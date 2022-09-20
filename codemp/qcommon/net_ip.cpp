@@ -435,7 +435,7 @@ SOCKET NET_IPSocket(char* net_interface, int port, int* err) {
 	Com_Printf("----- Client Initialization -----\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("---------- Genuine SerenityJediEngine-(Solaris Edition)----------\n");
-	Com_Printf("---------------------Build date 18/09/2022-----------------------\n");
+	Com_Printf("---------------------Build date 20/09/2022-----------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -454,6 +454,7 @@ SOCKET NET_IPSocket(char* net_interface, int port, int* err) {
 	Com_Printf("This could potentially improve the way we play JKA quite a lot.\n");
 	Com_Printf("Less spam-friendly, and more accurate hit detection could make the game more movie like.\n");
 	Com_Printf("-----------------------------------------------------------------\n");
+	Com_Printf("------Type (helpdebug) to open debug command list------\n");
 
 	if ((newsocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET) {
 		*err = socketError;

@@ -1010,10 +1010,9 @@ void Cvar_SerenityJediEngine_f(void)
 	Com_Printf("(d_blockinfo 1)= This will give information on saber blocking input \n");
 	Com_Printf("(d_attackinfo 1)= This will give information on saber attacking input \n");
 	Com_Printf("(d_saberinfo 1)= This will give information on saber trace box \n");
-	Com_Printf("(d_saberCombat 1)= This will give information on saber Combat input \n");
 	Com_Printf("(d_combatinfo 1)= This will give information on combatinfo input \n");
 	Com_Printf("(d_JediAI 1)= This will give information on NPC input \n");
-	Com_Printf("(g_DebugSaberCombat 1)= This will give  all information available \n");
+	Com_Printf("(g_DebugSaberCombat 1)= This will give all information available \n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("-Use these commands to help locate bugs or specific moments in code-\n");
 }
@@ -1358,7 +1357,7 @@ void Cvar_Init(void)
 	Cmd_AddCommand("cvar_usercreated", Cvar_ListUserCreated_f);
 	Cmd_AddCommand("cvar_modified", Cvar_ListModified_f);
 	Cmd_AddCommand("cvar_restart", Cvar_Restart_f);
-	Cmd_AddCommand("serenityjediengine", Cvar_SerenityJediEngine_f);
+	Cmd_AddCommand("helpdebug", Cvar_SerenityJediEngine_f);
 }
 
 static void Cvar_Realloc(char** string, char* memPool, int& memPoolUsed)

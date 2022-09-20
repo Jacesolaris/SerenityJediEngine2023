@@ -227,7 +227,7 @@ static void Howler_TryDamage(int damage, qboolean tongue, qboolean knockdown)
 	}
 
 #ifndef FINAL_BUILD
-	if (d_saberCombat->integer > 1)
+	if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 	{
 		G_DebugLine(start, end, 1000, 0x000000ff, qtrue);
 	}

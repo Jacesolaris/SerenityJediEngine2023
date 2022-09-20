@@ -780,7 +780,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 	if (saber_block_reflection) //GOES TO CROSSHAIR
 	{
 		vec3_t angs;
-		if (d_blockinfo->integer)
+		if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"GOES TO CROSSHAIR\n");
 		}
@@ -861,7 +861,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 	}
 	else if (bolt_block_reflection) //GOES TO ENEMY
 	{
-		if (d_blockinfo->integer)
+		if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"GOES TO ENEMY\n");
 		}
@@ -1077,7 +1077,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 
 		PM_AddBlockFatigue(&blocker->client->ps, punish);
 
-		if (d_blockinfo->integer)
+		if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"only randomly deflect away the bolt\n");
 		}

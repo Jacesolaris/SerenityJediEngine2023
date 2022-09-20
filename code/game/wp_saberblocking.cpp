@@ -405,7 +405,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker, int sabe
 			break;
 		case 1:
 			SabBeh_AnimateHeavySlowBounceAttacker(attacker);
-			if (d_attackinfo->integer)
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_RED"Attacker staggering\n");
 			}
@@ -434,7 +434,7 @@ void SabBeh_AddMishap_Blocker(gentity_t* blocker, gentity_t* attacker, int saber
 		{
 		case 0:
 			G_Stagger(blocker);
-			if (d_blockinfo->integer)
+			if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_RED"blocker staggering\n");
 			}
@@ -445,7 +445,7 @@ void SabBeh_AddMishap_Blocker(gentity_t* blocker, gentity_t* attacker, int saber
 				if (!Q_irand(0, 4))
 				{//20% chance
 					G_Stagger(blocker);
-					if (d_blockinfo->integer)
+					if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 					{
 						gi.Printf(S_COLOR_RED"NPC blocker staggering\n");
 					}
@@ -454,7 +454,7 @@ void SabBeh_AddMishap_Blocker(gentity_t* blocker, gentity_t* attacker, int saber
 				{
 					SabBeh_SaberShouldBeDisarmedBlocker(blocker, saberNum);
 					wp_block_points_regenerate_over_ride(blocker, BLOCKPOINTS_FATIGUE);
-					if (d_blockinfo->integer)
+					if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 					{
 						gi.Printf(S_COLOR_RED"NPC blocker lost his saber\n");
 					}
@@ -463,7 +463,7 @@ void SabBeh_AddMishap_Blocker(gentity_t* blocker, gentity_t* attacker, int saber
 			else
 			{
 				SabBeh_SaberShouldBeDisarmedBlocker(blocker, saberNum);
-				if (d_blockinfo->integer)
+				if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf(S_COLOR_RED"blocker lost his saber\n");
 				}
@@ -533,7 +533,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 			{
 				SabBeh_AnimateHeavySlowBounceAttacker(attacker);
 			}
-			if ((d_attackinfo->integer))
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_GREEN"Attacker npc is fatigued\n");
 			}
@@ -542,7 +542,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		else
 		{
-			if ((d_attackinfo->integer))
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_GREEN"Attacker player is fatigued\n");
 			}
@@ -560,7 +560,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 			attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_LIGHT;
 		}
 
-		if ((d_attackinfo->integer))
+		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
 			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
 			{
@@ -578,7 +578,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		//slow bounce
 		SabBeh_AnimateSmallBounce(attacker);
 
-		if ((d_attackinfo->integer))
+		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
 			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
 			{
@@ -597,7 +597,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		SabBeh_AnimateSmallBounce(attacker);
 		SabBeh_AnimateSmallBounce(blocker);
 
-		if ((d_attackinfo->integer))
+		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
 			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
 			{
@@ -614,7 +614,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 	{
 		if (!MBlocking)
 		{
-			if ((d_attackinfo->integer))
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
 				{
@@ -786,7 +786,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 
 			G_Sound(blocker, G_SoundIndex(va("sound/weapons/saber/saber_perfectblock%d.mp3", Q_irand(1, 3))));
 
-			if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+			if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 			{
 				gi.Printf(S_COLOR_MAGENTA"Blocker Perfect blocked an Unblockable attack reward 20\n");
 			}
@@ -816,7 +816,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 				G_Stagger(blocker);
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
-			if ((d_attackinfo->integer))
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_MAGENTA"Attacker must be Unblockable\n");
 			}
@@ -826,7 +826,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 	}
 	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps) || (TransitionClashParry))
 	{//and blocker is attacking
-		if (d_attackinfo->integer)
+		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"Both Attacker and Blocker are now attacking\n");
 		}
@@ -841,7 +841,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 		SabBeh_AnimateHeavySlowBounceAttacker(attacker);
 
 		SabBeh_AddBalance(blocker, -1);
-		if (d_attackinfo->integer)
+		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"Attacker Super break win / fail\n");
 		}
@@ -865,7 +865,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 
 			SabBeh_AddBalance(blocker, MPCOST_PARRYING_ATTACKFAKE);
 
-			if ((d_attackinfo->integer) && !PM_InSaberLock(attacker->client->ps.torsoAnim))
+			if ((d_attackinfo->integer || g_DebugSaberCombat->integer) && !PM_InSaberLock(attacker->client->ps.torsoAnim))
 			{
 				gi.Printf(S_COLOR_YELLOW"Attackers Attack Fake was Blocked\n");
 			}
@@ -887,7 +887,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 				SabBeh_Attack_Blocked(attacker, blocker, saberNum, bladeNum, qfalse);
 			}
 
-			if (d_attackinfo->integer)
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_YELLOW"Attacker Attack Fake bounced\n");
 			}
@@ -911,7 +911,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 				SabBeh_Attack_Blocked(attacker, blocker, saberNum, bladeNum, qfalse);
 			}
 
-			if (d_attackinfo->integer)
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_YELLOW"Attackers Attack was Blocked\n");
 			}
@@ -925,7 +925,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 				SabBeh_Attack_Blocked(attacker, blocker, saberNum, bladeNum, qtrue);
 			}
 
-			if (d_attackinfo->integer)
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_ORANGE"Attacker All the rest of the types of contact\n");
 			}
@@ -970,7 +970,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 				}
 			}
 
-			if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+			if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 			{
 				gi.Printf(S_COLOR_CYAN"Blocker was disarmed with very low bp, recharge bp 20bp\n");
 			}
@@ -989,7 +989,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 
 			PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_DANGER);
 
-			if (d_blockinfo->integer && (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker)))
+			if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker)))
 			{
 				gi.Printf(S_COLOR_CYAN"Blocker stagger drain 4 bp\n");
 			}
@@ -1027,7 +1027,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 
 				G_Sound(blocker, G_SoundIndex(va("sound/weapons/saber/saber_perfectblock%d.mp3", Q_irand(1, 3))));
 
-				if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+				if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 				{
 					gi.Printf(S_COLOR_CYAN"Blocker Perfect blocked reward 20\n");
 				}
@@ -1067,7 +1067,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 					CGCam_BlockShakeSP(0.45f, 100);
 				}
 
-				if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+				if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 				{
 					gi.Printf(S_COLOR_CYAN"Blocker Spamming block + attack cost 5\n");
 				}
@@ -1104,7 +1104,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 			{
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
-			if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+			if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 			{
 				gi.Printf(S_COLOR_CYAN"Blocker Holding block button only (spamming block) cost 10\n");
 			}
@@ -1124,7 +1124,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 				{
 					WP_SaberParry(blocker, attacker, saberNum, bladeNum);
 
-					if (d_blockinfo->integer && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+					if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
 					{
 						gi.Printf(S_COLOR_CYAN"NPC normal Parry\n");
 					}
@@ -1133,7 +1133,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 				{
 					WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
 
-					if (d_blockinfo->integer && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+					if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
 					{
 						gi.Printf(S_COLOR_CYAN"NPC Fatigued Parry\n");
 					}
@@ -1142,7 +1142,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 				{
 					WP_SaberMBlock(blocker, attacker, saberNum, bladeNum);
 
-					if (d_blockinfo->integer && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+					if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
 					{
 						gi.Printf(S_COLOR_CYAN"NPC good Parry\n");
 					}
@@ -1156,7 +1156,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 			G_Sound(blocker, G_SoundIndex(va("sound/weapons/saber/saber_goodparry%d.mp3", Q_irand(1, 3))));
 
 			PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_THREE);
-			if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+			if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 			{
 				gi.Printf(S_COLOR_CYAN"Blocker Other types of block and npc,s\n");
 			}
@@ -1180,7 +1180,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 			{
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
-			if ((d_blockinfo->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
+			if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 			{
 				gi.Printf(S_COLOR_CYAN"Blocker Not holding block drain 10\n");
 			}

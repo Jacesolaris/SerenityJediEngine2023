@@ -15037,12 +15037,6 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 		}
 	}
 
-	/*if (d_saberCombat->integer || g_DebugSaberCombat->integer)
-	{
-		Com_Printf("%s won saber lock, anim = %s!\n", gent->NPC_type, animTable[winAnim].name);
-		Com_Printf("%s lost saber lock, anim = %s!\n", genemy->NPC_type, animTable[loseAnim].name);
-	}*/
-
 	pm->ps->saberLockTime = genemy->client->ps.saberLockTime = 0;
 	pm->ps->saberLockEnemy = genemy->client->ps.saberLockEnemy = ENTITYNUM_NONE;
 	pm->ps->saberMoveNext = LS_NONE;

@@ -437,7 +437,7 @@ void Tusken_StaffTrace(void)
 			VectorMA(base, -20, dir, base);
 			VectorMA(base, 78, dir, tip);
 #ifndef FINAL_BUILD
-			if (d_saberCombat->integer > 1)
+			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
 				G_DebugLine(base, tip, 1000, 0x000000ff, qtrue);
 			}
@@ -502,7 +502,7 @@ void Tusken_StaffTracenew(gentity_t* self)
 			VectorMA(base, -20, dir, base);
 			VectorMA(base, 78, dir, tip);
 #ifndef FINAL_BUILD
-			if (d_saberCombat->integer > 1)
+			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
 				G_DebugLine(base, tip, 1000, 0x000000ff, qtrue);
 			}

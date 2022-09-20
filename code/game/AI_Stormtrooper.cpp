@@ -2905,7 +2905,7 @@ void Noghri_StickTrace(void)
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, POSITIVE_Y, dir);
 			VectorMA(base, 48, dir, tip);
 #ifndef FINAL_BUILD
-			if (d_saberCombat->integer > 1)
+			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
 				G_DebugLine(base, tip, FRAMETIME, 0x000000ff, qtrue);
 			}
@@ -2966,7 +2966,7 @@ void Noghri_StickTracenew(gentity_t* self)
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, POSITIVE_Y, dir);
 			VectorMA(base, 48, dir, tip);
 #ifndef FINAL_BUILD
-			if (d_saberCombat->integer > 1)
+			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
 				G_DebugLine(base, tip, FRAMETIME, 0x000000ff, qtrue);
 			}

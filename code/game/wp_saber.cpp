@@ -2503,7 +2503,7 @@ int g_get_attack_damage(const gentity_t* self, const int min_dmg, const int max_
 	if (damageFactor > 1)
 	{
 		damageFactor = 2.0f - damageFactor;
-		if (d_combatinfo->integer)
+		if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_RED"new damage system calculating extra damage %4.2f\n", damageFactor);
 		}
@@ -2886,32 +2886,15 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								}
 								else if (saber_in_kata)
 								{
-									if (d_combatinfo->integer)
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 									{
-										gi.Printf(S_COLOR_RED"saberInKata\n");
+										gi.Printf(S_COLOR_RED"saber_in_kata\n");
 									}
-									if (ent->client->ps.saberAnimLevel == SS_DESANN || ent->client->ps.saberAnimLevel ==
-										SS_STRONG)
-									{
-										totalDmg[i] = g_get_attack_damage(ent, 50, 100, 0.5f);
-									}
-									else if (ent->client->ps.saberAnimLevel == SS_MEDIUM)
-									{
-										totalDmg[i] = g_get_attack_damage(ent, 30, 60, 0.5f);
-									}
-									else if (ent->client->ps.saberAnimLevel == SS_FAST || ent->client->ps.saberAnimLevel
-										== SS_TAVION)
-									{
-										totalDmg[i] = g_get_attack_damage(ent, 20, 40, 0.5f);
-									}
-									else // SS_STAFF // SS_DUAL
-									{
-										totalDmg[i] = g_get_attack_damage(ent, 60, 70, 0.5f);
-									}
+									totalDmg[i] = g_get_attack_damage(ent, 100, 200, 0.5f);
 								}
 								else if (saber_in_back_attack)
 								{
-									if (d_combatinfo->integer)
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 									{
 										gi.Printf(S_COLOR_RED"saberInBackAttack\n");
 									}
@@ -2936,7 +2919,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								}
 								else if (saber_in_over_head_attack)
 								{
-									if (d_combatinfo->integer)
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 									{
 										gi.Printf(S_COLOR_RED"saberInOverHeadAttack\n");
 									}
@@ -2953,7 +2936,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 										{
 											//sort of a hack, don't want it doing big damage in the off points of the anim
 											totalDmg[i] = 10;
-											if (d_combatinfo->integer)
+											if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 											{
 												gi.Printf(
 													S_COLOR_MAGENTA
@@ -2973,7 +2956,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								}
 								else if (saber_in_roll_stab)
 								{
-									if (d_combatinfo->integer)
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 									{
 										gi.Printf(S_COLOR_YELLOW"SaberInRollStab\n");
 									}
@@ -2981,7 +2964,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								}
 								else if (saber_in_lunge_stab)
 								{
-									if (d_combatinfo->integer)
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 									{
 										gi.Printf(S_COLOR_YELLOW"SaberInLungeStab\n");
 									}
@@ -2989,7 +2972,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								}
 								else
 								{
-									if (d_combatinfo->integer)
+									if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 									{
 										gi.Printf(S_COLOR_RED"saberInSpecial\n");
 									}
@@ -4273,7 +4256,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 					{
 						WP_SaberParryNonRandom(hit_ent, tr.endpos, qfalse);
 
-						if ((d_blockinfo->integer))
+						if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 						{
 							gi.Printf(S_COLOR_MAGENTA"Blocker Blocked a thrown saber reward 10\n");
 						}
@@ -7755,7 +7738,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 				{
 					if (saberHitFraction < 1.0f)
 					{//an actual collision
-						if (d_blockinfo->integer)
+						if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 						{
 							gi.Printf(S_COLOR_YELLOW"Blocking starts here 1\n");
 						}
@@ -8174,7 +8157,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 	{
 		//actually did damage to something
 		wp_saber_hit_sound(ent, saberNum, bladeNum);
-		if (!saberInSpecial && (d_combatinfo->integer))
+		if (!saberInSpecial && (d_combatinfo->integer || g_DebugSaberCombat->integer))
 		{
 			if (g_saberRealisticCombat->integer == 3)
 			{
@@ -14113,7 +14096,7 @@ void wp_saber_update(gentity_t* self, const usercmd_t* ucmd)
 		wp_saber_in_flight_reflect_check(self);
 	}
 
-	if ((d_saberInfo->integer) && !PM_SaberInAttack(self->client->ps.saberMove))
+	if ((d_saberInfo->integer || g_DebugSaberCombat->integer) && !PM_SaberInAttack(self->client->ps.saberMove))
 	{
 		if (self->NPC && !G_ControlledByPlayer(self)) //NPC only
 		{

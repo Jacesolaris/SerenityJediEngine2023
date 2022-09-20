@@ -1495,7 +1495,7 @@ static void Jedi_StartBackOff(void)
 	ucmd.forwardmove = -127;
 	ucmd.rightmove = 0;
 	ucmd.upmove = 0;
-	if (d_JediAI->integer)
+	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		Com_Printf("%s backing off from spin attack!\n", NPC->NPC_type);
 	}
@@ -1857,7 +1857,7 @@ static void Jedi_AdjustSaberAnimLevel(const gentity_t* self, int newLevel)
 	//go ahead and set it
 	self->client->ps.saberAnimLevel = newLevel;
 
-	if (d_JediAI->integer)
+	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		switch (self->client->ps.saberAnimLevel)
 		{
@@ -4651,7 +4651,7 @@ void Jedi_CheckJumpEvasionSafety(gentity_t* self, usercmd_t* cmd, evasionType_t 
 				//cancel the evasion
 				NPC->client->ps.velocity[2] = NPC->client->ps.forceJumpCharge = 0;
 				cmd->upmove = 0;
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					Com_Printf(S_COLOR_RED"jump not safe, cancelling!");
 				}
@@ -4667,13 +4667,13 @@ void Jedi_CheckJumpEvasionSafety(gentity_t* self, usercmd_t* cmd, evasionType_t 
 					//cancel the evasion
 					NPC->client->ps.velocity[2] = NPC->client->ps.forceJumpCharge = 0;
 					cmd->upmove = 0;
-					if (d_JediAI->integer)
+					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
 						Com_Printf(S_COLOR_RED"jump not safe, cancelling!\n");
 					}
 				}
 			}
-			if (d_JediAI->integer)
+			if (d_JediAI->integer || g_DebugSaberCombat->integer)
 			{
 				Com_Printf(S_COLOR_GREEN"jump checked, is safe\n");
 			}
@@ -4827,7 +4827,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 	}
 
 	// Figure out what quadrant the block was in.
-	if (d_JediAI->integer)
+	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		gi.Printf("(%d) evading attack from height %4.2f, zdiff: %4.2f, rightdot: %4.2f\n", level.time,
 			hitloc[2] - self->absmin[2], zdiff, rightdot);
@@ -4874,7 +4874,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							TIMER_Start(self, "duck", Q_irand(500, 1500));
 							evasionType = EVASION_DUCK_PARRY;
 							evaded = qtrue;
-							if (d_JediAI->integer)
+							if (d_JediAI->integer || g_DebugSaberCombat->integer)
 							{
 								gi.Printf("duck ");
 							}
@@ -4885,7 +4885,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						}
 					}
 				}
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("UR block\n");
 				}
@@ -4926,7 +4926,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							TIMER_Start(self, "duck", Q_irand(500, 1500));
 							evasionType = EVASION_DUCK_PARRY;
 							evaded = qtrue;
-							if (d_JediAI->integer)
+							if (d_JediAI->integer || g_DebugSaberCombat->integer)
 							{
 								gi.Printf("duck ");
 							}
@@ -4937,7 +4937,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						}
 					}
 				}
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("UL block\n");
 				}
@@ -4950,7 +4950,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					duck_chance = 4;
 				}
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("TOP block\n");
 				}
@@ -4964,7 +4964,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasionType = EVASION_DUCK;
 				evaded = qtrue;
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("duck ");
 				}
@@ -4982,7 +4982,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasionType = EVASION_DUCK;
 				evaded = qtrue;
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("duck ");
 				}
@@ -5040,7 +5040,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						evasionType = EVASION_PARRY;
 					}
 				}
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("mid-UR block\n");
 				}
@@ -5091,7 +5091,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						evasionType = EVASION_PARRY;
 					}
 				}
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("mid-UL block\n");
 				}
@@ -5107,7 +5107,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					evasionType = EVASION_PARRY;
 				}
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("mid-TOP block\n");
 				}
@@ -5191,7 +5191,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							evasionType = EVASION_PARRY;
 						}
-						if (d_JediAI->integer)
+						if (d_JediAI->integer || g_DebugSaberCombat->integer)
 						{
 							gi.Printf("LR block\n");
 						}
@@ -5207,7 +5207,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							evasionType = EVASION_PARRY;
 						}
-						if (d_JediAI->integer)
+						if (d_JediAI->integer || g_DebugSaberCombat->integer)
 						{
 							gi.Printf("LL block\n");
 						}
@@ -5224,7 +5224,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
 					evasionType = EVASION_PARRY;
-					if (d_JediAI->integer)
+					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
 						gi.Printf("LR block\n");
 					}
@@ -5233,7 +5233,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
 					evasionType = EVASION_PARRY;
-					if (d_JediAI->integer)
+					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
 						gi.Printf("LL block\n");
 					}
@@ -5442,7 +5442,7 @@ static evasionType_t Jedi_CheckEvadeSpecialAttacks(void)
 									TIMER_Start(NPC, "strafeLeft", Q_irand(500, 1500));
 									TIMER_Set(NPC, "strafeRight", 0);
 									ucmd.rightmove = -127;
-									if (d_JediAI->integer)
+									if (d_JediAI->integer || g_DebugSaberCombat->integer)
 									{
 										Com_Printf("%s rolling left from roll-stab!\n", NPC->NPC_type);
 									}
@@ -5469,7 +5469,7 @@ static evasionType_t Jedi_CheckEvadeSpecialAttacks(void)
 									TIMER_Start(NPC, "strafeRight", Q_irand(500, 1500));
 									TIMER_Set(NPC, "strafeLeft", 0);
 									ucmd.rightmove = 127;
-									if (d_JediAI->integer)
+									if (d_JediAI->integer || g_DebugSaberCombat->integer)
 									{
 										Com_Printf("%s rolling right from roll-stab!\n", NPC->NPC_type);
 									}
@@ -5513,14 +5513,14 @@ static evasionType_t Jedi_CheckEvadeSpecialAttacks(void)
 								TIMER_Set(NPC, "moveleft", -level.time);
 								TIMER_Set(NPC, "movecenter", -level.time);
 								TIMER_Set(NPC, "moveback", Q_irand(500, 1000));
-								if (d_JediAI->integer)
+								if (d_JediAI->integer || g_DebugSaberCombat->integer)
 								{
 									Com_Printf("%s backflipping from roll-stab!\n", NPC->NPC_type);
 								}
 							}
 							else
 							{
-								if (d_JediAI->integer)
+								if (d_JediAI->integer || g_DebugSaberCombat->integer)
 								{
 									Com_Printf("%s force-jumping over roll-stab!\n", NPC->NPC_type);
 								}
@@ -5604,7 +5604,7 @@ static qboolean Jedi_SaberBlock(void)
 	if (bestDist > NPC->maxs[0] * 5)
 	{
 		//FIXME: sometimes he reacts when you're too far away to actually hit him
-		if (d_JediAI->integer)
+		if (d_JediAI->integer || g_DebugSaberCombat->integer)
 		{
 			Com_Printf(S_COLOR_RED"enemy saber dist: %4.2f\n", bestDist);
 		}
@@ -5614,7 +5614,7 @@ static qboolean Jedi_SaberBlock(void)
 
 	dist = bestDist;
 
-	if (d_JediAI->integer)
+	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		Com_Printf(S_COLOR_GREEN"enemy saber dist: %4.2f\n", dist);
 	}
@@ -5678,7 +5678,7 @@ static qboolean Jedi_SaberBlock(void)
 		VectorCopy(tr.endpos, hitloc);
 	}
 
-	if (d_JediAI->integer)
+	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		G_DebugLine(saberPoint, hitloc, FRAMETIME,
 			wp_debug_saber_colour(NPC->enemy->client->ps.saber[closestSaberNum].blade[closestBladeNum].color),
@@ -5703,7 +5703,7 @@ static qboolean Jedi_SaberBlock(void)
 
 			TIMER_Set(NPC, "parryReCalcTime", Q_irand(0, parryReCalcTime));
 
-			if (d_JediAI->integer)
+			if (d_JediAI->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf("Keep parry choice until: %d\n", level.time + parryReCalcTime);
 			}
@@ -6276,7 +6276,7 @@ static void Jedi_EvasionSaber(vec3_t enemy_movedir, float enemy_dist, vec3_t ene
 				else
 				{
 					//strafed
-					if (d_JediAI->integer)
+					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
 						gi.Printf("def strafe\n");
 					}
@@ -6945,7 +6945,7 @@ static void Jedi_CombatTimersUpdate(int enemy_dist)
 			//start a strafe
 			if (Jedi_Strafe(1000, 3000, 0, 4000, qtrue))
 			{
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("off strafe\n");
 				}
@@ -6999,7 +6999,7 @@ static void Jedi_CombatTimersUpdate(int enemy_dist)
 					}
 				}
 			}
-			if (d_JediAI->integer)
+			if (d_JediAI->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf("(%d) PARRY: agg %d, no parry until %d\n", level.time, NPCInfo->stats.aggression,
 					level.time + 100);
@@ -7012,7 +7012,7 @@ static void Jedi_CombatTimersUpdate(int enemy_dist)
 			if (!Q_irand(0, 1)) //FIXME: dependent on rank/diff?
 			{
 				Jedi_Aggression(NPC, -1);
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("(%d) HIT: agg %d\n", level.time, NPCInfo->stats.aggression);
 				}
@@ -7056,7 +7056,7 @@ static void Jedi_CombatTimersUpdate(int enemy_dist)
 					Jedi_Aggression(NPC, -2); //really should back off!
 				}
 				Jedi_AdjustSaberAnimLevel(NPC, NPC->client->ps.saberAnimLevel + 1); //use a stronger attack
-				if (d_JediAI->integer)
+				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("(%d) KNOCK-BLOCKED: agg %d\n", level.time, NPCInfo->stats.aggression);
 				}
@@ -7067,7 +7067,7 @@ static void Jedi_CombatTimersUpdate(int enemy_dist)
 				{
 					//Com_Printf( "(%d) drop agg - we were blocked\n", level.time );
 					Jedi_Aggression(NPC, -1);
-					if (d_JediAI->integer)
+					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
 						gi.Printf("(%d) BLOCKED: agg %d\n", level.time, NPCInfo->stats.aggression);
 					}
@@ -8474,14 +8474,14 @@ void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, cons
 			//Com_Printf( "(%d) drop agg - hit by saber\n", level.time );
 			Jedi_Aggression(self, -1);
 		}
-		if (d_JediAI->integer)
+		if (d_JediAI->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf("(%d) PAIN: agg %d, no parry until %d\n", level.time, self->NPC->stats.aggression,
 				level.time + 500);
 		}
 		//for testing only
 		// Figure out what quadrant the hit was in.
-		if (d_JediAI->integer)
+		if (d_JediAI->integer || g_DebugSaberCombat->integer)
 		{
 			vec3_t diff, fwdangles, right;
 

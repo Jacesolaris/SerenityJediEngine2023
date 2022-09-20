@@ -1508,7 +1508,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 		//only randomly deflect away the bolt
 		g_missile_bouncedoff_saber(blocker, bolt, fwd);
 
-		if (d_blockinfo.integer || g_DebugSaberCombat.integer && !(blocker->r.svFlags & SVF_BOT))
+		if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
 		{
 			Com_Printf(S_COLOR_YELLOW"only randomly deflect away the bolt\n");
 		}
@@ -1525,7 +1525,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 			//GOES TO ENEMY
 			g_deflect_missile_to_attacker(blocker, bolt, fwd);
 
-			if (d_blockinfo.integer || g_DebugSaberCombat.integer && !(blocker->r.svFlags & SVF_BOT))
+			if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
 			{
 				Com_Printf(S_COLOR_YELLOW"GOES TO ENEMY\n");
 			}
@@ -1584,7 +1584,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 			//GOES TO ENEMY
 			g_reflect_missile_to_attacker(blocker, bolt, fwd);
 
-			if (d_blockinfo.integer || g_DebugSaberCombat.integer && !(blocker->r.svFlags & SVF_BOT))
+			if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
 			{
 				Com_Printf(S_COLOR_YELLOW"GOES TO ENEMY\n");
 			}
@@ -1643,7 +1643,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 			vec3_t angs;
 			vec3_t bounce_dir;
 			//GOES TO CROSSHAIR
-			if (d_blockinfo.integer || g_DebugSaberCombat.integer && !(blocker->r.svFlags & SVF_BOT))
+			if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
 			{
 				Com_Printf(S_COLOR_YELLOW"GOES TO CROSSHAIR\n");
 			}
