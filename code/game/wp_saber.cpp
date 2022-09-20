@@ -226,7 +226,7 @@ extern qboolean npc_is_light_jedi(const gentity_t* self);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 //////////////////////////////////////////////////
 extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc, int saberNum, int bladeNum);
-extern void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum);
+extern void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
 //////////////////////////////////////////////////
 void player_Freeze(gentity_t* self);
 void Player_CheckFreeze(gentity_t* self);
@@ -2890,7 +2890,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 									{
 										gi.Printf(S_COLOR_RED"saber_in_kata\n");
 									}
-									totalDmg[i] = g_get_attack_damage(ent, 100, 200, 0.5f);
+									totalDmg[i] = g_get_attack_damage(ent, 150, 250, 0.65f);
 								}
 								else if (saber_in_back_attack)
 								{
@@ -7747,7 +7747,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 						SabBeh_BlockvsAttack(hitOwner, ent, saberHitLocation, saberNum, bladeNum);
 
 						//make me bounce -(Im the attacker)
-						SabBeh_AttackvBlock(ent, hitOwner, saberNum, bladeNum);
+						SabBeh_AttackvBlock(ent, hitOwner, saberNum, bladeNum, saberHitLocation);
 
 						collisionResolved = qtrue;
 					}

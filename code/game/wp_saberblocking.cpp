@@ -380,7 +380,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker, int sabe
 				if (!Q_irand(0, 4))
 				{//20% chance
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
-					if (d_attackinfo->integer || g_DebugSaberCombat->integer)
+					if (d_attackinfo->integer || g_DebugSaberCombat->integer && (attacker->NPC && !G_ControlledByPlayer(attacker)))
 					{
 						gi.Printf(S_COLOR_YELLOW"NPC Attacker staggering\n");
 					}
@@ -388,7 +388,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker, int sabe
 				else
 				{
 					SabBeh_SaberShouldBeDisarmedAttacker(attacker, saberNum);
-					if (d_attackinfo->integer || g_DebugSaberCombat->integer)
+					if (d_attackinfo->integer || g_DebugSaberCombat->integer && (attacker->NPC && !G_ControlledByPlayer(attacker)))
 					{
 						gi.Printf(S_COLOR_RED"NPC Attacker lost his saber\n");
 					}
@@ -397,17 +397,17 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker, int sabe
 			else
 			{
 				SabBeh_SaberShouldBeDisarmedAttacker(attacker, saberNum);
-				if (d_attackinfo->integer || g_DebugSaberCombat->integer)
+				if (d_attackinfo->integer || g_DebugSaberCombat->integer && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
 				{
-					gi.Printf(S_COLOR_RED"Attacker lost his saber\n");
+					gi.Printf(S_COLOR_RED"Player Attacker lost his saber\n");
 				}
 			}
 			break;
 		case 1:
 			SabBeh_AnimateHeavySlowBounceAttacker(attacker);
-			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
+			if (d_attackinfo->integer || g_DebugSaberCombat->integer && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
 			{
-				gi.Printf(S_COLOR_RED"Attacker staggering\n");
+				gi.Printf(S_COLOR_RED"Player Attacker staggering\n");
 			}
 			break;
 		default:;
@@ -750,10 +750,9 @@ void SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker, int saberNum
 	}
 }
 
-void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum)
+void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//if the attack is blocked -(Im the attacker)
-	vec3_t hitLoc = { 0, 0, 1.0 };
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
 	const qboolean AccurateParry = g_accurate_blocking(blocker, attacker, hitLoc); // Perfect Normal Blocking
 
@@ -923,6 +922,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 			if (!MBlocking)
 			{
 				SabBeh_Attack_Blocked(attacker, blocker, saberNum, bladeNum, qtrue);
+				G_Stagger(blocker);
 			}
 
 			if (d_attackinfo->integer || g_DebugSaberCombat->integer)

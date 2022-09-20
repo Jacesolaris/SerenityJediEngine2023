@@ -23,7 +23,7 @@ This file is part of Jedi Academy.
 #define VERSION_EXTERNAL_BUILD		01
 #define VERSION_INTERNAL_BUILD		02
 
-#define VERSION_STRING				"Year-22,Month-09,BuildNum -03"
-#define VERSION_STRING_DOTTED		"Year-22,Month-09,BuildNum -03"
+#define VERSION_STRING				"Year-22,Month-09,BuildNum -04"
+#define VERSION_STRING_DOTTED		"Year-22,Month-09,BuildNum -04"
 
 #endif // __AUTO_VERSION_HEADER

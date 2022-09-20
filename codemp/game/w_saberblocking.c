@@ -365,7 +365,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
 				if (!Q_irand(0, 4))
 				{//20% chance
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
-					if (d_attackinfo.integer || g_DebugSaberCombat.integer)
+					if (d_attackinfo.integer || g_DebugSaberCombat.integer && (attacker->r.svFlags & SVF_BOT))
 					{
 						Com_Printf(S_COLOR_YELLOW"NPC Attacker staggering\n");
 					}
@@ -373,7 +373,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
 				else
 				{
 					SabBeh_SaberShouldBeDisarmedAttacker(attacker, blocker);
-					if (d_attackinfo.integer || g_DebugSaberCombat.integer)
+					if (d_attackinfo.integer || g_DebugSaberCombat.integer && (attacker->r.svFlags & SVF_BOT))
 					{
 						Com_Printf(S_COLOR_RED"NPC Attacker lost his saber\n");
 					}
@@ -382,17 +382,17 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
 			else
 			{
 				SabBeh_SaberShouldBeDisarmedAttacker(attacker, blocker);
-				if (d_attackinfo.integer || g_DebugSaberCombat.integer)
+				if (d_attackinfo.integer || g_DebugSaberCombat.integer && !(attacker->r.svFlags & SVF_BOT))
 				{
-					Com_Printf(S_COLOR_RED"Attacker lost his saber\n");
+					Com_Printf(S_COLOR_RED"Player Attacker lost his saber\n");
 				}
 			}
 			break;
 		case 1:
 			SabBeh_AnimateHeavySlowBounceAttacker(attacker);
-			if (d_attackinfo.integer || g_DebugSaberCombat.integer)
+			if (d_attackinfo.integer || g_DebugSaberCombat.integer && !(attacker->r.svFlags & SVF_BOT))
 			{
-				Com_Printf(S_COLOR_RED"Attacker staggering\n");
+				Com_Printf(S_COLOR_RED"Player Attacker staggering\n");
 			}
 			break;
 		default:;
@@ -557,7 +557,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 
 		if (d_attackinfo.integer || g_DebugSaberCombat.integer)
 		{
-			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
+			if (!(attacker->r.svFlags & SVF_BOT))
 			{
 				Com_Printf(S_COLOR_GREEN"player attack stagger\n");
 			}
@@ -575,7 +575,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 
 		if (d_attackinfo.integer || g_DebugSaberCombat.integer)
 		{
-			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
+			if (!(attacker->r.svFlags & SVF_BOT))
 			{
 				Com_Printf(S_COLOR_GREEN"player light blocked bounce\n");
 			}
@@ -594,7 +594,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 
 		if (d_attackinfo.integer || g_DebugSaberCombat.integer)
 		{
-			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
+			if (!(attacker->r.svFlags & SVF_BOT))
 			{
 				Com_Printf(S_COLOR_GREEN"player two attacking sabers bouncing off each other\n");
 			}
@@ -611,7 +611,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		{
 			if (d_attackinfo.integer || g_DebugSaberCombat.integer)
 			{
-				if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
+				if (!(attacker->r.svFlags & SVF_BOT))
 				{
 					Com_Printf(S_COLOR_GREEN"player blocked bounce\n");
 				}
@@ -915,6 +915,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 			if (!MBlocking)
 			{
 				SabBeh_Attack_Blocked(attacker, blocker, qtrue);
+				G_Stagger(blocker);
 			}
 
 			if ((d_attackinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
@@ -950,7 +951,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 				SabBeh_SaberShouldBeDisarmedBlocker(blocker, attacker);
 			}
 
-			if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+			if (attacker->r.svFlags & SVF_BOT) //NPC only
 			{
 				wp_block_points_regenerate(attacker, BLOCKPOINTS_FATIGUE);
 			}
@@ -1048,7 +1049,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc
 					WP_SaberBlockNonRandom(blocker, hitLoc, qfalse);
 				}
 
-				if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+				if (attacker->r.svFlags & SVF_BOT) //NPC only
 				{
 					PM_AddBlockFatigue(&attacker->client->ps, BLOCKPOINTS_THREE);
 				}
