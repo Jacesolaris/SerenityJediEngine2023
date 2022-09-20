@@ -620,11 +620,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 					Com_Printf(S_COLOR_GREEN"npc blocked bounce\n");
 				}
 			}
-
-			if (attacker->r.svFlags & SVF_BOT) //NPC only
-			{
-				SabBeh_AnimateSmallBounce(attacker);
-			}
+			SabBeh_AnimateSmallBounce(attacker);
 		}
 		return qtrue;
 	}

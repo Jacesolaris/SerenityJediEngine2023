@@ -625,11 +625,6 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 					gi.Printf(S_COLOR_GREEN"npc blocked bounce\n");
 				}
 			}
-			
-			//if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
-			//{
-				//SabBeh_AnimateSmallBounce(attacker);
-			//}
 			SabBeh_AnimateSmallBounce(attacker);
 		}
 		return qtrue;
