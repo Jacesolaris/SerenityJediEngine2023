@@ -75,6 +75,7 @@ extern int G_MBlocktheAttack(int move);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern void G_Stagger(gentity_t* hit_ent);
 extern void G_StaggerAttacker(gentity_t* atk);
+extern void G_BounceAttacker(gentity_t* atk);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
 extern saberMoveName_t PM_SaberBounceForAttack(int move);
 extern cvar_t* g_SaberPerfectBlockingTimer;
@@ -484,9 +485,18 @@ void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker)
 
 void SabBeh_AnimateSmallBounce(gentity_t* attacker)
 {
-	attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
-	attacker->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[attacker->client->ps.saberMove].startQuad - Q_BR);
-	attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
+	if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+	{
+		attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
+		attacker->client->ps.userInt3 |= 1 << FLAG_OLDSLOWBOUNCE;
+		G_BounceAttacker(attacker);
+	}
+	else
+	{
+		attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
+		attacker->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[attacker->client->ps.saberMove].startQuad - Q_BR);
+		attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
+	}
 }
 
 ////////Blocker Bounces//////////
@@ -616,10 +626,11 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 				}
 			}
 			
-			if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
-			{
-				SabBeh_AnimateSmallBounce(attacker);
-			}
+			//if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+			//{
+				//SabBeh_AnimateSmallBounce(attacker);
+			//}
+			SabBeh_AnimateSmallBounce(attacker);
 		}
 		return qtrue;
 	}

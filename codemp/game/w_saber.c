@@ -379,6 +379,229 @@ void G_StaggerAttacker(gentity_t* atk)
 	}
 }
 
+// Attack bounce
+void G_BounceAttacker(gentity_t* atk)
+{
+	if (PM_InGetUp(&atk->client->ps) || PM_InForceGetUp(&atk->client->ps))
+	{
+		return;
+	}
+
+	const int anim_choice = irand(0, 6);
+
+	if (atk->client->ps.saberAnimLevel == SS_DUAL)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B6__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (atk->client->ps.saberAnimLevel == SS_STAFF)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B7__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (atk->client->ps.saberAnimLevel == SS_FAST)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B1__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (atk->client->ps.saberAnimLevel == SS_MEDIUM)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B2__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (atk->client->ps.saberAnimLevel == SS_STRONG)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B3__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (atk->client->ps.saberAnimLevel == SS_DESANN)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B4__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (atk->client->ps.saberAnimLevel == SS_TAVION)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5_BL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5_BR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5_TL___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5_TR___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5_T____, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5__L___, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 6:
+			G_SetAnim(atk, &atk->client->pers.cmd, SETANIM_TORSO, BOTH_B5__R___, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+
+	if (PM_SaberInMassiveBounce(atk->client->ps.torsoAnim))
+	{
+		atk->client->ps.saberMove = LS_NONE;
+		atk->client->ps.saberBlocked = BLOCKED_NONE;
+		atk->client->ps.weaponTime = atk->client->ps.torsoTimer;
+		atk->client->MassiveBounceAnimTime = atk->client->ps.torsoTimer + level.time;
+	}
+	else
+	{
+		if (!in_camera)
+		{
+			atk->client->ps.saberMove = LS_READY;
+		}
+	}
+}
+
 void G_Stumble(gentity_t* hit_ent)
 {
 	if (PM_SaberInBashedAnim(hit_ent->client->ps.torsoAnim))

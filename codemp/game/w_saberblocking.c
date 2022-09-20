@@ -85,6 +85,7 @@ extern qboolean WP_SaberNPCMBlock(gentity_t* blocker, gentity_t* attacker, int s
 extern qboolean WP_SaberNPCFatiguedParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
 void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker);
 extern void G_StaggerAttacker(gentity_t* atk);
+extern void G_BounceAttacker(gentity_t* atk);
 extern int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern void wp_saber_clear_damage_for_ent_num(gentity_t* attacker, int entity_num, int saber_num, int blade_num);
 //////////Defines////////////////
@@ -469,10 +470,18 @@ void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker)
 
 void SabBeh_AnimateSmallBounce(gentity_t* attacker)
 {
-	attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
-	attacker->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[attacker->client->ps.saberMove].startQuad - Q_BR);
-	//attacker->client->ps.saberBounceMove = PM_SaberBounceForAttack(attacker->client->ps.saberMove);
-	attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
+	if (attacker->r.svFlags & SVF_BOT) //NPC only
+	{
+		attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
+		attacker->client->ps.userInt3 |= 1 << FLAG_OLDSLOWBOUNCE;
+		G_BounceAttacker(attacker);
+	}
+	else
+	{
+		attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
+		attacker->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[attacker->client->ps.saberMove].startQuad - Q_BR);
+		attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
+	}
 }
 
 void SabBeh_AnimateHeavySlowBounceBlocker(gentity_t* blocker, gentity_t* attacker)
@@ -611,7 +620,11 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 					Com_Printf(S_COLOR_GREEN"npc blocked bounce\n");
 				}
 			}
-			SabBeh_AnimateSmallBounce(attacker);
+
+			if (attacker->r.svFlags & SVF_BOT) //NPC only
+			{
+				SabBeh_AnimateSmallBounce(attacker);
+			}
 		}
 		return qtrue;
 	}
