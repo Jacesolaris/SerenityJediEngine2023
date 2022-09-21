@@ -933,16 +933,16 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 	}
 }
 
-void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc, int saberNum, int bladeNum)
+void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
-	//-(Im the blocker)
+	//If the attack is blocked-(Im the blocker)
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
 	const qboolean AccurateParry = g_accurate_blocking(blocker, attacker, hitLoc); // Perfect Normal Blocking
 
-	const qboolean Blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking
-	const qboolean MBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse;//perfect Blocking
-	const qboolean ActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
-	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse; //Active NPC Blocking
+	const qboolean Blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking (just holding block button)
+	const qboolean MBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse;	//perfect Blocking (Timed Block)
+	const qboolean ActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking (Holding Block button = Attack button)
+	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;//(Npc Blocking function)
 
 	if (blocker->client->ps.blockPoints <= BLOCKPOINTS_FATIGUE) // blocker has less than 20BP
 	{

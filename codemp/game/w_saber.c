@@ -155,7 +155,7 @@ extern qboolean PM_SaberInKillMove(int move);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
 extern void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker);
 extern qboolean PM_RestAnim(int anim);
-extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc, int saberNum, int bladeNum);
+extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
 extern qboolean BG_HopAnim(int anim);
 
 float VectorBlockDistance(vec3_t v1, vec3_t v2)
@@ -6800,7 +6800,7 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 			did_hit = qfalse;
 
 			//make me parry	-(Im the blocker)
-			SabBeh_BlockvsAttack(blocker, self, tr.endpos, r_saber_num, r_blade_num);
+			SabBeh_BlockvsAttack(blocker, self, r_saber_num, r_blade_num, tr.endpos);
 
 			//make me bounce -(Im the attacker)
 			SabBeh_AttackvBlock(self, blocker, r_saber_num, r_blade_num, tr.endpos);
@@ -6856,7 +6856,7 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 				did_hit = qfalse;
 
 				//make me parry	-(Im the blocker)
-				SabBeh_BlockvsAttack(blocker, self, tr.endpos, r_saber_num, r_blade_num);
+				SabBeh_BlockvsAttack(blocker, self, r_saber_num, r_blade_num, tr.endpos);
 
 				//make me bounce -(Im the attacker)
 				SabBeh_AttackvBlock(self, blocker, r_saber_num, r_blade_num, tr.endpos);

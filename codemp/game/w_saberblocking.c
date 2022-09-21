@@ -926,7 +926,7 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 	}
 }
 
-void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc, int saberNum, int bladeNum)
+void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//-(Im the blocker)
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking

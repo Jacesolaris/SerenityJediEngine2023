@@ -225,7 +225,7 @@ extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 //////////////////////////////////////////////////
-extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, vec3_t hitLoc, int saberNum, int bladeNum);
+extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
 extern void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
 //////////////////////////////////////////////////
 void player_Freeze(gentity_t* self);
@@ -7744,7 +7744,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 						}
 
 						//make me parry	-(Im the blocker)
-						SabBeh_BlockvsAttack(hitOwner, ent, saberHitLocation, saberNum, bladeNum);
+						SabBeh_BlockvsAttack(hitOwner, ent, saberNum, bladeNum, saberHitLocation);
 
 						//make me bounce -(Im the attacker)
 						SabBeh_AttackvBlock(ent, hitOwner, saberNum, bladeNum, saberHitLocation);
