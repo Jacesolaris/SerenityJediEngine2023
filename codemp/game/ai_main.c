@@ -8400,7 +8400,9 @@ qboolean BotBehave_CheckUseKata(const bot_state_t* bs)
 	trace_t tr;
 
 	if (bs->cur_ps.weapon != WP_SABER)
+	{
 		return qfalse;
+	}
 
 	VectorCopy(bs->cur_ps.origin, cur_org);
 	cur_org[2] += 24;
@@ -8552,26 +8554,26 @@ void BotBehave_AttackBasic(bot_state_t* bs, const gentity_t* target)
 	moveDir[2] = 0;
 	VectorNormalize(moveDir);
 
-	//if (bs->virtualWeapon == WP_SABER)
-	//{
-	//	// Added, backstab check...
-	//	if (BotBehave_CheckBackstab(bs))
-	//	{
-	//		return;
-	//	}
+	if (bs->virtualWeapon == WP_SABER)
+	{
+		// Added, backstab check...
+		if (BotBehave_CheckBackstab(bs))
+		{
+			return;
+		}
 
-	//	// Added, kata check...
-	//	if (BotBehave_CheckUseKata(bs))
-	//	{
-	//		return;
-	//	}
+		// Added, kata check...
+		if (BotBehave_CheckUseKata(bs))
+		{
+			return;
+		}
 
-	//	// Added, special crouch attack check...
-	//	if (BotBehave_CheckUseCrouchAttack(bs))
-	//	{
-	//		return;
-	//	}
-	//}
+		// Added, special crouch attack check...
+		if (BotBehave_CheckUseCrouchAttack(bs))
+		{
+			return;
+		}
+	}
 
 	//adjust the moveDir to do strafing
 	adjustfor_strafe(bs, moveDir);
@@ -8636,7 +8638,7 @@ void SaberCombatHandling(bot_state_t* bs)
 	vec3_t downvec;
 	vec3_t midorg;
 	vec3_t a;
-	vec3_t fwd, moveDir;
+	vec3_t fwd, ang, moveDir;
 	vec3_t mins, maxs;
 	trace_t tr;
 	int me_down;
@@ -8759,7 +8761,6 @@ void SaberCombatHandling(bot_state_t* bs)
 
 		if (bs->currentEnemy && bs->currentEnemy->client)
 		{
-
 			if (!PM_SaberInSpecial(bs->currentEnemy->client->ps.saberMove)
 				&& bs->frame_Enemy_Len > 90
 				&& bs->saberBFTime > level.time
@@ -8835,47 +8836,26 @@ void SaberCombatHandling(bot_state_t* bs)
 	}
 	else if (bs->frame_Enemy_Len <= 56)
 	{
-		// Added, backstab check...
-		if (BotBehave_CheckBackstab(bs))
-		{
-			return;
-		}
+		BotBehave_Attack(bs);
+		bs->saberDefending = 0;
+	}
 
-		// Added, special crouch attack check...
-		if (BotBehave_CheckUseCrouchAttack(bs))
+	if (!VectorCompare(vec3_origin, moveDir))
+	{
+		trap->EA_Move(bs->client, moveDir, 5000);
+	}
+
+	if (bs->frame_Enemy_Vis && bs->cur_ps.weapon == bs->virtualWeapon
+		&& (InFieldOfVision(bs->viewangles, 30, ang)
+			|| bs->virtualWeapon == WP_SABER && InFieldOfVision(bs->viewangles, 100, ang)))
+	{
+		//not switching weapons so attack
+		trap->EA_Attack(bs->client);
+
+		if (bs->cur_ps.weapon == WP_SABER)
 		{
-			return;
-		}
-		//we're using a lightsaber
-		if (PM_SaberInIdle(bs->cur_ps.saberMove)
-			|| PM_SaberInBounce(bs->cur_ps.saberMove)
-			|| PM_SaberInReturn(bs->cur_ps.saberMove))
-		{//we want to attack, and we need to choose a new attack swing, pick randomly.
-			MoveforAttackQuad(bs, moveDir, Q_irand(Q_BR, Q_B));
-		}
-		else if (bs->cur_ps.userInt3 & 1 << FLAG_ATTACKFAKE)
-		{//successfully started an attack fake, don't do it again for a while.
-			bs->saberBFTime = level.time + Q_irand(3000, 5000); //every 3-5 secs
-		}
-		else if (bs->saberBFTime < level.time
-			&& (PM_SaberInTransition(bs->cur_ps.saberMove)
-				|| PM_SaberInStart(bs->cur_ps.saberMove)))
-		{
-			//we can and want to do a saber attack fake.
-			int fakeQuad = Q_irand(Q_BR, Q_B);
-			while (fakeQuad == saberMoveData[bs->cur_ps.saberMove].endQuad)
-			{
-				//can't fake in the direction we're already trying to attack in
-				fakeQuad = Q_irand(Q_BR, Q_B);
-			}
-			//start trying to fake
-			MoveforAttackQuad(bs, moveDir, fakeQuad);
-			trap->EA_Alt_Attack(bs->client);
-		}
-		else
-		{
-			bs->doAttack = 1;
-			bs->saberDefending = 0;
+			//only walk while attacking with the saber.
+			bs->doWalk = qtrue;
 		}
 	}
 }
@@ -10803,7 +10783,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 					break;
 				}
 				i++;
-}
+			}
 			if (i != MAX_GENTITIES && vehicle)
 			{ //broke before end so we must've found something
 				vec3_t v;
@@ -10859,8 +10839,8 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 				VectorSubtract(g_entities[0].client->ps.origin, bs->origin, mdir);
 				VectorNormalize(mdir);
 				trap->EA_Move(bs->client, mdir, 5000);
+				}
 			}
-		}
 
 		if (bs->forceMove_Forward)
 		{
@@ -10889,7 +10869,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			trap->EA_Jump(bs->client);
 		}
 		return;
-	}
+		}
 
 	if (level.gametype == GT_SIEGE && level.time - level.startTime < 10000)
 	{
@@ -11009,7 +10989,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 		}
 	}
 
-	if (g_entities[bs->client].client->ps.fd.saberAnimLevel == SS_DUAL 
+	if (g_entities[bs->client].client->ps.fd.saberAnimLevel == SS_DUAL
 		|| g_entities[bs->client].client->ps.fd.saberAnimLevel != SS_MEDIUM)
 	{
 		if (bs->changeStyleDebounce < level.time)
@@ -13857,7 +13837,7 @@ int BotWeapon_Detpack(bot_state_t* bs, const gentity_t* target)
 	}
 
 	return qtrue;
-	}
+}
 
 int gUpdateVars = 0;
 
@@ -13940,7 +13920,7 @@ int BotAIStartFrame(const int time)
 		if (!botstates[i] || !botstates[i]->inuse)
 		{
 			continue;
-	}
+		}
 		if (g_entities[i].client->pers.connected != CON_CONNECTED)
 		{
 			continue;
@@ -13948,7 +13928,7 @@ int BotAIStartFrame(const int time)
 
 		BotUpdateInput(botstates[i], time, elapsed_time);
 		trap->BotUserCommand(botstates[i]->client, &botstates[i]->lastucmd);
-}
+	}
 
 	return qtrue;
 }

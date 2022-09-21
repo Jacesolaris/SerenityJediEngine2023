@@ -4333,15 +4333,18 @@ qboolean PM_SaberBlocking(void)
 				if (pm->cmd.buttons & BUTTON_ATTACK)
 				{
 					//transition to a new attack
-					if (pm->ps->clientNum >= MAX_CLIENTS)
+#ifdef _GAME
+					if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 					{
-						//NPC
+						// Some special bot stuff.
 						nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
 					}
 					else
+#endif
 					{
 						//player
 						int newQuad = PM_SaberMoveQuadrantForMovement(&pm->cmd);
+
 						while (newQuad == saberMoveData[pm->ps->saberMove].startQuad)
 						{
 							//player is still in same attack quad, don't repeat that attack because it looks bad,
@@ -4353,25 +4356,29 @@ qboolean PM_SaberBlocking(void)
 				else
 				{
 					//return to ready
-					if (pm->ps->clientNum >= MAX_CLIENTS)
+#ifdef _GAME
+					if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 					{
-						//NPC
+						// Some special bot stuff.
 						nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
 					}
 					else
+#endif
 					{
 						//player
 						if (saberMoveData[pm->ps->saberMove].startQuad == Q_T)
 						{
-							nextMove = Q_irand(LS_R_BL2TR, LS_R_BR2TL);
+							nextMove = LS_R_BL2TR;
 						}
 						else if (saberMoveData[pm->ps->saberMove].startQuad < Q_T)
 						{
-							nextMove = LS_R_TL2BR + (saberMoveName_t)(saberMoveData[pm->ps->saberMove].startQuad - Q_BR);
+							nextMove = LS_R_TL2BR + (saberMoveName_t)(saberMoveData[pm->ps->saberMove].startQuad -
+								Q_BR);
 						}
 						else
 						{
-							nextMove = LS_R_BR2TL + (saberMoveName_t)(saberMoveData[pm->ps->saberMove].startQuad - Q_TL);
+							nextMove = LS_R_BR2TL + (saberMoveName_t)(saberMoveData[pm->ps->saberMove].startQuad -
+								Q_TL);
 						}
 					}
 				}

@@ -143,8 +143,6 @@ qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int sabe
 qboolean WP_SaberMBlockDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 qboolean WP_SaberBouncedSaberDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
-int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num,
-	int r_blade_num);
 extern void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 qboolean WP_SaberNPCParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
 qboolean WP_SaberNPCMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
@@ -3964,49 +3962,11 @@ int wp_saber_must_block(gentity_t* self, const gentity_t* atk, const qboolean ch
 		if (self->r.svFlags & SVF_BOT)
 		{
 			//bots just randomly parry to make up for them not intelligently parrying.
-			if (self->client->ps.weapon == WP_SABER && !BG_SabersOff(&self->client->ps) && !self->client->ps.
-				saberInFlight)
+			if (self->client->ps.weapon == WP_SABER
+				&& !BG_SabersOff(&self->client->ps) 
+				&& !self->client->ps.saberInFlight)
 			{
-				float blocking_factor;
-				if (self->client->ps.fd.forcePower <= BLOCKPOINTS_HALF
-					|| self->client->ps.fd.blockPoints <= BLOCKPOINTS_HALF)
-				{
-					switch (self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE])
-					{
-						// These actually make more sense to be separate from SABER blocking arcs.
-					case FORCE_LEVEL_3:
-						blocking_factor = 0.6f;
-						break;
-					case FORCE_LEVEL_2:
-						blocking_factor = 0.5f;
-						break;
-					case FORCE_LEVEL_1:
-						blocking_factor = 0.4f;
-						break;
-					default:
-						blocking_factor = 0.1f;
-						break;
-					}
-				}
-				else
-				{
-					switch (self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE])
-					{
-						// These actually make more sense to be separate from SABER blocking arcs.
-					case FORCE_LEVEL_3:
-						blocking_factor = 0.9f;
-						break;
-					case FORCE_LEVEL_2:
-						blocking_factor = 0.8f;
-						break;
-					case FORCE_LEVEL_1:
-						blocking_factor = 0.7f;
-						break;
-					default:
-						blocking_factor = 0.1f;
-						break;
-					}
-				}
+				return 1;
 			}
 			else
 			{
@@ -4149,8 +4109,25 @@ int wp_saber_must_block(gentity_t* self, const gentity_t* atk, const qboolean ch
 
 	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
 	{
-		// can't block in a stagger animation
-		return 0;
+		if (self->r.svFlags & SVF_BOT)
+		{
+			//bots just randomly parry to make up for them not intelligently parrying.
+			if (self->client->ps.weapon == WP_SABER 
+				&& !BG_SabersOff(&self->client->ps)
+				&& !self->client->ps.saberInFlight)
+			{
+
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	//check to see if we have the force to do this.
@@ -6860,6 +6837,11 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 
 				//make me bounce -(Im the attacker)
 				SabBeh_AttackvBlock(self, blocker, r_saber_num, r_blade_num, tr.endpos);
+			}
+			else
+			{
+				did_hit = qtrue;
+				blocker = NULL;
 			}
 		}
 	}

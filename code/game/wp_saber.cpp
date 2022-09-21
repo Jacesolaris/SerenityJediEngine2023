@@ -161,8 +161,7 @@ extern void JET_FlyStart(gentity_t* self);
 extern void Mando_DoFlameThrower(gentity_t* self);
 extern void Boba_StopFlameThrower(gentity_t* self);
 extern qboolean PM_InRoll(const playerState_t* ps);
-int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num,
-	int r_blade_num);
+int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num,int r_blade_num);
 extern int BG_InGrappleMove(int anim);
 extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
 extern int SaberDroid_PowerLevelForSaberAnim(gentity_t* self);
@@ -15215,6 +15214,11 @@ void ForceThrow(gentity_t* self, qboolean pull, qboolean fake)
 		return;
 	}
 
+	if (PM_SaberInKata(static_cast<saberMoveName_t>(self->client->ps.saberMove)))
+	{
+		return;
+	}
+
 	if (!self->s.number && (cg.zoomMode || in_camera))
 	{
 		//can't force throw/pull when zoomed in or in cinematic
@@ -21942,6 +21946,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 							break;
 						}
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
+
 						if (trace_ent->client->ps.blockPoints < BLOCKPOINTS_HALF)
 						{
 							WP_ForcePowerDrain(trace_ent, FP_ABSORB, fpBlockCost);

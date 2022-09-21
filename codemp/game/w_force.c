@@ -96,6 +96,7 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_InWallHoldMove(int anim);
 extern int PM_InGrappleMove(int anim);
 extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 
 void G_LetGoOfLedge(const gentity_t* ent)
 {
@@ -3029,6 +3030,7 @@ qboolean melee_block_lightning(gentity_t* attacker, gentity_t* defender)
 qboolean saber_block_lightning(const gentity_t* attacker, gentity_t* defender)
 {
 	//defender is attempting to block lightning.  Try to do it.
+	const qboolean ActiveBlocking = defender->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
 	int fp_block_cost;
 	const qboolean saber_light_block = qtrue;
 
@@ -3066,14 +3068,14 @@ qboolean saber_block_lightning(const gentity_t* attacker, gentity_t* defender)
 
 	if (saber_light_block)
 	{
-		defender->client->ps.saberBlocked = BLOCKED_TOP;
-		defender->client->ps.weaponTime = Q_irand(300, 600);
-		if (defender->client->ps.fd.blockPoints < BLOCKPOINTS_HALF)
+		if (ActiveBlocking)
+		{
+			PM_AddBlockFatigue(&defender->client->ps, fp_block_cost);
+		}
+		else
 		{
 			WP_ForcePowerDrain(&defender->client->ps, FP_ABSORB, fp_block_cost);
 		}
-		WP_BlockPointsDrain(defender, fp_block_cost);
-		//defender->client->ps.fd.blockPoints--;
 	}
 	return qtrue;
 }
@@ -5261,6 +5263,11 @@ void ForceThrow(gentity_t* self, qboolean pull)
 	}
 
 	if (self->health <= 0)
+	{
+		return;
+	}
+
+	if (PM_SaberInKata((saberMoveName_t)(self->client->ps.saberMove)))
 	{
 		return;
 	}
