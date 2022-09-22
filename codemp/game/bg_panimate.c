@@ -6093,7 +6093,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 	const float staffanimscale = 0.9f;
 	const float heavyanimscale = 1.0f;
 	const float yodaanimscale = 1.25f;
-	const float Fatiguedanimscale = 0.9f;
+	const float Fatiguedanimscale = 0.85f;
 
 	trap->Cvar_VariableStringBuffer("g_saberAnimSpeed", buf, sizeof buf);
 	const float saberanimscale = atof(buf);
@@ -6128,15 +6128,12 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 
 	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_H7_S7_BR)
 	{
-		//if (gent
-		//	&& gent->client
-		//	&& gent->s.number < MAX_CLIENTS
-		//	&& pm->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
-		//{
-		//	*anim_speed *= Fatiguedanimscale;
-		//}
-		//else
-		//{
+		if (fatigued & 1 << FLAG_ATTACKFATIGUE)
+		{
+			*anim_speed *= Fatiguedanimscale;
+		}
+		else
+		{
 			if (saber_anim_level == SS_DUAL)
 			{
 				*anim_speed *= dualanimscale;
@@ -6184,7 +6181,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 			{
 				*anim_speed *= saberanimscale;
 			}
-		//}
+		}
 	}
 
 	if (anim >= BOTH_S1_S1_T_ && anim <= BOTH_S1_S1_TR ||

@@ -553,7 +553,14 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 	else if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
 	{
 		//slow bounce
-		SabBeh_AnimateHeavySlowBounceAttacker(attacker);
+		if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
+		{
+			SabBeh_AnimateHeavySlowBounceAttacker(attacker);
+		}
+		else
+		{
+			SabBeh_AnimateSmallBounce(attacker);
+		}
 
 		if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
 		{

@@ -953,7 +953,7 @@ static void CG_Drawgunfatigue(const centity_t* cent, const int xPos, const int y
 	constexpr int MaxBlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
 	qboolean flash = qfalse;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -1043,7 +1043,7 @@ static void CG_DrawCusgunfatigue(const centity_t* cent, const int xPos, const in
 	constexpr int MaxBlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
 	qboolean flash = qfalse;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -1163,7 +1163,7 @@ static void CG_Drawsaberfatigue(const centity_t* cent, const int xPos, const int
 	constexpr int saberAttackChainCount = MISHAPLEVEL_MAX;
 	qboolean flash = qfalse;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -1252,7 +1252,7 @@ static void CG_DrawCusSaberfatigue(const centity_t* cent, const int xPos, const 
 	constexpr int saberAttackChainCount = MISHAPLEVEL_MAX;
 	qboolean flash = qfalse;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -1339,7 +1339,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 {
 	constexpr int saberAttackChainCount = MISHAPLEVEL_MAX;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -1499,7 +1499,7 @@ static void CG_DrawJK2GunFatigue(const centity_t* cent, int x, int y)
 {
 	constexpr int BlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -1617,7 +1617,7 @@ void CG_DrawoldblockPoints(const centity_t* cent)
 		cg.blockHUDActive = qtrue;
 	}
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -4215,7 +4215,7 @@ static void CG_DrawHUD(const centity_t* cent)
 	WorkshopDrawClientsideInformation();
 	const Vehicle_t* pVeh;
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}
@@ -5582,7 +5582,7 @@ void CG_DrawFatiguePointBar(const centity_t* cent, float chX, float chY, float c
 		return;
 	}
 
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
+	if (cent->gent->health < 1)
 	{
 		return;
 	}

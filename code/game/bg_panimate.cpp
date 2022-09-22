@@ -5814,7 +5814,7 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 	constexpr float staffanimscale = 0.9f;
 	constexpr float heavyanimscale = 1.0f;
 	constexpr float yodaanimscale = 1.25f;
-	constexpr float Fatiguedanimscale = 0.9f;
+	constexpr float Fatiguedanimscale = 0.85f;
 
 	gi.Cvar_VariableStringBuffer("g_saberAnimSpeed", buf, sizeof buf);
 	const float saberanimscale = atof(buf);

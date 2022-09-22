@@ -125,6 +125,7 @@ constexpr auto FLAG_WRISTBLASTER = 15;
 constexpr auto FLAG_TIMEDBLOCK = 16;
 constexpr auto FLAG_NPCBLOCKING = 17;
 constexpr auto FLAG_DASHING = 18;
+constexpr auto FLAG_ATTACKFATIGUE = 19;
 
 constexpr auto DODGE_BOLTBLOCK = 2; //standard DP cost to block a missile bolt;
 constexpr auto DODGE_BOWCASTERBLOCK = 5;

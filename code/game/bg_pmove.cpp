@@ -13521,6 +13521,15 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
 	}
 
+	if (pm->ps->saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+	{
+		pm->ps->userInt3 |= 1 << FLAG_ATTACKFATIGUE;
+	}
+	else
+	{
+		pm->ps->userInt3 &= ~(1 << FLAG_ATTACKFATIGUE);
+	}
+
 	if (pm->ps->blockPoints > BLOCK_POINTS_MAX)
 	{
 		//for the sake of being able to send the value over the net within a reasonable bit count

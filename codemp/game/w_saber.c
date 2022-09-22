@@ -151,10 +151,10 @@ extern qboolean BG_FullBodyTauntAnim(int anim);
 extern int PM_InGrappleMove(int anim);
 extern qboolean PM_SaberInKillMove(int move);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
-extern void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker);
 extern qboolean PM_RestAnim(int anim);
 extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
 extern qboolean BG_HopAnim(int anim);
+extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 
 float VectorBlockDistance(vec3_t v1, vec3_t v2)
 {
@@ -9045,6 +9045,23 @@ void saberBackToOwner(gentity_t* saberent)
 				//stop holding hand out if we still are.
 				saberOwner->client->ps.forceHandExtend = HANDEXTEND_NONE;
 				saberOwner->client->ps.forceHandExtendTime = level.time;
+			}
+
+			if (saberOwner->r.svFlags & SVF_BOT) //NPC only
+			{
+				if (saberOwner->client->ps.saberAttackChainCount >= MISHAPLEVEL_TEN)
+				{
+					saberOwner->client->ps.saberAttackChainCount = MISHAPLEVEL_LIGHT;
+				}
+				wp_block_points_regenerate(saberOwner, BLOCKPOINTS_TWENTYFIVE);
+				wp_force_power_regenerate(saberOwner, BLOCKPOINTS_TWENTYFIVE);
+			}
+			else
+			{
+				if (saberOwner->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
+				{
+					saberOwner->client->ps.saberAttackChainCount = MISHAPLEVEL_LIGHT;
+				}
 			}
 
 			saberent->touch = SaberGotHit;
