@@ -257,6 +257,107 @@ void G_Stagger(gentity_t* hit_ent)
 	}
 }
 
+void G_FatigueBPKnockaway(gentity_t* Blocker)
+{
+	if (PM_InGetUp(&Blocker->client->ps) || PM_InForceGetUp(&Blocker->client->ps))
+	{
+		return;
+	}
+
+	const int anim_choice = irand(0, 5);
+
+	if (Blocker->client->ps.saberAnimLevel == SS_DUAL)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K6_S6_T_, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K6_S6_TR, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K6_S6_TL, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K6_S6_BL, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K6_S6_B_, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K6_S6_BR, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else if (Blocker->client->ps.saberAnimLevel == SS_STAFF)
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K7_S7_T_, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K7_S7_TR, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K7_S7_TL, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K7_S7_BL, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K7_S7_B_, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K7_S7_BR, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+	else
+	{
+		switch (anim_choice)
+		{
+		default:
+		case 0:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K1_S1_T_, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 1:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K1_S1_TR_OLD, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 2:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K1_S1_TL_OLD, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 3:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K1_S1_BL, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 4:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K1_S1_B_, SETANIM_AFLAG_PACE, 0);
+			break;
+		case 5:
+			G_SetAnim(Blocker, &Blocker->client->pers.cmd, SETANIM_TORSO, BOTH_K1_S1_BR, SETANIM_AFLAG_PACE, 0);
+			break;
+		}
+	}
+
+	if (PM_SaberInMassiveBounce(Blocker->client->ps.torsoAnim))
+	{
+		Blocker->client->ps.saberMove = LS_NONE;
+		Blocker->client->ps.saberBlocked = BLOCKED_NONE;
+		Blocker->client->ps.weaponTime = Blocker->client->ps.torsoTimer;
+		Blocker->client->MassiveBounceAnimTime = Blocker->client->ps.torsoTimer + level.time;
+	}
+	else
+	{
+		if (!in_camera)
+		{
+			Blocker->client->ps.saberMove = LS_READY;
+		}
+	}
+}
+
 // Attack stagger
 void G_StaggerAttacker(gentity_t* atk)
 {

@@ -7059,6 +7059,26 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B7__L___:
 	case BOTH_B7__R___:
 		//
+	case BOTH_K1_S1_T_:	//# knockaway saber top
+	case BOTH_K1_S1_TR_OLD:	//# knockaway saber top right
+	case BOTH_K1_S1_TL_OLD:	//# knockaway saber top left
+	case BOTH_K1_S1_BL:	//# knockaway saber bottom left
+	case BOTH_K1_S1_B_:	//# knockaway saber bottom
+	case BOTH_K1_S1_BR:	//# knockaway saber bottom right
+		//
+	case BOTH_K6_S6_T_:	//# knockaway saber top
+	case BOTH_K6_S6_TR:	//# knockaway saber top right
+	case BOTH_K6_S6_TL:	//# knockaway saber top left
+	case BOTH_K6_S6_BL:	//# knockaway saber bottom left
+	case BOTH_K6_S6_B_:	//# knockaway saber bottom
+	case BOTH_K6_S6_BR:	//# knockaway saber bottom right
+		//
+	case BOTH_K7_S7_T_:	//# knockaway saber top
+	case BOTH_K7_S7_TR:	//# knockaway saber top right
+	case BOTH_K7_S7_TL:	//# knockaway saber top left
+	case BOTH_K7_S7_BL:	//# knockaway saber bottom left
+	case BOTH_K7_S7_B_:	//# knockaway saber bottom
+	case BOTH_K7_S7_BR:	//# knockaway saber bottom right
 		return qtrue;
 	default:;
 	}

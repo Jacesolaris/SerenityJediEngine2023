@@ -2127,6 +2127,23 @@ static void Jedi_CombatDistance(int enemy_dist)
 			G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
 		}
 	}
+	if (NPC->enemy
+		&& NPC->enemy->client
+		&& (NPC->client->ps.weapon == WP_SABER && (NPC->client->ps.saberInFlight || NPC->client->ps.saberEntityState == SES_RETURNING))
+		&& NPC->enemy->s.weapon == WP_SABER
+		&& in_front(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles, 0.7f))
+	{
+		//whoa, back off!!!
+		if (Q_irand(0, 1))
+		{
+			if (NPC->client->ps.blockPoints > BLOCKPOINTS_MISSILE || NPC->client->ps.forcePower > BLOCKPOINTS_MISSILE)
+			{
+				Jedi_StartBackOff();
+				G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
+				return;
+			}
+		}
+	}
 
 	//saber users must walk in combat
 	if (NPC_IsAlive(NPC, NPC->enemy)

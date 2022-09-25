@@ -74,6 +74,7 @@ extern saberMoveName_t PM_MBlocktheAttack(int move);
 extern int G_MBlocktheAttack(int move);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern void G_Stagger(gentity_t* hit_ent);
+extern void G_FatigueBPKnockaway(gentity_t* Blocker);
 extern void G_StaggerAttacker(gentity_t* atk);
 extern void G_BounceAttacker(gentity_t* atk);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
@@ -962,7 +963,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum,
 			else
 			{
 				//Low points = bad blocks
-				G_Stagger(blocker);
+				G_FatigueBPKnockaway(blocker);
 
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_DANGER);
 
@@ -1198,7 +1199,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum,
 			else
 			{
 				//Low points = bad blocks
-				G_Stagger(blocker);
+				G_FatigueBPKnockaway(blocker);
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
 			if ((d_blockinfo->integer || g_DebugSaberCombat->integer))

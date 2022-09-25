@@ -60,6 +60,7 @@ extern saberMoveName_t pm_blockthe_attack(int move);
 extern int G_BlocktheAttack(int move);
 extern saberMoveName_t PM_SaberBounceForAttack(int move);
 extern void G_Stagger(gentity_t* hit_ent);
+extern void G_FatigueBPKnockaway(gentity_t* Blocker);
 extern qboolean PM_SuperBreakLoseAnim(int anim);
 extern qboolean ButterFingers(gentity_t* saberent, gentity_t* saberOwner, const gentity_t* other, const trace_t* tr);
 extern qboolean PM_SaberInnonblockableAttack(int anim);
@@ -956,7 +957,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum,
 			else
 			{
 				//Low points = bad blocks
-				G_Stagger(blocker);
+				G_FatigueBPKnockaway(blocker);
 
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_DANGER);
 
@@ -1197,7 +1198,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum,
 			else
 			{
 				//Low points = bad blocks
-				G_Stagger(blocker);
+				G_FatigueBPKnockaway(blocker);
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
 			if ((d_blockinfo.integer || g_DebugSaberCombat.integer))
