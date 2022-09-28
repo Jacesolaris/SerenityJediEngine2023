@@ -5539,8 +5539,7 @@ void CG_DrawBlockPointBar(const centity_t* cent, float chX, float chY, float chW
 		return;
 	}
 
-	const float blockPercent = static_cast<float>(cent->gent->client->ps.blockPoints) / static_cast<float>(
-		BLOCK_POINTS_MAX);
+	const float blockPercent = static_cast<float>(cent->gent->client->ps.blockPoints) / static_cast<float>(BLOCK_POINTS_MAX);
 
 	if (blockPercent <= 0)
 	{

@@ -1419,7 +1419,7 @@ void BotUpdateInput(bot_state_t* bs, const int time, const int elapsed_time)
 		}
 	}
 
-	if (bs->doWalk && bs->cur_ps.weapon == WP_SABER)
+	if (bs->doWalk)
 	{
 		bi.actionflags |= ACTION_WALK;
 	}

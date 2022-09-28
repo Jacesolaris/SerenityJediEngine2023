@@ -868,7 +868,17 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 		{
 			if (MBlocking || ActiveBlocking || NPCBlocking)
 			{
-				attacker->client->ps.userInt3 |= 1 << FLAG_BLOCKED;
+				if ((blocker->client->ps.fd.blockPoints >= BLOCKPOINTS_MISSILE)
+					&& attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH
+					&& !Q_irand(0, 4))
+				{//20% chance
+					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
+					attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
+				}
+				else
+				{
+					attacker->client->ps.userInt3 |= 1 << FLAG_BLOCKED;
+				}
 			}
 			else
 			{
@@ -990,6 +1000,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum,
 					else
 					{
 						SabBeh_AnimateHeavySlowBounceAttacker(attacker);
+						attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 					}
 
 					if (!(blocker->r.svFlags & SVF_BOT))

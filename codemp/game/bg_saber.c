@@ -4646,14 +4646,13 @@ void PM_WeaponLightsaber(void)
 	qboolean delayed_fire = qfalse;
 	int anim = -1;
 	int newmove = LS_NONE;
+	int curmove;
 
 	saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
 	saberInfo_t* saber2 = BG_MySaber(pm->ps->clientNum, 1);
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
-	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	//Active Blocking
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
 
 	qboolean checkOnlyWeap = qfalse;
 
@@ -5529,9 +5528,11 @@ weapChecks:
 		return;
 	}
 
+	//this is never a valid regular saber attack button
+	pm->cmd.buttons &= ~BUTTON_ALT_ATTACK;
+
 	if (!delayed_fire)
 	{
-		int curmove;
 #ifdef _GAME
 		if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT) //npc
 		{
@@ -5552,7 +5553,7 @@ weapChecks:
 				newmove = LS_R_T2B;
 			}
 			// check for fire
-			else if (!(pm->cmd.buttons & BUTTON_ATTACK))
+			else if (!(pm->cmd.buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK)))
 			{
 				//not attacking
 				pm->ps->weaponTime = 0;
@@ -5616,7 +5617,7 @@ weapChecks:
 			else
 			{
 				curmove = LS_READY;
-			}
+				}
 
 			if (curmove == LS_A_JUMP_T__B_ || curmove == LS_A_JUMP_PALP_ || pm->ps->torsoAnim ==
 				BOTH_FORCELEAP2_T__B_ || pm->ps->torsoAnim == BOTH_FORCELEAP_PALP)
@@ -5709,7 +5710,7 @@ weapChecks:
 					//returning from a parry I think.
 				}
 			}
-		}
+				}
 
 		// ***************************************************
 		// Pressing attack, so we must look up the proper attack move.
@@ -6916,6 +6917,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				pm->ps->userInt3 &= ~(1 << FLAG_PARRIED);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKING);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKED);
+				pm->ps->userInt3 &= ~(1 << FLAG_MBLOCKBOUNCE);
 			}
 
 			if (!PM_SaberInParry(new_move))

@@ -13550,13 +13550,13 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		pm->ps->userInt3 &= ~(1 << FLAG_ATTACKFATIGUE);
 	}
 
-	if (pm->ps->blockPoints > BLOCK_POINTS_MAX)
+	if (pm->ps->blockPoints >= BLOCK_POINTS_MAX)
 	{
 		//for the sake of being able to send the value over the net within a reasonable bit count
 		pm->ps->blockPoints = BLOCK_POINTS_MAX;
 	}
 
-	if (pm->ps->blockPoints < BLOCK_POINTS_MIN)
+	if (pm->ps->blockPoints <= BLOCK_POINTS_MIN)
 	{
 		//for the sake of being able to send the value over the net within a reasonable bit count
 		pm->ps->blockPoints = BLOCK_POINTS_MIN;
@@ -14341,6 +14341,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				pm->ps->userInt3 &= ~(1 << FLAG_PARRIED);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKING);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKED);
+				pm->ps->userInt3 &= ~(1 << FLAG_MBLOCKBOUNCE);
 			}
 
 			if (!PM_SaberInParry(new_move))

@@ -6063,6 +6063,13 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 			*anim_speed *= 0.90f;
 		}
 	}
+	else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
+	{//slow animation for slow bounces
+		if (PM_SaberInMassiveBounce(anim))
+		{
+			*anim_speed *= 0.6f;
+		}
+	}
 	else if (fatigued & 1 << FLAG_BLOCKED)
 	{
 		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))

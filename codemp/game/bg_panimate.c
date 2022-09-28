@@ -6330,6 +6330,13 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 			*anim_speed *= 0.8f;
 		}
 	}
+	else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
+	{//slow animation for slow bounces
+		if (PM_SaberInMassiveBounce(anim))
+		{
+			*anim_speed *= 0.6f;
+		}
+	}
 	else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
 	{
 		//getting parried slows down your reaction
