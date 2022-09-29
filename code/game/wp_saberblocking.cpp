@@ -874,12 +874,18 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 		{
 			if (MBlocking || ActiveBlocking || NPCBlocking)
 			{
-				if ((blocker->client->ps.blockPoints >= BLOCKPOINTS_MISSILE)
+				if (NPCBlocking && (blocker->client->ps.blockPoints >= BLOCKPOINTS_MISSILE)
 					&& attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH
 					&& !Q_irand(0, 4))
 				{//20% chance
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
 					attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
+
+					if (d_slowmoaction->integer && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
+					{
+						G_StartStasisEffect(attacker, MEF_NO_SPIN, 200, 0.3f, 0);
+						CGCam_BlockShakeSP(0.45f, 100);
+					}
 				}
 				else
 				{
