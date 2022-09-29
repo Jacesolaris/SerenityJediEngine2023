@@ -20400,13 +20400,7 @@ static void PM_Weapon(void)
 					}
 				}
 				break;
-
-			case WP_BLASTER:
 			case WP_BOWCASTER:
-			case WP_DEMP2:
-			case WP_FLECHETTE:
-			case WP_CONCUSSION:
-			case WP_ROCKET_LAUNCHER:
 
 				if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 				{
@@ -20428,17 +20422,20 @@ static void PM_Weapon(void)
 				}
 				break;
 
+			case WP_BLASTER:
+			case WP_DEMP2:
+			case WP_FLECHETTE:
+			case WP_CONCUSSION:
+			case WP_ROCKET_LAUNCHER:
 			case WP_DISRUPTOR:
-				if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer() && pm->gent && pm->gent->NPC &&
-					pm->gent->NPC->scriptFlags & SCF_ALT_FIRE ||
-					(pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) && cg.zoomMode == 2)
+
+				if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 				{
-					//NPC or player in alt-fire, sniper mode
-					PM_SetAnim(pm, SETANIM_TORSO, BOTH_ATTACK4, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					PM_SetAnim(pm, SETANIM_TORSO, BOTH_ATTACK3,
+						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD);
 				}
 				else
 				{
-					//in primary fire mode
 					if (cg.renderingThirdPerson)
 					{
 						PM_SetAnim(pm, SETANIM_TORSO, BOTH_ATTACK4,

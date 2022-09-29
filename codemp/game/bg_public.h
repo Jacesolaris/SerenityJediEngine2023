@@ -2051,6 +2051,10 @@ extern int WeaponAttackAnim[WP_NUM_WEAPONS];
 extern int WeaponReadyAnim2[WP_NUM_WEAPONS];
 extern int WeaponAttackAnim2[WP_NUM_WEAPONS];
 
+extern int WeaponAimingAnim[WP_NUM_WEAPONS];
+extern int WeaponAimingAnim2[WP_NUM_WEAPONS];
+extern int WeaponAltAttackAnim[WP_NUM_WEAPONS];
+
 extern int force_power_dark_light[NUM_FORCE_POWERS];
 
 //KNOCKDOWN HOLD

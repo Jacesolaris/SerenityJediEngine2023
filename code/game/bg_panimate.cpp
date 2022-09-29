@@ -6905,7 +6905,7 @@ void PM_TorsoAnimLightsaber()
 						{//running w/1-handed weapon uses full-body anim
 							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
 						}
-						else if(PM_RunningAnim(pm->ps->legsAnim) && pm->ps->saberBlockingTime < cg.time)
+						else if (PM_RunningAnim(pm->ps->legsAnim) && pm->ps->saberBlockingTime < cg.time)
 						{//running w/1-handed weapon uses full-body anim
 							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
 						}
@@ -8010,6 +8010,7 @@ void PM_TorsoAnimation(void)
 				case WP_FLECHETTE:
 				case WP_CONCUSSION:
 				case WP_ROCKET_LAUNCHER:
+				case WP_DISRUPTOR:
 					if (pm->gent->alt_fire)
 					{
 						PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
@@ -8022,12 +8023,10 @@ void PM_TorsoAnimation(void)
 						}
 						else
 						{
-							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
 						}
 					}
 					break;
-
-				case WP_DISRUPTOR:
 				case WP_TUSKEN_RIFLE:
 					if (pm->ps->weaponstate != WEAPON_FIRING
 						&& pm->ps->weaponstate != WEAPON_CHARGING
@@ -8046,7 +8045,7 @@ void PM_TorsoAnimation(void)
 							}
 							else
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
 							}
 						}
 						else
@@ -8057,7 +8056,7 @@ void PM_TorsoAnimation(void)
 							}
 							else
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
 							}
 						}
 					}
@@ -8067,13 +8066,11 @@ void PM_TorsoAnimation(void)
 						{
 							if (cg.renderingThirdPerson)
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4,
-									SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4,SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 							}
 							else
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3,
-									SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4,SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 							}
 						}
 						else
@@ -8084,7 +8081,7 @@ void PM_TorsoAnimation(void)
 							}
 							else
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
 							}
 						}
 					}
@@ -8291,6 +8288,7 @@ void PM_TorsoAnimation(void)
 					// ********************************************************
 
 				case WP_BRYAR_PISTOL:
+				case WP_BLASTER_PISTOL:
 				case WP_JAWA:
 
 					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
@@ -8298,84 +8296,7 @@ void PM_TorsoAnimation(void)
 						//holding an enemy aloft with force-grip
 						return;
 					}
-					if (pm->ps->forcePowersActive & 1 << FP_LIGHTNING && pm->ps->forcePowerLevel[FP_LIGHTNING] >
-						FORCE_LEVEL_1)
-					{
-						//holding an enemy aloft with force-grip
-						return;
-					}
-					if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy)
-					{
-						PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
-					}
-					else if (PM_RunningAnim(pm->ps->legsAnim)
-						|| PM_WalkingAnim(pm->ps->legsAnim)
-						|| PM_JumpingAnim(pm->ps->legsAnim)
-						|| PM_SwimmingAnim(pm->ps->legsAnim))
-					{
-						//running w/1-handed weapon uses full-body anim
-						PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
-					}
-					else
-					{
-						PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE2, SETANIM_FLAG_NORMAL);
-					}
-					break;
-
-				case WP_SBD_PISTOL: //SBD WEAPON
-
-					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
-					{
-						//holding an enemy aloft with force-grip
-						return;
-					}
-					if (pm->ps->forcePowersActive & 1 << FP_LIGHTNING && pm->ps->forcePowerLevel[FP_LIGHTNING] >
-						FORCE_LEVEL_1)
-					{
-						//holding an enemy aloft with force-grip
-						return;
-					}
-					if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy)
-					{
-						if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_SBD)
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, SBD_WEAPON_OUT_STANDING, SETANIM_FLAG_NORMAL);
-						}
-						else
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
-						}
-					}
-					else if (PM_RunningAnim(pm->ps->legsAnim)
-						|| PM_WalkingAnim(pm->ps->legsAnim)
-						|| PM_JumpingAnim(pm->ps->legsAnim)
-						|| PM_SwimmingAnim(pm->ps->legsAnim))
-					{
-						//running w/1-handed weapon uses full-body anim
-						PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
-					}
-					else
-					{
-						if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_SBD)
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, SBD_WEAPON_STANDING, SETANIM_FLAG_NORMAL);
-						}
-						else
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE2, SETANIM_FLAG_NORMAL);
-						}
-					}
-					break;
-
-				case WP_BLASTER_PISTOL:
-
-					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
-					{
-						//holding an enemy aloft with force-grip
-						return;
-					}
-					if (pm->ps->forcePowersActive & 1 << FP_LIGHTNING && pm->ps->forcePowerLevel[FP_LIGHTNING] >
-						FORCE_LEVEL_1)
+					if (pm->ps->forcePowersActive & 1 << FP_LIGHTNING && pm->ps->forcePowerLevel[FP_LIGHTNING] > FORCE_LEVEL_1)
 					{
 						//holding an enemy aloft with force-grip
 						return;
@@ -8419,7 +8340,7 @@ void PM_TorsoAnimation(void)
 					else
 					{
 						//single pistols
-						if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy)
+						if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy || (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK))
 						{
 							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
 						}
@@ -8428,8 +8349,60 @@ void PM_TorsoAnimation(void)
 							|| PM_JumpingAnim(pm->ps->legsAnim)
 							|| PM_SwimmingAnim(pm->ps->legsAnim))
 						{
-							//running w/1-handed weapon uses full-body anim
-							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+							if (PM_WalkingAnim(pm->ps->legsAnim) && pm->cmd.buttons & BUTTON_BLOCK)
+							{//running w/1-handed weapon uses full-body anim
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
+							}
+							else
+							{
+								//running w/1-handed weapon uses full-body anim
+								PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+							}
+						}
+						else
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE2, SETANIM_FLAG_NORMAL);
+						}
+					}
+					break;
+
+				case WP_SBD_PISTOL: //SBD WEAPON
+
+					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
+					{
+						//holding an enemy aloft with force-grip
+						return;
+					}
+					if (pm->ps->forcePowersActive & 1 << FP_LIGHTNING && pm->ps->forcePowerLevel[FP_LIGHTNING] >
+						FORCE_LEVEL_1)
+					{
+						//holding an enemy aloft with force-grip
+						return;
+					}
+					if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy)
+					{
+						if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_SBD)
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, SBD_WEAPON_OUT_STANDING, SETANIM_FLAG_NORMAL);
+						}
+						else
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
+						}
+					}
+					else if (PM_RunningAnim(pm->ps->legsAnim)
+						|| PM_WalkingAnim(pm->ps->legsAnim)
+						|| PM_JumpingAnim(pm->ps->legsAnim)
+						|| PM_SwimmingAnim(pm->ps->legsAnim))
+					{
+						//running w/1-handed weapon uses full-body anim
+						PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+					}
+					else
+					{
+						if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_SBD)
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, SBD_WEAPON_STANDING, SETANIM_FLAG_NORMAL);
 						}
 						else
 						{
@@ -8514,12 +8487,15 @@ void PM_TorsoAnimation(void)
 					}
 					break;
 
+				case WP_STUN_BATON:
 				case WP_BLASTER:
 				case WP_BOWCASTER:
 				case WP_DEMP2:
 				case WP_FLECHETTE:
+				case WP_REPEATER:
 				case WP_CONCUSSION:
 				case WP_ROCKET_LAUNCHER:
+				case WP_DISRUPTOR:
 
 					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
 					{
@@ -8532,45 +8508,79 @@ void PM_TorsoAnimation(void)
 						//holding an enemy aloft with force-grip
 						return;
 					}
-					if (weaponBusy)
+					if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_GALAKMECH)
 					{
 						if (pm->gent->alt_fire)
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
-						}
-						else
-						{
-							if (cg.renderingThirdPerson)
-							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
-							}
-							else
-							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
-							}
-						}
-					}
-					else
-					{
-						if (pm->gent && pm->gent->alt_fire)
 						{
 							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
 						}
 						else
 						{
-							if (cg.renderingThirdPerson)
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE1, SETANIM_FLAG_NORMAL);
+						}
+					}
+					else
+					{
+						if (weaponBusy)
+						{
+							if (pm->gent->alt_fire)
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
 							}
 							else
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
+								if (cg.renderingThirdPerson)
+								{
+									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
+								}
+								else
+								{
+									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
+								}
+							}
+						}
+						else
+						{
+							if (pm->gent && pm->gent->alt_fire)
+							{
+								if (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK) //want to attack
+								{
+									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE4, SETANIM_FLAG_NORMAL);
+								}
+								else
+								{
+									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
+								}
+							}
+							else
+							{
+								if (cg.renderingThirdPerson)
+								{
+									if (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK) //want to attack
+									{
+										PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE4, SETANIM_FLAG_NORMAL);
+									}
+									else
+									{
+										PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
+									}
+								}
+								else
+								{
+									if (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK) //want to attack
+									{
+										PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
+									}
+									else
+									{
+										PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
+									}
+								}
 							}
 						}
 					}
 					break;
 
-				case WP_DISRUPTOR:
 				case WP_TUSKEN_RIFLE:
 					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
 					{
@@ -8705,71 +8715,6 @@ void PM_TorsoAnimation(void)
 						else
 						{
 							PM_SetAnim(pm, SETANIM_TORSO, BOTH_STAND9, SETANIM_FLAG_NORMAL);
-						}
-					}
-					break;
-
-				case WP_REPEATER:
-
-					if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)
-					{
-						//holding an enemy aloft with force-grip
-						return;
-					}
-					if (pm->ps->forcePowersActive & 1 << FP_LIGHTNING && pm->ps->forcePowerLevel[FP_LIGHTNING] >
-						FORCE_LEVEL_1)
-					{
-						//holding an enemy aloft with force-grip
-						return;
-					}
-					if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_GALAKMECH)
-					{
-						if (pm->gent->alt_fire)
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
-						}
-						else
-						{
-							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE1, SETANIM_FLAG_NORMAL);
-						}
-					}
-					else
-					{
-						if (weaponBusy)
-						{
-							if (pm->gent->alt_fire)
-							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
-							}
-							else
-							{
-								if (cg.renderingThirdPerson)
-								{
-									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_NORMAL);
-								}
-								else
-								{
-									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY3, SETANIM_FLAG_NORMAL);
-								}
-							}
-						}
-						else
-						{
-							if (pm->gent->alt_fire)
-							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
-							}
-							else
-							{
-								if (cg.renderingThirdPerson)
-								{
-									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
-								}
-								else
-								{
-									PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE3, SETANIM_FLAG_NORMAL);
-								}
-							}
 						}
 					}
 					break;

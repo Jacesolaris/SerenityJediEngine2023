@@ -7638,16 +7638,6 @@ void ClientSpawn(gentity_t* ent)
 	}
 	client->ps.rocketLockIndex = ENTITYNUM_NONE;
 	client->ps.rocketLockTime = 0;
-
-	//rww - Set here to initialize the circling seeker drone to off.
-	//A quick note about this so I don't forget how it works again:
-	//ps.genericEnemyIndex is kept in sync between the server and client.
-	//When it gets set then an entitystate value of the same name gets
-	//set along with an entitystate flag in the shared bg code. Which
-	//is why a value needs to be both on the player state and entity state.
-	//(it doesn't seem to just carry over the entitystate value automatically
-	//because entity state value is derived from player state data or some
-	//such)
 	client->ps.genericEnemyIndex = -1;
 
 	G_AddEvent(ent, EV_WEAPINVCHANGE, client->ps.stats[STAT_WEAPONS]);

@@ -231,6 +231,10 @@ void WP_FireRocket(gentity_t* ent, qboolean alt_fire)
 			lockTime = g_rocketLockTime;
 		}
 
+		//Shove us backwards for half a second
+		VectorMA(ent->client->ps.velocity, -200, forwardVec, ent->client->ps.velocity);
+		ent->client->ps.groundEntityNum = ENTITYNUM_NONE;
+
 		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_HALF)
 		{
 			NPC_SetAnim(ent, SETANIM_BOTH, BOTH_H1_S1_TR, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);

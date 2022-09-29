@@ -516,11 +516,22 @@ static QINLINE qboolean PM_IsRocketTrooper(void)
 
 animNumber_t QINLINE PM_GetWeaponReadyAnim(void)
 {
-	if (pm->ps->eFlags & EF_DUAL_WEAPONS && pm->ps->weapon == WP_BRYAR_PISTOL)
+	if (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK)
 	{
-		return WeaponReadyAnim2[pm->ps->weapon];
+		if (pm->ps->eFlags & EF_DUAL_WEAPONS && pm->ps->weapon == WP_BRYAR_PISTOL)
+		{
+			return WeaponAimingAnim2[pm->ps->weapon];
+		}
+		return WeaponAimingAnim[pm->ps->weapon];
 	}
-	return WeaponReadyAnim[pm->ps->weapon];
+	else
+	{
+		if (pm->ps->eFlags & EF_DUAL_WEAPONS && pm->ps->weapon == WP_BRYAR_PISTOL)
+		{
+			return WeaponReadyAnim2[pm->ps->weapon];
+		}
+		return WeaponReadyAnim[pm->ps->weapon];
+	}
 }
 
 int PM_ReadyPoseForSaberAnimLevelBOT(void);
@@ -12013,7 +12024,10 @@ rest:
 #ifdef _DEBUG
 		//	Com_Printf("Firing.  Charge time=%d\n", pm->cmd.serverTime - pm->ps->weaponChargeTime);
 #endif
-
+		if (pm->ps->weapon == WP_BOWCASTER)
+		{
+			PM_StartTorsoAnim(WeaponAltAttackAnim[pm->ps->weapon]);
+		}
 		// dumb, but since we shoot a charged weapon on button-up, we need to repress this button for now
 		pm->cmd.buttons |= BUTTON_ATTACK;
 		pm->ps->eFlags |= EF_FIRING;
@@ -12032,8 +12046,6 @@ rest:
 
 	return qfalse; // continue with the rest of the weapon code
 }
-
-#define BOWCASTER_CHARGE_UNIT	200.0f	// bowcaster charging gives us one more unit every 200ms--if you change this, you'll have to do the same in g_weapon
 
 int PM_ItemUsable(playerState_t * ps, int forcedUse)
 {
@@ -12194,11 +12206,6 @@ int PM_ItemUsable(playerState_t * ps, int forcedUse)
 //cheesy vehicle weapon hackery
 qboolean PM_CanSetWeaponAnims(void)
 {
-	/*if (pm->ps->m_iVehicleNum)
-	{
-		return qfalse;
-	}*/
-
 	return qtrue;
 }
 
@@ -14120,7 +14127,14 @@ void PM_Weapon(void)
 		}
 		else
 		{
-			PM_StartTorsoAnim(WeaponAttackAnim[pm->ps->weapon]);
+			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
+			{
+				PM_StartTorsoAnim(WeaponAltAttackAnim[pm->ps->weapon]);
+			}
+			else
+			{
+				PM_StartTorsoAnim(WeaponAttackAnim[pm->ps->weapon]);
+			}
 		}
 	}
 

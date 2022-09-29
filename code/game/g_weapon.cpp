@@ -1420,7 +1420,7 @@ void FireWeapon(gentity_t* ent, qboolean alt_fire)
 			AngleVectors(ent->lastAngles, forwardVec, vrightVec, up);
 		}
 	}
-	else if (ent->s.weapon == WP_ATST_SIDE || ent->s.weapon == WP_ATST_MAIN)
+	else if (ent && (ent->s.weapon == WP_ATST_SIDE || ent->s.weapon == WP_ATST_MAIN))
 	{
 		vec3_t muzzle1;
 
