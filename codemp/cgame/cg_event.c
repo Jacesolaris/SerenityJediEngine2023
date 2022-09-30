@@ -2769,7 +2769,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			int hit_other_fx_id = cgs.effects.mSaberCut;
 			int hit_droid_fx_id = cgs.effects.mDroidCut;
 			int hitOtherFxID2 = cgs.effects.mSaberBodyHit;
-			int hitSound = trap->S_RegisterSound(va("sound/weapons/saber/saberhit%i.wav", Q_irand(1, 7)));
+			int hitSound = trap->S_RegisterSound(va("sound/weapons/saber/saberhit%i.mp3", Q_irand(1, 15)));
 			int killSound = trap->S_RegisterSound(va("sound/weapons/saber/saberkill%i.wav", Q_irand(1, 17)));
 
 			if (es->otherEntityNum2 >= 0

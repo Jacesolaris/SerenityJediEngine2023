@@ -1659,7 +1659,7 @@ void wp_saber_hit_sound(gentity_t* ent, const int saber_num, const int blade_num
 		return;
 	}
 
-	const int index = Q_irand(1, 6);
+	const int index = Q_irand(1, 15);
 	const int index_stab = Q_irand(1, 11);
 	const int index_kill = Q_irand(1, 17);
 	const int indexspecial = Q_irand(1, 3);
@@ -1695,7 +1695,7 @@ void wp_saber_hit_sound(gentity_t* ent, const int saber_num, const int blade_num
 		}
 		else
 		{
-			G_Sound(ent, G_SoundIndex(va("sound/weapons/saber/saberhit%d.wav", index)));
+			G_Sound(ent, G_SoundIndex(va("sound/weapons/saber/saberhit%d.mp3", index)));
 		}
 	}
 }

@@ -404,9 +404,9 @@ void CG_RegisterWeapon(int weaponNum)
 		{
 			cgi_S_RegisterSound(va("sound/weapons/saber/saberbounce%d.wav", i));
 		}
-		for (i = 1; i < 7; i++)
+		for (i = 1; i < 15; i++)
 		{
-			cgi_S_RegisterSound(va("sound/weapons/saber/saberhit%d.wav", i));
+			cgi_S_RegisterSound(va("sound/weapons/saber/saberhit%d.mp3", i));
 		}
 		for (i = 1; i < 4; i++)
 		{

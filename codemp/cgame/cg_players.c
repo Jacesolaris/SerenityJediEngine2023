@@ -11603,7 +11603,7 @@ void CG_G2SaberEffects(vec3_t start, vec3_t end, const centity_t* owner)
 				//it succeeded with the ghoul2 trace
 				trap->FX_PlayEffectID(cgs.effects.mSaberBloodSparks, trace.endpos, trace.plane.normal, -1, -1, qfalse);
 				trap->S_StartSound(trace.endpos, trace.entityNum, CHAN_AUTO,
-					trap->S_RegisterSound(va("sound/weapons/saber/saberhit%i.wav", Q_irand(1, 7))));
+					trap->S_RegisterSound(va("sound/weapons/saber/saberhit%i.mp3", Q_irand(1, 15))));
 			}
 		}
 
