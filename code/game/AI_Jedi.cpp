@@ -1910,6 +1910,7 @@ static void Jedi_CheckDecreaseSaberAnimLevel(void)
 }
 
 extern qboolean PM_SaberInMassiveBounce(int anim);
+extern qboolean PM_SaberInReturn(int move);
 extern qboolean PM_SaberInBashedAnim(int anim);
 static qboolean Jedi_DecideKick(void)
 {
@@ -1918,6 +1919,12 @@ static qboolean Jedi_DecideKick(void)
 		return qfalse;
 	}
 	if (PM_InRoll(&NPC->client->ps))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInAttack(NPC->client->ps.saberMove) || PM_SaberInStart(NPC->client->ps.saberMove)
+		|| PM_SaberInBounce(NPC->client->ps.saberMove) || PM_SaberInReturn(NPC->client->ps.saberMove))
 	{
 		return qfalse;
 	}
@@ -5025,17 +5032,17 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					{
 						if (self->s.weapon == WP_SABER)
 						{
-							if (self->health > BLOCKPOINTS_HALF)
+							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE && !self->client->ps.saberInFlight)
 							{
 								self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
 							}
 							else
 							{
-								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
-								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 5;
-								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 5;
-								self->client->pers.cmd.rightmove = -64;
 								ForceDashAnimDash(self);
+								self->client->pers.cmd.rightmove = -127;
+								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
+								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 7;
+								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 7;
 							}
 						}
 						else
@@ -5076,17 +5083,17 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					{
 						if (self->s.weapon == WP_SABER)
 						{
-							if (self->health > BLOCKPOINTS_HALF)
+							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE && !self->client->ps.saberInFlight)
 							{
-								self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
+								self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
 							}
 							else
 							{
-								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
-								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 5;
-								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 5;
-								self->client->pers.cmd.rightmove = 64;
 								ForceDashAnimDash(self);
+								self->client->pers.cmd.rightmove = 127;
+								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
+								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 7;
+								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 7;
 							}
 						}
 						else
