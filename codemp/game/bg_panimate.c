@@ -6113,7 +6113,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 	const float staffanimscale = 0.9f;
 	const float heavyanimscale = 1.0f;
 	const float yodaanimscale = 1.25f;
-	const float Fatiguedanimscale = 0.85f;
+	const float Fatiguedanimscale = 0.75f;
 
 	trap->Cvar_VariableStringBuffer("g_saberAnimSpeed", buf, sizeof buf);
 	const float saberanimscale = atof(buf);
@@ -6126,12 +6126,8 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB)
 	{
 		const saberInfo_t* saber = BG_MySaber(clientNum, 0);
-
-		/*if (g_saberAnimSpeed.value != 1.0f)
-		{
-			*anim_speed *= g_saberAnimSpeed.value;
-		}
-		else*/ if (weapon == WP_SABER)
+		
+		if (weapon == WP_SABER)
 		{
 			if (saber && saber->animSpeedScale != 1.0f)
 			{
@@ -6146,7 +6142,19 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 		}
 	}
 
-	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_H7_S7_BR)
+	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_H7_S7_BR ||
+		anim >= BOTH_T1_BR__R && anim <= BOTH_T1_BL_TL ||
+		anim >= BOTH_T2_BR__R && anim <= BOTH_T2_BL_TL ||
+		anim >= BOTH_T3_BR__R && anim <= BOTH_T3_BL_TL ||
+		anim >= BOTH_T4_BR__R && anim <= BOTH_T4_BL_TL ||
+		anim >= BOTH_T5_BR__R && anim <= BOTH_T5_BL_TL ||
+		anim >= BOTH_T6_BR__R && anim <= BOTH_T6_BL_TL ||
+		anim >= BOTH_T7_BR__R && anim <= BOTH_T7_BL_TL ||
+		anim >= BOTH_S1_S1_T_ && anim <= BOTH_S1_S1_TR ||
+		anim >= BOTH_S2_S1_T_ && anim <= BOTH_S2_S1_TR ||
+		anim >= BOTH_S3_S1_T_ && anim <= BOTH_S3_S1_TR ||
+		anim >= BOTH_S4_S1_T_ && anim <= BOTH_S4_S1_TR ||
+		anim >= BOTH_S5_S1_T_ && anim <= BOTH_S5_S1_TR)
 	{
 		if (fatigued & 1 << FLAG_ATTACKFATIGUE)
 		{
@@ -6155,12 +6163,26 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 		else
 		{
 			if (saber_anim_level == SS_DUAL)
-			{
-				*anim_speed *= dualanimscale;
+			{//slow down broken parries
+				if (anim >= BOTH_H6_S6_T_ && anim <= BOTH_H6_S6_BR)
+				{//dual broken parries are 1/3 the frames of the single broken parries
+					*anim_speed *= 0.6f;
+				}
+				else
+				{
+					*anim_speed *= dualanimscale;
+				}
 			}
 			else if (saber_anim_level == SS_STAFF)
 			{
-				*anim_speed *= staffanimscale;
+				if (anim >= BOTH_H7_S7_T_ && anim <= BOTH_H7_S7_BR)
+				{//doubles are 1/2 the frames of single broken parries
+					*anim_speed *= 0.8f;
+				}
+				else
+				{
+					*anim_speed *= staffanimscale;
+				}
 			}
 			else if (saber_anim_level == SS_FAST)
 			{
@@ -6168,15 +6190,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 			}
 			else if (saber_anim_level == SS_MEDIUM)
 			{
-				//if (gent
-				//	&& gent->client
-				//	&& gent->s.number < MAX_CLIENTS)
-				//{
-					*anim_speed *= mediumanimscale;
-				//}
-				//{
-				////	*anim_speed *= npcanimscale;
-				//}
+				*anim_speed *= mediumanimscale;
 			}
 			else if (saber_anim_level == SS_STRONG)
 			{
@@ -6188,80 +6202,12 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 			}
 			else if (saber_anim_level == SS_TAVION)
 			{
-				//if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == BCLASS_YODA)
-				//{
-				//	*anim_speed *= yodaanimscale;
-				//}
-				//else
-				//{
-					*anim_speed *= tavionanimscale;
-				//}
+				*anim_speed *= tavionanimscale;
 			}
 			else
 			{
 				*anim_speed *= saberanimscale;
 			}
-		}
-	}
-
-	if (anim >= BOTH_S1_S1_T_ && anim <= BOTH_S1_S1_TR ||
-		anim >= BOTH_S2_S1_T_ && anim <= BOTH_S2_S1_TR ||
-		anim >= BOTH_S3_S1_T_ && anim <= BOTH_S3_S1_TR ||
-		anim >= BOTH_S4_S1_T_ && anim <= BOTH_S4_S1_TR ||
-		anim >= BOTH_S5_S1_T_ && anim <= BOTH_S5_S1_TR)
-	{
-		if (saber_anim_level == SS_FAST)
-		{
-			*anim_speed *= blueanimscale;
-		}
-		else if (saber_anim_level == SS_TAVION)
-		{
-			*anim_speed *= tavionanimscale;
-		}
-		else if (saber_anim_level == SS_STRONG)
-		{
-			*anim_speed *= redanimscale;
-		}
-		else
-		{
-			*anim_speed *= saberanimscale;
-		}
-	}
-	else if (broken && PM_InSaberAnim(anim))
-	{
-		if (broken & 1 << BROKENLIMB_RARM)
-		{
-			*anim_speed *= 0.5f;
-		}
-		else if (broken & 1 << BROKENLIMB_LARM)
-		{
-			*anim_speed *= 0.65f;
-		}
-	}
-
-	if (anim >= BOTH_T1_BR__R && anim <= BOTH_T1_BL_TL ||
-		anim >= BOTH_T2_BR__R && anim <= BOTH_T2_BL_TL ||
-		anim >= BOTH_T3_BR__R && anim <= BOTH_T3_BL_TL ||
-		anim >= BOTH_T4_BR__R && anim <= BOTH_T4_BL_TL ||
-		anim >= BOTH_T5_BR__R && anim <= BOTH_T5_BL_TL ||
-		anim >= BOTH_T6_BR__R && anim <= BOTH_T6_BL_TL ||
-		anim >= BOTH_T7_BR__R && anim <= BOTH_T7_BL_TL)
-	{
-		if (saber_anim_level == SS_FAST)
-		{
-			*anim_speed *= blueanimscale;
-		}
-		else if (saber_anim_level == SS_TAVION)
-		{
-			*anim_speed *= tavionanimscale;
-		}
-		else if (saber_anim_level == SS_STRONG)
-		{
-			*anim_speed *= redanimscale;
-		}
-		else
-		{
-			*anim_speed *= saberanimscale;
 		}
 	}
 	else if (broken && PM_InSaberAnim(anim))
@@ -6285,42 +6231,22 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 			|| anim == BOTH_V1_T__S1
 			|| anim >= BOTH_V6_BL_S6 && anim <= BOTH_V7__R_S7)
 		{
-			//we're in a broken attack
 			*anim_speed *= heavyanimscale;
 		}
 	}
-	if (anim >= BOTH_H1_S1_T_ && anim <= BOTH_H1_S1_BR
-		|| anim >= BOTH_H6_S6_T_ && anim <= BOTH_H6_S6_BR
-		|| anim >= BOTH_H7_S7_T_ && anim <= BOTH_H7_S7_BR)
-	{
-		//slow down broken parries
-		if (anim >= BOTH_H6_S6_T_ && anim <= BOTH_H6_S6_BR)
-		{
-			//dual broken parries are 1/3 the frames of the single broken parries
-			*anim_speed *= 0.6f;
-		}
-		else if (anim >= BOTH_H7_S7_T_ && anim <= BOTH_H7_S7_BR)
-		{
-			//doubles are 1/2 the frames of single broken parries
-			*anim_speed *= 0.8f;
-		}
-	}
 
-	if (fatigued & 1 << FLAG_FATIGUED && anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB
-		//not a wall run move
+	if ((fatigued & 1 << FLAG_FATIGUED || fatigued & 1 << FLAG_BLOCKDRAINED)
+		&& anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB
 		&& anim != BOTH_FORCEWALLRELEASE_FORWARD && anim != BOTH_FORCEWALLRUNFLIP_START
 		&& anim != BOTH_FORCEWALLRUNFLIP_END
 		&& anim != BOTH_JUMPFLIPSTABDOWN
 		&& anim != BOTH_JUMPFLIPSLASHDOWN1
 		&& anim != BOTH_LUNGE2_B__T_)
-	{
-		//You're pooped.  Move slower
+	{//You're pooped.  Move slower
 		*anim_speed *= 0.8f;
 	}
-
-	if (fatigued & 1 << FLAG_SLOWBOUNCE)
-	{
-		//slow animation for slow bounces
+	else if (fatigued & 1 << FLAG_SLOWBOUNCE)
+	{//slow animation for slow bounces
 		if (PM_BounceAnim(anim))
 		{
 			*anim_speed *= 0.6f;
@@ -6330,28 +6256,17 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 			*anim_speed *= 0.8f;
 		}
 	}
-	else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
-	{//slow animation for slow bounces
-		if (PM_SaberInMassiveBounce(anim))
-		{
-			*anim_speed *= 0.6f;
-		}
-	}
 	else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
-	{
-		//getting parried slows down your reaction
+	{//getting parried slows down your reaction
 		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{
-			//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
+		{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
 			*anim_speed *= 0.6f;
 		}
 	}
 	else if (fatigued & 1 << FLAG_PARRIED)
-	{
-		//getting parried slows down your reaction
+	{//getting parried slows down your reaction
 		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{
-			//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
+		{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
 			*anim_speed *= 0.8f;
 		}
 	}
@@ -6360,6 +6275,13 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
 		{
 			*anim_speed *= 0.95f;
+		}
+	}
+	else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
+	{//slow animation for all bounces
+		if (PM_SaberInMassiveBounce(anim))
+		{
+			*anim_speed *= 0.6f;
 		}
 	}
 }
