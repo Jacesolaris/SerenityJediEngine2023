@@ -1491,11 +1491,10 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 		FP_SABER_DEFENSE]) / FORCE_LEVEL_3;
 	gentity_t* prev_owner = &g_entities[bolt->r.ownerNum];
 	const float distance = vector_bolt_distance(blocker->r.currentOrigin, prev_owner->r.currentOrigin);
-	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING
-		? qtrue
-		: qfalse;
+	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING? qtrue: qfalse;
+	const qboolean accurate_missile_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING ? qtrue : qfalse;
 	const int manual_run_blocking = manual_running_and_saberblocking(blocker);
-	const int np_cis_blocking = manual_npc_saberblocking(blocker);
+	const int npc_is_blocking = manual_npc_saberblocking(blocker);
 
 	//create the bolt saber block effect
 	g_missile_reflect_effect(blocker, trace->endpos, trace->plane.normal);
@@ -1550,20 +1549,9 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				WP_SaberBlockBolt(blocker, bolt->r.currentOrigin, qtrue);
 			}
 
-			if (level.time - blocker->client->ps.ManualMBlockingTime <= 3000) //Blocking 1 //3sec
-			{
-				// good
-				block_points_used_used = 3;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 2000) //Blocking 1 //2sec
-			{
-				// better
+			if (accurate_missile_blocking)
+			{// excellent
 				block_points_used_used = 2;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 1000) //Blocking 1 //0.5sec
-			{
-				// excellent
-				block_points_used_used = 1;
 			}
 			else
 			{
@@ -1579,7 +1567,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				WP_BlockPointsDrain(blocker, block_points_used_used);
 			}
 		}
-		else if (manual_proj_blocking || manual_run_blocking || np_cis_blocking)
+		else if (manual_proj_blocking || manual_run_blocking || npc_is_blocking)
 		{
 			//GOES TO ENEMY
 			g_reflect_missile_to_attacker(blocker, bolt, fwd);
@@ -1609,20 +1597,9 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				WP_SaberBlockBolt(blocker, bolt->r.currentOrigin, qtrue);
 			}
 
-			if (level.time - blocker->client->ps.ManualMBlockingTime <= 3000) //Blocking 1 //3sec
-			{
-				// good
-				block_points_used_used = 3;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 2000) //Blocking 1 //2sec
-			{
-				// better
+			if (accurate_missile_blocking)
+			{// excellent
 				block_points_used_used = 2;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 1000) //Blocking 1 //0.5sec
-			{
-				// excellent
-				block_points_used_used = 1;
 			}
 			else
 			{
@@ -1690,20 +1667,9 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				wp_saber_block_non_random_missile(blocker, bolt->r.currentOrigin, qtrue);
 			}
 
-			if (level.time - blocker->client->ps.ManualMBlockingTime <= 3000) //Blocking 1 //3sec
-			{
-				// good
-				block_points_used_used = 3;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 2000) //Blocking 1 //2sec
-			{
-				// better
+			if (accurate_missile_blocking)
+			{// excellent
 				block_points_used_used = 2;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 1000) //Blocking 1 //0.5sec
-			{
-				// excellent
-				block_points_used_used = 1;
 			}
 			else
 			{
@@ -1746,6 +1712,5 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 
 	bolt->activator = prev_owner;
 
-	blocker->client->ps.ManualMBlockingTime = level.time + (600 - blocker->client->ps.fd.forcePowerLevel[
-		FP_SABER_DEFENSE] * 200);
+	blocker->client->ps.ManualMBlockingTime = level.time + (600 - blocker->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE] * 200);
 }

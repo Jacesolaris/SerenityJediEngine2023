@@ -2063,16 +2063,22 @@ public:
 	short saberBlocking;
 	short saberBlocked;
 	short leanStopDebounceTime;
-	int ManualMBlockingTime; //MBlocking on
-	int ManualBlockingTime; //Blocking time 1 on
-	int ManualblockStartTime; //Blocking 2
+
+	int PlayerEffectFlags;        // PlayerEffectFlags
+
+	int ManualBlockingFlags;      //Blockingflag on OK
+
+	int ManualMBlockingTime;      //MBlocking on
+	int ManualBlockingTime;       //Blocking 1
+	int ManualblockStartTime;     //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
+	int BoltblockStartTime;       //Blocking 4
 
-	int MeleeblockStartTime; //Blocking 2
-	int MeleeblockLastStartTime; //Blocking 3
+	int MeleeblockStartTime;      //Melee Blocking 1
+	int MeleeblockLastStartTime;  //Melee Blocking 2
 
-	int DodgeStartTime; //Blocking 2
-	int DodgeLastStartTime; //Blocking 3
+	int DodgeStartTime;           //Dodgeing 1
+	int DodgeLastStartTime;       //Dodgeing 2
 
 	int saberBlockDebounce;
 	int saberBPDebRecharge;
@@ -2195,12 +2201,8 @@ public:
 	vec3_t userVec1;
 	vec3_t userVec2;
 
-	int ManualBlockingFlags; //Blockingflag on OK
-
 	int stasisTime;
 	int stasisJediTime;
-
-	int PlayerEffectFlags;
 	int genericenemyindex;
 
 	int respectingtime;
@@ -2426,21 +2428,23 @@ public:
 
 		saved_game.write<int32_t>(hyperSpaceTime);
 		saved_game.write<float>(hyperSpaceAngles);
-
-		saved_game.write<int32_t>(ManualBlockingFlags);
 		saved_game.write<int32_t>(forceSpeedRecoveryTime);
 
-		saved_game.write<int32_t>(PlayerEffectFlags);
-		saved_game.write<int32_t>(ManualBlockingTime); //Blocking time 1 on
-		saved_game.write<int32_t>(ManualMBlockingTime);
-		saved_game.write<int32_t>(ManualblockStartTime);
+		saved_game.write<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+
+		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
+
+		saved_game.write<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
+		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
+		saved_game.write<int32_t>(BoltblockStartTime);       //Blocking 4
 
-		saved_game.write<int32_t>(MeleeblockStartTime);
-		saved_game.write<int32_t>(MeleeblockLastStartTime);
+		saved_game.write<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
+		saved_game.write<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
 
-		saved_game.write<int32_t>(DodgeStartTime);
-		saved_game.write<int32_t>(DodgeLastStartTime);
+		saved_game.write<int32_t>(DodgeStartTime);           //Dodgeing 1
+		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodgeing 2
 
 		saved_game.write<int32_t>(genericenemyindex);
 
@@ -2673,21 +2677,23 @@ public:
 
 		saved_game.read<int32_t>(hyperSpaceTime);
 		saved_game.read<float>(hyperSpaceAngles);
-
-		saved_game.read<int32_t>(ManualBlockingFlags);
 		saved_game.read<int32_t>(forceSpeedRecoveryTime);
 
-		saved_game.read<int32_t>(PlayerEffectFlags);
-		saved_game.read<int32_t>(ManualBlockingTime); //Blocking time 1 on
-		saved_game.read<int32_t>(ManualMBlockingTime);
-		saved_game.read<int32_t>(ManualblockStartTime);
+		saved_game.read<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+
+		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
+
+		saved_game.read<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
+		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
+		saved_game.read<int32_t>(BoltblockStartTime);       //Blocking 4
 
-		saved_game.read<int32_t>(MeleeblockStartTime);
-		saved_game.read<int32_t>(MeleeblockLastStartTime);
+		saved_game.read<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
+		saved_game.read<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
 
-		saved_game.read<int32_t>(DodgeStartTime);
-		saved_game.read<int32_t>(DodgeLastStartTime);
+		saved_game.read<int32_t>(DodgeStartTime);           //Dodgeing 1
+		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodgeing 2
 
 		saved_game.read<int32_t>(genericenemyindex);
 
@@ -3011,23 +3017,25 @@ using entityState_t = struct entityState_s
 
 	float speed;
 
-	int ManualBlockingFlags; //Blockingflag on OK
-	int ManualBlockingTime; //Blocking time 1 on
-	int ManualMBlockingTime; //MBlocking
-	int ManualblockStartTime; //Blocking 2
+	int PlayerEffectFlags;        // PlayerEffectFlags
+
+	int ManualBlockingFlags;      //Blockingflag on OK
+
+	int ManualMBlockingTime;      //MBlocking on
+	int ManualBlockingTime;       //Blocking 1
+	int ManualblockStartTime;     //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
+	int BoltblockStartTime;       //Blocking 4
 
-	int MeleeblockStartTime; //Blocking 2
-	int MeleeblockLastStartTime; //Blocking 3
+	int MeleeblockStartTime;      //Melee Blocking 1
+	int MeleeblockLastStartTime;  //Melee Blocking 2
 
-	int DodgeStartTime; //Blocking 2
-	int DodgeLastStartTime; //Blocking 3
+	int DodgeStartTime;           //Dodgeing 1
+	int DodgeLastStartTime;       //Dodgeing 2
 
 	int cloakFuel;
 	int stasisTime;
 	int stasisJediTime;
-
-	int PlayerEffectFlags;
 	int forceSpeedRecoveryTime;
 
 	int respectingtime;
@@ -3121,21 +3129,23 @@ using entityState_t = struct entityState_s
 
 		saved_game.write<int32_t>(speed);
 
-		saved_game.write<int32_t>(ManualBlockingFlags);
-		saved_game.write<int32_t>(ManualBlockingTime); //Blocking time 1 on
-		saved_game.write<int32_t>(ManualMBlockingTime);
-		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
-		saved_game.write<int32_t>(ManualblockLastStartTime);
+		saved_game.write<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
 
-		saved_game.write<int32_t>(MeleeblockStartTime);
-		saved_game.write<int32_t>(MeleeblockLastStartTime);
+		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
 
-		saved_game.write<int32_t>(DodgeStartTime);
-		saved_game.write<int32_t>(DodgeLastStartTime);
+		saved_game.write<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
+		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
+		saved_game.write<int32_t>(BoltblockStartTime);       //Blocking 4
+
+		saved_game.write<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
+		saved_game.write<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
+
+		saved_game.write<int32_t>(DodgeStartTime);           //Dodgeing 1
+		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodgeing 2
 
 		saved_game.write<int32_t>(forceSpeedRecoveryTime);
-
-		saved_game.write<int32_t>(PlayerEffectFlags);
 		saved_game.write<int32_t>(genericenemyindex);
 
 		saved_game.write<int32_t>(userInt1);
@@ -3226,7 +3236,6 @@ using entityState_t = struct entityState_s
 #ifndef JK2_MODE
 		saved_game.read<int32_t>(isPortalEnt);
 		saved_game.read<int32_t>(radarIcon);
-#endif // !JK2_MODE
 
 		saved_game.read<int32_t>(stasisTime);
 		saved_game.read<int32_t>(stasisJediTime);
@@ -3237,21 +3246,23 @@ using entityState_t = struct entityState_s
 
 		saved_game.read<int32_t>(speed);
 
-		saved_game.read<int32_t>(ManualBlockingFlags);
-		saved_game.read<int32_t>(ManualBlockingTime); //Blocking time 1 on
-		saved_game.read<int32_t>(ManualMBlockingTime);
-		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
-		saved_game.read<int32_t>(ManualblockLastStartTime);
+		saved_game.read<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
 
-		saved_game.read<int32_t>(MeleeblockStartTime);
-		saved_game.read<int32_t>(MeleeblockLastStartTime);
+		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
 
-		saved_game.read<int32_t>(MeleeblockStartTime);
-		saved_game.read<int32_t>(MeleeblockLastStartTime);
+		saved_game.read<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
+		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
+		saved_game.read<int32_t>(BoltblockStartTime);       //Blocking 4
+
+		saved_game.read<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
+		saved_game.read<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
+
+		saved_game.read<int32_t>(DodgeStartTime);           //Dodgeing 1
+		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodgeing 2
 
 		saved_game.read<int32_t>(forceSpeedRecoveryTime);
-
-		saved_game.read<int32_t>(PlayerEffectFlags);
 		saved_game.read<int32_t>(genericenemyindex);
 
 		saved_game.read<int32_t>(userInt1);
@@ -3287,6 +3298,7 @@ using entityState_t = struct entityState_s
 		saved_game.read<int32_t>(grapplelaststartTime);
 
 		saved_game.read<int32_t>(communicatingflags);
+#endif // !JK2_MODE
 	}
 };
 
@@ -3497,6 +3509,7 @@ using ManualBlockingFlag_e = enum
 	MBF_MELEEBLOCK,
 	MBF_MELEEDODGE,
 	MBF_BLOCKWALKING,
+	MBF_ACCURATEMISSILEBLOCKING,
 };
 
 using communicatingflags_e = enum

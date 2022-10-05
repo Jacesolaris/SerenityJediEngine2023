@@ -12278,10 +12278,10 @@ static void CG_Draw2D(void)
 		CG_DrawPic(0, 0, 640, 480, trap->R_RegisterShader("gfx/2d/jsense"));
 	}
 
-	//if (cg.predictedPlayerState.communicatingflags & 1 << CLOAK_CHARGE_RESTRICTION)
+	//if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING)
 	//{//test for all sorts of shit... does it work? show me.
-		//CG_DrawPic(0, 0, 640, 480, trap->R_RegisterShader("gfx/2d/jsense"));
-		//CG_DrawPic(0, 0, 640, 480, trap->R_RegisterShader("gfx/2d/droid_view"));
+	//	CG_DrawPic(0, 0, 640, 480, trap->R_RegisterShader("gfx/2d/jsense"));
+	//	CG_DrawPic(0, 0, 640, 480, trap->R_RegisterShader("gfx/2d/droid_view"));
 	//}
 
 	CG_Draw2DScreenTints();

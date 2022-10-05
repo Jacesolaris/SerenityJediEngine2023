@@ -6281,7 +6281,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 	{//slow animation for all bounces
 		if (PM_SaberInMassiveBounce(anim))
 		{
-			*anim_speed *= 0.6f;
+			*anim_speed *= 0.3f;
 		}
 	}
 }

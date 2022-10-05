@@ -6917,6 +6917,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				pm->ps->userInt3 &= ~(1 << FLAG_PARRIED);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKING);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKED);
+			}
+
+			if (!PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+			{
+				//cancel out pre-block flag
 				pm->ps->userInt3 &= ~(1 << FLAG_MBLOCKBOUNCE);
 			}
 

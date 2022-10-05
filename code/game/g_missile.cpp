@@ -729,13 +729,11 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 	}
 
 	const qboolean manual_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
-	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING
-		? qtrue
-		: qfalse;
-	const qboolean np_cis_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;
+	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean npc_is_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;
+	const qboolean accurate_missile_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING ? qtrue : qfalse;
 	//Active NPC Blocking
-	float slop_factor = (FATIGUE_AUTOBOLTBLOCK - 6) * (FORCE_LEVEL_3 - blocker->client->ps.forcePowerLevel[
-		FP_SABER_DEFENSE]) / FORCE_LEVEL_3;
+	float slop_factor = (FATIGUE_AUTOBOLTBLOCK - 6) * (FORCE_LEVEL_3 - blocker->client->ps.forcePowerLevel[FP_SABER_DEFENSE]) / FORCE_LEVEL_3;
 
 	//save the original speed
 	const float speed = VectorNormalize(missile->s.pos.trDelta);
@@ -756,7 +754,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 		npc_reflection = qfalse;
 	}
 
-	if (ent && blocker && blocker->client && np_cis_blocking)
+	if (ent && blocker && blocker->client && npc_is_blocking)
 	{
 		npc_reflection = qtrue;
 	}
@@ -830,29 +828,9 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			wp_saber_block_non_random_missile(blocker, missile->currentOrigin, qtrue);
 		}
 
-		if (level.time - blocker->client->ps.ManualMBlockingTime <= 3000) //Blocking 1 //3sec
-		{
-			// good
-			block_points_used_used = 3;
-		}
-		else if (level.time - blocker->client->ps.ManualMBlockingTime <= 2000) //Blocking 1 //2sec
-		{
-			// better
+		if (accurate_missile_blocking)
+		{// excellent
 			block_points_used_used = 2;
-		}
-		else if (level.time - blocker->client->ps.ManualMBlockingTime <= 1000) //Blocking 1 //0.5sec
-		{
-			// excellent
-			block_points_used_used = 1;
-		}
-		else
-		{
-			block_points_used_used = WP_SaberBoltBlockCost(blocker, missile);
-		}
-
-		if (blocker->client->ps.blockPoints < block_points_used_used)
-		{
-			blocker->client->ps.blockPoints = 0;
 		}
 		else
 		{
@@ -936,20 +914,9 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 				WP_SaberBlockBolt(blocker, missile->currentOrigin, qtrue);
 			}
 
-			if (level.time - blocker->client->ps.ManualMBlockingTime <= 3000) //Blocking 1 //3sec
-			{
-				// good
-				block_points_used_used = 3;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 2000) //Blocking 1 //2sec
-			{
-				// better
+			if (accurate_missile_blocking)
+			{// excellent
 				block_points_used_used = 2;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 1000) //Blocking 1 //0.5sec
-			{
-				// excellent
-				block_points_used_used = 1;
 			}
 			else
 			{
@@ -1004,8 +971,8 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 					for (i = 0; i < 3; i++)
 					{
 						bounce_dir[i] += Q_flrand(-0.2f, 0.2f);
-					}
 				}
+			}
 				else
 				{
 					//mildly more wild
@@ -1014,7 +981,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 						bounce_dir[i] += Q_flrand(-0.1f, 0.1f);
 					}
 				}
-			}
+		}
 
 			VectorNormalize(bounce_dir);
 			reflected = qtrue;
@@ -1039,20 +1006,9 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 				wp_saber_block_non_random_missile(blocker, missile->currentOrigin, qtrue);
 			}
 
-			if (level.time - blocker->client->ps.ManualMBlockingTime <= 3000) //Blocking 1 //3sec
-			{
-				// good
-				block_points_used_used = 3;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 2000) //Blocking 1 //2sec
-			{
-				// better
+			if (accurate_missile_blocking)
+			{// excellent
 				block_points_used_used = 2;
-			}
-			else if (level.time - blocker->client->ps.ManualMBlockingTime <= 1000) //Blocking 1 //0.5sec
-			{
-				// excellent
-				block_points_used_used = 1;
 			}
 			else
 			{
@@ -1067,8 +1023,8 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			{
 				WP_BlockPointsDrain(blocker, block_points_used_used);
 			}
-		}
 	}
+}
 
 	if (!reflected)
 	{

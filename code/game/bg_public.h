@@ -279,6 +279,7 @@ constexpr auto PMF_GRAPPLE_PULL = 1 << 23;
 constexpr auto PMF_DASH_HELD = 1 << 24; // Holding down the DASH button;
 constexpr auto PMF_BLOCK_HELD = 1 << 25; //32768	// Holding down the attack button;
 constexpr auto PMF_KICK_HELD = 1 << 26; //32768	// Holding down the attack button;
+constexpr auto PMF_ACCURATE_MISSILE_BLOCK_HELD = 1 << 27; //32768	// Holding down the attack button;
 
 #define	PMF_ALL_TIMES	(PMF_TIME_WATERJUMP|PMF_TIME_LAND|PMF_TIME_KNOCKBACK|PMF_TIME_NOFRICTION)
 

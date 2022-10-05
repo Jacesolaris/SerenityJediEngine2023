@@ -695,6 +695,7 @@ Ghoul2 Insert Start
 { NETF(ManualblockStartTime), 32 }, //Blocking 2
 { NETF(ManualblockLastStartTime), 32 }, //Blocking 3
 { NETF(ManualMBlockingTime), 32 },
+{ NETF(BoltblockStartTime), 32 },
 
 { NETF(MeleeblockStartTime), 32 }, //Blocking 2
 { NETF(MeleeblockLastStartTime), 32 }, //Blocking 3
@@ -1202,6 +1203,7 @@ static const netField_t playerStateFields[] =
 	{PSF(ManualblockStartTime), 32}, //Blocking 2
 	{PSF(ManualblockLastStartTime), 32}, //Blocking 3
 	{PSF(ManualMBlockingTime), 32},
+	{PSF(BoltblockStartTime), 32 },
 
 	{PSF(MeleeblockStartTime), 32}, //Blocking 2
 	{PSF(MeleeblockLastStartTime), 32}, //Blocking 3

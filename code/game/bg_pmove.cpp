@@ -14341,6 +14341,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				pm->ps->userInt3 &= ~(1 << FLAG_PARRIED);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKING);
 				pm->ps->userInt3 &= ~(1 << FLAG_BLOCKED);
+			}
+
+			if (!PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+			{
+				//cancel out pre-block flag
 				pm->ps->userInt3 &= ~(1 << FLAG_MBLOCKBOUNCE);
 			}
 
@@ -21978,6 +21983,15 @@ void Pmove(pmove_t* pmove)
 	else
 	{
 		pm->ps->pm_flags &= ~PMF_KICK_HELD;
+	}
+
+	if (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK && pm->cmd.buttons & BUTTON_ATTACK)
+	{
+		pm->ps->pm_flags |= PMF_ACCURATE_MISSILE_BLOCK_HELD;
+	}
+	else
+	{
+		pm->ps->pm_flags &= ~PMF_ACCURATE_MISSILE_BLOCK_HELD;
 	}
 
 	if (pm->gent)

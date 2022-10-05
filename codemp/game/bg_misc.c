@@ -3363,6 +3363,7 @@ void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, qboolean s
 	s->ManualBlockingTime = ps->ManualBlockingTime; //Blocking time 1 on
 	s->ManualblockStartTime = ps->ManualblockStartTime; //Blocking 2
 	s->ManualblockLastStartTime = ps->ManualblockLastStartTime; //Blocking 3
+	s->BoltblockStartTime = ps->BoltblockStartTime; //Blocking 4
 	s->ManualMBlockingTime = ps->ManualMBlockingTime;
 
 	s->MeleeblockStartTime = ps->MeleeblockStartTime; //Blocking 2
@@ -3571,6 +3572,7 @@ void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s,
 	s->ManualBlockingTime = ps->ManualBlockingTime; //Blocking time 1 on
 	s->ManualblockStartTime = ps->ManualblockStartTime; //Blocking 2
 	s->ManualblockLastStartTime = ps->ManualblockLastStartTime; //Blocking 3
+	s->BoltblockStartTime = ps->BoltblockStartTime; //Blocking 4
 	s->ManualMBlockingTime = ps->ManualMBlockingTime;
 
 	s->MeleeblockStartTime = ps->MeleeblockStartTime; //Blocking 2

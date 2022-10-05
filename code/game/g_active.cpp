@@ -1968,7 +1968,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			bg_reduce_blaster_mishap_level_advanced(&ent->client->ps);
 		}
 
-		if (ent->client->ps.saberAttackChainCount > MISHAPLEVEL_NONE 
+		if (ent->client->ps.saberAttackChainCount > MISHAPLEVEL_NONE
 			&& !BG_InSlowBounce(&ent->client->ps)
 			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
 			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
@@ -7817,81 +7817,93 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				}
 				client->usercmd.buttons &= ~BUTTON_ATTACK;
 
-				if (g_spskill->integer == 0)
-				{
-					if (client->ps.ManualblockStartTime <= 0 && level.time - client->ps.ManualblockLastStartTime >= 1000)
-					{
-						// They just pressed block. Mark the time... 1000 wait between allowed presses.
-						client->ps.ManualblockStartTime = level.time; //Blocking 2
-						client->ps.ManualblockLastStartTime = level.time; //Blocking 3
+				if (g_spskill->integer == 0) //easy blocking
+				{// started function
+					if (client->ps.ManualblockStartTime <= 0 ) //fresh start
+					{// They just pressed block. Mark the time... 
+						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;
+							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;// activate the function
 						}
 					}
 					else
 					{
-						if (level.time - client->ps.ManualblockStartTime >= 500) //Blocking 3
-						{
-							// When block was pressed, wait 550 before letting go of block.
-							client->ps.ManualblockStartTime = 0; //Blocking 2
+						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 500)
+						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
 					}
 				}
-				else if (g_spskill->integer == 1)
+				else if (g_spskill->integer == 1) // medium blocking
 				{
-					if (client->ps.ManualblockStartTime <= 0 && level.time - client->ps.ManualblockLastStartTime >= 2000)
-					{
-						// They just pressed block. Mark the time... 1500 wait between allowed presses.
-						client->ps.ManualblockStartTime = level.time; //Blocking 2
-						client->ps.ManualblockLastStartTime = level.time; //Blocking 3
+					if (client->ps.ManualblockStartTime <= 0) //fresh start
+					{// They just pressed block. Mark the time... 
+						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;
+							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;// activate the function
 						}
 					}
 					else
 					{
-						if (level.time - client->ps.ManualblockStartTime >= 250) //Blocking 3
-						{
-							// When block was pressed, wait 350 before letting go of block.
-							client->ps.ManualblockStartTime = 0; //Blocking 2
+						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 200)
+						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
+					}
+				}
+				else // hard blocking
+				{
+					if (client->ps.ManualblockStartTime <= 0) //fresh start
+					{// They just pressed block. Mark the time... 
+						client->ps.ManualblockStartTime = level.time;
+
+						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
+						{
+							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;// activate the function
+						}
+					}
+					else
+					{
+						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 100)
+						{// Been holding block for too long....Turn off
+							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+						}
+					}
+				}
+
+				if (client->ps.pm_flags & PMF_ACCURATE_MISSILE_BLOCK_HELD)
+				{// started function
+					if (client->ps.BoltblockStartTime <= 0) //fresh start
+					{// They just pressed block. Mark the time... 
+						client->ps.BoltblockStartTime = level.time; //start the timer
+
+						if (!(client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING))
+						{
+							client->ps.ManualBlockingFlags |= 1 << MBF_ACCURATEMISSILEBLOCKING; // activate the function
+						}
+					}
+					else if ((client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING) && level.time - client->ps.BoltblockStartTime >= 3000)
+					{// Been holding block for too long....let go.
+						client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 					}
 				}
 				else
-				{
-					if (client->ps.ManualblockStartTime <= 0 && level.time - client->ps.ManualblockLastStartTime >= 4000)
-					{
-						// They just pressed block. Mark the time... 3000 wait between allowed presses.
-						client->ps.ManualblockStartTime = level.time; //Blocking 2
-						client->ps.ManualblockLastStartTime = level.time; //Blocking 3
-
-						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
-						{
-							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;
-						}
-					}
-					else
-					{
-						if (level.time - client->ps.ManualblockStartTime >= 175) //Blocking 3
-						{
-							// When block was pressed, wait 200 before letting go of block.
-							client->ps.ManualblockStartTime = 0; //Blocking 2
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
-						}
-					}
+				{// not doing it so reset
+					client->ps.BoltblockStartTime = 0;
+					client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 				}
 			}
 			else
 			{
 				// No longer pressed, but we still need to make sure they are not spamming.
+				client->ps.ManualblockStartTime = 0;
 				client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
 				client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+				client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 			}
 		}
 		else
@@ -7899,6 +7911,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+			client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 			client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 			client->ps.ManualBlockingTime = 0; //Blocking time 1 on
 			client->ps.ManualMBlockingTime = 0;

@@ -476,6 +476,9 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 		s->ManualblockLastStartTime = ps->ManualblockLastStartTime; //Blocking 3
 		s->ManualMBlockingTime = ps->ManualMBlockingTime;
 
+
+		s->BoltblockStartTime = ps->BoltblockStartTime; //Blocking 2
+
 		s->respectingtime = ps->respectingtime;
 		s->respectingstartTime = ps->respectingstartTime;
 		s->respectinglaststartTime = ps->respectinglaststartTime;
