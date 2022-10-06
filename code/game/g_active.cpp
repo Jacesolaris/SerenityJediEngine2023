@@ -5425,40 +5425,9 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			ent->client->ps.forceJumpCharge = 0;
 		}
 	} //stiffenedup
-	else if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent) &&
-		(ent->client->ps.torsoAnim == BOTH_H1_S1_T_ ||
-			ent->client->ps.torsoAnim == BOTH_H1_S1_TR ||
-			ent->client->ps.torsoAnim == BOTH_H1_S1_TL ||
-			ent->client->ps.torsoAnim == BOTH_H1_S1_BR ||
-			ent->client->ps.torsoAnim == BOTH_H1_S1_BL ||
-			ent->client->ps.torsoAnim == BOTH_H1_S1_B_ ||
-			ent->client->ps.torsoAnim == BOTH_H6_S6_T_ ||
-			ent->client->ps.torsoAnim == BOTH_H6_S6_TR ||
-			ent->client->ps.torsoAnim == BOTH_H6_S6_TL ||
-			ent->client->ps.torsoAnim == BOTH_H7_S7_T_ ||
-			ent->client->ps.torsoAnim == BOTH_H7_S7_TR ||
-			ent->client->ps.torsoAnim == BOTH_H7_S7_TL ||
-			ent->client->ps.torsoAnim == BOTH_K1_S1_TR_ALT ||
-			ent->client->ps.torsoAnim == BOTH_K1_S1_TL_ALT ||
-			ent->client->ps.saberMove == LS_H1_T_ ||
-			ent->client->ps.saberMove == LS_H1_TR ||
-			ent->client->ps.saberMove == LS_H1_TL ||
-			ent->client->ps.saberMove == LS_V1_TR ||
-			ent->client->ps.saberMove == LS_V1_T_ ||
-			ent->client->ps.saberMove == LS_V1_TL ||
-			ent->client->ps.saberMove == LS_V1__L ||
-			ent->client->ps.saberMove == LS_V1__R ||
-			ent->client->ps.saberMove == LS_D1_T_ ||
-			ent->client->ps.saberMove == LS_D1_TL ||
-			ent->client->ps.saberMove == LS_D1_TR ||
-			ent->client->ps.saberMove == LS_B1_TR ||
-			ent->client->ps.saberMove == LS_B1_T_ ||
-			ent->client->ps.saberMove == LS_B1_TL ||
-			ent->client->ps.saberMove == LS_B1_BR ||
-			ent->client->ps.saberMove == LS_B1_BL ||
-			ent->client->ps.saberMove == LS_B1__R ||
-			ent->client->ps.saberMove == LS_B1__L ||
-			PM_SaberInBounce(ent->client->ps.saberMove))
+	else if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
+		&& !in_camera
+		&& (PM_SaberInMassiveBounce(ent->client->ps.torsoAnim))
 		&& ent->client->ps.torsoAnimTimer)
 	{
 		//npc can't move or turn
@@ -7819,8 +7788,8 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 
 				if (g_spskill->integer == 0) //easy blocking
 				{// started function
-					if (client->ps.ManualblockStartTime <= 0 ) //fresh start
-					{// They just pressed block. Mark the time... 
+					if (client->ps.ManualblockStartTime <= 0) //fresh start
+					{// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
@@ -7839,7 +7808,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				else if (g_spskill->integer == 1) // medium blocking
 				{
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
@@ -7858,7 +7827,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				else // hard blocking
 				{
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
@@ -7878,7 +7847,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				if (client->ps.pm_flags & PMF_ACCURATE_MISSILE_BLOCK_HELD)
 				{// started function
 					if (client->ps.BoltblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.BoltblockStartTime = level.time; //start the timer
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING))

@@ -97,6 +97,7 @@ extern qboolean PM_InSlapDown(const playerState_t* ps);
 qboolean PM_RollingAnim(int anim);
 extern qboolean PM_MeleeblockHoldAnim(int anim);
 extern int PM_InGrappleMove(int anim);
+extern qboolean PM_SaberInMassiveBounce(int anim);
 
 pmove_t* pm;
 pml_t pml;
@@ -18630,39 +18631,8 @@ void PmoveSingle(pmove_t * pmove)
 		|| PM_SpinningSaberAnim(pm->ps->legsAnim)
 		|| PM_SaberInStart(pm->ps->saberMove)
 		|| pm->ps->saberBlockingTime
-		|| (pm->ps->torsoAnim == BOTH_H1_S1_T_
-			|| pm->ps->torsoAnim == BOTH_H1_S1_TR
-			|| pm->ps->torsoAnim == BOTH_H1_S1_TL
-			|| pm->ps->torsoAnim == BOTH_H1_S1_BR
-			|| pm->ps->torsoAnim == BOTH_H1_S1_BL
-			|| pm->ps->torsoAnim == BOTH_H1_S1_B_
-			|| pm->ps->torsoAnim == BOTH_H6_S6_T_
-			|| pm->ps->torsoAnim == BOTH_H6_S6_TR
-			|| pm->ps->torsoAnim == BOTH_H6_S6_TL
-			|| pm->ps->torsoAnim == BOTH_H7_S7_T_
-			|| pm->ps->torsoAnim == BOTH_H7_S7_TR
-			|| pm->ps->torsoAnim == BOTH_H7_S7_TL
-			|| pm->ps->torsoAnim == BOTH_K1_S1_TR_ALT
-			|| pm->ps->torsoAnim == BOTH_K1_S1_TL_ALT
-			|| pm->ps->saberMove == LS_H1_T_
-			|| pm->ps->saberMove == LS_H1_TR
-			|| pm->ps->saberMove == LS_H1_TL
-			|| pm->ps->saberMove == LS_V1_TR
-			|| pm->ps->saberMove == LS_V1_T_
-			|| pm->ps->saberMove == LS_V1_TL
-			|| pm->ps->saberMove == LS_V1__L
-			|| pm->ps->saberMove == LS_V1__R
-			|| pm->ps->saberMove == LS_D1_T_
-			|| pm->ps->saberMove == LS_D1_TL
-			|| pm->ps->saberMove == LS_D1_TR
-			|| pm->ps->saberMove == LS_B1_TR
-			|| pm->ps->saberMove == LS_B1_T_
-			|| pm->ps->saberMove == LS_B1_TL
-			|| pm->ps->saberMove == LS_B1_BR
-			|| pm->ps->saberMove == LS_B1_BL
-			|| pm->ps->saberMove == LS_B1__R
-			|| pm->ps->saberMove == LS_B1__L) ||
-		PM_SaberInBounce(pm->ps->saberMove))
+		&& !in_camera
+		|| PM_SaberInMassiveBounce(pm->ps->torsoAnim))
 	{
 		//attacking or spinning (or, if player, starting an attack)
 #ifdef _GAME
