@@ -127,7 +127,6 @@ extern void JET_FlyStop(gentity_t* self);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean G_TryingKataAttack(gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingCartwheel(const gentity_t* self, const usercmd_t* cmd);
-extern qboolean G_TryingSpecial(gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingJumpAttack(gentity_t* self, usercmd_t* cmd);
 extern qboolean G_TryingJumpForwardAttack(const gentity_t* self, const usercmd_t* cmd);
 extern void wp_saber_swing_sound(gentity_t* ent, int saberNum, swingType_t swingType);
@@ -19044,47 +19043,43 @@ void PM_WeaponLightsaber(void)
 			if (anim == -1)
 			{
 				//not side-stepping, pick neutral anim
-				if (!G_TryingSpecial(pm->gent, &pm->cmd))
+				if (PM_InCartwheel(pm->ps->legsAnim) && pm->ps->legsAnimTimer > 100)
 				{
-					//but only if not trying one of the special attacks!
-					if (PM_InCartwheel(pm->ps->legsAnim) && pm->ps->legsAnimTimer > 100)
+					//if in the middle of a cartwheel, the chain attack is just a normal attack
+					//NOTE: this should match the switch in PM_InCartwheel!
+					switch (pm->ps->legsAnim)
 					{
-						//if in the middle of a cartwheel, the chain attack is just a normal attack
-						//NOTE: this should match the switch in PM_InCartwheel!
-						switch (pm->ps->legsAnim)
+					case BOTH_ARIAL_LEFT: //swing from l to r
+					case BOTH_CARTWHEEL_LEFT:
+						newmove = LS_A_L2R;
+						break;
+					case BOTH_ARIAL_RIGHT: //swing from r to l
+					case BOTH_CARTWHEEL_RIGHT:
+						newmove = LS_A_R2L;
+						break;
+					case BOTH_ARIAL_F1: //random l/r attack
+						if (Q_irand(0, 1))
 						{
-						case BOTH_ARIAL_LEFT: //swing from l to r
-						case BOTH_CARTWHEEL_LEFT:
 							newmove = LS_A_L2R;
-							break;
-						case BOTH_ARIAL_RIGHT: //swing from r to l
-						case BOTH_CARTWHEEL_RIGHT:
-							newmove = LS_A_R2L;
-							break;
-						case BOTH_ARIAL_F1: //random l/r attack
-							if (Q_irand(0, 1))
-							{
-								newmove = LS_A_L2R;
-							}
-							else
-							{
-								newmove = LS_A_R2L;
-							}
-							break;
-						default:;
 						}
-					}
-					else
-					{
-						newmove = saberMoveData[curmove].chain_attack;
-					}
-
-					if (newmove != LS_NONE)
-					{
-						if (PM_HasAnimation(pm->gent, saberMoveData[newmove].animToUse))
+						else
 						{
-							anim = saberMoveData[newmove].animToUse;
+							newmove = LS_A_R2L;
 						}
+						break;
+					default:;
+					}
+				}
+				else
+				{
+					newmove = saberMoveData[curmove].chain_attack;
+				}
+
+				if (newmove != LS_NONE)
+				{
+					if (PM_HasAnimation(pm->gent, saberMoveData[newmove].animToUse))
+					{
+						anim = saberMoveData[newmove].animToUse;
 					}
 				}
 

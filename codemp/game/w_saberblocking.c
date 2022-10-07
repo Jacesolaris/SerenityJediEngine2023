@@ -68,7 +68,6 @@ extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
 extern qboolean saberKnockOutOfHand(gentity_t* saberent, gentity_t* saberOwner, vec3_t velocity);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
-extern void G_SaberAttackBounce(gentity_t* self, gentity_t* other, qboolean hitBody);
 extern int G_GetParryForBlock(int block);
 extern int G_MBlocktheAttack(int move);
 extern saberMoveName_t PM_MBlocktheAttack(int move);

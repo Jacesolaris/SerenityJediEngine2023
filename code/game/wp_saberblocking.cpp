@@ -93,7 +93,6 @@ extern void CGCam_BlockShakeSP(float intensity, int duration);
 extern int G_GetParryForBlock(int block);
 extern qboolean WP_SaberDisarmed(gentity_t* self, vec3_t throwDir);
 extern void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
-extern void G_SaberAttackBounce(gentity_t* self, gentity_t* other);
 // Saber Blocks
 extern qboolean WP_SaberMBlock(gentity_t* victim, gentity_t* attacker, int saberNum, int bladeNum);
 extern qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);

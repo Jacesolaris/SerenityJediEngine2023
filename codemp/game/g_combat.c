@@ -7600,7 +7600,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 		}
 	}
 
-	if (shieldAbsorbed)
+	if (shieldAbsorbed && inflictor->s.weapon == WP_DISRUPTOR)
 	{
 		if (targ->client && targ->s.weapon != WP_SABER)
 		{

@@ -7391,12 +7391,15 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 				// DEMP2 does more damage to these guys.
 				damage *= 2;
 			}
-			else if (client->NPC_class == CLASS_PROBE || client->NPC_class == CLASS_INTERROGATOR ||
-				client->NPC_class == CLASS_MARK1 || client->NPC_class == CLASS_MARK2 || client->NPC_class ==
-				CLASS_SENTRY ||
-				client->NPC_class == CLASS_ATST || client->NPC_class == CLASS_SBD || client->NPC_class ==
-				CLASS_BATTLEDROID ||
-				client->NPC_class == CLASS_DROIDEKA)
+			else if (client->NPC_class == CLASS_PROBE
+				|| client->NPC_class == CLASS_INTERROGATOR
+				|| client->NPC_class == CLASS_MARK1
+				|| client->NPC_class == CLASS_MARK2
+				|| client->NPC_class == CLASS_SENTRY
+				|| client->NPC_class == CLASS_ATST
+				|| client->NPC_class == CLASS_SBD
+				|| client->NPC_class == CLASS_BATTLEDROID
+				|| client->NPC_class == CLASS_DROIDEKA)
 			{
 				// DEMP2 does way more damage to these guys.
 				damage *= 5;
@@ -8124,7 +8127,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 		}
 	}
 
-	if (shieldAbsorbed)
+	if (shieldAbsorbed && inflictor->s.weapon == WP_DISRUPTOR)
 	{
 		if (targ->client && targ->s.weapon != WP_SABER)
 		{

@@ -3152,86 +3152,88 @@ saberMoveName_t PM_SaberAttackForMovement(saberMoveName_t curmove)
 				newmove = LS_A_T2B;
 			}
 		}
-		else if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
-		{
-			//parries, return to the start position if a direction isn't given.
-			newmove = LS_READY;
-		}
-		else if (PM_SaberInBounce(curmove))
-		{
-			//bounces, parries, etc return to the start position if a direction isn't given.
+		else
+		{//not moving in any direction
+			if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
+			{
+				//parries, return to the start position if a direction isn't given.
+				newmove = LS_READY;
+			}
+			else if (PM_SaberInBounce(curmove) || PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+			{
+				//bounces, parries, etc return to the start position if a direction isn't given.
 #ifdef _GAME
-			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC && Q_irand(0, 3))
-			{
-				//use NPC random
-				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-			}
-			else
-#endif
-			{
-				//player uses chain-attack
-				newmove = saberMoveData[curmove].chain_attack;
-			}
-			if (PM_SaberKataDone(curmove, newmove))
-			{
-				return saberMoveData[curmove].chain_idle;
-			}
-			return newmove;
-		}
-		else if (PM_SaberInKnockaway(curmove))
-		{
-			//bounces should go to their default attack if you don't specify a direction but are attacking
-			newmove = saberMoveData[curmove].chain_attack;
-#ifdef _GAME
-			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC && Q_irand(0, 3))
-			{
-				//use bot random
-				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-			}
-			else
-#endif
-			{
-				if (pm->ps->fd.saberAnimLevel == SS_FAST || pm->ps->fd.saberAnimLevel == SS_TAVION)
+				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 				{
-					//player is in fast attacks, so come right back down from the same spot
-					newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
+					newmove = LS_READY;
 				}
 				else
+#endif
 				{
-					//use a transition to wrap to another attack from a different dir
+					//player uses chain-attack
 					newmove = saberMoveData[curmove].chain_attack;
 				}
+				if (PM_SaberKataDone(curmove, newmove))
+				{
+					return saberMoveData[curmove].chain_idle;
+				}
+				return newmove;
 			}
-			if (PM_SaberKataDone(curmove, newmove))
+			else if (PM_SaberInKnockaway(curmove))
 			{
-				return saberMoveData[curmove].chain_idle;
+				//bounces should go to their default attack if you don't specify a direction but are attacking
+				newmove = saberMoveData[curmove].chain_attack;
+#ifdef _GAME
+				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC && Q_irand(0, 3))
+				{
+					//use bot random
+					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
+				}
+				else
+#endif
+				{
+					if (pm->ps->fd.saberAnimLevel == SS_FAST || pm->ps->fd.saberAnimLevel == SS_TAVION)
+					{
+						//player is in fast attacks, so come right back down from the same spot
+						newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
+					}
+					else
+					{
+						//use a transition to wrap to another attack from a different dir
+						newmove = saberMoveData[curmove].chain_attack;
+					}
+				}
+				if (PM_SaberKataDone(curmove, newmove))
+				{
+					return saberMoveData[curmove].chain_idle;
+				}
+				return newmove;
 			}
-			return newmove;
-		}
-		else if (curmove == LS_A_FLIP_STAB
-			|| curmove == LS_A_FLIP_SLASH
-			|| curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
-		{
-			//Not moving at all, not too busy to attack
-			//checked all special attacks, if we're in a parry, attack from that move
-			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
+			else if (curmove == LS_A_FLIP_STAB
+				|| curmove == LS_A_FLIP_SLASH
+				|| curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
+			{
+				//Not moving at all, not too busy to attack
+				//checked all special attacks, if we're in a parry, attack from that move
+				const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
 
-			if (parryAttackMove != LS_NONE)
-			{
-				return parryAttackMove;
+				if (parryAttackMove != LS_NONE)
+				{
+					return parryAttackMove;
+				}
+				//check regular attacks
+				if (fabs(pm->ps->viewangles[0]) > 30)
+				{
+					//looking far up or far down uses the top to bottom attack, presuming you want a vertical attack
+					return LS_A_T2B;
+				}
+				//for now, just pick a random attack
+				return ((saberMoveName_t)Q_irand(LS_A_TL2BR, LS_A_T2B));
 			}
-			//check regular attacks
-			if (fabs(pm->ps->viewangles[0]) > 30)
+			else if (curmove == LS_READY)
 			{
-				//looking far up or far down uses the top to bottom attack, presuming you want a vertical attack
-				return LS_A_T2B;
+				newmove = LS_A_T2B; //decided we don't like random attacks when idle, use an overhead instead.
 			}
-			//for now, just pick a random attack
-			return Q_irand(LS_A_TL2BR, LS_A_T2B);
-		}
-		else if (curmove == LS_READY)
-		{
-			newmove = LS_A_T2B; //decided we don't like random attacks when idle, use an overhead instead.
 		}
 	}
 
@@ -4338,7 +4340,7 @@ qboolean PM_SaberBlocking(void)
 					{
 						// Some special bot stuff.
 						nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
-					}
+			}
 					else
 #endif
 					{
@@ -4352,7 +4354,7 @@ qboolean PM_SaberBlocking(void)
 						}
 						nextMove = transitionMove[saberMoveData[pm->ps->saberMove].startQuad][newQuad];
 					}
-				}
+		}
 				else
 				{
 					//return to ready
@@ -4361,7 +4363,7 @@ qboolean PM_SaberBlocking(void)
 					{
 						// Some special bot stuff.
 						nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
-					}
+	}
 					else
 #endif
 					{
@@ -4381,7 +4383,7 @@ qboolean PM_SaberBlocking(void)
 								Q_TL);
 						}
 					}
-				}
+}
 				PM_SetSaberMove((saberMoveName_t)(nextMove));
 				pm->ps->weaponTime = pm->ps->torsoTimer;
 			}
@@ -4686,8 +4688,8 @@ void PM_WeaponLightsaber(void)
 			// Always return to ready when attack is released...
 			PM_SetSaberMove(LS_READY);
 			return;
-		}
 	}
+}
 #endif
 
 	if (PM_InKnockDown(pm->ps) || BG_InRoll(pm->ps, pm->ps->legsAnim))
@@ -4815,7 +4817,7 @@ void PM_WeaponLightsaber(void)
 			{
 				// Some special bot stuff.
 				PM_SetAnim(SETANIM_TORSO, PM_ReadyPoseForSaberAnimLevelBOT(), SETANIM_FLAG_OVERRIDE);
-			}
+	}
 			else
 #endif
 			{
@@ -5372,7 +5374,7 @@ weapChecks:
 			{
 				// Some special bot stuff.
 				PM_SetAnim(SETANIM_TORSO, PM_ReadyPoseForSaberAnimLevelBOT(), SETANIM_FLAG_NORMAL);
-			}
+	}
 			else
 #endif
 			{
@@ -5617,7 +5619,7 @@ weapChecks:
 			else
 			{
 				curmove = LS_READY;
-				}
+			}
 
 			if (curmove == LS_A_JUMP_T__B_ || curmove == LS_A_JUMP_PALP_ || pm->ps->torsoAnim ==
 				BOTH_FORCELEAP2_T__B_ || pm->ps->torsoAnim == BOTH_FORCELEAP_PALP)
@@ -5710,7 +5712,7 @@ weapChecks:
 					//returning from a parry I think.
 				}
 			}
-				}
+		}
 
 		// ***************************************************
 		// Pressing attack, so we must look up the proper attack move.
@@ -5847,7 +5849,7 @@ weapChecks:
 				{
 					//NPCs use more randomized attacks the more skilled they are
 					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-				}
+		}
 				else
 #endif
 				{
@@ -6026,10 +6028,10 @@ weapChecks:
 					{
 						anim = PM_ReadyPoseForSaberAnimLevelPlayer();
 					}
-				}
+			}
 				break;
 #endif
-			}
+		}
 			newmove = LS_READY;
 		}
 
@@ -6402,7 +6404,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			//continuing with a kata, increment attack counter
 			pm->ps->saberAttackChainCount++;
 		}
-	}
+}
 	else
 #endif
 	{
@@ -6635,7 +6637,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 			{
 				anim = PM_ReadyPoseForSaberAnimLevelBOT();
-			}
+	}
 			else
 #endif
 			{
@@ -6899,7 +6901,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 						//PM_SaberFatigue(pm->ps, new_move, anim); //drainblockpoints high cost
 					}
 				}
-			}
+	}
 			else
 #endif
 			{

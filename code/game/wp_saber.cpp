@@ -193,7 +193,7 @@ qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower,
 void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);
 qboolean FP_ForceDrainGrippableEnt(const gentity_t* victim);
-void G_SaberBounce(gentity_t* self, gentity_t* other, qboolean hitBody);
+void G_SaberBounce(gentity_t* attacker, gentity_t* victim);
 extern qboolean PM_FaceProtectAnim(int anim);
 extern void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
@@ -2992,7 +2992,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 						{
 							//just get their attention?
 							d_flags |= DAMAGE_NO_DAMAGE;
-							G_SaberBounce(ent, victim, qfalse);
+							G_SaberBounce(ent, victim);
 						}
 
 						if (victim->client)
@@ -3002,19 +3002,19 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 							{
 								//already being knocked around
 								d_flags |= DAMAGE_NO_KNOCKBACK;
-								G_SaberBounce(ent, victim, qfalse);
+								G_SaberBounce(ent, victim);
 							}
 							if (!WP_SaberBladeUseSecondBladeStyle(&ent->client->ps.saber[saber_num], blade_num)
 								&& ent->client->ps.saber[saber_num].saberFlags2 & SFL2_NO_DISMEMBERMENT)
 							{
 								//no dismemberment! (blunt/stabbing weapon?)
-								G_SaberBounce(ent, victim, qfalse);
+								G_SaberBounce(ent, victim);
 							}
 							else if (WP_SaberBladeUseSecondBladeStyle(&ent->client->ps.saber[saber_num], blade_num)
 								&& ent->client->ps.saber[saber_num].saberFlags2 & SFL2_NO_DISMEMBERMENT2)
 							{
 								//no dismemberment! (blunt/stabbing weapon?)
-								G_SaberBounce(ent, victim, qfalse);
+								G_SaberBounce(ent, victim);
 							}
 							else
 							{
@@ -3024,7 +3024,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 									if (hitDismember[i])
 									{
 										victim->client->dismembered = false;
-										G_SaberBounce(ent, victim, qfalse);
+										G_SaberBounce(ent, victim);
 									}
 								}
 								else if (hitDismember[i])
@@ -3034,7 +3034,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								if (!victim->client->dismembered)
 								{
 									vic_was_dismembered = qfalse;
-									G_SaberBounce(ent, victim, qfalse);
+									G_SaberBounce(ent, victim);
 								}
 							}
 							if (base_damage <= 1.0f)
@@ -3045,7 +3045,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								{
 									//if it's the player or a saber-user, don't kill them with this blow
 									//dFlags |= DAMAGE_NO_KILL;
-									G_SaberBounce(ent, victim, qfalse);
+									G_SaberBounce(ent, victim);
 
 									if (victim->health > 20)
 									{
@@ -3063,7 +3063,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 								{
 									g_saberFlashTime = level.time - 50;
 									VectorCopy(dmgSpot[i], g_saberFlashPos);
-									G_SaberBounce(ent, victim, qfalse);
+									G_SaberBounce(ent, victim);
 								}
 							}
 						}
@@ -3131,7 +3131,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 							d_flags |= DAMAGE_NO_KNOCKBACK;
 							d_flags &= ~DAMAGE_DEATH_KNOCKBACK;
 							d_flags &= ~DAMAGE_NO_KILL;
-							G_SaberBounce(ent, victim, qfalse);
+							G_SaberBounce(ent, victim);
 						}
 						if (ent->client && !ent->s.number)
 						{
@@ -3168,7 +3168,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 						{
 							//do knockback
 							d_flags &= ~(DAMAGE_NO_KNOCKBACK | DAMAGE_DEATH_KNOCKBACK);
-							G_SaberBounce(ent, victim, qfalse);
+							G_SaberBounce(ent, victim);
 						}
 						if (!WP_SaberBladeUseSecondBladeStyle(&ent->client->ps.saber[saber_num], blade_num)
 							&& ent->client->ps.saber[saber_num].knockbackScale > 0.0f)
@@ -4599,7 +4599,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 								{
 									hit_effect = G_EffectIndex(hit_sparks);
 								}
-								G_SaberBounce(attacker, hit_ent, qfalse);
+								G_SaberBounce(attacker, hit_ent);
 							}
 						}
 						else
@@ -4635,7 +4635,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 										hit_effect = G_EffectIndex(hit_sparks2);
 									}
 								}
-								G_SaberBounce(attacker, hit_ent, qfalse);
+								G_SaberBounce(attacker, hit_ent);
 							}
 						}
 					}
@@ -4643,7 +4643,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 					if (!g_saberNoEffects && hit_effect != 0)
 					{
 						G_PlayEffect(hit_effect, tr.endpos, dir);
-						G_SaberBounce(attacker, hit_ent, qfalse);
+						G_SaberBounce(attacker, hit_ent);
 					}
 				}
 				else
@@ -4656,7 +4656,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 						if (!wp_saber_damage_effects(&tr, start, len, dmg, dir, blade_vec, attacker->client->enemyTeam,
 							saber_type, &attacker->client->ps.saber[saber_num], blade_num))
 						{
-							G_SaberBounce(attacker, hit_ent, qfalse);
+							G_SaberBounce(attacker, hit_ent);
 						}
 					}
 				}
@@ -6034,21 +6034,6 @@ qboolean G_TryingCartwheel(const gentity_t* self, const usercmd_t* cmd)
 			}
 		}
 	}
-	return qfalse;
-}
-
-qboolean G_TryingSpecial(gentity_t* self, const usercmd_t* cmd)
-{
-	if (g_saberNewControlScheme->integer)
-	{
-		//use the new control scheme: force focus button
-		if (cmd->buttons & BUTTON_FORCE_FOCUS)
-		{
-			return qtrue;
-		}
-		return qfalse;
-	}
-	//use the old control scheme
 	return qfalse;
 }
 
@@ -29181,65 +29166,37 @@ qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self)
 
 extern qboolean G_StandardHumanoid(gentity_t* self);
 
-void G_SaberBounce(gentity_t* self, gentity_t* other, qboolean hitBody)
+void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 {
-	if (other->health <= 20)
+	if (victim->health <= 20)
 	{
 		return;
 	}
 
-	if (self->client->ps.saberAttackChainCount < MISHAPLEVEL_LIGHT)
+	if (attacker->client->ps.saberAttackChainCount < MISHAPLEVEL_LIGHT)
 	{
 		return;
 	}
 
-	if (!G_StandardHumanoid(other))
+	if (!G_StandardHumanoid(victim))
 	{
 		return;
 	}
 
-	if (self && self->client && NPC_IsAlive(self, self) && other->client && NPC_IsAlive(self, other) && self->client->ps
-		.saberBlocked == BLOCKED_NONE)
+	if (attacker->client->ps.saberBlocked == BLOCKED_NONE)
 	{
-		if (!pm_saber_in_special_attack(self->client->ps.torsoAnim))
+		if (!pm_saber_in_special_attack(attacker->client->ps.torsoAnim))
 		{
-			if (SaberAttacking(self))
+			if (SaberAttacking(attacker))
 			{
 				// Saber is in attack, use bounce for this attack.
-				self->client->ps.saberMove = PM_SaberBounceForAttack(self->client->ps.saberMove);
-				self->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
+				attacker->client->ps.saberMove = PM_SaberBounceForAttack(attacker->client->ps.saberMove);
+				attacker->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
 			}
 			else
 			{
 				// Saber is in defense, use defensive bounce.
-				self->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			}
-		}
-	}
-}
-
-void G_SaberAttackBounce(gentity_t* self, gentity_t* other)
-{
-	if (!G_StandardHumanoid(other))
-	{
-		return;
-	}
-
-	if (self && self->client && NPC_IsAlive(self, self) && other->client && NPC_IsAlive(self, other) && self->client->ps
-		.saberBlocked == BLOCKED_NONE)
-	{
-		if (!pm_saber_in_special_attack(self->client->ps.torsoAnim))
-		{
-			if (SaberAttacking(self))
-			{
-				// Saber is in attack, use bounce for this attack.
-				self->client->ps.saberMove = PM_SaberBounceForAttack(self->client->ps.saberMove);
-				self->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
-			}
-			else
-			{
-				// Saber is in defense, use defensive bounce.
-				self->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
+				attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
 			}
 		}
 	}

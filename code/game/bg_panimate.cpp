@@ -90,7 +90,6 @@ extern qboolean PM_InGetUpNoRoll(const playerState_t* ps);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean G_TryingKataAttack(gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingCartwheel(const gentity_t* self, const usercmd_t* cmd);
-extern qboolean G_TryingSpecial(gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingJumpAttack(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingJumpForwardAttack(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingLungeAttack(const gentity_t* self, const usercmd_t* cmd);
@@ -4772,19 +4771,8 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 				return LS_JUMPATTACK_ARIAL_RIGHT;
 			}
 		}
-		else if (pm->ps->legsAnim != BOTH_CARTWHEEL_RIGHT
-			&& pm->ps->legsAnim != BOTH_ARIAL_RIGHT)
+		else if (pm->ps->legsAnim != BOTH_CARTWHEEL_RIGHT && pm->ps->legsAnim != BOTH_ARIAL_RIGHT)
 		{
-			//not in a cartwheel/arial
-			if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //PLAYER ONLY
-			{
-				//player
-				if (G_TryingSpecial(pm->gent, &pm->cmd)/*(pm->cmd.buttons&BUTTON_FORCE_FOCUS)*/) //Holding focus
-				{
-					//if no special worked, do nothing
-					return LS_NONE;
-				}
-			}
 			//checked all special attacks, if we're in a parry, attack from that move
 			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
 			if (parryAttackMove != LS_NONE)
@@ -4853,19 +4841,8 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 				return LS_JUMPATTACK_CART_LEFT;
 			}
 		}
-		else if (pm->ps->legsAnim != BOTH_CARTWHEEL_LEFT
-			&& pm->ps->legsAnim != BOTH_ARIAL_LEFT)
+		else if (pm->ps->legsAnim != BOTH_CARTWHEEL_LEFT && pm->ps->legsAnim != BOTH_ARIAL_LEFT)
 		{
-			//not in a left cartwheel/arial
-			if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //PLAYER ONLY
-			{
-				//player
-				if (G_TryingSpecial(pm->gent, &pm->cmd)/*(pm->cmd.buttons&BUTTON_FORCE_FOCUS)*/) //Holding focus
-				{
-					//if no special worked, do nothing
-					return LS_NONE;
-				}
-			}
 			//checked all special attacks, if we're in a parry, attack from that move
 			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
 			if (parryAttackMove != LS_NONE)
@@ -4973,16 +4950,6 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 				}
 			}
 
-			if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
-			{
-				//player
-				if (G_TryingSpecial(pm->gent, &pm->cmd))
-				{
-					//if no special worked, do nothing
-					return LS_NONE;
-				}
-			}
-
 			//checked all special attacks, if we're in a parry, attack from that move
 			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
 			if (parryAttackMove != LS_NONE)
@@ -5026,15 +4993,6 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 				if (PM_CheckBackflipAttackMove())
 				{
 					return PM_SaberBackflipAttackMove(); //backflip attack
-				}
-				if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //PLAYER ONLY
-				{
-					//player
-					if (G_TryingSpecial(pm->gent, &pm->cmd)) //(pm->cmd.buttons&BUTTON_FORCE_FOCUS) )//Holding focus
-					{
-						//if no special worked, do nothing
-						return LS_NONE;
-					}
 				}
 				//check backstabs
 				if (!(pm->ps->saber[0].saberFlags & SFL_NO_BACK_ATTACK)
@@ -5152,16 +5110,6 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 				}
 			}
 
-			if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //PLAYER ONLY
-			{
-				//player
-				if (G_TryingSpecial(pm->gent, &pm->cmd))
-				{
-					//if no special worked, do nothing
-					return LS_NONE;
-				}
-			}
-
 			//checked all special attacks, if we're in a parry, attack from that move
 			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
 			if (parryAttackMove != LS_NONE)
@@ -5170,99 +5118,101 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 			}
 			return LS_A_T2B;
 		}
-		//not moving in any direction
-		if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
-		{
-			//parries, return to the start position if a direction isn't given.
-			newmove = LS_READY;
-		}
-		else if (PM_SaberInBounce(curmove))
-		{
-			//bounces, parries, etc return to the start position if a direction isn't given.
-			if (pm->ps->clientNum && !PM_ControlledByPlayer() && Q_irand(0, 3))
+		else
+		{//not moving in any direction
+			if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
 			{
-				//use NPC random
-				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
+				//parries, return to the start position if a direction isn't given.
+				newmove = LS_READY;
 			}
-			else
+			else if (PM_SaberInBounce(curmove) || PM_SaberInMassiveBounce(pm->ps->torsoAnim))
 			{
-				//player uses chain-attack
-				newmove = saberMoveData[curmove].chain_attack;
-			}
-			if (PM_SaberKataDone(curmove, newmove))
-			{
-				return saberMoveData[curmove].chain_idle;
-			}
-			return newmove;
-		}
-		else if (PM_SaberInKnockaway(curmove))
-		{
-			//bounces should go to their default attack if you don't specify a direction but are attacking
-			if (pm->ps->clientNum && !PM_ControlledByPlayer() && Q_irand(0, 3))
-			{
-				//use NPC random
-				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-			}
-			else
-			{
-				if (pm->ps->saberAnimLevel == SS_FAST || pm->ps->saberAnimLevel == SS_TAVION)
+				//bounces, parries, etc return to the start position if a direction isn't given.
+				if (pm->ps->clientNum && !PM_ControlledByPlayer())
 				{
-					//player is in fast attacks, so come right back down from the same spot
-					newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
+					//use NPC random
+					newmove = LS_READY;
 				}
 				else
 				{
-					//use a transition to wrap to another attack from a different dir
+					//player uses chain-attack
 					newmove = saberMoveData[curmove].chain_attack;
 				}
-			}
-			if (PM_SaberKataDone(curmove, newmove))
-			{
-				return saberMoveData[curmove].chain_idle;
-			}
-			return newmove;
-		}
-		else if (curmove == LS_A_FLIP_STAB
-			|| curmove == LS_A_FLIP_SLASH
-			|| curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
-		{
-			//Not moving at all, not too busy to attack
-			//checked all special attacks, if we're in a parry, attack from that move
-			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
-
-			if (parryAttackMove != LS_NONE)
-			{
-				return parryAttackMove;
-			}
-			//check regular attacks
-			if (pm->ps->clientNum || g_saberAutoAim->integer)
-			{
-				//auto-aim
-				if (pm->gent && pm->gent->enemy)
+				if (PM_SaberKataDone(curmove, newmove))
 				{
-					//based on enemy position, pick a proper attack
-					const saberMoveName_t autoMove = PM_AttackForEnemyPos(
-						qtrue, static_cast<qboolean>(pm->ps->clientNum >= MAX_CLIENTS));
-					if (autoMove != LS_INVALID)
+					return saberMoveData[curmove].chain_idle;
+				}
+				return newmove;
+			}
+			else if (PM_SaberInKnockaway(curmove))
+			{
+				//bounces should go to their default attack if you don't specify a direction but are attacking
+				if (pm->ps->clientNum && !PM_ControlledByPlayer() && Q_irand(0, 3))
+				{
+					//use NPC random
+					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
+				}
+				else
+				{
+					if (pm->ps->saberAnimLevel == SS_FAST || pm->ps->saberAnimLevel == SS_TAVION)
 					{
-						return autoMove;
+						//player is in fast attacks, so come right back down from the same spot
+						newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
+					}
+					else
+					{
+						//use a transition to wrap to another attack from a different dir
+						newmove = saberMoveData[curmove].chain_attack;
 					}
 				}
-				else if (fabs(pm->ps->viewangles[0]) > 30)
+				if (PM_SaberKataDone(curmove, newmove))
 				{
-					//looking far up or far down uses the top to bottom attack, presuming you want a vertical attack
-					return LS_A_T2B;
+					return saberMoveData[curmove].chain_idle;
+				}
+				return newmove;
+			}
+			else if (curmove == LS_A_FLIP_STAB
+				|| curmove == LS_A_FLIP_SLASH
+				|| curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
+			{
+				//Not moving at all, not too busy to attack
+				//checked all special attacks, if we're in a parry, attack from that move
+				const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
+
+				if (parryAttackMove != LS_NONE)
+				{
+					return parryAttackMove;
+				}
+				//check regular attacks
+				if (pm->ps->clientNum || g_saberAutoAim->integer)
+				{
+					//auto-aim
+					if (pm->gent && pm->gent->enemy)
+					{
+						//based on enemy position, pick a proper attack
+						const saberMoveName_t autoMove = PM_AttackForEnemyPos(
+							qtrue, static_cast<qboolean>(pm->ps->clientNum >= MAX_CLIENTS));
+						if (autoMove != LS_INVALID)
+						{
+							return autoMove;
+						}
+					}
+					else if (fabs(pm->ps->viewangles[0]) > 30)
+					{
+						//looking far up or far down uses the top to bottom attack, presuming you want a vertical attack
+						return LS_A_T2B;
+					}
+				}
+				else
+				{
+					//for now, just pick a random attack
+					return static_cast<saberMoveName_t>(Q_irand(LS_A_TL2BR, LS_A_T2B));
 				}
 			}
-			else
+			else if (curmove == LS_READY)
 			{
-				//for now, just pick a random attack
-				return static_cast<saberMoveName_t>(Q_irand(LS_A_TL2BR, LS_A_T2B));
+				newmove = LS_A_T2B; //decided we don't like random attacks when idle, use an overhead instead.
 			}
-		}
-		else if (curmove == LS_READY)
-		{
-			newmove = LS_A_T2B; //decided we don't like random attacks when idle, use an overhead instead.
 		}
 	}
 	return newmove;
@@ -8022,11 +7972,11 @@ void PM_TorsoAnimation(void)
 						{
 							if (cg.renderingThirdPerson)
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4,SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 							}
 							else
 							{
-								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4,SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+								PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY4, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 							}
 						}
 						else

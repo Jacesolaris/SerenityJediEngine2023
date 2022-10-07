@@ -7344,8 +7344,9 @@ static qboolean Jedi_AttackDecide(int enemy_dist)
 
 				if (!PM_SaberInAttack(NPC->client->ps.saberMove) && !Jedi_SaberBusy(NPC))
 				{
-					if (NPC->health <= 30 || NPC->client->ps.forcePower < BLOCKPOINTS_THIRTY || NPC->client->ps.
-						blockPoints < BLOCKPOINTS_THIRTY)
+					if (NPC->health <= 30
+						|| NPC->client->ps.forcePower < BLOCKPOINTS_THIRTY
+						|| NPC->client->ps.blockPoints < BLOCKPOINTS_THIRTY)
 					{
 						// Back away while attacking...
 						const int rand = irand(0, 100);
@@ -7385,7 +7386,8 @@ static qboolean Jedi_AttackDecide(int enemy_dist)
 
 						WeaponThink(qtrue);
 
-						if (rand > 90 && NPC->client->ps.blockPoints < BLOCKPOINTS_TWENTYFIVE)
+						if (rand > 90
+							&& NPC->client->ps.blockPoints < BLOCKPOINTS_TWENTYFIVE)
 						{
 							// Do a lunge, etc occasionally...
 							NPC->client->pers.cmd.upmove = -127;
@@ -7402,8 +7404,9 @@ static qboolean Jedi_AttackDecide(int enemy_dist)
 			else
 			{
 				//Try to attack
-				if (NPC->health <= 30 || NPC->client->ps.forcePower < BLOCKPOINTS_THIRTY || NPC->client->ps.blockPoints
-					< BLOCKPOINTS_THIRTY)
+				if (NPC->health <= 30
+					|| NPC->client->ps.forcePower < BLOCKPOINTS_THIRTY
+					|| NPC->client->ps.blockPoints < BLOCKPOINTS_THIRTY)
 				{
 					// Back away while attacking...
 					const int rand = irand(0, 100);
@@ -9546,8 +9549,10 @@ static void Jedi_Attack(void)
 		}
 	}
 
-	if (g_spskill->integer > 1 && NPC->client->ps.saberBlockingTime < level.time && !PM_SaberInAttackback(curmove) &&
-		!PM_SaberInKata(static_cast<saberMoveName_t>(curmove)))
+	if (g_spskill->integer > 1
+		&& NPC->client->ps.saberBlockingTime < level.time
+		&& !PM_SaberInAttackback(curmove)
+		&& !PM_SaberInKata(static_cast<saberMoveName_t>(curmove)))
 	{
 		if (PM_SaberInStart(curmove) || PM_SaberInTransition(curmove) ||
 			BG_SaberInNonIdleDamageMove(&NPC->client->ps))

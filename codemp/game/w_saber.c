@@ -2653,65 +2653,37 @@ qboolean WP_SabersCheckLock(gentity_t* ent1, gentity_t* ent2)
 
 extern qboolean G_StandardHumanoid(gentity_t* self);
 
-void G_SaberBounce(gentity_t* self, gentity_t* other, qboolean hitBody)
+void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 {
-	if (other->health <= 20)
+	if (victim->health <= 20)
 	{
 		return;
 	}
 
-	if (self->client->ps.saberAttackChainCount < MISHAPLEVEL_LIGHT)
+	if (attacker->client->ps.saberAttackChainCount < MISHAPLEVEL_LIGHT)
 	{
 		return;
 	}
 
-	if (!G_StandardHumanoid(other))
+	if (!G_StandardHumanoid(victim))
 	{
 		return;
 	}
 
-	if (self && self->client && NPC_IsAlive(self, self) && other->client && NPC_IsAlive(self, other) && self->client->ps
-		.saberBlocked == BLOCKED_NONE)
+	if (attacker->client->ps.saberBlocked == BLOCKED_NONE)
 	{
-		if (!pm_saber_in_special_attack(self->client->ps.torsoAnim))
+		if (!pm_saber_in_special_attack(attacker->client->ps.torsoAnim))
 		{
-			if (SaberAttacking(self))
+			if (SaberAttacking(attacker))
 			{
 				// Saber is in attack, use bounce for this attack.
-				self->client->ps.saberMove = PM_SaberBounceForAttack(self->client->ps.saberMove);
-				self->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
+				attacker->client->ps.saberMove = PM_SaberBounceForAttack(attacker->client->ps.saberMove);
+				attacker->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
 			}
 			else
 			{
 				// Saber is in defense, use defensive bounce.
-				self->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			}
-		}
-	}
-}
-
-void G_SaberAttackBounce(gentity_t* self, gentity_t* other, qboolean hitBody)
-{
-	if (!G_StandardHumanoid(other))
-	{
-		return;
-	}
-
-	if (self && self->client && NPC_IsAlive(self, self) && other->client && NPC_IsAlive(self, other) && self->client->ps
-		.saberBlocked == BLOCKED_NONE)
-	{
-		if (!pm_saber_in_special_attack(self->client->ps.torsoAnim))
-		{
-			if (SaberAttacking(self))
-			{
-				// Saber is in attack, use bounce for this attack.
-				self->client->ps.saberMove = PM_SaberBounceForAttack(self->client->ps.saberMove);
-				self->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
-			}
-			else
-			{
-				// Saber is in defense, use defensive bounce.
-				self->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
+				attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
 			}
 		}
 	}
@@ -7094,6 +7066,7 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 
 		//We need the final damage total to know if we need to bounce the saber back or not.
 		G_Damage(victim, self, self, dir, tr.endpos, dmg, dflags, MOD_SABER);
+		G_SaberBounce(self, victim);
 
 		wp_saber_specific_do_hit(self, r_saber_num, r_blade_num, victim, tr.endpos, dmg);
 
