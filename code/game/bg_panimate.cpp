@@ -3063,8 +3063,7 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 	{
 		if (curmove == LS_NONE || newmove == LS_NONE)
 		{
-			if (pm->ps->saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(
-				MISHAPLEVEL_NONE, MISHAPLEVEL_MIN))
+			if (pm->ps->saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_NONE, MISHAPLEVEL_MIN))
 			{
 				return qtrue;
 			}
@@ -3076,6 +3075,7 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 		else if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 		{
 			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+
 			if (chainAngle < 135 || chainAngle > 215)
 			{
 				//if trying to chain to a move that doesn't continue the momentum
@@ -3121,8 +3121,7 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 				chainTolerance = 3;
 			}
 
-			if (pm->ps->saberAttackChainCount >= chainTolerance && Q_irand(
-				MISHAPLEVEL_MIN, pm->ps->saberAttackChainCount) > chainTolerance)
+			if (pm->ps->saberAttackChainCount >= chainTolerance && Q_irand(	MISHAPLEVEL_MIN, pm->ps->saberAttackChainCount) > chainTolerance)
 			{
 				return qtrue;
 			}
@@ -6698,7 +6697,8 @@ void PM_TorsoAnimLightsaber()
 				{
 					if ((PM_RunningAnim(pm->ps->legsAnim)
 						|| PM_WalkingAnim(pm->ps->legsAnim))
-						&& pm->ps->saberBlockingTime < cg.time && !IsSurrendering(pm->gent))
+						&& pm->ps->saberBlockingTime < cg.time
+						&& !IsSurrendering(pm->gent))
 					{
 						//running w/1-handed weapon uses full-body anim
 						int setFlags = SETANIM_FLAG_NORMAL;

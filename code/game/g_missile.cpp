@@ -834,6 +834,15 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 		}
 		else
 		{
+			block_points_used_used = WP_SaberBoltBlockCost(blocker, missile);
+		}
+
+		if (blocker->client->ps.blockPoints < block_points_used_used)
+		{
+			blocker->client->ps.blockPoints = 0;
+		}
+		else
+		{
 			WP_BlockPointsDrain(blocker, block_points_used_used);
 		}
 	}
@@ -971,8 +980,8 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 					for (i = 0; i < 3; i++)
 					{
 						bounce_dir[i] += Q_flrand(-0.2f, 0.2f);
+					}
 				}
-			}
 				else
 				{
 					//mildly more wild
@@ -981,7 +990,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 						bounce_dir[i] += Q_flrand(-0.1f, 0.1f);
 					}
 				}
-		}
+			}
 
 			VectorNormalize(bounce_dir);
 			reflected = qtrue;
@@ -1023,8 +1032,8 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			{
 				WP_BlockPointsDrain(blocker, block_points_used_used);
 			}
+		}
 	}
-}
 
 	if (!reflected)
 	{
@@ -1036,8 +1045,8 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 		if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"only randomly deflect away the bolt\n");
-		}
 	}
+}
 
 	VectorNormalize(bounce_dir);
 	VectorScale(bounce_dir, speed, missile->s.pos.trDelta);
@@ -1170,8 +1179,8 @@ void g_bounce_missile(gentity_t* ent, trace_t* trace)
 		if (ent->s.weapon == WP_THERMAL)
 		{
 			ent->has_bounced = qtrue;
+			}
 		}
-	}
 
 #if 0
 	// OLD--this looks so wrong.  It looked wrong in EF.  It just must be wrong.
@@ -1206,7 +1215,7 @@ void g_bounce_missile(gentity_t* ent, trace_t* trace)
 		//now you can damage the guy you came from
 		ent->owner = nullptr;
 	}
-}
+	}
 
 /*
 ================

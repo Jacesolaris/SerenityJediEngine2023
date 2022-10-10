@@ -161,7 +161,7 @@ extern void JET_FlyStart(gentity_t* self);
 extern void Mando_DoFlameThrower(gentity_t* self);
 extern void Boba_StopFlameThrower(gentity_t* self);
 extern qboolean PM_InRoll(const playerState_t* ps);
-int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num,int r_blade_num);
+int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern int BG_InGrappleMove(int anim);
 extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
 extern int SaberDroid_PowerLevelForSaberAnim(gentity_t* self);
@@ -3874,13 +3874,10 @@ qboolean wp_saber_damage_effects(trace_t* tr, const vec3_t start, const float le
 					}
 				}
 			}
-
-			//FIXME: play less if damage is less?
 			if (!g_saberNoEffects)
 			{
 				if (hit_effect != 0)
 				{
-					//FIXME: when you have multiple blades hitting someone for many sequential server frames, this can get a bit chuggy!
 					G_PlayEffect(hit_effect, coll.mCollisionPosition, coll.mCollisionNormal);
 				}
 			}
@@ -18463,7 +18460,7 @@ void ForceTelepathy(gentity_t* self)
 							traceEnt->s.number, traceEnt->currentOrigin,
 							mindTrickTime[self->client->ps.forcePowerLevel[FP_TELEPATHY]], qtrue);
 					}
-					}
+				}
 				else
 				{
 					//just confuse them
@@ -18487,13 +18484,13 @@ void ForceTelepathy(gentity_t* self)
 						G_ClearEnemy(traceEnt);
 					}
 				}
-				}
+			}
 			else
 			{
 				NPC_Jedi_PlayConfusionSound(traceEnt);
 			}
 			WP_ForcePowerStart(self, FP_TELEPATHY, override);
-			}
+		}
 		else if (traceEnt->client->playerTeam == self->client->playerTeam)
 		{
 			//an ally
@@ -18512,7 +18509,7 @@ void ForceTelepathy(gentity_t* self)
 		//make sure this plays and that you cannot press fire for about 1 second after this
 		NPC_SetAnim(self, SETANIM_TORSO, BOTH_MINDTRICK1,
 			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD);
-		}
+	}
 	else
 	{
 		if (self->client->ps.forcePowerLevel[FP_TELEPATHY] > FORCE_LEVEL_1 && tr.fraction * 2048 > 64)
@@ -18535,7 +18532,7 @@ void ForceTelepathy(gentity_t* self)
 	{
 		self->client->ps.weaponTime = floor(self->client->ps.weaponTime * g_timescale->value);
 	}
-	}
+}
 
 void ForceGripWide(gentity_t* self, gentity_t* traceEnt, vec3_t dir, float dist, float dot, vec3_t impactPoint)
 {
@@ -19085,11 +19082,11 @@ void ForceGripAdvanced(gentity_t* self)
 								}
 							}
 						}
+					}
+				}
+			}
 		}
 	}
-}
-}
-						}
 	if (!traceEnt)
 	{
 		//okay, trace straight ahead and see what's there
@@ -19426,7 +19423,7 @@ void ForceGripAdvanced(gentity_t* self)
 			G_SoundOnEnt(self, CHAN_BODY, "sound/weapons/force/grip.mp3");
 		}
 	}
-					}
+}
 
 void ForceGripBasic(gentity_t* self)
 {
@@ -19524,7 +19521,7 @@ void ForceGripBasic(gentity_t* self)
 	if (self->client->ps.forcePowersActive & 1 << FP_SPEED)
 	{
 		self->client->ps.weaponTime = floor(self->client->ps.weaponTime * g_timescale->value);
-}
+	}
 
 	AngleVectors(self->client->ps.viewangles, forward, nullptr, nullptr);
 	VectorNormalize(forward);
@@ -19883,7 +19880,7 @@ void ForceGripBasic(gentity_t* self)
 			G_SoundOnEnt(self, CHAN_BODY, "sound/weapons/force/grip.mp3");
 		}
 	}
-				}
+}
 
 qboolean ForceLightningCheckattack(const gentity_t* self)
 {
@@ -26384,7 +26381,7 @@ qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int over
 	}
 
 	return WP_ForcePowerAvailable(self, forcePower, overrideAmt);
-			}
+}
 
 void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower)
 {
@@ -26691,7 +26688,7 @@ void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower)
 							//if still alive after stopped draining, let them wake others up
 							G_AngerAlert(drainEnt);
 						}
-							}
+					}
 					else
 					{
 						//leave the effect playing on them for a few seconds
@@ -26699,10 +26696,10 @@ void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower)
 						drainEnt->s.powerups |= 1 << PW_DRAINED;
 						drainEnt->client->ps.powerups[PW_DRAINED] = level.time + Q_irand(1000, 4000);
 					}
-						}
-					}
-			self->client->ps.forceDrainEntityNum = ENTITYNUM_NONE;
 				}
+			}
+			self->client->ps.forceDrainEntityNum = ENTITYNUM_NONE;
+		}
 		if (self->client->ps.torsoAnim == BOTH_HUGGER1)
 		{
 			//old anim
@@ -26915,8 +26912,8 @@ void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower)
 		break;
 	default:
 		break;
-			}
-		}
+	}
+}
 
 void WP_ForceForceThrow(gentity_t* thrower)
 {
@@ -27136,7 +27133,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t forcePower, usercm
 				//stop
 				WP_ForcePowerStop(self, forcePower);
 			}
-			}
+		}
 		break;
 	case FP_LEVITATION:
 		if (self->client->ps.groundEntityNum != ENTITYNUM_NONE && !self->client->ps.forceJumpZStart ||
@@ -27897,7 +27894,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t forcePower, usercm
 							ForceDrainEnt(self, drainEnt);
 						}
 						WP_ForcePowerDrain(self, FP_DRAIN, 3);
-						}
+					}
 					else
 					{
 						if (!Q_irand(0, 4))
@@ -27915,7 +27912,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t forcePower, usercm
 						NPC_SetAnim(drainEnt, SETANIM_BOTH, BOTH_FORCE_DRAIN_GRABBED,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					}
+		}
 		else if (self->client->ps.forcePowerLevel[forcePower] > FORCE_LEVEL_1)
 		{
 			//regular distance-drain
@@ -28540,8 +28537,8 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t forcePower, usercm
 		break;
 	default:
 		break;
-		}
-		}
+	}
+}
 
 void WP_CheckForcedPowers(gentity_t* self, usercmd_t* ucmd)
 {
@@ -29169,6 +29166,21 @@ extern qboolean G_StandardHumanoid(gentity_t* self);
 void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 {
 	if (victim->health <= 20)
+	{
+		return;
+	}
+
+	if (PM_SaberInKata(static_cast<saberMoveName_t>(attacker->client->ps.saberMove)))
+	{
+		return;
+	}
+
+	if (PM_SaberInOverHeadSlash(static_cast<saberMoveName_t>(attacker->client->ps.saberMove)))
+	{
+		return;
+	}
+
+	if (PM_SaberInBackAttack(static_cast<saberMoveName_t>(attacker->client->ps.saberMove)))
 	{
 		return;
 	}

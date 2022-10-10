@@ -501,6 +501,33 @@ qboolean PM_SaberInKata(const saberMoveName_t saberMove)
 	return qfalse;
 }
 
+qboolean PM_SaberInOverHeadSlash(const saberMoveName_t saberMove)
+{
+	switch (saberMove)
+	{
+	case LS_A_FLIP_STAB:
+	case LS_A_FLIP_SLASH:
+		return qtrue;
+	default:;
+	}
+
+	return qfalse;
+}
+
+qboolean PM_SaberInBackAttack(const saberMoveName_t saberMove)
+{
+	switch (saberMove)
+	{
+	case LS_A_BACK:
+	case LS_A_BACK_CR:
+	case LS_A_BACKSTAB:
+		return qtrue;
+	default:;
+	}
+
+	return qfalse;
+}
+
 qboolean PM_LockedAnim(const int anim)
 {
 	//anims that can *NEVER* be overridden, regardless

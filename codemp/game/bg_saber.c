@@ -1377,8 +1377,7 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 	{
 		if (curmove == LS_NONE || newmove == LS_NONE)
 		{
-			if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(
-				MISHAPLEVEL_NONE, MISHAPLEVEL_MIN))
+			if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_NONE, MISHAPLEVEL_MIN))
 			{
 				return qtrue;
 			}
@@ -1390,6 +1389,7 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 		else if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 		{
 			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+
 			if (chainAngle < 135 || chainAngle > 215)
 			{
 				//if trying to chain to a move that doesn't continue the momentum
@@ -1435,14 +1435,14 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 				chainTolerance = 3;
 			}
 
-			if (pm->ps->saberAttackChainCount >= chainTolerance && Q_irand(
-				MISHAPLEVEL_MIN, pm->ps->saberAttackChainCount) > chainTolerance)
+			if (pm->ps->saberAttackChainCount >= chainTolerance && Q_irand(MISHAPLEVEL_MIN, pm->ps->saberAttackChainCount) > chainTolerance)
 			{
 				return qtrue;
 			}
 		}
-		if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2 || pm->ps->fd.saberAnimLevel == SS_DUAL) && pm->ps->
-			saberAttackChainCount > Q_irand(MISHAPLEVEL_RUNINACCURACY, MISHAPLEVEL_LIGHT))
+		if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2
+			|| pm->ps->fd.saberAnimLevel == SS_DUAL)
+			&& pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_RUNINACCURACY, MISHAPLEVEL_LIGHT))
 		{
 			return qtrue;
 		}
@@ -4340,7 +4340,7 @@ qboolean PM_SaberBlocking(void)
 					{
 						// Some special bot stuff.
 						nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
-			}
+					}
 					else
 #endif
 					{
@@ -4354,7 +4354,7 @@ qboolean PM_SaberBlocking(void)
 						}
 						nextMove = transitionMove[saberMoveData[pm->ps->saberMove].startQuad][newQuad];
 					}
-		}
+				}
 				else
 				{
 					//return to ready
@@ -4363,7 +4363,7 @@ qboolean PM_SaberBlocking(void)
 					{
 						// Some special bot stuff.
 						nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
-	}
+					}
 					else
 #endif
 					{
@@ -4383,7 +4383,7 @@ qboolean PM_SaberBlocking(void)
 								Q_TL);
 						}
 					}
-}
+				}
 				PM_SetSaberMove((saberMoveName_t)(nextMove));
 				pm->ps->weaponTime = pm->ps->torsoTimer;
 			}
@@ -4655,6 +4655,7 @@ void PM_WeaponLightsaber(void)
 
 	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
 	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
+	const qboolean WalkingBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKWALKING ? qtrue : qfalse; //Walking Blocking
 
 	qboolean checkOnlyWeap = qfalse;
 
@@ -4678,19 +4679,34 @@ void PM_WeaponLightsaber(void)
 		return;
 	}
 
-#ifdef _GAME
-	if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)
+	if (!in_camera)
 	{
-		if (!(pm->cmd.buttons & BUTTON_ATTACK)
-			&& !PM_SaberInSpecial(pm->ps->saberMove)
-			&& pm->ps->saberMove > LS_PUTAWAY)
+		//preblocks can be interrupted
+		if (PM_SaberInParry(pm->ps->saberMove) && pm->ps->userInt3 & 1 << FLAG_PREBLOCK // in a pre-block
+			&& (pm->cmd.buttons & BUTTON_ALT_ATTACK || pm->cmd.buttons & BUTTON_ATTACK)) //and attempting an attack
 		{
-			// Always return to ready when attack is released...
-			PM_SetSaberMove(LS_READY);
-			return;
-	}
-}
+			//interrupting a preblock
+			pm->ps->weaponTime = 0;
+			pm->ps->torsoTimer = 0;
+		}
+
+#ifdef _GAME
+		if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)
+		{
+			if (!(pm->cmd.buttons & BUTTON_ATTACK)
+				&& !PM_SaberInSpecial(pm->ps->saberMove)
+				&& !PM_SaberInStart(pm->ps->saberMove)
+				&& !PM_SaberInTransition(pm->ps->saberMove)
+				&& !PM_SaberInAttack(pm->ps->saberMove)
+				&& pm->ps->saberMove > LS_PUTAWAY)
+			{
+				// Always return to ready when attack is released...
+				PM_SetSaberMove(LS_READY);
+				return;
+			}
+		}
 #endif
+}
 
 	if (PM_InKnockDown(pm->ps) || BG_InRoll(pm->ps, pm->ps->legsAnim))
 	{
@@ -4817,7 +4833,7 @@ void PM_WeaponLightsaber(void)
 			{
 				// Some special bot stuff.
 				PM_SetAnim(SETANIM_TORSO, PM_ReadyPoseForSaberAnimLevelBOT(), SETANIM_FLAG_OVERRIDE);
-	}
+			}
 			else
 #endif
 			{
@@ -4885,18 +4901,6 @@ void PM_WeaponLightsaber(void)
 			pm->cmd.buttons &= ~BUTTON_ATTACK;
 		}
 		pm->cmd.buttons &= ~BUTTON_ALT_ATTACK;
-	}
-
-	if (!in_camera)
-	{
-		//preblocks can be interrupted
-		if (PM_SaberInParry(pm->ps->saberMove) && pm->ps->userInt3 & 1 << FLAG_PREBLOCK // in a pre-block
-			&& (pm->cmd.buttons & BUTTON_ALT_ATTACK || pm->cmd.buttons & BUTTON_ATTACK)) //and attempting an attack
-		{
-			//interrupting a preblock
-			pm->ps->weaponTime = 0;
-			pm->ps->torsoTimer = 0;
-		}
 	}
 
 	if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
@@ -5100,41 +5104,6 @@ weapChecks:
 	{
 		saberMoveName_t overrideMove = LS_INVALID;
 
-		//see if we have an overridden (or cancelled) kata move
-		//if (saber1 && saber1->kataMove != LS_INVALID)
-		//{
-		//	if (saber1->kataMove != LS_NONE)
-		//	{
-		//		overrideMove = (saberMoveName_t)saber1->kataMove;
-		//	}
-		//}
-		//if (overrideMove == LS_INVALID)
-		//{
-		//	//not overridden by first saber, check second
-		//	if (saber2
-		//		&& saber2->kataMove != LS_INVALID)
-		//	{
-		//		if (saber2->kataMove != LS_NONE)
-		//		{
-		//			overrideMove = (saberMoveName_t)saber2->kataMove;
-		//		}
-		//	}
-		//}
-		////no overrides, cancelled?
-		//if (overrideMove == LS_INVALID)
-		//{
-		//	if (saber2
-		//		&& saber2->kataMove == LS_NONE)
-		//	{
-		//		overrideMove = LS_NONE;
-		//	}
-		//	else if (saber2
-		//		&& saber2->kataMove == LS_NONE)
-		//	{
-		//		overrideMove = LS_NONE;
-		//	}
-		//}
-
 		if (overrideMove == LS_INVALID)
 		{
 			switch (pm->ps->fd.saberAnimLevel)
@@ -5247,163 +5216,96 @@ weapChecks:
 	// *********************************************************
 
 	if (pm->ps->weaponstate == WEAPON_RAISING)
-	{
-		//Just selected the weapon
+	{//Just selected the weapon
 		pm->ps->weaponstate = WEAPON_IDLE;
 
-		if (pm->ps->legsAnim == BOTH_WALK1)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK1, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_MENUIDLE1)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_MENUIDLE1, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN1)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN1, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN2)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN2, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_SPRINT)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_SPRINT, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_SPRINT_MP)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_SPRINT_MP, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_SPRINT_SABER_MP)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_SPRINT_SABER_MP, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN3)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN3, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN3_MP)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN3_MP, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN4)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN4, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN5)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN5, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN6)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN6, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN7)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN7, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN8)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN8, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN9)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN9, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN10)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN10, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN_STAFF)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN_STAFF, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_RUN_DUAL)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_RUN_DUAL, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_VADERRUN1)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_VADERRUN1, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_VADERRUN2)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_VADERRUN2, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK2)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK2, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK5)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK5, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK6)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK6, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK7)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK7, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK8)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK8, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK9)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK9, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK10)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK10, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK_STAFF)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK_STAFF, SETANIM_FLAG_NORMAL);
-		}
-		else if (pm->ps->legsAnim == BOTH_WALK_DUAL)
-		{
-			PM_SetAnim(SETANIM_TORSO, BOTH_WALK_DUAL, SETANIM_FLAG_NORMAL);
-		}
-		else
-		{
 #ifdef _GAME
-			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
+		if (!g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)   // player only
+		{
+			switch (pm->ps->legsAnim)
 			{
-				// Some special bot stuff.
-				PM_SetAnim(SETANIM_TORSO, PM_ReadyPoseForSaberAnimLevelBOT(), SETANIM_FLAG_NORMAL);
-	}
-			else
-#endif
-			{
+			case BOTH_WALK1:
+			case BOTH_WALK1TALKCOMM1:
+			case BOTH_WALK2:
+			case BOTH_WALK2B:
+			case BOTH_WALK3:
+			case BOTH_WALK4:
+			case BOTH_WALK5:
+			case BOTH_WALK6:
+			case BOTH_WALK7:
+			case BOTH_WALK8:
+			case BOTH_WALK9:
+			case BOTH_WALK10:
+			case BOTH_WALK_STAFF:
+			case BOTH_WALK_DUAL:
+			case BOTH_WALKBACK1:
+			case BOTH_WALKBACK2:
+			case BOTH_WALKBACK_STAFF:
+			case BOTH_WALKBACK_DUAL:
+			case BOTH_VADERWALK1:
+			case BOTH_VADERWALK2:
+			case BOTH_RUN1:
+			case BOTH_RUN2:
+			case BOTH_RUN3:
+			case BOTH_RUN3_MP:
+			case BOTH_RUN4:
+			case BOTH_RUN5:
+			case BOTH_RUN6:
+			case BOTH_RUN7:
+			case BOTH_RUN8:
+			case BOTH_RUN9:
+			case BOTH_RUN10:
+			case BOTH_SPRINT:
+			case BOTH_SPRINT_SABER:
+			case BOTH_RUN_STAFF:
+			case BOTH_RUN_DUAL:
+			case BOTH_RUNBACK1:
+			case BOTH_RUNBACK2:
+			case BOTH_RUNBACK_STAFF:
+			case SBD_WALK_WEAPON:
+			case SBD_WALK_NORMAL:
+			case SBD_WALKBACK_NORMAL:
+			case SBD_WALKBACK_WEAPON:
+			case SBD_RUNBACK_NORMAL:
+			case SBD_RUNING_WEAPON:
+			case SBD_RUNBACK_WEAPON:
+			case BOTH_VADERRUN1:
+			case BOTH_VADERRUN2:
+			case BOTH_MENUIDLE1:
+			case BOTH_PARRY_WALK:
+			case BOTH_PARRY_WALK_DUAL:
+			case BOTH_PARRY_WALK_STAFF:
+				PM_SetAnim(SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+				break;
+			default:
 				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+					if (pm->ps->saberAnimLevel == SS_DUAL)
 					{
-						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelDual(), SETANIM_FLAG_NORMAL);
+						int anim = PM_BlockingPoseForSaberAnimLevelDual();
 					}
-					else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+					else if (pm->ps->saberAnimLevel == SS_STAFF)
 					{
-						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelStaff(), SETANIM_FLAG_NORMAL);
+						int anim = PM_BlockingPoseForSaberAnimLevelStaff();
 					}
 					else
 					{
-						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelSingle(), SETANIM_FLAG_NORMAL);
+						int anim = PM_BlockingPoseForSaberAnimLevelSingle();
 					}
 				}
 				else
 				{
-					PM_SetAnim(SETANIM_TORSO, PM_ReadyPoseForSaberAnimLevelPlayer(), SETANIM_FLAG_NORMAL);
+					int anim = PM_ReadyPoseForSaberAnimLevelPlayer();
 				}
+				if (anim != -1)
+				{
+					PM_SetAnim(SETANIM_TORSO, anim, SETANIM_FLAG_NORMAL);
+				}
+				break;
 			}
 		}
-
-		if (pm->ps->weaponstate == WEAPON_RAISING)
-		{
-			return;
-		}
+#endif
+		return;
 	}
 
 	if (checkOnlyWeap)
@@ -5530,189 +5432,140 @@ weapChecks:
 		return;
 	}
 
-	//this is never a valid regular saber attack button
-	pm->cmd.buttons &= ~BUTTON_ALT_ATTACK;
-
 	if (!delayed_fire)
 	{
-#ifdef _GAME
-		if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT) //npc
+		// Start with the current move, and cross index it with the current control states.
+		if (pm->ps->saberMove > LS_NONE && pm->ps->saberMove < LS_MOVE_MAX)
 		{
-			// Start with the current move, and cross index it with the current control states.
-			if (pm->ps->saberMove > LS_NONE && pm->ps->saberMove < LS_MOVE_MAX)
-			{
-				curmove = (saberMoveName_t)pm->ps->saberMove;
+			curmove = (saberMoveName_t)pm->ps->saberMove;
+		}
+		else
+		{
+			curmove = LS_READY;
+		}
+
+		if (curmove == LS_A_JUMP_T__B_ || curmove == LS_A_JUMP_PALP_ || pm->ps->torsoAnim ==
+			BOTH_FORCELEAP2_T__B_ || pm->ps->torsoAnim == BOTH_FORCELEAP_PALP)
+		{
+			//must transition back to ready from this anim
+			newmove = LS_R_T2B;
+		}
+		// check for fire
+		//This section dictates want happens when you quit holding down attack.
+		else if (!(pm->cmd.buttons & BUTTON_ATTACK) || HoldingBlock || WalkingBlocking || ActiveBlocking)
+		{
+			//not attacking
+			pm->ps->weaponTime = 0;
+
+			if (pm->ps->weaponTime > 0)
+			{//Still firing
+				pm->ps->weaponstate = WEAPON_FIRING;
 			}
-			else
+			else if (pm->ps->weaponstate != WEAPON_READY)
 			{
-				curmove = LS_READY;
+				pm->ps->weaponstate = WEAPON_IDLE;
 			}
 
-			if (curmove == LS_A_JUMP_T__B_ || curmove == LS_A_JUMP_PALP_ || pm->ps->torsoAnim == BOTH_FORCELEAP2_T__B_
-				|| pm->ps->torsoAnim == BOTH_FORCELEAP_PALP)
-			{
-				//must transition back to ready from this anim
-				newmove = LS_R_T2B;
-			}
-			// check for fire
-			else if (!(pm->cmd.buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK)))
-			{
-				//not attacking
-				pm->ps->weaponTime = 0;
-
-				if (pm->ps->weaponTime > 0)
-				{
-					//Still firing
-					pm->ps->weaponstate = WEAPON_FIRING;
-				}
-				else if (pm->ps->weaponstate != WEAPON_READY)
-				{
-					pm->ps->weaponstate = WEAPON_IDLE;
-				}
-				//Check for finishing an anim if necc.
-				if (curmove >= LS_S_TL2BR && curmove <= LS_S_T2B)
-				{
-					//started a swing, must continue from here
+			//Check for finishing an anim if necc.
+			if (curmove >= LS_S_TL2BR && curmove <= LS_S_T2B)
+			{//started a swing, must continue from here
+#ifdef _GAME
+				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT) //npc
+				{//NPCs never do attack fakes, just follow thru with attack.
 					newmove = LS_A_TL2BR + (curmove - LS_S_TL2BR);
 				}
-				else if (curmove >= LS_A_TL2BR && curmove <= LS_A_T2B)
-				{
-					//finished an attack, must continue from here
-					newmove = LS_R_TL2BR + (curmove - LS_A_TL2BR);
+				else
+#endif
+				{//perform attack fake
+					newmove = PM_ReturnforQuad(saberMoveData[curmove].endQuad);
+					PM_AddBlockFatigue(pm->ps, FATIGUE_ATTACKFAKE);
 				}
-				else if (PM_SaberInTransition(curmove))
-				{
-					//in a transition, must play sequential attack
+			}
+			else if (curmove >= LS_A_TL2BR && curmove <= LS_A_T2B)
+			{//finished an attack, must continue from here
+				newmove = LS_R_TL2BR + (curmove - LS_A_TL2BR);
+			}
+			else if (PM_SaberInTransition(curmove))
+			{//in a transition, must play sequential attack
+#ifdef _GAME
+				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT) //npc
+				{//NPCs never stop attacking mid-attack, just follow thru with attack.
 					newmove = saberMoveData[curmove].chain_attack;
 				}
-				else if (PM_SaberInBounce(curmove))
-				{
-					//in a bounce
+				else
+#endif
+				{//exit out of transition without attacking
+					newmove = PM_ReturnforQuad(saberMoveData[curmove].endQuad);
+				}
+			}
+			else if (PM_SaberInBounce(curmove))
+			{//in a bounce
+#ifdef _GAME
+				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT) //npc
+				{//NPCs must play sequential attack
 					if (PM_SaberKataDone(LS_NONE, LS_NONE))
-					{
-						//done with this kata, must return to ready before attack again
+					{//done with this kata, must return to ready before attack again
 						newmove = saberMoveData[curmove].chain_idle;
 					}
 					else
-					{
-						//okay to chain to another attack
-						newmove = saberMoveData[curmove].chain_attack;
-						//we assume they're attacking, even if they're not
+					{//okay to chain to another attack
+						newmove = saberMoveData[curmove].chain_attack;//we assume they're attacking, even if they're not
 						pm->ps->saberAttackChainCount++;
 					}
-				}
+			}
 				else
-				{
-					PM_SetSaberMove(LS_READY);
-					return;
+#endif
+				{//player gets his by directional control
+					newmove = saberMoveData[curmove].chain_idle;//oops, not attacking, so don't chain
 				}
+		}
+			else
+			{
+				PM_SetSaberMove(LS_READY);
+				return;
 			}
 		}
-		else
-#endif
+		else if (pm->cmd.buttons & BUTTON_ATTACK && pm->cmd.buttons & BUTTON_USE)
 		{
-			// Start with the current move, and cross index it with the current control states.
-			if (pm->ps->saberMove > LS_NONE && pm->ps->saberMove < LS_MOVE_MAX)
+			//do some fancy faking stuff.
+			if (pm->ps->weaponstate != WEAPON_READY)
 			{
-				curmove = (saberMoveName_t)pm->ps->saberMove;
+				pm->ps->weaponstate = WEAPON_IDLE;
+			}
+			//Check for finishing an anim if necc.
+			if (curmove >= LS_S_TL2BR && curmove <= LS_S_T2B)
+			{
+				//allow the player to fake into another transition
+				newmove = PM_DoFake(curmove);
+				if (newmove == LS_NONE)
+				{
+					//no movement, just do the attack
+					newmove = LS_A_TL2BR + (curmove - LS_S_TL2BR);
+				}
+			}
+			else if (curmove >= LS_A_TL2BR && curmove <= LS_A_T2B)
+			{
+				//finished attack, let attack code handle the next step.
+		}
+			else if (PM_SaberInTransition(curmove))
+			{
+				//in a transition, must play sequential attack
+				newmove = PM_DoFake(curmove);
+				if (newmove == LS_NONE)
+				{
+					//no movement, just let the normal attack code handle it
+					newmove = saberMoveData[curmove].chain_attack;
+				}
+			}
+			else if (PM_SaberInBounce(curmove))
+			{
+				//in a bounce
 			}
 			else
 			{
-				curmove = LS_READY;
+				//returning from a parry I think.
 			}
-
-			if (curmove == LS_A_JUMP_T__B_ || curmove == LS_A_JUMP_PALP_ || pm->ps->torsoAnim ==
-				BOTH_FORCELEAP2_T__B_ || pm->ps->torsoAnim == BOTH_FORCELEAP_PALP)
-			{
-				//must transition back to ready from this anim
-				newmove = LS_R_T2B;
-			}
-			// check for fire
-			else if (!(pm->cmd.buttons & BUTTON_ATTACK) || HoldingBlock || ActiveBlocking)
-			{
-				//not attacking
-				pm->ps->weaponTime = 0;
-
-				if (pm->ps->weaponTime > 0)
-				{
-					//Still firing
-					pm->ps->weaponstate = WEAPON_FIRING;
-				}
-				else if (pm->ps->weaponstate != WEAPON_READY)
-				{
-					pm->ps->weaponstate = WEAPON_IDLE;
-				}
-				//Check for finishing an anim if necc.
-				if (curmove >= LS_S_TL2BR && curmove <= LS_S_T2B)
-				{
-					//started a swing, must continue from here
-					newmove = PM_ReturnforQuad(saberMoveData[curmove].endQuad);
-					//attack fakes now cost FP
-					PM_AddBlockFatigue(pm->ps, FATIGUE_ATTACKFAKE);
-				}
-				else if (curmove >= LS_A_TL2BR && curmove <= LS_A_T2B)
-				{
-					//finished an attack, must continue from here
-					newmove = LS_R_TL2BR + (curmove - LS_A_TL2BR);
-				}
-				else if (PM_SaberInTransition(curmove))
-				{
-					//in a transition, must play sequential attack
-					newmove = PM_ReturnforQuad(saberMoveData[curmove].endQuad);
-				}
-				else if (PM_SaberInBounce(curmove))
-				{
-					//in a bounce
-					newmove = saberMoveData[curmove].chain_idle; //oops, not attacking, so don't chain
-				}
-				else
-				{
-					PM_SetSaberMove(LS_READY);
-					return;
-				}
-			}
-			else if (pm->cmd.buttons & BUTTON_ATTACK && pm->cmd.buttons & BUTTON_USE)
-			{
-				//do some fancy faking stuff.
-				if (pm->ps->weaponstate != WEAPON_READY)
-				{
-					pm->ps->weaponstate = WEAPON_IDLE;
-				}
-				//Check for finishing an anim if necc.
-				if (curmove >= LS_S_TL2BR && curmove <= LS_S_T2B)
-				{
-					//allow the player to fake into another transition
-					newmove = PM_DoFake(curmove);
-					if (newmove == LS_NONE)
-					{
-						//no movement, just do the attack
-						newmove = LS_A_TL2BR + (curmove - LS_S_TL2BR);
-					}
-				}
-				else if (curmove >= LS_A_TL2BR && curmove <= LS_A_T2B)
-				{
-					//finished attack, let attack code handle the next step.
-				}
-				else if (PM_SaberInTransition(curmove))
-				{
-					//in a transition, must play sequential attack
-					newmove = PM_DoFake(curmove);
-					if (newmove == LS_NONE)
-					{
-						//no movement, just let the normal attack code handle it
-						newmove = saberMoveData[curmove].chain_attack;
-					}
-				}
-				else if (PM_SaberInBounce(curmove))
-				{
-					//in a bounce
-				}
-				else
-				{
-					//returning from a parry I think.
-				}
-			}
-		}
+	}
 
 		// ***************************************************
 		// Pressing attack, so we must look up the proper attack move.
@@ -5815,7 +5668,6 @@ weapChecks:
 			anim = saberMoveData[newmove].animToUse;
 		}
 
-		//FIXME: diagonal dirs use the figure-eight attacks from ready pose?
 		if (anim == -1)
 		{
 			if (PM_SaberInTransition(curmove))
@@ -5839,8 +5691,7 @@ weapChecks:
 				newmove = LS_READY;
 			}
 			else
-			{
-				//get attack move from movement command
+			{//get attack move from movement command
 #ifdef _GAME
 				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT
 					&& (Q_irand(0, pm->ps->fd.forcePowerLevel[FP_SABER_OFFENSE] - 1)
@@ -5849,13 +5700,13 @@ weapChecks:
 				{
 					//NPCs use more randomized attacks the more skilled they are
 					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-		}
+				}
 				else
 #endif
 				{
-					newmove = PM_SaberAttackForMovement(curmove);
+					newmove = PM_SaberAttackForMovement((saberMoveName_t)curmove);
 
-					if (pm->ps->fd.blockPoints > BLOCKPOINTS_HALF)
+					if (pm->ps->saberAttackChainCount < MISHAPLEVEL_TEN)
 					{
 						if ((PM_SaberInBounce(curmove) || PM_SaberInBrokenParry(curmove))
 							&& saberMoveData[newmove].startQuad == saberMoveData[curmove].endQuad)
@@ -5883,8 +5734,7 @@ weapChecks:
 				pm->ps->userInt3 &= ~(1 << FLAG_ATTACKFAKE);
 
 				if (PM_SaberKataDone(curmove, newmove))
-				{
-					//cannot chain this time
+				{//cannot chain this time
 					newmove = saberMoveData[curmove].chain_idle;
 				}
 			}
@@ -6003,11 +5853,12 @@ weapChecks:
 				break;
 			default:;
 #ifdef _GAME
-				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
+				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)
 				{
 					anim = PM_ReadyPoseForSaberAnimLevelBOT();
 				}
 				else
+#endif
 				{
 					if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
 					{
@@ -6028,10 +5879,9 @@ weapChecks:
 					{
 						anim = PM_ReadyPoseForSaberAnimLevelPlayer();
 					}
-			}
+				}
 				break;
-#endif
-		}
+			}
 			newmove = LS_READY;
 		}
 
@@ -6040,7 +5890,7 @@ weapChecks:
 			//turn on the saber if it's not on
 			pm->ps->saberHolstered = 0;
 			PM_AddEvent(EV_SABER_UNHOLSTER);
-		}
+			}
 
 		PM_SetSaberMove(newmove);
 
@@ -6055,7 +5905,7 @@ weapChecks:
 			//don't fire again until anim is done
 			pm->ps->weaponTime = pm->ps->torsoTimer;
 		}
-	}
+		}
 
 	// *********************************************************
 	// WEAPON_FIRING
@@ -6114,7 +5964,7 @@ weapChecks:
 		//can still attack during a cartwheel/arial
 		pm->ps->weaponTime = addTime;
 	}
-}
+	}
 
 //Add Fatigue to a player
 void PM_AddFatigue(playerState_t* ps, const int Fatigue)
@@ -6404,7 +6254,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			//continuing with a kata, increment attack counter
 			pm->ps->saberAttackChainCount++;
 		}
-}
+	}
 	else
 #endif
 	{
@@ -6485,7 +6335,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				|| saber1->type == SABER_ASBACKHAND))
 			{
 				anim = BOTH_SABER_BACKHAND_IGNITION;
-			}
+	}
 			else if (saber1 && saber1->type == SABER_STAFF_MAUL)
 			{
 				anim = BOTH_S1_S7;
@@ -6494,7 +6344,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			{
 				anim = BOTH_S1_S7;
 			}
-		}
+}
 		else if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 		{
 			if (saber1 && saber1->type == SABER_GRIE || saber1 && saber1->type == SABER_GRIE4)
@@ -6506,7 +6356,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				anim = BOTH_S1_S6;
 			}
 		}
-	}
+			}
 	else if (new_move == LS_PUTAWAY)
 	{
 		if (saber1
@@ -6637,7 +6487,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 			{
 				anim = PM_ReadyPoseForSaberAnimLevelBOT();
-	}
+			}
 			else
 #endif
 			{
@@ -6717,8 +6567,8 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				{
 					anim = PM_ReadyPoseForSaberAnimLevelPlayer();
 				}
-			}
-		}
+					}
+				}
 
 		if (PM_InSlopeAnim(anim))
 		{
@@ -6754,7 +6604,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		}
 
 		parts = SETANIM_TORSO;
-	}
+			}
 
 	if (!pm->ps->m_iVehicleNum)
 	{
@@ -6807,7 +6657,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			|| PM_KickMove(new_move))
 		{
 			parts = SETANIM_BOTH;
-		}
+	}
 		else if (PM_SpinningSaberAnim(anim))
 		{
 			//spins must be played on entire body
@@ -6877,7 +6727,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				pm->ps->legsTimer = pm->ps->torsoTimer;
 			}
 		}
-	}
+		}
 
 	if (pm->ps->torsoAnim == anim)
 	{
@@ -6901,7 +6751,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 						//PM_SaberFatigue(pm->ps, new_move, anim); //drainblockpoints high cost
 					}
 				}
-	}
+			}
 			else
 #endif
 			{
@@ -6989,7 +6839,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 						pm->ps->weaponTime = pm->ps->torsoTimer; //so we know our weapon is busy
 					}
 				}
-			}
+					}
 			else if (PM_SaberInStart(new_move))
 			{
 				int damageDelay = 150;
@@ -7005,7 +6855,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				//rww 01-02-03 - I think this will solve the issue of special attacks being interruptable, hopefully without side effects
 				pm->ps->weaponTime = pm->ps->torsoTimer;
 			}
-		}
+				}
 
 		pm->ps->saberMove = new_move;
 		pm->ps->saberBlocking = saberMoveData[new_move].blocking;
@@ -7030,8 +6880,8 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			//NPCs only clear blocked if not blocking?
 			pm->ps->saberBlocked = BLOCKED_NONE;
 		}
-	}
-}
+			}
+		}
 
 saberInfo_t* BG_MySaber(int clientNum, int saberNum)
 {
@@ -7130,18 +6980,18 @@ qboolean PM_DoKick(void)
 					//off ground, but too close to ground
 					kickMove = -1;
 				}
+				}
 			}
-		}
 
 		if (kickMove != -1 && BG_EnoughForcePowerForMove(FATIGUE_SABERATTACK))
 		{
 			PM_SetSaberMove(kickMove);
 			return qtrue;
 		}
-	}
+		}
 
 	return qfalse;
-}
+	}
 
 qboolean PM_DoSlap(void)
 {

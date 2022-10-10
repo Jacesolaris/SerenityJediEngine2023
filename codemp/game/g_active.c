@@ -5084,6 +5084,11 @@ void ClientThink_real(gentity_t* ent)
 		}
 	}
 
+	if ((ucmd->buttons & BUTTON_BLOCK))
+	{//blocking with saber
+		ent->client->ps.saberManualBlockingTime = level.time + FRAMETIME;
+	}
+
 	if (ent->client->beingThrown > level.time)
 	{
 		gentity_t* thrower = &g_entities[ent->client->throwingIndex];

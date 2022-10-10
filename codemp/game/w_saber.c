@@ -155,6 +155,8 @@ extern qboolean PM_RestAnim(int anim);
 extern void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
 extern qboolean BG_HopAnim(int anim);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
+extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saberMove);
+extern qboolean PM_SaberInBackAttack(saberMoveName_t saberMove);
 
 float VectorBlockDistance(vec3_t v1, vec3_t v2)
 {
@@ -2656,6 +2658,21 @@ extern qboolean G_StandardHumanoid(gentity_t* self);
 void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 {
 	if (victim->health <= 20)
+	{
+		return;
+	}
+
+	if (PM_SaberInKata(attacker->client->ps.saberMove))
+	{
+		return;
+	}
+
+	if (PM_SaberInOverHeadSlash(attacker->client->ps.saberMove))
+	{
+		return;
+	}
+
+	if (PM_SaberInBackAttack(attacker->client->ps.saberMove))
 	{
 		return;
 	}

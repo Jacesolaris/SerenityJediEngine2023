@@ -9995,7 +9995,7 @@ static void PM_Footsteps(void)
 			g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
 #endif
 		}
-		}
+	}
 	else if (pm->ps->pm_flags & PMF_ROLLING && !BG_InRoll(pm->ps, pm->ps->legsAnim) &&
 		!PM_InRollComplete(pm->ps, pm->ps->legsAnim))
 	{
@@ -11277,7 +11277,7 @@ static void PM_Footsteps(void)
 			// no sound when completely underwater
 		}
 	}
-	}
+}
 
 /*
 ==============
@@ -18626,20 +18626,17 @@ void PmoveSingle(pmove_t * pmove)
 		pm->cmd.forwardmove = 0;
 		pm->cmd.buttons = 0;
 	} //stiffenedup
-	else if (PM_SaberInAttack(pm->ps->saberMove)
+	else if (!in_camera && (PM_SaberInAttack(pm->ps->saberMove)
 		|| pm_saber_in_special_attack(pm->ps->torsoAnim)
 		|| PM_SpinningSaberAnim(pm->ps->legsAnim)
 		|| PM_SaberInStart(pm->ps->saberMove)
-		|| pm->ps->saberBlockingTime
-		&& !in_camera
-		|| PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+		|| (PM_SaberInMassiveBounce(pm->ps->torsoAnim) && pm->ps->torsoTimer)))
 	{
 		//attacking or spinning (or, if player, starting an attack)
 #ifdef _GAME
 		if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)
 		{
 			stiffenedUp = qtrue;
-			//PM_SetPMViewAngle(pm->ps, pm->ps->viewangles, &pm->cmd);
 		}
 #endif
 	}

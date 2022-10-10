@@ -5425,10 +5425,8 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			ent->client->ps.forceJumpCharge = 0;
 		}
 	} //stiffenedup
-	else if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
-		&& !in_camera
-		&& (PM_SaberInMassiveBounce(ent->client->ps.torsoAnim))
-		&& ent->client->ps.torsoAnimTimer)
+	else if (!in_camera && (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
+		&& PM_SaberInMassiveBounce(ent->client->ps.torsoAnim) && ent->client->ps.torsoAnimTimer))
 	{
 		//npc can't move or turn
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
@@ -5437,7 +5435,6 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			VectorClear(ent->client->ps.moveDir);
 			ent->client->ps.forceJumpCharge = 0;
 		}
-		//overridAngles = (PM_LockAngles(ent, ucmd) ? qtrue : overridAngles);
 	}
 	//END EMOTE
 	// manualdodge
@@ -8156,6 +8153,11 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	if (client->ps.blockPoints < BLOCK_POINTS_MAX)
 	{
 		WP_BlockPointsUpdate(ent);
+	}
+
+	if ((ucmd->buttons & BUTTON_BLOCK))
+	{//blocking with saber
+		ent->client->ps.saberManualBlockingTime = level.time + FRAMETIME;
 	}
 
 	//if we have the saber in hand, check for starting a block to reflect shots

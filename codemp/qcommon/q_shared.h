@@ -1201,6 +1201,7 @@ typedef struct playerState_s {
 	int		    saberBounceMove;
 	short 		leanStopDebounceTime;
 	int			saberBlockingTime;
+	int         saberManualBlockingTime;
 	int			saberAnimLevel;
 
 	int			saberLockTime;
