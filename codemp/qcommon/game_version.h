@@ -26,8 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // Current version of the multi player game
 #define VERSION_MAJOR_RELEASE		22
 #define VERSION_MINOR_RELEASE		10
-#define VERSION_EXTERNAL_BUILD		01
-#define VERSION_INTERNAL_BUILD		03
+#define VERSION_INTERNAL_BUILD		11
 
 #define VERSION_STRING				"Year-22,Month-10,BuildNum -03"
 #define VERSION_STRING_DOTTED		"Year-22,Month-10,BuildNum -03"

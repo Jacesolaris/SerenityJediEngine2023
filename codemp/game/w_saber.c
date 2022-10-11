@@ -6759,7 +6759,7 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 		dmg = SABER_NONATTACK_DAMAGE;
 		idle_damage = qtrue;
 	}
-	else if ((self_holding_block || self_active_blocking || self_m_blocking || self->client->ps.saberBlockingTime >
+	else if ((self_holding_block || self_active_blocking || self_m_blocking || self->client->ps.saberManualBlockingTime >
 		level.time) && !(self->r.svFlags & SVF_BOT))
 	{
 		//Dont do damage if holding block.
@@ -7867,7 +7867,7 @@ static QINLINE qboolean CheckThrownSaberDamaged(gentity_t* saberent, gentity_t* 
 					}
 					else
 					{
-						if (OtherHoldingBlock || OtherActiveBlocking || OtherMBlocking || manual_saberblocking(ent) || ent->client->ps.saberBlockingTime > level.time)
+						if (OtherHoldingBlock || OtherActiveBlocking || OtherMBlocking || manual_saberblocking(ent) || ent->client->ps.saberManualBlockingTime > level.time)
 						{
 							WP_SaberBlockNonRandom(ent, tr.endpos, qfalse);
 						}
@@ -15689,7 +15689,7 @@ qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, i
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
@@ -15740,7 +15740,7 @@ qboolean WP_SaberNPCMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
@@ -15791,7 +15791,7 @@ qboolean WP_SaberNPCParry(gentity_t* blocker, gentity_t* attacker, int saberNum,
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
@@ -15842,7 +15842,7 @@ qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, in
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
@@ -15893,7 +15893,7 @@ qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
@@ -15944,7 +15944,7 @@ qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int sabe
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
@@ -15995,7 +15995,7 @@ qboolean WP_SaberNPCFatiguedParry(gentity_t* blocker, gentity_t* attacker, int s
 		|| OtherMBlocking
 		|| NPCBlocking
 		|| manual_saberblocking(blocker)  // already in a block position it will override
-		|| blocker->client->ps.saberBlockingTime > level.time)
+		|| blocker->client->ps.saberManualBlockingTime > level.time)
 	{
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
