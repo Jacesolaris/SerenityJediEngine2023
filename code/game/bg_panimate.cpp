@@ -5119,7 +5119,7 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 		}
 		else
 		{//not moving in any direction
-			if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
+		if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
 			{
 				//parries, return to the start position if a direction isn't given.
 				newmove = LS_READY;

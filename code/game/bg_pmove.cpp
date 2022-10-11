@@ -18829,38 +18829,41 @@ void PM_WeaponLightsaber(void)
 				return;
 			}
 
-			if (HoldingBlock || curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
-			{
-				//from a parry or reflection, can go directly into an attack
-				if (pm->ps->clientNum && !PM_ControlledByPlayer())
-				{
-					//NPCs
-					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-				}
-				else
-				{
-					switch (saberMoveData[curmove].endQuad)
-					{
-					case Q_T:
-						newmove = LS_A_T2B;
-						break;
-					case Q_TR:
-						newmove = LS_A_TR2BL;
-						break;
-					case Q_TL:
-						newmove = LS_A_TL2BR;
-						break;
-					case Q_BR:
-						newmove = LS_A_BR2TL;
-						break;
-					case Q_BL:
-						newmove = LS_A_BL2TR;
-						break;
-					default:;
-						//shouldn't be a parry that ends at L, R or B
-					}
-				}
-			}
+			//if (/*(PM_IsInBlockingAnim(pm->ps->saberMove) && pm->cmd.buttons & BUTTON_ATTACK)||*/ curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
+			//{
+			//	//from a parry or reflection, can go directly into an attack
+			//	if (pm->ps->clientNum && !PM_ControlledByPlayer())
+			//	{
+			//		//NPCs
+			//		newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
+			//	}
+			//	else
+			//	{
+			//		//newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
+			//		
+			//		//newmove = PM_SaberAttackForMovement(pm->cmd.forwardmove, pm->cmd.rightmove, curmove);
+			//		
+			//		switch (saberMoveData[curmove].endQuad)
+			//		{
+			//		case Q_T:
+			//			newmove = LS_A_T2B;
+			//			break;
+			//		case Q_TR:
+			//			newmove = LS_A_TR2BL;
+			//			break;
+			//		case Q_TL:
+			//			newmove = LS_A_TL2BR;
+			//			break;
+			//		case Q_BR:
+			//			newmove = LS_A_BR2TL;
+			//			break;
+			//		case Q_BL:
+			//			newmove = LS_A_BL2TR;
+			//			break;
+			//			//shouldn't be a parry that ends at L, R or B
+			//		}
+			//	}
+			//}
 
 			if (newmove != LS_NONE)
 			{
