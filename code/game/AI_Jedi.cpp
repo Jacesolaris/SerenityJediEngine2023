@@ -3560,7 +3560,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 		}
 	}
 	//if really really mad, rage!
-	if (NPCInfo->stats.aggression > Q_irand(5, 15)
+	if (enemy_dist > 1024 && NPCInfo->stats.aggression > Q_irand(5, 15)
 		&& NPC->health < NPC->max_health * 0.75f
 		&& !Q_irand(0, 2))
 	{

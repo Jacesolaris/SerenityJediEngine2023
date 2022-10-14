@@ -4212,7 +4212,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 		}
 	}
 	//if really really mad, rage!
-	if (NPCS.NPCInfo->stats.aggression > Q_irand(5, 15)
+	if (enemy_dist > 1024 && NPCS.NPCInfo->stats.aggression > Q_irand(5, 15)
 		&& NPCS.NPC->health < NPCS.NPC->client->pers.maxHealth * 0.75f
 		&& !Q_irand(0, 2))
 	{

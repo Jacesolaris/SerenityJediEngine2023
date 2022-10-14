@@ -21092,7 +21092,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 
 	if (!g_saberAutoBlocking->integer
 		&& !g_saberNewControlScheme->integer
-		&& pm->cmd.buttons & BUTTON_FORCE_FOCUS)
+		&& (pm->cmd.buttons & BUTTON_FORCE_FOCUS || (pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING)))
 	{
 		pm->ps->saberBlockingTime = pm->cmd.serverTime + 100;
 		pm->cmd.buttons &= ~BUTTON_ATTACK;

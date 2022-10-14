@@ -13327,13 +13327,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 		do_full_routine = qfalse;
 	}
 
-	if (!self->s.number && !(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && self->client->ps.
-		saberBlockingTime < level.time)
-	{
-		do_full_routine = qfalse;
-	}
-
-	if (!(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && self->client->ps.saberBlockingTime < level.time)
+	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && !(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 	{
 		return;
 	}
@@ -13988,6 +13982,7 @@ void wp_saber_update(gentity_t* self, const usercmd_t* ucmd)
 		const Vehicle_t* p_veh = G_IsRidingVehicle(self);
 		if (!self->client->ps.SaberActive()
 			|| !self->client->ps.saberBlocking
+			|| ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && !(manual_saberblocking(self)))
 			|| PM_InKnockDown(&self->client->ps)
 			|| PM_SuperBreakLoseAnim(self->client->ps.torsoAnim)
 			|| p_veh && p_veh->m_pVehicleInfo && p_veh->m_pVehicleInfo->type != VH_ANIMAL && p_veh->m_pVehicleInfo->type

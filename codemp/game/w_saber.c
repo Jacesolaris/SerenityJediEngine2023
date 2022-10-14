@@ -7273,10 +7273,10 @@ void wp_saber_start_missile_block_check(gentity_t* self, usercmd_t* ucmd)
 		//you have not the SKILLZ
 		do_full_routine = qfalse;
 	}
-
-	if (!(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+	
+	if ((!(self->r.svFlags & SVF_BOT)) && (!(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)))
 	{
-		do_full_routine = qfalse;
+		return;
 	}
 
 	if (!walk_check(self)
