@@ -3011,125 +3011,138 @@ int PM_SaberAttackChainAngle(const int move1, const int move2)
 
 qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NONE)
 {
-	if (pm->ps->m_iVehicleNum)
+	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()))
 	{
-		//never continue kata on vehicle
-		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-		{
-			return qtrue;
-		}
-	}
-
-	if (pm->ps->forceRageRecoveryTime > level.time)
-	{
-		//rage recovery, only 1 swing at a time (tired)
-		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-		{
-			//swung once
-			return qtrue;
-		}
-		//allow one attack
-		return qfalse;
-	}
-	if (pm->ps->forcePowersActive & 1 << FP_RAGE)
-	{
-		//infinite chaining when raged
-		return qfalse;
-	}
-	if (pm->ps->saber[0].maxChain == -1)
-	{
-		return qfalse;
-	}
-	if (pm->ps->saber[0].maxChain != 0)
-	{
-		if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
-		{
-			return qtrue;
-		}
-		return qfalse;
-	}
-
-	if (pm->ps->saberAnimLevel == SS_DESANN
-		|| pm->ps->saberAnimLevel == SS_STRONG
-		|| pm->ps->saberAnimLevel == SS_TAVION
-		|| pm->ps->saberAnimLevel == SS_STAFF
-		|| pm->ps->saberAnimLevel == SS_DUAL
-		|| pm->ps->saberAnimLevel == SS_MEDIUM)
-	{
-		//desann and tavion can link up as many attacks as they want
-		return qfalse;
-	}
-	if (pm->ps->saberAnimLevel == FORCE_LEVEL_3)
-	{
-		if (curmove == LS_NONE || newmove == LS_NONE)
-		{
-			if (pm->ps->saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_NONE, MISHAPLEVEL_MIN))
-			{
+		if (pm->ps->forceRageRecoveryTime > level.time)
+		{//rage recovery, only 1 swing at a time (tired)
+			if (pm->ps->saberAttackChainCount > 0)
+			{//swung once
 				return qtrue;
 			}
-		}
-		else if (pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_RUNINACCURACY, MISHAPLEVEL_SNIPER))
-		{
-			return qtrue;
-		}
-		else if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-		{
-			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
-
-			if (chainAngle < 135 || chainAngle > 215)
-			{
-				//if trying to chain to a move that doesn't continue the momentum
-				return qtrue;
+			else
+			{//allow one attack
+				return qfalse;
 			}
-			if (chainAngle == 180)
+		}
+		else if ((pm->ps->forcePowersActive & (1 << FP_RAGE)))
+		{//infinite chaining when raged
+			return qfalse;
+		}
+		else if (pm->ps->saber[0].maxChain == -1)
+		{
+			return qfalse;
+		}
+		else if (pm->ps->saber[0].maxChain != 0)
+		{
+			if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
 			{
-				//continues the momentum perfectly, allow it to chain 66% of the time
-				if (pm->ps->saberAttackChainCount > MISHAPLEVEL_MIN)
-				{
-					return qtrue;
-				}
+				return qtrue;
 			}
 			else
 			{
-				//would continue the movement somewhat, 50% chance of continuing
-				if (pm->ps->saberAttackChainCount > MISHAPLEVEL_RUNINACCURACY)
-				{
-					return qtrue;
-				}
+				return qfalse;
 			}
+		}
+
+		if ((pm->ps->saberAnimLevel == SS_DESANN
+			|| pm->ps->saberAnimLevel == SS_STRONG
+			|| pm->ps->saberAnimLevel == SS_TAVION
+			|| pm->ps->saberAnimLevel == SS_STAFF
+			|| pm->ps->saberAnimLevel == SS_DUAL
+			|| pm->ps->saberAnimLevel == SS_MEDIUM)
+			&& pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_MAX, MISHAPLEVEL_OVERLOAD))
+		{
+			return qtrue;
 		}
 	}
 	else
 	{
-		//FIXME: have chainAngle influence fast and medium chains as well?
-		if (newmove == LS_A_TL2BR ||
-			newmove == LS_A_L2R ||
-			newmove == LS_A_BL2TR ||
-			newmove == LS_A_BR2TL ||
-			newmove == LS_A_R2L ||
-			newmove == LS_A_TR2BL)
-		{
-			//lower chaining tolerance for spinning saber anims
-			int chainTolerance;
-
-			if (pm->ps->saberAnimLevel == FORCE_LEVEL_1)
-			{
-				chainTolerance = 5;
+		if (pm->ps->forceRageRecoveryTime > level.time)
+		{//rage recovery, only 1 swing at a time (tired)
+			if (pm->ps->saberAttackChainCount > 0)
+			{//swung once
+				return qtrue;
 			}
 			else
-			{
-				chainTolerance = 3;
+			{//allow one attack
+				return qfalse;
 			}
-
-			if (pm->ps->saberAttackChainCount >= chainTolerance && Q_irand(	MISHAPLEVEL_MIN, pm->ps->saberAttackChainCount) > chainTolerance)
+		}
+		else if ((pm->ps->forcePowersActive & (1 << FP_RAGE)))
+		{//infinite chaining when raged
+			return qfalse;
+		}
+		else if (pm->ps->saber[0].maxChain == -1)
+		{
+			return qfalse;
+		}
+		else if (pm->ps->saber[0].maxChain != 0)
+		{
+			if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
 			{
 				return qtrue;
 			}
+			else
+			{
+				return qfalse;
+			}
 		}
-		if ((pm->ps->saberAnimLevel == FORCE_LEVEL_2 || pm->ps->saberAnimLevel == SS_DUAL) && pm->ps->
-			saberAttackChainCount > Q_irand(MISHAPLEVEL_RUNINACCURACY, MISHAPLEVEL_LIGHT))
+
+		if (pm->ps->saberAnimLevel == SS_DESANN || pm->ps->saberAnimLevel == SS_TAVION)
+		{//desann and tavion can link up as many attacks as they want
+			return qfalse;
+		}
+		if (pm->ps->saberAnimLevel == SS_STAFF)
 		{
-			return qtrue;
+			return qfalse;
+		}
+		else if (pm->ps->saberAnimLevel == SS_DUAL)
+		{
+			return qfalse;
+		}
+		else if (pm->ps->saberAnimLevel == FORCE_LEVEL_3)
+		{
+			if (curmove == LS_NONE || newmove == LS_NONE)
+			{
+				if (pm->ps->saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
+				{
+					return qtrue;
+				}
+			}
+			else if (pm->ps->saberAttackChainCount > Q_irand(2, 3))
+			{
+				return qtrue;
+			}
+			else if (pm->ps->saberAttackChainCount > 0)
+			{
+				int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+				if (chainAngle < 135 || chainAngle > 215)
+				{//if trying to chain to a move that doesn't continue the momentum
+					return qtrue;
+				}
+				else if (chainAngle == 180)
+				{//continues the momentum perfectly, allow it to chain 66% of the time
+					if (pm->ps->saberAttackChainCount > 1)
+					{
+						return qtrue;
+					}
+				}
+				else
+				{//would continue the movement somewhat, 50% chance of continuing
+					if (pm->ps->saberAttackChainCount > 2)
+					{
+						return qtrue;
+					}
+				}
+			}
+		}
+		else
+		{
+			if ((pm->ps->saberAnimLevel == FORCE_LEVEL_2 || pm->ps->saberAnimLevel == SS_DUAL)
+				&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
+			{
+				return qtrue;
+			}
 		}
 	}
 	return qfalse;
@@ -5219,7 +5232,6 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 
 saberMoveName_t PM_SaberAnimTransitionMove(const saberMoveName_t curmove, const saberMoveName_t newmove)
 {
-	//FIXME: take FP_SABER_OFFENSE into account here somehow?
 	int retmove = newmove;
 	if (curmove == LS_READY)
 	{

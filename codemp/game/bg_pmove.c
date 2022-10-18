@@ -3790,14 +3790,14 @@ void PM_AdjustAngleForWallGrab(playerState_t* ps, usercmd_t* ucmd)
 				if (ucmd->rightmove < 0)
 				{
 					//shimmy left
-					PM_SetAnim(SETANIM_BOTH, BOTH_LEDGE_LEFT, AFLAG_PACE);
+					PM_SetAnim(SETANIM_BOTH, BOTH_LEDGE_LEFT, AFLAG_LEDGE);
 					//hold weapontime so people can't do attacks while in ledgegrab
 					ps->weaponTime = ps->legsTimer;
 				}
 				else
 				{
 					//shimmy right
-					PM_SetAnim(SETANIM_BOTH, BOTH_LEDGE_RIGHT, AFLAG_PACE);
+					PM_SetAnim(SETANIM_BOTH, BOTH_LEDGE_RIGHT, AFLAG_LEDGE);
 					//hold weapontime so people can't do attacks while in ledgegrab
 					ps->weaponTime = ps->legsTimer;
 				}

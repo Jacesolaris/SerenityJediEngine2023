@@ -2662,17 +2662,7 @@ void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 		return;
 	}
 
-	if (PM_SaberInKata(attacker->client->ps.saberMove))
-	{
-		return;
-	}
-
-	if (PM_SaberInOverHeadSlash(attacker->client->ps.saberMove))
-	{
-		return;
-	}
-
-	if (PM_SaberInBackAttack(attacker->client->ps.saberMove))
+	if (PM_SaberInnonblockableAttack(attacker->client->ps.torsoAnim))
 	{
 		return;
 	}
@@ -2683,6 +2673,11 @@ void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 	}
 
 	if (!G_StandardHumanoid(victim))
+	{
+		return;
+	}
+
+	if (attacker->r.svFlags & SVF_BOT)
 	{
 		return;
 	}

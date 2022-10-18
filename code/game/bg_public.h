@@ -324,7 +324,7 @@ void Pmove(pmove_t* pmove);
 
 constexpr auto SETANIM_TORSO = 1;
 constexpr auto SETANIM_LEGS = 2;
-#define SETANIM_BOTH  (SETANIM_TORSO|SETANIM_LEGS)//3
+constexpr auto SETANIM_BOTH = (SETANIM_TORSO | SETANIM_LEGS);//3
 
 constexpr auto SETANIM_FLAG_NORMAL = 0; //Only set if timer is 0;
 constexpr auto SETANIM_FLAG_OVERRIDE = 1; //Override previous;
@@ -333,10 +333,8 @@ constexpr auto SETANIM_FLAG_RESTART = 4; //Allow restarting the anim if playing 
 constexpr auto SETANIM_FLAG_HOLDLESS = 8; //Set the new timer;
 constexpr auto SETANIM_FLAG_PACE = 16; //acts like a SETANIM_FLAG_RESTART but only restarts if the animation is over.;
 //Switch to this animation and keep repeating this animation while updating its timers
-#define	SETANIM_AFLAG_PACE (SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART)
-
-#define	AFLAG_LEDGE (SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS|SETANIM_FLAG_PACE)
-
+constexpr auto	SETANIM_AFLAG_PACE = (SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+constexpr auto	AFLAG_LEDGE = (SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE);
 constexpr auto SETANIM_BLEND_DEFAULT = 100;
 
 void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime = SETANIM_BLEND_DEFAULT);

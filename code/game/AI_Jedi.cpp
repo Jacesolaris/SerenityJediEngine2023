@@ -2112,7 +2112,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 			return;
 		}
 	}
-	if (enemy_dist < 100
+	if (enemy_dist < 128
 		&& NPC->enemy
 		&& NPC->enemy->client
 		&& in_front(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles, 0.7f)
@@ -2121,20 +2121,14 @@ static void Jedi_CombatDistance(int enemy_dist)
 		//whoa, back off!!!
 		if (Q_irand(0, 1))
 		{
-			if (NPC->client->ps.blockPoints > BLOCKPOINTS_MISSILE)
-			{
-				Jedi_StartBackOff();
-				G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-				return;
-			}
-			G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-		}
-		else
-		{
-			G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
+			Jedi_StartBackOff();
+			G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
+			return;
 		}
 	}
-	if (NPC->enemy
+
+	if (enemy_dist < 128
+		&& NPC->enemy
 		&& NPC->enemy->client
 		&& (NPC->client->ps.weapon == WP_SABER && (NPC->client->ps.saberInFlight || NPC->client->ps.saberEntityState == SES_RETURNING))
 		&& NPC->enemy->s.weapon == WP_SABER
@@ -2143,12 +2137,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 		//whoa, back off!!!
 		if (Q_irand(0, 1))
 		{
-			if (NPC->client->ps.blockPoints > BLOCKPOINTS_MISSILE || NPC->client->ps.forcePower > BLOCKPOINTS_MISSILE)
-			{
-				Jedi_StartBackOff();
-				G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-				return;
-			}
+			Jedi_StartBackOff();
+			G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
+			return;
 		}
 	}
 
@@ -4504,49 +4495,7 @@ int Jedi_ReCalcParryTime(const gentity_t* self, evasionType_t evasionType)
 				}
 			}
 
-			if (self->client->NPC_class == CLASS_ALORA
-				|| self->client->NPC_class == CLASS_SHADOWTROOPER
-				|| self->client->NPC_class == CLASS_TAVION
-				|| self->client->NPC_class == CLASS_YODA)
-			{
-				//Tavion & Alora are faster
-				baseTime = ceil(baseTime / 2.0f);
-			}
-			else if (self->NPC->rank >= RANK_LT_JG)
-			{
-				//fencers, bosses, shadowtroopers, luke, desann, et al use the norm
-				if (!Q_irand(0, 2))
-				{
-					//with the occasional fast parry
-					baseTime = ceil(baseTime / 2.0f);
-				}
-			}
-			else if (self->NPC->rank == RANK_CIVILIAN)
-			{
-				//grunts are slowest
-				baseTime = baseTime * Q_irand(1, 3);
-			}
-			else if (self->NPC->rank == RANK_CREWMAN)
-			{
-				//acrobats aren't so bad
-				if (evasionType == EVASION_PARRY
-					|| evasionType == EVASION_DUCK_PARRY
-					|| evasionType == EVASION_JUMP_PARRY)
-				{
-					//slower with parries
-					baseTime = baseTime * Q_irand(1, 2);
-				}
-				else
-				{
-					//faster with acrobatics
-					//baseTime = baseTime;
-				}
-			}
-			else
-			{
-				//force users are kinda slow
-				baseTime = baseTime * Q_irand(1, 2);
-			}
+			baseTime = baseTime += 400 * Q_irand(1, 2);
 
 			if (evasionType == EVASION_DUCK || evasionType == EVASION_DUCK_PARRY)
 			{
@@ -7288,30 +7237,30 @@ static qboolean Jedi_AttackDecide(int enemy_dist)
 		}
 	}
 
-	if (npc_is_saber_master(NPC) && NPC->client->ps.blockPoints > BLOCKPOINTS_FULL)
-	{
-		//tavion, fencers, jedi trainer are all good at following up a parry with an attack
-		if (PM_SaberInKnockaway(NPC->client->ps.saberMove) && NPC->client->ps.saberBlocked != BLOCKED_PARRY_BROKEN)
-		{
-			//try to attack straight from a knockaway
-			NPC->client->ps.weaponTime = NPCInfo->shotTime = NPC->attackDebounceTime = 0;
-			NPC->client->ps.saberBlocked = BLOCKED_NONE;
+	//if (npc_is_saber_master(NPC) && NPC->client->ps.blockPoints > BLOCKPOINTS_FULL)
+	//{
+	//	//tavion, fencers, jedi trainer are all good at following up a parry with an attack
+	//	if (PM_SaberInKnockaway(NPC->client->ps.saberMove) && NPC->client->ps.saberBlocked != BLOCKED_PARRY_BROKEN)
+	//	{
+	//		//try to attack straight from a knockaway
+	//		NPC->client->ps.weaponTime = NPCInfo->shotTime = NPC->attackDebounceTime = 0;
+	//		NPC->client->ps.saberBlocked = BLOCKED_NONE;
 
-			if (!(NPC->client->ps.saberAnimLevel == SS_STAFF) && !(NPC->client->ps.saberAnimLevel == SS_DUAL))
-			{
-				if (NPC->client->ps.saberAnimLevel == SS_TAVION)
-				{
-					Jedi_AdjustSaberAnimLevel(NPC, SS_FAST); //try to follow-up with an attack
-				}
-				else
-				{
-					Jedi_AdjustSaberAnimLevel(NPC, SS_MEDIUM); //try to follow-up with an attack
-				}
-			}
-			WeaponThink(qtrue);
-			return qtrue;
-		}
-	}
+	//		if (!(NPC->client->ps.saberAnimLevel == SS_STAFF) && !(NPC->client->ps.saberAnimLevel == SS_DUAL))
+	//		{
+	//			if (NPC->client->ps.saberAnimLevel == SS_TAVION)
+	//			{
+	//				Jedi_AdjustSaberAnimLevel(NPC, SS_FAST); //try to follow-up with an attack
+	//			}
+	//			else
+	//			{
+	//				Jedi_AdjustSaberAnimLevel(NPC, SS_MEDIUM); //try to follow-up with an attack
+	//			}
+	//		}
+	//		WeaponThink(qtrue);
+	//		return qtrue;
+	//	}
+	//}
 
 	//try to hit them if we can
 	if (!enemy_in_striking_range)
@@ -8288,31 +8237,36 @@ static void Jedi_Combat(void)
 					}
 					return;
 				}
-				//FIXME: try to find a waypoint that can see enemy, jump from there
-				if (NPCInfo->aiFlags & NPCAI_BLOCKED)
+				else
 				{
-					//try to jump to the blockedTargetPosition
-					gentity_t* tempGoal = G_Spawn(); //ugh, this is NOT good...?
-					G_SetOrigin(tempGoal, NPCInfo->blockedTargetPosition);
-					gi.linkentity(tempGoal);
-					if (Jedi_TryJump(tempGoal))
+					if (com_outcast->integer == 1)
 					{
-						//going to jump to the dest
-						G_FreeEntity(tempGoal);
-						return;
-					}
-					G_FreeEntity(tempGoal);
-				}
-				else if (STEER::HasBeenBlockedFor(NPC, 3000))
-				{
-					//try to jump to the blockedDest
-					if (NPCInfo->blockedTargetEntity)
-					{
-						NPC_TryJump(NPCInfo->blockedTargetEntity); // commented Out
-					}
-					else
-					{
-						NPC_TryJump(NPCInfo->blockedTargetPosition); // commented Out
+						if (NPCInfo->aiFlags & NPCAI_BLOCKED)
+						{
+							//try to jump to the blockedTargetPosition
+							gentity_t* tempGoal = G_Spawn(); //ugh, this is NOT good...?
+							G_SetOrigin(tempGoal, NPCInfo->blockedTargetPosition);
+							gi.linkentity(tempGoal);
+							if (Jedi_TryJump(tempGoal))
+							{
+								//going to jump to the dest
+								G_FreeEntity(tempGoal);
+								return;
+							}
+							G_FreeEntity(tempGoal);
+						}
+						else if (STEER::HasBeenBlockedFor(NPC, 3000))
+						{
+							//try to jump to the blockedDest
+							if (NPCInfo->blockedTargetEntity)
+							{
+								NPC_TryJump(NPCInfo->blockedTargetEntity); // commented Out
+							}
+							else
+							{
+								NPC_TryJump(NPCInfo->blockedTargetPosition); // commented Out
+							}
+						}
 					}
 				}
 			}
@@ -9009,47 +8963,49 @@ void NPC_BSJedi_FollowLeader(void)
 		}
 	}
 
-	if (NPCInfo->goalEntity)
+	if ((com_outcast->integer == 1) && NPCInfo->goalEntity)
 	{
-		trace_t trace;
+		trace_t	trace;
 
 		if (Jedi_Jumping(NPCInfo->goalEntity))
-		{
-			//in mid-jump
+		{//in mid-jump
 			return;
 		}
 
-		if (!NAV_CheckAhead(NPC, NPCInfo->goalEntity->currentOrigin, trace, NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP))
-		{
-			//can't get straight to him
+		if (!NAV_CheckAhead(NPC, NPCInfo->goalEntity->currentOrigin, trace, (NPC->clipmask & ~CONTENTS_BODY) | CONTENTS_BOTCLIP))
+		{//can't get straight to him
 			if (NPC_ClearLOS(NPCInfo->goalEntity) && NPC_FaceEntity(NPCInfo->goalEntity, qtrue))
-			{
-				//no line of sight
+			{//no line of sight
 				if (Jedi_TryJump(NPCInfo->goalEntity))
-				{
-					//started a jump
+				{//started a jump
 					return;
 				}
-				Jedi_Move(NPCInfo->goalEntity, qfalse);
-				return;
 			}
 		}
 		if (NPCInfo->aiFlags & NPCAI_BLOCKED)
 		{
-			//try to jump to the blockedDest
-			if (fabs(NPCInfo->blockedTargetPosition[2] - NPC->currentOrigin[2]) > 64)
+			//try to jump to the blockedTargetPosition
+			gentity_t* tempGoal = G_Spawn();
+			G_SetOrigin(tempGoal, NPCInfo->blockedTargetPosition);
+			gi.linkentity(tempGoal);
+			if (Jedi_TryJump(tempGoal))
 			{
-				gentity_t* tempGoal = G_Spawn(); //ugh, this is NOT good...?
-				G_SetOrigin(tempGoal, NPCInfo->blockedTargetPosition);
-				gi.linkentity(tempGoal);
-				TIMER_Set(NPC, "jumpChaseDebounce", -1);
-				if (Jedi_TryJump(tempGoal))
-				{
-					//going to jump to the dest
-					G_FreeEntity(tempGoal);
-					return;
-				}
+				//going to jump to the dest
 				G_FreeEntity(tempGoal);
+				return;
+			}
+			G_FreeEntity(tempGoal);
+		}
+		else if (STEER::HasBeenBlockedFor(NPC, 3000))
+		{
+			//try to jump to the blockedDest
+			if (NPCInfo->blockedTargetEntity)
+			{
+				NPC_TryJump(NPCInfo->blockedTargetEntity); // commented Out
+			}
+			else
+			{
+				NPC_TryJump(NPCInfo->blockedTargetPosition); // commented Out
 			}
 		}
 	}
@@ -9559,8 +9515,8 @@ static void Jedi_Attack(void)
 		{
 			//Hack to prevent the NPCS from using fakes all the time
 			if (!in_camera)
-			{
-				ucmd.buttons |= BUTTON_ATTACK;
+			{//Try to attack
+				WeaponThink(qtrue);
 			}
 		}
 	}
@@ -10654,6 +10610,11 @@ void NPC_BSJedi_Default(void)
 	if (Jedi_InSpecialMove())
 	{
 		return;
+	}
+
+	if (NPC->client->ps.forcePowerLevel[FP_SABER_DEFENSE] < FORCE_LEVEL_3)
+	{//ramp up his blocking
+		NPC->client->ps.forcePowerLevel[FP_SABER_DEFENSE] = FORCE_LEVEL_3;
 	}
 
 	Jedi_CheckCloak();

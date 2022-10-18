@@ -626,8 +626,9 @@ extern	pmove_t* pm;
 #define SETANIM_FLAG_HOLDLESS	8//Set the new timer
 #define SETANIM_FLAG_PACE		16//acts like a SETANIM_FLAG_RESTART but only restarts if the animation is over.
 //Switch to this animation and keep repeating this animation while updating its timers
-#define	SETANIM_AFLAG_PACE (SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART)
-#define	AFLAG_PACE (SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS|SETANIM_FLAG_PACE)
+#define	SETANIM_AFLAG_PACE (SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD)
+
+#define	AFLAG_LEDGE (SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS|SETANIM_FLAG_PACE)
 
 // if a full pmove isn't done on the client, you can just update the angles
 void PM_UpdateViewAngles(int saberAnimLevel, playerState_t* ps, const usercmd_t* cmd);

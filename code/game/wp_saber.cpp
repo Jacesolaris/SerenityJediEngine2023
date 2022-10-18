@@ -29165,17 +29165,7 @@ void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 		return;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(attacker->client->ps.saberMove)))
-	{
-		return;
-	}
-
-	if (PM_SaberInOverHeadSlash(static_cast<saberMoveName_t>(attacker->client->ps.saberMove)))
-	{
-		return;
-	}
-
-	if (PM_SaberInBackAttack(static_cast<saberMoveName_t>(attacker->client->ps.saberMove)))
+	if (PM_SaberInnonblockableAttack(attacker->client->ps.torsoAnim))
 	{
 		return;
 	}
@@ -29186,6 +29176,11 @@ void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
 	}
 
 	if (!G_StandardHumanoid(victim))
+	{
+		return;
+	}
+
+	if (attacker->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(attacker))
 	{
 		return;
 	}

@@ -1325,126 +1325,154 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 {
 	const saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
 
-	if (pm->ps->m_iVehicleNum)
+#ifdef _GAME
+	if (!(g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT))
 	{
-		//never continue kata on vehicle
-		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
+		if (pm->ps->m_iVehicleNum)
 		{
-			return qtrue;
-		}
-	}
-
-	if (pm->ps->fd.forceRageRecoveryTime > pm->cmd.serverTime)
-	{
-		//rage recovery, only 1 swing at a time (tired)
-		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-		{
-			//swung once
-			return qtrue;
-		}
-		//allow one attack
-		return qfalse;
-	}
-	if (pm->ps->fd.forcePowersActive & 1 << FP_RAGE)
-	{
-		//infinite chaining when raged
-		return qfalse;
-	}
-	if (saber1[0].maxChain == -1)
-	{
-		return qfalse;
-	}
-	if (saber1[0].maxChain != 0)
-	{
-		if (pm->ps->saberAttackChainCount >= saber1[0].maxChain)
-		{
-			return qtrue;
-		}
-		return qfalse;
-	}
-
-	if (pm->ps->fd.saberAnimLevel == SS_DESANN
-		|| pm->ps->fd.saberAnimLevel == SS_STRONG
-		|| pm->ps->fd.saberAnimLevel == SS_TAVION
-		|| pm->ps->fd.saberAnimLevel == SS_STAFF
-		|| pm->ps->fd.saberAnimLevel == SS_DUAL
-		|| pm->ps->fd.saberAnimLevel == SS_MEDIUM)
-	{
-		//desann and tavion can link up as many attacks as they want
-		return qfalse;
-	}
-	if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
-	{
-		if (curmove == LS_NONE || newmove == LS_NONE)
-		{
-			if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_NONE, MISHAPLEVEL_MIN))
+			//never continue kata on vehicle
+			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 			{
 				return qtrue;
 			}
 		}
-		else if (pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_RUNINACCURACY, MISHAPLEVEL_SNIPER))
-		{
-			return qtrue;
-		}
-		else if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-		{
-			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
 
-			if (chainAngle < 135 || chainAngle > 215)
+		if (pm->ps->fd.forceRageRecoveryTime > pm->cmd.serverTime)
+		{
+			//rage recovery, only 1 swing at a time (tired)
+			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 			{
-				//if trying to chain to a move that doesn't continue the momentum
+				//swung once
 				return qtrue;
 			}
-			if (chainAngle == 180)
+			//allow one attack
+			return qfalse;
+		}
+		if (pm->ps->fd.forcePowersActive & 1 << FP_RAGE)
+		{
+			//infinite chaining when raged
+			return qfalse;
+		}
+		if (saber1[0].maxChain == -1)
+		{
+			return qfalse;
+		}
+		if (saber1[0].maxChain != 0)
+		{
+			if (pm->ps->saberAttackChainCount >= saber1[0].maxChain)
 			{
-				//continues the momentum perfectly, allow it to chain 66% of the time
-				if (pm->ps->saberAttackChainCount > MISHAPLEVEL_MIN)
-				{
-					return qtrue;
-				}
+				return qtrue;
 			}
-			else
-			{
-				//would continue the movement somewhat, 50% chance of continuing
-				if (pm->ps->saberAttackChainCount > MISHAPLEVEL_RUNINACCURACY)
-				{
-					return qtrue;
-				}
-			}
+			return qfalse;
+		}
+
+		if ((pm->ps->fd.saberAnimLevel == SS_DESANN
+			|| pm->ps->fd.saberAnimLevel == SS_STRONG
+			|| pm->ps->fd.saberAnimLevel == SS_TAVION
+			|| pm->ps->fd.saberAnimLevel == SS_STAFF
+			|| pm->ps->fd.saberAnimLevel == SS_DUAL
+			|| pm->ps->fd.saberAnimLevel == SS_MEDIUM)
+			&& pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_MAX, MISHAPLEVEL_OVERLOAD))
+		{
+			return qtrue;
 		}
 	}
 	else
+#endif
 	{
-		//FIXME: have chainAngle influence fast and medium chains as well?
-		if (newmove == LS_A_TL2BR ||
-			newmove == LS_A_L2R ||
-			newmove == LS_A_BL2TR ||
-			newmove == LS_A_BR2TL ||
-			newmove == LS_A_R2L ||
-			newmove == LS_A_TR2BL)
+		if (pm->ps->m_iVehicleNum)
 		{
-			//lower chaining tolerance for spinning saber anims
-			int chainTolerance;
-
-			if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_1)
-			{
-				chainTolerance = 5;
-			}
-			else
-			{
-				chainTolerance = 3;
-			}
-
-			if (pm->ps->saberAttackChainCount >= chainTolerance && Q_irand(MISHAPLEVEL_MIN, pm->ps->saberAttackChainCount) > chainTolerance)
+			//never continue kata on vehicle
+			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 			{
 				return qtrue;
 			}
 		}
-		if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2
-			|| pm->ps->fd.saberAnimLevel == SS_DUAL)
-			&& pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_RUNINACCURACY, MISHAPLEVEL_LIGHT))
+
+		if (pm->ps->fd.forceRageRecoveryTime > pm->cmd.serverTime)
 		{
-			return qtrue;
+			//rage recovery, only 1 swing at a time (tired)
+			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
+			{
+				//swung once
+				return qtrue;
+			}
+			//allow one attack
+			return qfalse;
+		}
+		if (pm->ps->fd.forcePowersActive & 1 << FP_RAGE)
+		{
+			//infinite chaining when raged
+			return qfalse;
+		}
+		if (saber1[0].maxChain == -1)
+		{
+			return qfalse;
+		}
+		if (saber1[0].maxChain != 0)
+		{
+			if (pm->ps->saberAttackChainCount >= saber1[0].maxChain)
+			{
+				return qtrue;
+			}
+			return qfalse;
+		}
+
+		if (pm->ps->fd.saberAnimLevel == SS_DESANN || pm->ps->fd.saberAnimLevel == SS_TAVION)
+		{//desann and tavion can link up as many attacks as they want
+			return qfalse;
+		}
+		if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+		{
+			return qfalse;
+		}
+		else if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		{
+			return qfalse;
+		}
+		else if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
+		{
+			if (curmove == LS_NONE || newmove == LS_NONE)
+			{
+				if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
+				{
+					return qtrue;
+				}
+			}
+			else if (pm->ps->saberAttackChainCount > Q_irand(2, 3))
+			{
+				return qtrue;
+			}
+			else if (pm->ps->saberAttackChainCount > 0)
+			{
+				int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+				if (chainAngle < 135 || chainAngle > 215)
+				{//if trying to chain to a move that doesn't continue the momentum
+					return qtrue;
+				}
+				else if (chainAngle == 180)
+				{//continues the momentum perfectly, allow it to chain 66% of the time
+					if (pm->ps->saberAttackChainCount > 1)
+					{
+						return qtrue;
+					}
+				}
+				else
+				{//would continue the movement somewhat, 50% chance of continuing
+					if (pm->ps->saberAttackChainCount > 2)
+					{
+						return qtrue;
+					}
+				}
+			}
+		}
+		else
+		{
+			if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2 || pm->ps->fd.saberAnimLevel == SS_DUAL)
+				&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
+			{
+				return qtrue;
+			}
 		}
 	}
 	return qfalse;
@@ -6232,6 +6260,25 @@ void PM_SetJumped(const float height, const qboolean force)
 	}
 }
 
+void WP_SaberFatigueRegenerate(const int overrideAmt)
+{
+	if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_NONE)
+	{
+		if (overrideAmt)
+		{
+			pm->ps->saberAttackChainCount -= overrideAmt;
+		}
+		else
+		{
+			pm->ps->saberAttackChainCount--;
+		}
+		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_MAX)
+		{
+			pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
+		}
+	}
+}
+
 void PM_SetSaberMove(saberMoveName_t new_move)
 {
 	unsigned int setflags = saberMoveData[new_move].animSetFlags;
@@ -6247,7 +6294,15 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 #ifdef _GAME
 	if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 	{
-		if (new_move == LS_READY || new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
+		if (new_move == LS_READY)
+		{
+			if (pm->ps->fd.forcePowerRegenDebounceTime < level.time)
+			{
+				WP_SaberFatigueRegenerate(0);
+				pm->ps->fd.forcePowerRegenDebounceTime = level.time + 100;
+			}
+		}
+		else if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
 		{
 			//finished with a kata (or in a special move) reset attack counter
 			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;

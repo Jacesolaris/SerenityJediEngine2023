@@ -3198,7 +3198,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						else if (trace_ent->client->ps.groundEntityNum == ENTITYNUM_NONE && trace_ent->client->ps.stats[STAT_HEALTH] > 1)
 						{
 							g_throw(trace_ent, dir, 2);
-							G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), AFLAG_PACE, 0);
+							G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE, 0);
 						}
 						else
 						{
@@ -3320,21 +3320,21 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 								switch (trace_ent->client->ps.fd.saberAnimLevel)
 								{
 								case SS_DUAL:
-									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P6_S6_T_, AFLAG_PACE, 0);
+									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE, 0);
 									break;
 								case SS_STAFF:
-									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P7_S7_T_, AFLAG_PACE, 0);
+									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE, 0);
 									break;
 								case SS_FAST:
 								case SS_TAVION:
 								case SS_STRONG:
 								case SS_DESANN:
 								case SS_MEDIUM:
-									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, AFLAG_PACE, 0);
+									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE, 0);
 									break;
 								case SS_NONE:
 								default:
-									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, AFLAG_PACE, 0);
+									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE, 0);
 									break;
 								}
 								trace_ent->client->ps.weaponTime = Q_irand(300, 600);
@@ -3376,21 +3376,21 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 							switch (trace_ent->client->ps.fd.saberAnimLevel)
 							{
 							case SS_DUAL:
-								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P6_S6_T_, AFLAG_PACE, 0);
+								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P6_S6_T_, SETANIM_AFLAG_PACE, 0);
 								break;
 							case SS_STAFF:
-								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P7_S7_T_, AFLAG_PACE, 0);
+								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P7_S7_T_, SETANIM_AFLAG_PACE, 0);
 								break;
 							case SS_FAST:
 							case SS_TAVION:
 							case SS_STRONG:
 							case SS_DESANN:
 							case SS_MEDIUM:
-								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, AFLAG_PACE, 0);
+								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE, 0);
 								break;
 							case SS_NONE:
 							default:
-								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, AFLAG_PACE, 0);
+								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P1_S1_T_, SETANIM_AFLAG_PACE, 0);
 								break;
 							}
 							trace_ent->client->ps.weaponTime = Q_irand(300, 600);

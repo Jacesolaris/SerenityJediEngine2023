@@ -13478,6 +13478,25 @@ void PM_NPCFatigue(playerState_t* ps, const int newMove, int anim)
 
 void PM_SaberFakeFlagUpdate(playerState_t* ps, int newMove, int currentMove);
 
+void WP_SaberFatigueRegenerate(const int overrideAmt)
+{
+	if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_NONE)
+	{
+		if (overrideAmt)
+		{
+			pm->ps->saberAttackChainCount -= overrideAmt;
+		}
+		else
+		{
+			pm->ps->saberAttackChainCount--;
+		}
+		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_MAX)
+		{
+			pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
+		}
+	}
+}
+
 void PM_SetSaberMove(saberMoveName_t new_move)
 {
 	int parts = SETANIM_TORSO;
@@ -13507,15 +13526,36 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			saberMoveData[new_move].name);
 	}
 
-	if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
+	if (pm->ps->clientNum && !PM_ControlledByPlayer()) //npc only
 	{
-		//finished with a kata (or in a special move) reset attack counter
-		pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
+		if (new_move == LS_READY)
+		{
+			if (pm->ps->forcePowerRegenDebounceTime < level.time)
+			{
+				WP_SaberFatigueRegenerate(0);
+				pm->ps->forcePowerRegenDebounceTime = level.time + 100;
+			}
+		}
+		else if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
+		{
+			//finished with a kata (or in a special move) reset attack counter
+			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
+		}
+		else if (PM_SaberInAttack(new_move))
+		{//continuing with a kata, increment attack counter
+			pm->ps->saberAttackChainCount++;
+		}
 	}
-	else if (PM_SaberInAttack(new_move))
+	else
 	{
-		//continuing with a kata, increment attack counter
-		pm->ps->saberAttackChainCount++;
+		if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
+		{//finished with a kata (or in a special move) reset attack counter
+			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
+		}
+		else if (PM_SaberInAttack(new_move))
+		{//continuing with a kata, increment attack counter
+			pm->ps->saberAttackChainCount++;
+		}
 	}
 
 	if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_OVERLOAD)
