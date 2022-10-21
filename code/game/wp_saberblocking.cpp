@@ -670,7 +670,7 @@ void SabBeh_AddBalance(const gentity_t* self, int amount)
 
 /////////Functions//////////////
 
-void SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum)
+qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum)
 {
 	//set the saber behavior for two attacking blades hitting each other
 	const qboolean atkfake = attacker->client->ps.userInt3 & 1 << FLAG_ATTACKFAKE ? qtrue : qfalse;
@@ -755,9 +755,10 @@ void SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker, int saberNum
 
 		SabBeh_Attack_Blocked(blocker, attacker, saberNum, bladeNum, qtrue);
 	}
+	return qtrue;
 }
 
-void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
+qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//if the attack is blocked -(Im the attacker)
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
@@ -922,9 +923,10 @@ void SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, 
 			}
 		}
 	}
+	return qtrue;
 }
 
-void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
+qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//-(Im the blocker)
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
@@ -1225,6 +1227,7 @@ void SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum,
 			blocker->client->ps.saberEventFlags &= ~SEF_PARRIED;
 		}
 	}
+	return qtrue;
 }
 
 /////////Functions//////////////
