@@ -180,8 +180,8 @@ void R_BoxSurfaces_r(mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** li
 				surf->viewCount = tr.viewCount;
 			}
 		}
-		else if (*(surfaceType_t*)surf->data != SF_GRID
-			&& *(surfaceType_t*)surf->data != SF_TRIANGLES)
+		else if (*surf->data != SF_GRID
+			&& *surf->data != SF_TRIANGLES)
 		{
 			surf->viewCount = tr.viewCount;
 		}
@@ -189,7 +189,7 @@ void R_BoxSurfaces_r(mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** li
 		// already been added if it spans multiple leafs
 		if (surf->viewCount != tr.viewCount) {
 			surf->viewCount = tr.viewCount;
-			list[*listlength] = (surfaceType_t*)surf->data;
+			list[*listlength] = surf->data;
 			(*listlength)++;
 		}
 		mark++;

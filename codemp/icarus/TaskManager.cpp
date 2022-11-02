@@ -470,7 +470,7 @@ int CTaskManager::GetVector(int entID, CBlock* block, int& memberNum, vector_t& 
 
 		for (i = 0; i < 3; i++)
 		{
-			value[i] = (float)m_owner->GetInterface()->I_Random(min, max);	//FIXME: Just truncating it for now.. should be fine though
+			value[i] = m_owner->GetInterface()->I_Random(min, max);	//FIXME: Just truncating it for now.. should be fine though
 		}
 
 		return true;
@@ -1552,7 +1552,7 @@ int CTaskManager::Signal(CTask* task)
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
 	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d signal( \"%s\" ); [%d]", m_ownerID, sVal, task->GetTimeStamp());
-	m_owner->GetOwner()->Signal((const char*)sVal);
+	m_owner->GetOwner()->Signal(sVal);
 
 	Completed(task->GetGUID());
 

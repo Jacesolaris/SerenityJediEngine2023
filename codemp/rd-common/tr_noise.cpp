@@ -38,7 +38,7 @@ static int s_noise_perm[NOISE_SIZE];
 
 static float GetNoiseValue(int x, int y, int z, int t)
 {
-	const int index = INDEX((int)x, (int)y, (int)z, (int)t);
+	const int index = INDEX(x, (int)y, z, t);
 
 	return s_noise_table[index];
 }

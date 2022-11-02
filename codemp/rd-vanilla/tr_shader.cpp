@@ -1850,7 +1850,7 @@ static void ParseSkyParms(const char** text) {
 	if (strcmp(token, "-") != 0) {
 		for (int i = 0; i < 6; i++) {
 			Com_sprintf(pathname, sizeof pathname, "%s_%s", token, suf[i]);
-			shader.sky->outerbox[i] = R_FindImageFile((char*)pathname, qtrue, qtrue, static_cast<qboolean>(!shader.noTC), GL_CLAMP);
+			shader.sky->outerbox[i] = R_FindImageFile(pathname, qtrue, qtrue, static_cast<qboolean>(!shader.noTC), GL_CLAMP);
 			if (!shader.sky->outerbox[i]) {
 				if (i) {
 					shader.sky->outerbox[i] = shader.sky->outerbox[i - 1];//not found, so let's use the previous image
@@ -2525,7 +2525,7 @@ static void FixRenderCommandList(int newShader) {
 						int sortedIndex = drawSurf->sort >> QSORT_SHADERNUM_SHIFT & MAX_SHADERS - 1;
 						if (sortedIndex >= newShader) {
 							sortedIndex++;
-							drawSurf->sort = sortedIndex << QSORT_SHADERNUM_SHIFT | entityNum << QSORT_REFENTITYNUM_SHIFT | fogNum << QSORT_FOGNUM_SHIFT | (int)dlightMap;
+							drawSurf->sort = sortedIndex << QSORT_SHADERNUM_SHIFT | entityNum << QSORT_REFENTITYNUM_SHIFT | fogNum << QSORT_FOGNUM_SHIFT | dlightMap;
 						}
 					}
 					curCmd = static_cast<const void*>(ds_cmd + 1);
@@ -3997,7 +3997,7 @@ static void ScanAndLoadShaderFiles(void)
 
 	for (i = 0; i < MAX_SHADERTEXT_HASH; i++) {
 		shaderTextHashTable[i] = (char**)hashMem;
-		hashMem = (char*)hashMem + (shaderTextHashTableSizes[i] + 1) * sizeof(char*);
+		hashMem = hashMem + (shaderTextHashTableSizes[i] + 1) * sizeof(char*);
 	}
 
 	memset(shaderTextHashTableSizes, 0, sizeof shaderTextHashTableSizes);

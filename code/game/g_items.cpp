@@ -788,7 +788,7 @@ Touch_Item
 ===============
 */
 extern cvar_t* g_timescale;
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 void Touch_Item(gentity_t* ent, gentity_t* other, trace_t* trace)
 {
@@ -1704,7 +1704,7 @@ void G_RunItem(gentity_t* ent)
 				ent->s.pos.trTime = level.time;
 			}
 		}
-		else if (ent->flags & FL_DROPPED_ITEM && (g_remove_unused_weapons->integer)
+		else if (ent->flags & FL_DROPPED_ITEM && g_remove_unused_weapons->integer
 			&& ent->item
 			&& ent->item->giType == IT_WEAPON
 			&& ent->item->giType != IT_AMMO

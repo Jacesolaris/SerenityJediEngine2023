@@ -196,7 +196,7 @@ const char* mode;
 	}
 	else
 #endif
-		len = strlen((const char*)path);
+		len = strlen(path);
 	state->path = (char*)malloc(len + 1);
 	if (state->path == NULL) {
 		free(state);
@@ -439,7 +439,7 @@ int whence;
 {
 	z_off64_t ret;
 
-	ret = gzseek64(file, (z_off64_t)offset, whence);
+	ret = gzseek64(file, offset, whence);
 	return ret == (z_off_t)ret ? (z_off_t)ret : -1;
 }
 

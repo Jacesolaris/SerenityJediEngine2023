@@ -246,7 +246,7 @@ void CG_AddFragment(localEntity_t* le) {
 		const int t = le->endTime - cg.time;
 		if (t < SINK_TIME * 2) {
 			le->refEntity.renderfx |= RF_FORCE_ENT_ALPHA;
-			float t_e = (float)((float)(le->endTime - cg.time) / (SINK_TIME * 2));
+			float t_e = (float)(le->endTime - cg.time) / (SINK_TIME * 2);
 			t_e = (int)(t_e * 255);
 
 			if (t_e > 255)
@@ -688,7 +688,7 @@ void CG_AddScorePlum(localEntity_t* le) {
 	}
 
 	for (int i = 0; i < numdigits; i++) {
-		VectorMA(origin, (float)((float)numdigits / 2 - i) * NUMBER_SIZE, vec, re->origin);
+		VectorMA(origin, ((float)numdigits / 2 - i) * NUMBER_SIZE, vec, re->origin);
 		re->customShader = cgs.media.numberShaders[digits[numdigits - 1 - i]];
 		trap->R_AddRefEntityToScene(re);
 	}

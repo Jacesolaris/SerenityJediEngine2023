@@ -1059,7 +1059,7 @@ qhandle_t RE_RegisterServerModel(const char* name) {
 		//	because 'filename' accounts for any LOD mangling etc so guarantees unique lookups for yet more
 		//	internal caching...
 		//
-		int ident = *(unsigned*)buf;
+		int ident = *buf;
 		if (!bAlreadyCached)
 		{
 			LL(ident);
@@ -1134,7 +1134,6 @@ static qhandle_t RE_RegisterModel_Actual(const char* name) {
 	model_t* mod;
 	unsigned* buf;
 	int			lod;
-	int			ident;
 	qboolean	loaded;
 	modelHash_t* mh;
 	/*
@@ -1254,7 +1253,7 @@ static qhandle_t RE_RegisterModel_Actual(const char* name) {
 		//	because 'filename' accounts for any LOD mangling etc so guarantees unique lookups for yet more
 		//	internal caching...
 		//
-		ident = *(unsigned*)buf;
+		int ident = *buf;
 		if (!bAlreadyCached)
 		{
 			LL(ident);

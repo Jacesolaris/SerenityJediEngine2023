@@ -8832,7 +8832,7 @@ void CQuake3GameInterface::Set(int taskID, int entID, const char* type_name, con
 		break;
 
 	case SET_CINEMATIC_SKIPSCRIPT:
-		Q3_SetCinematicSkipScript((char*)data);
+		Q3_SetCinematicSkipScript(data);
 		break;
 
 	case SET_RAILCENTERTRACKLOCKED:
@@ -9085,14 +9085,14 @@ void CQuake3GameInterface::Set(int taskID, int entID, const char* type_name, con
 		break;
 
 	case SET_CAMERA_GROUP:
-		Q3_CameraGroup(entID, (char*)data);
+		Q3_CameraGroup(entID, data);
 		break;
 	case SET_CAMERA_GROUP_Z_OFS:
 		float_data = atof(data);
 		Q3_CameraGroupZOfs(float_data);
 		break;
 	case SET_CAMERA_GROUP_TAG:
-		Q3_CameraGroupTag((char*)data);
+		Q3_CameraGroupTag(data);
 		break;
 
 		//FIXME: put these into camera commands
@@ -9101,7 +9101,7 @@ void CQuake3GameInterface::Set(int taskID, int entID, const char* type_name, con
 		break;
 
 	case SET_ADDRHANDBOLT_MODEL:
-		Q3_AddRHandModel(entID, (char*)data);
+		Q3_AddRHandModel(entID, data);
 		break;
 
 	case SET_REMOVERHANDBOLT_MODEL:
@@ -9109,7 +9109,7 @@ void CQuake3GameInterface::Set(int taskID, int entID, const char* type_name, con
 		break;
 
 	case SET_ADDLHANDBOLT_MODEL:
-		Q3_AddLHandModel(entID, (char*)data);
+		Q3_AddLHandModel(entID, data);
 		break;
 
 	case SET_REMOVELHANDBOLT_MODEL:
@@ -9568,16 +9568,16 @@ void CQuake3GameInterface::Set(int taskID, int entID, const char* type_name, con
 		break;
 
 	case SET_SECURITY_KEY:
-		Q3_GiveSecurityKey(entID, (char*)data);
+		Q3_GiveSecurityKey(entID, data);
 		break;
 
 	case SET_SABER1_COLOR1:
 	case SET_SABER1_COLOR2:
-		WP_SaberSetColor(&g_entities[entID], 0, toSet - SET_SABER1_COLOR1, (char*)data);
+		WP_SaberSetColor(&g_entities[entID], 0, toSet - SET_SABER1_COLOR1, data);
 		break;
 	case SET_SABER2_COLOR1:
 	case SET_SABER2_COLOR2:
-		WP_SaberSetColor(&g_entities[entID], 1, toSet - SET_SABER2_COLOR1, (char*)data);
+		WP_SaberSetColor(&g_entities[entID], 1, toSet - SET_SABER2_COLOR1, data);
 		break;
 	case SET_DISMEMBER_LIMB:
 		Q3_DismemberLimb(entID, const_cast<char*>(data));

@@ -236,7 +236,7 @@ jpeg_std_error(struct jpeg_error_mgr* err)
 
 	/* Initialize message table pointers */
 	err->jpeg_message_table = jpeg_std_message_table;
-	err->last_jpeg_message = (int)JMSG_LASTMSGCODE - 1;
+	err->last_jpeg_message = JMSG_LASTMSGCODE - 1;
 
 	err->addon_message_table = NULL;
 	err->first_addon_message = 0;	/* for safety */

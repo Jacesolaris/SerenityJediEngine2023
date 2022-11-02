@@ -89,10 +89,9 @@ int statusTextIndex = -1;
 
 void CG_MissionFailed(void)
 {
-	char* text;
-
 	if (!cg.missionFailedScreen)
 	{
+		char* text;
 		cgi_UI_SetActive_Menu("missionfailed_menu");
 		cg.missionFailedScreen = qtrue;
 
@@ -169,7 +168,7 @@ CG_MissionCompletion
 void CG_MissionCompletion(void)
 {
 	char text[1024] = { 0 };
-	const int pad = 18;
+	constexpr int pad = 18;
 
 	/*cgi_SP_GetStringTextString("SP_INGAME_MISSIONCOMPLETION", text, sizeof(text));
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontMedium, 1.2f);

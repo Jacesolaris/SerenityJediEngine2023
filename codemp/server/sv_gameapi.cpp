@@ -708,8 +708,8 @@ static void SV_ICARUS_TaskIDComplete(sharedEntity_t* ent, int taskType) {
 }
 
 static int SV_ICARUS_GetStringVariable(const char* name, const char* value) {
-	const char* rec = (const char*)value;
-	return Q3_GetStringVariable(name, (const char**)&rec);
+	const char* rec = value;
+	return Q3_GetStringVariable(name, &rec);
 }
 static int SV_ICARUS_GetVectorVariable(const char* name, const vec3_t value) {
 	return Q3_GetVectorVariable(name, (float*)value);
@@ -2073,7 +2073,7 @@ intptr_t SV_GameSystemCalls(intptr_t* args) {
 	case G_ICARUS_GETSTRINGVARIABLE:
 	{
 		const char* rec = static_cast<const char*>(VMA(2));
-		return Q3_GetStringVariable(static_cast<const char*>(VMA(1)), (const char**)&rec);
+		return Q3_GetStringVariable(static_cast<const char*>(VMA(1)), &rec);
 	}
 
 	case G_ICARUS_GETVECTORVARIABLE:
@@ -2592,8 +2592,8 @@ intptr_t SV_GameSystemCalls(intptr_t* args) {
 #ifdef _FULL_G2_LEAK_CHECKING
 		g_G2AllocServer = 1;
 #endif
-		return	re->G2API_InitGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), static_cast<const char*>(VMA(2)), args[3], (qhandle_t)args[4],
-			(qhandle_t)args[5], args[6], args[7]);
+		return	re->G2API_InitGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), static_cast<const char*>(VMA(2)), args[3], args[4],
+			args[5], args[6], args[7]);
 
 	case G_G2_SETSKIN:
 	{
@@ -2645,7 +2645,7 @@ intptr_t SV_GameSystemCalls(intptr_t* args) {
 	return 0;
 
 	case G_G2_COPYGHOUL2INSTANCE:
-		return (int)re->G2API_CopyGhoul2Instance(*(CGhoul2Info_v*)args[1], *(CGhoul2Info_v*)args[2], args[3]);
+		return re->G2API_CopyGhoul2Instance(*(CGhoul2Info_v*)args[1], *(CGhoul2Info_v*)args[2], args[3]);
 
 	case G_G2_COPYSPECIFICGHOUL2MODEL:
 		re->G2API_CopySpecificG2Model(*(CGhoul2Info_v*)args[1], args[2], *(CGhoul2Info_v*)args[3], args[4]);
@@ -2660,21 +2660,21 @@ intptr_t SV_GameSystemCalls(intptr_t* args) {
 
 	case G_G2_HASGHOUL2MODELONINDEX:
 		//return (int)G2API_HasGhoul2ModelOnIndex((CGhoul2Info_v **)args[1], args[2]);
-		return (int)re->G2API_HasGhoul2ModelOnIndex(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
+		return re->G2API_HasGhoul2ModelOnIndex(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
 
 	case G_G2_REMOVEGHOUL2MODEL:
 #ifdef _FULL_G2_LEAK_CHECKING
 		g_G2AllocServer = 1;
 #endif
 		//return (int)G2API_RemoveGhoul2Model((CGhoul2Info_v **)args[1], args[2]);
-		return (int)re->G2API_RemoveGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
+		return re->G2API_RemoveGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
 
 	case G_G2_REMOVEGHOUL2MODELS:
 #ifdef _FULL_G2_LEAK_CHECKING
 		g_G2AllocServer = 1;
 #endif
 		//return (int)G2API_RemoveGhoul2Models((CGhoul2Info_v **)args[1]);
-		return (int)re->G2API_RemoveGhoul2Models(static_cast<CGhoul2Info_v**>(VMA(1)));
+		return re->G2API_RemoveGhoul2Models(static_cast<CGhoul2Info_v**>(VMA(1)));
 
 	case G_G2_CLEANMODELS:
 #ifdef _FULL_G2_LEAK_CHECKING

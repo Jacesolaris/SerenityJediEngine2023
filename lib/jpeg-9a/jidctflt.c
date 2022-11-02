@@ -77,7 +77,7 @@ Sorry, this code only copes with 8x8 DCTs. /* deliberate syntax err */
 	/* Pass 1: process columns from input, store into work array. */
 
 	JCOEFPTR inptr = coef_block;
-	FLOAT_MULT_TYPE* quantptr = (FLOAT_MULT_TYPE*)compptr->dct_table;
+	FLOAT_MULT_TYPE* quantptr = compptr->dct_table;
 	FAST_FLOAT* wsptr = workspace;
 	for (ctr = DCTSIZE; ctr > 0; ctr--) {
 		/* Due to quantization, we will usually find that many of the input

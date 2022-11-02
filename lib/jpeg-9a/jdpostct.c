@@ -241,9 +241,8 @@ post_process_2pass(j_decompress_ptr cinfo,
 GLOBAL(void)
 jinit_d_post_controller(j_decompress_ptr cinfo, boolean need_full_buffer)
 {
-	const my_post_ptr post = (my_post_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_post_controller));
+	const my_post_ptr post = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                    SIZEOF(my_post_controller));
 	cinfo->post = (struct jpeg_d_post_controller*)post;
 	post->pub.start_pass = start_pass_dpost;
 	post->whole_image = NULL;	/* flag for no virtual arrays */
@@ -263,8 +262,8 @@ jinit_d_post_controller(j_decompress_ptr cinfo, boolean need_full_buffer)
 			post->whole_image = (*cinfo->mem->request_virt_sarray)
 				((j_common_ptr)cinfo, JPOOL_IMAGE, FALSE,
 					cinfo->output_width * cinfo->out_color_components,
-					(JDIMENSION)jround_up((long)cinfo->output_height,
-						(long)post->strip_height),
+					(JDIMENSION)jround_up(cinfo->output_height,
+						post->strip_height),
 					post->strip_height);
 #else
 			ERREXIT(cinfo, JERR_BAD_BUFFER_MODE);

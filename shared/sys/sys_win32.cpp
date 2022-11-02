@@ -118,7 +118,7 @@ bool Sys_RandomBytes(byte* string, int len)
 		return false;
 	}
 
-	if (!CryptGenRandom(prov, len, (BYTE*)string)) {
+	if (!CryptGenRandom(prov, len, string)) {
 		CryptReleaseContext(prov, 0);
 		return false;
 	}

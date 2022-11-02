@@ -1718,7 +1718,7 @@ void* G2_FindSurface(const model_s* mod, int index, int lod)
 	assert(mod->mdxm);
 
 	// point at first lod list
-	byte* current = reinterpret_cast<byte*>(reinterpret_cast<intptr_t>(mod->mdxm) + (intptr_t)mod->mdxm->ofsLODs);
+	byte* current = reinterpret_cast<byte*>(reinterpret_cast<intptr_t>(mod->mdxm) + mod->mdxm->ofsLODs);
 
 	//walk the lods
 	assert(lod >= 0 && lod < mod->mdxm->numLODs);
@@ -1736,7 +1736,7 @@ void* G2_FindSurface(const model_s* mod, int index, int lod)
 	assert(index >= 0 && index < mod->mdxm->numSurfaces);
 	current += indexes->offsets[index];
 
-	return (void*)current;
+	return current;
 }
 
 #define SURFACE_SAVE_BLOCK_SIZE	sizeof(surfaceInfo_t)
@@ -1773,7 +1773,7 @@ void G2_SaveGhoul2Models(
 	}
 
 	// save out how many ghoul2 models we have
-	const int model_count = static_cast<int>(ghoul2.size());
+	const int model_count = ghoul2.size();
 
 	saved_game.write<int32_t>(
 		model_count);

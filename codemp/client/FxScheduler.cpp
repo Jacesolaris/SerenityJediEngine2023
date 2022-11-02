@@ -436,7 +436,7 @@ int CFxScheduler::ParseEffect(const char* file, CGPGroup* base)
 			AddPrimitiveToEffect(effect, prim);
 		}
 
-		primitiveGroup = (CGPGroup*)primitiveGroup->GetNext();
+		primitiveGroup = primitiveGroup->GetNext();
 	}
 
 	return handle;
@@ -598,7 +598,7 @@ SEffectTemplate* CFxScheduler::GetEffectCopy(int fxHandle, int* newHandle)
 // Return:
 //	the pointer to the desired primitive
 //------------------------------------------------------
-CPrimitiveTemplate* CFxScheduler::GetPrimitiveCopy(SEffectTemplate* effectCopy, const char* componentName)
+CPrimitiveTemplate* CFxScheduler::GetPrimitiveCopy(const SEffectTemplate* effectCopy, const char* componentName)
 {
 	if (!effectCopy || !effectCopy->mInUse)
 	{

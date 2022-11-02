@@ -1193,7 +1193,6 @@ bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
 	CVec3 Maxs(15.0f, 15.0f, 40.0f);
 	bool CanGo;
 	bool HitCharacter = false;
-	int EntHit;
 	const int i = at.Size();
 
 	a.mPoint.ToStr(mLocStringA);
@@ -1225,7 +1224,7 @@ bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
 	// Try It
 	//--------
 	CanGo = MoveTrace(a.mPoint, b.mPoint, mins, Maxs, 0, true, false);
-	EntHit = mMoveTrace.entityNum;
+	int EntHit = mMoveTrace.entityNum;
 
 	// Check For A Flying Edge
 	//-------------------------
@@ -2177,7 +2176,6 @@ void NAV::WayEdgesNowClear(gentity_t* ent)
 	{
 		ent->wayedge = 0;
 
-		int EdgeHandle;
 		const int EntNum = ent->s.number;
 
 		const TEntEdgeMap::iterator finder = mEntEdgeMap.find(EntNum);
@@ -2185,7 +2183,7 @@ void NAV::WayEdgesNowClear(gentity_t* ent)
 		{
 			for (int i = 0; i < finder->size(); i++)
 			{
-				EdgeHandle = (*finder)[i];
+				const int EdgeHandle = (*finder)[i];
 				if (EdgeHandle != 0)
 				{
 					CWayEdge& edge = mGraph.get_edge(EdgeHandle);
@@ -2423,8 +2421,6 @@ NAV::TNodeHandle NAV::GetNearestNode(const vec3_t& position, TNodeHandle previou
 		//==========================
 		{
 			CVec3 Point;
-			CVec3 PointOnEdge;
-			float PointOnEdgeRange;
 			mNearestNavSort.clear();
 			for (int i = 0; i < Cell.mEdges.size() && !mNearestNavSort.full(); i++)
 			{
@@ -2468,9 +2464,9 @@ NAV::TNodeHandle NAV::GetNearestNode(const vec3_t& position, TNodeHandle previou
 			for (int j = 0; j < mNearestNavSort.size(); j++)
 			{
 				CWayEdge& edge = mGraph.get_edge(mNearestNavSort[j].mHandle);
-				PointOnEdge = Pos;
+				CVec3 PointOnEdge = Pos;
 
-				PointOnEdgeRange = PointOnEdge.ProjectToLine(edge.PointA(), edge.PointB());
+				const float PointOnEdgeRange = PointOnEdge.ProjectToLine(edge.PointA(), edge.PointB());
 
 				if (PointOnEdgeRange > 0.0f && PointOnEdgeRange < 1.0f)
 				{
@@ -2853,18 +2849,11 @@ bool NAV::FindPath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 		}
 	}
 
-	// For All Points On The Path, Compute ETA, And Check For Sharp Corners
-	//----------------------------------------------------------------------
-	CVec3 AtToNext;
-	CVec3 NextToBeyond;
-	float NextToBeyondDistance;
-	float NextToBeyondDot;
-
 	for (int i = puser.mPath.size() - 1; i > -1; i--)
 	{
 		SPathPoint& PPoint = puser.mPath[i]; // For Debugging And A Tad Speed Improvement, Get A Ref Directly
 
-		AtToNext = PPoint.mPoint - At;
+		CVec3 AtToNext = PPoint.mPoint - At;
 		if (fabsf(AtToNext[2]) > Z_CULL_OFFSET)
 		{
 			AtToNext[2] = 0.0f;
@@ -2880,13 +2869,13 @@ bool NAV::FindPath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 			!mGraph.get_node(PPoint.mNode).mFlags.get_bit(c_way_node::WN_FLOATING)
 			)
 		{
-			NextToBeyond = puser.mPath[i - 1].mPoint - PPoint.mPoint;
+			CVec3 NextToBeyond = puser.mPath[i - 1].mPoint - PPoint.mPoint;
 			if (fabsf(NextToBeyond[2]) > Z_CULL_OFFSET)
 			{
 				NextToBeyond[2] = 0.0f;
 			}
-			NextToBeyondDistance = NextToBeyond.Norm();
-			NextToBeyondDot = NextToBeyond.Dot(AtToNext);
+			const float NextToBeyondDistance = NextToBeyond.Norm();
+			const float NextToBeyondDot = NextToBeyond.Dot(AtToNext);
 
 			if (NextToBeyondDistance > 150.0f && PPoint.mDist > 150.0f && NextToBeyondDot < 0.64f ||
 				NextToBeyondDistance > 30.0f && NextToBeyondDot < 0.5f)
@@ -5148,9 +5137,8 @@ float STEER::AvoidCollisions(gentity_t* actor, gentity_t* leader)
 	CVec3 ProjectedSteering(suser.mSteering);
 	CVec3 ProjectedVelocity(suser.mVelocity);
 	float ProjectedSpeed = suser.mSpeed;
-	float Newtons;
 
-	Newtons = ProjectedSteering.Truncate(suser.mMaxForce);
+	const float Newtons = ProjectedSteering.Truncate(suser.mMaxForce);
 	if (Newtons > 1E-10)
 	{
 		ProjectedSteering /= suser.mMass;

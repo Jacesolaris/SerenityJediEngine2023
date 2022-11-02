@@ -522,7 +522,7 @@ select_colors(j_decompress_ptr cinfo, int desired_colors)
 /* Master routine for color selection */
 {
 	/* Allocate workspace for box list */
-	const boxptr boxlist = (boxptr)(*cinfo->mem->alloc_small)
+	const boxptr boxlist = (*cinfo->mem->alloc_small)
 		((j_common_ptr)cinfo, JPOOL_IMAGE, desired_colors * SIZEOF(box));
 	/* Initialize one box containing whole space */
 	int numboxes = 1;
@@ -1066,7 +1066,7 @@ init_error_limit(j_decompress_ptr cinfo)
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 	int in;
 
-	int* table = (int*)(*cinfo->mem->alloc_small)
+	int* table = (*cinfo->mem->alloc_small)
 		((j_common_ptr)cinfo, JPOOL_IMAGE, (MAXJSAMPLE * 2 + 1) * SIZEOF(int));
 	table += MAXJSAMPLE;		/* so can index -MAXJSAMPLE .. +MAXJSAMPLE */
 	cquantize->error_limiter = table;
@@ -1148,8 +1148,8 @@ start_pass_2_quant(j_decompress_ptr cinfo, boolean is_pre_scan)
 			ERREXIT1(cinfo, JERR_QUANT_MANY_COLORS, MAXNUMCOLORS);
 
 		if (cinfo->dither_mode == JDITHER_FS) {
-			const size_t arraysize = (size_t)((cinfo->output_width + 2) *
-				(3 * SIZEOF(FSERROR)));
+			const size_t arraysize = (cinfo->output_width + 2) *
+				(3 * SIZEOF(FSERROR));
 			/* Allocate Floyd-Steinberg workspace if we didn't already. */
 			if (cquantize->fserrors == NULL)
 				cquantize->fserrors = (FSERRPTR)(*cinfo->mem->alloc_large)
@@ -1192,9 +1192,8 @@ new_color_map_2_quant(j_decompress_ptr cinfo)
 GLOBAL(void)
 jinit_2pass_quantizer(j_decompress_ptr cinfo)
 {
-	const my_cquantize_ptr cquantize = (my_cquantize_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_cquantizer));
+	const my_cquantize_ptr cquantize = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                              SIZEOF(my_cquantizer));
 	cinfo->cquantize = (struct jpeg_color_quantizer*)cquantize;
 	cquantize->pub.start_pass = start_pass_2_quant;
 	cquantize->pub.new_color_map = new_color_map_2_quant;
@@ -1248,7 +1247,7 @@ jinit_2pass_quantizer(j_decompress_ptr cinfo)
 	if (cinfo->dither_mode == JDITHER_FS) {
 		cquantize->fserrors = (FSERRPTR)(*cinfo->mem->alloc_large)
 			((j_common_ptr)cinfo, JPOOL_IMAGE,
-				(size_t)((cinfo->output_width + 2) * (3 * SIZEOF(FSERROR))));
+				(cinfo->output_width + 2) * (3 * SIZEOF(FSERROR)));
 		/* Might as well create the error-limiting table too. */
 		init_error_limit(cinfo);
 	}

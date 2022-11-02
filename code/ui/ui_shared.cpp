@@ -880,7 +880,7 @@ qboolean MenuParse_cinematic(itemDef_t* item)
 {
 	menuDef_t* menu = (menuDef_t*)item;
 
-	if (!PC_ParseStringMem((const char**)&menu->window.cinematicName))
+	if (!PC_ParseStringMem(&menu->window.cinematicName))
 	{
 		return qfalse;
 	}
@@ -955,7 +955,7 @@ qboolean MenuParse_soundLoop(itemDef_t* item)
 {
 	menuDef_t* menu = (menuDef_t*)item;
 
-	if (!PC_ParseStringMem((const char**)&menu->soundName))
+	if (!PC_ParseStringMem(&menu->soundName))
 	{
 		return qfalse;
 	}
@@ -1588,7 +1588,7 @@ void Item_ActivateByName(const char* menuName, const char* itemName)
 {
 	menuDef_t* menu = Menus_FindByName(menuName);
 
-	itemDef_t* item = (itemDef_s*)Menu_FindItemByName((menuDef_t*)menu, itemName);
+	itemDef_t* item = Menu_FindItemByName(menu, itemName);
 
 	if (item != nullptr)
 	{
@@ -1696,11 +1696,11 @@ void Menu_SetItemBackground(const menuDef_t* menu, const char* itemName, const c
 		return;
 	}
 
-	const int count = Menu_ItemsMatchingGroup((menuDef_t*)menu, itemName);
+	const int count = Menu_ItemsMatchingGroup(menu, itemName);
 
 	for (int j = 0; j < count; j++)
 	{
-		itemDef_t* item = Menu_GetMatchingItemByNumber((menuDef_t*)menu, j, itemName);
+		itemDef_t* item = Menu_GetMatchingItemByNumber(menu, j, itemName);
 		if (item != nullptr)
 		{
 			//			item->window.background = DC->registerShaderNoMip(background);
@@ -1717,11 +1717,11 @@ void Menu_SetItemText(const menuDef_t* menu, const char* itemName, const char* t
 		return;
 	}
 
-	const int count = Menu_ItemsMatchingGroup((menuDef_t*)menu, itemName);
+	const int count = Menu_ItemsMatchingGroup(menu, itemName);
 
 	for (int j = 0; j < count; j++)
 	{
-		itemDef_t* item = Menu_GetMatchingItemByNumber((menuDef_t*)menu, j, itemName);
+		itemDef_t* item = Menu_GetMatchingItemByNumber(menu, j, itemName);
 		if (item != nullptr)
 		{
 			if (text[0] == '*')
@@ -2227,7 +2227,7 @@ qboolean Script_SetFocus(itemDef_t* item, const char** args)
 
 	if (String_Parse(args, &name))
 	{
-		itemDef_t* focusItem = (itemDef_s*)Menu_FindItemByName(static_cast<menuDef_t*>(item->parent), name);
+		itemDef_t* focusItem = Menu_FindItemByName(static_cast<menuDef_t*>(item->parent), name);
 		if (focusItem && !(focusItem->window.flags & WINDOW_DECORATION) && !(focusItem->window.flags & WINDOW_HASFOCUS))
 		{
 			Menu_ClearFocus(static_cast<menuDef_t*>(item->parent));
@@ -2260,7 +2260,7 @@ qboolean Script_SetItemFlag(itemDef_t* item, const char** args)
 
 	if (String_Parse(args, &itemName))
 	{
-		item = (itemDef_s*)Menu_FindItemByName(static_cast<menuDef_t*>(item->parent), itemName);
+		item = Menu_FindItemByName(static_cast<menuDef_t*>(item->parent), itemName);
 
 		if (String_Parse(args, &number))
 		{
@@ -2994,7 +2994,7 @@ ItemParse_descText
 */
 qboolean ItemParse_descText(itemDef_t* item)
 {
-	if (!PC_ParseStringMem((const char**)&item->descText))
+	if (!PC_ParseStringMem(&item->descText))
 	{
 		return qfalse;
 	}
@@ -3979,7 +3979,7 @@ ItemParse_cinematic
 */
 qboolean ItemParse_cinematic(itemDef_t* item)
 {
-	if (!PC_ParseStringMem((const char**)&item->window.cinematicName))
+	if (!PC_ParseStringMem(&item->window.cinematicName))
 	{
 		return qfalse;
 	}
@@ -4171,7 +4171,7 @@ ItemParse_cvarTest
 */
 qboolean ItemParse_cvarTest(itemDef_t* item)
 {
-	if (!PC_ParseStringMem((const char**)&item->cvarTest))
+	if (!PC_ParseStringMem(&item->cvarTest))
 	{
 		return qfalse;
 	}
@@ -4306,7 +4306,7 @@ qboolean ItemParse_cvarInt(itemDef_t* item)
 	}
 	editFieldDef_t* editPtr = static_cast<editFieldDef_t*>(item->typeData);
 
-	if (PC_ParseStringMem((const char**)&item->cvar) &&
+	if (PC_ParseStringMem(&item->cvar) &&
 		!PC_ParseFloat(&editPtr->defVal) &&
 		!PC_ParseFloat(&editPtr->minVal) &&
 		!PC_ParseFloat(&editPtr->maxVal))
@@ -4325,7 +4325,7 @@ qboolean ItemParse_cvarFloat(itemDef_t* item)
 	}
 	editFieldDef_t* editPtr = static_cast<editFieldDef_t*>(item->typeData);
 
-	if (PC_ParseStringMem((const char**)&item->cvar) &&
+	if (PC_ParseStringMem(&item->cvar) &&
 		!PC_ParseFloat(&editPtr->defVal) &&
 		!PC_ParseFloat(&editPtr->minVal) &&
 		!PC_ParseFloat(&editPtr->maxVal))
@@ -4353,7 +4353,7 @@ qboolean ItemParse_cvarRotateScale(itemDef_t* item)
 		return qfalse;
 	}
 	editFieldDef_t* editPtr = static_cast<editFieldDef_t*>(item->typeData);
-	if (PC_ParseStringMem((const char**)&item->cvar) &&
+	if (PC_ParseStringMem(&item->cvar) &&
 		!PC_ParseFloat(&editPtr->range))
 	{
 		return qtrue;
@@ -4885,7 +4885,7 @@ qboolean Item_Parse(itemDef_t* item)
 			return qtrue;
 		}
 
-		const keywordHash_t* key = (keywordHash_s*)KeywordHash_Find(itemParseKeywordHash, token);
+		const keywordHash_t* key = KeywordHash_Find(itemParseKeywordHash, token);
 		if (!key)
 		{
 			PC_ParseWarning(va("Unknown item keyword '%s'", token));
@@ -4925,7 +4925,7 @@ static void Item_TextScroll_BuildLines(itemDef_t* item)
 	const char* psBestLineBreakSrcPos = psCurrentTextReadPos;
 
 	scrollPtr->iLineCount = 0;
-	memset((char*)scrollPtr->pLines, 0, sizeof scrollPtr->pLines);
+	memset(scrollPtr->pLines, 0, sizeof scrollPtr->pLines);
 
 	while (*psCurrentTextReadPos && scrollPtr->iLineCount < MAX_TEXTSCROLL_LINES)
 	{
@@ -6778,14 +6778,14 @@ void Item_Bind_Paint(itemDef_t* item)
 
 		// If the text runs past the limit bring the scale down until it fits.
 		float textScale = item->textscale;
-		float textWidth = DC->textWidth(g_nameBind, (float)textScale, uiInfo.uiDC.Assets.qhMediumFont);
+		float textWidth = DC->textWidth(g_nameBind, textScale, uiInfo.uiDC.Assets.qhMediumFont);
 
 		const int startingXPos = item->textRect.x + item->textRect.w + 8;
 
 		while (startingXPos + textWidth >= SCREEN_WIDTH)
 		{
 			textScale -= .05f;
-			textWidth = DC->textWidth(g_nameBind, (float)textScale, uiInfo.uiDC.Assets.qhMediumFont);
+			textWidth = DC->textWidth(g_nameBind, textScale, uiInfo.uiDC.Assets.qhMediumFont);
 		}
 
 		// Try to adjust it's y placement if the scale has changed.
@@ -7566,7 +7566,7 @@ static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 			const float h = item->window.rectClient.h / 2;
 			const float rx = item->window.rectClient.x + w - item->window.rectEffects.x;
 			const float ry = item->window.rectClient.y + h - item->window.rectEffects.y;
-			const float a = (float)(3 * M_PI / 180);
+			const float a = 3 * M_PI / 180;
 			const float c = cos(a);
 			const float s = sin(a);
 			item->window.rectClient.x = rx * c - ry * s + item->window.rectEffects.x - w;

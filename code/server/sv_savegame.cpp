@@ -709,7 +709,7 @@ static void SG_WriteComment(qboolean qbAutosave, const char* psMapName)
 
 static time_t SG_GetTime(unsigned int timestamp)
 {
-	return static_cast<time_t>(timestamp);
+	return timestamp;
 }
 
 // Test to see if the given file name is in the save game directory

@@ -233,7 +233,7 @@ using vmSlots_t = enum vmSlots_e {
 inline float _vmf(intptr_t x)
 {
 	byteAlias_t fi;
-	fi.i = (int)x;
+	fi.i = x;
 	return fi.f;
 }
 #define	VMF(x)	_vmf(args[x])

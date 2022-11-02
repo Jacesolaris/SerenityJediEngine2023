@@ -195,7 +195,7 @@ Sorry, this code only copes with 8x8 DCTs. /* deliberate syntax err */
 			inptr[DCTSIZE * 5] == 0 && inptr[DCTSIZE * 6] == 0 &&
 			inptr[DCTSIZE * 7] == 0) {
 			/* AC terms all zero */
-			int dcval = (int)DEQUANTIZE(inptr[DCTSIZE * 0], quantptr[DCTSIZE * 0]);
+			int dcval = DEQUANTIZE(inptr[DCTSIZE * 0], quantptr[DCTSIZE * 0]);
 
 			wsptr[DCTSIZE * 0] = dcval;
 			wsptr[DCTSIZE * 1] = dcval;
@@ -253,14 +253,14 @@ Sorry, this code only copes with 8x8 DCTs. /* deliberate syntax err */
 		tmp5 = tmp11 - tmp6;
 		tmp4 = tmp10 + tmp5;
 
-		wsptr[DCTSIZE * 0] = (int)(tmp0 + tmp7);
-		wsptr[DCTSIZE * 7] = (int)(tmp0 - tmp7);
-		wsptr[DCTSIZE * 1] = (int)(tmp1 + tmp6);
-		wsptr[DCTSIZE * 6] = (int)(tmp1 - tmp6);
-		wsptr[DCTSIZE * 2] = (int)(tmp2 + tmp5);
-		wsptr[DCTSIZE * 5] = (int)(tmp2 - tmp5);
-		wsptr[DCTSIZE * 4] = (int)(tmp3 + tmp4);
-		wsptr[DCTSIZE * 3] = (int)(tmp3 - tmp4);
+		wsptr[DCTSIZE * 0] = tmp0 + tmp7;
+		wsptr[DCTSIZE * 7] = tmp0 - tmp7;
+		wsptr[DCTSIZE * 1] = tmp1 + tmp6;
+		wsptr[DCTSIZE * 6] = tmp1 - tmp6;
+		wsptr[DCTSIZE * 2] = tmp2 + tmp5;
+		wsptr[DCTSIZE * 5] = tmp2 - tmp5;
+		wsptr[DCTSIZE * 4] = tmp3 + tmp4;
+		wsptr[DCTSIZE * 3] = tmp3 - tmp4;
 
 		inptr++;			/* advance pointers to next column */
 		quantptr++;
@@ -305,11 +305,11 @@ Sorry, this code only copes with 8x8 DCTs. /* deliberate syntax err */
 
 		/* Even part */
 
-		tmp10 = (DCTELEM)wsptr[0] + (DCTELEM)wsptr[4];
-		tmp11 = (DCTELEM)wsptr[0] - (DCTELEM)wsptr[4];
+		tmp10 = wsptr[0] + wsptr[4];
+		tmp11 = wsptr[0] - wsptr[4];
 
-		tmp13 = (DCTELEM)wsptr[2] + (DCTELEM)wsptr[6];
-		tmp12 = MULTIPLY((DCTELEM)wsptr[2] - (DCTELEM)wsptr[6], FIX_1_414213562)
+		tmp13 = wsptr[2] + wsptr[6];
+		tmp12 = MULTIPLY(wsptr[2] - wsptr[6], FIX_1_414213562)
 			- tmp13;
 
 		tmp0 = tmp10 + tmp13;
@@ -319,10 +319,10 @@ Sorry, this code only copes with 8x8 DCTs. /* deliberate syntax err */
 
 		/* Odd part */
 
-		z13 = (DCTELEM)wsptr[5] + (DCTELEM)wsptr[3];
-		z10 = (DCTELEM)wsptr[5] - (DCTELEM)wsptr[3];
-		z11 = (DCTELEM)wsptr[1] + (DCTELEM)wsptr[7];
-		z12 = (DCTELEM)wsptr[1] - (DCTELEM)wsptr[7];
+		z13 = wsptr[5] + wsptr[3];
+		z10 = wsptr[5] - wsptr[3];
+		z11 = wsptr[1] + wsptr[7];
+		z12 = wsptr[1] - wsptr[7];
 
 		tmp7 = z11 + z13;		/* phase 5 */
 		tmp11 = MULTIPLY(z11 - z13, FIX_1_414213562); /* 2*c4 */

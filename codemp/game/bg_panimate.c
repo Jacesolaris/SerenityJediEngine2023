@@ -1887,7 +1887,7 @@ saberMoveName_t pm_broken_parry_for_attack(const int move)
 	return LS_NONE;
 }
 
-saberMoveName_t pm_blockthe_attack(const int move)
+saberMoveName_t pm_block_the_attack(const int move)
 {
 	switch (move)
 	{
@@ -1909,7 +1909,7 @@ saberMoveName_t pm_blockthe_attack(const int move)
 	}
 }
 
-int G_BlocktheAttack(const int move)
+int g_block_the_attack(const int move)
 {
 	switch (move)
 	{
@@ -2116,30 +2116,6 @@ saberMoveName_t PM_MBlocktheAttack(const int move)
 	}
 }
 
-int G_MBlocktheAttack(const int move)
-{
-	switch (move)
-	{
-	case LS_REFLECT_ATTACK_FRONT:
-	case LS_PARRY_FRONT:
-	case LS_PARRY_WALK:
-	case LS_PARRY_WALK_DUAL:
-	case LS_PARRY_WALK_STAFF:
-	case LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case LS_REFLECT_ATTACK_RIGHT:
-	case LS_PARRY_UR:
-	default:
-		return LS_BLOCK_FULL_RIGHT; //push up, slightly to right
-	case LS_REFLECT_ATTACK_LEFT:
-	case LS_PARRY_UL:
-		return LS_BLOCK_FULL_LEFT; //push up and to left
-	case LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
 
 qboolean PM_InRollIgnoreTimer(const playerState_t* ps)
 {
@@ -5169,7 +5145,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 		}
 
 		token = COM_Parse(text_p);
-		const animEventType_t eventType = (animEventType_t)GetIDForString(animEventTypeTable, token);
+		const animEventType_t eventType = GetIDForString(animEventTypeTable, token);
 		if (eventType == AEV_NONE || eventType == (animEventType_t)-1)
 		{
 			//Unrecognized ANIM EVENT TYPE, or we're skipping this line, keep going till you get a good one

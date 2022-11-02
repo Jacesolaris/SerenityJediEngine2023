@@ -353,7 +353,7 @@ unsigned len;
 
 		/* large len -- read directly into user buffer */
 		else if (state->how == COPY) {      /* read directly */
-			if (gz_load(state, (unsigned char*)buf, len, &n) == -1)
+			if (gz_load(state, buf, len, &n) == -1)
 				return -1;
 		}
 
@@ -375,7 +375,7 @@ unsigned len;
 	} while (len);
 
 	/* return number of bytes read into user buffer (will fit in int) */
-	return (int)got;
+	return got;
 }
 
 /* -- see zlib.h -- */

@@ -227,11 +227,11 @@ void CG_TrueViewInit(void)
 void CG_AdjustEyePos(const char* modelName)
 {
 	//eye position
-	char eyepos[MAX_QPATH];
 
 	if (true_view_valid)
 	{
-		if (BG_SiegeGetPairedValue(true_view_info, (char*)modelName, eyepos))
+		char eyepos[MAX_QPATH];
+		if (BG_SiegeGetPairedValue(true_view_info, const_cast<char*>(modelName), eyepos))
 		{
 			CG_Printf("True View Eye Adjust Loaded for %s.\n", modelName);
 			gi.cvar_set("cg_trueeyeposition", eyepos);

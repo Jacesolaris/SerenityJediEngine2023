@@ -280,7 +280,7 @@ cg.spawnVars[], then call the class specfic spawn function
 ===================
 */
 static int spawncmp(const void* a, const void* b) {
-	return Q_stricmp((const char*)a, ((spawn_t*)b)->name);
+	return Q_stricmp(a, ((spawn_t*)b)->name);
 }
 
 void CG_ParseEntityFromSpawnVars(void) {

@@ -1388,7 +1388,7 @@ void BotUpdateInput(bot_state_t* bs, const int time, const int elapsed_time)
 		{
 			if (visible(&g_entities[bs->cur_ps.clientNum], bs->currentEnemy) || gesturetime[bs->cur_ps.clientNum] > level.time)
 			{
-				int saberRange = SABER_ATTACK_RANGE;
+				const int saberRange = SABER_ATTACK_RANGE;
 
 				if (bs->frame_Enemy_Len <= saberRange)
 				{
@@ -2469,7 +2469,7 @@ END A* Pathfinding Code
 int GetNearestVisibleWP(vec3_t org, const int ignore)
 {
 	float bestdist;
-	vec3_t a, mins, maxs;
+	vec3_t mins, maxs;
 
 	int i = 0;
 	if (RMG.integer)
@@ -2494,6 +2494,7 @@ int GetNearestVisibleWP(vec3_t org, const int ignore)
 	{
 		if (gWPArray[i] && gWPArray[i]->inuse)
 		{
+			vec3_t a;
 			VectorSubtract(org, gWPArray[i]->origin, a);
 			const float flLen = VectorLength(a);
 
@@ -6718,9 +6719,8 @@ int CTFTakesPriority(bot_state_t* bs)
 	if (bs->cur_ps.weapon == WP_BRYAR_PISTOL &&
 		level.time - bs->lastDeadTime < BOT_MAX_WEAPON_GATHER_TIME)
 	{
-		int idleWP;
 		//get the nearest weapon laying around base before heading off for battle
-		idleWP = GetBestIdleGoal(bs);
+		int idleWP = GetBestIdleGoal(bs);
 
 		if (idleWP != -1 && gWPArray[idleWP] && gWPArray[idleWP]->inuse)
 		{
@@ -7699,7 +7699,6 @@ void GetIdealDestination(bot_state_t* bs)
 	}
 	else if (bs->currentEnemy)
 	{
-		int bChicken;
 		if (bs->currentEnemy->client)
 		{
 			VectorCopy(bs->currentEnemy->client->ps.origin, usethisvec);
@@ -7709,7 +7708,7 @@ void GetIdealDestination(bot_state_t* bs)
 			VectorCopy(bs->currentEnemy->s.origin, usethisvec);
 		}
 
-		bChicken = BotIsAChickenWuss(bs);
+		int bChicken = BotIsAChickenWuss(bs);
 		bs->runningToEscapeThreat = bChicken;
 
 		if (bs->frame_Enemy_Len < distChange || bChicken && bChicken != 2)
@@ -8156,7 +8155,6 @@ void MeleeCombatHandling(bot_state_t* bs)
 	vec3_t fwd;
 	vec3_t mins, maxs;
 	trace_t tr;
-	bot_input_t bi;
 
 	if (!bs->currentEnemy)
 	{
@@ -8243,6 +8241,7 @@ void MeleeCombatHandling(bot_state_t* bs)
 			if (visible(&g_entities[bs->cur_ps.clientNum], bs->currentEnemy) || gesturetime[bs->cur_ps.clientNum] >
 				level.time)
 			{
+				bot_input_t bi;
 				bi.actionflags |= ACTION_GESTURE;
 
 				if (BotGetWeaponRange(bs) == BWEAPONRANGE_MELEE || BotGetWeaponRange(bs) == BWEAPONRANGE_SABER)
@@ -8733,24 +8732,19 @@ void SaberCombatHandling(bot_state_t* bs)
 			bs->DestIgnore = bs->currentEnemy->s.number;
 			BotBehave_AttackMove(bs);
 			return;
-			bs->saberDefending = 0;
-			bs->saberDefendDecideTime = level.time + Q_irand(1000, 2000);
 		}
-		else
+		if (bs->saberDefendDecideTime < level.time)
 		{
-			if (bs->saberDefendDecideTime < level.time)
+			if (bs->saberDefending)
 			{
-				if (bs->saberDefending)
-				{
-					bs->saberDefending = 0;
-				}
-				else
-				{
-					bs->saberDefending = 1;
-				}
-
-				bs->saberDefendDecideTime = level.time + Q_irand(500, 2000);
+				bs->saberDefending = 0;
 			}
+			else
+			{
+				bs->saberDefending = 1;
+			}
+
+			bs->saberDefendDecideTime = level.time + Q_irand(500, 2000);
 		}
 
 		if (bs->frame_Enemy_Len < 54) // (How far away you are from him)
@@ -8965,8 +8959,6 @@ void BotAimLeading(bot_state_t* bs, vec3_t headlevel, const float leadAmount)
 //wobble our aim around based on our sk1llz
 void BotAimOffsetGoalAngles(bot_state_t* bs)
 {
-	int i = 0;
-
 	if (bs->skills.perfectaim)
 	{
 		return;
@@ -8974,6 +8966,7 @@ void BotAimOffsetGoalAngles(bot_state_t* bs)
 
 	if (bs->aimOffsetTime > level.time)
 	{
+		int i = 0;
 		if (bs->aimOffsetAmtYaw)
 		{
 			bs->goalAngles[YAW] += bs->aimOffsetAmtYaw;
@@ -9081,7 +9074,7 @@ void BotAimOffsetGoalAngles(bot_state_t* bs)
 }
 
 //do we want to alt fire with this weapon?
-int ShouldSecondaryFire(bot_state_t* bs)
+int ShouldSecondaryFire(const bot_state_t* bs)
 {
 	const int weap = bs->cur_ps.weapon;
 
@@ -9163,7 +9156,6 @@ int ShouldSecondaryFire(bot_state_t* bs)
 int CombatBotAI(bot_state_t* bs, float thinktime)
 {
 	vec3_t eorg, a;
-	float fovcheck;
 
 	if (!bs->currentEnemy)
 	{
@@ -9205,6 +9197,7 @@ int CombatBotAI(bot_state_t* bs, float thinktime)
 	}
 	else
 	{
+		float fovcheck;
 		if (bs->cur_ps.weapon == WP_THERMAL || bs->cur_ps.weapon == WP_ROCKET_LAUNCHER)
 		{
 			//be careful with the hurty weapons
@@ -9535,7 +9528,7 @@ int BotTryAnotherWeapon(bot_state_t* bs)
 }
 
 //is this weapon available to us?
-qboolean BotWeaponSelectable(bot_state_t* bs, const int weapon)
+qboolean BotWeaponSelectable(const bot_state_t* bs, const int weapon)
 {
 	if (weapon == WP_NONE)
 	{
@@ -10046,7 +10039,6 @@ void BotReplyGreetings(const bot_state_t* bs)
 //try to move in to grab a nearby flag
 void CTFFlagMovement(bot_state_t* bs)
 {
-	int diddrop = 0;
 	const gentity_t* desiredDrop = NULL;
 	vec3_t a, mins, maxs;
 	trace_t tr;
@@ -10088,6 +10080,7 @@ void CTFFlagMovement(bot_state_t* bs)
 		if (bs->wpDestination == flagRed ||
 			bs->wpDestination == flagBlue)
 		{
+			int diddrop = 0;
 			if (bs->wpDestination == flagRed && droppedRedFlag && droppedRedFlag->flags & FL_DROPPED_ITEM &&
 				droppedRedFlag->classname && strcmp(droppedRedFlag->classname, "freed") != 0)
 			{

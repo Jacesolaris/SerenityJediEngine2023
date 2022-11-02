@@ -28,7 +28,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "g_vehicles.h"
 #include "b_local.h"
-#include "g_navigator.h"
 
 #ifdef _DEBUG
 #include <float.h>
@@ -328,7 +327,7 @@ void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity)
 	}
 }
 
-qboolean G_ControlledByPlayer(gentity_t* self)
+qboolean G_ControlledByPlayer(const gentity_t* self)
 {
 	if (self && self->NPC && self->NPC->controlledTime > level.time)
 	{
@@ -1910,7 +1909,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 		{
 			if (ent->client->NPC_class != CLASS_GALAKMECH
 				&& ent->client->ps.forceRageRecoveryTime < level.time
-				&& !(ent->client->ps.forcePowersActive & (1 << FP_RAGE)))
+				&& !(ent->client->ps.forcePowersActive & 1 << FP_RAGE))
 			{
 				if (client->ps.stats[STAT_ARMOR] < client->ps.stats[STAT_MAX_HEALTH])
 				{
@@ -1925,7 +1924,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			&& !ent->client->stunTime
 			&& !ent->client->AmputateTime
 			&& ent->client->ps.forceRageRecoveryTime < level.time
-			&& !(ent->client->ps.forcePowersActive & (1 << FP_RAGE)))
+			&& !(ent->client->ps.forcePowersActive & 1 << FP_RAGE))
 		{
 			//you heal 1 hp every 1 second.
 			if (ent->health < client->ps.stats[STAT_MAX_HEALTH])
@@ -7796,7 +7795,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					}
 					else
 					{
-						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 500)
+						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 500)
 						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
@@ -7815,7 +7814,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					}
 					else
 					{
-						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 200)
+						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 200)
 						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
@@ -7834,7 +7833,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					}
 					else
 					{
-						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 100)
+						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 100)
 						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
@@ -7852,7 +7851,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 							client->ps.ManualBlockingFlags |= 1 << MBF_ACCURATEMISSILEBLOCKING; // activate the function
 						}
 					}
-					else if ((client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING) && level.time - client->ps.BoltblockStartTime >= 3000)
+					else if (client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING && level.time - client->ps.BoltblockStartTime >= 3000)
 					{// Been holding block for too long....let go.
 						client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 					}
@@ -8155,7 +8154,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		WP_BlockPointsUpdate(ent);
 	}
 
-	if ((ucmd->buttons & BUTTON_BLOCK))
+	if (ucmd->buttons & BUTTON_BLOCK)
 	{//blocking with saber
 		ent->client->ps.saberManualBlockingTime = level.time + FRAMETIME;
 	}

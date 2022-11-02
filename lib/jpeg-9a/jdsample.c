@@ -111,7 +111,7 @@ sep_upsample(j_decompress_ptr cinfo,
 	/* Color-convert and emit rows */
 
 	/* How many we have in the buffer: */
-	JDIMENSION num_rows = (JDIMENSION)(cinfo->max_v_samp_factor - upsample->next_row_out);
+	JDIMENSION num_rows = cinfo->max_v_samp_factor - upsample->next_row_out;
 	/* Not more than the distance to the end of the image.  Need this test
 	 * in case the image height is not a multiple of max_v_samp_factor:
 	 */
@@ -273,9 +273,8 @@ jinit_upsampler(j_decompress_ptr cinfo)
 	int ci;
 	jpeg_component_info* compptr;
 
-	const my_upsample_ptr upsample = (my_upsample_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_upsampler));
+	const my_upsample_ptr upsample = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                            SIZEOF(my_upsampler));
 	cinfo->upsample = (struct jpeg_upsampler*)upsample;
 	upsample->pub.start_pass = start_pass_upsample;
 	upsample->pub.upsample = sep_upsample;
@@ -332,8 +331,8 @@ jinit_upsampler(j_decompress_ptr cinfo)
 		if (need_buffer) {
 			upsample->color_buf[ci] = (*cinfo->mem->alloc_sarray)
 				((j_common_ptr)cinfo, JPOOL_IMAGE,
-					(JDIMENSION)jround_up((long)cinfo->output_width,
-						(long)cinfo->max_h_samp_factor),
+					(JDIMENSION)jround_up(cinfo->output_width,
+						cinfo->max_h_samp_factor),
 					(JDIMENSION)cinfo->max_v_samp_factor);
 		}
 	}

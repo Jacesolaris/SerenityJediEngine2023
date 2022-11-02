@@ -764,11 +764,11 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 			// cannot auto-download file
 			if (unreferenced)
 			{
-				Com_Printf("clientDownload: %d : \"%s\" is not referenced and cannot be downloaded.\n", (int)(cl - svs.clients), cl->downloadName);
+				Com_Printf("clientDownload: %d : \"%s\" is not referenced and cannot be downloaded.\n", cl - svs.clients, cl->downloadName);
 				Com_sprintf(errorMessage, sizeof errorMessage, "File \"%s\" is not referenced and cannot be downloaded.", cl->downloadName);
 			}
 			else if (idPack) {
-				Com_Printf("clientDownload: %d : \"%s\" cannot download id pk3 files\n", (int)(cl - svs.clients), cl->downloadName);
+				Com_Printf("clientDownload: %d : \"%s\" cannot download id pk3 files\n", cl - svs.clients, cl->downloadName);
 				if (missionPack)
 				{
 					Com_sprintf(errorMessage, sizeof errorMessage, "Cannot autodownload Team Arena file \"%s\"\n"
@@ -780,7 +780,7 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 				}
 			}
 			else if (!sv_allowDownload->integer) {
-				Com_Printf("clientDownload: %d : \"%s\" download disabled\n", (int)(cl - svs.clients), cl->downloadName);
+				Com_Printf("clientDownload: %d : \"%s\" download disabled\n", cl - svs.clients, cl->downloadName);
 				if (sv_pure->integer) {
 					Com_sprintf(errorMessage, sizeof errorMessage, "Could not download \"%s\" because autodownloading is disabled on the server.\n\n"
 						"You will need to get this file elsewhere before you "
@@ -796,7 +796,7 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 			else {
 				// NOTE TTimo this is NOT supposed to happen unless bug in our filesystem scheme?
 				//   if the pk3 is referenced, it must have been found somewhere in the filesystem
-				Com_Printf("clientDownload: %d : \"%s\" file not found on server\n", (int)(cl - svs.clients), cl->downloadName);
+				Com_Printf("clientDownload: %d : \"%s\" file not found on server\n", cl - svs.clients, cl->downloadName);
 				Com_sprintf(errorMessage, sizeof errorMessage, "File \"%s\" not found on server for autodownloading.\n", cl->downloadName);
 			}
 			MSG_WriteByte(msg, svc_download);
@@ -812,7 +812,7 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 			return;
 		}
 
-		Com_Printf("clientDownload: %d : beginning \"%s\"\n", (int)(cl - svs.clients), cl->downloadName);
+		Com_Printf("clientDownload: %d : beginning \"%s\"\n", cl - svs.clients, cl->downloadName);
 
 		// Init
 		cl->downloadCurrentBlock = cl->downloadClientBlock = cl->downloadXmitBlock = 0;
@@ -913,7 +913,7 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 			MSG_WriteData(msg, cl->downloadBlocks[curindex], cl->downloadBlockSize[curindex]);
 		}
 
-		Com_DPrintf("clientDownload: %d : writing block %d\n", (int)(cl - svs.clients), cl->downloadXmitBlock);
+		Com_DPrintf("clientDownload: %d : writing block %d\n", cl - svs.clients, cl->downloadXmitBlock);
 
 		// Move on to the next block
 		// It will get sent with next snap shot.  The rate will keep us in line.

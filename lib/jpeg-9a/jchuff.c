@@ -423,7 +423,7 @@ emit_buffered_bits(huff_entropy_ptr entropy, char* bufstart,
 		return;			/* no real work */
 
 	while (nbits > 0) {
-		emit_bits_e(entropy, (unsigned int)*bufstart, 1);
+		emit_bits_e(entropy, *bufstart, 1);
 		bufstart++;
 		nbits--;
 	}
@@ -562,7 +562,7 @@ encode_mcu_DC_first(j_compress_ptr cinfo, JBLOCKROW* MCU_data)
 		/* Emit that number of bits of the value, if positive, */
 		/* or the complement of its magnitude, if negative. */
 		if (nbits)			/* emit_bits rejects calls with size 0 */
-			emit_bits_e(entropy, (unsigned int)temp2, nbits);
+			emit_bits_e(entropy, temp2, nbits);
 	}
 
 	cinfo->dest->next_output_byte = entropy->next_output_byte;
@@ -659,7 +659,7 @@ encode_mcu_AC_first(j_compress_ptr cinfo, JBLOCKROW* MCU_data)
 
 		/* Emit that number of bits of the value, if positive, */
 		/* or the complement of its magnitude, if negative. */
-		emit_bits_e(entropy, (unsigned int)temp2, nbits);
+		emit_bits_e(entropy, temp2, nbits);
 
 		r = 0;			/* reset zero run length */
 	}
@@ -710,7 +710,7 @@ encode_mcu_DC_refine(j_compress_ptr cinfo, JBLOCKROW* MCU_data)
 	/* Encode the MCU data blocks */
 	for (int blkn = 0; blkn < cinfo->blocks_in_MCU; blkn++) {
 		/* We simply emit the Al'th bit of the DC coefficient value. */
-		emit_bits_e(entropy, (unsigned int)(MCU_data[blkn][0][0] >> Al), 1);
+		emit_bits_e(entropy, MCU_data[blkn][0][0] >> Al, 1);
 	}
 
 	cinfo->dest->next_output_byte = entropy->next_output_byte;
@@ -818,7 +818,7 @@ encode_mcu_AC_refine(j_compress_ptr cinfo, JBLOCKROW* MCU_data)
 
 		/* Emit output bit for newly-nonzero coef */
 		temp = (*block)[natural_order[k]] < 0 ? 0 : 1;
-		emit_bits_e(entropy, (unsigned int)temp, 1);
+		emit_bits_e(entropy, temp, 1);
 
 		/* Emit buffered correction bits that must be associated with this code */
 		emit_buffered_bits(entropy, BR_buffer, BR);
@@ -894,7 +894,7 @@ encode_one_block(working_state* state, JCOEFPTR block, int last_dc_val,
 	/* Emit that number of bits of the value, if positive, */
 	/* or the complement of its magnitude, if negative. */
 	if (nbits)			/* emit_bits rejects calls with size 0 */
-		if (!emit_bits_s(state, (unsigned int)temp2, nbits))
+		if (!emit_bits_s(state, temp2, nbits))
 			return FALSE;
 
 	/* Encode the AC coefficients per section F.1.2.2 */
@@ -935,7 +935,7 @@ encode_one_block(working_state* state, JCOEFPTR block, int last_dc_val,
 
 			/* Emit that number of bits of the value, if positive, */
 			/* or the complement of its magnitude, if negative. */
-			if (!emit_bits_s(state, (unsigned int)temp2, nbits))
+			if (!emit_bits_s(state, temp2, nbits))
 				return FALSE;
 
 			r = 0;
@@ -1486,9 +1486,8 @@ start_pass_huff(j_compress_ptr cinfo, boolean gather_statistics)
 GLOBAL(void)
 jinit_huff_encoder(j_compress_ptr cinfo)
 {
-	const huff_entropy_ptr entropy = (huff_entropy_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(huff_entropy_encoder));
+	const huff_entropy_ptr entropy = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                            SIZEOF(huff_entropy_encoder));
 	cinfo->entropy = &entropy->pub;
 	entropy->pub.start_pass = start_pass_huff;
 

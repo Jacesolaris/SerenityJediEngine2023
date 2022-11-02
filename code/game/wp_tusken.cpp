@@ -38,7 +38,6 @@ void WP_FireTuskenRifle(gentity_t* ent)
 {
 	vec3_t start;
 	trace_t tr;
-	gentity_t* traceEnt = nullptr;
 
 	VectorCopy(muzzle, start);
 	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
@@ -53,7 +52,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 		//need to loop this in case we hit a Jedi who dodges the shot
 		gi.trace(&tr, start, nullptr, nullptr, end, ignore, MASK_SHOT, G2_RETURNONHIT, 0);
 
-		traceEnt = &g_entities[tr.entityNum];
+		gentity_t* traceEnt = &g_entities[tr.entityNum];
 
 		if (traceEnt)
 		{

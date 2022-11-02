@@ -31,7 +31,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean PM_CrouchAnim(int anim);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 //---------------------------------------------------------
 void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)

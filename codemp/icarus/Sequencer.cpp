@@ -355,7 +355,7 @@ int CSequencer::ParseRun(CBlock* block)
 	char		newname[MAX_STRING_SIZE];
 
 	//Get the name and format it
-	COM_StripExtension(static_cast<char*>(block->GetMemberData(0)), (char*)newname, sizeof newname);
+	COM_StripExtension(static_cast<char*>(block->GetMemberData(0)), newname, sizeof newname);
 
 	//Get the file from the game engine
 	const int buffer_size = m_ie->I_LoadFile(newname, (void**)&buffer);

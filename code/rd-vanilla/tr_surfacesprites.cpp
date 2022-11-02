@@ -1312,7 +1312,7 @@ static void RB_DrawEffectSurfaceSprites(shaderStage_t* stage, shaderCommands_t* 
 			for (posj = 0; posj < 1.0 - posi; posj += step)
 			{
 				effecttime = (tr.refdef.time + 10000.0 * randomchart[randomindex]) / stage->ss->fxDuration;
-				effectpos = (float)effecttime - static_cast<int>(effecttime);
+				effectpos = effecttime - static_cast<int>(effecttime);
 
 				randomindex2 = randomindex + effecttime;
 				randomindex += randominterval;

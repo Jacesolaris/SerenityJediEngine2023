@@ -2059,18 +2059,13 @@ static bool Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 		else if (false)
 #endif
 		{
-			//pilot pressed the "weapon link" toggle button
-			//playerState_t *pilotPS;
 #ifdef _JK2MP
 			bgEntity_t* rider = nullptr;
 			if (parent->s.owner != ENTITYNUM_NONE)
 			{
 				rider = PM_BGEntForNum(parent->s.owner); //&g_entities[parent->r.ownerNum];
 			}
-			//pilotPS = rider->playerState;
 #else
-			//gentity_t *rider = parent->owner;
-			//pilotPS = &rider->client->ps;
 #endif
 			if (!pVeh->linkWeaponToggleHeld) //so we don't hold it down and toggle it back and forth
 			{

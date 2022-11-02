@@ -56,7 +56,7 @@ const int FROZEN_TIME = 5000;
 extern qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self);
 extern int wp_saber_must_bolt_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point,
 	int r_saber_num, int r_blade_num);
-extern int wp_player_must_dodge(gentity_t* self, const gentity_t* shooter);
+extern int wp_player_must_dodge(const gentity_t* self, const gentity_t* shooter);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern void g_missile_reflect_effect(const gentity_t* ent, vec3_t org, vec3_t dir);
 extern void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t forcePower, int overrideAmt);
@@ -826,7 +826,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 	qboolean render_impact = qtrue;
 	vec3_t start, end;
 	trace_t tr;
-	gentity_t* traceEnt, * tent;
+	gentity_t* traceEnt;
 	const float shotRange = 8192;
 
 	const vec3_t shotMaxs = { DISRUPTOR_SHOT_SIZE, DISRUPTOR_SHOT_SIZE, DISRUPTOR_SHOT_SIZE };
@@ -949,7 +949,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 	}
 
 	// always render a shot beam, doing this the old way because I don't much feel like overriding the effect.
-	tent = G_TempEntity(tr.endpos, EV_DISRUPTOR_MAIN_SHOT);
+	gentity_t* tent = G_TempEntity(tr.endpos, EV_DISRUPTOR_MAIN_SHOT);
 	VectorCopy(muzzle, tent->s.origin2);
 	tent->s.eventParm = ent->s.number;
 
@@ -1047,7 +1047,6 @@ void WP_DisruptorAltFire(gentity_t* ent)
 	vec3_t start;
 	vec3_t muzzle2;
 	trace_t tr;
-	gentity_t* tent;
 	int traces = DISRUPTOR_ALT_TRACES;
 	qboolean fullCharge = qfalse;
 
@@ -1191,7 +1190,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 		}
 
 		// always render a shot beam, doing this the old way because I don't much feel like overriding the effect.
-		tent = G_TempEntity(tr.endpos, EV_DISRUPTOR_SNIPER_SHOT);
+		gentity_t* tent = G_TempEntity(tr.endpos, EV_DISRUPTOR_SNIPER_SHOT);
 		VectorCopy(muzzle, tent->s.origin2);
 		tent->s.shouldtarget = fullCharge;
 		tent->s.eventParm = ent->s.number;

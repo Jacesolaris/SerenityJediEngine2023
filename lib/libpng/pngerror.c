@@ -264,7 +264,7 @@ png_warning_parameter_signed(png_warning_parameters p, int number, int format,
 	char buffer[PNG_NUMBER_BUFFER_SIZE];
 
 	/* Avoid overflow by doing the negate in a png_alloc_size_t: */
-	png_alloc_size_t u = (png_alloc_size_t)value;
+	png_alloc_size_t u = value;
 	if (value < 0)
 		u = ~u + 1;
 
@@ -846,7 +846,7 @@ png_get_error_ptr(png_const_structrp png_ptr)
 	if (png_ptr == NULL)
 		return NULL;
 
-	return (png_voidp)png_ptr->error_ptr;
+	return png_ptr->error_ptr;
 }
 
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED

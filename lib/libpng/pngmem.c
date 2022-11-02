@@ -85,7 +85,7 @@ PNG_FUNCTION(png_voidp /* PRIVATE */,
 				return png_ptr->malloc_fn(png_constcast(png_structrp, png_ptr), size);
 
 #endif
-			return malloc((size_t)size);
+			return malloc(size);
 			/* checked for truncation above */
 		}
 	return NULL;

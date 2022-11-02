@@ -525,14 +525,11 @@ animNumber_t QINLINE PM_GetWeaponReadyAnim(void)
 		}
 		return WeaponAimingAnim[pm->ps->weapon];
 	}
-	else
+	if (pm->ps->eFlags & EF_DUAL_WEAPONS && pm->ps->weapon == WP_BRYAR_PISTOL)
 	{
-		if (pm->ps->eFlags & EF_DUAL_WEAPONS && pm->ps->weapon == WP_BRYAR_PISTOL)
-		{
-			return WeaponReadyAnim2[pm->ps->weapon];
-		}
-		return WeaponReadyAnim[pm->ps->weapon];
+		return WeaponReadyAnim2[pm->ps->weapon];
 	}
+	return WeaponReadyAnim[pm->ps->weapon];
 }
 
 int PM_ReadyPoseForSaberAnimLevelBOT(void);

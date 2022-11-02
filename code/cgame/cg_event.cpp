@@ -340,8 +340,7 @@ An entity has an event value
 
 void CG_EntityEvent(centity_t* cent, vec3_t position)
 {
-	vec3_t axis[3];
-	const char* s, * s2;
+	const char* s;
 	vec3_t dir;
 
 	entityState_t* es = &cent->currentState;
@@ -990,6 +989,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_PLAY_EFFECT:
 		DEBUGNAME("EV_PLAY_EFFECT");
 		{
+			vec3_t axis[3];
 			const bool portalEnt = !!es->isPortalEnt;
 			//the fx runner spawning this effect is within a skyportal, so only render this effect within that portal.
 
@@ -1056,6 +1056,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 			if (s && s[0])
 			{
+				const char* s2;
 				if (cent->gent->delay)
 				{
 					s2 = CG_ConfigString(CS_EFFECTS + cent->gent->delay);

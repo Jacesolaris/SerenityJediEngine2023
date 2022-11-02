@@ -1500,7 +1500,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, Colli
 
 		if (ghoul2[i].mCustomShader && ghoul2[i].mCustomShader != -20) //rww - -20 is a server instance (hack)
 		{
-			cust_shader = (shader_t*)R_GetShaderByHandle(ghoul2[i].mCustomShader);
+			cust_shader = R_GetShaderByHandle(ghoul2[i].mCustomShader);
 		}
 		else
 		{
@@ -1646,7 +1646,7 @@ void* G2_FindSurface(void* mod_t, int index, int lod)
 	// we are now looking at the offset array
 	current += indexes->offsets[index];
 
-	return (void*)current;
+	return current;
 }
 
 #define SURFACE_SAVE_BLOCK_SIZE	sizeof(surfaceInfo_t)

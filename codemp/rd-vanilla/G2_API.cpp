@@ -2642,7 +2642,7 @@ char* G2API_GetSurfaceName(CGhoul2Info_v& ghoul2, int modelIndex, int surfNumber
 			return noSurface;
 		}
 
-		surf = static_cast<mdxmSurface_t*>(G2_FindSurface((void*)mod, surfNumber, 0));
+		surf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, surfNumber, 0));
 		if (surf)
 		{
 			mdxmSurfHierarchy_t* surf_info;

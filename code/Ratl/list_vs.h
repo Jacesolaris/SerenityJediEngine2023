@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // ----
 // The list class supports ordered insertion and deletion in O(1) constant time.
 // It simulates a linked list of pointers by allocating free spots in a pool and
-// maintaining "links" as indicies to the pool array objects.
+// maintaining "links" as indices to the pool array objects.
 //
 //
 //
@@ -63,6 +63,7 @@ namespace ratl
 		int		mPrev;
 	};
 
+	int mNew;
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The List Class
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +71,7 @@ namespace ratl
 	class list_base : public ratl_base
 	{
 	public:
-		using TStorageTraits = typename T;
+		using TStorageTraits = T;
 		using TTValue = typename T::TValue;
 		////////////////////////////////////////////////////////////////////////////////////
 		// Capacity Enum
@@ -84,13 +85,13 @@ namespace ratl
 
 		int				mFront;				// The Beginning Of The List
 		int				mBack;				// The End Of The List
-		static const int NULL_NODE = -1;
+		static constexpr int null_node = -1;
 
 	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		////////////////////////////////////////////////////////////////////////////////////
-		list_base() : mFront(NULL_NODE), mBack(NULL_NODE)
+		list_base() : mFront(null_node), mBack(null_node)
 		{
 		}
 
@@ -108,7 +109,7 @@ namespace ratl
 		bool		empty() const
 		{
 			assert(mFront != NULL_NODE || size() == 0);
-			return mFront == NULL_NODE;
+			return mFront == null_node;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -124,8 +125,8 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		void		clear()
 		{
-			mFront = NULL_NODE;
-			mBack = NULL_NODE;
+			mFront = null_node;
+			mBack = null_node;
 			mPool.clear();
 		}
 
@@ -181,7 +182,7 @@ namespace ratl
 		public:
 			// Constructors
 			//--------------
-			iterator() : mLoc(0), mOwner(0)
+			iterator() : mLoc(0), mOwner(nullptr)
 			{}
 			iterator(list_base* p, int t) : mLoc(t), mOwner(p)
 			{}
@@ -283,7 +284,7 @@ namespace ratl
 		public:
 			// Constructors
 			//--------------
-			const_iterator() : mLoc(0), mOwner(0)
+			const_iterator() : mLoc(0), mOwner(nullptr)
 			{}
 			const_iterator(const list_base* p, int t) : mLoc(t), mOwner(p)
 			{}
@@ -431,7 +432,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		iterator	end()
 		{
-			return iterator(this, NULL_NODE);
+			return iterator(this, null_node);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -439,7 +440,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		const_iterator	end() const
 		{
-			return const_iterator(this, NULL_NODE);
+			return const_iterator(this, null_node);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -566,14 +567,14 @@ namespace ratl
 
 			// LINK: (Prev)<-(At)--(Next)
 			//--------------------------------------------
-			if (Next != NULL_NODE)
+			if (Next != null_node)
 			{
 				T::node(mPool[Next]).mPrev = Prev;
 			}
 
 			// LINK: (Prev)--(At)->(Next)
 			//--------------------------------------------
-			if (Prev != NULL_NODE)
+			if (Prev != null_node)
 			{
 				T::node(mPool[Prev]).mNext = Next;
 			}
@@ -609,26 +610,26 @@ namespace ratl
 			assert(it.mOwner == this);	// Iterators must be mixed up, this is from a different list.
 
 			int		Next = it.mLoc;
-			int		Prev = NULL_NODE;
-			if (Next != NULL_NODE)
+			int		prev;
+			if (Next != null_node)
 			{
-				Prev = T::node(mPool[Next]).mPrev;
+				prev = T::node(mPool[Next]).mPrev;
 			}
 			else
 			{
-				Prev = mBack;
+				prev = mBack;
 			}
 
 			assert(nNew != Next && nNew != Prev);
 
 			// LINK: (Prev)<-(New)->(Next)
 			//--------------------------------------------
-			T::node(mPool[nNew]).mPrev = Prev;
+			T::node(mPool[nNew]).mPrev = prev;
 			T::node(mPool[nNew]).mNext = Next;
 
 			// LINK:         (New)<-(Next)
 			//--------------------------------------------
-			if (Next != NULL_NODE)
+			if (Next != null_node)
 			{
 				T::node(mPool[Next]).mPrev = nNew;
 				assert(T::node(mPool[Next]).mPrev != T::node(mPool[Next]).mNext);
@@ -640,9 +641,9 @@ namespace ratl
 
 			// LINK: (Prev)->(New)
 			//--------------------------------------------
-			if (Prev != NULL_NODE)
+			if (prev != null_node)
 			{
-				T::node(mPool[Prev]).mNext = nNew;
+				T::node(mPool[prev]).mNext = nNew;
 				assert(T::node(mPool[Prev]).mPrev != T::node(mPool[Prev]).mNext);
 			}
 			else
@@ -658,9 +659,9 @@ namespace ratl
 		{
 			assert(it.mOwner == this);	// Iterators must be mixed up, this is from a different list.
 
-			int		Next = NULL_NODE;//it.mLoc;
+			int		Next = null_node;//it.mLoc;
 			int		Prev = it.mLoc;//NULL_NODE;
-			if (Prev != NULL_NODE)
+			if (Prev != null_node)
 			{
 				Next = T::node(mPool[Prev]).mNext;
 			}
@@ -678,7 +679,7 @@ namespace ratl
 
 			// LINK:         (New)<-(Next)
 			//--------------------------------------------
-			if (Next != NULL_NODE)
+			if (Next != null_node)
 			{
 				T::node(mPool[Next]).mPrev = nNew;
 				assert(T::node(mPool[Next]).mPrev != T::node(mPool[Next]).mNext);
@@ -690,7 +691,7 @@ namespace ratl
 
 			// LINK: (Prev)->(New)
 			//--------------------------------------------
-			if (Prev != NULL_NODE)
+			if (Prev != null_node)
 			{
 				T::node(mPool[Prev]).mNext = nNew;
 				assert(T::node(mPool[Prev]).mPrev != T::node(mPool[Prev]).mNext);
@@ -706,7 +707,7 @@ namespace ratl
 	class list_vs : public list_base<storage::value_semantics_node<T, ARG_CAPACITY, list_node> >
 	{
 	public:
-		using TStorageTraits = typename storage::value_semantics_node<T, ARG_CAPACITY, list_node>;
+		using TStorageTraits = storage::value_semantics_node<T, ARG_CAPACITY, list_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		list_vs() {}
@@ -716,7 +717,7 @@ namespace ratl
 	class list_os : public list_base<storage::object_semantics_node<T, ARG_CAPACITY, list_node> >
 	{
 	public:
-		using TStorageTraits = typename storage::object_semantics_node<T, ARG_CAPACITY, list_node>;
+		using TStorageTraits = storage::object_semantics_node<T, ARG_CAPACITY, list_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		list_os() {}
@@ -726,7 +727,7 @@ namespace ratl
 	class list_is : public list_base<storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node> >
 	{
 	public:
-		using TStorageTraits = typename storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node>;
+		using TStorageTraits = storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, list_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;

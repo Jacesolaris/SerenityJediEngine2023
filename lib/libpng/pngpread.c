@@ -280,8 +280,8 @@ png_push_read_chunk(png_structrp png_ptr, png_inforp info_ptr)
 		png_ptr->process_mode = PNG_READ_IDAT_MODE;
 		png_push_have_info(png_ptr, info_ptr);
 		png_ptr->zstream.avail_out =
-			(uInt)PNG_ROWBYTES(png_ptr->pixel_depth,
-				png_ptr->iwidth) + 1;
+			(PNG_ROWBYTES(png_ptr->pixel_depth,
+			              png_ptr->iwidth)) + 1;
 		png_ptr->zstream.next_out = png_ptr->row_buf;
 		return;
 	}
@@ -454,10 +454,10 @@ png_push_crc_finish(png_structrp png_ptr)
 		 * - it will break on either 16 or 64 bit platforms.
 		 */
 		if (skip_length < save_size)
-			save_size = (png_size_t)skip_length;
+			save_size = skip_length;
 
 		else
-			skip_length = (png_uint_32)save_size;
+			skip_length = save_size;
 
 		png_calculate_crc(png_ptr, png_ptr->save_buffer_ptr, save_size);
 
@@ -475,10 +475,10 @@ png_push_crc_finish(png_structrp png_ptr)
 		 * the same problem exists as above and the same solution.
 		 */
 		if (skip_length < save_size)
-			save_size = (png_size_t)skip_length;
+			save_size = skip_length;
 
 		else
-			skip_length = (png_uint_32)save_size;
+			skip_length = save_size;
 
 		png_calculate_crc(png_ptr, png_ptr->current_buffer_ptr, save_size);
 
@@ -567,7 +567,7 @@ png_push_save_buffer(png_structrp png_ptr)
 		const png_size_t new_max = png_ptr->save_buffer_size + png_ptr->current_buffer_size + 256;
 		png_bytep old_buffer = png_ptr->save_buffer;
 		png_ptr->save_buffer = (png_bytep)png_malloc_warn(png_ptr,
-			(png_size_t)new_max);
+			new_max);
 
 		if (png_ptr->save_buffer == NULL)
 		{
@@ -644,10 +644,10 @@ png_push_read_IDAT(png_structrp png_ptr)
 		 * will break on either 16 or 64 bit platforms.
 		 */
 		if (idat_size < save_size)
-			save_size = (png_size_t)idat_size;
+			save_size = idat_size;
 
 		else
-			idat_size = (png_uint_32)save_size;
+			idat_size = save_size;
 
 		png_calculate_crc(png_ptr, png_ptr->save_buffer_ptr, save_size);
 
@@ -670,10 +670,10 @@ png_push_read_IDAT(png_structrp png_ptr)
 		 * larger - this cannot overflow.
 		 */
 		if (idat_size < save_size)
-			save_size = (png_size_t)idat_size;
+			save_size = idat_size;
 
 		else
-			idat_size = (png_uint_32)save_size;
+			idat_size = save_size;
 
 		png_calculate_crc(png_ptr, png_ptr->current_buffer_ptr, save_size);
 
@@ -708,7 +708,7 @@ png_process_IDAT_data(png_structrp png_ptr, png_bytep buffer,
 	 */
 	png_ptr->zstream.next_in = buffer;
 	/* TODO: WARNING: TRUNCATION ERROR: DANGER WILL ROBINSON: */
-	png_ptr->zstream.avail_in = (uInt)buffer_length;
+	png_ptr->zstream.avail_in = buffer_length;
 
 	/* Keep going until the decompressed data is all processed
 	 * or the stream marked as finished.
@@ -724,8 +724,8 @@ png_process_IDAT_data(png_structrp png_ptr, png_bytep buffer,
 		if (!(png_ptr->zstream.avail_out > 0))
 		{
 			/* TODO: WARNING: TRUNCATION ERROR: DANGER WILL ROBINSON: */
-			png_ptr->zstream.avail_out = (uInt)(PNG_ROWBYTES(png_ptr->pixel_depth,
-				png_ptr->iwidth) + 1);
+			png_ptr->zstream.avail_out = PNG_ROWBYTES(png_ptr->pixel_depth,
+			                                          png_ptr->iwidth) + 1;
 
 			png_ptr->zstream.next_out = png_ptr->row_buf;
 		}

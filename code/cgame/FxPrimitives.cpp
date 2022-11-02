@@ -599,14 +599,14 @@ void CParticle::UpdateAlpha()
 	if (mFlags & FX_USE_ALPHA)
 	{
 		// should use this when using art that has an alpha channel
-		ClampVec(mRefEnt.angles, (byte*)&mRefEnt.shaderRGBA);
+		ClampVec(mRefEnt.angles, reinterpret_cast<byte*>(&mRefEnt.shaderRGBA));
 		mRefEnt.shaderRGBA[3] = static_cast<byte>(perc1 * 0xff);
 	}
 	else
 	{
 		// Modulate the rgb fields by the alpha value to do the fade, works fine for additive blending
 		VectorScale(mRefEnt.angles, perc1, mRefEnt.angles);
-		ClampVec(mRefEnt.angles, (byte*)&mRefEnt.shaderRGBA);
+		ClampVec(mRefEnt.angles, reinterpret_cast<byte*>(&mRefEnt.shaderRGBA));
 	}
 }
 
@@ -824,10 +824,10 @@ bool CLine::Update()
 
 		VectorAdd(mOrigin1, mOrgOffset, mOrigin1); //add the offset to the bolt point
 
-		vec3_t end;
 		trace_t trace;
 		if (mFlags & FX_APPLY_PHYSICS)
 		{
+			vec3_t end;
 			VectorMA(mOrigin1, 2048, ax[0], end);
 
 			theFxHelper.Trace(&trace, mOrigin1, nullptr, nullptr, end, mClientID, MASK_SHOT);
@@ -1377,7 +1377,7 @@ void CEmitter::Draw()
 	//	either choke up the effects system on a fast machine, or look really nasty on a low end one.
 	if (mFlags & FX_EMIT_FX)
 	{
-		vec3_t org, v;
+		vec3_t org;
 
 		constexpr auto TRAIL_RATE = 8; // we "think" at about a 60hz rate;
 
@@ -1389,6 +1389,7 @@ void CEmitter::Draw()
 
 		for (int t = mOldTime; t <= theFxHelper.mTime; t += TRAIL_RATE)
 		{
+			vec3_t v;
 			dif += TRAIL_RATE;
 
 			// ?Not sure if it's better to update this before or after updating the origin
@@ -1939,7 +1940,6 @@ void CPoly::CalcRotateMatrix()
 //--------------------------------
 void CPoly::Rotate()
 {
-	vec3_t temp[MAX_CPOLY_VERTS];
 	const float dif = abs(mLastFrameTime - theFxHelper.mFrameTime);
 
 	// Very generous check with frameTimes
@@ -1951,6 +1951,7 @@ void CPoly::Rotate()
 	// Multiply our rotation matrix by each of the offset verts to get their new position
 	for (int i = 0; i < mCount; i++)
 	{
+		vec3_t temp[MAX_CPOLY_VERTS];
 		VectorRotate(mOrg[i], mRot, temp[i]);
 		VectorCopy(temp[i], mOrg[i]);
 	}
@@ -2175,7 +2176,7 @@ const float BEZIER_RESOLUTION = 16.0f;
 void CBezier::Draw(void)
 {
 	vec3_t pos, old_pos;
-	const float incr = 1.0f / BEZIER_RESOLUTION, tex = 1.0f;
+	const float incr = 1.0f / BEZIER_RESOLUTION;
 
 	VectorCopy(mOrigin1, old_pos);
 
@@ -2191,6 +2192,7 @@ void CBezier::Draw(void)
 
 	for (float mu = incr; mu <= 1.0f; mu += incr)
 	{
+		const float tex = 1.0f;
 		//Four point curve
 		const float mum1 = 1 - mu;
 		const float mum13 = mum1 * mum1 * mum1;
@@ -2272,7 +2274,7 @@ void CFlash::Draw(void)
 {
 	// Interestingly, if znear is set > than this, then the flash
 	// doesn't appear at all.
-	const float FLASH_DISTANCE_FROM_VIEWER = 8.0f;
+	constexpr float FLASH_DISTANCE_FROM_VIEWER = 8.0f;
 
 	mRefEnt.reType = RT_SPRITE;
 

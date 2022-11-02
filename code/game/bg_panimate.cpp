@@ -95,7 +95,7 @@ extern qboolean G_TryingJumpForwardAttack(const gentity_t* self, const usercmd_t
 extern qboolean G_TryingLungeAttack(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingPullAttack(const gentity_t* self, const usercmd_t* cmd, qboolean amPulling);
 extern qboolean g_in_cinematic_saber_anim(const gentity_t* self);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_InSaberAnim(int anim);
 extern int g_crosshairEntNum;
 extern int PM_ReturnforQuad(int quad);
@@ -2673,30 +2673,6 @@ saberMoveName_t PM_MBlocktheAttack(const int move)
 	}
 }
 
-int G_MBlocktheAttack(const int move)
-{
-	switch (move)
-	{
-	case LS_REFLECT_ATTACK_FRONT:
-	case LS_PARRY_FRONT:
-	case LS_PARRY_WALK:
-	case LS_PARRY_WALK_DUAL:
-	case LS_PARRY_WALK_STAFF:
-	case LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case LS_REFLECT_ATTACK_RIGHT:
-	case LS_PARRY_UR:
-	default:
-		return LS_BLOCK_FULL_RIGHT; //push up, slightly to right
-	case LS_REFLECT_ATTACK_LEFT:
-	case LS_PARRY_UL:
-		return LS_BLOCK_FULL_LEFT; //push up and to left
-	case LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
 
 saberMoveName_t PM_PerfectBlocktheAttack(const int move)
 {
@@ -3011,7 +2987,7 @@ int PM_SaberAttackChainAngle(const int move1, const int move2)
 
 qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NONE)
 {
-	if ((pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()))
+	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
 	{
 		if (pm->ps->forceRageRecoveryTime > level.time)
 		{//rage recovery, only 1 swing at a time (tired)
@@ -3019,29 +2995,24 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 			{//swung once
 				return qtrue;
 			}
-			else
-			{//allow one attack
-				return qfalse;
-			}
+			//allow one attack
+			return qfalse;
 		}
-		else if ((pm->ps->forcePowersActive & (1 << FP_RAGE)))
+		if (pm->ps->forcePowersActive & 1 << FP_RAGE)
 		{//infinite chaining when raged
 			return qfalse;
 		}
-		else if (pm->ps->saber[0].maxChain == -1)
+		if (pm->ps->saber[0].maxChain == -1)
 		{
 			return qfalse;
 		}
-		else if (pm->ps->saber[0].maxChain != 0)
+		if (pm->ps->saber[0].maxChain != 0)
 		{
 			if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
 			{
 				return qtrue;
 			}
-			else
-			{
-				return qfalse;
-			}
+			return qfalse;
 		}
 
 		if ((pm->ps->saberAnimLevel == SS_DESANN
@@ -3063,29 +3034,24 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 			{//swung once
 				return qtrue;
 			}
-			else
-			{//allow one attack
-				return qfalse;
-			}
+			//allow one attack
+			return qfalse;
 		}
-		else if ((pm->ps->forcePowersActive & (1 << FP_RAGE)))
+		if (pm->ps->forcePowersActive & 1 << FP_RAGE)
 		{//infinite chaining when raged
 			return qfalse;
 		}
-		else if (pm->ps->saber[0].maxChain == -1)
+		if (pm->ps->saber[0].maxChain == -1)
 		{
 			return qfalse;
 		}
-		else if (pm->ps->saber[0].maxChain != 0)
+		if (pm->ps->saber[0].maxChain != 0)
 		{
 			if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
 			{
 				return qtrue;
 			}
-			else
-			{
-				return qfalse;
-			}
+			return qfalse;
 		}
 
 		if (pm->ps->saberAnimLevel == SS_DESANN || pm->ps->saberAnimLevel == SS_TAVION)
@@ -3096,11 +3062,11 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 		{
 			return qfalse;
 		}
-		else if (pm->ps->saberAnimLevel == SS_DUAL)
+		if (pm->ps->saberAnimLevel == SS_DUAL)
 		{
 			return qfalse;
 		}
-		else if (pm->ps->saberAnimLevel == FORCE_LEVEL_3)
+		if (pm->ps->saberAnimLevel == FORCE_LEVEL_3)
 		{
 			if (curmove == LS_NONE || newmove == LS_NONE)
 			{
@@ -3115,12 +3081,12 @@ qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NO
 			}
 			else if (pm->ps->saberAttackChainCount > 0)
 			{
-				int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+				const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
 				if (chainAngle < 135 || chainAngle > 215)
 				{//if trying to chain to a move that doesn't continue the momentum
 					return qtrue;
 				}
-				else if (chainAngle == 180)
+				if (chainAngle == 180)
 				{//continues the momentum perfectly, allow it to chain 66% of the time
 					if (pm->ps->saberAttackChainCount > 1)
 					{
@@ -5130,101 +5096,98 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 			}
 			return LS_A_T2B;
 		}
-		else
-		{//not moving in any direction
+		//not moving in any direction
 		if (PM_SaberInParry(curmove) || PM_SaberInBrokenParry(curmove))
+		{
+			//parries, return to the start position if a direction isn't given.
+			newmove = LS_READY;
+		}
+		else if (PM_SaberInBounce(curmove) || PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+		{
+			//bounces, parries, etc return to the start position if a direction isn't given.
+			if (pm->ps->clientNum && !PM_ControlledByPlayer())
 			{
-				//parries, return to the start position if a direction isn't given.
+				//use NPC random
 				newmove = LS_READY;
 			}
-			else if (PM_SaberInBounce(curmove) || PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+			else
 			{
-				//bounces, parries, etc return to the start position if a direction isn't given.
-				if (pm->ps->clientNum && !PM_ControlledByPlayer())
+				//player uses chain-attack
+				newmove = saberMoveData[curmove].chain_attack;
+			}
+			if (PM_SaberKataDone(curmove, newmove))
+			{
+				return saberMoveData[curmove].chain_idle;
+			}
+			return newmove;
+		}
+		else if (PM_SaberInKnockaway(curmove))
+		{//bounces should go to their default attack if you don't specify a direction but are attacking
+			if (pm->ps->clientNum && !PM_ControlledByPlayer() && Q_irand(0, 3))
+			{
+				//use NPC random
+				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
+			}
+			else
+			{
+				if (pm->ps->saberAnimLevel == SS_FAST || pm->ps->saberAnimLevel == SS_TAVION)
 				{
-					//use NPC random
-					newmove = LS_READY;
+					//player is in fast attacks, so come right back down from the same spot
+					newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
 				}
 				else
 				{
-					//player uses chain-attack
+					//use a transition to wrap to another attack from a different dir
 					newmove = saberMoveData[curmove].chain_attack;
 				}
-				if (PM_SaberKataDone(curmove, newmove))
-				{
-					return saberMoveData[curmove].chain_idle;
-				}
-				return newmove;
 			}
-			else if (PM_SaberInKnockaway(curmove))
+			if (PM_SaberKataDone(curmove, newmove))
 			{
-				//bounces should go to their default attack if you don't specify a direction but are attacking
-				if (pm->ps->clientNum && !PM_ControlledByPlayer() && Q_irand(0, 3))
-				{
-					//use NPC random
-					newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-				}
-				else
-				{
-					if (pm->ps->saberAnimLevel == SS_FAST || pm->ps->saberAnimLevel == SS_TAVION)
-					{
-						//player is in fast attacks, so come right back down from the same spot
-						newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
-					}
-					else
-					{
-						//use a transition to wrap to another attack from a different dir
-						newmove = saberMoveData[curmove].chain_attack;
-					}
-				}
-				if (PM_SaberKataDone(curmove, newmove))
-				{
-					return saberMoveData[curmove].chain_idle;
-				}
-				return newmove;
+				return saberMoveData[curmove].chain_idle;
 			}
-			else if (curmove == LS_A_FLIP_STAB
-				|| curmove == LS_A_FLIP_SLASH
-				|| curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
-			{
-				//Not moving at all, not too busy to attack
-				//checked all special attacks, if we're in a parry, attack from that move
-				const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
+			return newmove;
+		}
+		else if (curmove == LS_A_FLIP_STAB
+			|| curmove == LS_A_FLIP_SLASH
+			|| curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
+		{
+			//Not moving at all, not too busy to attack
+			//checked all special attacks, if we're in a parry, attack from that move
+			const saberMoveName_t parryAttackMove = PM_CheckPlayerAttackFromParry(curmove);
 
-				if (parryAttackMove != LS_NONE)
-				{
-					return parryAttackMove;
-				}
-				//check regular attacks
-				if (pm->ps->clientNum || g_saberAutoAim->integer)
-				{
-					//auto-aim
-					if (pm->gent && pm->gent->enemy)
-					{
-						//based on enemy position, pick a proper attack
-						const saberMoveName_t autoMove = PM_AttackForEnemyPos(
-							qtrue, static_cast<qboolean>(pm->ps->clientNum >= MAX_CLIENTS));
-						if (autoMove != LS_INVALID)
-						{
-							return autoMove;
-						}
-					}
-					else if (fabs(pm->ps->viewangles[0]) > 30)
-					{
-						//looking far up or far down uses the top to bottom attack, presuming you want a vertical attack
-						return LS_A_T2B;
-					}
-				}
-				else
-				{
-					//for now, just pick a random attack
-					return static_cast<saberMoveName_t>(Q_irand(LS_A_TL2BR, LS_A_T2B));
-				}
-			}
-			else if (curmove == LS_READY)
+			if (parryAttackMove != LS_NONE)
 			{
-				newmove = LS_A_T2B; //decided we don't like random attacks when idle, use an overhead instead.
+				return parryAttackMove;
 			}
+			//check regular attacks
+			if (pm->ps->clientNum || g_saberAutoAim->integer)
+			{
+				//auto-aim
+				if (pm->gent && pm->gent->enemy)
+				{
+					//based on enemy position, pick a proper attack
+					const saberMoveName_t autoMove = PM_AttackForEnemyPos(
+						qtrue, static_cast<qboolean>(pm->ps->clientNum >= MAX_CLIENTS));
+					if (autoMove != LS_INVALID)
+					{
+						return autoMove;
+					}
+				}
+				else if (fabs(pm->ps->viewangles[0]) > 30)
+				{
+					//looking far up or far down uses the top to bottom attack, presuming you want a vertical attack
+					return LS_A_T2B;
+				}
+			}
+			else
+			{
+				//for now, just pick a random attack
+				return static_cast<saberMoveName_t>(Q_irand(LS_A_TL2BR, LS_A_T2B));
+			}
+		}
+		else if (curmove == LS_READY)
+		{
+			return static_cast<saberMoveName_t>(Q_irand(LS_A_TL2BR, LS_A_T2B));
 		}
 	}
 	return newmove;
@@ -5808,7 +5771,7 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 
 	if (gent
 		&& gent->client
-		&& gent->client->ps.stats[STAT_WEAPONS] & (1 << WP_SCEPTER)
+		&& gent->client->ps.stats[STAT_WEAPONS] & 1 << WP_SCEPTER
 		&& gent->client->ps.dualSabers
 		&& saber_anim_level == SS_DUAL
 		&& gent->weaponModel[1])
@@ -6733,7 +6696,7 @@ void PM_TorsoAnimLightsaber()
 		}
 		return;
 	}
-	else if (!pm->ps->SaberActive() && pm->ps->SaberLength())
+	if (!pm->ps->SaberActive() && pm->ps->SaberLength())
 	{
 		if (!G_IsRidingVehicle(pm->gent))
 		{
@@ -7122,7 +7085,7 @@ void PM_TorsoAnimLightsaber()
 					|| pm->ps->torsoAnimTimer < 300)
 				{
 					//don't interrupt a force power anim
-					if ((pm->ps->torsoAnim != BOTH_LOSE_SABER && !PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+					if (pm->ps->torsoAnim != BOTH_LOSE_SABER && !PM_SaberInMassiveBounce(pm->ps->torsoAnim)
 						|| !pm->ps->torsoAnimTimer)
 					{
 						switch (pm->gent->client->ps.saberAnimLevel)
@@ -7414,7 +7377,7 @@ void PM_TorsoAnimation(void)
 					if (!PM_ForceAnim(pm->ps->torsoAnim) || pm->ps->torsoAnimTimer < 300)
 					{
 						//don't interrupt a force power anim
-						if ((pm->ps->torsoAnim != BOTH_LOSE_SABER && !PM_SaberInMassiveBounce(pm->ps->torsoAnim))
+						if (pm->ps->torsoAnim != BOTH_LOSE_SABER && !PM_SaberInMassiveBounce(pm->ps->torsoAnim)
 							|| !pm->ps->torsoAnimTimer)
 						{
 							switch (pm->gent->client->ps.saberAnimLevel)
@@ -8258,7 +8221,7 @@ void PM_TorsoAnimation(void)
 					else
 					{
 						//single pistols
-						if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy || (pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK))
+						if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy || pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_BLOCK)
 						{
 							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
 						}

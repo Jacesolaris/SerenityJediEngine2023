@@ -120,7 +120,7 @@ or generates more localentities along a trail.
 CG_FragmentBounceSound
 ================
 */
-void CG_FragmentBounceSound(localEntity_t* le, trace_t* trace)
+void CG_FragmentBounceSound(localEntity_t* le, const trace_t* trace)
 {
 	// half the fragments will make a bounce sounds
 	if (rand() & 1)
@@ -162,7 +162,7 @@ void CG_FragmentBounceSound(localEntity_t* le, trace_t* trace)
 CG_ReflectVelocity
 ================
 */
-void CG_ReflectVelocity(localEntity_t* le, trace_t* trace)
+void CG_ReflectVelocity(localEntity_t* le, const trace_t* trace)
 {
 	vec3_t velocity;
 
@@ -357,7 +357,7 @@ static void CG_AddPuff(localEntity_t* le)
 CG_AddLocalLight
 ================
 */
-static void CG_AddLocalLight(localEntity_t* le)
+static void CG_AddLocalLight(const localEntity_t* le)
 {
 	// There should be a light if this is being used, but hey...
 	if (le->light)
@@ -436,7 +436,7 @@ static void CG_AddFadeScaleModel(localEntity_t* le)
 
 // create a quad that doesn't use a refEnt.  Currently only for use with the DebugNav drawing so it doesn't have to use fx
 //------------------------------------------
-static void CG_AddQuad(localEntity_t* le)
+static void CG_AddQuad(const localEntity_t* le)
 {
 	polyVert_t verts[4];
 
@@ -477,7 +477,7 @@ static void CG_AddQuad(localEntity_t* le)
 
 // create a sprite that doesn't use a refEnt.  Currently only for use with the DebugNav drawing so it doesn't have to use fx
 //------------------------------------------
-static void CG_AddSprite(localEntity_t* le)
+static void CG_AddSprite(const localEntity_t* le)
 {
 	polyVert_t verts[4];
 

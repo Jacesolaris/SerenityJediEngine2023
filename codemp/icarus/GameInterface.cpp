@@ -53,7 +53,7 @@ int ICARUS_GetScript(const char* name, char** buf)
 	//Make sure the caller is valid
 
 	//Attempt to retrieve a precached script
-	bufferlist_t::iterator ei = ICARUS_BufferList.find((char*)name);
+	bufferlist_t::iterator ei = ICARUS_BufferList.find(name);
 
 	//Not found, check the disk
 	if (ei == ICARUS_BufferList.end())
@@ -62,7 +62,7 @@ int ICARUS_GetScript(const char* name, char** buf)
 			return 0;
 
 		//Script is now inserted, retrieve it and pass through
-		ei = ICARUS_BufferList.find((char*)name);
+		ei = ICARUS_BufferList.find(name);
 
 		if (ei == ICARUS_BufferList.end())
 		{
@@ -250,7 +250,7 @@ void ICARUS_FreeEnt(sharedEntity_t* ent)
 	{
 		char	temp[1024];
 
-		strncpy((char*)temp, ent->script_targetname, 1023);
+		strncpy(temp, ent->script_targetname, 1023);
 		temp[1023] = 0;
 
 		const entlist_t::iterator it = ICARUS_EntList.find(Q_strupr(temp));
@@ -321,10 +321,10 @@ void ICARUS_AssociateEnt(sharedEntity_t* ent)
 	if (VALIDSTRING(ent->script_targetname) == false)
 		return;
 
-	strncpy((char*)temp, ent->script_targetname, 1023);
+	strncpy(temp, ent->script_targetname, 1023);
 	temp[1023] = 0;
 
-	ICARUS_EntList[Q_strupr((char*)temp)] = ent->s.number;
+	ICARUS_EntList[Q_strupr(temp)] = ent->s.number;
 }
 
 /*
@@ -343,7 +343,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 	long		length;
 
 	//Make sure this isn't already cached
-	const bufferlist_t::iterator ei = ICARUS_BufferList.find((char*)name);
+	const bufferlist_t::iterator ei = ICARUS_BufferList.find(name);
 
 	// note special return condition here, if doing interrogate and we already have this file then we MUST return
 	//	false (which stops the interrogator proceeding), this not only saves some time, but stops a potential
@@ -494,7 +494,7 @@ void ICARUS_InterrogateScript(const char* filename)
 				sVal1 = static_cast<const char*>(block.GetMemberData(1));
 
 				//we can do this I guess since the roff is loaded on the server.
-				theROFFSystem.Cache((char*)sVal1, qfalse);
+				theROFFSystem.Cache(sVal1, qfalse);
 			}
 		}
 		break;
@@ -508,7 +508,7 @@ void ICARUS_InterrogateScript(const char* filename)
 				sVal1 = static_cast<const char*>(block.GetMemberData(1));
 
 				//we can do this I guess since the roff is loaded on the server.
-				theROFFSystem.Cache((char*)sVal1, qfalse);
+				theROFFSystem.Cache(sVal1, qfalse);
 			}
 			break;
 
@@ -517,7 +517,7 @@ void ICARUS_InterrogateScript(const char* filename)
 
 			sVal1 = static_cast<const char*>(block.GetMemberData(0));
 
-			COM_StripExtension(sVal1, (char*)temp, sizeof temp);
+			COM_StripExtension(sVal1, temp, sizeof temp);
 			ICARUS_InterrogateScript((const char*)&temp);
 
 			break;

@@ -2461,7 +2461,6 @@ void Cmd_CallVote_f(gentity_t* ent)
 	int				i;
 	char			arg1[MAX_CVAR_VALUE_STRING] = { 0 };
 	char			arg2[MAX_CVAR_VALUE_STRING] = { 0 };
-	voteString_t* vote;
 
 	// not allowed to vote at all
 	if (!g_allowVote.integer) {
@@ -2546,7 +2545,7 @@ void Cmd_CallVote_f(gentity_t* ent)
 	}
 
 validVote:
-	vote = &validVoteStrings[i];
+	voteString_t* vote = &validVoteStrings[i];
 	if (!(vote->validGT & 1 << level.gametype)) {
 		trap->SendServerCommand(ent - g_entities, va("print \"%s is not applicable in this gametype.\n\"", arg1));
 		return;
@@ -3180,30 +3179,23 @@ qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle)
 	{
 		return qfalse;
 	}
-	else if ((ent->client->saber[0].type == SABER_ASBACKHAND) && !(saberStyle == SS_STAFF))
+	if ((ent->client->saber[0].type == SABER_ASBACKHAND) && !(saberStyle == SS_STAFF))
 	{
 		return qfalse;
 	}
-	else
-	{//otherwise, check to see if the player has the skill to use this style
-		switch (saberStyle)
-		{
-		case SS_FAST:
-			return qtrue;
-			break;
-		default:
-			return qtrue;
-			break;
-		};
-	}
-
-	return qfalse;
+	//otherwise, check to see if the player has the skill to use this style
+	switch (saberStyle)
+	{
+	case SS_FAST:
+		return qtrue;
+	default:
+		return qtrue;
+	};
 }
 
 void Cmd_SaberAttackCycle_f(gentity_t* ent)
 {
 	int selectLevel = 0;
-	qboolean usingSiegeStyle = qfalse;
 
 	if (ent->client->ps.weapon != WP_SABER)
 	{
@@ -3272,7 +3264,7 @@ void Cmd_SaberAttackCycle_f(gentity_t* ent)
 	{ //we have a flag of useable stances so cycle through it instead
 		int i = selectLevel + 1;
 
-		usingSiegeStyle = qtrue;
+		qboolean usingSiegeStyle = qtrue;
 
 		while (i != selectLevel)
 		{ //cycle around upward til we hit the next style or end up back on this one
@@ -3296,10 +3288,9 @@ void Cmd_SaberAttackCycle_f(gentity_t* ent)
 	}
 	else
 	{//normal style selection
-		int attempts;
 		selectLevel++;
 
-		for (attempts = 0; attempts < SS_STAFF; attempts++)
+		for (int attempts = 0; attempts < SS_STAFF; attempts++)
 		{
 			if (selectLevel > SS_STAFF)
 			{
@@ -3891,7 +3882,7 @@ command_t commands[] = {
 	{"vote", Cmd_Vote_f, CMD_NOINTERMISSION},
 	{"where", Cmd_Where_f, CMD_NOINTERMISSION},
 };
-static const size_t numCommands = ARRAY_LEN(commands);
+static const size_t num_commands = ARRAY_LEN(commands);
 
 extern qboolean inGameCinematic;
 extern void Create_Autosave(vec3_t origin, int size, qboolean teleportPlayers);
@@ -4077,7 +4068,7 @@ void ClientCommand(int clientNum)
 		}
 	}
 
-	const command_t* command = (command_t*)Q_LinearSearch(cmd, commands, numCommands, sizeof commands[0], cmdcmp);
+	const command_t* command = (command_t*)Q_LinearSearch(cmd, commands, num_commands, sizeof commands[0], cmdcmp);
 	if (!command)
 	{
 		//trap->SendServerCommand(clientNum, va("print \"Unknown command %s\n\"", cmd));

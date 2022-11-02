@@ -5450,7 +5450,7 @@ static void UI_SetHexPicLevel(const menuDef_t* menu, const int forcePowerI, cons
 
 	// Find proper hex picture on menu
 	Com_sprintf(itemName, sizeof itemName, "%s_hexpic", powerEnums[forcePowerI].title);
-	itemDef_t* item = Menu_FindItemByName((menuDef_t*)menu, itemName);
+	itemDef_t* item = Menu_FindItemByName(menu, itemName);
 
 	// Now give it the proper hex graphic
 	if (item)
@@ -5469,7 +5469,7 @@ static void UI_SetHexPicLevel(const menuDef_t* menu, const int forcePowerI, cons
 		item->window.background = ui.R_RegisterShaderNoMip(itemGraphic);
 
 		Com_sprintf(itemName, sizeof itemName, "%s_fbutton", powerEnums[forcePowerI].title);
-		item = Menu_FindItemByName((menuDef_t*)menu, itemName);
+		item = Menu_FindItemByName(menu, itemName);
 		if (item)
 		{
 			if (goldFlag)

@@ -666,7 +666,7 @@ static void AS_ParseHeader(void)
 		case SET_KEYWORD_TYPE:
 			sscanf(parseBuffer + parsePos, "%s %s", tempBuffer, typeBuffer);
 
-			if (!Q_stricmp((const char*)typeBuffer, "ambientSet"))
+			if (!Q_stricmp(typeBuffer, "ambientSet"))
 			{
 				return;
 			}

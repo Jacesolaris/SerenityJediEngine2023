@@ -8237,35 +8237,32 @@ static void Jedi_Combat(void)
 					}
 					return;
 				}
-				else
+				if (com_outcast->integer == 1)
 				{
-					if (com_outcast->integer == 1)
+					if (NPCInfo->aiFlags & NPCAI_BLOCKED)
 					{
-						if (NPCInfo->aiFlags & NPCAI_BLOCKED)
+						//try to jump to the blockedTargetPosition
+						gentity_t* tempGoal = G_Spawn(); //ugh, this is NOT good...?
+						G_SetOrigin(tempGoal, NPCInfo->blockedTargetPosition);
+						gi.linkentity(tempGoal);
+						if (Jedi_TryJump(tempGoal))
 						{
-							//try to jump to the blockedTargetPosition
-							gentity_t* tempGoal = G_Spawn(); //ugh, this is NOT good...?
-							G_SetOrigin(tempGoal, NPCInfo->blockedTargetPosition);
-							gi.linkentity(tempGoal);
-							if (Jedi_TryJump(tempGoal))
-							{
-								//going to jump to the dest
-								G_FreeEntity(tempGoal);
-								return;
-							}
+							//going to jump to the dest
 							G_FreeEntity(tempGoal);
+							return;
 						}
-						else if (STEER::HasBeenBlockedFor(NPC, 3000))
+						G_FreeEntity(tempGoal);
+					}
+					else if (STEER::HasBeenBlockedFor(NPC, 3000))
+					{
+						//try to jump to the blockedDest
+						if (NPCInfo->blockedTargetEntity)
 						{
-							//try to jump to the blockedDest
-							if (NPCInfo->blockedTargetEntity)
-							{
-								NPC_TryJump(NPCInfo->blockedTargetEntity); // commented Out
-							}
-							else
-							{
-								NPC_TryJump(NPCInfo->blockedTargetPosition); // commented Out
-							}
+							NPC_TryJump(NPCInfo->blockedTargetEntity); // commented Out
+						}
+						else
+						{
+							NPC_TryJump(NPCInfo->blockedTargetPosition); // commented Out
 						}
 					}
 				}
@@ -8963,7 +8960,7 @@ void NPC_BSJedi_FollowLeader(void)
 		}
 	}
 
-	if ((com_outcast->integer == 1) && NPCInfo->goalEntity)
+	if (com_outcast->integer == 1 && NPCInfo->goalEntity)
 	{
 		trace_t	trace;
 
@@ -8972,7 +8969,7 @@ void NPC_BSJedi_FollowLeader(void)
 			return;
 		}
 
-		if (!NAV_CheckAhead(NPC, NPCInfo->goalEntity->currentOrigin, trace, (NPC->clipmask & ~CONTENTS_BODY) | CONTENTS_BOTCLIP))
+		if (!NAV_CheckAhead(NPC, NPCInfo->goalEntity->currentOrigin, trace, NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP))
 		{//can't get straight to him
 			if (NPC_ClearLOS(NPCInfo->goalEntity) && NPC_FaceEntity(NPCInfo->goalEntity, qtrue))
 			{//no line of sight

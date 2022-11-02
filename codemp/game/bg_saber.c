@@ -83,7 +83,7 @@ extern qboolean PM_SaberInAttackPure(int move);
 extern saberMoveName_t pm_broken_parry_for_attack(int move);
 extern qboolean PM_BounceAnim(int anim);
 extern qboolean PM_SaberReturnAnim(int anim);
-extern saberMoveName_t pm_blockthe_attack(int move);
+extern saberMoveName_t pm_block_the_attack(int move);
 void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern saberMoveName_t PM_PerfectBlocktheAttack(int move);
 extern qboolean PM_IsInBlockingAnim(int move);
@@ -1426,11 +1426,11 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 		{
 			return qfalse;
 		}
-		else if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 		{
 			return qfalse;
 		}
-		else if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
+		if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
 		{
 			if (curmove == LS_NONE || newmove == LS_NONE)
 			{
@@ -1445,12 +1445,12 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 			}
 			else if (pm->ps->saberAttackChainCount > 0)
 			{
-				int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+				const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
 				if (chainAngle < 135 || chainAngle > 215)
 				{//if trying to chain to a move that doesn't continue the momentum
 					return qtrue;
 				}
-				else if (chainAngle == 180)
+				if (chainAngle == 180)
 				{//continues the momentum perfectly, allow it to chain 66% of the time
 					if (pm->ps->saberAttackChainCount > 1)
 					{
@@ -3208,9 +3208,7 @@ saberMoveName_t PM_SaberAttackForMovement(saberMoveName_t curmove)
 				return newmove;
 			}
 			else if (PM_SaberInKnockaway(curmove))
-			{
-				//bounces should go to their default attack if you don't specify a direction but are attacking
-				newmove = saberMoveData[curmove].chain_attack;
+			{//bounces should go to their default attack if you don't specify a direction but are attacking
 #ifdef _GAME
 				if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC && Q_irand(0, 3))
 				{
@@ -3256,11 +3254,11 @@ saberMoveName_t PM_SaberAttackForMovement(saberMoveName_t curmove)
 					return LS_A_T2B;
 				}
 				//for now, just pick a random attack
-				return ((saberMoveName_t)Q_irand(LS_A_TL2BR, LS_A_T2B));
+				return Q_irand(LS_A_TL2BR, LS_A_T2B);
 			}
 			else if (curmove == LS_READY)
 			{
-				newmove = LS_A_T2B; //decided we don't like random attacks when idle, use an overhead instead.
+				return Q_irand(LS_A_TL2BR, LS_A_T2B);
 			}
 		}
 	}
@@ -3622,7 +3620,7 @@ qboolean PM_CanDoKata(void)
 {
 	if (!pm->ps->saberInFlight//not throwing saber
 		&& PM_SaberMoveOkayForKata()
-		&& !PM_SaberInKata((saberMoveName_t)pm->ps->saberMove)
+		&& !PM_SaberInKata(pm->ps->saberMove)
 		&& !PM_InKataAnim(pm->ps->legsAnim)
 		&& !PM_InKataAnim(pm->ps->torsoAnim)
 		&& pm->ps->groundEntityNum != ENTITYNUM_NONE//not in the air
@@ -4278,7 +4276,7 @@ qboolean PM_SaberBlocking(void)
 			&& !PM_SaberInKnockaway(pm->ps->saberBounceMove))
 		{
 			//if hitting use during a parry (not already a knockaway)
-			pm->ps->saberBounceMove = pm_blockthe_attack(pm->ps->saberBlocked);
+			pm->ps->saberBounceMove = pm_block_the_attack(pm->ps->saberBlocked);
 		}
 		else
 		{
@@ -4412,7 +4410,7 @@ qboolean PM_SaberBlocking(void)
 						}
 					}
 				}
-				PM_SetSaberMove((saberMoveName_t)(nextMove));
+				PM_SetSaberMove(nextMove);
 				pm->ps->weaponTime = pm->ps->torsoTimer;
 			}
 			else
@@ -4672,11 +4670,9 @@ Consults a chart to choose what to do with the lightsaber.
 */
 void PM_WeaponLightsaber(void)
 {
-	int addTime;
 	qboolean delayed_fire = qfalse;
 	int anim = -1;
 	int newmove = LS_NONE;
-	int curmove;
 
 	saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
 	saberInfo_t* saber2 = BG_MySaber(pm->ps->clientNum, 1);
@@ -4804,14 +4800,11 @@ void PM_WeaponLightsaber(void)
 		if (pm->ps->saberLockEnemy < ENTITYNUM_NONE &&
 			pm->ps->saberLockEnemy >= 0)
 		{
-			bgEntity_t* bgEnt;
-
-			bgEnt = PM_BGEntForNum(pm->ps->saberLockEnemy);
+			bgEntity_t* bgEnt = PM_BGEntForNum(pm->ps->saberLockEnemy);
 
 			if (bgEnt)
 			{
-				playerState_t* en;
-				en = bgEnt->playerState;
+				playerState_t* en = bgEnt->playerState;
 
 				if (en)
 				{
@@ -5462,6 +5455,7 @@ weapChecks:
 
 	if (!delayed_fire)
 	{
+		int curmove;
 		// Start with the current move, and cross index it with the current control states.
 		if (pm->ps->saberMove > LS_NONE && pm->ps->saberMove < LS_MOVE_MAX)
 		{
@@ -5608,22 +5602,16 @@ weapChecks:
 					PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelDual(), SETANIM_FLAG_OVERRIDE);
 					return;
 				}
-				else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+				if (pm->ps->fd.saberAnimLevel == SS_STAFF)
 				{
 					PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelStaff(), SETANIM_FLAG_OVERRIDE);
 					return;
 				}
-				else
-				{
-					PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelSingle(), SETANIM_FLAG_OVERRIDE);
-					return;
-				}
-			}
-			else
-			{
-				pm->ps->weaponstate = WEAPON_FIRING;
+				PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelSingle(), SETANIM_FLAG_OVERRIDE);
 				return;
 			}
+			pm->ps->weaponstate = WEAPON_FIRING;
+			return;
 		}
 		int both = qfalse;
 		if (pm->ps->torsoAnim == BOTH_FORCELONGLEAP_ATTACK
@@ -5735,7 +5723,7 @@ weapChecks:
 				else
 #endif
 				{
-					newmove = PM_SaberAttackForMovement((saberMoveName_t)curmove);
+					newmove = PM_SaberAttackForMovement(curmove);
 
 					if (pm->ps->saberAttackChainCount < MISHAPLEVEL_TEN)
 					{
@@ -5964,7 +5952,7 @@ weapChecks:
 		PM_SetSaberMove(LS_READY);
 	}
 
-	addTime = pm->ps->weaponTime;
+	int addTime = pm->ps->weaponTime;
 
 	if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 	{

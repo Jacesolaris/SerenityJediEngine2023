@@ -218,6 +218,7 @@ using consoleCommand_t = struct
 
 int cmdcmp(const void* a, const void* b)
 {
+	// ReSharper disable once CppCStyleCast
 	return Q_stricmp(static_cast<const char*>(a), ((consoleCommand_t*)b)->cmd);
 }
 
@@ -259,7 +260,7 @@ static consoleCommand_t commands[] = {
 	{"zoom", CG_ToggleBinoculars},
 };
 
-static const size_t numCommands = ARRAY_LEN(commands);
+static constexpr size_t num_commands = std::size(commands);
 
 /*
 =================
@@ -271,7 +272,7 @@ Cmd_Argc() / Cmd_Argv()
 */
 qboolean CG_ConsoleCommand(void)
 {
-	const consoleCommand_t* command = static_cast<consoleCommand_t*>(Q_LinearSearch(CG_Argv(0), commands, numCommands,
+	const consoleCommand_t* command = static_cast<consoleCommand_t*>(Q_LinearSearch(CG_Argv(0), commands, num_commands,
 		sizeof commands[0], cmdcmp));
 
 	if (!command)
@@ -388,7 +389,7 @@ static const char* gcmds[] =
 	"r_weather"
 };
 
-static const size_t numgcmds = ARRAY_LEN(gcmds);
+static constexpr size_t numgcmds = std::size(gcmds);
 
 /*
 =================
@@ -402,7 +403,7 @@ void CG_InitConsoleCommands(void)
 {
 	size_t i;
 
-	for (i = 0; i < numCommands; i++)
+	for (i = 0; i < num_commands; i++)
 		cgi_AddCommand(commands[i].cmd);
 
 	//

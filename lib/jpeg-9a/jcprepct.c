@@ -168,8 +168,8 @@ pre_process_data(j_compress_ptr cinfo,
 					cinfo->min_DCT_v_scaled_size;
 				expand_bottom_edge(output_buf[ci],
 					compptr->width_in_blocks * compptr->DCT_h_scaled_size,
-					(int)(*out_row_group_ctr * numrows),
-					(int)(out_row_groups_avail * numrows));
+					*out_row_group_ctr * numrows,
+					out_row_groups_avail * numrows);
 			}
 			*out_row_group_ctr = out_row_groups_avail;
 			break;			/* can exit outer loop without test */
@@ -264,10 +264,9 @@ create_context_buffer(j_compress_ptr cinfo)
 	/* Grab enough space for fake row pointers for all the components;
 	 * we need five row groups' worth of pointers for each component.
 	 */
-	JSAMPARRAY fake_buffer = (JSAMPARRAY)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			cinfo->num_components * 5 * rgroup_height *
-			SIZEOF(JSAMPROW));
+	JSAMPARRAY fake_buffer = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                    cinfo->num_components * 5 * rgroup_height *
+	                                                    SIZEOF(JSAMPROW));
 
 	for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
 		ci++, compptr++) {
@@ -309,9 +308,8 @@ jinit_c_prep_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 	if (need_full_buffer)		/* safety check */
 		ERREXIT(cinfo, JERR_BAD_BUFFER_MODE);
 
-	const my_prep_ptr prep = (my_prep_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_prep_controller));
+	const my_prep_ptr prep = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                    SIZEOF(my_prep_controller));
 	cinfo->prep = (struct jpeg_c_prep_controller*)prep;
 	prep->pub.start_pass = start_pass_prep;
 

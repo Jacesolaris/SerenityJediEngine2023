@@ -143,7 +143,7 @@ void QDECL Log_WriteTimeStamped(char* fmt, ...)
 		static_cast<int>(botlibglobals.time / 60 / 60),
 		static_cast<int>(botlibglobals.time / 60),
 		static_cast<int>(botlibglobals.time),
-		(int)static_cast<int>(botlibglobals.time * 100) -
+		static_cast<int>(botlibglobals.time * 100) -
 		static_cast<int>(botlibglobals.time) * 100);
 	va_start(ap, fmt);
 	vfprintf(logfile.fp, fmt, ap);

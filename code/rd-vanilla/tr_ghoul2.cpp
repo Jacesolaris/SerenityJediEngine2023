@@ -1004,7 +1004,7 @@ void G2_TimingModel(boneInfo_t& bone, int currentTime, int numFramesInFile, int&
 					{
 						// now figure out what we are lerping between
 						// delta is the fraction between this frame and the next, since the new anim is always at a .0f;
-						lerp = static_cast<float>(endFrame + 1) - newFrame_g;
+						lerp = endFrame + 1 - newFrame_g;
 						// frames are easy to calculate
 						currentFrame = endFrame;
 						assert(currentFrame >= 0 && currentFrame < numFramesInFile);

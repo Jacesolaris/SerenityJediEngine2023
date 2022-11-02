@@ -408,7 +408,7 @@ static void RB_SurfaceCone(void)
 	// this doesn't need to be perfect....just a rough compensation for zoom level is enough
 	length *= backEnd.viewParms.fovX / 90.0f;
 
-	float detail = 1 - (float)length / 2048;
+	float detail = 1 - length / 2048;
 	int segments = NUM_CYLINDER_SEGMENTS * detail;
 
 	// 3 is the absolute minimum, but the pop between 3-8 is too noticeable
@@ -536,7 +536,7 @@ static void RB_SurfaceCylinder(void)
 	// this doesn't need to be perfect....just a rough compensation for zoom level is enough
 	length *= backEnd.viewParms.fovX / 90.0f;
 
-	float detail = 1 - (float)length / 2048;
+	float detail = 1 - length / 2048;
 	int segments = NUM_CYLINDER_SEGMENTS * detail;
 
 	// 3 is the absolute minimum, but the pop between 3-8 is too noticeable

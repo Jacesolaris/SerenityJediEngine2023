@@ -400,7 +400,7 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 
 					bFastEstimateOnly = 1;	///////////////////////////////
 
-					const IN_OUT x = audio.decode((unsigned char*)pvData + iSourceReadIndex, (short*)(char*)pPCM_Buffer,
+					const IN_OUT x = audio.decode((unsigned char*)pvData + iSourceReadIndex, (short*)pPCM_Buffer,
 						(unsigned char*)pvData + iReadLimit
 					);
 
@@ -551,7 +551,7 @@ char* C_MP3Stream_DecodeInit(LP_MP3STREAM pSFX_MP3Stream, void* pvSourceData, in
 
 	pMP3Stream->pbSourceData = (byte*)pvSourceData;	// this MUST be re-initialised to link-mem outside here for SOF2, since raw data is now link-listed
 	pMP3Stream->iSourceBytesRemaining = iSourceBytesRemaining;
-	pMP3Stream->iSourceFrameBytes = head_info3((byte*)pvSourceData, iSourceBytesRemaining / 2, &head, &iBitRate, (unsigned int*)&pMP3Stream->iSourceReadIndex);
+	pMP3Stream->iSourceFrameBytes = head_info3(pvSourceData, iSourceBytesRemaining / 2, &head, &iBitRate, (unsigned int*)&pMP3Stream->iSourceReadIndex);
 
 	// hack, do NOT do this for stereo, since music files are now streamed and therefore the data isn't actually fully
 	//	loaded at this point, only about 4k or so for the header is actually in memory!!!...

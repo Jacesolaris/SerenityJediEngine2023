@@ -152,8 +152,7 @@ void CFxScheduler::LoadSave_Write()
 	//
 	for (auto& iFX : mLoopedEffectArray)
 	{
-		char sFX_Filename[MAX_QPATH];
-		memset(sFX_Filename, 0, sizeof sFX_Filename);
+		char sFX_Filename[MAX_QPATH] = {};
 		// instead of "sFX_Filename[0]=0;" so RLE will squash whole array to nothing, not just stop at '\0' then have old crap after it to compress
 
 		const int& iID = iFX.mId;
@@ -455,7 +454,6 @@ int CFxScheduler::RegisterEffect(const char* path, bool bHasCorrectPath /*= fals
 		return (*itr).second;
 	}
 
-	char correctFilenameBuffer[MAX_QPATH];
 	const char* pfile;
 	if (bHasCorrectPath)
 	{
@@ -463,6 +461,7 @@ int CFxScheduler::RegisterEffect(const char* path, bool bHasCorrectPath /*= fals
 	}
 	else
 	{
+		char correctFilenameBuffer[MAX_QPATH];
 		// Add on our extension and prepend the file with the default path
 		Com_sprintf(correctFilenameBuffer, sizeof correctFilenameBuffer, "%s/%s.efx", FX_FILE_PATH, filenameNoExt);
 		pfile = correctFilenameBuffer;
@@ -693,7 +692,7 @@ SEffectTemplate* CFxScheduler::GetEffectCopy(int fxHandle, int* newHandle)
 // Return:
 //	the pointer to the desired primitive
 //------------------------------------------------------
-CPrimitiveTemplate* CFxScheduler::GetPrimitiveCopy(SEffectTemplate* effectCopy, const char* componentName)
+CPrimitiveTemplate* CFxScheduler::GetPrimitiveCopy(const SEffectTemplate* effectCopy, const char* componentName)
 {
 	if (!effectCopy || !effectCopy->mInUse)
 	{
@@ -1337,9 +1336,7 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t forward, b
 //------------------------------------------------------
 void CFxScheduler::AddScheduledEffects(bool portal)
 {
-	TScheduledEffect::iterator next;
-	vec3_t origin;
-	vec3_t axis[3];
+	
 	int oldEntNum = -1, oldBoltIndex = -1, oldModelNum = -1;
 	qboolean doesBoltExist = qfalse;
 
@@ -1382,6 +1379,8 @@ void CFxScheduler::AddScheduledEffects(bool portal)
 			}
 			else
 			{
+				vec3_t axis[3];
+				vec3_t origin;
 				//bolted on effect
 				// do we need to go and re-get the bolt matrix again? Since it takes time lets try to do it only once
 				if (effect->mModelNum != oldModelNum || effect->mEntNum != oldEntNum || effect->mBoltNum !=
@@ -1508,7 +1507,6 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 
 		// calculate point on ellipse
 		VectorSet(temp, sin(x) * width * sin(y), cos(x) * width * sin(y), cos(y) * height);
-		// sinx * siny, cosx * siny, cosy
 		VectorAdd(org, temp, org);
 
 		if (fx->mSpawnFlags & FX_AXIS_FROM_SPHERE)
@@ -1522,7 +1520,6 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	{
 		vec3_t pt;
 
-		// set up our point, then rotate around the current direction to.  Make unrotated cylinder centered around 0,0,0
 		VectorScale(ax[1], fx->mRadius.GetVal(), pt);
 		VectorMA(pt, Q_flrand(-1.0f, 1.0f) * 0.5f * fx->mHeight.GetVal(), ax[0], pt);
 		RotatePointAroundVector(temp, ax[0], pt, Q_flrand(0.0f, 1.0f) * 360.0f);
@@ -1807,11 +1804,11 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 
 				if (ent != nullptr)
 				{
-					vec3_t entOrg, hitDir;
-					float entYaw;
-					const float firstModel = 0;
 					if (!(ent->s.eFlags & EF_NODRAW))
 					{
+						constexpr float firstModel = 0;
+						float entYaw;
+						vec3_t entOrg;
 						//not drawn, no marks
 						if (ent->client)
 						{
@@ -1831,6 +1828,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 						}
 						//if ( VectorCompare( tr.plane.normal, vec3_origin ) )
 						{
+							vec3_t hitDir;
 							//hunh, no plane?  Use trace dir
 							VectorCopy(ax[0], hitDir);
 						}

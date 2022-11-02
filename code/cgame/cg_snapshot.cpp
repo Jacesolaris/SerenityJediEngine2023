@@ -183,7 +183,7 @@ Determine if the entity can be interpolated between the states
 present in cg.snap and cg,nextSnap
 ===============
 */
-void CG_SetEntityNextState(centity_t* cent, entityState_t* state)
+void CG_SetEntityNextState(centity_t* cent, const entityState_t* state)
 {
 	cent->nextState = state;
 

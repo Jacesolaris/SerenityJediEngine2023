@@ -110,6 +110,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #if !defined(RATL_LIST_VS_INC)
 #include "..\Ratl\list_vs.h"
 #endif
+#include "Ratl/handle_pool_vs.h"
+
 namespace ragl
 {
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +228,8 @@ namespace ragl
 		void	floor_shape(typename TGraph::user& user, float maxzdelta)
 		{
 			ratl::vector_vs<int, MAXEDGES>		CullEdges;
-			TEdges::iterator stop = mEdges.end();
-			for (TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
+			typename TEdges::iterator stop = mEdges.end();
+			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
 			{
 				if (!(*it).mOnHull)
 				{
@@ -290,9 +292,9 @@ namespace ragl
 		void	alpha_shape(typename TGraph::user& user, float max, float min = 0)
 		{
 			ratl::vector_vs<int, MAXEDGES>		CullEdges;
-			for (TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
+			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
 			{
-				float cost = user.cost(mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
+				const float cost = user.cost(mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
 				if (cost<min || cost>max)
 				{
 					mLinks.get(mGraph.node_index((*it).mA), mGraph.node_index((*it).mB)) = 0;
@@ -316,7 +318,7 @@ namespace ragl
 		{
 			mGraph.clear_edges();
 			TEDGE	DefaultEdge;
-			for (TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
+			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
 				user.setup_edge(DefaultEdge, (*it).mA, (*it).mB, (*it).mOnHull, mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
 				mGraph.connect_node(DefaultEdge, (*it).mA, (*it).mB);
@@ -327,9 +329,9 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		using THull = typename ratl::list_vs<int, MAXNODES>;
+		using THull = ratl::list_vs<int, MAXNODES>;
 		using THullIter = typename ratl::list_vs<int, MAXNODES>::iterator;
-		using TLinks = typename ratl::grid2_vs<int, MAXNODES, MAXNODES>;
+		using TLinks = ratl::grid2_vs<int, MAXNODES, MAXNODES>;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Local Edge Class
@@ -367,7 +369,8 @@ namespace ragl
 				}
 				assert(mRight != mLeft);
 			}
-			void	verify(int PtA, int PtB, int Edge) const
+
+			static void	verify()
 			{
 				assert(PtA == mA || PtA == mB);
 				assert(PtB == mA || PtB == mB);
@@ -375,7 +378,8 @@ namespace ragl
 				assert(mRight != mLeft);
 				assert(mA != mB);
 			}
-			void	verify(int PtA, int PtB, int PtC, int Edge) const
+
+			static void	verify(int PtA, int PtB, int PtC, int Edge)
 			{
 				assert(PtC == mA && (PtA == mB || PtB == mB) || PtC == mB && (PtA == mA || PtB == mA));
 
@@ -471,10 +475,10 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		typedef		typename ratl::handle_pool_vs<edge, MAXEDGES>				TEdges;
+		typedef		ratl::handle_pool_vs<edge, MAXEDGES>				TEdges;
 		typedef		typename ratl::handle_pool_vs<edge, MAXEDGES>::iterator		TEdgesIter;
-		typedef		typename ratl::handle_pool_vs<face, MAXFACES>				TFaces;
-		using TSortNodes = typename ratl::vector_vs<sort_node, MAXNODES>;
+		typedef ratl::handle_pool_vs<face, MAXFACES>				TFaces;
+		using TSortNodes = ratl::vector_vs<sort_node, MAXNODES>;
 
 		TGraph& mGraph;			// A Reference To The Graph Points To Triangulate
 
@@ -495,7 +499,7 @@ namespace ragl
 		void	sort_points()
 		{
 			mSortNodes.clear();
-			for (TGraph::TNodes::iterator i = mGraph.nodes_begin(); i != mGraph.nodes_end(); i++)
+			for (typename TGraph::TNodes::iterator i = mGraph.nodes_begin(); i != mGraph.nodes_end(); ++i)
 			{
 				mSortNode.mNodeHandle = mGraph.node_handle(i);
 				mSortNode.mNodePointer = &*i;
@@ -569,31 +573,31 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		int		add_face(int A, int B, int C)
 		{
-			int		Temp = 0;
+			int		temp;
 			int		nFace = mFaces.alloc();
 
 			// First, Make Sure Node A.x Is Greater Than B and C.  If Not, Swap With B or C
 			//------------------------------------------------------------------------------
 			if (mGraph.get_node(B)[0] > mGraph.get_node(A)[0])
 			{
-				Temp = A;
+				temp = A;
 				A = B;
-				B = Temp;
+				B = temp;
 			}
 			if (mGraph.get_node(C)[0] > mGraph.get_node(A)[0])
 			{
-				Temp = A;
+				temp = A;
 				A = C;
-				C = Temp;
+				C = temp;
 			}
 
 			// Similarly, Make Sure Node B.y Is Greater Than Node C.y
 			//--------------------------------------------------------
 			if (mGraph.get_node(C).LRTest(mGraph.get_node(A), mGraph.get_node(B)) == Side_Left)
 			{
-				Temp = C;
+				temp = C;
 				C = B;
-				B = Temp;
+				B = temp;
 			}
 
 			// DEBUG ASSERTS

@@ -1146,7 +1146,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 		return (intptr_t)Z_Malloc(args[1], static_cast<memtag_t>(args[2]), qfalse);
 
 	case CG_Z_FREE:
-		Z_Free((void*)VMA(1));
+		Z_Free(VMA(1));
 		return 0;
 
 	case CG_UI_SETACTIVE_MENU:
@@ -1263,7 +1263,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 
 		if (menu)
 		{
-			item = (itemDef_s*)Menu_FindItemByName((menuDef_t*)menu, static_cast<char*>(VMA(2)));
+			item = Menu_FindItemByName(menu, static_cast<char*>(VMA(2)));
 			if (item)
 			{
 				Q_strncpyz(static_cast<char*>(VMA(3)), item->text, 256);
@@ -1286,7 +1286,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 
 		if (menu)
 		{
-			item = (itemDef_s*)Menu_FindItemByName((menuDef_t*)menu, static_cast<char*>(VMA(2)));
+			item = Menu_FindItemByName(menu, static_cast<char*>(VMA(2)));
 			if (item)
 			{
 				xPos = static_cast<int*>(VMA(3));
@@ -1304,10 +1304,10 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 					return qfalse;
 				}
 
-				(*color)[0] = (float)item->window.foreColor[0];
-				(*color)[1] = (float)item->window.foreColor[1];
-				(*color)[2] = (float)item->window.foreColor[2];
-				(*color)[3] = (float)item->window.foreColor[3];
+				(*color)[0] = item->window.foreColor[0];
+				(*color)[1] = item->window.foreColor[1];
+				(*color)[2] = item->window.foreColor[2];
+				(*color)[3] = item->window.foreColor[3];
 				qhandle_t* background = static_cast<qhandle_t*>(VMA(8));
 				if (!background)
 				{

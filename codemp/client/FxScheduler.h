@@ -684,7 +684,7 @@ public:
 	SEffectTemplate* GetEffectCopy(int fxHandle, int* newHandle);
 	SEffectTemplate* GetEffectCopy(const char* file, int* newHandle);
 
-	static CPrimitiveTemplate* GetPrimitiveCopy(SEffectTemplate* effectCopy, const char* componentName);
+	static CPrimitiveTemplate* GetPrimitiveCopy(const SEffectTemplate* effectCopy, const char* componentName);
 
 	static void	MaterialImpact(trace_t* tr, CEffect* effect);
 };

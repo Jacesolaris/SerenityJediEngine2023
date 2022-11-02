@@ -1049,7 +1049,7 @@ image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allowPicmip
 		return nullptr;
 	}
 
-	image = R_CreateImage((char*)name, pic, width, height, GL_RGBA, mipmap, allowPicmip, allowTC, glWrapClampMode);
+	image = R_CreateImage(name, pic, width, height, GL_RGBA, mipmap, allowPicmip, allowTC, glWrapClampMode);
 	R_Free(pic);
 	return image;
 }
@@ -1171,7 +1171,7 @@ static void R_CreateFogImage(void) {
 	// standard openGL clamping doesn't really do what we want -- it includes
 	// the border color at the edges.  OpenGL 1.2 has clamp-to-edge, which does
 	// what we want.
-	tr.fogImage = R_CreateImage("*fog", (byte*)data, FOG_S, FOG_T, GL_RGBA, qfalse, qfalse, qfalse, GL_CLAMP);
+	tr.fogImage = R_CreateImage("*fog", data, FOG_S, FOG_T, GL_RGBA, qfalse, qfalse, qfalse, GL_CLAMP);
 	R_Free(data);
 
 	borderColor[0] = 1.0;

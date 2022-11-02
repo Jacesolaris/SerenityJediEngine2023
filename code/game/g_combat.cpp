@@ -111,7 +111,7 @@ extern gitem_t* FindItemForAmmo(ammo_t ammo);
 extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
 void AddFatigueHurtBonus(gentity_t* attacker, const gentity_t* victim, int mod);
 void AddFatigueHurtBonusMax(gentity_t* attacker, const gentity_t* victim, int mod);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
 extern qboolean NPC_IsJetpacking(gentity_t* self);
@@ -8753,7 +8753,7 @@ void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, floa
 		// Lessen damage to vehicles that are moving away from the explosion
 		if (ent->client && (ent->client->NPC_class == CLASS_VEHICLE || G_IsRidingVehicle(ent)))
 		{
-			gentity_t* bike = ent;
+			const gentity_t* bike = ent;
 
 			if (G_IsRidingVehicle(ent) && ent->owner)
 			{

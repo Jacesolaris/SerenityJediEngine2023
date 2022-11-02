@@ -29,8 +29,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // For printing objectives
 static const short objectiveStartingYpos = 75; // Y starting position for objective text
 static const short objectiveStartingXpos = 60; // X starting position for objective text
-static const int objectiveTextBoxWidth = 500; // Width (in pixels) of text box
-static const int objectiveTextBoxHeight = 300; // Height (in pixels) of text box
+static constexpr int objectiveTextBoxWidth = 500; // Width (in pixels) of text box
+static constexpr int objectiveTextBoxHeight = 300; // Height (in pixels) of text box
 static const short missionYpos = 79;
 
 const char* showLoadPowersName[] =
@@ -75,8 +75,6 @@ Print a single mission objective
 static void ObjectivePrint_Line(const int color, const int objectIndex, int& missionYcnt)
 {
 	int y;
-	const int maxHoldText = 1024;
-	char holdText[maxHoldText];
 	char finalText[2048];
 	qhandle_t graphic;
 
@@ -159,6 +157,8 @@ static void ObjectivePrint_Line(const int color, const int objectIndex, int& mis
 		// Text is too long, break into lines.
 		else
 		{
+			constexpr int maxHoldText = 1024;
+			char holdText[maxHoldText];
 			char holdText2[2];
 			pixelLen = 0;
 			int charLen = 0;
@@ -299,9 +299,9 @@ void CG_DrawDataPadObjectives(const centity_t* cent)
 	int i;
 	const int iYPixelsPerLine = cgi_R_Font_HeightPixels(cgs.media.qhFontMedium, 1.0f);
 
-	const short titleXPos = objectiveStartingXpos - 22; // X starting position for title text
-	const short titleYPos = objectiveStartingYpos - 23; // Y starting position for title text
-	const short graphic_size = 16; // Size (width and height) of graphic used to show status of objective
+	constexpr short titleXPos = objectiveStartingXpos - 22; // X starting position for title text
+	constexpr short titleYPos = objectiveStartingYpos - 23; // Y starting position for title text
+	constexpr short graphic_size = 16; // Size (width and height) of graphic used to show status of objective
 	const short graphicXpos = objectiveStartingXpos - graphic_size - 8;
 	// Amount of X to backup from text starting position
 	const short graphicYOffset = (iYPixelsPerLine - graphic_size) / 2;
@@ -351,7 +351,7 @@ void CG_DrawDataPadObjectives(const centity_t* cent)
 	if (!missionYcnt)
 	{
 		// Set the message a quarter of the way down and in the center of the text box
-		const int messageYPosition = objectiveStartingYpos + objectiveTextBoxHeight / 4;
+		constexpr int messageYPosition = objectiveStartingYpos + objectiveTextBoxHeight / 4;
 
 		cgi_SP_GetStringTextString("SP_INGAME_OBJNONE", text, sizeof text);
 		const int messageXPosition = objectiveStartingXpos + objectiveTextBoxWidth / 2 - cgi_R_Font_StrLenPixels(
@@ -373,12 +373,12 @@ constexpr auto LOADBAR_CLIP_HEIGHT = 64;
 
 static void CG_LoadBar(void)
 {
-	const int numticks = 9, tickwidth = 40, tickheight = 8;
-	const int tickpadx = 20, tickpady = 12;
-	const int capwidth = 8;
-	const int barwidth = numticks * tickwidth + tickpadx * 2 + capwidth * 2, barleft = (640 - barwidth) / 2;
-	const int barheight = tickheight + tickpady * 2, bartop = 475 - barheight;
-	const int capleft = barleft + tickpadx, tickleft = capleft + capwidth, ticktop = bartop + tickpady;
+	constexpr int numticks = 9, tickwidth = 40, tickheight = 8;
+	constexpr int tickpadx = 20, tickpady = 12;
+	constexpr int capwidth = 8;
+	constexpr int barwidth = numticks * tickwidth + tickpadx * 2 + capwidth * 2, barleft = (640 - barwidth) / 2;
+	constexpr int barheight = tickheight + tickpady * 2, bartop = 475 - barheight;
+	constexpr int capleft = barleft + tickpadx, tickleft = capleft + capwidth, ticktop = bartop + tickpady;
 
 	cgi_R_SetColor(colorTable[CT_WHITE]);
 	// Draw background
@@ -393,11 +393,11 @@ static void CG_LoadBar(void)
 	// Draw right cap
 	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadTickCap);
 
-	const int y = 340;
-	const int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
+	constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
 
 	if (cg.loadLCARSStage >= 4)
 	{
+		constexpr int y = 340;
 		CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
 	}
 }
@@ -405,8 +405,8 @@ static void CG_LoadBar(void)
 int CG_WeaponCheck(int weaponIndex);
 
 // For printing load screen icons
-const int MAXLOADICONSPERROW = 8; // Max icons displayed per row
-const int MAXLOADWEAPONS = 16;
+constexpr int MAXLOADICONSPERROW = 8; // Max icons displayed per row
+constexpr int MAXLOADWEAPONS = 16;
 const int MAXLOAD_FORCEICONSIZE = 40; // Size of force power icons
 const int MAXLOAD_FORCEICONPAD = 12; // Padding space between icons
 
@@ -414,7 +414,6 @@ static int CG_DrawLoadWeaponsPrintRow(const char* itemName, int weaponsBits, int
 {
 	int endIndex = 0, printedIconCnt = 0;
 	int x, y;
-	const int yOffset = 0;
 	int width, height;
 	vec4_t color;
 	qhandle_t background;
@@ -434,8 +433,8 @@ static int CG_DrawLoadWeaponsPrintRow(const char* itemName, int weaponsBits, int
 
 	cgi_R_SetColor(color);
 
-	const int iconSize = 60;
-	const int pad = 12;
+	constexpr int iconSize = 60;
+	constexpr int pad = 12;
 
 	// calculate placement of weapon icons
 	int holdX = x + (width - (iconSize * rowIconCnt + pad * (rowIconCnt - 1))) / 2;
@@ -449,6 +448,7 @@ static int CG_DrawLoadWeaponsPrintRow(const char* itemName, int weaponsBits, int
 
 		if (weaponData[i].weaponIcon[0])
 		{
+			constexpr int yOffset = 0;
 			CG_RegisterWeapon(i);
 			const weaponInfo_t* weaponInfo = &cg_weapons[i];
 			endIndex = i;
@@ -510,7 +510,6 @@ static int CG_DrawLoadForcePrintRow(const char* itemName, int forceBits, int row
 {
 	int endIndex = 0, printedIconCnt = 0;
 	int x, y;
-	const int yOffset = 0;
 	int width, height;
 	vec4_t color;
 	qhandle_t background;
@@ -542,6 +541,7 @@ static int CG_DrawLoadForcePrintRow(const char* itemName, int forceBits, int row
 
 		if (force_icons[showPowers[i]])
 		{
+			constexpr int yOffset = 0;
 			endIndex = i;
 
 			CG_DrawPic(holdX, y + yOffset, MAXLOAD_FORCEICONSIZE, MAXLOAD_FORCEICONSIZE, force_icons[showPowers[i]]);
@@ -884,7 +884,7 @@ void CG_DrawInformation(void)
 			|| strcmp(s, "level0") == 0
 			|| strcmp(s, "kejim_post") == 0)) //special case for first map!
 	{
-		const char text[1024] = { 0 };
+		constexpr char text[1024] = { 0 };
 
 		CG_DrawPic(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Loadshot);
 
@@ -909,12 +909,12 @@ void CG_DrawInformation(void)
 
 	// draw info string information
 
-	int y = 20;
 	// map-specific message (long map name)
 	s = CG_ConfigString(CS_MESSAGE);
 
 	if (s[0])
 	{
+		int y = 20;
 		if (s[0] == '@')
 		{
 			char text[1024] = { 0 };

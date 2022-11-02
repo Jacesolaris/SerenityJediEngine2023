@@ -121,7 +121,7 @@ emit_marker(j_compress_ptr cinfo, JPEG_MARKER mark)
 /* Emit a marker code */
 {
 	emit_byte(cinfo, 0xFF);
-	emit_byte(cinfo, (int)mark);
+	emit_byte(cinfo, mark);
 }
 
 LOCAL(void)
@@ -165,8 +165,8 @@ emit_dqt(j_compress_ptr cinfo, int index)
 			/* The table entries must be emitted in zigzag order. */
 			const unsigned int qval = qtbl->quantval[cinfo->natural_order[i]];
 			if (prec)
-				emit_byte(cinfo, (int)(qval >> 8));
-			emit_byte(cinfo, (int)(qval & 0xFF));
+				emit_byte(cinfo, qval >> 8);
+			emit_byte(cinfo, qval & 0xFF);
 		}
 
 		qtbl->sent_table = TRUE;
@@ -268,7 +268,7 @@ emit_dri(j_compress_ptr cinfo)
 
 	emit_2bytes(cinfo, 4);	/* fixed length */
 
-	emit_2bytes(cinfo, (int)cinfo->restart_interval);
+	emit_2bytes(cinfo, cinfo->restart_interval);
 }
 
 LOCAL(void)
@@ -318,8 +318,8 @@ emit_sof(j_compress_ptr cinfo, JPEG_MARKER code)
 		ERREXIT1(cinfo, JERR_IMAGE_TOO_BIG, (unsigned int)65535);
 
 	emit_byte(cinfo, cinfo->data_precision);
-	emit_2bytes(cinfo, (int)cinfo->jpeg_height);
-	emit_2bytes(cinfo, (int)cinfo->jpeg_width);
+	emit_2bytes(cinfo, cinfo->jpeg_height);
+	emit_2bytes(cinfo, cinfo->jpeg_width);
 
 	emit_byte(cinfo, cinfo->num_components);
 
@@ -405,8 +405,8 @@ emit_jfif_app0(j_compress_ptr cinfo)
 	emit_byte(cinfo, cinfo->JFIF_major_version); /* Version fields */
 	emit_byte(cinfo, cinfo->JFIF_minor_version);
 	emit_byte(cinfo, cinfo->density_unit); /* Pixel size information */
-	emit_2bytes(cinfo, (int)cinfo->X_density);
-	emit_2bytes(cinfo, (int)cinfo->Y_density);
+	emit_2bytes(cinfo, cinfo->X_density);
+	emit_2bytes(cinfo, cinfo->Y_density);
 	emit_byte(cinfo, 0);		/* No thumbnail image */
 	emit_byte(cinfo, 0);
 }
@@ -471,9 +471,9 @@ write_marker_header(j_compress_ptr cinfo, int marker, unsigned int datalen)
 	if (datalen > (unsigned int)65533)		/* safety check */
 		ERREXIT(cinfo, JERR_BAD_LENGTH);
 
-	emit_marker(cinfo, (JPEG_MARKER)marker);
+	emit_marker(cinfo, marker);
 
-	emit_2bytes(cinfo, (int)(datalen + 2));	/* total length */
+	emit_2bytes(cinfo, datalen + 2);	/* total length */
 }
 
 METHODDEF(void)
@@ -675,9 +675,8 @@ GLOBAL(void)
 jinit_marker_writer(j_compress_ptr cinfo)
 {
 	/* Create the subobject */
-	const my_marker_ptr marker = (my_marker_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_marker_writer));
+	const my_marker_ptr marker = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                        SIZEOF(my_marker_writer));
 	cinfo->marker = &marker->pub;
 	/* Initialize method pointers */
 	marker->pub.write_file_header = write_file_header;

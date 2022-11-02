@@ -1288,7 +1288,7 @@ const void* RB_SetColor(const void* data) {
 	backEnd.color2D[2] = cmd->color[2] * 255;
 	backEnd.color2D[3] = cmd->color[3] * 255;
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1360,7 +1360,7 @@ const void* RB_StretchPic(const void* data) {
 	tess.texCoords[numVerts + 3][0][0] = cmd->s1;
 	tess.texCoords[numVerts + 3][0][1] = cmd->t2;
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1447,10 +1447,10 @@ const void* RB_RotatePic(const void* data)
 		tess.texCoords[numVerts + 3][0][0] = cmd->s1;
 		tess.texCoords[numVerts + 3][0][1] = cmd->t2;
 
-		return (const void*)(cmd + 1);
+		return cmd + 1;
 	}
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1541,7 +1541,7 @@ const void* RB_RotatePic2(const void* data)
 			tess.texCoords[numVerts + 3][0][0] = cmd->s1;
 			tess.texCoords[numVerts + 3][0][1] = cmd->t2;
 
-			return (const void*)(cmd + 1);
+			return cmd + 1;
 
 #if 0
 			// Hmmm, this is not too cool
@@ -1552,7 +1552,7 @@ const void* RB_RotatePic2(const void* data)
 		}
 	}
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1641,7 +1641,7 @@ const void* RB_DrawSurfs(const void* data) {
 		RB_DrawGlowOverlay();
 	}
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1702,7 +1702,7 @@ const void* RB_DrawBuffer(const void* data) {
 		qglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1859,7 +1859,7 @@ const void* RB_SwapBuffers(const void* data) {
 
 	backEnd.projection2D = qfalse;
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 const void* RB_WorldEffects(const void* data)
@@ -1878,7 +1878,7 @@ const void* RB_WorldEffects(const void* data)
 		RB_BeginSurface(tess.shader, tess.fogNum);
 	}
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*

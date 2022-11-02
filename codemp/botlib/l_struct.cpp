@@ -262,7 +262,7 @@ int ReadStructure(source_t* source, structdef_t* def, char* structure)
 		{
 			num = 1;
 		} //end else
-		void* p = (void*)(structure + fd->offset);
+		void* p = structure + fd->offset;
 		while (num-- > 0)
 		{
 			if (fd->type & FT_ARRAY)
@@ -381,7 +381,7 @@ int WriteStructWithIndent(FILE* fp, structdef_t* def, char* structure, int inden
 		const fielddef_t* fd = &def->fields[i];
 		if (!WriteIndent(fp, indent)) return qfalse;
 		if (fprintf(fp, "%s\t", fd->name) < 0) return qfalse;
-		void* p = (void*)(structure + fd->offset);
+		void* p = structure + fd->offset;
 		if (fd->type & FT_ARRAY)
 		{
 			num = fd->maxarray;

@@ -821,7 +821,7 @@ void CM_LoadMap(const char* name, qboolean clientload, int* checksum, qboolean s
 	if (subBSP)
 	{
 		Com_DPrintf("^5CM_LoadMap->CMLoadSubBSP(%s, %i)\n", name, qfalse);
-		CM_LoadSubBSP(va("maps/%s.bsp", (const char*)name + 1), qfalse);
+		CM_LoadSubBSP(va("maps/%s.bsp", name + 1), qfalse);
 		//CM_LoadMap_Actual( name, clientload, checksum, cmg );
 	}
 	else

@@ -137,7 +137,7 @@ forward_DCT_float(j_compress_ptr cinfo, jpeg_component_info* compptr,
 	/* This routine is heavily used, so it's worth coding it tightly. */
 	const my_fdct_ptr fdct = (my_fdct_ptr)cinfo->fdct;
 	const float_DCT_method_ptr do_dct = fdct->do_float_dct[compptr->component_index];
-	FAST_FLOAT* divisors = (FAST_FLOAT*)compptr->dct_table;
+	FAST_FLOAT* divisors = compptr->dct_table;
 	FAST_FLOAT workspace[DCTSIZE2]; /* work area for FDCT subroutine */
 
 	sample_data += start_row;	/* fold in the vertical offset once */
@@ -411,7 +411,7 @@ start_pass_fdctmgr(j_compress_ptr cinfo)
 			 * What's actually stored is 1/divisor so that the inner loop can
 			 * use a multiplication rather than a division.
 			 */
-			FAST_FLOAT* fdtbl = (FAST_FLOAT*)compptr->dct_table;
+			FAST_FLOAT* fdtbl = compptr->dct_table;
 			static const double aanscalefactor[DCTSIZE] = {
 			  1.0, 1.387039845, 1.306562965, 1.175875602,
 			  1.0, 0.785694958, 0.541196100, 0.275899379
@@ -448,9 +448,8 @@ jinit_forward_dct(j_compress_ptr cinfo)
 	int ci;
 	jpeg_component_info* compptr;
 
-	const my_fdct_ptr fdct = (my_fdct_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_fdct_controller));
+	const my_fdct_ptr fdct = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                    SIZEOF(my_fdct_controller));
 	cinfo->fdct = &fdct->pub;
 	fdct->pub.start_pass = start_pass_fdctmgr;
 

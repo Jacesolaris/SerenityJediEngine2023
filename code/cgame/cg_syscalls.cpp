@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //prototypes
 extern void CG_PreInit();
 
-static intptr_t(QDECL* Q_syscall)(intptr_t arg, ...) = (intptr_t(QDECL*)(intptr_t, ...)) - 1;
+static intptr_t(QDECL* Q_syscall)(intptr_t arg, ...) = reinterpret_cast<intptr_t(__cdecl*)(intptr_t, ...)>(- 1);
 
 extern "C" Q_EXPORT void QDECL dllEntry(intptr_t(QDECL * syscallptr)(intptr_t arg, ...))
 {
@@ -569,7 +569,7 @@ void trap_CIN_SetExtents(int handle, int x, int y, int w, int h)
 
 void* cgi_Z_Malloc(int size, int tag)
 {
-	return (void*)Q_syscall(CG_Z_MALLOC, size, tag);
+	return reinterpret_cast<void*>(Q_syscall(CG_Z_MALLOC, size, tag));
 }
 
 void cgi_Z_Free(void* ptr)
@@ -670,7 +670,7 @@ Since the modules are incompatible, might as well break base compat even further
 
 void* cgi_UI_GetMenuByName(const char* menu)
 {
-	return (void*)Q_syscall(CG_OPENJK_GETMENU_BYNAME, menu);
+	return reinterpret_cast<void*>(Q_syscall(CG_OPENJK_GETMENU_BYNAME, menu));
 }
 
 void cgi_UI_Menu_Paint(void* menu, qboolean force)

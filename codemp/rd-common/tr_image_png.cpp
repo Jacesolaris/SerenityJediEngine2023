@@ -98,7 +98,7 @@ int RE_SavePNG(const char* filename, byte* buf, size_t width, size_t height, int
 	/* Write the image data to "fp". */
 
 //	png_init_io (png_ptr, fp);
-	png_set_write_fn(png_ptr, (png_voidp)&fp, user_write_data, user_flush_data);
+	png_set_write_fn(png_ptr, &fp, user_write_data, user_flush_data);
 	png_set_rows(png_ptr, info_ptr, row_pointers);
 	png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
 
@@ -187,7 +187,7 @@ struct PNGFileReader
 		offset += SIGNATURE_LEN;
 
 		// Setup reading information, and read header
-		png_set_read_fn(png_ptr, (png_voidp)this, &user_read_data);
+		png_set_read_fn(png_ptr, this, &user_read_data);
 #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
 		// This generic "ignore all, except required chunks" requires 1.6.0 or newer"
 		png_set_keep_unknown_chunks(png_ptr, PNG_HANDLE_CHUNK_NEVER, NULL, -1);

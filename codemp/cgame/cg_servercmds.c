@@ -1639,7 +1639,7 @@ typedef struct serverCommand_s {
 } serverCommand_t;
 
 int svcmdcmp(const void* a, const void* b) {
-	return Q_stricmp((const char*)a, ((serverCommand_t*)b)->cmd);
+	return Q_stricmp(a, ((serverCommand_t*)b)->cmd);
 }
 
 static serverCommand_t	commands[] = {
@@ -1673,7 +1673,7 @@ static serverCommand_t	commands[] = {
 	{ "LMSLose",	        CG_LMSLose_f },
 };
 
-static const size_t numCommands = ARRAY_LEN(commands);
+static const size_t num_commands = ARRAY_LEN(commands);
 
 /*
 =================
@@ -1691,7 +1691,7 @@ static void CG_ServerCommand(void) {
 		return;
 	}
 
-	const serverCommand_t* command = (serverCommand_t*)Q_LinearSearch(cmd, commands, numCommands, sizeof commands[0],
+	const serverCommand_t* command = (serverCommand_t*)Q_LinearSearch(cmd, commands, num_commands, sizeof commands[0],
 		svcmdcmp);
 
 	if (command)

@@ -47,6 +47,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #if !defined(RAGL_COMMON_INC)
 #include "ragl_common.h"
 #endif
+#include "Ratl/handle_pool_vs.h"
+#include "Ratl/vector_vs.h"
+
 namespace ragl
 {
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +241,7 @@ namespace ragl
 				nextDimension = 0;
 			}
 
-			// Search Recursivly Down The Tree Either Left (For Data > Current Node), Or Right
+			// Search Recursively Down The Tree Either Left (For Data > Current Node), Or Right
 			//---------------------------------------------------------------------------------
 			int		findRecursive;
 			const bool	goLeft = data[curDimension] < mPool[curNode].mData[curDimension];
@@ -420,7 +423,7 @@ namespace ragl
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
-		// Add The Cur Node And All Childeren Of The Cur Node
+		// Add The Cur Node And All Children Of The Cur Node
 		////////////////////////////////////////////////////////////////////////////////////
 		void		tree_search_report_sub_tree(range_query& query, int curNode)
 		{

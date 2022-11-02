@@ -1117,7 +1117,7 @@ void Cmd_UseBarrier_f(gentity_t* ent)
 		}
 		CG_ChangeWeapon(WP_MELEE);
 
-		int	actualTime = (cg.time ? cg.time : level.time);
+		const int	actualTime = cg.time ? cg.time : level.time;
 		qboolean Clear_to_activate_barrier = qtrue;
 
 		if (actualTime < 1500)

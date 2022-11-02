@@ -138,7 +138,7 @@ qhandle_t RE_RegisterIndividualSkin(const char* name, qhandle_t hSkin)
 		if (static_cast<int>(sizeof skin->surfaces / sizeof skin->surfaces[0]) <= skin->numSurfaces)
 		{
 			assert(static_cast<int>(sizeof skin->surfaces / sizeof skin->surfaces[0]) > skin->numSurfaces);
-			Com_Printf("WARNING: RE_RegisterSkin( '%s' ) more than %u surfaces!\n", name, (unsigned int)ARRAY_LEN(skin->surfaces));
+			Com_Printf("WARNING: RE_RegisterSkin( '%s' ) more than %u surfaces!\n", name, ARRAY_LEN(skin->surfaces));
 			break;
 		}
 		skinSurface_t* surf = static_cast<skinSurface_t*>(Hunk_Alloc(sizeof * skin->surfaces[0], h_low));
@@ -302,7 +302,7 @@ static char* CommaParse(char** data_p) {
 			if (c == '\"' || !c)
 			{
 				com_token[len] = 0;
-				*data_p = (char*)data;
+				*data_p = data;
 				return com_token;
 			}
 			if (len < MAX_TOKEN_CHARS - 1)
@@ -327,7 +327,7 @@ static char* CommaParse(char** data_p) {
 
 	com_token[len] = 0;
 
-	*data_p = (char*)data;
+	*data_p = data;
 	return com_token;
 }
 

@@ -166,7 +166,7 @@ void dequant(SAMPLE Sample[], int* nsamp,
 					Sample[i].x = xs * look_pow[ISMAX + Sample[i].s];
 				else
 				{
-					const float tmpConst = (float)(1.0 / 3.0);
+					const float tmpConst = 1.0 / 3.0;
 					tmp = (double)Sample[i].s;
 					Sample[i].x = (float)(xs * tmp * pow(fabs(tmp), tmpConst));
 				}
@@ -209,7 +209,7 @@ void dequant(SAMPLE Sample[], int* nsamp,
 						buf[j][w] = xs * look_pow[ISMAX + Sample[i].s];
 					else
 					{
-						const float tmpConst = (float)(1.0 / 3.0);
+						const float tmpConst = 1.0 / 3.0;
 						tmp = (double)Sample[i].s;
 						buf[j][w] = (float)(xs * tmp * pow(fabs(tmp), tmpConst));
 					}

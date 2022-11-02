@@ -220,7 +220,7 @@ qboolean UI_SaberShouldDrawBlade(const char* saberName, int bladeNum)
 			noBlade = atoi(noBladeString);
 		}
 	}
-	return (qboolean)(noBlade == 0);
+	return noBlade == 0;
 }
 
 qboolean UI_IsSaberTwoHanded(const char* saberName)
@@ -232,7 +232,7 @@ qboolean UI_IsSaberTwoHanded(const char* saberName)
 		return qfalse;
 	}
 	const int twoHanded = atoi(twoHandedString);
-	return (qboolean)(twoHanded != 0);
+	return twoHanded != 0;
 }
 
 float UI_SaberBladeLengthForSaber(const char* saberName, int bladeNum)
@@ -319,7 +319,7 @@ qboolean UI_SaberValidForPlayerInMP(const char* saberName)
 		return qtrue;
 	}
 	//return value
-	return (qboolean)(atoi(allowed) == 0);
+	return atoi(allowed) == 0;
 }
 
 void UI_SaberLoadParms(void)

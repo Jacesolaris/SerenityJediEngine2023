@@ -834,13 +834,11 @@ void CG_DrawCusHealth(menuDef_t* menuHUD)
 void CG_DrawJK2HealthSJE(const int x, const int y)
 {
 	vec4_t calcColor;
-	float	healthPercent;
-	playerState_t* ps;
 
-	ps = &cg.snap->ps;
+	playerState_t* ps = &cg.snap->ps;
 
 	memcpy(calcColor, colorTable[CT_HUD_RED], sizeof(vec4_t));
-	healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
+	float healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
 	calcColor[0] *= healthPercent;
 	calcColor[1] *= healthPercent;
 	calcColor[2] *= healthPercent;
@@ -979,13 +977,11 @@ static void CG_DrawJK2blockPoints(int x, int y, menuDef_t* menuHUD)
 void CG_DrawJK2Health(const int x, const int y)
 {
 	vec4_t calcColor;
-	float	healthPercent;
-	playerState_t* ps;
 
-	ps = &cg.snap->ps;
+	playerState_t* ps = &cg.snap->ps;
 
 	memcpy(calcColor, colorTable[CT_HUD_RED], sizeof(vec4_t));
-	healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
+	float healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
 	calcColor[0] *= healthPercent;
 	calcColor[1] *= healthPercent;
 	calcColor[2] *= healthPercent;
@@ -1281,24 +1277,21 @@ void CG_Draw_JKA_Armor(menuDef_t* menuHUD)
 void CG_DrawJK2Armor(const centity_t* cent, const int x, const int y)
 {
 	vec4_t			calcColor;
-	float			armorPercent, hold;
-	playerState_t* ps;
-	int				armor;
 
-	ps = &cg.snap->ps;
+	playerState_t* ps = &cg.snap->ps;
 
 	//	Outer Armor circular
 	memcpy(calcColor, colorTable[CT_HUD_GREEN], sizeof(vec4_t));
 
-	armor = ps->stats[STAT_ARMOR];
+	int armor = ps->stats[STAT_ARMOR];
 
 	if (armor > ps->stats[STAT_MAX_HEALTH])
 	{
 		armor = ps->stats[STAT_MAX_HEALTH];
 	}
 
-	hold = armor - (ps->stats[STAT_MAX_HEALTH] / 2);
-	armorPercent = (float)hold / (ps->stats[STAT_MAX_HEALTH] / 2);
+	float hold = armor - (ps->stats[STAT_MAX_HEALTH] / 2);
+	float armorPercent = hold / (ps->stats[STAT_MAX_HEALTH] / 2);
 	if (armorPercent < 0)
 	{
 		armorPercent = 0;
@@ -1368,24 +1361,21 @@ void CG_DrawJK2Armor(const centity_t* cent, const int x, const int y)
 void CG_DrawJK2CusArmor(const centity_t* cent, const int x, const int y)
 {
 	vec4_t			calcColor;
-	float			armorPercent, hold;
-	playerState_t* ps;
-	int				armor;
 
-	ps = &cg.snap->ps;
+	playerState_t* ps = &cg.snap->ps;
 
 	//	Outer Armor circular
 	memcpy(calcColor, colorTable[CT_HUD_GREEN], sizeof(vec4_t));
 
-	armor = ps->stats[STAT_ARMOR];
+	int armor = ps->stats[STAT_ARMOR];
 
 	if (armor > ps->stats[STAT_MAX_HEALTH])
 	{
 		armor = ps->stats[STAT_MAX_HEALTH];
 	}
 
-	hold = armor - (ps->stats[STAT_MAX_HEALTH] / 2);
-	armorPercent = (float)hold / (ps->stats[STAT_MAX_HEALTH] / 2);
+	float hold = armor - (ps->stats[STAT_MAX_HEALTH] / 2);
+	float armorPercent = hold / (ps->stats[STAT_MAX_HEALTH] / 2);
 	if (armorPercent < 0)
 	{
 		armorPercent = 0;
@@ -3572,13 +3562,9 @@ static void CG_DrawCusAmmo(const centity_t* cent, menuDef_t* menuHUD)
 }
 static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 {
-	playerState_t* ps;
-	int			numColor_i;
-	int			i;
 	vec4_t		calcColor;
-	float		value, inc, percent;
 
-	ps = &cg.snap->ps;
+	playerState_t* ps = &cg.snap->ps;
 
 	if (!cent->currentState.weapon) // We don't have a weapon right now
 	{
@@ -3615,17 +3601,14 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		}
 		return;
 	}
-	else
-	{
-		value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
-	}
+	float value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
 
 	if (value < 0)	// No ammo
 	{
 		return;
 	}
 
-	numColor_i = CT_HUD_ORANGE;
+	int numColor_i = CT_HUD_ORANGE;
 
 	trap->R_SetColor(colorTable[numColor_i]);
 
@@ -3637,10 +3620,10 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		CG_DrawNumField(x + 30, y + 26, 3, value, 6, 12, NUM_FONT_SMALL, qfalse);
 	}
 
-	inc = (float)ammoData[weaponData[cent->currentState.weapon].ammoIndex].max / MAX_TICS;
+	float inc = (float)ammoData[weaponData[cent->currentState.weapon].ammoIndex].max / MAX_TICS;
 	value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
 
-	for (i = MAX_TICS - 1; i >= 0; i--)
+	for (int i = MAX_TICS - 1; i >= 0; i--)
 	{
 		if (value <= 0)	// partial tic
 		{
@@ -3649,7 +3632,7 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		else if (value < inc)	// partial tic
 		{
 			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			percent = value / inc;
+			float percent = value / inc;
 			calcColor[0] *= percent;
 			calcColor[1] *= percent;
 			calcColor[2] *= percent;
@@ -3675,125 +3658,6 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 CG_DrawForcePower
 ================
 */
-void CG_DrawForcePower(menuDef_t* menuHUD)
-{
-	vec4_t calcColor;
-	itemDef_t* focusItem;
-	const int maxForcePower = 100;
-	qboolean flash = qfalse;
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.forceHUDTotalFlashTime > cg.time || cg_entities[cg.snap->ps.clientNum].currentState.userInt3 & 1 <<
-		FLAG_FATIGUED)
-	{
-		flash = qtrue;
-		if (cg.forceHUDNextFlashTime < cg.time)
-		{
-			cg.forceHUDNextFlashTime = cg.time + 400;
-			trap->S_StartSound(NULL, 0, CHAN_LOCAL, cgs.media.noforceSound);
-
-			if (cg.forceHUDActive)
-			{
-				cg.forceHUDActive = qfalse;
-			}
-			else
-			{
-				cg.forceHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.forceHUDNextFlashTime = 0;
-		cg.forceHUDActive = qtrue;
-	}
-
-	const float inc = (float)maxForcePower / MAX_HUD_TICS;
-	float value = cg.snap->ps.fd.forcePower;
-
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, forceTicName[i]);
-
-		if (!focusItem)
-		{
-			continue;
-		}
-
-		if (value <= 0) // done
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-		else
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-		}
-
-		trap->R_SetColor(calcColor);
-
-		CG_DrawPic(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			focusItem->window.background
-		);
-
-		value -= inc;
-	}
-
-	focusItem = Menu_FindItemByName(menuHUD, "forceamount");
-
-	if (focusItem)
-	{
-		// Print force amount
-		if (flash)
-		{
-			trap->R_SetColor(colorTable[CT_RED]);
-		}
-		else
-		{
-			trap->R_SetColor(focusItem->window.foreColor);
-		}
-
-		CG_DrawNumField(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			3,
-			cg.snap->ps.fd.forcePower,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			NUM_FONT_SMALL,
-			qfalse);
-	}
-}
 
 void CG_Draw_JKA_ForcePower(const centity_t* cent, menuDef_t* menuHUD)
 {
@@ -3947,15 +3811,13 @@ void CG_Draw_JKA_ForcePower(const centity_t* cent, menuDef_t* menuHUD)
 
 void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHUD)
 {
-	int			i;
 	vec4_t		calcColor;
-	float		value, inc, percent;
 	itemDef_t* focusItem;
 
-	inc = (float)100 / MAX_TICS;
-	value = cg.snap->ps.fd.forcePower;
+	float inc = (float)100 / MAX_TICS;
+	float value = cg.snap->ps.fd.forcePower;
 
-	for (i = MAX_TICS - 1; i >= 0; i--)
+	for (int i = MAX_TICS - 1; i >= 0; i--)
 	{
 		if (value <= 0)	// partial tic
 		{
@@ -3964,7 +3826,7 @@ void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHU
 		else if (value < inc)	// partial tic
 		{
 			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			percent = value / inc;
+			float percent = value / inc;
 			calcColor[0] *= percent;
 			calcColor[1] *= percent;
 			calcColor[2] *= percent;
@@ -4029,15 +3891,12 @@ void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHU
 
 void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHUD)
 {
-	int			i;
 	vec4_t		calcColor;
-	float		value, inc, percent;
-	itemDef_t* focusItem;
 
-	inc = (float)100 / MAX_TICS;
-	value = cg.snap->ps.fd.forcePower;
+	float inc = (float)100 / MAX_TICS;
+	float value = cg.snap->ps.fd.forcePower;
 
-	for (i = MAX_TICS - 1; i >= 0; i--)
+	for (int i = MAX_TICS - 1; i >= 0; i--)
 	{
 		if (value <= 0)	// partial tic
 		{
@@ -4046,7 +3905,7 @@ void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t*
 		else if (value < inc)	// partial tic
 		{
 			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			percent = value / inc;
+			float percent = value / inc;
 			calcColor[0] *= percent;
 			calcColor[1] *= percent;
 			calcColor[2] *= percent;
@@ -4073,7 +3932,7 @@ void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t*
 	{
 		if (!cg.snap->ps.saberAttackChainCount && !cg.snap->ps.BlasterAttackChainCount)
 		{
-			focusItem = Menu_FindItemByName(menuHUD, "forceamount");
+			itemDef_t* focusItem = Menu_FindItemByName(menuHUD, "forceamount");
 
 			if (focusItem)
 			{
@@ -6376,6 +6235,7 @@ static void CG_DrawStats(void)
 CG_DrawPickupItem
 ===================
 */
+#define	PICKUP_ICON_SIZE 22
 static void CG_DrawPickupItem(void)
 {
 	const int value = cg.itemPickup;
@@ -6386,7 +6246,7 @@ static void CG_DrawPickupItem(void)
 		{
 			CG_RegisterItemVisuals(value);
 			trap->R_SetColor(fadeColor);
-			CG_DrawPic(573, 320, ICON_SIZE, ICON_SIZE, cg_items[value].icon);
+			CG_DrawPic(290, 20, PICKUP_ICON_SIZE, PICKUP_ICON_SIZE, cg_items[value].icon);
 			trap->R_SetColor(NULL);
 		}
 	}

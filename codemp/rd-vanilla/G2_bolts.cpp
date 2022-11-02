@@ -129,7 +129,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& 
 	int					flags;
 
 	// first up, we'll search for that which this bolt names in all the surfaces
-	const int surfNum = G2_IsSurfaceLegal((void*)mod_m, boneName, &flags);
+	const int surfNum = G2_IsSurfaceLegal(mod_m, boneName, &flags);
 
 	// did we find it as a surface?
 	if (surfNum != -1)

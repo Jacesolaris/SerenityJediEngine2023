@@ -1490,9 +1490,8 @@ jinit_huff_decoder(j_decompress_ptr cinfo)
 {
 	int i;
 
-	const huff_entropy_ptr entropy = (huff_entropy_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(huff_entropy_decoder));
+	const huff_entropy_ptr entropy = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                            SIZEOF(huff_entropy_decoder));
 	cinfo->entropy = &entropy->pub;
 	entropy->pub.start_pass = start_pass_huff_decoder;
 	entropy->pub.finish_pass = finish_pass_huff;

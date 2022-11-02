@@ -1331,7 +1331,7 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 }
 
 extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 qboolean DoesnotDrainMishap(const gentity_t* ent)
 {

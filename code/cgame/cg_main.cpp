@@ -644,7 +644,7 @@ static cvarTable_t cvarTable[] = {
 	{&cg_newgameplusJKO, "g_newgameplusJKO", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 };
 
-static const size_t cvarTableSize = ARRAY_LEN(cvarTable);
+static const size_t cvarTableSize = std::size(cvarTable);
 
 /*
 =================
@@ -1249,7 +1249,7 @@ qboolean CG_RegisterClientModelname(clientInfo_t* ci,
 	return qtrue;
 }
 
-void CG_RegisterClientRenderInfo(clientInfo_t* ci, renderInfo_t* ri)
+void CG_RegisterClientRenderInfo(clientInfo_t* ci, const renderInfo_t* ri)
 {
 	char headModelName[MAX_QPATH];
 	char torsoModelName[MAX_QPATH];
@@ -2291,7 +2291,7 @@ static void CG_RegisterGraphics(void)
 
 	for (i = 1; i < MAX_ICONS; i++)
 	{
-		const char* iconName = (char*)CG_ConfigString(CS_ICONS + i);
+		const char* iconName = const_cast<char*>(CG_ConfigString(CS_ICONS + i));
 
 		if (!iconName[0])
 		{
@@ -3334,7 +3334,7 @@ void CG_ParseMenu(const char* menuFile)
 
 	//Com_Printf("Parsing menu file:%s\n", menuFile);
 
-	int result = cgi_UI_StartParseSession((char*)menuFile, &buf);
+	int result = cgi_UI_StartParseSession(const_cast<char*>(menuFile), &buf);
 
 	if (!result)
 	{

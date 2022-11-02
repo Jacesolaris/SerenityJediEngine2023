@@ -649,11 +649,10 @@ int Com_HexStrToInt(const char* str)
 */
 
 int QDECL Com_sprintf(char* dest, int size, const char* fmt, ...) {
-	int		len;
 	va_list		argptr;
 
 	va_start(argptr, fmt);
-	len = Q_vsnprintf(dest, size, fmt, argptr);
+	int len = Q_vsnprintf(dest, size, fmt, argptr);
 	va_end(argptr);
 
 	if (len >= size)
@@ -685,10 +684,9 @@ char* QDECL va(const char* format, ...)
 	va_list		argptr;
 	static char	string[MAX_VA_BUFFERS][MAX_VA_STRING];	// in case va is called by nested functions
 	static int	index = 0;
-	char* buf;
 
 	va_start(argptr, format);
-	buf = (char*)&string[index++ & 3];
+	char* buf = (char*)&string[index++ & 3];
 	Q_vsnprintf(buf, sizeof(*string), format, argptr);
 	va_end(argptr);
 
@@ -736,7 +734,6 @@ char* Info_ValueForKey(const char* s, const char* key) {
 	static	char value[2][BIG_INFO_VALUE];	// use two buffers so compares
 	// work without stomping on each other
 	static	int	valueindex = 0;
-	char* o;
 
 	if (!s || !key) {
 		return "";
@@ -751,7 +748,7 @@ char* Info_ValueForKey(const char* s, const char* key) {
 		s++;
 	while (1)
 	{
-		o = pkey;
+		char* o = pkey;
 		while (*s != '\\')
 		{
 			if (!*s)
@@ -789,7 +786,6 @@ Return qfalse if we discover the infostring is invalid
 ===================
 */
 qboolean Info_NextPair(const char** head, char* key, char* value) {
-	char* o;
 	const char* s = *head;
 
 	if (*s == '\\')
@@ -797,7 +793,7 @@ qboolean Info_NextPair(const char** head, char* key, char* value) {
 	key[0] = 0;
 	value[0] = 0;
 
-	o = key;
+	char* o = key;
 	while (*s != '\\') {
 		if (!*s) {
 			key[0] = 0;
@@ -884,9 +880,7 @@ Info_RemoveKey_Big
 ===================
 */
 void Info_RemoveKey_Big(char* s, const char* key) {
-	char* start;
 	static char	pkey[BIG_INFO_KEY], value[BIG_INFO_VALUE];
-	char* o;
 
 	pkey[0] = value[0] = '\0';
 
@@ -900,10 +894,10 @@ void Info_RemoveKey_Big(char* s, const char* key) {
 
 	while (1)
 	{
-		start = s;
+		char* start = s;
 		if (*s == '\\')
 			s++;
-		o = pkey;
+		char* o = pkey;
 		while (*s != '\\')
 		{
 			if (!*s)
@@ -1048,9 +1042,7 @@ Com_CharIsOneOfCharset
 ==================
 */
 static qboolean Com_CharIsOneOfCharset(char c, char* set) {
-	size_t i;
-
-	for (i = 0; i < strlen(set); i++) {
+	for (size_t i = 0; i < strlen(set); i++) {
 		if (set[i] == c)
 			return qtrue;
 	}
@@ -1097,8 +1089,7 @@ char* Com_SkipTokens(char* s, int numTokens, char* sep) {
 
 	if (sepCount == numTokens)
 		return p;
-	else
-		return s;
+	return s;
 }
 
 qboolean Q_InBitflags(const uint32_t* bits, int index, uint32_t bitsPerByte) {
@@ -1116,8 +1107,7 @@ void Q_RemoveFromBitflags(uint32_t* bits, int index, uint32_t bitsPerByte) {
 void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
 	size_t size, cmpFunc_t cmp)
 {
-	size_t i;
-	for (i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		if (cmp(key, ptr) == 0) return (void*)ptr;
 		ptr = (const char*)ptr + size;

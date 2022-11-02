@@ -1900,7 +1900,7 @@ bool CPrimitiveTemplate::ParseRGB(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown key parsing an RGB group: %s\n", key);
 
-		pairs = (CGPValue*)pairs->GetNext();
+		pairs = pairs->GetNext();
 	}
 
 	return true;
@@ -1940,7 +1940,7 @@ bool CPrimitiveTemplate::ParseAlpha(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown key parsing an Alpha group: %s\n", key);
 
-		pairs = (CGPValue*)pairs->GetNext();
+		pairs = pairs->GetNext();
 	}
 
 	return true;
@@ -1980,7 +1980,7 @@ bool CPrimitiveTemplate::ParseSize(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown key parsing a Size group: %s\n", key);
 
-		pairs = (CGPValue*)pairs->GetNext();
+		pairs = pairs->GetNext();
 	}
 
 	return true;
@@ -2020,7 +2020,7 @@ bool CPrimitiveTemplate::ParseSize2(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown key parsing a Size2 group: %s\n", key);
 
-		pairs = (CGPValue*)pairs->GetNext();
+		pairs = pairs->GetNext();
 	}
 
 	return true;
@@ -2060,7 +2060,7 @@ bool CPrimitiveTemplate::ParseLength(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown key parsing a Length group: %s\n", key);
 
-		pairs = (CGPValue*)pairs->GetNext();
+		pairs = pairs->GetNext();
 	}
 
 	return true;
@@ -2156,7 +2156,7 @@ bool CPrimitiveTemplate::ParsePrimitive(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown key parsing an effect primitive: %s\n", key);
 
-		pairs = (CGPValue*)pairs->GetNext();
+		pairs = pairs->GetNext();
 	}
 
 	CGPGroup* subGrp = grp->GetSubGroups();
@@ -2179,7 +2179,7 @@ bool CPrimitiveTemplate::ParsePrimitive(CGPGroup* grp)
 		else
 			theFxHelper.Print("Unknown group key parsing a particle: %s\n", key);
 
-		subGrp = (CGPGroup*)subGrp->GetNext();
+		subGrp = subGrp->GetNext();
 	}
 
 	return true;

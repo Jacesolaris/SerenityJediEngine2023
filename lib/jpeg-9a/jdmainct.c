@@ -176,9 +176,8 @@ alloc_funny_pointers(j_decompress_ptr cinfo)
 		/* Get space for pointer lists --- M+4 row groups in each list.
 		 * We alloc both pointer lists with one call to save a few cycles.
 		 */
-		JSAMPARRAY xbuf = (JSAMPARRAY)
-			(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-				2 * (rgroup * (M + 4)) * SIZEOF(JSAMPROW));
+		JSAMPARRAY xbuf = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+		                                             2 * (rgroup * (M + 4)) * SIZEOF(JSAMPROW));
 		xbuf += rgroup;		/* want one row group at negative offsets */
 		mainp->xbuffer[0][ci] = xbuf;
 		xbuf += rgroup * (M + 4);
@@ -270,7 +269,7 @@ set_bottom_pointers(j_decompress_ptr cinfo)
 		const int iMCUheight = compptr->v_samp_factor * compptr->DCT_v_scaled_size;
 		const int rgroup = iMCUheight / cinfo->min_DCT_v_scaled_size;
 		/* Count nondummy sample rows remaining for this component */
-		int rows_left = (int)(compptr->downsampled_height % (JDIMENSION)iMCUheight);
+		int rows_left = compptr->downsampled_height % (JDIMENSION)iMCUheight;
 		if (rows_left == 0) rows_left = iMCUheight;
 		/* Count nondummy row groups.  Should get same answer for each component,
 		 * so we need only do it once.
@@ -345,7 +344,7 @@ process_data_simple_main(j_decompress_ptr cinfo,
 	}
 
 	/* There are always min_DCT_scaled_size row groups in an iMCU row. */
-	const JDIMENSION rowgroups_avail = (JDIMENSION)cinfo->min_DCT_v_scaled_size;
+	const JDIMENSION rowgroups_avail = cinfo->min_DCT_v_scaled_size;
 	/* Note: at the bottom of the image, we may pass extra garbage row groups
 	 * to the postprocessor.  The postprocessor has to check for bottom
 	 * of image anyway (at row resolution), so no point in us doing it too.
@@ -463,9 +462,8 @@ jinit_d_main_controller(j_decompress_ptr cinfo, boolean need_full_buffer)
 	int ci, ngroups;
 	jpeg_component_info* compptr;
 
-	const my_main_ptr mainp = (my_main_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_main_controller));
+	const my_main_ptr mainp = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                     SIZEOF(my_main_controller));
 	cinfo->main = &mainp->pub;
 	mainp->pub.start_pass = start_pass_main;
 

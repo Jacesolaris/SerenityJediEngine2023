@@ -431,7 +431,7 @@ qboolean MP3Stream_GetSamples(channel_t* ch, int startingSampleNum, int count, s
 		//		_bDecoded = qtrue;
 		//		Com_OPrintf("Scrolling...");
 
-		const int _iBytesDecoded = MP3Stream_Decode((LP_MP3STREAM)&ch->MP3StreamHeader, bStereo);	// stereo only for music, so this is safe
+		const int _iBytesDecoded = MP3Stream_Decode(&ch->MP3StreamHeader, bStereo);	// stereo only for music, so this is safe
 		//		Com_OPrintf("%d bytes decoded\n",_iBytesDecoded);
 		if (_iBytesDecoded == 0)
 		{

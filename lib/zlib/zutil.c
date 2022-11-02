@@ -303,8 +303,8 @@ unsigned items;
 unsigned size;
 {
 	if (opaque) items += size - size; /* make compiler happy */
-	return sizeof(uInt) > 2 ? (voidpf)malloc(items * size) :
-		(voidpf)calloc(items, size);
+	return sizeof(uInt) > 2 ? malloc(items * size) :
+		calloc(items, size);
 }
 
 void ZLIB_INTERNAL zcfree(opaque, ptr)

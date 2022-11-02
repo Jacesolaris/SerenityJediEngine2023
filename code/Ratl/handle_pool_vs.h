@@ -58,6 +58,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 namespace ratl
 {
+	void swap_index(int handle_to_index, int handle_to_index1);
+
 	template <class T>
 	class handle_pool_base : public pool_root<T>
 	{
@@ -114,7 +116,7 @@ namespace ratl
 				mHandles[i] |= ++HandleSaltValue << mMASK_NUM_BITS;
 #else
 				mHandles[i] = i;			// Reset The ID Counter
-				mHandles[i] |= (1 << mMASK_NUM_BITS);
+				mHandles[i] |= 1 << mMASK_NUM_BITS;
 #endif
 			}
 		}
@@ -162,7 +164,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Swap two items based on handle
 		////////////////////////////////////////////////////////////////////////////////////
-		void swap(int i, int j)
+		void swap(const int i, int j) const
 		{
 			assert(is_used(i));		//typically this is a stale handle (already been freed)
 			assert(is_used(j));		//typically this is a stale handle (already been freed)
@@ -268,7 +270,7 @@ namespace ratl
 	class handle_pool_vs : public handle_pool_base<storage::value_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::value_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		handle_pool_vs() {}
@@ -278,7 +280,7 @@ namespace ratl
 	class handle_pool_os : public handle_pool_base<storage::object_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::object_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		handle_pool_os() {}
@@ -288,7 +290,7 @@ namespace ratl
 	class handle_pool_is : public handle_pool_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
 	{
 	public:
-		using TStorageTraits = typename storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
+		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;

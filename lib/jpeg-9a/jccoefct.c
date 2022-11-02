@@ -265,7 +265,7 @@ compress_first_pass(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 		JDIMENSION blocks_across = compptr->width_in_blocks;
 		const int h_samp_factor = compptr->h_samp_factor;
 		/* Count number of dummy blocks to be added at the right margin. */
-		int ndummy = (int)(blocks_across % h_samp_factor);
+		int ndummy = blocks_across % h_samp_factor;
 		if (ndummy > 0)
 			ndummy = h_samp_factor - ndummy;
 		const forward_DCT_ptr forward_DCT = cinfo->fdct->forward_DCT[ci];
@@ -393,9 +393,8 @@ compress_output(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 GLOBAL(void)
 jinit_c_coef_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 {
-	const my_coef_ptr coef = (my_coef_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_coef_controller));
+	const my_coef_ptr coef = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                    SIZEOF(my_coef_controller));
 	cinfo->coef = (struct jpeg_c_coef_controller*)coef;
 	coef->pub.start_pass = start_pass_coef;
 
@@ -411,10 +410,10 @@ jinit_c_coef_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 			ci++, compptr++) {
 			coef->whole_image[ci] = (*cinfo->mem->request_virt_barray)
 				((j_common_ptr)cinfo, JPOOL_IMAGE, FALSE,
-					(JDIMENSION)jround_up((long)compptr->width_in_blocks,
-						(long)compptr->h_samp_factor),
-					(JDIMENSION)jround_up((long)compptr->height_in_blocks,
-						(long)compptr->v_samp_factor),
+					(JDIMENSION)jround_up(compptr->width_in_blocks,
+						compptr->h_samp_factor),
+					(JDIMENSION)jround_up(compptr->height_in_blocks,
+						compptr->v_samp_factor),
 					(JDIMENSION)compptr->v_samp_factor);
 		}
 #else
@@ -422,9 +421,8 @@ jinit_c_coef_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 #endif
 	}
 	else {
-		const JBLOCKROW buffer = (JBLOCKROW)
-			(*cinfo->mem->alloc_large)((j_common_ptr)cinfo, JPOOL_IMAGE,
-				C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
+		const JBLOCKROW buffer = (*cinfo->mem->alloc_large)((j_common_ptr)cinfo, JPOOL_IMAGE,
+		                                                    C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
 		for (int i = 0; i < C_MAX_BLOCKS_IN_MCU; i++) {
 			coef->MCU_buffer[i] = buffer + i;
 		}

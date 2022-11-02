@@ -54,7 +54,7 @@ extern qboolean PM_InKnockDownNoGetup(const playerState_t* ps);
 extern qboolean PM_InGetUpNoRoll(const playerState_t* ps);
 extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
 extern qboolean PM_MeleeblockHoldAnim(int anim);
 extern qboolean PM_MeleeblockAnim(int anim);
@@ -2201,7 +2201,7 @@ void PM_UpdateViewAngles(int saberAnimLevel, playerState_t* ps, usercmd_t* cmd, 
 						}
 					}
 				}
-				else if (!cmd->forwardmove && !cmd->rightmove && (cmd->buttons & BUTTON_ATTACK))
+				else if (!cmd->forwardmove && !cmd->rightmove && cmd->buttons & BUTTON_ATTACK)
 				{
 					pm->ps->saberBlocked = BLOCKED_TOP;
 				}

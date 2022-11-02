@@ -67,7 +67,7 @@ extern qboolean PM_SaberInTransitionAny(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern void CalcEntitySpot(const gentity_t* ent, spot_t spot, vec3_t point);
 extern qboolean pm_walking_or_standing(const gentity_t* self);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern float manual_npc_saberblocking(const gentity_t* defender);
 extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim, gentity_t* attacker, qboolean allowAnyMove);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);

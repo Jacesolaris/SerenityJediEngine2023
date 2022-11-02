@@ -45,7 +45,7 @@ extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thr
 extern qboolean PM_SaberInKnockaway(int move);
 extern qboolean PM_SaberInBounce(int move);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_SaberInTransitionAny(int move);
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
@@ -71,7 +71,6 @@ extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
 extern qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
 extern saberMoveName_t PM_MBlocktheAttack(int move);
-extern int G_MBlocktheAttack(int move);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern void G_Stagger(gentity_t* hit_ent);
 extern void G_FatigueBPKnockaway(gentity_t* Blocker);
@@ -550,7 +549,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		return qtrue;
 	}
-	else if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
+	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
 	{
 		//slow bounce
 		if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
@@ -580,7 +579,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		return qtrue;
 	}
-	else if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)
+	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)
 	{
 		//slow bounce
 		SabBeh_AnimateSmallBounce(attacker);
@@ -598,7 +597,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		return qtrue;
 	}
-	else if (forceMishap)
+	if (forceMishap)
 	{
 		//two attacking sabers bouncing off each other
 		SabBeh_AnimateSmallBounce(attacker);
@@ -617,26 +616,22 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		return qtrue;
 	}
-	else
+	if (!MBlocking)
 	{
-		if (!MBlocking)
+		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
-			if (d_attackinfo->integer || g_DebugSaberCombat->integer)
+			if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
 			{
-				if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
-				{
-					gi.Printf(S_COLOR_GREEN"player blocked bounce\n");
-				}
-				else
-				{
-					gi.Printf(S_COLOR_GREEN"npc blocked bounce\n");
-				}
+				gi.Printf(S_COLOR_GREEN"player blocked bounce\n");
 			}
-			SabBeh_AnimateSmallBounce(attacker);
+			else
+			{
+				gi.Printf(S_COLOR_GREEN"npc blocked bounce\n");
+			}
 		}
-		return qtrue;
+		SabBeh_AnimateSmallBounce(attacker);
 	}
-	return qfalse;
+	return qtrue;
 }
 
 void SabBeh_AddBalance(const gentity_t* self, int amount)
@@ -799,7 +794,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 			attacker->client->ps.saberEventFlags &= ~SEF_BLOCKED;
 		}
 	}
-	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps) || (TransitionClashParry))
+	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps) || TransitionClashParry)
 	{//and blocker is attacking
 		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
@@ -874,7 +869,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 		{
 			if (MBlocking || ActiveBlocking || NPCBlocking)
 			{
-				if (NPCBlocking && (blocker->client->ps.blockPoints >= BLOCKPOINTS_MISSILE)
+				if (NPCBlocking && blocker->client->ps.blockPoints >= BLOCKPOINTS_MISSILE
 					&& attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH
 					&& !Q_irand(0, 4))
 				{//20% chance
@@ -1112,7 +1107,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 				//since it was parried, take away any damage done
 				wp_saber_clear_damage_for_ent_num(attacker, blocker->s.number, saberNum, bladeNum);
 			}
-			else if ((AccurateParry || perfectparry || NPCBlocking))//Other types and npc,s
+			else if (AccurateParry || perfectparry || NPCBlocking)//Other types and npc,s
 			{
 				if (blocker->NPC && !G_ControlledByPlayer(blocker)) //NPC only
 				{
@@ -1220,7 +1215,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 				G_FatigueBPKnockaway(blocker);
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
-			if ((d_blockinfo->integer || g_DebugSaberCombat->integer))
+			if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 			{
 				gi.Printf(S_COLOR_MAGENTA"Blocker can not block Unblockable\n");
 			}

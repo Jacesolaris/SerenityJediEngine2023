@@ -111,7 +111,7 @@ inline	void	SnapFloatToGrid(float& f, int GridSize)
 		f *= -1;		// Temporarly make it positive
 	}
 
-	int		Offset = static_cast<int>(f) % (int)GridSize;
+	int		Offset = static_cast<int>(f) % GridSize;
 	const int		OffsetAbs = abs(Offset);
 	if (OffsetAbs > GridSize / 2)
 	{

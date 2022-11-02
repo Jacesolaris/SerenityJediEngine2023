@@ -829,7 +829,7 @@ static const char* SE_Load_Actual(const char* psFileName, SE_BOOL bLoadDebug, SE
 		TheStringPackage.SetupNewFileParse(psFileName, bLoadDebug);
 
 		char sLineBuffer[16384];	// should be enough for one line of text (some of them can be BIG though)
-		while (!psErrorMessage && TheStringPackage.ReadLine((const char*&)psParsePos, sLineBuffer))
+		while (!psErrorMessage && TheStringPackage.ReadLine(psParsePos, sLineBuffer))
 		{
 			if (strlen(sLineBuffer))
 			{

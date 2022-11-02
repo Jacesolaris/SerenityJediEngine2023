@@ -272,7 +272,7 @@ start_pass(j_decompress_ptr cinfo)
 			/* For LL&M IDCT method, multipliers are equal to raw quantization
 			 * coefficients, but are stored as ints to ensure access efficiency.
 			 */
-			ISLOW_MULT_TYPE* ismtbl = (ISLOW_MULT_TYPE*)compptr->dct_table;
+			ISLOW_MULT_TYPE* ismtbl = compptr->dct_table;
 			for (i = 0; i < DCTSIZE2; i++) {
 				ismtbl[i] = (ISLOW_MULT_TYPE)qtbl->quantval[i];
 			}
@@ -289,7 +289,7 @@ start_pass(j_decompress_ptr cinfo)
 			 * For integer operation, the multiplier table is to be scaled by
 			 * IFAST_SCALE_BITS.
 			 */
-			IFAST_MULT_TYPE* ifmtbl = (IFAST_MULT_TYPE*)compptr->dct_table;
+			IFAST_MULT_TYPE* ifmtbl = compptr->dct_table;
 #define CONST_BITS 14
 			static const INT16 aanscales[DCTSIZE2] = {
 				/* precomputed values scaled up by 14 bits */
@@ -322,7 +322,7 @@ start_pass(j_decompress_ptr cinfo)
 			 *   scalefactor[k] = cos(k*PI/16) * sqrt(2)    for k=1..7
 			 * We apply a further scale factor of 1/8.
 			 */
-			FLOAT_MULT_TYPE* fmtbl = (FLOAT_MULT_TYPE*)compptr->dct_table;
+			FLOAT_MULT_TYPE* fmtbl = compptr->dct_table;
 			int row, col;
 			static const double aanscalefactor[DCTSIZE] = {
 			  1.0, 1.387039845, 1.306562965, 1.175875602,
@@ -358,9 +358,8 @@ jinit_inverse_dct(j_decompress_ptr cinfo)
 	int ci;
 	jpeg_component_info* compptr;
 
-	const my_idct_ptr idct = (my_idct_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_idct_controller));
+	const my_idct_ptr idct = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                    SIZEOF(my_idct_controller));
 	cinfo->idct = &idct->pub;
 	idct->pub.start_pass = start_pass;
 

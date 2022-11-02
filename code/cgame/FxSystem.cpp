@@ -128,7 +128,7 @@ void SFxHelper::G2Trace(trace_t* tr, vec3_t start, vec3_t min, vec3_t max,
 }
 
 //------------------------------------------------------
-void SFxHelper::AddFxToScene(refEntity_t* ent)
+void SFxHelper::AddFxToScene(const refEntity_t* ent)
 {
 	cgi_R_AddRefEntityToScene(ent);
 }

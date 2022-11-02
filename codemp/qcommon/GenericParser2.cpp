@@ -170,7 +170,7 @@ static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = fal
 		length = 0;
 	}
 	token[length] = 0;
-	*text = (char*)pointer;
+	*text = pointer;
 
 	return token;
 }
@@ -440,7 +440,7 @@ int CGPGroup::GetNumSubGroups(void) const
 	do
 	{
 		count++;
-		group = (CGPGroup*)group->GetNext();
+		group = group->GetNext();
 	} while (group);
 
 	return count;
@@ -453,7 +453,7 @@ int CGPGroup::GetNumPairs(void) const
 	do
 	{
 		count++;
-		pair = (CGPValue*)pair->GetNext();
+		pair = pair->GetNext();
 	} while (pair);
 
 	return count;
@@ -463,14 +463,14 @@ void CGPGroup::Clean(void)
 {
 	while (mPairs)
 	{
-		mCurrentPair = (CGPValue*)mPairs->GetNext();
+		mCurrentPair = mPairs->GetNext();
 		delete mPairs;
 		mPairs = mCurrentPair;
 	}
 
 	while (mSubGroups)
 	{
-		mCurrentSubGroup = (CGPGroup*)mSubGroups->GetNext();
+		mCurrentSubGroup = mSubGroups->GetNext();
 		delete mSubGroups;
 		mSubGroups = mCurrentSubGroup;
 	}
@@ -502,7 +502,7 @@ CGPGroup* CGPGroup::Duplicate(CTextPool** textPool, CGPGroup* initParent) const
 		CGPGroup* newSub = subSub->Duplicate(textPool, newGroup);
 		newGroup->AddGroup(newSub);
 
-		subSub = (CGPGroup*)subSub->GetNext();
+		subSub = subSub->GetNext();
 	}
 
 	const CGPValue* subPair = mPairs;
@@ -511,7 +511,7 @@ CGPGroup* CGPGroup::Duplicate(CTextPool** textPool, CGPGroup* initParent) const
 		CGPValue* newPair = subPair->Duplicate(textPool);
 		newGroup->AddPair(newPair);
 
-		subPair = (CGPValue*)subPair->GetNext();
+		subPair = subPair->GetNext();
 	}
 
 	return newGroup;
@@ -613,7 +613,7 @@ CGPGroup* CGPGroup::FindSubGroup(const char* name) const
 		{
 			return group;
 		}
-		group = (CGPGroup*)group->GetNext();
+		group = group->GetNext();
 	}
 	return NULL;
 }
@@ -696,13 +696,13 @@ bool CGPGroup::Write(CTextPool** textPool, int depth) const
 	while (mPair)
 	{
 		mPair->Write(textPool, depth + 1);
-		mPair = (CGPValue*)mPair->GetNext();
+		mPair = mPair->GetNext();
 	}
 
 	while (mSubGroup)
 	{
 		mSubGroup->Write(textPool, depth + 1);
-		mSubGroup = (CGPGroup*)mSubGroup->GetNext();
+		mSubGroup = mSubGroup->GetNext();
 	}
 
 	if (depth >= 0)

@@ -237,7 +237,7 @@ void VM_Shifted_Free(void** ptr) {
 		return;
 	}
 
-	void* mem = (void*)*ptr;
+	void* mem = *ptr;
 	if (!mem) {
 		assert(0);
 		return;
@@ -271,7 +271,7 @@ void* VM_ExplicitArgPtr(vm_t* vm, intptr_t intValue) {
 
 float _vmf(intptr_t x) {
 	byteAlias_t fi;
-	fi.i = (int)x;
+	fi.i = x;
 	return fi.f;
 }
 

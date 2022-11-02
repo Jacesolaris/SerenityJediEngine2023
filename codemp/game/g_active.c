@@ -72,7 +72,7 @@ void P_SetTwitchInfo(gclient_t* client)
 	client->ps.painDirection ^= 1;
 }
 
-qboolean G_ControlledByPlayer(gentity_t* self)
+qboolean G_ControlledByPlayer(const gentity_t* self)
 {
 	if (self && self->NPC && self->NPC->controlledTime > level.time)
 	{

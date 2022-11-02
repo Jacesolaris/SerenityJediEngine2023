@@ -592,10 +592,8 @@ void G2_GetBoneBasepose(CGhoul2Info& ghoul2, int boneNum, mdxaBone_t*& retBasepo
 	assert(boneCache.mod);
 	assert(boneNum >= 0 && boneNum < boneCache.header->numBones);
 
-	mdxaSkel_t* skel;
-	mdxaSkelOffsets_t* offsets;
-	offsets = (mdxaSkelOffsets_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t));
-	skel = (mdxaSkel_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t) + offsets->offsets[boneNum]);
+	mdxaSkelOffsets_t* offsets = (mdxaSkelOffsets_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t));
+	mdxaSkel_t* skel = (mdxaSkel_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t) + offsets->offsets[boneNum]);
 	retBasepose = &skel->BasePoseMat;
 	retBaseposeInv = &skel->BasePoseMatInv;
 }
@@ -999,7 +997,7 @@ void G2_TimingModel(boneInfo_t& bone, int currentTime, int numFramesInFile, int&
 					{
 						// now figure out what we are lerping between
 						// delta is the fraction between this frame and the next, since the new anim is always at a .0f;
-						lerp = static_cast<float>(endFrame + 1) - newFrame_g;
+						lerp = endFrame + 1 - newFrame_g;
 						// frames are easy to calculate
 						currentFrame = endFrame;
 						assert(currentFrame >= 0 && currentFrame < numFramesInFile);
@@ -2049,7 +2047,7 @@ void G2_ProcessSurfaceBolt(mdxaBone_v& bonePtr, mdxmSurface_t* surface, int bolt
 		const int polyNumber = surfInfo->genPolySurfaceIndex >> 16 & 0x0ffff;
 
 		// find original surface our original poly was in.
-		const auto originalSurf = static_cast<mdxmSurface_t*>(G2_FindSurface((void*)mod, surfNumber, surfInfo->genLod));
+		const auto originalSurf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, surfNumber, surfInfo->genLod));
 		const mdxmTriangle_t* originalTriangleIndexes = (mdxmTriangle_t*)((byte*)originalSurf + originalSurf->
 			ofsTriangles);
 
@@ -2286,7 +2284,7 @@ void ProcessModelBoltSurfaces(int surfaceNum, surfaceInfo_v& rootSList,
 #endif
 
 	// back track and get the surfinfo struct for this surface
-	const auto surface = static_cast<mdxmSurface_t*>(G2_FindSurface((void*)currentModel, surfaceNum, 0));
+	const auto surface = static_cast<mdxmSurface_t*>(G2_FindSurface(currentModel, surfaceNum, 0));
 	const auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)currentModel->mdxm + sizeof(mdxmHeader_t));
 	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surface->
 		thisSurfaceIndex]);
@@ -2339,7 +2337,7 @@ void G2_ConstructUsedBoneList(CConstructBoneList& CBL)
 
 	// back track and get the surfinfo struct for this surface
 	const mdxmSurface_t* surface = static_cast<mdxmSurface_t*>(G2_FindSurface(
-		(void*)CBL.currentModel, CBL.surfaceNum, 0));
+		CBL.currentModel, CBL.surfaceNum, 0));
 	const mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)CBL.currentModel->mdxm + sizeof(
 		mdxmHeader_t));
 	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surface->

@@ -3158,7 +3158,7 @@ qboolean WP_IsSaberTwoHanded(const char* saberName)
 		return qfalse;
 	}
 	const int twoHanded = atoi(twoHandedString);
-	return (qboolean)(twoHanded != 0);
+	return twoHanded != 0;
 }
 
 void WP_SaberGetHiltInfo(const char* singleHilts[MAX_SABER_HILTS], const char* staffHilts[MAX_SABER_HILTS])

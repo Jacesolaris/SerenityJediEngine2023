@@ -347,7 +347,7 @@ static consoleCommand_t commands[] = {
 	{"weapprev", CG_PrevWeapon_f},
 };
 
-static const size_t numCommands = ARRAY_LEN(commands);
+static const size_t num_commands = ARRAY_LEN(commands);
 
 /*
 =================
@@ -359,7 +359,7 @@ Cmd_Argc() / Cmd_Argv()
 */
 qboolean CG_ConsoleCommand(void)
 {
-	const consoleCommand_t* command = (consoleCommand_t*)Q_LinearSearch(CG_Argv(0), commands, numCommands,
+	const consoleCommand_t* command = (consoleCommand_t*)Q_LinearSearch(CG_Argv(0), commands, num_commands,
 		sizeof commands[0], cmdcmp);
 
 	if (!command || !command->func)
@@ -452,7 +452,7 @@ void CG_InitConsoleCommands(void)
 {
 	size_t i;
 
-	for (i = 0; i < numCommands; i++)
+	for (i = 0; i < num_commands; i++)
 		trap->AddCommand(commands[i].cmd);
 	//
 	// the game server will interpret these commands, which will be automatically

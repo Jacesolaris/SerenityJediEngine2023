@@ -221,6 +221,7 @@ using serverCommand_t = struct serverCommand_s
 
 static int svcmdcmp(const void* a, const void* b)
 {
+	// ReSharper disable once CppCStyleCast
 	return Q_stricmp(static_cast<const char*>(a), ((serverCommand_t*)b)->cmd);
 }
 
@@ -237,7 +238,7 @@ static serverCommand_t commands[] = {
 	{"st", CG_ScrollText_f},
 };
 
-static const size_t numCommands = ARRAY_LEN(commands);
+static constexpr size_t num_commands = std::size(commands);
 
 /*
 =================
@@ -258,7 +259,7 @@ static void CG_ServerCommand(void)
 	}
 
 	const serverCommand_t* command = static_cast<serverCommand_t*>(Q_LinearSearch(
-		cmd, commands, numCommands, sizeof commands[0],
+		cmd, commands, num_commands, sizeof commands[0],
 		svcmdcmp));
 
 	if (command)

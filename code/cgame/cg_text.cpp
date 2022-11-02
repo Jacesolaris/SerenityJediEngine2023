@@ -268,7 +268,7 @@ void CG_CaptionText(const char* str, int sound)
 	// Break into individual lines
 	i = 0; // this could be completely removed and replace by "cg.scrollTextLines-1", but wtf?
 
-	auto s = (const char*)&text;
+	auto s = reinterpret_cast<const char*>(&text);
 	// tai...
 	//	s="賽卓哥爾博士已經安全了，我也把所有發現報告給「商店」。很不幸地，瑞士警局有些白癡發現了一些狀況，準備在機場逮捕亞歷西‧納克瑞得。他偽裝成外交使節，穿過了層層防備。現在他握有人質，並且威脅要散播病毒。根據最新的報告，納克瑞得以及他的黨羽已經完全佔據了機場。我受命來追捕納克瑞得以及救出所有人質。這並不容易。";
 	// kor...
@@ -547,7 +547,7 @@ void CG_ScrollText(const char* str, int iPixelWidth)
 			cg.printText[i][strlen(cg.printText[i]) - 1] = '\0'; // kill the CR
 			i++;
 			assert(i < static_cast<int>(sizeof cg.printText / sizeof cg.printText[0]));
-			if (i >= static_cast<int>(sizeof cg.printText / sizeof cg.printText[0]))
+			if (i >= static_cast<int>(std::size(cg.printText)))
 			{
 				break;
 			}

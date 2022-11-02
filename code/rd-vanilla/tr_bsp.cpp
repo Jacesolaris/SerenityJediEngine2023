@@ -1095,7 +1095,7 @@ void R_LoadLightGrid(lump_t* l, world_t& worldData) {
 	const int numGridDataElements = l->filelen / sizeof * w->lightGridData;
 
 	w->lightGridData = static_cast<mgrid_t*>(R_Hunk_Alloc(l->filelen, qfalse));
-	memcpy(w->lightGridData, (void*)(fileBase + l->fileofs), l->filelen);
+	memcpy(w->lightGridData, fileBase + l->fileofs, l->filelen);
 
 	// deal with overbright bits
 	for (i = 0; i < numGridDataElements; i++) {
@@ -1131,7 +1131,7 @@ void R_LoadLightGridArray(lump_t* l, world_t& worldData) {
 	}
 
 	w->lightGridArray = static_cast<unsigned short*>(R_Hunk_Alloc(l->filelen, qfalse));
-	memcpy(w->lightGridArray, (void*)(fileBase + l->fileofs), l->filelen);
+	memcpy(w->lightGridArray, fileBase + l->fileofs, l->filelen);
 #ifdef Q3_BIG_ENDIAN
 	for (i = 0; i < w->numGridArrayElements; i++) {
 		w->lightGridArray[i] = LittleShort(w->lightGridArray[i]);

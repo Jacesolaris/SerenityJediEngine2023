@@ -79,7 +79,7 @@ namespace ratl
 		}
 		int parent() const
 		{
-			return mParent & (~RED_BIT);
+			return mParent & ~RED_BIT;
 		}
 		bool red() const
 		{
@@ -290,7 +290,7 @@ namespace ratl
 				else
 				{
 					const int	excessRedChildCompare =
-						(nxtRotateLeft) ? (T::node(mPool[nxtChild]).right()) : (T::node(mPool[nxtChild]).left());
+						nxtRotateLeft ? T::node(mPool[nxtChild]).right() : T::node(mPool[nxtChild]).left();
 					if (excessRedChild == excessRedChildCompare)
 					{
 						// Single Rotation
@@ -389,7 +389,7 @@ namespace ratl
 				const bool	atWasRed = T::node(mPool[at]).red();
 				int		oldAt = at;
 
-				at = (T::node(mPool[at]).left() == tree_node::NULL_NODE) ? (T::node(mPool[at]).right()) : (T::node(mPool[at]).left());	// If Left Is Null, At Goes Right
+				at = T::node(mPool[at]).left() == tree_node::NULL_NODE ? T::node(mPool[at]).right() : T::node(mPool[at]).left();	// If Left Is Null, At Goes Right
 
 				// Actually Free It!
 				//-------------------
@@ -522,7 +522,7 @@ namespace ratl
 		{
 			// Decide Which Child, Left Or Right?
 			//------------------------------------
-			int	w = (left) ? (T::node(mPool[at]).right()) : (T::node(mPool[at]).left());	// w is the child of at
+			int	w = left ? T::node(mPool[at]).right() : T::node(mPool[at]).left();	// w is the child of at
 			if (w == tree_node::NULL_NODE)
 			{
 				const bool	atWasRed = T::node(mPool[at]).red();			// Remember what mPool[at] WAS
@@ -533,8 +533,8 @@ namespace ratl
 			// Get A Reference To The Child W, And Record It's Children x And y
 			//------------------------------------------------------------------
 			tree_node& wAt = T::node(mPool[w]);
-			int		x = (left) ? (wAt.left()) : (wAt.right());// x and y are the grand children of at
-			int		y = (left) ? (wAt.right()) : (wAt.left());
+			int		x = left ? wAt.left() : wAt.right();// x and y are the grand children of at
+			int		y = left ? wAt.right() : wAt.left();
 
 			// Is The Child Black?
 			//---------------------
@@ -658,7 +658,7 @@ namespace ratl
 			int		parent = tree_node::NULL_NODE;
 			find_internal(kAt, at, mRoot, parent);
 
-			while (parent != tree_node::NULL_NODE && (child == T::node(mPool[parent]).right()))
+			while (parent != tree_node::NULL_NODE && child == T::node(mPool[parent]).right())
 			{
 				child = parent;
 				find_internal(mPool[parent], parent, mRoot, parent);
@@ -683,7 +683,7 @@ namespace ratl
 			int		parent = tree_node::NULL_NODE;
 			find_internal(nAt, at, mRoot, parent);
 
-			while (parent != tree_node::NULL_NODE && (child == T::node(mPool[parent]).left()))
+			while (parent != tree_node::NULL_NODE && child == T::node(mPool[parent]).left())
 			{
 				child = parent;
 				find_internal(mPool[parent], parent, mRoot, parent);
@@ -705,7 +705,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		int			size() const
 		{
-			return (mPool.size());
+			return mPool.size();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -713,7 +713,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		bool		empty() const
 		{
-			return (mPool.empty());
+			return mPool.empty();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -721,7 +721,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		bool		full() const
 		{
-			return (mPool.full());
+			return mPool.full();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -942,8 +942,8 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const iterator p) const { return (mLoc != p.mLoc || mOwner != p.mOwner); }
-			bool	operator==(const iterator p) const { return (mLoc == p.mLoc && mOwner == p.mOwner); }
+			bool	operator!=(const iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool	operator==(const iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			const TTValue& operator*() const
 			{
@@ -1021,10 +1021,10 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const const_iterator p) const { return (mLoc != p.mLoc || mOwner != p.mOwner); }
-			bool	operator==(const const_iterator p) const { return (mLoc == p.mLoc && mOwner == p.mOwner); }
-			bool	operator!=(const iterator p) const { return (mLoc != p.mLoc || mOwner != p.mOwner); }
-			bool	operator==(const iterator p) const { return (mLoc == p.mLoc && mOwner == p.mOwner); }
+			bool	operator!=(const const_iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool	operator==(const const_iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool	operator!=(const iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool	operator==(const iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			const TTValue& operator*() const
 			{
@@ -1331,8 +1331,8 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const iterator& p) const { return (mLoc != p.mLoc || mOwner != p.mOwner); }
-			bool	operator==(const iterator& p) const { return (mLoc == p.mLoc && mOwner == p.mOwner); }
+			bool	operator!=(const iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool	operator==(const iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			TVTValue& operator*() const
 			{
@@ -1421,10 +1421,10 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const const_iterator& p) const { return (mLoc != p.mLoc || mOwner != p.mOwner); }
-			bool	operator==(const const_iterator& p) const { return (mLoc == p.mLoc && mOwner == p.mOwner); }
-			bool	operator!=(const iterator& p) const { return (mLoc != p.mLoc || mOwner != p.mOwner); }
-			bool	operator==(const iterator& p) const { return (mLoc == p.mLoc && mOwner == p.mOwner); }
+			bool	operator!=(const const_iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool	operator==(const const_iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool	operator!=(const iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool	operator==(const iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			const TVTValue& operator*() const
 			{

@@ -277,7 +277,7 @@ bool CParticle::UpdateOrigin(void)
 				}
 
 				// may need to interact with the material type we hit
-				theFxScheduler.MaterialImpact(&trace, (CEffect*)this);
+				theFxScheduler.MaterialImpact(&trace, this);
 
 				if (mFlags & FX_KILL_ON_IMPACT)
 				{
@@ -346,7 +346,7 @@ void CParticle::UpdateSize(void)
 		if (theFxHelper.mTime > mSizeParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mSizeParm) / (float)(mTimeEnd - mSizeParm);
+			perc2 = 1.0f - (theFxHelper.mTime - mSizeParm) / (mTimeEnd - mSizeParm);
 		}
 
 		if (mFlags & FX_SIZE_LINEAR)
@@ -370,7 +370,7 @@ void CParticle::UpdateSize(void)
 		if (theFxHelper.mTime < mSizeParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mSizeParm - theFxHelper.mTime) / (float)(mSizeParm - mTimeStart);
+			perc2 = (mSizeParm - theFxHelper.mTime) / (mSizeParm - mTimeStart);
 		}
 		else
 		{
@@ -434,7 +434,7 @@ void CParticle::UpdateRGB(void)
 		if (theFxHelper.mTime > mRGBParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mRGBParm) / (float)(mTimeEnd - mRGBParm);
+			perc2 = 1.0f - (theFxHelper.mTime - mRGBParm) / (mTimeEnd - mRGBParm);
 		}
 
 		if (mFlags & FX_RGB_LINEAR)
@@ -458,7 +458,7 @@ void CParticle::UpdateRGB(void)
 		if (theFxHelper.mTime < mRGBParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mRGBParm - theFxHelper.mTime) / (float)(mRGBParm - mTimeStart);
+			perc2 = (mRGBParm - theFxHelper.mTime) / (mRGBParm - mTimeStart);
 		}
 		else
 		{
@@ -511,7 +511,7 @@ void CParticle::UpdateAlpha(void)
 		if (theFxHelper.mTime > mAlphaParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mAlphaParm) / (float)(mTimeEnd - mAlphaParm);
+			perc2 = 1.0f - (theFxHelper.mTime - mAlphaParm) / (mTimeEnd - mAlphaParm);
 		}
 
 		if (mFlags & FX_ALPHA_LINEAR)
@@ -535,7 +535,7 @@ void CParticle::UpdateAlpha(void)
 		if (theFxHelper.mTime < mAlphaParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mAlphaParm - theFxHelper.mTime) / (float)(mAlphaParm - mTimeStart);
+			perc2 = (mAlphaParm - theFxHelper.mTime) / (mAlphaParm - mTimeStart);
 		}
 		else
 		{
@@ -1017,7 +1017,7 @@ void CTail::UpdateLength(void)
 		if (theFxHelper.mTime > mLengthParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mLengthParm) / (float)(mTimeEnd - mLengthParm);
+			perc2 = 1.0f - (theFxHelper.mTime - mLengthParm) / (mTimeEnd - mLengthParm);
 		}
 
 		if (mFlags & FX_LENGTH_LINEAR)
@@ -1041,7 +1041,7 @@ void CTail::UpdateLength(void)
 		if (theFxHelper.mTime < mLengthParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mLengthParm - theFxHelper.mTime) / (float)(mLengthParm - mTimeStart);
+			perc2 = (mLengthParm - theFxHelper.mTime) / (mLengthParm - mTimeStart);
 		}
 		else
 		{
@@ -1159,7 +1159,7 @@ void CCylinder::UpdateSize2(void)
 		if (theFxHelper.mTime > mSize2Parm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mSize2Parm) / (float)(mTimeEnd - mSize2Parm);
+			perc2 = 1.0f - (theFxHelper.mTime - mSize2Parm) / (mTimeEnd - mSize2Parm);
 		}
 
 		if (mFlags & FX_SIZE2_LINEAR)
@@ -1183,7 +1183,7 @@ void CCylinder::UpdateSize2(void)
 		if (theFxHelper.mTime < mSize2Parm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mSize2Parm - theFxHelper.mTime) / (float)(mSize2Parm - mTimeStart);
+			perc2 = (mSize2Parm - theFxHelper.mTime) / (mSize2Parm - mTimeStart);
 		}
 		else
 		{
@@ -1506,7 +1506,7 @@ void CLight::UpdateSize(void)
 		if (theFxHelper.mTime > mSizeParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mSizeParm) / (float)(mTimeEnd - mSizeParm);
+			perc2 = 1.0f - (theFxHelper.mTime - mSizeParm) / (mTimeEnd - mSizeParm);
 		}
 
 		if (mFlags & FX_SIZE_LINEAR)
@@ -1530,7 +1530,7 @@ void CLight::UpdateSize(void)
 		if (theFxHelper.mTime < mSizeParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mSizeParm - theFxHelper.mTime) / (float)(mSizeParm - mTimeStart);
+			perc2 = (mSizeParm - theFxHelper.mTime) / (mSizeParm - mTimeStart);
 		}
 		else
 		{
@@ -1580,7 +1580,7 @@ void CLight::UpdateRGB(void)
 		if (theFxHelper.mTime > mRGBParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = 1.0f - (float)(theFxHelper.mTime - mRGBParm) / (float)(mTimeEnd - mRGBParm);
+			perc2 = 1.0f - (theFxHelper.mTime - mRGBParm) / (mTimeEnd - mRGBParm);
 		}
 
 		if (mFlags & FX_RGB_LINEAR)
@@ -1604,7 +1604,7 @@ void CLight::UpdateRGB(void)
 		if (theFxHelper.mTime < mRGBParm)
 		{
 			// get percent done, using parm as the start of the non-linear fade
-			perc2 = (float)(mRGBParm - theFxHelper.mTime) / (float)(mRGBParm - mTimeStart);
+			perc2 = (mRGBParm - theFxHelper.mTime) / (mRGBParm - mTimeStart);
 		}
 		else
 		{
@@ -1926,7 +1926,7 @@ void CPoly::PolyInit(void)
 		VectorAdd(org, mOrg[i], org);
 	}
 
-	VectorScale(org, (float)(1.0f / mCount), org);
+	VectorScale(org, 1.0f / mCount, org);
 
 	// now store our midpoint for physics purposes
 	VectorCopy(org, mOrigin1);

@@ -200,9 +200,8 @@ GLOBAL(djpeg_dest_ptr)
 jinit_write_ppm(j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
-	const ppm_dest_ptr dest = (ppm_dest_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(ppm_dest_struct));
+	const ppm_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                     SIZEOF(ppm_dest_struct));
 	dest->pub.start_output = start_output_ppm;
 	dest->pub.finish_output = finish_output_ppm;
 

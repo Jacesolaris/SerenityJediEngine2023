@@ -171,7 +171,7 @@ int Q3_GetStringVariable(const char* name, const char** value)
 
 	if (vsi != varStrings.end())
 	{
-		*value = (const char*)(*vsi).second.c_str();
+		*value = (*vsi).second.c_str();
 		return true;
 	}
 

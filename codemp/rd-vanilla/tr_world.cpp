@@ -1078,13 +1078,13 @@ const void* R_DrawWireframeAutomap(const void* data)
 
 	if (!r_autoMap || !r_autoMap->integer)
 	{
-		return (const void*)(cmd + 1);
+		return cmd + 1;
 	}
 
 #ifndef _ALT_AUTOMAP_METHOD
 	if (!g_autoMapValid)
 	{ //data is not valid, don't draw
-		return (const void*)(cmd + 1);
+		return cmd + 1;
 	}
 #endif
 
@@ -1301,7 +1301,7 @@ const void* R_DrawWireframeAutomap(const void* data)
 	//white color/full alpha
 	qglColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 /*
@@ -1511,7 +1511,7 @@ qboolean R_inPVS(const vec3_t p1, const vec3_t p2, byte* mask) {
 	int cluster = ri->CM_LeafCluster(leafnum);
 
 	//agh, the damn snapshot mask doesn't work for this
-	mask = (byte*)ri->CM_ClusterPVS(cluster);
+	mask = ri->CM_ClusterPVS(cluster);
 
 	leafnum = ri->CM_PointLeafnum(p2);
 	cluster = ri->CM_LeafCluster(leafnum);

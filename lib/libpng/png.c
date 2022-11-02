@@ -61,7 +61,7 @@ png_sig_cmp(png_const_bytep sig, png_size_t start, png_size_t num_to_check)
 	if (start + num_to_check > 8)
 		num_to_check = 8 - start;
 
-	return ((int)(memcmp(&sig[start], &png_signature[start], num_to_check)));
+	return memcmp(&sig[start], &png_signature[start], num_to_check);
 }
 
 #endif /* READ */
@@ -138,7 +138,7 @@ png_calculate_crc(png_structrp png_ptr, png_const_bytep ptr, png_size_t length)
 
 		do
 		{
-			uInt safe_length = (uInt)length;
+			uInt safe_length = length;
 			if (safe_length == 0)
 				safe_length = (uInt)-1; /* evil, but safe */
 
@@ -927,7 +927,7 @@ png_uint_32 PNGAPI
 png_access_version_number(void)
 {
 	/* Version of *.c files used when building libpng */
-	return((png_uint_32)PNG_LIBPNG_VER);
+	return PNG_LIBPNG_VER;
 }
 
 #if defined(PNG_READ_SUPPORTED) || defined(PNG_WRITE_SUPPORTED)
@@ -1718,7 +1718,7 @@ png_icc_tag_char(png_uint_32 byte)
 {
 	byte &= 0xff;
 	if (byte >= 32 && byte <= 126)
-		return (char)byte;
+		return byte;
 	return '?';
 }
 
@@ -1764,7 +1764,7 @@ png_icc_profile_error(png_const_structrp png_ptr, png_colorspacerp colorspace,
 	if (is_ICC_signature(value) != 0)
 	{
 		/* So 'value' is at most 4 bytes and the following cast is safe */
-		png_icc_tag_name(message + pos, (png_uint_32)value);
+		png_icc_tag_name(message + pos, value);
 		pos += 6; /* total +8; less than the else clause */
 		message[pos++] = ':';
 		message[pos++] = ' ';
@@ -1836,12 +1836,12 @@ png_colorspace_set_sRGB(png_const_structrp png_ptr, png_colorspacerp colorspace,
 	 */
 	if (intent < 0 || intent >= PNG_sRGB_INTENT_LAST)
 		return png_icc_profile_error(png_ptr, colorspace, "sRGB",
-			(unsigned)intent, "invalid sRGB rendering intent");
+			intent, "invalid sRGB rendering intent");
 
 	if ((colorspace->flags & PNG_COLORSPACE_HAVE_INTENT) != 0 &&
 		colorspace->rendering_intent != intent)
 		return png_icc_profile_error(png_ptr, colorspace, "sRGB",
-			(unsigned)intent, "inconsistent rendering intents");
+			intent, "inconsistent rendering intents");
 
 	if ((colorspace->flags & PNG_COLORSPACE_FROM_sRGB) != 0)
 	{
@@ -2326,7 +2326,8 @@ png_icc_set_sRGB(png_const_structrp png_ptr,
 	if (png_compare_ICC_profile_with_sRGB(png_ptr, profile, adler) != 0)
 #endif
 		(void)png_colorspace_set_sRGB(png_ptr, colorspace,
-			(int)/*already checked*/png_get_uint_32(profile + 64));
+		                              /*already checked*/
+		                              png_get_uint_32(profile + 64));
 }
 #endif /* READ_sRGB */
 
@@ -3745,7 +3746,7 @@ png_gamma_8bit_correct(unsigned int value, png_fixed_point gamma_val)
 #     endif
 	}
 
-	return (png_byte)value;
+	return value;
 }
 
 #ifdef PNG_16BIT_SUPPORTED
@@ -3775,7 +3776,7 @@ png_gamma_16bit_correct(unsigned int value, png_fixed_point gamma_val)
 #     endif
 	}
 
-	return (png_uint_16)value;
+	return value;
 }
 #endif /* 16BIT */
 
@@ -3818,7 +3819,7 @@ png_build_16bit_table(png_structrp png_ptr, png_uint_16pp * ptable,
 	/* CSE the division and work round wacky GCC warnings (see the comments
 	 * in png_gamma_8bit_correct for where these come from.)
 	 */
-	PNG_CONST double fmax = 1. / (((png_int_32)1 << (16U - shift)) - 1);
+	PNG_CONST double fmax = 1. / ((1 << (16U - shift)) - 1);
 #endif
 	PNG_CONST unsigned int max = (1U << (16U - shift)) - 1U;
 	PNG_CONST unsigned int max_by_2 = 1U << (15U - shift);
@@ -3911,7 +3912,7 @@ png_build_16to8_table(png_structrp png_ptr, png_uint_16pp * ptable,
 	for (i = 0; i < 255; ++i) /* 8-bit output value */
 	{
 		/* Find the corresponding maximum input value */
-		const png_uint_16 out = (png_uint_16)(i * 257U); /* 16-bit output value */
+		const png_uint_16 out = i * 257U; /* 16-bit output value */
 
 		/* Find the boundary value in 16 bits: */
 		png_uint_32 bound = png_gamma_16bit_correct(out + 128U, gamma_val);

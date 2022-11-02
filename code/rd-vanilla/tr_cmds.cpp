@@ -441,10 +441,10 @@ void RE_BeginFrame(stereoFrame_t stereoFrame) {
 
 	if (glConfig.stereoEnabled) {
 		if (stereoFrame == STEREO_LEFT) {
-			cmd->buffer = (int)GL_BACK_LEFT;
+			cmd->buffer = GL_BACK_LEFT;
 		}
 		else if (stereoFrame == STEREO_RIGHT) {
-			cmd->buffer = (int)GL_BACK_RIGHT;
+			cmd->buffer = GL_BACK_RIGHT;
 		}
 		else {
 			Com_Error(ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame);
@@ -456,7 +456,7 @@ void RE_BeginFrame(stereoFrame_t stereoFrame) {
 			Com_Error(ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame);
 		}
 
-		cmd->buffer = (int)GL_BACK;
+		cmd->buffer = GL_BACK;
 	}
 }
 

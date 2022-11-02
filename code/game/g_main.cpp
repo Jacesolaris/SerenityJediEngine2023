@@ -59,7 +59,7 @@ extern qboolean PM_RestAnim(int anim);
 extern qboolean PM_CrouchAnim(int anim);
 extern void Boba_FlyStop(gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern void RemoveBarrier(gentity_t* ent);
 
 int eventClearTime = 0;

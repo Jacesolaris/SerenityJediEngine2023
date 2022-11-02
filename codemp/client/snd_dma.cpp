@@ -3608,12 +3608,12 @@ void AL_UpdateRawSamples()
 
 			if (size > largestBufferSize)
 			{
-				alBufferData(buffer, AL_FORMAT_STEREO16, (char*)(s_rawdata + ((iterations * largestBufferSize) >> 1)), largestBufferSize, 22050);
+				alBufferData(buffer, AL_FORMAT_STEREO16, s_rawdata + (iterations * largestBufferSize >> 1), largestBufferSize, 22050);
 				size -= largestBufferSize;
 			}
 			else
 			{
-				alBufferData(buffer, AL_FORMAT_STEREO16, (char*)(s_rawdata + ((iterations * largestBufferSize) >> 1)), size, 22050);
+				alBufferData(buffer, AL_FORMAT_STEREO16, s_rawdata + (iterations * largestBufferSize >> 1), size, 22050);
 				size = 0;
 			}
 

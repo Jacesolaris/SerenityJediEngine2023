@@ -837,10 +837,10 @@ get_interesting_appn(j_decompress_ptr cinfo)
 	/* process it */
 	switch (cinfo->unread_marker) {
 	case M_APP0:
-		examine_app0(cinfo, (JOCTET FAR*) b, numtoread, length);
+		examine_app0(cinfo, b, numtoread, length);
 		break;
 	case M_APP14:
-		examine_app14(cinfo, (JOCTET FAR*) b, numtoread, length);
+		examine_app14(cinfo, b, numtoread, length);
 		break;
 	default:
 		/* can't get here unless jpeg_save_markers chooses wrong processor */
@@ -851,7 +851,7 @@ get_interesting_appn(j_decompress_ptr cinfo)
 	/* skip any remaining data -- could be lots */
 	INPUT_SYNC(cinfo);
 	if (length > 0)
-		(*cinfo->src->skip_input_data) (cinfo, (long)length);
+		(*cinfo->src->skip_input_data) (cinfo, length);
 
 	return TRUE;
 }
@@ -876,10 +876,10 @@ save_marker(j_decompress_ptr cinfo)
 		if (length >= 0) {		/* watch out for bogus length word */
 			/* figure out how much we want to save */
 			unsigned int limit;
-			if (cinfo->unread_marker == (int)M_COM)
+			if (cinfo->unread_marker == M_COM)
 				limit = marker->length_limit_COM;
 			else
-				limit = marker->length_limit_APPn[cinfo->unread_marker - (int)M_APP0];
+				limit = marker->length_limit_APPn[cinfo->unread_marker - M_APP0];
 			if ((unsigned int)length < limit)
 				limit = (unsigned int)length;
 			/* allocate and initialize the marker item */
@@ -959,7 +959,7 @@ save_marker(j_decompress_ptr cinfo)
 	/* skip any remaining data -- could be lots */
 	INPUT_SYNC(cinfo);		/* do before skip_input_data */
 	if (length > 0)
-		(*cinfo->src->skip_input_data) (cinfo, (long)length);
+		(*cinfo->src->skip_input_data) (cinfo, length);
 
 	return TRUE;
 }
@@ -980,7 +980,7 @@ skip_variable(j_decompress_ptr cinfo)
 
 	INPUT_SYNC(cinfo);		/* do before skip_input_data */
 	if (length > 0)
-		(*cinfo->src->skip_input_data) (cinfo, (long)length);
+		(*cinfo->src->skip_input_data) (cinfo, length);
 
 	return TRUE;
 }
@@ -1054,7 +1054,7 @@ first_marker(j_decompress_ptr cinfo)
 
 	INPUT_BYTE(cinfo, c, return FALSE);
 	INPUT_BYTE(cinfo, c2, return FALSE);
-	if (c != 0xFF || c2 != (int)M_SOI)
+	if (c != 0xFF || c2 != M_SOI)
 		ERREXIT2(cinfo, JERR_NO_SOI, c, c2);
 
 	cinfo->unread_marker = c2;
@@ -1193,7 +1193,7 @@ read_markers(j_decompress_ptr cinfo)
 		case M_APP14:
 		case M_APP15:
 			if (!(*((my_marker_ptr)cinfo->marker)->process_APPn[
-				cinfo->unread_marker - (int)M_APP0]) (cinfo))
+				cinfo->unread_marker - M_APP0]) (cinfo))
 				return JPEG_SUSPENDED;
 				break;
 
@@ -1256,7 +1256,7 @@ read_restart_marker(j_decompress_ptr cinfo)
 	}
 
 	if (cinfo->unread_marker ==
-		(int)M_RST0 + cinfo->marker->next_restart_num) {
+		M_RST0 + cinfo->marker->next_restart_num) {
 		/* Normal case --- swallow the marker and let entropy decoder continue */
 		TRACEMS1(cinfo, 3, JTRC_RST, cinfo->marker->next_restart_num);
 		cinfo->unread_marker = 0;
@@ -1335,16 +1335,16 @@ jpeg_resync_to_restart(j_decompress_ptr cinfo, int desired)
 
 	/* Outer loop handles repeated decision after scanning forward. */
 	for (;;) {
-		if (marker < (int)M_SOF0)
+		if (marker < M_SOF0)
 			action = 2;		/* invalid marker */
-		else if (marker < (int)M_RST0 || marker >(int) M_RST7)
+		else if (marker < M_RST0 || marker >M_RST7)
 			action = 3;		/* valid non-restart marker */
 		else {
-			if (marker == (int)M_RST0 + (desired + 1 & 7) ||
-				marker == (int)M_RST0 + (desired + 2 & 7))
+			if (marker == M_RST0 + (desired + 1 & 7) ||
+				marker == M_RST0 + (desired + 2 & 7))
 				action = 3;		/* one of the next two expected restarts */
-			else if (marker == (int)M_RST0 + (desired - 1 & 7) ||
-				marker == (int)M_RST0 + (desired - 2 & 7))
+			else if (marker == M_RST0 + (desired - 1 & 7) ||
+				marker == M_RST0 + (desired - 2 & 7))
 				action = 2;		/* a prior restart, so advance */
 			else
 				action = 1;		/* desired restart or too far away */
@@ -1396,9 +1396,8 @@ GLOBAL(void)
 jinit_marker_reader(j_decompress_ptr cinfo)
 {
 	/* Create subobject in permanent pool */
-	const my_marker_ptr marker = (my_marker_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_PERMANENT,
-			SIZEOF(my_marker_reader));
+	const my_marker_ptr marker = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_PERMANENT,
+	                                                        SIZEOF(my_marker_reader));
 	cinfo->marker = &marker->pub;
 	/* Initialize public method pointers */
 	marker->pub.reset_marker_reader = reset_marker_reader;
@@ -1446,25 +1445,25 @@ jpeg_save_markers(j_decompress_ptr cinfo, int marker_code,
 	if (length_limit) {
 		processor = save_marker;
 		/* If saving APP0/APP14, save at least enough for our internal use. */
-		if (marker_code == (int)M_APP0 && length_limit < APP0_DATA_LEN)
+		if (marker_code == M_APP0 && length_limit < APP0_DATA_LEN)
 			length_limit = APP0_DATA_LEN;
-		else if (marker_code == (int)M_APP14 && length_limit < APP14_DATA_LEN)
+		else if (marker_code == M_APP14 && length_limit < APP14_DATA_LEN)
 			length_limit = APP14_DATA_LEN;
 	}
 	else {
 		processor = skip_variable;
 		/* If discarding APP0/APP14, use our regular on-the-fly processor. */
-		if (marker_code == (int)M_APP0 || marker_code == (int)M_APP14)
+		if (marker_code == M_APP0 || marker_code == M_APP14)
 			processor = get_interesting_appn;
 	}
 
-	if (marker_code == (int)M_COM) {
+	if (marker_code == M_COM) {
 		marker->process_COM = processor;
 		marker->length_limit_COM = length_limit;
 	}
-	else if (marker_code >= (int)M_APP0 && marker_code <= (int)M_APP15) {
-		marker->process_APPn[marker_code - (int)M_APP0] = processor;
-		marker->length_limit_APPn[marker_code - (int)M_APP0] = length_limit;
+	else if (marker_code >= M_APP0 && marker_code <= M_APP15) {
+		marker->process_APPn[marker_code - M_APP0] = processor;
+		marker->length_limit_APPn[marker_code - M_APP0] = length_limit;
 	}
 	else
 		ERREXIT1(cinfo, JERR_UNKNOWN_MARKER, marker_code);
@@ -1482,10 +1481,10 @@ jpeg_set_marker_processor(j_decompress_ptr cinfo, int marker_code,
 {
 	const my_marker_ptr marker = (my_marker_ptr)cinfo->marker;
 
-	if (marker_code == (int)M_COM)
+	if (marker_code == M_COM)
 		marker->process_COM = routine;
-	else if (marker_code >= (int)M_APP0 && marker_code <= (int)M_APP15)
-		marker->process_APPn[marker_code - (int)M_APP0] = routine;
+	else if (marker_code >= M_APP0 && marker_code <= M_APP15)
+		marker->process_APPn[marker_code - M_APP0] = routine;
 	else
 		ERREXIT1(cinfo, JERR_UNKNOWN_MARKER, marker_code);
 }

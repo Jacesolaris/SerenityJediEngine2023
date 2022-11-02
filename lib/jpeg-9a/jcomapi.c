@@ -81,8 +81,7 @@ jpeg_destroy(j_common_ptr cinfo)
 GLOBAL(JQUANT_TBL*)
 jpeg_alloc_quant_table(j_common_ptr cinfo)
 {
-	JQUANT_TBL* tbl = (JQUANT_TBL*)
-		(*cinfo->mem->alloc_small)(cinfo, JPOOL_PERMANENT, SIZEOF(JQUANT_TBL));
+	JQUANT_TBL* tbl = (*cinfo->mem->alloc_small)(cinfo, JPOOL_PERMANENT, SIZEOF(JQUANT_TBL));
 	tbl->sent_table = FALSE;	/* make sure this is false in any new table */
 	return tbl;
 }
@@ -90,8 +89,7 @@ jpeg_alloc_quant_table(j_common_ptr cinfo)
 GLOBAL(JHUFF_TBL*)
 jpeg_alloc_huff_table(j_common_ptr cinfo)
 {
-	JHUFF_TBL* tbl = (JHUFF_TBL*)
-		(*cinfo->mem->alloc_small)(cinfo, JPOOL_PERMANENT, SIZEOF(JHUFF_TBL));
+	JHUFF_TBL* tbl = (*cinfo->mem->alloc_small)(cinfo, JPOOL_PERMANENT, SIZEOF(JHUFF_TBL));
 	tbl->sent_table = FALSE;	/* make sure this is false in any new table */
 	return tbl;
 }

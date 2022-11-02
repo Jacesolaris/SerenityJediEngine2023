@@ -193,7 +193,7 @@ void Save_Autosaves(void)
 {
 	//save the autosaves
 	const fileHandle_t f = 0;
-	char lineBuf[MAX_QPATH];
+	
 	char fileBuf[MAX_AUTOSAVE_FILESIZE];
 	char loadPath[MAX_QPATH];
 	vmCvar_t mapname;
@@ -210,40 +210,6 @@ void Save_Autosaves(void)
 		Com_Printf("^5Couldn't create autosave file.\n");
 		return;
 	}
-
-	//find all the manually created autosave points.
-	gentity_t* autosavePoint = NULL;
-	while ((autosavePoint = G_Find(autosavePoint, FOFS(classname), "trigger_autosave")) != NULL)
-	{
-		Com_sprintf(lineBuf, MAX_QPATH, "%f %f %f %i %i\n",
-			autosavePoint->r.currentOrigin[0], autosavePoint->r.currentOrigin[1],
-			autosavePoint->r.currentOrigin[2], (int)autosavePoint->r.maxs[0],
-			autosavePoint->spawnflags & AUTOSAVE_TELE);
-		strcat(fileBuf, lineBuf);
-	}
-
-	//find all the manually added spawnpoints
-	autosavePoint = NULL;
-	while ((autosavePoint = G_Find(autosavePoint, FOFS(classname), "info_player_deathmatch")) != NULL)
-	{
-		if (!(autosavePoint->spawnflags & 1))
-		{
-			//not a manually placed spawnpoint
-			continue;
-		}
-		Com_sprintf(lineBuf, MAX_QPATH, "%f %f %f %i %i\n",
-			autosavePoint->r.currentOrigin[0], autosavePoint->r.currentOrigin[1],
-			autosavePoint->r.currentOrigin[2], -1, 0);
-		strcat(fileBuf, lineBuf);
-	}
-
-	if (fileBuf[0] != '\0')
-	{
-		//actually written something
-		trap->FS_Write(fileBuf, strlen(fileBuf), f);
-	}
-	trap->FS_Close(f);
-	Com_Printf("^5Done.\n");
 }
 
 extern qboolean G_PointInBounds(vec3_t point, vec3_t mins, vec3_t maxs);

@@ -373,9 +373,8 @@ GLOBAL(djpeg_dest_ptr)
 jinit_write_bmp(j_decompress_ptr cinfo, boolean is_os2)
 {
 	/* Create module interface object, fill in method pointers */
-	const bmp_dest_ptr dest = (bmp_dest_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(bmp_dest_struct));
+	const bmp_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                     SIZEOF(bmp_dest_struct));
 	dest->pub.start_output = start_output_bmp;
 	dest->pub.finish_output = finish_output_bmp;
 	dest->is_os2 = is_os2;

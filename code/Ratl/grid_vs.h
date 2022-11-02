@@ -104,8 +104,8 @@ namespace ratl
 
 		void		snap_scale()
 		{
-			mScale[0] = static_cast<float>((int)mScale[0]);
-			mScale[1] = static_cast<float>((int)mScale[1]);
+			mScale[0] = static_cast<float>(static_cast<int>(mScale[0]));
+			mScale[1] = static_cast<float>(static_cast<int>(mScale[1]));
 		}
 
 		void		get_size(int& xSize, int& ySize) const

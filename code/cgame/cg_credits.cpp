@@ -597,14 +597,14 @@ qboolean CG_Credits_Draw()
 			const float fMilliSecondsElapsed = cg.time - CreditData.iStartTime;
 			const float fSecondsElapsed = fMilliSecondsElapsed / 1000.0f;
 
-			bool bEraseOccured = false;
+			bool b_erase_occured;
 			for (auto it = CreditData.CreditLines.begin(); it != CreditData.CreditLines.end();
-				bEraseOccured ? it : ++it)
+				b_erase_occured ? it : ++it)
 			{
 				CreditLine_t& CreditLine = *it;
-				bEraseOccured = false;
+				b_erase_occured = false;
 
-				static const float fPixelsPerSecond = static_cast<float>(SCREEN_HEIGHT) / fLINE_SECONDTOSCROLLUP;
+				static constexpr float fPixelsPerSecond = static_cast<float>(SCREEN_HEIGHT) / fLINE_SECONDTOSCROLLUP;
 
 				int iYpos = SCREEN_HEIGHT + CreditLine.iLine * iFontHeight;
 				iYpos -= static_cast<int>(fPixelsPerSecond * fSecondsElapsed);
@@ -615,7 +615,7 @@ qboolean CG_Credits_Draw()
 					// scrolled off top of screen, so erase it...
 					//
 					it = CreditData.CreditLines.erase(it);
-					bEraseOccured = true;
+					b_erase_occured = true;
 				}
 				else if (iYpos < SCREEN_HEIGHT)
 				{

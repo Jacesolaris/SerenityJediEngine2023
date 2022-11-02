@@ -92,7 +92,7 @@ qboolean CROFFSystem::Restart()
 	// remove everything from the list
 	while (itr != mROFFList.end())
 	{
-		delete (CROFF*)(*itr).second;
+		delete (*itr).second;
 
 		mROFFList.erase(itr);
 		itr = mROFFList.begin();
@@ -410,7 +410,7 @@ int	CROFFSystem::GetID(const char* file)
 	// Attempt to find the requested roff
 	for (TROFFList::iterator itr = mROFFList.begin(); itr != mROFFList.end(); ++itr)
 	{
-		if (strcmp(((CROFF*)(*itr).second)->mROFFFilePath, file) == 0)
+		if (strcmp((*itr).second->mROFFFilePath, file) == 0)
 		{ // return the ID to this roff
 			return (*itr).first;
 		}
@@ -539,7 +539,7 @@ void CROFFSystem::List()
 
 	for (TROFFList::iterator itr = mROFFList.begin(); itr != mROFFList.end(); ++itr)
 	{
-		Com_Printf(S_COLOR_GREEN"%2i - %s\n", (*itr).first, ((CROFF*)(*itr).second)->mROFFFilePath);
+		Com_Printf(S_COLOR_GREEN"%2i - %s\n", (*itr).first, (*itr).second->mROFFFilePath);
 	}
 
 	Com_Printf(S_COLOR_GREEN"\nFiles: %i\n", mROFFList.size());
@@ -561,7 +561,7 @@ qboolean CROFFSystem::List(int id)
 
 	if (itr != mROFFList.end())
 	{ // requested item found in the list
-		CROFF* obj = (CROFF*)(*itr).second;
+		CROFF* obj = (*itr).second;
 		const TROFF2Entry* dat = obj->mMoveRotateList;
 
 		Com_Printf(S_COLOR_GREEN"File: %s\n", obj->mROFFFilePath);
@@ -763,13 +763,13 @@ void CROFFSystem::UpdateEntities(qboolean isClient)
 		}
 
 		// Get this entities ROFF object
-		TROFFList::iterator itrRoff = mROFFList.find(((SROFFEntity*)*itr)->mROFFID);
+		TROFFList::iterator itrRoff = mROFFList.find((*itr)->mROFFID);
 
 		if (itrRoff != mROFFList.end())
 		{ // roff that baby!
-			if (!ApplyROFF((SROFFEntity*)*itr, (CROFF*)(*itrRoff).second))
+			if (!ApplyROFF(*itr, (*itrRoff).second))
 			{ // done roffing, mark for death
-				((SROFFEntity*)*itr)->mKill = qtrue;
+				(*itr)->mKill = qtrue;
 			}
 		}
 		else
@@ -778,7 +778,7 @@ void CROFFSystem::UpdateEntities(qboolean isClient)
 			//			Com_Printf( S_COLOR_RED" -ROFF not found for entity <%s>\n",
 			//					entitySystem->GetEntityFromID(((SROFFEntity *)(*itr))->mEntID)->GetName() );
 
-			((SROFFEntity*)*itr)->mKill = qtrue;
+			(*itr)->mKill = qtrue;
 
 			ClearLerp(*itr);
 		}
@@ -796,7 +796,7 @@ void CROFFSystem::UpdateEntities(qboolean isClient)
 			continue;
 		}
 
-		if (((SROFFEntity*)*itr)->mKill == qtrue)
+		if ((*itr)->mKill == qtrue)
 		{
 			//make sure ICARUS knows ROFF is stopped
 //			CICARUSGameInterface::TaskIDComplete(

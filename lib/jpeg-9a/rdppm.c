@@ -361,7 +361,7 @@ start_input_ppm(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 		/* For unscaled raw-input case, we can just map it onto the I/O buffer. */
 		/* Synthesize a JSAMPARRAY pointer structure */
 		/* Cast here implies near->far pointer conversion on PCs */
-		source->pixrow = (JSAMPROW)source->iobuffer;
+		source->pixrow = source->iobuffer;
 		source->pub.buffer = &source->pixrow;
 		source->pub.buffer_height = 1;
 	}
@@ -405,9 +405,8 @@ GLOBAL(cjpeg_source_ptr)
 jinit_read_ppm(j_compress_ptr cinfo)
 {
 	/* Create module interface object */
-	const ppm_source_ptr source = (ppm_source_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(ppm_source_struct));
+	const ppm_source_ptr source = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                         SIZEOF(ppm_source_struct));
 	/* Fill in method ptrs, except get_pixel_rows which start_input sets */
 	source->pub.start_input = start_input_ppm;
 	source->pub.finish_input = finish_input_ppm;

@@ -234,8 +234,8 @@ emit_header(gif_dest_ptr dinfo, int num_colors, JSAMPARRAY colormap)
 	putc('7', dinfo->pub.output_file);
 	putc('a', dinfo->pub.output_file);
 	/* Write the Logical Screen Descriptor */
-	put_word(dinfo, (unsigned int)dinfo->cinfo->output_width);
-	put_word(dinfo, (unsigned int)dinfo->cinfo->output_height);
+	put_word(dinfo, dinfo->cinfo->output_width);
+	put_word(dinfo, dinfo->cinfo->output_height);
 	int FlagByte = 0x80;		/* Yes, there is a global color table */
 	FlagByte |= (BitsPerPixel - 1) << 4; /* color resolution */
 	FlagByte |= (BitsPerPixel - 1);	/* size of global color table */
@@ -273,8 +273,8 @@ emit_header(gif_dest_ptr dinfo, int num_colors, JSAMPARRAY colormap)
 	putc(',', dinfo->pub.output_file); /* separator */
 	put_word(dinfo, 0);		/* left/top offset */
 	put_word(dinfo, 0);
-	put_word(dinfo, (unsigned int)dinfo->cinfo->output_width); /* image size */
-	put_word(dinfo, (unsigned int)dinfo->cinfo->output_height);
+	put_word(dinfo, dinfo->cinfo->output_width); /* image size */
+	put_word(dinfo, dinfo->cinfo->output_height);
 	/* flag byte: not interlaced, no local color map */
 	putc(0x00, dinfo->pub.output_file);
 	/* Write Initial Code Size byte */
@@ -296,7 +296,7 @@ start_output_gif(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
 	if (cinfo->quantize_colors)
 		emit_header(dest, cinfo->actual_number_of_colors, cinfo->colormap);
 	else
-		emit_header(dest, 256, (JSAMPARRAY)NULL);
+		emit_header(dest, 256, NULL);
 }
 
 /*
@@ -345,9 +345,8 @@ GLOBAL(djpeg_dest_ptr)
 jinit_write_gif(j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
-	const gif_dest_ptr dest = (gif_dest_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(gif_dest_struct));
+	const gif_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                     SIZEOF(gif_dest_struct));
 	dest->cinfo = cinfo;		/* make back link for subroutines */
 	dest->pub.start_output = start_output_gif;
 	dest->pub.put_pixel_rows = put_pixel_rows;

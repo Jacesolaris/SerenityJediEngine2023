@@ -947,7 +947,7 @@ static void CG_ClearLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, int animationNu
 CG_PlayerAnimation
 ===============
 */
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 static void CG_PlayerAnimation(centity_t* cent, int* legsOld, int* legs, float* legsBackLerp, int* torsoOld, int* torso,
 	float* torsoBackLerp)
@@ -1208,7 +1208,7 @@ static void CG_PlayerAnimEventDo(centity_t* cent, animevent_t* animEvent)
 			else
 			{
 				//play at origin?  FIXME: maybe allow a fwd/rt/up offset?
-				const vec3_t up = { 0, 0, 1 };
+				constexpr vec3_t up = { 0, 0, 1 };
 				CG_PlayEffectID(animEvent->eventData[AED_EFFECTINDEX], cent->lerpOrigin, up);
 			}
 		}
@@ -6922,7 +6922,7 @@ static void CG_StopWeaponSounds(centity_t* cent)
 }
 
 //--------------- SABER STUFF --------
-void cg_saber_do_weapon_hit_marks(gclient_t* client, const gentity_t* saber_ent, gentity_t* hit_ent,
+void cg_saber_do_weapon_hit_marks(const gclient_t* client, const gentity_t* saber_ent, gentity_t* hit_ent,
 	const int saber_num, const int blade_num,
 	vec3_t hit_pos, vec3_t hit_dir, vec3_t uaxis, vec3_t splash_back_dir,
 	const float size_time_scale)

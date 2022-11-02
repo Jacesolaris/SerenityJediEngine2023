@@ -238,7 +238,7 @@ unsigned len;
 	}
 
 	/* input was all buffered or compressed (put will fit in int) */
-	return (int)put;
+	return put;
 }
 
 /* -- see zlib.h -- */
@@ -298,7 +298,7 @@ const char* str;
 	unsigned len;
 
 	/* write string */
-	len = (unsigned)strlen(str);
+	len = strlen(str);
 	ret = gzwrite(file, str, len);
 	return ret == 0 && len != 0 ? -1 : ret;
 }
@@ -337,7 +337,7 @@ int ZEXPORTVA gzvprintf(gzFile file, const char* format, va_list va)
 		return 0;
 
 	/* do the printf() into the input buffer, put length in len */
-	int size = (int)state->size;
+	int size = state->size;
 	state->in[size - 1] = 0;
 #ifdef NO_vsnprintf
 #  ifdef HAS_vsprintf_void
@@ -357,7 +357,7 @@ int ZEXPORTVA gzvprintf(gzFile file, const char* format, va_list va)
 #endif
 
 	/* check that printf() results fit in buffer */
-	if (len <= 0 || len >= (int)size || state->in[size - 1] != 0)
+	if (len <= 0 || len >= size || state->in[size - 1] != 0)
 		return 0;
 
 	/* update buffer and position, defer compression until needed */

@@ -388,7 +388,7 @@ static int MoveTypeNameToEnum(const char* name)
 	return MT_STATIC;
 }
 
-extern void CG_RegisterClientRenderInfo(clientInfo_t* ci, renderInfo_t* ri);
+extern void CG_RegisterClientRenderInfo(clientInfo_t* ci, const renderInfo_t* ri);
 extern void CG_RegisterClientModels(int entityNum);
 extern void CG_RegisterNPCCustomSounds(clientInfo_t* ci);
 

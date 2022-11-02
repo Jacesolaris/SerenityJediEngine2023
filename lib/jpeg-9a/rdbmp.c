@@ -275,7 +275,7 @@ start_input_bmp(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 		ERREXIT(cinfo, JERR_INPUT_EOF);
 	if (GET_2B(bmpfileheader, 0) != 0x4D42) /* 'BM' */
 		ERREXIT(cinfo, JERR_BMP_NOT);
-	const INT32 bfOffBits = (INT32)GET_4B(bmpfileheader, 10);
+	const INT32 bfOffBits = GET_4B(bmpfileheader, 10);
 	/* We ignore the remaining fileheader fields */
 
 	/* The infoheader might be 12 bytes (OS/2 1.x), 40 bytes (Windows),
@@ -283,7 +283,7 @@ start_input_bmp(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 	 */
 	if (!ReadOK(source->pub.input_file, bmpinfoheader, 4))
 		ERREXIT(cinfo, JERR_INPUT_EOF);
-	const INT32 headerSize = (INT32)GET_4B(bmpinfoheader, 0);
+	const INT32 headerSize = GET_4B(bmpinfoheader, 0);
 	if (headerSize < 12 || headerSize > 64)
 		ERREXIT(cinfo, JERR_BMP_BADHEADER);
 	if (!ReadOK(source->pub.input_file, bmpinfoheader + 4, headerSize - 4))
@@ -436,9 +436,8 @@ GLOBAL(cjpeg_source_ptr)
 jinit_read_bmp(j_compress_ptr cinfo)
 {
 	/* Create module interface object */
-	const bmp_source_ptr source = (bmp_source_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(bmp_source_struct));
+	const bmp_source_ptr source = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                         SIZEOF(bmp_source_struct));
 	source->cinfo = cinfo;	/* make back link for subroutines */
 	/* Fill in method ptrs, except get_pixel_rows which start_input sets */
 	source->pub.start_input = start_input_bmp;

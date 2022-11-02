@@ -100,9 +100,9 @@ extern qboolean PM_SaberInMassiveBounce(int anim);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
 extern void SabBeh_AnimateSlowBounceBlocker(gentity_t* self, gentity_t* inflictor);
 extern void NPC_SetPainEvent(gentity_t* self);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
-extern saberMoveName_t pm_blockthe_attack(int move);
-extern int G_BlocktheAttack(int move);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
+extern saberMoveName_t pm_block_the_attack(int move);
+extern int g_block_the_attack(int move);
 extern saberMoveName_t PM_PerfectBlocktheAttack(int move);
 extern int G_PerfectBlocktheAttack(int move);
 void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
@@ -2655,7 +2655,7 @@ qboolean WP_SabersCheckLock(gentity_t* ent1, gentity_t* ent2)
 
 extern qboolean G_StandardHumanoid(gentity_t* self);
 
-void G_SaberBounce(gentity_t* attacker, gentity_t* victim)
+void G_SaberBounce(const gentity_t* attacker, gentity_t* victim)
 {
 	if (victim->health <= 20)
 	{
@@ -4053,15 +4053,9 @@ int wp_saber_must_block(gentity_t* self, const gentity_t* atk, const qboolean ch
 			{
 				return 1;
 			}
-			else
-			{
-				return 0;
-			}
-		}
-		else
-		{
 			return 0;
 		}
+		return 0;
 	}
 
 	if (PM_InGrappleMove(self->client->ps.torsoAnim))
@@ -4204,15 +4198,9 @@ int wp_saber_must_block(gentity_t* self, const gentity_t* atk, const qboolean ch
 
 				return 1;
 			}
-			else
-			{
-				return 0;
-			}
-		}
-		else
-		{
 			return 0;
 		}
+		return 0;
 	}
 
 	//check to see if we have the force to do this.
@@ -4291,7 +4279,7 @@ int wp_saber_must_block(gentity_t* self, const gentity_t* atk, const qboolean ch
 	return 1;
 }
 extern qboolean PM_InLedgeMove(int anim);
-int wp_player_must_dodge(gentity_t* self, const gentity_t* shooter)
+int wp_player_must_dodge(const gentity_t* self, const gentity_t* shooter)
 {
 	if (in_camera)
 	{
@@ -8067,7 +8055,6 @@ static QINLINE void saberCheckRadiusDamage(gentity_t* saberent, int returning)
 { //we're going to cheat and damage players within the saber's radius, just for the sake of doing things more "efficiently" (and because the saber entity has no server g2 instance)
 	int i = 0;
 	int dist = 0;
-	gentity_t* ent;
 	gentity_t* saberOwner = &g_entities[saberent->r.ownerNum];
 
 	if (returning && returning != 2)
@@ -8091,7 +8078,7 @@ static QINLINE void saberCheckRadiusDamage(gentity_t* saberent, int returning)
 
 	while (i < level.num_entities)
 	{
-		ent = &g_entities[i];
+		gentity_t* ent = &g_entities[i];
 
 		CheckThrownSaberDamaged(saberent, saberOwner, ent, dist, returning, qfalse);
 
@@ -8143,7 +8130,6 @@ void MakeDeadSaber(const gentity_t* ent)
 	//This entity will remove itself after a very short time period.
 	vec3_t startorg;
 	vec3_t startang;
-	gentity_t* saberent;
 	gentity_t* owner = NULL;
 	//trace stuct used for determining if it's safe to spawn at current location
 	trace_t		tr;
@@ -8153,7 +8139,7 @@ void MakeDeadSaber(const gentity_t* ent)
 		return;
 	}
 
-	saberent = G_Spawn();
+	gentity_t* saberent = G_Spawn();
 
 	VectorCopy(ent->r.currentOrigin, startorg);
 	VectorCopy(ent->r.currentAngles, startang);
@@ -8253,7 +8239,6 @@ void saberBackToOwner(gentity_t* saberent);
 
 void DownedSaberThink(gentity_t* saberent)
 {
-	gentity_t* saberOwn = NULL;
 	qboolean notDisowned = qfalse;
 	qboolean pullBack = qfalse;
 
@@ -8268,7 +8253,7 @@ void DownedSaberThink(gentity_t* saberent)
 		return;
 	}
 
-	saberOwn = &g_entities[saberent->r.ownerNum];
+	gentity_t* saberOwn = &g_entities[saberent->r.ownerNum];
 
 	if (!saberOwn ||
 		!saberOwn->inuse ||
@@ -8996,7 +8981,6 @@ void saberBackToOwner(gentity_t* saberent)
 {
 	gentity_t* saberOwner = &g_entities[saberent->r.ownerNum];
 	vec3_t dir;
-	float ownerLen;
 
 	if (saberent->r.ownerNum == ENTITYNUM_NONE)
 	{
@@ -9062,7 +9046,7 @@ void saberBackToOwner(gentity_t* saberent)
 
 	VectorSubtract(saberent->pos1, saberent->r.currentOrigin, dir);
 
-	ownerLen = VectorLength(dir);
+	float ownerLen = VectorLength(dir);
 
 	if (saberent->speed < level.time)
 	{
@@ -9166,10 +9150,7 @@ void saberBackToOwner(gentity_t* saberent)
 
 			return;
 		}
-		else
-		{
-			saberOwner->client->ps.forceHandExtend = HANDEXTEND_SABERPULL;
-		}
+		saberOwner->client->ps.forceHandExtend = HANDEXTEND_SABERPULL;
 
 		saberMoveBack(saberent, qtrue);
 	}
@@ -9237,7 +9218,6 @@ void thrownSaberTouch(gentity_t* saberent, gentity_t* other, trace_t* trace)
 void saberFirstThrown(gentity_t* saberent)
 {
 	vec3_t		vSub;
-	float		vLen;
 	gentity_t* saberOwn = &g_entities[saberent->r.ownerNum];
 
 	if (saberent->r.ownerNum == ENTITYNUM_NONE)
@@ -9303,7 +9283,7 @@ void saberFirstThrown(gentity_t* saberent)
 	}
 
 	VectorSubtract(saberOwn->client->ps.origin, saberent->r.currentOrigin, vSub);
-	vLen = VectorLength(vSub);
+	float vLen = VectorLength(vSub);
 
 	if (vLen >= 300 && saberOwn->client->ps.fd.forcePowerLevel[FP_SABERTHROW] == FORCE_LEVEL_1)
 	{

@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean PM_CrouchAnim(int anim);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 //---------------------------------------------------------
 static void WP_RepeaterMainFire(gentity_t* ent, vec3_t dir)
 //---------------------------------------------------------

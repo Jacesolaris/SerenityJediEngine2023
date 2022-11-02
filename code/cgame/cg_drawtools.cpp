@@ -182,8 +182,8 @@ void CG_DrawChar(int x, int y, int width, int height, int ch)
 
 	const float frow = row * 0.0625;
 	const float fcol = col * 0.0625;
-	const float size = 0.03125;
-	const float size2 = 0.0625;
+	constexpr float size = 0.03125;
+	constexpr float size2 = 0.0625;
 
 	cgi_R_DrawStretchPic(ax, ay, aw, ah, fcol, frow, fcol + size, frow + size2,
 		cgs.media.charsetShader);

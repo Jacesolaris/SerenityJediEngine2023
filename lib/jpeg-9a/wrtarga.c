@@ -211,9 +211,8 @@ GLOBAL(djpeg_dest_ptr)
 jinit_write_targa(j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
-	const tga_dest_ptr dest = (tga_dest_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(tga_dest_struct));
+	const tga_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                     SIZEOF(tga_dest_struct));
 	dest->pub.start_output = start_output_tga;
 	dest->pub.finish_output = finish_output_tga;
 
@@ -224,7 +223,7 @@ jinit_write_targa(j_decompress_ptr cinfo)
 	dest->buffer_width = cinfo->output_width * cinfo->output_components;
 	dest->iobuffer = (char*)
 		(*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
-			(size_t)(dest->buffer_width * SIZEOF(char)));
+			dest->buffer_width * SIZEOF(char));
 
 	/* Create decompressor output buffer. */
 	dest->pub.buffer = (*cinfo->mem->alloc_sarray)

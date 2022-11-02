@@ -264,8 +264,8 @@ initial_setup(j_compress_ptr cinfo, boolean transcode_only)
 		ERREXIT(cinfo, JERR_EMPTY_IMAGE);
 
 	/* Make sure image isn't bigger than I can handle */
-	if ((long)cinfo->jpeg_height > (long) JPEG_MAX_DIMENSION ||
-		(long)cinfo->jpeg_width > (long)JPEG_MAX_DIMENSION)
+	if ((long)cinfo->jpeg_height > JPEG_MAX_DIMENSION ||
+		(long)cinfo->jpeg_width > JPEG_MAX_DIMENSION)
 		ERREXIT1(cinfo, JERR_IMAGE_TOO_BIG, (unsigned int)JPEG_MAX_DIMENSION);
 
 	/* Only 8 to 12 bits data precision are supported for DCT based JPEG */
@@ -329,19 +329,19 @@ initial_setup(j_compress_ptr cinfo, boolean transcode_only)
 		/* Size in DCT blocks */
 		compptr->width_in_blocks = (JDIMENSION)
 			jdiv_round_up((long)cinfo->jpeg_width * (long)compptr->h_samp_factor,
-				(long)(cinfo->max_h_samp_factor * cinfo->block_size));
+				cinfo->max_h_samp_factor * cinfo->block_size);
 		compptr->height_in_blocks = (JDIMENSION)
 			jdiv_round_up((long)cinfo->jpeg_height * (long)compptr->v_samp_factor,
-				(long)(cinfo->max_v_samp_factor * cinfo->block_size));
+				cinfo->max_v_samp_factor * cinfo->block_size);
 		/* Size in samples */
 		compptr->downsampled_width = (JDIMENSION)
 			jdiv_round_up((long)cinfo->jpeg_width *
 				(long)(compptr->h_samp_factor * compptr->DCT_h_scaled_size),
-				(long)(cinfo->max_h_samp_factor * cinfo->block_size));
+				cinfo->max_h_samp_factor * cinfo->block_size);
 		compptr->downsampled_height = (JDIMENSION)
 			jdiv_round_up((long)cinfo->jpeg_height *
 				(long)(compptr->v_samp_factor * compptr->DCT_v_scaled_size),
-				(long)(cinfo->max_v_samp_factor * cinfo->block_size));
+				cinfo->max_v_samp_factor * cinfo->block_size);
 		/* Don't need quantization scale after DCT,
 		 * until color conversion says otherwise.
 		 */
@@ -352,8 +352,8 @@ initial_setup(j_compress_ptr cinfo, boolean transcode_only)
 	 * main controller will call coefficient controller).
 	 */
 	cinfo->total_iMCU_rows = (JDIMENSION)
-		jdiv_round_up((long)cinfo->jpeg_height,
-			(long)(cinfo->max_v_samp_factor * cinfo->block_size));
+		jdiv_round_up(cinfo->jpeg_height,
+			cinfo->max_v_samp_factor * cinfo->block_size);
 }
 
 #ifdef C_MULTISCAN_FILES_SUPPORTED
@@ -612,11 +612,11 @@ per_scan_setup(j_compress_ptr cinfo)
 
 		/* Overall image size in MCUs */
 		cinfo->MCUs_per_row = (JDIMENSION)
-			jdiv_round_up((long)cinfo->jpeg_width,
-				(long)(cinfo->max_h_samp_factor * cinfo->block_size));
+			jdiv_round_up(cinfo->jpeg_width,
+				cinfo->max_h_samp_factor * cinfo->block_size);
 		cinfo->MCU_rows_in_scan = (JDIMENSION)
-			jdiv_round_up((long)cinfo->jpeg_height,
-				(long)(cinfo->max_v_samp_factor * cinfo->block_size));
+			jdiv_round_up(cinfo->jpeg_height,
+				cinfo->max_v_samp_factor * cinfo->block_size);
 
 		cinfo->blocks_in_MCU = 0;
 
@@ -803,9 +803,8 @@ finish_pass_master(j_compress_ptr cinfo)
 GLOBAL(void)
 jinit_c_master_control(j_compress_ptr cinfo, boolean transcode_only)
 {
-	const my_master_ptr master = (my_master_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_comp_master));
+	const my_master_ptr master = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                        SIZEOF(my_comp_master));
 	cinfo->master = &master->pub;
 	master->pub.prepare_for_pass = prepare_for_pass;
 	master->pub.pass_startup = pass_startup;

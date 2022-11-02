@@ -620,7 +620,7 @@ static int CL_G2API_GetNumGoreMarks(void* ghlInfo, int modelIndex) {
 static void CL_G2API_AddSkinGore(void* ghlInfo, SSkinGoreData* gore) {
 #ifdef _G2_GORE
 	if (!ghlInfo) return;
-	re->G2API_AddSkinGore(*static_cast<CGhoul2Info_v*>(ghlInfo), *(SSkinGoreData*)gore);
+	re->G2API_AddSkinGore(*static_cast<CGhoul2Info_v*>(ghlInfo), *gore);
 #endif
 }
 
@@ -1149,7 +1149,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args) {
 		return 0;
 
 	case CG_R_ADDDECALTOSCENE:
-		re->AddDecalToScene((qhandle_t)args[1], static_cast<const float*>(VMA(2)), static_cast<const float*>(VMA(3)), VMF(4), VMF(5), VMF(6), VMF(7), VMF(8), static_cast<qboolean>(args[9]), VMF(10), static_cast<qboolean>(args[11]));
+		re->AddDecalToScene(args[1], static_cast<const float*>(VMA(2)), static_cast<const float*>(VMA(3)), VMF(4), VMF(5), VMF(6), VMF(7), VMF(8), static_cast<qboolean>(args[9]), VMF(10), static_cast<qboolean>(args[11]));
 		return 0;
 
 	case CG_R_LIGHTFORPOINT:
@@ -1493,7 +1493,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args) {
 		return CL_G2API_GetBoltMatrix_NoRecNoRot((void*)args[1], args[2], args[3], static_cast<mdxaBone_t*>(VMA(4)), static_cast<const float*>(VMA(5)), static_cast<const float*>(VMA(6)), args[7], static_cast<qhandle_t*>(VMA(8)), static_cast<float*>(VMA(9)));
 
 	case CG_G2_INITGHOUL2MODEL:
-		return CL_G2API_InitGhoul2Model(static_cast<void**>(VMA(1)), static_cast<const char*>(VMA(2)), args[3], (qhandle_t)args[4], (qhandle_t)args[5], args[6], args[7]);
+		return CL_G2API_InitGhoul2Model(static_cast<void**>(VMA(1)), static_cast<const char*>(VMA(2)), args[3], args[4], args[5], args[6], args[7]);
 
 	case CG_G2_SETSKIN:
 		return CL_G2API_SetSkin((void*)args[1], args[2], args[3], args[4]);
@@ -1538,16 +1538,16 @@ intptr_t CL_CgameSystemCalls(intptr_t* args) {
 		return 0;
 
 	case CG_G2_HASGHOUL2MODELONINDEX:
-		return CL_G2API_HasGhoul2ModelOnIndex((void*)VMA(1), args[2]);
+		return CL_G2API_HasGhoul2ModelOnIndex(VMA(1), args[2]);
 
 	case CG_G2_REMOVEGHOUL2MODEL:
-		return CL_G2API_RemoveGhoul2Model((void*)VMA(1), args[2]);
+		return CL_G2API_RemoveGhoul2Model(VMA(1), args[2]);
 
 	case CG_G2_SKINLESSMODEL:
-		return CL_G2API_SkinlessModel((void*)VMA(1), args[2]);
+		return CL_G2API_SkinlessModel(VMA(1), args[2]);
 
 	case CG_G2_GETNUMGOREMARKS:
-		return CL_G2API_GetNumGoreMarks((void*)VMA(1), args[2]);
+		return CL_G2API_GetNumGoreMarks(VMA(1), args[2]);
 
 	case CG_G2_ADDSKINGORE:
 		CL_G2API_AddSkinGore((void*)args[1], static_cast<SSkinGoreData*>(VMA(2)));

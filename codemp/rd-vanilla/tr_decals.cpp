@@ -190,7 +190,7 @@ void RE_AddDecalToScene(qhandle_t decalShader, const vec3_t origin, const vec3_t
 
 	// get the fragments
 	VectorScale(dir, -20, projection);
-	const int numFragments = R_MarkFragments(4, (const vec3_t*)originalPoints,
+	const int numFragments = R_MarkFragments(4, originalPoints,
 		projection, MAX_DECAL_POINTS, markPoints[0],
 		MAX_DECAL_FRAGMENTS, markFragments);
 

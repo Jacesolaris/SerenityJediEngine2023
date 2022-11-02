@@ -180,7 +180,7 @@ jcopy_sample_rows(JSAMPARRAY input_array, int source_row,
 {
 	register JSAMPROW inptr, outptr;
 #ifdef FMEMCOPY
-	register size_t count = (size_t)(num_cols * SIZEOF(JSAMPLE));
+	register size_t count = num_cols * SIZEOF(JSAMPLE);
 #else
 	register JDIMENSION count;
 #endif

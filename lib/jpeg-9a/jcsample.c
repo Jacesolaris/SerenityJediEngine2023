@@ -93,7 +93,7 @@ LOCAL(void)
 expand_right_edge(JSAMPARRAY image_data, int num_rows,
 	JDIMENSION input_cols, JDIMENSION output_cols)
 {
-	const int numcols = (int)(output_cols - input_cols);
+	const int numcols = output_cols - input_cols;
 
 	if (numcols > 0) {
 		for (int row = 0; row < num_rows; row++) {
@@ -447,9 +447,8 @@ jinit_downsampler(j_compress_ptr cinfo)
 	jpeg_component_info* compptr;
 	boolean smoothok = TRUE;
 
-	const my_downsample_ptr downsample = (my_downsample_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_downsampler));
+	const my_downsample_ptr downsample = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                                SIZEOF(my_downsampler));
 	cinfo->downsample = (struct jpeg_downsampler*)downsample;
 	downsample->pub.start_pass = start_pass_downsample;
 	downsample->pub.downsample = sep_downsample;

@@ -52,7 +52,7 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 	if (png_ptr == NULL)
 		return;
 
-	const png_size_t check = fwrite(data, 1, length, (png_FILE_p)png_ptr->io_ptr);
+	const png_size_t check = fwrite(data, 1, length, png_ptr->io_ptr);
 
 	if (check != length)
 		png_error(png_ptr, "Write Error");

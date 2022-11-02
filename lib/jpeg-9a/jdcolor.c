@@ -450,7 +450,7 @@ grayscale_convert(j_decompress_ptr cinfo,
 	JSAMPIMAGE input_buf, JDIMENSION input_row,
 	JSAMPARRAY output_buf, int num_rows)
 {
-	jcopy_sample_rows(input_buf[0], (int)input_row, output_buf, 0,
+	jcopy_sample_rows(input_buf[0], input_row, output_buf, 0,
 		num_rows, cinfo->output_width);
 }
 
@@ -545,9 +545,8 @@ jinit_color_deconverter(j_decompress_ptr cinfo)
 {
 	int ci;
 
-	const my_cconvert_ptr cconvert = (my_cconvert_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_color_deconverter));
+	const my_cconvert_ptr cconvert = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                            SIZEOF(my_color_deconverter));
 	cinfo->cconvert = &cconvert->pub;
 	cconvert->pub.start_pass = start_pass_dcolor;
 

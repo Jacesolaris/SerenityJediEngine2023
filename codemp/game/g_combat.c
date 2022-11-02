@@ -66,7 +66,7 @@ void AddFatigueHurtBonusMax(gentity_t* attacker, const gentity_t* victim, int mo
 extern void g_atst_check_pain(gentity_t* self, gentity_t* other, int damage);
 qboolean PM_RunningAnim(int anim);
 void ThrowSaberToAttacker(gentity_t* self, const gentity_t* attacker);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int AnimIndex);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 extern float manual_saberblocking(gentity_t* defender);

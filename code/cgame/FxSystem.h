@@ -86,7 +86,7 @@ struct SFxHelper
 	static void Trace(trace_t* tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags);
 	static void G2Trace(trace_t* tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags);
 
-	static void AddFxToScene(refEntity_t* ent);
+	static void AddFxToScene(const refEntity_t* ent);
 	static void AddLightToScene(vec3_t org, float radius, float red, float green, float blue);
 
 	static int RegisterShader(const gsl::cstring_view& shader);

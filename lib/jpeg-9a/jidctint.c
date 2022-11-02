@@ -439,7 +439,7 @@ jpeg_idct_7x7(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Pass 1: process columns from input, store into work array. */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 7; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -583,7 +583,7 @@ jpeg_idct_6x6(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Pass 1: process columns from input, store into work array. */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 6; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -699,7 +699,7 @@ jpeg_idct_5x5(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Pass 1: process columns from input, store into work array. */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 5; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -809,7 +809,7 @@ jpeg_idct_4x4(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Pass 1: process columns from input, store into work array. */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 4; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -908,7 +908,7 @@ jpeg_idct_3x3(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Pass 1: process columns from input, store into work array. */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 3; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -3442,7 +3442,7 @@ jpeg_idct_10x5(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 8; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -3491,7 +3491,7 @@ jpeg_idct_10x5(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Add fudge factor here for final descale. */
 		z3 = (INT32)wsptr[0] + (ONE << (PASS1_BITS + 2));
 		z3 <<= CONST_BITS;
-		INT32 z4 = (INT32)wsptr[4];
+		INT32 z4 = wsptr[4];
 		z1 = MULTIPLY(z4, FIX(1.144122806));         /* c4 */
 		z2 = MULTIPLY(z4, FIX(0.437016024));         /* c8 */
 		tmp10 = z3 + z1;
@@ -3601,7 +3601,7 @@ jpeg_idct_8x4(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 8; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -3751,7 +3751,7 @@ jpeg_idct_6x3(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 6; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -3801,9 +3801,9 @@ jpeg_idct_6x3(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 
 		/* Odd part */
 
-		const INT32 z1 = (INT32)wsptr[1];
-		const INT32 z2 = (INT32)wsptr[3];
-		const INT32 z3 = (INT32)wsptr[5];
+		const INT32 z1 = wsptr[1];
+		const INT32 z2 = wsptr[3];
+		const INT32 z3 = wsptr[5];
 		tmp1 = MULTIPLY(z1 + z3, FIX(0.366025404)); /* c5 */
 		tmp0 = tmp1 + ((z1 + z2) << CONST_BITS);
 		tmp2 = tmp1 + ((z3 - z2) << CONST_BITS);
@@ -3855,7 +3855,7 @@ jpeg_idct_4x2(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		/* Pass 1: process columns from input, store into work array. */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	INT32* wsptr = workspace;
 	for (ctr = 0; ctr < 4; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -4551,7 +4551,7 @@ jpeg_idct_5x10(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 5; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -4702,7 +4702,7 @@ jpeg_idct_4x8(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 4; ctr > 0; ctr--) {
 		/* Due to quantization, we will usually find that many of the input
@@ -4878,7 +4878,7 @@ jpeg_idct_3x6(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	int* wsptr = workspace;
 	for (ctr = 0; ctr < 3; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */
@@ -4979,7 +4979,7 @@ jpeg_idct_2x4(j_decompress_ptr cinfo, jpeg_component_info* compptr,
 		 */
 
 		JCOEFPTR inptr = coef_block;
-	ISLOW_MULT_TYPE* quantptr = (ISLOW_MULT_TYPE*)compptr->dct_table;
+	ISLOW_MULT_TYPE* quantptr = compptr->dct_table;
 	INT32* wsptr = workspace;
 	for (ctr = 0; ctr < 2; ctr++, inptr++, quantptr++, wsptr++) {
 		/* Even part */

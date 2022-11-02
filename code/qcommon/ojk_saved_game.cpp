@@ -492,7 +492,7 @@ namespace ojk
 		}
 		else
 		{
-			const uint32_t size = static_cast<uint32_t>(io_buffer_.size());
+			const uint32_t size = io_buffer_.size();
 
 			saved_chunk_size += ::FS_Write(
 				&size,

@@ -422,7 +422,7 @@ start_input_tga(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 		source->colormap = (*cinfo->mem->alloc_sarray)
 			((j_common_ptr)cinfo, JPOOL_IMAGE, (JDIMENSION)maplen, (JDIMENSION)3);
 		/* and read it from the file */
-		read_colormap(source, (int)maplen, UCH(targaheader[7]));
+		read_colormap(source, maplen, UCH(targaheader[7]));
 	}
 	else {
 		if (cmaptype)		/* but you promised a cmap! */
@@ -454,9 +454,8 @@ GLOBAL(cjpeg_source_ptr)
 jinit_read_targa(j_compress_ptr cinfo)
 {
 	/* Create module interface object */
-	const tga_source_ptr source = (tga_source_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(tga_source_struct));
+	const tga_source_ptr source = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                         SIZEOF(tga_source_struct));
 	source->cinfo = cinfo;	/* make back link for subroutines */
 	/* Fill in method ptrs, except get_pixel_rows which start_input sets */
 	source->pub.start_input = start_input_tga;

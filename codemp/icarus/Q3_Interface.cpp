@@ -237,10 +237,10 @@ static sharedEntity_t* Q3_GetEntityByName(const char* name)
 	if (name == nullptr || name[0] == '\0')
 		return nullptr;
 
-	strncpy((char*)temp, name, sizeof temp);
+	strncpy(temp, name, sizeof temp);
 	temp[sizeof temp - 1] = 0;
 
-	const entlist_t::iterator ei = ICARUS_EntList.find(Q_strupr((char*)temp));
+	const entlist_t::iterator ei = ICARUS_EntList.find(Q_strupr(temp));
 
 	if (ei == ICARUS_EntList.end())
 		return nullptr;
@@ -315,7 +315,7 @@ void Q3_SetVar(int taskID, int entID, const char* type_name, const char* data)
 			}
 			else
 			{
-				float_data = atof((char*)data);
+				float_data = atof(data);
 			}
 			Q3_SetFloatVariable(type_name, float_data);
 			break;
@@ -325,7 +325,7 @@ void Q3_SetVar(int taskID, int entID, const char* type_name, const char* data)
 			break;
 
 		case VTYPE_VECTOR:
-			Q3_SetVectorVariable(type_name, (char*)data);
+			Q3_SetVectorVariable(type_name, data);
 			break;
 		default:;
 		}
@@ -439,17 +439,17 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 		switch (p1Type)
 		{
 		case TK_FLOAT:
-			return (int)(f1 == f2);
+			return f1 == f2;
 
 		case TK_INT:
-			return (int)(i1 == i2);
+			return i1 == i2;
 
 		case TK_VECTOR:
-			return (int)VectorCompare(v1, v2);
+			return VectorCompare(v1, v2);
 
 		case TK_STRING:
 		case TK_IDENTIFIER:
-			return (int)!Q_stricmp(c1, c2);	//NOTENOTE: The script uses proper string comparison logic (ex. ( a == a ) == true )
+			return !Q_stricmp(c1, c2);	//NOTENOTE: The script uses proper string comparison logic (ex. ( a == a ) == true )
 
 		default:
 			Q3_DebugPrint(WL_ERROR, "Q3_Evaluate unknown type used!\n");
@@ -465,10 +465,10 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 		switch (p1Type)
 		{
 		case TK_FLOAT:
-			return (int)(f1 > f2);
+			return f1 > f2;
 
 		case TK_INT:
-			return (int)(i1 > i2);
+			return i1 > i2;
 
 		case TK_VECTOR:
 			Q3_DebugPrint(WL_ERROR, "Q3_Evaluate vector comparisons of type GREATER THAN cannot be performed!");
@@ -493,10 +493,10 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 		switch (p1Type)
 		{
 		case TK_FLOAT:
-			return (int)(f1 < f2);
+			return f1 < f2;
 
 		case TK_INT:
-			return (int)(i1 < i2);
+			return i1 < i2;
 
 		case TK_VECTOR:
 			Q3_DebugPrint(WL_ERROR, "Q3_Evaluate vector comparisons of type LESS THAN cannot be performed!");
@@ -521,17 +521,17 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 		switch (p1Type)
 		{
 		case TK_FLOAT:
-			return (int)(f1 != f2);
+			return f1 != f2;
 
 		case TK_INT:
-			return (int)(i1 != i2);
+			return i1 != i2;
 
 		case TK_VECTOR:
-			return (int)!VectorCompare(v1, v2);
+			return !VectorCompare(v1, v2);
 
 		case TK_STRING:
 		case TK_IDENTIFIER:
-			return (int)Q_stricmp(c1, c2);
+			return Q_stricmp(c1, c2);
 
 		default:
 			Q3_DebugPrint(WL_ERROR, "Q3_Evaluate unknown type used!\n");
@@ -605,7 +605,7 @@ void Q3_DebugPrint(int level, const char* format, ...)
 		if (ICARUS_entFilter >= 0 && ICARUS_entFilter != entNum)
 			return;
 
-		char* buffer = (char*)text;
+		char* buffer = text;
 		buffer += 5;
 
 		if (entNum < 0 || entNum >= MAX_GENTITIES)

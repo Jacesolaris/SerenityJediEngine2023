@@ -71,7 +71,7 @@ extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
 extern saberInfo_t* BG_MySaber(int clientNum, int saberNum);
 int IsPressingDashButton(const gentity_t* self);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
 extern void Boba_FireWristMissile(gentity_t* self, int whichMissile);
 extern void Boba_EndWristMissile(gentity_t* self, int whichMissile);
@@ -5267,7 +5267,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 		return;
 	}
 
-	if (PM_SaberInKata((saberMoveName_t)(self->client->ps.saberMove)))
+	if (PM_SaberInKata(self->client->ps.saberMove))
 	{
 		return;
 	}

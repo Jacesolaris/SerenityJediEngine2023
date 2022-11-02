@@ -122,7 +122,7 @@ mdxmSurface_t* G2_FindSurface(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const 
 	{
 		if (slist[i].surface != 10000 && slist[i].surface != -1)
 		{
-			mdxmSurface_t* surf = static_cast<mdxmSurface_t*>(G2_FindSurface((void*)mod, slist[i].surface, 0));
+			mdxmSurface_t* surf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, slist[i].surface, 0));
 			// back track and get the surfinfo struct for this surface
 			const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surf->
 				thisSurfaceIndex]);
@@ -177,7 +177,7 @@ qboolean G2_SetSurfaceOnOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const ch
 	}
 	// ok, not in the list already - in that case, lets verify this surface exists in the model mesh
 	int	flags;
-	const int surfaceNum = G2_IsSurfaceLegal((void*)mod, surfaceName, &flags);
+	const int surfaceNum = G2_IsSurfaceLegal(mod, surfaceName, &flags);
 	if (surfaceNum != -1)
 	{
 		int newflags = flags;
@@ -262,7 +262,7 @@ int G2_IsSurfaceOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const char* surf
 
 void G2_FindRecursiveSurface(model_t* currentModel, int surfaceNum, surfaceInfo_v& rootList, int* activeSurfaces)
 {
-	const mdxmSurface_t* surface = static_cast<mdxmSurface_t*>(G2_FindSurface((void*)currentModel, surfaceNum, 0));
+	const mdxmSurface_t* surface = static_cast<mdxmSurface_t*>(G2_FindSurface(currentModel, surfaceNum, 0));
 	mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)currentModel->mdxm + sizeof(mdxmHeader_t));
 	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surface->thisSurfaceIndex]);
 
@@ -398,7 +398,7 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int modelIndex, const ch
 					ghoul2[boltMod].mBltlist[boltNum].surfaceNumber == -1)
 				{
 					CGhoul2Info_v* g2i = &ghoul2;
-					G2API_RemoveGhoul2Model((CGhoul2Info_v**)&g2i, i);
+					G2API_RemoveGhoul2Model(&g2i, i);
 				}
 			}
 		}
@@ -503,7 +503,7 @@ int G2_AddSurface(CGhoul2Info* ghoul2, int surfaceNumber, int polyNumber, float 
 	surfaceInfo_t temp_slist_entry;
 
 	// decide if LOD is legal
-	lod = G2_DecideTraceLod(*(CGhoul2Info*)ghoul2, lod);
+	lod = G2_DecideTraceLod(*ghoul2, lod);
 
 	// first up, see if we have a free one already set up  - look only from the end of the constant surfaces onwards
 	for (size_t i = 0; i < ghoul2->mSlist.size(); i++)
@@ -579,7 +579,7 @@ int G2_GetParentSurface(CGhoul2Info* ghlInfo, const int index)
 	mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)mod->mdxm + sizeof(mdxmHeader_t));
 
 	// walk each surface and see if this index is listed in it's children
-	const mdxmSurface_t* surf = static_cast<mdxmSurface_t*>(G2_FindSurface((void*)mod, index, 0));
+	const mdxmSurface_t* surf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, index, 0));
 	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surf->
 		thisSurfaceIndex]);
 

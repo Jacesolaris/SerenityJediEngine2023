@@ -75,7 +75,7 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
 
 			for (png_uint_32 i = 0; i < row_width; i++)
 			{
-				const png_byte value = (png_byte)(*sp & 0x03);
+				const png_byte value = *sp & 0x03;
 				v |= value << shift;
 
 				if (shift == 0)
@@ -109,7 +109,7 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
 
 			for (png_uint_32 i = 0; i < row_width; i++)
 			{
-				const png_byte value = (png_byte)(*sp & 0x0f);
+				const png_byte value = *sp & 0x0f;
 				v |= value << shift;
 
 				if (shift == 0)
@@ -510,7 +510,7 @@ png_do_write_transformations(png_structrp png_ptr, png_row_infop row_info)
 #ifdef PNG_WRITE_PACK_SUPPORTED
 	if ((png_ptr->transformations & PNG_PACK) != 0)
 		png_do_pack(row_info, png_ptr->row_buf + 1,
-			(png_uint_32)png_ptr->bit_depth);
+			png_ptr->bit_depth);
 #endif
 
 #ifdef PNG_WRITE_SWAP_SUPPORTED

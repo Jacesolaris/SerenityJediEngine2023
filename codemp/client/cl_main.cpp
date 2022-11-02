@@ -2298,7 +2298,7 @@ extern qboolean gbUsingCachedMapDataRightNow;
 
 static char* GetSharedMemory(void) { return cl.mSharedMemory; }
 static vm_t* GetCurrentVM(void) { return currentVM; }
-static qboolean CGVMLoaded(void) { return (qboolean)cls.cgameStarted; }
+static qboolean CGVMLoaded(void) { return cls.cgameStarted; }
 static void* CM_GetCachedMapDiskImage(void) { return gpvCachedMapDiskImage; }
 static void CM_SetCachedMapDiskImage(void* ptr) { gpvCachedMapDiskImage = ptr; }
 static void CM_SetUsingCache(qboolean usingCache) { gbUsingCachedMapDataRightNow = usingCache; }

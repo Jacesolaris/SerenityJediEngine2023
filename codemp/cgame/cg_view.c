@@ -1786,7 +1786,7 @@ void CG_DrawSkyBoxPortal(const char* cstr)
 		// do smooth transitions for zooming
 		if (cg.predictedPlayerState.zoomMode)
 		{ //zoomed/zooming in
-			f = (cg.time - cg.zoomTime) / (float)ZOOM_OUT_TIME;
+			f = (cg.time - cg.zoomTime) / ZOOM_OUT_TIME;
 			if (f > 1.0) {
 				fov_x = zoomFov;
 			}
@@ -1796,7 +1796,7 @@ void CG_DrawSkyBoxPortal(const char* cstr)
 		}
 		else
 		{ //zooming out
-			f = (cg.time - cg.zoomTime) / (float)ZOOM_OUT_TIME;
+			f = (cg.time - cg.zoomTime) / ZOOM_OUT_TIME;
 			if (f <= 1.0) {
 				fov_x = zoomFov + f * (fov_x - zoomFov);
 			}

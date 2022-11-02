@@ -1268,7 +1268,7 @@ const void* RB_TakeVideoFrameCmd(const void* data)
 		ri->CL_WriteAVIVideoFrame(cmd->encodeBuffer, avipadwidth * cmd->height);
 	}
 
-	return (const void*)(cmd + 1);
+	return cmd + 1;
 }
 
 //============================================================================
@@ -1517,7 +1517,7 @@ static consoleCommand_t	commands[] = {
 	{ "r_weather",			R_WeatherEffect_f },
 };
 
-static const size_t numCommands = ARRAY_LEN(commands);
+static const size_t num_commands = ARRAY_LEN(commands);
 
 #ifdef _DEBUG
 #define MIN_PRIMITIVES -1
@@ -1883,7 +1883,7 @@ void RE_GetLightStyle(int style, color4ub_t color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
-		Com_Error(ERR_FATAL, "RE_GetLightStyle: %d is out of range", (int)style);
+		Com_Error(ERR_FATAL, "RE_GetLightStyle: %d is out of range", style);
 	}
 
 	byteAlias_t* baDest = (byteAlias_t*)&color, * baSource = (byteAlias_t*)&styleColors[style];
@@ -1894,7 +1894,7 @@ void RE_SetLightStyle(int style, int color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
-		Com_Error(ERR_FATAL, "RE_SetLightStyle: %d is out of range", (int)style);
+		Com_Error(ERR_FATAL, "RE_SetLightStyle: %d is out of range", style);
 	}
 
 	byteAlias_t* ba = (byteAlias_t*)&styleColors[style];

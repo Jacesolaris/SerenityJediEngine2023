@@ -140,11 +140,11 @@ jpeg_calc_output_dimensions(j_decompress_ptr cinfo)
 		compptr->downsampled_width = (JDIMENSION)
 			jdiv_round_up((long)cinfo->image_width *
 				(long)(compptr->h_samp_factor * compptr->DCT_h_scaled_size),
-				(long)(cinfo->max_h_samp_factor * cinfo->block_size));
+				cinfo->max_h_samp_factor * cinfo->block_size);
 		compptr->downsampled_height = (JDIMENSION)
 			jdiv_round_up((long)cinfo->image_height *
 				(long)(compptr->v_samp_factor * compptr->DCT_v_scaled_size),
-				(long)(cinfo->max_v_samp_factor * cinfo->block_size));
+				cinfo->max_v_samp_factor * cinfo->block_size);
 	}
 
 #endif /* IDCT_SCALING_SUPPORTED */
@@ -230,9 +230,8 @@ prepare_range_limit_table(j_decompress_ptr cinfo)
 {
 	int i;
 
-	JSAMPLE* table = (JSAMPLE*)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			(5 * (MAXJSAMPLE + 1) + CENTERJSAMPLE) * SIZEOF(JSAMPLE));
+	JSAMPLE* table = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                            (5 * (MAXJSAMPLE + 1) + CENTERJSAMPLE) * SIZEOF(JSAMPLE));
 	table += MAXJSAMPLE + 1;	/* allow negative subscripts of simple table */
 	cinfo->sample_range_limit = table;
 	/* First segment of "simple" table: limit[x] = 0 for x < 0 */
@@ -524,9 +523,8 @@ jpeg_new_colormap(j_decompress_ptr cinfo)
 GLOBAL(void)
 jinit_master_decompress(j_decompress_ptr cinfo)
 {
-	const my_master_ptr master = (my_master_ptr)
-		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-			SIZEOF(my_decomp_master));
+	const my_master_ptr master = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
+	                                                        SIZEOF(my_decomp_master));
 	cinfo->master = &master->pub;
 	master->pub.prepare_for_output_pass = prepare_for_output_pass;
 	master->pub.finish_output_pass = finish_output_pass;

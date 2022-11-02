@@ -1156,7 +1156,7 @@ intptr_t CL_UISystemCalls(intptr_t* args) {
 #ifdef _FULL_G2_LEAK_CHECKING
 		g_G2AllocServer = 0;
 #endif
-		return	re->G2API_InitGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), static_cast<const char*>(VMA(2)), args[3], (qhandle_t)args[4], (qhandle_t)args[5], args[6], args[7]);
+		return	re->G2API_InitGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), static_cast<const char*>(VMA(2)), args[3], args[4], args[5], args[6], args[7]);
 
 	case UI_G2_COLLISIONDETECT:
 	case UI_G2_COLLISIONDETECTCACHE:
@@ -1207,7 +1207,7 @@ intptr_t CL_UISystemCalls(intptr_t* args) {
 	return 0;
 
 	case UI_G2_COPYGHOUL2INSTANCE:
-		return (int)re->G2API_CopyGhoul2Instance(*(CGhoul2Info_v*)args[1], *(CGhoul2Info_v*)args[2], args[3]);
+		return re->G2API_CopyGhoul2Instance(*(CGhoul2Info_v*)args[1], *(CGhoul2Info_v*)args[2], args[3]);
 
 	case UI_G2_COPYSPECIFICGHOUL2MODEL:
 		re->G2API_CopySpecificG2Model(*(CGhoul2Info_v*)args[1], args[2], *(CGhoul2Info_v*)args[3], args[4]);
@@ -1221,14 +1221,14 @@ intptr_t CL_UISystemCalls(intptr_t* args) {
 		return 0;
 
 	case UI_G2_HASGHOUL2MODELONINDEX:
-		return (int)re->G2API_HasGhoul2ModelOnIndex(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
+		return re->G2API_HasGhoul2ModelOnIndex(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
 		//return (int)G2API_HasGhoul2ModelOnIndex((CGhoul2Info_v **)args[1], args[2]);
 
 	case UI_G2_REMOVEGHOUL2MODEL:
 #ifdef _FULL_G2_LEAK_CHECKING
 		g_G2AllocServer = 0;
 #endif
-		return (int)re->G2API_RemoveGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
+		return re->G2API_RemoveGhoul2Model(static_cast<CGhoul2Info_v**>(VMA(1)), args[2]);
 		//return (int)G2API_RemoveGhoul2Model((CGhoul2Info_v **)args[1], args[2]);
 
 	case UI_G2_ADDBOLT:

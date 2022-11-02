@@ -200,7 +200,7 @@ png_write_info(png_structrp png_ptr, png_const_inforp info_ptr)
 
 	if ((info_ptr->valid & PNG_INFO_PLTE) != 0)
 		png_write_PLTE(png_ptr, info_ptr->palette,
-			(png_uint_32)info_ptr->num_palette);
+			info_ptr->num_palette);
 
 	else if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE != 0)
 		png_error(png_ptr, "Valid palette required for paletted images");
@@ -247,7 +247,7 @@ png_write_info(png_structrp png_ptr, png_const_inforp info_ptr)
 
 #ifdef PNG_WRITE_sCAL_SUPPORTED
 	if ((info_ptr->valid & PNG_INFO_sCAL) != 0)
-		png_write_sCAL_s(png_ptr, (int)info_ptr->scal_unit,
+		png_write_sCAL_s(png_ptr, info_ptr->scal_unit,
 			info_ptr->scal_s_width, info_ptr->scal_s_height);
 #endif /* sCAL */
 
@@ -1181,7 +1181,7 @@ png_init_filter_heuristics(png_structrp png_ptr, int heuristic_method,
 		if (num_weights > 0)
 		{
 			png_ptr->prev_filters = (png_bytep)png_malloc(png_ptr,
-				(png_uint_32)(sizeof(png_byte) * num_weights));
+				sizeof(png_byte) * num_weights);
 
 			/* To make sure that the weighting starts out fairly */
 			for (i = 0; i < num_weights; i++)
@@ -1190,10 +1190,10 @@ png_init_filter_heuristics(png_structrp png_ptr, int heuristic_method,
 			}
 
 			png_ptr->filter_weights = (png_uint_16p)png_malloc(png_ptr,
-				(png_uint_32)(sizeof(png_uint_16) * num_weights));
+				sizeof(png_uint_16) * num_weights);
 
 			png_ptr->inv_filter_weights = (png_uint_16p)png_malloc(png_ptr,
-				(png_uint_32)(sizeof(png_uint_16) * num_weights));
+				sizeof(png_uint_16) * num_weights);
 
 			for (i = 0; i < num_weights; i++)
 			{
@@ -1211,10 +1211,10 @@ png_init_filter_heuristics(png_structrp png_ptr, int heuristic_method,
 		if (png_ptr->filter_costs == NULL)
 		{
 			png_ptr->filter_costs = (png_uint_16p)png_malloc(png_ptr,
-				(png_uint_32)(sizeof(png_uint_16) * PNG_FILTER_VALUE_LAST));
+				sizeof(png_uint_16) * PNG_FILTER_VALUE_LAST);
 
 			png_ptr->inv_filter_costs = (png_uint_16p)png_malloc(png_ptr,
-				(png_uint_32)(sizeof(png_uint_16) * PNG_FILTER_VALUE_LAST));
+				sizeof(png_uint_16) * PNG_FILTER_VALUE_LAST);
 		}
 
 		for (i = 0; i < PNG_FILTER_VALUE_LAST; i++)
@@ -1870,7 +1870,7 @@ png_unpremultiply(png_uint_32 component, png_uint_32 alpha,
 			component *= 255;
 
 		/* Convert the component to sRGB. */
-		return (png_byte)PNG_sRGB_FROM_LINEAR(component);
+		return PNG_sRGB_FROM_LINEAR(component);
 	}
 	return 0;
 }
@@ -1917,7 +1917,7 @@ png_write_image_8bit(png_voidp argument)
 			while (out_ptr < row_end)
 			{
 				const png_uint_16 alpha = in_ptr[aindex];
-				const png_byte alphabyte = (png_byte)PNG_DIV257(alpha);
+				const png_byte alphabyte = PNG_DIV257(alpha);
 				png_uint_32 reciprocal = 0;
 
 				/* Scale and write the alpha channel. */
@@ -1959,7 +1959,7 @@ png_write_image_8bit(png_voidp argument)
 				png_uint_32 component = *in_ptr++;
 
 				component *= 255;
-				*out_ptr++ = (png_byte)PNG_sRGB_FROM_LINEAR(component);
+				*out_ptr++ = PNG_sRGB_FROM_LINEAR(component);
 			}
 
 			png_write_row(png_ptr, output_row);
@@ -2018,23 +2018,23 @@ png_image_set_PLTE(png_image_write_control* display)
 			{
 				if (channels >= 3) /* RGB */
 				{
-					palette[i].blue = (png_byte)PNG_sRGB_FROM_LINEAR(255 *
+					palette[i].blue = PNG_sRGB_FROM_LINEAR(255 *
 						entry[(2 ^ bgr)]);
-					palette[i].green = (png_byte)PNG_sRGB_FROM_LINEAR(255 *
+					palette[i].green = PNG_sRGB_FROM_LINEAR(255 *
 						entry[1]);
-					palette[i].red = (png_byte)PNG_sRGB_FROM_LINEAR(255 *
+					palette[i].red = PNG_sRGB_FROM_LINEAR(255 *
 						entry[bgr]);
 				}
 
 				else /* Gray */
 					palette[i].blue = palette[i].red = palette[i].green =
-					(png_byte)PNG_sRGB_FROM_LINEAR(255 * *entry);
+						PNG_sRGB_FROM_LINEAR(255 * *entry);
 			}
 
 			else /* alpha */
 			{
 				const png_uint_16 alpha = entry[afirst ? 0 : channels - 1];
-				const png_byte alphabyte = (png_byte)PNG_DIV257(alpha);
+				const png_byte alphabyte = PNG_DIV257(alpha);
 				png_uint_32 reciprocal = 0;
 
 				/* Calculate a reciprocal, as in the png_write_image_8bit code above
@@ -2239,7 +2239,7 @@ png_image_write_main(png_voidp argument)
 		png_set_packing(png_ptr);
 
 	/* That should have handled all (both) the transforms. */
-	if ((format & ~(png_uint_32)(PNG_FORMAT_FLAG_COLOR | PNG_FORMAT_FLAG_LINEAR |
+	if ((format & ~(PNG_FORMAT_FLAG_COLOR | PNG_FORMAT_FLAG_LINEAR |
 		PNG_FORMAT_FLAG_ALPHA | PNG_FORMAT_FLAG_COLORMAP)) != 0)
 		png_error(png_ptr, "png_write_image: unsupported transformation");
 

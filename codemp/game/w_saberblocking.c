@@ -52,12 +52,12 @@ extern saberMoveName_t PM_BrokenParryForParry(int move);
 extern saberMoveName_t pm_broken_parry_for_attack(int move);
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
-extern qboolean G_ControlledByPlayer(gentity_t* self);
+extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim, gentity_t* attacker, qboolean allowAnyMove);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
-extern saberMoveName_t pm_blockthe_attack(int move);
-extern int G_BlocktheAttack(int move);
+extern saberMoveName_t pm_block_the_attack(int move);
+extern int g_block_the_attack(int move);
 extern saberMoveName_t PM_SaberBounceForAttack(int move);
 extern void G_Stagger(gentity_t* hit_ent);
 extern void G_FatigueBPKnockaway(gentity_t* Blocker);
@@ -69,7 +69,6 @@ extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwD
 extern qboolean saberKnockOutOfHand(gentity_t* saberent, gentity_t* saberOwner, vec3_t velocity);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
 extern int G_GetParryForBlock(int block);
-extern int G_MBlocktheAttack(int move);
 extern saberMoveName_t PM_MBlocktheAttack(int move);
 extern qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
 extern qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
@@ -544,7 +543,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		}
 		return qtrue;
 	}
-	else if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
+	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
 	{
 		//slow bounce
 		if (!(attacker->r.svFlags & SVF_BOT))
@@ -574,7 +573,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		}
 		return qtrue;
 	}
-	else if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)
+	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)
 	{
 		//slow bounce
 		SabBeh_AnimateSmallBounce(attacker);
@@ -592,7 +591,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		}
 		return qtrue;
 	}
-	else if (forceMishap)
+	if (forceMishap)
 	{
 		//two attacking sabers bouncing off each other
 		SabBeh_AnimateSmallBounce(attacker);
@@ -611,26 +610,22 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		}
 		return qtrue;
 	}
-	else
+	if (!MBlocking)
 	{
-		if (!MBlocking)
+		if (d_attackinfo.integer || g_DebugSaberCombat.integer)
 		{
-			if (d_attackinfo.integer || g_DebugSaberCombat.integer)
+			if (!(attacker->r.svFlags & SVF_BOT))
 			{
-				if (!(attacker->r.svFlags & SVF_BOT))
-				{
-					Com_Printf(S_COLOR_GREEN"player blocked bounce\n");
-				}
-				else
-				{
-					Com_Printf(S_COLOR_GREEN"npc blocked bounce\n");
-				}
+				Com_Printf(S_COLOR_GREEN"player blocked bounce\n");
 			}
-			SabBeh_AnimateSmallBounce(attacker);
+			else
+			{
+				Com_Printf(S_COLOR_GREEN"npc blocked bounce\n");
+			}
 		}
-		return qtrue;
+		SabBeh_AnimateSmallBounce(attacker);
 	}
-	return qfalse;
+	return qtrue;
 }
 
 void SabBeh_AddBalance(const gentity_t* self, int amount)
@@ -699,7 +694,7 @@ qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker)
 		//set otherOwner
 		SabBeh_AddBalance(blocker, 1);
 	}
-	else if (PM_SaberInKata((saberMoveName_t)(attacker->client->ps.saberMove)))
+	else if (PM_SaberInKata(attacker->client->ps.saberMove))
 	{
 		SabBeh_AddBalance(attacker, 1);
 		//set otherOwner
@@ -718,7 +713,7 @@ qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker)
 			PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 		}
 	}
-	else if (PM_SaberInKata((saberMoveName_t)(blocker->client->ps.saberMove)))
+	else if (PM_SaberInKata(blocker->client->ps.saberMove))
 	{
 		SabBeh_AddBalance(attacker, -1);
 		//set otherOwner
