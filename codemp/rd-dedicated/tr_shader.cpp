@@ -1163,7 +1163,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 				}
 				continue;
 			}
-			stage->bundle[0].image = NULL;
+			stage->bundle[0].image = nullptr;
 			return qfalse;
 		}
 		//
@@ -1177,7 +1177,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 				Com_Printf(S_COLOR_YELLOW  "WARNING: missing parameter for 'clampmap' keyword in shader '%s'\n", shader.name);
 				return qfalse;
 			}
-			stage->bundle[0].image = NULL;
+			stage->bundle[0].image = nullptr;
 			return qfalse;
 		}
 		//
@@ -1207,7 +1207,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 				}
 				const int num = stage->bundle[0].numImageAnimations;
 				if (num < MAX_IMAGE_ANIMATIONS) {
-					stage->bundle[0].image = NULL;
+					stage->bundle[0].image = nullptr;
 					return qfalse;
 				}
 			}

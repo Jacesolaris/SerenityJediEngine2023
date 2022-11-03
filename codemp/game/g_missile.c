@@ -44,7 +44,7 @@ float RandFloat(float min, float max);
 
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern void Jedi_Decloak(gentity_t* self);
-extern qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS);
+extern qboolean FighterIsLanded(const Vehicle_t* pVeh, const playerState_t* parentPS);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern float VectorDistance(vec3_t v1, vec3_t v2);
 qboolean PM_SaberInStart(int move);
@@ -76,7 +76,7 @@ extern int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker)
 extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
 extern void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
-extern float manual_running_and_saberblocking(gentity_t* defender);
+extern float manual_running_and_saberblocking(const gentity_t* defender);
 extern qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 
 float vector_bolt_distance(vec3_t v1, vec3_t v2)
@@ -683,7 +683,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 	// check for bounce
 	if ((!other->takedamage || ent->s.weapon == WP_THERMAL) &&
 		(ent->bounceCount > 0 || ent->bounceCount == -5) &&
-		(ent->flags & (FL_BOUNCE | FL_BOUNCE_HALF)))
+		ent->flags & (FL_BOUNCE | FL_BOUNCE_HALF))
 	{
 		G_BounceMissile(ent, trace);
 
@@ -697,7 +697,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 		}
 		return qtrue;
 	}
-	if (ent->neverFree && ent->s.weapon == WP_SABER && (ent->flags & FL_BOUNCE_HALF))
+	if (ent->neverFree && ent->s.weapon == WP_SABER && ent->flags & FL_BOUNCE_HALF)
 	{//this is a knocked-away saber
 		if (ent->bounceCount > 0 && ent->bounceCount == -5)
 		{
@@ -714,8 +714,8 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 	}
 
 	// I would glom onto the FL_BOUNCE code section above, but don't feel like risking breaking something else
-	if (((trace->surfaceFlags & SURF_FORCEFIELD) && !ent->splashDamage && !ent->splashRadius && (ent->bounceCount > 0 ||
-		ent->bounceCount == -5)))
+	if (trace->surfaceFlags & SURF_FORCEFIELD && !ent->splashDamage && !ent->splashRadius && (ent->bounceCount > 0 ||
+		ent->bounceCount == -5))
 	{
 		G_BounceMissile(ent, trace);
 

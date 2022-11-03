@@ -112,7 +112,7 @@ Lights pointed at a target will be spotlights.
    12 FAST PULSE FOR JEREMY
    13 Test Blending
 */
-static void misc_lightstyle_set(gentity_t* ent)
+static void misc_lightstyle_set(const gentity_t* ent)
 {
 	const int mLightStyle = ent->count;
 	const int mLightSwitchStyle = ent->bounceCount;
@@ -249,7 +249,7 @@ void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles)
 void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean snapAngle)
 {
 	//FIXME: need an effect
-	vec3_t oldAngle, newAngle;
+	vec3_t newAngle;
 	float speed;
 
 	// unlink to make sure it can't possibly interfere with G_KillBox
@@ -277,6 +277,7 @@ void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean 
 	}
 	else
 	{
+		vec3_t oldAngle;
 		speed = VectorNormalize(mover->s.pos.trDelta);
 
 		vectoangles(mover->s.pos.trDelta, oldAngle);
@@ -306,7 +307,7 @@ void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean 
 	gi.linkentity(mover);
 }
 
-void teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	if (!other->client)
 		return;
@@ -1347,7 +1348,6 @@ void misc_model_useup(gentity_t* self, gentity_t* other, gentity_t* activator)
 void health_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
 	//FIXME: Heal entire team?  Or only those that are undying...?
-	int dif;
 
 	G_ActivateBehavior(self, BSET_USE);
 
@@ -1357,6 +1357,7 @@ void health_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	}
 	else
 	{
+		int dif;
 		if (other->client)
 		{
 			// He's dead, Jim. Don't give him health
@@ -1482,8 +1483,6 @@ void ammo_think(gentity_t* ent)
 //------------------------------------------------------------
 void ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
-	int dif;
-
 	G_ActivateBehavior(self, BSET_USE);
 
 	if (self->e_ThinkFunc != thinkF_NULL)
@@ -1495,6 +1494,7 @@ void ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	}
 	else
 	{
+		int dif;
 		if (other->client)
 		{
 			dif = ammoData[AMMO_BLASTER].max - other->client->ps.ammo[AMMO_BLASTER];
@@ -1566,8 +1566,6 @@ void mega_ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 //------------------------------------------------------------
 void mega_ammo_think(gentity_t* self)
 {
-	const int ammo_add = 5;
-
 	// If the middle model is done animating, and we haven't switched to the last model yet...
 	//		chuck up the last model.
 
@@ -1580,6 +1578,7 @@ void mega_ammo_think(gentity_t* self)
 
 	if (self->enemy && self->count > 0)
 	{
+		constexpr int ammo_add = 5;
 		// Add an equal ammount of ammo to each type
 		self->enemy->client->ps.ammo[AMMO_BLASTER] += ammo_add;
 		self->enemy->client->ps.ammo[AMMO_POWERCELL] += ammo_add;
@@ -2046,10 +2045,8 @@ void EnergyShieldStationSettings(gentity_t* ent)
 shield_power_converter_use
 ================
 */
-void shield_power_converter_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
+void shield_power_converter_use(gentity_t* self, const gentity_t* other, const gentity_t* activator)
 {
-	int add;
-
 	if (!activator || activator->s.number != 0)
 	{
 		//only the player gets to use these
@@ -2066,6 +2063,7 @@ void shield_power_converter_use(gentity_t* self, const gentity_t* other, gentity
 
 		if (dif > 0 && self->count) // Already at full armor?..and do I even have anything to give
 		{
+			int add;
 			if (dif > MAX_AMMO_GIVE)
 			{
 				add = MAX_AMMO_GIVE;
@@ -2435,10 +2433,8 @@ void poll_converter(gentity_t* self)
 ammo_power_converter_use
 ================
 */
-void ammo_power_converter_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void ammo_power_converter_use(gentity_t* self, gentity_t* other, const gentity_t* activator)
 {
-	int add;
-
 	if (!activator || activator->s.number != 0)
 	{
 		//only the player gets to use these
@@ -2458,6 +2454,7 @@ void ammo_power_converter_use(gentity_t* self, gentity_t* other, gentity_t* acti
 		// Has it got any power left...and can we even use any of it?
 		if (self->count && (difBlaster > 0 || difPowerCell > 0 || difMetalBolts > 0))
 		{
+			int add;
 			// at least one of the ammo types could stand to take on a bit more ammo
 			self->setTime = level.time + 100;
 			self->s.loopSound = G_SoundIndex("sound/interface/ammocon_run.wav");
@@ -2633,8 +2630,6 @@ welder_think
 void welder_think(gentity_t* self)
 {
 	self->nextthink = level.time + 200;
-	vec3_t org,
-		dir;
 	mdxaBone_t boltMatrix;
 
 	if (self->svFlags & SVF_INACTIVE)
@@ -2648,6 +2643,8 @@ void welder_think(gentity_t* self)
 
 	if (newBolt != -1)
 	{
+		vec3_t dir;
+		vec3_t org;
 		G_Sound(self, self->noise_index);
 		//	G_PlayEffect( "blueWeldSparks", self->playerModel, newBolt, self->s.number);
 		// The welder gets rotated around a lot, and since the origin is offset by 352 I have to make this super expensive call to position the hurt...

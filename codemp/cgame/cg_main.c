@@ -627,7 +627,6 @@ static void CG_RegisterSounds(void)
 {
 	int i;
 	char items[MAX_ITEMS + 1];
-	char name[MAX_QPATH];
 	const char* soundName;
 
 	CG_AS_Register();
@@ -1016,6 +1015,7 @@ static void CG_RegisterSounds(void)
 
 	for (i = 0; i < 4; i++)
 	{
+		char name[MAX_QPATH];
 		Com_sprintf(name, sizeof name, "sound/player/footsteps/stone_step%i.wav", i + 1);
 		cgs.media.footsteps[FOOTSTEP_STONEWALK][i] = trap->S_RegisterSound(name);
 		Com_sprintf(name, sizeof name, "sound/player/footsteps/stone_run%i.wav", i + 1);
@@ -1714,7 +1714,6 @@ static void CG_RegisterGraphics(void)
 	{
 		vec3_t mins, maxs;
 		int j;
-		char temp[MAX_QPATH];
 
 		const char* bspName = CG_ConfigString(CS_BSP_MODELS + i);
 		if (!bspName[0])
@@ -1732,6 +1731,7 @@ static void CG_RegisterGraphics(void)
 		breakPoint++;
 		for (int sub = 1; sub < MAX_MODELS; sub++)
 		{
+			char temp[MAX_QPATH];
 			Com_sprintf(temp, MAX_QPATH, "*%d-%d", i, sub);
 			cgs.inlineDrawModel[breakPoint] = trap->R_RegisterModel(temp);
 			if (!cgs.inlineDrawModel[breakPoint])
@@ -1770,42 +1770,42 @@ static void CG_RegisterGraphics(void)
 	trap->FX_RegisterEffect("force/force_touch");
 }
 
-//const char* CG_GetStringEdString(char* refSection, char* refName)
-//{
-//#define	MAX_VA_STRING	32000
-//	static char intext[MAX_VA_STRING];
-//	static char translation[MAX_VA_STRING];
-//	static char string[MAX_VA_STRING]; // in case va is called by nested functions
-//	static int index = 0;
-//
-//	Com_sprintf(intext, sizeof intext, "%s_%s", refSection, refName);
-//
-//	trap->SE_GetStringTextString(intext, translation, sizeof translation);
-//
-//	const int len = strlen(translation);
-//
-//	if (len + index >= MAX_VA_STRING - 1)
-//	{
-//		index = 0;
-//	}
-//
-//	char* buf = &string[index];
-//	memcpy(buf, translation, len + 1);
-//
-//	index += len + 1;
-//
-//	return buf;
-//}
-
 const char* CG_GetStringEdString(char* refSection, char* refName)
 {
-	static char text[2][1024];	//just in case it's nested
-	static int		index = 0;
+#define	MAX_VA_STRING	32000
+	static char intext[MAX_VA_STRING];
+	static char translation[MAX_VA_STRING];
+	static char string[MAX_VA_STRING]; // in case va is called by nested functions
+	static int index = 0;
 
-	index ^= 1;
-	trap->SE_GetStringTextString(va("%s_%s", refSection, refName), text[index], sizeof(text[0]));
-	return text[index];
+	Com_sprintf(intext, sizeof intext, "%s_%s", refSection, refName);
+
+	trap->SE_GetStringTextString(intext, translation, sizeof translation);
+
+	const int len = strlen(translation);
+
+	if (len + index >= MAX_VA_STRING - 1)
+	{
+		index = 0;
+	}
+
+	char* buf = &string[index];
+	memcpy(buf, translation, len + 1);
+
+	index += len + 1;
+
+	return buf;
 }
+
+//const char* CG_GetStringEdString(char* refSection, char* refName)
+//{
+//	static char text[2][1024];	//just in case it's nested
+//	static int		index = 0;
+//
+//	index ^= 1;
+//	trap->SE_GetStringTextString(va("%s_%s", refSection, refName), text[index], sizeof text[0]);
+//	return text[index];
+//}
 
 int CG_GetClassCount(team_t team, int siegeClass);
 int CG_GetTeamNonScoreCount(team_t team);
@@ -2352,7 +2352,6 @@ static clientInfo_t* CG_InfoFromScoreIndex(int index, int team, int* scoreIndex)
 static const char* CG_FeederItemText(float feederID, int index, int column,
 	qhandle_t* handle1, qhandle_t* handle2, qhandle_t* handle3)
 {
-	gitem_t* item;
 	int scoreIndex = 0;
 	int team = -1;
 
@@ -2372,6 +2371,7 @@ static const char* CG_FeederItemText(float feederID, int index, int column,
 
 	if (info && info->infoValid)
 	{
+		gitem_t* item;
 		switch (column)
 		{
 		case 0:

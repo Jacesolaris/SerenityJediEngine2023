@@ -92,7 +92,7 @@ int force_icons[NUM_FORCE_POWERS];
 
 void CG_DrawDataPadHUD(centity_t* cent);
 void CG_DrawDataPadObjectives(const centity_t* cent);
-void CG_DrawIconBackground(void);
+void CG_DrawIconBackground();
 void CG_DrawDataPadIconBackground(int backgroundType);
 void CG_DrawDataPadWeaponSelect(void);
 void CG_DrawDataPadForceSelect(void);

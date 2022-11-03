@@ -230,7 +230,7 @@ void CG_Respawn(void)
 CG_CheckPlayerstateEvents
 ==============
 */
-void CG_CheckPlayerstateEvents(playerState_t* ps, playerState_t* ops)
+void CG_CheckPlayerstateEvents(const playerState_t* ps, const playerState_t* ops)
 {
 	centity_t* cent;
 
@@ -271,7 +271,7 @@ void CG_CheckPlayerstateEvents(playerState_t* ps, playerState_t* ops)
 CG_CheckChangedPredictableEvents
 ==================
 */
-void CG_CheckChangedPredictableEvents(playerState_t* ps)
+void CG_CheckChangedPredictableEvents(const playerState_t* ps)
 {
 	centity_t* cent = &cg_entities[ps->clientNum];
 	for (int i = ps->eventSequence - MAX_PS_EVENTS; i < ps->eventSequence; i++)
@@ -310,7 +310,7 @@ int cgAnnouncerTime = 0; //to prevent announce sounds from playing on top of eac
 CG_CheckLocalSounds
 ==================
 */
-void CG_CheckLocalSounds(playerState_t* ps, playerState_t* ops)
+void CG_CheckLocalSounds(const playerState_t* ps, const playerState_t* ops)
 {
 	// don't play the sounds if the player just changed teams
 	if (ps->persistant[PERS_TEAM] != ops->persistant[PERS_TEAM])

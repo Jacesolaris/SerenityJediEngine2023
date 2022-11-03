@@ -78,7 +78,6 @@ extern saberMoveName_t PM_SaberBounceForAttack(int move);
 extern saberMoveName_t PM_SaberAttackForMovement(int forwardmove, int rightmove, int curmove);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
 extern saberMoveName_t PM_KnockawayForParry(int move);
-extern saberMoveName_t PM_AbsorbtheParry(int move);
 extern qboolean PM_SaberInbackblock(int move);
 extern qboolean PM_SaberInParry(int move);
 extern qboolean PM_SaberInKnockaway(int move);
@@ -89,7 +88,7 @@ extern qboolean PM_SaberInStart(int move);
 extern qboolean PM_SaberInReturn(int move);
 extern qboolean PM_SaberKataDone(int curmove, int newmove);
 extern qboolean PM_SaberInSpecial(int move);
-extern qboolean PM_InDeathAnim(void);
+extern qboolean PM_InDeathAnim();
 extern qboolean PM_StandingAnim(int anim);
 extern qboolean PM_KickMove(int move);
 extern qboolean PM_KickingAnim(int anim);
@@ -153,8 +152,7 @@ extern qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, int saberAnimLe
 extern void ItemUse_Jetpack(const gentity_t* ent);
 extern void Jetpack_Off(const gentity_t* ent);
 extern saberMoveName_t PM_MBlocktheAttack(int move);
-extern saberMoveName_t PM_PerfectBlocktheAttack(int move);
-extern qboolean IsSurrendering(gentity_t* self);
+extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean PM_IsInBlockingAnim(int move);
 extern qboolean PM_StandingidleAnim(int move);
 extern qboolean PM_SaberDoDamageAnim(int anim);
@@ -220,10 +218,9 @@ int c_pmove = 0;
 
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
-extern void PM_TorsoAnimation(void);
+extern void PM_TorsoAnimation();
 extern int PM_TorsoAnimForFrame(gentity_t* ent, int torsoFrame);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern qboolean PM_InDeathAnim(void);
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern weaponInfo_t cg_weapons[MAX_WEAPONS];
 extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
@@ -1149,7 +1146,7 @@ qboolean PM_InSpecialJump(const int anim)
 
 extern void CG_PlayerLockedWeaponSpeech(int jumping);
 
-qboolean PM_ForceJumpingUp(gentity_t* gent)
+qboolean PM_ForceJumpingUp(const gentity_t* gent)
 {
 	if (!gent || !gent->client)
 	{
@@ -2135,12 +2132,12 @@ static qboolean pm_check_jump()
 					{
 						//sigh.. check for bottomless pit to the right
 						trace_t trace2;
-						vec3_t start;
 						VectorMA(pm->ps->origin, 128, right, traceto);
 						pm->trace(&trace2, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents,
 							static_cast<EG2_Collision>(0), 0);
 						if (!trace2.allsolid && !trace2.startsolid)
 						{
+							vec3_t start;
 							VectorCopy(trace2.endpos, traceto);
 							VectorCopy(traceto, start);
 							traceto[2] -= 384;
@@ -4322,7 +4319,7 @@ void G_StartRoll(gentity_t* ent, int anim)
 
 qboolean pm_try_roll(void)
 {
-	const float rollDist = 192; //was 64;
+	constexpr float rollDist = 192; //was 64;
 
 	if (PM_SaberInAttack(pm->ps->saberMove) || pm_saber_in_special_attack(pm->ps->torsoAnim)
 		|| PM_SpinningSaberAnim(pm->ps->legsAnim)
@@ -4579,14 +4576,16 @@ qboolean PM_TryRoll_SJE(void)
 		return qfalse;
 	}
 
-	vec3_t fwd, right, traceto, mins = { pm->mins[0], pm->mins[1], pm->mins[2] + STEPSIZE },
-		maxs = { pm->maxs[0], pm->maxs[1], static_cast<float>(pm->gent->client->crouchheight) }, fwdAngles = {
-			0, pm->ps->viewangles[YAW], 0
+	vec3_t fwd, right, traceto;
+	const vec3_t fwd_angles = {
+		0, pm->ps->viewangles[YAW], 0
 	};
+	const vec3_t maxs = { pm->maxs[0], pm->maxs[1], static_cast<float>(pm->gent->client->crouchheight) };
+	const vec3_t mins = { pm->mins[0], pm->mins[1], pm->mins[2] + STEPSIZE };
 	trace_t trace;
 	int anim = -1;
 
-	AngleVectors(fwdAngles, fwd, right, nullptr);
+	AngleVectors(fwd_angles, fwd, right, nullptr);
 
 	gentity_t* npc = &g_entities[pm->ps->clientNum];
 
@@ -5485,9 +5484,9 @@ static void PM_SetVehicleAngles(vec3_t normal)
 			VectorCopy(pVeh->m_vOrientation, tempVAngles);
 			tempVAngles[ROLL] = 0;
 			AngleVectors(tempVAngles, nullptr, rt, nullptr);
-			const float dotp = DotProduct(velocity, rt);
 			//if (fabsf(dotp)>0.5f)
 			{
+				const float dotp = DotProduct(velocity, rt);
 				speed *= dotp;
 
 				// Magic number fun!  Speed is used for banking, so modulate the speed by a sine wave
@@ -5501,31 +5500,13 @@ static void PM_SetVehicleAngles(vec3_t normal)
 				{
 					speed /= pVeh->m_pVehicleInfo->speedMax;
 				}
-
-				///	if (pm->cmd.forwardmove==0)
-				//	{
-				//		speed *= 0.5;
-				//	}
-				//	if (pm->cmd.forwardmove<0)
-				//	{
-				//		speed *= 0.1f;
-				//	}
 				if (pVeh->m_ulFlags & VEH_SLIDEBREAKING)
 				{
 					speed *= 3.0f;
 				}
 
 				const float side = speed * 75.0f;
-				//			if (pVeh->m_ulFlags & VEH_STRAFERAM)
-				//			{
-				//	 			vAngles[ROLL] += side;
-				//			}
-				//			else
-				{
-					vAngles[ROLL] -= side;
-				}
-
-				//gi.Printf("VAngles(%f)", vAngles[2]);
+				vAngles[ROLL] -= side;
 			}
 			if (fabsf(vAngles[ROLL]) < 0.001f)
 			{
@@ -5635,7 +5616,7 @@ void BG_ExternThisSoICanRecompileInDebug(Vehicle_t* pVeh, playerState_t* riderPS
 		VectorCopy( riderPS->viewangles, pVeh->m_vPrevRiderViewAngles );*/
 }
 
-void BG_VehicleTurnRateForSpeed(Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride)
+void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride)
 {
 	if (pVeh && pVeh->m_pVehicleInfo)
 	{
@@ -5677,13 +5658,13 @@ The ground trace didn't hit a surface, so we are in freefall
 static void PM_GroundTraceMissed(void)
 {
 	trace_t trace;
-	vec3_t point;
 	qboolean cliff_fall = qfalse;
 
 	if (Flying != FLY_HOVER)
 	{
 		if (!(pm->ps->eFlags & EF_FORCE_DRAINED))
 		{
+			vec3_t point;
 			//if in a contents_falldeath brush, play the falling death anim and sound?
 			if (pm->ps->clientNum != 0 && pm->gent && pm->gent->NPC && pm->gent->client && pm->gent->client->NPC_class
 				!= CLASS_SITHLORD
@@ -6343,7 +6324,7 @@ void PM_HoverTrace(void)
 
 	Vehicle_t* pVeh = pm->gent->m_pVehicle;
 	const float hoverHeight = pVeh->m_pVehicleInfo->hoverHeight;
-	vec3_t point, vAng, fxAxis[3];
+	vec3_t vAng, fxAxis[3];
 	trace_t* trace = &pml.groundTrace;
 	int traceContents = pm->tracemask;
 
@@ -6394,6 +6375,7 @@ void PM_HoverTrace(void)
 	}
 	else
 	{
+		vec3_t point;
 		const float minNormal = pVeh->m_pVehicleInfo->maxSlope;
 
 		point[0] = pm->ps->origin[0];
@@ -7832,7 +7814,7 @@ qboolean PM_CheckRollGetup(void)
 	return qfalse;
 }
 
-extern int pm_min_get_up_time(gentity_t* ent);
+extern int pm_min_get_up_time(const gentity_t* ent);
 
 qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchheight)
 {
@@ -13393,16 +13375,6 @@ void PM_BlockPointFatigue(playerState_t* ps, const int newMove, const int anim)
 			//simple saber attack
 			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERDEFENSE);
 		}
-		else if (PM_PerfectBlocktheAttack(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERDEFENSE);
-		}
-		else if (PM_AbsorbtheParry(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERDEFENSE);
-		}
 		else if (PM_SaberInbackblock(newMove))
 		{
 			//simple block
@@ -13444,16 +13416,6 @@ void PM_NPCFatigue(playerState_t* ps, const int newMove, int anim)
 			//simple saber attack
 			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
 		}
-		else if (PM_PerfectBlocktheAttack(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
-		}
-		else if (PM_AbsorbtheParry(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
-		}
 		else if (PM_SaberInbackblock(newMove))
 		{
 			//simple block
@@ -13479,19 +13441,19 @@ void PM_SaberFakeFlagUpdate(playerState_t* ps, int newMove, int currentMove);
 
 void WP_SaberFatigueRegenerate(const int overrideAmt)
 {
-	if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_NONE)
+	if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_NONE)
 	{
 		if (overrideAmt)
 		{
-			pm->ps->saberAttackChainCount -= overrideAmt;
+			pm->ps->saberFatigueChainCount -= overrideAmt;
 		}
 		else
 		{
-			pm->ps->saberAttackChainCount--;
+			pm->ps->saberFatigueChainCount--;
 		}
-		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_MAX)
+		if (pm->ps->saberFatigueChainCount > MISHAPLEVEL_MAX)
 		{
-			pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
+			pm->ps->saberFatigueChainCount = MISHAPLEVEL_MAX;
 		}
 	}
 }
@@ -13525,45 +13487,24 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			saberMoveData[new_move].name);
 	}
 
-	if (pm->ps->clientNum && !PM_ControlledByPlayer()) //npc only
-	{
-		if (new_move == LS_READY)
-		{
-			if (pm->ps->forcePowerRegenDebounceTime < level.time)
-			{
-				WP_SaberFatigueRegenerate(0);
-				pm->ps->forcePowerRegenDebounceTime = level.time + 100;
-			}
-		}
-		else if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
-		{
-			//finished with a kata (or in a special move) reset attack counter
-			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
-		}
-		else if (PM_SaberInAttack(new_move))
-		{//continuing with a kata, increment attack counter
-			pm->ps->saberAttackChainCount++;
-		}
+	if (new_move == LS_READY || new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
+	{//finished with a kata (or in a special move) reset attack counter
+		pm->ps->saberAttackChainCount = 0;
 	}
-	else
-	{
-		if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
-		{//finished with a kata (or in a special move) reset attack counter
-			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
-		}
-		else if (PM_SaberInAttack(new_move))
-		{//continuing with a kata, increment attack counter
-			pm->ps->saberAttackChainCount++;
-		}
+	else if (PM_SaberInAttack(new_move))
+	{//continuing with a kata, increment attack counter
+		//FIXME: maybe some contextual/style-specific logic in here
+		pm->ps->saberAttackChainCount++;
+		pm->ps->saberFatigueChainCount++;
 	}
 
-	if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_OVERLOAD)
+	if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_OVERLOAD)
 	{
 		//for the sake of being able to send the value over the net within a reasonable bit count
-		pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
+		pm->ps->saberFatigueChainCount = MISHAPLEVEL_MAX;
 	}
 
-	if (pm->ps->saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+	if (pm->ps->saberFatigueChainCount > MISHAPLEVEL_HUDFLASH)
 	{
 		pm->ps->userInt3 |= 1 << FLAG_ATTACKFATIGUE;
 	}
@@ -14020,7 +13961,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		if (new_move >= LS_V1_BR && new_move <= LS_REFLECT_LL)
 		{
 			//there aren't 1-7, just 1, 6 and 7, so just set it
-			anim = (BOTH_P7_S7_T_) + (anim - BOTH_P1_S1_T_); //shift it up to the proper set
+			anim = BOTH_P7_S7_T_ + (anim - BOTH_P1_S1_T_); //shift it up to the proper set
 		}
 		else
 		{
@@ -16704,7 +16645,7 @@ void PM_CheckKick(void)
 				{
 					if (G_CheckEnemyPresence(pm->gent, DIR_FRONT, 64.0f, 12.0f))
 					{
-						if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+						if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 						{
 							PM_SetSaberMove(LS_HILT_BASH);
 						}
@@ -16920,7 +16861,7 @@ void PM_MeleeKickForConditions(void)
 				{
 					if (G_CheckEnemyPresence(pm->gent, DIR_FRONT, 64.0f, 12.0f))
 					{
-						if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+						if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 						{
 							PM_SetSaberMove(LS_HILT_BASH);
 						}
@@ -17136,7 +17077,7 @@ void PM_MeleeMoveForConditions(void)
 				{
 					if (G_CheckEnemyPresence(pm->gent, DIR_FRONT, 64.0f, 12.0f))
 					{
-						if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+						if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 						{
 							PM_SetSaberMove(LS_HILT_BASH);
 						}
@@ -17962,7 +17903,6 @@ void PM_WeaponLightsaber(void)
 	qboolean delayed_fire = qfalse, animLevelOverridden = qfalse;
 	int anim = -1;
 	int newmove = LS_NONE;
-	int curmove;
 
 	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
 	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
@@ -18511,9 +18451,9 @@ void PM_WeaponLightsaber(void)
 
 	if (PM_CanDoKata())
 	{
-		const saberMoveName_t overrideMove = LS_INVALID;
+		constexpr saberMoveName_t override_move = LS_INVALID;
 
-		if (overrideMove == LS_INVALID)
+		if (override_move == LS_INVALID)
 		{
 			switch (pm->ps->saberAnimLevel)
 			{
@@ -18591,7 +18531,7 @@ void PM_WeaponLightsaber(void)
 			pm->ps->weaponstate = WEAPON_FIRING;
 			WP_ForcePowerDrain(pm->gent, FP_SABER_OFFENSE, SABER_ALT_ATTACK_POWER);
 		}
-		if (overrideMove != LS_NONE)
+		if (override_move != LS_NONE)
 		{
 			//not cancelled
 			return;
@@ -18620,6 +18560,7 @@ void PM_WeaponLightsaber(void)
 
 	if (!delayed_fire)
 	{
+		int curmove;
 		// Start with the current move, and cross index it with the current control states.
 		if (pm->ps->saberMove > LS_NONE && pm->ps->saberMove < LS_MOVE_MAX)
 		{
@@ -18692,6 +18633,7 @@ void PM_WeaponLightsaber(void)
 					{//okay to chain to another attack
 						newmove = saberMoveData[curmove].chain_attack;//we assume they're attacking, even if they're not
 						pm->ps->saberAttackChainCount++;
+						pm->ps->saberFatigueChainCount++;
 					}
 				}
 				else
@@ -18938,7 +18880,7 @@ void PM_WeaponLightsaber(void)
 					{
 						newmove = PM_SaberAttackForMovement(pm->cmd.forwardmove, pm->cmd.rightmove, curmove);
 
-						if (pm->ps->saberAttackChainCount < MISHAPLEVEL_TEN)
+						if (pm->ps->saberFatigueChainCount < MISHAPLEVEL_TEN)
 						{
 							if ((PM_SaberInBounce(curmove) || PM_SaberInBrokenParry(curmove))
 								&& saberMoveData[newmove].startQuad == saberMoveData[curmove].endQuad)

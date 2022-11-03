@@ -784,11 +784,11 @@ namespace ratl
 			// this is so node support does not need to be added to the primitive containers
 			static NODE& node(TValue& v)
 			{
-				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)0)->nodeData) - static_cast<size_t>(&((TStorage*)0)->value));
+				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			static const NODE& node(const TValue& v)
 			{
-				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)0)->nodeData) - static_cast<size_t>(&((TStorage*)0)->value));
+				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			static void swap(TStorage* s1, TStorage* s2)
 			{
@@ -798,8 +798,8 @@ namespace ratl
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return
-					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)0)->value)) -
-					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)0)->value));
+					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)nullptr)->value)) -
+					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 		};
 
@@ -878,11 +878,11 @@ namespace ratl
 			// this is so node support does not need to be added to the primitive containers
 			static NODE& node(TValue& v)
 			{
-				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)0)->nodeData) - static_cast<size_t>(&((TStorage*)0)->value));
+				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			static const NODE& node(const TValue& v)
 			{
-				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)0)->nodeData) - static_cast<size_t>(&((TStorage*)0)->value));
+				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			static void swap(TStorage* s1, TStorage* s2)
 			{
@@ -894,8 +894,8 @@ namespace ratl
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return
-					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)0)->value)) -
-					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)0)->value));
+					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)nullptr)->value)) -
+					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 		};
 		template<class T, int SIZE, int MAX_CLASS_SIZE, class NODE>
@@ -969,11 +969,11 @@ namespace ratl
 			// this is so node support does not need to be added to the primitive containers
 			static NODE& node(TValue& v)
 			{
-				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)0)->nodeData) - static_cast<size_t>(&((TStorage*)0)->value));
+				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			static const NODE& node(const TValue& v)
 			{
-				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)0)->nodeData) - static_cast<size_t>(&((TStorage*)0)->value));
+				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			// this is a bit suspicious, we are forced to do a memory swap, and for a class, that, say
 			// stores a pointer to itself, it won't work right
@@ -985,8 +985,8 @@ namespace ratl
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return
-					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)0)->value)) -
-					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)0)->value));
+					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)nullptr)->value)) -
+					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)nullptr)->value));
 			}
 			template<class CAST_TO>
 			static CAST_TO* verify_alloc(CAST_TO* p)

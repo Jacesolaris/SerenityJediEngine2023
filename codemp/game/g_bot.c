@@ -51,9 +51,8 @@ float trap_Cvar_VariableValue(const char* var_name)
 G_ParseInfos
 ===============
 */
-int G_ParseInfos(char* buf, int max, char* infos[])
+int G_ParseInfos(const char* buf, int max, char* infos[])
 {
-	char key[MAX_TOKEN_CHARS];
 	char info[MAX_INFO_STRING];
 
 	int count = 0;
@@ -81,6 +80,7 @@ int G_ParseInfos(char* buf, int max, char* infos[])
 		info[0] = '\0';
 		while (1)
 		{
+			char key[MAX_TOKEN_CHARS];
 			token = COM_ParseExt(&buf, qtrue);
 			if (!token[0])
 			{
@@ -141,7 +141,7 @@ void G_LoadArenasFromFile(char* filename)
 	level.arenas.num += G_ParseInfos(buf, MAX_ARENAS - level.arenas.num, &level.arenas.infos[level.arenas.num]);
 }
 
-int G_GetMapTypeBits(char* type)
+int G_GetMapTypeBits(const char* type)
 {
 	int typeBits = 0;
 
@@ -208,7 +208,7 @@ int G_GetMapTypeBits(char* type)
 qboolean G_DoesMapSupportGametype(const char* mapname, int gametype)
 {
 	int thisLevel = -1;
-	char* type = NULL;
+	const char* type;
 
 	if (!level.arenas.infos[0])
 	{
@@ -258,8 +258,8 @@ qboolean G_DoesMapSupportGametype(const char* mapname, int gametype)
 const char* G_RefreshNextMap(int gametype, qboolean forced)
 {
 	int thisLevel = 0;
-	int n = 0;
-	char* type = NULL;
+	int n;
+	char* type;
 	qboolean loopingUp = qfalse;
 	vmCvar_t mapname;
 
@@ -340,7 +340,7 @@ G_LoadArenas
 #define MAX_MAPS 1024
 #define MAPSBUFSIZE (MAX_MAPS * 64)
 
-void G_LoadArenas(void)
+void g_load_arenas(void)
 {
 #if 0
 	int			numdirs;
@@ -373,7 +373,6 @@ void G_LoadArenas(void)
 #else
 
 	char filelist[MAPSBUFSIZE];
-	char filename[MAX_QPATH];
 
 	level.arenas.num = 0;
 
@@ -388,6 +387,7 @@ void G_LoadArenas(void)
 
 	for (; i < numFiles; i++)
 	{
+		char filename[MAX_QPATH];
 		const int len = strlen(fileptr);
 		Com_sprintf(filename, sizeof filename, "mpscripts/%s", fileptr);
 		G_LoadArenasFromFile(filename);
@@ -403,7 +403,7 @@ void G_LoadArenas(void)
 #endif
 }
 
-void G_LoadSPArenas(void)
+void g_load_sp_arenas(void)
 {
 #if 0
 	int			numdirs;
@@ -436,7 +436,6 @@ void G_LoadSPArenas(void)
 #else
 
 	char filelist[MAPSBUFSIZE];
-	char filename[MAX_QPATH];
 
 	level.arenas.num = 0;
 
@@ -451,6 +450,7 @@ void G_LoadSPArenas(void)
 
 	for (; i < numFiles; i++)
 	{
+		char filename[MAX_QPATH];
 		const int len = strlen(fileptr);
 		Com_sprintf(filename, sizeof filename, "mpscripts/%s", fileptr);
 		G_LoadArenasFromFile(filename);
@@ -519,7 +519,7 @@ G_AddRandomBot
 void G_AddRandomBot(int team)
 {
 	int i, n;
-	char* value, netname[36], * teamstr;
+	char* value, * teamstr;
 	gclient_t* cl;
 
 	int num = 0;
@@ -602,6 +602,7 @@ void G_AddRandomBot(int team)
 			num--;
 			if (num <= 0)
 			{
+				char netname[36];
 				const float skill = trap->Cvar_VariableIntegerValue("g_npcspskill");
 				if (team == TEAM_RED) teamstr = "red";
 				else if (team == TEAM_BLUE) teamstr = "blue";
@@ -1276,14 +1277,14 @@ Svcmd_BotList_f
 */
 void Svcmd_BotList_f(void)
 {
-	char name[MAX_NETNAME];
 	char funname[MAX_NETNAME];
-	char model[MAX_QPATH];
-	char personality[MAX_QPATH];
 
 	trap->Print("name             model            personality              funname\n");
 	for (int i = 0; i < level.bots.num; i++)
 	{
+		char personality[MAX_QPATH];
+		char model[MAX_QPATH];
+		char name[MAX_NETNAME];
 		Q_strncpyz(name, Info_ValueForKey(level.bots.infos[i], "name"), sizeof name);
 		if (!*name)
 		{
@@ -1401,7 +1402,6 @@ G_LoadBots
 static void G_LoadBots(void)
 {
 	vmCvar_t botsFile;
-	char filename[128];
 	char dirlist[1024];
 	int dirlen;
 
@@ -1427,6 +1427,7 @@ static void G_LoadBots(void)
 	char* dirptr = dirlist;
 	for (int i = 0; i < numdirs; i++, dirptr += dirlen + 1)
 	{
+		char filename[128];
 		dirlen = strlen(dirptr);
 		strcpy(filename, "mpscripts/");
 		strcat(filename, dirptr);
@@ -1484,10 +1485,10 @@ void G_InitBots(void)
 		trap->Cvar_Register(&bot_minplayers, "bot_minplayers", "0", CVAR_SERVERINFO);
 		LoadPath_ThisLevel(); //no bots routes in sp
 		G_LoadBots(); //no bots in sp
-		G_LoadArenas();
+		g_load_arenas();
 	}
 	else
 	{
-		G_LoadSPArenas();
+		g_load_sp_arenas();
 	}
 }

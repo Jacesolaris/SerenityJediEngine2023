@@ -108,7 +108,7 @@ void CL_ParsePacketEntities(msg_t* msg, clSnapshot_t* oldframe, clSnapshot_t* ne
 
 	// delta from the entities present in oldframe
 	int oldindex = 0;
-	entityState_t* oldstate = NULL;
+	entityState_t* oldstate = nullptr;
 	if (!oldframe) {
 		oldnum = 99999;
 	}
@@ -252,7 +252,7 @@ void CL_ParseSnapshot(msg_t* msg) {
 	// message
 	if (newSnap.deltaNum <= 0) {
 		newSnap.valid = qtrue;		// uncompressed frame
-		old = NULL;
+		old = nullptr;
 		clc.demowaiting = qfalse;	// we can start recording now
 	}
 	else {
@@ -304,10 +304,10 @@ void CL_ParseSnapshot(msg_t* msg) {
 		}
 	}
 	else {
-		MSG_ReadDeltaPlayerstate(msg, NULL, &newSnap.ps);
+		MSG_ReadDeltaPlayerstate(msg, nullptr, &newSnap.ps);
 		if (newSnap.ps.m_iVehicleNum)
 		{ //this means we must have written our vehicle's ps too
-			MSG_ReadDeltaPlayerstate(msg, NULL, &newSnap.vps, qtrue);
+			MSG_ReadDeltaPlayerstate(msg, nullptr, &newSnap.vps, qtrue);
 		}
 	}
 

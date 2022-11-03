@@ -3204,7 +3204,7 @@ Q3_SetAngles
 Sets the angles of an entity directly
 =============
 */
-void UpdatePlayerCameraAngle(gentity_t* ent, vec3_t newAngle);
+void UpdatePlayerCameraAngle(const gentity_t* ent, vec3_t newAngle);
 static void Q3_SetDYaw(int entID, float data);
 
 static void Q3_SetAngles(int entID, vec3_t angles)
@@ -7764,7 +7764,7 @@ static void Q3_LCARSText(const char* id)
 
 void un_lock_doors(gentity_t* ent);
 void lock_doors(gentity_t* ent);
-void UpdatePlayerCameraOrigin(gentity_t* ent, vec3_t newPos);
+void UpdatePlayerCameraOrigin(const gentity_t* ent, vec3_t newPos);
 
 //returns qtrue if it got to the end, otherwise qfalse.
 qboolean Q3_Set(int taskID, int entID, const char* type_name, const char* data)

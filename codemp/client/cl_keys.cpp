@@ -50,7 +50,7 @@ keyGlobals_t	kg;
 //
 keyname_t keynames[MAX_KEYS] =
 {
-	{ 0x00, 0x00, NULL, A_NULL, false									},
+	{ 0x00, 0x00, nullptr, A_NULL, false									},
 	{ 0x01, 0x01, "SHIFT", A_SHIFT, false 								},
 	{ 0x02, 0x02, "CTRL", A_CTRL, false   								},
 	{ 0x03, 0x03, "ALT", A_ALT, false									},
@@ -65,7 +65,7 @@ keyname_t keynames[MAX_KEYS] =
 	{ 0x0c, 0x0c, "KP_MINUS", A_KP_MINUS, false							},
 	{ 0x0d, 0x0d, "KP_ENTER", A_KP_ENTER, false							},
 	{ 0x0e, 0x0e, "KP_DEL", A_KP_PERIOD, false							},
-	{ 0x0f, 0x0f, NULL, A_PRINTSCREEN, false							},
+	{ 0x0f, 0x0f, nullptr, A_PRINTSCREEN, false							},
 	{ 0x10, 0x10, "KP_INS", A_KP_0, false								},
 	{ 0x11, 0x11, "KP_END", A_KP_1, false								},
 	{ 0x12, 0x12, "KP_DOWNARROW", A_KP_2, false							},
@@ -84,102 +84,102 @@ keyname_t keynames[MAX_KEYS] =
 	{ 0x1f, 0x1f, "F4", A_F4, true										},
 
 	{ 0x20, 0x20, "SPACE", A_SPACE, false								},
-	{ static_cast<word>('!'), static_cast<word>('!'), NULL, A_PLING, false		  				},
-	{ static_cast<word>('"'), static_cast<word>('"'), NULL, A_DOUBLE_QUOTE, false  				},
-	{ static_cast<word>('#'), static_cast<word>('#'), NULL, A_HASH, false		  					},
-	{ static_cast<word>('$'), static_cast<word>('$'), NULL, A_STRING, false						},
-	{ static_cast<word>('%'), static_cast<word>('%'), NULL, A_PERCENT, false						},
-	{ static_cast<word>('&'), static_cast<word>('&'), NULL, A_AND, false							},
-	{ 0x27, 0x27, NULL, A_SINGLE_QUOTE, false							},
-	{ static_cast<word>('('), static_cast<word>('('), NULL, A_OPEN_BRACKET, false					},
-	{ static_cast<word>(')'), static_cast<word>(')'), NULL, A_CLOSE_BRACKET, false				},
-	{ static_cast<word>('*'), static_cast<word>('*'), NULL, A_STAR, false							},
-	{ static_cast<word>('+'), static_cast<word>('+'), NULL, A_PLUS, false							},
-	{ static_cast<word>(','), static_cast<word>(','), NULL, A_COMMA, false						},
-	{ static_cast<word>('-'), static_cast<word>('-'), NULL, A_MINUS, false						},
-	{ static_cast<word>('.'), static_cast<word>('.'), NULL, A_PERIOD, false						},
-	{ static_cast<word>('/'), static_cast<word>('/'), NULL, A_FORWARD_SLASH, false				},
-	{ static_cast<word>('0'), static_cast<word>('0'), NULL, A_0, false							},
-	{ static_cast<word>('1'), static_cast<word>('1'), NULL, A_1, false							},
-	{ static_cast<word>('2'), static_cast<word>('2'), NULL, A_2, false							},
-	{ static_cast<word>('3'), static_cast<word>('3'), NULL, A_3, false							},
-	{ static_cast<word>('4'), static_cast<word>('4'), NULL, A_4, false							},
-	{ static_cast<word>('5'), static_cast<word>('5'), NULL, A_5, false							},
-	{ static_cast<word>('6'), static_cast<word>('6'), NULL, A_6, false							},
-	{ static_cast<word>('7'), static_cast<word>('7'), NULL, A_7, false							},
-	{ static_cast<word>('8'), static_cast<word>('8'), NULL, A_8, false							},
-	{ static_cast<word>('9'), static_cast<word>('9'), NULL, A_9, false							},
-	{ static_cast<word>(':'), static_cast<word>(':'), NULL, A_COLON, false						},
+	{ static_cast<word>('!'), static_cast<word>('!'), nullptr, A_PLING, false		  				},
+	{ static_cast<word>('"'), static_cast<word>('"'), nullptr, A_DOUBLE_QUOTE, false  				},
+	{ static_cast<word>('#'), static_cast<word>('#'), nullptr, A_HASH, false		  					},
+	{ static_cast<word>('$'), static_cast<word>('$'), nullptr, A_STRING, false						},
+	{ static_cast<word>('%'), static_cast<word>('%'), nullptr, A_PERCENT, false						},
+	{ static_cast<word>('&'), static_cast<word>('&'), nullptr, A_AND, false							},
+	{ 0x27, 0x27, nullptr, A_SINGLE_QUOTE, false							},
+	{ static_cast<word>('('), static_cast<word>('('), nullptr, A_OPEN_BRACKET, false					},
+	{ static_cast<word>(')'), static_cast<word>(')'), nullptr, A_CLOSE_BRACKET, false				},
+	{ static_cast<word>('*'), static_cast<word>('*'), nullptr, A_STAR, false							},
+	{ static_cast<word>('+'), static_cast<word>('+'), nullptr, A_PLUS, false							},
+	{ static_cast<word>(','), static_cast<word>(','), nullptr, A_COMMA, false						},
+	{ static_cast<word>('-'), static_cast<word>('-'), nullptr, A_MINUS, false						},
+	{ static_cast<word>('.'), static_cast<word>('.'), nullptr, A_PERIOD, false						},
+	{ static_cast<word>('/'), static_cast<word>('/'), nullptr, A_FORWARD_SLASH, false				},
+	{ static_cast<word>('0'), static_cast<word>('0'), nullptr, A_0, false							},
+	{ static_cast<word>('1'), static_cast<word>('1'), nullptr, A_1, false							},
+	{ static_cast<word>('2'), static_cast<word>('2'), nullptr, A_2, false							},
+	{ static_cast<word>('3'), static_cast<word>('3'), nullptr, A_3, false							},
+	{ static_cast<word>('4'), static_cast<word>('4'), nullptr, A_4, false							},
+	{ static_cast<word>('5'), static_cast<word>('5'), nullptr, A_5, false							},
+	{ static_cast<word>('6'), static_cast<word>('6'), nullptr, A_6, false							},
+	{ static_cast<word>('7'), static_cast<word>('7'), nullptr, A_7, false							},
+	{ static_cast<word>('8'), static_cast<word>('8'), nullptr, A_8, false							},
+	{ static_cast<word>('9'), static_cast<word>('9'), nullptr, A_9, false							},
+	{ static_cast<word>(':'), static_cast<word>(':'), nullptr, A_COLON, false						},
 	{ static_cast<word>(';'), static_cast<word>(';'), "SEMICOLON", A_SEMICOLON, false				},
-	{ static_cast<word>('<'), static_cast<word>('<'), NULL, A_LESSTHAN, false						},
-	{ static_cast<word>('='), static_cast<word>('='), NULL, A_EQUALS, false						},
-	{ static_cast<word>('>'), static_cast<word>('>'), NULL, A_GREATERTHAN, false					},
-	{ static_cast<word>('?'), static_cast<word>('?'), NULL, A_QUESTION, false						},
+	{ static_cast<word>('<'), static_cast<word>('<'), nullptr, A_LESSTHAN, false						},
+	{ static_cast<word>('='), static_cast<word>('='), nullptr, A_EQUALS, false						},
+	{ static_cast<word>('>'), static_cast<word>('>'), nullptr, A_GREATERTHAN, false					},
+	{ static_cast<word>('?'), static_cast<word>('?'), nullptr, A_QUESTION, false						},
 
-	{ static_cast<word>('@'), static_cast<word>('@'), NULL, A_AT, false							},
-	{ static_cast<word>('A'), static_cast<word>('a'), NULL, A_CAP_A, false						},
-	{ static_cast<word>('B'), static_cast<word>('b'), NULL, A_CAP_B, false						},
-	{ static_cast<word>('C'), static_cast<word>('c'), NULL, A_CAP_C, false						},
-	{ static_cast<word>('D'), static_cast<word>('d'), NULL, A_CAP_D, false						},
-	{ static_cast<word>('E'), static_cast<word>('e'), NULL, A_CAP_E, false						},
-	{ static_cast<word>('F'), static_cast<word>('f'), NULL, A_CAP_F, false						},
-	{ static_cast<word>('G'), static_cast<word>('g'), NULL, A_CAP_G, false						},
-	{ static_cast<word>('H'), static_cast<word>('h'), NULL, A_CAP_H, false						},
-	{ static_cast<word>('I'), static_cast<word>('i'), NULL, A_CAP_I, false						},
-	{ static_cast<word>('J'), static_cast<word>('j'), NULL, A_CAP_J, false						},
-	{ static_cast<word>('K'), static_cast<word>('k'), NULL, A_CAP_K, false						},
-	{ static_cast<word>('L'), static_cast<word>('l'), NULL, A_CAP_L, false						},
-	{ static_cast<word>('M'), static_cast<word>('m'), NULL, A_CAP_M, false						},
-	{ static_cast<word>('N'), static_cast<word>('n'), NULL, A_CAP_N, false						},
-	{ static_cast<word>('O'), static_cast<word>('o'), NULL, A_CAP_O, false						},
-	{ static_cast<word>('P'), static_cast<word>('p'), NULL, A_CAP_P, false						},
-	{ static_cast<word>('Q'), static_cast<word>('q'), NULL, A_CAP_Q, false						},
-	{ static_cast<word>('R'), static_cast<word>('r'), NULL, A_CAP_R, false						},
-	{ static_cast<word>('S'), static_cast<word>('s'), NULL, A_CAP_S, false						},
-	{ static_cast<word>('T'), static_cast<word>('t'), NULL, A_CAP_T, false						},
-	{ static_cast<word>('U'), static_cast<word>('u'), NULL, A_CAP_U, false						},
-	{ static_cast<word>('V'), static_cast<word>('v'), NULL, A_CAP_V, false						},
-	{ static_cast<word>('W'), static_cast<word>('w'), NULL, A_CAP_W, false						},
-	{ static_cast<word>('X'), static_cast<word>('x'), NULL, A_CAP_X, false						},
-	{ static_cast<word>('Y'), static_cast<word>('y'), NULL, A_CAP_Y, false						},
-	{ static_cast<word>('Z'), static_cast<word>('z'), NULL, A_CAP_Z, false						},
-	{ static_cast<word>('['), static_cast<word>('['), NULL, A_OPEN_SQUARE, false					},
-	{ 0x5c, 0x5c, NULL, A_BACKSLASH, false								},
-	{ static_cast<word>(']'), static_cast<word>(']'), NULL, A_CLOSE_SQUARE, false 				},
-	{ static_cast<word>('^'), static_cast<word>('^'), NULL, A_CARET, false		 				},
-	{ static_cast<word>('_'), static_cast<word>('_'), NULL, A_UNDERSCORE, false					},
+	{ static_cast<word>('@'), static_cast<word>('@'), nullptr, A_AT, false							},
+	{ static_cast<word>('A'), static_cast<word>('a'), nullptr, A_CAP_A, false						},
+	{ static_cast<word>('B'), static_cast<word>('b'), nullptr, A_CAP_B, false						},
+	{ static_cast<word>('C'), static_cast<word>('c'), nullptr, A_CAP_C, false						},
+	{ static_cast<word>('D'), static_cast<word>('d'), nullptr, A_CAP_D, false						},
+	{ static_cast<word>('E'), static_cast<word>('e'), nullptr, A_CAP_E, false						},
+	{ static_cast<word>('F'), static_cast<word>('f'), nullptr, A_CAP_F, false						},
+	{ static_cast<word>('G'), static_cast<word>('g'), nullptr, A_CAP_G, false						},
+	{ static_cast<word>('H'), static_cast<word>('h'), nullptr, A_CAP_H, false						},
+	{ static_cast<word>('I'), static_cast<word>('i'), nullptr, A_CAP_I, false						},
+	{ static_cast<word>('J'), static_cast<word>('j'), nullptr, A_CAP_J, false						},
+	{ static_cast<word>('K'), static_cast<word>('k'), nullptr, A_CAP_K, false						},
+	{ static_cast<word>('L'), static_cast<word>('l'), nullptr, A_CAP_L, false						},
+	{ static_cast<word>('M'), static_cast<word>('m'), nullptr, A_CAP_M, false						},
+	{ static_cast<word>('N'), static_cast<word>('n'), nullptr, A_CAP_N, false						},
+	{ static_cast<word>('O'), static_cast<word>('o'), nullptr, A_CAP_O, false						},
+	{ static_cast<word>('P'), static_cast<word>('p'), nullptr, A_CAP_P, false						},
+	{ static_cast<word>('Q'), static_cast<word>('q'), nullptr, A_CAP_Q, false						},
+	{ static_cast<word>('R'), static_cast<word>('r'), nullptr, A_CAP_R, false						},
+	{ static_cast<word>('S'), static_cast<word>('s'), nullptr, A_CAP_S, false						},
+	{ static_cast<word>('T'), static_cast<word>('t'), nullptr, A_CAP_T, false						},
+	{ static_cast<word>('U'), static_cast<word>('u'), nullptr, A_CAP_U, false						},
+	{ static_cast<word>('V'), static_cast<word>('v'), nullptr, A_CAP_V, false						},
+	{ static_cast<word>('W'), static_cast<word>('w'), nullptr, A_CAP_W, false						},
+	{ static_cast<word>('X'), static_cast<word>('x'), nullptr, A_CAP_X, false						},
+	{ static_cast<word>('Y'), static_cast<word>('y'), nullptr, A_CAP_Y, false						},
+	{ static_cast<word>('Z'), static_cast<word>('z'), nullptr, A_CAP_Z, false						},
+	{ static_cast<word>('['), static_cast<word>('['), nullptr, A_OPEN_SQUARE, false					},
+	{ 0x5c, 0x5c, nullptr, A_BACKSLASH, false								},
+	{ static_cast<word>(']'), static_cast<word>(']'), nullptr, A_CLOSE_SQUARE, false 				},
+	{ static_cast<word>('^'), static_cast<word>('^'), nullptr, A_CARET, false		 				},
+	{ static_cast<word>('_'), static_cast<word>('_'), nullptr, A_UNDERSCORE, false					},
 
-	{ 0x60, 0x60, NULL, A_LEFT_SINGLE_QUOTE, false						},
-	{ static_cast<word>('A'), static_cast<word>('a'), NULL, A_LOW_A, false						},
-	{ static_cast<word>('B'), static_cast<word>('b'), NULL, A_LOW_B, false						},
-	{ static_cast<word>('C'), static_cast<word>('c'), NULL, A_LOW_C, false						},
-	{ static_cast<word>('D'), static_cast<word>('d'), NULL, A_LOW_D, false						},
-	{ static_cast<word>('E'), static_cast<word>('e'), NULL, A_LOW_E, false						},
-	{ static_cast<word>('F'), static_cast<word>('f'), NULL, A_LOW_F, false						},
-	{ static_cast<word>('G'), static_cast<word>('g'), NULL, A_LOW_G, false						},
-	{ static_cast<word>('H'), static_cast<word>('h'), NULL, A_LOW_H, false						},
-	{ static_cast<word>('I'), static_cast<word>('i'), NULL, A_LOW_I, false						},
-	{ static_cast<word>('J'), static_cast<word>('j'), NULL, A_LOW_J, false						},
-	{ static_cast<word>('K'), static_cast<word>('k'), NULL, A_LOW_K, false						},
-	{ static_cast<word>('L'), static_cast<word>('l'), NULL, A_LOW_L, false						},
-	{ static_cast<word>('M'), static_cast<word>('m'), NULL, A_LOW_M, false						},
-	{ static_cast<word>('N'), static_cast<word>('n'), NULL, A_LOW_N, false						},
-	{ static_cast<word>('O'), static_cast<word>('o'), NULL, A_LOW_O, false						},
-	{ static_cast<word>('P'), static_cast<word>('p'), NULL, A_LOW_P, false						},
-	{ static_cast<word>('Q'), static_cast<word>('q'), NULL, A_LOW_Q, false						},
-	{ static_cast<word>('R'), static_cast<word>('r'), NULL, A_LOW_R, false						},
-	{ static_cast<word>('S'), static_cast<word>('s'), NULL, A_LOW_S, false						},
-	{ static_cast<word>('T'), static_cast<word>('t'), NULL, A_LOW_T, false						},
-	{ static_cast<word>('U'), static_cast<word>('u'), NULL, A_LOW_U, false						},
-	{ static_cast<word>('V'), static_cast<word>('v'), NULL, A_LOW_V, false						},
-	{ static_cast<word>('W'), static_cast<word>('w'), NULL, A_LOW_W, false						},
-	{ static_cast<word>('X'), static_cast<word>('x'), NULL, A_LOW_X, false						},
-	{ static_cast<word>('Y'), static_cast<word>('y'), NULL, A_LOW_Y, false						},
-	{ static_cast<word>('Z'), static_cast<word>('z'), NULL, A_LOW_Z, false						},
-	{ static_cast<word>('{'), static_cast<word>('{'), NULL, A_OPEN_BRACE, false					},
-	{ static_cast<word>('|'), static_cast<word>('|'), NULL, A_BAR, false							},
-	{ static_cast<word>('}'), static_cast<word>('}'), NULL, A_CLOSE_BRACE, false					},
-	{ static_cast<word>('~'), static_cast<word>('~'), NULL, A_TILDE, false						},
+	{ 0x60, 0x60, nullptr, A_LEFT_SINGLE_QUOTE, false						},
+	{ static_cast<word>('A'), static_cast<word>('a'), nullptr, A_LOW_A, false						},
+	{ static_cast<word>('B'), static_cast<word>('b'), nullptr, A_LOW_B, false						},
+	{ static_cast<word>('C'), static_cast<word>('c'), nullptr, A_LOW_C, false						},
+	{ static_cast<word>('D'), static_cast<word>('d'), nullptr, A_LOW_D, false						},
+	{ static_cast<word>('E'), static_cast<word>('e'), nullptr, A_LOW_E, false						},
+	{ static_cast<word>('F'), static_cast<word>('f'), nullptr, A_LOW_F, false						},
+	{ static_cast<word>('G'), static_cast<word>('g'), nullptr, A_LOW_G, false						},
+	{ static_cast<word>('H'), static_cast<word>('h'), nullptr, A_LOW_H, false						},
+	{ static_cast<word>('I'), static_cast<word>('i'), nullptr, A_LOW_I, false						},
+	{ static_cast<word>('J'), static_cast<word>('j'), nullptr, A_LOW_J, false						},
+	{ static_cast<word>('K'), static_cast<word>('k'), nullptr, A_LOW_K, false						},
+	{ static_cast<word>('L'), static_cast<word>('l'), nullptr, A_LOW_L, false						},
+	{ static_cast<word>('M'), static_cast<word>('m'), nullptr, A_LOW_M, false						},
+	{ static_cast<word>('N'), static_cast<word>('n'), nullptr, A_LOW_N, false						},
+	{ static_cast<word>('O'), static_cast<word>('o'), nullptr, A_LOW_O, false						},
+	{ static_cast<word>('P'), static_cast<word>('p'), nullptr, A_LOW_P, false						},
+	{ static_cast<word>('Q'), static_cast<word>('q'), nullptr, A_LOW_Q, false						},
+	{ static_cast<word>('R'), static_cast<word>('r'), nullptr, A_LOW_R, false						},
+	{ static_cast<word>('S'), static_cast<word>('s'), nullptr, A_LOW_S, false						},
+	{ static_cast<word>('T'), static_cast<word>('t'), nullptr, A_LOW_T, false						},
+	{ static_cast<word>('U'), static_cast<word>('u'), nullptr, A_LOW_U, false						},
+	{ static_cast<word>('V'), static_cast<word>('v'), nullptr, A_LOW_V, false						},
+	{ static_cast<word>('W'), static_cast<word>('w'), nullptr, A_LOW_W, false						},
+	{ static_cast<word>('X'), static_cast<word>('x'), nullptr, A_LOW_X, false						},
+	{ static_cast<word>('Y'), static_cast<word>('y'), nullptr, A_LOW_Y, false						},
+	{ static_cast<word>('Z'), static_cast<word>('z'), nullptr, A_LOW_Z, false						},
+	{ static_cast<word>('{'), static_cast<word>('{'), nullptr, A_OPEN_BRACE, false					},
+	{ static_cast<word>('|'), static_cast<word>('|'), nullptr, A_BAR, false							},
+	{ static_cast<word>('}'), static_cast<word>('}'), nullptr, A_CLOSE_BRACE, false					},
+	{ static_cast<word>('~'), static_cast<word>('~'), nullptr, A_TILDE, false						},
 	{ 0x7f, 0x7f, "DEL", A_DELETE, false								},
 
 	{ 0x80, 0x80, "EURO", A_EURO, false  								},
@@ -192,127 +192,127 @@ keyname_t keynames[MAX_KEYS] =
 	{ 0x87, 0x87, "F8", A_F8, true										},
 	{ 0x88, 0x88, "CIRCUMFLEX", A_CIRCUMFLEX, false  					},
 	{ 0x89, 0x89, "MWHEELUP", A_MWHEELUP, false							},
-	{ 0x8a, 0x9a, NULL, A_CAP_SCARON, false								},	// ******
+	{ 0x8a, 0x9a, nullptr, A_CAP_SCARON, false								},	// ******
 	{ 0x8b, 0x8b, "MWHEELDOWN", A_MWHEELDOWN, false						},
-	{ 0x8c, 0x9c, NULL, A_CAP_OE, false									},	// ******
+	{ 0x8c, 0x9c, nullptr, A_CAP_OE, false									},	// ******
 	{ 0x8d, 0x8d, "MOUSE1", A_MOUSE1, false								},
 	{ 0x8e, 0x8e, "MOUSE2", A_MOUSE2, false								},
 	{ 0x8f, 0x8f, "INS", A_INSERT, false								},
 	{ 0x90, 0x90, "HOME", A_HOME, false									},
 	{ 0x91, 0x91, "PGUP", A_PAGE_UP, false								},
-	{ 0x92, 0x92, NULL, A_RIGHT_SINGLE_QUOTE, false						},
-	{ 0x93, 0x93, NULL, A_LEFT_DOUBLE_QUOTE, false						},
-	{ 0x94, 0x94, NULL, A_RIGHT_DOUBLE_QUOTE, false						},
+	{ 0x92, 0x92, nullptr, A_RIGHT_SINGLE_QUOTE, false						},
+	{ 0x93, 0x93, nullptr, A_LEFT_DOUBLE_QUOTE, false						},
+	{ 0x94, 0x94, nullptr, A_RIGHT_DOUBLE_QUOTE, false						},
 	{ 0x95, 0x95, "F9", A_F9, true										},
 	{ 0x96, 0x96, "F10", A_F10, true									},
 	{ 0x97, 0x97, "F11", A_F11, true									},
 	{ 0x98, 0x98, "F12", A_F12, true									},
-	{ 0x99, 0x99, NULL, A_TRADEMARK, false								},
-	{ 0x8a, 0x9a, NULL, A_LOW_SCARON, false								},	// ******
+	{ 0x99, 0x99, nullptr, A_TRADEMARK, false								},
+	{ 0x8a, 0x9a, nullptr, A_LOW_SCARON, false								},	// ******
 	{ 0x9b, 0x9b, "SHIFT_ENTER", A_ENTER, false							},
-	{ 0x8c, 0x9c, NULL, A_LOW_OE, false									},	// ******
+	{ 0x8c, 0x9c, nullptr, A_LOW_OE, false									},	// ******
 	{ 0x9d, 0x9d, "END", A_END, false									},
 	{ 0x9e, 0x9e, "PGDN", A_PAGE_DOWN, false							},
-	{ 0x9f, 0xff, NULL, A_CAP_YDIERESIS, false							},	// ******
+	{ 0x9f, 0xff, nullptr, A_CAP_YDIERESIS, false							},	// ******
 
 	{ 0xa0, 0,	  "SHIFT_SPACE", A_SPACE, false							},
-	{ 0xa1, 0xa1, NULL, A_EXCLAMDOWN, false								},	// upside down '!' - undisplayable
-	{ L'\u00A2', L'\u00A2', NULL, A_CENT, false	  			}, // cent sign
-	{ L'\u00A3', L'\u00A3', NULL, A_POUND, false	  		}, // pound (as in currency) symbol
+	{ 0xa1, 0xa1, nullptr, A_EXCLAMDOWN, false								},	// upside down '!' - undisplayable
+	{ L'\u00A2', L'\u00A2', nullptr, A_CENT, false	  			}, // cent sign
+	{ L'\u00A3', L'\u00A3', nullptr, A_POUND, false	  		}, // pound (as in currency) symbol
 	{ 0xa4, 0,    "SHIFT_KP_ENTER", A_KP_ENTER, false					},
-	{ L'\u00A5', L'\u00A5', NULL, A_YEN, false		  		}, // yen symbol
+	{ L'\u00A5', L'\u00A5', nullptr, A_YEN, false		  		}, // yen symbol
 	{ 0xa6, 0xa6, "MOUSE3", A_MOUSE3, false								},
 	{ 0xa7, 0xa7, "MOUSE4", A_MOUSE4, false								},
 	{ 0xa8, 0xa8, "MOUSE5", A_MOUSE5, false								},
-	{ L'\u00A9', L'\u00A9', NULL, A_COPYRIGHT, false 		}, // copyright symbol
+	{ L'\u00A9', L'\u00A9', nullptr, A_COPYRIGHT, false 		}, // copyright symbol
 	{ 0xaa, 0xaa, "UPARROW", A_CURSOR_UP, false							},
 	{ 0xab, 0xab, "DOWNARROW", A_CURSOR_DOWN, false						},
 	{ 0xac, 0xac, "LEFTARROW", A_CURSOR_LEFT, false						},
 	{ 0xad, 0xad, "RIGHTARROW", A_CURSOR_RIGHT, false					},
-	{ L'\u00AE', L'\u00AE', NULL, A_REGISTERED, false		}, // registered trademark symbol
-	{ 0xaf, 0,	  NULL, A_UNDEFINED_7, false							},
-	{ 0xb0, 0,	  NULL, A_UNDEFINED_8, false							},
-	{ 0xb1, 0,	  NULL, A_UNDEFINED_9, false							},
-	{ 0xb2, 0,	  NULL, A_UNDEFINED_10, false							},
-	{ 0xb3, 0,	  NULL, A_UNDEFINED_11, false							},
-	{ 0xb4, 0,	  NULL, A_UNDEFINED_12, false							},
-	{ 0xb5, 0,	  NULL, A_UNDEFINED_13, false							},
-	{ 0xb6, 0,	  NULL, A_UNDEFINED_14, false							},
-	{ 0xb7, 0,	  NULL, A_UNDEFINED_15, false							},
-	{ 0xb8, 0,	  NULL, A_UNDEFINED_16, false							},
-	{ 0xb9, 0,	  NULL, A_UNDEFINED_17, false							},
-	{ 0xba, 0,	  NULL, A_UNDEFINED_18, false							},
-	{ 0xbb, 0,	  NULL, A_UNDEFINED_19, false							},
-	{ 0xbc, 0,	  NULL, A_UNDEFINED_20, false							},
-	{ 0xbd, 0,	  NULL, A_UNDEFINED_21, false							},
-	{ 0xbe, 0,	  NULL, A_UNDEFINED_22, false							},
-	{ L'\u00BF', L'\u00BF', NULL, A_QUESTION_DOWN, false	}, // upside-down question mark
+	{ L'\u00AE', L'\u00AE', nullptr, A_REGISTERED, false		}, // registered trademark symbol
+	{ 0xaf, 0, nullptr, A_UNDEFINED_7, false							},
+	{ 0xb0, 0, nullptr, A_UNDEFINED_8, false							},
+	{ 0xb1, 0, nullptr, A_UNDEFINED_9, false							},
+	{ 0xb2, 0, nullptr, A_UNDEFINED_10, false							},
+	{ 0xb3, 0, nullptr, A_UNDEFINED_11, false							},
+	{ 0xb4, 0, nullptr, A_UNDEFINED_12, false							},
+	{ 0xb5, 0, nullptr, A_UNDEFINED_13, false							},
+	{ 0xb6, 0, nullptr, A_UNDEFINED_14, false							},
+	{ 0xb7, 0, nullptr, A_UNDEFINED_15, false							},
+	{ 0xb8, 0, nullptr, A_UNDEFINED_16, false							},
+	{ 0xb9, 0, nullptr, A_UNDEFINED_17, false							},
+	{ 0xba, 0, nullptr, A_UNDEFINED_18, false							},
+	{ 0xbb, 0, nullptr, A_UNDEFINED_19, false							},
+	{ 0xbc, 0, nullptr, A_UNDEFINED_20, false							},
+	{ 0xbd, 0, nullptr, A_UNDEFINED_21, false							},
+	{ 0xbe, 0, nullptr, A_UNDEFINED_22, false							},
+	{ L'\u00BF', L'\u00BF', nullptr, A_QUESTION_DOWN, false	}, // upside-down question mark
 
-	{ L'\u00C0', L'\u00E0', NULL, A_CAP_AGRAVE, false		},
-	{ L'\u00C1', L'\u00E1', NULL, A_CAP_AACUTE, false		},
-	{ L'\u00C2', L'\u00E2', NULL, A_CAP_ACIRCUMFLEX, false	},
-	{ L'\u00C3', L'\u00E3', NULL, A_CAP_ATILDE, false		},
-	{ L'\u00C4', L'\u00E4', NULL, A_CAP_ADIERESIS, false	},
-	{ L'\u00C5', L'\u00E5', NULL, A_CAP_ARING, false		},
-	{ L'\u00C6', L'\u00E6', NULL, A_CAP_AE, false			},
-	{ L'\u00C7', L'\u00E7', NULL, A_CAP_CCEDILLA, false		},
-	{ L'\u00C8', L'\u00E8', NULL, A_CAP_EGRAVE, false		},
-	{ L'\u00C9', L'\u00E9', NULL, A_CAP_EACUTE, false		},
-	{ L'\u00CA', L'\u00EA', NULL, A_CAP_ECIRCUMFLEX, false	},
-	{ L'\u00CB', L'\u00EB', NULL, A_CAP_EDIERESIS, false	},
-	{ L'\u00CC', L'\u00EC', NULL, A_CAP_IGRAVE, false		},
-	{ L'\u00CD', L'\u00ED', NULL, A_CAP_IACUTE, false		},
-	{ L'\u00CE', L'\u00EE', NULL, A_CAP_ICIRCUMFLEX, false	},
-	{ L'\u00CF', L'\u00EF', NULL, A_CAP_IDIERESIS, false	},
-	{ L'\u00D0', L'\u00F0', NULL, A_CAP_ETH, false			},
-	{ L'\u00D1', L'\u00F1', NULL, A_CAP_NTILDE, false		},
-	{ L'\u00D2', L'\u00F2', NULL, A_CAP_OGRAVE, false		},
-	{ L'\u00D3', L'\u00F3', NULL, A_CAP_OACUTE, false		},
-	{ L'\u00D4', L'\u00F4', NULL, A_CAP_OCIRCUMFLEX, false	},
-	{ L'\u00D5', L'\u00F5', NULL, A_CAP_OTILDE, false		},
-	{ L'\u00D6', L'\u00F6', NULL, A_CAP_ODIERESIS, false	},
+	{ L'\u00C0', L'\u00E0', nullptr, A_CAP_AGRAVE, false		},
+	{ L'\u00C1', L'\u00E1', nullptr, A_CAP_AACUTE, false		},
+	{ L'\u00C2', L'\u00E2', nullptr, A_CAP_ACIRCUMFLEX, false	},
+	{ L'\u00C3', L'\u00E3', nullptr, A_CAP_ATILDE, false		},
+	{ L'\u00C4', L'\u00E4', nullptr, A_CAP_ADIERESIS, false	},
+	{ L'\u00C5', L'\u00E5', nullptr, A_CAP_ARING, false		},
+	{ L'\u00C6', L'\u00E6', nullptr, A_CAP_AE, false			},
+	{ L'\u00C7', L'\u00E7', nullptr, A_CAP_CCEDILLA, false		},
+	{ L'\u00C8', L'\u00E8', nullptr, A_CAP_EGRAVE, false		},
+	{ L'\u00C9', L'\u00E9', nullptr, A_CAP_EACUTE, false		},
+	{ L'\u00CA', L'\u00EA', nullptr, A_CAP_ECIRCUMFLEX, false	},
+	{ L'\u00CB', L'\u00EB', nullptr, A_CAP_EDIERESIS, false	},
+	{ L'\u00CC', L'\u00EC', nullptr, A_CAP_IGRAVE, false		},
+	{ L'\u00CD', L'\u00ED', nullptr, A_CAP_IACUTE, false		},
+	{ L'\u00CE', L'\u00EE', nullptr, A_CAP_ICIRCUMFLEX, false	},
+	{ L'\u00CF', L'\u00EF', nullptr, A_CAP_IDIERESIS, false	},
+	{ L'\u00D0', L'\u00F0', nullptr, A_CAP_ETH, false			},
+	{ L'\u00D1', L'\u00F1', nullptr, A_CAP_NTILDE, false		},
+	{ L'\u00D2', L'\u00F2', nullptr, A_CAP_OGRAVE, false		},
+	{ L'\u00D3', L'\u00F3', nullptr, A_CAP_OACUTE, false		},
+	{ L'\u00D4', L'\u00F4', nullptr, A_CAP_OCIRCUMFLEX, false	},
+	{ L'\u00D5', L'\u00F5', nullptr, A_CAP_OTILDE, false		},
+	{ L'\u00D6', L'\u00F6', nullptr, A_CAP_ODIERESIS, false	},
 	{ L'\u00D7', L'\u00D7', "KP_STAR", A_MULTIPLY, false 	},
-	{ L'\u00D8', L'\u00F8', NULL, A_CAP_OSLASH, false		},
-	{ L'\u00D9', L'\u00F9', NULL, A_CAP_UGRAVE, false		},
-	{ L'\u00DA', L'\u00FA', NULL, A_CAP_UACUTE, false		},
-	{ L'\u00DB', L'\u00FB', NULL, A_CAP_UCIRCUMFLEX, false	},
-	{ L'\u00DC', L'\u00FC', NULL, A_CAP_UDIERESIS, false	},
-	{ L'\u00DD', L'\u00FD', NULL, A_CAP_YACUTE, false		},
-	{ L'\u00DE', L'\u00FE', NULL, A_CAP_THORN, false		},
-	{ L'\u00DF', L'\u00DF', NULL, A_GERMANDBLS, false 		},
+	{ L'\u00D8', L'\u00F8', nullptr, A_CAP_OSLASH, false		},
+	{ L'\u00D9', L'\u00F9', nullptr, A_CAP_UGRAVE, false		},
+	{ L'\u00DA', L'\u00FA', nullptr, A_CAP_UACUTE, false		},
+	{ L'\u00DB', L'\u00FB', nullptr, A_CAP_UCIRCUMFLEX, false	},
+	{ L'\u00DC', L'\u00FC', nullptr, A_CAP_UDIERESIS, false	},
+	{ L'\u00DD', L'\u00FD', nullptr, A_CAP_YACUTE, false		},
+	{ L'\u00DE', L'\u00FE', nullptr, A_CAP_THORN, false		},
+	{ L'\u00DF', L'\u00DF', nullptr, A_GERMANDBLS, false 		},
 
-	{ L'\u00C0', L'\u00E0', NULL, A_LOW_AGRAVE, false		},
-	{ L'\u00C1', L'\u00E1', NULL, A_LOW_AACUTE, false		},
-	{ L'\u00C2', L'\u00E2', NULL, A_LOW_ACIRCUMFLEX, false	},
-	{ L'\u00C3', L'\u00E3', NULL, A_LOW_ATILDE, false		},
-	{ L'\u00C4', L'\u00E4', NULL, A_LOW_ADIERESIS, false	},
-	{ L'\u00C5', L'\u00E5', NULL, A_LOW_ARING, false		},
-	{ L'\u00C6', L'\u00E6', NULL, A_LOW_AE, false			},
-	{ L'\u00C7', L'\u00E7', NULL, A_LOW_CCEDILLA, false		},
-	{ L'\u00C8', L'\u00E8', NULL, A_LOW_EGRAVE, false		},
-	{ L'\u00C9', L'\u00E9', NULL, A_LOW_EACUTE, false		},
-	{ L'\u00CA', L'\u00EA', NULL, A_LOW_ECIRCUMFLEX, false	},
-	{ L'\u00CB', L'\u00EB', NULL, A_LOW_EDIERESIS, false	},
-	{ L'\u00CC', L'\u00EC', NULL, A_LOW_IGRAVE, false		},
-	{ L'\u00CD', L'\u00ED', NULL, A_LOW_IACUTE, false		},
-	{ L'\u00CE', L'\u00EE', NULL, A_LOW_ICIRCUMFLEX, false	},
-	{ L'\u00CF', L'\u00EF', NULL, A_LOW_IDIERESIS, false	},
-	{ L'\u00D0', L'\u00F0', NULL, A_LOW_ETH, false			},
-	{ L'\u00D1', L'\u00F1', NULL, A_LOW_NTILDE, false		},
-	{ L'\u00D2', L'\u00F2', NULL, A_LOW_OGRAVE, false		},
-	{ L'\u00D3', L'\u00F3', NULL, A_LOW_OACUTE, false		},
-	{ L'\u00D4', L'\u00F4', NULL, A_LOW_OCIRCUMFLEX, false	},
-	{ L'\u00D5', L'\u00F5', NULL, A_LOW_OTILDE, false		},
-	{ L'\u00D6', L'\u00F6', NULL, A_LOW_ODIERESIS, false	},
+	{ L'\u00C0', L'\u00E0', nullptr, A_LOW_AGRAVE, false		},
+	{ L'\u00C1', L'\u00E1', nullptr, A_LOW_AACUTE, false		},
+	{ L'\u00C2', L'\u00E2', nullptr, A_LOW_ACIRCUMFLEX, false	},
+	{ L'\u00C3', L'\u00E3', nullptr, A_LOW_ATILDE, false		},
+	{ L'\u00C4', L'\u00E4', nullptr, A_LOW_ADIERESIS, false	},
+	{ L'\u00C5', L'\u00E5', nullptr, A_LOW_ARING, false		},
+	{ L'\u00C6', L'\u00E6', nullptr, A_LOW_AE, false			},
+	{ L'\u00C7', L'\u00E7', nullptr, A_LOW_CCEDILLA, false		},
+	{ L'\u00C8', L'\u00E8', nullptr, A_LOW_EGRAVE, false		},
+	{ L'\u00C9', L'\u00E9', nullptr, A_LOW_EACUTE, false		},
+	{ L'\u00CA', L'\u00EA', nullptr, A_LOW_ECIRCUMFLEX, false	},
+	{ L'\u00CB', L'\u00EB', nullptr, A_LOW_EDIERESIS, false	},
+	{ L'\u00CC', L'\u00EC', nullptr, A_LOW_IGRAVE, false		},
+	{ L'\u00CD', L'\u00ED', nullptr, A_LOW_IACUTE, false		},
+	{ L'\u00CE', L'\u00EE', nullptr, A_LOW_ICIRCUMFLEX, false	},
+	{ L'\u00CF', L'\u00EF', nullptr, A_LOW_IDIERESIS, false	},
+	{ L'\u00D0', L'\u00F0', nullptr, A_LOW_ETH, false			},
+	{ L'\u00D1', L'\u00F1', nullptr, A_LOW_NTILDE, false		},
+	{ L'\u00D2', L'\u00F2', nullptr, A_LOW_OGRAVE, false		},
+	{ L'\u00D3', L'\u00F3', nullptr, A_LOW_OACUTE, false		},
+	{ L'\u00D4', L'\u00F4', nullptr, A_LOW_OCIRCUMFLEX, false	},
+	{ L'\u00D5', L'\u00F5', nullptr, A_LOW_OTILDE, false		},
+	{ L'\u00D6', L'\u00F6', nullptr, A_LOW_ODIERESIS, false	},
 	{ L'\u00F7', L'\u00F7', "KP_SLASH", A_DIVIDE, false 	},
-	{ L'\u00D8', L'\u00F8', NULL, A_LOW_OSLASH, false		},
-	{ L'\u00D9', L'\u00F9', NULL, A_LOW_UGRAVE, false		},
-	{ L'\u00DA', L'\u00FA', NULL, A_LOW_UACUTE, false		},
-	{ L'\u00DB', L'\u00FB', NULL, A_LOW_UCIRCUMFLEX, false	},
-	{ L'\u00DC', L'\u00FC', NULL, A_LOW_UDIERESIS, false	},
-	{ L'\u00DD', L'\u00FD', NULL, A_LOW_YACUTE, false		},
-	{ L'\u00DE', L'\u00FE', NULL, A_LOW_THORN, false		},
-	{ 0x9f, 0xff, NULL, A_LOW_YDIERESIS, false							},	// *******
+	{ L'\u00D8', L'\u00F8', nullptr, A_LOW_OSLASH, false		},
+	{ L'\u00D9', L'\u00F9', nullptr, A_LOW_UGRAVE, false		},
+	{ L'\u00DA', L'\u00FA', nullptr, A_LOW_UACUTE, false		},
+	{ L'\u00DB', L'\u00FB', nullptr, A_LOW_UCIRCUMFLEX, false	},
+	{ L'\u00DC', L'\u00FC', nullptr, A_LOW_UDIERESIS, false	},
+	{ L'\u00DD', L'\u00FD', nullptr, A_LOW_YACUTE, false		},
+	{ L'\u00DE', L'\u00FE', nullptr, A_LOW_THORN, false		},
+	{ 0x9f, 0xff, nullptr, A_LOW_YDIERESIS, false							},	// *******
 
 	{ 0x100, 0x100, "JOY0", A_JOY0, false								},
 	{ 0x101, 0x101, "JOY1", A_JOY1, false								},
@@ -519,7 +519,7 @@ Key events are used for non-printable characters, others are gotten from char ev
 */
 void Field_KeyDownEvent(field_t* edit, int key) {
 	// shift-insert is paste
-	if (((key == A_INSERT) || (key == A_KP_0)) && kg.keys[A_SHIFT].down) {
+	if ((key == A_INSERT || key == A_KP_0) && kg.keys[A_SHIFT].down) {
 		Field_Paste(edit);
 		return;
 	}
@@ -670,8 +670,8 @@ void Console_Key(int key) {
 			(g_consoleField.buffer[0] == '\\' || g_consoleField.buffer[0] == '/')) {
 			char temp[MAX_EDIT_LINE - 1];
 
-			Q_strncpyz(temp, g_consoleField.buffer + 1, sizeof(temp));
-			Com_sprintf(g_consoleField.buffer, sizeof(g_consoleField.buffer), "%s", temp);
+			Q_strncpyz(temp, g_consoleField.buffer + 1, sizeof temp);
+			Com_sprintf(g_consoleField.buffer, sizeof g_consoleField.buffer, "%s", temp);
 			g_consoleField.cursor--;
 		}
 		//	else
@@ -684,7 +684,7 @@ void Console_Key(int key) {
 		if (cls.cgameStarted && cl.mSharedMemory) {
 			TCGIncomingConsoleCommand* icc = (TCGIncomingConsoleCommand*)cl.mSharedMemory;
 
-			Q_strncpyz(icc->conCommand, g_consoleField.buffer, sizeof(icc->conCommand));
+			Q_strncpyz(icc->conCommand, g_consoleField.buffer, sizeof icc->conCommand);
 
 			if (CGVM_IncomingConsoleCommand()) {
 				// valid command
@@ -733,8 +733,8 @@ void Console_Key(int key) {
 
 	// history scrolling
 	if (key == A_CURSOR_UP || key == A_KP_8
-		|| (kg.keys[A_SHIFT].down && key == A_MWHEELUP)
-		|| (kg.keys[A_CTRL].down && keynames[key].lower == 'p'))
+		|| kg.keys[A_SHIFT].down && key == A_MWHEELUP
+		|| kg.keys[A_CTRL].down && keynames[key].lower == 'p')
 	{// scroll up: arrow-up, numpad-up, shift + mwheelup, ctrl + p
 		if (nextHistoryLine - historyLine < COMMAND_HISTORY && historyLine > 0)
 			historyLine--;
@@ -744,8 +744,8 @@ void Console_Key(int key) {
 	}
 
 	if (key == A_CURSOR_DOWN || key == A_KP_2
-		|| (kg.keys[A_SHIFT].down && key == A_MWHEELDOWN)
-		|| (kg.keys[A_CTRL].down && keynames[key].lower == 'n'))
+		|| kg.keys[A_SHIFT].down && key == A_MWHEELDOWN
+		|| kg.keys[A_CTRL].down && keynames[key].lower == 'n')
 	{// scroll down: arrow-down, numpad-down, shift + mwheeldown, ctrl + n
 		historyLine++;
 		if (historyLine >= nextHistoryLine) {
@@ -809,9 +809,9 @@ void Message_Key(int key) {
 
 	if (key == A_ENTER || key == A_KP_ENTER) {
 		if (chatField.buffer[0] && cls.state == CA_ACTIVE) {
-			if (chat_playerNum != -1)	Com_sprintf(buffer, sizeof(buffer), "tell %i \"%s\"\n", chat_playerNum, chatField.buffer);
-			else if (chat_team)				Com_sprintf(buffer, sizeof(buffer), "say_team \"%s\"\n", chatField.buffer);
-			else								Com_sprintf(buffer, sizeof(buffer), "say \"%s\"\n", chatField.buffer);
+			if (chat_playerNum != -1)	Com_sprintf(buffer, sizeof buffer, "tell %i \"%s\"\n", chat_playerNum, chatField.buffer);
+			else if (chat_team)				Com_sprintf(buffer, sizeof buffer, "say_team \"%s\"\n", chatField.buffer);
+			else								Com_sprintf(buffer, sizeof buffer, "say \"%s\"\n", chatField.buffer);
 
 			CL_AddReliableCommand(buffer, qfalse);
 		}
@@ -857,7 +857,7 @@ the K_* names are matched up.
 to be configured even if they don't have defined names.
 ===================
 */
-int Key_StringToKeynum(char* str) {
+int Key_StringToKeynum(const char* str) {
 	if (!VALIDSTRING(str))
 		return -1;
 
@@ -888,7 +888,7 @@ static const char* Key_KeynumValid(int keynum) {
 		return "<KEY NOT FOUND>";
 	if (keynum < 0 || keynum >= MAX_KEYS)
 		return "<OUT OF RANGE>";
-	return NULL;
+	return nullptr;
 }
 
 static const char* Key_KeyToName(int keynum) {
@@ -897,7 +897,7 @@ static const char* Key_KeyToName(int keynum) {
 
 static const char* Key_KeyToAscii(int keynum) {
 	if (!keynames[keynum].lower)
-		return NULL;
+		return nullptr;
 
 	if (keynum == A_SPACE)		tinyString[0] = static_cast<char>(A_SHIFT_SPACE);
 	else if (keynum == A_ENTER)		tinyString[0] = static_cast<char>(A_SHIFT_ENTER);
@@ -914,8 +914,8 @@ static const char* Key_KeyToHex(int keynum) {
 
 	tinyString[0] = '0';
 	tinyString[1] = 'x';
-	tinyString[2] = i > 9 ? (i - 10 + 'A') : (i + '0');
-	tinyString[3] = j > 9 ? (j - 10 + 'A') : (j + '0');
+	tinyString[2] = i > 9 ? i - 10 + 'A' : i + '0';
+	tinyString[3] = j > 9 ? j - 10 + 'A' : j + '0';
 	tinyString[4] = '\0';
 
 	return tinyString;
@@ -979,7 +979,7 @@ void Key_SetBinding(int keynum, const char* binding) {
 	// free old bindings
 	if (kg.keys[keynames[keynum].upper].binding) {
 		Z_Free(kg.keys[keynames[keynum].upper].binding);
-		kg.keys[keynames[keynum].upper].binding = NULL;
+		kg.keys[keynames[keynum].upper].binding = nullptr;
 	}
 
 	// allocate memory for new binding
@@ -1215,7 +1215,7 @@ void CL_ParseBinding(int key, qboolean down, unsigned time)
 		return;
 	if (!kg.keys[keynames[key].upper].binding || !kg.keys[keynames[key].upper].binding[0])
 		return;
-	Q_strncpyz(buf, kg.keys[keynames[key].upper].binding, sizeof(buf));
+	Q_strncpyz(buf, kg.keys[keynames[key].upper].binding, sizeof buf);
 
 	// run all bind commands if console, ui, etc aren't reading keys
 	const qboolean allCommands = static_cast<qboolean>(Key_GetCatcher() == 0);
@@ -1235,10 +1235,10 @@ void CL_ParseBinding(int key, qboolean down, unsigned time)
 			// button commands add keynum and time as parameters
 			// so that multiple sources can be discriminated and
 			// subframe corrected
-			if (allCommands || (allowUpCmds && !down)) {
+			if (allCommands || allowUpCmds && !down) {
 				char cmd[1024];
-				Com_sprintf(cmd, sizeof(cmd), "%c%s %d %d\n",
-					(down) ? '+' : '-', p + 1, key, time);
+				Com_sprintf(cmd, sizeof cmd, "%c%s %d %d\n",
+					down ? '+' : '-', p + 1, key, time);
 				Cbuf_AddText(cmd);
 			}
 		}
@@ -1251,7 +1251,7 @@ void CL_ParseBinding(int key, qboolean down, unsigned time)
 					// don't do this unless cgame is inited and shared memory is valid
 					TCGIncomingConsoleCommand* icc = (TCGIncomingConsoleCommand*)cl.mSharedMemory;
 
-					Q_strncpyz(icc->conCommand, p, sizeof(icc->conCommand));
+					Q_strncpyz(icc->conCommand, p, sizeof icc->conCommand);
 
 					if (CGVM_IncomingConsoleCommand()) {
 						//rww - let mod authors filter client console messages so they can cut them off if they want.
@@ -1300,7 +1300,7 @@ void CL_KeyDownEvent(int key, unsigned time)
 	}
 
 	// console key is hardcoded, so the user can never unbind it
-	if (key == A_CONSOLE || (kg.keys[A_SHIFT].down && key == A_ESCAPE)) {
+	if (key == A_CONSOLE || kg.keys[A_SHIFT].down && key == A_ESCAPE) {
 		Con_ToggleConsole_f();
 		Key_ClearStates();
 		return;
@@ -1316,7 +1316,7 @@ void CL_KeyDownEvent(int key, unsigned time)
 
 	// escape is always handled special
 	if (key == A_ESCAPE) {
-		if (!kg.keys[A_SHIFT].down && (Key_GetCatcher() & KEYCATCH_CONSOLE)) {
+		if (!kg.keys[A_SHIFT].down && Key_GetCatcher() & KEYCATCH_CONSOLE) {
 			Con_ToggleConsole_f();
 			Key_ClearStates();
 			return;
@@ -1394,7 +1394,7 @@ void CL_KeyUpEvent(int key, unsigned time)
 	}
 
 	// don't process key-up events for the console key
-	if (key == A_CONSOLE || (key == A_ESCAPE && kg.keys[A_SHIFT].down))
+	if (key == A_CONSOLE || key == A_ESCAPE && kg.keys[A_SHIFT].down)
 		return;
 
 	//

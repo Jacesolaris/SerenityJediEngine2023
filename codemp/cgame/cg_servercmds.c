@@ -521,7 +521,7 @@ void CG_PrecacheNPCSounds(const char* str)
 	}
 }
 
-void CG_HandleNPCSounds(centity_t* cent)
+void CG_HandleNPCSounds(const centity_t* cent)
 {
 	if (!cent->npcClient)
 	{

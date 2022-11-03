@@ -321,7 +321,7 @@ static float PredictedAngularDecrement(float scale, float timeMod, float origina
 
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
 
-qboolean FighterIsInSpace(gentity_t* gParent)
+qboolean FighterIsInSpace(const gentity_t* gParent)
 {
 	if (gParent
 		&& gParent->client
@@ -1011,7 +1011,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	/********************************************************************************/
 }
 
-extern void BG_VehicleTurnRateForSpeed(Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
+extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
 
 static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS)
 {

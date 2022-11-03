@@ -68,7 +68,6 @@ void CG_BuildSolidList(void)
 	int i;
 	centity_t* cent;
 	snapshot_t* snap;
-	vec3_t difference;
 
 	cg_numSolidEntities = 0;
 	cg_numTriggerEntities = 0;
@@ -144,6 +143,7 @@ void CG_BuildSolidList(void)
 
 	for (i = 0; i < cg_numpermanents; i++)
 	{
+		vec3_t difference;
 		cent = cg_permanents[i];
 		VectorSubtract(cent->lerpOrigin, snap->ps.origin, difference);
 		if (cent->currentState.eType == ET_TERRAIN ||
@@ -164,7 +164,7 @@ void CG_BuildSolidList(void)
 	}
 }
 
-static QINLINE qboolean CG_VehicleClipCheck(centity_t* ignored, trace_t* trace)
+static QINLINE qboolean CG_VehicleClipCheck(const centity_t* ignored, const trace_t* trace)
 {
 	if (!trace || trace->entityNum < 0 || trace->entityNum >= ENTITYNUM_WORLD)
 	{
@@ -251,7 +251,6 @@ static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const v
 	entityState_t* ent;
 	clipHandle_t cmodel;
 	vec3_t bmins, bmaxs;
-	vec3_t origin, angles;
 	centity_t* cent;
 	centity_t* ignored = NULL;
 
@@ -262,6 +261,8 @@ static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const v
 
 	for (i = 0; i < cg_numSolidEntities; i++)
 	{
+		vec3_t angles;
+		vec3_t origin;
 		cent = cg_solidEntities[i];
 		ent = &cent->currentState;
 
@@ -786,7 +787,7 @@ static void CG_TouchTriggerPrediction(void)
 	for (int i = 0; i < cg_numTriggerEntities; i++)
 	{
 		centity_t* cent = cg_triggerEntities[i];
-		entityState_t* ent = &cent->currentState;
+		const entityState_t* ent = &cent->currentState;
 
 		if (ent->eType == ET_ITEM && !spectator)
 		{
@@ -1236,8 +1237,6 @@ void CG_PredictPlayerState(void)
 		if (CG_Piloting(oldPlayerState.m_iVehicleNum) &&
 			cg.predictedVehicleState.commandTime == oldVehicleState.commandTime)
 		{
-			vec3_t delta;
-
 			if (cg.thisFrameTeleport)
 			{
 				// a teleport will not cause an error decay
@@ -1250,6 +1249,7 @@ void CG_PredictPlayerState(void)
 			}
 			else
 			{
+				vec3_t delta;
 				vec3_t adjusted;
 				CG_AdjustPositionForMover(cg.predictedVehicleState.origin,
 					cg.predictedVehicleState.groundEntityNum, cg.physicsTime, cg.oldTime,
@@ -1313,8 +1313,6 @@ void CG_PredictPlayerState(void)
 		else if (!oldPlayerState.m_iVehicleNum && //don't do pred err on ps while riding veh
 			cg.predictedPlayerState.commandTime == oldPlayerState.commandTime)
 		{
-			vec3_t delta;
-
 			if (cg.thisFrameTeleport)
 			{
 				// a teleport will not cause an error decay
@@ -1327,6 +1325,7 @@ void CG_PredictPlayerState(void)
 			}
 			else
 			{
+				vec3_t delta;
 				vec3_t adjusted;
 				CG_AdjustPositionForMover(cg.predictedPlayerState.origin,
 					cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime,

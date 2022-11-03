@@ -273,9 +273,9 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 //"!s.number", this is a universal check that will work for both SP
 //and MP. -rww
 // ProcessOrientCommands the Vehicle.
-extern void AnimalProcessOri(Vehicle_t* pVeh);
+extern void AnimalProcessOri(const Vehicle_t* pVeh);
 
-void ProcessOrientCommands(Vehicle_t* pVeh)
+void ProcessOrientCommands(const Vehicle_t* pVeh)
 {
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
@@ -395,7 +395,7 @@ void AnimateRiders(Vehicle_t* pVeh)
 }
 
 #ifndef _GAME
-void AttachRidersGeneric(Vehicle_t* pVeh);
+void AttachRidersGeneric(const Vehicle_t* pVeh);
 #endif
 
 void G_SetSpeederVehicleFunctions(vehicleInfo_t* pVehInfo)
@@ -450,7 +450,7 @@ void G_CreateSpeederNPC(Vehicle_t** pVeh, const char* strType)
 	if (!*pVeh)
 	{
 		//only allocate a new one if we really have to
-		(*pVeh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
+		*pVeh = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
 	}
 #endif
 	memset(*pVeh, 0, sizeof(Vehicle_t));

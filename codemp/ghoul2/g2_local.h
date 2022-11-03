@@ -110,8 +110,8 @@ public:
 			Array() = other.Array();
 			for (int i = 0; i < size(); i++)
 			{
-				Array()[i].mBoneCache = 0;
-				Array()[i].mTransformedVertsArray = 0;
+				Array()[i].mBoneCache = nullptr;
+				Array()[i].mTransformedVertsArray = nullptr;
 				Array()[i].mSkelFrameNum = 0;
 				Array()[i].mMeshFrameNum = 0;
 			}

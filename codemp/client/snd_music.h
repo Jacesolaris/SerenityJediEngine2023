@@ -71,7 +71,7 @@ qboolean	Music_StateIsTransition(MusicState_e eMusicState);
 qboolean	Music_StateCanBeInterrupted(MusicState_e eMusicState, MusicState_e eProposedMusicState);
 float		Music_GetRandomEntryTime(MusicState_e eMusicState);
 
-qboolean	Music_AllowedToTransition(float fPlayingTimeElapsed, MusicState_e eMusicState, MusicState_e* peTransition = nullptr, float* pfNewTrackEntryTime = NULL);
+qboolean	Music_AllowedToTransition(float fPlayingTimeElapsed, MusicState_e eMusicState, MusicState_e* peTransition = nullptr, float* pfNewTrackEntryTime = nullptr);
 
 const char* Music_BaseStateToString(MusicState_e eMusicState, qboolean bDebugPrintQuery = qfalse);
 

@@ -371,7 +371,6 @@ This does not actually spawn an entity.
 ====================
 */
 qboolean CG_ParseSpawnVars(void) {
-	char keyname[MAX_TOKEN_CHARS];
 	char com_token[MAX_TOKEN_CHARS];
 
 	cg.numSpawnVars = 0;
@@ -389,6 +388,7 @@ qboolean CG_ParseSpawnVars(void) {
 
 	// go through all the key / value pairs
 	while (1) {
+		char keyname[MAX_TOKEN_CHARS];
 		// parse key
 		if (!trap->R_GetEntityToken(keyname, sizeof keyname)) {
 			trap->Error(ERR_DROP, "CG_ParseSpawnVars: EOF without closing brace");

@@ -394,9 +394,7 @@ void CG_DrawInformation(void)
 		}
 		else if (valueNOFP == FORCE_JUMPONLY)
 		{
-			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			320, y, "Force Jump Only", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite;
+			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 		else if (valueNOFP == FORCE_NEUTRALSONLY)
@@ -482,11 +480,11 @@ void CG_LoadBar(void)
 	// Draw right cap
 	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadBarLEDCap);
 
-	const int y = 50;
 	const int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
 
 	if (cg.loadLCARSStage >= 4)
 	{
+		const int y = 50;
 		CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
 	}
 }

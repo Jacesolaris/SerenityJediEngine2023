@@ -33,8 +33,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define IBI_HEADER_ID	"IBI"
 #define IBI_HEADER_ID_LENGTH 4 // Length of IBI_HEADER_ID + 1 for the null terminating byte.
 
-const	float	IBI_VERSION = 1.57f;
-const	int		MAX_FILENAME_LENGTH = 1024;
+constexpr	float	IBI_VERSION = 1.57f;
+constexpr	int		MAX_FILENAME_LENGTH = 1024;
 
 using vector_t = float[3];
 

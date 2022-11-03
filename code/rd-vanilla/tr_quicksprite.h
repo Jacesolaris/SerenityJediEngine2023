@@ -52,7 +52,7 @@ public:
 	void StartGroup(textureBundle_t* bundle, uint32_t glbits, int fogIndex = -1);
 	void EndGroup(void);
 
-	void Add(float* pointdata, color4ub_t color, vec2_t fog = NULL);
+	void Add(float* pointdata, color4ub_t color, vec2_t fog = nullptr);
 };
 
 extern CQuickSpriteSystem SQuickSprite;

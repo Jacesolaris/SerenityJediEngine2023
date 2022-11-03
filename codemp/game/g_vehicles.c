@@ -1766,7 +1766,7 @@ static qboolean UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmc
 }
 
 //generic vehicle function we care about over there
-extern void AttachRidersGeneric(Vehicle_t* pVeh);
+extern void AttachRidersGeneric(const Vehicle_t* pVeh);
 
 // Attachs all the riders of this vehicle to their appropriate tag (*driver, *pass1, *pass2, whatever...).
 static void AttachRiders(Vehicle_t* pVeh)

@@ -627,7 +627,7 @@ qboolean SpotWouldTelefrag(const gentity_t* spot)
 	return qfalse;
 }
 
-qboolean spot_would_telefrag2(gentity_t* mover, vec3_t dest)
+qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest)
 {
 	int touch[MAX_GENTITIES];
 	vec3_t mins, maxs;
@@ -2166,7 +2166,6 @@ char* G_ValidateUserinfo(const char* userinfo)
 	unsigned int i, count;
 	const size_t length = strlen(userinfo);
 	userinfoValidate_t* info;
-	char key[BIG_INFO_KEY];
 	const char* s;
 	unsigned int fieldCount[ARRAY_LEN(userinfoFields)] = { 0 };
 
@@ -2223,6 +2222,7 @@ char* G_ValidateUserinfo(const char* userinfo)
 	s = userinfo;
 	while (s)
 	{
+		char key[BIG_INFO_KEY];
 		char value[BIG_INFO_VALUE];
 		Info_NextPair(&s, key, value);
 

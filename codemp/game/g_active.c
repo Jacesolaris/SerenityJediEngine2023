@@ -35,7 +35,6 @@ qboolean PM_SaberInStart(int move);
 qboolean PM_SaberInReturn(int move);
 qboolean saberCheckKnockdown_DuelLoss(gentity_t* saberent, gentity_t* saberOwner, const gentity_t* other);
 extern void BG_ReduceSaberMishapLevel(playerState_t* ps);
-extern void BG_ReduceSaberMishapLevelBot(playerState_t* ps);
 extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
 extern qboolean BG_SprintAnim(int anim);
 extern void Weapon_GrapplingHook_Fire(gentity_t* ent);
@@ -47,8 +46,8 @@ extern void Player_CheckBurn(gentity_t* self);
 extern void Player_CheckFreeze(gentity_t* self);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void BG_ReduceBlasterMishapLevelAdvanced(playerState_t* ps);
-extern float manual_saberblocking(gentity_t* defender);
-extern float manual_running_and_saberblocking(gentity_t* defender);
+extern float manual_saberblocking(const gentity_t* defender);
+extern float manual_running_and_saberblocking(const gentity_t* defender);
 extern qboolean manual_meleeblocking(const gentity_t* defender);
 extern qboolean manual_melee_dodging(const gentity_t* defender);
 extern qboolean PM_SaberInAttackPure(int move);
@@ -1212,6 +1211,7 @@ ClientTimerActions
 Actions that happen once a second
 ==================
 */
+extern void WP_SaberFatigueRegenerate(int overrideAmt);
 void ClientTimerActions(gentity_t* ent, int msec)
 {
 	gclient_t* client = ent->client;
@@ -1239,7 +1239,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			&& !ent->client->stunTime
 			&& !ent->client->AmputateTime
 			&& ent->client->ps.fd.forceRageRecoveryTime < level.time
-			&& !(ent->client->ps.fd.forcePowersActive & (1 << FP_RAGE)))
+			&& !(ent->client->ps.fd.forcePowersActive & 1 << FP_RAGE))
 		{
 			//you heal 1 hp every 1 second.
 			if (ent->health < client->ps.stats[STAT_MAX_HEALTH])
@@ -1249,7 +1249,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 
 			if (ent->client->NPC_class != CLASS_GALAKMECH
 				&& ent->client->ps.fd.forceRageRecoveryTime < level.time
-				&& !(ent->client->ps.fd.forcePowersActive & (1 << FP_RAGE)))
+				&& !(ent->client->ps.fd.forcePowersActive & 1 << FP_RAGE))
 			{
 				if (client->ps.stats[STAT_ARMOR] < client->ps.stats[STAT_MAX_HEALTH])
 				{
@@ -1270,7 +1270,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			ent->health--;
 		}
 
-		if (!(ent->client->buttons & (BUTTON_ATTACK)) && !(ent->client->buttons & (BUTTON_ALT_ATTACK)))
+		if (!(ent->client->buttons & BUTTON_ATTACK) && !(ent->client->buttons & BUTTON_ALT_ATTACK))
 		{
 			if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_MIN && ent->client->ps.weaponTime < 1)
 			{
@@ -1283,7 +1283,8 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			BG_ReduceBlasterMishapLevelAdvanced(&ent->client->ps);
 		}
 
-		if (ent->client->ps.saberAttackChainCount > MISHAPLEVEL_NONE
+		if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
+			&& (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)) // player
 			&& !BG_InSlowBounce(&ent->client->ps)
 			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
 			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
@@ -1291,16 +1292,27 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			&& !PM_SaberInTransitionAny(ent->client->ps.saberMove)
 			&& !PM_InKnockDown(&ent->client->ps)
 			&& ent->client->ps.saberLockTime < level.time
+			&& ent->client->ps.saberBlockingTime < level.time
 			&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
-			if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && !(ent->r.svFlags & SVF_BOT))
+			if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 			{
-				BG_ReduceSaberMishapLevel(&ent->client->ps);
+				WP_SaberFatigueRegenerate(1);
 			}
-			else
-			{
-				BG_ReduceSaberMishapLevelBot(&ent->client->ps);
-			}
+		}
+		else if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
+			&& ent->r.svFlags & SVF_BOT //npc
+			&& !BG_InSlowBounce(&ent->client->ps)
+			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
+			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
+			&& !PM_SaberInAttack(ent->client->ps.saberMove)
+			&& !PM_SaberInTransitionAny(ent->client->ps.saberMove)
+			&& !PM_InKnockDown(&ent->client->ps)
+			&& ent->client->ps.saberLockTime < level.time
+			&& ent->client->ps.saberBlockingTime < level.time
+			&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
+		{
+			WP_SaberFatigueRegenerate(1);
 		}
 
 		if (ent->r.svFlags & SVF_BOT
@@ -3622,7 +3634,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 	}
 }
 
-static qboolean ClientCinematicThink(gclient_t* client, usercmd_t* ucmd);
+static qboolean ClientCinematicThink(gclient_t* client, const usercmd_t* ucmd);
 extern qboolean in_camera;
 extern qboolean player_locked;
 extern char cinematicSkipScript[1024];
@@ -4011,19 +4023,19 @@ void ClientThink_real(gentity_t* ent)
 			if (!G_ValidSaberStyle(ent, ent->client->ps.fd.saberAnimLevel))
 			{
 				//had an illegal style, revert to default
-				if ((ent->client->saber[0].type == SABER_BACKHAND))
+				if (ent->client->saber[0].type == SABER_BACKHAND)
 				{
 					ent->client->ps.fd.saberAnimLevel = SS_STAFF;
 				}
-				else if ((ent->client->saber[0].type == SABER_ASBACKHAND))
+				else if (ent->client->saber[0].type == SABER_ASBACKHAND)
 				{
 					ent->client->ps.fd.saberAnimLevel = SS_STAFF;
 				}
-				else if ((ent->client->saber[0].type == SABER_STAFF_MAUL))
+				else if (ent->client->saber[0].type == SABER_STAFF_MAUL)
 				{
 					ent->client->ps.fd.saberAnimLevel = SS_STAFF;
 				}
-				else if ((ent->client->saber[0].type == SABER_ELECTROSTAFF))
+				else if (ent->client->saber[0].type == SABER_ELECTROSTAFF)
 				{
 					ent->client->ps.fd.saberAnimLevel = SS_STAFF;
 				}
@@ -4755,7 +4767,7 @@ void ClientThink_real(gentity_t* ent)
 					}
 					else
 					{
-						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 500)
+						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 500)
 						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
@@ -4774,7 +4786,7 @@ void ClientThink_real(gentity_t* ent)
 					}
 					else
 					{
-						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 200)
+						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 200)
 						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
@@ -4793,7 +4805,7 @@ void ClientThink_real(gentity_t* ent)
 					}
 					else
 					{
-						if ((client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING) && level.time - client->ps.ManualblockStartTime >= 100)
+						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 100)
 						{// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
 						}
@@ -4811,7 +4823,7 @@ void ClientThink_real(gentity_t* ent)
 							client->ps.ManualBlockingFlags |= 1 << MBF_ACCURATEMISSILEBLOCKING; // activate the function
 						}
 					}
-					else if ((client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING) && level.time - client->ps.BoltblockStartTime >= 3000)
+					else if (client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING && level.time - client->ps.BoltblockStartTime >= 3000)
 					{// Been holding block for too long....let go.
 						client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 					}
@@ -5084,7 +5096,7 @@ void ClientThink_real(gentity_t* ent)
 		}
 	}
 
-	if ((ucmd->buttons & BUTTON_BLOCK))
+	if (ucmd->buttons & BUTTON_BLOCK)
 	{//blocking with saber
 		ent->client->ps.saberManualBlockingTime = level.time + FRAMETIME;
 	}
@@ -5445,7 +5457,7 @@ void ClientThink_real(gentity_t* ent)
 		}
 
 		if (ent->client->pers.cmd.buttons & BUTTON_ALT_ATTACK && ent->client->pers.cmd.forwardmove < 0
-			&& !(ent->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY))
+			&& !(ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY))
 		{
 			//breaking out of the saberlock!
 			ent->client->ps.saberLockFrame = 0;
@@ -5810,8 +5822,8 @@ void ClientThink_real(gentity_t* ent)
 					{
 						if (ent->health > 0
 							&& ent->painDebounceTime < level.time
-							&& !(ent->client->ps.saberInFlight)
-							&& !(PM_SaberInAttack(ent->client->ps.saberMove))
+							&& !ent->client->ps.saberInFlight
+							&& !PM_SaberInAttack(ent->client->ps.saberMove)
 							&& !(ent->client->ps.fd.forceGripBeingGripped > level.time)
 							&& !(ent->client->ps.communicatingflags & 1 << CLOAK_CHARGE_RESTRICTION))
 						{
@@ -6256,7 +6268,7 @@ ClientThink
 A new command has arrived from the client
 ==================
 */
-void ClientThink(int clientNum, usercmd_t* ucmd)
+void ClientThink(int clientNum, const usercmd_t* ucmd)
 {
 	gentity_t* ent = g_entities + clientNum;
 	if (clientNum < MAX_CLIENTS)
@@ -6481,7 +6493,7 @@ void ClientEndFrame(gentity_t* ent)
 ClientIntermissionThink
 ====================
 */
-static qboolean ClientCinematicThink(gclient_t* client, usercmd_t* ucmd)
+static qboolean ClientCinematicThink(gclient_t* client, const usercmd_t* ucmd)
 {
 	client->ps.eFlags &= ~EF_FIRING;
 

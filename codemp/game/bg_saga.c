@@ -1142,7 +1142,7 @@ void BG_SiegeParseClassFile(const char* filename, siegeClassDesc_t* descBuffer)
 	{
 #if defined(_GAME)
 		bgSiegeClasses[bgNumSiegeClasses].uiPortraitShader = 0;
-		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof(bgSiegeClasses[bgNumSiegeClasses].uiPortrait));
+		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof bgSiegeClasses[bgNumSiegeClasses].uiPortrait);
 #elif defined(_CGAME)
 		bgSiegeClasses[bgNumSiegeClasses].uiPortraitShader = 0;
 		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof(bgSiegeClasses[bgNumSiegeClasses].uiPortrait));
@@ -1398,7 +1398,6 @@ void BG_SiegeParseTeamFile(const char* filename)
 	fileHandle_t f;
 	char teamInfo[2048];
 	char parseBuf[1024];
-	int i = 1;
 	qboolean success = qtrue;
 
 	const int len = trap->FS_Open(filename, &f, FS_READ);
@@ -1440,6 +1439,7 @@ void BG_SiegeParseTeamFile(const char* filename)
 
 	if (BG_SiegeGetValueGroup(teamInfo, "Classes", teamInfo))
 	{
+		int i = 1;
 		while (success && i < MAX_SIEGE_CLASSES)
 		{
 			char lookString[256];

@@ -73,5 +73,5 @@ const char* ShaderEntryPtrs_Lookup(const char* psShaderName)
 		return p;
 	}
 
-	return NULL;
+	return nullptr;
 }

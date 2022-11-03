@@ -210,7 +210,7 @@ static float PredictedAngularDecrement(float scale, float timeMod, float origina
 
 #ifdef _GAME//only do this check on game side, because if it's cgame, it's being predicted, and it's only predicted if the local client is the driver
 
-qboolean FighterIsInSpace(gentity_t* gParent)
+qboolean FighterIsInSpace(const gentity_t* gParent)
 {
 	if (gParent
 		&& gParent->client
@@ -223,18 +223,18 @@ qboolean FighterIsInSpace(gentity_t* gParent)
 }
 #endif
 
-qboolean FighterOverValidLandingSurface(Vehicle_t* pVeh)
+qboolean FighterOverValidLandingSurface(const Vehicle_t* pVeh)
 {
 	if (pVeh->m_LandTrace.fraction < 1.0f //ground present
 		&& pVeh->m_LandTrace.plane.normal[2] >= MIN_LANDING_SLOPE) //flat enough
-		//FIXME: also check for a certain surface flag ... "landing zones"?
+	//FIXME: also check for a certain surface flag ... "landing zones"?
 	{
 		return qtrue;
 	}
 	return qfalse;
 }
 
-qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterIsLanded(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	if (FighterOverValidLandingSurface(pVeh)
 		&& !parentPS->speed) //stopped
@@ -244,7 +244,7 @@ qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS)
 	return qfalse;
 }
 
-qboolean FighterIsLanding(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterIsLanding(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	if (FighterOverValidLandingSurface(pVeh)
 #ifdef _GAME//only do this check on game side, because if it's cgame, it's being predicted, and it's only predicted if the local client is the driver
@@ -260,7 +260,7 @@ qboolean FighterIsLanding(Vehicle_t* pVeh, playerState_t* parentPS)
 	return qfalse;
 }
 
-qboolean FighterIsLaunching(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterIsLaunching(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	if (FighterOverValidLandingSurface(pVeh)
 #ifdef _GAME//only do this check on game side, because if it's cgame, it's being predicted, and it's only predicted if the local client is the driver
@@ -853,7 +853,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 
 extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
 
-static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS)
+static void FighterWingMalfunctionCheck(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	float mPitchOverride = 1.0f;
 	float mYawOverride = 1.0f;
@@ -887,7 +887,7 @@ static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS
 	}
 }
 
-static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS)
+static void FighterNoseMalfunctionCheck(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	float mPitchOverride = 1.0f;
 	float mYawOverride = 1.0f;
@@ -909,7 +909,7 @@ static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS
 	}
 }
 
-static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, playerState_t* parentPS, playerState_t* riderPS,
+static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, playerState_t* parentPS, const playerState_t* riderPS,
 	qboolean isDead)
 {
 	if (!pVeh->m_iRemovedSurfaces)
@@ -1270,7 +1270,7 @@ void FighterPitchAdjust(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* 
 
 #else// VEH_CONTROL_SCHEME_4
 
-void FighterYawAdjust(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* parentPS)
+void FighterYawAdjust(const Vehicle_t* pVeh, const playerState_t* riderPS, const playerState_t* parentPS)
 {
 	float angDif = AngleSubtract(pVeh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
 
@@ -1297,7 +1297,7 @@ void FighterYawAdjust(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* pa
 	}
 }
 
-void FighterPitchAdjust(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* parentPS)
+void FighterPitchAdjust(const Vehicle_t* pVeh, const playerState_t* riderPS, const playerState_t* parentPS)
 {
 	float angDif = AngleSubtract(pVeh->m_vOrientation[PITCH], riderPS->viewangles[PITCH]);
 
@@ -1325,7 +1325,7 @@ void FighterPitchAdjust(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* 
 }
 #endif// VEH_CONTROL_SCHEME_4
 
-void FighterPitchClamp(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* parentPS, int curTime)
+void FighterPitchClamp(Vehicle_t* pVeh, const playerState_t* riderPS, const playerState_t* parentPS, int curTime)
 {
 	if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
 	{
@@ -1823,7 +1823,7 @@ static void AnimateRiders(Vehicle_t* pVeh)
 #endif //game-only
 
 #ifdef _CGAME
-void AttachRidersGeneric(Vehicle_t* pVeh);
+void AttachRidersGeneric(const Vehicle_t* pVeh);
 #endif
 
 void G_SetFighterVehicleFunctions(vehicleInfo_t* pVehInfo)
@@ -1875,7 +1875,7 @@ void G_CreateFighterNPC(Vehicle_t** pVeh, const char* strType)
 #else
 	if (!*pVeh)
 	{ //only allocate a new one if we really have to
-		(*pVeh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
+		*pVeh = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
 	}
 #endif
 	memset(*pVeh, 0, sizeof(Vehicle_t));

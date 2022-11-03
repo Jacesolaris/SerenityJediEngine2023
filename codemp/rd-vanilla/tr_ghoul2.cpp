@@ -589,11 +589,11 @@ void G2_GetBoneBasepose(CGhoul2Info& ghoul2, int boneNum, mdxaBone_t*& retBasepo
 		return;
 	}
 	assert(ghoul2.mBoneCache);
-	CBoneCache& boneCache = *ghoul2.mBoneCache;
+	const CBoneCache& boneCache = *ghoul2.mBoneCache;
 	assert(boneCache.mod);
 	assert(boneNum >= 0 && boneNum < boneCache.header->numBones);
 
-	mdxaSkelOffsets_t* offsets = (mdxaSkelOffsets_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t));
+	const mdxaSkelOffsets_t* offsets = (mdxaSkelOffsets_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t));
 	mdxaSkel_t* skel = (mdxaSkel_t*)((byte*)boneCache.header + sizeof(mdxaHeader_t) + offsets->offsets[boneNum]);
 	retBasepose = &skel->BasePoseMat;
 	retBaseposeInv = &skel->BasePoseMatInv;

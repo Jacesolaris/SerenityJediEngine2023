@@ -2727,12 +2727,12 @@ void G_DebugNodeFile()
 
 	while (i < nodenum)
 	{
-		strcat(fileString, va("%i-%f ", i, nodetable[i].weight));
+		Q_strcat(fileString, sizeof(fileString), va("%i-%f ", i, nodetable[i].weight));
 		placeX += DEFAULT_GRID_SPACING;
 
 		if (placeX >= terrain->r.absmax[0])
 		{
-			strcat(fileString, "\n");
+			Q_strcat(fileString, sizeof(fileString), "\n");
 			placeX = terrain->r.absmin[0];
 		}
 		i++;

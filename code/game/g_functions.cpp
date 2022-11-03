@@ -157,7 +157,7 @@ void GEntity_ThinkFunc(gentity_t* self)
 
 // note different switch-case code for CEntity as opposed to GEntity (CEntity goes through parent GEntity first)...
 //
-void CEntity_ThinkFunc(centity_s* cent)
+void CEntity_ThinkFunc(const centity_s* cent)
 {
 #define CLTHINKCASE(blah) case clThinkF_ ## blah: blah(cent); break;
 

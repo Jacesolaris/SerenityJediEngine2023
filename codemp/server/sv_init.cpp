@@ -850,7 +850,7 @@ void QDECL SV_RefPrintf(int print_level, const char* fmt, ...)
 	char msg[MAXPRINTMSG];
 
 	va_start(argptr, fmt);
-	Q_vsnprintf(msg, sizeof(msg), fmt, argptr);
+	Q_vsnprintf(msg, sizeof msg, fmt, argptr);
 	va_end(argptr);
 
 	if (print_level == PRINT_ALL)
@@ -899,7 +899,7 @@ static void SV_InitRef(void)
 
 	Com_Printf("----- Initializing Renderer ----\n");
 
-	memset(&ri, 0, sizeof(ri));
+	memset(&ri, 0, sizeof ri);
 
 	//set up the import table
 	ri.Printf = SV_RefPrintf;

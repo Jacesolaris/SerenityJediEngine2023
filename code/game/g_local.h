@@ -451,7 +451,7 @@ void G_SetMovedir(vec3_t angles, vec3_t movedir);
 void G_InitGentity(gentity_t* e, qboolean bFreeG2);
 gentity_t* G_Spawn(void);
 gentity_t* G_TempEntity(const vec3_t origin, int event);
-void G_Sound(gentity_t* ent, int soundIndex);
+void G_Sound(const gentity_t* ent, int soundIndex);
 void G_FreeEntity(gentity_t* e);
 
 void G_TouchTriggers(gentity_t* ent);
@@ -549,7 +549,7 @@ qboolean client_spawn(gentity_t* ent, SavedGameJustLoaded_e e_saved_game_just_lo
 void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
 	int hitLoc);
 void AddScore(const gentity_t* ent, int score);
-qboolean SpotWouldTelefrag(gentity_t* spot, team_t checkteam);
+qboolean SpotWouldTelefrag(const gentity_t* spot, team_t checkteam);
 void G_RemoveWeaponModels(gentity_t* ent);
 void G_RemoveHolsterModels(gentity_t* ent);
 

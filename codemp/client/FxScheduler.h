@@ -307,20 +307,20 @@ public:
 	bool ParseVariance(const char* val);
 
 	// Group type processing
-	bool ParseRGB(CGPGroup* grp);
-	bool ParseAlpha(CGPGroup* grp);
-	bool ParseSize(CGPGroup* grp);
-	bool ParseSize2(CGPGroup* grp);
-	bool ParseLength(CGPGroup* grp);
+	bool ParseRGB(const CGPGroup* grp);
+	bool ParseAlpha(const CGPGroup* grp);
+	bool ParseSize(const CGPGroup* grp);
+	bool ParseSize2(const CGPGroup* grp);
+	bool ParseLength(const CGPGroup* grp);
 
-	bool ParseModels(CGPValue* grp);
-	bool ParseShaders(CGPValue* grp);
-	bool ParseSounds(CGPValue* grp);
+	bool ParseModels(const CGPValue* grp);
+	bool ParseShaders(const CGPValue* grp);
+	bool ParseSounds(const CGPValue* grp);
 
-	bool ParseImpactFxStrings(CGPValue* grp);
-	bool ParseDeathFxStrings(CGPValue* grp);
-	bool ParseEmitterFxStrings(CGPValue* grp);
-	bool ParsePlayFxStrings(CGPValue* grp);
+	bool ParseImpactFxStrings(const CGPValue* grp);
+	bool ParseDeathFxStrings(const CGPValue* grp);
+	bool ParseEmitterFxStrings(const CGPValue* grp);
+	bool ParsePlayFxStrings(const CGPValue* grp);
 
 	// Group keys
 	bool ParseRGBStart(const char* val);
@@ -355,7 +355,7 @@ public:
 	CPrimitiveTemplate();
 	~CPrimitiveTemplate() {};
 
-	bool ParsePrimitive(CGPGroup* grp);
+	bool ParsePrimitive(const CGPGroup* grp);
 
 	CPrimitiveTemplate& operator=(const CPrimitiveTemplate& that);
 };
@@ -400,7 +400,7 @@ public:
 	{
 		if (numFree == 0)
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		T* ptr = new (&pool[freeAndAllocated[0]]) T;
@@ -493,13 +493,13 @@ public:
 
 	T* Alloc()
 	{
-		T* ptr = NULL;
-		for (int i = 0; i < numPages && ptr == NULL; i++)
+		T* ptr = nullptr;
+		for (int i = 0; i < numPages && ptr == nullptr; i++)
 		{
 			ptr = pages[i].Alloc();
 		}
 
-		if (ptr == NULL)
+		if (ptr == nullptr)
 		{
 			PoolAllocator<T, N>* newPages = new PoolAllocator<T, N>[numPages + 1]();
 			for (int i = 0; i < numPages; i++)
@@ -511,9 +511,9 @@ public:
 			pages = newPages;
 
 			ptr = pages[numPages].Alloc();
-			if (ptr == NULL)
+			if (ptr == nullptr)
 			{
-				return NULL;
+				return nullptr;
 			}
 
 			numPages++;

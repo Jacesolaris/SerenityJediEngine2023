@@ -612,11 +612,11 @@ void G_InitGame(int levelTime, int randomSeed, int restart)
 	{
 		if (level.gametype != GT_SINGLE_PLAYER)
 		{
-			G_LoadArenas();
+			g_load_arenas();
 		}
 		else
 		{
-			G_LoadSPArenas();
+			g_load_sp_arenas();
 		}
 	}
 
@@ -714,13 +714,12 @@ void G_InitGame(int levelTime, int randomSeed, int restart)
 
 	if (level.sp_map == qtrue)
 	{
-		int i1 = 0;
-
 		if (level.is_t2_rouge_map == qtrue && g_allowNPC.integer)
 		{
 		}
 		else
 		{
+			int i1 = 0;
 			gentity_t* ent;
 			for (i1 = 0; i1 < level.num_entities; i1++)
 				// dont do map change at end of levels so players can stay on maps and erm...play
@@ -1738,7 +1737,7 @@ Add client to end of tournament queue
 =======================
 */
 
-void AddTournamentQueue(gclient_t* client)
+void AddTournamentQueue(const gclient_t* client)
 {
 	for (int index = 0; index < level.maxclients; index++)
 	{
@@ -2482,7 +2481,6 @@ extern int gSiegeRoundWinningTeam;
 void FindIntermissionPoint(void)
 {
 	gentity_t* ent = NULL;
-	vec3_t dir;
 
 	// find the intermission spot
 	if (level.gametype == GT_SIEGE
@@ -2526,6 +2524,7 @@ void FindIntermissionPoint(void)
 			const gentity_t* target = G_PickTarget(ent->target);
 			if (target)
 			{
+				vec3_t dir;
 				VectorSubtract(target->s.origin, level.intermission_origin, dir);
 				vectoangles(dir, level.intermission_angle);
 			}
@@ -3731,11 +3730,11 @@ void CheckTournament(void)
 	}
 	if (level.warmupTime != 0)
 	{
-		int counts[TEAM_NUM_TEAMS];
 		qboolean notEnough = qfalse;
 
 		if (level.gametype > GT_TEAM)
 		{
+			int counts[TEAM_NUM_TEAMS];
 			counts[TEAM_BLUE] = TeamCount(-1, TEAM_BLUE);
 			counts[TEAM_RED] = TeamCount(-1, TEAM_RED);
 
@@ -3927,7 +3926,7 @@ void CheckVote(void)
 PrintTeam
 ==================
 */
-void PrintTeam(int team, char* message)
+void PrintTeam(int team, const char* message)
 {
 	for (int i = 0; i < level.maxclients; i++)
 	{

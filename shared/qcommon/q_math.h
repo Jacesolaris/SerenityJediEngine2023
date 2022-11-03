@@ -179,7 +179,7 @@ extern "C" {
 
 	void SetPlaneSignbits(cplane_t* out);
 	int	PlaneTypeForNormal(vec3_t normal);
-	int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, cplane_t* p);
+	int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, const cplane_t* p);
 
 	///////////////////////////////////////////////////////////////////////////
 	//

@@ -419,7 +419,6 @@ static void CG_ResetThirdPersonViewDamp(void)
 static void CG_UpdateThirdPersonTargetDamp(void)
 {
 	trace_t trace;
-	float ratio;
 
 	// Set the cameraIdealTarget
 	// Automatically get the ideal target, to avoid jittering.
@@ -436,6 +435,7 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 	}
 	else if (cg_thirdPersonTargetDamp.value >= 0.0)
 	{
+		float ratio;
 		vec3_t targetdiff;
 		// Calculate the difference from the current position to the new one.
 		VectorSubtract(cameraIdealTarget, cameraCurTarget, targetdiff);

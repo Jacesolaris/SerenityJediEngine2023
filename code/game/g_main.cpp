@@ -81,16 +81,16 @@ static void ClearAllInUse(void)
 
 void SetInUse(gentity_t* ent)
 {
-	assert((uintptr_t)ent >= (uintptr_t)g_entities);
-	assert((uintptr_t)ent <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
+	assert(reinterpret_cast<uintptr_t>(ent) >= reinterpret_cast<uintptr_t>(g_entities));
+	assert(reinterpret_cast<uintptr_t>(ent) <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
 	const unsigned int entNum = ent - g_entities;
 	g_entityInUseBits[entNum / 32] |= static_cast<unsigned>(1) << (entNum & 0x1f);
 }
 
 void ClearInUse(gentity_t* ent)
 {
-	assert((uintptr_t)ent >= (uintptr_t)g_entities);
-	assert((uintptr_t)ent <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
+	assert(reinterpret_cast<uintptr_t>(ent) >= reinterpret_cast<uintptr_t>(g_entities));
+	assert(reinterpret_cast<uintptr_t>(ent) <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
 	const unsigned int entNum = ent - g_entities;
 	g_entityInUseBits[entNum / 32] &= ~(static_cast<unsigned>(1) << (entNum & 0x1f));
 }
@@ -287,7 +287,6 @@ static void G_DynamicMusicUpdate(void)
 {
 	gentity_t* entityList[MAX_GENTITIES];
 	vec3_t mins, maxs;
-	const int radius = 2048;
 	vec3_t center;
 	int danger = 0;
 	int battle = 0;
@@ -358,6 +357,7 @@ static void G_DynamicMusicUpdate(void)
 	VectorCopy(player->currentOrigin, center);
 	for (int i = 0; i < 3; i++)
 	{
+		const int radius = 2048;
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
@@ -1101,9 +1101,9 @@ static void G_Cvar_Create(const char* var_name, const char* var_value, int flags
 qboolean G_ParseSpawnVars(const char** data);
 void G_SpawnGEntityFromSpawnVars(void);
 
-void G_GameSpawnRMGEntity(char* s)
+void G_GameSpawnRMGEntity(const char* s)
 {
-	if (G_ParseSpawnVars((const char**)&s))
+	if (G_ParseSpawnVars(&s))
 	{
 		G_SpawnGEntityFromSpawnVars();
 	}
@@ -1121,7 +1121,7 @@ and global variables
 */
 extern int PM_ValidateAnimRange(int startFrame, int endFrame, float animSpeed);
 
-extern "C" Q_EXPORT game_export_t * QDECL GetGameAPI(game_import_t * import)
+extern "C" Q_EXPORT game_export_t * QDECL GetGameAPI(const game_import_t * import)
 {
 	gameinfo_import_t gameinfo_import;
 
@@ -1483,7 +1483,7 @@ class c_game_rag_doll_update_params final : public CRagDollUpdateParams
 
 		if (data.useTracePlane)
 		{
-			const float magicFactor42 = 64.0f;
+			constexpr float magicFactor42 = 64.0f;
 			VectorScale(data.tr.plane.normal, magicFactor42, effectorPosDif);
 		}
 		else
@@ -1552,7 +1552,7 @@ extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 extern qboolean G_ReleaseEntity(gentity_t* grabber);
 
-static void G_BodyDragUpdate(gentity_t* ent, gentity_t* dragger)
+static void G_BodyDragUpdate(const gentity_t* ent, gentity_t* dragger)
 {
 	vec3_t handVec;
 
@@ -1717,7 +1717,6 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 			int i = 0;
 			int boltChecks[5];
 			vec3_t boltPoints[5];
-			vec3_t trStart, trEnd;
 			vec3_t tAng;
 			//qboolean deathDone = qfalse;
 			trace_t tr;
@@ -1750,6 +1749,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 			while (i < 5)
 			{
+				vec3_t trEnd;
+				vec3_t trStart;
 				if (i < 2)
 				{
 					//when doing hands, trace to the head instead of origin
@@ -1835,14 +1836,14 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 				&startFrame, &endFrame, &flags, &animSpeed, nullptr))
 			{
 				//lock the anim on the current frame.
-				const int blendTime = 500;
+				constexpr int blend_time = 500;
 
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "lower_lumbar", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blendTime);
+					cg.time ? cg.time : level.time, currentFrame, blend_time);
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "model_root", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blendTime);
+					cg.time ? cg.time : level.time, currentFrame, blend_time);
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "Motion", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blendTime);
+					cg.time ? cg.time : level.time, currentFrame, blend_time);
 			}
 		}
 #endif
@@ -1954,7 +1955,6 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 					{
 						//if we're being dragged, then kick all the bones around a bit
 						vec3_t dVel;
-						vec3_t rVel;
 						int i = 0;
 
 						if (difLen < 12.0f)
@@ -1965,6 +1965,7 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 						while (g_effectorStringTable[i])
 						{
+							vec3_t rVel;
 							VectorCopy(pDif, dVel);
 							dVel[2] = 0;
 

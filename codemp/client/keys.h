@@ -68,7 +68,7 @@ void	Field_BigDraw(field_t* edit, int x, int y, int width, qboolean showCursor, 
 void		Key_SetBinding(int keynum, const char* binding);
 char* Key_GetBinding(int keynum);
 qboolean	Key_IsDown(int keynum);
-int			Key_StringToKeynum(char* str);
+int			Key_StringToKeynum(const char* str);
 qboolean	Key_GetOverstrikeMode(void);
 void		Key_SetOverstrikeMode(qboolean state);
 void		Key_ClearStates(void);

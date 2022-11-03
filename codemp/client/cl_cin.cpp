@@ -231,8 +231,8 @@ static long RllDecodeMonoToMono(unsigned char *from,short *to,unsigned int size,
 //
 // Returns:		Number of samples placed in output buffer
 //-----------------------------------------------------------------------------
-static long RllDecodeMonoToStereo(unsigned char* from, short* to, unsigned int size, char signedOutput,
-	unsigned short flag)
+static long RllDecodeMonoToStereo(const unsigned char* from, short* to, unsigned int size, char signedOutput,
+                                  unsigned short flag)
 {
 	int prev;
 
@@ -406,7 +406,7 @@ static void blit4_32(byte* src, byte* dst, int spl)
 *
 ******************************************************************************/
 
-static void blit2_32(byte* src, byte* dst, int spl)
+static void blit2_32(const byte* src, byte* dst, int spl)
 {
 	memcpy(dst, src, 8);
 	memcpy(dst + spl, src + 8, 8);
@@ -1055,7 +1055,7 @@ static void setupQuad(long xOff, long yOff)
 *
 ******************************************************************************/
 
-static void readQuadInfo(byte* qData)
+static void readQuadInfo(const byte* qData)
 {
 	if (currentHandle < 0) return;
 

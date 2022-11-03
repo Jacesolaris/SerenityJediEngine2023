@@ -102,17 +102,17 @@ extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lockMode);
 extern qboolean G_JediInNormalAI(gentity_t* ent);
-extern void bg_reduce_saber_mishap_level(playerState_t* ps);
+extern void WP_SaberFatigueRegenerate(int overrideAmt);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void bg_reduce_blaster_mishap_level_advanced(playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-extern float manual_saberblocking(gentity_t* defender);
-extern float manual_running_and_saberblocking(gentity_t* defender);
+extern float manual_saberblocking(const gentity_t* defender);
+extern float manual_running_and_saberblocking(const gentity_t* defender);
 extern qboolean manual_meleeblocking(const gentity_t* defender);
 extern qboolean manual_melee_dodging(const gentity_t* defender);
 extern qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-extern int BG_InGrappleMove(int move);
+extern int PM_InGrappleMove(int move);
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern qboolean BG_SprintAnim(int anim);
@@ -133,17 +133,17 @@ extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 extern qboolean PM_Saberinstab(int move);
-extern float manual_npc_saberblocking(gentity_t* defender);
+extern float manual_npc_saberblocking(const gentity_t* defender);
 extern float manual_npc_kick_absorbing(const gentity_t* defender);
 extern qboolean BG_FullBodyEmoteAnim(int anim);
 extern qboolean BG_FullBodyCowerAnim(int anim);
 extern cvar_t* d_slowmoaction;
 extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
 	int spinTime = 0);
-extern qboolean IsSurrendering(gentity_t* self);
+extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(gentity_t* self);
 extern qboolean IsCowering(gentity_t* self);
-extern qboolean IsAnimRequiresResponce(gentity_t* self);
+extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern qboolean IsSurrenderingAnimRequiresResponce(gentity_t* self);
 extern qboolean BG_InKnockDown(int anim);
 extern qboolean pm_saber_in_special_attack(int anim);
@@ -171,7 +171,7 @@ extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength);
 extern qboolean PM_ReloadAnim(int anim);
 extern qboolean JET_Flying(gentity_t* self);
 extern qboolean PM_InAmputateMove(int anim);
-void ClientEndPowerUps(gentity_t* ent);
+void ClientEndPowerUps(const gentity_t* ent);
 extern qboolean PM_Dyinganim(const playerState_t* ps);
 extern int IsPressingKickButton(const gentity_t* self);
 
@@ -1967,7 +1967,8 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			bg_reduce_blaster_mishap_level_advanced(&ent->client->ps);
 		}
 
-		if (ent->client->ps.saberAttackChainCount > MISHAPLEVEL_NONE
+		if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
+			&& (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)) // player
 			&& !BG_InSlowBounce(&ent->client->ps)
 			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
 			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
@@ -1975,17 +1976,27 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			&& !PM_SaberInTransitionAny(ent->client->ps.saberMove)
 			&& !PM_InKnockDown(&ent->client->ps)
 			&& ent->client->ps.saberLockTime < level.time
+			&& ent->client->ps.saberBlockingTime < level.time
 			&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
-			if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && (ent->s.number < MAX_CLIENTS ||
-				G_ControlledByPlayer(ent)))
+			if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 			{
-				bg_reduce_saber_mishap_level(&ent->client->ps);
+				WP_SaberFatigueRegenerate(1);
 			}
-			else
-			{
-				bg_reduce_saber_mishap_level(&ent->client->ps);
-			}
+		}
+		else if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
+			&& (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)) //npc
+			&& !BG_InSlowBounce(&ent->client->ps)
+			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
+			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
+			&& !PM_SaberInAttack(ent->client->ps.saberMove)
+			&& !PM_SaberInTransitionAny(ent->client->ps.saberMove)
+			&& !PM_InKnockDown(&ent->client->ps)
+			&& ent->client->ps.saberLockTime < level.time
+			&& ent->client->ps.saberBlockingTime < level.time
+			&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
+		{
+			WP_SaberFatigueRegenerate(1);
 		}
 
 		if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
@@ -2250,7 +2261,7 @@ qboolean G_CanBeEnemy(const gentity_t* self, const gentity_t* enemy)
 
 extern void G_Stagger(gentity_t* hit_ent);
 
-qboolean WP_AbsorbKick(gentity_t* ent, gentity_t* pusher, const vec3_t pushDir)
+qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t pushDir)
 {
 	const qboolean ActiveBlocking = ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;	//manual Blocking
 	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking
@@ -2632,7 +2643,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						{
 							g_kick_throw(hitEnt, kickDir, 80);
 						}
-						if ((hitEnt->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY ||
+						if ((hitEnt->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
 							hitEnt->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
 							&& !(hitEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 						{
@@ -2654,7 +2665,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 							}
 						}
 						else if (ent->client->ps.saberAnimLevel == SS_DESANN
-							&& (hitEnt->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY ||
+							&& (hitEnt->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
 								hitEnt->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
 							&& !(hitEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
 						{
@@ -2769,7 +2780,7 @@ qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
 	return qtrue;
 }
 
-void G_CamPullBackForLegsAnim(gentity_t* ent, qboolean useTorso = qfalse)
+void G_CamPullBackForLegsAnim(const gentity_t* ent, qboolean useTorso = qfalse)
 {
 	if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 	{
@@ -2796,7 +2807,7 @@ void G_CamPullBackForLegsAnim(gentity_t* ent, qboolean useTorso = qfalse)
 	}
 }
 
-void G_CamCircleForLegsAnim(gentity_t* ent)
+void G_CamCircleForLegsAnim(const gentity_t* ent)
 {
 	if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 	{
@@ -8556,7 +8567,7 @@ A new command has arrived from the client
 extern void PM_CheckForceUseButton(gentity_t* ent, usercmd_t* ucmd);
 extern qboolean PM_GentCantJump(const gentity_t* gent);
 
-void ClientThink(int clientNum, usercmd_t* ucmd)
+void ClientThink(const int clientNum, usercmd_t* ucmd)
 {
 	qboolean restore_ucmd = qfalse;
 	usercmd_t sav_ucmd = { 0 };
@@ -8715,7 +8726,7 @@ void ClientThink(int clientNum, usercmd_t* ucmd)
 	}
 }
 
-void ClientEndPowerUps(gentity_t* ent)
+void ClientEndPowerUps(const gentity_t* ent)
 {
 	if (ent == nullptr || ent->client == nullptr)
 	{

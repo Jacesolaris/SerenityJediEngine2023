@@ -613,21 +613,21 @@ void CL_MouseMove(usercmd_t* cmd) {
 
 	if ((in_mlooking || cl_freelook->integer) && !in_strafe.active) {
 		// VVFIXME - This is supposed to be a CVAR
-		const float cl_pitchSensitivity = 1.0f;
+		constexpr float cl_pitch_sensitivity = 1.0f;
 		if (cl_mPitchOverride)
 		{
 			if (pitch > 0)
 			{
-				cl.viewangles[PITCH] += cl_mPitchOverride * my * cl_pitchSensitivity;
+				cl.viewangles[PITCH] += cl_mPitchOverride * my * cl_pitch_sensitivity;
 			}
 			else
 			{
-				cl.viewangles[PITCH] -= cl_mPitchOverride * my * cl_pitchSensitivity;
+				cl.viewangles[PITCH] -= cl_mPitchOverride * my * cl_pitch_sensitivity;
 			}
 		}
 		else
 		{
-			cl.viewangles[PITCH] += pitch * my * cl_pitchSensitivity;
+			cl.viewangles[PITCH] += pitch * my * cl_pitch_sensitivity;
 		}
 	}
 	else {

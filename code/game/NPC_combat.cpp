@@ -1251,10 +1251,10 @@ void ShootThink(void)
 	NPC->attackDebounceTime = level.time + NPC_AttackDebounceForWeapon();
 }
 
-extern qboolean IsSurrendering(gentity_t* self);
+extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(gentity_t* self);
 extern qboolean IsCowering(gentity_t* self);
-extern qboolean IsAnimRequiresResponce(gentity_t* self);
+extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean PM_SaberInAttack(int move);

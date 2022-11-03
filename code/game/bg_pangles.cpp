@@ -811,7 +811,7 @@ qboolean PM_AdjustAnglesForSaberLock(gentity_t* ent, usercmd_t* ucmd)
 	return qfalse;
 }
 
-int pm_min_get_up_time(gentity_t* ent)
+int pm_min_get_up_time(const gentity_t* ent)
 {
 	if (ent
 		&& ent->client

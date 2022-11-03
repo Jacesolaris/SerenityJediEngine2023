@@ -691,7 +691,7 @@ void CL_PacketEvent(netadr_t from, msg_t* msg)
 {
 	clc.lastPacketTime = cls.realtime;
 
-	if (msg->cursize >= 4 && *(int*)msg->data == -1)
+	if (msg->cursize >= 4 && *reinterpret_cast<int*>(msg->data) == -1)
 	{
 		CL_ConnectionlessPacket(from, msg);
 		return;
@@ -883,9 +883,9 @@ void CL_Frame(int msec, float fractionMsec)
 	if (cl_framerate->integer)
 	{
 		avgFrametime += msec;
-		char mess[256];
 		if (!(frameCount & 0x1f))
 		{
+			char mess[256];
 			sprintf(mess, "Frame rate=%f\n\n", 1000.0f * (1.0 / (avgFrametime / 32.0f)));
 			//		OutputDebugString(mess);
 			Com_Printf(mess);
@@ -1319,7 +1319,7 @@ void CL_Init()
 
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("---------- Genuine SerenityJediEngine-(Solaris Edition)----------\n");
-	Com_Printf("---------------------Build date 18/10/2022-----------------------\n");
+	Com_Printf("---------------------Build date 03/11/2022-----------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");

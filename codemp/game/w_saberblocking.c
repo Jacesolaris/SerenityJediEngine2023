@@ -69,7 +69,6 @@ extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwD
 extern qboolean saberKnockOutOfHand(gentity_t* saberent, gentity_t* saberOwner, vec3_t velocity);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
 extern int G_GetParryForBlock(int block);
-extern saberMoveName_t PM_MBlocktheAttack(int move);
 extern qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
 extern qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
 extern qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
@@ -340,15 +339,15 @@ qboolean g_perfect_blocking(const gentity_t* blocker, const gentity_t* attacker,
 	return qfalse;
 }
 
-void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
+void SabBeh_AddMishap_Attacker(gentity_t* attacker, const gentity_t* blocker)
 {
 	if (attacker->client->ps.fd.blockPoints <= MISHAPLEVEL_NONE)
 	{
 		attacker->client->ps.fd.blockPoints = MISHAPLEVEL_NONE;
 	}
-	else if (attacker->client->ps.saberAttackChainCount <= MISHAPLEVEL_NONE)
+	else if (attacker->client->ps.saberFatigueChainCount <= MISHAPLEVEL_NONE)
 	{
-		attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;
+		attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;
 	}
 	else
 	{
@@ -363,7 +362,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
 				if (!Q_irand(0, 4))
 				{//20% chance
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
-					if (d_attackinfo.integer || g_DebugSaberCombat.integer && (attacker->r.svFlags & SVF_BOT))
+					if (d_attackinfo.integer || g_DebugSaberCombat.integer && attacker->r.svFlags & SVF_BOT)
 					{
 						Com_Printf(S_COLOR_YELLOW"NPC Attacker staggering\n");
 					}
@@ -371,7 +370,7 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
 				else
 				{
 					SabBeh_SaberShouldBeDisarmedAttacker(attacker, blocker);
-					if (d_attackinfo.integer || g_DebugSaberCombat.integer && (attacker->r.svFlags & SVF_BOT))
+					if (d_attackinfo.integer || g_DebugSaberCombat.integer && attacker->r.svFlags & SVF_BOT)
 					{
 						Com_Printf(S_COLOR_RED"NPC Attacker lost his saber\n");
 					}
@@ -398,15 +397,15 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker)
 	}
 }
 
-void SabBeh_AddMishap_Blocker(gentity_t* blocker, gentity_t* attacker)
+void SabBeh_AddMishap_Blocker(gentity_t* blocker, const gentity_t* attacker)
 {
 	if (blocker->client->ps.fd.blockPoints <= MISHAPLEVEL_NONE)
 	{
 		blocker->client->ps.fd.blockPoints = MISHAPLEVEL_NONE;
 	}
-	else if (blocker->client->ps.saberAttackChainCount <= MISHAPLEVEL_NONE)
+	else if (blocker->client->ps.saberFatigueChainCount <= MISHAPLEVEL_NONE)
 	{
-		blocker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;
+		blocker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;
 	}
 	else
 	{
@@ -512,7 +511,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 	//if the attack is blocked -(Im the attacker)
 	const qboolean MBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse;	//perfect Blocking (Timed Block)
 
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_MAX)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_MAX)
 	{
 		//hard mishap.
 
@@ -531,7 +530,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 				Com_Printf(S_COLOR_GREEN"Attacker npc is fatigued\n");
 			}
 
-			attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_MIN;
+			attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_MIN;
 		}
 		else
 		{
@@ -543,7 +542,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		}
 		return qtrue;
 	}
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HUDFLASH)
 	{
 		//slow bounce
 		if (!(attacker->r.svFlags & SVF_BOT))
@@ -557,7 +556,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 
 		if (attacker->r.svFlags & SVF_BOT) //NPC only
 		{
-			attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_LIGHT;
+			attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_LIGHT;
 		}
 
 		if (d_attackinfo.integer || g_DebugSaberCombat.integer)
@@ -573,7 +572,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, qboolean
 		}
 		return qtrue;
 	}
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT)
 	{
 		//slow bounce
 		SabBeh_AnimateSmallBounce(attacker);
@@ -643,15 +642,15 @@ void SabBeh_AddBalance(const gentity_t* self, int amount)
 		}
 	}
 
-	self->client->ps.saberAttackChainCount += amount;
+	self->client->ps.saberFatigueChainCount += amount;
 
-	if (self->client->ps.saberAttackChainCount < MISHAPLEVEL_NONE)
+	if (self->client->ps.saberFatigueChainCount < MISHAPLEVEL_NONE)
 	{
-		self->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;
+		self->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;
 	}
-	else if (self->client->ps.saberAttackChainCount > MISHAPLEVEL_OVERLOAD)
+	else if (self->client->ps.saberFatigueChainCount > MISHAPLEVEL_OVERLOAD)
 	{
-		self->client->ps.saberAttackChainCount = MISHAPLEVEL_MAX;
+		self->client->ps.saberFatigueChainCount = MISHAPLEVEL_MAX;
 	}
 }
 
@@ -781,14 +780,14 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 		}
 		else
 		{//This must be Unblockable
-			if ((d_attackinfo.integer || g_DebugSaberCombat.integer))
+			if (d_attackinfo.integer || g_DebugSaberCombat.integer)
 			{
 				Com_Printf(S_COLOR_MAGENTA"Attacker must be Unblockable\n");
 			}
 			attacker->client->ps.saberEventFlags &= ~SEF_BLOCKED;
 		}
 	}
-	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps, blocker->localAnimIndex) || (TransitionClashParry))
+	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps, blocker->localAnimIndex) || TransitionClashParry)
 	{//and blocker is attacking
 		if ((d_attackinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
 		{
@@ -863,8 +862,8 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 		{
 			if (MBlocking || ActiveBlocking || NPCBlocking)
 			{
-				if (NPCBlocking && (blocker->client->ps.fd.blockPoints >= BLOCKPOINTS_MISSILE)
-					&& attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH
+				if (NPCBlocking && blocker->client->ps.fd.blockPoints >= BLOCKPOINTS_MISSILE
+					&& attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HUDFLASH
 					&& !Q_irand(0, 4))
 				{//20% chance
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
@@ -1023,7 +1022,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 					wp_saber_clear_damage_for_ent_num(attacker, blocker->s.number, saberNum, bladeNum);
 
 					wp_block_points_regenerate_over_ride(blocker, BLOCKPOINTS_FATIGUE); //BP Reward blocker
-					blocker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
+					blocker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
 					PM_AddBlockFatigue(&attacker->client->ps, BLOCKPOINTS_TEN);         //BP Punish Attacker
 				}
 				else
@@ -1197,7 +1196,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 			blocker->client->ps.saberEventFlags |= SEF_PARRIED;
 
 			wp_block_points_regenerate_over_ride(blocker, BLOCKPOINTS_FATIGUE); //BP Reward blocker
-			blocker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
+			blocker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
 		}
 		else
 		{//This must be Unblockable
@@ -1213,7 +1212,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 				G_FatigueBPKnockaway(blocker);
 				PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 			}
-			if ((d_blockinfo.integer || g_DebugSaberCombat.integer))
+			if (d_blockinfo.integer || g_DebugSaberCombat.integer)
 			{
 				Com_Printf(S_COLOR_MAGENTA"Blocker can not block Unblockable\n");
 			}

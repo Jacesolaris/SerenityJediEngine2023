@@ -317,7 +317,7 @@ FS_Initialized
 */
 
 qboolean FS_Initialized(void) {
-	return static_cast<qboolean>(fs_searchpaths != NULL);
+	return static_cast<qboolean>(fs_searchpaths != nullptr);
 }
 
 static void FS_AssertInitialised(void) {
@@ -371,7 +371,7 @@ static long FS_HashFileName(const char* fname, int hashSize) {
 
 static fileHandle_t FS_HandleForFile(void) {
 	for (int i = 1; i < MAX_FILE_HANDLES; i++) {
-		if (fsh[i].handleFiles.file.o == NULL) {
+		if (fsh[i].handleFiles.file.o == nullptr) {
 			return i;
 		}
 	}
@@ -394,7 +394,7 @@ static FILE* FS_FileForHandle(fileHandle_t f) {
 
 void	FS_ForceFlush(fileHandle_t f) {
 	FILE* file = FS_FileForHandle(f);
-	setvbuf(file, NULL, _IONBF, 0);
+	setvbuf(file, nullptr, _IONBF, 0);
 }
 
 /*
@@ -428,7 +428,7 @@ size of the file.
 int FS_filelength(fileHandle_t f) {
 	FILE* h = FS_FileForHandle(f);
 
-	if (h == NULL)
+	if (h == nullptr)
 		return EOF;
 	return FS_fplength(h);
 }
@@ -530,7 +530,7 @@ qboolean FS_CreatePath(char* OSPath) {
 		ofs++;
 	}
 
-	for (; ofs != NULL && *ofs; ofs++) {
+	for (; ofs != nullptr && *ofs; ofs++) {
 		if (*ofs == PATH_SEP) {
 			// create the directory
 			*ofs = 0;
@@ -662,7 +662,7 @@ void FS_Rmdir(const char* osPath, qboolean recursive) {
 	if (recursive) {
 		int numfiles;
 		int i;
-		char** filesToRemove = Sys_ListFiles(osPath, "", NULL, &numfiles, qfalse);
+		char** filesToRemove = Sys_ListFiles(osPath, "", nullptr, &numfiles, qfalse);
 		for (i = 0; i < numfiles; i++) {
 			char fileOsPath[MAX_OSPATH];
 			Com_sprintf(fileOsPath, sizeof fileOsPath, "%s/%s", osPath, filesToRemove[i]);
@@ -670,7 +670,7 @@ void FS_Rmdir(const char* osPath, qboolean recursive) {
 		}
 		FS_FreeFileList(filesToRemove);
 
-		char** directoriesToRemove = Sys_ListFiles(osPath, "/", NULL, &numfiles, qfalse);
+		char** directoriesToRemove = Sys_ListFiles(osPath, "/", nullptr, &numfiles, qfalse);
 		for (i = 0; i < numfiles; i++) {
 			if (!Q_stricmp(directoriesToRemove[i], ".") || !Q_stricmp(directoriesToRemove[i], "..")) {
 				continue;
@@ -1129,17 +1129,17 @@ bool Sys_GetFileTime(LPCSTR psFileName, FILETIME& ft)
 	const HANDLE hFile = CreateFile(psFileName, // LPCTSTR lpFileName,          // pointer to name of the file
 		GENERIC_READ, // DWORD dwDesiredAccess,       // access (read-write) mode
 		FILE_SHARE_READ, // DWORD dwShareMode,           // share mode
-		NULL, // LPSECURITY_ATTRIBUTES lpSecurityAttributes,	// pointer to security attributes
+		nullptr, // LPSECURITY_ATTRIBUTES lpSecurityAttributes,	// pointer to security attributes
 		OPEN_EXISTING, // DWORD dwCreationDisposition,  // how to create
 		FILE_FLAG_NO_BUFFERING, // DWORD dwFlagsAndAttributes,   // file attributes
-		NULL // HANDLE hTemplateFile          // handle to file with attributes to
+		nullptr		// HANDLE hTemplateFile          // handle to file with attributes to
 	);
 
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		if (GetFileTime(hFile,	// handle to file
-			NULL,	// LPFILETIME lpCreationTime
-			NULL,	// LPFILETIME lpLastAccessTime
+		                nullptr,	// LPFILETIME lpCreationTime
+		                nullptr,	// LPFILETIME lpLastAccessTime
 			&ft		// LPFILETIME lpLastWriteTime
 		)
 			)
@@ -1193,7 +1193,7 @@ bool FS_FileCacheable(const char* const filename)
 	{
 		return true;
 	}
-	return strchr(filename, '/') != 0;
+	return strchr(filename, '/') != nullptr;
 }
 
 /*
@@ -1217,7 +1217,7 @@ long FS_FOpenFileRead(const char* filename, fileHandle_t* file, qboolean uniqueF
 
 	FS_AssertInitialised();
 
-	if (file == NULL) {
+	if (file == nullptr) {
 		Com_Error(ERR_FATAL, "FS_FOpenFileRead: NULL 'file' parameter passed\n");
 	}
 
@@ -1338,7 +1338,7 @@ long FS_FOpenFileRead(const char* filename, fileHandle_t* file, qboolean uniqueF
 						if (uniqueFILE) {
 							// open a new file on the pakfile
 							fsh[*file].handleFiles.file.z = unzOpen(pak->pakFilename);
-							if (fsh[*file].handleFiles.file.z == NULL) {
+							if (fsh[*file].handleFiles.file.z == nullptr) {
 								Com_Error(ERR_FATAL, "Couldn't open %s", pak->pakFilename);
 							}
 						}
@@ -1386,7 +1386,7 @@ long FS_FOpenFileRead(const char* filename, fileHandle_t* file, qboolean uniqueF
 						return pakFile->len;
 					}
 					pakFile = pakFile->next;
-				} while (pakFile != NULL);
+				} while (pakFile != nullptr);
 			}
 			else if (search->dir) {
 				// check a file in the directory tree
@@ -1437,7 +1437,7 @@ long FS_FOpenFileRead(const char* filename, fileHandle_t* file, qboolean uniqueF
 					if (Sys_FileOutOfDate(netpath, FS_BuildOSPath(fs_cdpath->string, dir->gamedir, filename)))
 					{
 						fclose(fsh[*file].handleFiles.file.o);
-						fsh[*file].handleFiles.file.o = 0;
+						fsh[*file].handleFiles.file.o = nullptr;
 						continue;	//carry on to find the cdpath version.
 					}
 				}
@@ -1487,7 +1487,7 @@ long FS_FOpenFileRead(const char* filename, fileHandle_t* file, qboolean uniqueF
 								//
 								bFasterToReOpenUsingNewLocalFile = qtrue;
 								fclose(fsh[*file].handleFiles.file.o);
-								fsh[*file].handleFiles.file.o = NULL;
+								fsh[*file].handleFiles.file.o = nullptr;
 							}
 						}
 					}
@@ -1799,7 +1799,7 @@ int	FS_FileIsInPAK(const char* filename, int* pChecksum) {
 					return 1;
 				}
 				pakFile = pakFile->next;
-			} while (pakFile != NULL);
+			} while (pakFile != nullptr);
 		}
 	}
 	return -1;
@@ -1824,7 +1824,7 @@ long FS_ReadFile(const char* qpath, void** buffer) {
 		Com_Error(ERR_FATAL, "FS_ReadFile with empty name\n");
 	}
 
-	byte* buf = NULL;	// quiet compiler warning
+	byte* buf = nullptr;	// quiet compiler warning
 
 	// if this is a .cfg file and we are playing back a journal, read
 	// it from the journal file
@@ -1834,18 +1834,18 @@ long FS_ReadFile(const char* qpath, void** buffer) {
 			Com_DPrintf("Loading %s from journal file.\n", qpath);
 			int r = FS_Read(&len, sizeof len, com_journalDataFile);
 			if (r != sizeof len) {
-				if (buffer != NULL) *buffer = NULL;
+				if (buffer != nullptr) *buffer = nullptr;
 				return -1;
 			}
 			// if the file didn't exist when the journal was created
 			if (!len) {
-				if (buffer == NULL) {
+				if (buffer == nullptr) {
 					return 1;			// hack for old journal files
 				}
-				*buffer = NULL;
+				*buffer = nullptr;
 				return -1;
 			}
-			if (buffer == NULL) {
+			if (buffer == nullptr) {
 				return len;
 			}
 
@@ -1873,7 +1873,7 @@ long FS_ReadFile(const char* qpath, void** buffer) {
 	len = FS_FOpenFileRead(qpath, &h, qfalse);
 	if (h == 0) {
 		if (buffer) {
-			*buffer = NULL;
+			*buffer = nullptr;
 		}
 		// if we are journalling and it is a config file, write a zero to the journal file
 		if (isConfig && com_journal && com_journal->integer == 1) {
@@ -1987,13 +1987,13 @@ static pack_t* FS_LoadZipFile(const char* zipfile, const char* basename)
 	int err = unzGetGlobalInfo(uf, &gi);
 
 	if (err != UNZ_OK)
-		return NULL;
+		return nullptr;
 
 	int len = 0;
 	unzGoToFirstFile(uf);
 	for (i = 0; i < gi.number_entry; i++)
 	{
-		err = unzGetCurrentFileInfo(uf, &file_info, filename_inzip, sizeof filename_inzip, NULL, 0, NULL, 0);
+		err = unzGetCurrentFileInfo(uf, &file_info, filename_inzip, sizeof filename_inzip, nullptr, 0, nullptr, 0);
 		if (err != UNZ_OK) {
 			break;
 		}
@@ -2019,7 +2019,7 @@ static pack_t* FS_LoadZipFile(const char* zipfile, const char* basename)
 	pack->hashSize = i;
 	pack->hashTable = (fileInPack_t**)((char*)pack + sizeof(pack_t));
 	for (int j = 0; j < pack->hashSize; j++) {
-		pack->hashTable[j] = NULL;
+		pack->hashTable[j] = nullptr;
 	}
 
 	Q_strncpyz(pack->pakFilename, zipfile, sizeof pack->pakFilename);
@@ -2036,7 +2036,7 @@ static pack_t* FS_LoadZipFile(const char* zipfile, const char* basename)
 
 	for (i = 0; i < gi.number_entry; i++)
 	{
-		err = unzGetCurrentFileInfo(uf, &file_info, filename_inzip, sizeof filename_inzip, NULL, 0, NULL, 0);
+		err = unzGetCurrentFileInfo(uf, &file_info, filename_inzip, sizeof filename_inzip, nullptr, 0, nullptr, 0);
 		if (err != UNZ_OK) {
 			break;
 		}
@@ -2181,7 +2181,7 @@ char** FS_ListFilteredFiles(const char* path, const char* extension, char* filte
 
 	if (!path) {
 		*numfiles = 0;
-		return NULL;
+		return nullptr;
 	}
 	if (!extension) {
 		extension = "";
@@ -2284,14 +2284,14 @@ char** FS_ListFilteredFiles(const char* path, const char* extension, char* filte
 	*numfiles = nfiles;
 
 	if (!nfiles) {
-		return NULL;
+		return nullptr;
 	}
 
 	char** listCopy = static_cast<char**>(Z_Malloc((nfiles + 1) * sizeof * listCopy, TAG_FILESYS));
 	for (i = 0; i < nfiles; i++) {
 		listCopy[i] = list[i];
 	}
-	listCopy[i] = NULL;
+	listCopy[i] = nullptr;
 
 	return listCopy;
 }
@@ -2302,7 +2302,7 @@ FS_ListFiles
 =================
 */
 char** FS_ListFiles(const char* path, const char* extension, int* numfiles) {
-	return FS_ListFilteredFiles(path, extension, NULL, numfiles);
+	return FS_ListFilteredFiles(path, extension, nullptr, numfiles);
 }
 
 /*
@@ -2391,7 +2391,7 @@ static unsigned int Sys_CountFileList(char** fileList)
 static char** Sys_ConcatenateFileLists(char** list0, char** list1, char** list2)
 {
 	int totalLength = 0;
-	char** cat = NULL, ** src;
+	char** cat = nullptr, ** src;
 
 	totalLength += Sys_CountFileList(list0);
 	totalLength += Sys_CountFileList(list1);
@@ -2415,7 +2415,7 @@ static char** Sys_ConcatenateFileLists(char** list0, char** list1, char** list2)
 	}
 
 	// Terminate the list
-	*dst = NULL;
+	*dst = nullptr;
 
 	// Free our old lists.
 	// NOTE: not freeing their content, it's been merged in dst and still being used
@@ -2450,9 +2450,9 @@ int	FS_GetModList(char* listbuf, int bufsize) {
 	*listbuf = 0;
 	int nMods = nPotential = nTotal = 0;
 
-	char** pFiles0 = Sys_ListFiles(fs_homepath->string, NULL, NULL, &dummy, qtrue);
-	char** pFiles1 = Sys_ListFiles(fs_basepath->string, NULL, NULL, &dummy, qtrue);
-	char** pFiles2 = Sys_ListFiles(fs_cdpath->string, NULL, NULL, &dummy, qtrue);
+	char** pFiles0 = Sys_ListFiles(fs_homepath->string, nullptr, nullptr, &dummy, qtrue);
+	char** pFiles1 = Sys_ListFiles(fs_basepath->string, nullptr, nullptr, &dummy, qtrue);
+	char** pFiles2 = Sys_ListFiles(fs_cdpath->string, nullptr, nullptr, &dummy, qtrue);
 	// we searched for mods in the three paths
 	// it is likely that we have duplicate names now, which we will cleanup below
 	char** pFiles = Sys_ConcatenateFileLists(pFiles0, pFiles1, pFiles2);
@@ -2485,14 +2485,14 @@ int	FS_GetModList(char* listbuf, int bufsize) {
 			//   we will try each three of them here (yes, it's a bit messy)
 			const char* path = FS_BuildOSPath(fs_basepath->string, name, "");
 			nPaks = 0;
-			char** pPaks = Sys_ListFiles(path, ".pk3", NULL, &nPaks, qfalse);
+			char** pPaks = Sys_ListFiles(path, ".pk3", nullptr, &nPaks, qfalse);
 			Sys_FreeFileList(pPaks); // we only use Sys_ListFiles to check wether .pk3 files are present
 
 			/* Try on cd path */
 			if (nPaks <= 0) {
 				path = FS_BuildOSPath(fs_cdpath->string, name, "");
 				nPaks = 0;
-				pPaks = Sys_ListFiles(path, ".pk3", NULL, &nPaks, qfalse);
+				pPaks = Sys_ListFiles(path, ".pk3", nullptr, &nPaks, qfalse);
 				Sys_FreeFileList(pPaks);
 			}
 
@@ -2501,7 +2501,7 @@ int	FS_GetModList(char* listbuf, int bufsize) {
 			{
 				path = FS_BuildOSPath(fs_homepath->string, name, "");
 				nPaks = 0;
-				pPaks = Sys_ListFiles(path, ".pk3", NULL, &nPaks, qfalse);
+				pPaks = Sys_ListFiles(path, ".pk3", nullptr, &nPaks, qfalse);
 				Sys_FreeFileList(pPaks);
 			}
 
@@ -2652,7 +2652,7 @@ void FS_SortFileList(char** filelist, int numfiles) {
 	int j;
 
 	char** sortedlist = static_cast<char**>(Z_Malloc((numfiles + 1) * sizeof * sortedlist, TAG_FILESYS, qtrue));
-	sortedlist[0] = NULL;
+	sortedlist[0] = nullptr;
 	int numsortedfiles = 0;
 	for (int i = 0; i < numfiles; i++) {
 		for (j = 0; j < numsortedfiles; j++) {
@@ -2800,7 +2800,7 @@ void FS_Which_f(void) {
 					}
 
 					pakFile = pakFile->next;
-				} while (pakFile != NULL);
+				} while (pakFile != nullptr);
 			}
 		}
 		else if (search->dir) {
@@ -2877,7 +2877,7 @@ static void FS_AddGameDirectory(const char* path, const char* dir) {
 
 	searchpath_t* thedir = search;
 
-	char** pakfiles = Sys_ListFiles(curpath, ".pk3", NULL, &numfiles, qfalse);
+	char** pakfiles = Sys_ListFiles(curpath, ".pk3", nullptr, &numfiles, qfalse);
 
 	// sort them so that later alphabetic matches override
 	// earlier ones.  This makes pak1.pk3 override pak0.pk3
@@ -2892,7 +2892,7 @@ static void FS_AddGameDirectory(const char* path, const char* dir) {
 
 	for (i = 0; i < numfiles; i++) {
 		const char* pakfile = FS_BuildOSPath(path, dir, sorted[i]);
-		if ((pak = FS_LoadZipFile(pakfile, sorted[i])) == 0)
+		if ((pak = FS_LoadZipFile(pakfile, sorted[i])) == nullptr)
 			continue;
 		Q_strncpyz(pak->pakPathname, curpath, sizeof pak->pakPathname);
 		// store the game name for downloading
@@ -3128,7 +3128,7 @@ void FS_Shutdown(qboolean closemfp) {
 	}
 
 	// any FS_ calls will now be an error until reinitialized
-	fs_searchpaths = NULL;
+	fs_searchpaths = nullptr;
 
 	Cmd_RemoveCommand("path");
 	Cmd_RemoveCommand("dir");
@@ -3558,7 +3558,7 @@ void FS_PureServerSetLoadedPaks(const char* pakSums, const char* pakNames) {
 		if (fs_serverPakNames[i]) {
 			Z_Free(fs_serverPakNames[i]);
 		}
-		fs_serverPakNames[i] = NULL;
+		fs_serverPakNames[i] = nullptr;
 	}
 	if (pakNames && *pakNames) {
 		Cmd_TokenizeString(pakNames);
@@ -3602,7 +3602,7 @@ void FS_PureServerSetReferencedPaks(const char* pakSums, const char* pakNames) {
 		if (fs_serverReferencedPakNames[i])
 			Z_Free(fs_serverReferencedPakNames[i]);
 
-		fs_serverReferencedPakNames[i] = NULL;
+		fs_serverReferencedPakNames[i] = nullptr;
 	}
 
 	if (pakNames && *pakNames) {
@@ -3657,7 +3657,7 @@ void FS_InitFilesystem(void) {
 	// if we can't find spdefault.cfg, assume that the paths are
 	// busted and error out now, rather than getting an unreadable
 	// graphics screen when the font fails to load
-	if (FS_ReadFile("mpdefault.cfg", NULL) <= 0) {
+	if (FS_ReadFile("mpdefault.cfg", nullptr) <= 0) {
 		Com_Error(ERR_FATAL, "Couldn't load mpdefault.cfg");
 		// bk001208 - SafeMode see below, FIXME?
 	}
@@ -3693,7 +3693,7 @@ void FS_Restart(int checksumFeed) {
 	// if we can't find spdefault.cfg, assume that the paths are
 	// busted and error out now, rather than getting an unreadable
 	// graphics screen when the font fails to load
-	if (FS_ReadFile("mpdefault.cfg", NULL) <= 0) {
+	if (FS_ReadFile("mpdefault.cfg", nullptr) <= 0) {
 		// this might happen when connecting to a pure server not using BASEGAME/pak0.pk3
 		// (for instance a TA demo server)
 		if (lastValidBase[0]) {
@@ -3821,7 +3821,7 @@ void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, 
 	int nfiles;
 	char filename[MAX_STRING_CHARS];
 
-	char** filenames = FS_ListFilteredFiles(dir, ext, NULL, &nfiles);
+	char** filenames = FS_ListFilteredFiles(dir, ext, nullptr, &nfiles);
 
 	FS_SortFileList(filenames, nfiles);
 
@@ -3964,12 +3964,12 @@ qboolean FS_WriteToTemporaryFile(const void* data, size_t dataLength, char** tem
 		if (tempFileNameResult)
 		{
 			const HANDLE file = CreateFile(
-				tempFileName, GENERIC_WRITE, 0, NULL,
-				CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+				tempFileName, GENERIC_WRITE, 0, nullptr,
+				CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 			if (file != INVALID_HANDLE_VALUE)
 			{
 				DWORD bytesWritten = 0;
-				if (WriteFile(file, data, dataLength, &bytesWritten, NULL))
+				if (WriteFile(file, data, dataLength, &bytesWritten, nullptr))
 				{
 					int deletesRemaining = ARRAY_LEN(fs_temporaryFileNames);
 

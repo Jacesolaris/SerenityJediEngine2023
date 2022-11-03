@@ -99,7 +99,7 @@ UI_UpdateConnectionMessageString
 
 ========================
 */
-void UI_UpdateConnectionMessageString(char* string) {
+void UI_UpdateConnectionMessageString(const char* string) {
 	Q_strncpyz(connectionMessageString, string, sizeof connectionMessageString);
 
 	// strip \n

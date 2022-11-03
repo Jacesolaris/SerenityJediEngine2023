@@ -1198,21 +1198,21 @@ void CL_MouseMove(usercmd_t* cmd)
 				{
 					//this will fuck things up for them, need to clamp
 					//max input?
-					mx = cl_mSensitivityOverride * (mx + ((mx < 0) ? -power[0] : power[0]) * cl_mouseAccelOffset->
+					mx = cl_mSensitivityOverride * (mx + (mx < 0 ? -power[0] : power[0]) * cl_mouseAccelOffset->
 						value);
-					my = cl_mSensitivityOverride * (my + ((my < 0) ? -power[1] : power[1]) * cl_mouseAccelOffset->
+					my = cl_mSensitivityOverride * (my + (my < 0 ? -power[1] : power[1]) * cl_mouseAccelOffset->
 						value);
 				}
 				else
 				{
-					mx = cl_sensitivity->value * (mx + ((mx < 0) ? -power[0] : power[0]) * cl_mouseAccelOffset->value);
-					my = cl_sensitivity->value * (my + ((my < 0) ? -power[1] : power[1]) * cl_mouseAccelOffset->value);
+					mx = cl_sensitivity->value * (mx + (mx < 0 ? -power[0] : power[0]) * cl_mouseAccelOffset->value);
+					my = cl_sensitivity->value * (my + (my < 0 ? -power[1] : power[1]) * cl_mouseAccelOffset->value);
 				}
 			}
 			else
 			{
-				mx = cl_sensitivity->value * (mx + ((mx < 0) ? -power[0] : power[0]) * cl_mouseAccelOffset->value);
-				my = cl_sensitivity->value * (my + ((my < 0) ? -power[1] : power[1]) * cl_mouseAccelOffset->value);
+				mx = cl_sensitivity->value * (mx + (mx < 0 ? -power[0] : power[0]) * cl_mouseAccelOffset->value);
+				my = cl_sensitivity->value * (my + (my < 0 ? -power[1] : power[1]) * cl_mouseAccelOffset->value);
 			}
 
 			if (cl_showMouseRate->integer)
@@ -1313,7 +1313,7 @@ void CL_CmdButtons(usercmd_t* cmd)
 	if (cmd->buttons & BUTTON_FORCEPOWER)
 	{
 		//check for transferring a use force to a use inventory...
-		if ((cmd->buttons & BUTTON_USE) || CL_NoUseableForce())
+		if (cmd->buttons & BUTTON_USE || CL_NoUseableForce())
 		{
 			//it's pushed, remap it!
 			cmd->buttons &= ~BUTTON_FORCEPOWER;
@@ -1443,7 +1443,7 @@ usercmd_t CL_CreateCmd(void)
 	// keyboard angle adjustment
 	CL_AdjustAngles();
 
-	Com_Memset(&cmd, 0, sizeof(cmd));
+	Com_Memset(&cmd, 0, sizeof cmd);
 
 	CL_CmdButtons(&cmd);
 
@@ -1575,7 +1575,7 @@ qboolean CL_ReadyToSendPacket(void)
 	{
 		Cvar_Set("cl_maxpackets", "1000");
 	}
-	const int oldPacketNum = (clc.netchan.outgoingSequence - 1) & PACKET_MASK;
+	const int oldPacketNum = clc.netchan.outgoingSequence - 1 & PACKET_MASK;
 	const int delta = cls.realtime - cl.outPackets[oldPacketNum].p_realtime;
 	if (delta < 1000 / cl_maxpackets->integer)
 	{
@@ -1620,10 +1620,10 @@ void CL_WritePacket(void)
 		return;
 	}
 
-	Com_Memset(&nullcmd, 0, sizeof(nullcmd));
+	Com_Memset(&nullcmd, 0, sizeof nullcmd);
 	usercmd_t* oldcmd = &nullcmd;
 
-	MSG_Init(&buf, data, sizeof(data));
+	MSG_Init(&buf, data, sizeof data);
 
 	MSG_Bitstream(&buf);
 	// write the current serverId so the server
@@ -1643,7 +1643,7 @@ void CL_WritePacket(void)
 	{
 		MSG_WriteByte(&buf, clc_clientCommand);
 		MSG_WriteLong(&buf, i);
-		MSG_WriteString(&buf, clc.reliableCommands[i & (MAX_RELIABLE_COMMANDS - 1)]);
+		MSG_WriteString(&buf, clc.reliableCommands[i & MAX_RELIABLE_COMMANDS - 1]);
 	}
 
 	// we want to send all the usercmds that were generated in the last
@@ -1657,7 +1657,7 @@ void CL_WritePacket(void)
 	{
 		Cvar_Set("cl_packetdup", "5");
 	}
-	const int oldPacketNum = (clc.netchan.outgoingSequence - 1 - cl_packetdup->integer) & PACKET_MASK;
+	const int oldPacketNum = clc.netchan.outgoingSequence - 1 - cl_packetdup->integer & PACKET_MASK;
 	int count = cl.cmdNumber - cl.outPackets[oldPacketNum].p_cmdNumber;
 	if (count > MAX_PACKET_USERCMDS)
 	{
@@ -1691,12 +1691,12 @@ void CL_WritePacket(void)
 		// also use the message acknowledge
 		key ^= clc.serverMessageSequence;
 		// also use the last acknowledged server command in the key
-		key ^= Com_HashKey(clc.serverCommands[clc.serverCommandSequence & (MAX_RELIABLE_COMMANDS - 1)], 32);
+		key ^= Com_HashKey(clc.serverCommands[clc.serverCommandSequence & MAX_RELIABLE_COMMANDS - 1], 32);
 
 		// write all the commands, including the predicted command
 		for (i = 0; i < count; i++)
 		{
-			const int j = (cl.cmdNumber - count + i + 1) & CMD_MASK;
+			const int j = cl.cmdNumber - count + i + 1 & CMD_MASK;
 			usercmd_t* cmd = &cl.cmds[j];
 			MSG_WriteDeltaUsercmdKey(&buf, key, oldcmd, cmd);
 			oldcmd = cmd;

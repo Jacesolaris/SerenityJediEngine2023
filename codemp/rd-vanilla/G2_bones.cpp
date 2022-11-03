@@ -3747,7 +3747,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 #ifdef _DEBUG_BONE_NAMES
 			if (bone.solidCount > 64)
 			{
-				char* debugBoneName = G2_Get_Bone_Name(&ghoul2V[0], ghoul2V[0].mBlist, bone.boneNumber);
+				const char* debugBoneName = G2_Get_Bone_Name(&ghoul2V[0], ghoul2V[0].mBlist, bone.boneNumber);
 				vec3_t absmin, absmax;
 
 				assert(debugBoneName);

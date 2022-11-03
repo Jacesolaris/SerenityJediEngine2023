@@ -59,7 +59,6 @@ void CG_SiegeBriefingDisplay(int team, int dontshow);
 void CG_PrecacheSiegeObjectiveAssetsForTeam(int myTeam)
 {
 	char			teamstr[64];
-	char			foundobjective[MAX_SIEGE_INFO_SIZE];
 
 	if (!siege_valid)
 	{
@@ -81,6 +80,7 @@ void CG_PrecacheSiegeObjectiveAssetsForTeam(int myTeam)
 		int i = 1;
 		while (i < 32)
 		{
+			char foundobjective[MAX_SIEGE_INFO_SIZE];
 			char objstr[256];
 			//eh, just try 32 I guess
 			Com_sprintf(objstr, sizeof objstr, "Objective%i", i);

@@ -360,11 +360,10 @@ static void CG_Text_Paint_Limit(float* maxX, float x, float y, float scale, vec4
 #define PIC_WIDTH 12
 
 extern const char* CG_GetLocationString(const char* loc); //cg_main.c
-void CG_DrawNewTeamInfo(rectDef_t* rect, float text_x, float text_y, float scale, vec4_t color, qhandle_t shader)
+void CG_DrawNewTeamInfo(const rectDef_t* rect, float text_x, float text_y, float scale, vec4_t color, qhandle_t shader)
 {
 	int i, len;
 	const char* p;
-	vec4_t hcolor;
 	float maxx, leftOver;
 	clientInfo_t* ci;
 	qhandle_t h;
@@ -403,6 +402,7 @@ void CG_DrawNewTeamInfo(rectDef_t* rect, float text_x, float text_y, float scale
 		ci = cgs.clientinfo + sortedTeamPlayers[i];
 		if (ci->infoValid && ci->team == cg.snap->ps.persistant[PERS_TEAM])
 		{
+			vec4_t hcolor;
 			int xx = rect->x + 1;
 			for (int j = 0; j <= PW_NUM_POWERUPS; j++)
 			{
@@ -475,7 +475,7 @@ void CG_DrawNewTeamInfo(rectDef_t* rect, float text_x, float text_y, float scale
 	}
 }
 
-void CG_DrawTeamSpectators(rectDef_t* rect, float scale, vec4_t color, qhandle_t shader)
+void CG_DrawTeamSpectators(const rectDef_t* rect, float scale, vec4_t color, qhandle_t shader)
 {
 	if (cg.spectatorLen)
 	{
@@ -553,7 +553,7 @@ void CG_DrawTeamSpectators(rectDef_t* rect, float scale, vec4_t color, qhandle_t
 	}
 }
 
-void CG_DrawMedal(int ownerDraw, rectDef_t* rect, float scale, vec4_t color, qhandle_t shader)
+void CG_DrawMedal(int ownerDraw, const rectDef_t* rect, float scale, vec4_t color, qhandle_t shader)
 {
 	const score_t* score = &cg.scores[cg.selectedScore];
 	float value = 0;

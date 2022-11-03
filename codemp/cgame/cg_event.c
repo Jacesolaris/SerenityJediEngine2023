@@ -1228,7 +1228,7 @@ void CG_GetCTFMessageEvent(const entityState_t* es)
 	CG_PrintCTFMessage(ci, teamName, es->eventParm);
 }
 
-void DoFall(centity_t* cent, entityState_t* es, int clientNum)
+void DoFall(centity_t* cent, const entityState_t* es, int clientNum)
 {
 	const int delta = es->eventParm;
 

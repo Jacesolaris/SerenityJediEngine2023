@@ -845,7 +845,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 	VectorMA(start, shotRange, forward, end);
 
 	int ignore = ent->s.number;
-	int traces = 0;
+	const int traces = 0;
 	while (traces < 10)
 	{
 		//need to loop this in case we hit a Jedi who dodges the shot

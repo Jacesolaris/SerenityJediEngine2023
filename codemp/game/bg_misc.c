@@ -2267,7 +2267,7 @@ void BG_CycleForce(playerState_t* ps, int direction)
 	while (x != presel)
 	{
 		// loop around to the current force power
-		if (ps->fd.forcePowersKnown & (1 << i) && i != ps->fd.forcePowerSelected)
+		if (ps->fd.forcePowersKnown & 1 << i && i != ps->fd.forcePowerSelected)
 		{
 			// we have this power
 			if (i != FP_LEVITATION && i != FP_SABER_OFFENSE && i != FP_SABER_DEFENSE && i != FP_SABERTHROW)

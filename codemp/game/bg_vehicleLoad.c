@@ -814,7 +814,7 @@ void BG_VehicleClampData(vehicleInfo_t* vehicle)
 	}
 }
 
-static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName, char* pValue)
+static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName, const char* pValue)
 {
 	vec3_t vec;
 	byte* b = (byte*)vehicle;
@@ -1520,7 +1520,7 @@ void BG_GetVehicleSkinName(char* skinname, int len)
 //bother with all the other funcs that don't really exist cgame-side.
 extern int BG_GetTime(void);
 
-void AttachRidersGeneric(Vehicle_t* pVeh)
+void AttachRidersGeneric(const Vehicle_t* pVeh)
 {
 	// If we have a pilot, attach him to the driver tag.
 	if (pVeh->m_pPilot)

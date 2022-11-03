@@ -44,7 +44,7 @@ extern void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean use
 //NEEDED FOR MIND-TRICK on NPCS=========================================================
 extern void Jedi_Decloak(gentity_t* self);
 extern qboolean walk_check(const gentity_t* self);
-extern float manual_forceblocking(gentity_t* defender);
+extern float manual_forceblocking(const gentity_t* defender);
 extern qboolean BG_FullBodyTauntAnim(int anim);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
@@ -57,7 +57,6 @@ extern qboolean PM_Saberinstab(int move);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean PM_RestAnim(int anim);
 extern void BG_ReduceSaberMishapLevel(playerState_t* ps);
-extern void BG_ReduceSaberMishapLevelBot(playerState_t* ps);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 extern qboolean PM_SaberInParry(int move);
@@ -81,7 +80,7 @@ extern bot_state_t* botstates[MAX_CLIENTS];
 extern void Touch_Button(gentity_t* ent, gentity_t* other, trace_t* trace);
 extern void player_Freeze(gentity_t* self);
 extern void Player_CheckFreeze(gentity_t* self);
-extern float manual_saberblocking(gentity_t* defender);
+extern float manual_saberblocking(const gentity_t* defender);
 extern qboolean PM_ForceUsingSaberAnim(int anim);
 extern qboolean PM_SaberInSpecial(int move);
 extern qboolean BG_SabersOff(const playerState_t* ps);
@@ -999,7 +998,7 @@ int ForcePowerUsableOn(const gentity_t* attacker, const gentity_t* other, forceP
 	}
 
 	if (other && other->client && (other->client->ps.fd.saberAnimLevel == SS_DESANN && other->client->ps.
-		saberAttackChainCount >=
+		saberFatigueChainCount >=
 		MISHAPLEVEL_HEAVY))
 	{
 		return 0;
@@ -1764,7 +1763,7 @@ void wp_add_to_client_bitflags(gentity_t* ent, int entNum)
 	}
 }
 
-void ForceTeamHeal(gentity_t* self)
+void ForceTeamHeal(const gentity_t* self)
 {
 	float radius = 256;
 	int i = 0;
@@ -1876,7 +1875,7 @@ void ForceTeamHeal(gentity_t* self)
 	}
 }
 
-void ForceTeamForceReplenish(gentity_t* self)
+void ForceTeamForceReplenish(const gentity_t* self)
 {
 	float radius = 256;
 	int i = 0;
@@ -2182,12 +2181,12 @@ qboolean WP_CounterForce(const gentity_t* attacker, const gentity_t* defender, i
 			return qfalse;
 		}
 
-		if (defender->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+		if (defender->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 		{
 			//can't block if we're too off balance.
 			return qfalse;
 		}
-		if (defender->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT
+		if (defender->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT
 			&& attacker->client->ps.fd.saberAnimLevel == SS_DESANN)
 		{
 			//can't block if we're too off balance and they are using Juyo's perk
@@ -2203,52 +2202,9 @@ qboolean WP_CounterForce(const gentity_t* attacker, const gentity_t* defender, i
 		{
 			if (defender->r.svFlags & SVF_BOT || defender->s.eType == ET_NPC)
 			{
-				float block_factor;
-				//bots just randomly dodge to make up for them not intelligently dodgeing
-				if (defender->client->ps.fd.forcePower <= BLOCKPOINTS_HALF || defender->client->ps.fd.blockPoints <=
-					BLOCKPOINTS_HALF)
-				{
-					switch (defender->client->ps.fd.forcePowerLevel[FP_ABSORB])
-					{
-						// These actually make more sense to be separate from SABER blocking arcs.
-					case FORCE_LEVEL_3:
-						block_factor = 0.6f;
-						break;
-					case FORCE_LEVEL_2:
-						block_factor = 0.5f;
-						break;
-					case FORCE_LEVEL_1:
-						block_factor = 0.4f;
-						break;
-					default:
-						block_factor = 0.1f;
-						break;
-					}
-				}
-				else
-				{
-					switch (defender->client->ps.fd.forcePowerLevel[FP_ABSORB])
-					{
-						// These actually make more sense to be separate from SABER blocking arcs.
-					case FORCE_LEVEL_3:
-						block_factor = 0.9f;
-						break;
-					case FORCE_LEVEL_2:
-						block_factor = 0.8f;
-						break;
-					case FORCE_LEVEL_1:
-						block_factor = 0.7f;
-						break;
-					default:
-						block_factor = 0.1f;
-						break;
-					}
-				}
+				return qtrue;
 			}
-			else
-			{
-				return qfalse;
-			}
+			return qfalse;
 		}
 
 		if (IsHybrid(defender))
@@ -2259,7 +2215,7 @@ qboolean WP_CounterForce(const gentity_t* attacker, const gentity_t* defender, i
 		return qtrue;
 }
 
-void ForceGrip(gentity_t* self)
+void ForceGrip(const gentity_t* self)
 {
 	trace_t tr;
 	vec3_t tfrom, tto, fwd;
@@ -2959,7 +2915,7 @@ void ForceLightning(gentity_t* self)
 	WP_ForcePowerStart(self, FP_LIGHTNING, 500);
 }
 
-qboolean melee_block_lightning_counter_force(gentity_t* attacker, gentity_t* defender, int attackPower)
+qboolean melee_block_lightning_counter_force(gentity_t* attacker, const gentity_t* defender, int attackPower)
 {
 	//generically checks to see if the defender is able to block an attack from this attacker
 	if (!manual_forceblocking(defender))
@@ -3027,7 +2983,7 @@ qboolean melee_block_lightning(gentity_t* attacker, gentity_t* defender)
 	return qtrue;
 }
 
-qboolean saber_block_lightning(const gentity_t* attacker, gentity_t* defender)
+qboolean saber_block_lightning(const gentity_t* attacker, const gentity_t* defender)
 {
 	//defender is attempting to block lightning.  Try to do it.
 	const qboolean ActiveBlocking = defender->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
@@ -4799,7 +4755,7 @@ qboolean PM_KnockDownAnimExtended(int anim);
 extern qboolean PM_StaggerAnim(int anim);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 
-static qboolean playeris_resisting_force_throw(gentity_t* player, gentity_t* attacker, qboolean pull)
+static qboolean playeris_resisting_force_throw(const gentity_t* player, gentity_t* attacker, qboolean pull)
 {
 	if (player->health <= 0)
 	{
@@ -6237,7 +6193,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 				//switched to more logical wasWallGrabbing toggle.
 				if (!wasWallGrabbing && ShouldPlayerResistForceThrow(push_list[x], self, pull) ||
 					playeris_resisting_force_throw(push_list[x], self, pull)
-					&& push_list[x]->client->ps.saberAttackChainCount < MISHAPLEVEL_HEAVY)
+					&& push_list[x]->client->ps.saberFatigueChainCount < MISHAPLEVEL_HEAVY)
 				{
 					//racc - player blocked the throw.
 					if (pull)
@@ -6309,7 +6265,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 
 					if (push_list[x]->client && VectorLength(pushDir) <= 256)
 					{
-						if (!OnSameTeam(self, push_list[x]) && push_list[x]->client->ps.saberAttackChainCount <
+						if (!OnSameTeam(self, push_list[x]) && push_list[x]->client->ps.saberFatigueChainCount <
 							MISHAPLEVEL_HEAVY)
 						{
 							canPullWeapon = qfalse;
@@ -7822,7 +7778,7 @@ int WP_DoSpecificPower(gentity_t* self, const usercmd_t* ucmd, const forcePowers
 	return powerSucceeded;
 }
 
-void FindGenericEnemyIndex(gentity_t* self)
+void FindGenericEnemyIndex(const gentity_t* self)
 {
 	//Find another client that would be considered a threat.
 	int i = 0;
@@ -8518,7 +8474,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		}
 	}
 
-	i = 0;
+	//i = 0;
 
 	if (self->client->ps.powerups[PW_FORCE_ENLIGHTENED_LIGHT] || self->client->ps.powerups[PW_FORCE_ENLIGHTENED_DARK])
 	{
@@ -8567,7 +8523,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		self->client->ps.fd.forceUsingAdded = 0;
 	}
 
-	i = 0;
+	//i = 0;
 
 	if (!(self->client->ps.fd.forcePowersActive & 1 << FP_TELEPATHY))
 	{
@@ -8997,9 +8953,9 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		&& self->client->ps.saberLockTime < level.time //not in a saber lock.
 		&& self->client->ps.groundEntityNum != ENTITYNUM_NONE) //can't regen while in the air.
 	{
-		if (self->client->ps.saberAttackChainCount > MISHAPLEVEL_NONE)
+		if (self->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE)
 		{
-			self->client->ps.saberAttackChainCount--;
+			self->client->ps.saberFatigueChainCount--;
 		}
 
 		if (self->client->ps.weapon == WP_SABER)

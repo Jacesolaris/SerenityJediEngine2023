@@ -568,7 +568,7 @@ static cvarTable_t cvarTable[] =
 constexpr auto FP_UPDATED_NONE = -1;
 constexpr auto NOWEAPON = -1;
 
-static const size_t cvarTableSize = ARRAY_LEN(cvarTable);
+static const size_t cvarTableSize = std::size(cvarTable);
 
 void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, int iMaxPixelWidth, int style,
 	int iFontIndex);
@@ -1353,7 +1353,7 @@ static qboolean UI_RunMenuScript(const char** args)
 		}
 		else if (Q_stricmp(name, "clearmouseover") == 0)
 		{
-			menuDef_t* menu = Menu_GetFocused();
+			const menuDef_t* menu = Menu_GetFocused();
 
 			if (menu)
 			{
@@ -1372,7 +1372,7 @@ static qboolean UI_RunMenuScript(const char** args)
 		}
 		else if (Q_stricmp(name, "resetMovesDesc") == 0)
 		{
-			menuDef_t* menu = Menu_GetFocused();
+			const menuDef_t* menu = Menu_GetFocused();
 
 			if (menu)
 			{
@@ -1391,7 +1391,7 @@ static qboolean UI_RunMenuScript(const char** args)
 		}
 		else if (Q_stricmp(name, "resetMovesList") == 0)
 		{
-			menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
+			const menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
 			//update saber models
 			if (menu)
 			{
@@ -1410,14 +1410,12 @@ static qboolean UI_RunMenuScript(const char** args)
 		//		}
 		else if (Q_stricmp(name, "setMoveCharacter") == 0)
 		{
-			char skin[MAX_QPATH];
-
 			UI_GetCharacterCvars();
 			UI_GetSaberCvars();
 
 			uiInfo.movesTitleIndex = 0;
 
-			menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
+			const menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
 
 			if (menu)
 			{
@@ -1427,6 +1425,7 @@ static qboolean UI_RunMenuScript(const char** args)
 					const modelDef_t* modelPtr = static_cast<modelDef_t*>(item->typeData);
 					if (modelPtr)
 					{
+						char skin[MAX_QPATH];
 						uiInfo.movesBaseAnim = datapadMoveTitleBaseAnims[uiInfo.movesTitleIndex];
 						ItemParse_model_g2anim_go(item, uiInfo.movesBaseAnim);
 
@@ -2118,7 +2117,7 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 	}
 	else if (feederID == FEEDER_MOVES)
 	{
-		menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
+		const menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
 
 		if (menu)
 		{
@@ -2197,7 +2196,7 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 	{
 		uiInfo.movesTitleIndex = index;
 		uiInfo.movesBaseAnim = datapadMoveTitleBaseAnims[uiInfo.movesTitleIndex];
-		menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
+		const menuDef_t* menu = Menus_FindByName("datapadMovesMenu");
 
 		if (menu)
 		{
@@ -2533,7 +2532,7 @@ int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, int animNum, const 
 			flags = BONE_ANIM_OVERRIDE_LOOP;
 		}
 		flags |= BONE_ANIM_BLEND;
-		const int blendTime = 150;
+		constexpr int blendTime = 150;
 
 		re.G2API_SetBoneAnim(ghlInfo, boneName, sFrame, eFrame, flags, animSpeed, time, -1, blendTime);
 
@@ -2543,7 +2542,7 @@ int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, int animNum, const 
 	return 0;
 }
 
-static qboolean UI_ParseColorData(char* buf, playerSpeciesInfo_t& species)
+static qboolean UI_ParseColorData(const char* buf, playerSpeciesInfo_t& species)
 {
 	const char* p;
 
@@ -2662,7 +2661,7 @@ PlayerModel_BuildList
 */
 static void UI_BuildPlayerModel_List(qboolean inGameLoad)
 {
-	static const size_t DIR_LIST_SIZE = 16384;
+	static constexpr size_t DIR_LIST_SIZE = 16384;
 
 	size_t dirListSize = DIR_LIST_SIZE;
 	char stackDirList[8192];
@@ -2794,13 +2793,13 @@ static void UI_BuildPlayerModel_List(qboolean inGameLoad)
 			species->SkinTorso = static_cast<skinName_t*>(malloc(species->SkinTorsoMax * sizeof(skinName_t)));
 			species->SkinLeg = static_cast<skinName_t*>(malloc(species->SkinLegMax * sizeof(skinName_t)));
 
-			char skinname[64];
 			int iSkinParts = 0;
 
 			const int numfiles = ui.FS_GetFileList(va("models/players/%s", dirptr), ".skin", filelist, sizeof filelist);
 			char* fileptr = filelist;
 			for (int j = 0; j < numfiles; j++, fileptr += filelen + 1)
 			{
+				char skinname[64];
 				if (building)
 				{
 					ui.FS_FOpenFile(va("models/players/%s/%s", dirptr, fileptr), &f, FS_READ);
@@ -3220,12 +3219,12 @@ void UI_LoadMenus(const char* menuFile, qboolean reset)
 
 	const int start = Sys_Milliseconds();
 
-	int len = ui.FS_ReadFile(menuFile, (void**)&buffer);
+	int len = ui.FS_ReadFile(menuFile, reinterpret_cast<void**>(&buffer));
 
 	if (len < 1)
 	{
 		Com_Printf(va(S_COLOR_YELLOW "menu file not found: %s, using default\n", menuFile));
-		len = ui.FS_ReadFile("ui/menus.txt", (void**)&buffer);
+		len = ui.FS_ReadFile("ui/menus.txt", reinterpret_cast<void**>(&buffer));
 
 		if (len < 1)
 		{
@@ -4040,7 +4039,7 @@ void UI_UpdateCvars(void)
 UI_DrawEffects
 =================
 */
-static void UI_DrawEffects(rectDef_t* rect, float scale, vec4_t color)
+static void UI_DrawEffects(const rectDef_t* rect, float scale, vec4_t color)
 {
 	UI_DrawHandlePic(rect->x, rect->y - 14, 128, 8, 0/*uiInfo.uiDC.Assets.fxBasePic*/);
 	UI_DrawHandlePic(rect->x + uiInfo.effectsColor * 16 + 8, rect->y - 16, 16, 12,
@@ -4052,7 +4051,7 @@ static void UI_DrawEffects(rectDef_t* rect, float scale, vec4_t color)
 UI_Version
 =================
 */
-static void UI_Version(rectDef_t* rect, float scale, vec4_t color, int iFontIndex)
+static void UI_Version(const rectDef_t* rect, float scale, vec4_t color, int iFontIndex)
 {
 	const int width = DC->textWidth(Q3_VERSION, scale, 0);
 
@@ -4085,7 +4084,7 @@ static void UI_DrawKeyBindStatus(rectDef_t* rect, float scale, vec4_t color, int
 UI_DrawKeyBindStatus
 =================
 */
-static void UI_DrawGLInfo(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iFontIndex)
+static void UI_DrawGLInfo(const rectDef_t* rect, float scale, vec4_t color, int textStyle, int iFontIndex)
 {
 	constexpr auto MAX_LINES = 64;
 	char buff[4096];
@@ -4134,7 +4133,7 @@ static void UI_DrawGLInfo(rectDef_t* rect, float scale, vec4_t color, int textSt
 	}
 }
 
-static void UI_DrawCrosshair(rectDef_t* rect, float scale, vec4_t color)
+static void UI_DrawCrosshair(const rectDef_t* rect, float scale, vec4_t color)
 {
 	trap_R_SetColor(color);
 	if (uiInfo.currentCrosshair < 0 || uiInfo.currentCrosshair >= NUM_CROSSHAIRS)
@@ -4245,7 +4244,7 @@ UI_OwnerDrawVisible
 */
 static qboolean UI_OwnerDrawVisible(int flags)
 {
-	const qboolean vis = qtrue;
+	constexpr qboolean vis = qtrue;
 
 	while (flags)
 	{
@@ -5313,7 +5312,7 @@ static void UI_InitAllocForcePowers(const char* forceName)
 	short forcePowerI = 0;
 	int forcelevel;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -5371,7 +5370,7 @@ static void UI_SetPowerTitleText(qboolean showAllocated)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -5415,7 +5414,7 @@ static void UI_SetPowerTitleText(qboolean showAllocated)
 //. Find weapons button and make active/inactive  (Used by Force Power Allocation screen)
 static void UI_ForcePowerWeaponsButton(qboolean activeFlag)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -5785,9 +5784,8 @@ static void UI_DecrementCurrentForcePower(void)
 {
 	itemDef_t* item;
 	vec4_t color = { 0.65f, 0.65f, 0.65f, 1.0f };
-	char itemName[128];
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -5843,6 +5841,7 @@ static void UI_DecrementCurrentForcePower(void)
 	// Make it so all  buttons can be clicked
 	for (short i = 0; i < MAX_POWER_ENUMS; i++)
 	{
+		char itemName[128];
 		Com_sprintf(itemName, sizeof itemName, "%s_fbutton", powerEnums[i].title);
 		item = Menu_FindItemByName(menu, itemName);
 		if (item) // This is okay, because core powers don't have a hex button
@@ -5883,9 +5882,8 @@ void Item_MouseEnter(itemDef_t* item, float x, float y);
 static void UI_AffectForcePowerLevel(const char* forceName)
 {
 	short forcePowerI = 0;
-	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -5941,12 +5939,13 @@ static void UI_AffectForcePowerLevel(const char* forceName)
 	// A field was updated, so make it so others can't be
 	if (uiInfo.forcePowerUpdated > FP_UPDATED_NONE)
 	{
+		itemDef_t* item;
 		vec4_t color = { 0.25f, 0.25f, 0.25f, 1.0f };
-		char itemName[128];
 
 		// Make it so none of the other buttons can be clicked
 		for (short i = 0; i < MAX_POWER_ENUMS; i++)
 		{
+			char itemName[128];
 			if (i == uiInfo.forcePowerUpdated)
 			{
 				continue;
@@ -6002,7 +6001,7 @@ static void UI_DecrementForcePowerLevel(void)
 static void UI_ShowForceLevelDesc(const char* forceName)
 {
 	short forcePowerI = 0;
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -6061,7 +6060,7 @@ static void UI_ResetForceLevels(void)
 
 		itemDef_t* item;
 
-		menuDef_t* menu = Menu_GetFocused(); // Get current menu
+		const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 		if (!menu)
 		{
@@ -6142,12 +6141,11 @@ static void UI_UpdateFightingStyle(void)
 
 static void UI_ResetCharacterListBoxes(void)
 {
-	listBoxDef_t* listPtr;
-
-	menuDef_t* menu = Menus_FindByName("characterMenu");
+	const menuDef_t* menu = Menus_FindByName("characterMenu");
 
 	if (menu)
 	{
+		listBoxDef_t* listPtr;
 		itemDef_t* item = Menu_FindItemByName(menu, "headlistbox");
 		if (item)
 		{
@@ -6239,7 +6237,7 @@ static void UI_GiveInventory(const int itemIndex, const int amount)
 //. Find weapons allocation screen BEGIN button and make active/inactive
 static void UI_WeaponAllocBeginButton(qboolean activeFlag)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -6412,7 +6410,7 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 	const char* iconItemName, const char* litIconItemName, const char* hexBackground,
 	const char* soundfile)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -6538,7 +6536,7 @@ static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 	const char* chosenItemName, * chosenButtonName, * background;
 	int ammoIndex, weaponIndex;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	// Which item has it?
 	if (weaponSelectionIndex == 1)
@@ -6653,7 +6651,7 @@ static void UI_NormalWeaponSelection(const int selectionslot)
 {
 	itemDef_s* item;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 	if (!menu)
 	{
 		return;
@@ -6682,7 +6680,7 @@ static void UI_HighLightWeaponSelection(const int selectionslot)
 {
 	itemDef_s* item;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 	if (!menu)
 	{
 		return;
@@ -6712,7 +6710,7 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 	const char* iconItemName, const char* litIconItemName, const char* hexBackground,
 	const char* soundfile)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -6813,7 +6811,7 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 // Update the player weapons with the chosen throw weapon
 static void UI_RemoveThrowWeaponSelection(void)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	// Weapon not chosen
 	if (uiInfo.selectedThrowWeapon == NOWEAPON)
@@ -6896,7 +6894,7 @@ static void UI_RemoveThrowWeaponSelection(void)
 
 static void UI_NormalThrowSelection(void)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 	if (!menu)
 	{
 		return;
@@ -6908,7 +6906,7 @@ static void UI_NormalThrowSelection(void)
 
 static void UI_HighLightThrowSelection(void)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 	if (!menu)
 	{
 		return;
@@ -6965,7 +6963,7 @@ static void UI_UpdateCharacterSkin(void)
 {
 	char skin[MAX_QPATH];
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -6993,7 +6991,7 @@ static void UI_UpdateCharacter(qboolean changedModel)
 {
 	char modelPath[MAX_QPATH];
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -7039,8 +7037,7 @@ static void UI_UpdateSaberHilt(qboolean secondSaber)
 {
 	char model[MAX_QPATH];
 	char modelPath[MAX_QPATH];
-	char skinPath[MAX_QPATH];
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
 
 	if (!menu)
 	{
@@ -7070,6 +7067,7 @@ static void UI_UpdateSaberHilt(qboolean secondSaber)
 	//read this from the sabers.cfg
 	if (UI_SaberModelForSaber(model, modelPath))
 	{
+		char skinPath[MAX_QPATH];
 		//successfully found a model
 		ItemParse_asset_model_go(item, modelPath); //set the model
 		//get the customSkin, if any
@@ -7117,7 +7115,7 @@ UI_CheckVid1Data
 */
 void UI_CheckVid1Data(const char* menuTo, const char* warningMenuName)
 {
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
 
 	if (!menu)
 	{
@@ -7187,7 +7185,7 @@ UI_AdjustSaveGameListBox
 void UI_AdjustSaveGameListBox(int currentLine)
 {
 	// could be in either the ingame or shell load menu (I know, I know it's bad)
-	menuDef_t* menu = Menus_FindByName("loadgameMenu");
+	const menuDef_t* menu = Menus_FindByName("loadgameMenu");
 	if (!menu)
 	{
 		menu = Menus_FindByName("ingameloadMenu");

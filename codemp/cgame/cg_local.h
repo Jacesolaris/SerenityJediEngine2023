@@ -364,6 +364,7 @@ typedef struct clientInfo_s {
 	holster_t	holsterData[MAX_HOLSTER];
 
 	int			saberAttackChainCount;
+	int         saberFatigueChainCount;
 	int			BlasterAttackChainCount;
 	int			blockPoints;
 	int			saberAnimLevel;
@@ -519,6 +520,7 @@ typedef struct centity_s {
 	int			    fx_time;		// timer for beam in/out effects.
 
 	int			    saberAttackChainCount;
+	int             saberFatigueChainCount;
 	int			    BlasterAttackChainCount;
 
 	int				shieldHitTime;
@@ -2229,7 +2231,7 @@ void CG_ShaderStateChanged(void);
 int CG_IsMindTricked(int trickIndex1, int trickIndex2, int trickIndex3, int trickIndex4, int client);
 void CG_Respawn(void);
 void CG_TransitionPlayerState(playerState_t* ps, playerState_t* ops);
-void CG_CheckChangedPredictableEvents(playerState_t* ps);
+void CG_CheckChangedPredictableEvents(const playerState_t* ps);
 
 //
 // cg_siege.c

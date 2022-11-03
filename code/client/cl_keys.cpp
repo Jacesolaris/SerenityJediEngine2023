@@ -399,7 +399,6 @@ x, y, amd width are in pixels
 */
 void Field_VariableSizeDraw(field_t* edit, int x, int y, int width, int size, qboolean showCursor, qboolean noColorEscape) {
 	int		prestep;
-	int		cursorChar;
 	char	str[MAX_STRING_CHARS];
 
 	int drawLen = edit->widthInChars - 1; // - 1 so there is always a space for the cursor
@@ -444,6 +443,7 @@ void Field_VariableSizeDraw(field_t* edit, int x, int y, int width, int size, qb
 
 	// draw the cursor
 	if (showCursor) {
+		int cursorChar;
 		if (cls.realtime >> 8 & 1) {
 			return;		// off blink
 		}
@@ -804,7 +804,7 @@ the K_* names are matched up.
 to be configured even if they don't have defined names.
 ===================
 */
-int Key_StringToKeynum(char* str) {
+int Key_StringToKeynum(const char* str) {
 	if (!VALIDSTRING(str))
 		return -1;
 

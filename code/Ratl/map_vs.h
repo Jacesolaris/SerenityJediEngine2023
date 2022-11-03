@@ -897,7 +897,7 @@ namespace ratl
 			set_base<TStorageTraits, IS_MULTI>* mOwner;
 
 		public:
-			iterator(set_base<TStorageTraits, IS_MULTI>* owner = 0, int loc = tree_node::NULL_NODE) :
+			iterator(set_base<TStorageTraits, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
@@ -967,7 +967,7 @@ namespace ratl
 			const set_base<TStorageTraits, IS_MULTI>* mOwner;
 
 		public:
-			const_iterator(const set_base<TStorageTraits, IS_MULTI>* owner = 0, int loc = tree_node::NULL_NODE) :
+			const_iterator(const set_base<TStorageTraits, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
@@ -1286,7 +1286,7 @@ namespace ratl
 			map_base<K, V, IS_MULTI>* mOwner;
 
 		public:
-			iterator(map_base<K, V, IS_MULTI>* owner = 0, int loc = tree_node::NULL_NODE) :
+			iterator(map_base<K, V, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
@@ -1367,7 +1367,7 @@ namespace ratl
 			const map_base<K, V, IS_MULTI>* mOwner;
 
 		public:
-			const_iterator(const map_base<K, V, IS_MULTI>* owner = 0, int loc = tree_node::NULL_NODE) :
+			const_iterator(const map_base<K, V, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{

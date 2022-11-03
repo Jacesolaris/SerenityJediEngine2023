@@ -100,10 +100,10 @@ int BotSelectChoiceWeapon(bot_state_t* bs, int weapon, int doselection);
 void adjustfor_strafe(const bot_state_t* bs, vec3_t move_dir);
 void BotBehave_Attack(bot_state_t* bs);
 extern const gbuyable_t bg_buylist[];
-extern qboolean IsSurrendering(gentity_t* self);
+extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(gentity_t* self);
 extern qboolean IsCowering(gentity_t* self);
-extern qboolean IsAnimRequiresResponce(gentity_t* self);
+extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 qboolean G_ThereIsAMaster(void);
 void BotBehave_AttackMove(bot_state_t* bs);
 
@@ -6720,13 +6720,13 @@ int CTFTakesPriority(bot_state_t* bs)
 		level.time - bs->lastDeadTime < BOT_MAX_WEAPON_GATHER_TIME)
 	{
 		//get the nearest weapon laying around base before heading off for battle
-		int idleWP = GetBestIdleGoal(bs);
+		const int idle_wp = GetBestIdleGoal(bs);
 
-		if (idleWP != -1 && gWPArray[idleWP] && gWPArray[idleWP]->inuse)
+		if (idle_wp != -1 && gWPArray[idle_wp] && gWPArray[idle_wp]->inuse)
 		{
 			if (bs->wpDestSwitchTime < level.time)
 			{
-				bs->wpDestination = gWPArray[idleWP];
+				bs->wpDestination = gWPArray[idle_wp];
 			}
 			return 1;
 		}
@@ -7708,10 +7708,10 @@ void GetIdealDestination(bot_state_t* bs)
 			VectorCopy(bs->currentEnemy->s.origin, usethisvec);
 		}
 
-		int bChicken = BotIsAChickenWuss(bs);
-		bs->runningToEscapeThreat = bChicken;
+		const int b_chicken = BotIsAChickenWuss(bs);
+		bs->runningToEscapeThreat = b_chicken;
 
-		if (bs->frame_Enemy_Len < distChange || bChicken && bChicken != 2)
+		if (bs->frame_Enemy_Len < distChange || b_chicken && b_chicken != 2)
 		{
 			const int c_wp_index = bs->wpCurrent->index;
 
@@ -7743,7 +7743,7 @@ void GetIdealDestination(bot_state_t* bs)
 				}
 			}
 		}
-		else if (bChicken != 2 && bs->wpDestSwitchTime < level.time)
+		else if (b_chicken != 2 && bs->wpDestSwitchTime < level.time)
 		{
 			tempInt = GetNearestVisibleWP(usethisvec, 0);
 

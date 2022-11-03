@@ -17171,11 +17171,12 @@ void CG_Player(centity_t* cent)
 		if (cent->currentState.eFlags & EF_JETPACK_ACTIVE)
 		{
 			mdxaBone_t mat;
-			vec3_t flamePos, flameDir;
 			int n = 0;
 
 			while (n < 2)
 			{
+				vec3_t flameDir;
+				vec3_t flamePos;
 				//Get the position/dir of the flame bolt on the jetpack model bolted to the player
 				trap->G2API_GetBoltMatrix(cent->ghoul2, 3, n, &mat, cent->turAngles, cent->lerpOrigin, cg.time,
 					cgs.game_models, cent->modelScale);

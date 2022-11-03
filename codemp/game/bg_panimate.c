@@ -273,7 +273,7 @@ qboolean PM_InSaberStandAnim(const int anim)
 {
 	switch (anim)
 	{
-	case BOTH_STAND1: //not really a saberstance anim, actually... "saber off" stance
+	case BOTH_STAND1: //not really a saber stance anim, actually... "saber off" stance
 	case BOTH_STAND2: //single-saber, medium style
 	case BOTH_SABERFAST_STANCE: //single-saber, fast style
 	case BOTH_SABERSLOW_STANCE: //single-saber, strong style
@@ -1934,28 +1934,6 @@ int g_block_the_attack(const int move)
 	}
 }
 
-saberMoveName_t PM_AbsorbtheParry(const int move)
-{
-	switch (move)
-	{
-	case BLOCKED_FRONT:
-	case BLOCKED_BLOCKATTACK_FRONT:
-	case BLOCKED_TOP: //LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case BLOCKED_BLOCKATTACK_RIGHT:
-	case BLOCKED_UPPER_RIGHT: //LS_PARRY_UR:
-	default:
-		return LS_REFLECT_ATTACK_RIGHT; //push up, slightly to right
-	case BLOCKED_BLOCKATTACK_LEFT:
-	case BLOCKED_UPPER_LEFT: //LS_PARRY_UL:
-		return LS_REFLECT_ATTACK_LEFT; //push up and to left
-	case BLOCKED_LOWER_RIGHT: //LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case BLOCKED_LOWER_LEFT: //LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
 saberMoveName_t PM_KnockawayForParry(const int move)
 {
 	switch (move)
@@ -1996,53 +1974,6 @@ saberMoveName_t PM_KnockawayForParryOld(const int move)
 	case BLOCKED_LOWER_RIGHT: //LS_PARRY_LR:
 		return LS_K1_BR; //push down and to left
 	case BLOCKED_LOWER_LEFT: //LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
-saberMoveName_t PM_PerfectBlocktheAttack(const int move)
-{
-	switch (move)
-	{
-	case BLOCKED_FRONT:
-	case BLOCKED_BLOCKATTACK_FRONT:
-	case BLOCKED_TOP: //LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case BLOCKED_BLOCKATTACK_RIGHT:
-	case BLOCKED_UPPER_RIGHT: //LS_PARRY_UR:
-	default:
-		return LS_KNOCK_RIGHT; //push up, slightly to right
-	case BLOCKED_BLOCKATTACK_LEFT:
-	case BLOCKED_UPPER_LEFT: //LS_PARRY_UL:
-		return LS_KNOCK_LEFT; //push up and to left
-	case BLOCKED_LOWER_RIGHT: //LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case BLOCKED_LOWER_LEFT: //LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
-int G_PerfectBlocktheAttack(const int move)
-{
-	switch (move)
-	{
-	case LS_REFLECT_ATTACK_FRONT:
-	case LS_PARRY_FRONT:
-	case LS_PARRY_WALK:
-	case LS_PARRY_WALK_DUAL:
-	case LS_PARRY_WALK_STAFF:
-	case LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case LS_REFLECT_ATTACK_RIGHT:
-	case LS_PARRY_UR:
-	default:
-		return LS_KNOCK_RIGHT; //push up, slightly to right
-	case LS_REFLECT_ATTACK_LEFT:
-	case LS_PARRY_UL:
-		return LS_KNOCK_LEFT; //push up and to left
-	case LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case LS_PARRY_LL:
 		return LS_K1_BL; //push down and to right
 	}
 }
@@ -5056,7 +4987,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			//Now precache all the sounds
 			if (lowestVal && highestVal)
 			{
-				if ((highestVal - lowestVal) >= MAX_RANDOM_ANIM_SOUNDS)
+				if (highestVal - lowestVal >= MAX_RANDOM_ANIM_SOUNDS)
 				{
 					highestVal = lowestVal + (MAX_RANDOM_ANIM_SOUNDS - 1);
 				}
@@ -5230,7 +5161,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			if (lowestVal && highestVal)
 			{
 				//assert(highestVal - lowestVal < MAX_RANDOM_ANIM_SOUNDS);
-				if ((highestVal - lowestVal) >= MAX_RANDOM_ANIM_SOUNDS)
+				if (highestVal - lowestVal >= MAX_RANDOM_ANIM_SOUNDS)
 				{
 					highestVal = lowestVal + (MAX_RANDOM_ANIM_SOUNDS - 1);
 				}
@@ -5519,7 +5450,7 @@ int bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int 
 	}
 
 	// Load and parse mpanimevents.cfg file
-	Com_sprintf(sfilename, sizeof(sfilename), "%smpanimevents.cfg", as_filename);
+	Com_sprintf(sfilename, sizeof sfilename, "%smpanimevents.cfg", as_filename);
 
 	if (bg_animParseIncluding <= 0)
 	{
@@ -5557,7 +5488,7 @@ int bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int 
 		//no file
 		goto fin;
 	}
-	if (len >= sizeof(text) - 1)
+	if (len >= sizeof text - 1)
 	{
 		trap->FS_Close(f);
 #ifndef FINAL_BUILD
@@ -6107,16 +6038,6 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 	float* anim_speed, const int broken, const int fatigued)
 {
 	char buf[128];
-	const float redanimscale = 1.0f;
-	const float blueanimscale = 1.0f;
-	const float tavionanimscale = 1.0f;
-	const float mediumanimscale = 1.0f;
-	const float npcanimscale = 0.90f;
-	const float dualanimscale = 0.9f;
-	const float staffanimscale = 0.9f;
-	const float heavyanimscale = 1.0f;
-	const float yodaanimscale = 1.25f;
-	const float Fatiguedanimscale = 0.75f;
 
 	trap->Cvar_VariableStringBuffer("g_saberAnimSpeed", buf, sizeof buf);
 	const float saberanimscale = atof(buf);
@@ -6159,9 +6080,55 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 		anim >= BOTH_S4_S1_T_ && anim <= BOTH_S4_S1_TR ||
 		anim >= BOTH_S5_S1_T_ && anim <= BOTH_S5_S1_TR)
 	{
-		if (fatigued & 1 << FLAG_ATTACKFATIGUE)
+		if (fatigued & 1 << FLAG_ATTACKFATIGUE
+			&& anim != BOTH_FORCEWALLRELEASE_FORWARD
+			&& anim != BOTH_FORCEWALLRUNFLIP_START
+			&& anim != BOTH_FORCEWALLRUNFLIP_END
+			&& anim != BOTH_JUMPFLIPSTABDOWN
+			&& anim != BOTH_JUMPFLIPSLASHDOWN1
+			&& anim != BOTH_LUNGE2_B__T_)
 		{
-			*anim_speed *= Fatiguedanimscale;
+			const float fatiguedanimscale = 0.75f;
+			*anim_speed *= fatiguedanimscale;
+		}
+		else if (fatigued & 1 << FLAG_SLOWBOUNCE)
+		{//slow animation for slow bounces
+			if (PM_BounceAnim(anim))
+			{
+				*anim_speed *= 0.6f;
+			}
+			else if (PM_SaberReturnAnim(anim))
+			{
+				*anim_speed *= 0.8f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
+		{//getting parried slows down your reaction
+			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
+			{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
+				*anim_speed *= 0.6f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_PARRIED)
+		{//getting parried slows down your reaction
+			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
+			{
+				*anim_speed *= 0.90f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_BLOCKED)
+		{
+			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
+			{
+				*anim_speed *= 0.85f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
+		{//slow animation for all bounces
+			if (PM_SaberInMassiveBounce(anim))
+			{
+				*anim_speed *= 0.5f;
+			}
 		}
 		else
 		{
@@ -6173,6 +6140,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 				}
 				else
 				{
+					const float dualanimscale = 0.90f;
 					*anim_speed *= dualanimscale;
 				}
 			}
@@ -6184,107 +6152,39 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 				}
 				else
 				{
+					const float staffanimscale = 0.90f;
 					*anim_speed *= staffanimscale;
 				}
 			}
 			else if (saber_anim_level == SS_FAST)
 			{
+				const float blueanimscale = 1.0f;
 				*anim_speed *= blueanimscale;
 			}
 			else if (saber_anim_level == SS_MEDIUM)
 			{
-				*anim_speed *= mediumanimscale;
+				const float realisticanimscale = 0.95f;
+				*anim_speed *= realisticanimscale;
 			}
 			else if (saber_anim_level == SS_STRONG)
 			{
+				const float redanimscale = 1.0f;
 				*anim_speed *= redanimscale;
 			}
 			else if (saber_anim_level == SS_DESANN)
 			{
+				const float heavyanimscale = 1.0f;
 				*anim_speed *= heavyanimscale;
 			}
 			else if (saber_anim_level == SS_TAVION)
 			{
+				const float tavionanimscale = 0.9f;
 				*anim_speed *= tavionanimscale;
 			}
 			else
 			{
 				*anim_speed *= saberanimscale;
 			}
-		}
-	}
-	else if (broken && PM_InSaberAnim(anim))
-	{
-		if (broken & 1 << BROKENLIMB_RARM)
-		{
-			*anim_speed *= 0.5f;
-		}
-		else if (broken & 1 << BROKENLIMB_LARM)
-		{
-			*anim_speed *= 0.65f;
-		}
-	}
-
-	if (saber_anim_level == SS_STRONG || saber_anim_level == SS_DESANN)
-	{
-		if (anim == BOTH_V1_BL_S1
-			|| anim == BOTH_V1_BR_S1
-			|| anim == BOTH_V1_TL_S1
-			|| anim == BOTH_V1_TR_S1
-			|| anim == BOTH_V1_T__S1
-			|| anim >= BOTH_V6_BL_S6 && anim <= BOTH_V7__R_S7)
-		{
-			*anim_speed *= heavyanimscale;
-		}
-	}
-
-	if ((fatigued & 1 << FLAG_FATIGUED || fatigued & 1 << FLAG_BLOCKDRAINED)
-		&& anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB
-		&& anim != BOTH_FORCEWALLRELEASE_FORWARD && anim != BOTH_FORCEWALLRUNFLIP_START
-		&& anim != BOTH_FORCEWALLRUNFLIP_END
-		&& anim != BOTH_JUMPFLIPSTABDOWN
-		&& anim != BOTH_JUMPFLIPSLASHDOWN1
-		&& anim != BOTH_LUNGE2_B__T_)
-	{//You're pooped.  Move slower
-		*anim_speed *= 0.8f;
-	}
-	else if (fatigued & 1 << FLAG_SLOWBOUNCE)
-	{//slow animation for slow bounces
-		if (PM_BounceAnim(anim))
-		{
-			*anim_speed *= 0.6f;
-		}
-		else if (PM_SaberReturnAnim(anim))
-		{
-			*anim_speed *= 0.8f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
-	{//getting parried slows down your reaction
-		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
-			*anim_speed *= 0.6f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_PARRIED)
-	{//getting parried slows down your reaction
-		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
-			*anim_speed *= 0.8f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_BLOCKED)
-	{
-		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{
-			*anim_speed *= 0.95f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
-	{//slow animation for all bounces
-		if (PM_SaberInMassiveBounce(anim))
-		{
-			*anim_speed *= 0.3f;
 		}
 	}
 }

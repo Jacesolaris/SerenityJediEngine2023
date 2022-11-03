@@ -435,7 +435,7 @@ using game_export_t = struct
 	// and parameters.  Return qfalse if the game doesn't recognize it as a command.
 	qboolean(*ConsoleCommand)(void);
 
-	void (*GameSpawnRMGEntity)(char* s);
+	void (*GameSpawnRMGEntity)(const char* s);
 	//
 	// global variables shared between game and server
 	//

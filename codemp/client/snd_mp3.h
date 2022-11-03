@@ -57,7 +57,7 @@ float		MP3Stream_GetPlayingTimeInSeconds(LP_MP3STREAM lpMP3Stream);
 float		MP3Stream_GetRemainingTimeInSeconds(LP_MP3STREAM lpMP3Stream);
 qboolean	MP3_FakeUpWAVInfo(const char* psLocalFilename, void* pvData, int iDataLen, int iUnpackedDataLength, int& format, int& rate, int& width, int& channels, int& samples, int& dataofs, qboolean bStereoDesired = qfalse);
 qboolean	MP3_ReadSpecialTagInfo(byte* pbLoadedFile, int iLoadedFileLen,
-	id3v1_1** ppTAG = NULL, int* piUncompressedSize = NULL, float* pfMaxVol = NULL);
+	id3v1_1** ppTAG = nullptr, int* piUncompressedSize = nullptr, float* pfMaxVol = nullptr);
 qboolean	MP3Stream_InitFromFile(sfx_t* sfx, byte* pbSrcData, int iSrcDatalen, const char* psSrcDataFilename, int iMP3UnPackedSize, qboolean bStereoDesired = qfalse);
 int			MP3Stream_Decode(LP_MP3STREAM lpMP3Stream, qboolean bDoingMusic);
 qboolean	MP3Stream_SeekTo(channel_t* ch, float fTimeToSeekTo);

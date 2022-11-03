@@ -75,9 +75,9 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 	gentity_t* hitEnt = trace != NULL ? &g_entities[trace->entityNum] : NULL;
 
 	if (!hitEnt ||
-		(pSelfVeh && pSelfVeh->m_pPilot &&
-			hitEnt && hitEnt->s.eType == ET_MISSILE && hitEnt->inuse &&
-			hitEnt->r.ownerNum == pSelfVeh->m_pPilot->s.number)
+		pSelfVeh && pSelfVeh->m_pPilot &&
+		hitEnt && hitEnt->s.eType == ET_MISSILE && hitEnt->inuse &&
+		hitEnt->r.ownerNum == pSelfVeh->m_pPilot->s.number
 		)
 	{
 		return;
@@ -116,14 +116,14 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 	if (trace->entityNum < ENTITYNUM_WORLD
 		&& hitEnt->s.eType == ET_MOVER
 		&& hitEnt->s.apos.trType != TR_STATIONARY //rotating
-		&& (hitEnt->spawnflags & 16) //IMPACT
+		&& hitEnt->spawnflags & 16 //IMPACT
 		&& Q_stricmp("func_rotating", hitEnt->classname) == 0)
 	{
 		//hit a func_rotating that is supposed to destroy anything it touches!
 		//guarantee the hit will happen, thereby taking off a piece of the ship
 		forceSurfDestruction = qtrue;
 	}
-	else if ((fabs(pm->ps->velocity[0]) + fabs(pm->ps->velocity[1])) < 100.0f
+	else if (fabs(pm->ps->velocity[0]) + fabs(pm->ps->velocity[1]) < 100.0f
 		&& pm->ps->velocity[2] > -100.0f)
 #elif defined(_CGAME)
 	if ((fabs(pm->ps->velocity[0]) + fabs(pm->ps->velocity[1])) < 100.0f
@@ -228,7 +228,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 					if (!turnHitEnt)
 					{
 						//hit wall
-						VectorScale(bounceDir, (pm->ps->speed * 0.25f / pSelfVeh->m_pVehicleInfo->mass), pushDir);
+						VectorScale(bounceDir, pm->ps->speed * 0.25f / pSelfVeh->m_pVehicleInfo->mass, pushDir);
 					}
 					else
 					{
@@ -245,7 +245,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 #else
 						VectorScale(bounceDir, (pm->ps->speed + hitEnt->s.speed) * 0.5f, bounceDir);
 #endif
-						VectorScale(pushDir, (l / pSelfVeh->m_pVehicleInfo->mass), pushDir);
+						VectorScale(pushDir, l / pSelfVeh->m_pVehicleInfo->mass, pushDir);
 						VectorScale(pushDir, 0.1f, pushDir);
 					}
 					VectorNormalize2(pm->ps->velocity, moveDir);
@@ -257,7 +257,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 					VectorScale(pushDir, bounceDot, pushDir);
 					VectorAdd(pm->ps->velocity, pushDir, pm->ps->velocity);
 					//turn
-					float turnDivider = (pSelfVeh->m_pVehicleInfo->mass / 400.0f);
+					float turnDivider = pSelfVeh->m_pVehicleInfo->mass / 400.0f;
 					if (turnHitEnt)
 					{
 						//don't turn as much when hit another ship
@@ -267,7 +267,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 					{
 						turnDivider = 0.5f;
 					}
-					float turnStrength = (magnitude / 2000.0f);
+					float turnStrength = magnitude / 2000.0f;
 					if (turnStrength < 0.1f)
 					{
 						turnStrength = 0.1f;
@@ -332,7 +332,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 						VectorScale(bounceDir, -1, bounceDir);
 						//do bounce
 						VectorScale(bounceDir, (pm->ps->speed + l) * 0.5f, pushDir);
-						VectorScale(pushDir, (l * 0.5f / hitEnt->m_pVehicle->m_pVehicleInfo->mass), pushDir);
+						VectorScale(pushDir, l * 0.5f / hitEnt->m_pVehicle->m_pVehicleInfo->mass, pushDir);
 						VectorNormalize2(hitEnt->client->ps.velocity, moveDir);
 						bounceDot = DotProduct(moveDir, bounceDir) * -1;
 						if (bounceDot < 0.1f)
@@ -342,7 +342,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 						VectorScale(pushDir, bounceDot, pushDir);
 						VectorAdd(hitEnt->client->ps.velocity, pushDir, hitEnt->client->ps.velocity);
 						//turn
-						turnDivider = (hitEnt->m_pVehicle->m_pVehicleInfo->mass / 400.0f);
+						turnDivider = hitEnt->m_pVehicle->m_pVehicleInfo->mass / 400.0f;
 						if (turnHitEnt)
 						{
 							//don't turn as much when hit another ship
@@ -425,7 +425,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				if (pSelfVeh->m_pVehicleInfo->type == VH_FIGHTER)
 				{
 					//increase the damage...
-					float mult = (pSelfVeh->m_vOrientation[PITCH] * 0.1f);
+					float mult = pSelfVeh->m_vOrientation[PITCH] * 0.1f;
 					if (mult < 1.0f)
 					{
 						mult = 1.0f;
@@ -455,7 +455,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				{
 					//FIX: NEVER do or take impact damage from a missile...
 					noDamage = qtrue;
-					if ((hitEnt->s.eFlags & EF_JETPACK_ACTIVE) && hitEnt->r.ownerNum < MAX_CLIENTS) //valid client owner
+					if (hitEnt->s.eFlags & EF_JETPACK_ACTIVE && hitEnt->r.ownerNum < MAX_CLIENTS) //valid client owner
 					{
 						//I ran into a missile and died because of the impact, give credit to the missile's owner (PROBLEM: might this ever accidentally give improper credit to client 0?)
 						killer = &g_entities[hitEnt->r.ownerNum];
@@ -465,7 +465,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				{
 					G_Damage((gentity_t*)pEnt, hitEnt, killer != NULL ? killer : hitEnt, NULL, pm->ps->origin,
 						magnitude * 5, DAMAGE_NO_ARMOR,
-						(hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING));
+						hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
 				}
 
 				if (pSelfVeh->m_pVehicleInfo->surfDestruction)
@@ -484,8 +484,8 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				float pmult = 1.0f;
 				gentity_t* attackEnt;
 
-				if ((hitEnt->s.eType == ET_PLAYER && hitEnt->s.number < MAX_CLIENTS) ||
-					(hitEnt->s.eType == ET_NPC && hitEnt->s.NPC_class != CLASS_VEHICLE))
+				if (hitEnt->s.eType == ET_PLAYER && hitEnt->s.number < MAX_CLIENTS ||
+					hitEnt->s.eType == ET_NPC && hitEnt->s.NPC_class != CLASS_VEHICLE)
 				{
 					//probably a humanoid, or something
 					if (pSelfVeh->m_pVehicleInfo->type == VH_FIGHTER)
@@ -542,7 +542,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				if (!noDamage)
 				{
 					G_Damage(hitEnt, attackEnt, attackEnt, NULL, pm->ps->origin, finalD, 0,
-						(hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING));
+						hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
 				}
 			}
 #else	//this is gonna result in "double effects" for the client doing the prediction.
@@ -598,7 +598,7 @@ qboolean PM_ClientImpact( trace_t *trace, qboolean damageSelf )
 extern void Client_CheckImpactBBrush(gentity_t* self, gentity_t* other);
 extern qboolean PM_CheckGrabWall(trace_t* trace);
 
-qboolean PM_ClientImpact(trace_t* trace, qboolean damageSelf)
+qboolean PM_ClientImpact(const trace_t* trace, qboolean damageSelf)
 {
 	const int otherEntityNum = trace->entityNum;
 
@@ -617,7 +617,7 @@ qboolean PM_ClientImpact(trace_t* trace, qboolean damageSelf)
 	if (VectorLength(pm->ps->velocity) >= 100 && pm_entSelf->s.NPC_class != CLASS_VEHICLE && pm->ps->lastOnGround + 100
 		< level.time)
 	{
-		Client_CheckImpactBBrush((gentity_t*)(pm_entSelf), &g_entities[otherEntityNum]);
+		Client_CheckImpactBBrush((gentity_t*)pm_entSelf, &g_entities[otherEntityNum]);
 		//DoImpact((gentity_t*)(pm_entSelf), &g_entities[otherEntityNum], damageSelf, trace);
 	}
 
@@ -887,7 +887,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 		VectorCopy(primal_velocity, pm->ps->velocity);
 	}
 
-	return (bumpcount != 0);
+	return bumpcount != 0;
 }
 
 /*
@@ -949,8 +949,8 @@ void PM_StepSlideMove(qboolean gravity)
 		// apply ground friction, even if on ladder
 		if (p_ent &&
 			(p_ent->s.NPC_class == CLASS_ATST ||
-				(p_ent->s.NPC_class == CLASS_VEHICLE && p_ent->m_pVehicle && p_ent->m_pVehicle->m_pVehicleInfo->type ==
-					VH_WALKER)))
+				p_ent->s.NPC_class == CLASS_VEHICLE && p_ent->m_pVehicle && p_ent->m_pVehicle->m_pVehicleInfo->type ==
+				VH_WALKER))
 		{
 			//AT-STs can step high
 			up[2] += 66.0f;
@@ -1023,7 +1023,7 @@ void PM_StepSlideMove(qboolean gravity)
 			//from (A) to (B) and if that slope is walk-upabble, then it's okay
 			VectorSubtract(trace.endpos, down_o, stepVec);
 			VectorNormalize(stepVec);
-			if (stepVec[2] > (1.0f - MIN_WALK_NORMAL))
+			if (stepVec[2] > 1.0f - MIN_WALK_NORMAL)
 			{
 				skipStep = qtrue;
 			}

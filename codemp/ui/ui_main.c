@@ -3752,7 +3752,7 @@ static qboolean UI_Chat_Main_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -3801,7 +3801,7 @@ static qboolean UI_Chat_Attack_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -3838,7 +3838,7 @@ static qboolean UI_Chat_Defend_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -3879,7 +3879,7 @@ static qboolean UI_Chat_Request_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -3928,7 +3928,7 @@ static qboolean UI_Chat_Reply_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -3973,7 +3973,7 @@ static qboolean UI_Chat_Spot_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -4018,7 +4018,7 @@ static qboolean UI_Chat_Tactical_HandleKey(int key)
 {
 	itemDef_t* item;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (!menu)
 	{
@@ -4114,7 +4114,7 @@ static qboolean UI_InSoloMenu(void)
 {
 	const char* name = "solo_gametypefield";
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
 
 	if (!menu)
 	{
@@ -5626,7 +5626,7 @@ void UI_FindCurrentSiegeTeamClass(void)
 	const int myTeam = (int)(trap->Cvar_VariableValue("ui_myteam"));
 	char* itemname;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -5757,7 +5757,7 @@ static void UI_SetSaberBoxesandHilts(void)
 	qboolean getBig = qfalse;
 	char sType[MAX_QPATH];
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
 
 	if (!menu)
 	{
@@ -5851,7 +5851,7 @@ static void UI_UpdateSaberHilt(qboolean secondSaber)
 	char* saberCvarName;
 	int animRunLength;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu (either video or ingame video, I would assume)
 
 	if (!menu)
 	{
@@ -5973,7 +5973,7 @@ void UI_UpdateCharacterSkin(void)
 	char torso[MAX_QPATH];
 	char legs[MAX_QPATH];
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -6007,7 +6007,7 @@ static void UI_ResetCharacterListBoxes(void)
 {
 	listBoxDef_t* listPtr;
 
-	menuDef_t* menu = Menu_GetFocused();
+	const menuDef_t* menu = Menu_GetFocused();
 
 	if (menu)
 	{
@@ -6068,7 +6068,7 @@ static void UI_UpdateCharacter(qboolean changedModel)
 	char modelPath[MAX_QPATH];
 	int animRunLength;
 
-	menuDef_t* menu = Menu_GetFocused(); // Get current menu
+	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
 	if (!menu)
 	{
@@ -9585,7 +9585,7 @@ static qhandle_t UI_FeederItemImage(float feederID, int index)
 
 		validCnt = 0;
 
-		menuDef_t* menu = Menu_GetFocused(); // Get current menu
+		const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 		if (menu)
 		{
 			const itemDef_t* item = Menu_FindItemByName(menu, "base_class_force_feed");
@@ -9642,7 +9642,7 @@ qboolean UI_FeederSelection(float feederFloat, int index, itemDef_t* item)
 	}
 	else if (feederID == FEEDER_MOVES)
 	{
-		menuDef_t* menu = Menus_FindByName("rulesMenu_moves");
+		const menuDef_t* menu = Menus_FindByName("rulesMenu_moves");
 
 		if (menu)
 		{
@@ -9718,7 +9718,7 @@ qboolean UI_FeederSelection(float feederFloat, int index, itemDef_t* item)
 	{
 		uiInfo.movesTitleIndex = index;
 		uiInfo.movesBaseAnim = datapadMoveTitleBaseAnims[uiInfo.movesTitleIndex];
-		menuDef_t* menu = Menus_FindByName("rulesMenu_moves");
+		const menuDef_t* menu = Menus_FindByName("rulesMenu_moves");
 
 		if (menu)
 		{

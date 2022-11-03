@@ -227,7 +227,7 @@ extern void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activat
 extern float IdealDistance(gentity_t* self);
 
 //g_client
-extern qboolean SpotWouldTelefrag(gentity_t* spot, team_t checkteam);
+extern qboolean SpotWouldTelefrag(const gentity_t* spot, team_t checkteam);
 
 //g_utils
 extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);

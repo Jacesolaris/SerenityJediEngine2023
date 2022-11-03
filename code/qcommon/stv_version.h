@@ -21,6 +21,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 // Current version of the single player game
+#ifndef STV_VERSION_H
+#define STV_VERSION_H
 #include "../win32/AutoVersion.h"
 
 #ifdef _DEBUG
@@ -31,3 +33,4 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	Q3_VERSION		"(internal)SerenityJediEngine2023-SP: " VERSION_STRING_DOTTED
 #endif
 // end
+#endif // STV_VERSION_H

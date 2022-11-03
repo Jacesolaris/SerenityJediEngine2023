@@ -1534,7 +1534,7 @@ void ExplodeDeath(gentity_t* self);
 void G_CheckForDismemberment(gentity_t* ent, const gentity_t* enemy, vec3_t point, int damage, int deathAnim,
 	qboolean postDeath);
 extern int gGAvoidDismember;
-void G_DodgeDrain(gentity_t* victim, gentity_t* attacker, int amount);
+void G_DodgeDrain(const gentity_t* victim, const gentity_t* attacker, int amount);
 
 // damage flags
 #define DAMAGE_NORMAL				0x00000000	// No flags set.
@@ -1713,7 +1713,7 @@ void FindIntermissionPoint(void);
 void SetLeader(int team, int client);
 void CheckTeamLeader(int team);
 void G_RunThink(gentity_t* ent);
-void AddTournamentQueue(gclient_t* client);
+void AddTournamentQueue(const gclient_t* client);
 void QDECL G_LogPrintf(const char* fmt, ...);
 void QDECL G_SecurityLogPrintf(const char* fmt, ...);
 void SendScoreboardMessageToAllClients(void);
@@ -1736,7 +1736,7 @@ void G_ClearTeamVote(const gentity_t* ent, int team);
 // g_active.c
 //
 void G_CheckClientTimeouts(gentity_t* ent);
-void ClientThink(int clientNum, usercmd_t* ucmd);
+void ClientThink(int clientNum, const usercmd_t* ucmd);
 void ClientEndFrame(gentity_t* ent);
 void G_RunClient(gentity_t* ent);
 
@@ -1795,8 +1795,8 @@ void Svcmd_AddBot_f(void);
 void Svcmd_BotList_f(void);
 qboolean G_DoesMapSupportGametype(const char* mapname, int gametype);
 const char* G_RefreshNextMap(int gametype, qboolean forced);
-void G_LoadArenas(void);
-void G_LoadSPArenas(void);
+void g_load_arenas(void);
+void g_load_sp_arenas(void);
 
 // w_force.c / w_saber.c
 gentity_t* G_PreDefSound(vec3_t org, int pdSound);
@@ -1813,11 +1813,11 @@ void ForceHeal(gentity_t* self);
 void ForceSpeed(gentity_t* self, int forceDuration);
 void ForceSpeedDash(gentity_t* self);
 void ForceRage(gentity_t* self);
-void ForceGrip(gentity_t* self);
+void ForceGrip(const gentity_t* self);
 void ForceProtect(gentity_t* self);
 void ForceAbsorb(gentity_t* self);
-void ForceTeamHeal(gentity_t* self);
-void ForceTeamForceReplenish(gentity_t* self);
+void ForceTeamHeal(const gentity_t* self);
+void ForceTeamForceReplenish(const gentity_t* self);
 void ForceSeeing(gentity_t* self);
 void ForceThrow(gentity_t* self, qboolean pull);
 void ForceTelepathy(gentity_t* self);

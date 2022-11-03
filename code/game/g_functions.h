@@ -353,7 +353,7 @@ using touchFunc_t = enum
 // TOUCH functions...
 //
 extern void Touch_Item(gentity_t* self, gentity_t* other, trace_t* trace);
-extern void teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace);
 extern void charge_stick(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void Touch_DoorTrigger(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void Touch_PlatCenterTrigger(gentity_t* self, gentity_t* other, trace_t* trace);
@@ -518,8 +518,8 @@ extern void funcGlassUse(gentity_t* self, gentity_t* other, gentity_t* activator
 extern void TrainUse(gentity_t* ent, gentity_t* other, gentity_t* activator);
 extern void misc_trip_mine_activate(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void emplaced_gun_use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void shield_power_converter_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
-extern void ammo_power_converter_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void shield_power_converter_use(gentity_t* self, const gentity_t* other, const gentity_t* activator);
+extern void ammo_power_converter_use(gentity_t* self, gentity_t* other, const gentity_t* activator);
 extern void bomb_planted_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void beacon_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void security_panel_use(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -712,7 +712,7 @@ extern void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker,
 	int hitLoc = HL_NONE);
 
 void GEntity_ThinkFunc(gentity_t* self);
-void CEntity_ThinkFunc(centity_s* cent); //Think func for equivalent centity
+void CEntity_ThinkFunc(const centity_s* cent); //Think func for equivalent centity
 void GEntity_ReachedFunc(gentity_t* self); // movers call this when hitting endpoint
 void GEntity_BlockedFunc(gentity_t* self, gentity_t* other);
 void GEntity_TouchFunc(gentity_t* self, gentity_t* other, trace_t* trace);

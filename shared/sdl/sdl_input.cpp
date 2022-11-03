@@ -121,7 +121,7 @@ static qboolean IN_IsConsoleKey(fakeAscii_t key, int character)
 			consoleKey_t* c = &consoleKeys[numConsoleKeys];
 			int charCode = 0;
 
-			char* token = COM_Parse(&text_p);
+			const char* token = COM_Parse(&text_p);
 			if (!token[0])
 				break;
 

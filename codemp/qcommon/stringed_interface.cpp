@@ -55,7 +55,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 unsigned char* SE_LoadFileData(const char* psFileName, int* piLoadedLength /* = 0 */)
 {
-	unsigned char* psReturn = NULL;
+	unsigned char* psReturn = nullptr;
 	if (piLoadedLength)
 	{
 		*piLoadedLength = 0;

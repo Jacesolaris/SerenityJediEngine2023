@@ -35,7 +35,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define ACT_INACTIVE	qfalse
 extern void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone);
 extern qboolean PM_CrouchAnim(int anim);
-extern qboolean PM_InDeathAnim(void);
+extern qboolean PM_InDeathAnim();
 /*
 =========================================================================
 
@@ -1281,7 +1281,7 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm)
 G_Sound
 =============
 */
-void G_Sound(gentity_t* ent, int soundIndex)
+void G_Sound(const gentity_t* ent, int soundIndex)
 {
 	gentity_t* te = G_TempEntity(ent->currentOrigin, EV_GENERAL_SOUND);
 	te->s.eventParm = soundIndex;

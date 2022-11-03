@@ -153,7 +153,7 @@ public:
 	CInterpreter();
 	~CInterpreter();
 
-	int Interpret(CTokenizer*, CBlockStream*, char* filename = NULL);	//Main interpretation function
+	int Interpret(CTokenizer*, CBlockStream*, char* filename = nullptr);	//Main interpretation function
 
 	int Match(int);		//Looks ahead to the next token to try and match it to the passed token, consumes token on success
 	int LookAhead(int);	//Looks ahead without consuming on success

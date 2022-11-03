@@ -89,7 +89,7 @@ int ICARUS_RunScript(sharedEntity_t* ent, const char* name)
 	int len;
 
 	//Make sure the caller is valid
-	if (gSequencers[ent->s.number] == NULL)
+	if (gSequencers[ent->s.number] == nullptr)
 	{
 		//Com_Printf( "%s : entity is not a valid script user\n", ent->classname );
 		return false;
@@ -143,7 +143,7 @@ int ICARUS_RunScript(sharedEntity_t* ent, const char* name)
 
 	if (ICARUS_entFilter == -1 || ICARUS_entFilter == ent->s.number)
 	{
-		Q3_DebugPrint(WL_VERBOSE, "%d Script %s executed by %s %s\n", svs.time, (char*)name, ent->classname, ent->targetname);
+		Q3_DebugPrint(WL_VERBOSE, "%d Script %s executed by %s %s\n", svs.time, const_cast<char*>(name), ent->classname, ent->targetname);
 	}
 
 	return true;
@@ -165,7 +165,7 @@ void ICARUS_Init(void)
 	//Create the ICARUS instance for this session
 	iICARUS = ICARUS_Instance::Create(&interface_export);
 
-	if (iICARUS == NULL)
+	if (iICARUS == nullptr)
 	{
 		Com_Error(ERR_DROP, "Unable to initialize ICARUS instance\n");
 	}
@@ -215,7 +215,7 @@ void ICARUS_Shutdown(void)
 	if (iICARUS)
 	{
 		iICARUS->Delete();
-		iICARUS = NULL;
+		iICARUS = nullptr;
 	}
 }
 
@@ -242,7 +242,7 @@ void ICARUS_FreeEnt(sharedEntity_t* ent)
 	}
 
 	//Make sure the ent is valid
-	if (gSequencers[ent->s.number] == NULL)
+	if (gSequencers[ent->s.number] == nullptr)
 		return;
 
 	//Remove them from the ICARUSE_EntList list so that when their g_entity index is reused, ICARUS doesn't try to affect the new (incorrect) ent.
@@ -265,8 +265,8 @@ void ICARUS_FreeEnt(sharedEntity_t* ent)
 	iICARUS->DeleteSequencer(gSequencers[ent->s.number]);
 
 	//Clean up the pointers
-	gSequencers[ent->s.number] = NULL;
-	gTaskManagers[ent->s.number] = NULL;
+	gSequencers[ent->s.number] = nullptr;
+	gTaskManagers[ent->s.number] = nullptr;
 }
 
 /*
@@ -277,7 +277,7 @@ Determines whether or not an entity needs ICARUS information
 ==============
 */
 
-bool ICARUS_ValidEnt(sharedEntity_t* ent)
+bool ICARUS_ValidEnt(const sharedEntity_t* ent)
 {
 	//Targeted by a script
 	if VALIDSTRING(ent->script_targetname)
@@ -339,7 +339,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 {
 	pscript_t* pscript;
 	char		newname[MAX_FILENAME_LENGTH];
-	char* buffer = NULL;	// lose compiler warning about uninitialised vars
+	char* buffer = nullptr;	// lose compiler warning about uninitialised vars
 	long		length;
 
 	//Make sure this isn't already cached
@@ -379,7 +379,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 	}
 #endif
 
-	length = qbIgnoreFileRead ? -1 : FS_ReadFile(newname, (void**)&buffer);
+	length = qbIgnoreFileRead ? -1 : FS_ReadFile(newname, reinterpret_cast<void**>(&buffer));
 
 	if (length <= 0)
 	{
@@ -407,7 +407,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 
 void ICARUS_SoundPrecache(const char* filename)
 {
-	T_G_ICARUS_SOUNDINDEX* sharedMem = (T_G_ICARUS_SOUNDINDEX*)sv.mSharedMemory;
+	T_G_ICARUS_SOUNDINDEX* sharedMem = reinterpret_cast<T_G_ICARUS_SOUNDINDEX*>(sv.mSharedMemory);
 
 	strcpy(sharedMem->filename, filename);
 
@@ -416,7 +416,7 @@ void ICARUS_SoundPrecache(const char* filename)
 
 int ICARUS_GetIDForString(const char* string)
 {
-	T_G_ICARUS_GETSETIDFORSTRING* sharedMem = (T_G_ICARUS_GETSETIDFORSTRING*)sv.mSharedMemory;
+	T_G_ICARUS_GETSETIDFORSTRING* sharedMem = reinterpret_cast<T_G_ICARUS_GETSETIDFORSTRING*>(sv.mSharedMemory);
 
 	strcpy(sharedMem->string, string);
 
@@ -518,7 +518,7 @@ void ICARUS_InterrogateScript(const char* filename)
 			sVal1 = static_cast<const char*>(block.GetMemberData(0));
 
 			COM_StripExtension(sVal1, temp, sizeof temp);
-			ICARUS_InterrogateScript((const char*)&temp);
+			ICARUS_InterrogateScript(reinterpret_cast<const char*>(&temp));
 
 			break;
 
@@ -624,17 +624,17 @@ Precache all scripts being used by the entity
 ==============
 */
 
-void ICARUS_PrecacheEnt(sharedEntity_t* ent)
+void ICARUS_PrecacheEnt(const sharedEntity_t* ent)
 {
-	char	newname[MAX_FILENAME_LENGTH];
-
 	for (int i = 0; i < NUM_BSETS; i++)
 	{
-		if (ent->behaviorSet[i] == NULL)
+		if (ent->behaviorSet[i] == nullptr)
 			continue;
 
 		if (GetIDForString(BSTable, ent->behaviorSet[i]) == -1)
-		{//not a behavior set
+		{
+			char newname[MAX_FILENAME_LENGTH];
+			//not a behavior set
 			Com_sprintf(newname, sizeof newname, "%s/%s", Q3_SCRIPT_DIR, ent->behaviorSet[i]);
 
 			//Precache this, and all internally referenced scripts
@@ -659,10 +659,10 @@ void ICARUS_InitEnt(sharedEntity_t* ent)
 	assert(gTaskManagers[ent->s.number] == NULL);
 	assert(gSequencers[ent->s.number] == NULL);
 
-	if (gSequencers[ent->s.number] != NULL)
+	if (gSequencers[ent->s.number] != nullptr)
 		return;
 
-	if (gTaskManagers[ent->s.number] != NULL)
+	if (gTaskManagers[ent->s.number] != nullptr)
 		return;
 
 	//Create the sequencer and setup the task manager
@@ -689,7 +689,7 @@ int ICARUS_LinkEntity(int entID, CSequencer* sequencer, CTaskManager* taskManage
 {
 	sharedEntity_t* ent = SV_GentityNum(entID);
 
-	if (ent == NULL)
+	if (ent == nullptr)
 		return false;
 
 	gSequencers[ent->s.number] = sequencer;

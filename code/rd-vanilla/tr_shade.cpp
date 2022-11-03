@@ -2000,7 +2000,7 @@ void RB_StageIteratorGeneric(void)
 ** RB_EndSurface
 */
 void RB_EndSurface(void) {
-	shaderCommands_t* input = &tess;
+	const shaderCommands_t* input = &tess;
 
 	if (input->numIndexes == 0) {
 		return;

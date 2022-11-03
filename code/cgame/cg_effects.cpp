@@ -998,7 +998,7 @@ void CG_DrawTargetBeam(vec3_t start, vec3_t end, vec3_t norm, const char* beamFx
 	vec3_t dir;
 
 	// overriding the effect, so give us a copy first
-	SEffectTemplate* temp = theFxScheduler.GetEffectCopy(beamFx, &handle);
+	const SEffectTemplate* temp = theFxScheduler.GetEffectCopy(beamFx, &handle);
 
 	VectorSubtract(start, end, dir);
 	VectorNormalize(dir);

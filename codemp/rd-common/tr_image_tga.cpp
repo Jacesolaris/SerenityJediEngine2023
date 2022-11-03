@@ -59,11 +59,11 @@ void LoadTGA(const char* name, byte** pic, int* width, int* height)
 
 	// these don't need to be declared or initialised until later, but the compiler whines that 'goto' skips them.
 	//
-	byte* pRGBA = NULL;
-	byte* pOut = NULL;
-	byte* pIn = NULL;
+	byte* pRGBA = nullptr;
+	byte* pOut = nullptr;
+	byte* pIn = nullptr;
 
-	*pic = NULL;
+	*pic = nullptr;
 
 #define TGA_FORMAT_ERROR(blah) {sprintf(sErrorString,blah); bFormatErrors = true; goto TGADone;}
 	//#define TGA_FORMAT_ERROR(blah) Com_Error( ERR_DROP, blah );
@@ -71,7 +71,7 @@ void LoadTGA(const char* name, byte** pic, int* width, int* height)
 		//
 		// load the file
 		//
-	byte* pTempLoadedBuffer = 0;
+	byte* pTempLoadedBuffer = nullptr;
 	ri->FS_ReadFile((char*)name, (void**)&pTempLoadedBuffer);
 	if (!pTempLoadedBuffer) {
 		return;

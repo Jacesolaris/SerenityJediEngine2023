@@ -2896,7 +2896,7 @@ void SP_target_screenshake(gentity_t* ent)
 
 void LogExit(const char* string);
 
-void Use_Target_Escapetrig(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Escapetrig(const gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	if (!ent->genericValue6)
 	{
@@ -3601,10 +3601,10 @@ void ref_link(gentity_t* ent)
 	{
 		//TODO: Find the target and set our angles to that direction
 		const gentity_t* target = G_Find(NULL, FOFS(targetname), ent->target);
-		vec3_t dir;
 
 		if (target)
 		{
+			vec3_t dir;
 			//Find the direction to the target
 			VectorSubtract(target->s.origin, ent->s.origin, dir);
 			VectorNormalize(dir);
@@ -3676,7 +3676,7 @@ gclient_t* G_ClientForShooter(void)
 	return NULL;
 }
 
-void G_FreeClientForShooter(gclient_t* cl)
+void G_FreeClientForShooter(const gclient_t* cl)
 {
 	int i = 0;
 	while (i < MAX_SHOOTERS)
@@ -4071,7 +4071,6 @@ void SP_misc_model_gun_rack(gentity_t* ent)
 // AMMO RACK!!
 void spawn_rack_goods(gentity_t* ent)
 {
-	float v_off = 0;
 	gitem_t* blaster = NULL, * metal_bolts = NULL, * rockets = NULL, * it = NULL;
 	gitem_t* am_blaster = NULL, * am_metal_bolts = NULL, * am_rockets = NULL, * am_pwr_cell = NULL;
 	gitem_t* health = NULL;
@@ -4163,6 +4162,7 @@ void spawn_rack_goods(gentity_t* ent)
 	// -----Weapon option
 	if (ent->spawnflags & RACK_WEAPONS)
 	{
+		float v_off = 0;
 		if (!(ent->spawnflags & (RACK_BLASTER | RACK_METAL_BOLTS | RACK_ROCKETS | RACK_PWR_CELL)))
 		{
 			// nothing was selected, so we assume blaster pack

@@ -31,7 +31,7 @@ GetIDForString
 -------------------------
 */
 
-int GetIDForString(stringID_table_t* table, const char* string)
+int GetIDForString(const stringID_table_t* table, const char* string)
 {
 	int	index = 0;
 
@@ -652,7 +652,7 @@ int QDECL Com_sprintf(char* dest, int size, const char* fmt, ...) {
 	va_list		argptr;
 
 	va_start(argptr, fmt);
-	int len = Q_vsnprintf(dest, size, fmt, argptr);
+	const int len = Q_vsnprintf(dest, size, fmt, argptr);
 	va_end(argptr);
 
 	if (len >= size)
@@ -687,7 +687,7 @@ char* QDECL va(const char* format, ...)
 
 	va_start(argptr, format);
 	char* buf = (char*)&string[index++ & 3];
-	Q_vsnprintf(buf, sizeof(*string), format, argptr);
+	Q_vsnprintf(buf, sizeof*string, format, argptr);
 	va_end(argptr);
 
 	return buf;
@@ -706,9 +706,9 @@ void Com_TruncateLongString(char* buffer, const char* s) {
 	if (length <= TRUNCATE_LENGTH)
 		Q_strncpyz(buffer, s, TRUNCATE_LENGTH);
 	else {
-		Q_strncpyz(buffer, s, (TRUNCATE_LENGTH / 2) - 3);
+		Q_strncpyz(buffer, s, TRUNCATE_LENGTH / 2 - 3);
 		Q_strcat(buffer, TRUNCATE_LENGTH, " ... ");
-		Q_strcat(buffer, TRUNCATE_LENGTH, s + length - (TRUNCATE_LENGTH / 2) + 3);
+		Q_strcat(buffer, TRUNCATE_LENGTH, s + length - TRUNCATE_LENGTH / 2 + 3);
 	}
 }
 
@@ -984,7 +984,7 @@ void Info_SetValueForKey(char* s, const char* key, const char* value) {
 	if (!value || !strlen(value))
 		return;
 
-	Com_sprintf(newi, sizeof(newi), "\\%s\\%s", key, value);
+	Com_sprintf(newi, sizeof newi, "\\%s\\%s", key, value);
 
 	if (strlen(newi) + strlen(s) >= MAX_INFO_STRING)
 	{
@@ -1025,7 +1025,7 @@ void Info_SetValueForKey_Big(char* s, const char* key, const char* value) {
 	if (!value)
 		return;
 
-	Com_sprintf(newi, sizeof(newi), "\\%s\\%s", key, value);
+	Com_sprintf(newi, sizeof newi, "\\%s\\%s", key, value);
 
 	if (strlen(newi) + strlen(s) >= BIG_INFO_STRING)
 	{
@@ -1093,15 +1093,15 @@ char* Com_SkipTokens(char* s, int numTokens, char* sep) {
 }
 
 qboolean Q_InBitflags(const uint32_t* bits, int index, uint32_t bitsPerByte) {
-	return (bits[index / bitsPerByte] & (1 << (index % bitsPerByte))) ? qtrue : qfalse;
+	return bits[index / bitsPerByte] & 1 << index % bitsPerByte ? qtrue : qfalse;
 }
 
 void Q_AddToBitflags(uint32_t* bits, int index, uint32_t bitsPerByte) {
-	bits[index / bitsPerByte] |= (1 << (index % bitsPerByte));
+	bits[index / bitsPerByte] |= 1 << index % bitsPerByte;
 }
 
 void Q_RemoveFromBitflags(uint32_t* bits, int index, uint32_t bitsPerByte) {
-	bits[index / bitsPerByte] &= ~(1 << (index % bitsPerByte));
+	bits[index / bitsPerByte] &= ~(1 << index % bitsPerByte);
 }
 
 void* Q_LinearSearch(const void* key, const void* ptr, size_t count,

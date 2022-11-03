@@ -5758,7 +5758,6 @@ static void PM_WaterMove(void)
 	float wishspeed;
 	vec3_t wishdir;
 	float scale;
-	float vel;
 
 	if (PM_CheckWaterJump())
 	{
@@ -5831,7 +5830,7 @@ static void PM_WaterMove(void)
 	// make sure we can go up slopes easily under water
 	if (pml.groundPlane && DotProduct(pm->ps->velocity, pml.groundTrace.plane.normal) < 0)
 	{
-		vel = VectorLength(pm->ps->velocity);
+		const float vel = VectorLength(pm->ps->velocity);
 		// slide along the ground plane
 		PM_ClipVelocity(pm->ps->velocity, pml.groundTrace.plane.normal,
 			pm->ps->velocity, OVERCLIP);
@@ -5868,7 +5867,6 @@ static void PM_LadderMove(void)
 	float wishspeed;
 	vec3_t wishdir;
 	float scale;
-	float vel;
 
 	if (PM_CheckWaterJump())
 	{
@@ -5941,7 +5939,7 @@ static void PM_LadderMove(void)
 	// make sure we can go up slopes easily under water
 	if (pml.groundPlane && DotProduct(pm->ps->velocity, pml.groundTrace.plane.normal) < 0)
 	{
-		vel = VectorLength(pm->ps->velocity);
+		const float vel = VectorLength(pm->ps->velocity);
 		// slide along the ground plane
 		PM_ClipVelocity(pm->ps->velocity, pml.groundTrace.plane.normal,
 			pm->ps->velocity, OVERCLIP);
@@ -6770,7 +6768,7 @@ static void PM_WalkMove(void)
 	}
 	else if (pml.groundTrace.surfaceFlags & SURF_SLICK)
 	{
-		if ((!(pm->cmd.buttons & BUTTON_WALKING)))
+		if (!(pm->cmd.buttons & BUTTON_WALKING))
 		{
 			accelerate = 0.1f;
 
@@ -7003,7 +7001,6 @@ static void PM_CrashLandDamage(int damage)
 	gentity_t* self = &g_entities[pm_entSelf->s.number];
 	if (self)
 	{
-		const int dflags = DAMAGE_NO_ARMOR;
 		if (self->NPC && self->NPC->aiFlags & NPCAI_DIE_ON_IMPACT)
 		{
 			damage = 1000;
@@ -7015,6 +7012,7 @@ static void PM_CrashLandDamage(int damage)
 
 		if (damage)
 		{
+			const int dflags = DAMAGE_NO_ARMOR;
 			self->painDebounceTime = level.time + 200;
 			G_Damage(self, NULL, NULL, NULL, NULL, damage, dflags, MOD_FALLING);
 		}
@@ -7959,7 +7957,7 @@ qboolean BG_InDFA()
 }
 
 #ifdef _GAME
-qboolean G_InDFA(gentity_t* ent)
+qboolean G_InDFA(const gentity_t* ent)
 {
 	if (!ent || !ent->client) return qfalse;
 
@@ -8127,12 +8125,12 @@ static void PM_GroundTrace(void)
 			&& g_entities[pm->ps->clientNum].s.NPC_class != CLASS_VEHICLE
 			&& !G_InDFA(&g_entities[pm->ps->clientNum]))
 		{
-			vec3_t pushdir;
 			gentity_t* trEnt = &g_entities[trace.entityNum];
 
 			if (trEnt->inuse && trEnt->client && !trEnt->item
 				&& trEnt->s.NPC_class != CLASS_SEEKER && trEnt->s.NPC_class != CLASS_VEHICLE && !G_InDFA(trEnt))
 			{
+				vec3_t pushdir;
 				//Player?
 				trEnt->client->ps.legsAnim = trEnt->client->ps.torsoAnim = 0;
 				g_entities[pm->ps->clientNum].client->ps.legsAnim = g_entities[pm->ps->clientNum].client->ps.torsoAnim =
@@ -18627,7 +18625,7 @@ void PmoveSingle(pmove_t * pmove)
 		|| pm_saber_in_special_attack(pm->ps->torsoAnim)
 		|| PM_SpinningSaberAnim(pm->ps->legsAnim)
 		|| PM_SaberInStart(pm->ps->saberMove)
-		|| (PM_SaberInMassiveBounce(pm->ps->torsoAnim) && pm->ps->torsoTimer)))
+		|| PM_SaberInMassiveBounce(pm->ps->torsoAnim) && pm->ps->torsoTimer))
 	{
 		//attacking or spinning (or, if player, starting an attack)
 #ifdef _GAME
@@ -19782,11 +19780,8 @@ int pm_min_get_up_time(const playerState_t * ps)
 			const int jedi_bot_get_up_time = BOT_KNOCKDOWN_HOLD_EXTRA_TIME;
 			return jedi_bot_get_up_time + 400;
 		}
-		else
-		{
-			const int gunner_get_up_time = PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME;
-			return gunner_get_up_time + 100;
-		}
+		const int gunner_get_up_time = PLAYER_KNOCKDOWN_HOLD_EXTRA_TIME;
+		return gunner_get_up_time + 100;
 	}
 #endif
 	if (ps->clientNum < MAX_CLIENTS)

@@ -67,7 +67,6 @@ qboolean PM_SuperBreakLoseAnim(int anim);
 qboolean PM_SuperBreakWinAnim(int anim);
 extern bgEntity_t* pm_entSelf;
 extern saberMoveName_t PM_KnockawayForParry(int move);
-extern saberMoveName_t PM_AbsorbtheParry(int move);
 extern qboolean PM_SaberInbackblock(int move);
 extern qboolean PM_BlockAnim(int anim);
 extern qboolean PM_BlockHoldAnim(int anim);
@@ -85,7 +84,6 @@ extern qboolean PM_BounceAnim(int anim);
 extern qboolean PM_SaberReturnAnim(int anim);
 extern saberMoveName_t pm_block_the_attack(int move);
 void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
-extern saberMoveName_t PM_PerfectBlocktheAttack(int move);
 extern qboolean PM_IsInBlockingAnim(int move);
 extern qboolean PM_SaberDoDamageAnim(int anim);
 extern qboolean in_camera;
@@ -1324,155 +1322,98 @@ int PM_SaberAttackChainAngle(const int move1, const int move2)
 qboolean PM_SaberKataDone(const int curmove, const int newmove)
 {
 	const saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
-
-#ifdef _GAME
-	if (!(g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT))
+	if (pm->ps->m_iVehicleNum)
 	{
-		if (pm->ps->m_iVehicleNum)
-		{
-			//never continue kata on vehicle
-			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-			{
-				return qtrue;
-			}
-		}
-
-		if (pm->ps->fd.forceRageRecoveryTime > pm->cmd.serverTime)
-		{
-			//rage recovery, only 1 swing at a time (tired)
-			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-			{
-				//swung once
-				return qtrue;
-			}
-			//allow one attack
-			return qfalse;
-		}
-		if (pm->ps->fd.forcePowersActive & 1 << FP_RAGE)
-		{
-			//infinite chaining when raged
-			return qfalse;
-		}
-		if (saber1[0].maxChain == -1)
-		{
-			return qfalse;
-		}
-		if (saber1[0].maxChain != 0)
-		{
-			if (pm->ps->saberAttackChainCount >= saber1[0].maxChain)
-			{
-				return qtrue;
-			}
-			return qfalse;
-		}
-
-		if ((pm->ps->fd.saberAnimLevel == SS_DESANN
-			|| pm->ps->fd.saberAnimLevel == SS_STRONG
-			|| pm->ps->fd.saberAnimLevel == SS_TAVION
-			|| pm->ps->fd.saberAnimLevel == SS_STAFF
-			|| pm->ps->fd.saberAnimLevel == SS_DUAL
-			|| pm->ps->fd.saberAnimLevel == SS_MEDIUM)
-			&& pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_MAX, MISHAPLEVEL_OVERLOAD))
+		//never continue kata on vehicle
+		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 		{
 			return qtrue;
 		}
 	}
-	else
-#endif
+
+	if (pm->ps->fd.forceRageRecoveryTime > pm->cmd.serverTime)
 	{
-		if (pm->ps->m_iVehicleNum)
+		//rage recovery, only 1 swing at a time (tired)
+		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
 		{
-			//never continue kata on vehicle
-			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-			{
-				return qtrue;
-			}
+			//swung once
+			return qtrue;
 		}
+		//allow one attack
+		return qfalse;
+	}
+	if (pm->ps->fd.forcePowersActive & 1 << FP_RAGE)
+	{
+		//infinite chaining when raged
+		return qfalse;
+	}
+	if (saber1[0].maxChain == -1)
+	{
+		return qfalse;
+	}
+	if (saber1[0].maxChain != 0)
+	{
+		if (pm->ps->saberAttackChainCount >= saber1[0].maxChain)
+		{
+			return qtrue;
+		}
+		return qfalse;
+	}
 
-		if (pm->ps->fd.forceRageRecoveryTime > pm->cmd.serverTime)
+	if (pm->ps->fd.saberAnimLevel == SS_DESANN || pm->ps->fd.saberAnimLevel == SS_TAVION)
+	{//desann and tavion can link up as many attacks as they want
+		return qfalse;
+	}
+	if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+	{
+		return qfalse;
+	}
+	if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+	{
+		return qfalse;
+	}
+	if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
+	{
+		if (curmove == LS_NONE || newmove == LS_NONE)
 		{
-			//rage recovery, only 1 swing at a time (tired)
-			if (pm->ps->saberAttackChainCount > MISHAPLEVEL_NONE)
-			{
-				//swung once
-				return qtrue;
-			}
-			//allow one attack
-			return qfalse;
-		}
-		if (pm->ps->fd.forcePowersActive & 1 << FP_RAGE)
-		{
-			//infinite chaining when raged
-			return qfalse;
-		}
-		if (saber1[0].maxChain == -1)
-		{
-			return qfalse;
-		}
-		if (saber1[0].maxChain != 0)
-		{
-			if (pm->ps->saberAttackChainCount >= saber1[0].maxChain)
+			if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
 			{
 				return qtrue;
 			}
-			return qfalse;
 		}
-
-		if (pm->ps->fd.saberAnimLevel == SS_DESANN || pm->ps->fd.saberAnimLevel == SS_TAVION)
-		{//desann and tavion can link up as many attacks as they want
-			return qfalse;
-		}
-		if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+		else if (pm->ps->saberAttackChainCount > Q_irand(2, 3))
 		{
-			return qfalse;
+			return qtrue;
 		}
-		if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		else if (pm->ps->saberAttackChainCount > 0)
 		{
-			return qfalse;
-		}
-		if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
-		{
-			if (curmove == LS_NONE || newmove == LS_NONE)
-			{
-				if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
+			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+			if (chainAngle < 135 || chainAngle > 215)
+			{//if trying to chain to a move that doesn't continue the momentum
+				return qtrue;
+			}
+			if (chainAngle == 180)
+			{//continues the momentum perfectly, allow it to chain 66% of the time
+				if (pm->ps->saberAttackChainCount > 1)
 				{
 					return qtrue;
 				}
 			}
-			else if (pm->ps->saberAttackChainCount > Q_irand(2, 3))
-			{
-				return qtrue;
-			}
-			else if (pm->ps->saberAttackChainCount > 0)
-			{
-				const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
-				if (chainAngle < 135 || chainAngle > 215)
-				{//if trying to chain to a move that doesn't continue the momentum
+			else
+			{//would continue the movement somewhat, 50% chance of continuing
+				if (pm->ps->saberAttackChainCount > 2)
+				{
 					return qtrue;
-				}
-				if (chainAngle == 180)
-				{//continues the momentum perfectly, allow it to chain 66% of the time
-					if (pm->ps->saberAttackChainCount > 1)
-					{
-						return qtrue;
-					}
-				}
-				else
-				{//would continue the movement somewhat, 50% chance of continuing
-					if (pm->ps->saberAttackChainCount > 2)
-					{
-						return qtrue;
-					}
 				}
 			}
 		}
-		else
+	}
+	else
+	{
+		if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2 || pm->ps->fd.saberAnimLevel == SS_DUAL)
+			&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
 		{
-			if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2 || pm->ps->fd.saberAnimLevel == SS_DUAL)
-				&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
-			{
-				return qtrue;
-			}
+			return qtrue;
 		}
 	}
 	return qfalse;
@@ -3624,8 +3565,8 @@ qboolean PM_CanDoKata(void)
 		&& !PM_InKataAnim(pm->ps->legsAnim)
 		&& !PM_InKataAnim(pm->ps->torsoAnim)
 		&& pm->ps->groundEntityNum != ENTITYNUM_NONE//not in the air
-		&& (pm->cmd.buttons & BUTTON_ATTACK)//pressing attack
-		&& (pm->cmd.buttons & BUTTON_ALT_ATTACK)//pressing alt attack
+		&& pm->cmd.buttons & BUTTON_ATTACK//pressing attack
+		&& pm->cmd.buttons & BUTTON_ALT_ATTACK//pressing alt attack
 		&& !pm->cmd.forwardmove//not moving f/b
 		&& !pm->cmd.rightmove//not moving r/l
 		&& pm->cmd.upmove <= 0//not jumping...?
@@ -3741,7 +3682,7 @@ qboolean PM_CanDoRollStab(void)
 qboolean PM_Can_Do_Kill_Move(void)
 {
 	if (!pm->ps->saberInFlight //not throwing saber
-		&& (pm->cmd.buttons & BUTTON_ATTACK)//pressing attack
+		&& pm->cmd.buttons & BUTTON_ATTACK//pressing attack
 		&& pm->cmd.forwardmove >= 0 //not moving back (used to be !pm->cmd.forwardmove)
 		&& !pm->cmd.rightmove//not moving r/l
 		&& BG_EnoughForcePowerForMove(SABER_ALT_ATTACK_POWER_FB))// have enough power
@@ -4419,7 +4360,7 @@ qboolean PM_SaberBlocking(void)
 				saberMoveName_t bounceMove;
 				if (pm->ps->saberBounceMove != LS_NONE)
 				{
-					bounceMove = (saberMoveName_t)(pm->ps->saberBounceMove);
+					bounceMove = (saberMoveName_t)pm->ps->saberBounceMove;
 				}
 				else
 				{
@@ -4670,11 +4611,11 @@ Consults a chart to choose what to do with the lightsaber.
 */
 void PM_WeaponLightsaber(void)
 {
-	qboolean delayed_fire = qfalse;
+	const qboolean delayed_fire = qfalse;
 	int anim = -1;
 	int newmove = LS_NONE;
 
-	saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
+	const saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
 	saberInfo_t* saber2 = BG_MySaber(pm->ps->clientNum, 1);
 
 	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
@@ -4800,7 +4741,7 @@ void PM_WeaponLightsaber(void)
 		if (pm->ps->saberLockEnemy < ENTITYNUM_NONE &&
 			pm->ps->saberLockEnemy >= 0)
 		{
-			bgEntity_t* bgEnt = PM_BGEntForNum(pm->ps->saberLockEnemy);
+			const bgEntity_t* bgEnt = PM_BGEntForNum(pm->ps->saberLockEnemy);
 
 			if (bgEnt)
 			{
@@ -5069,7 +5010,7 @@ void PM_WeaponLightsaber(void)
 	if (pm->ps->weaponTime > 0)
 	{
 		//check for special pull move while busy
-		saberMoveName_t pullmove = PM_CheckPullAttack();
+		const saberMoveName_t pullmove = PM_CheckPullAttack();
 		if (pullmove != LS_NONE)
 		{
 			pm->ps->weaponTime = 0;
@@ -5123,7 +5064,7 @@ weapChecks:
 
 	if (PM_CanDoKata())
 	{
-		saberMoveName_t overrideMove = LS_INVALID;
+		const saberMoveName_t overrideMove = LS_INVALID;
 
 		if (overrideMove == LS_INVALID)
 		{
@@ -5367,7 +5308,7 @@ weapChecks:
 				if (pm->ps->groundEntityNum == ENTITYNUM_NONE)
 				{
 					//if in air, convert kick to an in-air kick
-					float gDist = PM_GroundDistance();
+					const float gDist = PM_GroundDistance();
 
 					if ((!PM_FlippingAnim(pm->ps->legsAnim) || pm->ps->legsTimer <= 0) &&
 						gDist > 64.0f &&
@@ -5426,7 +5367,7 @@ weapChecks:
 			}
 			if (kickMove != -1)
 			{
-				int kickAnim = saberMoveData[kickMove].animToUse;
+				const int kickAnim = saberMoveData[kickMove].animToUse;
 
 				if (kickAnim != -1)
 				{
@@ -5533,6 +5474,7 @@ weapChecks:
 					{//okay to chain to another attack
 						newmove = saberMoveData[curmove].chain_attack;//we assume they're attacking, even if they're not
 						pm->ps->saberAttackChainCount++;
+						pm->ps->saberFatigueChainCount++;
 					}
 			}
 				else
@@ -5725,7 +5667,7 @@ weapChecks:
 				{
 					newmove = PM_SaberAttackForMovement(curmove);
 
-					if (pm->ps->saberAttackChainCount < MISHAPLEVEL_TEN)
+					if (pm->ps->saberFatigueChainCount < MISHAPLEVEL_TEN)
 					{
 						if ((PM_SaberInBounce(curmove) || PM_SaberInBrokenParry(curmove))
 							&& saberMoveData[newmove].startQuad == saberMoveData[curmove].endQuad)
@@ -6076,16 +6018,6 @@ void PM_BlockFatigue(playerState_t* ps, const int newMove, const int anim)
 			//simple saber attack
 			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERDEFENSE);
 		}
-		else if (PM_PerfectBlocktheAttack(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERDEFENSE);
-		}
-		else if (PM_AbsorbtheParry(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERDEFENSE);
-		}
 		else if (PM_SaberInbackblock(newMove))
 		{
 			//simple block
@@ -6137,16 +6069,6 @@ void PM_SaberFatigue(playerState_t* ps, const int newMove, const int anim)
 			//simple saber attack
 			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERBOLTBLOCK);
 		}
-		else if (PM_PerfectBlocktheAttack(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERBOLTBLOCK);
-		}
-		else if (PM_AbsorbtheParry(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, FATIGUE_AUTOSABERBOLTBLOCK);
-		}
 		else if (PM_SaberInbackblock(newMove))
 		{
 			//simple block
@@ -6184,16 +6106,6 @@ void PM_NPCFatigue(playerState_t* ps, const int newMove, int anim)
 			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
 		}
 		else if (PM_KnockawayForParry(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
-		}
-		else if (PM_PerfectBlocktheAttack(newMove))
-		{
-			//simple saber attack
-			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
-		}
-		else if (PM_AbsorbtheParry(newMove))
 		{
 			//simple saber attack
 			PM_AddBlockFatigue(ps, Fatigue_SaberAttack(ps));
@@ -6250,19 +6162,19 @@ void PM_SetJumped(const float height, const qboolean force)
 
 void WP_SaberFatigueRegenerate(const int overrideAmt)
 {
-	if (pm->ps->saberAttackChainCount >= MISHAPLEVEL_NONE)
+	if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_NONE)
 	{
 		if (overrideAmt)
 		{
-			pm->ps->saberAttackChainCount -= overrideAmt;
+			pm->ps->saberFatigueChainCount -= overrideAmt;
 		}
 		else
 		{
-			pm->ps->saberAttackChainCount--;
+			pm->ps->saberFatigueChainCount--;
 		}
-		if (pm->ps->saberAttackChainCount > MISHAPLEVEL_MAX)
+		if (pm->ps->saberFatigueChainCount > MISHAPLEVEL_MAX)
 		{
-			pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
+			pm->ps->saberFatigueChainCount = MISHAPLEVEL_MAX;
 		}
 	}
 }
@@ -6278,51 +6190,25 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 
 	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
 	//Holding Block Button
-
-#ifdef _GAME
-	if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
+	if (new_move == LS_READY || new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
 	{
-		if (new_move == LS_READY)
-		{
-			if (pm->ps->fd.forcePowerRegenDebounceTime < level.time)
-			{
-				WP_SaberFatigueRegenerate(0);
-				pm->ps->fd.forcePowerRegenDebounceTime = level.time + 100;
-			}
-		}
-		else if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
-		{
-			//finished with a kata (or in a special move) reset attack counter
-			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
-		}
-		else if (PM_SaberInAttack(new_move))
-		{
-			//continuing with a kata, increment attack counter
-			pm->ps->saberAttackChainCount++;
-		}
+		//finished with a kata (or in a special move) reset attack counter
+		pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
 	}
-	else
-#endif
+	else if (PM_SaberInAttack(new_move))
 	{
-		if (new_move == LS_A_FLIP_STAB || new_move == LS_A_FLIP_SLASH)
-		{
-			//finished with a kata (or in a special move) reset attack counter
-			pm->ps->saberAttackChainCount = MISHAPLEVEL_NONE;
-		}
-		else if (PM_SaberInAttack(new_move))
-		{
-			//continuing with a kata, increment attack counter
-			pm->ps->saberAttackChainCount++;
-		}
+		//continuing with a kata, increment attack counter
+		pm->ps->saberAttackChainCount++;
+		pm->ps->saberFatigueChainCount++;
 	}
 
-	if (pm->ps->saberAttackChainCount > MISHAPLEVEL_OVERLOAD)
+	if (pm->ps->saberFatigueChainCount > MISHAPLEVEL_OVERLOAD)
 	{
 		//for the sake of being able to send the value over the net within a reasonable bit count
-		pm->ps->saberAttackChainCount = MISHAPLEVEL_MAX;
+		pm->ps->saberFatigueChainCount = MISHAPLEVEL_MAX;
 	}
 
-	if (pm->ps->saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+	if (pm->ps->saberFatigueChainCount > MISHAPLEVEL_HUDFLASH)
 	{
 		pm->ps->userInt3 |= 1 << FLAG_ATTACKFATIGUE;
 	}

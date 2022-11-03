@@ -211,7 +211,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 //as a gentity, but the MP-compatible access restrictions are based
 //on the bgEntity structure in the MP codebase) -rww
 // ProcessOrientCommands the Vehicle.
-static void ProcessOrientCommands(Vehicle_t* pVeh)
+static void ProcessOrientCommands(const Vehicle_t* pVeh)
 {
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
@@ -303,7 +303,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		/********************************************************************************/
 }
 
-void AnimalProcessOri(Vehicle_t* pVeh)
+void AnimalProcessOri(const Vehicle_t* pVeh)
 {
 	ProcessOrientCommands(pVeh);
 }
@@ -442,7 +442,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 static void AnimateRiders(Vehicle_t* pVeh)
 {
 	animNumber_t Anim = BOTH_VT_IDLE;
-	int iFlags = SETANIM_FLAG_NORMAL, iBlend = 500;
+	int iFlags, iBlend;
 	gentity_t* pilot = (gentity_t*)pVeh->m_pPilot;
 	const gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
 
@@ -455,10 +455,10 @@ static void AnimateRiders(Vehicle_t* pVeh)
 	}
 
 	// Percentage of maximum speed relative to current speed.
-	const float fSpeedPercToMax = parent->client->ps.speed / pVeh->m_pVehicleInfo->speedMax;
 
 	// Going in reverse...
 	{
+		const float fSpeedPercToMax = parent->client->ps.speed / pVeh->m_pVehicleInfo->speedMax;
 		const qboolean HasWeapon = pilotPS->weapon != WP_NONE && pilotPS->weapon != WP_MELEE;
 		const qboolean Attacking = HasWeapon && !!(pVeh->m_ucmd.buttons & BUTTON_ATTACK);
 		qboolean Right = pVeh->m_ucmd.rightmove > 0;
@@ -667,7 +667,7 @@ void G_CreateAnimalNPC(Vehicle_t** pVeh, const char* strAnimalType)
 	if (!*pVeh)
 	{
 		//only allocate a new one if we really have to
-		(*pVeh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
+		*pVeh = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
 	}
 #endif
 	memset(*pVeh, 0, sizeof(Vehicle_t));

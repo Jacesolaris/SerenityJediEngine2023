@@ -168,7 +168,7 @@ void* UI_Alloc(int size)
 
 	char* p = &memoryPool[allocPoint];
 
-	allocPoint += (size + 15) & ~15;
+	allocPoint += size + 15 & ~15;
 
 	return p;
 }
@@ -202,10 +202,10 @@ static unsigned hashForString(const char* str)
 	while (str[i] != '\0')
 	{
 		const char letter = tolower(str[i]);
-		hash += (unsigned)(letter) * (i + 119);
+		hash += (unsigned)letter * (i + 119);
 		i++;
 	}
-	hash &= (HASH_TABLE_SIZE - 1);
+	hash &= HASH_TABLE_SIZE - 1;
 	return hash;
 }
 
@@ -354,7 +354,7 @@ void PC_SourceError(int handle, char* format, ...)
 	static char string[4096];
 
 	va_start(argptr, format);
-	Q_vsnprintf(string, sizeof(string), format, argptr);
+	Q_vsnprintf(string, sizeof string, format, argptr);
 	va_end(argptr);
 
 	filename[0] = '\0';
@@ -571,8 +571,8 @@ qboolean String_Parse(char** p, const char** out)
 	const char* token = COM_ParseExt(p, qfalse);
 	if (token && token[0] != 0)
 	{
-		*(out) = String_Alloc(token);
-		return *(out) != NULL;
+		*out = String_Alloc(token);
+		return *out != NULL;
 	}
 	return qfalse;
 }
@@ -595,11 +595,11 @@ qboolean PC_String_Parse(int handle, const char** out)
 	if (!Q_stricmp(token.string, "}"))
 	{
 		static char* squiggy = "}";
-		*(out) = squiggy;
+		*out = squiggy;
 	}
 	else
 	{
-		*(out) = String_Alloc(token.string);
+		*out = String_Alloc(token.string);
 	}
 	return qtrue;
 }
@@ -962,7 +962,7 @@ itemDef_t* Menu_ClearFocus(const menuDef_t* menu)
 
 qboolean IsVisible(int flags)
 {
-	return (flags & WINDOW_VISIBLE && !(flags & WINDOW_FADINGOUT));
+	return flags & WINDOW_VISIBLE && !(flags & WINDOW_FADINGOUT);
 }
 
 qboolean Rect_ContainsPoint(const rectDef_t* rect, float x, float y)
@@ -987,8 +987,8 @@ int Menu_ItemsMatchingGroup(const menuDef_t* menu, const char* name)
 			continue;
 		}
 
-		if (!Q_stricmp(menu->items[i]->window.name, name) || (VALIDSTRING(menu->items[i]->window.group) && !Q_stricmp(
-			menu->items[i]->window.group, name)))
+		if (!Q_stricmp(menu->items[i]->window.name, name) || VALIDSTRING(menu->items[i]->window.group) && !Q_stricmp(
+			menu->items[i]->window.group, name))
 			count++;
 	}
 
@@ -1000,8 +1000,8 @@ itemDef_t* Menu_GetMatchingItemByNumber(const menuDef_t* menu, int index, const 
 	int count = 0;
 	for (int i = 0; i < menu->itemCount; i++)
 	{
-		if (Q_stricmp(menu->items[i]->window.name, name) == 0 || (menu->items[i]->window.group && Q_stricmp(
-			menu->items[i]->window.group, name) == 0))
+		if (Q_stricmp(menu->items[i]->window.name, name) == 0 || menu->items[i]->window.group && Q_stricmp(
+			menu->items[i]->window.group, name) == 0)
 		{
 			if (count == index)
 			{
@@ -1095,7 +1095,7 @@ qboolean Script_SetItemRectCvar(itemDef_t* item, char** args)
 		{
 			char cvarBuf[1024];
 			// get cvar data
-			DC->getCVarString(cvarName, cvarBuf, sizeof(cvarBuf));
+			DC->getCVarString(cvarName, cvarBuf, sizeof cvarBuf);
 
 			holdBuf = cvarBuf;
 			if (String_Parse(&holdBuf, &holdVal))
@@ -1212,7 +1212,7 @@ qboolean Script_SetItemColor(itemDef_t* item, char** args)
 		{
 			char buff[1024];
 			itemname += 1;
-			DC->getCVarString(itemname, buff, sizeof(buff));
+			DC->getCVarString(itemname, buff, sizeof buff);
 			itemname = buff;
 		}
 
@@ -1274,7 +1274,7 @@ qboolean Script_SetItemColorCvar(itemDef_t* item, char** args)
 		{
 			char buff[1024];
 			itemname += 1;
-			DC->getCVarString(itemname, buff, sizeof(buff));
+			DC->getCVarString(itemname, buff, sizeof buff);
 			itemname = buff;
 		}
 
@@ -1285,7 +1285,7 @@ qboolean Script_SetItemColorCvar(itemDef_t* item, char** args)
 		{
 			return qtrue;
 		}
-		DC->getCVarString(colorCvarName, cvarBuf, sizeof(cvarBuf));
+		DC->getCVarString(colorCvarName, cvarBuf, sizeof cvarBuf);
 
 		holdBuf = cvarBuf;
 		if (String_Parse(&holdBuf, &holdVal))
@@ -1432,12 +1432,12 @@ void Menu_FadeItemByName(menuDef_t* menu, const char* p, qboolean fadeOut)
 		{
 			if (fadeOut)
 			{
-				item->window.flags |= (WINDOW_FADINGOUT | WINDOW_VISIBLE);
+				item->window.flags |= WINDOW_FADINGOUT | WINDOW_VISIBLE;
 				item->window.flags &= ~WINDOW_FADINGIN;
 			}
 			else
 			{
-				item->window.flags |= (WINDOW_VISIBLE | WINDOW_FADINGIN);
+				item->window.flags |= WINDOW_VISIBLE | WINDOW_FADINGIN;
 				item->window.flags &= ~WINDOW_FADINGOUT;
 			}
 		}
@@ -1616,7 +1616,7 @@ void Menu_TransitionItemByName(menuDef_t* menu, const char* p, const rectDef_t* 
 				rectFrom = &item->window.rect;
 				//if there are more than one of these with the same name, they'll all use the FIRST one's FROM.
 			}
-			item->window.flags |= (WINDOW_INTRANSITION | WINDOW_VISIBLE);
+			item->window.flags |= WINDOW_INTRANSITION | WINDOW_VISIBLE;
 			item->window.offsetTime = time;
 			memcpy(&item->window.rectClient, rectFrom, sizeof(rectDef_t));
 			memcpy(&item->window.rectEffects, rectTo, sizeof(rectDef_t));
@@ -1653,7 +1653,7 @@ void Menu_Transition3ItemByName(menuDef_t* menu, const char* p, const float minx
 			{
 				modelDef_t* modelptr = item->typeData.model;
 
-				item->window.flags |= (WINDOW_INTRANSITIONMODEL | WINDOW_VISIBLE);
+				item->window.flags |= WINDOW_INTRANSITIONMODEL | WINDOW_VISIBLE;
 				item->window.offsetTime = time;
 				modelptr->fov_x2 = fovtx;
 				modelptr->fov_y2 = fovty;
@@ -1758,7 +1758,7 @@ void Menu_OrbitItemByName(menuDef_t* menu, const char* p, float x, float y, floa
 		itemDef_t* item = Menu_GetMatchingItemByNumber(menu, i, p);
 		if (item != NULL)
 		{
-			item->window.flags |= (WINDOW_ORBITING | WINDOW_VISIBLE);
+			item->window.flags |= WINDOW_ORBITING | WINDOW_VISIBLE;
 			item->window.offsetTime = time;
 			item->window.rectEffects.x = cx;
 			item->window.rectEffects.y = cy;
@@ -1799,7 +1799,7 @@ qboolean Script_Disable(itemDef_t* item, char** args)
 		if (name[0] == '*')
 		{
 			name += 1;
-			DC->getCVarString(name, buff, sizeof(buff));
+			DC->getCVarString(name, buff, sizeof buff);
 			name = buff;
 		}
 
@@ -1828,7 +1828,7 @@ qboolean Script_Scale(itemDef_t* item, char** args)
 		if (name[0] == '*')
 		{
 			name += 1;
-			DC->getCVarString(name, buff, sizeof(buff));
+			DC->getCVarString(name, buff, sizeof buff);
 			name = buff;
 		}
 
@@ -1844,8 +1844,8 @@ qboolean Script_Scale(itemDef_t* item, char** args)
 					rectTo.h = itemFound->window.rect.h * scale;
 					rectTo.w = itemFound->window.rect.w * scale;
 
-					rectTo.x = itemFound->window.rect.x + ((itemFound->window.rect.h - rectTo.h) / 2);
-					rectTo.y = itemFound->window.rect.y + ((itemFound->window.rect.w - rectTo.w) / 2);
+					rectTo.x = itemFound->window.rect.x + (itemFound->window.rect.h - rectTo.h) / 2;
+					rectTo.y = itemFound->window.rect.y + (itemFound->window.rect.w - rectTo.w) / 2;
 
 					Menu_TransitionItemByName(item->parent, name, 0, &rectTo, 1, 1);
 				}
@@ -2057,7 +2057,7 @@ qboolean Script_SetCvarToCvar(itemDef_t* item, char** args)
 	if (String_Parse(args, &cvar) && String_Parse(args, &val))
 	{
 		char cvarBuf[1024];
-		DC->getCVarString(val, cvarBuf, sizeof(cvarBuf));
+		DC->getCVarString(val, cvarBuf, sizeof cvarBuf);
 		DC->setCVar(cvar, cvarBuf);
 	}
 	return qtrue;
@@ -2234,7 +2234,7 @@ void Menu_SetItemText(const menuDef_t* menu, const char* itemName, const char* t
 	}
 }
 
-int scriptCommandCount = sizeof(commandList) / sizeof(commandDef_t);
+int scriptCommandCount = sizeof commandList / sizeof(commandDef_t);
 
 void Item_RunScript(itemDef_t* item, const char* s)
 {
@@ -2293,7 +2293,7 @@ qboolean Item_EnableShowViaCvar(itemDef_t* item, int flag)
 	if (item && item->enableCvar && *item->enableCvar && item->cvarTest && *item->cvarTest)
 	{
 		char buff[2048];
-		DC->getCVarString(item->cvarTest, buff, sizeof(buff));
+		DC->getCVarString(item->cvarTest, buff, sizeof buff);
 		Q_strncpyz(script, item->enableCvar, 2048);
 		p = script;
 		while (1)
@@ -2302,7 +2302,7 @@ qboolean Item_EnableShowViaCvar(itemDef_t* item, int flag)
 			// expect value then ; or NULL, NULL ends list
 			if (!String_Parse(&p, &val))
 			{
-				return (item->cvarFlags & flag) ? qfalse : qtrue;
+				return item->cvarFlags & flag ? qfalse : qtrue;
 			}
 
 			if (val[0] == ';' && val[1] == '\0')
@@ -2312,16 +2312,16 @@ qboolean Item_EnableShowViaCvar(itemDef_t* item, int flag)
 			// enable it if any of the values are true
 			if (item->cvarFlags & flag)
 			{
-				if (((item->cvarFlags & CVAR_SUBSTRING) && strstr(buff, val))
-					|| (Q_stricmp(buff, val) == 0))
+				if (item->cvarFlags & CVAR_SUBSTRING && strstr(buff, val)
+					|| Q_stricmp(buff, val) == 0)
 				{
 					return qtrue;
 				}
 			}
 			else
 			{
-				if (((item->cvarFlags & CVAR_SUBSTRING) && strstr(buff, val))
-					|| (Q_stricmp(buff, val) == 0))
+				if (item->cvarFlags & CVAR_SUBSTRING && strstr(buff, val)
+					|| Q_stricmp(buff, val) == 0)
 				{
 					return qfalse;
 				}
@@ -2443,7 +2443,7 @@ int Item_TextScroll_ThumbPosition(itemDef_t* item)
 	const textScrollDef_t* scrollPtr = item->typeData.textscroll;
 
 	const float max = Item_TextScroll_MaxScroll(item);
-	const float size = item->window.rect.h - (SCROLLBAR_SIZE * 2) - 2;
+	const float size = item->window.rect.h - SCROLLBAR_SIZE * 2 - 2;
 
 	if (max > 0)
 	{
@@ -2530,12 +2530,12 @@ qboolean Item_TextScroll_HandleKey(itemDef_t* item, int key, qboolean down, qboo
 {
 	textScrollDef_t* scrollPtr = item->typeData.textscroll;
 
-	if (force || (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags &
-		WINDOW_HASFOCUS))
+	if (force || Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags &
+		WINDOW_HASFOCUS)
 	{
 		const int max = Item_TextScroll_MaxScroll(item);
 
-		const int viewmax = (item->window.rect.h / scrollPtr->lineHeight);
+		const int viewmax = item->window.rect.h / scrollPtr->lineHeight;
 		if (key == A_CURSOR_UP || key == A_KP_8)
 		{
 			scrollPtr->startPos--;
@@ -2674,11 +2674,11 @@ int Item_ListBox_MaxScroll(itemDef_t* item)
 
 	if (item->window.flags & WINDOW_HORIZONTAL)
 	{
-		max = count - (item->window.rect.w / listPtr->elementWidth) + 1;
+		max = count - item->window.rect.w / listPtr->elementWidth + 1;
 	}
 	else
 	{
-		max = count - (item->window.rect.h / listPtr->elementHeight) + 1;
+		max = count - item->window.rect.h / listPtr->elementHeight + 1;
 	}
 	if (max < 0)
 	{
@@ -2695,7 +2695,7 @@ int Item_ListBox_ThumbPosition(itemDef_t* item)
 	const float max = Item_ListBox_MaxScroll(item);
 	if (item->window.flags & WINDOW_HORIZONTAL)
 	{
-		size = item->window.rect.w - (SCROLLBAR_SIZE * 2) - 2;
+		size = item->window.rect.w - SCROLLBAR_SIZE * 2 - 2;
 		if (max > 0)
 		{
 			pos = (size - SCROLLBAR_SIZE) / max;
@@ -2707,7 +2707,7 @@ int Item_ListBox_ThumbPosition(itemDef_t* item)
 		pos *= listPtr->startPos;
 		return item->window.rect.x + 1 + SCROLLBAR_SIZE + pos;
 	}
-	size = item->window.rect.h - (SCROLLBAR_SIZE * 2) - 2;
+	size = item->window.rect.h - SCROLLBAR_SIZE * 2 - 2;
 	if (max > 0)
 	{
 		pos = (size - SCROLLBAR_SIZE) / max;
@@ -2792,7 +2792,7 @@ int Item_Slider_OverSlider(itemDef_t* item, float x, float y)
 {
 	rectDef_t r;
 
-	r.x = Item_Slider_ThumbPosition(item) - (SLIDER_THUMB_WIDTH / 2);
+	r.x = Item_Slider_ThumbPosition(item) - SLIDER_THUMB_WIDTH / 2;
 	r.y = item->window.rect.y - 2;
 	r.w = SLIDER_THUMB_WIDTH;
 	r.h = SLIDER_THUMB_HEIGHT;
@@ -2854,7 +2854,7 @@ int Item_ListBox_OverLB(itemDef_t* item, float x, float y)
 	else
 	{
 		// Multiple rows and columns (since it's more than twice as wide as an element)
-		if ((item->window.rect.w > (listPtr->elementWidth * 2)) && (listPtr->elementStyle == LISTBOX_IMAGE))
+		if (item->window.rect.w > listPtr->elementWidth * 2 && listPtr->elementStyle == LISTBOX_IMAGE)
 		{
 			r.x = item->window.rect.x + item->window.rect.w - SCROLLBAR_SIZE;
 			r.y = item->window.rect.y;
@@ -2966,13 +2966,13 @@ void Item_ListBox_MouseEnter(itemDef_t* item, float x, float y)
 		if (Rect_ContainsPoint(&r, x, y))
 		{
 			// Multiple rows and columns (since it's more than twice as wide as an element)
-			if ((item->window.rect.w > (listPtr->elementWidth * 2)) && (listPtr->elementStyle == LISTBOX_IMAGE))
+			if (item->window.rect.w > listPtr->elementWidth * 2 && listPtr->elementStyle == LISTBOX_IMAGE)
 			{
 				const int row = (int)((y - 2 - r.y) / listPtr->elementHeight);
 				const int rowLength = (int)r.w / listPtr->elementWidth;
 				const int column = (int)((x - r.x) / listPtr->elementWidth);
 
-				listPtr->cursorPos = (row * rowLength) + column + listPtr->startPos;
+				listPtr->cursorPos = row * rowLength + column + listPtr->startPos;
 				if (listPtr->cursorPos >= listPtr->endPos)
 				{
 					listPtr->cursorPos = listPtr->endPos;
@@ -3145,13 +3145,13 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 	listBoxDef_t* listPtr = item->typeData.listbox;
 	const int count = DC->feederCount(item->special);
 	int viewmax;
-	if (force || (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags &
-		WINDOW_HASFOCUS))
+	if (force || Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags &
+		WINDOW_HASFOCUS)
 	{
 		const int max = Item_ListBox_MaxScroll(item);
 		if (item->window.flags & WINDOW_HORIZONTAL)
 		{
-			viewmax = (item->window.rect.w / listPtr->elementWidth);
+			viewmax = item->window.rect.w / listPtr->elementWidth;
 			if (key == A_CURSOR_LEFT || key == A_KP_4)
 			{
 				if (!listPtr->notselectable)
@@ -3217,13 +3217,13 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 		else
 		{
 			// Multiple rows and columns (since it's more than twice as wide as an element)
-			if ((item->window.rect.w > (listPtr->elementWidth * 2)) && (listPtr->elementStyle == LISTBOX_IMAGE))
+			if (item->window.rect.w > listPtr->elementWidth * 2 && listPtr->elementStyle == LISTBOX_IMAGE)
 			{
-				viewmax = (item->window.rect.w / listPtr->elementWidth);
+				viewmax = item->window.rect.w / listPtr->elementWidth;
 			}
 			else
 			{
-				viewmax = (item->window.rect.h / listPtr->elementHeight);
+				viewmax = item->window.rect.h / listPtr->elementHeight;
 			}
 
 			if (key == A_CURSOR_UP || key == A_KP_8)
@@ -3290,7 +3290,7 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 			if (key == A_MWHEELUP)
 			{
 				int countup = trap->Key_IsDown(A_CTRL) ? 5 : 1;
-				listPtr->startPos -= ((int)item->special == FEEDER_Q3HEADS) ? viewmax : countup;
+				listPtr->startPos -= (int)item->special == FEEDER_Q3HEADS ? viewmax : countup;
 				if (listPtr->startPos < 0)
 				{
 					listPtr->startPos = 0;
@@ -3303,7 +3303,7 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 			if (key == A_MWHEELDOWN)
 			{
 				int countdown = trap->Key_IsDown(A_CTRL) ? 5 : 1;
-				listPtr->startPos += ((int)item->special == FEEDER_Q3HEADS) ? viewmax : countdown;
+				listPtr->startPos += (int)item->special == FEEDER_Q3HEADS ? viewmax : countdown;
 				if (listPtr->startPos > max)
 				{
 					listPtr->startPos = max;
@@ -3347,9 +3347,9 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 			{
 				// page down
 				listPtr->startPos += viewmax;
-				if (listPtr->startPos > (max))
+				if (listPtr->startPos > max)
 				{
-					listPtr->startPos = (max);
+					listPtr->startPos = max;
 				}
 			}
 			else if (item->window.flags & WINDOW_LB_THUMB)
@@ -3490,7 +3490,7 @@ int Item_Multi_FindCvarByValue(itemDef_t* item)
 	{
 		if (multiPtr->strDef)
 		{
-			DC->getCVarString(item->cvar, buff, sizeof(buff));
+			DC->getCVarString(item->cvar, buff, sizeof buff);
 		}
 		else
 		{
@@ -3528,7 +3528,7 @@ const char* Item_Multi_Setting(itemDef_t* item)
 		{
 			if (item->cvar)
 			{
-				DC->getCVarString(item->cvar, buff, sizeof(buff));
+				DC->getCVarString(item->cvar, buff, sizeof buff);
 			}
 		}
 		else
@@ -3598,7 +3598,7 @@ qboolean Item_Multi_HandleKey(itemDef_t* item, int key)
 				else
 				{
 					const float value = multiPtr->cvarValue[current];
-					if (((float)((int)value)) == value)
+					if ((float)(int)value == value)
 					{
 						DC->setCVar(item->cvar, va("%i", (int)value));
 					}
@@ -3624,7 +3624,7 @@ qboolean Item_Multi_HandleKey(itemDef_t* item, int key)
 void Leaving_EditField(itemDef_t* item)
 {
 	// switching fields so reset printed text of edit field
-	if ((g_editingField == qtrue) && (item->type == ITEM_TYPE_EDITFIELD))
+	if (g_editingField == qtrue && item->type == ITEM_TYPE_EDITFIELD)
 	{
 		editFieldDef_t* editPtr = item->typeData.edit;
 		if (editPtr)
@@ -3639,7 +3639,7 @@ qboolean Item_TextField_HandleKey(itemDef_t* item, int key);
 void Item_TextField_Paste(itemDef_t* item) {
 	char	buff[2048] = { 0 };
 
-	trap->GetClipboardData(buff, sizeof(buff));
+	trap->GetClipboardData(buff, sizeof buff);
 
 	if (!*buff) {
 		return;
@@ -3662,7 +3662,7 @@ qboolean Item_TextField_HandleKey(itemDef_t* item, int key)
 	if (item->cvar)
 	{
 		buff[0] = 0;
-		DC->getCVarString(item->cvar, buff, sizeof(buff));
+		DC->getCVarString(item->cvar, buff, sizeof buff);
 		int len = strlen(buff);
 		if (editPtr->maxChars && len > editPtr->maxChars)
 		{
@@ -3713,7 +3713,7 @@ qboolean Item_TextField_HandleKey(itemDef_t* item, int key)
 
 			if (!DC->getOverstrikeMode())
 			{
-				if ((len == MAX_EDITFIELD - 1) || (editPtr->maxChars && len >= editPtr->maxChars))
+				if (len == MAX_EDITFIELD - 1 || editPtr->maxChars && len >= editPtr->maxChars)
 				{
 					return qtrue;
 				}
@@ -3844,8 +3844,8 @@ qboolean Item_TextField_HandleKey(itemDef_t* item, int key)
 		}
 
 		//	if ( key == A_ENTER || key == A_KP_ENTER || key == A_ESCAPE)  {
-		if (key == A_ENTER || key == A_KP_ENTER || key == A_ESCAPE || (key == A_MOUSE1 && !Rect_ContainsPoint(
-			&item->window.rect, DC->cursorx, DC->cursory)))
+		if (key == A_ENTER || key == A_KP_ENTER || key == A_ESCAPE || key == A_MOUSE1 && !Rect_ContainsPoint(
+			&item->window.rect, DC->cursorx, DC->cursory))
 		{
 			DC->setOverstrikeMode(qfalse);
 			return qfalse;
@@ -3890,7 +3890,7 @@ static void Scroll_TextScroll_ThumbFunc(void* p)
 	{
 		r.x = si->item->window.rect.x + si->item->window.rect.w - SCROLLBAR_SIZE - 1;
 		r.y = si->item->window.rect.y + SCROLLBAR_SIZE + 1;
-		r.h = si->item->window.rect.h - (SCROLLBAR_SIZE * 2) - 2;
+		r.h = si->item->window.rect.h - SCROLLBAR_SIZE * 2 - 2;
 		r.w = SCROLLBAR_SIZE;
 		const int max = Item_TextScroll_MaxScroll(si->item);
 		//
@@ -3965,7 +3965,7 @@ static void Scroll_ListBox_ThumbFunc(void* p)
 		r.x = si->item->window.rect.x + SCROLLBAR_SIZE + 1;
 		r.y = si->item->window.rect.y + si->item->window.rect.h - SCROLLBAR_SIZE - 1;
 		r.h = SCROLLBAR_SIZE;
-		r.w = si->item->window.rect.w - (SCROLLBAR_SIZE * 2) - 2;
+		r.w = si->item->window.rect.w - SCROLLBAR_SIZE * 2 - 2;
 		max = Item_ListBox_MaxScroll(si->item);
 		//
 		pos = (DC->cursorx - r.x - SCROLLBAR_SIZE / 2) * max / (r.w - SCROLLBAR_SIZE);
@@ -3984,12 +3984,12 @@ static void Scroll_ListBox_ThumbFunc(void* p)
 	{
 		r.x = si->item->window.rect.x + si->item->window.rect.w - SCROLLBAR_SIZE - 1;
 		r.y = si->item->window.rect.y + SCROLLBAR_SIZE + 1;
-		r.h = si->item->window.rect.h - (SCROLLBAR_SIZE * 2) - 2;
+		r.h = si->item->window.rect.h - SCROLLBAR_SIZE * 2 - 2;
 		r.w = SCROLLBAR_SIZE;
 		max = Item_ListBox_MaxScroll(si->item);
 
 		// Multiple rows and columns (since it's more than twice as wide as an element)
-		if ((si->item->window.rect.w > (listPtr->elementWidth * 2)) && (listPtr->elementStyle == LISTBOX_IMAGE))
+		if (si->item->window.rect.w > listPtr->elementWidth * 2 && listPtr->elementStyle == LISTBOX_IMAGE)
 		{
 			const int rowLength = si->item->window.rect.w / listPtr->elementWidth;
 			const int rowMax = max / rowLength;
@@ -4060,7 +4060,7 @@ static void Scroll_Slider_ThumbFunc(void* p)
 	}
 	float value = cursorx - x;
 	value /= SLIDER_WIDTH;
-	value *= (editDef->maxVal - editDef->minVal);
+	value *= editDef->maxVal - editDef->minVal;
 	value += editDef->minVal;
 
 	if (si->item->type == ITEM_TYPE_INTSLIDER)
@@ -4089,7 +4089,7 @@ void Item_StartCapture(itemDef_t* item, int key)
 			scrollInfo.nextAdjustTime = DC->realTime + SCROLL_TIME_ADJUST;
 			scrollInfo.adjustValue = SCROLL_TIME_START;
 			scrollInfo.scrollKey = key;
-			scrollInfo.scrollDir = (flags & WINDOW_LB_LEFTARROW) ? qtrue : qfalse;
+			scrollInfo.scrollDir = flags & WINDOW_LB_LEFTARROW ? qtrue : qfalse;
 			scrollInfo.item = item;
 			captureData = &scrollInfo;
 			captureFunc = &Scroll_ListBox_AutoFunc;
@@ -4116,7 +4116,7 @@ void Item_StartCapture(itemDef_t* item, int key)
 			scrollInfo.nextAdjustTime = DC->realTime + SCROLL_TIME_ADJUST;
 			scrollInfo.adjustValue = SCROLL_TIME_START;
 			scrollInfo.scrollKey = key;
-			scrollInfo.scrollDir = (flags & WINDOW_LB_LEFTARROW) ? qtrue : qfalse;
+			scrollInfo.scrollDir = flags & WINDOW_LB_LEFTARROW ? qtrue : qfalse;
 			scrollInfo.item = item;
 			captureData = &scrollInfo;
 			captureFunc = &Scroll_TextScroll_AutoFunc;
@@ -4185,13 +4185,13 @@ qboolean Item_Slider_HandleKey(itemDef_t* item, int key, qboolean down)
 				testRect.x = x;
 				float value = (float)SLIDER_THUMB_WIDTH / 2;
 				testRect.x -= value;
-				testRect.w = (SLIDER_WIDTH + (float)SLIDER_THUMB_WIDTH / 2);
+				testRect.w = SLIDER_WIDTH + (float)SLIDER_THUMB_WIDTH / 2;
 
 				if (Rect_ContainsPoint(&testRect, DC->cursorx, DC->cursory))
 				{
 					const float work = DC->cursorx - x;
 					value = work / width;
-					value *= (editDef->maxVal - editDef->minVal);
+					value *= editDef->maxVal - editDef->minVal;
 					value += editDef->minVal;
 
 					if (item->type == ITEM_TYPE_INTSLIDER)
@@ -4403,7 +4403,7 @@ static void Display_CloseCinematics()
 
 void Menus_Activate(menuDef_t* menu)
 {
-	menu->window.flags |= (WINDOW_HASFOCUS | WINDOW_VISIBLE);
+	menu->window.flags |= WINDOW_HASFOCUS | WINDOW_VISIBLE;
 	if (menu->onOpen)
 	{
 		itemDef_t item;
@@ -4730,7 +4730,7 @@ void Rect_ToWindowCoords(rectDef_t* rect, windowDef_t* window)
 
 void Item_SetTextExtents(itemDef_t* item, int* width, int* height, const char* text)
 {
-	const char* textPtr = (text) ? text : item->text;
+	const char* textPtr = text ? text : item->text;
 
 	if (textPtr == NULL)
 	{
@@ -4741,9 +4741,9 @@ void Item_SetTextExtents(itemDef_t* item, int* width, int* height, const char* t
 	*height = item->textRect.h;
 
 	// keeps us from computing the widths and heights more than once
-	if (*width == 0 || (item->type == ITEM_TYPE_OWNERDRAW && item->textalignment == ITEM_ALIGN_CENTER)
+	if (*width == 0 || item->type == ITEM_TYPE_OWNERDRAW && item->textalignment == ITEM_ALIGN_CENTER
 #ifndef _CGAME
-		|| (item->text && item->text[0] == '@' && item->asset != se_language.modificationCount)	//string package language changed
+		|| item->text && item->text[0] == '@' && item->asset != se_language.modificationCount	//string package language changed
 #endif
 		)
 	{
@@ -4803,7 +4803,7 @@ void Item_TextColor(itemDef_t* item, vec4_t* newColor)
 		lowLight[3] = 0.8 * parent->focusColor[3];
 		LerpColor(parent->focusColor, lowLight, *newColor, 0.5 + 0.5 * sin((float)(DC->realTime / PULSE_DIVISOR)));
 	}
-	else if (item->textStyle == ITEM_TEXTSTYLE_BLINK && !((DC->realTime / BLINK_DIVISOR) & 1))
+	else if (item->textStyle == ITEM_TEXTSTYLE_BLINK && !(DC->realTime / BLINK_DIVISOR & 1))
 	{
 		lowLight[0] = 0.8 * item->window.foreColor[0];
 		lowLight[1] = 0.8 * item->window.foreColor[1];
@@ -4847,7 +4847,7 @@ void Item_Text_AutoWrapped_Paint(itemDef_t* item)
 		{
 			return;
 		}
-		DC->getCVarString(item->cvar, text, sizeof(text));
+		DC->getCVarString(item->cvar, text, sizeof text);
 		textPtr = text;
 	}
 	else
@@ -4856,7 +4856,7 @@ void Item_Text_AutoWrapped_Paint(itemDef_t* item)
 	}
 	if (*textPtr == '@') // string reference
 	{
-		trap->SE_GetStringTextString(&textPtr[1], text, sizeof(text));
+		trap->SE_GetStringTextString(&textPtr[1], text, sizeof text);
 		textPtr = text;
 	}
 	if (*textPtr == '\0')
@@ -4887,7 +4887,7 @@ void Item_Text_AutoWrapped_Paint(itemDef_t* item)
 			newLineWidth = textWidth;
 		}
 		textWidth = DC->textWidth(buff, item->textscale, 0);
-		if ((newLine && textWidth > item->window.rect.w) || *p == '\n' || *p == '\0')
+		if (newLine && textWidth > item->window.rect.w || *p == '\n' || *p == '\0')
 		{
 			if (len)
 			{
@@ -4944,7 +4944,7 @@ void Item_Text_Wrapped_Paint(itemDef_t* item)
 		{
 			return;
 		}
-		DC->getCVarString(item->cvar, text, sizeof(text));
+		DC->getCVarString(item->cvar, text, sizeof text);
 		textPtr = text;
 	}
 	else
@@ -4953,7 +4953,7 @@ void Item_Text_Wrapped_Paint(itemDef_t* item)
 	}
 	if (*textPtr == '@') // string reference
 	{
-		trap->SE_GetStringTextString(&textPtr[1], text, sizeof(text));
+		trap->SE_GetStringTextString(&textPtr[1], text, sizeof text);
 		textPtr = text;
 	}
 	if (*textPtr == '\0')
@@ -5004,7 +5004,7 @@ void Item_Text_Paint(itemDef_t* item)
 		{
 			return;
 		}
-		DC->getCVarString(item->cvar, text, sizeof(text));
+		DC->getCVarString(item->cvar, text, sizeof text);
 		textPtr = text;
 	}
 	else
@@ -5013,7 +5013,7 @@ void Item_Text_Paint(itemDef_t* item)
 	}
 	if (*textPtr == '@') // string reference
 	{
-		trap->SE_GetStringTextString(&textPtr[1], text, sizeof(text));
+		trap->SE_GetStringTextString(&textPtr[1], text, sizeof text);
 		textPtr = text;
 	}
 
@@ -5035,7 +5035,7 @@ void Item_Text_Paint(itemDef_t* item)
 		textPtr = item->text2;
 		if (*textPtr == '@') // string reference
 		{
-			trap->SE_GetStringTextString(&textPtr[1], text, sizeof(text));
+			trap->SE_GetStringTextString(&textPtr[1], text, sizeof text);
 			textPtr = text;
 		}
 		Item_TextColor(item, &color);
@@ -5056,10 +5056,10 @@ void Item_TextField_Paint(itemDef_t* item)
 
 	if (item->cvar)
 	{
-		DC->getCVarString(item->cvar, buff, sizeof(buff));
+		DC->getCVarString(item->cvar, buff, sizeof buff);
 		if (buff[0] == '@') // string reference
 		{
-			trap->SE_GetStringTextString(&buff[1], buff, sizeof(buff));
+			trap->SE_GetStringTextString(&buff[1], buff, sizeof buff);
 		}
 	}
 
@@ -5078,7 +5078,7 @@ void Item_TextField_Paint(itemDef_t* item)
 		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
-	const int offset = (item->text && *item->text) ? 8 : 0;
+	const int offset = item->text && *item->text ? 8 : 0;
 	if (item->window.flags & WINDOW_HASFOCUS && g_editingField)
 	{
 		const char cursor = DC->getOverstrikeMode() ? '_' : '|';
@@ -5100,16 +5100,16 @@ void Item_YesNo_Paint(itemDef_t* item)
 	vec4_t color;
 	const char* yesnovalue;
 
-	const float value = (item->cvar) ? DC->getCVarValue(item->cvar) : 0;
+	const float value = item->cvar ? DC->getCVarValue(item->cvar) : 0;
 
-	trap->SE_GetStringTextString("MENUS_YES", sYES, sizeof(sYES));
-	trap->SE_GetStringTextString("MENUS_NO", sNO, sizeof(sNO));
+	trap->SE_GetStringTextString("MENUS_YES", sYES, sizeof sYES);
+	trap->SE_GetStringTextString("MENUS_NO", sNO, sizeof sNO);
 
 	//JLFYESNO MPMOVED
 	if (item->invertYesNo)
-		yesnovalue = (value == 0) ? sYES : sNO;
+		yesnovalue = value == 0 ? sYES : sNO;
 	else
-		yesnovalue = (value != 0) ? sYES : sNO;
+		yesnovalue = value != 0 ? sYES : sNO;
 
 	Item_TextColor(item, &color);
 	if (item->text)
@@ -5144,13 +5144,13 @@ void Item_Multi_Paint(itemDef_t* item)
 	const char* text = Item_Multi_Setting(item);
 	if (*text == '@') // string reference
 	{
-		trap->SE_GetStringTextString(&text[1], temp, sizeof(temp));
+		trap->SE_GetStringTextString(&text[1], temp, sizeof temp);
 		text = temp;
 	}
 	// Is is specifying a cvar to get the item name from?
 	else if (*text == '*')
 	{
-		DC->getCVarString(&text[1], temp, sizeof(temp));
+		DC->getCVarString(&text[1], temp, sizeof temp);
 		text = temp;
 	}
 
@@ -5308,7 +5308,7 @@ static void Controls_GetKeyAssignment(const char* command, int* twokeys)
 
 	for (int j = 0; j < MAX_KEYS; j++)
 	{
-		DC->getBindingBuf(j, b, sizeof(b));
+		DC->getBindingBuf(j, b, sizeof b);
 		if (*b && !Q_stricmp(b, command))
 		{
 			twokeys[count] = j;
@@ -5391,24 +5391,24 @@ void BindingFromName(const char* cvar)
 			{
 				char keyname[2][32];
 
-				DC->keynumToStringBuf(b1, keyname[0], sizeof(keyname[0]));
+				DC->keynumToStringBuf(b1, keyname[0], sizeof keyname[0]);
 				// do NOT do this or it corrupts asian text!!!					Q_strupr(keyname[0]);
-				DC->keynumToStringBuf(b2, keyname[1], sizeof(keyname[1]));
+				DC->keynumToStringBuf(b2, keyname[1], sizeof keyname[1]);
 				// do NOT do this or it corrupts asian text!!!					Q_strupr(keyname[1]);
 
-				trap->SE_GetStringTextString("MENUS_KEYBIND_OR", sOR, sizeof(sOR));
+				trap->SE_GetStringTextString("MENUS_KEYBIND_OR", sOR, sizeof sOR);
 
-				Com_sprintf(g_nameBind, sizeof(g_nameBind), "%s %s %s", keyname[0], sOR, keyname[1]);
+				Com_sprintf(g_nameBind, sizeof g_nameBind, "%s %s %s", keyname[0], sOR, keyname[1]);
 			}
 			else
 			{
-				DC->keynumToStringBuf(b1, g_nameBind, sizeof(g_nameBind));
+				DC->keynumToStringBuf(b1, g_nameBind, sizeof g_nameBind);
 				// do NOT do this or it corrupts asian text!!!					Q_strupr(g_nameBind);
 			}
 			return;
 		}
 	}
-	Q_strncpyz(g_nameBind, "???", sizeof(g_nameBind));
+	Q_strncpyz(g_nameBind, "???", sizeof g_nameBind);
 }
 
 void Item_Slider_Paint(itemDef_t* item)
@@ -5444,7 +5444,7 @@ void Item_Slider_Paint(itemDef_t* item)
 	DC->drawHandlePic(x, y, SLIDER_WIDTH, SLIDER_HEIGHT, DC->Assets.sliderBar);
 
 	x = Item_Slider_ThumbPosition(item);
-	DC->drawHandlePic(x - (SLIDER_THUMB_WIDTH / 2), y - 2, SLIDER_THUMB_WIDTH, SLIDER_THUMB_HEIGHT,
+	DC->drawHandlePic(x - SLIDER_THUMB_WIDTH / 2, y - 2, SLIDER_THUMB_WIDTH, SLIDER_THUMB_HEIGHT,
 		DC->Assets.sliderThumb);
 }
 
@@ -5460,7 +5460,7 @@ void Item_Bind_Paint(itemDef_t* item)
 		maxChars = editPtr->maxPaintChars;
 	}
 
-	const float value = (item->cvar) ? DC->getCVarValue(item->cvar) : 0;
+	const float value = item->cvar ? DC->getCVarValue(item->cvar) : 0;
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
@@ -5493,9 +5493,9 @@ void Item_Bind_Paint(itemDef_t* item)
 		// If the text runs past the limit bring the scale down until it fits.
 		float textScale = item->textscale;
 		float textWidth = DC->textWidth(g_nameBind, textScale, item->iMenuFont);
-		const int startingXPos = (item->textRect.x + item->textRect.w + 8);
+		const int startingXPos = item->textRect.x + item->textRect.w + 8;
 
-		while ((startingXPos + textWidth) >= SCREEN_WIDTH)
+		while (startingXPos + textWidth >= SCREEN_WIDTH)
 		{
 			textScale -= .05f;
 			textWidth = DC->textWidth(g_nameBind, textScale, item->iMenuFont);
@@ -5514,7 +5514,7 @@ void Item_Bind_Paint(itemDef_t* item)
 	}
 	else
 	{
-		DC->drawText(item->textRect.x, item->textRect.y, item->textscale, newColor, (value != 0) ? "FIXME" : "FIXME", 0,
+		DC->drawText(item->textRect.x, item->textRect.y, item->textscale, newColor, value != 0 ? "FIXME" : "FIXME", 0,
 			maxChars, item->textStyle, item->iMenuFont);
 	}
 }
@@ -5676,13 +5676,13 @@ void Item_Model_Paint(itemDef_t* item)
 
 	// a moves datapad anim is playing
 #ifdef UI_BUILD
-	if (uiInfo.moveAnimTime && (uiInfo.moveAnimTime < uiInfo.uiDC.realTime))
+	if (uiInfo.moveAnimTime && uiInfo.moveAnimTime < uiInfo.uiDC.realTime)
 	{
 		if (modelPtr)
 		{
 			char modelPath[MAX_QPATH];
 
-			Com_sprintf(modelPath, sizeof(modelPath), "models/players/%s/model.glm", UI_Cvar_VariableString("ui_char_model"));
+			Com_sprintf(modelPath, sizeof modelPath, "models/players/%s/model.glm", UI_Cvar_VariableString("ui_char_model"));
 			//HACKHACKHACK: check for any multi-part anim sequences, and play the next anim, if needbe
 			switch (modelPtr->g2anim)
 			{
@@ -5748,7 +5748,7 @@ void Item_Model_Paint(itemDef_t* item)
 #endif
 
 	// setup the refdef
-	memset(&refdef, 0, sizeof(refdef));
+	memset(&refdef, 0, sizeof refdef);
 
 	refdef.rdflags = RDF_NOWORLDMODEL;
 	AxisClear(refdef.viewaxis);
@@ -5791,8 +5791,8 @@ void Item_Model_Paint(itemDef_t* item)
 		origin[0] = len / 0.268; // len / tan( fov/2 )
 		//origin[0] = len / tan(w/2);
 	}
-	refdef.fov_x = (modelPtr->fov_x) ? modelPtr->fov_x : (int)((float)refdef.width / 640.0f * 90.0f);
-	refdef.fov_y = (modelPtr->fov_y)
+	refdef.fov_x = modelPtr->fov_x ? modelPtr->fov_x : (int)((float)refdef.width / 640.0f * 90.0f);
+	refdef.fov_y = modelPtr->fov_y
 		? modelPtr->fov_y
 		: atan2(refdef.height, refdef.width / tan(refdef.fov_x / 360 * M_PI)) * (360 / M_PI);
 
@@ -5805,10 +5805,10 @@ void Item_Model_Paint(itemDef_t* item)
 
 	// add the model
 
-	memset(&ent, 0, sizeof(ent));
+	memset(&ent, 0, sizeof ent);
 
 	// use item storage to track
-	if ((item->flags & ITF_ISANYSABER) && !(item->flags & ITF_ISCHARACTER))
+	if (item->flags & ITF_ISANYSABER && !(item->flags & ITF_ISCHARACTER))
 	{
 		//hack to put saber on it's side
 		if (modelPtr->rotationSpeed)
@@ -5840,7 +5840,7 @@ void Item_Model_Paint(itemDef_t* item)
 		VectorCopy(modelPtr->g2scale, ent.modelScale);
 		UI_ScaleModelAxis(&ent);
 #ifndef _CGAME
-		if ((item->flags & ITF_ISCHARACTER))
+		if (item->flags & ITF_ISCHARACTER)
 		{
 			ent.shaderRGBA[0] = ui_char_color_red.integer;
 			ent.shaderRGBA[1] = ui_char_color_green.integer;
@@ -5893,7 +5893,7 @@ void Item_TextScroll_Paint(itemDef_t* item)
 	y += SCROLLBAR_SIZE - 1;
 
 	scrollPtr->endPos = scrollPtr->startPos;
-	float size = item->window.rect.h - (SCROLLBAR_SIZE * 2);
+	float size = item->window.rect.h - SCROLLBAR_SIZE * 2;
 	DC->drawHandlePic(x, y, SCROLLBAR_SIZE, size + 1, DC->Assets.scrollBar);
 	y += size - 1;
 	DC->drawHandlePic(x, y, SCROLLBAR_SIZE, SCROLLBAR_SIZE, DC->Assets.scrollBarArrowDown);
@@ -5908,7 +5908,7 @@ void Item_TextScroll_Paint(itemDef_t* item)
 
 	if (item->cvar)
 	{
-		DC->getCVarString(item->cvar, cvartext, sizeof(cvartext));
+		DC->getCVarString(item->cvar, cvartext, sizeof cvartext);
 		item->text = cvartext;
 		Item_TextScroll_BuildLines(item);
 	}
@@ -5966,7 +5966,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 	if (item->cursorPos > (count ? count - 1 : count))
 	{
 		//probably changed feeders, so reset
-		item->cursorPos = (count ? count - 1 : count);
+		item->cursorPos = count ? count - 1 : count;
 		// NOTE : might consider moving this to any spot in here we change the cursor position
 		DC->feederSelection(item->special, item->cursorPos, NULL);
 	}
@@ -5989,7 +5989,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 				y = item->window.rect.y + item->window.rect.h - SCROLLBAR_SIZE - 1;
 				DC->drawHandlePic(x, y, SCROLLBAR_SIZE, SCROLLBAR_SIZE, DC->Assets.scrollBarArrowLeft);
 				x += SCROLLBAR_SIZE - 1;
-				sizeWidth = item->window.rect.w - (SCROLLBAR_SIZE * 2);
+				sizeWidth = item->window.rect.w - SCROLLBAR_SIZE * 2;
 				DC->drawHandlePic(x, y, sizeWidth + 1, SCROLLBAR_SIZE, DC->Assets.scrollBar);
 				x += sizeWidth - 1;
 				DC->drawHandlePic(x, y, SCROLLBAR_SIZE, SCROLLBAR_SIZE, DC->Assets.scrollBarArrowRight);
@@ -6088,7 +6088,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 			y += SCROLLBAR_SIZE - 1;
 
 			listPtr->endPos = listPtr->startPos;
-			sizeHeight = item->window.rect.h - (SCROLLBAR_SIZE * 2);
+			sizeHeight = item->window.rect.h - SCROLLBAR_SIZE * 2;
 			DC->drawHandlePic(x, y, SCROLLBAR_SIZE, sizeHeight + 1, DC->Assets.scrollBar);
 			y += sizeHeight - 1;
 			DC->drawHandlePic(x, y, SCROLLBAR_SIZE, SCROLLBAR_SIZE, DC->Assets.scrollBarArrowDown);
@@ -6109,7 +6109,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 		if (listPtr->elementStyle == LISTBOX_IMAGE)
 		{
 			// Multiple rows and columns (since it's more than twice as wide as an element)
-			if (item->window.rect.w > (listPtr->elementWidth * 2))
+			if (item->window.rect.w > listPtr->elementWidth * 2)
 			{
 				int startPos = listPtr->startPos;
 				x = item->window.rect.x + 1;
@@ -6235,7 +6235,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 
 						if (text[0] == '@')
 						{
-							trap->SE_GetStringTextString(&text[1], temp, sizeof(temp));
+							trap->SE_GetStringTextString(&text[1], temp, sizeof temp);
 							text = temp;
 						}
 
@@ -6327,7 +6327,7 @@ void Item_OwnerDraw_Paint(itemDef_t* item)
 		menuDef_t* parent = item->parent;
 		Fade(&item->window.flags, &item->window.foreColor[3], parent->fadeClamp, &item->window.nextTime,
 			parent->fadeCycle, qtrue, parent->fadeAmount);
-		memcpy(&color, &item->window.foreColor, sizeof(color));
+		memcpy(&color, &item->window.foreColor, sizeof color);
 		if (item->numColors > 0 && DC->getValue)
 		{
 			const float f = DC->getValue(item->window.ownerDraw);
@@ -6335,7 +6335,7 @@ void Item_OwnerDraw_Paint(itemDef_t* item)
 			{
 				if (f >= item->colorRanges[i].low && f <= item->colorRanges[i].high)
 				{
-					memcpy(&color, &item->colorRanges[i].color, sizeof(color));
+					memcpy(&color, &item->colorRanges[i].color, sizeof color);
 					break;
 				}
 			}
@@ -6349,7 +6349,7 @@ void Item_OwnerDraw_Paint(itemDef_t* item)
 			lowLight[3] = 0.8 * parent->focusColor[3];
 			LerpColor(parent->focusColor, lowLight, color, 0.5 + 0.5 * sin((float)(DC->realTime / PULSE_DIVISOR)));
 		}
-		else if (item->textStyle == ITEM_TEXTSTYLE_BLINK && !((DC->realTime / BLINK_DIVISOR) & 1))
+		else if (item->textStyle == ITEM_TEXTSTYLE_BLINK && !(DC->realTime / BLINK_DIVISOR & 1))
 		{
 			lowLight[0] = 0.8 * item->window.foreColor[0];
 			lowLight[1] = 0.8 * item->window.foreColor[1];
@@ -6422,8 +6422,8 @@ void Item_Paint(itemDef_t* item)
 			const float a = 3 * M_PI / 180;
 			const float c = cos(a);
 			const float s = sin(a);
-			item->window.rectClient.x = (rx * c - ry * s) + item->window.rectEffects.x - w;
-			item->window.rectClient.y = (rx * s + ry * c) + item->window.rectEffects.y - h;
+			item->window.rectClient.x = rx * c - ry * s + item->window.rectEffects.x - w;
+			item->window.rectClient.y = rx * s + ry * c + item->window.rectEffects.y - h;
 			Item_UpdatePosition(item);
 		}
 	}
@@ -6846,7 +6846,7 @@ void Item_Paint(itemDef_t* item)
 				char temp[MAX_STRING_CHARS] = { 0 };
 				if (*textPtr == '@') // string reference
 				{
-					trap->SE_GetStringTextString(&textPtr[1], temp, sizeof(temp));
+					trap->SE_GetStringTextString(&textPtr[1], temp, sizeof temp);
 					textPtr = temp;
 				}
 
@@ -6867,7 +6867,7 @@ void Item_Paint(itemDef_t* item)
 						}
 						else if (parent->descAlignment == ITEM_ALIGN_CENTER)
 						{
-							xPos = parent->descX - (textWidth / 2); // Center justify
+							xPos = parent->descX - textWidth / 2; // Center justify
 						}
 						else // Left justify
 						{
@@ -6878,7 +6878,7 @@ void Item_Paint(itemDef_t* item)
 						{
 							// only this one will auto-shrink the scale until we eventually fit...
 							//
-							if (xPos + textWidth > (SCREEN_WIDTH - 4))
+							if (xPos + textWidth > SCREEN_WIDTH - 4)
 							{
 								fDescScale -= 0.001f;
 								continue;
@@ -7016,7 +7016,7 @@ void Menu_ScrollFeeder(menuDef_t* menu, int feeder, qboolean down)
 		{
 			if (menu->items[i]->special == feeder)
 			{
-				Item_ListBox_HandleKey(menu->items[i], (down) ? A_CURSOR_DOWN : A_CURSOR_UP, qtrue, qtrue);
+				Item_ListBox_HandleKey(menu->items[i], down ? A_CURSOR_DOWN : A_CURSOR_UP, qtrue, qtrue);
 				return;
 			}
 		}
@@ -7349,7 +7349,7 @@ static int KeywordHash_Key(char* keyword)
 		else
 			hash += keyword[i] * (119 + i);
 	}
-	hash = (hash ^ (hash >> 10) ^ (hash >> 20)) & (KEYWORDHASH_SIZE - 1);
+	hash = (hash ^ hash >> 10 ^ hash >> 20) & KEYWORDHASH_SIZE - 1;
 	return hash;
 }
 
@@ -7501,10 +7501,10 @@ void UI_InsertG2Pointer(void* ghoul2)
 {
 	uiG2PtrTracker_t** nextFree = &ui_G2PtrTracker;
 
-	while ((*nextFree) && (*nextFree)->ghoul2)
+	while (*nextFree && (*nextFree)->ghoul2)
 	{
 		//check if it has a ghoul2, if not we can reuse it.
-		nextFree = &((*nextFree)->next);
+		nextFree = &(*nextFree)->next;
 	}
 
 	if (!nextFree)
@@ -7514,10 +7514,10 @@ void UI_InsertG2Pointer(void* ghoul2)
 		return;
 	}
 
-	if (!(*nextFree))
+	if (!*nextFree)
 	{
 		//if we aren't reusing a chain then allocate space for it.
-		(*nextFree) = (uiG2PtrTracker_t*)BG_Alloc(sizeof(uiG2PtrTracker_t));
+		*nextFree = (uiG2PtrTracker_t*)BG_Alloc(sizeof(uiG2PtrTracker_t));
 		(*nextFree)->next = NULL;
 	}
 
@@ -7627,7 +7627,7 @@ qboolean ItemParse_asset_model_go(itemDef_t* item, const char* name, int* runTim
 							}
 
 							trap->G2API_SetBoneAnim(item->ghoul2, 0, "model_root", sFrame, eFrame, flags, animSpeed, time, -1, blendTime);
-							*runTimeLength = ((anim->frameLerp * (anim->numFrames - 2)));
+							*runTimeLength = anim->frameLerp * (anim->numFrames - 2);
 						}
 					}
 				}
@@ -7648,7 +7648,7 @@ qboolean ItemParse_asset_model_go(itemDef_t* item, const char* name, int* runTim
 		}
 		*/
 	}
-	else if (!(item->asset))
+	else if (!item->asset)
 	{ //guess it's just an md3
 		item->asset = DC->registerModel(name);
 		item->flags &= ~ITF_G2VALID;
@@ -7674,12 +7674,12 @@ qboolean ItemParse_asset_model(itemDef_t* item, int handle)
 	{
 		char modelPath[MAX_QPATH] = { 0 };
 		char ui_char_model[MAX_QPATH] = { 0 };
-		trap->Cvar_VariableStringBuffer("ui_char_model", ui_char_model, sizeof(ui_char_model));
-		Com_sprintf(modelPath, sizeof(modelPath), "models/players/%s/model.glm", ui_char_model);
-		return (ItemParse_asset_model_go(item, modelPath, &animRunLength));
+		trap->Cvar_VariableStringBuffer("ui_char_model", ui_char_model, sizeof ui_char_model);
+		Com_sprintf(modelPath, sizeof modelPath, "models/players/%s/model.glm", ui_char_model);
+		return ItemParse_asset_model_go(item, modelPath, &animRunLength);
 	}
 #endif
-	return (ItemParse_asset_model_go(item, token.string, &animRunLength));
+	return ItemParse_asset_model_go(item, token.string, &animRunLength);
 }
 
 // asset_shader <string>
@@ -7949,7 +7949,7 @@ qboolean ItemParse_rectcvar(itemDef_t* item, int handle)
 	}
 
 	// get cvar data
-	DC->getCVarString(token.string, cvarBuf, sizeof(cvarBuf));
+	DC->getCVarString(token.string, cvarBuf, sizeof cvarBuf);
 
 	holdBuf = cvarBuf;
 	if (String_Parse(&holdBuf, &holdVal))
@@ -8830,7 +8830,7 @@ qboolean ItemParse_addColorRange(itemDef_t* item, int handle)
 	{
 		if (item->numColors < MAX_COLOR_RANGES)
 		{
-			memcpy(&item->colorRanges[item->numColors], &color, sizeof(color));
+			memcpy(&item->colorRanges[item->numColors], &color, sizeof color);
 			item->numColors++;
 		}
 		return qtrue;
@@ -9069,7 +9069,7 @@ Item_SetupKeywordHash
 */
 void Item_SetupKeywordHash(void)
 {
-	memset(itemParseKeywordHash, 0, sizeof(itemParseKeywordHash));
+	memset(itemParseKeywordHash, 0, sizeof itemParseKeywordHash);
 	for (int i = 0; itemParseKeywords[i].keyword; i++)
 	{
 		KeywordHash_Add(itemParseKeywordHash, &itemParseKeywords[i]);
@@ -9227,7 +9227,7 @@ static void Item_TextScroll_BuildLines(itemDef_t* item)
 
 	if (*psText == '@') // string reference
 	{
-		trap->SE_GetStringTextString(&psText[1], text, sizeof(text));
+		trap->SE_GetStringTextString(&psText[1], text, sizeof text);
 		psText = text;
 	}
 
@@ -9236,9 +9236,9 @@ static void Item_TextScroll_BuildLines(itemDef_t* item)
 	const char* psBestLineBreakSrcPos = psCurrentTextReadPos;
 
 	scrollPtr->iLineCount = 0;
-	memset((char*)scrollPtr->pLines, 0, sizeof(scrollPtr->pLines));
+	memset((char*)scrollPtr->pLines, 0, sizeof scrollPtr->pLines);
 
-	while (*psCurrentTextReadPos && (scrollPtr->iLineCount < MAX_TEXTSCROLL_LINES))
+	while (*psCurrentTextReadPos && scrollPtr->iLineCount < MAX_TEXTSCROLL_LINES)
 	{
 		char sLineForDisplay[2048]; // ott
 
@@ -9267,11 +9267,11 @@ static void Item_TextScroll_BuildLines(itemDef_t* item)
 
 			if (uiLetter > 255)
 			{
-				Q_strcat(sLineForDisplay, sizeof(sLineForDisplay), va("%c%c", uiLetter >> 8, uiLetter & 0xFF));
+				Q_strcat(sLineForDisplay, sizeof sLineForDisplay, va("%c%c", uiLetter >> 8, uiLetter & 0xFF));
 			}
 			else
 			{
-				Q_strcat(sLineForDisplay, sizeof(sLineForDisplay), va("%c", uiLetter & 0xFF));
+				Q_strcat(sLineForDisplay, sizeof sLineForDisplay, va("%c", uiLetter & 0xFF));
 			}
 
 			if (uiLetter == '\n')
@@ -9323,7 +9323,7 @@ static void Item_TextScroll_BuildLines(itemDef_t* item)
 
 			// record last-good linebreak pos...  (ie if we've just concat'd a punctuation point (western or asian) or space)
 			//
-			if (bIsTrailingPunctuation || uiLetter == ' ' || (uiLetter > 255 && !trap->R_Language_UsesSpaces()))
+			if (bIsTrailingPunctuation || uiLetter == ' ' || uiLetter > 255 && !trap->R_Language_UsesSpaces())
 			{
 				psBestLineBreakSrcPos = psCurrentTextReadPos;
 			}
@@ -9977,7 +9977,7 @@ Menu_SetupKeywordHash
 */
 void Menu_SetupKeywordHash(void)
 {
-	memset(menuParseKeywordHash, 0, sizeof(menuParseKeywordHash));
+	memset(menuParseKeywordHash, 0, sizeof menuParseKeywordHash);
 	for (int i = 0; menuParseKeywords[i].keyword; i++)
 	{
 		KeywordHash_Add(menuParseKeywordHash, &menuParseKeywords[i]);
@@ -10223,7 +10223,7 @@ static qboolean Menu_OverActiveItem(menuDef_t* menu, float x, float y)
 
 				if (Rect_ContainsPoint(&menu->items[i]->window.rect, x, y))
 				{
-					itemDef_t* overItem = menu->items[i];
+					const itemDef_t* overItem = menu->items[i];
 					if (overItem->type == ITEM_TYPE_TEXT && overItem->text)
 					{
 						if (Rect_ContainsPoint(&overItem->window.rect, x, y))

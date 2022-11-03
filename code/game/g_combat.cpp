@@ -102,20 +102,20 @@ extern qboolean PM_KnockDownAnim(int anim);
 extern void G_SpeechEvent(gentity_t* self, int event);
 extern qboolean Rosh_BeingHealed(const gentity_t* self);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
-extern float manual_saberblocking(gentity_t* defender);
+extern float manual_saberblocking(const gentity_t* defender);
 static int G_CheckForLedge(const gentity_t* self, vec3_t fallCheckDir, float checkDist);
 static int G_CheckSpecialDeathAnim(gentity_t* self, vec3_t point, int damage, int mod, int hitLoc);
 static void G_TrackWeaponUsage(const gentity_t* self, const gentity_t* inflictor, int add, int mod);
 static qboolean G_Dismemberable(const gentity_t* self, int hitLoc);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
 extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
-void AddFatigueHurtBonus(gentity_t* attacker, const gentity_t* victim, int mod);
-void AddFatigueHurtBonusMax(gentity_t* attacker, const gentity_t* victim, int mod);
+void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int mod);
+void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, int mod);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
 extern qboolean NPC_IsJetpacking(gentity_t* self);
-void AddFatigueKillBonus(gentity_t* attacker, const gentity_t* victim, int meansOfDeath);
+void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, int meansOfDeath);
 void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void AI_DeleteSelfFromGroup(gentity_t* self);
 extern void AI_GroupMemberKilled(gentity_t* self);
@@ -5935,7 +5935,7 @@ void PlayerPain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const v
 CheckArmor
 ================
 */
-int CheckArmor(gentity_t* ent, int damage, int dflags, int mod)
+int CheckArmor(const gentity_t* ent, int damage, int dflags, int mod)
 {
 	int save;
 
@@ -7076,7 +7076,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 
 		WP_ForcePowerDrain(targ, FP_ABSORB, 20);
 
-		targ->client->ps.saberAttackChainCount += StunDamage;
+		targ->client->ps.saberFatigueChainCount += StunDamage;
 
 		// I guess always do 10 points of damage...feel free to tweak as needed
 		if (damage < 5)
@@ -7089,12 +7089,12 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 			damage = 25;
 		}
 
-		if (targ->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY || targ->client->ps.forcePower < 50)
+		if (targ->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY || targ->client->ps.forcePower < 50)
 		{
 			//knockdown
 			G_Knockdown(targ, attacker, dir, 50, qtrue);
 		}
-		else if (targ->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT && !PM_InKnockDown(&targ->client->ps))
+		else if (targ->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT && !PM_InKnockDown(&targ->client->ps))
 		{
 			//stumble
 			AnimateStun(targ, attacker, point);
@@ -8826,7 +8826,7 @@ constexpr auto FATIGUE_HURTBONUS = 15; //the FP bonus you get for killing anothe
 constexpr auto FATIGUE_HURTBONUSMAX = 20; //the FP bonus you get for killing another player;
 constexpr auto FATIGUE_KILLBONUS = 25; //the FP bonus you get for killing another player;
 
-void AddFatigueKillBonus(gentity_t* attacker, const gentity_t* victim, int meansOfDeath)
+void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, int meansOfDeath)
 {
 	//get a small bonus for killing an enemy
 	if (!attacker || !attacker->client || !victim || !victim->client)
@@ -8865,9 +8865,9 @@ void AddFatigueKillBonus(gentity_t* attacker, const gentity_t* victim, int means
 		wp_force_power_regenerate(attacker, FATIGUE_KILLBONUS);
 	}
 
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 	{
-		attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_MININACCURACY;
+		attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_MININACCURACY;
 	}
 }
 
@@ -8894,13 +8894,13 @@ void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim)
 	wp_block_points_regenerate(attacker, FATIGUE_DAMAGEBONUS);
 	wp_force_power_regenerate(attacker, FATIGUE_DAMAGEBONUS);
 
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 	{
-		attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_MININACCURACY;
+		attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_MININACCURACY;
 	}
 }
 
-void AddFatigueHurtBonus(gentity_t* attacker, const gentity_t* victim, int mod)
+void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int mod)
 {
 	//get a small bonus for killing an enemy
 	if (!attacker || !attacker->client || !victim || !victim->client)
@@ -8939,13 +8939,13 @@ void AddFatigueHurtBonus(gentity_t* attacker, const gentity_t* victim, int mod)
 		wp_force_power_regenerate(attacker, FATIGUE_HURTBONUS);
 	}
 
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 	{
-		attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_MININACCURACY;
+		attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_MININACCURACY;
 	}
 }
 
-void AddFatigueHurtBonusMax(gentity_t* attacker, const gentity_t* victim, int mod)
+void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, int mod)
 {
 	//get a small bonus for killing an enemy
 	if (!attacker || !attacker->client || !victim || !victim->client)
@@ -8984,9 +8984,9 @@ void AddFatigueHurtBonusMax(gentity_t* attacker, const gentity_t* victim, int mo
 		wp_force_power_regenerate(attacker, FATIGUE_HURTBONUSMAX);
 	}
 
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY)
 	{
-		attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_MININACCURACY;
+		attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_MININACCURACY;
 	}
 }
 
@@ -8997,8 +8997,8 @@ void add_npc_block_point_bonus(const gentity_t* self)
 	wp_block_points_regenerate(self, FATIGUE_HURTBONUS);
 	wp_force_power_regenerate(self, FATIGUE_HURTBONUSMAX);
 
-	if (self->client->ps.saberAttackChainCount >= MISHAPLEVEL_TEN)
+	if (self->client->ps.saberFatigueChainCount >= MISHAPLEVEL_TEN)
 	{
-		self->client->ps.saberAttackChainCount = MISHAPLEVEL_LIGHT;
+		self->client->ps.saberFatigueChainCount = MISHAPLEVEL_LIGHT;
 	}
 }

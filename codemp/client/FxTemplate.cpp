@@ -1436,7 +1436,7 @@ bool CPrimitiveTemplate::ParseLengthFlags(const char* val)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseShaders(CGPValue* grp)
+bool CPrimitiveTemplate::ParseShaders(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1488,7 +1488,7 @@ bool CPrimitiveTemplate::ParseShaders(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseSounds(CGPValue* grp)
+bool CPrimitiveTemplate::ParseSounds(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1540,7 +1540,7 @@ bool CPrimitiveTemplate::ParseSounds(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseModels(CGPValue* grp)
+bool CPrimitiveTemplate::ParseModels(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1594,7 +1594,7 @@ bool CPrimitiveTemplate::ParseModels(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseImpactFxStrings(CGPValue* grp)
+bool CPrimitiveTemplate::ParseImpactFxStrings(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1665,7 +1665,7 @@ bool CPrimitiveTemplate::ParseImpactFxStrings(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseDeathFxStrings(CGPValue* grp)
+bool CPrimitiveTemplate::ParseDeathFxStrings(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1736,7 +1736,7 @@ bool CPrimitiveTemplate::ParseDeathFxStrings(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseEmitterFxStrings(CGPValue* grp)
+bool CPrimitiveTemplate::ParseEmitterFxStrings(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1807,7 +1807,7 @@ bool CPrimitiveTemplate::ParseEmitterFxStrings(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParsePlayFxStrings(CGPValue* grp)
+bool CPrimitiveTemplate::ParsePlayFxStrings(const CGPValue* grp)
 {
 	const char* val;
 	int			handle;
@@ -1877,7 +1877,7 @@ bool CPrimitiveTemplate::ParsePlayFxStrings(CGPValue* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseRGB(CGPGroup* grp)
+bool CPrimitiveTemplate::ParseRGB(const CGPGroup* grp)
 {
 	// Inside of the group, we should have a series of pairs
 	const CGPValue* pairs = grp->GetPairs();
@@ -1917,7 +1917,7 @@ bool CPrimitiveTemplate::ParseRGB(CGPGroup* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseAlpha(CGPGroup* grp)
+bool CPrimitiveTemplate::ParseAlpha(const CGPGroup* grp)
 {
 	// Inside of the group, we should have a series of pairs
 	const CGPValue* pairs = grp->GetPairs();
@@ -1957,7 +1957,7 @@ bool CPrimitiveTemplate::ParseAlpha(CGPGroup* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseSize(CGPGroup* grp)
+bool CPrimitiveTemplate::ParseSize(const CGPGroup* grp)
 {
 	// Inside of the group, we should have a series of pairs
 	const CGPValue* pairs = grp->GetPairs();
@@ -1997,7 +1997,7 @@ bool CPrimitiveTemplate::ParseSize(CGPGroup* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseSize2(CGPGroup* grp)
+bool CPrimitiveTemplate::ParseSize2(const CGPGroup* grp)
 {
 	// Inside of the group, we should have a series of pairs
 	const CGPValue* pairs = grp->GetPairs();
@@ -2037,7 +2037,7 @@ bool CPrimitiveTemplate::ParseSize2(CGPGroup* grp)
 // return:
 //	success of parse operation.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParseLength(CGPGroup* grp)
+bool CPrimitiveTemplate::ParseLength(const CGPGroup* grp)
 {
 	// Inside of the group, we should have a series of pairs
 	const CGPValue* pairs = grp->GetPairs();
@@ -2069,7 +2069,7 @@ bool CPrimitiveTemplate::ParseLength(CGPGroup* grp)
 // Parse a primitive, apply defaults first, grab any base level
 //	key pairs, then process any sub groups we may contain.
 //------------------------------------------------------
-bool CPrimitiveTemplate::ParsePrimitive(CGPGroup* grp)
+bool CPrimitiveTemplate::ParsePrimitive(const CGPGroup* grp)
 {
 	const char* key;
 

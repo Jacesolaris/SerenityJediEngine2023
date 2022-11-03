@@ -122,7 +122,7 @@ qboolean PM_SaberReturnAnim(int anim);
 extern qboolean PM_InKataAnim(int anim);
 qboolean PM_StandingAtReadyAnim(int anim);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
-extern qboolean IsSurrendering(gentity_t* self);
+extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean PM_Can_Do_Kill_Move(void);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 
@@ -2344,7 +2344,7 @@ qboolean PM_KickMove(const int move)
 	return qfalse;
 }
 
-int BG_InGrappleMove(const int anim)
+int PM_InGrappleMove(const int anim)
 {
 	switch (anim)
 	{
@@ -2604,53 +2604,6 @@ saberMoveName_t PM_BrokenParryForParry(const int move)
 	return LS_NONE;
 }
 
-saberMoveName_t PM_AbsorbtheParry(const int move)
-{
-	switch (move)
-	{
-	case BLOCKED_FRONT:
-	case BLOCKED_BLOCKATTACK_FRONT:
-	case BLOCKED_TOP: //LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case BLOCKED_BLOCKATTACK_RIGHT:
-	case BLOCKED_UPPER_RIGHT: //LS_PARRY_UR:
-	default:
-		return LS_REFLECT_ATTACK_RIGHT; //push up, slightly to right
-	case BLOCKED_BLOCKATTACK_LEFT:
-	case BLOCKED_UPPER_LEFT: //LS_PARRY_UL:
-		return LS_REFLECT_ATTACK_LEFT; //push up and to left
-	case BLOCKED_LOWER_RIGHT: //LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case BLOCKED_LOWER_LEFT: //LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
-int g_absorbthe_parry(const int move)
-{
-	switch (move)
-	{
-	case LS_REFLECT_ATTACK_FRONT:
-	case LS_PARRY_FRONT:
-	case LS_PARRY_WALK:
-	case LS_PARRY_WALK_DUAL:
-	case LS_PARRY_WALK_STAFF:
-	case LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case LS_REFLECT_ATTACK_RIGHT:
-	case LS_PARRY_UR:
-	default:
-		return LS_REFLECT_ATTACK_RIGHT; //push up, slightly to right
-	case LS_REFLECT_ATTACK_LEFT:
-	case LS_PARRY_UL:
-		return LS_REFLECT_ATTACK_LEFT; //push up and to left
-	case LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
 saberMoveName_t PM_MBlocktheAttack(const int move)
 {
 	switch (move)
@@ -2669,54 +2622,6 @@ saberMoveName_t PM_MBlocktheAttack(const int move)
 	case BLOCKED_LOWER_RIGHT: //LS_PARRY_LR:
 		return LS_K1_BR; //push down and to left
 	case BLOCKED_LOWER_LEFT: //LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
-
-saberMoveName_t PM_PerfectBlocktheAttack(const int move)
-{
-	switch (move)
-	{
-	case BLOCKED_FRONT:
-	case BLOCKED_BLOCKATTACK_FRONT:
-	case BLOCKED_TOP: //LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case BLOCKED_BLOCKATTACK_RIGHT:
-	case BLOCKED_UPPER_RIGHT: //LS_PARRY_UR:
-	default:
-		return LS_PERFECTBLOCK_RIGHT; //push up, slightly to right
-	case BLOCKED_BLOCKATTACK_LEFT:
-	case BLOCKED_UPPER_LEFT: //LS_PARRY_UL:
-		return LS_PERFECTBLOCK_LEFT; //push up and to left
-	case BLOCKED_LOWER_RIGHT: //LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case BLOCKED_LOWER_LEFT: //LS_PARRY_LL:
-		return LS_K1_BL; //push down and to right
-	}
-}
-
-int G_PerfectBlocktheAttack(const int move)
-{
-	switch (move)
-	{
-	case LS_REFLECT_ATTACK_FRONT:
-	case LS_PARRY_FRONT:
-	case LS_PARRY_WALK:
-	case LS_PARRY_WALK_DUAL:
-	case LS_PARRY_WALK_STAFF:
-	case LS_PARRY_UP:
-		return LS_K1_T_; //push up
-	case LS_REFLECT_ATTACK_RIGHT:
-	case LS_PARRY_UR:
-	default:
-		return LS_PERFECTBLOCK_RIGHT; //push up, slightly to right
-	case LS_REFLECT_ATTACK_LEFT:
-	case LS_PARRY_UL:
-		return LS_PERFECTBLOCK_LEFT; //push up and to left
-	case LS_PARRY_LR:
-		return LS_K1_BR; //push down and to left
-	case LS_PARRY_LL:
 		return LS_K1_BL; //push down and to right
 	}
 }
@@ -2987,128 +2892,86 @@ int PM_SaberAttackChainAngle(const int move1, const int move2)
 
 qboolean PM_SaberKataDone(const int curmove = LS_NONE, const int newmove = LS_NONE)
 {
-	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
+	if (pm->ps->forceRageRecoveryTime > level.time)
+	{//rage recovery, only 1 swing at a time (tired)
+		if (pm->ps->saberAttackChainCount > 0)
+		{//swung once
+			return qtrue;
+		}
+		//allow one attack
+		return qfalse;
+	}
+	if (pm->ps->forcePowersActive & 1 << FP_RAGE)
+	{//infinite chaining when raged
+		return qfalse;
+	}
+	if (pm->ps->saber[0].maxChain == -1)
 	{
-		if (pm->ps->forceRageRecoveryTime > level.time)
-		{//rage recovery, only 1 swing at a time (tired)
-			if (pm->ps->saberAttackChainCount > 0)
-			{//swung once
-				return qtrue;
-			}
-			//allow one attack
-			return qfalse;
-		}
-		if (pm->ps->forcePowersActive & 1 << FP_RAGE)
-		{//infinite chaining when raged
-			return qfalse;
-		}
-		if (pm->ps->saber[0].maxChain == -1)
-		{
-			return qfalse;
-		}
-		if (pm->ps->saber[0].maxChain != 0)
-		{
-			if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
-			{
-				return qtrue;
-			}
-			return qfalse;
-		}
-
-		if ((pm->ps->saberAnimLevel == SS_DESANN
-			|| pm->ps->saberAnimLevel == SS_STRONG
-			|| pm->ps->saberAnimLevel == SS_TAVION
-			|| pm->ps->saberAnimLevel == SS_STAFF
-			|| pm->ps->saberAnimLevel == SS_DUAL
-			|| pm->ps->saberAnimLevel == SS_MEDIUM)
-			&& pm->ps->saberAttackChainCount > Q_irand(MISHAPLEVEL_MAX, MISHAPLEVEL_OVERLOAD))
+		return qfalse;
+	}
+	if (pm->ps->saber[0].maxChain != 0)
+	{
+		if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
 		{
 			return qtrue;
 		}
+		return qfalse;
 	}
-	else
-	{
-		if (pm->ps->forceRageRecoveryTime > level.time)
-		{//rage recovery, only 1 swing at a time (tired)
-			if (pm->ps->saberAttackChainCount > 0)
-			{//swung once
-				return qtrue;
-			}
-			//allow one attack
-			return qfalse;
-		}
-		if (pm->ps->forcePowersActive & 1 << FP_RAGE)
-		{//infinite chaining when raged
-			return qfalse;
-		}
-		if (pm->ps->saber[0].maxChain == -1)
-		{
-			return qfalse;
-		}
-		if (pm->ps->saber[0].maxChain != 0)
-		{
-			if (pm->ps->saberAttackChainCount >= pm->ps->saber[0].maxChain)
-			{
-				return qtrue;
-			}
-			return qfalse;
-		}
 
-		if (pm->ps->saberAnimLevel == SS_DESANN || pm->ps->saberAnimLevel == SS_TAVION)
-		{//desann and tavion can link up as many attacks as they want
-			return qfalse;
-		}
-		if (pm->ps->saberAnimLevel == SS_STAFF)
+	if (pm->ps->saberAnimLevel == SS_DESANN || pm->ps->saberAnimLevel == SS_TAVION)
+	{//desann and tavion can link up as many attacks as they want
+		return qfalse;
+	}
+	if (pm->ps->saberAnimLevel == SS_STAFF)
+	{
+		return qfalse;
+	}
+	if (pm->ps->saberAnimLevel == SS_DUAL)
+	{
+		return qfalse;
+	}
+	if (pm->ps->saberAnimLevel == FORCE_LEVEL_3)
+	{
+		if (curmove == LS_NONE || newmove == LS_NONE)
 		{
-			return qfalse;
-		}
-		if (pm->ps->saberAnimLevel == SS_DUAL)
-		{
-			return qfalse;
-		}
-		if (pm->ps->saberAnimLevel == FORCE_LEVEL_3)
-		{
-			if (curmove == LS_NONE || newmove == LS_NONE)
+			if (pm->ps->saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
 			{
-				if (pm->ps->saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
+				return qtrue;
+			}
+		}
+		else if (pm->ps->saberAttackChainCount > Q_irand(2, 3))
+		{
+			return qtrue;
+		}
+		else if (pm->ps->saberAttackChainCount > 0)
+		{
+			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
+			if (chainAngle < 135 || chainAngle > 215)
+			{//if trying to chain to a move that doesn't continue the momentum
+				return qtrue;
+			}
+			if (chainAngle == 180)
+			{//continues the momentum perfectly, allow it to chain 66% of the time
+				if (pm->ps->saberAttackChainCount > 1)
 				{
 					return qtrue;
 				}
 			}
-			else if (pm->ps->saberAttackChainCount > Q_irand(2, 3))
-			{
-				return qtrue;
-			}
-			else if (pm->ps->saberAttackChainCount > 0)
-			{
-				const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
-				if (chainAngle < 135 || chainAngle > 215)
-				{//if trying to chain to a move that doesn't continue the momentum
+			else
+			{//would continue the movement somewhat, 50% chance of continuing
+				if (pm->ps->saberAttackChainCount > 2)
+				{
 					return qtrue;
-				}
-				if (chainAngle == 180)
-				{//continues the momentum perfectly, allow it to chain 66% of the time
-					if (pm->ps->saberAttackChainCount > 1)
-					{
-						return qtrue;
-					}
-				}
-				else
-				{//would continue the movement somewhat, 50% chance of continuing
-					if (pm->ps->saberAttackChainCount > 2)
-					{
-						return qtrue;
-					}
 				}
 			}
 		}
-		else
+	}
+	else
+	{
+		if ((pm->ps->saberAnimLevel == FORCE_LEVEL_2 || pm->ps->saberAnimLevel == SS_DUAL)
+			&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
 		{
-			if ((pm->ps->saberAnimLevel == FORCE_LEVEL_2 || pm->ps->saberAnimLevel == SS_DUAL)
-				&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
-			{
-				return qtrue;
-			}
+			return qtrue;
 		}
 	}
 	return qfalse;
@@ -4983,7 +4846,8 @@ saberMoveName_t PM_SaberAttackForMovement(const int forwardmove, const int right
 						if (pm->gent && pm->gent->enemy)
 						{
 							//FIXME: or just trace for a valid enemy standing behind me?  And no enemy in front?
-							vec3_t enemyDir, faceFwd, facingAngles = { 0, pm->ps->viewangles[YAW], 0 };
+							vec3_t enemyDir, faceFwd;
+							const vec3_t facingAngles = { 0, pm->ps->viewangles[YAW], 0 };
 							AngleVectors(facingAngles, faceFwd, nullptr, nullptr);
 							VectorSubtract(pm->gent->enemy->currentOrigin, pm->ps->origin, enemyDir);
 							const float dot = DotProduct(enemyDir, faceFwd);
@@ -5729,17 +5593,6 @@ void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, const int time)
 void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float* anim_speed, const gentity_t* gent, const int fatigued)
 {
 	char buf[128];
-	constexpr float staffanimscale = 0.9f;
-	constexpr float dualanimscale = 0.9f;
-	constexpr float redanimscale = 1.0f;
-	constexpr float blueanimscale = 1.0f;
-	constexpr float tavionanimscale = 1.0f;
-	constexpr float mediumanimscale = 1.0f;
-	constexpr float npcanimscale = 0.9f;
-	constexpr float heavyanimscale = 1.0f;
-	constexpr float realisticanimscale = 0.90f;
-	constexpr float yodaanimscale = 1.25f;
-	constexpr float Fatiguedanimscale = 0.75f;
 
 	gi.Cvar_VariableStringBuffer("g_saberAnimSpeed", buf, sizeof buf);
 	const float saberanimscale = atof(buf);
@@ -5829,18 +5682,62 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 		anim >= BOTH_S4_S1_T_ && anim <= BOTH_S4_S1_TR ||
 		anim >= BOTH_S5_S1_T_ && anim <= BOTH_S5_S1_TR)
 	{
-		if (gent
-			&& gent->client
-			&& gent->s.number < MAX_CLIENTS
-			&& gent->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
+		if (gent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HUDFLASH
+			&& anim != BOTH_FORCEWALLRELEASE_FORWARD
+			&& anim != BOTH_FORCEWALLRUNFLIP_START
+			&& anim != BOTH_FORCEWALLRUNFLIP_END
+			&& anim != BOTH_JUMPFLIPSTABDOWN
+			&& anim != BOTH_JUMPFLIPSLASHDOWN1
+			&& anim != BOTH_LUNGE2_B__T_)
 		{
-			*anim_speed *= Fatiguedanimscale;
+			constexpr float fatiguedanimscale = 0.75f;
+			*anim_speed *= fatiguedanimscale;
+		}
+		else if (fatigued & 1 << FLAG_SLOWBOUNCE)
+		{//slow animation for slow bounces
+			if (PM_BounceAnim(anim))
+			{
+				*anim_speed *= 0.6f;
+			}
+			else if (PM_SaberReturnAnim(anim))
+			{
+				*anim_speed *= 0.8f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
+		{//getting parried slows down your reaction
+			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
+			{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
+				*anim_speed *= 0.6f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_PARRIED)
+		{//getting parried slows down your reaction
+			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
+			{
+				*anim_speed *= 0.90f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_BLOCKED)
+		{
+			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
+			{
+				*anim_speed *= 0.85f;
+			}
+		}
+		else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
+		{//slow animation for all bounces
+			if (PM_SaberInMassiveBounce(anim))
+			{
+				*anim_speed *= 0.5f;
+			}
 		}
 		else if (gent
 			&& gent->client
 			&& gent->client->NPC_class == CLASS_YODA)
 		{
-			*anim_speed *= yodaanimscale;
+			constexpr float yoda_animscale = 1.25f;
+			*anim_speed *= yoda_animscale;
 		}
 		else
 		{
@@ -5852,6 +5749,7 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 				}
 				else
 				{
+					constexpr float dualanimscale = 0.90f;
 					*anim_speed *= dualanimscale;
 				}
 			}
@@ -5863,11 +5761,13 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 				}
 				else
 				{
+					constexpr float staffanimscale = 0.90f;
 					*anim_speed *= staffanimscale;
 				}
 			}
 			else if (saber_anim_level == SS_FAST)
 			{
+				constexpr float blueanimscale = 1.0f;
 				*anim_speed *= blueanimscale;
 			}
 			else if (saber_anim_level == SS_MEDIUM)
@@ -5876,92 +5776,34 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 					&& gent->client
 					&& gent->s.number < MAX_CLIENTS)
 				{
-					*anim_speed *= mediumanimscale;
+					constexpr float realisticanimscale = 0.95f;
+					*anim_speed *= realisticanimscale;
 				}
 				else
 				{
+					constexpr float npcanimscale = 0.90f;
 					*anim_speed *= npcanimscale;
 				}
 			}
 			else if (saber_anim_level == SS_STRONG)
 			{
+				constexpr float redanimscale = 1.0f;
 				*anim_speed *= redanimscale;
 			}
 			else if (saber_anim_level == SS_DESANN)
 			{
+				constexpr float heavyanimscale = 1.0f;
 				*anim_speed *= heavyanimscale;
 			}
 			else if (saber_anim_level == SS_TAVION)
 			{
+				constexpr float tavionanimscale = 0.9f;
 				*anim_speed *= tavionanimscale;
 			}
 			else
 			{
 				*anim_speed *= saberanimscale;
 			}
-		}
-	}
-
-	if (saber_anim_level == SS_STRONG || saber_anim_level == SS_DESANN)
-	{
-		if (anim == BOTH_V1_BL_S1
-			|| anim == BOTH_V1_BR_S1
-			|| anim == BOTH_V1_TL_S1
-			|| anim == BOTH_V1_TR_S1
-			|| anim == BOTH_V1_T__S1
-			|| anim >= BOTH_V6_BL_S6 && anim <= BOTH_V7__R_S7)
-		{
-			*anim_speed *= heavyanimscale;
-		}
-	}
-
-	if ((fatigued & 1 << FLAG_FATIGUED || fatigued & 1 << FLAG_BLOCKDRAINED)
-		&& anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB
-		&& anim != BOTH_FORCEWALLRELEASE_FORWARD && anim != BOTH_FORCEWALLRUNFLIP_START
-		&& anim != BOTH_FORCEWALLRUNFLIP_END
-		&& anim != BOTH_JUMPFLIPSTABDOWN
-		&& anim != BOTH_JUMPFLIPSLASHDOWN1
-		&& anim != BOTH_LUNGE2_B__T_)
-	{//You're pooped.  Move slower
-		*anim_speed *= 0.8f;
-	}
-	else if (fatigued & 1 << FLAG_SLOWBOUNCE)
-	{//slow animation for slow bounces
-		if (PM_BounceAnim(anim))
-		{
-			*anim_speed *= 0.6f;
-		}
-		else if (PM_SaberReturnAnim(anim))
-		{
-			*anim_speed *= 0.8f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
-	{//getting parried slows down your reaction
-		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
-			*anim_speed *= 0.6f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_PARRIED)
-	{//getting parried slows down your reaction
-		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
-			*anim_speed *= 0.8f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_BLOCKED)
-	{
-		if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-		{
-			*anim_speed *= 0.95f;
-		}
-	}
-	else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
-	{//slow animation for all bounces
-		if (PM_SaberInMassiveBounce(anim))
-		{
-			*anim_speed *= 0.3f;
 		}
 	}
 }
@@ -6039,7 +5881,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	const int actualTime = cg.time ? cg.time : level.time;
 	const animation_t* animations = level.knownAnimFileSets[gent->client->clientInfo.animFileIndex].animations;
 	const animation_t& curAnim = animations[anim];
-	const qboolean HoldingBlock = gent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	
 
 	// Make Sure This Character Has Such An Anim And A Model
 	//-------------------------------------------------------
@@ -6086,7 +5928,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	//======================================
 	const bool animFootMove = PM_WalkingAnim(anim) || PM_RunningAnim(anim) || anim == BOTH_CROUCH1WALK || anim ==
 		BOTH_CROUCH1WALKBACK;
-	const bool animHoldless = (setAnimFlags & SETANIM_FLAG_HOLDLESS) != 0;
+	const bool anim_holdless = (setAnimFlags & SETANIM_FLAG_HOLDLESS) != 0;
 	const bool animHold = (setAnimFlags & SETANIM_FLAG_HOLD) != 0;
 	const bool animRestart = (setAnimFlags & SETANIM_FLAG_RESTART) != 0;
 	const bool animPace = (setAnimFlags & SETANIM_FLAG_PACE) != 0;
@@ -6097,7 +5939,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	// animSpeed is 1.0 if the frameLerp (ms/frame) is 50 (20 fps).
 	const float animFPS = abs(curAnim.frameLerp);
 	const int animDurMSec = static_cast<int>((curAnim.numFrames - 1) * animFPS / timeScaleMod);
-	const int animHoldMSec = animHoldless && timeScaleMod == 1.0f
+	const int animHoldMSec = anim_holdless && timeScaleMod == 1.0f
 		? (animDurMSec > 1 ? animDurMSec - 1 : animFPS)
 		: animDurMSec;
 	int animFlags = curAnim.loopFrames != -1 ? BONE_ANIM_OVERRIDE_LOOP : BONE_ANIM_OVERRIDE_FREEZE;
@@ -6369,7 +6211,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 
 		// If This Animation Is To Be Locked And Held, Calculate The Duration And Set The Timer
 		//--------------------------------------------------------------------------------------
-		if (animHold || animHoldless)
+		if (animHold || anim_holdless)
 		{
 			PM_SetTorsoAnimTimer(gent, torsoAnimTimer, animHoldMSec);
 		}
@@ -6400,7 +6242,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 
 		// If This Animation Is To Be Locked And Held, Calculate The Duration And Set The Timer
 		//--------------------------------------------------------------------------------------
-		if (animHold || animHoldless)
+		if (animHold || anim_holdless)
 		{
 			PM_SetLegsAnimTimer(gent, legsAnimTimer, animHoldMSec);
 		}
@@ -7186,7 +7028,7 @@ void PM_TorsoAnimLightsaber()
 	}
 }
 
-qboolean PM_IsPistoleer(void)
+qboolean PM_IsPistoleer()
 {
 	switch (pm->ps->weapon)
 	{
@@ -7206,7 +7048,7 @@ PM_TorsoAnimation
 -------------------------
 */
 
-void PM_TorsoAnimation(void)
+void PM_TorsoAnimation()
 {
 	//FIXME: Write a much smarter and more appropriate anim picking routine logic...
 	//	int	oldAnim;
@@ -7699,7 +7541,6 @@ void PM_TorsoAnimation(void)
 				}
 				else if (pm->ps->weapon == WP_MELEE)
 				{
-					//hehe
 					PM_SetAnim(pm, SETANIM_TORSO, BOTH_STANDMELEE, SETANIM_FLAG_NORMAL);
 				}
 				else
@@ -8882,7 +8723,7 @@ qboolean PM_InOnGroundAnim(playerState_t* ps)
 	case BOTH_DEADBACKWARD2:
 	case BOTH_LYINGDEATH1:
 	case BOTH_LYINGDEAD1:
-	case BOTH_SLEEP1: //# laying on back-rknee up-rhand on torso
+	case BOTH_SLEEP1: //# laying on back-r knee up-r hand on torso
 		return qtrue;
 	case BOTH_KNOCKDOWN1: //#
 	case BOTH_KNOCKDOWN2: //#
@@ -9007,7 +8848,7 @@ qboolean PM_InSpecialDeathAnim(int anim)
 	}
 }
 
-qboolean PM_InDeathAnim(void)
+qboolean PM_InDeathAnim()
 {
 	//Purposely does not cover stumbledeath and falldeath...
 	switch (pm->ps->legsAnim)

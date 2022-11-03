@@ -457,7 +457,7 @@ namespace ratl
 		public:
 			// Constructors
 			//--------------
-			iterator() : mLoc(0), mOwner(0)
+			iterator() : mLoc(0), mOwner(nullptr)
 			{}
 			iterator(vector_base<T>* p, int t) : mLoc(t), mOwner(p)
 			{}
@@ -540,7 +540,7 @@ namespace ratl
 		public:
 			// Constructors
 			//--------------
-			const_iterator() : mLoc(0), mOwner(0)
+			const_iterator() : mLoc(0), mOwner(nullptr)
 			{}
 			const_iterator(const vector_base<T>* p, int t) : mLoc(t), mOwner(p)
 			{}

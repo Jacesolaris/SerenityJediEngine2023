@@ -54,10 +54,8 @@ extern saberMoveName_t pm_broken_parry_for_attack(int move);
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
 extern qboolean PM_SaberInParry(int move);
-extern saberMoveName_t PM_AbsorbtheParry(int move);
 extern saberMoveName_t PM_KnockawayForParry(int move);
 extern int G_KnockawayForParry(int move);
-extern int g_absorbthe_parry(int move);
 extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
 extern qboolean WP_SaberLose(gentity_t* self, vec3_t throwDir);
@@ -70,7 +68,6 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
 extern qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
-extern saberMoveName_t PM_MBlocktheAttack(int move);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern void G_Stagger(gentity_t* hit_ent);
 extern void G_FatigueBPKnockaway(gentity_t* Blocker);
@@ -362,9 +359,9 @@ void SabBeh_AddMishap_Attacker(gentity_t* attacker, gentity_t* blocker, int sabe
 	{
 		attacker->client->ps.blockPoints = MISHAPLEVEL_NONE;
 	}
-	else if (attacker->client->ps.saberAttackChainCount <= MISHAPLEVEL_NONE)
+	else if (attacker->client->ps.saberFatigueChainCount <= MISHAPLEVEL_NONE)
 	{
-		attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;
+		attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;
 	}
 	else
 	{
@@ -420,9 +417,9 @@ void SabBeh_AddMishap_Blocker(gentity_t* blocker, gentity_t* attacker, int saber
 	{
 		blocker->client->ps.blockPoints = MISHAPLEVEL_NONE;
 	}
-	else if (blocker->client->ps.saberAttackChainCount <= MISHAPLEVEL_NONE)
+	else if (blocker->client->ps.saberFatigueChainCount <= MISHAPLEVEL_NONE)
 	{
-		blocker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;
+		blocker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;
 	}
 	else
 	{
@@ -518,7 +515,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 	//if the attack is blocked -(Im the attacker)
 	const qboolean MBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse;	//perfect Blocking (Timed Block)
 
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_MAX)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_MAX)
 	{
 		//hard mishap.
 
@@ -537,7 +534,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 				gi.Printf(S_COLOR_GREEN"Attacker npc is fatigued\n");
 			}
 
-			attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_MIN;
+			attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_MIN;
 		}
 		else
 		{
@@ -549,7 +546,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		return qtrue;
 	}
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HUDFLASH)
 	{
 		//slow bounce
 		if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
@@ -563,7 +560,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 
 		if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
 		{
-			attacker->client->ps.saberAttackChainCount = MISHAPLEVEL_LIGHT;
+			attacker->client->ps.saberFatigueChainCount = MISHAPLEVEL_LIGHT;
 		}
 
 		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
@@ -579,7 +576,7 @@ qboolean SabBeh_Attack_Blocked(gentity_t* attacker, gentity_t* blocker, int sabe
 		}
 		return qtrue;
 	}
-	if (attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)
+	if (attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT)
 	{
 		//slow bounce
 		SabBeh_AnimateSmallBounce(attacker);
@@ -649,15 +646,15 @@ void SabBeh_AddBalance(const gentity_t* self, int amount)
 		}
 	}
 
-	self->client->ps.saberAttackChainCount += amount;
+	self->client->ps.saberFatigueChainCount += amount;
 
-	if (self->client->ps.saberAttackChainCount < MISHAPLEVEL_NONE)
+	if (self->client->ps.saberFatigueChainCount < MISHAPLEVEL_NONE)
 	{
-		self->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;
+		self->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;
 	}
-	else if (self->client->ps.saberAttackChainCount >= MISHAPLEVEL_OVERLOAD)
+	else if (self->client->ps.saberFatigueChainCount >= MISHAPLEVEL_OVERLOAD)
 	{
-		self->client->ps.saberAttackChainCount = MISHAPLEVEL_MAX;
+		self->client->ps.saberFatigueChainCount = MISHAPLEVEL_MAX;
 	}
 }
 
@@ -870,7 +867,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 			if (MBlocking || ActiveBlocking || NPCBlocking)
 			{
 				if (NPCBlocking && blocker->client->ps.blockPoints >= BLOCKPOINTS_MISSILE
-					&& attacker->client->ps.saberAttackChainCount >= MISHAPLEVEL_HUDFLASH
+					&& attacker->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HUDFLASH
 					&& !Q_irand(0, 4))
 				{//20% chance
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
@@ -1031,7 +1028,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 					wp_saber_clear_damage_for_ent_num(attacker, blocker->s.number, saberNum, bladeNum);
 
 					wp_block_points_regenerate_over_ride(blocker, BLOCKPOINTS_FATIGUE); //BP Reward blocker
-					blocker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
+					blocker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
 					PM_AddBlockFatigue(&attacker->client->ps, BLOCKPOINTS_TEN);         //BP Punish Attacker
 				}
 				else
@@ -1199,7 +1196,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 			blocker->client->ps.saberEventFlags |= SEF_PARRIED;
 
 			wp_block_points_regenerate_over_ride(blocker, BLOCKPOINTS_FATIGUE); //BP Reward blocker
-			blocker->client->ps.saberAttackChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
+			blocker->client->ps.saberFatigueChainCount = MISHAPLEVEL_NONE;       //SAC Reward blocker
 		}
 		else
 		{//This must be Unblockable

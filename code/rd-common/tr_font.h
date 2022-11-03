@@ -42,8 +42,8 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 //
 // so instead we have to use this messier method...
 //
-unsigned int AnyLanguage_ReadCharFromString(char* psText, int* piAdvanceCount, qboolean* pbIsTrailingPunctuation = NULL);
-unsigned int AnyLanguage_ReadCharFromString(char** psText, qboolean* pbIsTrailingPunctuation = NULL);
+unsigned int AnyLanguage_ReadCharFromString(char* psText, int* piAdvanceCount, qboolean* pbIsTrailingPunctuation = nullptr);
+unsigned int AnyLanguage_ReadCharFromString(char** psText, qboolean* pbIsTrailingPunctuation = nullptr);
 
 qboolean Language_IsAsian(void);
 qboolean Language_UsesSpaces(void);

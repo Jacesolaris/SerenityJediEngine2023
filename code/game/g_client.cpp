@@ -251,7 +251,7 @@ SpotWouldTelefrag
 
 ================
 */
-qboolean SpotWouldTelefrag(gentity_t* spot, team_t checkteam)
+qboolean SpotWouldTelefrag(const gentity_t* spot, const team_t checkteam)
 {
 	gentity_t* touch[MAX_GENTITIES];
 	vec3_t mins, maxs;
@@ -765,12 +765,12 @@ extern gitem_t* FindItemForInventory(int inv);
 void player_cache_from_prev_level()
 {
 	char s[MAX_STRING_CHARS];
-	int i;
 
 	gi.Cvar_VariableStringBuffer(sCVARNAME_PLAYERSAVE, s, sizeof s);
 
 	if (s[0]) // actually this would be safe anyway because of the way sscanf() works, but this is clearer
 	{
+		int i;
 		int iDummy, bits, ibits;
 
 		sscanf(s, "%i %i %i %i",
@@ -814,13 +814,13 @@ static void player_restore_from_prev_level(gentity_t* ent)
 	if (client) // though I can't see it not being true...
 	{
 		char s[MAX_STRING_CHARS];
-		char saber0Name[MAX_QPATH];
-		char saber1Name[MAX_QPATH];
 
 		gi.Cvar_VariableStringBuffer(sCVARNAME_PLAYERSAVE, s, sizeof s);
 
 		if (strlen(s)) // actually this would be safe anyway because of the way sscanf() works, but this is clearer
 		{
+			char saber1Name[MAX_QPATH];
+			char saber0Name[MAX_QPATH];
 			//				|general info				  |-force powers |-saber 1										   |-saber 2										  |-general saber
 			int saber1BladeActive[8];
 			int saber2BladeActive[8];
@@ -1313,7 +1313,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 	if (ent->playerModel != -1)
 	{
 		// we found the model ok
-		const vec3_t angles = { 0, 0, 0 };
+		constexpr vec3_t angles = { 0, 0, 0 };
 		const char* token;
 		const char* p;
 

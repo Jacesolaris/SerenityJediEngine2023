@@ -1586,7 +1586,7 @@ Item_ActivateByName
 */
 void Item_ActivateByName(const char* menuName, const char* itemName)
 {
-	menuDef_t* menu = Menus_FindByName(menuName);
+	const menuDef_t* menu = Menus_FindByName(menuName);
 
 	itemDef_t* item = Menu_FindItemByName(menu, itemName);
 
@@ -9725,7 +9725,7 @@ static qboolean Menu_OverActiveItem(menuDef_t* menu, float x, float y)
 
 				if (Rect_ContainsPoint(&menu->items[i]->window.rect, x, y))
 				{
-					itemDef_t* overItem = menu->items[i];
+					const itemDef_t* overItem = menu->items[i];
 					if (overItem->type == ITEM_TYPE_TEXT && overItem->text)
 					{
 						if (Rect_ContainsPoint(&overItem->window.rect, x, y))

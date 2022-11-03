@@ -20,6 +20,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 
+#ifndef FXSYSTEM_H
+#define FXSYSTEM_H
 #if !defined(CG_LOCAL_H_INC)
 #include "cg_local.h"
 #endif
@@ -100,3 +102,4 @@ struct SFxHelper
 extern SFxHelper theFxHelper;
 
 #endif // FX_SYSTEM_H_INC
+#endif // FXSYSTEM_H

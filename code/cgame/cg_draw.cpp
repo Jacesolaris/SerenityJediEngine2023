@@ -22,7 +22,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 // cg_draw.c -- draw all of the graphical elements during
-// active (after loading) gameplay
+// active (after loading) game play
 
 #include "cg_headers.h"
 
@@ -39,7 +39,7 @@ extern vmCvar_t cg_com_outcast;
 
 extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
 
-void CG_DrawIconBackground(void);
+void CG_DrawIconBackground();
 void cg_draw_inventory_select();
 void CG_DrawForceSelect(void);
 qboolean CG_WorldCoordToScreenCoord(vec3_t worldCoord, int* x, int* y);
@@ -368,68 +368,6 @@ If the weapon is a light saber (which needs no ammo) then draw a graphic showing
 the saber style (fast, medium, strong)
 ================
 */
-static void CG_DrawSaberStyle(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	int index;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon != WP_SABER || !cent->gent)
-	{
-		return;
-	}
-
-	cgi_R_SetColor(colorTable[CT_WHITE]);
-
-	if (!cg.saberAnimLevelPending && cent->gent->client)
-	{
-		//uninitialized after a loadgame, cheat across and get it
-		cg.saberAnimLevelPending = cent->gent->client->ps.saberAnimLevel;
-	}
-
-	// don't need to draw ammo, but we will draw the current saber style in this window
-	if (cg.saberAnimLevelPending == SS_FAST)
-	{
-		index = OHB_SABERSTYLE_FAST;
-	}
-	else if (cg.saberAnimLevelPending == SS_MEDIUM)
-	{
-		index = OHB_SABERSTYLE_MEDIUM;
-	}
-	else if (cg.saberAnimLevelPending == SS_TAVION)
-	{
-		index = OHB_SABERSTYLE_TAVION;
-	}
-	else if (cg.saberAnimLevelPending == SS_DESANN)
-	{
-		index = OHB_SABERSTYLE_DESANN;
-	}
-	else if (cg.saberAnimLevelPending == SS_STAFF)
-	{
-		index = OHB_SABERSTYLE_STAFF;
-	}
-	else if (cg.saberAnimLevelPending == SS_DUAL)
-	{
-		index = OHB_SABERSTYLE_DUAL;
-	}
-	else
-	{
-		index = OHB_SABERSTYLE_STRONG;
-	}
-
-	cgi_R_SetColor(otherHUDBits[index].color);
-
-	CG_DrawPic(
-		SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[index].xPos) * hudRatio,
-		otherHUDBits[index].yPos,
-		otherHUDBits[index].width * hudRatio,
-		otherHUDBits[index].height,
-		otherHUDBits[index].background
-	);
-}
 
 static void CG_DrawCusSaberStyle(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
 {
@@ -494,85 +432,7 @@ static void CG_DrawCusSaberStyle(const centity_t* cent, const int xPos, const in
 	);
 }
 
-static void CG_DrawblockingMode(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	int Blockindex;
 
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon != WP_SABER || !cent->gent)
-	{
-		return;
-	}
-
-	cgi_R_SetColor(colorTable[CT_WHITE]);
-
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
-	{
-		Blockindex = OHB_MBLOCKINGMODE;
-	}
-	else if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_BLOCKING)
-	{
-		Blockindex = OHB_BLOCKINGMODE;
-	}
-	else
-	{
-		Blockindex = OHB_NOTBLOCKING;
-	}
-
-	cgi_R_SetColor(otherHUDBits[Blockindex].color);
-
-	CG_DrawPic(
-		SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[Blockindex].xPos) * hudRatio,
-		otherHUDBits[Blockindex].yPos,
-		otherHUDBits[Blockindex].width * hudRatio,
-		otherHUDBits[Blockindex].height,
-		otherHUDBits[Blockindex].background
-	);
-}
-
-static void CG_DrawCusblockingMode(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	int Blockindex;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon != WP_SABER || !cent->gent)
-	{
-		return;
-	}
-
-	cgi_R_SetColor(colorTable[CT_WHITE]);
-
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
-	{
-		Blockindex = OHB_MBLOCKINGMODE;
-	}
-	else if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_BLOCKING)
-	{
-		Blockindex = OHB_BLOCKINGMODE;
-	}
-	else
-	{
-		Blockindex = OHB_NOTBLOCKING;
-	}
-
-	cgi_R_SetColor(otherHUDBits[Blockindex].color);
-
-	CG_DrawPic(
-		SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[Blockindex].xPos) + 5 * hudRatio,
-		otherHUDBits[Blockindex].yPos + 5,
-		otherHUDBits[Blockindex].width * hudRatio,
-		otherHUDBits[Blockindex].height,
-		otherHUDBits[Blockindex].background
-	);
-}
 
 static void CG_DrawJK2blockingMode(const centity_t* cent, const int xPos, const int yPos)
 {
@@ -627,103 +487,6 @@ static void CG_DrawJK2blockingMode(const centity_t* cent, const int xPos, const 
 	}
 }
 
-static void CG_Drawweapontype(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	int wp_index;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon == WP_SABER || !cent->gent)
-	{
-		return;
-	}
-
-	cgi_R_SetColor(colorTable[CT_WHITE]);
-
-	if (cent->currentState.weapon == WP_SBD_PISTOL)
-	{
-		wp_index = OHB_SBD_BLASTER;
-	}
-	else if (cent->currentState.weapon == WP_WRIST_BLASTER)
-	{
-		wp_index = OHB_WRIST;
-	}
-	else if (cent->currentState.weapon == WP_STUN_BATON)
-	{
-		wp_index = OHB_STUN_BATON;
-	}
-	else if (cent->currentState.weapon == WP_BRYAR_PISTOL)
-	{
-		wp_index = OHB_BRIAR_PISTOL;
-	}
-	else if (cent->currentState.weapon == WP_BLASTER_PISTOL)
-	{
-		wp_index = OHB_BLASTER_PISTOL;
-	}
-	else if (cent->currentState.weapon == WP_BLASTER)
-	{
-		wp_index = OHB_BLASTER;
-	}
-	else if (cent->currentState.weapon == WP_BOWCASTER)
-	{
-		wp_index = OHB_BOWCASTER;
-	}
-	else if (cent->currentState.weapon == WP_CONCUSSION)
-	{
-		wp_index = OHB_CONCUSSION;
-	}
-	else if (cent->currentState.weapon == WP_DEMP2)
-	{
-		wp_index = OHB_DEMP2;
-	}
-	else if (cent->currentState.weapon == WP_DET_PACK)
-	{
-		wp_index = OHB_DETPACK;
-	}
-	else if (cent->currentState.weapon == WP_DISRUPTOR)
-	{
-		wp_index = OHB_DISRUPTOR;
-	}
-	else if (cent->currentState.weapon == WP_FLECHETTE)
-	{
-		wp_index = OHB_FLACHETTE;
-	}
-	else if (cent->currentState.weapon == WP_REPEATER)
-	{
-		wp_index = OHB_REPEATER;
-	}
-	else if (cent->currentState.weapon == WP_THERMAL)
-	{
-		wp_index = OHB_THERMAL;
-	}
-	else if (cent->currentState.weapon == WP_ROCKET_LAUNCHER)
-	{
-		wp_index = OHB_ROCKET;
-	}
-	else if (cent->currentState.weapon == WP_TRIP_MINE)
-	{
-		wp_index = OHB_TRIPMINE;
-	}
-	else if (cent->currentState.weapon == WP_MELEE)
-	{
-		wp_index = OHB_MELEE;
-	}
-	else
-	{
-		wp_index = OHB_MELEE;
-	}
-
-	cgi_R_SetColor(otherHUDBits[wp_index].color);
-
-	CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[wp_index].xPos) * hudRatio,
-		otherHUDBits[wp_index].yPos,
-		otherHUDBits[wp_index].width * hudRatio,
-		otherHUDBits[wp_index].height,
-		otherHUDBits[wp_index].background);
-}
 
 static void CG_DrawCusweapontype(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
 {
@@ -828,95 +591,6 @@ static void CG_DrawCusweapontype(const centity_t* cent, const int xPos, const in
 CG_Drawgunfatigue
 ================
 */
-static void CG_Drawgunfatigue(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	//render the CG_Drawgunfatigue meter.
-	vec4_t calcColor;
-	constexpr int MaxBlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
-	qboolean flash = qfalse;
-
-	if (cent->gent->health < 1)
-	{
-		return;
-	}
-
-	if (!cent->gent->client->ps.BlasterAttackChainCount)
-	{
-		return;
-	}
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.BlasterAttackChainCount >
-		BLASTERMISHAPLEVEL_FULL)
-	{
-		flash = qtrue;
-		if (cg.mishapHUDNextFlashTime < cg.time)
-		{
-			cg.mishapHUDNextFlashTime = cg.time + 400;
-			//cgi_S_StartSound(NULL, 0, CHAN_AUTO, cgs.media.overheatgun);
-
-			if (cg.mishapHUDActive)
-			{
-				cg.mishapHUDActive = qfalse;
-			}
-			else
-			{
-				cg.mishapHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.mishapHUDNextFlashTime = 0;
-		cg.mishapHUDActive = qtrue;
-	}
-
-	constexpr float inc = static_cast<float>(MaxBlasterAttackChainCount) / MAX_HUD_TICS;
-	float value = cent->gent->client->ps.BlasterAttackChainCount;
-
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		if (value <= 0) // no more
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-		else
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-		}
-
-		cgi_R_SetColor(calcColor);
-
-		CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - mishapTics[i].xPos) * hudRatio,
-			mishapTics[i].yPos,
-			mishapTics[i].width * hudRatio,
-			mishapTics[i].height,
-			mishapTics[i].background);
-
-		value -= inc;
-	}
-}
 
 static void CG_DrawCusgunfatigue(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
 {
@@ -1039,201 +713,22 @@ static void CG_DrawCusgunfatigue(const centity_t* cent, const int xPos, const in
 	}
 }
 
-static void CG_Drawsaberfatigue(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	vec4_t calcColor;
-	constexpr int saberAttackChainCount = MISHAPLEVEL_MAX;
-	qboolean flash = qfalse;
-
-	if (cent->gent->health < 1)
-	{
-		return;
-	}
-
-	if (!cent->gent->client->ps.saberAttackChainCount)
-	{
-		return;
-	}
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_MAX)
-	{
-		flash = qtrue;
-		if (cg.mishapHUDNextFlashTime < cg.time)
-		{
-			cg.mishapHUDNextFlashTime = cg.time + 400;
-			cgi_S_StartSound(nullptr, 0, CHAN_AUTO, cgs.media.overload);
-
-			if (cg.mishapHUDActive)
-			{
-				cg.mishapHUDActive = qfalse;
-			}
-			else
-			{
-				cg.mishapHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.mishapHUDNextFlashTime = 0;
-		cg.mishapHUDActive = qtrue;
-	}
-
-	constexpr float inc = static_cast<float>(saberAttackChainCount) / MAX_SJEHUD_TICS;
-	float value = cent->gent->client->ps.saberAttackChainCount;
-
-	for (int i = MAX_SJEHUD_TICS - 1; i >= 0; i--)
-	{
-		if (value <= 0) // no more
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-		else
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-		}
-
-		cgi_R_SetColor(calcColor);
-
-		CG_DrawPic(
-			SCREEN_WIDTH - (SCREEN_WIDTH - sabfatticS[i].xPos) * hudRatio,
-			sabfatticS[i].yPos,
-			sabfatticS[i].width * hudRatio,
-			sabfatticS[i].height,
-			sabfatticS[i].background);
-
-		value -= inc;
-	}
-}
-
-static void CG_DrawCusSaberfatigue(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	vec4_t calcColor;
-	constexpr int saberAttackChainCount = MISHAPLEVEL_MAX;
-	qboolean flash = qfalse;
-
-	if (cent->gent->health < 1)
-	{
-		return;
-	}
-
-	if (!cent->gent->client->ps.saberAttackChainCount)
-	{
-		return;
-	}
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_MAX)
-	{
-		flash = qtrue;
-		if (cg.mishapHUDNextFlashTime < cg.time)
-		{
-			cg.mishapHUDNextFlashTime = cg.time + 400;
-			cgi_S_StartSound(nullptr, 0, CHAN_AUTO, cgs.media.overload);
-
-			if (cg.mishapHUDActive)
-			{
-				cg.mishapHUDActive = qfalse;
-			}
-			else
-			{
-				cg.mishapHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.mishapHUDNextFlashTime = 0;
-		cg.mishapHUDActive = qtrue;
-	}
-
-	constexpr float inc = static_cast<float>(saberAttackChainCount) / MAX_SJEHUD_TICS;
-	float value = cent->gent->client->ps.saberAttackChainCount;
-
-	for (int i = MAX_SJEHUD_TICS - 1; i >= 0; i--)
-	{
-		if (value <= 0) // no more
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-		else
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-		}
-
-		cgi_R_SetColor(calcColor);
-
-		CG_DrawPic(
-			SCREEN_WIDTH - (SCREEN_WIDTH - sabfatticS[i].xPos) + 5 * hudRatio,
-			sabfatticS[i].yPos + 5,
-			sabfatticS[i].width * hudRatio,
-			sabfatticS[i].height,
-			sabfatticS[i].background);
-
-		value -= inc;
-	}
-}
-
 static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 {
-	constexpr int saberAttackChainCount = MISHAPLEVEL_MAX;
 
 	if (cent->gent->health < 1)
 	{
 		return;
 	}
 
-	if (!cent->gent->client->ps.saberAttackChainCount)
+	if (!cent->gent->client->ps.saberFatigueChainCount)
 	{
 		return;
 	}
 
 	if (cg_com_outcast.integer == 1) //jko
 	{
-		if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+		if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_HUDFLASH)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1251,7 +746,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_TEN)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_TEN)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1268,7 +763,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_SIX)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_SIX)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1285,7 +780,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_RUNINACCURACY)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_RUNINACCURACY)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1305,7 +800,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 	}
 	else
 	{
-		if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+		if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_HUDFLASH)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1323,7 +818,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_TEN)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_TEN)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1340,7 +835,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_SIX)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_SIX)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1357,7 +852,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_RUNINACCURACY)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_RUNINACCURACY)
 		{
 			if (!(cg.time / 600 & 1))
 			{
@@ -1379,8 +874,6 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 
 static void CG_DrawJK2GunFatigue(const centity_t* cent, int x, int y)
 {
-	constexpr int BlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
-
 	if (cent->gent->health < 1)
 	{
 		return;
@@ -1515,7 +1008,7 @@ void CG_DrawoldblockPoints(const centity_t* cent)
 		x -= BPFUELBAR_W + 12.0f;
 	}
 
-	if (cent->gent->client->ps.saberAttackChainCount > MISHAPLEVEL_MIN)
+	if (cent->gent->client->ps.saberFatigueChainCount > MISHAPLEVEL_MIN)
 	{
 		//if drawing then move this over...?
 		x -= BPFUELBAR_W + 6.0f;
@@ -1582,121 +1075,6 @@ void CG_DrawoldblockPoints(const centity_t* cent)
 	CG_FillRect(x + 0.5f, y + 0.5f, BPFUELBAR_W - 0.5f, BPFUELBAR_H - percent, cColor);
 }
 
-static void CG_DrawblockPoints(int x, int y, const float hudRatio)
-{
-	vec4_t calcColor;
-
-	//	Outer block circular
-	//==========================================================================================================//
-
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		//blockingflag is on
-		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
-	}
-	else
-	{
-		memcpy(calcColor, colorTable[CT_MAGENTA], sizeof(vec4_t));
-	}
-
-	const float hold = cg.snap->ps.blockPoints - BLOCK_POINTS_MAX / 2;
-	float blockPercent = static_cast<float>(hold) / (BLOCK_POINTS_MAX / 2);
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.blockHUDTotalFlashTime > cg.time || cg.snap->ps.blockPoints < BLOCKPOINTS_WARNING)
-	{
-		if (cg.blockHUDNextFlashTime < cg.time)
-		{
-			cg.blockHUDNextFlashTime = cg.time + 400;
-			cgi_S_StartSound(nullptr, 0, CHAN_AUTO, cgs.media.overload);
-
-			if (cg.blockHUDActive)
-			{
-				cg.blockHUDActive = qfalse;
-			}
-			else
-			{
-				cg.blockHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.blockHUDNextFlashTime = 0;
-		cg.blockHUDActive = qtrue;
-	}
-
-	if (blockPercent < 0)
-	{
-		blockPercent = 0;
-	}
-
-	calcColor[0] *= blockPercent;
-	calcColor[1] *= blockPercent;
-	calcColor[2] *= blockPercent;
-
-	cgi_R_SetColor(calcColor);
-
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		//blockingflag is on
-		CG_DrawPic(x * hudRatio, y, 40 * hudRatio, 40, cgs.media.HUDblockpointMB1);
-	}
-	else
-	{
-		CG_DrawPic(x * hudRatio, y, 40 * hudRatio, 40, cgs.media.HUDblockpoint1);
-	}
-
-	// Inner block circular
-	//==========================================================================================================//
-	if (blockPercent > 0)
-	{
-		blockPercent = 1;
-	}
-	else
-	{
-		blockPercent = static_cast<float>(cg.snap->ps.blockPoints) / (BLOCK_POINTS_MAX / 2);
-	}
-
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		//blockingflag is on
-		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
-	}
-	else
-	{
-		memcpy(calcColor, colorTable[CT_MAGENTA], sizeof(vec4_t));
-	}
-
-	calcColor[0] *= blockPercent;
-	calcColor[1] *= blockPercent;
-	calcColor[2] *= blockPercent;
-
-	cgi_R_SetColor(calcColor);
-
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		//blockingflag is on
-		CG_DrawPic(x * hudRatio, y, 40 * hudRatio, 40, cgs.media.HUDblockpointMB2);
-	}
-	else
-	{
-		CG_DrawPic(x * hudRatio, y, 40 * hudRatio, 40, cgs.media.HUDblockpoint2);
-	}
-
-	// Print force health amount
-	cgi_R_SetColor(otherHUDBits[OHB_BLOCKAMOUNT].color);
-
-	CG_DrawNumField(
-		otherHUDBits[OHB_BLOCKAMOUNT].xPos * hudRatio,
-		otherHUDBits[OHB_BLOCKAMOUNT].yPos,
-		3,
-		cg.snap->ps.blockPoints,
-		otherHUDBits[OHB_BLOCKAMOUNT].width * hudRatio,
-		otherHUDBits[OHB_BLOCKAMOUNT].height,
-		NUM_FONT_SMALL,
-		qfalse);
-}
 
 static void CG_DrawCusblockPoints(int x, int y, const float hudRatio)
 {
@@ -2069,107 +1447,6 @@ Draw the ammo graphics (tics) and the ammo numeric amount. Any tics that are par
 be alphaed out.
 ================
 */
-static void CG_DrawAmmo(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
-{
-	vec4_t calcColor;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon == WP_STUN_BATON || cent->currentState.weapon == WP_MELEE)
-	{
-		return;
-	}
-
-	const playerState_t* ps = &cg.snap->ps;
-
-	float currValue = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
-
-	if (currValue < 0) // No ammo
-	{
-		return;
-	}
-
-	//
-	// ammo
-	//
-	if (cg.oldammo < currValue)
-	{
-		cg.oldAmmoTime = cg.time + 200;
-	}
-
-	cg.oldammo = currValue;
-
-	// Determine the color of the numeric field
-
-	// Firing or reloading?
-	if (cg.predicted_player_state.weaponstate == WEAPON_FIRING
-		&& cg.predicted_player_state.weaponTime > 100)
-	{
-		memcpy(calcColor, colorTable[CT_LTGREY], sizeof(vec4_t));
-	}
-	else
-	{
-		if (currValue > 0)
-		{
-			if (cg.oldAmmoTime > cg.time)
-			{
-				memcpy(calcColor, colorTable[CT_YELLOW], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, otherHUDBits[OHB_AMMOAMOUNT].color, sizeof(vec4_t));
-			}
-		}
-		else
-		{
-			memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-		}
-	}
-
-	// Print number amount
-	cgi_R_SetColor(calcColor);
-
-	CG_DrawNumField(
-		SCREEN_WIDTH - (SCREEN_WIDTH - otherHUDBits[OHB_AMMOAMOUNT].xPos) * hudRatio,
-		otherHUDBits[OHB_AMMOAMOUNT].yPos,
-		3,
-		ps->ammo[weaponData[cent->currentState.weapon].ammoIndex],
-		otherHUDBits[OHB_AMMOAMOUNT].width * hudRatio,
-		otherHUDBits[OHB_AMMOAMOUNT].height,
-		NUM_FONT_SMALL,
-		qfalse);
-
-	const float inc = static_cast<float>(ammoData[weaponData[cent->currentState.weapon].ammoIndex].max) / MAX_HUD_TICS;
-	currValue = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
-	memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		if (currValue <= 0) // don't show tic
-		{
-			break;
-		}
-		if (currValue < inc) // partial tic (alpha it out)
-		{
-			memcpy(calcColor, ammoTics[i].color, sizeof(vec4_t));
-			const float percent = currValue / inc;
-			calcColor[3] *= percent;
-		}
-
-		cgi_R_SetColor(calcColor);
-
-		CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - ammoTics[i].xPos) * hudRatio,
-			ammoTics[i].yPos,
-			ammoTics[i].width * hudRatio,
-			ammoTics[i].height,
-			ammoTics[i].background);
-
-		currValue -= inc;
-	}
-}
 
 static void CG_DrawCusAmmo(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
 {
@@ -2322,6 +1599,7 @@ void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 		case 7://FORCE_LEVEL_5://DUELS
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleDuels);
 			break;
+		default: ;
 		}
 		return;
 	}
@@ -2409,74 +1687,6 @@ void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 CG_DrawHealth
 ================
 */
-static void CG_DrawHealth(const int x, const int y, const int w, const int h, const float hudRatio)
-{
-	vec4_t calcColor;
-	const playerState_t* ps = &cg.snap->ps;
-
-	// Print all the tics of the health graphic
-	// Look at the amount of health left and show only as much of the graphic as there is health.
-	// Use alpha to fade out partial section of health
-	const float inc = static_cast<float>(ps->stats[STAT_MAX_HEALTH]) / MAX_HUD_TICS;
-	float currValue = ps->stats[STAT_HEALTH];
-	memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		if (currValue <= 0) // don't show tic
-		{
-			break;
-		}
-		if (currValue < inc) // partial tic (alpha it out)
-		{
-			memcpy(calcColor, healthTics[i].color, sizeof(vec4_t));
-			const float percent = currValue / inc;
-			calcColor[3] *= percent; // Fade it out
-		}
-
-		cgi_R_SetColor(calcColor);
-
-		CG_DrawPic(
-			healthTics[i].xPos * hudRatio,
-			healthTics[i].yPos,
-			healthTics[i].width * hudRatio,
-			healthTics[i].height,
-			healthTics[i].background
-		);
-
-		currValue -= inc;
-	}
-
-	if (cg.snap->ps.weapon == WP_SABER)
-	{
-		// Print force health amount
-		cgi_R_SetColor(otherHUDBits[OHB_HEALTHAMOUNT].color);
-
-		CG_DrawNumField(
-			otherHUDBits[OHB_HEALTHAMOUNT].xPos * hudRatio,
-			otherHUDBits[OHB_HEALTHAMOUNT].yPos,
-			3,
-			ps->stats[STAT_HEALTH],
-			otherHUDBits[OHB_HEALTHAMOUNT].width * hudRatio,
-			otherHUDBits[OHB_HEALTHAMOUNT].height,
-			NUM_FONT_SMALL,
-			qfalse);
-	}
-	else
-	{
-		// Print force health amount
-		cgi_R_SetColor(otherHUDBits[OHB_HEALTHAMOUNTALT].color);
-
-		CG_DrawNumField(
-			otherHUDBits[OHB_HEALTHAMOUNTALT].xPos * hudRatio,
-			otherHUDBits[OHB_HEALTHAMOUNTALT].yPos,
-			3,
-			ps->stats[STAT_HEALTH],
-			otherHUDBits[OHB_HEALTHAMOUNTALT].width * hudRatio,
-			otherHUDBits[OHB_HEALTHAMOUNTALT].height,
-			NUM_FONT_SMALL,
-			qfalse);
-	}
-}
 
 static void CG_DrawCusHealth(const int x, const int y, const int w, const int h, const float hudRatio)
 {
@@ -2555,112 +1765,6 @@ Draw the armor graphics (tics) and the armor numeric amount. Any tics that are p
 be alphaed out.
 ================
 */
-static void CG_DrawArmor(const int x, const int y, const int w, const int h, const float hudRatio)
-{
-	vec4_t calcColor;
-	const playerState_t* ps = &cg.snap->ps;
-
-	// Print all the tics of the armor graphic
-	// Look at the amount of armor left and show only as much of the graphic as there is armor.
-	// Use alpha to fade out partial section of armor
-	// MAX_HEALTH is the same thing as max armor
-	const float inc = static_cast<float>(ps->stats[STAT_MAX_HEALTH]) / MAX_HUD_TICS;
-	float currValue = ps->stats[STAT_ARMOR];
-
-	memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		if (currValue <= 0) // don't show tic
-		{
-			break;
-		}
-		if (currValue < inc) // partial tic (alpha it out)
-		{
-			memcpy(calcColor, armorTics[i].color, sizeof(vec4_t));
-			const float percent = currValue / inc;
-			calcColor[3] *= percent;
-		}
-
-		cgi_R_SetColor(calcColor);
-
-		if (i == MAX_HUD_TICS - 1 && currValue < inc)
-		{
-			if (cg.HUDArmorFlag)
-			{
-				CG_DrawPic(
-					armorTics[i].xPos * hudRatio,
-					armorTics[i].yPos,
-					armorTics[i].width * hudRatio,
-					armorTics[i].height,
-					armorTics[i].background
-				);
-			}
-		}
-		else
-		{
-			CG_DrawPic(
-				armorTics[i].xPos * hudRatio,
-				armorTics[i].yPos,
-				armorTics[i].width * hudRatio,
-				armorTics[i].height,
-				armorTics[i].background
-			);
-		}
-
-		currValue -= inc;
-	}
-
-	if (cg.snap->ps.weapon == WP_SABER)
-	{
-		//Dont draw armour if saber is out
-	}
-	else
-	{
-		// Print armor amount
-		cgi_R_SetColor(otherHUDBits[OHB_ARMORAMOUNT].color);
-
-		CG_DrawNumField(
-			otherHUDBits[OHB_ARMORAMOUNT].xPos * hudRatio,
-			otherHUDBits[OHB_ARMORAMOUNT].yPos,
-			3,
-			ps->stats[STAT_ARMOR],
-			otherHUDBits[OHB_ARMORAMOUNT].width * hudRatio,
-			otherHUDBits[OHB_ARMORAMOUNT].height,
-			NUM_FONT_SMALL,
-			qfalse);
-	}
-
-	// If armor is low, flash a graphic to warn the player
-	if (ps->stats[STAT_ARMOR]) // Is there armor? Draw the HUD Armor TIC
-	{
-		const float quarterArmor = ps->stats[STAT_MAX_HEALTH] / 4.0f;
-
-		// Make tic flash if armor is at 25% of full armor
-		if (ps->stats[STAT_ARMOR] < quarterArmor) // Do whatever the flash timer says
-		{
-			if (cg.HUDTickFlashTime < cg.time) // Flip at the same time
-			{
-				cg.HUDTickFlashTime = cg.time + 400;
-				if (cg.HUDArmorFlag)
-				{
-					cg.HUDArmorFlag = qfalse;
-				}
-				else
-				{
-					cg.HUDArmorFlag = qtrue;
-				}
-			}
-		}
-		else
-		{
-			cg.HUDArmorFlag = qtrue;
-		}
-	}
-	else // No armor? Don't show it.
-	{
-		cg.HUDArmorFlag = qfalse;
-	}
-}
 
 static void CG_Draw_JKA_Armor(const int x, const int y, const int w, const int h, const float hudRatio)
 {
@@ -4208,43 +3312,34 @@ static void CG_DrawHUD(const centity_t* cent)
 
 			if (cent->currentState.weapon == WP_SABER)
 			{
-				constexpr int y = 415;
-				constexpr int x = 26;
-				CG_DrawCusblockPoints(x, y, hudRatio);
+				CG_DrawCusblockPoints(26, 415, hudRatio);
 			}
 		}
 		else if (cg_com_outcast.integer == 1) //jko
 		{
-			constexpr int y = 400;
-			constexpr int x = 0.1;
-			CG_DrawHUDJK2LeftFrame1(x, y);
-			CG_DrawHUDJK2LeftFrame2(x, y);
+			CG_DrawHUDJK2LeftFrame1(0.1, 400);
+			CG_DrawHUDJK2LeftFrame2(0.1, 400);
 
-			CG_DrawJK2Armor(cent, x, y);
+			CG_DrawJK2Armor(cent, 0.1, 400);
 
 			if (cent->currentState.weapon == WP_SABER)
 			{
-				CG_DrawJK2HealthSJE(x + 21, y + 21);
+				CG_DrawJK2HealthSJE(21.1, 421);
 			}
 			else
 			{
-				CG_DrawJK2Health(x, y);
+				CG_DrawJK2Health(0.1, 400);
 			}
 
 			if (cent->currentState.weapon == WP_SABER)
 			{
-				constexpr int y = 424; //up / down
-				constexpr int x = 23.7; // left / right
-				CG_DrawJK2blockPoints(x, y);
+				CG_DrawJK2blockPoints(23.7, 424);
 			}
 		}
 		else //custom
 		{
 			// Print scanline
-			constexpr int y = 400;
-			constexpr int x = 0.1;
-
-			CG_DrawHUDJK2LeftFrame2(x, y);
+			CG_DrawHUDJK2LeftFrame2(0.1, 400);
 
 			// Print scanline
 			cgi_R_SetColor(otherHUDBits[OHB_SCANLINE_LEFT].color);
@@ -4265,15 +3360,13 @@ static void CG_DrawHUD(const centity_t* cent)
 				otherHUDBits[OHB_FRAME_LEFT].background
 			);
 
-			CG_DrawCusJK2Armor(cent, x, y);
+			CG_DrawCusJK2Armor(cent, 0.1, 400);
 
 			CG_DrawCusHealth(sectionXPos, sectionYPos, sectionWidth, sectionHeight, hudRatio);
 
 			if (cent->currentState.weapon == WP_SABER)
 			{
-				constexpr int y = 415;
-				constexpr int x = 26;
-				CG_DrawCusblockPoints(x, y, hudRatio);
+				CG_DrawCusblockPoints(26, 415, hudRatio);
 			}
 		}
 	}
@@ -4302,10 +3395,7 @@ static void CG_DrawHUD(const centity_t* cent)
 
 		if (cg_com_outcast.integer == 0) //jka
 		{
-			constexpr int y = 400;
-			constexpr int x = 560;
-
-			CG_DrawHUDJK2RightFrame2(x, y);
+			CG_DrawHUDJK2RightFrame2(560, 400);
 
 			// Print scanline
 			cgi_R_SetColor(otherHUDBits[OHB_SCANLINE_RIGHT].color);
@@ -4333,8 +3423,8 @@ static void CG_DrawHUD(const centity_t* cent)
 
 				if (cent->gent->client->ps.SaberActive())
 				{
-					CG_DrawJK2blockingMode(cent, x, y);
-					CG_DrawJK2SaberFatigue(cent, x, y);
+					CG_DrawJK2blockingMode(cent, 560, 400);
+					CG_DrawJK2SaberFatigue(cent, 560, 400);
 				}
 			}
 			else if (cent->currentState.weapon == WP_SABER && !cent->gent->client->ps.SaberActive())
@@ -4357,13 +3447,10 @@ static void CG_DrawHUD(const centity_t* cent)
 		}
 		else if (cg_com_outcast.integer == 1) //jko
 		{
-			constexpr int y = 400;
-			constexpr int x = 560;
+			CG_DrawHUDJK2RightFrame1(560, 400);
+			CG_DrawHUDJK2RightFrame2(560, 400);
 
-			CG_DrawHUDJK2RightFrame1(x, y);
-			CG_DrawHUDJK2RightFrame2(x, y);
-
-			CG_DrawJK2ForcePower(cent, x, y);
+			CG_DrawJK2ForcePower(cent, 560, 400);
 
 			if (cent->currentState.weapon == WP_STUN_BATON)
 			{
@@ -4371,28 +3458,25 @@ static void CG_DrawHUD(const centity_t* cent)
 			}
 			else
 			{
-				CG_DrawJK2Ammo(cent, x, y);
+				CG_DrawJK2Ammo(cent, 560, 400);
 
 				if (cent->currentState.weapon == WP_SABER)
 				{
 					if (cent->gent->client->ps.SaberActive())
 					{
-						CG_DrawJK2blockingMode(cent, x, y);
-						CG_DrawJK2SaberFatigue(cent, x, y);
+						CG_DrawJK2blockingMode(cent, 560, 400);
+						CG_DrawJK2SaberFatigue(cent, 560, 400);
 					}
 				}
 				else
 				{
-					CG_DrawJK2GunFatigue(cent, x, y);
+					CG_DrawJK2GunFatigue(cent, 560, 400);
 				}
 			}
 		}
 		else //custom
 		{
-			constexpr int y = 400;
-			constexpr int x = 560;
-
-			CG_DrawHUDJK2RightFrame2(x, y);
+			CG_DrawHUDJK2RightFrame2(560, 400);
 
 			// Print scanline
 			cgi_R_SetColor(otherHUDBits[OHB_SCANLINE_RIGHT].color);
@@ -4420,8 +3504,8 @@ static void CG_DrawHUD(const centity_t* cent)
 
 				if (cent->gent->client->ps.SaberActive())
 				{
-					CG_DrawJK2blockingMode(cent, x, y);
-					CG_DrawJK2SaberFatigue(cent, x, y);
+					CG_DrawJK2blockingMode(cent, 560, 400);
+					CG_DrawJK2SaberFatigue(cent, 560, 400);
 				}
 			}
 			else if (cent->currentState.weapon == WP_SABER && !cent->gent->client->ps.SaberActive())
@@ -4440,7 +3524,7 @@ static void CG_DrawHUD(const centity_t* cent)
 				CG_DrawCusAmmo(cent, sectionXPos, sectionYPos, hudRatio);
 				CG_DrawCusweapontype(cent, sectionXPos, sectionYPos, hudRatio);
 			}
-			CG_DrawJK2ForcePower(cent, x, y);
+			CG_DrawJK2ForcePower(cent, 560, 400);
 		}
 
 		if (cg.snap->ps.cloakFuel < 100)
@@ -5475,7 +4559,7 @@ void CG_DrawFatiguePointBar(const centity_t* cent, float chX, float chY, float c
 		return;
 	}
 
-	const float FatiguePercent = static_cast<float>(cent->gent->client->ps.saberAttackChainCount) / MISHAPLEVEL_MAX;
+	const float FatiguePercent = static_cast<float>(cent->gent->client->ps.saberFatigueChainCount) / MISHAPLEVEL_MAX;
 
 	//color of the bar
 	//hostile
@@ -5494,10 +4578,10 @@ void CG_DrawFatiguePointBar(const centity_t* cent, float chX, float chY, float c
 	CG_DrawRect(x, y - 8.0f, chW, chH, 1.0f, colorTable[CT_BLACK]);
 
 	//now draw the part to show how much health there is in the color specified
-	CG_FillRect(x + 1.0f, y + 1.0f - 8.0f, FatiguePercent * chW - 1.0f, chH - 1.0f, aColor);
+	CG_FillRect(x + 1.0f, y + 1.0f - 8.0f, FatiguePercent * chW - 1.0f, chH - 1.0f, cColor);
 
 	//then draw the other part greyed out
-	CG_FillRect(x + FatiguePercent * chW, y + 1.0f - 8.0f, chW - FatiguePercent * chW - 1.0f, chH - 1.0f, cColor);
+	CG_FillRect(x + FatiguePercent * chW, y + 1.0f - 8.0f, chW - FatiguePercent * chW - 1.0f, chH - 1.0f, aColor);
 }
 
 constexpr auto MAX_BLOCKPOINT_BAR_ENTS = 32;
@@ -5522,7 +4606,7 @@ void CG_DrawBlockPointBars(void)
 			{
 				//on screen
 				CG_DrawBlockPointBar(cent, chX, chY, BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
-				CG_DrawFatiguePointBar(cent, chX, chY, BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
+				CG_DrawFatiguePointBar(cent, chX, chY, -BLOCKPOINT_BAR_WIDTH, BLOCKPOINT_BAR_HEIGHT);
 			}
 		}
 	}
@@ -8335,7 +7419,7 @@ Choose the proper background for the icons, scale it depending on if your openin
 closing the icon section of the HU
 ===================
 */
-void CG_DrawIconBackground(void)
+void CG_DrawIconBackground()
 {
 	int height, xAdd, x2, y2;
 	int backgroundWidth, backgroundHeight;

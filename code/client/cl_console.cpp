@@ -192,7 +192,6 @@ If the line width has changed, reformat the buffer.
 void Con_CheckResize(void)
 {
 	int		i;
-	short	tbuf[CON_TEXTSIZE];
 
 	int width = cls.glconfig.vidWidth / SMALLCHAR_WIDTH - 2;
 
@@ -213,6 +212,7 @@ void Con_CheckResize(void)
 	}
 	else
 	{
+		short tbuf[CON_TEXTSIZE];
 		// on wide screens, we will center the text
 		con.xadjust = 640.0f / cls.glconfig.vidWidth;
 		con.yadjust = 480.0f / cls.glconfig.vidHeight;

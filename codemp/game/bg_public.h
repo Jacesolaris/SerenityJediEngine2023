@@ -1978,7 +1978,6 @@ qboolean PM_SaberInKata(saberMoveName_t saberMove);
 qboolean PM_InKataAnim(int anim);
 qboolean PM_KickingAnim(int anim);
 qboolean PM_PunchAnim(int anim);
-int BG_InGrappleMove(int anim);
 qboolean BG_InRoll(const playerState_t* ps, int anim);
 qboolean BG_InDeathAnim(int anim);
 qboolean BG_InSaberLockOld(int anim);

@@ -1503,7 +1503,7 @@ extern qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const sabe
 
 qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
 
-qboolean G_SetSaber(gentity_t* ent, int saberNum, const char* saberName, qboolean siegeOverride)
+qboolean G_SetSaber(const gentity_t* ent, int saberNum, const char* saberName, qboolean siegeOverride)
 {
 	char truncSaberName[MAX_QPATH] = { 0 };
 
@@ -1935,7 +1935,7 @@ static void Cmd_SayTeam_f(const gentity_t* ent)
 Cmd_Tell_f
 ==================
 */
-static void Cmd_Tell_f(gentity_t* ent)
+static void Cmd_Tell_f(const gentity_t* ent)
 {
 	char arg[MAX_TOKEN_CHARS];
 
@@ -2545,7 +2545,7 @@ void Cmd_CallVote_f(gentity_t* ent)
 	}
 
 validVote:
-	voteString_t* vote = &validVoteStrings[i];
+	const voteString_t* vote = &validVoteStrings[i];
 	if (!(vote->validGT & 1 << level.gametype)) {
 		trap->SendServerCommand(ent - g_entities, va("print \"%s is not applicable in this gametype.\n\"", arg1));
 		return;
@@ -2605,7 +2605,7 @@ validVote:
 Cmd_AllyChat_f
 ==================
 */
-void Cmd_AllyChat_f(gentity_t* ent)
+void Cmd_AllyChat_f(const gentity_t* ent)
 {
 	// allows chatting with allies
 	if (trap->Argc() < 2)
@@ -3240,7 +3240,7 @@ void Cmd_SaberAttackCycle_f(gentity_t* ent)
 
 	if (ent->client->ps.m_iVehicleNum)
 	{ //in a vehicle like at-st
-		gentity_t* veh = &g_entities[ent->client->ps.m_iVehicleNum];
+		const gentity_t* veh = &g_entities[ent->client->ps.m_iVehicleNum];
 
 		if (veh->m_pVehicle && veh->m_pVehicle->m_pVehicleInfo->type == VH_WALKER)
 			return;

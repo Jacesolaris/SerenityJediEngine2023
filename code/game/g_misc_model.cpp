@@ -30,16 +30,15 @@ extern cvar_t* g_spskill;
 // Helper functions
 //
 //------------------------------------------------------------
-void SetMiscModelModels(char* modelNameString, gentity_t* ent, qboolean damage_model)
+void SetMiscModelModels(const char* modelNameString, gentity_t* ent, qboolean damage_model)
 {
-	char damageModel[MAX_QPATH];
-	char chunkModel[MAX_QPATH];
-
 	//Main model
 	ent->s.modelindex = G_ModelIndex(modelNameString);
 
 	if (damage_model)
 	{
+		char chunkModel[MAX_QPATH];
+		char damageModel[MAX_QPATH];
 		const int len = strlen(modelNameString) - 4; // extract the extension
 
 		//Dead/damaged model
@@ -84,7 +83,7 @@ void SetMiscModelDefaults(gentity_t* ent, useFunc_t use_func, const char* materi
 			G_SoundIndex("sound/player/suitenergy.wav");
 		}
 	*/
-	G_SpawnInt("material", material, (int*)&ent->material);
+	G_SpawnInt("material", material, reinterpret_cast<int*>(&ent->material));
 
 	if (ent->health)
 	{
@@ -156,7 +155,7 @@ void set_MiscAnim(gentity_t* ent)
 	const animation_t* animations = level.knownAnimFileSets[temp_animFileIndex].animations;
 	if (ent->playerModel & 1)
 	{
-		const int anim = BOTH_STAND3;
+		constexpr int anim = BOTH_STAND3;
 		const float animSpeed = 50.0f / animations[anim].frameLerp;
 
 		// yes, its the same animation, so work out where we are in the leg anim, and blend us
@@ -167,7 +166,7 @@ void set_MiscAnim(gentity_t* ent)
 	}
 	else
 	{
-		const int anim = BOTH_PAIN3;
+		constexpr int anim = BOTH_PAIN3;
 		const float animSpeed = 50.0f / animations[anim].frameLerp;
 		gi.G2API_SetBoneAnim(&ent->ghoul2[0], "model_root", animations[anim].firstFrame,
 			animations[anim].numFrames - 1 + animations[anim].firstFrame,
@@ -580,8 +579,7 @@ void SP_misc_model_ammo_rack(gentity_t* ent)
 // AMMO RACK!!
 void spawn_rack_goods(gentity_t* ent)
 {
-	float v_off = 0;
-	gitem_t* blaster = nullptr, * metal_bolts = nullptr, * rockets = nullptr, * it = nullptr;
+	gitem_t* blaster = nullptr, * metal_bolts = nullptr, * rockets = nullptr;
 	gitem_t* am_blaster = nullptr, * am_metal_bolts = nullptr, * am_rockets = nullptr, * am_pwr_cell = nullptr;
 	gitem_t* health = nullptr;
 	int pos = 0, ct = 0;
@@ -672,6 +670,8 @@ void spawn_rack_goods(gentity_t* ent)
 	// -----Weapon option
 	if (ent->spawnflags & RACK_WEAPONS)
 	{
+		gitem_t* it = nullptr;
+		float v_off = 0;
 		if (!(ent->spawnflags & (RACK_BLASTER | RACK_METAL_BOLTS | RACK_ROCKETS | RACK_PWR_CELL)))
 		{
 			// nothing was selected, so we assume blaster pack

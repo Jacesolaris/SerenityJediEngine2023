@@ -235,8 +235,8 @@ static long RllDecodeMonoToMono(unsigned char *from,short *to,unsigned int size,
 //
 // Returns:		Number of samples placed in output buffer
 //-----------------------------------------------------------------------------
-static long RllDecodeMonoToStereo(unsigned char* from, short* to, unsigned int size, char signedOutput,
-	unsigned short flag)
+static long RllDecodeMonoToStereo(const unsigned char* from, short* to, unsigned int size, char signedOutput,
+                                  unsigned short flag)
 {
 	int prev;
 
@@ -410,7 +410,7 @@ static void blit4_32(byte* src, byte* dst, int spl)
 *
 ******************************************************************************/
 
-static void blit2_32(byte* src, byte* dst, int spl)
+static void blit2_32(const byte* src, byte* dst, int spl)
 {
 	memcpy(dst, src, 8);
 	memcpy(dst + spl, src + 8, 8);
@@ -453,7 +453,7 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 		switch (code)
 		{
 		case 0x8000: // vq code
-			blit8_32((byte*)&vq8[(*data) * 128], status[index], spl);
+			blit8_32(reinterpret_cast<byte*>(&vq8[(*data) * 128]), status[index], spl);
 			data++;
 			index += 5;
 			break;
@@ -479,17 +479,17 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 				{
 					// code in top two bits of code
 				case 0x8000: // 4x4 vq code
-					blit4_32((byte*)&vq4[(*data) * 32], status[index], spl);
+					blit4_32(reinterpret_cast<byte*>(&vq4[(*data) * 32]), status[index], spl);
 					data++;
 					break;
 				case 0xc000: // 2x2 vq code
-					blit2_32((byte*)&vq2[(*data) * 8], status[index], spl);
+					blit2_32(reinterpret_cast<byte*>(&vq2[(*data) * 8]), status[index], spl);
 					data++;
-					blit2_32((byte*)&vq2[(*data) * 8], status[index] + 8, spl);
+					blit2_32(reinterpret_cast<byte*>(&vq2[(*data) * 8]), status[index] + 8, spl);
 					data++;
-					blit2_32((byte*)&vq2[(*data) * 8], status[index] + spl * 2, spl);
+					blit2_32(reinterpret_cast<byte*>(&vq2[(*data) * 8]), status[index] + spl * 2, spl);
 					data++;
-					blit2_32((byte*)&vq2[(*data) * 8], status[index] + spl * 2 + 8, spl);
+					blit2_32(reinterpret_cast<byte*>(&vq2[(*data) * 8]), status[index] + spl * 2 + 8, spl);
 					data++;
 					break;
 				case 0x4000: // motion compensation
@@ -524,10 +524,10 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 
 static void ROQ_GenYUVTables(void)
 {
-	const float t_ub = (1.77200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
-	const float t_vr = (1.40200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
-	const float t_ug = (0.34414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
-	const float t_vg = (0.71414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_ub = (1.77200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_vr = (1.40200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_ug = (0.34414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_vg = (0.71414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
 	for (long i = 0; i < 256; i++)
 	{
 		const float x = static_cast<float>(2 * i - 255);
@@ -652,7 +652,7 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 {
 	long i, j, two, four;
 	unsigned short* aptr, * bptr, * cptr, * dptr;
-	long y0, y1, y2, y3, cr, cb;
+	long y0, y2, cr, cb;
 	byte* bbptr, * baptr, * bcptr, * bdptr;
 	union
 	{
@@ -677,6 +677,8 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 
 	if (!cinTable[currentHandle].half)
 	{
+		long y3;
+		long y1;
 		if (!cinTable[currentHandle].smootheddouble)
 		{
 			//
@@ -741,7 +743,7 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 			}
 			else if (cinTable[currentHandle].samplesPerPixel == 1)
 			{
-				bbptr = (byte*)bptr;
+				bbptr = reinterpret_cast<byte*>(bptr);
 				for (i = 0; i < two; i++)
 				{
 					*bbptr++ = cinTable[currentHandle].gray[*input++];
@@ -751,13 +753,13 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 					input += 3;
 				}
 
-				bcptr = (byte*)vq4;
-				bdptr = (byte*)vq8;
+				bcptr = reinterpret_cast<byte*>(vq4);
+				bdptr = reinterpret_cast<byte*>(vq8);
 
 				for (i = 0; i < four; i++)
 				{
-					baptr = (byte*)vq2 + (*input++) * 4;
-					bbptr = (byte*)vq2 + (*input++) * 4;
+					baptr = reinterpret_cast<byte*>(vq2) + (*input++) * 4;
+					bbptr = reinterpret_cast<byte*>(vq2) + (*input++) * 4;
 					for (j = 0; j < 2; j++)
 						VQ2TO4(baptr, bbptr, bcptr, bdptr);
 				}
@@ -841,7 +843,7 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 			}
 			else if (cinTable[currentHandle].samplesPerPixel == 1)
 			{
-				bbptr = (byte*)bptr;
+				bbptr = reinterpret_cast<byte*>(bptr);
 				for (i = 0; i < two; i++)
 				{
 					y0 = static_cast<long>(*input++);
@@ -859,13 +861,13 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 					*bbptr++ = cinTable[currentHandle].gray[y3];
 				}
 
-				bcptr = (byte*)vq4;
-				bdptr = (byte*)vq8;
+				bcptr = reinterpret_cast<byte*>(vq4);
+				bdptr = reinterpret_cast<byte*>(vq8);
 
 				for (i = 0; i < four; i++)
 				{
-					baptr = (byte*)vq2 + (*input++) * 8;
-					bbptr = (byte*)vq2 + (*input++) * 8;
+					baptr = reinterpret_cast<byte*>(vq2) + (*input++) * 8;
+					bbptr = reinterpret_cast<byte*>(vq2) + (*input++) * 8;
 					for (j = 0; j < 2; j++)
 					{
 						VQ2TO4(baptr, bbptr, bcptr, bdptr);
@@ -909,7 +911,7 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 		}
 		else if (cinTable[currentHandle].samplesPerPixel == 1)
 		{
-			bbptr = (byte*)bptr;
+			bbptr = reinterpret_cast<byte*>(bptr);
 
 			for (i = 0; i < two; i++)
 			{
@@ -919,13 +921,13 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 				input += 4;
 			}
 
-			bcptr = (byte*)vq4;
-			bdptr = (byte*)vq8;
+			bcptr = reinterpret_cast<byte*>(vq4);
+			bdptr = reinterpret_cast<byte*>(vq8);
 
 			for (i = 0; i < four; i++)
 			{
-				baptr = (byte*)vq2 + (*input++) * 2;
-				bbptr = (byte*)vq2 + (*input++) * 2;
+				baptr = reinterpret_cast<byte*>(vq2) + (*input++) * 2;
+				bbptr = reinterpret_cast<byte*>(vq2) + (*input++) * 2;
 				for (j = 0; j < 2; j++)
 				{
 					VQ2TO2(baptr, bbptr, bcptr, bdptr);
@@ -1043,10 +1045,9 @@ static void setupQuad(long xOff, long yOff)
 		for (long x = 0; x < static_cast<long>(cinTable[currentHandle].xsize); x += 16)
 			recurseQuad(x, y, 16, xOff, yOff);
 
-	byte* temp = nullptr;
-
 	for (long i = (numQuadCels - 64); i < numQuadCels; i++)
 	{
+		byte* temp = nullptr;
 		cin.qStatus[0][i] = temp; // eoq
 		cin.qStatus[1][i] = temp; // eoq
 	}
@@ -1060,7 +1061,7 @@ static void setupQuad(long xOff, long yOff)
 *
 ******************************************************************************/
 
-static void readQuadInfo(byte* qData)
+static void readQuadInfo(const byte* qData)
 {
 	if (currentHandle < 0) return;
 
@@ -1146,8 +1147,8 @@ static void initRoQ(void)
 {
 	if (currentHandle < 0) return;
 
-	cinTable[currentHandle].VQNormal = (void (*)(byte*, void*))blitVQQuad32fs;
-	cinTable[currentHandle].VQBuffer = (void (*)(byte*, void*))blitVQQuad32fs;
+	cinTable[currentHandle].VQNormal = reinterpret_cast<void (*)(byte*, void*)>(blitVQQuad32fs);
+	cinTable[currentHandle].VQBuffer = reinterpret_cast<void (*)(byte*, void*)>(blitVQQuad32fs);
 	cinTable[currentHandle].samplesPerPixel = 4;
 	ROQ_GenYUVTables();
 	RllSetupTable();
@@ -1236,14 +1237,14 @@ redump:
 		{
 			cinTable[currentHandle].normalBuffer0 = cinTable[currentHandle].t[1];
 			RoQPrepMcomp(cinTable[currentHandle].roqF0, cinTable[currentHandle].roqF1);
-			cinTable[currentHandle].VQ1((byte*)cin.qStatus[1], framedata);
+			cinTable[currentHandle].VQ1(reinterpret_cast<byte*>(cin.qStatus[1]), framedata);
 			cinTable[currentHandle].buf = cin.linbuf + cinTable[currentHandle].screenDelta;
 		}
 		else
 		{
 			cinTable[currentHandle].normalBuffer0 = cinTable[currentHandle].t[0];
 			RoQPrepMcomp(cinTable[currentHandle].roqF0, cinTable[currentHandle].roqF1);
-			cinTable[currentHandle].VQ0((byte*)cin.qStatus[0], framedata);
+			cinTable[currentHandle].VQ0(reinterpret_cast<byte*>(cin.qStatus[0]), framedata);
 			cinTable[currentHandle].buf = cin.linbuf;
 		}
 		if (cinTable[currentHandle].numQuads == 0)
@@ -1263,7 +1264,7 @@ redump:
 		{
 			ssize = RllDecodeMonoToStereo(framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0,
 				static_cast<unsigned short>(cinTable[currentHandle].roq_flags));
-			S_RawSamples(ssize, 22050, 2, 1, (byte*)sbuf, s_volume->value, qtrue);
+			S_RawSamples(ssize, 22050, 2, 1, reinterpret_cast<byte*>(sbuf), s_volume->value, qtrue);
 		}
 		break;
 	case ZA_SOUND_STEREO:
@@ -1276,7 +1277,7 @@ redump:
 			}
 			ssize = RllDecodeStereoToStereo(framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0,
 				static_cast<unsigned short>(cinTable[currentHandle].roq_flags));
-			S_RawSamples(ssize, 22050, 2, 2, (byte*)sbuf, s_volume->value, qtrue);
+			S_RawSamples(ssize, 22050, 2, 2, reinterpret_cast<byte*>(sbuf), s_volume->value, qtrue);
 		}
 		break;
 	case ROQ_QUAD_INFO:
@@ -1825,11 +1826,11 @@ void CIN_ResampleCinematic(int handle, int* buf2)
 		ll = 9;
 	}
 
-	const auto buf3 = (int*)buf;
+	const auto buf3 = reinterpret_cast<int*>(buf);
 	if (xm == 2 && ym == 2)
 	{
-		auto bc2 = (byte*)buf2;
-		const auto bc3 = (byte*)buf3;
+		auto bc2 = reinterpret_cast<byte*>(buf2);
+		const auto bc3 = reinterpret_cast<byte*>(buf3);
 		for (iy = 0; iy < 256; iy++)
 		{
 			const int iiy = iy << 12;
@@ -1845,8 +1846,8 @@ void CIN_ResampleCinematic(int handle, int* buf2)
 	}
 	else if (xm == 2 && ym == 1)
 	{
-		auto bc2 = (byte*)buf2;
-		const auto bc3 = (byte*)buf3;
+		auto bc2 = reinterpret_cast<byte*>(buf2);
+		const auto bc3 = reinterpret_cast<byte*>(buf3);
 		for (iy = 0; iy < 256; iy++)
 		{
 			const int iiy = iy << 11;
@@ -1901,7 +1902,7 @@ void CIN_DrawCinematic(int handle)
 
 		CIN_ResampleCinematic(handle, buf2);
 
-		re.DrawStretchRaw(x, y, w, h, 256, 256, (byte*)buf2, handle, qtrue);
+		re.DrawStretchRaw(x, y, w, h, 256, 256, reinterpret_cast<byte*>(buf2), handle, qtrue);
 		cinTable[handle].dirty = qfalse;
 		Z_Free(buf2); //Hunk_FreeTempMemory(buf2);
 		return;
@@ -2338,7 +2339,7 @@ void CIN_UploadCinematic(int handle)
 
 			CIN_ResampleCinematic(handle, buf2);
 
-			re.UploadCinematic(256, 256, (byte*)buf2, handle, qtrue);
+			re.UploadCinematic(256, 256, reinterpret_cast<byte*>(buf2), handle, qtrue);
 			cinTable[handle].dirty = qfalse;
 			Z_Free(buf2);
 		}

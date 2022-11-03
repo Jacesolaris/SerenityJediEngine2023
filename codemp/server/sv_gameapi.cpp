@@ -446,7 +446,7 @@ static void SV_GameDropClient(int clientNum, const char* reason) {
 
 static void SV_GameSendServerCommand(int clientNum, const char* text) {
 	if (clientNum == -1) {
-		SV_SendServerCommand(NULL, "%s", text);
+		SV_SendServerCommand(nullptr, "%s", text);
 	}
 	else {
 		if (clientNum < 0 || clientNum >= sv_maxclients->integer) {
@@ -597,7 +597,7 @@ static const char* SV_SetActiveSubBSP(int index) {
 	}
 
 	sv.mLocalSubBSPIndex = -1;
-	return NULL;
+	return nullptr;
 }
 
 static qboolean SV_GetEntityToken(char* buffer, int bufferSize) {
@@ -3216,7 +3216,7 @@ void SV_BindGame(void) {
 void SV_UnbindGame(void) {
 	GVM_ShutdownGame(qfalse);
 	VM_Free(gvm);
-	gvm = NULL;
+	gvm = nullptr;
 }
 
 void SV_RestartGame(void) {

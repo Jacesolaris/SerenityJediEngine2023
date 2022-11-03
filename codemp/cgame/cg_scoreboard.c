@@ -77,7 +77,7 @@ static qboolean localClient; // true if local client has been displayed
 CG_DrawScoreboard
 =================
 */
-static void CG_DrawClientScore(int y, score_t* score, float* color, float fade, qboolean largeFormat)
+static void CG_DrawClientScore(int y, const score_t* score, float* color, float fade, qboolean largeFormat)
 {
 	const int				iconx = SB_BOTICON_X + SB_RATING_WIDTH / 2;
 	const float			scale = largeFormat ? 1.0f : 0.75f,

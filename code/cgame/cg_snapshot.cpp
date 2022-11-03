@@ -218,7 +218,7 @@ void CG_SetNextSnap(snapshot_t* snap)
 	// check for extrapolation errors
 	for (int num = 0; num < snap->numEntities; num++)
 	{
-		entityState_t* es = &snap->entities[num];
+		const entityState_t* es = &snap->entities[num];
 		centity_t* cent = &cg_entities[es->number];
 		CG_SetEntityNextState(cent, es);
 	}

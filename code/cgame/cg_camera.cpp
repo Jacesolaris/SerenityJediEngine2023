@@ -119,9 +119,9 @@ void CGCam_Enable(void)
 			}
 		}
 
-		if (g_entities[0].client->ps.saberAttackChainCount >= MISHAPLEVEL_MIN)
+		if (g_entities[0].client->ps.saberFatigueChainCount >= MISHAPLEVEL_MIN)
 		{
-			g_entities[0].client->ps.saberAttackChainCount = MISHAPLEVEL_MIN;
+			g_entities[0].client->ps.saberFatigueChainCount = MISHAPLEVEL_MIN;
 		}
 
 		if (g_entities[0].client->ps.blockPoints <= BLOCK_POINTS_MAX)

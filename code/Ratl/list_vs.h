@@ -108,7 +108,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		bool		empty() const
 		{
-			assert(mFront != NULL_NODE || size() == 0);
+			assert(mFront != tree_node::NULL_NODE || size() == 0);
 			return mFront == null_node;
 		}
 
@@ -135,7 +135,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		TTValue& front()
 		{
-			assert(mFront != NULL_NODE);  // this is empty
+			assert(mFront != tree_node::NULL_NODE);  // this is empty
 			return mPool[mFront];
 		}
 
@@ -144,7 +144,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		TTValue& back()
 		{
-			assert(mBack != NULL_NODE);
+			assert(mBack != tree_node::NULL_NODE);
 			return mPool[mBack];
 		}
 
@@ -153,7 +153,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		const TTValue& front() const
 		{
-			assert(mFront != NULL_NODE);  // this is empty
+			assert(mFront != tree_node::NULL_NODE);  // this is empty
 			return mPool[mFront];
 		}
 
@@ -162,7 +162,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		const TTValue& back() const
 		{
-			assert(mBack != NULL_NODE);
+			assert(mBack != tree_node::NULL_NODE);
 			return mPool[mBack];
 		}
 
@@ -559,7 +559,7 @@ namespace ratl
 		void		erase(iterator& it)
 		{
 			assert(it.mOwner == this);		// Iterators must be mixed up, this is from a different list.
-			assert(it.mLoc != NULL_NODE);
+			assert(it.mLoc != tree_node::NULL_NODE);
 
 			int		At = it.mLoc;
 			int		Prev = T::node(mPool[At]).mPrev;
@@ -620,6 +620,7 @@ namespace ratl
 				prev = mBack;
 			}
 
+			int Prev;
 			assert(nNew != Next && nNew != Prev);
 
 			// LINK: (Prev)<-(New)->(Next)

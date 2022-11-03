@@ -314,12 +314,12 @@ void FX_FeedTrail(effectTrailArgStruct_t* a); //FxPrimitives.cpp
 // wrappers and such
 
 static void CL_AddCgameCommand(const char* cmdName) {
-	Cmd_AddCommand(cmdName, NULL);
+	Cmd_AddCommand(cmdName, nullptr);
 }
 
 static void CL_CM_LoadMap(const char* mapname, qboolean subBSP) {
 	if (subBSP)	CM_LoadSubBSP(va("maps/%s.bsp", mapname + 1), qfalse);
-	else			CM_LoadMap(mapname, qtrue, NULL);
+	else			CM_LoadMap(mapname, qtrue, nullptr);
 }
 
 static void CL_GetGlconfig(glconfig_t* glconfig) {
@@ -1926,5 +1926,5 @@ void CL_BindCGame(void) {
 void CL_UnbindCGame(void) {
 	CGVM_Shutdown();
 	VM_Free(cgvm);
-	cgvm = NULL;
+	cgvm = nullptr;
 }

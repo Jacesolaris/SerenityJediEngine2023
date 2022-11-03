@@ -148,9 +148,9 @@ void SV_BotCalculatePaths(int /*rmg*/)
 					const float nLDist = VectorLength(a);
 					const int forceJumpable = qfalse;//CanForceJumpTo(i, c, nLDist);
 
-					if ((nLDist < maxNeighborDist) &&
-						(static_cast<int>(gWPArray[i]->origin[2]) == static_cast<int>(gWPArray[c]->origin[2])) &&
-						(SV_OrgVisibleBox(gWPArray[i]->origin, mins, maxs, gWPArray[c]->origin, ENTITYNUM_NONE)))
+					if (nLDist < maxNeighborDist &&
+						static_cast<int>(gWPArray[i]->origin[2]) == static_cast<int>(gWPArray[c]->origin[2]) &&
+						SV_OrgVisibleBox(gWPArray[i]->origin, mins, maxs, gWPArray[c]->origin, ENTITYNUM_NONE))
 					{
 						gWPArray[i]->neighbors[gWPArray[i]->neighbornum].num = c;
 						{

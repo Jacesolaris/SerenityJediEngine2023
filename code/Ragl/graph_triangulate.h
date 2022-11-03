@@ -114,6 +114,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 namespace ragl
 {
+	int PtB;
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Graph Class
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -372,8 +373,10 @@ namespace ragl
 
 			static void	verify()
 			{
-				assert(PtA == mA || PtA == mB);
+				constexpr int pt_a = 0;
+				assert(pt_a == mA || pt_a == mB);
 				assert(PtB == mA || PtB == mB);
+				int Edge;
 				assert(mRight == Edge || mLeft == Edge);
 				assert(mRight != mLeft);
 				assert(mA != mB);

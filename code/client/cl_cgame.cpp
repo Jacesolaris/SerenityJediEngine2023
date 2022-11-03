@@ -989,7 +989,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 	case CG_R_FONTHEIGHTPIXELS:
 		return re.Font_HeightPixels(args[1], VMF(2));
 	case CG_R_FONTDRAWSTRING:
-		re.Font_DrawString(args[1], args[2], static_cast<const char*>(VMA(3)), (float*)args[4], args[5], args[6], VMF(7));
+		re.Font_DrawString(args[1], args[2], static_cast<const char*>(VMA(3)), reinterpret_cast<float*>(args[4]), args[5], args[6], VMF(7));
 		return 0;
 	case CG_LANGUAGE_ISASIAN:
 		return re.Language_IsAsian();
@@ -1143,7 +1143,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 		return 0;
 
 	case CG_Z_MALLOC:
-		return (intptr_t)Z_Malloc(args[1], static_cast<memtag_t>(args[2]), qfalse);
+		return reinterpret_cast<intptr_t>(Z_Malloc(args[1], static_cast<memtag_t>(args[2]), qfalse));
 
 	case CG_Z_FREE:
 		Z_Free(VMA(1));
@@ -1210,7 +1210,7 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 		return 0;
 
 	case CG_OPENJK_GETMENU_BYNAME:
-		return (intptr_t)Menus_FindByName(static_cast<const char*>(VMA(1)));
+		return reinterpret_cast<intptr_t>(Menus_FindByName(static_cast<const char*>(VMA(1))));
 
 	case CG_UI_STRING_INIT:
 		String_Init();

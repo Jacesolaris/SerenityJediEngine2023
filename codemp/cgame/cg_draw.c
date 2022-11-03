@@ -627,109 +627,8 @@ void CG_DrawFlagModel(float x, float y, float w, float h, int team, qboolean for
 CG_DrawHealth
 ================
 */
-void CG_DrawHealth(menuDef_t* menuHUD)
-{
-	vec4_t calcColor;
-	itemDef_t* focusItem;
 
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	const playerState_t* ps = &cg.snap->ps;
-
-	// What's the health?
-	int healthAmt = ps->stats[STAT_HEALTH];
-	if (healthAmt > ps->stats[STAT_MAX_HEALTH])
-	{
-		healthAmt = ps->stats[STAT_MAX_HEALTH];
-	}
-
-	const int inc = (float)ps->stats[STAT_MAX_HEALTH] / MAX_HUD_TICS;
-	int currValue = healthAmt;
-
-	// Print the health tics, fading out the one which is partial health
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, healthTicName[i]);
-
-		if (!focusItem) // This is bad
-		{
-			continue;
-		}
-
-		memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-
-		if (currValue <= 0) // don't show tic
-		{
-			break;
-		}
-		if (currValue < inc) // partial tic (alpha it out)
-		{
-			const float percent = (float)currValue / inc;
-			calcColor[3] *= percent; // Fade it out
-		}
-
-		trap->R_SetColor(calcColor);
-
-		CG_DrawPic(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			focusItem->window.background
-		);
-
-		currValue -= inc;
-	}
-
-	if (cg.snap->ps.weapon == WP_SABER)
-	{
-		// Print the mueric amount
-		focusItem = Menu_FindItemByName(menuHUD, "healthamount");
-
-		if (focusItem)
-		{
-			// Print health amount
-			trap->R_SetColor(focusItem->window.foreColor);
-
-			CG_DrawNumField(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				3,
-				ps->stats[STAT_HEALTH],
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				NUM_FONT_SMALL,
-				qfalse);
-		}
-	}
-	else
-	{
-		// Print the mueric amount
-		focusItem = Menu_FindItemByName(menuHUD, "healthamountmp");
-
-		if (focusItem)
-		{
-			// Print health amount
-			trap->R_SetColor(focusItem->window.foreColor);
-
-			CG_DrawNumField(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				3,
-				ps->stats[STAT_HEALTH],
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				NUM_FONT_SMALL,
-				qfalse);
-		}
-	}
-}
-
-void CG_DrawCusHealth(menuDef_t* menuHUD)
+void CG_DrawCusHealth(const menuDef_t* menuHUD)
 {
 	vec4_t calcColor;
 	itemDef_t* focusItem;
@@ -835,10 +734,10 @@ void CG_DrawJK2HealthSJE(const int x, const int y)
 {
 	vec4_t calcColor;
 
-	playerState_t* ps = &cg.snap->ps;
+	const playerState_t* ps = &cg.snap->ps;
 
 	memcpy(calcColor, colorTable[CT_HUD_RED], sizeof(vec4_t));
-	float healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
+	const float healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
 	calcColor[0] *= healthPercent;
 	calcColor[1] *= healthPercent;
 	calcColor[2] *= healthPercent;
@@ -857,7 +756,7 @@ void CG_DrawJK2HealthSJE(const int x, const int y)
 	CG_DrawNumField(x + 2, y + 26, 3, ps->stats[STAT_HEALTH], 4, 7, NUM_FONT_SMALL, qtrue);
 }
 
-static void CG_DrawJK2blockPoints(int x, int y, menuDef_t* menuHUD)
+static void CG_DrawJK2blockPoints(int x, int y, const menuDef_t* menuHUD)
 {
 	vec4_t calcColor;
 
@@ -978,10 +877,10 @@ void CG_DrawJK2Health(const int x, const int y)
 {
 	vec4_t calcColor;
 
-	playerState_t* ps = &cg.snap->ps;
+	const playerState_t* ps = &cg.snap->ps;
 
 	memcpy(calcColor, colorTable[CT_HUD_RED], sizeof(vec4_t));
-	float healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
+	const float healthPercent = (float)ps->stats[STAT_HEALTH] / ps->stats[STAT_MAX_HEALTH];
 	calcColor[0] *= healthPercent;
 	calcColor[1] *= healthPercent;
 	calcColor[2] *= healthPercent;
@@ -1004,134 +903,8 @@ void CG_DrawJK2Health(const int x, const int y)
 CG_DrawArmor
 ================
 */
-void CG_DrawArmor(menuDef_t* menuHUD)
-{
-	vec4_t calcColor;
-	itemDef_t* focusItem;
 
-	//ps = &cg.snap->ps;
-	const playerState_t* ps = &cg.predictedPlayerState;
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	const int maxArmor = ps->stats[STAT_MAX_HEALTH];
-
-	int currValue = ps->stats[STAT_ARMOR];
-	const int inc = (float)maxArmor / MAX_HUD_TICS;
-
-	memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, armorTicName[i]);
-
-		if (!focusItem) // This is bad
-		{
-			continue;
-		}
-
-		memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-
-		if (currValue <= 0) // don't show tic
-		{
-			break;
-		}
-		if (currValue < inc) // partial tic (alpha it out)
-		{
-			const float percent = (float)currValue / inc;
-			calcColor[3] *= percent;
-		}
-
-		trap->R_SetColor(calcColor);
-
-		if (i == MAX_HUD_TICS - 1 && currValue < inc)
-		{
-			if (cg.HUDArmorFlag)
-			{
-				CG_DrawPic(
-					focusItem->window.rect.x,
-					focusItem->window.rect.y,
-					focusItem->window.rect.w,
-					focusItem->window.rect.h,
-					focusItem->window.background
-				);
-			}
-		}
-		else
-		{
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-
-		currValue -= inc;
-	}
-
-	if (cg.snap->ps.weapon == WP_SABER)
-	{
-		//Dont draw armour if saber is out
-	}
-	else
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "armoramount");
-
-		if (focusItem)
-		{
-			// Print armor amount
-			trap->R_SetColor(focusItem->window.foreColor);
-
-			CG_DrawNumField(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				3,
-				ps->stats[STAT_ARMOR],
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				NUM_FONT_SMALL,
-				qfalse);
-		}
-	}
-
-	// If armor is low, flash a graphic to warn the player
-	if (ps->stats[STAT_ARMOR]) // Is there armor? Draw the HUD Armor TIC
-	{
-		const float quarterArmor = ps->stats[STAT_MAX_HEALTH] / 4.0f;
-
-		// Make tic flash if armor is at 25% of full armor
-		if (ps->stats[STAT_ARMOR] < quarterArmor) // Do whatever the flash timer says
-		{
-			if (cg.HUDTickFlashTime < cg.time) // Flip at the same time
-			{
-				cg.HUDTickFlashTime = cg.time + 400;
-				if (cg.HUDArmorFlag)
-				{
-					cg.HUDArmorFlag = qfalse;
-				}
-				else
-				{
-					cg.HUDArmorFlag = qtrue;
-				}
-			}
-		}
-		else
-		{
-			cg.HUDArmorFlag = qtrue;
-		}
-	}
-	else // No armor? Don't show it.
-	{
-		cg.HUDArmorFlag = qfalse;
-	}
-}
-
-void CG_Draw_JKA_Armor(menuDef_t* menuHUD)
+void CG_Draw_JKA_Armor(const menuDef_t* menuHUD)
 {
 	vec4_t calcColor;
 	itemDef_t* focusItem;
@@ -1278,7 +1051,7 @@ void CG_DrawJK2Armor(const centity_t* cent, const int x, const int y)
 {
 	vec4_t			calcColor;
 
-	playerState_t* ps = &cg.snap->ps;
+	const playerState_t* ps = &cg.snap->ps;
 
 	//	Outer Armor circular
 	memcpy(calcColor, colorTable[CT_HUD_GREEN], sizeof(vec4_t));
@@ -1290,7 +1063,7 @@ void CG_DrawJK2Armor(const centity_t* cent, const int x, const int y)
 		armor = ps->stats[STAT_MAX_HEALTH];
 	}
 
-	float hold = armor - (ps->stats[STAT_MAX_HEALTH] / 2);
+	const float hold = armor - ps->stats[STAT_MAX_HEALTH] / 2;
 	float armorPercent = hold / (ps->stats[STAT_MAX_HEALTH] / 2);
 	if (armorPercent < 0)
 	{
@@ -1362,7 +1135,7 @@ void CG_DrawJK2CusArmor(const centity_t* cent, const int x, const int y)
 {
 	vec4_t			calcColor;
 
-	playerState_t* ps = &cg.snap->ps;
+	const playerState_t* ps = &cg.snap->ps;
 
 	//	Outer Armor circular
 	memcpy(calcColor, colorTable[CT_HUD_GREEN], sizeof(vec4_t));
@@ -1374,7 +1147,7 @@ void CG_DrawJK2CusArmor(const centity_t* cent, const int x, const int y)
 		armor = ps->stats[STAT_MAX_HEALTH];
 	}
 
-	float hold = armor - (ps->stats[STAT_MAX_HEALTH] / 2);
+	const float hold = armor - ps->stats[STAT_MAX_HEALTH] / 2;
 	float armorPercent = hold / (ps->stats[STAT_MAX_HEALTH] / 2);
 	if (armorPercent < 0)
 	{
@@ -1450,148 +1223,8 @@ If the weapon is a light saber (which needs no ammo) then draw a graphic showing
 the saber style (fast, medium, strong)
 ================
 */
-static void CG_DrawSaberStyle(const centity_t* cent, menuDef_t* menuHUD)
-{
-	itemDef_t* focusItem;
 
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon != WP_SABER)
-	{
-		return;
-	}
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	// draw the current saber style in this window
-	switch (cg.predictedPlayerState.fd.saberDrawAnimLevel)
-	{
-	case 1: //FORCE_LEVEL_1:
-
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_fastMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-
-		break;
-	case 2: //FORCE_LEVEL_2:
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_mediumMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-		break;
-	case 6: //SS_DUAL
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_dualMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-		break;
-	case 7: //SS_STAFF
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_staffMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-		break;
-	case 3: //FORCE_LEVEL_3:
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_strongMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-		break;
-	case 4: //FORCE_LEVEL_4://Desann
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_desannMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-		break;
-	case 5: //FORCE_LEVEL_5://Tavion
-		focusItem = Menu_FindItemByName(menuHUD, "saberstyle_tavionMP");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-		break;
-	default:;
-	}
-}
-
-static void CG_DrawCusSaberStyle(const centity_t* cent, menuDef_t* menuHUD)
+static void CG_DrawCusSaberStyle(const centity_t* cent, const menuDef_t* menuHUD)
 {
 	itemDef_t* focusItem;
 
@@ -1732,447 +1365,7 @@ static void CG_DrawCusSaberStyle(const centity_t* cent, menuDef_t* menuHUD)
 	}
 }
 
-static void CG_DrawblockingMode(const centity_t* cent, menuDef_t* menuHUD)
-{
-	itemDef_t* Blockindex;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon != WP_SABER)
-	{
-		return;
-	}
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
-	{
-		Blockindex = Menu_FindItemByName(menuHUD, "MBlockingMode");
-
-		if (Blockindex)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				Blockindex->window.rect.x,
-				Blockindex->window.rect.y,
-				Blockindex->window.rect.w,
-				Blockindex->window.rect.h,
-				Blockindex->window.background
-			);
-		}
-	}
-	else if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_BLOCKING)
-	{
-		Blockindex = Menu_FindItemByName(menuHUD, "BlockingMode");
-
-		if (Blockindex)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				Blockindex->window.rect.x,
-				Blockindex->window.rect.y,
-				Blockindex->window.rect.w,
-				Blockindex->window.rect.h,
-				Blockindex->window.background
-			);
-		}
-	}
-	else
-	{
-		Blockindex = Menu_FindItemByName(menuHUD, "NotBlocking");
-
-		if (Blockindex)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				Blockindex->window.rect.x,
-				Blockindex->window.rect.y,
-				Blockindex->window.rect.w,
-				Blockindex->window.rect.h,
-				Blockindex->window.background
-			);
-		}
-	}
-}
-
-static void CG_DrawCusblockingMode(const centity_t* cent, menuDef_t* menuHUD)
-{
-	itemDef_t* Blockindex;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon != WP_SABER)
-	{
-		return;
-	}
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
-	{
-		Blockindex = Menu_FindItemByName(menuHUD, "MBlockingMode");
-
-		if (Blockindex)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				Blockindex->window.rect.x + 5,
-				Blockindex->window.rect.y + 5,
-				Blockindex->window.rect.w,
-				Blockindex->window.rect.h,
-				Blockindex->window.background
-			);
-		}
-	}
-	else if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_BLOCKING)
-	{
-		Blockindex = Menu_FindItemByName(menuHUD, "BlockingMode");
-
-		if (Blockindex)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				Blockindex->window.rect.x + 5,
-				Blockindex->window.rect.y + 5,
-				Blockindex->window.rect.w,
-				Blockindex->window.rect.h,
-				Blockindex->window.background
-			);
-		}
-	}
-	else
-	{
-		Blockindex = Menu_FindItemByName(menuHUD, "NotBlocking");
-
-		if (Blockindex)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				Blockindex->window.rect.x + 5,
-				Blockindex->window.rect.y + 5,
-				Blockindex->window.rect.w,
-				Blockindex->window.rect.h,
-				Blockindex->window.background
-			);
-		}
-	}
-}
-
-static void CG_Drawweapontype(const centity_t* cent, menuDef_t* menuHUD)
-{
-	itemDef_t* focusItem;
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon == WP_SABER)
-	{
-		return;
-	}
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon == WP_MELEE)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_melee");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_STUN_BATON)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_stun_baton");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_BRYAR_PISTOL)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_briar_pistol");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_BRYAR_PISTOL)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_blaster_pistol");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_BLASTER)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_blaster");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_BOWCASTER)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_bowcaster");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_CONCUSSION)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_concussion");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_DEMP2)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_demp2");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_DET_PACK)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_detpack");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_DISRUPTOR)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_disruptor");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_FLECHETTE)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_flachette");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_REPEATER)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_repeater");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_THERMAL)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_thermal");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_ROCKET_LAUNCHER)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_rocket");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else if (cent->currentState.weapon == WP_TRIP_MINE)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_tripmine");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-	else
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "weapontype_melee");
-
-		if (focusItem)
-		{
-			trap->R_SetColor(colorTable[CT_WHITE]);
-
-			CG_DrawPic(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				focusItem->window.background
-			);
-		}
-	}
-}
-
-static void CG_DrawCusweapontype(const centity_t* cent, menuDef_t* menuHUD)
+static void CG_DrawCusweapontype(const centity_t* cent, const menuDef_t* menuHUD)
 {
 	itemDef_t* focusItem;
 
@@ -2471,111 +1664,8 @@ static void CG_DrawCusweapontype(const centity_t* cent, menuDef_t* menuHUD)
 CG_Drawgunfatigue
 ================
 */
-void CG_Drawgunfatigue(menuDef_t* menuHUD)
-{
-	//render the CG_Drawgunfatigue meter.
-	vec4_t calcColor;
-	const int MaxBlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
-	qboolean flash = qfalse;
 
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
-	{
-		return;
-	}
-
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
-	{
-		return;
-	}
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FULL)
-	{
-		flash = qtrue;
-		if (cg.mishapHUDNextFlashTime < cg.time)
-		{
-			trap->S_StartSound(NULL, 0, CHAN_LOCAL, cgs.media.messageLitSound);
-			cg.mishapHUDNextFlashTime = cg.time + 400;
-
-			if (cg.mishapHUDActive)
-			{
-				cg.mishapHUDActive = qfalse;
-			}
-			else
-			{
-				cg.mishapHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.mishapHUDNextFlashTime = 0;
-		cg.mishapHUDActive = qtrue;
-	}
-
-	const float inc = (float)MaxBlasterAttackChainCount / MAX_HUD_TICS;
-	float value = cg.snap->ps.BlasterAttackChainCount;
-
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		const itemDef_t* focusItem = Menu_FindItemByName(menuHUD, mishapTics[i]);
-
-		if (!focusItem)
-		{
-			continue;
-		}
-
-		if (value <= 0) // done
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-		else
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-		}
-
-		trap->R_SetColor(calcColor);
-
-		CG_DrawPic(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			focusItem->window.background
-		);
-
-		value -= inc;
-	}
-}
-
-void CG_DrawCusgunfatigue(menuDef_t* menuHUD)
+void CG_DrawCusgunfatigue(const menuDef_t* menuHUD)
 {
 	//render the CG_Drawgunfatigue meter.
 	vec4_t calcColor;
@@ -2679,11 +1769,11 @@ void CG_DrawCusgunfatigue(menuDef_t* menuHUD)
 	}
 }
 
-void CG_Drawsaberfatigue(menuDef_t* menuHUD)
+void CG_DrawCussaberfatigue(const menuDef_t* menuHUD)
 {
 	//render the balance/mishap meter.
 	vec4_t calcColor;
-	const int saberAttackChainCount = MISHAPLEVEL_MAX;
+	const int saberFatigueChainCount = MISHAPLEVEL_MAX;
 	qboolean flash = qfalse;
 
 	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
@@ -2703,7 +1793,7 @@ void CG_Drawsaberfatigue(menuDef_t* menuHUD)
 	}
 
 	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_MAX)
+	if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_MAX)
 	{
 		flash = qtrue;
 		if (cg.mishapHUDNextFlashTime < cg.time)
@@ -2727,112 +1817,8 @@ void CG_Drawsaberfatigue(menuDef_t* menuHUD)
 		cg.mishapHUDActive = qtrue;
 	}
 
-	const float inc = (float)saberAttackChainCount / MAX_SJEHUD_TICS;
-	float value = cg.snap->ps.saberAttackChainCount;
-
-	for (int i = MAX_SJEHUD_TICS - 1; i >= 0; i--)
-	{
-		const itemDef_t* focusItem = Menu_FindItemByName(menuHUD, sabfatticS[i]);
-
-		if (!focusItem)
-		{
-			continue;
-		}
-
-		if (value <= 0) // done
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-		else
-		{
-			if (flash)
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			}
-		}
-
-		trap->R_SetColor(calcColor);
-
-		CG_DrawPic(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			focusItem->window.background
-		);
-
-		value -= inc;
-	}
-}
-
-void CG_DrawCussaberfatigue(menuDef_t* menuHUD)
-{
-	//render the balance/mishap meter.
-	vec4_t calcColor;
-	const int saberAttackChainCount = MISHAPLEVEL_MAX;
-	qboolean flash = qfalse;
-
-	if (cgs.clientinfo[cg.snap->ps.clientNum].team == TEAM_SPECTATOR)
-	{
-		return;
-	}
-
-	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
-	{
-		return;
-	}
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_MAX)
-	{
-		flash = qtrue;
-		if (cg.mishapHUDNextFlashTime < cg.time)
-		{
-			cg.mishapHUDNextFlashTime = cg.time + 400;
-			trap->S_StartSound(NULL, 0, CHAN_LOCAL, cgs.media.overload);
-
-			if (cg.mishapHUDActive)
-			{
-				cg.mishapHUDActive = qfalse;
-			}
-			else
-			{
-				cg.mishapHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.mishapHUDNextFlashTime = 0;
-		cg.mishapHUDActive = qtrue;
-	}
-
-	const float inc = (float)saberAttackChainCount / MAX_SJEHUD_TICS;
-	float value = cg.snap->ps.saberAttackChainCount;
+	const float inc = (float)saberFatigueChainCount / MAX_SJEHUD_TICS;
+	float value = cg.snap->ps.saberFatigueChainCount;
 
 	for (int i = MAX_SJEHUD_TICS - 1; i >= 0; i--)
 	{
@@ -2959,7 +1945,7 @@ void CG_DrawoldblockPoints(void)
 		x -= BPFUELBAR_W + 6.0f;
 	}
 
-	if (cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_NONE)
+	if (cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_NONE)
 	{
 		//if drawing then move this over...?
 		x -= BPFUELBAR_W + 6.0f;
@@ -3026,124 +2012,7 @@ void CG_DrawoldblockPoints(void)
 	CG_FillRect(x + 0.5f, y + 0.5f, BPFUELBAR_W - 0.5f, BPFUELBAR_H - percent, cColor);
 }
 
-static void CG_DrawblockPoints(int x, int y, menuDef_t* menuHUD)
-{
-	vec4_t calcColor;
-
-	//	Outer block circular
-	//==========================================================================================================//
-
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
-	}
-	else
-	{
-		memcpy(calcColor, colorTable[CT_MAGENTA], sizeof(vec4_t));
-	}
-
-	const float hold = cg.snap->ps.fd.blockPoints - BLOCK_POINTS_MAX / 2;
-	float blockPercent = (float)hold / (BLOCK_POINTS_MAX / 2);
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.blockHUDTotalFlashTime > cg.time || cg.snap->ps.fd.blockPoints < BLOCKPOINTS_WARNING)
-	{
-		if (cg.blockHUDNextFlashTime < cg.time)
-		{
-			cg.blockHUDNextFlashTime = cg.time + 400;
-			trap->S_StartSound(NULL, 0, CHAN_LOCAL, cgs.media.overload);
-
-			if (cg.blockHUDActive)
-			{
-				cg.blockHUDActive = qfalse;
-			}
-			else
-			{
-				cg.blockHUDActive = qtrue;
-			}
-		}
-	}
-	else // turn HUD back on if it had just finished flashing time.
-	{
-		cg.blockHUDNextFlashTime = 0;
-		cg.blockHUDActive = qtrue;
-	}
-
-	if (blockPercent < 0)
-	{
-		blockPercent = 0;
-	}
-
-	calcColor[0] *= blockPercent;
-	calcColor[1] *= blockPercent;
-	calcColor[2] *= blockPercent;
-
-	trap->R_SetColor(calcColor);
-
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		CG_DrawPic(x, y, 40, 40, cgs.media.HUDblockpointMB1);
-	}
-	else
-	{
-		CG_DrawPic(x, y, 40, 40, cgs.media.HUDblockpoint1);
-	}
-
-	// Inner block circular
-	//==========================================================================================================//
-	if (blockPercent > 0)
-	{
-		blockPercent = 1;
-	}
-	else
-	{
-		blockPercent = (float)cg.snap->ps.fd.blockPoints / (BLOCK_POINTS_MAX / 2);
-	}
-
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
-	}
-	else
-	{
-		memcpy(calcColor, colorTable[CT_MAGENTA], sizeof(vec4_t));
-	}
-
-	calcColor[0] *= blockPercent;
-	calcColor[1] *= blockPercent;
-	calcColor[2] *= blockPercent;
-
-	trap->R_SetColor(calcColor);
-
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
-	{
-		CG_DrawPic(x, y, 40, 40, cgs.media.HUDblockpointMB2);
-	}
-	else
-	{
-		CG_DrawPic(x, y, 40, 40, cgs.media.HUDblockpoint2);
-	}
-
-	const itemDef_t* focusItem = Menu_FindItemByName(menuHUD, "blockpointamount");
-
-	if (focusItem)
-	{
-		// Print blockpointamount amount
-		trap->R_SetColor(focusItem->window.foreColor);
-
-		CG_DrawNumField(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			3,
-			cg.snap->ps.fd.blockPoints,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			NUM_FONT_SMALL,
-			qfalse);
-	}
-}
-
-static void CG_DrawCusblockPoints(int x, int y, menuDef_t* menuHUD)
+static void CG_DrawCusblockPoints(int x, int y, const menuDef_t* menuHUD)
 {
 	vec4_t calcColor;
 
@@ -3265,155 +2134,8 @@ static void CG_DrawCusblockPoints(int x, int y, menuDef_t* menuHUD)
 CG_DrawAmmo
 ================
 */
-static void CG_DrawAmmo(const centity_t* cent, menuDef_t* menuHUD)
-{
-	vec4_t calcColor;
-	float inc = 0.0f;
 
-	const playerState_t* ps = &cg.snap->ps;
-
-	// Can we find the menu?
-	if (!menuHUD)
-	{
-		return;
-	}
-
-	if (!cent->currentState.weapon) // We don't have a weapon right now
-	{
-		return;
-	}
-
-	if (cent->currentState.weapon == WP_STUN_BATON || cent->currentState.weapon == WP_MELEE)
-	{
-		return;
-	}
-
-	float value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
-	if (value < 0) // No ammo
-	{
-		return;
-	}
-
-	//
-	// ammo
-	//
-	if (cg.oldammo < value)
-	{
-		cg.oldAmmoTime = cg.time + 200;
-	}
-
-	cg.oldammo = value;
-
-	itemDef_t* focusItem;
-
-	if (weaponData[cent->currentState.weapon].energyPerShot == 0 &&
-		weaponData[cent->currentState.weapon].altEnergyPerShot == 0)
-	{
-		//just draw "infinite"
-		inc = 8 / MAX_HUD_TICS;
-		value = 8;
-
-		focusItem = Menu_FindItemByName(menuHUD, "ammoinfinite");
-		trap->R_SetColor(colorTable[CT_YELLOW]);
-		if (focusItem)
-		{
-			CG_DrawProportionalString(focusItem->window.rect.x, focusItem->window.rect.y, "--", NUM_FONT_SMALL,
-				focusItem->window.foreColor);
-		}
-	}
-	else
-	{
-		focusItem = Menu_FindItemByName(menuHUD, "ammoamount");
-
-		// Firing or reloading?
-		if (cg.predictedPlayerState.weaponstate == WEAPON_FIRING
-			&& cg.predictedPlayerState.weaponTime > 100)
-		{
-			memcpy(calcColor, colorTable[CT_LTGREY], sizeof(vec4_t));
-		}
-		else
-		{
-			if (value > 0)
-			{
-				if (cg.oldAmmoTime > cg.time)
-				{
-					memcpy(calcColor, colorTable[CT_YELLOW], sizeof(vec4_t));
-				}
-				else
-				{
-					memcpy(calcColor, focusItem->window.foreColor, sizeof(vec4_t));
-				}
-			}
-			else
-			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
-			}
-		}
-
-		trap->R_SetColor(calcColor);
-		if (focusItem)
-		{
-			if (cent->currentState.eFlags & EF_DOUBLE_AMMO)
-			{
-				inc = ammoData[weaponData[cent->currentState.weapon].ammoIndex].max * 2.0f / MAX_HUD_TICS;
-			}
-			else
-			{
-				inc = (float)ammoData[weaponData[cent->currentState.weapon].ammoIndex].max / MAX_HUD_TICS;
-			}
-			value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
-
-			CG_DrawNumField(
-				focusItem->window.rect.x,
-				focusItem->window.rect.y,
-				3,
-				value,
-				focusItem->window.rect.w,
-				focusItem->window.rect.h,
-				NUM_FONT_SMALL,
-				qfalse);
-		}
-	}
-
-	trap->R_SetColor(colorTable[CT_WHITE]);
-
-	// Draw tics
-	for (int i = MAX_HUD_TICS - 1; i >= 0; i--)
-	{
-		focusItem = Menu_FindItemByName(menuHUD, ammoTicName[i]);
-
-		if (!focusItem)
-		{
-			continue;
-		}
-
-		memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-
-		if (value <= 0) // done
-		{
-			break;
-		}
-		if (value < inc) // partial tic
-		{
-			const float percent = value / inc;
-			calcColor[3] = percent;
-		}
-
-		trap->R_SetColor(calcColor);
-
-		CG_DrawPic(
-			focusItem->window.rect.x,
-			focusItem->window.rect.y,
-			focusItem->window.rect.w,
-			focusItem->window.rect.h,
-			focusItem->window.background
-		);
-
-		value -= inc;
-	}
-}
-
-static void CG_DrawCusAmmo(const centity_t* cent, menuDef_t* menuHUD)
+static void CG_DrawCusAmmo(const centity_t* cent, const menuDef_t* menuHUD)
 {
 	vec4_t calcColor;
 	float inc = 0.0f;
@@ -3564,7 +2286,7 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 {
 	vec4_t		calcColor;
 
-	playerState_t* ps = &cg.snap->ps;
+	const playerState_t* ps = &cg.snap->ps;
 
 	if (!cent->currentState.weapon) // We don't have a weapon right now
 	{
@@ -3598,6 +2320,7 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		case 7://FORCE_LEVEL_5://DUELS
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleDuels);
 			break;
+		default:;
 		}
 		return;
 	}
@@ -3608,7 +2331,7 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		return;
 	}
 
-	int numColor_i = CT_HUD_ORANGE;
+	const int numColor_i = CT_HUD_ORANGE;
 
 	trap->R_SetColor(colorTable[numColor_i]);
 
@@ -3620,7 +2343,7 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		CG_DrawNumField(x + 30, y + 26, 3, value, 6, 12, NUM_FONT_SMALL, qfalse);
 	}
 
-	float inc = (float)ammoData[weaponData[cent->currentState.weapon].ammoIndex].max / MAX_TICS;
+	const float inc = (float)ammoData[weaponData[cent->currentState.weapon].ammoIndex].max / MAX_TICS;
 	value = ps->ammo[weaponData[cent->currentState.weapon].ammoIndex];
 
 	for (int i = MAX_TICS - 1; i >= 0; i--)
@@ -3632,7 +2355,7 @@ static void CG_DrawJK2Ammo(const centity_t* cent, int x, int y)
 		else if (value < inc)	// partial tic
 		{
 			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			float percent = value / inc;
+			const float percent = value / inc;
 			calcColor[0] *= percent;
 			calcColor[1] *= percent;
 			calcColor[2] *= percent;
@@ -3659,7 +2382,7 @@ CG_DrawForcePower
 ================
 */
 
-void CG_Draw_JKA_ForcePower(const centity_t* cent, menuDef_t* menuHUD)
+void CG_Draw_JKA_ForcePower(const centity_t* cent, const menuDef_t* menuHUD)
 {
 	vec4_t calcColor;
 	itemDef_t* focusItem;
@@ -3809,12 +2532,12 @@ void CG_Draw_JKA_ForcePower(const centity_t* cent, menuDef_t* menuHUD)
 	}
 }
 
-void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHUD)
+void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, const menuDef_t* menuHUD)
 {
 	vec4_t		calcColor;
 	itemDef_t* focusItem;
 
-	float inc = (float)100 / MAX_TICS;
+	const float inc = (float)100 / MAX_TICS;
 	float value = cg.snap->ps.fd.forcePower;
 
 	for (int i = MAX_TICS - 1; i >= 0; i--)
@@ -3826,7 +2549,7 @@ void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHU
 		else if (value < inc)	// partial tic
 		{
 			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			float percent = value / inc;
+			const float percent = value / inc;
 			calcColor[0] *= percent;
 			calcColor[1] *= percent;
 			calcColor[2] *= percent;
@@ -3846,7 +2569,7 @@ void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHU
 		value -= inc;
 	}
 
-	if ((cent->currentState.weapon == WP_SABER || cent->currentState.weapon == WP_MELEE))
+	if (cent->currentState.weapon == WP_SABER || cent->currentState.weapon == WP_MELEE)
 	{
 		focusItem = Menu_FindItemByName(menuHUD, "forceamount");
 
@@ -3867,7 +2590,7 @@ void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHU
 	}
 	else
 	{
-		if (!cg.snap->ps.BlasterAttackChainCount && (com_outcast.integer == 1))
+		if (!cg.snap->ps.BlasterAttackChainCount && com_outcast.integer == 1)
 		{
 			focusItem = Menu_FindItemByName(menuHUD, "forceamount");
 
@@ -3889,11 +2612,11 @@ void CG_DrawJK2ForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHU
 	}
 }
 
-void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t* menuHUD)
+void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, const menuDef_t* menuHUD)
 {
 	vec4_t		calcColor;
 
-	float inc = (float)100 / MAX_TICS;
+	const float inc = (float)100 / MAX_TICS;
 	float value = cg.snap->ps.fd.forcePower;
 
 	for (int i = MAX_TICS - 1; i >= 0; i--)
@@ -3905,7 +2628,7 @@ void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t*
 		else if (value < inc)	// partial tic
 		{
 			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-			float percent = value / inc;
+			const float percent = value / inc;
 			calcColor[0] *= percent;
 			calcColor[1] *= percent;
 			calcColor[2] *= percent;
@@ -3930,9 +2653,9 @@ void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t*
 	}
 	else
 	{
-		if (!cg.snap->ps.saberAttackChainCount && !cg.snap->ps.BlasterAttackChainCount)
+		if (!cg.snap->ps.saberFatigueChainCount && !cg.snap->ps.BlasterAttackChainCount)
 		{
-			itemDef_t* focusItem = Menu_FindItemByName(menuHUD, "forceamount");
+			const itemDef_t* focusItem = Menu_FindItemByName(menuHUD, "forceamount");
 
 			if (focusItem)
 			{
@@ -3954,8 +2677,6 @@ void CG_DrawJK2NoSaberForcePower(const centity_t* cent, int x, int y, menuDef_t*
 
 void CG_DrawJK2GunFatigue(const centity_t* cent, int x, int y)
 {
-	const int BlasterAttackChainCount = BLASTERMISHAPLEVEL_MAX;
-
 	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
 	{
 		return;
@@ -3977,7 +2698,7 @@ void CG_DrawJK2GunFatigue(const centity_t* cent, int x, int y)
 		{
 			if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FULL)
 			{
-				if (!((cg.time / 600) & 1))
+				if (!(cg.time / 600 & 1))
 				{
 					if (!cg.messageLitActive)
 					{
@@ -4010,7 +2731,7 @@ void CG_DrawJK2GunFatigue(const centity_t* cent, int x, int y)
 	{
 		if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FULL)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4042,23 +2763,21 @@ void CG_DrawJK2GunFatigue(const centity_t* cent, int x, int y)
 
 void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 {
-	const int saberAttackChainCount = MISHAPLEVEL_MAX;
-
 	if (cg.snap->ps.stats[STAT_HEALTH] <= 0)
 	{
 		return;
 	}
 
-	if (!cg.snap->ps.saberAttackChainCount)
+	if (!cg.snap->ps.saberFatigueChainCount)
 	{
 		return;
 	}
 
 	if (com_outcast.integer == 1) //jko
 	{
-		if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+		if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_HUDFLASH)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4074,9 +2793,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_TEN)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_TEN)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4091,9 +2810,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_SIX)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_SIX)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4108,9 +2827,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_RUNINACCURACY)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_RUNINACCURACY)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4128,9 +2847,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 	}
 	else
 	{
-		if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_HUDFLASH)
+		if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_HUDFLASH)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4146,9 +2865,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_TEN)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_TEN)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4163,9 +2882,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_SIX)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_SIX)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4180,9 +2899,9 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 				cg.messageLitActive = qfalse;
 			}
 		}
-		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberAttackChainCount > MISHAPLEVEL_RUNINACCURACY)
+		else if (cg.mishapHUDTotalFlashTime > cg.time || cg.snap->ps.saberFatigueChainCount > MISHAPLEVEL_RUNINACCURACY)
 		{
-			if (!((cg.time / 600) & 1))
+			if (!(cg.time / 600 & 1))
 			{
 				if (!cg.messageLitActive)
 				{
@@ -4200,7 +2919,7 @@ void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 	}
 }
 
-void CG_DrawJK2blockingMode(const centity_t* cent, menuDef_t* menuHUD)
+void CG_DrawJK2blockingMode(const centity_t* cent, const menuDef_t* menuHUD)
 {
 	itemDef_t* Blockindex;
 
@@ -4607,17 +3326,17 @@ void CG_DrawHUD(const centity_t* cent)
 
 	if (com_outcast.integer == 1)
 	{
-		if ((cg.snap->ps.fd.forcePowersActive & 1 << FP_GRIP)
-			|| (cg.snap->ps.fd.forcePowersActive & 1 << FP_DRAIN)
-			|| (cg.snap->ps.fd.forcePowersActive & 1 << FP_LIGHTNING)
-			|| (cg.snap->ps.fd.forcePowersActive & 1 << FP_RAGE))
+		if (cg.snap->ps.fd.forcePowersActive & 1 << FP_GRIP
+			|| cg.snap->ps.fd.forcePowersActive & 1 << FP_DRAIN
+			|| cg.snap->ps.fd.forcePowersActive & 1 << FP_LIGHTNING
+			|| cg.snap->ps.fd.forcePowersActive & 1 << FP_RAGE)
 		{
 			hudTintColor = redhudtint;
 		}
-		else if ((cg.snap->ps.fd.forcePowersActive & 1 << FP_ABSORB)
-			|| (cg.snap->ps.fd.forcePowersActive & 1 << FP_HEAL)
-			|| (cg.snap->ps.fd.forcePowersActive & 1 << FP_PROTECT)
-			|| (cg.snap->ps.fd.forcePowersActive & 1 << FP_TELEPATHY))
+		else if (cg.snap->ps.fd.forcePowersActive & 1 << FP_ABSORB
+			|| cg.snap->ps.fd.forcePowersActive & 1 << FP_HEAL
+			|| cg.snap->ps.fd.forcePowersActive & 1 << FP_PROTECT
+			|| cg.snap->ps.fd.forcePowersActive & 1 << FP_TELEPATHY)
 		{
 			hudTintColor = bluehudtint;
 		}
@@ -4639,9 +3358,6 @@ void CG_DrawHUD(const centity_t* cent)
 			// Print frame
 			if (com_outcast.integer == 0) //jka
 			{
-				const int y = 400;
-				const int x = 0.1;
-
 				CG_DrawHUDJK2LeftFrame2(0, SCREEN_HEIGHT - 80);
 
 				// Print scanline
@@ -4683,21 +3399,15 @@ void CG_DrawHUD(const centity_t* cent)
 			}
 			else if (com_outcast.integer == 1) //jko
 			{
-				const int y = 400;
-				const int x = 0.1;
-
 				CG_DrawHUDJK2LeftFrame1(0, SCREEN_HEIGHT - 80);
 
 				CG_DrawJK2Armor(cent, 0, SCREEN_HEIGHT - 80);
 
 				if (cent->currentState.weapon == WP_SABER)
 				{
-					CG_DrawJK2HealthSJE(x + 21, y + 21);
+					CG_DrawJK2HealthSJE(21.1, 421);
 
-					const int y = 424; //up / down
-					const int x = 23.7; // left / right
-
-					CG_DrawJK2blockPoints(x, y, menuHUD);
+					CG_DrawJK2blockPoints(23.7, 424, menuHUD);
 				}
 				else
 				{
@@ -4708,9 +3418,6 @@ void CG_DrawHUD(const centity_t* cent)
 			}
 			else //custom
 			{
-				const int y = 400;
-				const int x = 0.1;
-
 				CG_DrawHUDJK2LeftFrame2(0, SCREEN_HEIGHT - 80);
 
 				// Print scanline
@@ -4772,9 +3479,6 @@ void CG_DrawHUD(const centity_t* cent)
 		{
 			if (com_outcast.integer == 0) //jka
 			{
-				const int y = 400;
-				const int x = 560;
-
 				CG_DrawHUDJK2RightFrame2(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 80);
 
 				itemDef_t* focus_item;
@@ -4831,10 +3535,8 @@ void CG_DrawHUD(const centity_t* cent)
 					if (!cent->currentState.saberHolstered)
 					{
 						CG_DrawJK2blockingMode(cent, menuHUD);
-						CG_DrawJK2SaberFatigue(cent, x, y);
+						CG_DrawJK2SaberFatigue(cent, 560, 400);
 					}
-					/*CG_DrawCussaberfatigue(menuHUD);
-					CG_DrawCusblockingMode(cent, menuHUD);*/
 				}
 				else if (cent->currentState.weapon == WP_SABER && cent->currentState.saberHolstered)
 				{
@@ -4899,9 +3601,6 @@ void CG_DrawHUD(const centity_t* cent)
 			}
 			else //custom
 			{
-				const int y = 400;
-				const int x = 560;
-
 				CG_DrawHUDJK2RightFrame2(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 80);
 
 				itemDef_t* focus_item;
@@ -4958,7 +3657,7 @@ void CG_DrawHUD(const centity_t* cent)
 					if (!cent->currentState.saberHolstered)
 					{
 						CG_DrawJK2blockingMode(cent, menuHUD);
-						CG_DrawJK2SaberFatigue(cent, x, y);
+						CG_DrawJK2SaberFatigue(cent, 560, 400);
 					}
 				}
 				else if (cent->currentState.weapon == WP_SABER && cent->currentState.saberHolstered)
@@ -5279,14 +3978,14 @@ void cg_draw_inventory_select(void)
 			cgs.media.invenIcons[cg.itemSelect]);
 		trap->R_SetColor(colorTable[CT_ICON_BLUE]);
 
-		const int itemNdex = BG_GetItemIndexByTag(cg.itemSelect, IT_HOLDABLE);
-		if (bg_itemlist[itemNdex].classname)
+		const int item_ndex = BG_GetItemIndexByTag(cg.itemSelect, IT_HOLDABLE);
+		if (bg_itemlist[item_ndex].classname)
 		{
 			vec4_t textColor = { .312f, .75f, .621f, 1.0f };
 			char text[1024];
 			char upperKey[1024];
 
-			strcpy(upperKey, bg_itemlist[itemNdex].classname);
+			strcpy(upperKey, bg_itemlist[item_ndex].classname);
 
 			if (trap->SE_GetStringTextString(va("SP_INGAME_%s", Q_strupr(upperKey)), text, sizeof text)
 				|| trap->SE_GetStringTextString(va("OJP_MENUS_%s", Q_strupr(upperKey)), text, sizeof text))
@@ -5295,7 +3994,7 @@ void cg_draw_inventory_select(void)
 			}
 			else
 			{
-				CG_DrawProportionalString(320, y + 45, bg_itemlist[itemNdex].classname, UI_CENTER | UI_SMALLFONT,
+				CG_DrawProportionalString(320, y + 45, bg_itemlist[item_ndex].classname, UI_CENTER | UI_SMALLFONT,
 					textColor);
 			}
 		}
@@ -5385,7 +4084,6 @@ qboolean CG_CheckTargetVehicle(centity_t** pTargetVeh, float* alpha)
 	if (targetNum < ENTITYNUM_WORLD
 		&& targetNum >= MAX_CLIENTS)
 	{
-		//centity_t *targetVeh = &cg_entities[targetNum];
 		targetVeh = &cg_entities[targetNum];
 		if (targetVeh->currentState.NPC_class == CLASS_VEHICLE
 			&& targetVeh->m_pVehicle
@@ -5410,8 +4108,6 @@ qboolean CG_CheckTargetVehicle(centity_t** pTargetVeh, float* alpha)
 
 	if (cg_targVehLastTime && cg.time - cg_targVehLastTime < 3000)
 	{
-		targetVeh = &cg_entities[cg_targVeh];
-
 		//stay at full alpha for 1 sec after lose them from crosshair
 		if (cg.time - cg_targVehLastTime < 1000)
 			*alpha = 1.0f;
@@ -5443,13 +4139,13 @@ float CG_DrawVehicleShields(const menuDef_t* menuHUD, const centity_t* veh)
 			item->window.background);
 	}
 
-	const float maxShields = veh->m_pVehicle->m_pVehicleInfo->shields;
-	float currValue = cg.predictedVehicleState.stats[STAT_ARMOR];
-	const float percShields = currValue / (float)maxShields;
+	const float max_shields = veh->m_pVehicle->m_pVehicleInfo->shields;
+	float cur_value = cg.predictedVehicleState.stats[STAT_ARMOR];
+	const float perc_shields = cur_value / (float)max_shields;
 	// Print all the tics of the shield graphic
 	// Look at the amount of health left and show only as much of the graphic as there is health.
 	// Use alpha to fade out partial section of health
-	const float inc = (float)maxShields / MAX_VHUD_ARMOR_TICS;
+	const float inc = (float)max_shields / MAX_VHUD_ARMOR_TICS;
 	for (int i = 1; i <= MAX_VHUD_ARMOR_TICS; i++)
 	{
 		char itemName[64];
@@ -5464,13 +4160,13 @@ float CG_DrawVehicleShields(const menuDef_t* menuHUD, const centity_t* veh)
 
 		memcpy(calcColor, item->window.foreColor, sizeof(vec4_t));
 
-		if (currValue <= 0) // don't show tic
+		if (cur_value <= 0) // don't show tic
 		{
 			break;
 		}
-		if (currValue < inc) // partial tic (alpha it out)
+		if (cur_value < inc) // partial tic (alpha it out)
 		{
-			const float percent = currValue / inc;
+			const float percent = cur_value / inc;
 			calcColor[3] *= percent; // Fade it out
 		}
 
@@ -5483,10 +4179,10 @@ float CG_DrawVehicleShields(const menuDef_t* menuHUD, const centity_t* veh)
 			item->window.rect.h,
 			item->window.background);
 
-		currValue -= inc;
+		cur_value -= inc;
 	}
 
-	return percShields;
+	return perc_shields;
 }
 
 int cg_vehicleAmmoWarning = 0;
@@ -6026,7 +4722,7 @@ void CG_DrawVehicleDamageHUD(const centity_t* veh, int brokenLimbs, float percSh
 {
 	vec4_t color;
 
-	menuDef_t* menuHUD = Menus_FindByName(menuName);
+	const menuDef_t* menuHUD = Menus_FindByName(menuName);
 
 	if (!menuHUD)
 	{
@@ -6116,7 +4812,7 @@ qboolean CG_DrawVehicleHud(const centity_t* cent)
 	centity_t* veh;
 	float alpha;
 
-	menuDef_t* menuHUD = Menus_FindByName("swoopvehiclehud");
+	const menuDef_t* menuHUD = Menus_FindByName("swoopvehiclehud");
 	if (!menuHUD)
 	{
 		return qtrue; // Draw player HUD
@@ -7435,11 +6131,12 @@ static float CG_DrawTeamOverlay(float y, qboolean right, qboolean upper)
 				if (!p || !*p)
 					p = "unknown";
 				len = CG_DrawStrlen(p);
-				if (len > lwidth)
-					len = lwidth;
 
-				//				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth +
-				//					((lwidth/2 - len/2) * TINYCHAR_WIDTH);
+				if (len > lwidth)
+				{
+					//len = lwidth;
+				}
+
 				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth;
 				CG_DrawStringExt(xx + xOffset, y,
 					p, hcolor, qfalse, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT,
@@ -10071,7 +8768,7 @@ CG_DrawCrosshairNames
 static void CG_DrawCrosshairNames(void)
 {
 	char sanitized[1024];
-	int baseColor;
+	//int baseColor;
 	qboolean isVeh = qfalse;
 
 	if (in_camera)
@@ -10126,14 +8823,14 @@ static void CG_DrawCrosshairNames(void)
 		if (cg.crosshairClientNum != cg.snap->ps.duelIndex)
 		{
 			//grey out crosshair for everyone but your foe if you're in a duel
-			baseColor = CT_BLACK;
+			//baseColor = CT_BLACK;
 		}
 	}
 	else if (cg_entities[cg.crosshairClientNum].currentState.bolt1)
 	{
 		//this fellow is in a duel. We just checked if we were in a duel above, so
 		//this means we aren't and he is. Which of course means our crosshair greys out over him.
-		baseColor = CT_BLACK;
+		//baseColor = CT_BLACK;
 	}
 
 	CG_SanitizeString(name, sanitized);
@@ -10688,7 +9385,7 @@ static void CG_DrawTemporaryStats()
 	if (!cg.snap)
 	{
 		return;
-		}
+	}
 
 	sprintf(s, "Force: %i", cg.snap->ps.fd.forcePower);
 
@@ -11303,7 +10000,7 @@ static void CG_DrawSiegeTimer(int timeRemaining, qboolean isMyTeam)
 	int minutes = 0;
 	char timeStr[1024];
 
-	menuDef_t* menuHUD = Menus_FindByName("mp_timer");
+	const menuDef_t* menuHUD = Menus_FindByName("mp_timer");
 	if (!menuHUD)
 	{
 		return;
@@ -11358,7 +10055,7 @@ static void CG_DrawSiegeDeathTimer(int timeRemaining)
 	int minutes = 0;
 	char timeStr[1024];
 
-	menuDef_t* menuHUD = Menus_FindByName("mp_timer");
+	const menuDef_t* menuHUD = Menus_FindByName("mp_timer");
 	if (!menuHUD)
 	{
 		return;

@@ -328,7 +328,7 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 
 #ifdef _GAME //back to our game-only functions
 // This function makes sure that the vehicle is properly animated.
-static void AnimateVehicle(Vehicle_t* pVeh)
+static void AnimateVehicle(const Vehicle_t* pVeh)
 {
 	animNumber_t Anim;
 	int iFlags, iBlend;
@@ -429,7 +429,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 #endif //_GAME
 
 #ifndef _GAME
-void AttachRidersGeneric(Vehicle_t* pVeh);
+void AttachRidersGeneric(const Vehicle_t* pVeh);
 #endif
 
 //on the client this function will only set up the process command funcs
@@ -485,7 +485,7 @@ void G_CreateWalkerNPC(Vehicle_t** pVeh, const char* strAnimalType)
 	if (!*pVeh)
 	{
 		//only allocate a new one if we really have to
-		(*pVeh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
+		*pVeh = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
 	}
 #endif
 	memset(*pVeh, 0, sizeof(Vehicle_t));
