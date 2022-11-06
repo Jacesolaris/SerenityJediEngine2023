@@ -1234,7 +1234,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 
 		if (!(ent->r.svFlags & SVF_BOT) &&
 			!PM_SaberInAttack(ent->client->ps.saberMove)
-			&& !(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+			&& !(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			&& !ent->client->poisonTime
 			&& !ent->client->stunTime
 			&& !ent->client->AmputateTime
@@ -1295,7 +1295,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			&& ent->client->ps.saberBlockingTime < level.time
 			&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
-			if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+			if (!(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
 				WP_SaberFatigueRegenerate(1);
 			}
@@ -2631,7 +2631,7 @@ void CancelReload(gentity_t* ent);
 void G_SetTauntAnim(gentity_t* ent, int taunt)
 {
 	const saberInfo_t* saber1 = BG_MySaber(ent->clientNum, 0);
-	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	// dead clients dont get to spam taunt
@@ -3672,8 +3672,8 @@ void G_SetsaberdownorAnim(gentity_t* ent)
 			}
 			ent->client->ps.saberHolstered = 0;
 		}
-		ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-		ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
+		ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+		ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
 	}
 	else if (ent->client->ps.weapon != WP_SABER)
 	{
@@ -4729,27 +4729,27 @@ void ClientThink_real(gentity_t* ent)
 	{
 		if (manual_running_and_saberblocking(ent))
 		{
-			if (!(client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+			if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
-				client->ps.ManualBlockingFlags |= 1 << MBF_BLOCKING;
+				client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCK;
 				client->ps.userInt3 |= 1 << FLAG_BLOCKING;
 				client->ps.ManualBlockingTime = level.time; //Blocking time 1 on
 			}
 		}
 		else if (manual_saberblocking(ent))
 		{
-			if (!(client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+			if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
-				client->ps.ManualBlockingFlags |= 1 << MBF_BLOCKING;
+				client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCK;
 				client->ps.userInt3 |= 1 << FLAG_BLOCKING;
 				client->ps.ManualBlockingTime = level.time; //Blocking time 1 on
 			}
 
 			if (ucmd->buttons & BUTTON_ATTACK)
 			{
-				if (!(client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING))
+				if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK))
 				{
-					client->ps.ManualBlockingFlags |= 1 << MBF_PROJBLOCKING;
+					client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCKANDATTACK;
 					client->ps.ManualMBlockingTime = level.time;
 				}
 				ucmd->buttons &= ~BUTTON_ATTACK;
@@ -4760,16 +4760,16 @@ void ClientThink_real(gentity_t* ent)
 					{// They just pressed block. Mark the time... 
 						client->ps.ManualblockStartTime = level.time;
 
-						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
+						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;// activate the function
+							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING;// activate the function
 						}
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 500)
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.ManualblockStartTime >= 500)
 						{// Been holding block for too long....Turn off
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						}
 					}
 				}
@@ -4779,16 +4779,16 @@ void ClientThink_real(gentity_t* ent)
 					{// They just pressed block. Mark the time... 
 						client->ps.ManualblockStartTime = level.time;
 
-						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
+						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;// activate the function
+							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING;// activate the function
 						}
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 200)
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.ManualblockStartTime >= 200)
 						{// Been holding block for too long....Turn off
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						}
 					}
 				}
@@ -4798,16 +4798,16 @@ void ClientThink_real(gentity_t* ent)
 					{// They just pressed block. Mark the time... 
 						client->ps.ManualblockStartTime = level.time;
 
-						if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
+						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING;// activate the function
+							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING;// activate the function
 						}
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.ManualblockStartTime >= 100)
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.ManualblockStartTime >= 100)
 						{// Been holding block for too long....Turn off
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						}
 					}
 				}
@@ -4838,16 +4838,16 @@ void ClientThink_real(gentity_t* ent)
 			{
 				// No longer pressed, but we still need to make sure they are not spamming.
 				client->ps.ManualblockStartTime = 0;
-				client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-				client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+				client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+				client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 				client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 			}
 		}
 		else
 		{
-			client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-			client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-			client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+			client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+			client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+			client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 			client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 			client->ps.ManualBlockingTime = 0; //Blocking time 1 on

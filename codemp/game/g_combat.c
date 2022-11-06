@@ -46,7 +46,7 @@ extern void G_LetGoOfWall(const gentity_t* ent);
 extern void BG_ClearRocketLock(playerState_t* ps);
 void BotDamageNotification(const gclient_t* bot, gentity_t* attacker);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
-extern qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean PM_FaceProtectAnim(int anim);

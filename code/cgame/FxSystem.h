@@ -94,7 +94,7 @@ struct SFxHelper
 	static int RegisterShader(const gsl::cstring_view& shader);
 	static int RegisterModel(const gsl::cstring_view& model);
 
-	static void AddPolyToScene(int shader, int count, polyVert_t* verts);
+	static void AddPolyToScene(int shader, int count, const polyVert_t* verts);
 
 	static void CameraShake(vec3_t origin, float intensity, int radius, int time);
 };

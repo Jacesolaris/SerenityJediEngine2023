@@ -375,7 +375,7 @@ void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 void WP_FireBryarsbdMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean alt_fire)
 //---------------------------------------------------------
 {
-	const int velocity = BRYAR_PISTOL_VEL;
+	constexpr int velocity = BRYAR_PISTOL_VEL;
 	int damage = alt_fire ? weaponData[WP_SBD_PISTOL].altDamage : weaponData[WP_SBD_PISTOL].damage;
 
 	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);

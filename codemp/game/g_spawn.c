@@ -931,12 +931,11 @@ void Q3_SetParm(int entID, int parmNum, const char* parmValue);
 
 void G_ParseField(const char* key, const char* value, gentity_t* ent)
 {
-	float v;
-	vec3_t vec;
-
 	const field_t* f = (field_t*)Q_LinearSearch(key, fields, ARRAY_LEN(fields), sizeof(field_t), fieldcmp);
 	if (f)
 	{
+		vec3_t vec;
+		float v;
 		// found it
 		byte* b = (byte*)ent;
 
@@ -1110,7 +1109,7 @@ void G_SpawnGEntityFromSpawnVars(qboolean inSubBSP)
 }
 
 // set an entity field with a value. Old function
-void sje_set_entity_field(gentity_t* ent, char* key, char* value)
+void sje_set_entity_field(gentity_t* ent, const char* key, const char* value)
 {
 	if (Q_stricmp(value, "(null)") == 0)
 	{
@@ -1166,7 +1165,7 @@ void sje_spawn_entity(gentity_t* ent)
 }
 
 // function to set an entity field used by Entity System
-void sje_main_set_entity_field(gentity_t* ent, char* key, char* value)
+void sje_main_set_entity_field(const gentity_t* ent, const char* key, const char* value)
 {
 	int i = 0;
 
@@ -1346,7 +1345,7 @@ char* G_AddSpawnVarToken(const char* string)
 	return dest;
 }
 
-void AddSpawnField(char* field, char* value)
+void AddSpawnField(const char* field, const char* value)
 {
 	for (int i = 0; i < level.numSpawnVars; i++)
 	{
@@ -1506,7 +1505,6 @@ This does not actually spawn an entity.
 */
 qboolean G_ParseSpawnVars(qboolean inSubBSP)
 {
-	char keyname[MAX_TOKEN_CHARS];
 	char com_token[MAX_TOKEN_CHARS];
 
 	level.numSpawnVars = 0;
@@ -1526,6 +1524,7 @@ qboolean G_ParseSpawnVars(qboolean inSubBSP)
 	// go through all the key / value pairs
 	while (1)
 	{
+		char keyname[MAX_TOKEN_CHARS];
 		// parse key
 		if (!trap->GetEntityToken(keyname, sizeof keyname))
 		{
@@ -1789,7 +1788,7 @@ float g_cullDistance;
 
 void SP_worldspawn(void)
 {
-	char* text, temp[32];
+	char* text;
 	int i;
 
 	//I want to "cull" entities out of net sends to clients to reduce
@@ -1909,6 +1908,7 @@ void SP_worldspawn(void)
 
 	for (i = 1; i < LS_NUM_STYLES; i++)
 	{
+		char temp[32];
 		Com_sprintf(temp, sizeof temp, "ls_%dr", i);
 		G_SpawnString(temp, defaultStyles[i][0], &text);
 		const int lengthRed = strlen(text);

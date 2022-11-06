@@ -44,7 +44,7 @@ extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
-extern float NPC_EntRangeFromBolt(gentity_t* targEnt, int boltIndex);
+extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
 extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);

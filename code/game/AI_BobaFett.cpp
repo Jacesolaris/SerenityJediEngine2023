@@ -44,13 +44,13 @@ void Boba_Precache(void);
 void Mando_Precache(void);
 void Boba_DustFallNear(const vec3_t origin, int dustcount);
 void Boba_ChangeWeapon(int wp);
-qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown = qfalse);
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown = qfalse);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
 
 // Flight Related Functions (also used by Rocket Trooper)
 //--------------------------------------------------------
-qboolean Boba_Flying(gentity_t* self);
+qboolean Boba_Flying(const gentity_t* self);
 void Boba_FlyStart(gentity_t* self);
 void Boba_FlyStop(gentity_t* self);
 
@@ -82,7 +82,7 @@ void Boba_FireDecide();
 // Local: Called From Tactics()
 //----------------------------
 void Boba_TacticsSelect();
-bool Boba_CanSeeEnemy(gentity_t* self);
+bool Boba_CanSeeEnemy(const gentity_t* self);
 
 // Called From NPC_RunBehavior()
 //-------------------------------
@@ -283,11 +283,11 @@ void Boba_DustFallNear(const vec3_t origin, int dustcount)
 	trace_t testTrace;
 	vec3_t testDirection;
 	vec3_t testStartPos;
-	vec3_t testEndPos;
 
 	VectorCopy(origin, testStartPos);
 	for (int i = 0; i < dustcount; i++)
 	{
+		vec3_t testEndPos;
 		testDirection[0] = Q_flrand(0.0f, 1.0f) * 2.0f - 1.0f;
 		testDirection[1] = Q_flrand(0.0f, 1.0f) * 2.0f - 1.0f;
 		testDirection[2] = 1.0f;
@@ -311,11 +311,11 @@ void Do_DustFallNear(const vec3_t origin, int dustcount)
 	trace_t testTrace;
 	vec3_t testDirection;
 	vec3_t testStartPos;
-	vec3_t testEndPos;
 
 	VectorCopy(origin, testStartPos);
 	for (int i = 0; i < dustcount; i++)
 	{
+		vec3_t testEndPos;
 		testDirection[0] = Q_flrand(0.0f, 1.0f) * 2.0f - 1.0f;
 		testDirection[1] = Q_flrand(0.0f, 1.0f) * 2.0f - 1.0f;
 		testDirection[2] = 1.0f;
@@ -350,7 +350,7 @@ void Boba_ChangeWeapon(int wp)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Choose an "anti-knockdown" response
 ////////////////////////////////////////////////////////////////////////////////////////
-qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown)
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown)
 {
 	if (self->client->NPC_class != CLASS_BOBAFETT && self->client->NPC_class != CLASS_COMMANDO)
 	{
@@ -363,7 +363,8 @@ qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pus
 		return qtrue;
 	}
 
-	vec3_t pDir, fwd, right, ang = { 0, self->currentAngles[YAW], 0 };
+	vec3_t pDir, fwd, right;
+	const vec3_t ang = { 0, self->currentAngles[YAW], 0 };
 	const int strafeTime = Q_irand(1000, 2000);
 
 	AngleVectors(ang, fwd, right, nullptr);
@@ -428,7 +429,7 @@ qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pus
 ////////////////////////////////////////////////////////////////////////////////////////
 // Is this entity flying
 ////////////////////////////////////////////////////////////////////////////////////////
-qboolean Boba_Flying(gentity_t* self)
+qboolean Boba_Flying(const gentity_t* self)
 {
 	assert(
 		self && self->client && (self->client->NPC_class == CLASS_BOBAFETT || self->client->NPC_class == CLASS_MANDO));
@@ -438,7 +439,7 @@ qboolean Boba_Flying(gentity_t* self)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool Boba_CanSeeEnemy(gentity_t* self)
+bool Boba_CanSeeEnemy(const gentity_t* self)
 {
 	assert(
 		self && self->NPC && self->client && (self->client->NPC_class == CLASS_BOBAFETT || self->client->NPC_class ==
@@ -538,7 +539,7 @@ void Boba_FireFlameThrower(gentity_t* self)
 	vec3_t start, end, dir;
 	CVec3 traceMins(self->mins);
 	CVec3 traceMaxs(self->maxs);
-	const int damage = BOBA_FLAMETHROWDAMAGEMIN;
+	constexpr int damage = BOBA_FLAMETHROWDAMAGEMIN;
 
 	AngleVectors(self->currentAngles, dir, nullptr, nullptr);
 	dir[2] = 0.0f;
@@ -737,7 +738,7 @@ wristWeapon_t missileStates[4] =
 
 void Boba_VibrobladePunch(gentity_t* self)
 {
-	const int dummyForcePower = FP_DRAIN;
+	constexpr int dummyForcePower = FP_DRAIN;
 	if (!self->client->ps.forcePowerDuration[dummyForcePower])
 	{
 		NPC_SetAnim(self, SETANIM_TORSO, BOTH_PULL_IMPALE_STAB, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -862,7 +863,7 @@ void Boba_FireWristMissile(gentity_t* self, int whichMissile)
 
 	if (shotsFired >= missileStates[whichMissile].maxShots)
 	{
-		const vec3_t ORIGIN = { 0, 0, 0 };
+		constexpr vec3_t ORIGIN = { 0, 0, 0 };
 		G_PlayEffect(G_EffectIndex("repeater/muzzle_smoke"), self->playerModel,
 			missileStates[whichMissile].leftBolt ? self->genericBolt3 : self->handRBolt, self->s.number,
 			ORIGIN);
@@ -927,7 +928,7 @@ void Boba_FireWristMissile(gentity_t* self, int whichMissile)
 	self->s.weapon = oldWeapon;
 }
 
-void Boba_EndWristMissile(gentity_t* self, int whichMissile)
+void Boba_EndWristMissile(const gentity_t* self, int whichMissile)
 {
 	if (missileStates[whichMissile].hold)
 	{

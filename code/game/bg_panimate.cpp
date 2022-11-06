@@ -107,7 +107,7 @@ qboolean PM_InOnGroundAnim(playerState_t* ps);
 qboolean PM_SuperBreakWinAnim(int anim);
 qboolean PM_SuperBreakLoseAnim(int anim);
 qboolean PM_LockedAnim(int anim);
-saberMoveName_t PM_SaberFlipOverAttackMove(void);
+saberMoveName_t PM_SaberFlipOverAttackMove();
 qboolean PM_CheckFlipOverAttackMove(qboolean checkEnemy);
 saberMoveName_t PM_SaberJumpForwardAttackMove(void);
 qboolean PM_CheckJumpForwardAttackMove(void);
@@ -1243,7 +1243,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 	case BOTH_LK_DL_S_S_SB_1_W:
 		if (saberNum != 0)
 		{
-			//only right hand saber does damage in this suberbreak
+			//only right hand saber does damage in this suber break
 			return FORCE_LEVEL_0;
 		}
 		if (ps->torsoAnimTimer < 900)
@@ -1260,7 +1260,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 	case BOTH_LK_DL_S_T_SB_1_W:
 		if (saberNum != 0)
 		{
-			//only right hand saber does damage in this suberbreak
+			//only right hand saber does damage in this suber break
 			return FORCE_LEVEL_0;
 		}
 		if (ps->torsoAnimTimer < 250)
@@ -3897,7 +3897,7 @@ qboolean PM_CheckJumpForwardAttackMove(void)
 	return qfalse;
 }
 
-saberMoveName_t PM_SaberFlipOverAttackMove(void)
+saberMoveName_t PM_SaberFlipOverAttackMove()
 {
 	//see if we have an overridden (or cancelled) kata move
 	if (pm->ps->saber[0].jumpAtkFwdMove != LS_INVALID)
@@ -6352,7 +6352,7 @@ bool TorsoAgainstWindTest(gentity_t* ent)
 					}
 					else
 					{
-						if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && !(pm->ps->
+						if (!(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK) && !(pm->ps->
 							PlayerEffectFlags & 1 << PEF_SPRINTING) && !(pm->ps->PlayerEffectFlags & 1 <<
 								PEF_WEAPONSPRINTING))
 						{
@@ -6413,8 +6413,8 @@ void PM_TorsoAnimLightsaber()
 	// WEAPON_READY
 	// *********************************************************
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
 	const qboolean WalkingBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKWALKING ? qtrue : qfalse; //Walking Blocking
 
 	if (pm->ps->forcePowersActive & 1 << FP_GRIP && pm->ps->forcePowerLevel[FP_GRIP] > FORCE_LEVEL_1)

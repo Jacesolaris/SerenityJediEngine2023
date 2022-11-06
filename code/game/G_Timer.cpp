@@ -320,7 +320,7 @@ TIMER_Set
 -------------------------
 */
 
-void TIMER_Set(gentity_t* ent, const char* identifier, int duration)
+void TIMER_Set(const gentity_t* ent, const char* identifier, int duration)
 {
 	assert(ent->inuse);
 	gtimer_t* timer = TIMER_GetNew(ent->s.number, identifier);
@@ -338,7 +338,7 @@ TIMER_Get
 -------------------------
 */
 
-int TIMER_Get(gentity_t* ent, const char* identifier)
+int TIMER_Get(const gentity_t* ent, const char* identifier)
 {
 	const gtimer_t* timer = TIMER_GetExisting(ent->s.number, identifier);
 
@@ -356,7 +356,7 @@ TIMER_Done
 -------------------------
 */
 
-qboolean TIMER_Done(gentity_t* ent, const char* identifier)
+qboolean TIMER_Done(const gentity_t* ent, const char* identifier)
 {
 	const gtimer_t* timer = TIMER_GetExisting(ent->s.number, identifier);
 
@@ -378,7 +378,7 @@ timer was never started
 -------------------------
 */
 
-qboolean TIMER_Done2(gentity_t* ent, const char* identifier, qboolean remove)
+qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, qboolean remove)
 {
 	gtimer_t* timer = TIMER_GetExisting(ent->s.number, identifier);
 
@@ -403,7 +403,7 @@ qboolean TIMER_Done2(gentity_t* ent, const char* identifier, qboolean remove)
 TIMER_Exists
 -------------------------
 */
-qboolean TIMER_Exists(gentity_t* ent, const char* identifier)
+qboolean TIMER_Exists(const gentity_t* ent, const char* identifier)
 {
 	return static_cast<qboolean>(TIMER_GetExisting(ent->s.number, identifier) != nullptr);
 }
@@ -414,7 +414,7 @@ TIMER_Remove
 Utility to get rid of any timer
 -------------------------
 */
-void TIMER_Remove(gentity_t* ent, const char* identifier)
+void TIMER_Remove(const gentity_t* ent, const char* identifier)
 {
 	gtimer_t* timer = TIMER_GetExisting(ent->s.number, identifier);
 

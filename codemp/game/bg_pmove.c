@@ -615,7 +615,7 @@ int PM_ReadyPoseForSaberAnimLevelPlayer(void)
 
 	const saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
 
 	if (!pm->ps->saberEntityNum)
@@ -1495,7 +1495,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 {
 	//Sets your saber block position based on your current movement commands.
 	int anim = PM_ReadyPoseForSaberAnimLevel();
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	const signed char forwardmove = pm->cmd.forwardmove;
@@ -1661,7 +1661,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 {
 	//Sets your saber block position based on your current movement commands.
 	int anim = PM_ReadyPoseForSaberAnimLevel();
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	const signed char forwardmove = pm->cmd.forwardmove;
@@ -1831,7 +1831,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 {
 	//Sets your saber block position based on your current movement commands.
 	int anim = PM_ReadyPoseForSaberAnimLevel();
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	const signed char forwardmove = pm->cmd.forwardmove;
@@ -5535,7 +5535,7 @@ void PM_CheckGrab(void)
 		return;
 	}
 
-	if (pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ||
+	if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ||
 		pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
 		pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 	{
@@ -7263,6 +7263,7 @@ static void PM_CrashLandEffect(void)
 		case MATERIAL_LAVA:
 			effectID = EFFECT_LANDING_SAND;
 			break;
+		default: ;
 		}
 
 		if (effectID != -1)
@@ -9646,7 +9647,7 @@ static void PM_Footsteps(void)
 	int old;
 	int setAnimFlags = 0;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
 
 	const saberInfo_t* saber1 = BG_MySaber(pm->ps->clientNum, 0);
@@ -11446,9 +11447,9 @@ PM_BeginWeaponChange
 */
 void PM_BeginWeaponChange(int weapon)
 {
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	if (weapon <= WP_NONE || weapon >= WP_NUM_WEAPONS)
@@ -12693,12 +12694,7 @@ void PM_Weapon(void)
 	bgEntity_t* veh = NULL;
 	qboolean vehicleRocketLock = qfalse;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
-	//Holding Block Button
-#ifdef _GAME
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	//Active Blocking
-#endif
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
 
 #if 0
 #ifdef _GAME
@@ -13514,7 +13510,7 @@ void PM_Weapon(void)
 	// can't change if weapon is firing, but can change
 	// again if lowering or raising
 	if (pm->ps->weaponTime <= 0 || pm->ps->weaponstate != WEAPON_FIRING && !(pm->ps->ManualBlockingFlags & 1 <<
-		MBF_BLOCKING))
+		HOLDINGBLOCK))
 	{
 		if (pm->ps->weapon != pm->cmd.weapon)
 		{
@@ -14495,7 +14491,7 @@ qboolean G_OkayToLean(const playerState_t * ps, const usercmd_t * uscmd, qboolea
 			&& !ps->torsoTimer) //not in any held torso anim
 		&& !(uscmd->buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK | BUTTON_FORCE_LIGHTNING | BUTTON_FORCEPOWER |
 			BUTTON_DASH | BUTTON_FORCE_DRAIN | BUTTON_FORCEGRIP)) //not trying to attack
-		&& !(ps->ManualBlockingFlags & 1 << MBF_BLOCKING)
+		&& !(ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 		&& VectorCompare(ps->velocity, vec3_origin))
 	{
 		return qtrue;
@@ -15885,7 +15881,7 @@ void BG_AdjustClientSpeed(playerState_t * ps, const usercmd_t * cmd, int svTime)
 	if (cmd->forwardmove < 0 && cmd->buttons & BUTTON_WALKING && pm->ps->groundEntityNum != ENTITYNUM_NONE)
 	{
 		//walking backwards also makes a player move a little slower
-		if (pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING)
+		if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 		{
 			ps->speed *= 0.75f + 0.2f;
 		}

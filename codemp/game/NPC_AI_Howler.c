@@ -284,7 +284,7 @@ static void Howler_TryDamage(int damage, qboolean tongue, qboolean knockdown)
 
 //Moved in from SP
 extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
-extern float NPC_EntRangeFromBolt(gentity_t* targEnt, int boltIndex);
+extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
 
 static void Howler_Howl(void)
 {

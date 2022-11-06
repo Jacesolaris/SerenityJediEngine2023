@@ -35,7 +35,7 @@ extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel,
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
 extern qboolean NPC_CheckLookTarget(gentity_t* self);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
 extern void Jedi_Ambush(gentity_t* self);
 extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
@@ -48,9 +48,9 @@ extern qboolean PM_FlippingAnim(int anim);
 extern qboolean PM_RollingAnim(int anim);
 extern qboolean PM_InCartwheel(int anim);
 extern qboolean IsSurrendering(const gentity_t* self);
-extern qboolean IsRespecting(gentity_t* self);
+extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
-extern qboolean IsCowering(gentity_t* self);
+extern qboolean IsCowering(const gentity_t* self);
 extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern qboolean PM_SaberInStart(int move);
@@ -416,7 +416,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3
 	}
 }
 
-extern qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy);
+extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 
 gentity_t* G_CheckControlledTurretEnemy(gentity_t* self, gentity_t* enemy, qboolean validate)
 {

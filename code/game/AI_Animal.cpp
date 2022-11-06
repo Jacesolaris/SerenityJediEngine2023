@@ -220,7 +220,7 @@ void NPC_BSAnimal_Default(void)
 			//-------------------------
 			if (leader && leader != NPC)
 			{
-				const float followDist = 100.0f;
+				constexpr float followDist = 100.0f;
 				const float curDist = Distance(NPC->currentOrigin, leader->followPos);
 
 				// Update The Leader's Follow Position

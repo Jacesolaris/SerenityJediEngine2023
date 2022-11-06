@@ -1005,12 +1005,12 @@ COrientedParticle* FX_AddOrientedParticle(vec3_t org, vec3_t norm, vec3_t vel, v
 //-------------------------
 //  FX_AddPoly
 //-------------------------
-CPoly* FX_AddPoly(vec3_t* verts, vec2_t* st, int numVerts,
-	vec3_t vel, vec3_t accel,
-	float alpha1, float alpha2, float alphaParm,
-	vec3_t rgb1, vec3_t rgb2, float rgbParm,
-	vec3_t rotationDelta, float bounce, int motionDelay,
-	int killTime, qhandle_t shader, int flags)
+CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
+                  vec3_t vel, vec3_t accel,
+                  float alpha1, float alpha2, float alphaParm,
+                  vec3_t rgb1, vec3_t rgb2, float rgbParm,
+                  vec3_t rotationDelta, float bounce, int motionDelay,
+                  int killTime, qhandle_t shader, int flags)
 {
 	if (theFxHelper.mFrameTime < 1 || !verts)
 	{ // disallow adding effects when the system is paused or the user doesn't pass in a vert array

@@ -354,7 +354,7 @@ using touchFunc_t = enum
 //
 extern void Touch_Item(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace);
-extern void charge_stick(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void charge_stick(gentity_t* self, gentity_t* other, const trace_t* trace);
 extern void Touch_DoorTrigger(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void Touch_PlatCenterTrigger(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void Touch_Plat(gentity_t* self, const gentity_t* other, trace_t* trace);
@@ -367,7 +367,7 @@ extern void NPC_Touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void touch_ammo_crystal_tigger(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void funcBBrushTouch(gentity_t* ent, gentity_t* other, trace_t* trace);
 extern void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace);
-extern void prox_mine_stick(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void prox_mine_stick(gentity_t* self, gentity_t* other, const trace_t* trace);
 extern void func_rotating_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void TouchTieBomb(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void TieFighterUse(gentity_t* self, gentity_t* other, gentity_t* activator);

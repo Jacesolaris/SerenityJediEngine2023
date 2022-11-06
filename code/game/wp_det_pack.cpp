@@ -31,7 +31,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //-----------------------
 
 //---------------------------------------------------------
-void charge_stick(gentity_t* self, gentity_t* other, trace_t* trace)
+void charge_stick(gentity_t* self, gentity_t* other, const trace_t* trace)
 //---------------------------------------------------------
 {
 	self->s.eType = ET_GENERAL;

@@ -1471,7 +1471,7 @@ gentity_t* fire_stun(gentity_t* self, vec3_t start, vec3_t dir)
 int ReflectionLevel(const gentity_t* player)
 {
 	//determine reflection level.
-	const qboolean manual_blocking = player->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean manual_blocking = player->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	const int np_cis_blocking = manual_npc_saberblocking(player);
 
 	if (manual_blocking || np_cis_blocking)
@@ -1491,7 +1491,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 		FP_SABER_DEFENSE]) / FORCE_LEVEL_3;
 	gentity_t* prev_owner = &g_entities[bolt->r.ownerNum];
 	const float distance = vector_bolt_distance(blocker->r.currentOrigin, prev_owner->r.currentOrigin);
-	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING? qtrue: qfalse;
+	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue: qfalse;
 	const qboolean accurate_missile_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING ? qtrue : qfalse;
 	const int manual_run_blocking = manual_running_and_saberblocking(blocker);
 	const int npc_is_blocking = manual_npc_saberblocking(blocker);

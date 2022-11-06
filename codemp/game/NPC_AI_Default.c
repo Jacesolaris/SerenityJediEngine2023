@@ -64,7 +64,7 @@ void NPC_StandIdle(void)
 	}
 }
 
-qboolean NPC_StandTrackAndShoot(gentity_t* NPC, qboolean canDuck)
+qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
 {
 	qboolean attack_ok = qfalse;
 	qboolean duck_ok = qfalse;

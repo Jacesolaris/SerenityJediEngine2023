@@ -38,14 +38,14 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern qboolean NPC_CheckLookTarget(gentity_t* self);
-extern void NPC_ClearLookTarget(gentity_t* self);
+extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_Jedi_RateNewEnemy(gentity_t* self, const gentity_t* enemy);
 extern int NAV_FindClosestWaypointForPoint2(vec3_t point);
 extern int NAV_GetNearestNode(gentity_t* self, int lastNode);
 extern qboolean PM_DroidMelee(int npc_class);
 extern qboolean PM_ReloadAnim(int anim);
 void ChangeWeapon(const gentity_t* ent, int newWeapon);
-qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy);
+qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 
 void G_ClearEnemy(gentity_t* self)
 {
@@ -1444,7 +1444,7 @@ float NPC_MaxDistSquaredForWeapon(void)
 }
 
 //This replaces ValidEnemy.
-qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy)
+qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy)
 {
 	//Must be a valid pointer
 	if (enemy == NULL)

@@ -2442,7 +2442,7 @@ void CG_Limb(const centity_t* cent)
 	}
 }
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 qboolean MatrixMode = qfalse;
 extern cvar_t* g_skippingcin;
 
@@ -2758,7 +2758,7 @@ void CG_StasisEffect(const centity_t* cent)
 	}
 }
 
-static void CG_Think(centity_t* cent)
+static void CG_Think(const centity_t* cent)
 {
 	if (!cent->gent)
 	{

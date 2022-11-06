@@ -161,9 +161,9 @@ extern void Boba_StopFlameThrower(gentity_t* self);
 extern qboolean PM_InRoll(const playerState_t* ps);
 int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern int PM_InGrappleMove(int anim);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 extern int SaberDroid_PowerLevelForSaberAnim(gentity_t* self);
-extern qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy);
+extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
 	int spinTime = 0);
 extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
@@ -185,7 +185,7 @@ void wp_saber_in_flight_reflect_check(gentity_t* self);
 extern qboolean SaberAttacking(const gentity_t* self);
 void WP_SaberDrop(const gentity_t* self, gentity_t* saber);
 qboolean WP_SaberLose(gentity_t* self, vec3_t throwDir);
-void WP_SaberReturn(gentity_t* self, gentity_t* saber);
+void WP_SaberReturn(const gentity_t* self, gentity_t* saber);
 qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
@@ -1545,7 +1545,7 @@ void wp_set_saber_ent_model_skin(const gentity_t* ent, gentity_t* saberent)
 	}
 }
 
-void wp_saber_fall_sound(const gentity_t* owner, gentity_t* saber)
+void wp_saber_fall_sound(const gentity_t* owner, const gentity_t* saber)
 {
 	if (!saber)
 	{
@@ -1640,7 +1640,7 @@ void wp_saber_swing_sound(gentity_t* ent, int saberNum, const swingType_t swingT
 	}
 }
 
-void wp_saber_hit_sound(gentity_t* ent, const int saber_num, const int blade_num)
+void wp_saber_hit_sound(const gentity_t* ent, const int saber_num, const int blade_num)
 {
 	const qboolean saber_in_stab_down = PM_StabDownAnim(ent->client->ps.torsoAnim);
 	const qboolean saber_in_special = PM_SaberInKillAttack(ent->client->ps.torsoAnim);
@@ -1697,7 +1697,7 @@ void wp_saber_hit_sound(gentity_t* ent, const int saber_num, const int blade_num
 	}
 }
 
-void wp_saber_lock_sound(gentity_t* ent, gentity_t* hitEnt, const int saber_num, const int blade_num)
+void wp_saber_lock_sound(const gentity_t* ent, gentity_t* hitEnt, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -1721,7 +1721,7 @@ void wp_saber_lock_sound(gentity_t* ent, gentity_t* hitEnt, const int saber_num,
 	}
 }
 
-void wp_saber_block_sound(gentity_t* ent, gentity_t* hitEnt, const int saber_num, const int blade_num)
+void wp_saber_block_sound(const gentity_t* ent, gentity_t* hitEnt, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -1745,7 +1745,7 @@ void wp_saber_block_sound(gentity_t* ent, gentity_t* hitEnt, const int saber_num
 	}
 }
 
-void wp_saber_knock_sound(gentity_t* ent, gentity_t* hitEnt, const int saber_num, const int blade_num)
+void wp_saber_knock_sound(const gentity_t* ent, gentity_t* hitEnt, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -1769,7 +1769,7 @@ void wp_saber_knock_sound(gentity_t* ent, gentity_t* hitEnt, const int saber_num
 	}
 }
 
-void wp_saber_bounce_on_wall_sound(gentity_t* ent, const int saber_num, const int blade_num)
+void wp_saber_bounce_on_wall_sound(const gentity_t* ent, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -1803,7 +1803,7 @@ void wp_saber_bounce_on_wall_sound(gentity_t* ent, const int saber_num, const in
 	}
 }
 
-void wp_saber_bounce_sound(gentity_t* ent, gentity_t* hitEnt, gentity_t* play_on_ent, const int saber_num,
+void wp_saber_bounce_sound(gentity_t* ent, gentity_t* hitEnt, const gentity_t* play_on_ent, const int saber_num,
 	const int blade_num)
 {
 	if (!ent || !ent->client)
@@ -2200,7 +2200,7 @@ qboolean wp_get_saber_deflection_angle(const gentity_t* attacker, const gentity_
 	const int att_saber_level = g_saber_attack_power(attacker, SaberAttacking(attacker));
 	const int def_saber_level = g_saber_attack_power(defender, SaberAttacking(defender));
 
-	if (defender->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING || defender->client->ps.saberBlockingTime > level.
+	if (defender->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK || defender->client->ps.saberBlockingTime > level.
 		time)
 	{
 		//Hmm, let's try just basing it off the anim
@@ -2551,10 +2551,10 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 	const saberType_t saber_type = ent->client->ps.saber[saber_num].type;
 	float max_dmg;
 
-	const qboolean active_blocking = ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	const qboolean holding_block = ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean active_blocking = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean holding_block = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
-	const qboolean m_blocking = ent->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse;
+	const qboolean m_blocking = ent->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse;
 	//Perfect Blocking
 
 	if (!numVictims)
@@ -4223,9 +4223,9 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 				//hit victim is able to block, block!
 				hit_ent = &g_entities[tr.entityNum];
 
-				const qboolean other_holding_block = hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse; //Normal Blocking
-				const qboolean other_active_blocking = hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
-				const qboolean other_m_blocking = hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse; //Perfect Blocking
+				const qboolean other_holding_block = hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse; //Normal Blocking
+				const qboolean other_active_blocking = hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse; //Active Blocking
+				const qboolean other_m_blocking = hit_ent->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse; //Perfect Blocking
 
 				if (hit_ent->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(hit_ent))
 				{
@@ -4298,7 +4298,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 						//player takes less damage
 						dmg *= 0.20f;
 					}
-					else if (owner->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+					else if (owner->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 					{
 						//player takes less damage
 						dmg *= 0.20f;
@@ -4312,7 +4312,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 			if (attacker && attacker->client && attacker->client->ps.saberInFlight  //attacker is throwing
 				&& owner && owner->s.number == 0  // defender
 				&& (g_saberAutoBlocking->integer && owner->NPC && !G_ControlledByPlayer(owner)//all npc,s
-					|| owner->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING //player
+					|| owner->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK //player
 					|| owner->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING && owner->NPC && !G_ControlledByPlayer(owner)
 					|| owner->client->ps.saberBlockingTime > level.time))  //anybody already doing blocking
 			{
@@ -5634,9 +5634,9 @@ int G_GetParryForBlock(const int block)
 
 qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum)
 {
-	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking
-	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
-	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse; //Perfect Blocking
+	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
+	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse; //Active Blocking
+	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse; //Perfect Blocking
 	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;//Normal Blocking
 
 	if (!blocker || !blocker->client || !attacker)
@@ -5695,9 +5695,9 @@ qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, i
 
 qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum)
 {
-	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking
-	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
-	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse; //Perfect Blocking
+	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
+	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse; //Active Blocking
+	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse; //Perfect Blocking
 	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;//Normal Blocking
 
 	if (!blocker || !blocker->client || !attacker)
@@ -5756,9 +5756,9 @@ qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, in
 
 qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum)
 {
-	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking
-	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
-	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse; //Perfect Blocking
+	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
+	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse; //Active Blocking
+	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse; //Perfect Blocking
 	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;//Normal Blocking
 
 	if (!blocker || !blocker->client || !attacker)
@@ -5818,9 +5818,9 @@ qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int
 
 qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum)
 {
-	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Normal Blocking
-	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
-	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING ? qtrue : qfalse; //Perfect Blocking
+	const qboolean OtherHoldingBlock = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
+	const qboolean OtherActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse; //Active Blocking
+	const qboolean OtherMBlocking = blocker->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse; //Perfect Blocking
 	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;//Normal Blocking
 
 	if (!blocker || !blocker->client || !attacker)
@@ -7573,9 +7573,9 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 				}
 
 				if (PM_SaberInParry(ent->client->ps.saberMove)
-					|| ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
-					|| ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING
-					|| ent->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING
+					|| ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
+					|| ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK
+					|| ent->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING
 					|| g_saberAutoBlocking->integer && ent->NPC && !G_ControlledByPlayer(ent)
 					|| ent->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING && ent->NPC && !G_ControlledByPlayer(ent)
 					|| ent->client->ps.saberBlockingTime > level.time
@@ -7626,9 +7626,9 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 				}
 
 				if (PM_SaberInParry(hitOwner->client->ps.saberMove)
-					|| hitOwner->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
-					|| hitOwner->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING
-					|| hitOwner->client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING
+					|| hitOwner->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
+					|| hitOwner->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK
+					|| hitOwner->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING
 					|| g_saberAutoBlocking->integer && hitOwner->NPC && !G_ControlledByPlayer(hitOwner)
 					|| hitOwner->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING && hitOwner->NPC && !G_ControlledByPlayer(hitOwner)
 					|| hitOwner->client->ps.saberBlockingTime > level.time
@@ -7751,7 +7751,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 		if (saberHitFraction < 1.0f)
 		{
 			auto active_defenseentagain = static_cast<qboolean>
-				(ent->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING || ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING);
+				(ent->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING || ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK);
 
 			if (!collisionResolved && baseDamage)
 			{
@@ -8113,7 +8113,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 			!PM_WalkingAnim(ent->client->ps.legsAnim) &&
 			!PM_RunningAnim(ent->client->ps.legsAnim) &&
 			ent->client->buttons & BUTTON_WALKING &&
-			ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING &&
+			ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK &&
 			(ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
 		{
 			//reflect from wall
@@ -9292,9 +9292,9 @@ qboolean saberShotOutOfHand(gentity_t* self, vec3_t throwDir)
 	if (self->client->ps.saber[0].Active())
 	{//drop it instantly
 		WP_SaberKnockedOutOfHand(self, dropped);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+		self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+		self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+		self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKWALKING);
 		self->client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 		self->client->ps.ManualBlockingTime = 0; //Blocking time 1 on
@@ -9345,9 +9345,9 @@ qboolean WP_SaberDisarmed(gentity_t* self, vec3_t throwDir)
 	if (self->client->ps.saber[0].Active())
 	{//drop it instantly
 		WP_SaberKnockedOutOfHand(self, dropped);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+		self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+		self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+		self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKWALKING);
 		self->client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 		self->client->ps.ManualBlockingTime = 0; //Blocking time 1 on
@@ -9579,10 +9579,10 @@ void WP_SaberCatch(gentity_t* self, gentity_t* saber, const qboolean switchToSab
 	}
 }
 
-void WP_SaberReturn(gentity_t* self, gentity_t* saber)
+void WP_SaberReturn(const gentity_t* self, gentity_t* saber)
 {
-	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (PM_SaberInBrokenParry(self->client->ps.saberMove) || self->client->ps.saberBlocked == BLOCKED_PARRY_BROKEN || self->NPC && level.time - self->client->ps.saberThrowTime < MAX_DISARM_TIME)
@@ -9654,7 +9654,7 @@ void WP_SaberDrop(const gentity_t* self, gentity_t* saber)
 	}
 }
 
-void WP_SaberPull(gentity_t* self, gentity_t* saber)
+void WP_SaberPull(const gentity_t* self, gentity_t* saber)
 {
 	if (PM_SaberInBrokenParry(self->client->ps.saberMove) || self->client->ps.saberBlocked == BLOCKED_PARRY_BROKEN || self->NPC && level.time - self->client->ps.saberThrowTime < MAX_DISARM_TIME)
 	{
@@ -9686,10 +9686,10 @@ void WP_SaberPull(gentity_t* self, gentity_t* saber)
 	}
 }
 
-void WP_SaberGrab(gentity_t* self, gentity_t* saber)
+void WP_SaberGrab(const gentity_t* self, gentity_t* saber)
 {
-	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (PM_SaberInBrokenParry(self->client->ps.saberMove) || self->client->ps.saberBlocked == BLOCKED_PARRY_BROKEN)
@@ -10910,7 +10910,7 @@ int wp_saber_must_block(gentity_t* self, const gentity_t* atk, const qboolean ch
 		return 0;
 	}
 
-	if (self->client->ps.weaponstate == WEAPON_RAISING || !(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+	if (self->client->ps.weaponstate == WEAPON_RAISING || !(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 	{
 		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
 		{
@@ -11521,7 +11521,7 @@ int PlayerCanAbsorbKick(const gentity_t* defender, const vec3_t pushDir) //Can t
 {
 	vec3_t pLAngles, pLFwd;
 
-	const qboolean HoldingBlock = defender->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = defender->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!defender || !defender->client)
@@ -11741,7 +11741,7 @@ qboolean IsSurrendering(const gentity_t* self)
 	return qtrue;
 }
 
-qboolean IsCowering(gentity_t* self)
+qboolean IsCowering(const gentity_t* self)
 {
 	if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
 	{
@@ -11759,7 +11759,7 @@ qboolean IsCowering(gentity_t* self)
 
 extern qboolean BG_FullBodyRespectAnim(int anim);
 
-qboolean IsRespecting(gentity_t* self)
+qboolean IsRespecting(const gentity_t* self)
 {
 	if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
 	{
@@ -11795,7 +11795,7 @@ qboolean IsAnimRequiresResponce(const gentity_t* self)
 
 extern qboolean BG_AnimIsSurrenderingandRequiresResponce(int anim);
 
-qboolean IsSurrenderingAnimRequiresResponce(gentity_t* self)
+qboolean IsSurrenderingAnimRequiresResponce(const gentity_t* self)
 {
 	if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
 	{
@@ -13187,7 +13187,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 		do_full_routine = qfalse;
 	}
 
-	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && !(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && !(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 	{
 		return;
 	}
@@ -13309,7 +13309,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 					return;
 				}
 
-				if (!(self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && self->client->ps.saberBlockingTime <
+				if (!(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK) && self->client->ps.saberBlockingTime <
 					level.time)
 				{
 					return;
@@ -13523,7 +13523,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 						PM_AddFatigue(&self->client->ps, FORCE_LONGJUMP_POWER);
 					}
 				}
-				else if (self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
+				else if (self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
 					&& self->client->NPC_class != CLASS_BOBAFETT
 					&& self->client->NPC_class != CLASS_MANDO
 					&& self->client->NPC_class != CLASS_ROCKETTROOPER)
@@ -13551,7 +13551,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 						//can see it
 						vec3_t throw_dir;
 						//make the gesture
-						if (self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
+						if (self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
 							&& self->client->NPC_class != CLASS_BOBAFETT
 							&& self->client->NPC_class != CLASS_MANDO
 							&& self->client->NPC_class != CLASS_ROCKETTROOPER)
@@ -13596,7 +13596,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 					PM_AddFatigue(&self->client->ps, FORCE_LONGJUMP_POWER);
 				}
 			}
-			else if (self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
+			else if (self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
 				&& self->client->NPC_class != CLASS_BOBAFETT
 				&& self->client->NPC_class != CLASS_MANDO
 				&& self->client->NPC_class != CLASS_ROCKETTROOPER)
@@ -13743,7 +13743,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 				blocker->client->ps.saberBlocked = blockedfor_quad(closest_swing_quad);
 				blocker->client->ps.userInt3 |= 1 << FLAG_PREBLOCK;
 			}
-			else if (blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+			else if (blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			{
 				wp_saber_block_non_random_missile(blocker, incoming->currentOrigin, qtrue);
 			}
@@ -13911,14 +13911,14 @@ void wp_saber_update(gentity_t* self, const usercmd_t* ucmd)
 			if (!force_block
 				&& (self->s.number && !Jedi_SaberBusy(self) && !g_saberRealisticCombat->integer
 					|| self->s.number == 0 && self->client->ps.saberBlocking == BLK_WIDE
-					&& (self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
+					&& (self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
 						|| self->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING && self->NPC && !G_ControlledByPlayer(self)
 						|| g_saberAutoBlocking->integer && self->NPC && !G_ControlledByPlayer(self)
 						|| self->client->ps.saberBlockingTime > level.time))
 				&& self->client->ps.weaponTime <= 0
 				&& !g_in_cinematic_saber_anim(self))
 			{
-				//full-size blocking for non-attacking player with ManualBlockingFlags & (1 << MBF_BLOCKING) on
+				//full-size blocking for non-attacking player with ManualBlockingFlags & (1 << HOLDINGBLOCK) on
 				vec3_t saberang = { 0, 0, 0 }, fwd;
 				constexpr vec3_t sabermaxs = { 8, 8, 8 };
 				constexpr vec3_t sabermins = { -8, -8, -8 };
@@ -13999,7 +13999,7 @@ void wp_saber_update(gentity_t* self, const usercmd_t* ucmd)
 						|| self->s.number
 						|| g_saberAutoBlocking->integer && self->NPC && !G_ControlledByPlayer(self)
 						|| self->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING && self->NPC && !G_ControlledByPlayer(self)
-						|| self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING
+						|| self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK
 						|| self->client->ps.saberBlockingTime > level.time)
 					{
 						//if attacking or blocking (or an NPC), inflate to a minimum size
@@ -14408,7 +14408,7 @@ void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean noPen
 	}
 }
 
-extern qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
 
 void WP_ForceKnockdown(gentity_t* self, gentity_t* pusher, qboolean pull, qboolean strongKnockdown,
@@ -16031,7 +16031,7 @@ void ForceThrow(gentity_t* self, qboolean pull, qboolean fake)
 						soundIndex = G_SoundIndex("sound/weapons/force/pushed.mp3");
 					}
 					int resistChance = Q_irand(0, 2);
-					if (!push_list[x]->s.number && self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+					if (!push_list[x]->s.number && self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 					{
 						resistChance = 1;
 					}
@@ -18025,7 +18025,7 @@ int FP_MaxForceHeal(const gentity_t* self)
 	}
 }
 
-int FP_ForceHealInterval(gentity_t* self)
+int FP_ForceHealInterval(const gentity_t* self)
 {
 	if (self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self))
 	{
@@ -18596,7 +18596,7 @@ void ForceGripWide(gentity_t* self, gentity_t* traceEnt, vec3_t dir, float dist,
 				{
 					//they can't take that away from me, oh no...
 				}
-				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 				{
 					//they can't take that away from me, oh no...
 				}
@@ -19209,7 +19209,7 @@ void ForceGripAdvanced(gentity_t* self)
 				{
 					//they can't take that away from me, oh no...
 				}
-				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 				{
 					//they can't take that away from me, oh no...
 				}
@@ -19665,7 +19665,7 @@ void ForceGripBasic(gentity_t* self)
 				{
 					//they can't take that away from me, oh no...
 				}
-				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+				else if (traceEnt->s.weapon == WP_SABER && traceEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 				{
 					//they can't take that away from me, oh no...
 				}
@@ -21936,7 +21936,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
-						const qboolean ActiveBlocking = trace_ent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
+						const qboolean ActiveBlocking = trace_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
 						//make them do a parry
 						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd;
@@ -22524,9 +22524,9 @@ void force_shoot_lightning(gentity_t* self)
 
 void WP_DeactivateSaber(gentity_t* self, qboolean clearLength)
 {
-	const qboolean Blocking = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean Blocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
-	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	if (!self || !self->client)
@@ -22538,9 +22538,9 @@ void WP_DeactivateSaber(gentity_t* self, qboolean clearLength)
 	{
 		return;
 	}
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 	//keep my saber off!
 	if (self->client->ps.SaberActive())
@@ -22552,17 +22552,17 @@ void WP_DeactivateSaber(gentity_t* self, qboolean clearLength)
 		}
 		G_SoundIndexOnEnt(self, CHAN_WEAPON, self->client->ps.saber[0].soundOff);
 	}
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 }
 
 void WP_DeactivateLightSaber(gentity_t* self, qboolean clearLength)
 {
-	const qboolean Blocking = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean Blocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
-	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	if (!self || !self->client)
@@ -22574,9 +22574,9 @@ void WP_DeactivateLightSaber(gentity_t* self, qboolean clearLength)
 	{
 		return;
 	}
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 	//keep my saber off!
 	if (self->client->ps.SaberActive())
@@ -22589,9 +22589,9 @@ void WP_DeactivateLightSaber(gentity_t* self, qboolean clearLength)
 		}
 		G_SoundIndexOnEnt(self, CHAN_WEAPON, self->client->ps.saber[0].soundOff);
 	}
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+	self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 }
 
@@ -22972,9 +22972,9 @@ qboolean Jedi_DrainReaction(gentity_t* self, gentity_t* shooter)
 			NPC_SetAnim(self, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 		}
 
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+		self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+		self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+		self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 	}
 	return qfalse;
@@ -24271,7 +24271,7 @@ qboolean PlayerAffectedByStasis()
 
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 
-void ForceStasisWide(gentity_t* self, gentity_t* traceEnt, vec3_t dir, float dist, float dot, vec3_t impactPoint)
+void ForceStasisWide(const gentity_t* self, gentity_t* traceEnt, vec3_t dir, float dist, float dot, vec3_t impactPoint)
 {
 	float currentFrame, animSpeed;
 	int junk;
@@ -25708,7 +25708,7 @@ void wp_force_power_regenerate(const gentity_t* self, const int override_amt)
 
 void wp_block_points_regenerate(const gentity_t* self, const int override_amt)
 {
-	const qboolean holding_block = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean holding_block = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!holding_block)
@@ -27304,15 +27304,15 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t forcePower, usercm
 					gripEnt->client->ps.eFlags |= EF_FORCE_GRIPPED;
 					//dammit!  Make sure that saber stays off!
 
-					if (!(gripEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+					if (!(gripEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 					{
 						WP_DeactivateSaber(gripEnt);
 					}
 					else
 					{
-						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						gripEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 						WP_DeactivateSaber(gripEnt);
 					}
@@ -27721,15 +27721,15 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t forcePower, usercm
 						drainEnt->client->ps.eFlags |= EF_FORCE_DRAINED;
 						//dammit!  Make sure that saber stays off!
 
-						if (!(drainEnt->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+						if (!(drainEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 						{
 							WP_DeactivateSaber(drainEnt, qtrue);
 						}
 						else
 						{
-							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 							drainEnt->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 							WP_DeactivateSaber(drainEnt, qtrue);
 						}
@@ -28728,8 +28728,8 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		usingForce = qtrue;
 	}
 
-	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!usingForce
@@ -28805,9 +28805,9 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 }
 
-void WP_BlockPointsUpdate(gentity_t* self)
+void WP_BlockPointsUpdate(const gentity_t* self)
 {
-	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self))

@@ -36,7 +36,7 @@ extern qboolean G_ClearTrace(const vec3_t start, const vec3_t mins, const vec3_t
 extern qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest);
 extern qboolean PM_CrouchAnim(int anim);
 extern void Boba_FlyStart(gentity_t* self);
-extern qboolean Boba_Flying(gentity_t* self);
+extern qboolean Boba_Flying(const gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
 
 void InitTrigger(gentity_t* self)

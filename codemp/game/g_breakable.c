@@ -11,7 +11,7 @@ extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* sou
 extern void G_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
 	float speed, int numChunks, material_t chunkType, int customChunk, float baseScale);
 
-void misc_model_breakable_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
 {
 	float size = 0;
 	vec3_t dir, up, dis;
@@ -334,7 +334,7 @@ qboolean ITM_AddHealth(gentity_t* ent, int amount)
 	return qtrue;
 }
 
-qboolean ITM_AddArmor(gentity_t* ent, int amount)
+qboolean ITM_AddArmor(const gentity_t* ent, int amount)
 {
 	if (ent->client->ps.stats[STAT_ARMOR] == ent->client->ps.stats[STAT_MAX_HEALTH])
 	{
@@ -430,7 +430,6 @@ void health_think(gentity_t* ent)
 void health_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
 	//FIXME: Heal entire team?  Or only those that are undying...?
-	int dif;
 
 	G_ActivateBehavior(self, BSET_USE);
 
@@ -440,6 +439,7 @@ void health_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	}
 	else
 	{
+		int dif;
 		if (other->client)
 		{
 			// He's dead, Jim. Don't give him health
@@ -509,7 +509,7 @@ void ammo_shutdown(gentity_t* self)
 	}
 }
 
-qboolean Add_Ammo2(gentity_t* ent, int ammotype, int amount)
+qboolean Add_Ammo2(const gentity_t* ent, int ammotype, int amount)
 {
 	if (ent->client->ps.ammo[ammotype] == ammoData[ammotype].max)
 	{
@@ -569,8 +569,6 @@ void ammo_think(gentity_t* ent)
 
 void ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
-	int dif;
-
 	G_ActivateBehavior(self, BSET_USE);
 
 	if (self->think != NULL)
@@ -582,6 +580,7 @@ void ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	}
 	else
 	{
+		int dif;
 		if (other->client)
 		{
 			dif = ammoData[AMMO_BLASTER].max - other->client->ps.ammo[AMMO_BLASTER];
@@ -776,7 +775,6 @@ void TieFighterThink(gentity_t* self)
 void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
 {
 	trace_t tr;
-	vec3_t top, bottom;
 
 	G_EffectIndex("melee/kick_impact");
 	G_EffectIndex("melee/kick_impact_silent");
@@ -795,6 +793,8 @@ void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
 	//drop to floor
 	if (dropToFloor)
 	{
+		vec3_t bottom;
+		vec3_t top;
 		VectorCopy(ent->r.currentOrigin, top);
 		top[2] += 1;
 		VectorCopy(ent->r.currentOrigin, bottom);
@@ -994,13 +994,13 @@ void SP_misc_model_breakable(gentity_t* ent)
 
 			ent->s.loopSound = G_SoundIndex("sound/vehicles/tie-bomber/loop.wav");
 			const qboolean lightSet = qtrue;
-			const float light = 255;
-			const qboolean colorSet = qtrue;
+			
 			color[0] = 1;
 			color[1] = 1;
 			color[2] = 1;
 			if (lightSet)
 			{
+				const float light = 255;
 				int r = color[0] * 255;
 				if (r > 255)
 				{

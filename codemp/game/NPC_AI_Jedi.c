@@ -49,8 +49,8 @@ extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolea
 
 #define	MAX_CHECK_THRESHOLD	1
 
-extern void NPC_ClearLookTarget(gentity_t* self);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_ClearLookTarget(const gentity_t* self);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
@@ -722,7 +722,7 @@ void Boba_ChangeWeapon(int wp)
 	G_AddEvent(NPCS.NPC, EV_GENERAL_SOUND, G_SoundIndex("sound/weapons/change.wav"));
 }
 
-qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown)
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown)
 //forceKnockdown = qfalse
 {
 	vec3_t pDir, fwd, right, ang;
@@ -992,7 +992,7 @@ void Boba_FlyStop(gentity_t* self)
 	}
 }
 
-qboolean Boba_Flying(gentity_t* self)
+qboolean Boba_Flying(const gentity_t* self)
 {
 	return self->client->ps.eFlags2 & EF2_FLYING;
 }
@@ -1378,7 +1378,7 @@ void Boba_FireWristMissile(gentity_t* self, int whichMissile)
 	self->s.weapon = oldWeapon;
 }
 
-void Boba_EndWristMissile(gentity_t* self, int whichMissile)
+void Boba_EndWristMissile(const gentity_t* self, int whichMissile)
 {
 	if (missileStates[whichMissile].hold)
 	{

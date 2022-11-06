@@ -88,7 +88,7 @@ extern npcStatic_t NPCS;
 
 //AI_Default
 extern qboolean NPC_CheckInvestigate(int alertEventNum);
-extern qboolean NPC_StandTrackAndShoot(gentity_t* NPC, qboolean canDuck);
+extern qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck);
 extern void NPC_BSIdle(void);
 extern void NPC_BSPointShoot(qboolean shoot);
 extern void NPC_BSStandGuard(void);
@@ -203,8 +203,8 @@ extern qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw);
 extern void SetTeamNumbers(void);
 extern qboolean G_ActivateBehavior(gentity_t* self, int bset);
 extern void NPC_AimWiggle(vec3_t enemy_org);
-extern void NPC_ClearLookTarget(gentity_t* self);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_ClearLookTarget(const gentity_t* self);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 
 //g_nav.cpp
 extern int NAV_FindClosestWaypointForEnt(gentity_t* ent, int targWp);
@@ -311,7 +311,7 @@ extern void NPC_ApplyWeaponFireDelay(void);
 
 //NPC_FaceXXX suite
 extern qboolean NPC_FacePosition(vec3_t position, qboolean doPitch); //doPitch = qtrue
-extern qboolean NPC_FaceEntity(gentity_t* ent, qboolean doPitch); //doPitch = qtrue
+extern qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch); //doPitch = qtrue
 extern qboolean NPC_FaceEnemy(qboolean doPitch); //doPitch = qtrue
 
 //Skill level cvar

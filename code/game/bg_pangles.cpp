@@ -52,7 +52,7 @@ extern qboolean PM_BlockHoldStaffAnim(int anim);
 extern qboolean PM_InReboundHold(int anim);
 extern qboolean PM_InKnockDownNoGetup(const playerState_t* ps);
 extern qboolean PM_InGetUpNoRoll(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
@@ -1539,7 +1539,7 @@ qboolean G_OkayToLean(const playerState_t* ps, const usercmd_t* cmd, qboolean in
 			&& !ps->torsoAnimTimer) //not in any held torso anim
 		&& !(cmd->buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK | BUTTON_FORCE_LIGHTNING | BUTTON_USE_FORCE | BUTTON_DASH
 			| BUTTON_FORCE_DRAIN | BUTTON_FORCEGRIP | BUTTON_REPULSE | BUTTON_FORCEGRASP)) //not trying to attack
-		&& !(ps->ManualBlockingFlags & 1 << MBF_BLOCKING)
+		&& !(ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 		&& VectorCompare(ps->velocity, vec3_origin) //not moving
 		&& !cg_usingInFrontOf) //use button wouldn't be used for anything else
 	{
@@ -2070,7 +2070,7 @@ void PM_UpdateViewAngles(int saberAnimLevel, playerState_t* ps, usercmd_t* cmd, 
 	//standing block
 	if (gent
 		&& gent->client
-		&& ~gent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING
+		&& ~gent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK
 		&& ~gent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKWALKING
 		&& gent->s.weapon == WP_SABER
 		&& pm->ps->SaberActive()

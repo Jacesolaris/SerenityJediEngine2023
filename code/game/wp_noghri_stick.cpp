@@ -44,7 +44,7 @@ void WP_FireNoghriStick(gentity_t* ent)
 	AngleVectors(angs, dir, nullptr, nullptr);
 
 	// FIXME: if temp_org does not have clear trace to inside the bbox, don't shoot!
-	const int velocity = 1200;
+	constexpr int velocity = 1200;
 
 	WP_TraceSetStart(ent, muzzle, vec3_origin, vec3_origin);
 	//make sure our start point isn't on the other side of a wall

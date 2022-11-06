@@ -2245,16 +2245,17 @@ int BG_ProperForceIndex(int power)
 
 void BG_CycleForce(playerState_t* ps, int direction)
 {
-	int i, x;
+	int x = 0;
 	int foundnext = -1;
-
-	int presel = x = i = ps->fd.forcePowerSelected;
 
 	// no valid force powers
 	if (x >= NUM_FORCE_POWERS || x == -1)
+	{
 		return;
+		
+	}
 
-	presel = x = BG_ProperForceIndex(x);
+	const int presel = x = BG_ProperForceIndex(x);
 
 	// get the next/prev power and handle overflow
 	if (direction == 1) x++;
@@ -2262,7 +2263,7 @@ void BG_CycleForce(playerState_t* ps, int direction)
 	if (x >= NUM_FORCE_POWERS) x = 0;
 	if (x < 0) x = NUM_FORCE_POWERS - 1;
 
-	i = forcePowerSorted[x]; //the "sorted" value of this power
+	int i = forcePowerSorted[x]; //the "sorted" value of this power
 
 	while (x != presel)
 	{

@@ -389,7 +389,7 @@ void SP_misc_model_static(gentity_t* ent)
 	G_FreeEntity(ent);
 }
 
-extern void misc_model_breakable_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage,
+extern void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage,
 	int meansOfDeath);
 
 void misc_use(gentity_t* self, gentity_t* other, gentity_t* activator)
@@ -768,7 +768,7 @@ miscentDef - defines which client models spawn on the terrain (file is base/ext_
 densityMap - how dense the client models are packed
 
 */
-void AddSpawnField(char* field, char* value);
+void AddSpawnField(const char* field, const char* value);
 #define MAX_INSTANCE_TYPES		16
 
 void SP_terrain(gentity_t* ent)

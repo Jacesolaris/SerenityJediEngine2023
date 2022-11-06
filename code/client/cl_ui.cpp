@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "vmachine.h"
 
-intptr_t CL_UISystemCalls(intptr_t* args);
+intptr_t CL_UISystemCalls(const intptr_t* args);
 
 //prototypes
 #ifdef JK2_MODE
@@ -199,9 +199,7 @@ void CL_InitUI(void) {
 	JK2SP_Register("keynames", 0	/*SP_REGISTER_REQUIRED*/);		// reference is KEYNAMES
 #endif
 
-	uiimport_t	uii;
-
-	memset(&uii, 0, sizeof uii);
+	uiimport_t	uii = {};
 
 	uii.Printf = Com_Printf;
 	uii.Error = Com_Error;
@@ -357,7 +355,7 @@ CL_UISystemCalls
 The ui module is making a system call
 ====================
 */
-intptr_t CL_UISystemCalls(intptr_t* args)
+intptr_t CL_UISystemCalls(const intptr_t* args)
 {
 	switch (args[0])
 	{

@@ -891,7 +891,7 @@ NPC_ValidEnemy
 -------------------------
 */
 
-qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy)
+qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy)
 {
 	//Must be a valid pointer
 	if (enemy == nullptr)
@@ -1303,7 +1303,7 @@ NPC_FaceEntity
 -------------------------
 */
 
-qboolean NPC_FaceEntity(gentity_t* ent, qboolean doPitch)
+qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch)
 {
 	vec3_t entPos;
 
@@ -1359,7 +1359,7 @@ NPC_ClearLookTarget
 -------------------------
 */
 
-void NPC_ClearLookTarget(gentity_t* self)
+void NPC_ClearLookTarget(const gentity_t* self)
 {
 	if (!self->client)
 	{
@@ -1375,7 +1375,7 @@ void NPC_ClearLookTarget(gentity_t* self)
 NPC_SetLookTarget
 -------------------------
 */
-void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime)
+void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
 {
 	if (!self->client)
 	{
@@ -1515,7 +1515,7 @@ void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelInde
 		return;
 	}
 	mdxaBone_t boltMatrix;
-	vec3_t result, angles = { 0, self->currentAngles[YAW], 0 };
+	const vec3_t angles = { 0, self->currentAngles[YAW], 0 };
 
 	gi.G2API_GetBoltMatrix(self->ghoul2, modelIndex,
 		boltIndex,
@@ -1523,12 +1523,13 @@ void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelInde
 		nullptr, self->s.modelScale);
 	if (pos)
 	{
+		vec3_t result;
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, result);
 		VectorCopy(result, pos);
 	}
 }
 
-float NPC_EntRangeFromBolt(gentity_t* targEnt, int boltIndex)
+float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex)
 {
 	vec3_t org = { 0.0f };
 
@@ -1577,7 +1578,7 @@ int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec
 extern qboolean RT_Flying(gentity_t* self);
 extern void RT_FlyStart(gentity_t* self);
 extern void RT_FlyStop(gentity_t* self);
-extern qboolean Boba_Flying(gentity_t* self);
+extern qboolean Boba_Flying(const gentity_t* self);
 extern void Boba_FlyStart(gentity_t* self);
 extern void Boba_FlyStop(gentity_t* self);
 

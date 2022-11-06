@@ -214,7 +214,7 @@ extern qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw);
 extern void SetTeamNumbers(void);
 extern qboolean G_ActivateBehavior(gentity_t* self, int bset);
 extern void NPC_AimWiggle(vec3_t enemy_org);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 
 //other modules
 extern void CalcMuzzlePoint(gentity_t* ent, vec3_t forward, vec3_t right, vec3_t up, vec3_t muzzlePoint, float lead_in);
@@ -338,7 +338,7 @@ extern void NPC_ApplyWeaponFireDelay(void);
 
 //NPC_FaceXXX suite
 extern qboolean NPC_FacePosition(vec3_t position, qboolean doPitch = qtrue);
-extern qboolean NPC_FaceEntity(gentity_t* ent, qboolean doPitch = qtrue);
+extern qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch = qtrue);
 extern qboolean NPC_FaceEnemy(qboolean doPitch = qtrue);
 
 //Skill level cvar

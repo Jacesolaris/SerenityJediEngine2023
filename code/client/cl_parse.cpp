@@ -40,7 +40,7 @@ const char* svc_strings[256] = {
 	"svc_snapshot"
 };
 
-void SHOWNET(msg_t* msg, const char* s) {
+void SHOWNET(const msg_t* msg, const char* s) {
 	if (cl_shownet->integer >= 2) {
 		Com_Printf("%3i:%s\n", msg->readcount - 1, s);
 	}
@@ -324,9 +324,6 @@ gamestate, and possibly during gameplay.
 ==================
 */
 void CL_SystemInfoChanged(void) {
-	char			key[MAX_INFO_KEY];
-	char			value[MAX_INFO_VALUE];
-
 	const char* systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SYSTEMINFO];
 	cl.serverId = atoi(Info_ValueForKey(systemInfo, "sv_serverid"));
 
@@ -340,6 +337,8 @@ void CL_SystemInfoChanged(void) {
 	// scan through all the variables in the systeminfo and locally set cvars to match
 	s = systemInfo;
 	while (s) {
+		char value[MAX_INFO_VALUE];
+		char key[MAX_INFO_KEY];
 		Info_NextPair(&s, key, value);
 		if (!key[0]) {
 			break;

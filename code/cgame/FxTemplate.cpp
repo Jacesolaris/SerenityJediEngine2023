@@ -1845,7 +1845,7 @@ bool CPrimitiveTemplate::ParsePrimitive(const CGPGroup& grp)
 				// just stash the descriptive name of the primitive
 				const std::size_t len = std::min<std::size_t>(prop.GetTopValue().size(), FX_MAX_PRIM_NAME - 1);
 				const auto begin = prop.GetTopValue().begin();
-				std::copy(begin, begin + len, &mName[0]);
+				std::copy_n(begin, len, &mName[0]);
 				mName[len] = '\0';
 			}
 		}

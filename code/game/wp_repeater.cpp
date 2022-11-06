@@ -146,7 +146,7 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 void WP_FireRepeater(gentity_t* ent, qboolean alt_fire)
 //---------------------------------------------------------
 {
-	vec3_t dir, angs;
+	vec3_t angs;
 
 	vectoangles(forwardVec, angs);
 
@@ -156,6 +156,7 @@ void WP_FireRepeater(gentity_t* ent, qboolean alt_fire)
 	}
 	else
 	{
+		vec3_t dir;
 		if (!(ent->client->ps.forcePowersActive & 1 << FP_SEE) || ent->client->ps.forcePowerLevel[FP_SEE] <
 			FORCE_LEVEL_2)
 		{

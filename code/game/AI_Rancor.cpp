@@ -328,7 +328,7 @@ extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushD
 	qboolean breakSaberLock);
 extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
 	qboolean force = qfalse);
-extern float NPC_EntRangeFromBolt(gentity_t* targEnt, int boltIndex);
+extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
 extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
 
 void Rancor_DropVictim(gentity_t* self)

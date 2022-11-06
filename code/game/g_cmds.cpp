@@ -68,7 +68,7 @@ extern qboolean IsHoldingGun(const gentity_t* ent);
 extern void ReloadGun(gentity_t* ent);
 extern void RemoveBarrier(gentity_t* ent);
 extern void CancelReload(gentity_t* ent);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 
 extern void ForceRepulse(gentity_t* self);
 extern void ForceGrasp(gentity_t* self);
@@ -1301,7 +1301,7 @@ extern qboolean NPC_IsMando(const gentity_t* self);
 
 void G_SetTauntAnim(gentity_t* ent, int taunt)
 {
-	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!ent || !ent->client)
@@ -2268,8 +2268,8 @@ void G_SetsaberdownorAnim(gentity_t* ent)
 				ent->client->ps.SaberActivate();
 			}
 		}
-		ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-		ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
+		ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+		ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
 	}
 	else if (ent->client->ps.weapon != WP_SABER)
 	{

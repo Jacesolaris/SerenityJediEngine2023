@@ -1364,7 +1364,7 @@ NPC_FaceEntity
 -------------------------
 */
 
-qboolean NPC_FaceEntity(gentity_t* ent, qboolean doPitch)
+qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch)
 {
 	vec3_t entPos;
 
@@ -1420,7 +1420,7 @@ NPC_ClearLookTarget
 -------------------------
 */
 
-void NPC_ClearLookTarget(gentity_t* self)
+void NPC_ClearLookTarget(const gentity_t* self)
 {
 	if (!self->client)
 	{
@@ -1442,7 +1442,7 @@ void NPC_ClearLookTarget(gentity_t* self)
 NPC_SetLookTarget
 -------------------------
 */
-void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime)
+void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
 {
 	if (!self->client)
 	{
@@ -1571,7 +1571,7 @@ void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelInde
 	}
 }
 
-float NPC_EntRangeFromBolt(gentity_t* targEnt, int boltIndex)
+float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex)
 {
 	vec3_t org;
 
@@ -1612,7 +1612,7 @@ int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int boltIndex, vec3_t bol
 	return trap->EntitiesInBox(mins, maxs, radiusEnts, 128);
 }
 
-extern qboolean Boba_Flying(gentity_t* self);
+extern qboolean Boba_Flying(const gentity_t* self);
 extern void Boba_FlyStart(gentity_t* self);
 extern void Boba_FlyStop(gentity_t* self);
 

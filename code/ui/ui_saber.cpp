@@ -615,8 +615,6 @@ void UI_DoBattlefrontSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, 
 	vec3_t mid;
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t blade = 0, glow = 0;
 	refEntity_t saber;
@@ -705,8 +703,10 @@ void UI_DoBattlefrontSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, 
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeBF2.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -760,8 +760,6 @@ void UI_DoSFXSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	vec3_t mid;
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -850,8 +848,10 @@ void UI_DoSFXSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeSFX.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -905,8 +905,6 @@ void UI_DoEp1Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	vec3_t mid, rgb = { 1, 1, 1 };
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1004,8 +1002,10 @@ void UI_DoEp1Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeEP1.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1059,8 +1059,6 @@ void UI_DoEp2Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	vec3_t mid, rgb = { 1, 1, 1 };
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1158,8 +1156,10 @@ void UI_DoEp2Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeEP2.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1213,8 +1213,6 @@ void UI_DoEp3Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	vec3_t mid, rgb = { 1, 1, 1 };
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1312,8 +1310,10 @@ void UI_DoEp3Saber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeEP3.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1367,8 +1367,6 @@ void UI_DoOTSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float rad
 	vec3_t mid, rgb = { 1, 1, 1 };
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1468,8 +1466,10 @@ void UI_DoOTSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float rad
 	coreradius *= 0.5f;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1523,8 +1523,6 @@ void UI_DoTFASaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	vec3_t mid, rgb = { 1, 1, 1 };
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1622,8 +1620,10 @@ void UI_DoTFASaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float ra
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeTFA.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1677,8 +1677,6 @@ void UI_DoSaberUnstable(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, flo
 	vec3_t mid, rgb = { 1, 1, 1 };
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1760,8 +1758,10 @@ void UI_DoSaberUnstable(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, flo
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSize.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1815,8 +1815,6 @@ void UI_DoCustomSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float
 	vec3_t mid;
 	float radiusmult, effectradius, coreradius;
 	float blade_len;
-	float effectalpha = 0.8f;
-	float AngleScale = 1.0f;
 
 	qhandle_t glow = 0, blade = 0;
 	refEntity_t saber;
@@ -1905,8 +1903,10 @@ void UI_DoCustomSaber(vec3_t blade_muz, vec3_t blade_dir, float lengthMax, float
 	coreradius = (radius * 0.4f + Q_flrand(-1.0f, 1.0f) * 0.1f) * radiusmult * ui_SFXSabersCoreSizeCSM.value;
 
 	{
+		float AngleScale = 1.0f;
 		if (blade_len - effectradius * AngleScale / 2 > 0)
 		{
+			float effectalpha = 0.8f;
 			saber.radius = effectradius * AngleScale;
 			saber.saberLength = blade_len - saber.radius / 2;
 			VectorCopy(blade_muz, saber.origin);
@@ -1963,7 +1963,6 @@ void UI_DoSaber(vec3_t origin, vec3_t dir, float length, float lengthMax, float 
 	float radiusmult;
 	float radiusRange;
 	float radiusStart;
-	int i;
 
 	if (length < 0.5f)
 	{
@@ -2013,6 +2012,7 @@ void UI_DoSaber(vec3_t origin, vec3_t dir, float length, float lengthMax, float 
 		break;
 	case SABER_RGB:
 	{
+		int i;
 		if (whichSaber == 0)
 			VectorSet(rgb, ui_rgb_saber_red.integer, ui_rgb_saber_green.integer, ui_rgb_saber_blue.integer);
 		else
@@ -2322,7 +2322,7 @@ saberType_t TranslateSaberType(const char* name)
 	return SABER_SINGLE;
 }
 
-void UI_SaberDrawBlade(itemDef_t* item, char* saberName, int saberModel, saberType_t saberType, vec3_t origin,
+void UI_SaberDrawBlade(itemDef_t* item, const char* saberName, int saberModel, saberType_t saberType, vec3_t origin,
 	float curYaw, int bladeNum)
 {
 	char bladeColorString[MAX_QPATH];
@@ -2815,7 +2815,6 @@ void UI_SaberAttachToChar(itemDef_t* item)
 	{
 		//bolt sabers
 		char modelPath[MAX_QPATH];
-		char skinPath[MAX_QPATH];
 		char saber[MAX_QPATH];
 
 		UI_GetSaberForMenu(saber, saberNum);
@@ -2826,6 +2825,7 @@ void UI_SaberAttachToChar(itemDef_t* item)
 			const int g2Saber = DC->g2_InitGhoul2Model(item->ghoul2, modelPath, 0, 0, 0, 0, 0); //add the model
 			if (g2Saber)
 			{
+				char skinPath[MAX_QPATH];
 				//get the customSkin, if any
 				if (UI_SaberSkinForSaber(saber, skinPath))
 				{

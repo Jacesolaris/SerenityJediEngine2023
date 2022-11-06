@@ -181,7 +181,7 @@ extern qboolean PM_SaberInTransitionAny(int move);
 extern int PM_GetTurnAnim(const gentity_t* gent, int anim);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_InRoll(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 extern qboolean PM_SuperBreakWinAnim(int anim);
 
 //Basic set of custom sounds that everyone needs

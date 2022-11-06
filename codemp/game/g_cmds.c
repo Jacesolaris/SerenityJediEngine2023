@@ -3158,8 +3158,8 @@ void Cmd_ToggleSaber_f(gentity_t* ent)
 			{
 				G_Sound(ent, CHAN_AUTO, ent->client->saber[1].soundOff);
 			}
-			ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-			ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
+			ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+			ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
 			//prevent anything from being done for 400ms after holster
 			ent->client->ps.weaponTime = 400;
 		}
@@ -3496,8 +3496,8 @@ void Cmd_EngageDuel_f(gentity_t* ent)
 				{
 					G_Sound(ent, CHAN_AUTO, ent->client->saber[1].soundOff);
 				}
-				ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-				ent->client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
+				ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+				ent->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
 				ent->client->ps.weaponTime = 400;
 				ent->client->ps.saberHolstered = 2;
 			}

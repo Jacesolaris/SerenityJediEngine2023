@@ -37,7 +37,7 @@ extern qboolean G_ControlledByPlayer(const gentity_t* self);
 static void WP_FlechetteMainFire(gentity_t* ent)
 //---------------------------------------------------------
 {
-	vec3_t fwd, angs, start;
+	vec3_t angs, start;
 	float damage = weaponData[WP_FLECHETTE].damage, vel = FLECHETTE_VEL;
 
 	VectorCopy(muzzle, start);
@@ -53,6 +53,7 @@ static void WP_FlechetteMainFire(gentity_t* ent)
 
 	for (int i = 0; i < FLECHETTE_SHOTS; i++)
 	{
+		vec3_t fwd;
 		vectoangles(forwardVec, angs);
 
 		if (i == 0 && ent->s.number == 0)
@@ -182,7 +183,7 @@ void prox_mine_think(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void prox_mine_stick(gentity_t* self, gentity_t* other, trace_t* trace)
+void prox_mine_stick(gentity_t* self, gentity_t* other, const trace_t* trace)
 //---------------------------------------------------------
 {
 	// turn us into a generic entity so we aren't running missile code
@@ -267,7 +268,7 @@ static void WP_CreateFlechetteBouncyThing(vec3_t start, vec3_t fwd, gentity_t* s
 static void WP_FlechetteAltFire(gentity_t* ent)
 //---------------------------------------------------------
 {
-	vec3_t dir, fwd, start, angs;
+	vec3_t dir, start, angs;
 
 	vectoangles(forwardVec, angs);
 	VectorCopy(muzzle, start);
@@ -282,6 +283,7 @@ static void WP_FlechetteAltFire(gentity_t* ent)
 
 	for (int i = 0; i < 2; i++)
 	{
+		vec3_t fwd;
 		VectorCopy(angs, dir);
 
 		dir[PITCH] -= Q_flrand(0.0f, 1.0f) * 4 + 8; // make it fly upwards

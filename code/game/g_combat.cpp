@@ -62,7 +62,7 @@ extern cvar_t* com_outcast;
 extern cvar_t* g_broadsword;
 gentity_t* g_lastClientDamaged;
 extern void Boba_FlyStop(gentity_t* self);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 extern void G_StartRoll(gentity_t* ent, int anim);
 extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern int killPlayerTimer;
@@ -6099,7 +6099,7 @@ int CheckArmor(const gentity_t* ent, int damage, int dflags, int mod)
 
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern qboolean Boba_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir,
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
 	qboolean forceKnockdown = qfalse);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
 

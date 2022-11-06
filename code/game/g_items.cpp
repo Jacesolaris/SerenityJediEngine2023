@@ -37,7 +37,7 @@ extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern void WP_SetSaber(gentity_t* ent, int saberNum, const char* saberName);
 extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
-extern void wp_saber_fall_sound(const gentity_t* owner, gentity_t* saber);
+extern void wp_saber_fall_sound(const gentity_t* owner, const gentity_t* saber);
 extern saber_colors_t TranslateSaberColor(const char* name);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 

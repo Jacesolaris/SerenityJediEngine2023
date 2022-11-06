@@ -167,9 +167,9 @@ void G_CacheMapname(const vmCvar_t* mapname)
 }
 
 // creates a ctf flag spawn point
-extern void sje_set_entity_field(gentity_t* ent, char* key, char* value);
+extern void sje_set_entity_field(gentity_t* ent, const char* key, const char* value);
 extern void sje_spawn_entity(gentity_t* ent);
-extern void sje_main_set_entity_field(gentity_t* ent, char* key, char* value);
+extern void sje_main_set_entity_field(const gentity_t* ent, const char* key, const char* value);
 extern void sje_main_spawn_entity(gentity_t* ent);
 
 void sje_create_info_player_deathmatch(int x, int y, int z, int yaw)

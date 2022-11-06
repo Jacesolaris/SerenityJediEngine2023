@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 //Externs
-extern qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy);
+extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void CG_DrawAlert(vec3_t origin, float rating);
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
@@ -38,8 +38,8 @@ extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int lengt
 extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
 	int spinTime = 0);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
-extern void NPC_ClearLookTarget(gentity_t* self);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_ClearLookTarget(const gentity_t* self);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
@@ -117,8 +117,8 @@ extern void add_npc_block_point_bonus(const gentity_t* self);
 extern qboolean NPC_IsAlive(gentity_t* self, gentity_t* NPC);
 extern void WP_DeactivateLightSaber(gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean IsSurrendering(const gentity_t* self);
-extern qboolean IsRespecting(gentity_t* self);
-extern qboolean IsCowering(gentity_t* self);
+extern qboolean IsRespecting(const gentity_t* self);
+extern qboolean IsCowering(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern void ForceGrip(const gentity_t* self);
 extern void ForceDashAnimDash(gentity_t* self);

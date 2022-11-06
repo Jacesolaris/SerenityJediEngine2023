@@ -763,7 +763,7 @@ static void CG_DrawJK2blockPoints(int x, int y, const menuDef_t* menuHUD)
 	//	Outer block circular
 	//==========================================================================================================//
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
 	}
@@ -810,7 +810,7 @@ static void CG_DrawJK2blockPoints(int x, int y, const menuDef_t* menuHUD)
 
 	trap->R_SetColor(calcColor);
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		CG_DrawPic(x, y, 35, 35, cgs.media.HUDblockpointMB1);
 	}
@@ -830,7 +830,7 @@ static void CG_DrawJK2blockPoints(int x, int y, const menuDef_t* menuHUD)
 		blockPercent = (float)cg.snap->ps.fd.blockPoints / (BLOCK_POINTS_MAX / 2);
 	}
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
 	}
@@ -845,7 +845,7 @@ static void CG_DrawJK2blockPoints(int x, int y, const menuDef_t* menuHUD)
 
 	trap->R_SetColor(calcColor);
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		CG_DrawPic(x, y, 35, 35, cgs.media.HUDblockpointMB2);
 	}
@@ -2019,7 +2019,7 @@ static void CG_DrawCusblockPoints(int x, int y, const menuDef_t* menuHUD)
 	//	Outer block circular
 	//==========================================================================================================//
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
 	}
@@ -2066,7 +2066,7 @@ static void CG_DrawCusblockPoints(int x, int y, const menuDef_t* menuHUD)
 
 	trap->R_SetColor(calcColor);
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		CG_DrawPic(x - 3.4, y + 3.5, 40, 40, cgs.media.HUDblockpointMB1);
 	}
@@ -2086,7 +2086,7 @@ static void CG_DrawCusblockPoints(int x, int y, const menuDef_t* menuHUD)
 		blockPercent = (float)cg.snap->ps.fd.blockPoints / (BLOCK_POINTS_MAX / 2);
 	}
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
 	}
@@ -2101,7 +2101,7 @@ static void CG_DrawCusblockPoints(int x, int y, const menuDef_t* menuHUD)
 
 	trap->R_SetColor(calcColor);
 
-	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predictedPlayerState.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		CG_DrawPic(x - 3.4, y + 3.5, 40, 40, cgs.media.HUDblockpointMB2);
 	}
@@ -2941,7 +2941,7 @@ void CG_DrawJK2blockingMode(const centity_t* cent, const menuDef_t* menuHUD)
 
 	if (com_outcast.integer == 1) //jko
 	{
-		if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
+		if (cg.predictedPlayerState.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK)
 		{
 			Blockindex = Menu_FindItemByName(menuHUD, "jk2MBlockingMode");
 
@@ -2958,7 +2958,7 @@ void CG_DrawJK2blockingMode(const centity_t* cent, const menuDef_t* menuHUD)
 				);
 			}
 		}
-		else if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_BLOCKING)
+		else if (cg.predictedPlayerState.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 		{
 			Blockindex = Menu_FindItemByName(menuHUD, "jk2BlockingMode");
 
@@ -2995,7 +2995,7 @@ void CG_DrawJK2blockingMode(const centity_t* cent, const menuDef_t* menuHUD)
 	}
 	else
 	{
-		if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
+		if (cg.predictedPlayerState.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK)
 		{
 			Blockindex = Menu_FindItemByName(menuHUD, "jk2MBlockingMode");
 
@@ -3012,7 +3012,7 @@ void CG_DrawJK2blockingMode(const centity_t* cent, const menuDef_t* menuHUD)
 				);
 			}
 		}
-		else if (cg.predictedPlayerState.ManualBlockingFlags & 1 << MBF_BLOCKING)
+		else if (cg.predictedPlayerState.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 		{
 			Blockindex = Menu_FindItemByName(menuHUD, "jk2BlockingMode");
 

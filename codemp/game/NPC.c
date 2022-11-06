@@ -38,14 +38,14 @@ extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern void NPC_ApplyRoff(void);
 extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean NPC_CheckLookTarget(gentity_t* self);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void Mark1_dying(gentity_t* self);
 extern void NPC_BSCinematic(void);
 extern int GetTime(int lastTime);
 extern void G_CheckCharmed(gentity_t* self);
 extern qboolean Jedi_CultistDestroyer(const gentity_t* self);
 extern void NPC_BSGM_Default(void);
-extern qboolean Boba_Flying(gentity_t* self);
+extern qboolean Boba_Flying(const gentity_t* self);
 
 //Local Variables
 npcStatic_t NPCS;

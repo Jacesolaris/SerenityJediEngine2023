@@ -52,7 +52,7 @@ gentity_t* ent_list[MAX_GENTITIES];
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 extern qboolean walk_check(const gentity_t* self);
 
 // some naughty little things that are used cg side
@@ -140,8 +140,6 @@ void WP_TraceSetStart(const gentity_t* ent, vec3_t start, const vec3_t mins, con
 		VectorCopy(tr.endpos, start);
 	}
 }
-
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
 //-----------------------------------------------------------------------------
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire)
 //-----------------------------------------------------------------------------
@@ -1330,7 +1328,6 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 	}
 }
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 qboolean DoesnotDrainMishap(const gentity_t* ent)

@@ -42,11 +42,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern qboolean NPC_CheckLookTarget(gentity_t* self);
-extern void NPC_ClearLookTarget(gentity_t* self);
+extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_Jedi_RateNewEnemy(gentity_t* self, const gentity_t* enemy);
 extern qboolean PM_DroidMelee(int npc_class);
 extern int delayedShutDown;
-extern qboolean G_ValidEnemy(gentity_t* self, gentity_t* enemy);
+extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern qboolean PM_ReloadAnim(int anim);
 void ChangeWeapon(const gentity_t* ent, int newWeapon);
 
@@ -1252,8 +1252,8 @@ void ShootThink(void)
 }
 
 extern qboolean IsSurrendering(const gentity_t* self);
-extern qboolean IsRespecting(gentity_t* self);
-extern qboolean IsCowering(gentity_t* self);
+extern qboolean IsRespecting(const gentity_t* self);
+extern qboolean IsCowering(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);

@@ -31,7 +31,7 @@ extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* sou
 extern void cgi_S_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean NPC_CheckLookTarget(gentity_t* self);
-extern void NPC_SetLookTarget(gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
 extern void Jedi_Ambush(gentity_t* self);
 extern qboolean NPC_SomeoneLookingAtMe(gentity_t* ent);

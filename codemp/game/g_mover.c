@@ -488,9 +488,7 @@ G_MoverTeam
 */
 void G_MoverTeam(gentity_t* ent)
 {
-	vec3_t move, amove;
 	gentity_t* part, * obstacle;
-	vec3_t origin, angles;
 
 	obstacle = NULL;
 
@@ -500,6 +498,10 @@ void G_MoverTeam(gentity_t* ent)
 	pushed_p = pushed;
 	for (part = ent; part; part = part->teamchain)
 	{
+		vec3_t angles;
+		vec3_t origin;
+		vec3_t amove;
+		vec3_t move;
 		// get current position
 		BG_EvaluateTrajectory(&part->s.pos, level.time, origin);
 		BG_EvaluateTrajectory(&part->s.apos, level.time, angles);
@@ -595,15 +597,14 @@ CalcTeamDoorCenter
 Finds all the doors of a team and returns their center position
 */
 
-void CalcTeamDoorCenter(gentity_t* ent, vec3_t center)
+void CalcTeamDoorCenter(const gentity_t* ent, vec3_t center)
 {
-	vec3_t slavecenter;
-
 	//Start with our center
 	VectorAdd(ent->r.mins, ent->r.maxs, center);
 	VectorScale(center, 0.5, center);
 	for (const gentity_t* slave = ent->teamchain; slave; slave = slave->teamchain)
 	{
+		vec3_t slavecenter;
 		//Find slave's center
 		VectorAdd(slave->r.mins, slave->r.maxs, slavecenter);
 		VectorScale(slavecenter, 0.5, slavecenter);
@@ -1339,7 +1340,7 @@ qboolean G_EntIsDoor(int entityNum)
 	return qfalse;
 }
 
-gentity_t* G_FindDoorTrigger(gentity_t* ent)
+gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 {
 	gentity_t* owner = NULL;
 	const gentity_t* door = ent;
@@ -1597,7 +1598,7 @@ Touch_Plat
 Don't allow descent if a living player is on it
 ===============
 */
-void Touch_Plat(gentity_t* ent, gentity_t* other, trace_t* trace)
+void Touch_Plat(gentity_t* ent, const gentity_t* other, trace_t* trace)
 {
 	if (!other->client || other->client->ps.stats[STAT_HEALTH] <= 0)
 	{
@@ -2977,9 +2978,9 @@ void SP_func_breakable(gentity_t* self)
 	}
 	InitBBrush(self);
 
-	char buffer[MAX_QPATH];
 	if (G_SpawnString("noise", "*NOSOUND*", &s))
 	{
+		char buffer[MAX_QPATH];
 		Q_strncpyz(buffer, s, sizeof buffer);
 		COM_DefaultExtension(buffer, sizeof buffer, ".wav");
 		self->noise_index = G_SoundIndex(buffer);

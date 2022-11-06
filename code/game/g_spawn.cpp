@@ -48,7 +48,7 @@ namePrecache_m* as_preCacheMap = nullptr;
 
 char* G_AddSpawnVarToken(const char* string);
 
-void AddSpawnField(char* field, char* value)
+void AddSpawnField(const char* field, const char* value)
 {
 	for (int i = 0; i < numSpawnVars; i++)
 	{

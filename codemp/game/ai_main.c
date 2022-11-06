@@ -101,8 +101,8 @@ void adjustfor_strafe(const bot_state_t* bs, vec3_t move_dir);
 void BotBehave_Attack(bot_state_t* bs);
 extern const gbuyable_t bg_buylist[];
 extern qboolean IsSurrendering(const gentity_t* self);
-extern qboolean IsRespecting(gentity_t* self);
-extern qboolean IsCowering(gentity_t* self);
+extern qboolean IsRespecting(const gentity_t* self);
+extern qboolean IsCowering(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 qboolean G_ThereIsAMaster(void);
 void BotBehave_AttackMove(bot_state_t* bs);
@@ -5111,7 +5111,7 @@ int BotTrace_Duck(const bot_state_t* bs, vec3_t traceto)
 }
 
 //check of the potential enemy is a valid one
-int PassStandardEnemyChecks(const bot_state_t* bs, gentity_t* en)
+int PassStandardEnemyChecks(const bot_state_t* bs, const gentity_t* en)
 {
 	if (!bs || !en)
 	{
@@ -8224,48 +8224,6 @@ void MeleeCombatHandling(bot_state_t* bs)
 		en_down == mid_down)
 	{
 		VectorCopy(usethisvec, bs->goalPosition);
-	}
-
-	if (gesturetime[bs->cur_ps.clientNum] <= level.time && bot_thinklevel.integer >= 0)
-	{
-		if (bs->currentEnemy
-			&& bs->currentEnemy->client
-			&& bs->currentEnemy->health > 0
-			&& bs->jumpTime <= level.time // Don't gesture during jumping...
-			&& !bs->doAttack
-			&& !bs->doAltAttack
-			&& bs->currentEnemy->client->ps.groundEntityNum != ENTITYNUM_NONE
-			&& VectorDistance(g_entities[bs->cur_ps.clientNum].r.currentOrigin, bs->currentEnemy->r.currentOrigin) <
-			300 || gesturetime[bs->cur_ps.clientNum] > level.time)
-		{
-			if (visible(&g_entities[bs->cur_ps.clientNum], bs->currentEnemy) || gesturetime[bs->cur_ps.clientNum] >
-				level.time)
-			{
-				bot_input_t bi;
-				bi.actionflags |= ACTION_GESTURE;
-
-				if (BotGetWeaponRange(bs) == BWEAPONRANGE_MELEE || BotGetWeaponRange(bs) == BWEAPONRANGE_SABER)
-				{
-					bi.actionflags |= ACTION_KICK;
-				}
-				int check_val = bot_thinklevel.integer;
-
-				if (check_val <= 0)
-					check_val = 1;
-
-				gesturetime[bs->cur_ps.clientNum] = level.time + 20000 / check_val;
-			}
-			else
-			{
-				// Reset.
-				gesturetime[bs->cur_ps.clientNum] = 0;
-			}
-		}
-		else
-		{
-			// Reset.
-			gesturetime[bs->cur_ps.clientNum] = 0;
-		}
 	}
 }
 

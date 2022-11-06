@@ -450,11 +450,11 @@ static void CG_DrawJK2blockingMode(const centity_t* cent, const int xPos, const 
 
 	cgi_R_SetColor(colorTable[CT_WHITE]);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK)
 	{
 		blockindex = OHB_JK2MBLOCKINGMODE;
 	}
-	else if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_BLOCKING)
+	else if (cg.predicted_player_state.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 	{
 		blockindex = OHB_JK2BLOCKINGMODE;
 	}
@@ -1083,7 +1083,7 @@ static void CG_DrawCusblockPoints(int x, int y, const float hudRatio)
 	//	Outer block circular
 	//==========================================================================================================//
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -1131,7 +1131,7 @@ static void CG_DrawCusblockPoints(int x, int y, const float hudRatio)
 
 	cgi_R_SetColor(calcColor);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		CG_DrawPic(x - 3.3 * hudRatio, y + 3.5, 40 * hudRatio, 40, cgs.media.HUDblockpointMB1);
@@ -1152,7 +1152,7 @@ static void CG_DrawCusblockPoints(int x, int y, const float hudRatio)
 		blockPercent = static_cast<float>(cg.snap->ps.blockPoints) / (BLOCK_POINTS_MAX / 2);
 	}
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -1168,7 +1168,7 @@ static void CG_DrawCusblockPoints(int x, int y, const float hudRatio)
 
 	cgi_R_SetColor(calcColor);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		CG_DrawPic(x - 3.3 * hudRatio, y + 3.5, 40 * hudRatio, 40, cgs.media.HUDblockpointMB2);
@@ -2040,7 +2040,7 @@ static void CG_DrawJK2blockPoints(int x, int y)
 	//	Outer block circular
 	//==========================================================================================================//
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -2088,7 +2088,7 @@ static void CG_DrawJK2blockPoints(int x, int y)
 
 	cgi_R_SetColor(calcColor);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		CG_DrawPic(x, y, 35, 35, cgs.media.HUDblockpointMB1);
@@ -2109,7 +2109,7 @@ static void CG_DrawJK2blockPoints(int x, int y)
 		blockPercent = static_cast<float>(cg.snap->ps.blockPoints) / (BLOCK_POINTS_MAX / 2);
 	}
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		memcpy(calcColor, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -2125,7 +2125,7 @@ static void CG_DrawJK2blockPoints(int x, int y)
 
 	cgi_R_SetColor(calcColor);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		CG_DrawPic(x, y, 35, 35, cgs.media.HUDblockpointMB2);

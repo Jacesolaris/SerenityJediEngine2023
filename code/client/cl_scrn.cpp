@@ -97,16 +97,16 @@ void SCR_DrawBigChar(int x, int y, int ch) {
 
 	const float ax = x;
 	const float ay = y;
-	const float aw = BIGCHAR_WIDTH;
-	const float ah = BIGCHAR_HEIGHT;
+	constexpr float aw = BIGCHAR_WIDTH;
+	constexpr float ah = BIGCHAR_HEIGHT;
 
 	const int row = ch >> 4;
 	const int col = ch & 15;
 
 	const float frow = row * 0.0625;
 	const float fcol = col * 0.0625;
-	const float size = 0.03125;
-	const float size2 = 0.0625;
+	constexpr float size = 0.03125;
+	constexpr float size2 = 0.0625;
 
 	re.DrawStretchPic(ax, ay, aw, ah,
 		fcol, frow,
@@ -144,8 +144,8 @@ void SCR_DrawSmallChar(int x, int y, int ch) {
 
 	const float frow = row * 0.0625;
 	const float fcol = col * 0.0625;
-	const float size = 0.03125;
-	const float size2 = 0.0625;
+	constexpr float size = 0.03125;
+	constexpr float size2 = 0.0625;
 
 	re.DrawStretchPic(x * con.xadjust, y * con.yadjust,
 		SMALLCHAR_WIDTH * con.xadjust, SMALLCHAR_HEIGHT * con.yadjust,
@@ -164,7 +164,7 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawBigStringExt(int x, int y, const char* string, float* setColor, qboolean forceColor, qboolean noColorEscape) {
+void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean noColorEscape) {
 	vec4_t		color;
 
 	// draw the drop shadow
@@ -226,7 +226,7 @@ Draws a multi-colored string with a drop shadow, optionally forcing
 to a fixed color.
 ==================
 */
-void SCR_DrawSmallStringExt(int x, int y, const char* string, float* setColor, qboolean forceColor,
+void SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor,
 	qboolean noColorEscape) {
 	vec4_t		color;
 
@@ -321,7 +321,7 @@ void SCR_DrawDebugGraph(void)
 	// draw the graph
 	//
 	const int w = cls.glconfig.vidWidth;
-	const int x = 0;
+	constexpr int x = 0;
 	const int y = cls.glconfig.vidHeight;
 	re.SetColor(g_color_table[0]);
 	re.DrawStretchPic(x, y - cl_graphheight->integer,

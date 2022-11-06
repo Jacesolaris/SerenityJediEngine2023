@@ -1845,14 +1845,14 @@ void G_SiegeClientExData(gentity_t* msgTarg);
 // g_timer
 //Timing information
 void TIMER_Clear(void);
-void TIMER_Clear2(gentity_t* ent);
-void TIMER_Set(gentity_t* ent, const char* identifier, int duration);
-int TIMER_Get(gentity_t* ent, const char* identifier);
-qboolean TIMER_Done(gentity_t* ent, const char* identifier);
+void TIMER_Clear2(const gentity_t* ent);
+void TIMER_Set(const gentity_t* ent, const char* identifier, int duration);
+int TIMER_Get(const gentity_t* ent, const char* identifier);
+qboolean TIMER_Done(const gentity_t* ent, const char* identifier);
 qboolean TIMER_Start(gentity_t* self, const char* identifier, int duration);
-qboolean TIMER_Done2(gentity_t* ent, const char* identifier, qboolean remove);
-qboolean TIMER_Exists(gentity_t* ent, const char* identifier);
-void TIMER_Remove(gentity_t* ent, const char* identifier);
+qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, qboolean remove);
+qboolean TIMER_Exists(const gentity_t* ent, const char* identifier);
+void TIMER_Remove(const gentity_t* ent, const char* identifier);
 
 float NPC_GetHFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, float hFOV);
 float NPC_GetVFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, float vFOV);

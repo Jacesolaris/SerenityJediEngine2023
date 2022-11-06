@@ -98,7 +98,6 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_InCartwheel(int anim);
 extern qboolean PM_InButterfly(int anim);
 extern qboolean PM_CanRollFromSoulCal(const playerState_t* ps);
-extern saberMoveName_t PM_SaberFlipOverAttackMove(void);
 extern qboolean PM_CheckFlipOverAttackMove(qboolean checkEnemy);
 extern qboolean PM_CheckJumpForwardAttackMove(void);
 extern saberMoveName_t PM_SaberBackflipAttackMove(void);
@@ -179,11 +178,10 @@ extern cvar_t* g_saberNewControlScheme;
 extern cvar_t* g_stepSlideFix;
 extern cvar_t* g_noIgniteTwirl;
 
-int PM_BlockingPoseForSaberAnimLevelSingle(void);
-int PM_BlockingPoseForSaberAnimLevelDual(void);
-int PM_BlockingPoseForSaberAnimLevelStaff(void);
-
-int PM_ReadyPoseForSaberAnimLevelPlayer(void);
+int PM_BlockingPoseForSaberAnimLevelDual();
+int PM_BlockingPoseForSaberAnimLevelStaff();
+int PM_BlockingPoseForSaberAnimLevelSingle();
+int PM_IdlePoseForSaberAnimLevel();
 
 static void pm_set_water_level_at_point(vec3_t org, int* waterlevel, int* watertype);
 
@@ -228,7 +226,7 @@ extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
 extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trace_t* trace);
 extern saberMoveName_t transitionMove[Q_NUM_QUADS][Q_NUM_QUADS];
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
 
 Vehicle_t* PM_RidingVehicle(void)
 {
@@ -3161,7 +3159,6 @@ static void PM_FlyVehicleMove(void)
 	// Handle negative speed.
 	if (wishspeed < 0)
 	{
-		wishspeed = wishspeed * -1.0f;
 		VectorScale(wishvel, -1.0f, wishvel);
 		VectorScale(wishdir, -1.0f, wishdir);
 	}
@@ -3386,7 +3383,6 @@ static void PM_AirMove(void)
 		//--------------------------------
 		if (pVeh->m_ulFlags & VEH_FLYING || pVeh->m_ulFlags & VEH_SLIDEBREAKING)
 		{
-			wishspeed = 0.0f;
 			VectorClear(wishvel);
 			VectorClear(wishdir);
 		}
@@ -3397,7 +3393,6 @@ static void PM_AirMove(void)
 		{
 			VectorCopy(pm->gent->pos3, wishvel);
 			VectorCopy(wishvel, wishdir);
-			wishspeed = VectorNormalize(wishdir);
 		}
 
 		// Boarding - Maintain Boarding Velocity
@@ -3406,14 +3401,12 @@ static void PM_AirMove(void)
 		{
 			VectorCopy(pVeh->m_vBoardingVelocity, wishvel);
 			VectorCopy(wishvel, wishdir);
-			wishspeed = VectorNormalize(wishdir);
 		}
 
 		// Otherwise, Normal Velocity
 		//----------------------------
 		else
 		{
-			wishspeed = pm->ps->speed;
 			VectorScale(pm->ps->moveDir, pm->ps->speed, wishvel);
 			VectorCopy(pm->ps->moveDir, wishdir);
 		}
@@ -5458,8 +5451,6 @@ static void PM_SetVehicleAngles(vec3_t normal)
 		{
 			vAngles[PITCH] = -15;
 		}
-		//don't bank so fast when in the air
-		vehicleBankingSpeed *= 0.125f;
 	}
 	//NOTE: if angles are flat and we're moving through air (not on ground),
 	//		then pitch/bank?
@@ -10082,7 +10073,7 @@ void PM_SwimFloatAnim(void)
 PM_Footsteps
 ===============
 */
-static void PM_Footsteps(void)
+static void PM_Footsteps()
 {
 	float bobmove;
 	int old;
@@ -10091,8 +10082,8 @@ static void PM_Footsteps(void)
 	qboolean flipping = qfalse;
 	int setAnimFlags = SETANIM_FLAG_NORMAL;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse; //Active Blocking
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	
 
 	if (pm->gent == nullptr || pm->gent->client == nullptr)
 		return;
@@ -10210,7 +10201,7 @@ static void PM_Footsteps(void)
 					{
 						bobmove = 0.005 * fabs(pm->ps->velocity[2]); // climbing bobs slow
 						if (bobmove > 0.3)
-							bobmove = 0.3F;
+							bobmove = 0.3f;
 						goto DoFootSteps;
 					}
 				}
@@ -10562,54 +10553,24 @@ static void PM_Footsteps(void)
 					}
 					else
 					{
-						switch (pm->ps->saberAnimLevel)
+						if (HoldingBlock)
 						{
-						case SS_DUAL:
-							if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+							if (pm->ps->saberAnimLevel == SS_DUAL)
 							{
 								legsAnim = PM_BlockingPoseForSaberAnimLevelDual();
 							}
-							else
-							{
-								legsAnim = PM_ReadyPoseForSaberAnimLevelPlayer();
-							}
-							break;
-						case SS_STAFF:
-							if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+							else if (pm->ps->saberAnimLevel == SS_STAFF)
 							{
 								legsAnim = PM_BlockingPoseForSaberAnimLevelStaff();
 							}
 							else
 							{
-								legsAnim = PM_ReadyPoseForSaberAnimLevelPlayer();
-							}
-							break;
-						case SS_FAST:
-						case SS_TAVION:
-						case SS_STRONG:
-						case SS_DESANN:
-						case SS_MEDIUM:
-							if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
-							{
 								legsAnim = PM_BlockingPoseForSaberAnimLevelSingle();
 							}
-							else
-							{
-								legsAnim = PM_ReadyPoseForSaberAnimLevelPlayer();
-							}
-							break;
-						case SS_NONE:
-
-						default:
-							if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
-							{
-								legsAnim = PM_BlockingPoseForSaberAnimLevelSingle();
-							}
-							else
-							{
-								legsAnim = PM_ReadyPoseForSaberAnimLevelPlayer();
-							}
-							break;
+						}
+						else
+						{
+							legsAnim = PM_IdlePoseForSaberAnimLevel();
 						}
 					}
 					PM_SetAnim(pm, SETANIM_LEGS, legsAnim, SETANIM_FLAG_NORMAL);
@@ -10756,7 +10717,7 @@ static void PM_Footsteps(void)
 
 	if (pm->ps->pm_flags & PMF_DUCKED || OVERRIDE_ROLL_CHECK)
 	{
-		bobmove = 0.5; // ducked characters bob much faster
+		bobmove = 0.5f; // ducked characters bob much faster
 		if (!PM_InOnGroundAnim(pm->ps) //not on the ground
 			&& (!PM_InRollIgnoreTimer(pm->ps) || !pm->ps->legsAnimTimer && pm->cmd.upmove < 0))
 		{
@@ -10812,7 +10773,7 @@ static void PM_Footsteps(void)
 		if (!(pm->cmd.buttons & BUTTON_WALKING))
 		{
 			//running backwards
-			bobmove = 0.4F; // faster speeds bob faster
+			bobmove = 0.4f; // faster speeds bob faster
 
 			if (pm->ps->weapon == WP_SABER && pm->ps->SaberActive())
 			{ //This controls saber movement anims //JaceSolaris
@@ -10835,7 +10796,7 @@ static void PM_Footsteps(void)
 		else
 		{
 			//walking backwards
-			bobmove = 0.3F; // faster speeds bob faster
+			bobmove = 0.3f; // faster speeds bob faster
 
 			if (pm->ps->weapon == WP_SABER && pm->ps->SaberActive())
 			{ //This controls saber movement anims //JaceSolaris
@@ -10875,7 +10836,7 @@ static void PM_Footsteps(void)
 	{
 		if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_GALAKMECH)
 		{
-			bobmove = 0.3F; // walking bobs slow
+			bobmove = 0.3f; // walking bobs slow
 			if (pm->ps->weapon == WP_NONE)
 			{
 				//helmet retracted
@@ -10898,7 +10859,7 @@ static void PM_Footsteps(void)
 			if (!(pm->cmd.buttons & BUTTON_WALKING))
 			{
 				//running
-				bobmove = 0.4F; // faster speeds bob faster
+				bobmove = 0.4f; // faster speeds bob faster
 
 				////////////////////////////////////////////// saber running anims ///////////////////////////////////////////
 				if (pm->ps->weapon == WP_SABER && pm->ps->SaberActive())
@@ -11361,7 +11322,7 @@ static void PM_Footsteps(void)
 			else
 			{
 				//walking forward saber
-				bobmove = 0.3F; // walking bobs slow
+				bobmove = 0.3f; // walking bobs slow
 				if (pm->ps->weapon == WP_SABER && pm->ps->SaberActive())
 				{
 					if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer())
@@ -11768,9 +11729,9 @@ PM_BeginWeaponChange
 */
 static void PM_BeginWeaponChange(const int weapon)
 {
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	if (pm->gent && pm->gent->client && pm->gent->client->pers.enterTime >= level.time - 500)
@@ -12211,49 +12172,7 @@ static void PM_FinishWeaponChange(void)
 	}
 }
 
-int PM_ReadyPoseForSaberAnimLevelDucked(void);
-
-int PM_ReadyPoseForSaberAnimLevel(void)
-{
-	int anim = BOTH_STAND2;
-
-	if (PM_RidingVehicle())
-	{
-		return -1;
-	}
-
-	switch (pm->ps->saberAnimLevel)
-	{
-	case SS_DUAL:
-		anim = BOTH_SABERDUAL_STANCE;
-		break;
-	case SS_STAFF:
-		anim = BOTH_SABERSTAFF_STANCE;
-		break;
-	case SS_FAST:
-		anim = BOTH_SABERFAST_STANCE;
-		break;
-	case SS_TAVION:
-		anim = BOTH_SABERTAVION_STANCE;
-		break;
-	case SS_STRONG:
-		anim = BOTH_SABERSLOW_STANCE;
-		break;
-	case SS_DESANN:
-		anim = BOTH_SABERDESANN_STANCE;
-		break;
-	case SS_MEDIUM:
-		anim = BOTH_STAND2;
-		break;
-	case SS_NONE:
-	default:
-		anim = BOTH_STAND2;
-		break;
-	}
-	return anim;
-}
-
-int PM_ReadyPoseForSaberAnimLevelNPC(void)
+int PM_ReadyPoseForSaberAnimLevel()
 {
 	int anim;
 
@@ -12261,7 +12180,6 @@ int PM_ReadyPoseForSaberAnimLevelNPC(void)
 	{
 		return -1;
 	}
-
 	switch (pm->ps->saberAnimLevel)
 	{
 	case SS_DUAL:
@@ -12270,11 +12188,11 @@ int PM_ReadyPoseForSaberAnimLevelNPC(void)
 	case SS_STAFF:
 		anim = BOTH_SABERSTAFF_STANCE;
 		break;
-	case SS_FAST:
-		anim = BOTH_SABERFAST_STANCE;
-		break;
 	case SS_TAVION:
 		anim = BOTH_SABERTAVION_STANCE;
+		break;
+	case SS_FAST:
+		anim = BOTH_SABERFAST_STANCE;
 		break;
 	case SS_STRONG:
 		anim = BOTH_SABERSLOW_STANCE;
@@ -12282,462 +12200,73 @@ int PM_ReadyPoseForSaberAnimLevelNPC(void)
 	case SS_DESANN:
 		anim = BOTH_SABERDESANN_STANCE;
 		break;
-	case SS_MEDIUM:
-		anim = BOTH_SABERSTANCE_STANCE;
-		break;
 	case SS_NONE:
+	case SS_MEDIUM:
 	default:
-		anim = BOTH_SABERSTANCE_STANCE;
+		anim = BOTH_STAND2;
 		break;
 	}
 	return anim;
 }
 
-int PM_ReadyPoseForSaberAnimLevelPlayer(void)
+int PM_IdlePoseForSaberAnimLevel()
 {
-	int anim = BOTH_STAND2;
-
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
+	int anim;
 
 	if (PM_RidingVehicle())
 	{
 		return -1;
-	}
-
-	if (pm->ps->blockPoints <= BLOCKPOINTS_FAIL)
-	{
-		return BOTH_STAND1;
 	}
 
 	if (pm->ps->clientNum && !PM_ControlledByPlayer())
 	{
-		anim = PM_ReadyPoseForSaberAnimLevelNPC();
+		anim = PM_ReadyPoseForSaberAnimLevel();
+	}
+	else  if (pm->ps->pm_flags & PMF_DUCKED)
+	{
+		anim = PM_ReadyPoseForSaberAnimLevel();
 	}
 	else
 	{
-		if (PM_BoltBlockingAnim(pm->ps->torsoAnim)
-			|| PM_SaberInBounce(pm->ps->saberMove))
+		switch (pm->ps->saberAnimLevel)
 		{
-			//
-		}
-		else
-		{
-			if (pm->ps->pm_flags & PMF_DUCKED)
-			{
-				anim = PM_ReadyPoseForSaberAnimLevelDucked();
-			}
-			else
-			{
-				switch (pm->ps->saberAnimLevel)
-				{
-				case SS_DUAL:
-					if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-					{
-						anim = BOTH_SABERDUAL_STANCE_ALT;
-					}
-					else
-					{
-						//simple saber attack
-						if (HoldingBlock)
-						{
-							if (pm->ps->saber[0].type == SABER_GRIE) //saber backhand
-							{
-								anim = BOTH_SABERDUAL_STANCE_GRIEVOUS;
-							}
-							else if (pm->ps->saber[0].type == SABER_GRIE4) //saber backhand
-							{
-								anim = BOTH_SABERDUAL_STANCE_GRIEVOUS;
-							}
-							else
-							{
-								anim = BOTH_SABERDUAL_STANCE;
-							}
-						}
-						else
-						{
-							anim = BOTH_SABERDUAL_STANCE_IDLE;
-						}
-					}
-					break;
-				case SS_STAFF:
-					if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-					{
-						anim = BOTH_SABERSTAFF_STANCE_ALT;
-					}
-					else
-					{
-						if (HoldingBlock)
-						{
-							if (pm->ps->saber[0].type == SABER_BACKHAND
-								|| pm->ps->saber[0].type == SABER_ASBACKHAND) //saber backhand
-							{
-								anim = BOTH_SABERBACKHAND_STANCE;
-							}
-							else
-							{
-								anim = BOTH_SABERSTAFF_STANCE;
-							}
-						}
-						else
-						{
-							anim = BOTH_SABERSTAFF_STANCE_IDLE;
-						}
-					}
-					break;
-				case SS_FAST:
-					if (HoldingBlock)
-					{
-						if (pm->ps->saber[0].type == SABER_YODA) //yoda
-						{
-							anim = BOTH_SABERYODA_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_OBIWAN) //saber obi
-						{
-							anim = BOTH_SABEROBI_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_REY) //saber ray
-						{
-							anim = BOTH_SABER_REY_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_DOOKU) //saber dooku
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_UNSTABLE) //saber kylo
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_WINDU) //saber windu
-						{
-							anim = BOTH_SABEREADY_STANCE;
-						}
-						else
-						{
-							anim = BOTH_SABERFAST_STANCE;
-						}
-					}
-					else
-					{
-						if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else
-						{
-							anim = BOTH_STAND1;
-						}
-					}
-					break;
-				case SS_MEDIUM:
-					if (HoldingBlock)
-					{
-						if (pm->ps->saber[0].type == SABER_YODA) //yoda
-						{
-							anim = BOTH_SABERYODA_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_OBIWAN) //saber obi
-						{
-							anim = BOTH_SABEROBI_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_REY) //saber ray
-						{
-							anim = BOTH_SABER_REY_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_DOOKU) //saber dooku
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_UNSTABLE) //saber kylo
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_WINDU) //saber windu
-						{
-							anim = BOTH_SABEREADY_STANCE;
-						}
-						else
-						{
-							anim = BOTH_STAND2;
-						}
-					}
-					else
-					{
-						if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else
-						{
-							anim = BOTH_STAND1;
-						}
-					}
-					break;
-				case SS_STRONG:
-					if (HoldingBlock)
-					{
-						if (pm->ps->saber[0].type == SABER_YODA) //yoda
-						{
-							anim = BOTH_SABERYODA_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_OBIWAN) //saber obi
-						{
-							anim = BOTH_SABEROBI_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_REY) //saber ray
-						{
-							anim = BOTH_SABER_REY_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_DOOKU) //saber dooku
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_UNSTABLE) //saber kylo
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_WINDU) //saber windu
-						{
-							anim = BOTH_SABEREADY_STANCE;
-						}
-						else
-						{
-							anim = BOTH_SABERSLOW_STANCE;
-						}
-					}
-					else
-					{
-						if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else
-						{
-							anim = BOTH_STAND1;
-						}
-					}
-					break;
-				case SS_TAVION:
-					if (HoldingBlock)
-					{
-						if (pm->ps->saber[0].type == SABER_YODA) //yoda
-						{
-							anim = BOTH_SABERYODA_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_OBIWAN) //saber obi
-						{
-							anim = BOTH_SABEROBI_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_REY) //saber ray
-						{
-							anim = BOTH_SABER_REY_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_DOOKU) //saber dooku
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_UNSTABLE) //saber kylo
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_WINDU) //saber windu
-						{
-							anim = BOTH_SABEREADY_STANCE;
-						}
-						else
-						{
-							anim = BOTH_SABERTAVION_STANCE;
-						}
-					}
-					else
-					{
-						if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else
-						{
-							anim = BOTH_STAND1;
-						}
-					}
-					break;
-				case SS_DESANN:
-					if (HoldingBlock)
-					{
-						if (pm->ps->saber[0].type == SABER_YODA) //yoda
-						{
-							anim = BOTH_SABERYODA_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_OBIWAN) //saber obi
-						{
-							anim = BOTH_SABEROBI_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_REY) //saber ray
-						{
-							anim = BOTH_SABER_REY_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_DOOKU) //saber dooku
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_UNSTABLE) //saber kylo
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_WINDU) //saber windu
-						{
-							anim = BOTH_SABEREADY_STANCE;
-						}
-						else
-						{
-							anim = BOTH_SABERDESANN_STANCE;
-						}
-					}
-					else
-					{
-						if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else
-						{
-							anim = BOTH_STAND1;
-						}
-					}
-					break;
-				case SS_NONE:
-				default:
-					if (HoldingBlock)
-					{
-						if (pm->ps->saber[0].type == SABER_YODA) //yoda
-						{
-							anim = BOTH_SABERYODA_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_OBIWAN) //saber obi
-						{
-							anim = BOTH_SABEROBI_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_REY) //saber ray
-						{
-							anim = BOTH_SABER_REY_STANCE;
-						}
-						else if (pm->ps->saber[0].type == SABER_DOOKU) //saber dooku
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_UNSTABLE) //saber kylo
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else if (pm->ps->saber[0].type == SABER_WINDU) //saber windu
-						{
-							anim = BOTH_SABEREADY_STANCE;
-						}
-						else
-						{
-							anim = BOTH_STAND2;
-						}
-					}
-					else
-					{
-						if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-						{
-							anim = BOTH_SABERSTANCE_STANCE_ALT;
-						}
-						else
-						{
-							anim = BOTH_STAND1;
-						}
-					}
-					break;
-				}
-			}
+		case SS_DUAL:
+		case SS_STAFF:
+		case SS_FAST:
+		case SS_TAVION:
+		case SS_STRONG:
+		case SS_NONE:
+		case SS_MEDIUM:
+		case SS_DESANN:
+		default:
+			anim = BOTH_STAND1;
+			break;
 		}
 	}
 	return anim;
 }
 
-int PM_ReadyPoseForSaberAnimLevelDucked(void)
+int PM_BlockingPoseForSaberAnimLevelDual()
 {
-	int anim;
-
-	if (PM_RidingVehicle())
-	{
-		return -1;
-	}
-
-	switch (pm->ps->saberAnimLevel)
-	{
-	case SS_DUAL:
-		anim = BOTH_SABERDUALCROUCH;
-		break;
-	case SS_STAFF:
-		anim = BOTH_SABERSTAFFCROUCH;
-		break;
-	case SS_FAST:
-		anim = BOTH_SABERSINGLECROUCH;
-		break;
-	case SS_TAVION:
-		anim = BOTH_SABERSINGLECROUCH;
-		break;
-	case SS_STRONG:
-		anim = BOTH_SABERSINGLECROUCH;
-		break;
-	case SS_MEDIUM:
-		anim = BOTH_SABERSINGLECROUCH;
-		break;
-	case SS_DESANN:
-		anim = BOTH_SABERSINGLECROUCH;
-		break;
-	case SS_NONE:
-	default:
-		anim = BOTH_SABERSINGLECROUCH;
-		break;
-	}
-	return anim;
-}
-
-int PM_BlockingPoseForSaberAnimLevelSingle(void)
-{
-	//Sets your saber block position based on your current movement commands.
 	int anim = PM_ReadyPoseForSaberAnimLevel();
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;	//Active Blocking
+
+	const qboolean HoldingBlockAndAttack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
 
 	const signed char forwardmove = pm->cmd.forwardmove;
 	const signed char rightmove = pm->cmd.rightmove;
 
-	if (pm->ps->blockPoints < BLOCKPOINTS_DANGER)
-	{
-		return -1;
-	}
-
-	if (pm->ps->eFlags & EF_FORCE_DRAINED || pm->ps->eFlags & EF_FORCE_GRIPPED || pm->ps->eFlags &
-		EF_FORCE_GRABBED)
-	{
-		return -1;
-	}
-
 	if (PM_RidingVehicle())
 	{
 		return -1;
 	}
 
-	if (PM_InKnockDown(pm->ps) || PM_InSlapDown(pm->ps) || PM_InRoll(pm->ps))
+	if (pm->ps->clientNum && !PM_ControlledByPlayer())
 	{
-		return -1;
-	}
-
-	if (PM_BoltBlockingAnim(pm->ps->torsoAnim)
-		|| PM_SaberInBounce(pm->ps->saberMove))
-	{
-		//
+		anim = PM_ReadyPoseForSaberAnimLevel();
 	}
 	else
 	{
-		if (pm->ps->clientNum && !PM_ControlledByPlayer())
-		{
-			anim = PM_ReadyPoseForSaberAnimLevelNPC();
-		}
-		else if (pm->cmd.upmove <= 0)
+		if (pm->cmd.upmove <= 0)
 		{
 			if (forwardmove < 0)
 			{
@@ -12745,182 +12274,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				if (rightmove < 0)
 				{
 					//back left
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_TL;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-				else if (rightmove > 0)
-				{
-					//Back right
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_TR;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-				else
-				{
-					//straight back
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_T_;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-			}
-			else if (forwardmove > 0)
-			{
-				//walking forwards
-				if (rightmove < 0)
-				{
-					//forwards left
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_BL;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-				else if (rightmove > 0)
-				{
-					//forwards right
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_BR;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-				else
-				{
-					//Top Block
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_T_;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-			}
-			else
-			{
-				//STANDING STILL
-				if (rightmove < 0)
-				{
-					//left block
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_TL;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-				else if (rightmove > 0)
-				{
-					//right block
-					if (ActiveBlocking)
-					{
-						anim = BOTH_P1_S1_TR;
-					}
-					else
-					{
-						anim = PM_ReadyPoseForSaberAnimLevel();
-					}
-				}
-				else
-				{
-					if (ActiveBlocking)
-					{
-						anim = BOTH_SABEREADY_STANCE;//2023 new anims
-					}
-					else
-					{
-						if (pm->ps->pm_flags & PMF_DUCKED)
-						{
-							anim = PM_ReadyPoseForSaberAnimLevelDucked();
-						}
-						else
-						{
-							anim = PM_ReadyPoseForSaberAnimLevel();
-						}
-					}
-				}
-			}
-		}
-	}
-	return anim;
-}
-
-int PM_BlockingPoseForSaberAnimLevelDual(void)
-{
-	//Sets your saber block position based on your current movement commands.
-	int anim = PM_ReadyPoseForSaberAnimLevel();
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	//Active Blocking
-
-	const signed char forwardmove = pm->cmd.forwardmove;
-	const signed char rightmove = pm->cmd.rightmove;
-
-	if (pm->ps->blockPoints < BLOCKPOINTS_DANGER)
-	{
-		return -1;
-	}
-
-	if (pm->ps->eFlags & EF_FORCE_DRAINED || pm->ps->eFlags & EF_FORCE_GRIPPED || pm->ps->eFlags &
-		EF_FORCE_GRABBED)
-	{
-		return -1;
-	}
-
-	if (PM_RidingVehicle())
-	{
-		return -1;
-	}
-
-	if (PM_InKnockDown(pm->ps) || PM_InSlapDown(pm->ps) || PM_InRoll(pm->ps))
-	{
-		return -1;
-	}
-
-	if (PM_BoltBlockingAnim(pm->ps->torsoAnim)
-		|| PM_SaberInBounce(pm->ps->saberMove))
-	{
-		//
-	}
-	else
-	{
-		if (pm->ps->clientNum && !PM_ControlledByPlayer())
-		{
-			anim = PM_ReadyPoseForSaberAnimLevelNPC();
-		}
-		else if (pm->cmd.upmove <= 0)
-		{
-			if (forwardmove < 0)
-			{
-				//walking backwards
-				if (rightmove < 0)
-				{
-					//back left
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_TL;
 					}
@@ -12932,19 +12286,19 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else if (rightmove > 0)
 				{
 					//Back right
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_TR;
 					}
 					else
 					{
-						anim = BOTH_SABERDUAL_STANCE;
+						anim = PM_ReadyPoseForSaberAnimLevel();
 					}
 				}
 				else
 				{
 					//straight back
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_T_;
 					}
@@ -12960,7 +12314,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				if (rightmove < 0)
 				{
 					//forwards left
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_BL;
 					}
@@ -12972,7 +12326,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else if (rightmove > 0)
 				{
 					//forwards right
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_BR;
 					}
@@ -12984,7 +12338,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else
 				{
 					//Top Block
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_T_;
 					}
@@ -13000,7 +12354,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				if (rightmove < 0)
 				{
 					//left block
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_TL;
 					}
@@ -13012,7 +12366,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else if (rightmove > 0)
 				{
 					//right block
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P6_S6_TR;
 					}
@@ -13023,20 +12377,13 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				}
 				else
 				{
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
-						anim = BOTH_SABERDUAL_STANCE_ALT;//2023 new anims
+						anim = BOTH_P6_S6_T_;
 					}
 					else
 					{
-						if (pm->ps->pm_flags & PMF_DUCKED)
-						{
-							anim = PM_ReadyPoseForSaberAnimLevelDucked();
-						}
-						else
-						{
-							anim = PM_ReadyPoseForSaberAnimLevel();
-						}
+						anim = PM_ReadyPoseForSaberAnimLevel();
 					}
 				}
 			}
@@ -13045,49 +12392,27 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 	return anim;
 }
 
-int PM_BlockingPoseForSaberAnimLevelStaff(void)
+int PM_BlockingPoseForSaberAnimLevelStaff()
 {
-	//Sets your saber block position based on your current movement commands.
 	int anim = PM_ReadyPoseForSaberAnimLevel();
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
-	//Active Blocking
+
+	const qboolean HoldingBlockAndAttack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
 
 	const signed char forwardmove = pm->cmd.forwardmove;
 	const signed char rightmove = pm->cmd.rightmove;
-
-	if (pm->ps->blockPoints < BLOCKPOINTS_DANGER)
-	{
-		return -1;
-	}
-
-	if (pm->ps->eFlags & EF_FORCE_DRAINED || pm->ps->eFlags & EF_FORCE_GRIPPED || pm->ps->eFlags &
-		EF_FORCE_GRABBED)
-	{
-		return -1;
-	}
 
 	if (PM_RidingVehicle())
 	{
 		return -1;
 	}
 
-	if (PM_InKnockDown(pm->ps) || PM_InSlapDown(pm->ps) || PM_InRoll(pm->ps))
+	if (pm->ps->clientNum && !PM_ControlledByPlayer())
 	{
-		return -1;
-	}
-
-	if (PM_BoltBlockingAnim(pm->ps->torsoAnim)
-		|| PM_SaberInBounce(pm->ps->saberMove))
-	{
-		//
+		anim = PM_ReadyPoseForSaberAnimLevel();
 	}
 	else
 	{
-		if (pm->ps->clientNum && !PM_ControlledByPlayer())
-		{
-			anim = PM_ReadyPoseForSaberAnimLevelNPC();
-		}
-		else if (pm->cmd.upmove <= 0)
+		if (pm->cmd.upmove <= 0)
 		{
 			if (forwardmove < 0)
 			{
@@ -13095,7 +12420,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				if (rightmove < 0)
 				{
 					//back left
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_TL;
 					}
@@ -13107,7 +12432,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else if (rightmove > 0)
 				{
 					//Back right
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_TR;
 					}
@@ -13119,7 +12444,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else
 				{
 					//straight back
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_T_;
 					}
@@ -13135,7 +12460,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				if (rightmove < 0)
 				{
 					//forwards left
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_BL;
 					}
@@ -13147,7 +12472,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else if (rightmove > 0)
 				{
 					//forwards right
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_BR;
 					}
@@ -13159,7 +12484,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else
 				{
 					//Top Block
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_T_;
 					}
@@ -13175,7 +12500,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				if (rightmove < 0)
 				{
 					//left block
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_TL;
 					}
@@ -13187,7 +12512,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else if (rightmove > 0)
 				{
 					//right block
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
 						anim = BOTH_P7_S7_TR;
 					}
@@ -13198,20 +12523,159 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				}
 				else
 				{
-					if (ActiveBlocking)
+					if (HoldingBlockAndAttack)
 					{
-						anim = BOTH_P7_S7_T_;//2023 new anims
+						anim = BOTH_P7_S7_T_;
 					}
 					else
 					{
-						if (pm->ps->pm_flags & PMF_DUCKED)
-						{
-							anim = PM_ReadyPoseForSaberAnimLevelDucked();
-						}
-						else
-						{
-							anim = PM_ReadyPoseForSaberAnimLevel();
-						}
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+			}
+		}
+	}
+	return anim;
+}
+
+int PM_BlockingPoseForSaberAnimLevelSingle()
+{
+	int anim = PM_ReadyPoseForSaberAnimLevel();
+
+	const qboolean HoldingBlockAndAttack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
+
+	const signed char forwardmove = pm->cmd.forwardmove;
+	const signed char rightmove = pm->cmd.rightmove;
+
+	if (PM_RidingVehicle())
+	{
+		return -1;
+	}
+
+	if (pm->ps->clientNum && !PM_ControlledByPlayer())
+	{
+		anim = PM_ReadyPoseForSaberAnimLevel();
+	}
+	else
+	{
+		if (pm->cmd.upmove <= 0)
+		{
+			if (forwardmove < 0)
+			{
+				//walking backwards
+				if (rightmove < 0)
+				{
+					//back left
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_TL;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+				else if (rightmove > 0)
+				{
+					//Back right
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_TR;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+				else
+				{
+					//straight back
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_T_;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+			}
+			else if (forwardmove > 0)
+			{
+				//walking forwards
+				if (rightmove < 0)
+				{
+					//forwards left
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_BL;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+				else if (rightmove > 0)
+				{
+					//forwards right
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_BR;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+				else
+				{
+					//Top Block
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_T_;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+			}
+			else
+			{
+				//STANDING STILL
+				if (rightmove < 0)
+				{
+					//left block
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_TL;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+				else if (rightmove > 0)
+				{
+					//right block
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_P1_S1_TR;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
+					}
+				}
+				else
+				{
+					if (HoldingBlockAndAttack)
+					{
+						anim = BOTH_SABEREADY_STANCE;
+					}
+					else
+					{
+						anim = PM_ReadyPoseForSaberAnimLevel();
 					}
 				}
 			}
@@ -13463,8 +12927,8 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 	int parts = SETANIM_TORSO;
 	qboolean manualBlocking = qfalse;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;//Active Blocking
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	
 
 	if (new_move < LS_NONE || new_move >= LS_MOVE_MAX)
 	{
@@ -13556,11 +13020,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				pm->ps->SaberActivate();
 			}
 
-			if (pm->ps->saber[0].type == SABER_CLAW || pm->ps->dualSabers && pm->ps->saber[1].Active()  // Both sabers active duels
-				|| (pm->ps->SaberStaff() && (!pm->ps->saber[0].singleBladeStyle || pm->ps->saber[0].blade[1].active)//saber staff with more than first blade active
-				|| pm->ps->saber[0].type == SABER_ARC))
+			if (((pm->ps->saber[0].type == SABER_CLAW) || (pm->ps->dualSabers && pm->ps->saber[1].Active()))  // Both sabers active duels
+				|| ((pm->ps->SaberStaff() && (!pm->ps->saber[0].singleBladeStyle || pm->ps->saber[0].blade[1].active))//saber staff with more than first blade active
+					|| pm->ps->saber[0].type == SABER_ARC))
 			{
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->saberAnimLevel == SS_DUAL)
 					{
@@ -13577,13 +13041,13 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				}
 				else
 				{
-					anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+					anim = PM_IdlePoseForSaberAnimLevel();
 				}
 			}
 		}
 		else if (pm->ps->saber[0].readyAnim != -1)
 		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (HoldingBlock)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13605,7 +13069,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		}
 		else if (pm->ps->dualSabers && pm->ps->saber[1].readyAnim != -1)
 		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (HoldingBlock)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13625,9 +13089,13 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				anim = pm->ps->saber[1].readyAnim;
 			}
 		}
-		else if (pm->ps->saber[0].type == SABER_ARC)
+		else if ((pm->ps->saber[0].type == SABER_LANCE || pm->ps->saber[0].type == SABER_TRIDENT)
+			|| (((pm->ps->dualSabers && pm->ps->saber[1].Active()))
+				|| ((pm->ps->SaberStaff() && (!pm->ps->saber[0].singleBladeStyle
+					|| pm->ps->saber[0].blade[1].active))
+					|| pm->ps->saber[0].type == SABER_ARC)))
 		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (HoldingBlock)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13644,154 +13112,12 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 			else
 			{
-				anim = BOTH_SABERFAST_STANCE;
-			}
-		}
-		else if (pm->ps->dualSabers && pm->ps->saber[1].Active())
-		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
-			{
-				if (pm->ps->saberAnimLevel == SS_DUAL)
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelDual();
-				}
-				else if (pm->ps->saberAnimLevel == SS_STAFF)
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelStaff();
-				}
-				else
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelSingle();
-				}
-			}
-			else
-			{
-				if (pm->ps->pm_flags & PMF_DUCKED)
-				{
-					anim = PM_ReadyPoseForSaberAnimLevelDucked();
-				}
-				else
-				{
-					if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-					{
-						anim = BOTH_SABERDUAL_STANCE_ALT;
-					}
-					else
-					{
-						if (PM_WalkingOrRunningAnim(pm->ps->legsAnim))
-						{
-							//
-						}
-						else
-						{
-							if (HoldingBlock)
-							{
-								if (pm->ps->saber[0].type == SABER_GRIE) //saber backhand
-								{
-									anim = BOTH_SABERDUAL_STANCE_GRIEVOUS;
-								}
-								else if (pm->ps->saber[0].type == SABER_GRIE4) //saber backhand
-								{
-									anim = BOTH_SABERDUAL_STANCE_GRIEVOUS;
-								}
-								else
-								{
-									anim = BOTH_SABERDUAL_STANCE;
-								}
-							}
-							else
-							{
-								anim = BOTH_SABERDUAL_STANCE_IDLE;
-							}
-						}
-					}
-				}
-			}
-		}
-		else if (pm->ps->SaberStaff() && (!pm->ps->saber[0].singleBladeStyle || pm->ps->saber[0].blade[1].active)
-			|| pm->ps->saber[0].type == SABER_ARC)
-		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
-			{
-				if (pm->ps->saberAnimLevel == SS_DUAL)
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelDual();
-				}
-				else if (pm->ps->saberAnimLevel == SS_STAFF)
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelStaff();
-				}
-				else
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelSingle();
-				}
-			}
-			else
-			{
-				if (pm->ps->pm_flags & PMF_DUCKED)
-				{
-					anim = PM_ReadyPoseForSaberAnimLevelDucked();
-				}
-				else
-				{
-					if (pm->ps->blockPoints < BLOCKPOINTS_FULL)
-					{
-						anim = BOTH_SABERSTAFF_STANCE_ALT;
-					}
-					else
-					{
-						if (PM_WalkingOrRunningAnim(pm->ps->legsAnim))
-						{
-							//
-						}
-						else
-						{
-							if (HoldingBlock)
-							{
-								if (pm->ps->saber[0].type == SABER_BACKHAND
-									|| pm->ps->saber[0].type == SABER_ASBACKHAND) //saber backhand
-								{
-									anim = BOTH_SABERBACKHAND_STANCE;
-								}
-								else
-								{
-									anim = BOTH_SABERSTAFF_STANCE;
-								}
-							}
-							else
-							{
-								anim = BOTH_SABERSTAFF_STANCE_IDLE;
-							}
-						}
-					}
-				}
-			}
-		}
-		else if (pm->ps->saber[0].type == SABER_LANCE || pm->ps->saber[0].type == SABER_TRIDENT)
-		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
-			{
-				if (pm->ps->saberAnimLevel == SS_DUAL)
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelDual();
-				}
-				else if (pm->ps->saberAnimLevel == SS_STAFF)
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelStaff();
-				}
-				else
-				{
-					anim = PM_BlockingPoseForSaberAnimLevelSingle();
-				}
-			}
-			else
-			{
-				anim = BOTH_STAND1;
+				anim = PM_IdlePoseForSaberAnimLevel();
 			}
 		}
 		else
 		{
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (HoldingBlock)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13808,7 +13134,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 			else
 			{
-				anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+				anim = PM_IdlePoseForSaberAnimLevel();
 			}
 		}
 	}
@@ -14940,8 +14266,7 @@ extern void CGCam_BlockShakeSP(float intensity, int duration);
 constexpr auto AMPUTATE_DAMAGE = 100;
 
 void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult_t result, int victoryStrength)
-{
-	int loseAnim = -1;
+{	
 	int break_type;
 	qboolean singleVsSingle = qtrue;
 
@@ -14978,7 +14303,7 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 		//a single vs. single break
 		if (genemy && genemy->client)
 		{
-			loseAnim = PM_SaberLockLoseAnim(genemy, result, break_type);
+			PM_SaberLockLoseAnim(genemy, result, break_type);
 		}
 	}
 	else
@@ -14989,7 +14314,7 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 		pm->ps->weaponstate = WEAPON_FIRING;
 		if (genemy && genemy->client)
 		{
-			loseAnim = PM_SaberLockResultAnim(genemy, break_type, SABER_LOCK_LOSE);
+			PM_SaberLockResultAnim(genemy, break_type, SABER_LOCK_LOSE);
 			genemy->client->ps.weaponstate = WEAPON_READY;
 		}
 	}
@@ -17237,7 +16562,7 @@ void PM_CheckClearSaberBlock(void)
 				pm->ps->weaponTime = 0;
 				pm->ps->saberBlocked = BLOCKED_NONE;
 			}
-			else if (pm->cmd.buttons & BUTTON_ATTACK && !(pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING))
+			else if (pm->cmd.buttons & BUTTON_ATTACK && !(pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
 				//block is done or breaking out of it with an attack
 				pm->ps->weaponTime = 0;
@@ -17254,8 +16579,7 @@ qboolean PM_SaberBlocking(void)
 	{
 		qboolean wasAttackedByGun = qfalse;
 
-		if (pm->ps->saberMove > LS_PUTAWAY && pm->ps->saberMove <= LS_A_BL2TR && pm->ps->saberBlocked !=
-			BLOCKED_PARRY_BROKEN &&
+		if (pm->ps->saberMove > LS_PUTAWAY && pm->ps->saberMove <= LS_A_BL2TR && pm->ps->saberBlocked !=BLOCKED_PARRY_BROKEN &&
 			(pm->ps->saberBlocked < BLOCKED_FRONT || pm->ps->saberBlocked > BLOCKED_FRONT_PROJ))
 		{
 			//we parried another lightsaber while attacking, so treat it as a bounce
@@ -17279,7 +16603,7 @@ qboolean PM_SaberBlocking(void)
 			if (pm->ps->saberBlocked >= BLOCKED_FRONT && pm->ps->saberBlocked <= BLOCKED_FRONT_PROJ)
 			{
 				//blocking a projectile
-				if (pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
+				if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK)
 				{
 					//trying to attack
 					if (pm->ps->saberMove == LS_READY || PM_SaberInReflect(pm->ps->saberMove))
@@ -17294,8 +16618,7 @@ qboolean PM_SaberBlocking(void)
 						return qfalse;
 					}
 				}
-				else if (pm->cmd.buttons & BUTTON_ATTACK && !(pm->ps->ManualBlockingFlags & 1 <<
-					MBF_BLOCKING))
+				else if (pm->cmd.buttons & BUTTON_ATTACK && !(pm->ps->ManualBlockingFlags & 1 <<HOLDINGBLOCK))
 				{
 					//block is done or breaking out of it with an attack
 					pm->ps->weaponTime = 0;
@@ -17904,8 +17227,8 @@ void PM_WeaponLightsaber(void)
 	int anim = -1;
 	int newmove = LS_NONE;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	const qboolean WalkingBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKWALKING ? qtrue : qfalse; //Walking Blocking
 
 	if (pm->gent
@@ -18358,24 +17681,24 @@ void PM_WeaponLightsaber(void)
 				PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
 				break;
 			default:
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->saberAnimLevel == SS_DUAL)
 					{
-						int anim = PM_BlockingPoseForSaberAnimLevelDual();
+						anim = PM_BlockingPoseForSaberAnimLevelDual();
 					}
 					else if (pm->ps->saberAnimLevel == SS_STAFF)
 					{
-						int anim = PM_BlockingPoseForSaberAnimLevelStaff();
+						anim = PM_BlockingPoseForSaberAnimLevelStaff();
 					}
 					else
 					{
-						int anim = PM_BlockingPoseForSaberAnimLevelSingle();
+						anim = PM_BlockingPoseForSaberAnimLevelSingle();
 					}
 				}
 				else
 				{
-					int anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+					anim = PM_IdlePoseForSaberAnimLevel();
 				}
 				if (anim != -1)
 				{
@@ -19035,34 +18358,27 @@ void PM_WeaponLightsaber(void)
 				case BOTH_PARRY_WALK:
 				case BOTH_PARRY_WALK_DUAL:
 				case BOTH_PARRY_WALK_STAFF:
-					anim = pm->ps->legsAnim;
+					pm->ps->legsAnim;
 					break;
 				default:;
-					if (pm->ps->clientNum && !PM_ControlledByPlayer()) //npc
+					if (HoldingBlock)
 					{
-						anim = PM_ReadyPoseForSaberAnimLevelNPC();
-					}
-					else
-					{
-						if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+						if (pm->ps->saberAnimLevel == SS_DUAL)
 						{
-							if (pm->ps->saberAnimLevel == SS_DUAL)
-							{
-								anim = PM_BlockingPoseForSaberAnimLevelDual();
-							}
-							else if (pm->ps->saberAnimLevel == SS_STAFF)
-							{
-								anim = PM_BlockingPoseForSaberAnimLevelStaff();
-							}
-							else
-							{
-								anim = PM_BlockingPoseForSaberAnimLevelSingle();
-							}
+							PM_BlockingPoseForSaberAnimLevelDual();
+						}
+						else if (pm->ps->saberAnimLevel == SS_STAFF)
+						{
+							PM_BlockingPoseForSaberAnimLevelStaff();
 						}
 						else
 						{
-							anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+							PM_BlockingPoseForSaberAnimLevelSingle();
 						}
+					}
+					else
+					{
+						PM_IdlePoseForSaberAnimLevel();
 					}
 					break;
 				}
@@ -21061,7 +20377,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 
 	if (!g_saberAutoBlocking->integer
 		&& !g_saberNewControlScheme->integer
-		&& (pm->cmd.buttons & BUTTON_FORCE_FOCUS || pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING))
+		&& (pm->cmd.buttons & BUTTON_FORCE_FOCUS || pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK))
 	{
 		pm->ps->saberBlockingTime = pm->cmd.serverTime + 100;
 		pm->cmd.buttons &= ~BUTTON_ATTACK;
@@ -22472,7 +21788,7 @@ void PM_CheckGrab(void)
 		return;
 	}
 
-	if (pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ||
+	if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ||
 		pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
 		pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 	{

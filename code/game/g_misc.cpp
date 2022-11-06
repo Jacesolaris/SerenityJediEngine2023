@@ -651,7 +651,7 @@ void SP_misc_bsp(gentity_t* ent)
 
 constexpr auto MAX_INSTANCE_TYPES = 16;
 
-void AddSpawnField(char* field, char* value);
+void AddSpawnField(const char* field, const char* value);
 
 /*QUAKED terrain (1.0 1.0 1.0) ? NOVEHDMG
 

@@ -160,7 +160,7 @@ void SFxHelper::AddLightToScene(vec3_t org, float radius, float red, float green
 }
 
 //------------------------------------------------------
-void SFxHelper::AddPolyToScene(int shader, int count, polyVert_t* verts)
+void SFxHelper::AddPolyToScene(int shader, int count, const polyVert_t* verts)
 {
 	cgi_R_AddPolyToScene(shader, count, verts);
 }

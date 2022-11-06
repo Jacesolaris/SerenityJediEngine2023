@@ -3171,8 +3171,8 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 	int flags = BONE_ANIM_OVERRIDE_FREEZE;
 	const float oldSpeed = lf->animationSpeed;
 
-	const qboolean HoldingBlock = cent->currentState.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
-	const qboolean ActiveBlocking = cent->currentState.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = cent->currentState.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean ActiveBlocking = cent->currentState.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 
 	if (cent->localAnimIndex > 0)
 	{
@@ -3704,8 +3704,8 @@ static void CG_PlayerAnimation(centity_t* cent, int* legsOld, int* legs, float* 
 
 	const int clientNum = cent->currentState.clientNum;
 
-	const qboolean HoldingBlock = cent->currentState.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
-	const qboolean ActiveBlocking = cent->currentState.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean HoldingBlock = cent->currentState.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean ActiveBlocking = cent->currentState.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 
 	if (cg_noPlayerAnims.integer)
 	{

@@ -85,9 +85,8 @@ void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smackDir)
 void BubbleShield_PushRadiusEnts()
 {
 	gentity_t* radiusEnts[128];
-	const float radius = ASSASSIN_SHIELD_SIZE;
+	constexpr float radius = ASSASSIN_SHIELD_SIZE;
 	vec3_t mins, maxs;
-	vec3_t smackDir;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -98,6 +97,7 @@ void BubbleShield_PushRadiusEnts()
 	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
 	for (int entIndex = 0; entIndex < numEnts; entIndex++)
 	{
+		vec3_t smackDir;
 		// Only Clients
 		//--------------
 		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client)

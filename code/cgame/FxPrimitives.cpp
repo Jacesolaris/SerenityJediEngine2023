@@ -2170,7 +2170,7 @@ void CBezier::DrawSegment(vec3_t start, vec3_t end, float texcoord1, float texco
 	mInit = true;
 }
 
-const float BEZIER_RESOLUTION = 16.0f;
+constexpr float BEZIER_RESOLUTION = 16.0f;
 
 //----------------------------
 void CBezier::Draw(void)
@@ -2192,7 +2192,7 @@ void CBezier::Draw(void)
 
 	for (float mu = incr; mu <= 1.0f; mu += incr)
 	{
-		const float tex = 1.0f;
+		constexpr float tex = 1.0f;
 		//Four point curve
 		const float mum1 = 1 - mu;
 		const float mum13 = mum1 * mum1 * mum1;

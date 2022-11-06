@@ -38,7 +38,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 //---------------------------------------------------------
 {
 	int damage = weaponData[WP_BOWCASTER].damage;
-	vec3_t angs, dir, start;
+	vec3_t angs, start;
 
 	VectorCopy(muzzle, start);
 	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
@@ -82,6 +82,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 
 	for (int i = 0; i < count; i++)
 	{
+		vec3_t dir;
 		// create a range of different velocities
 		const float vel = BOWCASTER_VELOCITY * (Q_flrand(-1.0f, 1.0f) * BOWCASTER_VEL_RANGE + 1.0f);
 
