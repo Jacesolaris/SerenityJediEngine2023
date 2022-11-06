@@ -209,7 +209,7 @@ void RT_FireDecide(void)
 					if (!Q_irand(0, 10))
 					{
 						//Fire on the last known position
-						vec3_t muzzle, dir, angles;
+						vec3_t muzzle;
 						qboolean tooClose = qfalse;
 						qboolean tooFar = qfalse;
 
@@ -301,6 +301,8 @@ void RT_FireDecide(void)
 
 						if (!tooClose && !tooFar)
 						{
+							vec3_t angles;
+							vec3_t dir;
 							//okay too shoot at last pos
 							VectorSubtract(NPCInfo->enemyLastSeenLocation, muzzle, dir);
 							VectorNormalize(dir);
@@ -344,7 +346,7 @@ void RT_FireDecide(void)
 					WeaponThink(qtrue);
 				}
 				//NASTY
-				const int altChance = 6; //FIXME: base on g_spskill
+				constexpr int altChance = 6; //FIXME: base on g_spskill
 				if (NPC->s.weapon == WP_ROCKET_LAUNCHER)
 				{
 					if (ucmd.buttons & BUTTON_ATTACK
@@ -380,7 +382,7 @@ void RT_FireDecide(void)
 //=====================================================================================
 //FLYING behavior
 //=====================================================================================
-qboolean RT_Flying(gentity_t* self)
+qboolean RT_Flying(const gentity_t* self)
 {
 	return static_cast<qboolean>(self->client->moveType == MT_FLYSWIM);
 }
@@ -536,7 +538,7 @@ void RT_Flying_MaintainHeight(void)
 			// Find the height difference
 			dif = enemyZHeight + Q_flrand(NPC->enemy->maxs[2] / 2, NPC->enemy->maxs[2] + 8) - NPC->currentOrigin[2];
 
-			const float difFactor = 10.0f;
+			constexpr float difFactor = 10.0f;
 
 			// cap to prevent dramatic height shifts
 			if (fabs(dif) > 2 * difFactor)
@@ -659,7 +661,7 @@ void RT_Flying_MaintainHeight(void)
 void RT_Flying_Strafe(void)
 {
 	int side;
-	vec3_t end, right, dir;
+	vec3_t end, right;
 	trace_t tr;
 
 	if (Q_flrand(0.0f, 1.0f) > 0.7f
@@ -685,7 +687,7 @@ void RT_Flying_Strafe(void)
 			if (!Q_irand(0, 3))
 			{
 				// Add a slight upward push
-				const float upPush = RT_FLYING_UPWARD_PUSH;
+				constexpr float upPush = RT_FLYING_UPWARD_PUSH;
 				if (NPC->client->ps.velocity[2] < 300)
 				{
 					if (NPC->client->ps.velocity[2] < 300 + upPush)
@@ -704,12 +706,13 @@ void RT_Flying_Strafe(void)
 	}
 	else
 	{
+		vec3_t dir;
 		// Do a strafe to try and keep on the side of their enemy
 		AngleVectors(NPC->enemy->client->renderInfo.eyeAngles, dir, right, nullptr);
 
 		// Pick a random side
 		side = rand() & 1 ? -1 : 1;
-		const float stDis = RT_FLYING_STRAFE_DIS * 2.0f;
+		constexpr float stDis = RT_FLYING_STRAFE_DIS * 2.0f;
 		VectorMA(NPC->enemy->currentOrigin, stDis * side, right, end);
 
 		// then add a very small bit of random in front of/behind the player action
@@ -734,7 +737,7 @@ void RT_Flying_Strafe(void)
 
 			if (!Q_irand(0, 3))
 			{
-				const float upPush = RT_FLYING_UPWARD_PUSH;
+				constexpr float upPush = RT_FLYING_UPWARD_PUSH;
 				// Add a slight upward push
 				if (NPC->client->ps.velocity[2] < 300)
 				{

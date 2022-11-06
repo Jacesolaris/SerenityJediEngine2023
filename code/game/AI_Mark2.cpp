@@ -156,7 +156,7 @@ Mark2_FireBlaster
 */
 void Mark2_FireBlaster(qboolean advance)
 {
-	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
+	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
 	mdxaBone_t boltMatrix;
 
@@ -169,6 +169,9 @@ void Mark2_FireBlaster(qboolean advance)
 
 	if (NPC->health)
 	{
+		vec3_t angleToEnemy1;
+		vec3_t delta1;
+		vec3_t enemy_org1;
 		CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
 		VectorSubtract(enemy_org1, muzzle1, delta1);
 		vectoangles(delta1, angleToEnemy1);

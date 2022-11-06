@@ -212,7 +212,7 @@ Does not include "aim" in it's calculations
 FIXME: stop compressing angles into shorts!!!!
 */
 extern cvar_t* g_timescale;
-extern bool NPC_IsTrooper(gentity_t* ent);
+extern bool NPC_IsTrooper(const gentity_t* ent);
 
 qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 {
@@ -1575,7 +1575,7 @@ int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec
 	return G_GetEntsNearBolt(NPC, radiusEnts, radius, boltIndex, boltOrg);
 }
 
-extern qboolean RT_Flying(gentity_t* self);
+extern qboolean RT_Flying(const gentity_t* self);
 extern void RT_FlyStart(gentity_t* self);
 extern void RT_FlyStop(gentity_t* self);
 extern qboolean Boba_Flying(const gentity_t* self);

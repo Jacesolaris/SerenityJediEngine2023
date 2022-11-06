@@ -1254,7 +1254,6 @@ typedef struct playerState_s {
 	int			saberAttackSequence;
 	int			saberIdleWound;
 	int			saberAttackWound;
-	int			saberBPDebRecharge;
 
 	int			otherKiller;
 	int			otherKillerTime;

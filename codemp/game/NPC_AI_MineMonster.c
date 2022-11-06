@@ -116,7 +116,7 @@ void MineMonster_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-void MineMonster_TryDamage(gentity_t* enemy, int damage)
+void MineMonster_TryDamage(const gentity_t* enemy, int damage)
 {
 	vec3_t end, dir;
 	trace_t tr;

@@ -232,7 +232,7 @@ qboolean npc_is_light_jedi(gentity_t* self)
 	return qfalse;
 }
 
-qboolean npc_is_dark_jedi(gentity_t* self)
+qboolean npc_is_dark_jedi(const gentity_t* self)
 {
 	switch (self->client->NPC_class)
 	{
@@ -2014,7 +2014,7 @@ void Jedi_CheckCloak(void)
 AGGRESSION
 ==========================================================================================
 */
-static void Jedi_Aggression(gentity_t* self, int change)
+static void Jedi_Aggression(const gentity_t* self, int change)
 {
 	int upper_threshold, lower_threshold;
 
@@ -2126,7 +2126,7 @@ static void Jedi_Rage(void)
 	ForceRage(NPCS.NPC);
 }
 
-void Jedi_RageStop(gentity_t* self)
+void Jedi_RageStop(const gentity_t* self)
 {
 	if (self->NPC)
 	{
@@ -8063,7 +8063,7 @@ static qboolean Jedi_TryJump(gentity_t* goal)
 	return qfalse;
 }
 
-static qboolean Jedi_Jumping(gentity_t* goal)
+static qboolean Jedi_Jumping(const gentity_t* goal)
 {
 	if (!TIMER_Done(NPCS.NPC, "forceJumpChasing") && goal)
 	{
@@ -9179,7 +9179,7 @@ finish:
 	}
 }
 
-qboolean Jedi_CanPullBackSaber(gentity_t* self)
+qboolean Jedi_CanPullBackSaber(const gentity_t* self)
 {
 	if (self->client->ps.saberBlocked == BLOCKED_PARRY_BROKEN && !TIMER_Done(self, "parryTime"))
 	{

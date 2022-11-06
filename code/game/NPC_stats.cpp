@@ -1537,7 +1537,7 @@ extern void npc_rosh_dark_precache(void);
 extern void NPC_Tusken_Precache(void);
 extern void NPC_Saboteur_Precache(void);
 extern void npc_cultist_destroyer_precache(void);
-extern void NPC_GalakMech_Precache(void);
+extern void NPC_GalakMech_Precache();
 
 void NPC_Jawa_Precache(void)
 {

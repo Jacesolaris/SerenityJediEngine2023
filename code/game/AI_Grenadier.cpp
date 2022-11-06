@@ -65,7 +65,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void Grenadier_ClearTimers(gentity_t* ent)
+void Grenadier_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "chatter", 0);
 	TIMER_Set(ent, "duck", 0);

@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 extern void NPC_BSST_Patrol(void);
-extern void Boba_FireDecide(void);
+extern void Boba_FireDecide();
 extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
 	qboolean altFire = qfalse);
 

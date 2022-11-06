@@ -215,7 +215,7 @@ void Droid_Spin( void )
 */
 void Droid_Spin(void)
 {
-	const vec3_t dir = { 0, 0, 1 };
+	constexpr vec3_t dir = { 0, 0, 1 };
 
 	R2D2_TurnAnims();
 

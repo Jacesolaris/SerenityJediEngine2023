@@ -21,9 +21,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 */
 #include "b_local.h"
-#include "g_nav.h"
 #include "anims.h"
-#include "g_navigator.h"
 #include "../cgame/cg_local.h"
 #include "g_functions.h"
 #include "wp_saber.h"
@@ -66,7 +64,7 @@ static qboolean shoot;
 static float enemyDist;
 static vec3_t impactPos;
 
-void NPC_GalakMech_Precache(void)
+void NPC_GalakMech_Precache()
 {
 	G_SoundIndex("sound/weapons/galak/skewerhit.wav");
 	G_SoundIndex("sound/weapons/galak/lasercharge.wav");
@@ -263,8 +261,7 @@ NPC_GM_Pain
 
 extern void NPC_SetPainEvent(gentity_t* self);
 
-void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, const int hitLoc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
@@ -513,7 +510,7 @@ static void GM_CheckFireState(void)
 			if (!Q_irand(0, 10))
 			{
 				//Fire on the last known position
-				vec3_t muzzle, dir, angles;
+				vec3_t muzzle;
 				qboolean tooClose = qfalse;
 				qboolean tooFar = qfalse;
 
@@ -569,6 +566,8 @@ static void GM_CheckFireState(void)
 
 				if (!tooClose && !tooFar)
 				{
+					vec3_t dir;
+					vec3_t angles;
 					//okay too shoot at last pos
 					VectorSubtract(NPCInfo->enemyLastSeenLocation, muzzle, dir);
 					VectorNormalize(dir);
@@ -811,7 +810,9 @@ void NPC_BSGM_Attack(void)
 				//attack still going
 				//do the trace and damage
 				trace_t trace;
-				vec3_t end, mins = { -3, -3, -3 }, maxs = { 3, 3, 3 };
+				vec3_t end;
+				const vec3_t maxs = { 3, 3, 3 };
+				const vec3_t mins = { -3, -3, -3 };
 				VectorMA(NPC->client->renderInfo.muzzlePoint, 1024, NPC->client->renderInfo.muzzleDir, end);
 				gi.trace(&trace, NPC->client->renderInfo.muzzlePoint, mins, maxs, end, NPC->s.number, MASK_SHOT,
 					G2_NOCOLLIDE, 0);
@@ -1069,7 +1070,6 @@ void NPC_BSGM_Attack(void)
 		NPC, "attackDelay"))
 	{
 		vec3_t muzzle;
-		vec3_t angles;
 		vec3_t target;
 		vec3_t velocity = { 0, 0, 0 };
 		vec3_t mins = { -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE }, maxs = {
@@ -1107,6 +1107,7 @@ void NPC_BSGM_Attack(void)
 		}
 		else
 		{
+			vec3_t angles;
 			vectoangles(velocity, angles);
 
 			NPCInfo->desiredYaw = AngleNormalize360(angles[YAW]);

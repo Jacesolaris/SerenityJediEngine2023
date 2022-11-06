@@ -63,7 +63,7 @@ constexpr auto MAX_TROOP_JOIN_DIST2 = 1000000; //1000 units;
 constexpr auto MAX_TROOP_MERGE_DIST2 = 250000; //500 units;
 constexpr auto TARGET_POS_VISITED = 10000; //100 units;
 
-bool NPC_IsTrooper(gentity_t* actor);
+bool NPC_IsTrooper(const gentity_t* actor);
 
 enum
 {
@@ -210,7 +210,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// DistanceSq - Quick Operation to see how far an ent is from the rest of the troop
 	////////////////////////////////////////////////////////////////////////////////////
-	float DistanceSq(gentity_t* ent)
+	float DistanceSq(const gentity_t* ent)
 	{
 		if (mActors.size())
 		{
@@ -277,7 +277,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// RemoveActor - Removes an actor from the troop & automatically promote leader
 	////////////////////////////////////////////////////////////////////////////////////
-	void RemoveActor(gentity_t* actor)
+	void RemoveActor(const gentity_t* actor)
 	{
 		assert(actor->NPC->troop == mTroopHandle);
 		int bestNewLeader = -1;
@@ -396,7 +396,7 @@ private:
 	//
 	// Compute all factors that can add visibility to a target
 	////////////////////////////////////////////////////////////////////////////////////
-	static float TargetVisibility(gentity_t* target)
+	static float TargetVisibility(const gentity_t* target)
 	{
 		float Scale = 0.8f;
 		if (target->client && target->client->ps.weapon == WP_SABER && target->client->ps.SaberActive())
@@ -409,7 +409,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	static float TargetNoiseLevel(gentity_t* target)
+	static float TargetNoiseLevel(const gentity_t* target)
 	{
 		float Scale = 0.1f;
 		Scale += target->resultspeed / static_cast<float>(g_speed->integer);
@@ -433,7 +433,6 @@ private:
 		const float scannerMaxViewDist = scannerStats->visrange;
 		const float scannerMinVisability = 0.1f; //1.0f - scannerStats->vigilance;
 		const float scannerMaxHearDist = scannerStats->earshot;
-		const float scannerMinNoiseLevel = 0.3f; //1.0f - scannerStats->vigilance;
 		const CVec3 scannerPos(scanner->currentOrigin);
 		CVec3 scannerFwd(scanner->currentAngles);
 		scannerFwd.AngToVec();
@@ -487,6 +486,7 @@ private:
 			//----------------------------------
 			if (targetDistance < scannerMaxHearDist)
 			{
+				const float scannerMinNoiseLevel = 0.3f;
 				float targetNoiseLevel = TargetNoiseLevel(target);
 				targetNoiseLevel *= 1.0f - targetDistance / scannerMaxHearDist; // scale by distance
 				if (targetNoiseLevel > scannerMinNoiseLevel)
@@ -804,7 +804,7 @@ private:
 				else if (NextState == TS_ATTACK_FLANK && actorIndex >= 4)
 				{
 					int cpFlags = CP_HAS_ROUTE | CP_AVOID_ENEMY | CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
-					const float avoidDist = 128.0f;
+					constexpr float avoidDist = 128.0f;
 
 					Order.mCombatPoint = NPC_FindCombatPointRetry(
 						mActors[actorIndex]->currentOrigin,
@@ -864,7 +864,7 @@ private:
 				if (trace.startsolid || trace.allsolid)
 				{
 					int cpFlags = CP_HAS_ROUTE | CP_AVOID_ENEMY | CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
-					const float avoidDist = 128.0f;
+					constexpr float avoidDist = 128.0f;
 
 					Order.mCombatPoint = NPC_FindCombatPointRetry(
 						mActors[actorIndex]->currentOrigin,
@@ -1029,7 +1029,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	gentity_t* TooCloseToTroopMember(gentity_t* actor)
+	gentity_t* TooCloseToTroopMember(const gentity_t* actor)
 	{
 		for (int i = 0; i < mActors.size(); i++)
 		{
@@ -1221,7 +1221,7 @@ void Trooper_SmackAway(gentity_t* actor, gentity_t* target)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool Trooper_Kneeling(gentity_t* actor)
+bool Trooper_Kneeling(const gentity_t* actor)
 {
 	return actor->NPC->aiFlags & NPCAI_KNEEL || actor->client->ps.legsAnim == BOTH_STAND_TO_KNEEL;
 }
@@ -1257,7 +1257,7 @@ void Trooper_StandUp(gentity_t* actor, bool always = false)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-int Trooper_CanHitTarget(gentity_t* actor, gentity_t* target, c_troop& troop, float& MuzzleToTargetDistance,
+int Trooper_CanHitTarget(gentity_t* actor, const gentity_t* target, c_troop& troop, float& MuzzleToTargetDistance,
 	CVec3& MuzzleToTarget)
 {
 	trace_t tr;
@@ -1499,7 +1499,7 @@ void NPC_BehaviorSet_Trooper(int bState)
 ////////////////////////////////////////////////////////////////////////////////////////
 // IsTrooper - return true if you want a given actor to use trooper AI
 ////////////////////////////////////////////////////////////////////////////////////////
-bool NPC_IsTrooper(gentity_t* actor)
+bool NPC_IsTrooper(const gentity_t* actor)
 {
 	return actor &&
 		actor->NPC &&
@@ -1508,7 +1508,7 @@ bool NPC_IsTrooper(gentity_t* actor)
 		;
 }
 
-void NPC_LeaveTroop(gentity_t* actor)
+void NPC_LeaveTroop(const gentity_t* actor)
 {
 	assert(actor->NPC->troop);
 	const int wasInTroop = actor->NPC->troop;

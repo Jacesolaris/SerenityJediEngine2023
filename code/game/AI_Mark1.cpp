@@ -134,7 +134,7 @@ void Mark1Dead_FireRocket(void)
 	mdxaBone_t boltMatrix;
 	vec3_t muzzle1, muzzle_dir;
 
-	const int damage = 50;
+	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		NPC->genericBolt5,
@@ -230,12 +230,11 @@ Mark1_dying
 */
 void Mark1_dying(gentity_t* self)
 {
-	int newBolt;
-
 	if (self->client->ps.torsoAnimTimer > 0)
 	{
 		if (TIMER_Done(self, "dyingExplosion"))
 		{
+			int newBolt;
 			int num = Q_irand(1, 3);
 
 			// Find place to generate explosion
@@ -394,7 +393,7 @@ Mark1_FireBlaster
 */
 void Mark1_FireBlaster(void)
 {
-	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
+	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
 	mdxaBone_t boltMatrix;
 	int bolt;
@@ -430,6 +429,9 @@ void Mark1_FireBlaster(void)
 
 	if (NPC->health)
 	{
+		vec3_t angleToEnemy1;
+		vec3_t delta1;
+		vec3_t enemy_org1;
 		CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
 		VectorSubtract(enemy_org1, muzzle1, delta1);
 		vectoangles(delta1, angleToEnemy1);
@@ -523,7 +525,7 @@ void Mark1_FireRocket(void)
 	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
 	static vec3_t forward, vright, up;
 
-	const int damage = 50;
+	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		NPC->genericBolt5,

@@ -61,7 +61,7 @@ void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, int mod);
 // Local: Flame Thrower Weapon
 //-----------------------------
 void Boba_FireFlameThrower(gentity_t* self);
-void Boba_StopFlameThrower(gentity_t* self);
+void Boba_StopFlameThrower(const gentity_t* self);
 void Boba_StartFlameThrower(gentity_t* self);
 void Boba_DoFlameThrower(gentity_t* self);
 
@@ -595,7 +595,7 @@ void Boba_FireFlameThrower(gentity_t* self)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_StopFlameThrower(gentity_t* self)
+void Boba_StopFlameThrower(const gentity_t* self)
 {
 	if (self->s.number < MAX_CLIENTS)
 	{
@@ -1079,7 +1079,7 @@ qboolean isBobaClass(int className)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Call this function to see if Fett should fire his current weapon
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_FireDecide(void)
+void Boba_FireDecide()
 {
 	// Any Reason Not To Shoot?
 	//--------------------------

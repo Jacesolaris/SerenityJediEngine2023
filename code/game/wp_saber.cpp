@@ -101,7 +101,7 @@ extern void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_p
 	int hitLoc = HL_NONE);
 extern evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitloc, vec3_t phit_dir,
 	const gentity_t* incoming, float dist = 0.0f);
-extern void Jedi_RageStop(gentity_t* self);
+extern void Jedi_RageStop(const gentity_t* self);
 extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_SwimmingAnim(int anim);
@@ -157,7 +157,7 @@ extern qboolean Jedi_SaberBusy(const gentity_t* self);
 extern qboolean Jedi_CultistDestroyer(const gentity_t* self);
 extern void JET_FlyStart(gentity_t* self);
 extern void Mando_DoFlameThrower(gentity_t* self);
-extern void Boba_StopFlameThrower(gentity_t* self);
+extern void Boba_StopFlameThrower(const gentity_t* self);
 extern qboolean PM_InRoll(const playerState_t* ps);
 int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern int PM_InGrappleMove(int anim);
@@ -205,7 +205,6 @@ extern qboolean PM_RestAnim(int anim);
 extern qboolean PM_KickingAnim(int anim);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
 extern qboolean g_accurate_blocking(const gentity_t* self, const gentity_t* attacker, vec3_t hit_loc);
-extern qboolean g_perfect_blocking(const gentity_t* blocker, const gentity_t* attacker, vec3_t hitLoc);
 extern int G_KnockawayForParry(int move);
 extern int G_AnimateOldKnockBack(int move);
 extern cvar_t* g_saberRealisticCombat;
@@ -258,7 +257,6 @@ extern void CGCam_BlockShakeSP(float intensity, int duration);
 static qhandle_t repulseLoopSound = 0;
 extern void Boba_FlyStop(gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
-extern qboolean G_TransitionParry(const gentity_t* self);
 extern void SabBeh_SaberShouldBeDisarmedBlocker(gentity_t* blocker, int saberNum);
 
 qboolean g_saberNoEffects = qfalse;
@@ -26055,7 +26053,7 @@ qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower,
 }
 
 extern void CG_PlayerLockedWeaponSpeech(int jumping);
-extern qboolean Rosh_TwinNearBy(gentity_t* self);
+extern qboolean Rosh_TwinNearBy(const gentity_t* self);
 
 qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int overrideAmt)
 {

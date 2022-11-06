@@ -5776,7 +5776,7 @@ void pm_saber_start_trans_anim(const int saber_anim_level, const int anim, float
 					&& gent->client
 					&& gent->s.number < MAX_CLIENTS)
 				{
-					constexpr float realisticanimscale = 0.95f;
+					constexpr float realisticanimscale = 1.0f;
 					*anim_speed *= realisticanimscale;
 				}
 				else

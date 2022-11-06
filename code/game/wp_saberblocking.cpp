@@ -100,30 +100,6 @@ extern qboolean PM_InSaberLock(int anim);
 ///////////Defines////////////////
 
 //////////Actions////////////////
-qboolean G_TransitionParry(const gentity_t* self)
-{
-	//checks to see if a player is doing an attack parry
-	if (self->client->pers.cmd.buttons & BUTTON_ATTACK
-		|| self->client->pers.cmd.buttons & BUTTON_ALT_ATTACK)
-	{
-		//can't be pressing an attack button.
-		return qfalse;
-	}
-
-	if (self->client->ps.userInt3 & 1 << FLAG_PARRIED)
-	{
-		//can't attack parry when parried.
-		return qfalse;
-	}
-
-	if (PM_SaberInTransitionAny(self->client->ps.saberMove))
-	{
-		//in transition, start, or return
-		return qtrue;
-	}
-
-	return qfalse;
-}
 
 void SabBeh_SaberShouldBeDisarmedAttacker(gentity_t* attacker, int saberNum)
 {
@@ -241,107 +217,6 @@ qboolean g_accurate_blocking(const gentity_t* self, const gentity_t* attacker, v
 		return qtrue;
 	}
 	//player didn't parry in the correct direction, do blockPoints punishment
-	if (self->NPC)
-	{
-		//bots just randomly parry to make up for them not intelligently parrying.
-		if (NPC_PARRYRATE * g_spskill->integer > Q_irand(0, 999))
-		{
-			return qtrue;
-		}
-	}
-	return qfalse;
-}
-
-qboolean g_perfect_blocking(const gentity_t* self, const gentity_t* attacker, vec3_t hitLoc)
-{
-	//determines if self (who is blocking) is actively m blocking (parrying)
-	vec3_t p_angles;
-	vec3_t p_right;
-	vec3_t parrier_move;
-	vec3_t hit_pos;
-	vec3_t hit_flat; //flatten 2D version of the hitPos.
-	const qboolean in_front_of_me = in_front(attacker->client->ps.origin, self->client->ps.origin,
-		self->client->ps.viewangles, 0.0f);
-
-	if (self->s.number < MAX_CLIENTS)
-	{
-		if (!(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK))
-		{
-			return qfalse;
-		}
-	}
-
-	if (!in_front_of_me)
-	{
-		//can't parry attacks to the rear.
-		return qfalse;
-	}
-	if (PM_SaberInKnockaway(self->client->ps.saberMove))
-	{
-		//already in parry move, continue parrying anything that hits us as long as
-		//the attacker is in the same general area that we're facing.
-		return qtrue;
-	}
-
-	if (self->client->ps.ManualblockLastStartTime >= g_SaberPerfectBlockingwaitTimer->integer) //3 sec
-	{
-		//cant perfect parry if your too slow
-		return qfalse;
-	}
-
-	if (PM_KickingAnim(self->client->ps.legsAnim))
-	{
-		//can't parry in kick.
-		return qfalse;
-	}
-
-	if (BG_SaberInNonIdleDamageMove(&self->client->ps)
-		|| PM_SaberInBounce(self->client->ps.saberMove) || BG_InSlowBounce(&self->client->ps))
-	{
-		//can't parry if we're transitioning into a block from an attack state.
-		return qfalse;
-	}
-
-	if (self->client->ps.pm_flags & PMF_DUCKED)
-	{
-		//can't parry while ducked or running
-		return qfalse;
-	}
-
-	if (PM_InKnockDown(&self->client->ps))
-	{
-		//can't block while knocked down or getting up from knockdown, or we are staggered.
-		return qfalse;
-	}
-
-	//set up flatten version of the location of the incoming attack in orientation
-	//to the player.
-	VectorSubtract(hitLoc, self->client->ps.origin, hit_pos);
-	VectorSet(p_angles, 0, self->client->ps.viewangles[YAW], 0);
-	AngleVectors(p_angles, nullptr, p_right, nullptr);
-	hit_flat[0] = 0;
-	hit_flat[1] = DotProduct(p_right, hit_pos);
-
-	//just bump the hit pos down for the blocking since the average left/right slice happens at about origin +10
-	hit_flat[2] = hit_pos[2] - 10;
-	VectorNormalize(hit_flat);
-
-	//set up the vector for the direction the player is trying to parry in.
-	parrier_move[0] = 0;
-	parrier_move[1] = self->client->pers.cmd.rightmove;
-	parrier_move[2] = -self->client->pers.cmd.forwardmove;
-	VectorNormalize(parrier_move);
-
-	const float block_dot = DotProduct(hit_flat, parrier_move);
-
-	if (block_dot >= .4)
-	{
-		//player successfully blocked in the right direction
-		return qtrue;
-	}
-	//player didn't parry in the correct direction, do blockPoints punishment
-	self->client->ps.blockPoints -= BLOCKPOINTS_FAIL;
-
 	if (self->NPC)
 	{
 		//bots just randomly parry to make up for them not intelligently parrying.
@@ -753,23 +628,12 @@ qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker, int sabe
 qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//if the attack is blocked -(Im the attacker)
-	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
-	const qboolean AccurateParry = g_accurate_blocking(blocker, attacker, hitLoc); // Perfect Normal Blocking
-
 	const qboolean Blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking (just holding block button)
 	const qboolean MBlocking = blocker->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse;	//perfect Blocking (Timed Block)
 	const qboolean ActiveBlocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking (Holding Block button + Attack button)
 	const qboolean NPCBlocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;//(Npc Blocking function)
 
 	const qboolean atkfake = attacker->client->ps.userInt3 & 1 << FLAG_ATTACKFAKE ? qtrue : qfalse;
-	qboolean TransitionClashParry = G_TransitionParry(blocker);
-
-	if ((AccurateParry || perfectparry) && (blocker->NPC && !G_ControlledByPlayer(blocker))
-		&& NPC_PARRYRATE * g_spskill->integer > Q_irand(0, 999))
-	{
-		//npc performed an attack parry (by cheating a bit)
-		TransitionClashParry = qtrue;
-	}
 
 	if (PM_SaberInnonblockableAttack(attacker->client->ps.torsoAnim))
 	{   //perfect Blocking
@@ -791,7 +655,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 			attacker->client->ps.saberEventFlags &= ~SEF_BLOCKED;
 		}
 	}
-	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps) || TransitionClashParry)
+	else if (BG_SaberInNonIdleDamageMove(&blocker->client->ps))
 	{//and blocker is attacking
 		if (d_attackinfo->integer || g_DebugSaberCombat->integer)
 		{
@@ -816,7 +680,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 	else if (atkfake)
 	{
 		//attacker faked but it was blocked here
-		if (AccurateParry || perfectparry || Blocking || MBlocking || ActiveBlocking || NPCBlocking)
+		if (Blocking || MBlocking || ActiveBlocking || NPCBlocking)
 		{
 			//defender parried the attack fake.
 			SabBeh_AddBalance(attacker, MPCOST_PARRIED_ATTACKFAKE);
@@ -862,7 +726,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 	}
 	else
 	{//standard attack.
-		if (AccurateParry || perfectparry || Blocking || MBlocking || ActiveBlocking || NPCBlocking) // All types of active blocking
+		if (Blocking || MBlocking || ActiveBlocking || NPCBlocking) // All types of active blocking
 		{
 			if (MBlocking || ActiveBlocking || NPCBlocking)
 			{
@@ -921,8 +785,6 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//-(Im the blocker)
-	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
-	const qboolean AccurateParry = g_accurate_blocking(blocker, attacker, hitLoc); // Perfect Normal Blocking
 
 	const qboolean Blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
 	const qboolean MBlocking = blocker->client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING ? qtrue : qfalse;//perfect Blocking
@@ -1104,7 +966,7 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 				//since it was parried, take away any damage done
 				wp_saber_clear_damage_for_ent_num(attacker, blocker->s.number, saberNum, bladeNum);
 			}
-			else if (AccurateParry || perfectparry || NPCBlocking)//Other types and npc,s
+			else if (NPCBlocking || (g_saberAutoBlocking->integer && blocker->NPC && !G_ControlledByPlayer(blocker) || blocker->client->ps.saberBlockingTime > level.time && blocker->NPC && !G_ControlledByPlayer(blocker))) //Other types and npc,s
 			{
 				if (blocker->NPC && !G_ControlledByPlayer(blocker)) //NPC only
 				{

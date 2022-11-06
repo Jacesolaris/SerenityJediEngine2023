@@ -354,7 +354,7 @@ void RT_FireDecide(void)
 //=====================================================================================
 //FLYING behavior
 //=====================================================================================
-qboolean RT_Flying(gentity_t* self)
+qboolean RT_Flying(const gentity_t* self)
 {
 	return self->client->ps.eFlags2 & EF2_FLYING;
 }

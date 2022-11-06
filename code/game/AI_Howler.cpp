@@ -71,7 +71,7 @@ void NPC_Howler_Precache(void)
 	}
 }
 
-void Howler_ClearTimers(gentity_t* self)
+void Howler_ClearTimers(const gentity_t* self)
 {
 	//clear all my timers
 	TIMER_Set(self, "flee", -level.time);
@@ -388,7 +388,8 @@ static void Howler_Attack(float enemyDist, qboolean howl)
 		{
 			//lunge attack
 			//jump foward
-			vec3_t fwd, yawAng = { 0, NPC->client->ps.viewangles[YAW], 0 };
+			vec3_t fwd;
+			const vec3_t yawAng = { 0, NPC->client->ps.viewangles[YAW], 0 };
 			AngleVectors(yawAng, fwd, nullptr, nullptr);
 			VectorScale(fwd, enemyDist * 3.0f, NPC->client->ps.velocity);
 			NPC->client->ps.velocity[2] = 200;

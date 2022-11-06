@@ -122,7 +122,7 @@ extern void AI_GroupMemberKilled(gentity_t* self);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern void G_DrivableATSTDie(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
-extern void NPC_LeaveTroop(gentity_t* actor);
+extern void NPC_LeaveTroop(const gentity_t* actor);
 extern void Rancor_DropVictim(gentity_t* self);
 extern void Wampa_DropVictim(gentity_t* self);
 extern void WP_StopForceHealEffects(const gentity_t* self);

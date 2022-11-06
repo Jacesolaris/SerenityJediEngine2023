@@ -2080,8 +2080,7 @@ public:
 	int DodgeStartTime;           //Dodgeing 1
 	int DodgeLastStartTime;       //Dodgeing 2
 
-	int saberBlockDebounce;
-	int saberBPDebRecharge;
+	int damageTime;
 
 #ifdef JK2_MODE
 	float		saberLengthOld;
@@ -2450,6 +2449,8 @@ public:
 		saved_game.write<int32_t>(DodgeStartTime);           //Dodgeing 1
 		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodgeing 2
 
+		saved_game.write<int32_t>(damageTime);
+
 		saved_game.write<int32_t>(genericenemyindex);
 
 		saved_game.write<int32_t>(userInt1);
@@ -2700,6 +2701,8 @@ public:
 
 		saved_game.read<int32_t>(DodgeStartTime);           //Dodgeing 1
 		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodgeing 2
+
+		saved_game.read<int32_t>(damageTime);
 
 		saved_game.read<int32_t>(genericenemyindex);
 

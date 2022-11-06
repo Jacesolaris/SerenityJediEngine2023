@@ -67,7 +67,7 @@ extern void Boba_Precache(void);
 extern void NPC_Wampa_Precache(void);
 extern void npc_rosh_dark_precache(void);
 gentity_t* NPC_SpawnType(gentity_t* ent, char* npc_type, char* targetname, qboolean isVehicle);
-extern void Howler_ClearTimers(gentity_t* self);
+extern void Howler_ClearTimers(const gentity_t* self);
 
 extern void Rancor_SetBolts(gentity_t* self);
 extern void Wampa_SetBolts(gentity_t* self);

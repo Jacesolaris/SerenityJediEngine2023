@@ -907,8 +907,6 @@ public:
 
 	int stunDebounceTime;
 	qboolean stunhasbeenfired;
-
-	int saberBlockDebounce;
 	int cloneFired; //[CloneRifle]
 
 	void sg_export(

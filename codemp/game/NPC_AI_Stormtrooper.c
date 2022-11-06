@@ -37,7 +37,7 @@ extern int GetTime(int lastTime);
 extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern void NPC_EvasionSaber(void);
-extern qboolean RT_Flying(gentity_t* self);
+extern qboolean RT_Flying(const gentity_t* self);
 extern float NPC_EnemyRangeFromBolt(int boltIndex);
 extern qboolean in_camera;
 extern void NPC_CheckEvasion(void);

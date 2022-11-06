@@ -200,7 +200,7 @@ G_DROIDEKACheckPain
 Called by NPC's and player in an DROIDEKA
 -------------------------
 */
-void G_DROIDEKACheckPain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc)
+void g_droideka_check_pain(const gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc)
 {
 	if (rand() & 1)
 	{
@@ -391,9 +391,9 @@ void DROIDEKA_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
 DROIDEKA_Attack
 -------------------------
 */
-void DROIDEKA_Attack(void)
+void droideka_attack()
 {
-	const qboolean altAttack = qfalse;
+	constexpr qboolean altAttack = qfalse;
 
 	// Rate our distance to the target, and our visibilty
 	const float distance = static_cast<int>(DistanceHorizontalSquared(NPC->currentOrigin, NPC->enemy->currentOrigin));
@@ -557,6 +557,6 @@ void NPC_BSDROIDEKA_Default(void)
 		{
 			NPCInfo->goalEntity = NPC->enemy;
 		}
-		DROIDEKA_Attack();
+		droideka_attack();
 	}
 }

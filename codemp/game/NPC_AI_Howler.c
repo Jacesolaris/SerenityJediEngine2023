@@ -64,7 +64,7 @@ void NPC_Howler_Precache(void)
 }
 
 //added from SP code
-void Howler_ClearTimers(gentity_t* self)
+void Howler_ClearTimers(const gentity_t* self)
 {
 	//clear all my timers
 	TIMER_Set(self, "flee", -level.time);

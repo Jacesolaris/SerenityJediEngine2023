@@ -1070,8 +1070,6 @@ struct gclient_s
 		int drainDebounce;
 		int lightningDebounce;
 	} force;
-
-	int saberBlockDebounce;
 	int hookDebounceTime;
 	qboolean hookhasbeenfired;
 	gentity_t* owner;

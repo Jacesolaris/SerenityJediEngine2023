@@ -42,7 +42,7 @@ extern int GetTime(int lastTime);
 extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern void NPC_EvasionSaber(void);
-extern qboolean RT_Flying(gentity_t* self);
+extern qboolean RT_Flying(const gentity_t* self);
 extern void NPC_CheckEvasion(void);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern qboolean PM_InKnockDown(const playerState_t* ps);

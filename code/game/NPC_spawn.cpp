@@ -49,9 +49,9 @@ extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void ST_ClearTimers(gentity_t* ent);
-extern void Jedi_ClearTimers(gentity_t* ent);
-extern void Howler_ClearTimers(gentity_t* self);
-extern void NPC_GalakMech_Precache(void);
+extern void Jedi_ClearTimers(const gentity_t* ent);
+extern void Howler_ClearTimers(const gentity_t* self);
+extern void NPC_GalakMech_Precache();
 constexpr auto NSF_DROP_TO_FLOOR = 16;
 extern void NPC_SBD_Precache(void);
 extern void NPC_DROIDEKA_Init(gentity_t* ent);

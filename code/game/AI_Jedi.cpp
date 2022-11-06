@@ -297,7 +297,7 @@ void NPC_SBD_Precache(void)
 	G_SoundIndex("sound/chars/SBD/SBDStep3.wav");
 }
 
-void Jedi_ClearTimers(gentity_t* ent)
+void Jedi_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "roamTime", 0);
 	TIMER_Set(ent, "chatter", 0);
@@ -536,7 +536,7 @@ qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pus
 	return qtrue;
 }
 
-extern void Boba_FireDecide(void);
+extern void Boba_FireDecide();
 extern void RT_FireDecide(void);
 extern void Boba_FlyStart(gentity_t* self);
 
@@ -1079,7 +1079,7 @@ static void Jedi_AggressionErosion(int amt)
 	}
 }
 
-void NPC_Jedi_RateNewEnemy(gentity_t* self, const gentity_t* enemy)
+void NPC_Jedi_RateNewEnemy(const gentity_t* self, const gentity_t* enemy)
 {
 	float healthAggression;
 	float weaponAggression;
@@ -1130,7 +1130,7 @@ static void Jedi_Rage(void)
 	ForceRage(NPC);
 }
 
-void Jedi_RageStop(gentity_t* self)
+void Jedi_RageStop(const gentity_t* self)
 {
 	if (self->NPC)
 	{
@@ -4435,14 +4435,14 @@ int Jedi_ReCalcParryTime(const gentity_t* self, evasionType_t evasionType)
 				switch (g_spskill->integer)
 				{
 				case 0:
-					baseTime = 1500;
+					baseTime = 500;
 					break;
 				case 1:
-					baseTime = 1000;
+					baseTime = 250;
 					break;
 				case 2:
 				default:
-					baseTime = 500;
+					baseTime = 100;
 					break;
 				}
 			}
@@ -7699,7 +7699,7 @@ static qboolean Jedi_TryJump(const gentity_t* goal)
 	return qfalse;
 }
 
-static qboolean Jedi_Jumping(gentity_t* goal)
+static qboolean Jedi_Jumping(const gentity_t* goal)
 {
 	if (!TIMER_Done(NPC, "forceJumpChasing") && goal)
 	{
@@ -8844,7 +8844,7 @@ finish:
 	}
 }
 
-qboolean Jedi_CanPullBackSaber(gentity_t* self)
+qboolean Jedi_CanPullBackSaber(const gentity_t* self)
 {
 	if (self->client->ps.saberBlocked == BLOCKED_PARRY_BROKEN && !TIMER_Done(self, "parryTime"))
 	{
@@ -9048,7 +9048,7 @@ extern qboolean PM_SaberInAttackback(int move);
 
 static void Jedi_Attack(void)
 {
-	int curmove = NPC->client->ps.saberMove;
+	//int curmove = NPC->client->ps.saberMove;
 
 	//Don't do anything if we're in a pain anim
 	if (NPC->painDebounceTime > level.time)
@@ -9462,21 +9462,21 @@ static void Jedi_Attack(void)
 		}
 	}
 
-	if (g_spskill->integer > 1
-		&& NPC->client->ps.saberBlockingTime < level.time
-		&& !PM_SaberInAttackback(curmove)
-		&& !PM_SaberInKata(static_cast<saberMoveName_t>(curmove)))
-	{
-		if (PM_SaberInStart(curmove) || PM_SaberInTransition(curmove) ||
-			BG_SaberInNonIdleDamageMove(&NPC->client->ps))
-		{
-			//Hack to prevent the NPCS from using fakes all the time
-			if (!in_camera)
-			{//Try to attack
-				WeaponThink(qtrue);
-			}
-		}
-	}
+	//if (g_spskill->integer > 1
+	//	&& NPC->client->ps.saberBlockingTime < level.time
+	//	&& !PM_SaberInAttackback(curmove)
+	//	&& !PM_SaberInKata(static_cast<saberMoveName_t>(curmove)))
+	//{
+	//	if (PM_SaberInStart(curmove) || PM_SaberInTransition(curmove) ||
+	//		BG_SaberInNonIdleDamageMove(&NPC->client->ps))
+	//	{
+	//		//Hack to prevent the NPCS from using fakes all the time
+	//		if (!in_camera)
+	//		{//Try to attack
+	//			WeaponThink(qtrue);
+	//		}
+	//	}
+	//}
 
 	//see if our enemy was killed by us, gloat and turn off saber after cool down.
 	if (NPC->enemy)
@@ -9891,7 +9891,7 @@ qboolean Rosh_TwinPresent(gentity_t* self)
 	return qtrue;
 }
 
-qboolean Rosh_TwinNearBy(gentity_t* self)
+qboolean Rosh_TwinNearBy(const gentity_t* self)
 {
 	const gentity_t* foundTwin = G_Find(nullptr, FOFS(NPC_type), "DKothos");
 	if (!foundTwin

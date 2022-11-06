@@ -1455,7 +1455,7 @@ NPC_RunBehavior
 -------------------------
 */
 extern void NPC_BSRT_Default(void);
-extern qboolean RT_Flying(gentity_t* self);
+extern qboolean RT_Flying(const gentity_t* self);
 extern void NPC_BSEmplaced(void);
 extern qboolean NPC_CheckSurrender(void);
 extern void Boba_FlyStop(gentity_t* self);

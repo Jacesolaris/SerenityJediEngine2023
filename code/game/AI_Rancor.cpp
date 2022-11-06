@@ -731,7 +731,7 @@ void Rancor_Smash(void)
 void Rancor_Bite(void)
 {
 	gentity_t* radiusEnts[128];
-	const float radius = 100;
+	constexpr float radius = 100;
 	const float radiusSquared = radius * radius;
 	vec3_t boltOrg;
 
@@ -934,7 +934,8 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 			{
 				NPC_SetAnim(NPC, SETANIM_BOTH, BOTH_MELEE2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPC, "attack_dmg", 1250);
-				vec3_t fwd, yawAng = { 0, NPC->client->ps.viewangles[YAW], 0 };
+				vec3_t fwd;
+				const vec3_t yawAng = { 0, NPC->client->ps.viewangles[YAW], 0 };
 				AngleVectors(yawAng, fwd, nullptr, nullptr);
 				VectorScale(fwd, distance * 1.5f, NPC->client->ps.velocity);
 				NPC->client->ps.velocity[2] = 150;
@@ -1019,10 +1020,10 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 	}
 
 	// Need to do delayed damage since the attack animations encapsulate multiple mini-attacks
-	float playerDist;
 
 	if (TIMER_Done2(NPC, "attack_dmg", qtrue))
 	{
+		float playerDist;
 		switch (NPC->client->ps.legsAnim)
 		{
 		case BOTH_MELEE1:
@@ -1427,8 +1428,8 @@ qboolean Rancor_AttackBBrush(void)
 {
 	trace_t trace;
 	vec3_t center;
-	vec3_t dir2Brush, end;
-	const float checkDist = 64.0f; //32.0f;
+	vec3_t dir2Brush;
+	constexpr float checkDist = 64.0f; //32.0f;
 
 	if (VectorCompare(NPCInfo->blockedEntity->s.origin, vec3_origin))
 	{
@@ -1459,6 +1460,7 @@ qboolean Rancor_AttackBBrush(void)
 	}
 	else
 	{
+		vec3_t end;
 		VectorMA(NPC->currentOrigin, checkDist, dir2Brush, end);
 		gi.trace(&trace, NPC->currentOrigin, NPC->mins, NPC->maxs, end, NPC->s.number, NPC->clipmask,
 			static_cast<EG2_Collision>(0), 0);
@@ -1524,11 +1526,13 @@ void Rancor_FireBreathAttack(void)
 	const int damage = Q_irand(10, 15);
 	trace_t tr;
 	mdxaBone_t boltMatrix;
-	vec3_t start, end, dir, traceMins = { -4, -4, -4 }, traceMaxs = { 4, 4, 4 };
-	const vec3_t rancAngles = { 0, NPC->client->ps.viewangles[YAW], 0 };
+	vec3_t start, end, dir;
+	constexpr vec3_t traceMaxs = { 4, 4, 4 };
+	constexpr vec3_t traceMins = { -4, -4, -4 };
+	const vec3_t ranc_angles = { 0, NPC->client->ps.viewangles[YAW], 0 };
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel, NPC->gutBolt,
-		&boltMatrix, rancAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+		&boltMatrix, ranc_angles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, start);

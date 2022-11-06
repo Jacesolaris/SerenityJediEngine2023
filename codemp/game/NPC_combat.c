@@ -39,7 +39,7 @@ extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern qboolean NPC_CheckLookTarget(gentity_t* self);
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void NPC_Jedi_RateNewEnemy(gentity_t* self, const gentity_t* enemy);
+extern void NPC_Jedi_RateNewEnemy(const gentity_t* self, const gentity_t* enemy);
 extern int NAV_FindClosestWaypointForPoint2(vec3_t point);
 extern int NAV_GetNearestNode(gentity_t* self, int lastNode);
 extern qboolean PM_DroidMelee(int npc_class);

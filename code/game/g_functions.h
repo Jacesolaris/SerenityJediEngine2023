@@ -700,8 +700,8 @@ extern void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 	int hitLoc = HL_NONE);
 extern void Mark1_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags = 0,
 	int hitLoc = HL_NONE);
-extern void Interrogator_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
-	int dFlags = 0, int hitLoc = HL_NONE);
+extern void Interrogator_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
+                             int dFlags = 0, int hitLoc = HL_NONE);
 extern void misc_atst_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
 extern void misc_panel_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,

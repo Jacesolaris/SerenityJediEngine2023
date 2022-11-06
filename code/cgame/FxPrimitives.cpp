@@ -2176,7 +2176,7 @@ constexpr float BEZIER_RESOLUTION = 16.0f;
 void CBezier::Draw(void)
 {
 	vec3_t pos, old_pos;
-	const float incr = 1.0f / BEZIER_RESOLUTION;
+	constexpr float incr = 1.0f / BEZIER_RESOLUTION;
 
 	VectorCopy(mOrigin1, old_pos);
 
