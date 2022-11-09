@@ -214,7 +214,7 @@ static int CG_TeamScoreboard(int y, team_t team, float fade, int maxClients, int
 
 	int count = 0;
 	for (int i = 0; i < cg.numScores && count < maxClients; i++) {
-		score_t* score = &cg.scores[i];
+		const score_t* score = &cg.scores[i];
 		const clientInfo_t* ci = &cgs.clientinfo[score->client];
 
 		if (team != ci->team) {

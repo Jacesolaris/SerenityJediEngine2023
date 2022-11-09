@@ -151,7 +151,7 @@ bool VEH_StartStrafeRam(Vehicle_t* pVeh, bool Right)
 				}
 				if (shiftSound)
 				{
-					pVeh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 4000);
+					pVeh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 3000);
 					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shiftSound);
 				}
 			}
@@ -254,6 +254,28 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 				G_PlayEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
 					parent->s.number, parent->currentOrigin, 1, qtrue);
 			}
+
+			int	shift_sound = Q_irand(1, 4);
+			switch (shift_sound)
+			{
+			case 1:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+				break;
+			case 2:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+				break;
+			case 3:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+				break;
+			case 4:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+				break;
+			default:;
+			}
+			if (shift_sound)
+			{
+				G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shift_sound);
+			}
 		}
 
 		// Stop It On Each Exhaust Bolt
@@ -265,6 +287,37 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 			{
 				G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
 					parent->s.number);
+				if (pVeh->m_pVehicleInfo->soundShift1)
+				{
+					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundShift1);
+				}
+			}
+		}
+		else
+		{
+			if (pVeh->m_ucmd.forwardmove)
+			{
+				if (pVeh->m_iSoundDebounceTimer < level.time && Q_irand(0, 1) == 0)
+				{
+					int shift_sound = Q_irand(1, 4);
+					switch (shift_sound)
+					{
+					case 1: shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+						break;
+					case 2: shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+						break;
+					case 3: shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+						break;
+					case 4: shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+						break;
+					default:;
+					}
+					if (shift_sound)
+					{
+						pVeh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 4000);
+						G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shift_sound);
+					}
+				}
 			}
 		}
 	}

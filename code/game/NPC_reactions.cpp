@@ -437,7 +437,7 @@ gentity_t* G_CheckControlledTurretEnemy(gentity_t* self, gentity_t* enemy, qbool
 	return enemy;
 }
 
-extern void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, int mod);
+extern void Boba_Pain(gentity_t* self, int mod);
 /*
 ===============
 NPC_Pain
@@ -627,7 +627,7 @@ void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec
 
 	if (self->client && (self->client->NPC_class == CLASS_BOBAFETT || self->client->NPC_class == CLASS_MANDO))
 	{
-		Boba_Pain(self, inflictor, damage, mod);
+		Boba_Pain(self, mod);
 	}
 
 	RestoreNPCGlobals();

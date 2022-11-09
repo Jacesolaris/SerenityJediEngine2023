@@ -411,7 +411,7 @@ int CFxScheduler::ParseEffect(const char* file, CGPGroup* base)
 		}
 	}
 
-	CGPGroup* primitiveGroup = base->GetSubGroups();
+	const CGPGroup* primitiveGroup = base->GetSubGroups();
 
 	while (primitiveGroup)
 	{

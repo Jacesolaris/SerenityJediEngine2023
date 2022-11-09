@@ -202,7 +202,7 @@ vehField_t vehWeaponFields[] =
 	//when iLifeTime is up, explodes rather than simply removing itself
 };
 
-static const size_t numVehWeaponFields = ARRAY_LEN(vehWeaponFields);
+static constexpr size_t numVehWeaponFields = std::size(vehWeaponFields);
 
 static vehField_t* FindVehWeaponParm(const char* parmName)
 {

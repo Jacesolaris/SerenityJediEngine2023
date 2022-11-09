@@ -456,7 +456,6 @@ void Pilot_Steer_Vehicle()
 	bool ActorDoTurbo = false;
 	bool ActorAccelerate;
 	bool ActorAimAtTarget = true;
-	const float ActorYawOffset = 0.0f;
 
 	// Setup Enemy Data
 	//------------------
@@ -674,6 +673,7 @@ void Pilot_Steer_Vehicle()
 	//---------------
 	if (ActorAimAtTarget)
 	{
+		constexpr float ActorYawOffset = 0.0f;
 		MoveDirection.VecToAng();
 		NPCInfo->desiredPitch = AngleNormalize360(MoveDirection[PITCH]);
 		NPCInfo->desiredYaw = AngleNormalize360(MoveDirection[YAW] + ActorYawOffset);

@@ -39,7 +39,7 @@ extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const cha
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying);
 extern void NAV_GetLastMove(navInfo_t& info);
-extern qboolean NPC_IsGunner(gentity_t* self);
+extern qboolean NPC_IsGunner(const gentity_t* self);
 
 constexpr auto MELEE_DIST_SQUARED = 6400; //80*80;
 constexpr auto MIN_LOB_DIST_SQUARED = 65536; //256*256;
@@ -811,8 +811,8 @@ void NPC_BSGM_Attack(void)
 				//do the trace and damage
 				trace_t trace;
 				vec3_t end;
-				const vec3_t maxs = { 3, 3, 3 };
-				const vec3_t mins = { -3, -3, -3 };
+				constexpr vec3_t maxs = { 3, 3, 3 };
+				constexpr vec3_t mins = { -3, -3, -3 };
 				VectorMA(NPC->client->renderInfo.muzzlePoint, 1024, NPC->client->renderInfo.muzzleDir, end);
 				gi.trace(&trace, NPC->client->renderInfo.muzzlePoint, mins, maxs, end, NPC->s.number, MASK_SHOT,
 					G2_NOCOLLIDE, 0);

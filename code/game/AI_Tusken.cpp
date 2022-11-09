@@ -34,7 +34,7 @@ extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_
 extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern qboolean NPC_IsGunner(gentity_t* self);
+extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound(void);
 
 constexpr auto MAX_VIEW_DIST = 1024;
@@ -76,7 +76,7 @@ void NPC_Tusken_Precache(void)
 	}
 }
 
-void Tusken_ClearTimers(gentity_t* ent)
+void Tusken_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "chatter", 0);
 	TIMER_Set(ent, "duck", 0);
@@ -424,8 +424,9 @@ void Tusken_StaffTrace(void)
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t boltMatrix;
-			vec3_t tip, dir, base, angles = { 0, NPC->currentAngles[YAW], 0 };
-			const vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
+			vec3_t tip, dir, base;
+			const vec3_t angles = { 0, NPC->currentAngles[YAW], 0 };
+			constexpr vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->weaponModel[0],
@@ -489,8 +490,9 @@ void Tusken_StaffTracenew(gentity_t* self)
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t boltMatrix;
-			vec3_t tip, dir, base, angles = { 0, self->currentAngles[YAW], 0 };
-			const vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
+			vec3_t tip, dir, base;
+			const vec3_t angles = { 0, self->currentAngles[YAW], 0 };
+			constexpr vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(self->ghoul2, self->weaponModel[0],

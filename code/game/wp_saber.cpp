@@ -162,7 +162,7 @@ extern qboolean PM_InRoll(const playerState_t* ps);
 int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern int PM_InGrappleMove(int anim);
 extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
-extern int SaberDroid_PowerLevelForSaberAnim(gentity_t* self);
+extern int SaberDroid_PowerLevelForSaberAnim(const gentity_t* self);
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
 	int spinTime = 0);

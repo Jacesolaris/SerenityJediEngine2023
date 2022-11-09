@@ -32,7 +32,7 @@ extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern void Saboteur_Cloak(gentity_t* self);
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
-extern qboolean NPC_IsGunner(gentity_t* self);
+extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound(void);
 
 constexpr auto SPF_NO_HIDE = 2;
@@ -69,7 +69,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void Sniper_ClearTimers(gentity_t* ent)
+void Sniper_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "chatter", 0);
 	TIMER_Set(ent, "duck", 0);

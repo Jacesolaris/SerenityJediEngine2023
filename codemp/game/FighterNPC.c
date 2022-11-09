@@ -1736,7 +1736,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 {
 	int Anim = -1;
 	const int iFlags = SETANIM_FLAG_NORMAL;
-	playerState_t* parentPS = pVeh->m_pParentEntity->playerState;
+	const playerState_t* parentPS = pVeh->m_pParentEntity->playerState;
 	const int curTime = level.time;
 
 	if (parentPS->hyperSpaceTime

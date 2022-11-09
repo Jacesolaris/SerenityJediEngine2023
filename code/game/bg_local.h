@@ -55,22 +55,6 @@ using pml_t = struct
 extern pmove_t* pm;
 extern pml_t pml;
 
-// movement parameters
-extern const float pm_stopspeed;
-extern const float pm_duckScale;
-extern const float pm_swimScale;
-extern const float pm_wadeScale;
-
-extern const float pm_accelerate;
-extern const float pm_airaccelerate;
-extern const float pm_wateraccelerate;
-extern const float pm_flyaccelerate;
-extern const float pm_Laddeeraccelerate;
-
-extern const float pm_friction;
-extern const float pm_waterfriction;
-extern const float pm_flightfriction;
-
 extern int c_pmove;
 
 void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce);

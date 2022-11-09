@@ -221,7 +221,7 @@ void CM_BoxLeafnums_r(leafList_t* ll, int nodenum)
 		}
 
 		const cNode_t* node = &cmg.nodes[nodenum];
-		cplane_t* plane = node->plane;
+		const cplane_t* plane = node->plane;
 
 		const int s = BoxOnPlaneSide(ll->bounds[0], ll->bounds[1], plane);
 		if (s == 1)

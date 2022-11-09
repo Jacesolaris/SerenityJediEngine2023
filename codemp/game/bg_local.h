@@ -60,19 +60,6 @@ typedef struct
 extern pml_t pml;
 
 // movement parameters
-extern float pm_stopspeed;
-extern float pm_duckScale;
-extern float pm_swimScale;
-extern float pm_wadeScale;
-
-extern float pm_accelerate;
-extern float pm_airaccelerate;
-extern float pm_wateraccelerate;
-extern float pm_flyaccelerate;
-
-extern float pm_friction;
-extern float pm_waterfriction;
-extern float pm_flightfriction;
 
 extern int c_pmove;
 
@@ -99,7 +86,7 @@ qboolean PM_InRollComplete(const playerState_t* ps, int anim);
 int PM_AnimLength(int index, animNumber_t anim);
 
 int PM_ReadyPoseForSaberAnimLevel(void);
-int PM_ReadyPoseForSaberAnimLevelPlayer(void);
+int PM_IdlePoseForSaberAnimLevel(void);
 int PM_ReadyPoseForSaberAnimLevelBOT(void);
 int PM_ReadyPoseForSaberAnimLevelDucked(void);
 int PM_BlockingPoseForSaberAnimLevelSingle(void);

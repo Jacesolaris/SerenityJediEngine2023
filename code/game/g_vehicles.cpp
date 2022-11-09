@@ -759,6 +759,7 @@ bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 #ifdef _JK2MP
 			parent->client->ps.loopSound = parent->s.loopSound = pVeh->m_pVehicleInfo->soundLoop;
 #else
+
 			parent->s.loopSound = pVeh->m_pVehicleInfo->soundLoop;
 #endif
 		}
@@ -2255,6 +2256,18 @@ static bool Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 		parent->enemy = pVeh->m_pPilot->enemy;
 	}
 #endif
+
+	if (pVeh->m_pPilot)
+	{
+		if (pVeh->m_pVehicleInfo->type == VH_WALKER)
+		{
+			parent->s.loopSound = G_SoundIndex("sound/vehicles/shuttle/loop.wav");
+		}
+		/*else if (pVeh->m_pVehicleInfo->type == VH_FIGHTER)
+		{
+			parent->s.loopSound = pVeh->m_pVehicleInfo->soundLoop;
+		}*/
+	}
 
 	return true;
 }

@@ -732,7 +732,7 @@ void Rancor_Bite(void)
 {
 	gentity_t* radiusEnts[128];
 	constexpr float radius = 100;
-	const float radiusSquared = radius * radius;
+	constexpr float radiusSquared = radius * radius;
 	vec3_t boltOrg;
 
 	const int numEnts = NPC_GetEntsNearBolt(radiusEnts, radius, NPC->gutBolt, boltOrg);

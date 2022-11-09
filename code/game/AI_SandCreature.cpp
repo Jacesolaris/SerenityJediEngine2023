@@ -87,7 +87,7 @@ void NPC_SandCreature_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* oth
 
 void SandCreature_MoveEffect(void)
 {
-	const vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = { 0, 0, 1 };
 	const vec3_t org = { NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->absmin[2] + 2 };
 
 	const float playerDist = Distance(player->currentOrigin, NPC->currentOrigin);
@@ -358,7 +358,7 @@ void SandCreature_Attack(qboolean miss)
 	}
 }
 
-float SandCreature_EntScore(gentity_t* ent)
+float SandCreature_EntScore(const gentity_t* ent)
 {
 	if (ent->s.weapon == WP_THERMAL && g_spskill->integer > 1)
 	{
@@ -743,9 +743,8 @@ void SandCreature_Sleep(void)
 void SandCreature_PushEnts()
 {
 	gentity_t* radiusEnts[128];
-	const float radius = 70;
+	constexpr float radius = 70;
 	vec3_t mins, maxs;
-	vec3_t smackDir;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -756,6 +755,7 @@ void SandCreature_PushEnts()
 	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
 	for (int entIndex = 0; entIndex < numEnts; entIndex++)
 	{
+		vec3_t smackDir;
 		// Only Clients
 		//--------------
 		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client || radiusEnts[entIndex] == NPC)
@@ -815,7 +815,7 @@ void NPC_BSSandCreature_Default(void)
 		|| NPC->client->ps.legsAnim == BOTH_ATTACK2)
 	{
 		//FIXME: get start and end frame numbers for this effect for each of these anims
-		const vec3_t up = { 0, 0, 1 };
+		constexpr vec3_t up = { 0, 0, 1 };
 		vec3_t org;
 		VectorCopy(NPC->currentOrigin, org);
 		org[2] -= 40;

@@ -56,7 +56,7 @@ void Boba_FlyStop(gentity_t* self);
 
 // Called From NPC_Pain()
 //-----------------------------
-void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, int mod);
+void Boba_Pain(gentity_t* self, int mod);
 
 // Local: Flame Thrower Weapon
 //-----------------------------
@@ -273,7 +273,7 @@ void Mando_Precache(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_DustFallNear(const vec3_t origin, int dustcount)
+void Boba_DustFallNear(const vec3_t origin, const int dustcount)
 {
 	if (!BobaActive)
 	{
@@ -306,7 +306,7 @@ void Boba_DustFallNear(const vec3_t origin, int dustcount)
 	}
 }
 
-void Do_DustFallNear(const vec3_t origin, int dustcount)
+void Do_DustFallNear(const vec3_t origin, const int dustcount)
 {
 	trace_t testTrace;
 	vec3_t testDirection;
@@ -337,7 +337,7 @@ void Do_DustFallNear(const vec3_t origin, int dustcount)
 ////////////////////////////////////////////////////////////////////////////////////////
 // This is just a super silly wrapper around NPC_Change Weapon
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_ChangeWeapon(int wp)
+void Boba_ChangeWeapon(const int wp)
 {
 	if (NPC->s.weapon == wp)
 	{
@@ -350,7 +350,7 @@ void Boba_ChangeWeapon(int wp)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Choose an "anti-knockdown" response
 ////////////////////////////////////////////////////////////////////////////////////////
-qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown)
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, const qboolean forceKnockdown)
 {
 	if (self->client->NPC_class != CLASS_BOBAFETT && self->client->NPC_class != CLASS_COMMANDO)
 	{
@@ -450,7 +450,7 @@ bool Boba_CanSeeEnemy(const gentity_t* self)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_Pain(gentity_t* self, gentity_t* inflictor, int damage, int mod)
+void Boba_Pain(gentity_t* self, const int mod)
 {
 	if (mod == MOD_SABER && !(NPCInfo->aiFlags & NPCAI_FLAMETHROW))
 	{
@@ -787,7 +787,7 @@ void Boba_VibrobladePunch(gentity_t* self)
 	self->s.weapon = oldWeapon;
 }
 
-void Boba_FireWristMissile(gentity_t* self, int whichMissile)
+void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 {
 	static int shotsFired = 0; //only 5 shots allowed for wristlaser; only 1 for missile launcher or dart
 
@@ -1068,7 +1068,7 @@ void Boba_Fire()
 	}
 }
 
-qboolean isBobaClass(int className)
+qboolean isBobaClass()
 {
 	if (NPC->client->NPC_class == CLASS_BOBAFETT || NPC->client->NPC_class == CLASS_MANDO)
 		return qtrue;
@@ -1085,7 +1085,7 @@ void Boba_FireDecide()
 	//--------------------------
 	if (!NPC || // Only NPCs
 		!NPC->client || // Only Clients
-		!isBobaClass(NPC->client->NPC_class) || // Only Boba
+		!isBobaClass() || // Only Boba
 		!NPC->enemy || // Only If There Is An Enemy
 		NPC->s.weapon == WP_NONE || // Only If Using A Valid Weapon
 		!TIMER_Done(NPC, "nextAttackDelay") || // Only If Ready To Shoot Again
@@ -1107,12 +1107,13 @@ void Boba_FireDecide()
 		break;
 
 	case WP_DISRUPTOR:
-		// TODO: Add Conditions Here
-		Boba_Fire();
+		if (Distance(NPC->currentOrigin, NPC->enemy->currentOrigin) > 200.0f)
+		{
+			Boba_Fire();
+		}
 		break;
 
 	case WP_BLASTER:
-		// TODO: Add Conditions Here
 		Boba_Fire();
 		break;
 	default:;
@@ -1186,7 +1187,7 @@ void Boba_TacticsSelect()
 		next_state = !enemyInRocketRange || Q_irand(0, NPC->count) < 1 ? BTS_RIFLE : BTS_MISSILE;
 	}
 
-	// Hmmm...  Havn't Seen The Player In A While, We Might Want To Try Something Sneaky
+	// Hmmm...  Haven't Seen The Player In A While, We Might Want To Try Something Sneaky
 	//-----------------------------------------------------------------------------------
 	else
 	{

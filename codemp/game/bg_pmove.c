@@ -125,7 +125,6 @@ float pm_flyaccelerate = 8.0f;
 
 float pm_friction = 6.0f;
 float pm_waterfriction = 1.0f;
-float pm_flightfriction = 3.0f;
 float pm_spectatorfriction = 5.0f;
 
 int c_pmove = 0;
@@ -609,7 +608,7 @@ int PM_ReadyPoseForSaberAnimLevel(void)
 	return anim;
 }
 
-int PM_ReadyPoseForSaberAnimLevelPlayer(void)
+int PM_IdlePoseForSaberAnimLevel(void)
 {
 	int anim = BOTH_STAND2;
 
@@ -2691,7 +2690,7 @@ PM_ClipVelocity
 Slide off of the impacting surface
 ==================
 */
-void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce)
+void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, const float overbounce)
 {
 	if (pm->ps->pm_flags & PMF_STUCK_TO_WALL)
 	{
@@ -9841,7 +9840,7 @@ static void PM_Footsteps(void)
 								else
 #endif
 								{
-									if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+									if (HoldingBlock)
 									{
 										if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 										{
@@ -9858,7 +9857,7 @@ static void PM_Footsteps(void)
 									}
 									else
 									{
-										PM_ContinueLegsAnim(PM_LegsSlopeBackTransition(PM_ReadyPoseForSaberAnimLevelPlayer()));
+										PM_ContinueLegsAnim(PM_LegsSlopeBackTransition(PM_IdlePoseForSaberAnimLevel()));
 									}
 								}
 							}
@@ -13580,7 +13579,7 @@ void PM_Weapon(void)
 				else
 #endif
 				{
-					if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+					if (HoldingBlock)
 					{
 						if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 						{
@@ -13597,7 +13596,7 @@ void PM_Weapon(void)
 					}
 					else
 					{
-						PM_StartTorsoAnim(PM_ReadyPoseForSaberAnimLevelPlayer());
+						PM_StartTorsoAnim(PM_IdlePoseForSaberAnimLevel());
 					}
 				}
 			}

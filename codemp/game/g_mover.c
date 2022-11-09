@@ -1396,7 +1396,7 @@ qboolean G_EntIsUnlockedDoor(int entityNum)
 
 	if (G_EntIsDoor(entityNum))
 	{
-		gentity_t* ent = &g_entities[entityNum];
+		const gentity_t* ent = &g_entities[entityNum];
 		gentity_t* owner;
 		if (ent->flags & FL_TEAMSLAVE)
 		{

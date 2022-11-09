@@ -6825,7 +6825,7 @@ extern void NPC_ClearLookTarget(const gentity_t* self);
 static void Q3_LookTarget(int entID, char* targetName)
 {
 	vec3_t viewspot;
-	gentity_t* ent = &g_entities[entID];
+	const gentity_t* ent = &g_entities[entID];
 
 	if (!ent)
 	{

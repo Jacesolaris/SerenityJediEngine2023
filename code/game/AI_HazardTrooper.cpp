@@ -486,7 +486,7 @@ private:
 			//----------------------------------
 			if (targetDistance < scannerMaxHearDist)
 			{
-				const float scannerMinNoiseLevel = 0.3f;
+				constexpr float scannerMinNoiseLevel = 0.3f;
 				float targetNoiseLevel = TargetNoiseLevel(target);
 				targetNoiseLevel *= 1.0f - targetDistance / scannerMaxHearDist; // scale by distance
 				if (targetNoiseLevel > scannerMinNoiseLevel)

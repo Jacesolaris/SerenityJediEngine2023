@@ -197,8 +197,8 @@ extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltInd
 void Wampa_Slash(int boltIndex, qboolean backhand)
 {
 	gentity_t* radiusEnts[128];
-	const float radius = 88;
-	const float radiusSquared = radius * radius;
+	constexpr float radius = 88;
+	constexpr float radius_squared = radius * radius;
 	vec3_t boltOrg;
 	const int damage = backhand ? Q_irand(10, 15) : Q_irand(20, 30);
 
@@ -223,7 +223,7 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 			continue;
 		}
 
-		if (DistanceSquared(radiusEnts[i]->currentOrigin, boltOrg) <= radiusSquared)
+		if (DistanceSquared(radiusEnts[i]->currentOrigin, boltOrg) <= radius_squared)
 		{
 			//smack
 			G_Damage(radiusEnts[i], NPC, NPC, vec3_origin, radiusEnts[i]->currentOrigin, damage,
@@ -312,7 +312,8 @@ void Wampa_Attack(float distance, qboolean doCharge)
 			//leap
 			NPC_SetAnim(NPC, SETANIM_BOTH, BOTH_ATTACK2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			TIMER_Set(NPC, "attack_dmg", 500);
-			vec3_t fwd, yawAng = { 0, NPC->client->ps.viewangles[YAW], 0 };
+			vec3_t fwd;
+			const vec3_t yawAng = { 0, NPC->client->ps.viewangles[YAW], 0 };
 			AngleVectors(yawAng, fwd, nullptr, nullptr);
 			VectorScale(fwd, distance * 1.5f, NPC->client->ps.velocity);
 			NPC->client->ps.velocity[2] = 150;
@@ -658,7 +659,7 @@ extern float NPC_EnemyRangeFromBolt(int boltIndex);
 
 qboolean Wampa_TryGrab(void)
 {
-	const float radius = 64.0f;
+	constexpr float radius = 64.0f;
 
 	if (!NPC->enemy
 		|| !NPC->enemy->client

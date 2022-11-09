@@ -48,7 +48,7 @@ extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 
 extern int wp_saber_init_blade_data(gentity_t* ent);
-extern void ST_ClearTimers(gentity_t* ent);
+extern void ST_ClearTimers(const gentity_t* ent);
 extern void Jedi_ClearTimers(const gentity_t* ent);
 extern void Howler_ClearTimers(const gentity_t* self);
 extern void NPC_GalakMech_Precache();

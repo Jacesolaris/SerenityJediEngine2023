@@ -6016,7 +6016,7 @@ Q3_LookTarget
 */
 static void Q3_LookTarget(int entID, char* targetName)
 {
-	gentity_t* ent = &g_entities[entID];
+	const gentity_t* ent = &g_entities[entID];
 
 	if (!ent)
 	{

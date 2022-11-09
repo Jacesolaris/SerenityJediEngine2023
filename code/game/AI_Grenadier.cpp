@@ -32,7 +32,7 @@ extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime,
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
-extern qboolean NPC_IsGunner(gentity_t* self);
+extern qboolean NPC_IsGunner(const gentity_t* self);
 
 constexpr auto MAX_VIEW_DIST = 1024;
 constexpr auto MAX_VIEW_SPEED = 250;

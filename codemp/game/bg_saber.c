@@ -1730,25 +1730,23 @@ extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushD
 #endif
 void PM_SaberLockBreak(playerState_t* genemy, const qboolean victory, const int strength)
 {
-	// ReSharper disable once CppEntityAssignedButNoRead
-	int lose_anim;
 	const qboolean superBreak = strength + pm->cmd.buttons & BUTTON_ATTACK;
 
 	pm->ps->userInt3 &= ~(1 << FLAG_LOCKWINNER);
 	genemy->userInt3 &= ~(1 << FLAG_LOCKWINNER);
 
-	int winAnim = PM_SaberLockWinAnim(victory, superBreak);
+	const int win_anim = PM_SaberLockWinAnim(victory, superBreak);
 
-	if (winAnim != -1)
+	if (win_anim != -1)
 	{
 		//a single vs. single break
-		lose_anim = PM_SaberLockLoseAnim(genemy, victory, superBreak);
+		PM_SaberLockLoseAnim(genemy, victory, superBreak);
 	}
 	else
 	{
-		winAnim = PM_SaberLockResultAnim(pm->ps, superBreak, qtrue);
+		PM_SaberLockResultAnim(pm->ps, superBreak, qtrue);
 		pm->ps->weaponstate = WEAPON_FIRING;
-		lose_anim = PM_SaberLockResultAnim(genemy, superBreak, qfalse);
+		PM_SaberLockResultAnim(genemy, superBreak, qfalse);
 		genemy->weaponstate = WEAPON_READY;
 	}
 
@@ -1834,7 +1832,7 @@ qboolean g_check_increment_lock_anim(const int anim, const int winOrLose)
 		//decrement to win:
 	case BOTH_LK_S_DL_S_L_1: //lock if I'm using single vs. a dual
 	case BOTH_LK_S_DL_T_L_1: //lock if I'm using single vs. a dual
-	case BOTH_LK_S_S_S_L_2: //lock if I'm using single vs. a single and other intitiated
+	case BOTH_LK_S_S_S_L_2: //lock if I'm using single vs. a single and other initiated
 	case BOTH_LK_S_S_T_L_1: //lock if I'm using single vs. a single and I initiated
 	case BOTH_LK_S_ST_S_L_1: //lock if I'm using single vs. a staff
 	case BOTH_LK_S_ST_T_L_1: //lock if I'm using single vs. a staff
@@ -2397,7 +2395,7 @@ qboolean PM_JMCanBackstab(void)
 
 	if (tr.fraction != 1.0 && tr.entityNum >= 0 && tr.entityNum < MAX_CLIENTS)
 	{
-		//We don't have real entity access here so we can't do an indepth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
+		//We don't have real entity access here so we can't do an in depth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
 		return qtrue;
 	}
 
@@ -2429,7 +2427,7 @@ qboolean PM_CanLunge(void)
 
 	if (tr.fraction != 1.0 && tr.entityNum >= 0 && tr.entityNum < MAX_CLIENTS)
 	{
-		//We don't have real entity access here so we can't do an indepth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
+		//We don't have real entity access here so we can't do an in depth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
 		return qtrue;
 	}
 
@@ -2459,7 +2457,7 @@ qboolean PM_JMCanLunge(void)
 
 	if (tr.fraction != 1.0 && tr.entityNum >= 0 && tr.entityNum < MAX_CLIENTS)
 	{
-		//We don't have real entity access here so we can't do an indepth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
+		//We don't have real entity access here so we can't do an in depth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
 		return qtrue;
 	}
 
@@ -4770,7 +4768,7 @@ void PM_WeaponLightsaber(void)
 			//you're kicking, no interruptions
 			return;
 		}
-		//done?  be immeditately ready to do an attack
+		//done?  be immediately ready to do an attack
 		pm->ps->saberMove = LS_READY;
 		pm->ps->weaponTime = 0;
 	}
@@ -4798,7 +4796,7 @@ void PM_WeaponLightsaber(void)
 			else
 #endif
 			{
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 					{
@@ -4815,7 +4813,7 @@ void PM_WeaponLightsaber(void)
 				}
 				else
 				{
-					PM_SetAnim(SETANIM_TORSO, PM_ReadyPoseForSaberAnimLevelPlayer(), SETANIM_FLAG_OVERRIDE);
+					PM_SetAnim(SETANIM_TORSO, PM_IdlePoseForSaberAnimLevel(), SETANIM_FLAG_OVERRIDE);
 				}
 			}
 		}
@@ -5233,7 +5231,7 @@ weapChecks:
 				PM_SetAnim(SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
 				break;
 			default:
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->saberAnimLevel == SS_DUAL)
 					{
@@ -5250,7 +5248,7 @@ weapChecks:
 				}
 				else
 				{
-					anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+					anim = PM_IdlePoseForSaberAnimLevel();
 				}
 				if (anim != -1)
 				{
@@ -5530,7 +5528,7 @@ weapChecks:
 		if (pm->ps->weaponTime > 0)
 		{
 			// Last attack is not yet complete.
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (HoldingBlock)
 			{
 				if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 				{
@@ -5579,46 +5577,24 @@ weapChecks:
 			return;
 		}
 
-		//		if (/*(PM_IsInBlockingAnim(pm->ps->saberMove) && pm->cmd.buttons & BUTTON_ATTACK) ||*/ curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
-		//		{
-		//			//from a parry or reflection, can go directly into an attack
-		//#ifdef _GAME
-		//			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)
-		//			{
-		//				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
-		//			}
-		//			else
-		//#endif
-		//			{
-		//				//newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
-		//
-		//				//newmove = PM_SaberAttackForMovement((saberMoveName_t)curmove);
-		//
-		//				switch (saberMoveData[curmove].endQuad)
-		//				{
-		//				case Q_T:
-		//					newmove = LS_A_T2B;
-		//					break;
-		//				case Q_TR:
-		//					newmove = LS_A_TR2BL;
-		//					break;
-		//				case Q_TL:
-		//					newmove = LS_A_TL2BR;
-		//					break;
-		//				case Q_BR:
-		//					newmove = LS_A_BR2TL;
-		//					break;
-		//				case Q_BL:
-		//					newmove = LS_A_BL2TR;
-		//					break;
-		//					//shouldn't be a parry that ends at L, R or B
-		//				}
-		//			}
-		//		}
+		if (curmove >= LS_PARRY_UP && curmove <= LS_REFLECT_LL)
+		{
+			//from a parry or reflection, can go directly into an attack
+#ifdef _GAME
+			if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT)
+			{
+				newmove = PM_NPCSaberAttackFromQuad(saberMoveData[curmove].endQuad);
+			}
+			else
+#endif
+			{
+				newmove = PM_SaberAttackForMovement(curmove);
+			}
+		}
 
 		if (newmove != LS_NONE)
 		{
-			//have a valid, final LS_ move picked, so skip findingt he transition move and just get the anim
+			//have a valid, final LS_ move picked, so skip finding the transition move and just get the anim
 			anim = saberMoveData[newmove].animToUse;
 		}
 
@@ -5764,8 +5740,8 @@ weapChecks:
 			case BOTH_WALK6:
 			case BOTH_WALK7:
 			case BOTH_WALK8: //# pistolwalk
-			case BOTH_WALK9: //# riflewalk
-			case BOTH_WALK10: //# grenadewalk
+			case BOTH_WALK9: //# rifle walk
+			case BOTH_WALK10: //# grenade-walk
 			case BOTH_WALK_STAFF:
 			case BOTH_WALK_DUAL:
 			case BOTH_WALKBACK1:
@@ -5814,7 +5790,7 @@ weapChecks:
 				else
 #endif
 				{
-					if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+					if (HoldingBlock)
 					{
 						if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 						{
@@ -5831,7 +5807,7 @@ weapChecks:
 					}
 					else
 					{
-						anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+						anim = PM_IdlePoseForSaberAnimLevel();
 					}
 				}
 				break;
@@ -5867,7 +5843,7 @@ weapChecks:
 
 	pm->ps->weaponstate = WEAPON_FIRING;
 
-	if (pm->ps->weaponTime > 0 && HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+	if (pm->ps->weaponTime > 0 && HoldingBlock)
 	{
 		if (pm->ps->fd.saberAnimLevel == SS_STAFF)
 		{
@@ -6416,7 +6392,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			else
 #endif
 			{
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 					{
@@ -6433,7 +6409,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				}
 				else
 				{
-					anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+					anim = PM_IdlePoseForSaberAnimLevel();
 				}
 			}
 		}
@@ -6441,7 +6417,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		if (pm->ps->pm_flags & PMF_DUCKED)
 		{
 			//Playing torso walk anims while crouched makes you look like a monkey
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (HoldingBlock)
 			{
 				if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 				{
@@ -6473,7 +6449,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			else
 #endif
 			{
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 					{
@@ -6490,7 +6466,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				}
 				else
 				{
-					anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+					anim = PM_IdlePoseForSaberAnimLevel();
 				}
 			}
 		}
@@ -6506,7 +6482,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			else
 #endif
 			{
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				if (HoldingBlock)
 				{
 					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 					{
@@ -6523,7 +6499,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				}
 				else
 				{
-					anim = PM_ReadyPoseForSaberAnimLevelPlayer();
+					anim = PM_IdlePoseForSaberAnimLevel();
 				}
 			}
 		}
@@ -6596,10 +6572,10 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			pm->ps->legsTimer = pm->ps->torsoTimer = 0;
 		}
 		else if (!pm->cmd.forwardmove && !pm->cmd.rightmove && !pm->cmd.upmove && !(pm->ps->pm_flags & PMF_DUCKED) ||
-			HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			HoldingBlock)
 		{
 			//not trying to run, duck or jump
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING
+			if (HoldingBlock
 				&& !PM_SaberInParry(new_move)
 				&& !PM_SaberInKnockaway(new_move)
 				&& !PM_SaberInBrokenParry(new_move)
@@ -6767,17 +6743,17 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 			else if (PM_SaberInStart(new_move))
 			{
-				int damageDelay = 150;
-				if (pm->ps->torsoTimer < damageDelay)
+				const int damage_delay = 150;
+				if (pm->ps->torsoTimer < damage_delay)
 				{
-					damageDelay = pm->ps->torsoTimer;
+					pm->ps->torsoTimer;
 				}
 			}
 
 			if (PM_SaberInSpecial(new_move) &&
 				pm->ps->weaponTime < pm->ps->torsoTimer)
 			{
-				//rww 01-02-03 - I think this will solve the issue of special attacks being interruptable, hopefully without side effects
+				//rww 01-02-03 - I think this will solve the issue of special attacks being interrupt able, hopefully without side effects
 				pm->ps->weaponTime = pm->ps->torsoTimer;
 			}
 		}

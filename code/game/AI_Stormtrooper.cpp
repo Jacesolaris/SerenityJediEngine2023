@@ -29,8 +29,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
-extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, gentity_t* member, int newSquadState);
-extern qboolean AI_GroupContainsEntNum(AIGroupInfo_t* group, int entNum);
+extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState);
+extern qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, int entNum);
 extern void AI_GroupUpdateEnemyLastSeen(AIGroupInfo_t* group, vec3_t spot);
 extern void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group);
 extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
@@ -147,7 +147,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void ST_AggressionAdjust(gentity_t* self, int change)
+void ST_AggressionAdjust(const gentity_t* self, int change)
 {
 	int upper_threshold, lower_threshold;
 
@@ -192,7 +192,7 @@ void ST_AggressionAdjust(gentity_t* self, int change)
 	}
 }
 
-void ST_ClearTimers(gentity_t* ent)
+void ST_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "chatter", 0);
 	TIMER_Set(ent, "duck", 0);
@@ -232,7 +232,7 @@ enum
 	SPEECH_PUSHED
 };
 
-qboolean NPC_IsGunner(gentity_t* self)
+qboolean NPC_IsGunner(const gentity_t* self)
 {
 	switch (self->client->NPC_class)
 	{
@@ -486,7 +486,7 @@ void NPC_ST_StoreMovementSpeech(int speech, float chance)
 ST_Move
 -------------------------
 */
-void ST_TransferMoveGoal(gentity_t* self, gentity_t* other);
+void ST_TransferMoveGoal(const gentity_t* self, const gentity_t* other);
 extern void NAV_GetLastMove(navInfo_t& info);
 
 static qboolean ST_Move(void)
@@ -1296,7 +1296,9 @@ void NPC_BSST_Patrol(void)
 	if (NPC->client->NPC_class == CLASS_ROCKETTROOPER && NPC->client->ps.eFlags & EF_SPOTLIGHT)
 	{
 		//using spotlight search mode
-		vec3_t eyeFwd, end, mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
+		vec3_t eyeFwd, end;
+		constexpr vec3_t maxs = { 2, 2, 2 };
+		constexpr vec3_t mins = { -2, -2, -2 };
 		trace_t trace;
 		AngleVectors(NPC->client->renderInfo.eyeAngles, eyeFwd, nullptr, nullptr);
 		VectorMA(NPC->client->renderInfo.eyePoint, NPCInfo->stats.visrange, eyeFwd, end);
@@ -1634,7 +1636,7 @@ void ST_ResolveBlockedShot(int hit)
 		//we're not ducking
 		if (AI_GroupContainsEntNum(NPCInfo->group, hit))
 		{
-			gentity_t* member = &g_entities[hit];
+			const gentity_t* member = &g_entities[hit];
 			if (TIMER_Done(member, "duck"))
 			{
 				//they aren't ducking
@@ -1708,7 +1710,7 @@ static void ST_CheckFireState(void)
 			if (!Q_irand(0, 10))
 			{
 				//Fire on the last known position
-				vec3_t muzzle, dir, angles;
+				vec3_t muzzle;
 				qboolean tooClose = qfalse;
 				qboolean tooFar = qfalse;
 
@@ -1799,6 +1801,8 @@ static void ST_CheckFireState(void)
 
 				if (!tooClose && !tooFar)
 				{
+					vec3_t angles;
+					vec3_t dir;
 					//okay too shoot at last pos
 					VectorSubtract(NPCInfo->enemyLastSeenLocation, muzzle, dir);
 					VectorNormalize(dir);
@@ -1815,7 +1819,7 @@ static void ST_CheckFireState(void)
 	}
 }
 
-void ST_TrackEnemy(gentity_t* self, vec3_t enemyPos)
+void ST_TrackEnemy(const gentity_t* self, vec3_t enemyPos)
 {
 	//clear timers
 	TIMER_Set(self, "attackDelay", Q_irand(1000, 2000));
@@ -1832,7 +1836,7 @@ void ST_TrackEnemy(gentity_t* self, vec3_t enemyPos)
 	}
 }
 
-int ST_ApproachEnemy(gentity_t* self)
+int ST_ApproachEnemy(const gentity_t* self)
 {
 	TIMER_Set(self, "attackDelay", Q_irand(250, 500));
 	TIMER_Set(self, "stick", Q_irand(1000, 2000));
@@ -1844,7 +1848,7 @@ int ST_ApproachEnemy(gentity_t* self)
 	return CP_CLEAR | CP_CLOSEST;
 }
 
-void ST_HuntEnemy(gentity_t* self)
+void ST_HuntEnemy(const gentity_t* self)
 {
 	TIMER_Set(NPC, "stick", Q_irand(250, 1000));
 	TIMER_Set(NPC, "stand", -1);
@@ -1858,7 +1862,7 @@ void ST_HuntEnemy(gentity_t* self)
 	}
 }
 
-void ST_TransferTimers(gentity_t* self, gentity_t* other)
+void ST_TransferTimers(const gentity_t* self, const gentity_t* other)
 {
 	TIMER_Set(other, "attackDelay", TIMER_Get(self, "attackDelay") - level.time);
 	TIMER_Set(other, "duck", TIMER_Get(self, "duck") - level.time);
@@ -1874,7 +1878,7 @@ void ST_TransferTimers(gentity_t* self, gentity_t* other)
 	TIMER_Set(self, "stand", -1);
 }
 
-void ST_TransferMoveGoal(gentity_t* self, gentity_t* other)
+void ST_TransferMoveGoal(const gentity_t* self, const gentity_t* other)
 {
 	if (Q3_TaskIDPending(self, TID_MOVE_NAV))
 	{
@@ -2893,8 +2897,9 @@ void Noghri_StickTrace(void)
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t boltMatrix;
-			vec3_t tip, dir, base, angles = { 0, NPC->currentAngles[YAW], 0 };
-			const vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
+			vec3_t tip, dir, base;
+			const vec3_t angles = { 0, NPC->currentAngles[YAW], 0 };
+			constexpr vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->weaponModel[0],
@@ -2954,8 +2959,9 @@ void Noghri_StickTracenew(gentity_t* self)
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t boltMatrix;
-			vec3_t tip, dir, base, angles = { 0, self->currentAngles[YAW], 0 };
-			const vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
+			vec3_t tip, dir, base;
+			const vec3_t angles = { 0, self->currentAngles[YAW], 0 };
+			constexpr vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(self->ghoul2, self->weaponModel[0],
@@ -3470,7 +3476,7 @@ void NPC_BSST_Attack(void)
 				if (TIMER_Done(NPC, "slapattackDelay"))
 				{
 					//animate me
-					const int swingAnim = BOTH_TUSKENLUNGE1;
+					constexpr int swingAnim = BOTH_TUSKENLUNGE1;
 					G_Sound(NPC->enemy, G_SoundIndex("sound/chars/stofficer1/misc/victory1.mp3"));
 					NPC_SetAnim(NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					TIMER_Set(NPC, "slapattackDelay", NPC->client->ps.torsoAnimTimer + Q_irand(15000, 20000));
@@ -3666,7 +3672,7 @@ void NPC_BSST_Attack(void)
 					if (TIMER_Done(NPC, "slapattackDelay"))
 					{
 						//animate me
-						const int swingAnim = BOTH_TUSKENATTACK1;
+						constexpr int swingAnim = BOTH_TUSKENATTACK1;
 						G_AddVoiceEvent(NPC, Q_irand(EV_OUTFLANK1, EV_OUTFLANK2), 2000);
 						NPC_SetAnim(NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						if (NPC->health > BLOCKPOINTS_THIRTY)
@@ -3729,7 +3735,7 @@ void NPC_BSST_Attack(void)
 					if (TIMER_Done(NPC, "slapattackDelay"))
 					{
 						//animate me
-						const int swingAnim = BOTH_TUSKENATTACK1;
+						constexpr int swingAnim = BOTH_TUSKENATTACK1;
 						G_AddVoiceEvent(NPC, Q_irand(EV_OUTFLANK1, EV_OUTFLANK2), 2000);
 						NPC_SetAnim(NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						if (NPC->health > BLOCKPOINTS_THIRTY)

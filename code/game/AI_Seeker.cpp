@@ -178,7 +178,7 @@ void Seeker_MaintainHeight(void)
 void Seeker_Strafe(void)
 {
 	int side;
-	vec3_t end, right, dir;
+	vec3_t end, right;
 	trace_t tr;
 
 	if (Q_flrand(0.0f, 1.0f) > 0.7f || !NPC->enemy || !NPC->enemy->client)
@@ -217,6 +217,7 @@ void Seeker_Strafe(void)
 	}
 	else
 	{
+		vec3_t dir;
 		// Do a strafe to try and keep on the side of their enemy
 		AngleVectors(NPC->enemy->client->renderInfo.eyeAngles, dir, right, nullptr);
 
@@ -442,7 +443,6 @@ void Seeker_FollowPlayer(void)
 	Seeker_MaintainHeight();
 
 	const float dis = DistanceHorizontalSquared(NPC->currentOrigin, g_entities[0].currentOrigin);
-	vec3_t pt, dir;
 
 	float minDistSqr = MIN_DISTANCE_SQR;
 
@@ -456,6 +456,8 @@ void Seeker_FollowPlayer(void)
 
 	if (dis < minDistSqr)
 	{
+		vec3_t dir;
+		vec3_t pt;
 		// generally circle the player closely till we take an enemy..this is our target point
 		if (NPC->client->NPC_class == CLASS_BOBAFETT || NPC->client->NPC_class == CLASS_MANDO)
 		{

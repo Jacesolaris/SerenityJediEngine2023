@@ -230,7 +230,7 @@ void AI_SortGroupByPathCostToEnemy(AIGroupInfo_t* group)
 	}
 }
 
-qboolean AI_FindSelfInPreviousGroup(gentity_t* self)
+qboolean AI_FindSelfInPreviousGroup(const gentity_t* self)
 {
 	//go through other groups made this frame and see if any of those contain me already
 	for (int i = 0; i < MAX_FRAME_GROUPS; i++)
@@ -642,7 +642,7 @@ void AI_DeleteGroupMember(AIGroupInfo_t* group, int memberNum)
 	AI_SetNewGroupCommander(group);
 }
 
-void AI_DeleteSelfFromGroup(gentity_t* self)
+void AI_DeleteSelfFromGroup(const gentity_t* self)
 {
 	//FIXME: if killed, keep track of how many in group killed?  To affect morale?
 	for (int i = 0; i < self->NPC->group->numGroup; i++)
@@ -655,12 +655,12 @@ void AI_DeleteSelfFromGroup(gentity_t* self)
 	}
 }
 
-extern void ST_AggressionAdjust(gentity_t* self, int change);
+extern void ST_AggressionAdjust(const gentity_t* self, int change);
 extern void ST_MarkToCover(gentity_t* self);
 extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int minTime,
 	int maxTime);
 
-void AI_GroupMemberKilled(gentity_t* self)
+void AI_GroupMemberKilled(const gentity_t* self)
 {
 	AIGroupInfo_t* group = self->NPC->group;
 	gentity_t* member;
@@ -768,7 +768,7 @@ void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group)
 	group->lastClearShotTime = level.time;
 }
 
-void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, gentity_t* member, int newSquadState)
+void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState)
 {
 	if (!group)
 	{

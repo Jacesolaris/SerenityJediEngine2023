@@ -272,7 +272,7 @@ extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thr
 
 void G_RunFrame(int levelTime);
 void ClearNPCGlobals(void);
-extern void AI_UpdateGroups(void);
+extern void AI_UpdateGroups();
 
 void ClearPlayerAlertEvents(void);
 extern void NPC_ShowDebugInfo(void);

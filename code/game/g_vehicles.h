@@ -234,6 +234,9 @@ using vehicleInfo_t = struct
 	int soundShift3; //sound to play when decelerating
 	int soundShift4; //sound to play when decelerating
 
+	int soundfoilsopen; //soundfoilsopen
+	int soundfoilsclose; //soundfoilsclose
+
 	int iExhaustFX; //exhaust effect, played from "*exhaust" bolt(s)
 	int iTurboFX; //turbo exhaust effect, played from "*exhaust" bolt(s) when ship is in "turbo" mode
 	int iTurboStartFX; //turbo begin effect, played from "*exhaust" bolts when "turbo" mode begins

@@ -2816,8 +2816,8 @@ player_die
 */
 extern stringID_table_t animTable[MAX_ANIMATIONS + 1];
 
-extern void AI_DeleteSelfFromGroup(gentity_t* self);
-extern void AI_GroupMemberKilled(gentity_t* self);
+extern void AI_DeleteSelfFromGroup(const gentity_t* self);
+extern void AI_GroupMemberKilled(const gentity_t* self);
 extern void Boba_FlyStop(gentity_t* self);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
 void CheckExitRules(void);

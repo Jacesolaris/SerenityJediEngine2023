@@ -342,7 +342,7 @@ void SandCreature_Attack(qboolean miss)
 	}
 }
 
-float SandCreature_EntScore(gentity_t* ent)
+float SandCreature_EntScore(const gentity_t* ent)
 {
 	float moveSpeed;
 

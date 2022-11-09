@@ -2074,7 +2074,7 @@ bool CPrimitiveTemplate::ParsePrimitive(const CGPGroup* grp)
 	const char* key;
 
 	// Lets work with the pairs first
-	CGPValue* pairs = grp->GetPairs();
+	const CGPValue* pairs = grp->GetPairs();
 
 	while (pairs)
 	{
@@ -2159,7 +2159,7 @@ bool CPrimitiveTemplate::ParsePrimitive(const CGPGroup* grp)
 		pairs = pairs->GetNext();
 	}
 
-	CGPGroup* subGrp = grp->GetSubGroups();
+	const CGPGroup* subGrp = grp->GetSubGroups();
 
 	// Lets chomp on the groups now
 	while (subGrp)

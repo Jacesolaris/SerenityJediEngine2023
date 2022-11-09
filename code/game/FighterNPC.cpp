@@ -20,7 +20,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 
-//seems to be a compiler bug, it doesn't clean out the #ifdefs between dif-compiles
 //or something, so the headers spew errors on these defs from the previous compile.
 //this fixes that. -rww
 #ifdef _JK2MP
@@ -60,7 +59,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #ifndef _JK2MP
-#include "g_functions.h"
 #include "g_vehicles.h"
 #else
 #include "bg_vehicles.h"
@@ -88,7 +86,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #endif
 
 extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
-#ifdef QAGAME //SP or gameside MP
+#ifdef QAGAME //SP or game side MP
 extern vmCvar_t cg_thirdPersonAlpha;
 extern vec3_t playerMins;
 extern vec3_t playerMaxs;
@@ -121,9 +119,8 @@ bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, ve
 {
 	vec3_t bottom;
 	playerState_t* parentPS;
-	//qboolean	isDead = qfalse;
 #ifdef QAGAME //don't do this on client
-	// Make sure the riders are not visible or collidable.
+	// Make sure the riders are not visible.
 	pVeh->m_pVehicleInfo->Ghost(pVeh, pVeh->m_pPilot);
 #endif
 
@@ -150,7 +147,7 @@ bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, ve
 	{
 #ifndef _JK2MP //don't need this flag in mp, I.. guess
 		pVeh->m_pParentEntity->svFlags &= ~SVF_CUSTOM_GRAVITY;
-#else //in MP set grav back to normal gravity
+#else //in MP set gravity back to normal gravity
 		if (pVeh->m_pVehicleInfo->gravity)
 		{
 			parentPS->gravity = pVeh->m_pVehicleInfo->gravity;
@@ -162,35 +159,12 @@ bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, ve
 #endif
 	}
 
-#ifdef _JK2MP
-	//isDead = (qboolean)((parentPS->eFlags&EF_DEAD)!=0);
-#else
-	//isDead = (parentPS->stats[STAT_HEALTH] <= 0 );
-#endif
-
-	/*
-	if ( isDead ||
-		(pVeh->m_pVehicleInfo->surfDestruction &&
-			pVeh->m_iRemovedSurfaces ) )
-	{//can't land if dead or spiralling out of control
-		pVeh->m_LandTrace.fraction = 1.0f;
-		pVeh->m_LandTrace.contents = pVeh->m_LandTrace.surfaceFlags = 0;
-		VectorClear( pVeh->m_LandTrace.plane.normal );
-		pVeh->m_LandTrace.allsolid = qfalse;
-		pVeh->m_LandTrace.startsolid = qfalse;
-	}
-	else
-	{
-	*/
-	//argh, no, I need to have a way to see when they impact the ground while damaged. -rww
-
 	// Check to see if the fighter has taken off yet (if it's a certain height above ground).
 	VectorCopy(parentPS->origin, bottom);
 	bottom[2] -= pVeh->m_pVehicleInfo->landingHeight;
 
 	traceFunc(&pVeh->m_LandTrace, parentPS->origin, trMins, trMaxs, bottom, pVeh->m_pParentEntity->s.number,
 		MASK_NPCSOLID & ~CONTENTS_BODY);
-	//}
 
 	return true;
 }
@@ -247,6 +221,16 @@ static bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 					parent->s.number);
 			}
 		}
+		else
+		{
+			if (pVeh->m_ucmd.forwardmove && pVeh->m_ulFlags & VEH_FLYING)
+			{
+				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+				{
+					G_PlayEffect(pVeh->m_pVehicleInfo->iTurboFX, parent->playerModel, pVeh->m_iExhaustTag[i], parent->s.number, parent->currentOrigin, 1, qtrue);
+				}
+			}
+		}
 	}
 
 	return true;
@@ -269,6 +253,10 @@ static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
 {
 	if (g_vehicleInfo[VEHICLE_BASE].Eject(pVeh, pEnt, forceEject))
 	{
+		if (pVeh->m_pVehicleInfo->soundOff)
+		{
+			G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundOff);
+		}
 		return true;
 	}
 
@@ -334,7 +322,7 @@ qboolean FighterIsInSpace(const gentity_t* gParent)
 }
 #endif
 
-qboolean FighterOverValidLandingSurface(Vehicle_t* pVeh)
+qboolean FighterOverValidLandingSurface(const Vehicle_t* pVeh)
 {
 	if (pVeh->m_LandTrace.fraction < 1.0f //ground present
 		&& pVeh->m_LandTrace.plane.normal[2] >= MIN_LANDING_SLOPE) //flat enough
@@ -345,7 +333,7 @@ qboolean FighterOverValidLandingSurface(Vehicle_t* pVeh)
 	return qfalse;
 }
 
-qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterIsLanded(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	if (FighterOverValidLandingSurface(pVeh)
 		&& !parentPS->speed) //stopped
@@ -358,20 +346,18 @@ qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS)
 qboolean FighterIsLanding(Vehicle_t* pVeh, playerState_t* parentPS)
 {
 	if (FighterOverValidLandingSurface(pVeh)
-#ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
-
 		&& pVeh->m_pVehicleInfo->Inhabited(pVeh) //has to have a driver in order to be capable of landing
-#endif
 		&& (pVeh->m_ucmd.forwardmove < 0 || pVeh->m_ucmd.upmove < 0) //decelerating or holding crouch button
 		&& parentPS->speed <= MIN_LANDING_SPEED)
 		//going slow enough to start landing - was using pVeh->m_pVehicleInfo->speedIdle, but that's still too fast
 	{
+		parentPS->speed = 0;
 		return qtrue;
 	}
 	return qfalse;
 }
 
-qboolean FighterIsLaunching(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterIsLaunching(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	if (FighterOverValidLandingSurface(pVeh)
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
@@ -387,7 +373,7 @@ qboolean FighterIsLaunching(Vehicle_t* pVeh, playerState_t* parentPS)
 	return qfalse;
 }
 
-qboolean FighterSuspended(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterSuspended(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
 
@@ -395,7 +381,7 @@ qboolean FighterSuspended(Vehicle_t* pVeh, playerState_t* parentPS)
 		&& !parentPS->speed //not moving
 		&& pVeh->m_ucmd.forwardmove <= 0 //not trying to go forward for whatever reason
 		&& pVeh->m_pParentEntity != nullptr
-		&& pVeh->m_pParentEntity->spawnflags & 2) //SUSPENDED spawnflag is on
+		&& pVeh->m_pParentEntity->spawnflags & 2) //SUSPENDED spawn flag is on
 	{
 		return qtrue;
 	}
@@ -405,13 +391,6 @@ qboolean FighterSuspended(Vehicle_t* pVeh, playerState_t* parentPS)
 #endif
 }
 
-//MP RULE - ALL PROCESSMOVECOMMANDS FUNCTIONS MUST BE BG-COMPATIBLE!!!
-//If you really need to violate this rule for SP, then use ifdefs.
-//By BG-compatible, I mean no use of game-specific data - ONLY use
-//stuff available in the MP bgEntity (in SP, the bgEntity is #defined
-//as a gentity, but the MP-compatible access restrictions are based
-//on the bgEntity structure in the MP codebase) -rww
-// ProcessMoveCommands the Vehicle.
 #define FIGHTER_MIN_TAKEOFF_FRACTION 0.7f
 
 static void ProcessMoveCommands(Vehicle_t* pVeh)
@@ -556,7 +535,36 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		return;
 	}
 
-	if (pVeh->m_ucmd.upmove > 0 && pVeh->m_pVehicleInfo->turboSpeed)
+	// Exhaust Effects Start And Stop When The Accelerator Is Pressed
+	//----------------------------------------------------------------
+	if (pVeh->m_pVehicleInfo->iExhaustFX && pVeh->m_pVehicleInfo->Inhabited(pVeh))
+	{
+		for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+		{
+			G_PlayEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i], parent->s.number, parent->currentOrigin, 1, qtrue);
+
+			if (pVeh->m_ucmd.forwardmove > 0)
+			{
+				if (pVeh->m_pVehicleInfo->iTrailFX)
+				{
+					G_PlayEffect(pVeh->m_pVehicleInfo->iTrailFX, pVeh->m_pParentEntity->playerModel,
+						pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
+						pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration, qtrue);
+				}
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+		{
+			G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
+				parent->s.number);
+		}
+	}
+
+	if (pVeh->m_pPilot &&
+		(pVeh->m_ucmd.upmove > 0 && pVeh->m_ucmd.forwardmove > 0 && pVeh->m_pVehicleInfo->turboSpeed))
 	{
 		if (curTime - pVeh->m_iTurboTime > pVeh->m_pVehicleInfo->turboRecharge)
 		{
@@ -586,7 +594,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 					if (pVeh->m_pParentEntity &&
 						pVeh->m_pParentEntity->ghoul2 &&
 						pVeh->m_pParentEntity->playerState)
-					{ //fine, I'll use a tempent for this, but only because it's played only once at the start of a turbo.
+					{ //fine, I'll use a temp ent for this, but only because it's played only once at the start of a turbo.
 						vec3_t boltOrg, boltDir;
 						mdxaBone_t boltMatrix;
 
@@ -839,7 +847,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		&& !pVeh->m_iRemovedSurfaces
 		&& parentPS->electrifyTime < curTime
 		&& parentPS->vehTurnaroundTime < curTime
-		&& (pVeh->m_LandTrace.fraction >= 1.0f //no grounf
+		&& (pVeh->m_LandTrace.fraction >= 1.0f //no ground
 			|| pVeh->m_LandTrace.plane.normal[2] < MIN_LANDING_SLOPE //can't land here
 			|| parentPS->speed > MIN_LANDING_SPEED) //going too fast to land
 		&& pVeh->m_ucmd.rightmove)
@@ -1013,7 +1021,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 
 extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
 
-static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS)
+static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	float mPitchOverride = 1.0f;
 	float mYawOverride = 1.0f;
@@ -1047,7 +1055,7 @@ static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS
 	}
 }
 
-static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS)
+static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 	float mPitchOverride = 1.0f;
 	float mYawOverride = 1.0f;
@@ -1069,7 +1077,7 @@ static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, playerState_t* parentPS
 	}
 }
 
-static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, playerState_t* parentPS, playerState_t* riderPS,
+static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const playerState_t* parentPS, playerState_t* riderPS,
 	qboolean isDead)
 {
 	if (!pVeh->m_iRemovedSurfaces)
@@ -1191,7 +1199,7 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, playerStat
 			factor *= 4.0f;
 		}
 
-		pVeh->m_vOrientation[ROLL] += pVeh->m_fTimeModifier * factor; //do some spiralling
+		pVeh->m_vOrientation[ROLL] += pVeh->m_fTimeModifier * factor; //do some spiraling
 	}
 	else if (pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_C ||
 		pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_D)
@@ -1289,13 +1297,6 @@ void FighterPitchAdjust(Vehicle_t* pVeh, playerState_t* riderPS, playerState_t* 
 }
 #endif
 
-//MP RULE - ALL PROCESSORIENTCOMMANDS FUNCTIONS MUST BE BG-COMPATIBLE!!!
-//If you really need to violate this rule for SP, then use ifdefs.
-//By BG-compatible, I mean no use of game-specific data - ONLY use
-//stuff available in the MP bgEntity (in SP, the bgEntity is #defined
-//as a gentity, but the MP-compatible access restrictions are based
-//on the bgEntity structure in the MP codebase) -rww
-// ProcessOrientCommands the Vehicle.
 static void ProcessOrientCommands(Vehicle_t* pVeh)
 {
 	/********************************************************************************/
@@ -1432,7 +1433,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 	}
 	else
 	{
-		//clear decr/incr angles once landed.
+		//clear angles once landed.
 		VectorClear(pVeh->m_vFullAngleVelocity);
 	}
 
@@ -1492,7 +1493,6 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		}
 		else
 		{
-			//Actal YAW
 #ifdef _JK2MP
 			FighterYawAdjust(pVeh, riderPS, parentPS);
 #else
@@ -1553,7 +1553,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			&& parentPS->electrifyTime < curTime
 			&& (!pVeh->m_pVehicleInfo->surfDestruction || !pVeh->m_iRemovedSurfaces))
 		{
-			//not crashing or spiralling out of control...
+			//not crashing or spiraling out of control...
 			if (pVeh->m_vOrientation[PITCH] > 0)
 			{
 				pVeh->m_vOrientation[PITCH] = PredictedAngularDecrement(0.2f, angleTimeMod * 10.0f,
@@ -1653,9 +1653,7 @@ extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAni
 static void AnimateVehicle(Vehicle_t* pVeh)
 {
 	int Anim = -1;
-	int iFlags = SETANIM_FLAG_NORMAL, iBlend = 300;
-	qboolean isLanding;
-	qboolean isLanded;
+	int iFlags = SETANIM_FLAG_NORMAL;
 #ifdef _JK2MP
 	playerState_t* parentPS = pVeh->m_pParentEntity->playerState;
 #else
@@ -1680,27 +1678,36 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 		{
 			pVeh->m_ulFlags &= ~VEH_WINGSOPEN;
 			Anim = BOTH_WINGS_CLOSE;
+			if (pVeh->m_pVehicleInfo->soundfoilsclose)
+			{
+				G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundfoilsclose);
+			}
 		}
 	}
 	else
 	{
-		isLanding = FighterIsLanding(pVeh, parentPS);
-		isLanded = FighterIsLanded(pVeh, parentPS);
+		const qboolean is_landing = FighterIsLanding(pVeh, parentPS);
+		const qboolean is_landed = FighterIsLanded(pVeh, parentPS);
 
 		// if we're above launch height (way up in the air)...
-		if (!isLanding && !isLanded)
+		if (!is_landing && !is_landed)
 		{
 			if (!(pVeh->m_ulFlags & VEH_WINGSOPEN))
 			{
 				pVeh->m_ulFlags |= VEH_WINGSOPEN;
 				pVeh->m_ulFlags &= ~VEH_GEARSOPEN;
 				Anim = BOTH_WINGS_OPEN;
+
+				if (pVeh->m_pVehicleInfo->soundfoilsopen)
+				{
+					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_BODY, pVeh->m_pVehicleInfo->soundfoilsopen);
+				}
 			}
 		}
 		// otherwise we're below launch height and still taking off.
 		else
 		{
-			if ((pVeh->m_ucmd.forwardmove < 0 || pVeh->m_ucmd.upmove < 0 || isLanded)
+			if ((pVeh->m_ucmd.forwardmove < 0 || pVeh->m_ucmd.upmove < 0 || is_landed)
 				&& pVeh->m_LandTrace.fraction <= 0.4f
 				&& pVeh->m_LandTrace.plane.normal[2] >= MIN_LANDING_SLOPE)
 			{
@@ -1708,7 +1715,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 				// Open gears.
 				if (!(pVeh->m_ulFlags & VEH_GEARSOPEN))
 				{
-					if (pVeh->m_pVehicleInfo->soundLand)
+					if (pVeh->m_pVehicleInfo->soundLand && pVeh->m_pVehicleInfo->Inhabited(pVeh))
 					{
 						//just landed?
 						G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundLand);
@@ -1725,6 +1732,11 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 				{
 					pVeh->m_ulFlags &= ~VEH_GEARSOPEN;
 					Anim = BOTH_GEARS_CLOSE;
+					if (pVeh->m_pVehicleInfo->soundTakeOff)
+					{
+						//just landed?
+						G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundTakeOff);
+					}
 				}
 				// If gears are closed, and we are below launch height, close the wings.
 				else
@@ -1733,6 +1745,10 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 					{
 						pVeh->m_ulFlags &= ~VEH_WINGSOPEN;
 						Anim = BOTH_WINGS_CLOSE;
+						if (pVeh->m_pVehicleInfo->soundfoilsclose)
+						{
+							G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_BODY, pVeh->m_pVehicleInfo->soundfoilsclose);
+						}
 					}
 				}
 			}
@@ -1741,6 +1757,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 
 	if (Anim != -1)
 	{
+		int iBlend = 300;
 #ifdef _JK2MP
 		BG_SetAnim(pVeh->m_pParentEntity->playerState, bgAllAnims[pVeh->m_pParentEntity->localAnimIndex].anims,
 			SETANIM_BOTH, Anim, iFlags, iBlend);

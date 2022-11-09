@@ -25,7 +25,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "anims.h"
 
 extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
-extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, gentity_t* member, int newSquadState);
+extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState);
 extern qboolean AI_GroupContainsEntNum(AIGroupInfo_t* group, int entNum);
 extern void AI_GroupUpdateEnemyLastSeen(AIGroupInfo_t* group, vec3_t spot);
 extern void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group);
@@ -129,7 +129,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void ST_AggressionAdjust(gentity_t* self, int change)
+void ST_AggressionAdjust(const gentity_t* self, int change)
 {
 	int upper_threshold, lower_threshold;
 
@@ -174,7 +174,7 @@ void ST_AggressionAdjust(gentity_t* self, int change)
 	}
 }
 
-void ST_ClearTimers(gentity_t* ent)
+void ST_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "chatter", 0);
 	TIMER_Set(ent, "duck", 0);
@@ -477,7 +477,7 @@ void Melee_TryGrab(void)
 ST_Move
 -------------------------
 */
-void ST_TransferMoveGoal(gentity_t* self, gentity_t* other);
+void ST_TransferMoveGoal(const gentity_t* self, const gentity_t* other);
 
 static qboolean ST_Move(void)
 {
@@ -1638,7 +1638,7 @@ void ST_ResolveBlockedShot(int hit)
 		//we're not ducking
 		if (AI_GroupContainsEntNum(NPCS.NPCInfo->group, hit))
 		{
-			gentity_t* member = &g_entities[hit];
+			const gentity_t* member = &g_entities[hit];
 			if (TIMER_Done(member, "duck"))
 			{
 				//they aren't ducking
@@ -1821,7 +1821,7 @@ static void ST_CheckFireState(void)
 	}
 }
 
-void ST_TrackEnemy(gentity_t* self, vec3_t enemyPos)
+void ST_TrackEnemy(const gentity_t* self, vec3_t enemyPos)
 {
 	//clear timers
 	TIMER_Set(self, "attackDelay", Q_irand(1000, 2000));
@@ -1838,7 +1838,7 @@ void ST_TrackEnemy(gentity_t* self, vec3_t enemyPos)
 	}
 }
 
-int ST_ApproachEnemy(gentity_t* self)
+int ST_ApproachEnemy(const gentity_t* self)
 {
 	TIMER_Set(self, "attackDelay", Q_irand(250, 500));
 	TIMER_Set(self, "stick", Q_irand(1000, 2000));
@@ -1850,7 +1850,7 @@ int ST_ApproachEnemy(gentity_t* self)
 	return CP_CLEAR | CP_CLOSEST;
 }
 
-void ST_HuntEnemy(gentity_t* self)
+void ST_HuntEnemy(const gentity_t* self)
 {
 	//TIMER_Set( NPC, "attackDelay", Q_irand( 250, 500 ) );//Disabled this for now, guys who couldn't hunt would never attack
 	//TIMER_Set( NPC, "duck", -1 );
@@ -1866,7 +1866,7 @@ void ST_HuntEnemy(gentity_t* self)
 	}
 }
 
-void ST_TransferTimers(gentity_t* self, gentity_t* other)
+void ST_TransferTimers(const gentity_t* self, const gentity_t* other)
 {
 	TIMER_Set(other, "attackDelay", TIMER_Get(self, "attackDelay") - level.time);
 	TIMER_Set(other, "duck", TIMER_Get(self, "duck") - level.time);
@@ -1882,7 +1882,7 @@ void ST_TransferTimers(gentity_t* self, gentity_t* other)
 	TIMER_Set(self, "stand", -1);
 }
 
-void ST_TransferMoveGoal(gentity_t* self, gentity_t* other)
+void ST_TransferMoveGoal(const gentity_t* self, const gentity_t* other)
 {
 	if (trap->ICARUS_TaskIDPending((sharedEntity_t*)self, TID_MOVE_NAV))
 	{

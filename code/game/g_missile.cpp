@@ -66,7 +66,7 @@ extern void Jedi_Decloak(gentity_t* self);
 extern void player_Decloak(gentity_t* self);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern gentity_t* Jedi_FindEnemyInCone(const gentity_t* self, gentity_t* fallback, float minDot);
-extern qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS);
+extern qboolean FighterIsLanded(const Vehicle_t* pVeh, const playerState_t* parentPS);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim, gentity_t* attacker, qboolean allowAnyMove);
 extern int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker);

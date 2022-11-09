@@ -219,11 +219,11 @@ public:
 	}
 }; // AIGroupInfo_t
 
-int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, gentity_t* avoid = nullptr);
+int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, const gentity_t* avoid = nullptr);
 int AI_GetGroupSize(gentity_t* ent, int radius);
 
 void AI_GetGroup(gentity_t* self);
 
-gentity_t* AI_DistributeAttack(gentity_t* attacker, gentity_t* enemy, team_t team, int threshold);
+gentity_t* AI_DistributeAttack(const gentity_t* attacker, gentity_t* enemy, team_t team, int threshold);
 
 #endif	//__AI__
