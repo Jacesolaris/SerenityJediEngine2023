@@ -168,6 +168,8 @@ extern "C" {
 #define	PLANE_Z			2
 #define	PLANE_NON_AXIAL	3
 
+	int   Q_irand2(int min, int max);
+
 // plane_t structure
 	typedef struct cplane_s {
 		vec3_t	normal;

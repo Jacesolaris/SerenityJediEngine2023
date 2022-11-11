@@ -240,6 +240,10 @@ typedef struct vehicleInfo_s
 	int soundShift2; //sound to play when accelerating
 	int soundShift3; //sound to play when decelerating
 	int soundShift4; //sound to play when decelerating
+	int soundShift5; //sound to play when accelerating
+	int soundShift6; //sound to play when accelerating
+	int soundShift7; //sound to play when decelerating
+	int soundShift8; //sound to play when decelerating
 
 	int iExhaustFX; //exhaust effect, played from "*exhaust" bolt(s)
 	int iTurboFX; //turbo exhaust effect, played from "*exhaust" bolt(s) when ship is in "turbo" mode

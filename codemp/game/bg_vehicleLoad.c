@@ -503,6 +503,10 @@ vehField_t vehicleFields[] =
 	{"soundShift2", VFOFS(soundShift2), VF_SOUND}, //sound to play when changing speeds
 	{"soundShift3", VFOFS(soundShift3), VF_SOUND}, //sound to play when changing speeds
 	{"soundShift4", VFOFS(soundShift4), VF_SOUND}, //sound to play when changing speeds
+	{"soundShift5", VFOFS(soundShift5), VF_SOUND}, //sound to play when changing speeds
+	{"soundShift6", VFOFS(soundShift6), VF_SOUND}, //sound to play when changing speeds
+	{"soundShift7", VFOFS(soundShift7), VF_SOUND}, //sound to play when changing speeds
+	{"soundShift8", VFOFS(soundShift8), VF_SOUND}, //sound to play when changing speeds
 
 	{"exhaustFX", VFOFS(iExhaustFX), VF_EFFECT_CLIENT}, //exhaust effect, played from "*exhaust" bolt(s)
 	{"turboFX", VFOFS(iTurboFX), VF_EFFECT_CLIENT},

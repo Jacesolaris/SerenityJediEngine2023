@@ -233,6 +233,10 @@ using vehicleInfo_t = struct
 	int soundShift2; //sound to play when accelerating
 	int soundShift3; //sound to play when decelerating
 	int soundShift4; //sound to play when decelerating
+	int soundShift5; //sound to play when accelerating
+	int soundShift6; //sound to play when accelerating
+	int soundShift7; //sound to play when decelerating
+	int soundShift8; //sound to play when decelerating
 
 	int soundfoilsopen; //soundfoilsopen
 	int soundfoilsclose; //soundfoilsclose

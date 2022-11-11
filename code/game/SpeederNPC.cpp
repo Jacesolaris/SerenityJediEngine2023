@@ -60,7 +60,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #ifndef _JK2MP
-#include "g_functions.h"
 #include "g_vehicles.h"
 #include "../game/wp_saber.h"
 #include "../cgame/cg_local.h"
@@ -255,7 +254,7 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 					parent->s.number, parent->currentOrigin, 1, qtrue);
 			}
 
-			int	shift_sound = Q_irand(1, 4);
+			int	shift_sound = Q_irand2(1, 8);
 			switch (shift_sound)
 			{
 			case 1:
@@ -269,6 +268,18 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 				break;
 			case 4:
 				shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+				break;
+			case 5:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift5;
+				break;
+			case 6:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift6;
+				break;
+			case 7:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift7;
+				break;
+			case 8:
+				shift_sound = pVeh->m_pVehicleInfo->soundShift8;
 				break;
 			default:;
 			}
@@ -285,11 +296,39 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 			pVeh->m_ulFlags &= ~VEH_ACCELERATORON;
 			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
 			{
-				G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
-					parent->s.number);
-				if (pVeh->m_pVehicleInfo->soundShift1)
+				G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],	parent->s.number);
+				int	shift_sound = Q_irand2(1, 8);
+				switch (shift_sound)
 				{
-					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundShift1);
+				case 1:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+					break;
+				case 2:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+					break;
+				case 3:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+					break;
+				case 4:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+					break;
+				case 5:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift5;
+					break;
+				case 6:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift6;
+					break;
+				case 7:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift7;
+					break;
+				case 8:
+					shift_sound = pVeh->m_pVehicleInfo->soundShift8;
+					break;
+				default:;
+				}
+				if (shift_sound)
+				{
+					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shift_sound);
 				}
 			}
 		}
@@ -299,16 +338,32 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 			{
 				if (pVeh->m_iSoundDebounceTimer < level.time && Q_irand(0, 1) == 0)
 				{
-					int shift_sound = Q_irand(1, 4);
+					int shift_sound = Q_irand(1, 8);
 					switch (shift_sound)
 					{
-					case 1: shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+					case 1:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift1;
 						break;
-					case 2: shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+					case 2:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift2;
 						break;
-					case 3: shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+					case 3:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift3;
 						break;
-					case 4: shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+					case 4:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+						break;
+					case 5:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift5;
+						break;
+					case 6:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift6;
+						break;
+					case 7:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift7;
+						break;
+					case 8:
+						shift_sound = pVeh->m_pVehicleInfo->soundShift8;
 						break;
 					default:;
 					}

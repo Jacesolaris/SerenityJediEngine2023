@@ -1523,8 +1523,7 @@ maintainSelfDuringBoarding:
 	if (pVeh->m_iTurboTime < curTime &&
 		pVeh->m_iSoundDebounceTimer < curTime &&
 		(nextSpeed > prevSpeed && nextSpeed > halfMaxSpeed && prevSpeed < halfMaxSpeed || nextSpeed > halfMaxSpeed && !
-			Q_irand(0, 1000))
-		)
+			Q_irand(0, 1000)))
 	{
 		int shiftSound = Q_irand(1, 4);
 		switch (shiftSound)
@@ -1537,6 +1536,7 @@ maintainSelfDuringBoarding:
 			break;
 		case 4: shiftSound = pVeh->m_pVehicleInfo->soundShift4;
 			break;
+		default: ;
 		}
 		if (shiftSound)
 		{
