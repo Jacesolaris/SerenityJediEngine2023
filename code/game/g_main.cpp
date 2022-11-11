@@ -266,7 +266,7 @@ cvar_t* g_remove_unused_weapons;
 
 qboolean stop_icarus = qfalse;
 
-extern char* G_GetLocationForEnt(gentity_t* ent);
+extern char* G_GetLocationForEnt(const gentity_t* ent);
 extern void CP_FindCombatPointWaypoints(void);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 
@@ -357,7 +357,7 @@ static void G_DynamicMusicUpdate(void)
 	VectorCopy(player->currentOrigin, center);
 	for (int i = 0; i < 3; i++)
 	{
-		const int radius = 2048;
+		constexpr int radius = 2048;
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}

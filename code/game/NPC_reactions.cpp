@@ -38,7 +38,7 @@ extern qboolean NPC_CheckLookTarget(gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
 extern void Jedi_Ambush(gentity_t* self);
-extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean PM_SpinningAnim(int anim);
@@ -418,7 +418,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3
 
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 
-gentity_t* G_CheckControlledTurretEnemy(gentity_t* self, gentity_t* enemy, qboolean validate)
+gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate)
 {
 	if (enemy->e_UseFunc == useF_emplaced_gun_use
 		|| enemy->e_UseFunc == useF_eweb_use)

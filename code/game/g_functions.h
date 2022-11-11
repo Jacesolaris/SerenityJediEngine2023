@@ -370,7 +370,7 @@ extern void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace);
 extern void prox_mine_stick(gentity_t* self, gentity_t* other, const trace_t* trace);
 extern void func_rotating_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void TouchTieBomb(gentity_t* self, gentity_t* other, trace_t* trace);
-extern void TieFighterUse(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void TieFighterUse(gentity_t* self, const gentity_t* other, const gentity_t* activator);
 extern void space_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void shipboundary_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void hyperspace_touch(gentity_t* self, gentity_t* other, trace_t* trace);
@@ -464,7 +464,7 @@ using useFunc_t = enum
 // USE functions...
 //
 extern void funcBBrushUse(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void misc_model_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void misc_model_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
 extern void Use_Item(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void Use_Shooter(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -533,7 +533,7 @@ extern void misc_atst_use(gentity_t* self, gentity_t* other, gentity_t* activato
 extern void panel_turret_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void welder_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void jabba_cam_use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void misc_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void misc_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
 extern void pas_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void item_spawn_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void NPC_VehicleSpawnUse(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -578,7 +578,7 @@ using painFunc_t = enum
 
 // PAIN functions...
 //
-extern void funcBBrushPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
+extern void funcBBrushPain(gentity_t* self, gentity_t* inflictor, const gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
 extern void misc_model_breakable_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point,
 	int damage, int mod, int hitLoc = HL_NONE);
@@ -668,9 +668,9 @@ using dieFunc_t = enum
 //
 extern void funcBBrushDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
-extern void misc_model_breakable_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
+extern void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
-extern void misc_model_cargo_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
+extern void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
 extern void func_train_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);

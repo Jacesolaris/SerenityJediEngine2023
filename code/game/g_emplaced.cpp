@@ -286,7 +286,7 @@ void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int da
 	G_ActivateBehavior(self, BSET_DEATH);
 }
 
-qboolean eweb_can_be_used(gentity_t* self, gentity_t* other, gentity_t* activator)
+qboolean eweb_can_be_used(const gentity_t* self, gentity_t* other, gentity_t* activator)
 {
 	if (self->health <= 0)
 	{
@@ -334,12 +334,13 @@ qboolean eweb_can_be_used(gentity_t* self, gentity_t* other, gentity_t* activato
 		return qfalse;
 	}
 
-	vec3_t fwd1, fwd2;
 	vec3_t facingAngles;
 
 	VectorAdd(self->s.angles, self->pos1, facingAngles);
 	if (activator && activator->s.number < MAX_CLIENTS)
 	{
+		vec3_t fwd2;
+		vec3_t fwd1;
 		//player must be facing general direction of the turret head
 		// Let's get some direction vectors for the users
 		AngleVectors(activator->client->ps.viewangles, fwd1, nullptr, nullptr);
@@ -440,7 +441,7 @@ void eweb_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 //----------------------------------------------------------
 void SP_emplaced_eweb(gentity_t* ent)
 {
-	const char name[] = "models/map_objects/hoth/eweb_model.glm";
+	constexpr char name[] = "models/map_objects/hoth/eweb_model.glm";
 
 	ent->svFlags |= SVF_PLAYER_USABLE;
 	ent->contents = CONTENTS_BODY;
@@ -544,8 +545,6 @@ void SP_emplaced_eweb(gentity_t* ent)
 //----------------------------------------------------------
 void emplaced_gun_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
-	vec3_t fwd1, fwd2;
-
 	if (self->health <= 0)
 	{
 		// can't use a dead gun.
@@ -583,6 +582,8 @@ void emplaced_gun_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	// We'll just let the designers duke this one out....I mean, as to whether they even want to limit such a thing.
 	if (self->spawnflags & EMPLACED_FACING)
 	{
+		vec3_t fwd2;
+		vec3_t fwd1;
 		// Let's get some direction vectors for the users
 		AngleVectors(activator->client->ps.viewangles, fwd1, nullptr, nullptr);
 
@@ -820,7 +821,7 @@ void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker
 //----------------------------------------------------------
 void SP_emplaced_gun(gentity_t* ent)
 {
-	const char name[] = "models/map_objects/imp_mine/turret_chair.glm";
+	constexpr char name[] = "models/map_objects/imp_mine/turret_chair.glm";
 
 	ent->svFlags |= SVF_PLAYER_USABLE;
 	ent->contents = CONTENTS_BODY; //CONTENTS_SHOTCLIP|CONTENTS_PLAYERCLIP|CONTENTS_MONSTERCLIP;//CONTENTS_SOLID;

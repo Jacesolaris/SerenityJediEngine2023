@@ -65,7 +65,7 @@ or take any AI related factors (for example, the NPC's reaction time) into accou
 
 FIXME do we need fat and thin version of this?
 */
-qboolean CanSee(gentity_t* ent)
+qboolean CanSee(const gentity_t* ent)
 {
 	trace_t tr;
 	vec3_t eyes, spot;
@@ -165,7 +165,7 @@ qboolean InFOV2(vec3_t origin, gentity_t* from, int hFOV, int vFOV)
 
 //Entity to entity
 
-qboolean InFOV(gentity_t* ent, gentity_t* from, int hFOV, int vFOV)
+qboolean InFOV(const gentity_t* ent, const gentity_t* from, int hFOV, int vFOV)
 {
 	vec3_t eyes;
 	vec3_t spot;
@@ -226,7 +226,7 @@ qboolean InFOV(gentity_t* ent, gentity_t* from, int hFOV, int vFOV)
 	return qfalse;
 }
 
-qboolean InVisrange(gentity_t* ent)
+qboolean InVisrange(const gentity_t* ent)
 {
 	//FIXME: make a calculate visibility for ents that takes into account
 	//lighting, movement, turning, crouch/stand up, other anims, hide brushes, etc.
@@ -537,7 +537,7 @@ int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAle
 		NPCS.NPCInfo->stats.earshot, ignoreAlert, mustHaveOwner, minAlertLevel);
 }
 
-qboolean G_CheckForDanger(gentity_t* self, int alertEvent)
+qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 {
 	//FIXME: more bStates need to call this?
 	if (alertEvent == -1)

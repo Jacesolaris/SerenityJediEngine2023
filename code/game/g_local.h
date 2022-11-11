@@ -441,7 +441,7 @@ int G_BSPIndex(char* name);
 
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
-int G_RadiusList(vec3_t origin, float radius, gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
 	gentity_t* ent_list[MAX_GENTITIES]);
 gentity_t* G_PickTarget(char* targetname);
 void G_UseTargets(gentity_t* ent, gentity_t* activator);
@@ -675,14 +675,14 @@ extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alert
 	float addLight = 0.0f);
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
 	qboolean needLOS = qfalse, qboolean onGround = qfalse);
-extern qboolean G_CheckForDanger(gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
 	float maxHearDist, int ignoreAlert = -1, qboolean mustHaveOwner = qfalse,
 	int minAlertLevel = AEL_MINOR, qboolean onGroundOnly = qfalse);
-extern qboolean G_CheckForDanger(gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
-extern qboolean G_ClearLOS(gentity_t* self, gentity_t* ent, const vec3_t end);
-extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, gentity_t* ent);
+extern qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent, const vec3_t end);
+extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const gentity_t* ent);
 extern qboolean G_ClearLOS(gentity_t* self, gentity_t* ent);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t end);
 

@@ -38,7 +38,7 @@ constexpr auto LSTATE_BERZERK = 3;
 constexpr auto HOWLER_RETREAT_DIST = 300.0f;
 constexpr auto HOWLER_PANIC_HEALTH = 10;
 
-extern void G_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir);
+extern void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir);
 extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist);

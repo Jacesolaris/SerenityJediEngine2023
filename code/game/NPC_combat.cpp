@@ -159,7 +159,7 @@ qboolean G_TeamEnemy(const gentity_t* self)
 	return qfalse;
 }
 
-qboolean G_CheckSaberAllyAttackDelay(gentity_t* self, const gentity_t* enemy)
+qboolean G_CheckSaberAllyAttackDelay(const gentity_t* self, const gentity_t* enemy)
 {
 	if (!self || !self->enemy)
 	{
@@ -205,7 +205,7 @@ qboolean G_CheckSaberAllyAttackDelay(gentity_t* self, const gentity_t* enemy)
 	return qfalse;
 }
 
-void G_AttackDelay(gentity_t* self, const gentity_t* enemy)
+void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 {
 	if (enemy && self->client && self->NPC)
 	{
@@ -438,10 +438,10 @@ void G_AttackDelay(gentity_t* self, const gentity_t* enemy)
 G_SetEnemy
 -------------------------
 */
-extern gentity_t* G_CheckControlledTurretEnemy(gentity_t* self, gentity_t* enemy, qboolean validate);
+extern gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate);
 
 void Saboteur_Cloak(gentity_t* self);
-void G_AimSet(gentity_t* self, int aim);
+void G_AimSet(const gentity_t* self, int aim);
 
 void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 {
@@ -3417,7 +3417,7 @@ void NPC_AimAdjust(int change)
 	}
 }
 
-void G_AimSet(gentity_t* self, int aim)
+void G_AimSet(const gentity_t* self, int aim)
 {
 	if (self->NPC)
 	{

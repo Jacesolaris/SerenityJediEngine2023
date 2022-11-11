@@ -392,7 +392,7 @@ void SP_misc_model_static(gentity_t* ent)
 extern void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage,
 	int meansOfDeath);
 
-void misc_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void misc_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	misc_model_breakable_die(self, other, activator, 100, MOD_UNKNOWN);
 }
@@ -4891,7 +4891,7 @@ void SP_misc_model_beacon(gentity_t* ent)
 
 extern gentity_t* LaunchItem(gitem_t* item, vec3_t origin, vec3_t velocity);
 
-void misc_model_cargo_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
 	int hitLoc)
 {
 	vec3_t org, temp;

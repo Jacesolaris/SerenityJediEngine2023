@@ -103,8 +103,8 @@ extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushD
 	qboolean breakSaberLock);
 
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
-extern void Player_CheckBurn(gentity_t* self);
-extern void player_Burn(gentity_t* self);
+extern void Player_CheckBurn(const gentity_t* self);
+extern void player_Burn(const gentity_t* self);
 ////////////////////////////////////////////////////////////////////////////////////////
 // External Data
 ////////////////////////////////////////////////////////////////////////////////////////

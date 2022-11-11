@@ -1570,7 +1570,7 @@ void wp_saber_init_blade_data(const gentity_t* ent)
 #define LOOK_DEFAULT_SPEED	0.15f
 #define LOOK_TALKING_SPEED	0.15f
 
-static QINLINE qboolean G_CheckLookTarget(gentity_t* ent, vec3_t lookAngles, float* lookingSpeed)
+static QINLINE qboolean G_CheckLookTarget(const gentity_t* ent, vec3_t lookAngles, float* lookingSpeed)
 {
 	//FIXME: also clamp the lookAngles based on the clamp + the existing difference between
 	//		headAngles and torsoAngles?  But often the tag_torso is straight but the torso itself
@@ -15059,10 +15059,10 @@ qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self)
 	return qfalse;
 }
 
-void player_Burn(gentity_t* self);
+void player_Burn(const gentity_t* self);
 void player_StopBurn(const gentity_t* self);
 
-void Player_CheckBurn(gentity_t* self)
+void Player_CheckBurn(const gentity_t* self)
 {
 	if (self->health <= 0 || self->painDebounceTime < level.time)
 	{
@@ -15086,7 +15086,7 @@ void Player_CheckBurn(gentity_t* self)
 	}
 }
 
-void player_Burn(gentity_t* self)
+void player_Burn(const gentity_t* self)
 {
 	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && self && self->client)
 	{
@@ -15094,10 +15094,6 @@ void player_Burn(gentity_t* self)
 		{
 			self->client->ps.PlayerEffectFlags |= 1 << PEF_BURNING;
 		}
-		/*else
-		{
-			player_StopBurn(self);
-		}*/
 	}
 
 	TIMER_Set(self, "BurnDebounce", 1000);
@@ -15120,7 +15116,7 @@ void player_StopBurn(const gentity_t* self)
 	}
 }
 
-void player_Freeze(gentity_t* self);
+void player_Freeze(const gentity_t* self);
 
 void player_StopFreeze(const gentity_t* self)
 {
@@ -15139,7 +15135,7 @@ void player_StopFreeze(const gentity_t* self)
 	}
 }
 
-void Player_CheckFreeze(gentity_t* self)
+void Player_CheckFreeze(const gentity_t* self)
 {
 	if (self && self->client)
 	{
@@ -15162,7 +15158,7 @@ void Player_CheckFreeze(gentity_t* self)
 	}
 }
 
-void player_Freeze(gentity_t* self)
+void player_Freeze(const gentity_t* self)
 {
 	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && self && self->client)
 	{

@@ -3904,7 +3904,7 @@ static void PM_NoclipMove(void)
 	{
 		float drop = 0;
 
-		const float friction = pm_friction * 1.5; // extra friction
+		constexpr float friction = pm_friction * 1.5; // extra friction
 		const float control = speed < pm_stopspeed ? pm_stopspeed : speed;
 		drop += control * friction * pml.frametime;
 

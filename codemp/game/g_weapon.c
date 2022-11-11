@@ -3746,13 +3746,11 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 	//a rail-gun-like beam
 	const int traces = DISRUPTOR_ALT_TRACES;
 	qboolean render_impact = qtrue;
-	vec3_t start, end;
+	vec3_t start;
 	vec3_t dir;
 	trace_t tr;
-	const float shotRange = 8192.0f;
 	qboolean hitDodged = qfalse;
 	vec3_t shot_mins, shot_maxs;
-	const int damage = CONC_ALT_DAMAGE;
 
 	//Shove us backwards for half a second
 	VectorMA(ent->client->ps.velocity, -200, forward, ent->client->ps.velocity);
@@ -3788,6 +3786,8 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 
 	for (int i = 0; i < traces; i++)
 	{
+		const float shotRange = 8192.0f;
+		vec3_t end;
 		VectorMA(start, shotRange, forward, end);
 
 		if (d_projectileGhoul2Collision.integer)
@@ -3861,6 +3861,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 					|| !Q_stricmp(traceEnt->classname, "misc_model_breakable")
 					|| traceEnt->s.eType == ET_MOVER)
 				{
+					const int damage = CONC_ALT_DAMAGE;
 					if (traceEnt->client && LogAccuracyHit(traceEnt, ent))
 					{
 						//NOTE: hitting multiple ents can still get you over 100% accuracy
@@ -4442,7 +4443,7 @@ void CalcMuzzlePoint(const gentity_t* ent, const vec3_t inForward, const vec3_t 
 	SnapVector(muzzlePoint);
 }
 
-void CalcMuzzlePoint2(gentity_t* ent, vec3_t forward, vec3_t right, vec3_t up, vec3_t muzzlePoint)
+void CalcMuzzlePoint2(const gentity_t* ent, vec3_t forward, vec3_t right, vec3_t up, vec3_t muzzlePoint)
 {
 	vec3_t muzzleOffPoint;
 

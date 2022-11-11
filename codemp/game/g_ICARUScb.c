@@ -1272,7 +1272,7 @@ void G_DebugPrint(int printLevel, const char* format, ...)
 Q3_GetAnimLower
 -------------------------
 */
-static char* Q3_GetAnimLower(gentity_t* ent)
+static char* Q3_GetAnimLower(const gentity_t* ent)
 {
 	if (ent->client == NULL)
 	{
@@ -1290,7 +1290,7 @@ static char* Q3_GetAnimLower(gentity_t* ent)
 Q3_GetAnimUpper
 -------------------------
 */
-static char* Q3_GetAnimUpper(gentity_t* ent)
+static char* Q3_GetAnimUpper(const gentity_t* ent)
 {
 	if (ent->client == NULL)
 	{
@@ -1308,7 +1308,7 @@ static char* Q3_GetAnimUpper(gentity_t* ent)
 Q3_GetAnimBoth
 -------------------------
 */
-static char* Q3_GetAnimBoth(gentity_t* ent)
+static char* Q3_GetAnimBoth(const gentity_t* ent)
 {
 	char* lowerName = Q3_GetAnimLower(ent);
 	const char* upperName = Q3_GetAnimUpper(ent);
@@ -1690,7 +1690,6 @@ Lerps the origin and angles of an entity to the destination values
 void Q3_Lerp2Pos(int taskID, int entID, vec3_t origin, vec3_t angles, float duration)
 {
 	gentity_t* ent = &g_entities[entID];
-	vec3_t ang;
 
 	if (!ent)
 	{
@@ -1743,6 +1742,7 @@ void Q3_Lerp2Pos(int taskID, int entID, vec3_t origin, vec3_t angles, float dura
 	//Only do the angles if specified
 	if (angles != NULL)
 	{
+		vec3_t ang;
 		//
 		// Rotation
 
@@ -2759,7 +2759,7 @@ Q3_GetString
   Argument		: char **value
 ============
 */
-char* G_GetLocationForEnt(gentity_t* self);
+char* G_GetLocationForEnt(const gentity_t* self);
 
 int Q3_GetString(int entID, int type, const char* name, char** value)
 {
@@ -3670,7 +3670,7 @@ static void Q3_SetAnimHoldTime(int entID, int int_data, qboolean lower)
 
 static void Q3_SetRenderCullRadius(int entID, float float_data);
 
-static void Q3_SetPlayerTeam(int entID, char* data)
+static void Q3_SetPlayerTeam(int entID, const char* data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -3684,7 +3684,7 @@ static void Q3_SetPlayerTeam(int entID, char* data)
 }
 
 //==========
-static void Q3_SetEnemyTeam(int entID, char* data)
+static void Q3_SetEnemyTeam(int entID, const char* data)
 {
 	const gentity_t* ent = &g_entities[entID];
 
@@ -6767,7 +6767,7 @@ Q3_CameraGroup
 ?
 ============
 */
-static void Q3_CameraGroupTag(char* camGTag)
+static void Q3_CameraGroupTag(const char* camGTag)
 {
 	Q_strncpyz(client_camera.cameraGroupTag, camGTag, sizeof client_camera.cameraGroupTag);
 }
@@ -6824,7 +6824,6 @@ extern void NPC_ClearLookTarget(const gentity_t* self);
 
 static void Q3_LookTarget(int entID, char* targetName)
 {
-	vec3_t viewspot;
 	const gentity_t* ent = &g_entities[entID];
 
 	if (!ent)
@@ -6857,6 +6856,7 @@ static void Q3_LookTarget(int entID, char* targetName)
 			{
 				if (strcmp(targetName, "player") == 0)
 				{
+					vec3_t viewspot;
 					//players probably haven't spawned in yet.  just use the spawnpoin
 					targ = SelectSPSpawnPoint(viewspot, viewspot);
 				}
@@ -9267,7 +9267,7 @@ static void Q3_SetRenderCullRadius(int entID, float float_data)
 
 //find the current name of whatever trigger_location the entity is inside of.  if it's
 //inside none of them, return NULL
-char* G_GetLocationForEnt(gentity_t* self)
+char* G_GetLocationForEnt(const gentity_t* self)
 {
 	int touch[MAX_GENTITIES];
 	vec3_t mins, maxs;

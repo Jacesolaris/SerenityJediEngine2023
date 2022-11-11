@@ -94,7 +94,7 @@ int AI_GetGroupSize2(gentity_t* ent, int radius)
 	return AI_GetGroupSize(ent->r.currentOrigin, radius, ent->client->playerTeam, ent);
 }
 
-extern int NAV_FindClosestWaypointForPoint(gentity_t* ent, vec3_t point);
+extern int NAV_FindClosestWaypointForPoint(const gentity_t* ent, vec3_t point);
 
 int AI_ClosestGroupEntityNumToPoint(AIGroupInfo_t* group, vec3_t point)
 {

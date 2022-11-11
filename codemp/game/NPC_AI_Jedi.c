@@ -55,8 +55,8 @@ extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime,
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
 void Boba_FireDecide(void);
-extern void Player_CheckBurn(gentity_t* self);
-extern void player_Burn(gentity_t* self);
+extern void Player_CheckBurn(const gentity_t* self);
+extern void player_Burn(const gentity_t* self);
 
 extern gitem_t* BG_FindItemForAmmo(ammo_t ammo);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
@@ -8082,7 +8082,7 @@ static qboolean Jedi_Jumping(const gentity_t* goal)
 	return qfalse;
 }
 
-extern void G_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir);
+extern void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir);
 
 static void Jedi_CheckEnemyMovement(float enemy_dist)
 {

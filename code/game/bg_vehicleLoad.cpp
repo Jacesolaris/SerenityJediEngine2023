@@ -214,7 +214,7 @@ static vehField_t* FindVehWeaponParm(const char* parmName)
 	return nullptr;
 }
 
-static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* parmName, char* pValue)
+static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* parmName, const char* pValue)
 {
 	vec3_t vec;
 	auto b = (byte*)vehWeapon;
@@ -739,7 +739,7 @@ vehField_t vehicleFields[] =
 	//===END TURRETS===========================================================================
 };
 
-static const size_t numVehicleFields = ARRAY_LEN(vehicleFields);
+static constexpr size_t num_vehicle_fields = std::size(vehicleFields);
 
 stringID_table_t VehicleTable[VH_NUM_VEHICLES + 1] =
 {
@@ -814,7 +814,7 @@ void BG_VehicleClampData(vehicleInfo_t* vehicle)
 
 static vehField_t* FindVehicleParm(const char* parmName)
 {
-	for (size_t i = 0; i < numVehicleFields; i++)
+	for (size_t i = 0; i < num_vehicle_fields; i++)
 	{
 		if (vehicleFields[i].name && !Q_stricmp(vehicleFields[i].name, parmName))
 			return &vehicleFields[i];
@@ -822,7 +822,7 @@ static vehField_t* FindVehicleParm(const char* parmName)
 	return nullptr;
 }
 
-static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName, char* pValue)
+static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName, const char* pValue)
 {
 	vec3_t vec;
 	auto b = (byte*)vehicle;

@@ -81,8 +81,8 @@ extern float NPC_GetPainChance(const gentity_t* self, int damage);
 //
 // NPC_misc.cpp
 //
-extern void Debug_Printf(cvar_t* cv, int level, char* fmt, ...);
-extern void Debug_NPCPrintf(gentity_t* printNPC, cvar_t* cv, int debugLevel, char* fmt, ...);
+extern void Debug_Printf(const cvar_t* cv, int level, char* fmt, ...);
+extern void Debug_NPCPrintf(const gentity_t* printNPC, const cvar_t* cv, int debugLevel, char* fmt, ...);
 
 //MCG - Begin============================================================
 //NPC_ai variables - shared by NPC.cpp andf the following modules
@@ -184,12 +184,12 @@ constexpr auto CHECK_360 = 2;
 constexpr auto CHECK_FOV = 4;
 constexpr auto CHECK_SHOOT = 8;
 constexpr auto CHECK_VISRANGE = 16;
-extern qboolean CanSee(gentity_t* ent);
-extern qboolean InFOV(gentity_t* ent, gentity_t* from, int hFOV, int vFOV);
-extern qboolean InFOV(vec3_t origin, gentity_t* from, int hFOV, int vFOV);
+extern qboolean CanSee(const gentity_t* ent);
+extern qboolean InFOV(const gentity_t* ent, const gentity_t* from, int hFOV, int vFOV);
+extern qboolean InFOV(vec3_t origin, const gentity_t* from, int hFOV, int vFOV);
 extern qboolean InFOV(vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int vFOV);
 extern visibility_t NPC_CheckVisibility(gentity_t* ent, int flags);
-extern qboolean InVisrange(gentity_t* ent);
+extern qboolean InVisrange(const gentity_t* ent);
 
 //NPC_spawn
 extern void NPC_Spawn(gentity_t* self, gentity_t* other, gentity_t* activator);

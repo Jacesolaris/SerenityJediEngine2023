@@ -39,7 +39,7 @@ constexpr auto LSTATE_WAITING = 1;
 constexpr auto SPF_RANCOR_MUTANT = 1;
 constexpr auto SPF_RANCOR_FASTKILL = 2;
 
-extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern cvar_t* g_dismemberment;
 extern cvar_t* g_bobaDebug;
 

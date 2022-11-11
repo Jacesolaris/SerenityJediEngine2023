@@ -246,7 +246,7 @@ extern "C" {
 	void VectorNormalizeFast(vec3_t vec);
 	float VectorNormalize(vec3_t vec);
 	float VectorNormalize2(const vec3_t vec, vec3_t vecOut);
-	void VectorAdvance(const vec3_t veca, const float scale, const vec3_t vecb, vec3_t vecc);
+	void VectorAdvance(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc);
 	void VectorInc(vec3_t vec);
 	void VectorDec(vec3_t vec);
 	void VectorInverse(vec3_t vec);

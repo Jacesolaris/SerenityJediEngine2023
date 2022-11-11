@@ -434,7 +434,7 @@ CG_TransitionPlayerState
 
 ===============
 */
-void CG_TransitionPlayerState(playerState_t* ps, playerState_t* ops)
+void CG_TransitionPlayerState(const playerState_t* ps, playerState_t* ops)
 {
 	// check for changing follow mode
 	if (ps->clientNum != ops->clientNum)

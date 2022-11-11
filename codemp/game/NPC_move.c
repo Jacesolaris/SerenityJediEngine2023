@@ -1339,7 +1339,7 @@ qboolean SJE_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir, qboolea
 	return qtrue;
 }
 
-void G_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir)
+void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir)
 {
 	vec3_t forward, right;
 
@@ -1518,7 +1518,7 @@ void NPC_ApplyRoff(void)
 	trap->LinkEntity((sharedEntity_t*)NPCS.NPC);
 }
 
-qboolean NPC_IsJetpacking(gentity_t* self)
+qboolean NPC_IsJetpacking(const gentity_t* self)
 {
 	if (self->s.eFlags & EF_JETPACK_ACTIVE || self->s.eFlags & EF_JETPACK_FLAMING || self->s.eFlags & EF_JETPACK_HOVER)
 	{

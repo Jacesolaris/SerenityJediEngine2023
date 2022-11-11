@@ -128,7 +128,7 @@ extern qboolean NPC_CheckDefend(float scale);
 extern qboolean NPC_CheckCanAttack(float attack_scale, qboolean stationary);
 extern int NPC_AttackDebounceForWeapon(void);
 extern qboolean EntIsGlass(const gentity_t* check);
-extern qboolean ShotThroughGlass(trace_t* tr, gentity_t* target, vec3_t spot, int mask);
+extern qboolean ShotThroughGlass(trace_t* tr, const gentity_t* target, vec3_t spot, int mask);
 extern qboolean ValidEnemy(gentity_t* ent);
 extern void G_ClearEnemy(gentity_t* self);
 extern gentity_t* NPC_PickAlly(qboolean facingEachOther, float range, qboolean ignoreGroup, qboolean movingOnly);
@@ -175,12 +175,12 @@ qboolean NPC_JumpBackingUp(void);
 #define CHECK_FOV		4
 #define CHECK_SHOOT		8
 #define CHECK_VISRANGE	16
-extern qboolean CanSee(gentity_t* ent);
-extern qboolean InFOV(gentity_t* ent, gentity_t* from, int hFOV, int vFOV);
+extern qboolean CanSee(const gentity_t* ent);
+extern qboolean InFOV(const gentity_t* ent, const gentity_t* from, int hFOV, int vFOV);
 extern qboolean InFOV2(vec3_t origin, gentity_t* from, int hFOV, int vFOV);
 extern qboolean InFOV3(vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int vFOV);
 extern visibility_t NPC_CheckVisibility(gentity_t* ent, int flags);
-extern qboolean InVisrange(gentity_t* ent);
+extern qboolean InVisrange(const gentity_t* ent);
 
 //NPC_spawn
 extern void NPC_Spawn(gentity_t* ent, gentity_t* other, gentity_t* activator);
@@ -208,7 +208,7 @@ extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 
 //g_nav.cpp
 extern int NAV_FindClosestWaypointForEnt(gentity_t* ent, int targWp);
-extern qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
+extern qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
 
 //NPC_combat
 extern float IdealDistance(gentity_t* self);

@@ -43,11 +43,9 @@ void LoadDynamicMusic(void)
 extern int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf);
 extern int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf);
 
-void LoadDMSSongData(char* buffer, char* song, DynamicMusicSet_t* songData, char* mapname)
+void LoadDMSSongData(const char* buffer, char* song, DynamicMusicSet_t* songData, char* mapname)
 {
 	char SongGroup[DMS_INFO_SIZE];
-	char transitionGroup[DMS_INFO_SIZE];
-	char Value[MAX_QPATH];
 	int numTransitions = 0;
 	int numExits = 0;
 
@@ -70,6 +68,8 @@ void LoadDMSSongData(char* buffer, char* song, DynamicMusicSet_t* songData, char
 	char* transition = strstr(SongGroup, "exit");
 	while (transition)
 	{
+		char Value[MAX_QPATH];
+		char transitionGroup[DMS_INFO_SIZE];
 		//still have a transition file to add
 		if (numTransitions >= MAX_DMS_TRANSITIONS)
 		{
@@ -117,7 +117,7 @@ void LoadDMSSongData(char* buffer, char* song, DynamicMusicSet_t* songData, char
 	}
 }
 
-void LoadLengthforSong(char* buffer, DynamicMusicSet_t* song)
+void LoadLengthforSong(const char* buffer, DynamicMusicSet_t* song)
 {
 	//load in the song lengths for the given DMS song
 	char TempLength[MAX_QPATH];
@@ -346,9 +346,6 @@ void TransitionBetweenState(void)
 void G_DynamicMusicUpdate(void)
 {
 	int battle = 0;
-	vec3_t center;
-	const int radius = 2048;
-	int entityList[MAX_GENTITIES];
 	int entTeam;
 	vec3_t mins, maxs;
 
@@ -404,6 +401,8 @@ void G_DynamicMusicUpdate(void)
 
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
+		int entityList[MAX_GENTITIES];
+		vec3_t center;
 		gentity_t* player = &g_entities[i];
 
 		//check to make sure this player is valid
@@ -418,6 +417,7 @@ void G_DynamicMusicUpdate(void)
 		VectorCopy(player->r.currentOrigin, center);
 		for (int x = 0; x < 3; x++)
 		{
+			const int radius = 2048;
 			mins[x] = center[x] - radius;
 			maxs[x] = center[x] + radius;
 		}

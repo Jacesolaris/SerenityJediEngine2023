@@ -909,39 +909,39 @@ void fx_explosion_trail_use(gentity_t* self, gentity_t* other, gentity_t* activa
 }
 
 //----------------------------------------------------------
-void fx_explosion_trail_link(gentity_t* ent)
+void fx_explosion_trail_link(gentity_t* self)
 {
 	vec3_t dir;
 
 	// we ony activate when used
-	ent->e_UseFunc = useF_fx_explosion_trail_use;
+	self->e_UseFunc = useF_fx_explosion_trail_use;
 
-	if (ent->target)
+	if (self->target)
 	{
 		gentity_t* target = nullptr;
 		// try to use the target to override the orientation
-		target = G_Find(target, FOFS(targetname), ent->target);
+		target = G_Find(target, FOFS(targetname), self->target);
 
 		if (!target)
 		{
-			gi.Printf(S_COLOR_RED"ERROR: fx_explosion_trail %s could not find target %s\n", ent->targetname,
-				ent->target);
-			G_FreeEntity(ent);
+			gi.Printf(S_COLOR_RED"ERROR: fx_explosion_trail %s could not find target %s\n", self->targetname,
+				self->target);
+			G_FreeEntity(self);
 			return;
 		}
 
 		// Our target is valid so lets use that
-		VectorSubtract(target->s.origin, ent->s.origin, dir);
+		VectorSubtract(target->s.origin, self->s.origin, dir);
 		VectorNormalize(dir);
 	}
 	else
 	{
 		// we are assuming that we have angles, but there are no checks to verify this
-		AngleVectors(ent->s.angles, dir, nullptr, nullptr);
+		AngleVectors(self->s.angles, dir, nullptr, nullptr);
 	}
 
 	// NOTE: this really isn't an angle, but rather an orientation vector
-	G_SetAngles(ent, dir);
+	G_SetAngles(self, dir);
 }
 
 /*QUAKED fx_explosion_trail (0 0 1) (-8 -8 -8) (8 8 8) GRAVITY
@@ -1134,63 +1134,63 @@ void fx_target_beam_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 }
 
 //------------------------------------------
-void fx_target_beam_think(gentity_t* ent)
+void fx_target_beam_think(gentity_t* self)
 {
-	if (ent->attackDebounceTime > level.time)
+	if (self->attackDebounceTime > level.time)
 	{
-		ent->nextthink = level.time + FRAMETIME;
+		self->nextthink = level.time + FRAMETIME;
 		return;
 	}
 
-	fx_target_beam_fire_start(ent);
+	fx_target_beam_fire_start(self);
 }
 
 //------------------------------------------
-void fx_target_beam_link(gentity_t* ent)
+void fx_target_beam_link(gentity_t* self)
 {
 	gentity_t* target = nullptr;
 	vec3_t dir;
 
-	target = G_Find(target, FOFS(targetname), ent->target);
+	target = G_Find(target, FOFS(targetname), self->target);
 
 	if (!target)
 	{
-		Com_Printf("bolt_link: unable to find target %s\n", ent->target);
-		G_FreeEntity(ent);
+		Com_Printf("bolt_link: unable to find target %s\n", self->target);
+		G_FreeEntity(self);
 		return;
 	}
 
-	ent->attackDebounceTime = level.time;
+	self->attackDebounceTime = level.time;
 
 	if (!target->classname || Q_stricmp("info_null", target->classname))
 	{
 		//don't want to set enemy to something that's going to free itself... actually, this could be bad in other ways, too... ent pointer could be freed up and re-used by the time we check it next
-		G_SetEnemy(ent, target);
+		G_SetEnemy(self, target);
 	}
-	VectorSubtract(target->s.origin, ent->s.origin, dir); //er, does it ever use dir?
+	VectorSubtract(target->s.origin, self->s.origin, dir); //er, does it ever use dir?
 	/*len = */
 	VectorNormalize(dir); //er, does it use len or dir?
-	vectoangles(dir, ent->s.angles); //er, does it use s.angles?
+	vectoangles(dir, self->s.angles); //er, does it use s.angles?
 
-	VectorCopy(target->s.origin, ent->s.origin2);
+	VectorCopy(target->s.origin, self->s.origin2);
 
-	if (ent->spawnflags & 1)
+	if (self->spawnflags & 1)
 	{
 		// Do nothing
-		ent->e_ThinkFunc = thinkF_NULL;
+		self->e_ThinkFunc = thinkF_NULL;
 	}
 	else
 	{
-		if (!(ent->spawnflags & 8)) // one_shot, only calls when used
+		if (!(self->spawnflags & 8)) // one_shot, only calls when used
 		{
 			// switch think functions to avoid doing the bolt_link every time
-			ent->e_ThinkFunc = thinkF_fx_target_beam_think;
-			ent->nextthink = level.time + FRAMETIME;
+			self->e_ThinkFunc = thinkF_fx_target_beam_think;
+			self->nextthink = level.time + FRAMETIME;
 		}
 	}
 
-	ent->e_UseFunc = useF_fx_target_beam_use;
-	gi.linkentity(ent);
+	self->e_UseFunc = useF_fx_target_beam_use;
+	gi.linkentity(self);
 }
 
 /*QUAKED fx_target_beam (1 0.5 0.5) (-8 -8 -8) (8 8 8) STARTOFF OPEN NO_KNOCKBACK ONE_SHOT NO_IMPACT

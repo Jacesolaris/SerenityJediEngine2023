@@ -42,7 +42,6 @@ void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboole
 	trace_t tr;
 	vec3_t projectedOrigin;
 	vec3_t vNorm;
-	vec3_t ground;
 	float velScaling = 0.1f;
 	float vTotal = 0.0f;
 
@@ -50,6 +49,7 @@ void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboole
 
 	if (gravity)
 	{
+		vec3_t ground;
 		//factor it in before we do anything.
 		VectorCopy(ent->r.currentOrigin, ground);
 		ground[2] -= 0.1f;
@@ -124,8 +124,6 @@ void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboole
 		vec3_t tMins, tMaxs;
 		vec3_t trajDif;
 		vec3_t gbmAngles;
-		vec3_t boneOrg;
-		vec3_t projectedBoneOrg;
 		vec3_t collisionRootPos;
 		mdxaBone_t matrix;
 		trace_t bestCollision;
@@ -145,6 +143,8 @@ void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboole
 
 		while (i < numG2Bolts)
 		{
+			vec3_t projectedBoneOrg;
+			vec3_t boneOrg;
 			//Get the position of the actual bolt for this frame
 			trap->G2API_GetBoltMatrix(ent->ghoul2, 0, g2Bolts[i], &matrix, gbmAngles, ent->r.currentOrigin, level.time,
 				NULL, ent->modelScale);

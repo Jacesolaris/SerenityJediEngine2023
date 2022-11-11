@@ -1452,10 +1452,10 @@ void G_TeamCommand(team_t team, char* cmd);
 void G_ScaleNetHealth(gentity_t* self);
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
-int G_RadiusList(vec3_t origin, float radius, gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
 	gentity_t* ent_list[MAX_GENTITIES]);
 
-void g_throw(gentity_t* targ, const vec3_t new_dir, const float push);
+void g_throw(gentity_t* targ, const vec3_t new_dir, float push);
 
 void G_FreeFakeClient(gclient_t** cl);
 void G_CreateFakeClient(int entNum, gclient_t** cl);
@@ -1475,8 +1475,8 @@ gentity_t* G_TempEntity(vec3_t origin, int event);
 gentity_t* G_PlayEffect(int fxID, vec3_t org, vec3_t ang);
 gentity_t* G_PlayEffectID(int fxID, vec3_t org, vec3_t ang);
 gentity_t* G_PlayBoltedEffect(int fxID, gentity_t* owner, const char* bolt);
-gentity_t* G_ScreenShake(vec3_t org, gentity_t* target, float intensity, int duration, qboolean global);
-gentity_t* CGCam_BlockShakeMP(vec3_t org, gentity_t* target, float intensity, int duration, qboolean global);
+gentity_t* G_ScreenShake(vec3_t org, const gentity_t* target, float intensity, int duration, qboolean global);
+gentity_t* CGCam_BlockShakeMP(vec3_t org, const gentity_t* target, float intensity, int duration, qboolean global);
 void G_MuteSound(int entnum, int channel);
 void G_Sound(gentity_t* ent, int channel, int soundIndex);
 void G_SoundAtLoc(vec3_t loc, int channel, int soundIndex);
@@ -1502,7 +1502,7 @@ extern void G_RunObject(gentity_t* ent);
 float* tv(float x, float y, float z);
 char* vtos(const vec3_t v);
 
-void G_AddPredictableEvent(gentity_t* ent, int event, int eventParm);
+void G_AddPredictableEvent(const gentity_t* ent, int event, int eventParm);
 void G_AddEvent(gentity_t* ent, int event, int eventParm);
 void G_SetOrigin(gentity_t* ent, vec3_t origin);
 qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
@@ -1769,11 +1769,11 @@ extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alert
 	float addLight); //addLight = 0.0f
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
 	qboolean needLOS, qboolean onGround);
-extern qboolean G_CheckForDanger(gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
 	float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel);
 //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
-extern qboolean G_CheckForDanger(gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS2(gentity_t* self, gentity_t* ent, const vec3_t end);
 extern qboolean G_ClearLOS3(gentity_t* self, const vec3_t start, gentity_t* ent);

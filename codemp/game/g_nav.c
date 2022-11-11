@@ -67,8 +67,8 @@ qboolean FlyingCreature(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
-void NAV_StoreWaypoint(gentity_t* ent);
+qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
+void NAV_StoreWaypoint(const gentity_t* ent);
 
 extern vec3_t NPCDEBUG_RED;
 
@@ -374,7 +374,7 @@ int NAV_FindClosestWaypointForEnt(gentity_t* ent, int targWp)
 	return trap->Nav_GetNearestNode((sharedEntity_t*)ent, ent->waypoint, NF_CLEAR_PATH, targWp);
 }
 
-int NAV_FindClosestWaypointForPoint(gentity_t* ent, vec3_t point)
+int NAV_FindClosestWaypointForPoint(const gentity_t* ent, vec3_t point)
 {
 	//FIXME: can we make this a static ent?
 	gentity_t* marker = G_Spawn();
@@ -432,7 +432,7 @@ NAV_ClearBlockedInfo
 -------------------------
 */
 
-void NAV_ClearBlockedInfo(gentity_t* self)
+void NAV_ClearBlockedInfo(const gentity_t* self)
 {
 	self->NPC->aiFlags &= ~NPCAI_BLOCKED;
 	self->NPC->blockingEntNum = ENTITYNUM_WORLD;
@@ -444,7 +444,7 @@ NAV_SetBlockedInfo
 -------------------------
 */
 
-void NAV_SetBlockedInfo(gentity_t* self, int entId)
+void NAV_SetBlockedInfo(const gentity_t* self, int entId)
 {
 	self->NPC->aiFlags |= NPCAI_BLOCKED;
 	self->NPC->blockingEntNum = entId;
@@ -508,7 +508,7 @@ NAV_CheckAhead
 -------------------------
 */
 
-qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t* trace, int clipmask)
+qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int clipmask)
 {
 	vec3_t mins;
 
@@ -682,7 +682,7 @@ NAV_MoveBlocker
 -------------------------
 */
 
-qboolean NAV_MoveBlocker(gentity_t* self, vec3_t shove_dir)
+qboolean NAV_MoveBlocker(const gentity_t* self, vec3_t shove_dir)
 {
 	//FIXME: This is a temporary method for making blockers move
 
@@ -728,7 +728,7 @@ NAV_TrueCollision
 -------------------------
 */
 
-qboolean NAV_TrueCollision(gentity_t* self, gentity_t* blocker, vec3_t movedir, vec3_t blocked_dir)
+qboolean NAV_TrueCollision(const gentity_t* self, const gentity_t* blocker, vec3_t movedir, vec3_t blocked_dir)
 {
 	vec3_t velocityDir;
 	vec3_t testPos;
@@ -770,7 +770,7 @@ NAV_StackedCanyon
 -------------------------
 */
 
-qboolean NAV_StackedCanyon(gentity_t* self, gentity_t* blocker, vec3_t pathDir)
+qboolean NAV_StackedCanyon(const gentity_t* self, const gentity_t* blocker, vec3_t pathDir)
 {
 	vec3_t perp, cross, test;
 	int extraClip = CONTENTS_BOTCLIP;
@@ -986,7 +986,7 @@ NAV_TestBestNode
 -------------------------
 */
 
-int NAV_TestBestNode(gentity_t* self, int startID, int endID, qboolean failEdge)
+int NAV_TestBestNode(const gentity_t* self, int startID, int endID, qboolean failEdge)
 {
 	//check only against architectrure
 	vec3_t end;
@@ -1703,7 +1703,7 @@ void NAV_ClearStoredWaypoints(void)
 	numStoredWaypoints = 0;
 }
 
-void NAV_StoreWaypoint(gentity_t* ent)
+void NAV_StoreWaypoint(const gentity_t* ent)
 {
 	/*
 	if ( !tempWaypointList )
@@ -1747,7 +1747,7 @@ void NAV_StoreWaypoint(gentity_t* ent)
 	numStoredWaypoints++;
 }
 
-int NAV_GetStoredWaypoint(char* targetname)
+int NAV_GetStoredWaypoint(const char* targetname)
 {
 	if (!targetname || !targetname[0])
 	{

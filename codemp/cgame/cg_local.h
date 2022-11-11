@@ -2230,7 +2230,7 @@ void CG_ShaderStateChanged(void);
 //
 int CG_IsMindTricked(int trickIndex1, int trickIndex2, int trickIndex3, int trickIndex4, int client);
 void CG_Respawn(void);
-void CG_TransitionPlayerState(playerState_t* ps, playerState_t* ops);
+void CG_TransitionPlayerState(const playerState_t* ps, playerState_t* ops);
 void CG_CheckChangedPredictableEvents(const playerState_t* ps);
 
 //

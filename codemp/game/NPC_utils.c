@@ -1053,7 +1053,7 @@ NPC_FindNearestEnemy
 
 #define	MAX_RADIUS_ENTS			256	//NOTE: This can cause entities to be lost
 #define NEAR_DEFAULT_RADIUS		256
-extern gentity_t* G_CheckControlledTurretEnemy(gentity_t* self, gentity_t* enemy, qboolean validate);
+extern gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate);
 
 int NPC_FindNearestEnemy(gentity_t* ent)
 {

@@ -74,13 +74,12 @@ void NPC_BSAdvanceFight(void)
 	if (NPC->enemy)
 	{
 		//See if we can shoot him
-		vec3_t delta, forward;
+		vec3_t delta;
 		vec3_t angleToEnemy;
-		vec3_t hitspot, muzzle, diff, enemy_org, enemy_head;
+		vec3_t muzzle, enemy_org;
 		qboolean attack_ok = qfalse;
 		qboolean dead_on = qfalse;
 		float attack_scale = 1.0;
-		const float max_aim_off = 64;
 
 		//Yaw to enemy
 		VectorMA(NPC->enemy->absmin, 0.5, NPC->enemy->maxs, enemy_org);
@@ -104,6 +103,8 @@ void NPC_BSAdvanceFight(void)
 
 			if (enemyVisibility == VIS_FOV)
 			{
+				vec3_t enemy_head;
+				vec3_t hitspot;
 				//He's in our FOV
 				attack_ok = qtrue;
 				CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_head);
@@ -160,6 +161,9 @@ void NPC_BSAdvanceFight(void)
 
 					if (!dead_on)
 					{
+						const float max_aim_off = 64;
+						vec3_t diff;
+						vec3_t forward;
 						//We're not going to hit him directly, try a suppressing fire
 						//see if where we're going to shoot is too far from his origin
 						AngleVectors(NPCInfo->shootAngles, forward, nullptr, nullptr);
@@ -678,7 +682,7 @@ constexpr auto JUMP_SPEED = 200.0f;
 
 void NPC_BSJump(void)
 {
-	vec3_t dir, angles, p1, p2, apex;
+	vec3_t dir, p1, p2, apex;
 	float time, height, forward, z, xy, dist, apexHeight;
 
 	if (!NPCInfo->goalEntity)
@@ -689,6 +693,7 @@ void NPC_BSJump(void)
 
 	if (NPCInfo->jumpState != JS_JUMPING && NPCInfo->jumpState != JS_LANDING)
 	{
+		vec3_t angles;
 		//Face navgoal
 		VectorSubtract(NPCInfo->goalEntity->currentOrigin, NPC->currentOrigin, dir);
 		vectoangles(dir, angles);
@@ -1046,7 +1051,8 @@ void NPC_BSNoClip(void)
 {
 	if (UpdateGoal())
 	{
-		vec3_t dir, forward, right, angles, up = { 0, 0, 1 };
+		vec3_t dir, forward, right, angles;
+		const vec3_t up = { 0, 0, 1 };
 
 		VectorSubtract(NPCInfo->goalEntity->currentOrigin, NPC->currentOrigin, dir);
 
@@ -1642,7 +1648,6 @@ qboolean NPC_BSFlee(void)
 {
 	float enemyTooCloseDist = 50.0f;
 	bool reachedEscapePoint = false;
-	bool moveSuccess = false;
 	const bool inSurrender = level.time < NPCInfo->surrenderTime;
 
 	if (NPCInfo->surrenderTime - level.time < 4000 && NPC_CheckSubmit())
@@ -1754,6 +1759,7 @@ qboolean NPC_BSFlee(void)
 		}
 		else
 		{
+			bool moveSuccess = false;
 			// Try To Get To The Escape Point
 			//--------------------------------
 			if (hasEscapePoint)
@@ -1996,10 +2002,10 @@ void NPC_BSEmplaced(void)
 	qboolean enemyCS = qfalse;
 	qboolean faceEnemy = qfalse;
 	qboolean shoot = qfalse;
-	vec3_t impactPos;
 
 	if (NPC_ClearLOS(NPC->enemy))
 	{
+		vec3_t impactPos;
 		enemyLOS = qtrue;
 
 		const int hit = NPC_ShotEntity(NPC->enemy, impactPos);

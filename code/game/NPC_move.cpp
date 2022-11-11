@@ -55,21 +55,22 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 {
 	//FIXME: if land on enemy, knock him down & jump off again
 	float bestImpactDist = Q3_INFINITE; //fireSpeed,
-	const float speedStep = 50.0f, minShotSpeed = 30.0f, maxShotSpeed = 500.0f;
+	constexpr float minShotSpeed = 30.0f, max_shot_speed = 500.0f;
 	qboolean belowBlocked = qfalse, aboveBlocked = qfalse;
-	vec3_t targetDir, shotVel, failCase;
+	vec3_t targetDir, shotVel;
 	trace_t trace;
 	trajectory_t tr;
-	int timeStep = 250, hitCount = 0, aboveTries = 0, belowTries = 0, maxHits = 10;
-	vec3_t lastPos, testPos, bottom;
+	int hitCount = 0, aboveTries = 0, belowTries = 0;
+	const int maxHits = 10;
+	vec3_t bottom;
 
 	VectorSubtract(dest, NPC->currentOrigin, targetDir);
 	const float targetDist = VectorNormalize(targetDir);
 	//make our shotSpeed reliant on the distance
 	float originalShotSpeed = targetDist; //DistanceHorizontal( dest, NPC->currentOrigin )/2.0f;
-	if (originalShotSpeed > maxShotSpeed)
+	if (originalShotSpeed > max_shot_speed)
 	{
-		originalShotSpeed = maxShotSpeed;
+		originalShotSpeed = max_shot_speed;
 	}
 	else if (originalShotSpeed < minShotSpeed)
 	{
@@ -79,6 +80,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 
 	while (hitCount < maxHits)
 	{
+		vec3_t failCase;
 		VectorScale(targetDir, shotSpeed, shotVel);
 		float travelTime = targetDist / shotSpeed;
 		shotVel[2] += travelTime * 0.5 * NPC->client->ps.gravity;
@@ -91,6 +93,8 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 
 		if (true) //tracePath )
 		{
+			vec3_t lastPos;
+			int timeStep = 250;
 			//do a rough trace of the path
 			qboolean blocked = qfalse;
 
@@ -104,6 +108,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 			//This may be kind of wasteful, especially on long throws... use larger steps?  Divide the travelTime into a certain hard number of slices?  Trace just to apex and down?
 			for (int elapsedTime = timeStep; elapsedTime < floor(travelTime) + timeStep; elapsedTime += timeStep)
 			{
+				vec3_t testPos;
 				if (static_cast<float>(elapsedTime) > travelTime)
 				{
 					//cap it
@@ -207,6 +212,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 			}
 			if (blocked)
 			{
+				const float speedStep = 50.0f;
 				//hit something, adjust speed (which will change arc)
 				hitCount++;
 				//alternate back and forth between trying an arc slightly above or below the ideal
@@ -228,9 +234,9 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 					hitCount = maxHits;
 					break;
 				}
-				if (shotSpeed > maxShotSpeed)
+				if (shotSpeed > max_shot_speed)
 				{
-					shotSpeed = maxShotSpeed;
+					shotSpeed = max_shot_speed;
 					aboveBlocked = qtrue;
 				}
 				else if (shotSpeed < minShotSpeed)
@@ -675,7 +681,7 @@ void NAV_GetLastMove(navInfo_t& info)
 	info = frameNavInfo;
 }
 
-void G_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir)
+void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir)
 {
 	vec3_t forward, right;
 
@@ -825,7 +831,7 @@ void NPC_ApplyRoff(void)
 	gi.linkentity(NPC);
 }
 
-qboolean NPC_IsJetpacking(gentity_t* self)
+qboolean NPC_IsJetpacking(const gentity_t* self)
 {
 	if (self->s.eFlags & EF_JETPACK_ACTIVE)
 	{

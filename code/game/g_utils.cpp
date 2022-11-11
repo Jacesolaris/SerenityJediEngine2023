@@ -523,7 +523,7 @@ gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match)
 G_RadiusList - given an origin and a radius, return all entities that are in use that are within the list
 ============
 */
-int G_RadiusList(vec3_t origin, float radius, gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
 	gentity_t* ent_list[MAX_GENTITIES])
 {
 	gentity_t* entityList[MAX_GENTITIES];
@@ -1533,7 +1533,7 @@ ValidUseTarget
 Returns whether or not the targeted entity is useable
 ==============
 */
-qboolean ValidUseTarget(gentity_t* ent)
+qboolean ValidUseTarget(const gentity_t* ent)
 {
 	if (ent->e_UseFunc == useF_NULL)
 	{
@@ -1746,7 +1746,7 @@ static qboolean CanUseInfrontOfPartOfLevel(gentity_t* ent) //originally from VV
 }
 
 constexpr auto USE_DISTANCE = 64.0f;
-extern qboolean eweb_can_be_used(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern qboolean eweb_can_be_used(const gentity_t* self, gentity_t* other, gentity_t* activator);
 
 qboolean CanUseInfrontOf(gentity_t* ent)
 {

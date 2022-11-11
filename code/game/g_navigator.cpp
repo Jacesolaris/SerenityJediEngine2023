@@ -62,7 +62,7 @@ bool HFILEclose(int& handle)
 // Externs
 ////////////////////////////////////////////////////////////////////////////////////////
 extern gentity_t* G_FindDoorTrigger(const gentity_t* ent);
-extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, gentity_t* self);
 
 extern cvar_t* g_nav1;
@@ -264,7 +264,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Size Function
 	////////////////////////////////////////////////////////////////////////////////////
-	int Blocking()
+	int Blocking() const
 	{
 		if (mFlags.get_bit(WE_BLOCKING_BREAK))
 		{

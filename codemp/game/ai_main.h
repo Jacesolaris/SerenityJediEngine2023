@@ -25,8 +25,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "bg_saga.h"
 
-//#define FORCEJUMP_INSTANTMETHOD 1
-
 #define MAX_CHAT_BUFFER_SIZE 8192
 #define MAX_CHAT_LINE_SIZE 128
 

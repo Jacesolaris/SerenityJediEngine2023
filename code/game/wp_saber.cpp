@@ -222,8 +222,8 @@ extern qboolean PM_SaberInMassiveBounce(int anim);
 extern qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
 extern qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
 //////////////////////////////////////////////////
-void player_Freeze(gentity_t* self);
-void Player_CheckFreeze(gentity_t* self);
+void player_Freeze(const gentity_t* self);
+void Player_CheckFreeze(const gentity_t* self);
 extern qboolean PM_SaberInSpecial(int move);
 float manual_saberblocking(const gentity_t* defender);
 void wp_block_points_regenerate(const gentity_t* self, int override_amt);
@@ -6172,7 +6172,7 @@ int G_CostForSpecialMove(int cost, qboolean kataMove)
 	return 0;
 }
 
-extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 
 void WP_SaberRadiusDamage(gentity_t* ent, vec3_t point, float radius, int damage, float knockBack)
 {
@@ -17919,7 +17919,7 @@ void ForceSpeedDash(gentity_t* self)
 	CG_PlayEffectBolted("misc/breath.efx", self->playerModel, self->headBolt, self->s.number, self->currentOrigin);
 }
 
-void player_Burn(gentity_t* self);
+void player_Burn(const gentity_t* self);
 
 void player_StopBurn(const gentity_t* self)
 {
@@ -17938,7 +17938,7 @@ void player_StopBurn(const gentity_t* self)
 	}
 }
 
-void Player_CheckBurn(gentity_t* self)
+void Player_CheckBurn(const gentity_t* self)
 {
 	if (self && self->client)
 	{
@@ -17965,7 +17965,7 @@ void Player_CheckBurn(gentity_t* self)
 	}
 }
 
-void player_Burn(gentity_t* self)
+void player_Burn(const gentity_t* self)
 {
 	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && self && self->client)
 	{
@@ -29168,7 +29168,7 @@ void player_StopFreeze(const gentity_t* self)
 	}
 }
 
-void Player_CheckFreeze(gentity_t* self)
+void Player_CheckFreeze(const gentity_t* self)
 {
 	if (self && self->client)
 	{
@@ -29191,7 +29191,7 @@ void Player_CheckFreeze(gentity_t* self)
 	}
 }
 
-void player_Freeze(gentity_t* self)
+void player_Freeze(const gentity_t* self)
 {
 	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && self && self->client)
 	{

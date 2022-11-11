@@ -340,7 +340,7 @@ typedef enum //# playType_e
 	PLAY_NUMBEROF
 } playType_t;
 
-const	int	Q3_TIME_SCALE = 1;	//MILLISECONDS
+constexpr	int	Q3_TIME_SCALE = 1;	//MILLISECONDS
 
 extern char	cinematicSkipScript[1024];
 

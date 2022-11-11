@@ -219,7 +219,7 @@ void funcBBrushUse(gentity_t* self, gentity_t* other, gentity_t* activator)
 	}
 }
 
-void funcBBrushPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
+void funcBBrushPain(gentity_t* self, gentity_t* inflictor, const gentity_t* attacker, const vec3_t point, int damage, int mod,
 	int hitLoc)
 {
 	if (self->painDebounceTime > level.time)
@@ -445,10 +445,10 @@ void SP_func_breakable(gentity_t* self)
 	}
 	InitBBrush(self);
 
-	char buffer[MAX_QPATH];
 	char* s;
 	if (G_SpawnString("noise", "*NOSOUND*", &s))
 	{
+		char buffer[MAX_QPATH];
 		Q_strncpyz(buffer, s, sizeof buffer);
 		COM_DefaultExtension(buffer, sizeof buffer, ".wav");
 		self->noise_index = G_SoundIndex(buffer);
@@ -492,7 +492,7 @@ void misc_model_breakable_pain(gentity_t* self, gentity_t* inflictor, gentity_t*
 	}
 }
 
-void misc_model_breakable_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
+void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
 	int dFlags, int hitLoc)
 {
 	float size = 0;
@@ -648,7 +648,7 @@ void misc_model_breakable_die(gentity_t* self, gentity_t* inflictor, gentity_t* 
 	}
 }
 
-void misc_model_throw_at_target4(gentity_t* self, gentity_t* activator)
+void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 {
 	vec3_t pushDir, kvel;
 	float knockback = 200;
@@ -720,7 +720,7 @@ void misc_model_throw_at_target4(gentity_t* self, gentity_t* activator)
 	}
 }
 
-void misc_model_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void misc_model_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	if (self->target4)
 	{
@@ -775,7 +775,7 @@ constexpr auto MDL_AMMO = 2;
 
 void misc_model_breakable_init(gentity_t* ent)
 {
-	const int type = MDL_OTHER;
+	constexpr int type = MDL_OTHER;
 
 	if (!ent->model)
 	{
@@ -922,7 +922,7 @@ void TieFighterThink(gentity_t* self)
 	}
 }
 
-void TieFighterUse(gentity_t* self, gentity_t* other, gentity_t* activator)
+void TieFighterUse(gentity_t* self, const gentity_t* other, const gentity_t* activator)
 {
 	if (!self || !other || !activator)
 		return;
@@ -1020,7 +1020,7 @@ void TieBomberThink(gentity_t* self)
 		// Doesn't matter what model gets loaded here, as long as it exists.
 		// It's only used as a point on to which the falling effect for the bomb
 		// can be attached to (kinda inefficient, I know).
-		const char name1[200] = "models/players/gonk/model.glm";
+		constexpr char name1[200] = "models/players/gonk/model.glm";
 		gentity_t* bomb = G_CreateObject(self, self->s.pos.trBase, self->s.apos.trBase, 0, 0, TR_GRAVITY, 0);
 		bomb->s.modelindex = G_ModelIndex(name1);
 		gi.G2API_InitGhoul2Model(bomb->ghoul2, name1, bomb->s.modelindex, NULL_HANDLE, NULL_HANDLE, 0, 0);
@@ -1071,10 +1071,11 @@ void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
 	ent->physicsBounce = ent->mass;
 	//drop to floor
 	trace_t tr;
-	vec3_t top, bottom;
 
 	if (dropToFloor)
 	{
+		vec3_t bottom;
+		vec3_t top;
 		VectorCopy(ent->currentOrigin, top);
 		top[2] += 1;
 		VectorCopy(ent->currentOrigin, bottom);
@@ -1568,7 +1569,7 @@ void SP_func_glass(gentity_t* self)
 	gi.linkentity(self);
 }
 
-qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker)
+qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker)
 {
 	//breakable brush/model that can actually be broken
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)

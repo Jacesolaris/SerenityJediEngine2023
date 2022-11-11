@@ -64,13 +64,13 @@ void AddRemap(const char* oldShader, const char* newShader, float timeOffset)
 const char* BuildShaderStateConfig(void)
 {
 	static char buff[MAX_STRING_CHARS * 4];
-	char out[MAX_QPATH * 2 + 5];
 
 	memset(buff, 0, MAX_STRING_CHARS);
 	for (int i = 0; i < remapCount; i++)
 	{
+		char out[MAX_QPATH * 2 + 5];
 		Com_sprintf(out, MAX_QPATH * 2 + 5, "%s=%s:%5.2f@", remappedShaders[i].oldShader, remappedShaders[i].newShader,
-			remappedShaders[i].timeOffset);
+		            remappedShaders[i].timeOffset);
 		Q_strcat(buff, sizeof buff, out);
 	}
 	return buff;
@@ -93,7 +93,6 @@ G_FindConfigstringIndex
 int G_FindConfigstringIndex(const char* name, int start, int max, qboolean create)
 {
 	int i;
-	char s[MAX_STRING_CHARS];
 
 	if (!VALIDSTRING(name))
 	{
@@ -102,6 +101,7 @@ int G_FindConfigstringIndex(const char* name, int start, int max, qboolean creat
 
 	for (i = 1; i < max; i++)
 	{
+		char s[MAX_STRING_CHARS];
 		trap->GetConfigstring(start + i, s, sizeof s);
 		if (!s[0])
 		{
@@ -260,7 +260,7 @@ gentity_t* G_Find(gentity_t* from, const int fieldofs, const char* match)
 G_RadiusList - given an origin and a radius, return all entities that are in use that are within the list
 ============
 */
-int G_RadiusList(vec3_t origin, float radius, gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
 	gentity_t* ent_list[MAX_GENTITIES])
 {
 	int entityList[MAX_GENTITIES];
@@ -501,7 +501,7 @@ void G_AllocateVehicleObject(Vehicle_t** pVeh)
 }
 
 //free the pointer, sort of a lame method
-void G_FreeVehicleObject(Vehicle_t* pVeh)
+void G_FreeVehicleObject(const Vehicle_t* pVeh)
 {
 	int i = 0;
 	while (i < MAX_VEHICLES_AT_A_TIME)
@@ -800,7 +800,6 @@ static void G_SpewEntList(void)
 	int numProjectile = 0;
 	int numTempEnt = 0;
 	int numTempEntST = 0;
-	char className[MAX_STRING_CHARS];
 	gentity_t* ent;
 	char* str;
 
@@ -814,6 +813,7 @@ static void G_SpewEntList(void)
 		ent = &g_entities[i];
 		if (ent->inuse)
 		{
+			char className[MAX_STRING_CHARS];
 			if (ent->s.eType == ET_NPC)
 			{
 				numNPC++;
@@ -1405,7 +1405,7 @@ client side: jumppads and item pickups
 Adds an event+parm and twiddles the event counter
 ===============
 */
-void G_AddPredictableEvent(gentity_t* ent, int event, int eventParm)
+void G_AddPredictableEvent(const gentity_t* ent, int event, int eventParm)
 {
 	if (!ent->client)
 	{
@@ -1517,7 +1517,7 @@ gentity_t* G_PlayBoltedEffect(int fxID, gentity_t* owner, const char* bolt)
 G_ScreenShake
 =============
 */
-gentity_t* G_ScreenShake(vec3_t org, gentity_t* target, float intensity, int duration, qboolean global)
+gentity_t* G_ScreenShake(vec3_t org, const gentity_t* target, float intensity, int duration, qboolean global)
 {
 	gentity_t* te = G_TempEntity(org, EV_SCREENSHAKE);
 	VectorCopy(org, te->s.origin);
@@ -1541,7 +1541,7 @@ gentity_t* G_ScreenShake(vec3_t org, gentity_t* target, float intensity, int dur
 	return te;
 }
 
-gentity_t* CGCam_BlockShakeMP(vec3_t org, gentity_t* target, float intensity, int duration, qboolean global)
+gentity_t* CGCam_BlockShakeMP(vec3_t org, const gentity_t* target, float intensity, int duration, qboolean global)
 {
 	gentity_t* te = G_TempEntity(org, EV_BLOCKSHAKE);
 	VectorCopy(org, te->s.origin);
@@ -1667,7 +1667,7 @@ ValidUseTarget
 Returns whether or not the targeted entity is useable
 ==============
 */
-qboolean ValidUseTarget(gentity_t* ent)
+qboolean ValidUseTarget(const gentity_t* ent)
 {
 	if (!ent->use)
 	{
@@ -1690,7 +1690,7 @@ qboolean ValidUseTarget(gentity_t* ent)
 }
 
 //use an ammo/health dispenser on another client
-void G_UseDispenserOn(gentity_t* ent, int dispType, gentity_t* target)
+void G_UseDispenserOn(const gentity_t* ent, int dispType, gentity_t* target)
 {
 	if (dispType == HI_HEALTHDISP)
 	{
@@ -1729,7 +1729,7 @@ void G_UseDispenserOn(gentity_t* ent, int dispType, gentity_t* target)
 }
 
 //see if this guy needs servicing from a specific type of dispenser
-int G_CanUseDispOn(gentity_t* ent, int dispType)
+int G_CanUseDispOn(const gentity_t* ent, int dispType)
 {
 	if (!ent->client || !ent->inuse || ent->health < 1 ||
 		ent->client->ps.stats[STAT_HEALTH] < 1)
@@ -2276,7 +2276,8 @@ DebugLine
 */
 int DebugLine(vec3_t start, vec3_t end, int color)
 {
-	vec3_t points[4], dir, cross, up = { 0, 0, 1 };
+	vec3_t points[4], dir, cross;
+	const vec3_t up = { 0, 0, 1 };
 
 	VectorCopy(start, points[0]);
 	VectorCopy(start, points[1]);
@@ -2458,7 +2459,7 @@ void TextWrapCenterPrint(char orgtext[CENTERPRINT_MAXSTRING], char output[CENTER
 	}
 }
 
-gentity_t* ViewTarget(gentity_t* ent, int length, vec3_t* target, cplane_t* plane)
+gentity_t* ViewTarget(const gentity_t* ent, int length, vec3_t* target, cplane_t* plane)
 {
 	trace_t tr;
 	vec3_t traceVec;

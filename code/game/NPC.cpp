@@ -90,7 +90,7 @@ extern int eventClearTime;
 extern void GM_Dying(gentity_t* self);
 extern void DROIDEKA_Dying(gentity_t* self);
 
-extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 
 qboolean NPC_EntityIsBreakable(gentity_t* self, gentity_t* ent)
 {
@@ -212,7 +212,7 @@ Determines when it's ok to ditch the corpse
 */
 constexpr auto REMOVE_DISTANCE = 128;
 #define REMOVE_DISTANCE_SQR (REMOVE_DISTANCE * REMOVE_DISTANCE)
-extern qboolean InFOVFromPlayerView(gentity_t* ent, int hFOV, int vFOV);
+extern qboolean InFOVFromPlayerView(const gentity_t* ent, int hFOV, int vFOV);
 
 qboolean G_OkayToRemoveCorpse(gentity_t* self)
 {

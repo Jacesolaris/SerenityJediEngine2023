@@ -2778,7 +2778,7 @@ void SP_misc_model_jabba_cam(gentity_t* ent)
 }
 
 //------------------------------------------------------------------------
-void misc_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void misc_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	misc_model_breakable_die(self, other, activator, 100, MOD_UNKNOWN);
 }

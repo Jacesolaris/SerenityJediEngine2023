@@ -63,8 +63,8 @@ float DEFAULT_PLAYER_RADIUS = sqrt(DEFAULT_MAXS_0 * DEFAULT_MAXS_0 + DEFAULT_MAX
 vec3_t playerMins = { DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2 };
 vec3_t playerMinsStep = { DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2 + STEPSIZE };
 vec3_t playerMaxs = { DEFAULT_MAXS_0, DEFAULT_MAXS_1, DEFAULT_MAXS_2 };
-extern void Player_CheckBurn(gentity_t* self);
-extern void Player_CheckFreeze(gentity_t* self);
+extern void Player_CheckBurn(const gentity_t* self);
+extern void Player_CheckFreeze(const gentity_t* self);
 extern void RemoveBarrier(gentity_t* ent);
 void SP_misc_teleporter_dest(gentity_t* ent);
 

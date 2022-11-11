@@ -93,7 +93,7 @@ extern float NPC_EnemyRangeFromBolt(int boltIndex);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lockMode);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
-extern qboolean G_EntIsBreakable(int entityNum, gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask);
 void NPC_CheckEvasion(void);
@@ -7719,7 +7719,7 @@ static qboolean Jedi_Jumping(const gentity_t* goal)
 	return qfalse;
 }
 
-extern void G_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir);
+extern void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir);
 extern qboolean PM_KickingAnim(int anim);
 
 static void Jedi_CheckEnemyMovement(float enemy_dist)
@@ -10560,7 +10560,7 @@ void NPC_CheckEvasion(void)
 
 extern void NPC_BSST_Patrol(void);
 extern void NPC_BSSniper_Default(void);
-extern void G_UcmdMoveForDir(gentity_t* self, usercmd_t* cmd, vec3_t dir);
+extern void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir);
 
 void NPC_BSJedi_Default(void)
 {

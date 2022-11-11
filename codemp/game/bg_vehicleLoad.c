@@ -644,7 +644,7 @@ vehField_t vehicleFields[] =
 	//===END TURRETS===========================================================================
 };
 
-static const size_t numVehicleFields = ARRAY_LEN(vehicleFields);
+static const size_t num_vehicle_fields = ARRAY_LEN(vehicleFields);
 
 stringID_table_t VehicleTable[VH_NUM_VEHICLES + 1] =
 {
@@ -825,7 +825,7 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 	Q_strncpyz(value, pValue, sizeof value);
 
 	// Loop through possible parameters
-	vehField_t* vehField = Q_LinearSearch(parmName, vehicleFields, numVehicleFields,
+	vehField_t* vehField = Q_LinearSearch(parmName, vehicleFields, num_vehicle_fields,
 		sizeof vehicleFields[0], vfieldcmp);
 
 	if (!vehField)

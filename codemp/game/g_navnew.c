@@ -23,7 +23,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "g_nav.h"
 
-qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
+qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
 qboolean NAV_TestForBlocked(gentity_t* self, gentity_t* goal, gentity_t* blocker, float distance, int* flags);
 
 void G_Line(vec3_t start, vec3_t end, vec3_t color, float alpha);

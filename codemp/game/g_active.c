@@ -42,8 +42,8 @@ extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* sou
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
-extern void Player_CheckBurn(gentity_t* self);
-extern void Player_CheckFreeze(gentity_t* self);
+extern void Player_CheckBurn(const gentity_t* self);
+extern void Player_CheckFreeze(const gentity_t* self);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void BG_ReduceBlasterMishapLevelAdvanced(playerState_t* ps);
 extern float manual_saberblocking(const gentity_t* defender);

@@ -1506,7 +1506,6 @@ int PM_SaberLockWinAnim(const qboolean victory, const qboolean superBreak)
 }
 
 #ifdef _GAME
-#include "g_local.h"
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
 extern gentity_t g_entities[];
 #elif defined(_CGAME)
@@ -1637,7 +1636,7 @@ int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean superBreak, co
 	int base_anim = duelist->torsoAnim;
 	switch (base_anim)
 	{
-	case BOTH_LK_S_S_S_L_2: //lock if I'm using single vs. a single and other intitiated
+	case BOTH_LK_S_S_S_L_2: //lock if I'm using single vs. a single and other initiated
 		base_anim = BOTH_LK_S_S_S_L_1;
 		break;
 	case BOTH_LK_S_S_T_L_2: //lock if I'm using single vs. a single and other initiated
@@ -1704,7 +1703,7 @@ int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean superBreak, co
 		if (duelist->clientNum == pm->ps->clientNum)
 #endif
 		{
-			//set sabermove to none
+			//set saber move to none
 			duelist->saberMove = LS_NONE;
 			//Hold the anim a little longer than it is
 			duelist->torsoTimer += 250;
@@ -5954,7 +5953,7 @@ int Fatigue_SaberAttack(playerState_t* ps)
 	return FATIGUE_SABERATTACK;
 }
 
-//Add Fatigue for all the sabermoves.
+//Add Fatigue for all the saber moves.
 extern qboolean PM_KnockAwayStaffAndDuels(int move);
 
 void PM_BlockFatigue(playerState_t* ps, const int newMove, const int anim)
@@ -6204,7 +6203,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 	}
 	else if (pm->ps->fd.blockPoints > BLOCKPOINTS_HALF)
 	{
-		//CANCEL THE BLOCKDRAINED FLAG
+		//CANCEL THE BLOCK DRAINED FLAG
 		pm->ps->userInt3 &= ~(1 << FLAG_BLOCKDRAINED);
 	}
 
@@ -6214,7 +6213,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 	}
 	else if (pm->ps->fd.forcePower > BLOCKPOINTS_HALF)
 	{
-		//CANCEL THE BLOCKDRAINED FLAG
+		//CANCEL THE BLOCK DRAINED FLAG
 		pm->ps->userInt3 &= ~(1 << FLAG_BLOCKDRAINED);
 	}
 
@@ -7005,7 +7004,7 @@ qboolean BG_SaberInFullDamageMove(const playerState_t* ps, const int AnimIndex)
 
 	if (PM_SaberInAttack(ps->saberMove)
 		|| PM_SaberInDamageMove(ps->saberMove)
-		|| pm_saber_in_special_attack(ps->torsoAnim) //jacesolaris 2019 test for idlekill
+		|| pm_saber_in_special_attack(ps->torsoAnim) //jacesolaris 2019 test for idle kill
 		|| PM_SaberDoDamageAnim(ps->torsoAnim)
 		&& !PM_KickMove(ps->saberMove)
 		&& !PM_InSaberLock(ps->torsoAnim)

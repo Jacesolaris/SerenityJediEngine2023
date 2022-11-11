@@ -164,7 +164,7 @@ void misc_model_breakable_touch(gentity_t* self, gentity_t* other, trace_t* trac
 	//touch function for model breakable.  doesn't actually do anything, but we need one to prevent crashs like the one on taspir2
 }
 
-void misc_model_throw_at_target4(gentity_t* self, gentity_t* activator)
+void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 {
 	vec3_t pushDir, kvel;
 	float knockback = 200;
@@ -224,7 +224,7 @@ void misc_model_throw_at_target4(gentity_t* self, gentity_t* activator)
 	}
 }
 
-void misc_model_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void misc_model_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	if (self->target4)
 	{
@@ -509,7 +509,7 @@ void ammo_shutdown(gentity_t* self)
 	}
 }
 
-qboolean Add_Ammo2(const gentity_t* ent, int ammotype, int amount)
+qboolean Add_Ammo2(const gentity_t* ent, const int ammotype, int amount)
 {
 	if (ent->client->ps.ammo[ammotype] == ammoData[ammotype].max)
 	{

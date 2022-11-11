@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #endif
 
 extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
-#ifdef _GAME //SP or gameside MP
+#ifdef _GAME //SP or game side MP
 extern vmCvar_t cg_thirdPersonAlpha;
 extern vec3_t playerMins;
 extern vec3_t playerMaxs;
@@ -53,10 +53,9 @@ qboolean BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins
 {
 	vec3_t bottom;
 	playerState_t* parentPS;
-	//qboolean	isDead = qfalse;
 #ifdef _GAME //don't do this on client
 
-	// Make sure the riders are not visible or collidable.
+	// Make sure the riders are not visible or collide able.
 	pVeh->m_pVehicleInfo->Ghost(pVeh, pVeh->m_pPilot);
 	for (int i = 0; i < pVeh->m_pVehicleInfo->maxPassengers; i++)
 	{
@@ -90,31 +89,12 @@ qboolean BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins
 		}
 	}
 
-	/*
-	isDead = (qboolean)((parentPS->eFlags&EF_DEAD)!=0);
-
-	if ( isDead ||
-		(pVeh->m_pVehicleInfo->surfDestruction &&
-			pVeh->m_iRemovedSurfaces ) )
-	{//can't land if dead or spiralling out of control
-		pVeh->m_LandTrace.fraction = 1.0f;
-		pVeh->m_LandTrace.contents = pVeh->m_LandTrace.surfaceFlags = 0;
-		VectorClear( pVeh->m_LandTrace.plane.normal );
-		pVeh->m_LandTrace.allsolid = qfalse;
-		pVeh->m_LandTrace.startsolid = qfalse;
-	}
-	else
-	{
-	*/
-	//argh, no, I need to have a way to see when they impact the ground while damaged. -rww
-
 	// Check to see if the fighter has taken off yet (if it's a certain height above ground).
 	VectorCopy(parentPS->origin, bottom);
 	bottom[2] -= pVeh->m_pVehicleInfo->landingHeight;
 
 	traceFunc(&pVeh->m_LandTrace, parentPS->origin, trMins, trMaxs, bottom, pVeh->m_pParentEntity->s.number,
 		MASK_NPCSOLID & ~CONTENTS_BODY);
-	//}
 
 	return qtrue;
 }
@@ -276,7 +256,7 @@ qboolean FighterIsLaunching(Vehicle_t* pVeh, const playerState_t* parentPS)
 	return qfalse;
 }
 
-qboolean FighterSuspended(Vehicle_t* pVeh, playerState_t* parentPS)
+qboolean FighterSuspended(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 #ifdef _GAME//only do this check on game side, because if it's cgame, it's being predicted, and it's only predicted if the local client is the driver
 
@@ -312,7 +292,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	//Client sets ucmds and such for speed alterations
 	float speedMax;
 	bgEntity_t* parent = pVeh->m_pParentEntity;
-	//this function should only be called from pmove.. if it gets called elsehwere,
+	//this function should only be called from pmove.. if it gets called else where,
 	//obviously this will explode.
 	const int curTime = pm->cmd.serverTime;
 
@@ -408,13 +388,6 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 
 			if (pVeh->m_LandTrace.fraction <= FIGHTER_MIN_TAKEOFF_FRACTION)
 			{
-				//pVeh->m_pParentEntity->client->ps.velocity[0] *= pVeh->m_LandTrace.fraction;
-				//pVeh->m_pParentEntity->client->ps.velocity[1] *= pVeh->m_LandTrace.fraction;
-
-				//remember to always base this stuff on the time modifier! otherwise, you create
-				//framerate-dependancy issues and break prediction in MP -rww
-				//parentPS->velocity[2] *= pVeh->m_LandTrace.fraction;
-				//it's not an angle, but hey
 				parentPS->velocity[2] = PredictedAngularDecrement(pVeh->m_LandTrace.fraction,
 					pVeh->m_fTimeModifier * 5.0f, parentPS->velocity[2]);
 
@@ -450,9 +423,6 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	{
 		//going turbo speed
 		speedMax = pVeh->m_pVehicleInfo->turboSpeed;
-		//double our acceleration
-		//speedInc *= 2.0f;
-		//no no no! this would el breako el predictiono! we want the following... -rww
 		speedInc = pVeh->m_pVehicleInfo->acceleration * 2.0f * pVeh->m_fTimeModifier;
 
 		//force us to move forward
@@ -460,13 +430,6 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		//add flag to let cgame know to draw the iTurboFX effect
 		parentPS->eFlags |= EF_JETPACK_ACTIVE;
 	}
-	/*
-	//FIXME: if turbotime is up and we're waiting for it to recharge, should our max speed drop while we recharge?
-	else if ( (curTime - pVeh->m_iTurboTime)<3000 )
-	{//still waiting for the recharge
-		speedMax = pVeh->m_pVehicleInfo->speedMax*0.75;
-	}
-	*/
 	else
 	{
 		//normal max speed
@@ -677,7 +640,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		&& !pVeh->m_iRemovedSurfaces
 		&& parentPS->electrifyTime < curTime
 		&& parentPS->vehTurnaroundTime < curTime
-		&& (pVeh->m_LandTrace.fraction >= 1.0f //no grounf
+		&& (pVeh->m_LandTrace.fraction >= 1.0f //no ground
 			|| pVeh->m_LandTrace.plane.normal[2] < MIN_LANDING_SLOPE //can't land here
 			|| parentPS->speed > MIN_LANDING_SPEED) //going too fast to land
 		&& pVeh->m_ucmd.rightmove)
@@ -732,7 +695,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		//strafing takes away from forward speed?  If so, strafePerc above should use speedMax
 		//parentPS->speed *= (1.0f-pVeh->m_pVehicleInfo->strafePerc);
 	}
-	else //if ( parentPS->hackingTimef )
+	else
 	{
 		if (parentPS->hackingTime > 0)
 		{
@@ -909,7 +872,7 @@ static void FighterNoseMalfunctionCheck(const Vehicle_t* pVeh, const playerState
 	}
 }
 
-static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, playerState_t* parentPS, const playerState_t* riderPS,
+static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const playerState_t* parentPS, const playerState_t* riderPS,
 	qboolean isDead)
 {
 	if (!pVeh->m_iRemovedSurfaces)
@@ -1037,7 +1000,7 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, playerStat
 			factor *= 4.0f;
 		}
 
-		pVeh->m_vOrientation[ROLL] += pVeh->m_fTimeModifier * factor; //do some spiralling
+		pVeh->m_vOrientation[ROLL] += pVeh->m_fTimeModifier * factor;
 	}
 	else if (pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_C ||
 		pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_D)
@@ -1365,9 +1328,9 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 #ifdef _GAME
 	const float groundFraction = 0.1f;
 #endif
-	float curRoll = 0.0f;
-	qboolean isDead = qfalse;
-	qboolean isLandingOrLanded = qfalse;
+	float curRoll;
+	qboolean isDead;
+	qboolean isLandingOrLanded;
 #ifdef _GAME
 	int curTime = level.time;
 #elif _CGAME
@@ -1636,7 +1599,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			&& parentPS->electrifyTime < curTime
 			&& (!pVeh->m_pVehicleInfo->surfDestruction || !pVeh->m_iRemovedSurfaces))
 		{
-			//not crashing or spiralling out of control...
+			//not crashing or spiraling out of control...
 			if (pVeh->m_vOrientation[PITCH] > 0)
 			{
 				pVeh->m_vOrientation[PITCH] = PredictedAngularDecrement(0.2f, angleTimeMod * 10.0f,
@@ -1735,7 +1698,6 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 static void AnimateVehicle(Vehicle_t* pVeh)
 {
 	int Anim = -1;
-	const int iFlags = SETANIM_FLAG_NORMAL;
 	const playerState_t* parentPS = pVeh->m_pParentEntity->playerState;
 	const int curTime = level.time;
 
@@ -1810,8 +1772,9 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 
 	if (Anim != -1)
 	{
+		const int iFlags = SETANIM_FLAG_NORMAL;
 		BG_SetAnim(pVeh->m_pParentEntity->playerState, bgAllAnims[pVeh->m_pParentEntity->localAnimIndex].anims,
-			SETANIM_BOTH, Anim, iFlags);
+		           SETANIM_BOTH, Anim, iFlags);
 	}
 }
 

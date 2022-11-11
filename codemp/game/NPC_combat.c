@@ -455,9 +455,9 @@ void G_ForceSaberOn(gentity_t* ent)
 G_SetEnemy
 -------------------------
 */
-void G_AimSet(gentity_t* self, int aim);
+void G_AimSet(const gentity_t* self, int aim);
 extern void Saboteur_Cloak(gentity_t* self);
-extern gentity_t* G_CheckControlledTurretEnemy(gentity_t* self, gentity_t* enemy, qboolean validate);
+extern gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate);
 extern void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
 
 void G_SetEnemy(gentity_t* self, gentity_t* enemy)
@@ -1214,7 +1214,7 @@ qboolean EntIsGlass(const gentity_t* check)
 	return qfalse;
 }
 
-qboolean ShotThroughGlass(trace_t* tr, gentity_t* target, vec3_t spot, int mask)
+qboolean ShotThroughGlass(trace_t* tr, const gentity_t* target, vec3_t spot, int mask)
 {
 	const gentity_t* hit = &g_entities[tr->entityNum];
 	if (hit != target && EntIsGlass(hit))
@@ -3339,7 +3339,7 @@ void NPC_AimAdjust(int change)
 	}
 }
 
-void G_AimSet(gentity_t* self, int aim)
+void G_AimSet(const gentity_t* self, int aim)
 {
 	if (self->NPC)
 	{

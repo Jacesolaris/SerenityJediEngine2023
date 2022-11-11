@@ -229,10 +229,11 @@ void Q_strcat(char* dest, int size, const char* src)
 */
 const char* Q_stristr(const char* s, const char* find)
 {
-	char c, sc;
+	char c;
 
 	if ((c = *find++) != 0)
 	{
+		char sc;
 		if (c >= 'a' && c <= 'z')
 		{
 			c -= 'a' - 'A';

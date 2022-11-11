@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 /*
 Debug_Printf
 */
-void Debug_Printf(cvar_t* cv, int debugLevel, char* fmt, ...)
+void Debug_Printf(const cvar_t* cv, int debugLevel, char* fmt, ...)
 {
 	char* color;
 	va_list argptr;
@@ -59,7 +59,7 @@ void Debug_Printf(cvar_t* cv, int debugLevel, char* fmt, ...)
 /*
 Debug_NPCPrintf
 */
-void Debug_NPCPrintf(gentity_t* printNPC, cvar_t* cv, int debugLevel, char* fmt, ...)
+void Debug_NPCPrintf(const gentity_t* printNPC, const cvar_t* cv, int debugLevel, char* fmt, ...)
 {
 	int color;
 	va_list argptr;

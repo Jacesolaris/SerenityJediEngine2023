@@ -86,10 +86,10 @@ void NAV_CalculateSquadPaths(const char* filename, int checksum);
 void NAV_ShowDebugInfo(void);
 
 int NAV_GetNearestNode(gentity_t* self, int lastNode);
-extern int NAV_TestBestNode(gentity_t* self, int startID, int endID, qboolean failEdge);
+extern int NAV_TestBestNode(const gentity_t* self, int startID, int endID, qboolean failEdge);
 
 qboolean NPC_GetMoveDirection(vec3_t out, float* distance);
 void NPC_MoveToGoalExt(vec3_t point);
 void NAV_FindPlayerWaypoint(int clNum);
-qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
+qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int clipmask);
 #endif

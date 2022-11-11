@@ -70,7 +70,7 @@ or take any AI related factors (for example, the NPC's reaction time) into accou
 
 FIXME do we need fat and thin version of this?
 */
-qboolean CanSee(gentity_t* ent)
+qboolean CanSee(const gentity_t* ent)
 {
 	trace_t tr;
 	vec3_t eyes;
@@ -168,7 +168,7 @@ qboolean InFOV(vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int vFOV)
 
 //NPC to position
 
-qboolean InFOV(vec3_t origin, gentity_t* from, int hFOV, int vFOV)
+qboolean InFOV(vec3_t origin, const gentity_t* from, int hFOV, int vFOV)
 {
 	vec3_t fromAngles, eyes;
 
@@ -187,7 +187,7 @@ qboolean InFOV(vec3_t origin, gentity_t* from, int hFOV, int vFOV)
 }
 
 //Entity to entity
-qboolean InFOVFromPlayerView(gentity_t* ent, int hFOV, int vFOV)
+qboolean InFOVFromPlayerView(const gentity_t* ent, int hFOV, int vFOV)
 {
 	vec3_t eyes;
 	vec3_t spot;
@@ -251,7 +251,7 @@ qboolean InFOVFromPlayerView(gentity_t* ent, int hFOV, int vFOV)
 	return qfalse;
 }
 
-qboolean InFOV(gentity_t* ent, gentity_t* from, int hFOV, int vFOV)
+qboolean InFOV(const gentity_t* ent, const gentity_t* from, int hFOV, int vFOV)
 {
 	vec3_t eyes;
 	vec3_t spot;
@@ -315,7 +315,7 @@ qboolean InFOV(gentity_t* ent, gentity_t* from, int hFOV, int vFOV)
 	return qfalse;
 }
 
-qboolean InVisrange(gentity_t* ent)
+qboolean InVisrange(const gentity_t* ent)
 {
 	//FIXME: make a calculate visibility for ents that takes into account
 	//lighting, movement, turning, crouch/stand up, other anims, hide brushes, etc.
@@ -698,7 +698,7 @@ int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAle
 
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 
-qboolean G_CheckForDanger(gentity_t* self, int alertEvent)
+qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 {
 	//FIXME: more bStates need to call this?
 	if (alertEvent == -1)
@@ -977,7 +977,7 @@ qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end)
 }
 
 //Entity to position
-qboolean G_ClearLOS(gentity_t* self, gentity_t* ent, const vec3_t end)
+qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent, const vec3_t end)
 {
 	vec3_t eyes;
 
@@ -987,7 +987,7 @@ qboolean G_ClearLOS(gentity_t* self, gentity_t* ent, const vec3_t end)
 }
 
 //Position to entity
-qboolean G_ClearLOS(gentity_t* self, const vec3_t start, gentity_t* ent)
+qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const gentity_t* ent)
 {
 	vec3_t spot;
 
@@ -1083,7 +1083,7 @@ int G_FindLocalInterestPoint(gentity_t* self)
 {
 	int bestPoint = ENTITYNUM_NONE;
 	float bestDist = Q3_INFINITE;
-	vec3_t diffVec, eyes;
+	vec3_t eyes;
 
 	CalcEntitySpot(self, SPOT_HEAD_LEAN, eyes);
 	for (int i = 0; i < level.numInterestPoints; i++)
@@ -1091,6 +1091,7 @@ int G_FindLocalInterestPoint(gentity_t* self)
 		//Don't ignore portals?  If through a portal, need to look at portal!
 		if (gi.inPVS(level.interestPoints[i].origin, eyes))
 		{
+			vec3_t diffVec;
 			VectorSubtract(level.interestPoints[i].origin, eyes, diffVec);
 			if ((fabs(diffVec[0]) + fabs(diffVec[1])) / 2 < 48 &&
 				fabs(diffVec[2]) > (fabs(diffVec[0]) + fabs(diffVec[1])) / 2)

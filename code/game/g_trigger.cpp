@@ -527,7 +527,7 @@ When an ent is asked for it's location, it will return this ent's "message" fiel
 
   NOTE: always rectangular
 */
-char* G_GetLocationForEnt(gentity_t* ent)
+char* G_GetLocationForEnt(const gentity_t* ent)
 {
 	vec3_t mins, maxs;
 	gentity_t* found = nullptr;

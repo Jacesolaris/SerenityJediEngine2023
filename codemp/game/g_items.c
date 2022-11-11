@@ -57,8 +57,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern gentity_t* droppedRedFlag;
 extern gentity_t* droppedBlueFlag;
 qboolean AllForceDisabled(int force);
-extern void Player_CheckBurn(gentity_t* self);
-extern void player_Burn(gentity_t* self);
+extern void Player_CheckBurn(const gentity_t* self);
+extern void player_Burn(const gentity_t* self);
 
 //======================================================================
 #define MAX_MEDPACK_HEAL_AMOUNT		25

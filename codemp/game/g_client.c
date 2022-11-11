@@ -48,8 +48,8 @@ void WP_SaberAddG2Model(gentity_t* saberent, const char* saberModel, qhandle_t s
 void WP_SaberRemoveG2Model(gentity_t* saberent);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
 extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
-extern void Player_CheckBurn(gentity_t* self);
-extern void Player_CheckFreeze(gentity_t* self);
+extern void Player_CheckBurn(const gentity_t* self);
+extern void Player_CheckFreeze(const gentity_t* self);
 extern qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered,
 	int saberAnimLevel);
 extern qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered,
