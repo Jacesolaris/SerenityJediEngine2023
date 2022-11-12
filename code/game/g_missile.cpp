@@ -261,6 +261,7 @@ void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			reflected = qtrue;
 		}
 	}
+
 			if (!reflected)
 			{
 				if (missile->owner && missile->s.weapon != WP_SABER)
@@ -343,12 +344,11 @@ void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			VectorNormalize(bounce_dir);
 			VectorScale(bounce_dir, speed, missile->s.pos.trDelta);
 #ifdef _DEBUG
-			assert(
-				!Q_isnan(missile->s.pos.trDelta[0]) && !Q_isnan(missile->s.pos.trDelta[1]) && !Q_isnan(missile->s.pos.trDelta[2]
-				));
+			assert(!Q_isnan(missile->s.pos.trDelta[0]) && !Q_isnan(missile->s.pos.trDelta[1]) && !Q_isnan(missile->s.pos.trDelta[2]));
 #endif// _DEBUG
 			missile->s.pos.trTime = level.time - 10; // move a bit on the very first frame
 			VectorCopy(missile->currentOrigin, missile->s.pos.trBase);
+
 			if (missile->s.weapon != WP_SABER)
 			{
 				//you are mine, now!
@@ -1045,8 +1045,8 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 		if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 		{
 			gi.Printf(S_COLOR_YELLOW"only randomly deflect away the bolt\n");
+		}
 	}
-}
 
 	VectorNormalize(bounce_dir);
 	VectorScale(bounce_dir, speed, missile->s.pos.trDelta);
@@ -1179,8 +1179,8 @@ void g_bounce_missile(gentity_t* ent, trace_t* trace)
 		if (ent->s.weapon == WP_THERMAL)
 		{
 			ent->has_bounced = qtrue;
-			}
 		}
+	}
 
 #if 0
 	// OLD--this looks so wrong.  It looked wrong in EF.  It just must be wrong.
@@ -1215,7 +1215,7 @@ void g_bounce_missile(gentity_t* ent, trace_t* trace)
 		//now you can damage the guy you came from
 		ent->owner = nullptr;
 	}
-	}
+}
 
 /*
 ================

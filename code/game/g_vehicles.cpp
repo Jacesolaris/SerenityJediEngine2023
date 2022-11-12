@@ -1104,6 +1104,10 @@ bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
 			return false;
 		}
 	}
+	if (pVeh->m_pVehicleInfo->soundOff)
+	{
+		G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundOff);
+	}
 
 	// Move them to the exit position.
 	G_SetOrigin(ent, vExitPos);
