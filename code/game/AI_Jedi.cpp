@@ -126,6 +126,7 @@ extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const ve
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern cvar_t* g_DebugSaberCombat;
+extern qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 
 int InFieldOfVision(vec3_t viewangles, const float fov, vec3_t angles)
 {
@@ -3859,16 +3860,12 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int
 
 	case HL_FOOT_RT:
 	case HL_FOOT_LT:
-		dodgeAnim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
-		break;
 	case HL_LEG_RT:
 	case HL_LEG_LT:
-		dodgeAnim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
 	case HL_WAIST:
 	{
 		if (!self->s.number)
-		{
-			//don't force the player to jump
+		{//don't force the player to jump
 			return qfalse;
 		}
 		if (!self->enemy && G_ValidEnemy(self, shooter))
@@ -4632,7 +4629,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 	int duck_chance = 0;
 	int dodge_anim = -1;
 	qboolean saber_busy = qfalse;
-	qboolean evaded;
 	evasionType_t evasionType = EVASION_NONE;
 
 	if (!self || !self->client)
@@ -4776,7 +4772,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						TIMER_Start(self, "strafeLeft", Q_irand(500, 1500));
 						TIMER_Set(self, "strafeRight", 0);
 						evasionType = EVASION_DUCK;
-						evaded = qtrue;
 					}
 					else if (Q_irand(0, 1))
 					{
@@ -4790,7 +4785,10 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				}
 				else
 				{
-					self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					//self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+
 					evasionType = EVASION_PARRY;
 					if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
 					{
@@ -4798,7 +4796,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							TIMER_Start(self, "duck", Q_irand(500, 1500));
 							evasionType = EVASION_DUCK_PARRY;
-							evaded = qtrue;
 							if (d_JediAI->integer || g_DebugSaberCombat->integer)
 							{
 								gi.Printf("duck ");
@@ -4828,7 +4825,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						TIMER_Start(self, "strafeRight", Q_irand(500, 1500));
 						TIMER_Set(self, "strafeLeft", 0);
 						evasionType = EVASION_DUCK;
-						evaded = qtrue;
 					}
 					else if (Q_irand(0, 1))
 					{
@@ -4842,7 +4838,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				}
 				else
 				{
-					self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					//self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
 					evasionType = EVASION_PARRY;
 					if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
 					{
@@ -4850,7 +4848,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							TIMER_Start(self, "duck", Q_irand(500, 1500));
 							evasionType = EVASION_DUCK_PARRY;
-							evaded = qtrue;
 							if (d_JediAI->integer || g_DebugSaberCombat->integer)
 							{
 								gi.Printf("duck ");
@@ -4869,7 +4866,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			}
 			else
 			{
-				self->client->ps.saberBlocked = BLOCKED_TOP;
+				WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+				//self->client->ps.saberBlocked = BLOCKED_TOP;
 				evasionType = EVASION_PARRY;
 				if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
 				{
@@ -4880,7 +4879,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					gi.Printf("TOP block\n");
 				}
 			}
-			evaded = qtrue;
 		}
 		else
 		{
@@ -4888,7 +4886,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			{
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasionType = EVASION_DUCK;
-				evaded = qtrue;
 				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("duck ");
@@ -4906,7 +4903,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				//duckChance = 2;
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasionType = EVASION_DUCK;
-				evaded = qtrue;
 				if (d_JediAI->integer || g_DebugSaberCombat->integer)
 				{
 					gi.Printf("duck ");
@@ -4935,7 +4931,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE && !self->client->ps.saberInFlight)
 							{
-								self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+								WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+								//self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
 							}
 							else
 							{
@@ -4955,7 +4953,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				}
 				else
 				{
-					self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					//self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
 					if (evasionType == EVASION_DUCK)
 					{
 						evasionType = EVASION_DUCK_PARRY;
@@ -4986,7 +4986,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE && !self->client->ps.saberInFlight)
 							{
-								self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+								WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+								//self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
 							}
 							else
 							{
@@ -5006,7 +5008,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				}
 				else
 				{
-					self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					//self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
 					if (evasionType == EVASION_DUCK)
 					{
 						evasionType = EVASION_DUCK_PARRY;
@@ -5023,7 +5027,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			}
 			else
 			{
-				self->client->ps.saberBlocked = BLOCKED_TOP;
+				WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+				//self->client->ps.saberBlocked = BLOCKED_TOP;
 				if (evasionType == EVASION_DUCK)
 				{
 					evasionType = EVASION_DUCK_PARRY;
@@ -5037,7 +5043,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					gi.Printf("mid-TOP block\n");
 				}
 			}
-			evaded = qtrue;
 		}
 	}
 	else
@@ -5050,21 +5055,23 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				//already in air, duck to pull up legs
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasionType = EVASION_DUCK;
-				evaded = qtrue;
 				if (incoming || !saber_busy)
 				{
 					//since the jump may be cleared if not safe, set a lower block too
 					if (rightdot >= 0)
 					{
-						self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+						//self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
 						evasionType = EVASION_DUCK_PARRY;
 					}
 					else
 					{
-						self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+						//self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
 						evasionType = EVASION_DUCK_PARRY;
 					}
-					evaded = qtrue;
 				}
 			}
 			else
@@ -5075,15 +5082,12 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					//since the jump may be cleared if not safe, set a lower block too
 					if (rightdot >= 0)
 					{
-						self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
-						evasionType = EVASION_PARRY;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
 					}
 					else
 					{
-						self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
-						evasionType = EVASION_PARRY;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
 					}
-					evaded = qtrue;
 				}
 				if ((evasionType = Jedi_CheckFlipEvasions(self, rightdot, zdiff)) != EVASION_NONE)
 				{
@@ -5092,22 +5096,15 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						//G_StartMatrixEffect(self);
 						G_StartStasisEffect(self);
 					}
-					/*else
-					{
-						if (d_slowmoaction->integer)
-						{
-							G_StartStasisEffect(self);
-						}
-					}*/
-					saber_busy = qtrue;
-					evaded = qtrue;
 				}
 				else if (incoming || !saber_busy)
 				{
 					//since the jump may be cleared if not safe, set a lower block too
 					if (rightdot >= 0)
 					{
-						self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+						//self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
 						if (evasionType == EVASION_JUMP)
 						{
 							evasionType = EVASION_JUMP_PARRY;
@@ -5123,7 +5120,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					}
 					else
 					{
-						self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+						//self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
 						if (evasionType == EVASION_JUMP)
 						{
 							evasionType = EVASION_JUMP_PARRY;
@@ -5137,7 +5136,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							gi.Printf("LL block\n");
 						}
 					}
-					evaded = qtrue;
 				}
 			}
 		}
@@ -5147,7 +5145,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			{
 				if (rightdot >= 0)
 				{
-					self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					//self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
 					evasionType = EVASION_PARRY;
 					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
@@ -5156,7 +5156,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				}
 				else
 				{
-					self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					//self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
 					evasionType = EVASION_PARRY;
 					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
@@ -5168,16 +5170,19 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					//thrown saber!
 					if (rightdot >= 0)
 					{
-						self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+						//self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
 						evasionType = EVASION_PARRY;
 					}
 					else
 					{
-						self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
+						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+						//self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
 						evasionType = EVASION_PARRY;
 					}
 				}
-				evaded = qtrue;
 			}
 		}
 	}
@@ -6332,8 +6337,6 @@ gentity_t* Jedi_FindEnemyInCone(const gentity_t* self, gentity_t* fallback, floa
 
 		if (dist < bestDist)
 		{
-			//closer than our last best one
-			dist = bestDist;
 			enemy = check;
 		}
 	}
@@ -6355,8 +6358,7 @@ static void Jedi_SetEnemyInfo(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_
 		VectorCopy(NPC->enemy->currentOrigin, enemy_dest);
 		enemy_dest[2] += NPC->enemy->mins[2] + 24; //get it's origin to a height I can work with
 		VectorSubtract(enemy_dest, NPC->currentOrigin, enemy_dir);
-		//FIXME: enemy_dist calc needs to include all blade lengths, and include distance from hand to start of blade....
-		*enemy_dist = VectorNormalize(enemy_dir); // - (NPC->client->ps.saberLengthMax + NPC->maxs[0]*1.5 + 16);
+		*enemy_dist = VectorNormalize(enemy_dir);
 	}
 	else
 	{
