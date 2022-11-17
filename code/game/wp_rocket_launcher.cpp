@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 void rocketThink(gentity_t* ent)
 //---------------------------------------------------------
 {
-	const vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = { 0, 0, 1 };
 
 	if (ent->disconnectDebounceTime && ent->disconnectDebounceTime < level.time)
 	{

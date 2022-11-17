@@ -1007,7 +1007,7 @@ qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const gentity_t* ent)
 }
 
 //NPC's eyes to entity
-qboolean G_ClearLOS(gentity_t* self, gentity_t* ent)
+qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent)
 {
 	vec3_t eyes;
 

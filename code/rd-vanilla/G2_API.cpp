@@ -768,7 +768,7 @@ qhandle_t G2API_PrecacheGhoul2Model(const char* fileName)
 int G2API_InitGhoul2Model(CGhoul2Info_v& ghoul2, const char* fileName, int, qhandle_t customSkin,
 	qhandle_t customShader, int modelFlags, int lodBias)
 {
-	int model = -1;
+	int model;
 
 	G2ERROR(fileName && fileName[0], "NULL filename");
 
@@ -836,6 +836,7 @@ qboolean G2API_SetLodBias(CGhoul2Info* ghlInfo, int lodBias)
 	return qfalse;
 }
 
+extern void G2API_SetSurfaceOnOffFromSkin(CGhoul2Info* ghlInfo, qhandle_t renderSkin); //tr_ghoul2.cpp
 qboolean G2API_SetSkin(CGhoul2Info* ghlInfo, qhandle_t customSkin, qhandle_t renderSkin)
 {
 	G2ERROR(ghlInfo, "NULL ghlInfo");
@@ -853,7 +854,6 @@ qboolean G2API_SetSkin(CGhoul2Info* ghlInfo, qhandle_t customSkin, qhandle_t ren
 		if (renderSkin)
 		{
 			//this is going to set the surfs on/off matching the skin file
-			extern void G2API_SetSurfaceOnOffFromSkin(CGhoul2Info * ghlInfo, qhandle_t renderSkin); //tr_ghoul2.cpp
 			G2API_SetSurfaceOnOffFromSkin(ghlInfo, renderSkin);
 		}
 		return qtrue;
@@ -1007,11 +1007,10 @@ qboolean G2API_SetAnimIndex(CGhoul2Info* ghlInfo, const int index)
 
 			// Kill All Existing Animation, Blending, Etc.
 			//---------------------------------------------
-			for (auto& index : ghlInfo->mBlist)
+			for (auto& info : ghlInfo->mBlist)
 			{
-				index.flags &= ~(BONE_ANIM_TOTAL);
-				index.flags &= ~(BONE_ANGLES_TOTAL);
-				//				G2_Remove_Bone_Index(ghlInfo->mBlist, index);
+				info.flags &= ~(BONE_ANIM_TOTAL);
+				info.flags &= ~(BONE_ANGLES_TOTAL);
 			}
 		}
 		return qtrue;

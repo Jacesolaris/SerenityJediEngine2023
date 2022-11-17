@@ -437,7 +437,7 @@ void G_PlayEffect(int fxID, int entNum, const vec3_t fwd);
 void G_StopEffect(int fxID, int modelIndex, int boltIndex, int entNum);
 void G_StopEffect(const char* name, int modelIndex, int boltIndex, int entNum);
 
-int G_BSPIndex(char* name);
+int G_BSPIndex(const char* name);
 
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
@@ -608,7 +608,7 @@ void Svcmd_Form_f(void);
 //
 void Svcmd_Use_f(void);
 extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soundPath);
-extern void G_SoundIndexOnEnt(gentity_t* ent, soundChannel_t channel, int index);
+extern void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int index);
 
 //
 // g_weapons.cpp
@@ -683,7 +683,7 @@ extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const gentity_t* ent);
-extern qboolean G_ClearLOS(gentity_t* self, gentity_t* ent);
+extern qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t end);
 
 //============================================================================
@@ -738,11 +738,11 @@ void TIMER_Load(void);
 void TIMER_Set(const gentity_t* ent, const char* identifier, int duration);
 int TIMER_Get(const gentity_t* ent, const char* identifier);
 qboolean TIMER_Done(const gentity_t* ent, const char* identifier);
-qboolean TIMER_Start(gentity_t* self, const char* identifier, int duration);
+qboolean TIMER_Start(const gentity_t* self, const char* identifier, int duration);
 qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, qboolean remove = qfalse);
 qboolean TIMER_Exists(const gentity_t* ent, const char* identifier);
 void TIMER_Remove(const gentity_t* ent, const char* identifier);
-std::vector<std::pair<std::string, int>> TIMER_List(gentity_t* ent);
+std::vector<std::pair<std::string, int>> TIMER_List(const gentity_t* ent);
 
 float NPC_GetHFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, float hFOV);
 float NPC_GetVFOVPercentage(vec3_t spot, vec3_t from, vec3_t facing, float vFOV);

@@ -1385,7 +1385,7 @@ gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 	return NULL;
 }
 
-qboolean G_TriggerActive(gentity_t* self);
+qboolean G_TriggerActive(const gentity_t* self);
 
 qboolean G_EntIsUnlockedDoor(int entityNum)
 {
@@ -3177,7 +3177,7 @@ void SP_func_glass(gentity_t* ent)
 	ent->pain = GlassPain;
 }
 
-void func_usable_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+void func_usable_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
 
 extern gentity_t* G_TestEntityPosition(const gentity_t* ent);
 
@@ -3242,7 +3242,7 @@ qboolean G_EntIsRemovableUsable(int entNum)
 	return qfalse;
 }
 
-void func_usable_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void func_usable_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	//Toggle on and off
 	G_ActivateBehavior(self, BSET_USE);

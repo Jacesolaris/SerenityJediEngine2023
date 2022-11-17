@@ -2442,7 +2442,7 @@ void CG_Limb(const centity_t* cent)
 	}
 }
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 qboolean MatrixMode = qfalse;
 extern cvar_t* g_skippingcin;
 

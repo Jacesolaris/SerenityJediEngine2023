@@ -33,7 +33,7 @@ g_bounce_missile
 
 ================
 */
-void G_BounceObject(gentity_t* ent, trace_t* trace)
+void G_BounceObject(gentity_t* ent, const trace_t* trace)
 {
 	vec3_t velocity;
 
@@ -168,13 +168,7 @@ void G_RunObject(gentity_t* ent)
 		//friction in zero-G
 		if (!g_gravity->value)
 		{
-			const float friction = 0.975f;
-			/*friction -= ent->mass/1000.0f;
-			if ( friction < 0.1 )
-			{
-				friction = 0.1f;
-			}
-			*/
+			constexpr float friction = 0.975f;
 			VectorScale(ent->s.pos.trDelta, friction, ent->s.pos.trDelta);
 			VectorCopy(ent->currentOrigin, ent->s.pos.trBase);
 			ent->s.pos.trTime = level.time;
@@ -341,11 +335,6 @@ gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int mo
 	//FIXME: allow to set a targetname/script_targetname and animation info?
 	object->s.frame = object->startFrame = object->endFrame = frame;
 	object->owner = owner;
-	//object->damage = 100;
-	//object->splashDamage = 200;
-	//object->splashRadius = 200;
-	//object->methodOfDeath = MOD_EXPLOSIVE;
-	//object->splashMethodOfDeath = MOD_EXPLOSIVE_SPLASH;
 	object->clipmask = MASK_SOLID; //?
 	//object->e_TouchFunc = touchF_charge_stick;
 

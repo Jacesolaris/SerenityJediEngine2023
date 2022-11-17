@@ -31,7 +31,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //Externs
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
 	int spinTime = 0);
@@ -52,11 +52,11 @@ extern void ForceAbsorb(gentity_t* self);
 extern qboolean ForceDrain2(gentity_t* self);
 extern void ForceLightningStrike(gentity_t* self);
 extern int WP_MissileBlockForBlock(int saber_block);
-extern qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 extern void WP_KnockdownTurret(gentity_t* self, gentity_t* pas);
-extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
@@ -87,8 +87,8 @@ extern qboolean PM_PainAnim(int anim);
 extern qboolean G_CanKickEntity(const gentity_t* self, const gentity_t* target);
 extern saberMoveName_t G_PickAutoKick(const gentity_t* self, const gentity_t* enemy, qboolean storeMove);
 extern saberMoveName_t g_pick_auto_multi_kick(gentity_t* self, qboolean allowSingles, qboolean storeMove);
-extern qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist);
-extern qboolean NAV_MoveDirSafe(gentity_t* self, usercmd_t* cmd, float distScale = 1.0f);
+extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
+extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f);
 extern float NPC_EnemyRangeFromBolt(int boltIndex);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lockMode);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
@@ -115,7 +115,7 @@ static qboolean Jedi_SaberBlock(void);
 static qboolean Jedi_AttackDecide(int enemy_dist);
 extern void add_npc_block_point_bonus(const gentity_t* self);
 extern qboolean NPC_IsAlive(gentity_t* self, gentity_t* NPC);
-extern void WP_DeactivateLightSaber(gentity_t* self, qboolean clearLength = qfalse);
+extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
@@ -4427,21 +4427,18 @@ int Jedi_ReCalcParryTime(const gentity_t* self, evasionType_t evasionType)
 		}
 		else
 		{
-			if (true)
+			switch (g_spskill->integer)
 			{
-				switch (g_spskill->integer)
-				{
-				case 0:
-					baseTime = 500;
-					break;
-				case 1:
-					baseTime = 250;
-					break;
-				case 2:
-				default:
-					baseTime = 100;
-					break;
-				}
+			case 0:
+				baseTime = 500;
+				break;
+			case 1:
+				baseTime = 250;
+				break;
+			case 2:
+			default:
+				baseTime = 100;
+				break;
 			}
 
 			baseTime = baseTime += 400 * Q_irand(1, 2);
@@ -5675,7 +5672,7 @@ static qboolean Jedi_SaberBlock(void)
 	return qtrue;
 }
 
-extern qboolean NPC_CheckFallPositionOK(gentity_t* NPC, vec3_t position);
+extern qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 
 qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 {
@@ -6318,7 +6315,7 @@ gentity_t* Jedi_FindEnemyInCone(const gentity_t* self, gentity_t* fallback, floa
 		}
 
 		VectorSubtract(check->currentOrigin, self->currentOrigin, dir);
-		float dist = VectorNormalize(dir);
+		const float dist = VectorNormalize(dir);
 
 		if (DotProduct(dir, forward) < minDot)
 		{
@@ -8871,7 +8868,7 @@ qboolean Jedi_CanPullBackSaber(const gentity_t* self)
 NPC_BSJedi_FollowLeader
 -------------------------
 */
-extern qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t& trace, int clipmask);
+extern qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t& trace, int clipmask);
 
 void NPC_BSJedi_FollowLeader(void)
 {

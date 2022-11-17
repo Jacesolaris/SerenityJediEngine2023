@@ -371,12 +371,11 @@ void ref_link(gentity_t* ent)
 {
 	if (ent->target)
 	{
-		//TODO: Find the target and set our angles to that direction
 		const gentity_t* target = G_Find(nullptr, FOFS(targetname), ent->target);
-		vec3_t dir;
 
 		if (target)
 		{
+			vec3_t dir;
 			//Find the direction to the target
 			VectorSubtract(target->s.origin, ent->s.origin, dir);
 			VectorNormalize(dir);

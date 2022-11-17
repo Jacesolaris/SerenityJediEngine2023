@@ -223,7 +223,6 @@ void Use_Target_Speaker(gentity_t* ent, gentity_t* other, gentity_t* activator)
 
 void SP_target_speaker(gentity_t* ent)
 {
-	char buffer[MAX_QPATH];
 	char* s;
 
 	if (VALIDSTRING(ent->soundSet))
@@ -238,6 +237,7 @@ void SP_target_speaker(gentity_t* ent)
 
 	if (!ent->sounds)
 	{
+		char buffer[MAX_QPATH];
 		if (!G_SpawnString("noise", "*NOSOUND*", &s))
 		{
 			G_Error("target_speaker without a noise key at %s", vtos(ent->s.origin));
@@ -293,11 +293,11 @@ void target_laser_think(gentity_t* self)
 {
 	vec3_t end;
 	trace_t tr;
-	vec3_t point;
 
 	// if pointed at another entity, set movedir to point at it
 	if (self->enemy)
 	{
+		vec3_t point;
 		VectorMA(self->enemy->s.origin, 0.5, self->enemy->mins, point);
 		VectorMA(point, 0.5, self->enemy->maxs, point);
 		VectorSubtract(point, self->s.origin, self->movedir);

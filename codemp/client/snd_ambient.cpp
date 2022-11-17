@@ -956,7 +956,7 @@ Alters lastTime to reflect the time updates.
 -------------------------
 */
 
-static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, ambientSet_t* set, int entID, int* lastTime)
+static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambientSet_t* set, int entID, int* lastTime)
 {
 	vec3_t			dir;
 	const int				time = cl.serverTime;
@@ -1001,7 +1001,7 @@ Alters lastTime to reflect the time updates.
 -------------------------
 */
 
-static void AS_PlayAmbientSet(vec3_t origin, ambientSet_t* set, int* lastTime)
+static void AS_PlayAmbientSet(vec3_t origin, const ambientSet_t* set, int* lastTime)
 {
 	const int				time = cls.realtime;
 

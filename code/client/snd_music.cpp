@@ -278,7 +278,7 @@ static qboolean Music_ParseMusic(gsl::czstring filename, const CGenericParser2& 
 
 						// new check, don't keep this this exit point if it's within 1.5 seconds either way of an entry point...
 						//
-						const bool bTooCloseToEntryPoint = false;
+						constexpr bool bTooCloseToEntryPoint = false;
 						for (const auto& item : MusicFile.MusicEntryTimes)
 						{
 							const float fThisEntryTime = item.second;
@@ -440,7 +440,7 @@ static qboolean Music_ParseLeveldata(gsl::czstring psLevelName)
 				int steps = 0;
 				gsl::cstring_view searchName{ &sLevelName[0], &sLevelName[strlen(&sLevelName[0])] };
 
-				const int sanityLimit = 10;
+				constexpr int sanityLimit = 10;
 				while (!searchName.empty() && steps < sanityLimit)
 				{
 					gsLevelNameForLoad = searchName;
@@ -843,7 +843,6 @@ qboolean Music_AllowedToTransition(float fPlayingTimeElapsed,
 	float* pfNewTrackEntryTime /* = NULL */
 )
 {
-	const float fTimeEpsilon = 0.3f; // arb., how close we have to be to an exit point to take it.
 	//		if set too high then music change is sloppy
 	//		if set too low[/precise] then we might miss an exit if client fps is poor
 
@@ -863,9 +862,10 @@ qboolean Music_AllowedToTransition(float fPlayingTimeElapsed,
 			++itp.second; // increase range to one beyond, so we can do normal STL being/end looping below
 		for (auto it = itp.first; it != itp.second; ++it)
 		{
+			constexpr float f_time_epsilon = 0.3f;
 			const auto pExitTime = it;
 
-			if (Q_fabs(pExitTime->fTime - fPlayingTimeElapsed) <= fTimeEpsilon)
+			if (Q_fabs(pExitTime->fTime - fPlayingTimeElapsed) <= f_time_epsilon)
 			{
 				// got an exit point!, work out feedback params...
 				//

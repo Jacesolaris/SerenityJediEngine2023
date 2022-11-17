@@ -144,7 +144,7 @@ extern qboolean NPC_EvaluateShot(int hit, qboolean glassOK);
 extern int NPC_ShotEntity(const gentity_t* ent, vec3_t impactPos = nullptr);
 
 //NPC_formation
-extern qboolean NPC_SlideMoveToGoal(void);
+extern qboolean NPC_SlideMoveToGoal();
 
 constexpr auto COLLISION_RADIUS = 32;
 constexpr auto NUM_POSITIONS = 30;
@@ -192,7 +192,7 @@ extern visibility_t NPC_CheckVisibility(gentity_t* ent, int flags);
 extern qboolean InVisrange(const gentity_t* ent);
 
 //NPC_spawn
-extern void NPC_Spawn(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void NPC_Spawn(gentity_t* self, const gentity_t* other, gentity_t* activator);
 
 //NPC_stats
 extern int NPC_ReactionTime(void);
@@ -231,7 +231,7 @@ extern qboolean SpotWouldTelefrag(const gentity_t* spot, team_t checkteam);
 
 //g_utils
 extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
-extern qboolean infront(gentity_t* from, gentity_t* to);
+extern qboolean infront(const gentity_t* from, const gentity_t* to);
 
 //MCG - End============================================================
 
@@ -257,12 +257,12 @@ inline qboolean NPC_ClearLOS(gentity_t* ent)
 	return G_ClearLOS(NPC, ent);
 }
 
-inline qboolean NPC_ClearLOS(const vec3_t start, gentity_t* ent)
+inline qboolean NPC_ClearLOS(const vec3_t start, const gentity_t* ent)
 {
 	return G_ClearLOS(NPC, start, ent);
 }
 
-inline qboolean NPC_ClearLOS(gentity_t* ent, const vec3_t end)
+inline qboolean NPC_ClearLOS(const gentity_t* ent, const vec3_t end)
 {
 	return G_ClearLOS(NPC, ent, end);
 }
@@ -314,7 +314,7 @@ constexpr auto CPF_SNIPE = 0x00000020;
 
 constexpr auto MAX_COMBAT_POINT_CHECK = 32;
 
-extern qboolean NPC_ValidEnemy(gentity_t* ent);
+extern qboolean NPC_ValidEnemy(const gentity_t* ent);
 extern qboolean NPC_CheckEnemyExt(qboolean checkAlerts = qfalse);
 extern qboolean NPC_FindPlayer(void);
 extern qboolean NPC_CheckCanAttackExt(void);
@@ -323,7 +323,7 @@ extern int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ig
 	qboolean mustHaveOwner = qfalse, int minAlertLevel = AEL_MINOR,
 	qboolean onGroundOnly = qfalse);
 extern qboolean NPC_CheckForDanger(int alertEvent);
-extern void G_AlertTeam(gentity_t* victim, gentity_t* attacker, float radius, float soundDist);
+extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist);
 
 extern int NPC_FindSquadPoint(vec3_t position);
 

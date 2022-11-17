@@ -35,12 +35,12 @@ VIRTUAL MACHINE
 intptr_t	VM_Call(int callnum, ...)
 {
 	intptr_t args[10] = { 0 };
-	va_list ap;
 
 	if (cgvm.entryPoint) {
+		va_list ap;
 		va_start(ap, callnum);
-		for (size_t i = 0; i < ARRAY_LEN(args); i++)
-			args[i] = va_arg(ap, intptr_t);
+		for (int & arg : args)
+			arg = va_arg(ap, intptr_t);
 		va_end(ap);
 
 		return cgvm.entryPoint(callnum, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],

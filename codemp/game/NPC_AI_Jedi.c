@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean BG_SabersOff(const playerState_t* ps);
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern qboolean PM_InRoll(const playerState_t* ps);
 extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean noPenalty);
@@ -73,7 +73,7 @@ extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, in
 extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
-extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength);
 extern void WP_ActivateSaber(gentity_t* self);
 
 extern qboolean PM_SaberInStart(int move);
@@ -4727,42 +4727,21 @@ int Jedi_ReCalcParryTime(gentity_t* self, evasionType_t evasionType)
 		}
 		else
 		{
-			if (g_saberRealisticCombat.integer)
+			switch (g_npcspskill.integer)
 			{
-				baseTime = 1000;
-
-				switch (g_npcspskill.integer)
-				{
-				case 0:
-					baseTime = 1500;
-					break;
-				case 1:
-					baseTime = 1000;
-					break;
-				case 2:
-				default:
-					baseTime = 500;
-					break;
-				}
-			}
-			else
-			{
+			case 0:
 				baseTime = 500;
-
-				switch (g_npcspskill.integer)
-				{
-				case 0:
-					baseTime = 500;
-					break;
-				case 1:
-					baseTime = 300;
-					break;
-				case 2:
-				default:
-					baseTime = 100;
-					break;
-				}
+				break;
+			case 1:
+				baseTime = 250;
+				break;
+			case 2:
+			default:
+				baseTime = 100;
+				break;
 			}
+
+			baseTime = baseTime += 400 * Q_irand(1, 2);
 
 			if (evasionType == EVASION_DUCK || evasionType == EVASION_DUCK_PARRY)
 			{
@@ -4795,7 +4774,7 @@ qboolean Jedi_QuickReactions(gentity_t* self)
 	return qfalse;
 }
 
-qboolean Jedi_SaberBusy(gentity_t* self)
+qboolean Jedi_SaberBusy(const gentity_t* self)
 {
 	if (self->client->ps.torsoTimer > 300
 		&& (PM_SaberInAttack(self->client->ps.saberMove) && self->client->ps.fd.saberAnimLevel == FORCE_LEVEL_3
@@ -4890,8 +4869,8 @@ qboolean Jedi_InNoAIAnim(gentity_t* self)
 }
 
 extern qboolean FlyingCreature(const gentity_t* ent);
-extern qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist);
-extern qboolean NAV_MoveDirSafe(gentity_t* self, usercmd_t* cmd, float distScale);
+extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
+extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale);
 
 void Jedi_CheckJumpEvasionSafety(gentity_t* self, usercmd_t* cmd, evasionType_t evasionType)
 {
@@ -6105,7 +6084,7 @@ static qboolean Jedi_SaberBlock(void)
 	return qtrue;
 }
 
-extern qboolean NPC_CheckFallPositionOK(gentity_t* NPC, vec3_t position);
+extern qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 
 qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 {

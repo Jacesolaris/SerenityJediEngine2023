@@ -1246,10 +1246,6 @@ static qhandle_t RE_RegisterModel_Actual(const char* name) {
 
 #ifdef _DEBUG
 		const int ident = 0;
-		if (r_noPrecacheGLA && r_noPrecacheGLA->integer && ident == MDXA_IDENT)
-		{ //I expect this will cause leaks, but I don't care because it's a debugging utility.
-			return mod->index;
-		}
 #endif
 
 		RE_InsertModelIntoHash(name, mod);

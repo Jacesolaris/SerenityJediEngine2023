@@ -35,7 +35,7 @@ navInfo_t frameNavInfo;
 extern qboolean FlyingCreature(const gentity_t* ent);
 
 extern qboolean PM_InKnockDown(const playerState_t* ps);
-qboolean NPC_CheckFallPositionOK(gentity_t* NPC, vec3_t position);
+qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 static qboolean NPC_TryJump_Final();
 extern void G_DrawEdge(vec3_t start, vec3_t end, int type);
 
@@ -827,7 +827,7 @@ NPC_ClearPathToGoal
 -------------------------
 */
 
-qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal)
+qboolean NPC_ClearPathToGoal(gentity_t* goal)
 {
 	trace_t trace;
 
@@ -872,7 +872,7 @@ qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal)
 	return qfalse;
 }
 
-qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist)
+qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
 {
 	//check to see if this NPC can move in the given direction and distance.
 	vec3_t mins, end;
@@ -1015,7 +1015,7 @@ qboolean NPC_GetMoveDirection(vec3_t out, float* distance)
 	}
 
 	//Attempt a straight move to goal
-	if (NPC_ClearPathToGoal(frameNavInfo.direction, NPCS.NPCInfo->goalEntity) == qfalse)
+	if (NPC_ClearPathToGoal(NPCS.NPCInfo->goalEntity) == qfalse)
 	{
 		//See if we're just stuck
 		if (NAV_MoveToGoal(NPCS.NPC, &frameNavInfo) == WAYPOINT_NONE)
@@ -1099,7 +1099,7 @@ qboolean NPC_GetMoveDirectionAltRoute(vec3_t out, float* distance, qboolean tryS
 	}
 
 	//Attempt a straight move to goal
-	if (!tryStraight || NPC_ClearPathToGoal(frameNavInfo.direction, NPCS.NPCInfo->goalEntity) == qfalse)
+	if (!tryStraight || NPC_ClearPathToGoal(NPCS.NPCInfo->goalEntity) == qfalse)
 	{
 		//blocked
 		//Can't get straight to goal, use macro nav
@@ -1167,7 +1167,7 @@ qboolean NPC_GetMoveDirectionAltRoute(vec3_t out, float* distance, qboolean tryS
 extern qboolean NPC_MoveDirClear(int forwardmove, int rightmove, qboolean reset);
 extern qboolean G_EntIsBreakable(int entityNum);
 
-qboolean NPC_EntityIsBreakable(gentity_t* self, gentity_t* ent)
+qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent)
 {
 	if (ent
 		&& ent->inuse
@@ -1528,12 +1528,11 @@ qboolean NPC_IsJetpacking(const gentity_t* self)
 	return qfalse;
 }
 
-qboolean NPC_CheckFallPositionOK(gentity_t* NPC, vec3_t position)
+qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position)
 {
 	trace_t tr;
 	vec3_t testPos, downPos;
-	vec3_t mins, maxs;
-	gentity_t* aiEnt = NPC;
+	vec3_t mins, maxs;	
 
 	if (NPC_IsJetpacking(NPC))
 	{

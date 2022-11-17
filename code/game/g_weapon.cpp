@@ -52,7 +52,7 @@ gentity_t* ent_list[MAX_GENTITIES];
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern qboolean walk_check(const gentity_t* self);
 
 // some naughty little things that are used cg side

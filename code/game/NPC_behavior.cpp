@@ -161,7 +161,7 @@ void NPC_BSAdvanceFight(void)
 
 					if (!dead_on)
 					{
-						const float max_aim_off = 64;
+						constexpr float max_aim_off = 64;
 						vec3_t diff;
 						vec3_t forward;
 						//We're not going to hit him directly, try a suppressing fire
@@ -1052,7 +1052,7 @@ void NPC_BSNoClip(void)
 	if (UpdateGoal())
 	{
 		vec3_t dir, forward, right, angles;
-		const vec3_t up = { 0, 0, 1 };
+		constexpr vec3_t up = { 0, 0, 1 };
 
 		VectorSubtract(NPCInfo->goalEntity->currentOrigin, NPC->currentOrigin, dir);
 
@@ -1218,7 +1218,7 @@ void NPC_BSFaceLeader (void)
 NPC_BSFlee
 -------------------------
 */
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void WP_DropWeapon(gentity_t* dropper, vec3_t velocity);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern int g_crosshairEntNum;

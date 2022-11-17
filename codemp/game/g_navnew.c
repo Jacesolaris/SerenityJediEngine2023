@@ -917,10 +917,10 @@ failed:
 	return WAYPOINT_NONE;
 }
 
-extern qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist);
+extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 extern qboolean FlyingCreature(const gentity_t* ent);
 //defualt for float distScale = 1.0f
-qboolean NAV_MoveDirSafe(gentity_t* self, usercmd_t* cmd, float distScale)
+qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale)
 {
 	//use your current ps's moveDir or construct one from your current ucmd and then
 	//check to make sure we can move in that direction.

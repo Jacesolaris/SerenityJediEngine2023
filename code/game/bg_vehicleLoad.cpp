@@ -353,7 +353,6 @@ int VEH_LoadVehWeapon(const char* vehWeaponName)
 {
 	//load up specified vehWeapon and save in array: g_vehWeaponInfo
 	const char* token;
-	char parmName[128]; //we'll assume that no parm name is longer than 128
 	char* value;
 	const char* p;
 	vehWeaponInfo_t* vehWeapon;
@@ -410,6 +409,7 @@ int VEH_LoadVehWeapon(const char* vehWeaponName)
 	// parse the vehWeapon info block
 	while (true)
 	{
+		char parmName[128];
 		SkipRestOfLine(&p);
 		token = COM_ParseExt(&p, qtrue);
 		if (!token[0])

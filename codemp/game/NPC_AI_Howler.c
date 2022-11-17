@@ -40,7 +40,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 static void Howler_Attack(float enemyDist, qboolean howl);
 extern qboolean NPC_TryJump_Gent(gentity_t* goal, float max_xy_dist, float max_z_diff);
 extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex); //NPC_utils.c
-extern qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist);
+extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 
 /*
 -------------------------

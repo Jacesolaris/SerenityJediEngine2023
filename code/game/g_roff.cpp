@@ -43,10 +43,8 @@ static void G_RoffNotetrackCallback(gentity_t* ent, const char* notetrack)
 	char argument[512];
 	char addlArg[512];
 	char errMsg[256];
-	char t[64];
 	char teststr[256];
 	int addlArgs = 0;
-	vec3_t parsedAngles, parsedOffset, useAngles, useOrigin, forward, right, up;
 
 	if (!ent || !notetrack)
 	{
@@ -144,6 +142,8 @@ static void G_RoffNotetrackCallback(gentity_t* ent, const char* notetrack)
 
 	if (strcmp(type, "effect") == 0)
 	{
+		vec3_t parsedOffset;
+		char t[64];
 		int posoffset_gathered = 0;
 		if (!addlArgs)
 		{
@@ -225,8 +225,14 @@ static void G_RoffNotetrackCallback(gentity_t* ent, const char* notetrack)
 
 		if (objectID)
 		{
+			vec3_t up;
+			vec3_t right;
+			vec3_t forward;
+			vec3_t useOrigin;
+			vec3_t useAngles;
 			if (addlArgs)
 			{
+				vec3_t parsedAngles;
 				int angles_gathered = 0;
 				//if there is an additional argument for an effect it is expected to be XANGLE-YANGLE-ZANGLE
 				i++;
@@ -920,7 +926,6 @@ void G_SaveCachedRoffs()
 void G_LoadCachedRoffs()
 {
 	int count = 0, len = 0;
-	char buffer[MAX_QPATH];
 
 	ojk::SavedGameHelper saved_game(gi.saved_game);
 
@@ -930,6 +935,7 @@ void G_LoadCachedRoffs()
 	// Now bring 'em back to life
 	for (int i = 0; i < count; i++)
 	{
+		char buffer[MAX_QPATH];
 		saved_game.read_chunk<int32_t>(INT_ID('S', 'L', 'E', 'N'), len);
 
 		if (len < 0 || static_cast<size_t>(len) >= sizeof buffer)

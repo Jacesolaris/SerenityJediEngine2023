@@ -89,7 +89,7 @@ qboolean G_EntIsRemovableUsable(int entNum)
 	return qfalse;
 }
 
-void func_usable_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void func_usable_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	//Toggle on and off
 	if (other == activator)

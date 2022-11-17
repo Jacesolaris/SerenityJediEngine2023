@@ -1023,62 +1023,62 @@ void Q3_SetParm(int entID, int parmNum, const char* parmValue);
 void G_ParseField(const char* key, const char* value, gentity_t* ent)
 {
 	float v;
-	vec3_t vec;
-	vec4_t vec4;
 
 	for (field_t* f = fields; f->name; f++)
 	{
 		if (!Q_stricmp(f->name, key))
 		{
 			// found it
-			const auto b = (byte*)ent;
+			const auto b = reinterpret_cast<byte*>(ent);
 
 			switch (f->type)
 			{
 			case F_LSTRING:
-				*(char**)(b + f->ofs) = G_NewString(value);
+				*reinterpret_cast<char**>(b + f->ofs) = G_NewString(value);
 				break;
 			case F_VECTOR:
 			{
-				const int _iFieldsRead = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-				assert(_iFieldsRead == 3);
-				if (_iFieldsRead != 3)
+				vec3_t vec;
+				const int i_fields_read = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+				assert(i_fields_read == 3);
+				if (i_fields_read != 3)
 				{
 					gi.Printf(
 						S_COLOR_YELLOW"G_ParseField: VEC3 sscanf() failed to read 3 floats ('angle' key bug?)\n");
 					delayedShutDown = level.time + 100;
 				}
-				((float*)(b + f->ofs))[0] = vec[0];
-				((float*)(b + f->ofs))[1] = vec[1];
-				((float*)(b + f->ofs))[2] = vec[2];
+				reinterpret_cast<float*>(b + f->ofs)[0] = vec[0];
+				reinterpret_cast<float*>(b + f->ofs)[1] = vec[1];
+				reinterpret_cast<float*>(b + f->ofs)[2] = vec[2];
 				break;
 			}
 			case F_VECTOR4:
 			{
-				const int _iFieldsRead = sscanf(value, "%f %f %f %f", &vec4[0], &vec4[1], &vec4[2], &vec4[3]);
-				assert(_iFieldsRead == 4);
-				if (_iFieldsRead != 4)
+				vec4_t vec4;
+				const int i_fields_read = sscanf(value, "%f %f %f %f", &vec4[0], &vec4[1], &vec4[2], &vec4[3]);
+				assert(i_fields_read == 4);
+				if (i_fields_read != 4)
 				{
 					gi.Printf(S_COLOR_YELLOW"G_ParseField: VEC4 sscanf() failed to read 4 floats\n");
 					delayedShutDown = level.time + 100;
 				}
-				((float*)(b + f->ofs))[0] = vec4[0];
-				((float*)(b + f->ofs))[1] = vec4[1];
-				((float*)(b + f->ofs))[2] = vec4[2];
-				((float*)(b + f->ofs))[3] = vec4[3];
+				reinterpret_cast<float*>(b + f->ofs)[0] = vec4[0];
+				reinterpret_cast<float*>(b + f->ofs)[1] = vec4[1];
+				reinterpret_cast<float*>(b + f->ofs)[2] = vec4[2];
+				reinterpret_cast<float*>(b + f->ofs)[3] = vec4[3];
 				break;
 			}
 			case F_INT:
-				*(int*)(b + f->ofs) = atoi(value);
+				*reinterpret_cast<int*>(b + f->ofs) = atoi(value);
 				break;
 			case F_FLOAT:
-				*(float*)(b + f->ofs) = atof(value);
+				*reinterpret_cast<float*>(b + f->ofs) = atof(value);
 				break;
 			case F_ANGLEHACK:
 				v = atof(value);
-				((float*)(b + f->ofs))[0] = 0;
-				((float*)(b + f->ofs))[1] = v;
-				((float*)(b + f->ofs))[2] = 0;
+				reinterpret_cast<float*>(b + f->ofs)[0] = 0;
+				reinterpret_cast<float*>(b + f->ofs)[1] = v;
+				reinterpret_cast<float*>(b + f->ofs)[2] = 0;
 				break;
 			case F_PARM1:
 			case F_PARM2:
@@ -1131,7 +1131,7 @@ void G_ParseField(const char* key, const char* value, gentity_t* ent)
 #endif
 }
 
-static qboolean SpawnForCurrentDifficultySetting(gentity_t* ent)
+static qboolean SpawnForCurrentDifficultySetting(const gentity_t* ent)
 {
 	extern cvar_t* com_buildScript;
 	if (com_buildScript->integer)
@@ -1287,8 +1287,6 @@ This does not actually spawn an entity.
 */
 qboolean G_ParseSpawnVars(const char** data)
 {
-	char keyname[MAX_STRING_CHARS];
-
 	numSpawnVars = 0;
 	numSpawnVarChars = 0;
 
@@ -1310,6 +1308,7 @@ qboolean G_ParseSpawnVars(const char** data)
 	// go through all the key / value pairs
 	while (true)
 	{
+		char keyname[MAX_STRING_CHARS];
 		// parse key
 		com_token = COM_Parse(data);
 		if (!*data)

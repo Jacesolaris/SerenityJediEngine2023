@@ -1550,9 +1550,9 @@ static const char* g_effectorStringTable[] =
 extern qboolean G_StandardHumanoid(gentity_t* self);
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
-extern qboolean G_ReleaseEntity(gentity_t* grabber);
+extern qboolean G_ReleaseEntity(const gentity_t* grabber);
 
-static void G_BodyDragUpdate(const gentity_t* ent, gentity_t* dragger)
+static void G_BodyDragUpdate(const gentity_t* ent, const gentity_t* dragger)
 {
 	vec3_t handVec;
 
@@ -2050,7 +2050,7 @@ Advances the non-player objects in the world
 int AITime = 0;
 int navTime = 0;
 #endif//	AI_TIMERS
-extern qboolean JET_Flying(gentity_t* self);
+extern qboolean JET_Flying(const gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
 extern void Boba_StopFlameThrower(const gentity_t* self);
 

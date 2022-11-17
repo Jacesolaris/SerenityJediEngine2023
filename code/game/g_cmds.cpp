@@ -56,8 +56,8 @@ extern void ItemUse_Jetpack(const gentity_t* ent);
 extern qboolean PM_SaberInAttack(int move);
 extern cvar_t* g_sex;
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
-extern void G_SpeechEvent(gentity_t* self, int event);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_SpeechEvent(const gentity_t* self, int event);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);
@@ -68,7 +68,7 @@ extern qboolean IsHoldingGun(const gentity_t* ent);
 extern void ReloadGun(gentity_t* ent);
 extern void RemoveBarrier(gentity_t* ent);
 extern void CancelReload(gentity_t* ent);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
 extern void ForceRepulse(gentity_t* self);
 extern void ForceGrasp(gentity_t* self);
@@ -910,7 +910,7 @@ void Cmd_UseCloak_f(gentity_t* ent)
 Cmd_UseJetpack_f
 ================
 */
-void Cmd_UseJetpack_f(gentity_t* ent)
+void Cmd_UseJetpack_f(const gentity_t* ent)
 {
 	if (ent->health < 1 || in_camera)
 	{
@@ -1233,7 +1233,7 @@ enum
 	TAUNT_RELOAD
 };
 
-void G_TauntSound(gentity_t* ent, int taunt)
+void G_TauntSound(const gentity_t* ent, int taunt)
 {
 	if (BG_IsAlreadyinTauntAnim(ent->client->ps.legsAnim))
 	{

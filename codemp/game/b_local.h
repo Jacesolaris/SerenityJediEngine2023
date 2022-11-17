@@ -159,7 +159,7 @@ extern void NPC_ClearGoal(void);
 extern void NPC_ReachedGoal(void);
 extern qboolean ReachedGoal(gentity_t* goal);
 extern gentity_t* UpdateGoal(void);
-extern qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal);
+extern qboolean NPC_ClearPathToGoal(gentity_t* goal);
 extern qboolean NPC_MoveToGoal(qboolean tryStraight);
 
 //NPC_move
@@ -183,7 +183,7 @@ extern visibility_t NPC_CheckVisibility(gentity_t* ent, int flags);
 extern qboolean InVisrange(const gentity_t* ent);
 
 //NPC_spawn
-extern void NPC_Spawn(gentity_t* ent, gentity_t* other, gentity_t* activator);
+extern void NPC_Spawn(gentity_t* ent, const gentity_t* other, gentity_t* activator);
 
 extern float G_GroundDistance(const gentity_t* self);
 
@@ -284,7 +284,7 @@ extern qboolean NPC_SetCombatPoint(int combatPointID);
 
 #define	MAX_COMBAT_POINT_CHECK	32
 
-extern qboolean NPC_ValidEnemy(gentity_t* ent);
+extern qboolean NPC_ValidEnemy(const gentity_t* ent);
 extern qboolean NPC_CheckEnemyExt(qboolean checkAlerts); //checkAlerts = qfalse
 extern qboolean NPC_FindPlayer(void);
 extern qboolean NPC_CheckCanAttackExt(void);
@@ -293,7 +293,7 @@ extern int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ig
 	int minAlertLevel);
 //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
 extern qboolean NPC_CheckForDanger(int alertEvent);
-extern void G_AlertTeam(gentity_t* victim, gentity_t* attacker, float radius, float soundDist);
+extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist);
 
 extern int NPC_FindSquadPoint(vec3_t position);
 

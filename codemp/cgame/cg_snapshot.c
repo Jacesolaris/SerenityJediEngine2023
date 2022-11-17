@@ -189,7 +189,7 @@ static void CG_TransitionSnapshot(void) {
 	// check for playerstate transition events
 	if (oldFrame) {
 		playerState_t* ops = &oldFrame->ps;
-		playerState_t* ps = &cg.snap->ps;
+		const playerState_t* ps = &cg.snap->ps;
 		// teleporting checks are irrespective of prediction
 		if ((ps->eFlags ^ ops->eFlags) & EF_TELEPORT_BIT) {
 			cg.thisFrameTeleport = qtrue;	// will be cleared by prediction code

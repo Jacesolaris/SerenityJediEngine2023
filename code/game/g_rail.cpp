@@ -97,7 +97,7 @@ bool mRailSystemActive = false;
 class CRailTrack
 {
 public:
-	void Setup(gentity_t* ent)
+	void Setup(const gentity_t* ent)
 	{
 		mName = ent->targetname;
 		mSpeedGridCellsPerSecond = ent->speed;
@@ -215,7 +215,7 @@ public:
 	}
 
 	void Update();
-	bool TestMoverInCells(CRailMover* mover, int atCol);
+	bool TestMoverInCells(const CRailMover* mover, int atCol);
 	void InsertMoverInCells(CRailMover* mover, int atCol);
 	void RandomizeTestCols(int startCol, int stopCol);
 
@@ -292,7 +292,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// From Entity Setup Spawn
 	////////////////////////////////////////////////////////////////////////////////////
-	void Setup(gentity_t* ent)
+	void Setup(const gentity_t* ent)
 	{
 		mName = ent->targetname;
 		mNameTrack = ent->target;
@@ -603,7 +603,6 @@ void Rail_Update()
 		if (player && gi.WE_IsOutside(player->currentOrigin))
 		{
 			vec3_t wooshSoundPos;
-			vec3_t moverOrigin;
 			vec3_t playerToMover;
 
 			// Iterate Over All The Movers
@@ -616,6 +615,7 @@ void Rail_Update()
 				//--------------------------------------------------------
 				if (mover.Active() && !mover.mSoundPlayed)
 				{
+					vec3_t moverOrigin;
 					VectorAdd(mover.mEnt->currentOrigin, mover.mOriginOffset.v, moverOrigin);
 					VectorSubtract(moverOrigin, player->currentOrigin, playerToMover);
 					playerToMover[2] = 0.0f;
@@ -912,7 +912,7 @@ void CRailTrack::RandomizeTestCols(int startCol, int stopCol)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CRailTrack::TestMoverInCells(CRailMover* mover, int atCol)
+bool CRailTrack::TestMoverInCells(const CRailMover* mover, int atCol)
 {
 	//for (int moverRow=0; (moverRow<mover->mRows); moverRow++)
 	//{
@@ -942,7 +942,7 @@ void CRailTrack::InsertMoverInCells(CRailMover* mover, int atCol)
 			{
 				row -= mRows;
 			}
-			assert(mCells.get(col, row) == 0);
+			assert(mCells.get(col, row) == nullptr);
 			mCells.get(col, row) = mover;
 		}
 	}

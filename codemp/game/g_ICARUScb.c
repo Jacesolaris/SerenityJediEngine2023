@@ -2763,7 +2763,7 @@ char* G_GetLocationForEnt(const gentity_t* self);
 
 int Q3_GetString(int entID, int type, const char* name, char** value)
 {
-	gentity_t* ent = &g_entities[entID];
+	const gentity_t* ent = &g_entities[entID];
 	if (!ent)
 	{
 		return 0;

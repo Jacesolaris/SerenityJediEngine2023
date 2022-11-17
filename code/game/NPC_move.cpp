@@ -29,8 +29,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "anims.h"
 #include "g_navigator.h"
 
-extern qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal);
-extern qboolean NAV_MoveDirSafe(gentity_t* self, usercmd_t* cmd, float distScale = 1.0f);
+extern qboolean NPC_ClearPathToGoal(gentity_t* goal);
+extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f);
 
 qboolean G_BoundsOverlap(const vec3_t mins1, const vec3_t maxs1, const vec3_t mins2, const vec3_t maxs2);
 extern int GetTime(int lastTime);
@@ -49,7 +49,7 @@ constexpr auto JUMP_SPEED = 200.0f;
 
 static qboolean NPC_TryJump();
 
-qboolean NPC_CheckFallPositionOK(gentity_t* NPC, vec3_t position);
+qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 
 static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 {
@@ -61,7 +61,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 	trace_t trace;
 	trajectory_t tr;
 	int hitCount = 0, aboveTries = 0, belowTries = 0;
-	const int maxHits = 10;
+	constexpr int max_hits = 10;
 	vec3_t bottom;
 
 	VectorSubtract(dest, NPC->currentOrigin, targetDir);
@@ -78,7 +78,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 	}
 	float shotSpeed = originalShotSpeed;
 
-	while (hitCount < maxHits)
+	while (hitCount < max_hits)
 	{
 		vec3_t failCase;
 		VectorScale(targetDir, shotSpeed, shotVel);
@@ -94,7 +94,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 		if (true) //tracePath )
 		{
 			vec3_t lastPos;
-			int timeStep = 250;
+			constexpr int timeStep = 250;
 			//do a rough trace of the path
 			qboolean blocked = qfalse;
 
@@ -118,17 +118,6 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 				//FUCK IT, always check for do not enter...
 				gi.trace(&trace, lastPos, NPC->mins, NPC->maxs, testPos, NPC->s.number,
 					NPC->clipmask | CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
-				/*
-				if ( testPos[2] < lastPos[2]
-					&& elapsedTime < floor( travelTime ) )
-				{//going down, haven't reached end, ignore botclip
-					gi.trace( &trace, lastPos, NPC->mins, NPC->maxs, testPos, NPC->s.number, NPC->clipmask );
-				}
-				else
-				{//going up, check for botclip
-					gi.trace( &trace, lastPos, NPC->mins, NPC->maxs, testPos, NPC->s.number, NPC->clipmask|CONTENTS_BOTCLIP );
-				}
-				*/
 
 				if (trace.allsolid || trace.startsolid)
 				{
@@ -150,16 +139,6 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 					{
 						//hit the enemy, that's bad!
 						blocked = qtrue;
-						/*
-						if ( g_entities[goalEntNum].client && g_entities[goalEntNum].client->ps.groundEntityNum == ENTITYNUM_NONE )
-						{//bah, would collide in mid-air, no good
-							blocked = qtrue;
-						}
-						else
-						{//he's on the ground, good enough, I guess
-							//Hmm, don't want to land on him, though...?
-						}
-						*/
 						break;
 					}
 					if (trace.contents & CONTENTS_BOTCLIP)
@@ -212,7 +191,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 			}
 			if (blocked)
 			{
-				const float speedStep = 50.0f;
+				constexpr float speedStep = 50.0f;
 				//hit something, adjust speed (which will change arc)
 				hitCount++;
 				//alternate back and forth between trying an arc slightly above or below the ideal
@@ -231,7 +210,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 				else
 				{
 					//can't go any higher or lower
-					hitCount = maxHits;
+					hitCount = max_hits;
 					break;
 				}
 				if (shotSpeed > max_shot_speed)
@@ -253,13 +232,10 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 		}
 	}
 
-	if (hitCount >= maxHits)
+	if (hitCount >= max_hits)
 	{
 		//NOTE: worst case scenario, use the one that impacted closest to the target (or just use the first try...?)
 		return qfalse;
-		//NOTE: or try failcase?
-		//VectorCopy( failCase, NPC->client->ps.velocity );
-		//return qtrue;
 	}
 	VectorCopy(shotVel, NPC->client->ps.velocity);
 	return qtrue;
@@ -428,7 +404,6 @@ qboolean NPC_TryJump()
 				CG_DrawEdge(NPC->currentOrigin, actorProjectedTowardTarget, EDGE_RED_TWOSECOND); // TryJump
 			}
 
-			// TODO: We may want to test to see if it is safe to back up here?
 			NPCInfo->jumpBackupTime = level.time + 1000;
 			TIMER_Set(NPC, "jumpBackupDebounce", 5000);
 			return qtrue;
@@ -596,41 +571,12 @@ qboolean NPC_JumpBackingUp()
 
 /*
 -------------------------
-NPC_CheckCombatMove
--------------------------
-*/
-
-inline qboolean NPC_CheckCombatMove(void)
-{
-	//return NPCInfo->combatMove;
-	if (NPCInfo->goalEntity && NPC->enemy && NPCInfo->goalEntity == NPC->enemy || NPCInfo->combatMove)
-	{
-		return qtrue;
-	}
-
-	if (NPCInfo->goalEntity && NPCInfo->watchTarget)
-	{
-		if (NPCInfo->goalEntity != NPCInfo->watchTarget)
-		{
-			return qtrue;
-		}
-	}
-
-	return qfalse;
-}
-
-/*
--------------------------
 NPC_LadderMove
 -------------------------
 */
 
 static void NPC_LadderMove(vec3_t dir)
 {
-	//FIXME: this doesn't guarantee we're facing ladder
-	//ALSO: Need to be able to get off at top
-	//ALSO: Need to play an anim
-	//ALSO: Need transitionary anims?
 
 	if (dir[2] > 0 || dir[2] < 0 && NPC->client->ps.groundEntityNum == ENTITYNUM_NONE)
 	{
@@ -650,8 +596,6 @@ NPC_GetMoveInformation
 
 inline qboolean NPC_GetMoveInformation(vec3_t dir, float* distance)
 {
-	//NOTENOTE: Use path stacks!
-
 	//Make sure we have somewhere to go
 	if (NPCInfo->goalEntity == nullptr)
 		return qfalse;
@@ -798,12 +742,12 @@ qboolean NPC_MoveToGoal(qboolean tryStraight) //FIXME: tryStraight not even used
 
 /*
 -------------------------
-void NPC_SlideMoveToGoal( void )
+void NPC_SlideMoveToGoal(  )
 
   Now assumes goal is goalEntity, if want to use tempGoal, you set that before calling the func
 -------------------------
 */
-qboolean NPC_SlideMoveToGoal(void)
+qboolean NPC_SlideMoveToGoal()
 {
 	const float saveYaw = NPC->client->ps.viewangles[YAW];
 
@@ -841,7 +785,7 @@ qboolean NPC_IsJetpacking(const gentity_t* self)
 	return qfalse;
 }
 
-qboolean NPC_CheckFallPositionOK(gentity_t* NPC, vec3_t position)
+qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position)
 {
 	trace_t tr;
 	vec3_t testPos, downPos;

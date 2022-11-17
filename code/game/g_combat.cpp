@@ -62,13 +62,13 @@ extern cvar_t* com_outcast;
 extern cvar_t* g_broadsword;
 gentity_t* g_lastClientDamaged;
 extern void Boba_FlyStop(gentity_t* self);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern void G_StartRoll(gentity_t* ent, int anim);
 extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern int killPlayerTimer;
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern qboolean G_TeamEnemy(const gentity_t* self);
 extern void CG_ChangeWeapon(int num);
@@ -99,7 +99,7 @@ extern qboolean PM_SaberInReturn(int move);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean PM_KnockDownAnim(int anim);
-extern void G_SpeechEvent(gentity_t* self, int event);
+extern void G_SpeechEvent(const gentity_t* self, int event);
 extern qboolean Rosh_BeingHealed(const gentity_t* self);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 extern float manual_saberblocking(const gentity_t* defender);
@@ -557,7 +557,7 @@ G_AlertTeam
 -------------------------
 */
 
-void G_AlertTeam(gentity_t* victim, gentity_t* attacker, float radius, float soundDist)
+void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist)
 {
 	gentity_t* radiusEnts[128];
 	vec3_t mins, maxs;
@@ -656,9 +656,8 @@ G_DeathAlert
 constexpr auto DEATH_ALERT_RADIUS = 512;
 constexpr auto DEATH_ALERT_SOUND_RADIUS = 512;
 
-void G_DeathAlert(gentity_t* victim, gentity_t* attacker)
+void G_DeathAlert(const gentity_t* victim, gentity_t* attacker)
 {
-	//FIXME: with all the other alert stuff, do we really need this?
 	G_AlertTeam(victim, attacker, DEATH_ALERT_RADIUS, DEATH_ALERT_SOUND_RADIUS);
 }
 

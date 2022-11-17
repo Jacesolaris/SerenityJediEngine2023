@@ -303,7 +303,7 @@ TIMER_Start
 -------------------------
 */
 
-qboolean TIMER_Start(gentity_t* self, const char* identifier, int duration)
+qboolean TIMER_Start(const gentity_t* self, const char* identifier, int duration)
 {
 	if (TIMER_Done(self, identifier))
 	{

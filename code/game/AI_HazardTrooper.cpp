@@ -83,7 +83,7 @@ enum
 	SPEECH_PUSHED
 };
 
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
 static void HT_Speech(gentity_t* self, int speechType, float failChance)

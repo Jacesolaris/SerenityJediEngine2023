@@ -161,7 +161,7 @@ class CBoneCache
 	}
 
 	//rww - RAGDOLL_BEGIN
-	void SmoothLow(int index)
+	void SmoothLow(int index) const
 	{
 		if (mSmoothBones[index].touch == mLastTouch)
 		{

@@ -31,7 +31,7 @@ extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime,
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern void Saboteur_Cloak(gentity_t* self);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound(void);
 

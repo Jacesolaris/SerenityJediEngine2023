@@ -37,7 +37,7 @@ extern vmCvar_t cg_newgameplusJKA;
 extern vmCvar_t cg_newgameplusJKO;
 extern vmCvar_t cg_com_outcast;
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* ent);
 
 void CG_DrawIconBackground();
 void cg_draw_inventory_select();
@@ -5163,7 +5163,7 @@ static void CG_ScanForRocketLock(void)
 CG_ScanForCrosshairEntity
 =================
 */
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* ent);
 extern float forcePushPullRadius[];
 
 static void CG_ScanForCrosshairEntity(qboolean scanAll)

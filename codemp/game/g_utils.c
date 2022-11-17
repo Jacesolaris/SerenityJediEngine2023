@@ -1433,11 +1433,6 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm)
 		return;
 	}
 
-	/*if (BG_IsAlreadyinTauntAnim(ent->client->ps.legsAnim))
-	{
-		return;
-	}*/
-
 	// clients need to add the event in playerState_t instead of entityState_t
 	if (ent->client)
 	{
@@ -1617,10 +1612,7 @@ void G_Sound(gentity_t* ent, int channel, int soundIndex)
 		ent->client->ps.fd.killSoundEntIndex[channel - 50] = te->s.number;
 		te->s.trickedentindex = ent->s.number;
 		te->s.eFlags = EF_SOUNDTRACKER;
-		// fix: let other players know about this
-		// for case that they will meet this one
 		te->r.svFlags |= SVF_BROADCAST;
-		//te->freeAfterEvent = qfalse;
 	}
 }
 

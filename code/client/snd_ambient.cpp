@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "snd_ambient.h"
 #include "snd_local.h"
 
-static const int MAX_SET_VOLUME = 255;
+static constexpr int MAX_SET_VOLUME = 255;
 
 static void AS_GetGeneralSet(ambientSet_t&);
 static void AS_GetLocalSet(ambientSet_t&);
@@ -305,7 +305,7 @@ subWaves <directory> <wave1> <wave2> ...
 
 static void AS_GetSubWaves(ambientSet_t& set)
 {
-	char dirBuffer[512], waveBuffer[256], waveName[1024];
+	char dirBuffer[512];
 
 	//Get the directory for these sets
 	sscanf(parseBuffer + parsePos, "%s %s", tempBuffer, dirBuffer);
@@ -316,6 +316,7 @@ static void AS_GetSubWaves(ambientSet_t& set)
 	//Get all the subwaves
 	while (parsePos <= parseSize)
 	{
+		char waveBuffer[256];
 		//Get the data
 		sscanf(parseBuffer + parsePos, "%s", waveBuffer);
 
@@ -327,6 +328,7 @@ static void AS_GetSubWaves(ambientSet_t& set)
 		}
 		else
 		{
+			char waveName[1024];
 			//Construct the wave name (pretty, huh?)
 			Com_sprintf(waveName, sizeof waveName, "sound/%s/%s.wav", dirBuffer, waveBuffer);
 
@@ -654,10 +656,9 @@ Parses the directory information out of the beginning of the file
 
 static void AS_ParseHeader(void)
 {
-	char typeBuffer[128];
-
 	while (parsePos <= parseSize)
 	{
+		char typeBuffer[128];
 		sscanf(parseBuffer + parsePos, "%s", tempBuffer);
 
 		const int keywordID = AS_GetKeywordIDForString((const char*)&tempBuffer);
@@ -978,7 +979,7 @@ Alters lastTime to reflect the time updates.
 -------------------------
 */
 
-static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, ambientSet_t* set, int entID, int* lastTime)
+static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambientSet_t* set, int entID, int* lastTime)
 {
 	vec3_t dir;
 	const int time = cl.serverTime;
@@ -1026,7 +1027,7 @@ Alters lastTime to reflect the time updates.
 -------------------------
 */
 
-static void AS_PlayAmbientSet(vec3_t origin, ambientSet_t* set, int* lastTime)
+static void AS_PlayAmbientSet(vec3_t origin, const ambientSet_t* set, int* lastTime)
 {
 	const int time = cls.realtime;
 

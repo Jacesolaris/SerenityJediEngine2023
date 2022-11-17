@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_nav.h"
 #include "g_functions.h"
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
 int teamNumbers[TEAM_NUM_TEAMS];
 int teamStrength[TEAM_NUM_TEAMS];
@@ -37,7 +37,7 @@ int teamCounter[TEAM_NUM_TEAMS];
 
 constexpr auto VALID_ATTACK_CONE = 2.0f; //Degrees;
 void GetAnglesForDirection(const vec3_t p1, const vec3_t p2, vec3_t out);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void ViewHeightFix(const gentity_t* ent);
 extern void AddLeanOfs(const gentity_t* ent, vec3_t point);
 extern void SubtractLeanOfs(const gentity_t* const ent, vec3_t point);
@@ -972,7 +972,7 @@ qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy)
 	return qfalse;
 }
 
-qboolean NPC_ValidEnemy(gentity_t* ent)
+qboolean NPC_ValidEnemy(const gentity_t* ent)
 {
 	return G_ValidEnemy(NPC, ent);
 }
@@ -1010,7 +1010,7 @@ constexpr auto MAX_RADIUS_ENTS = 256; //NOTE: This can cause entities to be lost
 constexpr auto NEAR_DEFAULT_RADIUS = 256;
 extern gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate);
 
-int NPC_FindNearestEnemy(gentity_t* ent)
+int NPC_FindNearestEnemy(const gentity_t* ent)
 {
 	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -1391,7 +1391,7 @@ void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
 NPC_CheckLookTarget
 -------------------------
 */
-qboolean NPC_CheckLookTarget(gentity_t* self)
+qboolean NPC_CheckLookTarget(const gentity_t* self)
 {
 	if (self->client)
 	{
@@ -1431,7 +1431,7 @@ qboolean NPC_CheckLookTarget(gentity_t* self)
 NPC_CheckCharmed
 -------------------------
 */
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 
 void G_CheckCharmed(gentity_t* self)
@@ -1582,7 +1582,7 @@ extern qboolean Boba_Flying(const gentity_t* self);
 extern void Boba_FlyStart(gentity_t* self);
 extern void Boba_FlyStop(gentity_t* self);
 
-qboolean JET_Flying(gentity_t* self)
+qboolean JET_Flying(const gentity_t* self)
 {
 	if (!self || !self->client)
 	{

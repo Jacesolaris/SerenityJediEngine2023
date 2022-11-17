@@ -974,7 +974,7 @@ qboolean NPC_SomeoneLookingAtMe(gentity_t* ent)
 
 	while (i < MAX_CLIENTS)
 	{
-		gentity_t* pEnt = &g_entities[i];
+		const gentity_t* pEnt = &g_entities[i];
 
 		if (pEnt && pEnt->inuse && pEnt->client && pEnt->client->sess.sessionTeam != TEAM_SPECTATOR &&
 			pEnt->client->tempSpectate < level.time && !(pEnt->client->ps.pm_flags & PMF_FOLLOW) && pEnt->s.weapon !=
@@ -1055,7 +1055,7 @@ NPC_FindNearestEnemy
 #define NEAR_DEFAULT_RADIUS		256
 extern gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate);
 
-int NPC_FindNearestEnemy(gentity_t* ent)
+int NPC_FindNearestEnemy(const gentity_t* ent)
 {
 	int iradiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -1185,7 +1185,7 @@ static qboolean NPC_CheckPlayerDistance(void)
 	//go into the scan loop.
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
-		gentity_t* player = &g_entities[i];
+		const gentity_t* player = &g_entities[i];
 
 		if (!player->inuse || !player->client
 			|| player->client->pers.connected != CON_CONNECTED
@@ -1464,7 +1464,7 @@ void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
 NPC_CheckLookTarget
 -------------------------
 */
-qboolean NPC_CheckLookTarget(gentity_t* self)
+qboolean NPC_CheckLookTarget(const gentity_t* self)
 {
 	if (self->client)
 	{
@@ -1504,7 +1504,7 @@ qboolean NPC_CheckLookTarget(gentity_t* self)
 NPC_CheckCharmed
 -------------------------
 */
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 
 void G_CheckCharmed(gentity_t* self)
 {
@@ -1616,7 +1616,7 @@ extern qboolean Boba_Flying(const gentity_t* self);
 extern void Boba_FlyStart(gentity_t* self);
 extern void Boba_FlyStop(gentity_t* self);
 
-qboolean JET_Flying(gentity_t* self)
+qboolean JET_Flying(const gentity_t* self)
 {
 	if (!self || !self->client)
 	{

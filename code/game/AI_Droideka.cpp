@@ -20,7 +20,7 @@ constexpr auto TURN_OFF = 0x00000100;
 static vec3_t shieldMins = { -20, -20, -24 };
 static vec3_t shieldMaxs = { 20, 20, 40 };
 extern void NPC_SetPainEvent(gentity_t* self);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 
 /*

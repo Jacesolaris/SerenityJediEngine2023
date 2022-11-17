@@ -36,10 +36,10 @@ extern vec3_t playerMaxs;
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 extern void NPC_BSNoClip(void);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void NPC_ApplyRoff(void);
 extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
-extern qboolean NPC_CheckLookTarget(gentity_t* self);
+extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void Mark1_dying(gentity_t* self);
 extern void NPC_BSCinematic(void);
@@ -92,7 +92,7 @@ extern void DROIDEKA_Dying(gentity_t* self);
 
 extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 
-qboolean NPC_EntityIsBreakable(gentity_t* self, gentity_t* ent)
+qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent)
 {
 	if (ent
 		&& ent->inuse
@@ -1049,7 +1049,7 @@ void NPC_ApplyScriptFlags(void)
 	}
 }
 
-extern qboolean JET_Flying(gentity_t* self);
+extern qboolean JET_Flying(const gentity_t* self);
 extern void JET_FlyStart(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
 
@@ -1656,7 +1656,7 @@ void NPC_BehaviorSet_Jedi(int bState)
 	}
 }
 
-qboolean G_JediInNormalAI(gentity_t* ent)
+qboolean G_JediInNormalAI(const gentity_t* ent)
 {
 	//NOTE: should match above func's switch!
 	//check our bState

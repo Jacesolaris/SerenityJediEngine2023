@@ -24,9 +24,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "icarus/Q3_Interface.h"
 
-extern void G_SpeechEvent(gentity_t* self, int event);
+extern void G_SpeechEvent(const gentity_t* self, int event);
 
-void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime)
+void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime)
 {
 	if (!self->NPC)
 	{

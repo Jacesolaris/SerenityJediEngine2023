@@ -74,7 +74,7 @@ void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 	int hitLoc)
 	//------------------------------------------------------------------------------------------------------------
 {
-	vec3_t forward = { 0, 0, -1 }, pos;
+	vec3_t forward = { 0, 0, -1 };
 
 	// Turn off the thinking of the base & use it's targets
 	self->e_ThinkFunc = thinkF_NULL;
@@ -100,6 +100,7 @@ void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 	{
 		if (self->fxID > 0)
 		{
+			vec3_t pos;
 			VectorMA(self->currentOrigin, 12, forward, pos);
 			G_PlayEffect(self->fxID, pos, forward);
 		}
@@ -285,8 +286,7 @@ void turret_head_think(gentity_t* self)
 static void turret_aim(gentity_t* self)
 //-----------------------------------------------------
 {
-	vec3_t enemyDir, org, org2;
-	vec3_t desiredAngles, setAngle;
+	vec3_t desiredAngles;
 	float diffYaw = 0.0f, diffPitch = 0.0f;
 	const float maxYawSpeed = self->spawnflags & SPF_TURRETG2_TURBO ? 30.0f : 14.0f;
 	const float maxPitchSpeed = self->spawnflags & SPF_TURRETG2_TURBO ? 15.0f : 3.0f;
@@ -298,6 +298,9 @@ static void turret_aim(gentity_t* self)
 
 	if (self->enemy)
 	{
+		vec3_t org2;
+		vec3_t org;
+		vec3_t enemyDir;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
 		if (self->enemy->client)
@@ -349,6 +352,7 @@ static void turret_aim(gentity_t* self)
 
 	if (diffYaw)
 	{
+		vec3_t setAngle;
 		// cap max speed....
 		if (fabs(diffYaw) > maxYawSpeed)
 		{
@@ -451,7 +455,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 
 	qboolean found = qfalse;
 	float bestDist = self->radius * self->radius;
-	vec3_t enemyDir, org, org2;
+	vec3_t org, org2;
 	gentity_t* entity_list[MAX_GENTITIES], * bestTarget = nullptr;
 
 	if (self->aimDebounceTime > level.time) // time since we've been shut off
@@ -515,6 +519,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 
 		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
 		{
+			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
 			VectorSubtract(target->currentOrigin, self->currentOrigin, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -560,7 +565,6 @@ void turret_base_think(gentity_t* self)
 //-----------------------------------------------------
 {
 	qboolean turnOff = qtrue;
-	vec3_t enemyDir, org, org2;
 
 	self->nextthink = level.time + FRAMETIME;
 
@@ -588,6 +592,7 @@ void turret_base_think(gentity_t* self)
 	{
 		if (self->enemy->health > 0)
 		{
+			vec3_t enemyDir;
 			// enemy is alive
 			VectorSubtract(self->enemy->currentOrigin, self->currentOrigin, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -597,6 +602,8 @@ void turret_base_think(gentity_t* self)
 				// was in valid radius
 				if (gi.inPVS(self->currentOrigin, self->enemy->currentOrigin))
 				{
+					vec3_t org2;
+					vec3_t org;
 					// Every now and again, check to see if we can even trace to the enemy
 					trace_t tr;
 
@@ -675,10 +682,10 @@ void turret_SetBoneAngles(gentity_t* ent, const char* bone, const vec3_t angles)
 		return;
 	}
 
-	const int flags = BONE_ANGLES_POSTMULT;
-	const Eorientations up = POSITIVE_Y;
-	const Eorientations right = NEGATIVE_Z;
-	const Eorientations forward = NEGATIVE_X;
+	constexpr int flags = BONE_ANGLES_POSTMULT;
+	constexpr Eorientations up = POSITIVE_Y;
+	constexpr Eorientations right = NEGATIVE_Z;
+	constexpr Eorientations forward = NEGATIVE_X;
 
 	gi.G2API_SetBoneAngles(&ent->ghoul2[0], bone, angles, flags, up,
 		right, forward, nullptr, 100, level.time);
@@ -1367,7 +1374,7 @@ static qboolean pas_find_enemies(gentity_t* self)
 {
 	qboolean found = qfalse;
 	float bestDist = self->radius * self->radius;
-	vec3_t enemyDir, org, org2;
+	vec3_t org, org2;
 	gentity_t* entity_list[MAX_GENTITIES];
 
 	if (self->aimDebounceTime > level.time) // time since we've been shut off
@@ -1429,6 +1436,7 @@ static qboolean pas_find_enemies(gentity_t* self)
 
 		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
 		{
+			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
 			VectorSubtract(target->currentOrigin, self->currentOrigin, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -1573,15 +1581,16 @@ void pas_think(gentity_t* ent)
 
 	qboolean moved = qfalse;
 	float diffYaw, diffPitch = 0.0f;
-	vec3_t enemyDir, org;
 	vec3_t frontAngles, backAngles;
-	vec3_t desiredAngles;
 
 	ent->speed = AngleNormalize360(ent->speed);
 	ent->random = AngleNormalize360(ent->random);
 
 	if (ent->enemy)
 	{
+		vec3_t desiredAngles;
+		vec3_t org;
+		vec3_t enemyDir;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
 		if (ent->enemy->client)

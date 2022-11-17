@@ -39,9 +39,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "g_functions.h"
 
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
-extern qboolean NPC_CheckLookTarget(gentity_t* self);
+extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_Jedi_RateNewEnemy(const gentity_t* self, const gentity_t* enemy);
 extern qboolean PM_DroidMelee(int npc_class);
@@ -85,7 +85,7 @@ NPC_AngerAlert
 constexpr auto ANGER_ALERT_RADIUS = 512;
 constexpr auto ANGER_ALERT_SOUND_RADIUS = 256;
 
-void G_AngerAlert(gentity_t* self)
+void G_AngerAlert(const gentity_t* self)
 {
 	if (self && self->NPC && self->NPC->scriptFlags & SCF_NO_GROUPS)
 	{
@@ -1256,7 +1256,7 @@ extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
-extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
@@ -1371,7 +1371,7 @@ this function does not check teams, invulnerability, notarget, etc....
 
 Added: If can't shoot center, try head, if not, see if it's close enough to try anyway.
 */
-extern qboolean NPC_EntityIsBreakable(gentity_t* self, gentity_t* ent);
+extern qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent);
 
 qboolean CanShoot(gentity_t* ent, gentity_t* shooter)
 {

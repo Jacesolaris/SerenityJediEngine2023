@@ -2384,7 +2384,7 @@ void g_reload_saber_data(const gentity_t* ent)
 	}
 }
 
-extern qboolean JET_Flying(gentity_t* self);
+extern qboolean JET_Flying(const gentity_t* self);
 
 void G_ChangePlayerModel(gentity_t* ent, const char* newModel)
 {

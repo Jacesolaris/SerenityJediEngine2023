@@ -356,7 +356,7 @@ void trigger_cleared_fire(gentity_t* self)
 	}
 }
 
-qboolean G_TriggerActive(gentity_t* self)
+qboolean G_TriggerActive(const gentity_t* self)
 {
 	if (self->svFlags & SVF_INACTIVE)
 	{
@@ -406,10 +406,10 @@ so, the basic time between firing is a random time between
 */
 void SP_trigger_multiple(gentity_t* ent)
 {
-	char buffer[MAX_QPATH];
 	char* s;
 	if (G_SpawnString("noise", "*NOSOUND*", &s))
 	{
+		char buffer[MAX_QPATH];
 		Q_strncpyz(buffer, s, sizeof buffer);
 		COM_DefaultExtension(buffer, sizeof buffer, ".wav");
 		ent->noise_index = G_SoundIndex(buffer);
@@ -475,10 +475,10 @@ so, the basic time between firing is a random time between
 */
 void SP_trigger_once(gentity_t* ent)
 {
-	char buffer[MAX_QPATH];
 	char* s;
 	if (G_SpawnString("noise", "*NOSOUND*", &s))
 	{
+		char buffer[MAX_QPATH];
 		Q_strncpyz(buffer, s, sizeof buffer);
 		COM_DefaultExtension(buffer, sizeof buffer, ".wav");
 		ent->noise_index = G_SoundIndex(buffer);
@@ -950,7 +950,7 @@ constexpr auto TTSF_STASIS = 8;
 constexpr auto TTSF_DEAD_OK = 16;
 void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean snapAngle);
 
-void trigger_teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	if (self->svFlags & SVF_INACTIVE)
 	{
@@ -1018,13 +1018,14 @@ void trigger_teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 void trigger_teleporter_find_closest_portal(gentity_t* self)
 {
 	gentity_t* found = nullptr;
-	vec3_t org, vec;
+	vec3_t org;
 	float bestDist = 64 * 64;
 
 	VectorAdd(self->mins, self->maxs, org);
 	VectorScale(org, 0.5, org);
 	while ((found = G_Find(found, FOFS(classname), "misc_portal_surface")) != nullptr)
 	{
+		vec3_t vec;
 		VectorSubtract(found->currentOrigin, org, vec);
 		const float dist = VectorLengthSquared(vec);
 		if (dist < bestDist)
@@ -1285,13 +1286,13 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 
 void SP_trigger_hurt(gentity_t* self)
 {
-	char buffer[MAX_QPATH];
 	char* s;
 
 	InitTrigger(self);
 
 	if (!(self->spawnflags & 4))
 	{
+		char buffer[MAX_QPATH];
 		G_SpawnString("noise", "sound/world/electro", &s);
 
 		Q_strncpyz(buffer, s, sizeof buffer);
@@ -1341,7 +1342,7 @@ void SP_trigger_hurt(gentity_t* self)
 }
 
 constexpr auto INITIAL_SUFFOCATION_DELAY = 500; //.5 seconds;
-void space_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void space_touch(const gentity_t* self, const gentity_t* other, trace_t* trace)
 {
 	if (!other || !other->inuse || !other->client)
 	{
@@ -1497,7 +1498,7 @@ void SP_trigger_shipboundary(gentity_t* self)
 	gi.linkentity(self);
 }
 
-void hyperspace_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	gentity_t* ent;
 
@@ -1635,7 +1636,7 @@ void SP_trigger_hyperspace(gentity_t* self)
 	gi.linkentity(self);
 }
 
-gentity_t* asteroid_pick_random_asteroid(gentity_t* self)
+gentity_t* asteroid_pick_random_asteroid(const gentity_t* self)
 {
 	int t_count = 0;
 	gentity_t* t = nullptr;
@@ -1680,7 +1681,7 @@ gentity_t* asteroid_pick_random_asteroid(gentity_t* self)
 	return nullptr;
 }
 
-int asteroid_count_num_asteroids(gentity_t* self)
+int asteroid_count_num_asteroids(const gentity_t* self)
 {
 	int count = 0;
 
@@ -1703,7 +1704,7 @@ extern void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
 
 void asteroid_move_to_start(gentity_t* self);
 
-void asteroid_move_to_start2(gentity_t* self, gentity_t* ownerTrigger)
+void asteroid_move_to_start2(gentity_t* self, const gentity_t* ownerTrigger)
 {
 	//move asteroid to a new start position
 	if (ownerTrigger)
@@ -2077,8 +2078,8 @@ void trigger_visible_check_player_visibility(gentity_t* self)
 			//3: see if player is in PVS
 			if (gi.inPVS(self->currentOrigin, player->client->renderInfo.eyePoint))
 			{
-				const vec3_t mins = { -1, -1, -1 };
-				const vec3_t maxs = { 1, 1, 1 };
+				constexpr vec3_t mins = { -1, -1, -1 };
+				constexpr vec3_t maxs = { 1, 1, 1 };
 				//4: If needbe, trace to see if there is clear LOS from player viewpos
 				if (self->spawnflags & 1 || G_ClearTrace(player->client->renderInfo.eyePoint, mins, maxs,
 					self->currentOrigin, 0, MASK_OPAQUE))

@@ -50,7 +50,7 @@ void NPC_SandCreature_Pain(gentity_t* self, gentity_t* attacker, int damage)
 		G_GetBoltPosition(self, self->client->renderInfo.headBolt, shakePos, 0);
 		for (int counter = 0; counter < MAX_CLIENTS; counter++)
 		{
-			gentity_t* radiusEnt = &g_entities[counter];
+			const gentity_t* radiusEnt = &g_entities[counter];
 			if (radiusEnt && radiusEnt->client)
 			{
 				const float playerDist = Distance(radiusEnt->r.currentOrigin, self->r.currentOrigin);
@@ -74,7 +74,7 @@ void SandCreature_MoveEffect(void)
 	G_GetBoltPosition(NPCS.NPC, NPCS.NPC->client->renderInfo.headBolt, shakePos, 0);
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
-		gentity_t* radiusEnt = &g_entities[i];
+		const gentity_t* radiusEnt = &g_entities[i];
 		if (radiusEnt && radiusEnt->client)
 		{
 			const float playerDist = Distance(radiusEnt->r.currentOrigin, NPCS.NPC->r.currentOrigin);
@@ -250,7 +250,7 @@ void SandCreature_Attack(qboolean miss)
 
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
-		gentity_t* radiusEnt = &g_entities[i];
+		const gentity_t* radiusEnt = &g_entities[i];
 		if (radiusEnt && radiusEnt->client)
 		{
 			const float playerDist = Distance(radiusEnt->r.currentOrigin, NPCS.NPC->r.currentOrigin);

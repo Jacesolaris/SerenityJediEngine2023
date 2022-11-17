@@ -5227,7 +5227,7 @@ void SND_setup()
 
 // ask how much mem an sfx has allocated...
 //
-static int SND_MemUsed(sfx_t* sfx)
+static int SND_MemUsed(const sfx_t* sfx)
 {
 	int iSize = 0;
 	if (sfx->pSoundData)
@@ -5346,7 +5346,7 @@ void S_FreeAllSFXMem(void)
 //
 // new param is so we can be usre of not freeing ourselves (without having to rely on possible uninitialised timers etc)
 //
-int SND_FreeOldestSound(sfx_t* pButNotThisOne /* = NULL */)
+int SND_FreeOldestSound(const sfx_t* pButNotThisOne /* = NULL */)
 {
 	int iBytesFreed = 0;
 	sfx_t* sfx;

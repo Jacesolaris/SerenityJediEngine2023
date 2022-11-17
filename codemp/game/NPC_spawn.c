@@ -271,7 +271,7 @@ NPC_SetMiscDefaultData
 -------------------------
 */
 //this function sets the default fleeing behavior for this NPC
-void G_ClassSetDontFlee(gentity_t* self)
+void G_ClassSetDontFlee(const gentity_t* self)
 {
 	if (!self || !self->client || !self->NPC)
 	{
@@ -1174,7 +1174,7 @@ void NPC_SpawnEffect(gentity_t* ent)
 //
 // Set up any special parms for spawn effects
 //--------------------------------------------------------------
-void NPC_SetFX_SpawnStates(gentity_t* ent)
+void NPC_SetFX_SpawnStates(const gentity_t* ent)
 {
 	if (!(ent->NPC->aiFlags & NPCAI_CUSTOM_GRAVITY))
 	{
@@ -1731,7 +1731,7 @@ gNPC_t* New_NPC_t(int entNum)
 	return ptr;
 }
 
-void NPC_DefaultScriptFlags(gentity_t* ent)
+void NPC_DefaultScriptFlags(const gentity_t* ent)
 {
 	if (!ent || !ent->NPC)
 	{
@@ -2258,7 +2258,7 @@ NPC_Spawn
 -------------------------
 */
 
-void NPC_Spawn(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void NPC_Spawn(gentity_t* ent, const gentity_t* other, gentity_t* activator)
 {
 	//delay before spawning NPC
 	if (ent->delay)
@@ -5045,7 +5045,7 @@ void NPC_Kill_f(void)
 	}
 }
 
-void NPC_PrintScore(gentity_t* ent)
+void NPC_PrintScore(const gentity_t* ent)
 {
 	Com_Printf("%s: %d\n", ent->targetname, ent->client->ps.persistant[PERS_SCORE]);
 }

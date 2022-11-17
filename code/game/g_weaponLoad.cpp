@@ -353,7 +353,7 @@ const int defaultSplashDamage[] = {
 	0, // WP_NOGHRI_STICK
 };
 
-const float defaultSplashRadius[] = {
+constexpr float defaultSplashRadius[] = {
 	0.0f, // WP_NONE
 	0.0f, // WP_SABER
 	0.0f, // WP_BLASTER_PISTOL
@@ -431,7 +431,7 @@ const int defaultAltSplashDamage[] = {
 	0, // WP_NOGHRI_STICK
 };
 
-const float defaultAltSplashRadius[] = {
+constexpr float defaultAltSplashRadius[] = {
 	0.0f, // WP_NONE
 	0.0f, // WP_SABER		// handled elsewhere
 	0.0f, // WP_BLASTER_PISTOL
@@ -523,7 +523,7 @@ wpnParms_t WpnParms[] =
 	{"selectforce", WPN_FuncSkip},
 };
 
-static const size_t numWpnParms = ARRAY_LEN(WpnParms);
+static constexpr size_t numWpnParms = std::size(WpnParms);
 
 void WPN_FuncSkip(const char** holdBuf)
 {

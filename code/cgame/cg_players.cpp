@@ -38,7 +38,7 @@ constexpr auto CG_SWINGSPEED = 0.3f;
 #include "animtable.h"
 
 extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int bladeNum);
-extern void wp_saber_swing_sound(gentity_t* ent, int saberNum, swingType_t swingType);
+extern void wp_saber_swing_sound(const gentity_t* ent, int saberNum, swingType_t swingType);
 extern qboolean PM_InKataAnim(int anim);
 extern qboolean PM_InLedgeMove(int anim);
 extern void WP_SabersDamageTrace(gentity_t* ent, qboolean noEffects);
@@ -181,7 +181,7 @@ extern qboolean PM_SaberInTransitionAny(int move);
 extern int PM_GetTurnAnim(const gentity_t* gent, int anim);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_InRoll(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern qboolean PM_SuperBreakWinAnim(int anim);
 
 //Basic set of custom sounds that everyone needs

@@ -57,7 +57,7 @@ constexpr auto MIN_STAY_VIEWABLE_TIME = 20000;
 ////////////////////////////////////////////////////////////////////////////////////////
 // Externs
 ////////////////////////////////////////////////////////////////////////////////////////
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 

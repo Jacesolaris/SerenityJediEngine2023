@@ -361,7 +361,7 @@ extern void Touch_Plat(gentity_t* self, const gentity_t* other, trace_t* trace);
 extern void Touch_Button(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void Touch_Multi(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void trigger_push_touch(gentity_t* self, gentity_t* other, trace_t* trace);
-extern void trigger_teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace);
 extern void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void NPC_Touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void touch_ammo_crystal_tigger(gentity_t* self, gentity_t* other, trace_t* trace);
@@ -371,9 +371,9 @@ extern void prox_mine_stick(gentity_t* self, gentity_t* other, const trace_t* tr
 extern void func_rotating_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void TouchTieBomb(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void TieFighterUse(gentity_t* self, const gentity_t* other, const gentity_t* activator);
-extern void space_touch(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void space_touch(const gentity_t* self, const gentity_t* other, trace_t* trace);
 extern void shipboundary_touch(gentity_t* self, gentity_t* other, trace_t* trace);
-extern void hyperspace_touch(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace);
 
 //	void		(*use)(gentity_t *self, gentity_t *other, gentity_t *activator);
 using useFunc_t = enum
@@ -489,11 +489,11 @@ extern void Use_target_push(gentity_t* self, gentity_t* other, gentity_t* activa
 extern void hurt_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void func_timer_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void trigger_entdist_use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void func_usable_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void func_usable_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
 extern void target_activate_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void target_deactivate_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void NPC_Use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void NPC_Spawn(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void NPC_Spawn(gentity_t* self, const gentity_t* other, gentity_t* activator);
 extern void misc_dlight_use(gentity_t* ent, gentity_t* other, gentity_t* activator);
 extern void health_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -517,7 +517,7 @@ extern void fx_runner_use(gentity_t* self, gentity_t* other, gentity_t* activato
 extern void funcGlassUse(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void TrainUse(gentity_t* ent, gentity_t* other, gentity_t* activator);
 extern void misc_trip_mine_activate(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void emplaced_gun_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
 extern void shield_power_converter_use(gentity_t* self, const gentity_t* other, const gentity_t* activator);
 extern void ammo_power_converter_use(gentity_t* self, gentity_t* other, const gentity_t* activator);
 extern void bomb_planted_use(gentity_t* self, gentity_t* other, gentity_t* activator);

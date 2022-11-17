@@ -113,7 +113,7 @@ hfile::~hfile()
 {
 	if (is_open())
 	{
-		close();
+		return;
 	}
 
 	if (mHandle && Pool().is_used(mHandle))
@@ -211,22 +211,19 @@ bool hfile::open(float version, int checksum, bool read) const
 		if (!HFILEread(sfile.mHandle, &sfile.mVersion, sizeof sfile.mVersion))
 		{
 			assert("HFILE: Unable To Read File Header" == nullptr);
-			close();
-			return false;
+			return close();
 		}
 		if (!HFILEread(sfile.mHandle, &sfile.mChecksum, sizeof sfile.mChecksum))
 		{
 			assert("HFILE: Unable To Read File Header" == nullptr);
-			close();
-			return false;
+			return close();
 		}
 
 		// Make Sure The Checksum & Version Match
 		//----------------------------------------
 		if (sfile.mVersion != version || sfile.mChecksum != checksum)
 		{
-			close();
-			return false; // Failed To Match Checksum Or Version Number -> Old Data
+			return close();
 		}
 	}
 	else
@@ -237,14 +234,12 @@ bool hfile::open(float version, int checksum, bool read) const
 		if (!HFILEwrite(sfile.mHandle, &sfile.mVersion, sizeof sfile.mVersion))
 		{
 			assert("HFILE: Unable To Write File Header" == nullptr);
-			close();
-			return false;
+			return close();
 		}
 		if (!HFILEwrite(sfile.mHandle, &sfile.mChecksum, sizeof sfile.mChecksum))
 		{
 			assert("HFILE: Unable To Write File Header" == nullptr);
-			close();
-			return false;
+			return close();
 		}
 	}
 
@@ -283,7 +278,7 @@ bool hfile::close() const
 ////////////////////////////////////////////////////////////////////////////////////
 // Searches for the first block with the matching data size, and reads it in.
 ////////////////////////////////////////////////////////////////////////////////////
-bool hfile::load(void* data, int datasize)
+bool hfile::load(void* data, int datasize) const
 {
 	// Go Ahead And Open The File For Reading
 	//----------------------------------------
@@ -305,7 +300,7 @@ bool hfile::load(void* data, int datasize)
 		assert("HFILE: Unable to load from a file that is opened for save" == nullptr);
 		if (auto_opened)
 		{
-			close();
+			return close();
 		}
 		return false;
 	}
@@ -317,7 +312,7 @@ bool hfile::load(void* data, int datasize)
 		assert("HFILE: Unable To Read Object" == nullptr);
 		if (auto_opened)
 		{
-			close();
+			return close();
 		}
 		return false;
 	}
@@ -326,7 +321,7 @@ bool hfile::load(void* data, int datasize)
 	//----------
 	if (auto_opened)
 	{
-		close();
+		return close();
 	}
 	return true;
 }
@@ -334,7 +329,7 @@ bool hfile::load(void* data, int datasize)
 ////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////
-bool hfile::save(void* data, int datasize)
+bool hfile::save(void* data, int datasize) const
 {
 	// Go Ahead And Open The File For Reading
 	//----------------------------------------
@@ -356,7 +351,7 @@ bool hfile::save(void* data, int datasize)
 		assert("HFILE: Unable to save to a file that is opened for read" == nullptr);
 		if (auto_opened)
 		{
-			close();
+			return close();
 		}
 		return false;
 	}
@@ -368,14 +363,14 @@ bool hfile::save(void* data, int datasize)
 		assert("HFILE: Unable To Write File Data" == nullptr);
 		if (auto_opened)
 		{
-			close();
+			return close();
 		}
 		return false;
 	}
 
 	if (auto_opened)
 	{
-		close();
+		return close();
 	}
 	return true;
 }

@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "g_navigator.h"
 
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 
@@ -286,7 +286,7 @@ void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int da
 	G_ActivateBehavior(self, BSET_DEATH);
 }
 
-qboolean eweb_can_be_used(const gentity_t* self, gentity_t* other, gentity_t* activator)
+qboolean eweb_can_be_used(const gentity_t* self, const gentity_t* other, const gentity_t* activator)
 {
 	if (self->health <= 0)
 	{
@@ -543,7 +543,7 @@ void SP_emplaced_eweb(gentity_t* ent)
 */
 
 //----------------------------------------------------------
-void emplaced_gun_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	if (self->health <= 0)
 	{

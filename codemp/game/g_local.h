@@ -1847,7 +1847,7 @@ void TIMER_Clear2(const gentity_t* ent);
 void TIMER_Set(const gentity_t* ent, const char* identifier, int duration);
 int TIMER_Get(const gentity_t* ent, const char* identifier);
 qboolean TIMER_Done(const gentity_t* ent, const char* identifier);
-qboolean TIMER_Start(gentity_t* self, const char* identifier, int duration);
+qboolean TIMER_Start(const gentity_t* self, const char* identifier, int duration);
 qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, qboolean remove);
 qboolean TIMER_Exists(const gentity_t* ent, const char* identifier);
 void TIMER_Remove(const gentity_t* ent, const char* identifier);

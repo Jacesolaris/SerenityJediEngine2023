@@ -52,10 +52,9 @@ G_FindConfigstringIndex
 */
 extern void ForceTelepathy(gentity_t* self);
 
-int G_FindConfigstringIndex(const char* name, int start, int max, qboolean create)
+int G_FindConfigstringIndex(const char* name, const int start, const int max, qboolean create)
 {
 	int i;
-	char s[MAX_STRING_CHARS];
 
 	if (!name || !name[0])
 	{
@@ -64,6 +63,7 @@ int G_FindConfigstringIndex(const char* name, int start, int max, qboolean creat
 
 	for (i = 1; i < max; i++)
 	{
+		char s[MAX_STRING_CHARS];
 		gi.GetConfigstring(start + i, s, sizeof s);
 		if (!s[0])
 		{
@@ -128,7 +128,7 @@ int G_EffectIndex(const char* name)
 	return G_FindConfigstringIndex(temp, CS_EFFECTS, MAX_FX, qtrue);
 }
 
-int G_BSPIndex(char* name)
+int G_BSPIndex(const char* name)
 {
 	return G_FindConfigstringIndex(name, CS_BSP_MODELS, MAX_SUB_BSP, qtrue);
 }
@@ -146,7 +146,7 @@ constexpr auto FX_ENT_RADIUS = 32;
 //-----------------------------
 
 //-----------------------------
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t fwd)
+void G_PlayEffect(const int fxID, const vec3_t origin, const vec3_t fwd)
 {
 	vec3_t temp;
 
@@ -165,7 +165,7 @@ void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t fwd)
 
 // Play an effect at the origin of the specified entity
 //----------------------------
-void G_PlayEffect(int fxID, int entNum, const vec3_t fwd)
+void G_PlayEffect(const int fxID, int entNum, const vec3_t fwd)
 {
 	vec3_t temp;
 
@@ -192,7 +192,7 @@ void G_PlayEffect(const char* name, int clientNum)
 }
 
 //-----------------------------
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t axis[3])
+void G_PlayEffect(const int fxID, const vec3_t origin, const vec3_t axis[3])
 {
 	gentity_t* tent = G_TempEntity(origin, EV_PLAY_EFFECT);
 	tent->s.eventParm = fxID;
@@ -207,8 +207,8 @@ void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t axis[3])
 
 // Effect playing utilities	- bolt an effect to a ghoul2 models bolton point
 //-----------------------------
-void G_PlayEffect(int fxID, const int modelIndex, const int boltIndex, const int entNum, const vec3_t origin,
-	int iLoopTime, qboolean isRelative) //iLoopTime 0 = not looping, 1 for infinite, else duration
+void G_PlayEffect(const int fxID, const int modelIndex, const int boltIndex, const int entNum, const vec3_t origin,
+                  const int iLoopTime, qboolean isRelative) //iLoopTime 0 = not looping, 1 for infinite, else duration
 {
 	gentity_t* tent = G_TempEntity(origin, EV_PLAY_EFFECT);
 	tent->s.eventParm = fxID;
@@ -223,14 +223,14 @@ void G_PlayEffect(int fxID, const int modelIndex, const int boltIndex, const int
 //-----------------------------
 void G_PlayEffect(const char* name, const vec3_t origin)
 {
-	const vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = { 0, 0, 1 };
 
 	G_PlayEffect(G_EffectIndex(name), origin, up);
 }
 
-void G_PlayEffect(int fxID, const vec3_t origin)
+void G_PlayEffect(const int fxID, const vec3_t origin)
 {
-	const vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = { 0, 0, 1 };
 
 	G_PlayEffect(fxID, origin, up);
 }
@@ -247,7 +247,7 @@ void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3])
 	G_PlayEffect(G_EffectIndex(name), origin, axis);
 }
 
-void G_StopEffect(int fxID, const int modelIndex, const int boltIndex, const int entNum)
+void G_StopEffect(const int fxID, const int modelIndex, const int boltIndex, const int entNum)
 {
 	gentity_t* tent = G_TempEntity(g_entities[entNum].currentOrigin, EV_STOP_EFFECT);
 	tent->s.eventParm = fxID;
@@ -293,7 +293,7 @@ void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soun
 	}
 }
 
-void G_SoundIndexOnEnt(gentity_t* ent, soundChannel_t channel, int index)
+void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int index)
 {
 	if (!ent)
 	{
@@ -309,7 +309,7 @@ void G_SoundIndexOnEnt(gentity_t* ent, soundChannel_t channel, int index)
 
 extern cvar_t* g_skippingcin;
 
-void G_SpeechEvent(gentity_t* self, int event)
+void G_SpeechEvent(const gentity_t* self, int event)
 {
 	if (in_camera
 		&& g_skippingcin
@@ -487,7 +487,7 @@ NULL will be returned if the end of the list is reached.
 
 =============
 */
-gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match)
+gentity_t* G_Find(gentity_t* from, const int fieldofs, const char* match)
 {
 	if (!match || !match[0])
 	{
@@ -625,10 +625,9 @@ gentity_t* G_PickTarget(char* targetname)
 
 void G_UseTargets2(gentity_t* ent, gentity_t* activator, const char* string)
 {
-	gentity_t* t;
-
 	if (string)
 	{
+		gentity_t* t;
 		if (!Q_stricmp(string, "self"))
 		{
 			t = ent;
@@ -1213,8 +1212,6 @@ Adds an event+parm and twiddles the event counter
 */
 void G_AddEvent(gentity_t* ent, int event, int eventParm)
 {
-	int bits;
-
 	if (!event)
 	{
 		gi.Printf("G_AddEvent: zero event added for entity %i\n", ent->s.number);
@@ -1268,7 +1265,7 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm)
 	}
 	else
 	{
-		bits = ent->s.event & EV_EVENT_BITS;
+		int bits = ent->s.event & EV_EVENT_BITS;
 		bits = bits + EV_EVENT_BIT1 & EV_EVENT_BITS;
 		ent->s.event = event | bits;
 		ent->s.eventParm = eventParm;
@@ -1309,7 +1306,7 @@ G_SoundBroadcast
   Plays sound that can permeate PVS blockage
 =============
 */
-void G_SoundBroadcast(gentity_t* ent, int soundIndex)
+void G_SoundBroadcast(const gentity_t* ent, int soundIndex)
 {
 	gentity_t* te = G_TempEntity(ent->currentOrigin, EV_GLOBAL_SOUND); //full volume
 	te->s.eventParm = soundIndex;
@@ -1355,7 +1352,7 @@ void G_SetOrigin(gentity_t* ent, const vec3_t origin)
 	}
 }
 
-qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, gentity_t* self)
+qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, const gentity_t* self)
 {
 	trace_t trace;
 	vec3_t end, mins;
@@ -1416,7 +1413,7 @@ qboolean G_CheckInSolid(gentity_t* self, qboolean fix)
 	return qfalse;
 }
 
-qboolean infront(gentity_t* from, gentity_t* to)
+qboolean infront(const gentity_t* from, const gentity_t* to)
 {
 	vec3_t angles, dir, forward;
 
@@ -1561,7 +1558,7 @@ qboolean ValidUseTarget(const gentity_t* ent)
 	return qtrue;
 }
 
-static void DebugTraceForNPC(gentity_t* ent)
+static void DebugTraceForNPC(const gentity_t* ent)
 {
 	trace_t trace;
 	vec3_t src, dest, vf;
@@ -1600,7 +1597,7 @@ static void DebugTraceForNPC(gentity_t* ent)
 	}
 }
 
-static qboolean G_ValidActivateBehavior(gentity_t* self, int bset)
+static qboolean G_ValidActivateBehavior(const gentity_t* self, int bset)
 {
 	if (!self)
 	{
@@ -1617,7 +1614,7 @@ static qboolean G_ValidActivateBehavior(gentity_t* self, int bset)
 	return qtrue;
 }
 
-static qboolean G_IsTriggerUsable(gentity_t* self, gentity_t* other)
+static qboolean G_IsTriggerUsable(const gentity_t* self, const gentity_t* other)
 {
 	if (self->svFlags & SVF_INACTIVE)
 	{
@@ -1690,11 +1687,11 @@ static qboolean G_IsTriggerUsable(gentity_t* self, gentity_t* other)
 	return qtrue;
 }
 
-static qboolean CanUseInfrontOfPartOfLevel(gentity_t* ent) //originally from VV
+static qboolean CanUseInfrontOfPartOfLevel(const gentity_t* ent) //originally from VV
 {
 	gentity_t* touch[MAX_GENTITIES];
 	vec3_t mins, maxs;
-	const vec3_t range = { 40, 40, 52 };
+	constexpr vec3_t range = { 40, 40, 52 };
 
 	if (!ent->client)
 	{
@@ -1712,7 +1709,7 @@ static qboolean CanUseInfrontOfPartOfLevel(gentity_t* ent) //originally from VV
 
 	for (int i = 0; i < num; i++)
 	{
-		gentity_t* hit = touch[i];
+		const gentity_t* hit = touch[i];
 
 		if (hit->e_TouchFunc == touchF_NULL && ent->e_TouchFunc == touchF_NULL)
 		{
@@ -1746,7 +1743,7 @@ static qboolean CanUseInfrontOfPartOfLevel(gentity_t* ent) //originally from VV
 }
 
 constexpr auto USE_DISTANCE = 64.0f;
-extern qboolean eweb_can_be_used(const gentity_t* self, gentity_t* other, gentity_t* activator);
+extern qboolean eweb_can_be_used(const gentity_t* self, const gentity_t* other, const gentity_t* activator);
 
 qboolean CanUseInfrontOf(gentity_t* ent)
 {
@@ -1812,7 +1809,7 @@ qboolean CanUseInfrontOf(gentity_t* ent)
 		return CanUseInfrontOfPartOfLevel(ent);
 	}
 
-	gentity_t* target = &g_entities[trace.entityNum];
+	const gentity_t* target = &g_entities[trace.entityNum];
 
 	if (target && target->client && target->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -2175,7 +2172,7 @@ void removeBoltSurface(gentity_t* ent)
 void G_SetBoltSurfaceRemoval(const int entNum, const int modelIndex, const int boltIndex, const int surfaceIndex,
 	float duration)
 {
-	const vec3_t snapped = { 0, 0, 0 };
+	constexpr vec3_t snapped = { 0, 0, 0 };
 
 	gentity_t* e = G_Spawn();
 

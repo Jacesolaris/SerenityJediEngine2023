@@ -87,8 +87,6 @@ S_TransferPaintBuffer
 */
 void S_TransferPaintBuffer(int endtime)
 {
-	int val;
-
 	const auto pbuf = (unsigned long*)dma.buffer;
 
 	if (s_testsound->integer)
@@ -106,6 +104,7 @@ void S_TransferPaintBuffer(int endtime)
 	}
 	else
 	{
+		int val;
 		// general case
 		auto p = (int*)paintbuffer;
 		int count = (endtime - s_paintedtime) * dma.channels;
@@ -153,7 +152,7 @@ CHANNEL MIXING
 
 ===============================================================================
 */
-static void S_PaintChannelFrom16(channel_t* ch, const sfx_t* sfx, int count, int sampleOffset, int bufferOffset)
+static void S_PaintChannelFrom16(const channel_t* ch, const sfx_t* sfx, int count, int sampleOffset, int bufferOffset)
 {
 	const int iLeftVol = ch->leftvol * snd_vol;
 	const int iRightVol = ch->rightvol * snd_vol;
@@ -215,7 +214,7 @@ void S_PaintChannelFromMP3(channel_t* ch, const sfx_t* sc, int count, int sample
 
 // subroutinised to save code dup (called twice)	-ste
 //
-void ChannelPaint(channel_t* ch, sfx_t* sc, int count, int sampleOffset, int bufferOffset)
+void ChannelPaint(channel_t* ch, const sfx_t* sc, int count, int sampleOffset, int bufferOffset)
 {
 	switch (sc->eSoundCompressionMethod)
 	{

@@ -1324,7 +1324,7 @@ qboolean NPC_CanSurrender(void)
 NPC_BSFlee
 -------------------------
 */
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void WP_DropWeapon(gentity_t* dropper, vec3_t velocity);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 

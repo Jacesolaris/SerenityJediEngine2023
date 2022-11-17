@@ -644,7 +644,7 @@ void trigger_cleared_fire(gentity_t* self)
 	}
 }
 
-qboolean G_TriggerActive(gentity_t* self)
+qboolean G_TriggerActive(const gentity_t* self)
 {
 	if (self->flags & FL_INACTIVE)
 	{
@@ -1931,7 +1931,7 @@ void SP_func_timer(gentity_t* self)
 	self->r.svFlags = SVF_NOCLIENT;
 }
 
-gentity_t* asteroid_pick_random_asteroid(gentity_t* self)
+gentity_t* asteroid_pick_random_asteroid(const gentity_t* self)
 {
 	int t_count = 0;
 	gentity_t* t = NULL;
@@ -1976,7 +1976,7 @@ gentity_t* asteroid_pick_random_asteroid(gentity_t* self)
 	return NULL;
 }
 
-int asteroid_count_num_asteroids(gentity_t* self)
+int asteroid_count_num_asteroids(const gentity_t* self)
 {
 	int count = 0;
 
@@ -1999,7 +1999,7 @@ extern void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
 
 void asteroid_move_to_start(gentity_t* self);
 
-void asteroid_move_to_start2(gentity_t* self, gentity_t* ownerTrigger)
+void asteroid_move_to_start2(gentity_t* self, const gentity_t* ownerTrigger)
 {
 	//move asteroid to a new start position
 	if (ownerTrigger)

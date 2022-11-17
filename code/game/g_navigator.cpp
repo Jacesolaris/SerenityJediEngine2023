@@ -63,7 +63,7 @@ bool HFILEclose(int& handle)
 ////////////////////////////////////////////////////////////////////////////////////////
 extern gentity_t* G_FindDoorTrigger(const gentity_t* ent);
 extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
-extern qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, gentity_t* self);
+extern qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, const gentity_t* self);
 
 extern cvar_t* g_nav1;
 extern cvar_t* g_nav2;
@@ -281,9 +281,9 @@ public:
 		return 0;
 	}
 
-	bool BlockingBreakable() { return mFlags.get_bit(WE_BLOCKING_BREAK); }
-	bool BlockingWall() { return mFlags.get_bit(WE_BLOCKING_WALL); }
-	bool BlockingDoor() { return mFlags.get_bit(WE_BLOCKING_DOOR); }
+	bool BlockingBreakable() const { return mFlags.get_bit(WE_BLOCKING_BREAK); }
+	bool BlockingWall() const { return mFlags.get_bit(WE_BLOCKING_WALL); }
+	bool BlockingDoor() const { return mFlags.get_bit(WE_BLOCKING_DOOR); }
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Size Function
@@ -463,7 +463,7 @@ using TSteerUsers = ratl::pool_vs<SSteerUser, 4>;
 using TSteerUserIndex = ratl::array_vs<int, MAX_GENTITIES>;
 using TEntBits = ratl::bits_vs<MAX_GENTITIES>;
 
-TAlertList& GetAlerts(gentity_t* actor);
+TAlertList& GetAlerts(const gentity_t* actor);
 TGraph& GetGraph();
 int GetAirRegion();
 int GetIslandRegion();
@@ -768,7 +768,7 @@ char mLocStringB[256] = { 0 };
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-TAlertList& GetAlerts(gentity_t* actor)
+TAlertList& GetAlerts(const gentity_t* actor)
 {
 	return mEntityAlertList[actor->s.number];
 }
@@ -815,7 +815,7 @@ int GetIslandRegion()
 ////////////////////////////////////////////////////////////////////////////////////////
 bool ViewTrace(const CVec3& a, const CVec3& b)
 {
-	const int contents = CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP;
+	constexpr int contents = CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP;
 
 	mViewTraceCount++;
 	gi.trace(&mViewTrace, a.v, nullptr, nullptr, b.v, ENTITYNUM_NONE, contents, static_cast<EG2_Collision>(0), 0);
@@ -832,7 +832,7 @@ bool ViewTrace(const CVec3& a, const CVec3& b)
 ////////////////////////////////////////////////////////////////////////////////////////
 bool ViewNavTrace(const CVec3& a, const CVec3& b)
 {
-	const int contents = CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP;
+	constexpr int contents = CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP;
 
 	mViewTraceCount++;
 	gi.trace(&mViewTrace, a.v, nullptr, nullptr, b.v, ENTITYNUM_NONE, contents, static_cast<EG2_Collision>(0), 0);
@@ -907,7 +907,7 @@ bool MoveTrace(const CVec3& Start, const CVec3& Stop, const CVec3& Mins, const C
 ////////////////////////////////////////////////////////////////////////////////////////
 bool MoveTrace(gentity_t* actor, const CVec3& goalPosition, bool IgnoreAllEnts = false)
 {
-	assert(actor != 0);
+	assert(actor != nullptr);
 	CVec3 Mins(actor->mins);
 	const CVec3 Maxs(actor->maxs);
 
@@ -924,7 +924,7 @@ bool MoveTrace(gentity_t* actor, const CVec3& goalPosition, bool IgnoreAllEnts =
 ////////////////////////////////////////////////////////////////////////////////////////
 bool NAV::GoTo(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 {
-	assert(actor != 0 && actor->client != 0);
+	assert(actor != nullptr && actor->client != nullptr);
 
 	// Check If We Already Have A Path
 	//---------------------------------
@@ -977,7 +977,7 @@ bool NAV::GoTo(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 bool NAV::GoTo(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
 {
-	assert(actor != 0 && actor->client != 0);
+	assert(actor != nullptr && actor->client != nullptr);
 
 	bool HasPath = false;
 	TNodeHandle targetNode = GetNearestNode(target, true);
@@ -1065,7 +1065,7 @@ bool NAV::GoTo(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
 ////////////////////////////////////////////////////////////////////////////////////////
 bool NAV::GoTo(gentity_t* actor, const vec3_t& position, float MaxDangerLevel)
 {
-	assert(actor != 0 && actor->client != 0);
+	assert(actor != nullptr && actor->client != nullptr);
 
 	bool HasPath = false;
 	TNodeHandle targetNode = GetNearestNode(position);
@@ -1192,7 +1192,6 @@ bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
 	CVec3 mins(-15.0f, -15.0f, 0.0f); // These were the old "sizeless" defaults
 	CVec3 Maxs(15.0f, 15.0f, 40.0f);
 	bool CanGo;
-	bool HitCharacter = false;
 	const int i = at.Size();
 
 	a.mPoint.ToStr(mLocStringA);
@@ -1245,6 +1244,7 @@ bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
 		EntHit != ENTITYNUM_NONE &&
 		&g_entities[EntHit] != nullptr)
 	{
+		bool hit_character = false;
 		gentity_t* ent = &g_entities[EntHit];
 
 		if (IsDebugEdge)
@@ -1275,7 +1275,7 @@ bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
 		}
 		else if (ent->NPC || ent->s.number == 0)
 		{
-			HitCharacter = true;
+			hit_character = true;
 		}
 
 		// Don't Care About Any Other Entity Types
@@ -1362,7 +1362,7 @@ bool NAV::TestEdge(TNodeHandle NodeA, TNodeHandle NodeB, qboolean IsDebugEdge)
 
 		// If We Can Now Go, Ignoring The Entity, Remember That (But Don't Remember Characters - They Won't Stay Anyway)
 		//---------------------------------------------------------------------------------------------------------------
-		if (CanGo && !HitCharacter)
+		if (CanGo && !hit_character)
 		{
 			ent->wayedge = at_handle;
 			at.mEntityNum = EntHit;
@@ -2090,7 +2090,7 @@ void NAV::DecayDangerSenses()
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void NAV::RegisterDangerSense(gentity_t* actor, int alertEventIndex)
+void NAV::RegisterDangerSense( gentity_t* actor, int alertEventIndex)
 {
 	if (actor == nullptr || alertEventIndex < 0)
 	{
@@ -2697,7 +2697,7 @@ bool NAV::FindPath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 	{
 		if (mPathUsers.full())
 		{
-			assert("NAV: No more unused path users, possibly change MAX_PATH_USERS" == 0);
+			assert("NAV: No more unused path users, possibly change MAX_PATH_USERS" == nullptr);
 			return false;
 		}
 
@@ -2794,7 +2794,7 @@ bool NAV::FindPath(gentity_t* actor, TNodeHandle target, float MaxDangerLevel)
 			if (puser.mPath.full())
 			{
 				// NAV_TODO: If the path is longer than the max length, we want to store the first valid ones, instead of returning false
-				assert("This Is A Test To See If We Hit This Condition Anymore...  It Should Be Handled Properly" == 0);
+				assert("This Is A Test To See If We Hit This Condition Anymore...  It Should Be Handled Properly" == nullptr);
 				mPathUsers.free(pathUserNum);
 				mPathUserIndex[actor->s.number] = NULL_PATH_USER_INDEX;
 				return false;
@@ -3269,7 +3269,7 @@ bool NAV::InSafeRadius(CVec3 at, TNodeHandle atNode, TNodeHandle targetNode)
 ////////////////////////////////////////////////////////////////////////////////////////
 bool NAV::FindPath(gentity_t* actor, gentity_t* target, float MaxDangerLevel)
 {
-	assert(target != 0 && actor != 0);
+	assert(target != nullptr && actor != nullptr);
 	if (target != nullptr && actor != nullptr)
 	{
 		if (target->waypoint == WAYPOINT_NONE)
@@ -3479,7 +3479,7 @@ float NAV::PathDangerLevel(gentity_t* actor)
 {
 	if (!actor)
 	{
-		assert("No Actor!!!" == 0);
+		assert("No Actor!!!" == nullptr);
 		return 0.0f;
 	}
 	const int pathUserNum = mPathUserIndex[actor->s.number];
@@ -3863,7 +3863,7 @@ void NAV::ShowStats()
 ////////////////////////////////////////////////////////////////////////////////////
 void NAV::TeleportTo(gentity_t* actor, const char* pointName)
 {
-	assert(actor != 0);
+	assert(actor != nullptr);
 	const hstring nName(pointName);
 	const TNameToNodeMap::iterator nameFinder = mNodeNames.find(nName);
 	if (nameFinder != mNodeNames.end())
@@ -3883,7 +3883,7 @@ void NAV::TeleportTo(gentity_t* actor, const char* pointName)
 ////////////////////////////////////////////////////////////////////////////////////
 void NAV::TeleportTo(gentity_t* actor, int pointNum)
 {
-	assert(actor != 0);
+	assert(actor != nullptr);
 	TeleportPlayer(actor, mGraph.get_node(pointNum).mPoint.v, actor->currentAngles);
 }
 
@@ -3898,7 +3898,7 @@ void STEER::Activate(gentity_t* actor)
 	//==================================================
 	if (mSteerUsers.full())
 	{
-		assert("STEER: No more unused steer users, possibly change size" == 0);
+		assert("STEER: No more unused steer users, possibly change size" == nullptr);
 		return;
 	}
 
@@ -3952,7 +3952,7 @@ void STEER::Activate(gentity_t* actor)
 	for (int i = 0; i < numFound; i++)
 	{
 		neighbor = EntityList[i];
-		assert(neighbor != 0);
+		assert(neighbor != nullptr);
 
 		if (neighbor->s.number == actor->s.number || neighbor == actor->enemy || !neighbor->client || neighbor->health
 			<= 0 || !neighbor->inuse)
@@ -4775,7 +4775,7 @@ float STEER::Path(gentity_t* actor)
 
 		if (!NAV::NextPosition(actor, NextPosition, NextSlowingRadius, Fly, Jump))
 		{
-			assert("STEER: Unable to obtain the next path position" == 0);
+			assert("STEER: Unable to obtain the next path position" == nullptr);
 			return 0.0f;
 		}
 

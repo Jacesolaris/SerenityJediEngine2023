@@ -62,7 +62,7 @@ NPC_PainFunc
 -------------------------
 */
 
-painFunc_t NPC_PainFunc(gentity_t* ent)
+painFunc_t NPC_PainFunc(const gentity_t* ent)
 {
 	painFunc_t func;
 
@@ -171,7 +171,7 @@ touchFunc_t NPC_TouchFunc(gentity_t* ent)
 NPC_SetMiscDefaultData
 -------------------------
 */
-void G_ClassSetDontFlee(gentity_t* self)
+void G_ClassSetDontFlee(const gentity_t* self)
 {
 	if (!self || !self->client || !self->NPC)
 	{
@@ -1133,7 +1133,7 @@ NPC_SetWeapons
 -------------------------
 */
 
-void NPC_SetWeapons(gentity_t* ent)
+void NPC_SetWeapons(const gentity_t* ent)
 {
 	int bestWeap = WP_NONE;
 	const int weapons = NPC_WeaponsForTeam(ent->client->playerTeam, ent->spawnflags, ent->NPC_type);
@@ -1190,7 +1190,7 @@ static void NPC_SpawnEffect(gentity_t* ent)
 //
 // Set up any special parms for spawn effects
 //--------------------------------------------------------------
-void NPC_SetFX_SpawnStates(gentity_t* ent)
+void NPC_SetFX_SpawnStates(const gentity_t* ent)
 {
 	ent->client->ps.gravity = g_gravity->value;
 }
@@ -1551,7 +1551,7 @@ void NPC_Begin(gentity_t* ent)
 	}
 }
 
-void NPC_DefaultScriptFlags(gentity_t* ent)
+void NPC_DefaultScriptFlags(const gentity_t* ent)
 {
 	if (!ent || !ent->NPC)
 	{
@@ -1563,7 +1563,7 @@ void NPC_DefaultScriptFlags(gentity_t* ent)
 
 constexpr auto MAX_SAFESPAWN_ENTS = 4;
 
-bool NPC_SafeSpawn(gentity_t* ent, float safeRadius)
+bool NPC_SafeSpawn(const gentity_t* ent, float safeRadius)
 {
 	gentity_t* radiusEnts[MAX_SAFESPAWN_ENTS];
 	vec3_t safeMins, safeMaxs;
@@ -2023,7 +2023,7 @@ NPC_Spawn
 -------------------------
 */
 
-void NPC_Spawn(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void NPC_Spawn(gentity_t* ent, const gentity_t* other, gentity_t* activator)
 {
 	//delay before spawning NPC
 	if (other->spawnflags & 32)
@@ -5506,7 +5506,7 @@ void NPC_Kill_f(void)
 	}
 }
 
-void NPC_PrintScore(gentity_t* ent)
+void NPC_PrintScore(const gentity_t* ent)
 {
 	gi.Printf("%s: %d\n", ent->targetname, ent->client->ps.persistant[PERS_SCORE]);
 }

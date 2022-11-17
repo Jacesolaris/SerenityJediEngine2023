@@ -2806,8 +2806,8 @@ void SetWeaponSelectTime(void)
 CG_DrawWeaponSelect
 ===================
 */
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
-extern bool G_IsRidingTurboVehicle(gentity_t* ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
+extern bool G_IsRidingTurboVehicle(const gentity_t* ent);
 
 void CG_DrawWeaponSelect(void)
 {

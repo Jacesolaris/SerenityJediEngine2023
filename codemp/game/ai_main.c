@@ -88,7 +88,7 @@ qboolean AttackLocalBreakable(bot_state_t* bs, vec3_t origin);
 boteventtracker_t gBotEventTracker[MAX_CLIENTS];
 extern qboolean G_PointInBounds(vec3_t point, vec3_t mins, vec3_t maxs);
 extern siegeClass_t* BG_GetClassOnBaseClass(int team, short classIndex, short cntIndex);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 int NumberofSiegeSpecificClass(int team, const char* classname);
 void BotAimLeading(bot_state_t* bs, vec3_t headlevel, float leadAmount);
 float BotWeaponCanLead(const bot_state_t* bs);

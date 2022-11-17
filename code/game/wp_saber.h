@@ -288,7 +288,7 @@ extern qboolean WP_BreakSaber(gentity_t* ent, const char* surfName, saberType_t 
 extern void ForceThrow(gentity_t* self, qboolean pull, qboolean fake = qfalse);
 extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir,
 	vec3_t bladeDir, int mod, saberType_t saberType = SABER_NONE);
-extern qboolean G_CheckEnemyPresence(gentity_t* ent, int dir, float radius, float tolerance = 0.75f);
+extern qboolean G_CheckEnemyPresence(const gentity_t* ent, int dir, float radius, float tolerance = 0.75f);
 extern void WP_SaberFreeStrings(saberInfo_t& saber);
 extern qboolean G_EnoughPowerForSpecialMove(int forcePower, int cost, qboolean kataMove = qfalse);
 extern void G_DrainPowerForSpecialMove(const gentity_t* self, forcePowers_t fp, int cost, qboolean kataMove = qfalse);

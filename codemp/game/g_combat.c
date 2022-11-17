@@ -47,7 +47,7 @@ extern void BG_ClearRocketLock(playerState_t* ps);
 void BotDamageNotification(const gclient_t* bot, gentity_t* attacker);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
 extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean PM_FaceProtectAnim(int anim);
 extern void NPC_SetPainEvent(gentity_t* self);
@@ -2101,7 +2101,7 @@ G_AlertTeam
 -------------------------
 */
 
-void G_AlertTeam(gentity_t* victim, gentity_t* attacker, float radius, float soundDist)
+void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist)
 {
 	int radiusEnts[128];
 	vec3_t mins, maxs;
@@ -2201,7 +2201,7 @@ G_DeathAlert
 #define	DEATH_ALERT_RADIUS			512
 #define	DEATH_ALERT_SOUND_RADIUS	512
 
-void G_DeathAlert(gentity_t* victim, gentity_t* attacker)
+void G_DeathAlert(const gentity_t* victim, gentity_t* attacker)
 {
 	//FIXME: with all the other alert stuff, do we really need this?
 	G_AlertTeam(victim, attacker, DEATH_ALERT_RADIUS, DEATH_ALERT_SOUND_RADIUS);
@@ -3904,7 +3904,7 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 	return qfalse;
 }
 
-extern void G_SpeechEvent(gentity_t* self, int event);
+extern void G_SpeechEvent(const gentity_t* self, int event);
 
 void PlayerPain(gentity_t* self, gentity_t* attacker, int damage)
 {

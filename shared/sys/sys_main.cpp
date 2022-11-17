@@ -459,7 +459,7 @@ static void* Sys_LoadDllFromPaths(const char* filename, const char* gamedir, con
 	return nullptr;
 }
 
-static void FreeUnpackDLLResult(UnpackDLLResult* result)
+static void FreeUnpackDLLResult(const UnpackDLLResult* result)
 {
 	if (result->tempDLLPath)
 		Z_Free(result->tempDLLPath);
@@ -520,7 +520,7 @@ void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallPro
 					basepath,
 					cdpath,
 				};
-				const size_t numPaths = ARRAY_LEN(searchPaths);
+				constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
 					SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
@@ -581,7 +581,7 @@ void* Sys_LoadSPGameDll(const char* name, GetGameAPIProc** GetGameAPI)
 			basepath,
 			cdpath,
 		};
-		const size_t numPaths = ARRAY_LEN(searchPaths);
+		constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 		libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
 			SEARCH_PATH_BASE | SEARCH_PATH_MOD | SEARCH_PATH_OPENJK | SEARCH_PATH_ROOT,
@@ -656,7 +656,7 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 					basepath,
 					cdpath,
 				};
-				const size_t numPaths = ARRAY_LEN(searchPaths);
+				constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
 					SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);

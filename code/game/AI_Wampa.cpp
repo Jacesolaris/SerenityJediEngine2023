@@ -34,7 +34,7 @@ constexpr auto LSTATE_CLEAR = 0;
 constexpr auto LSTATE_WAITING = 1;
 
 float enemyDist = 0;
-extern qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t& trace, int clipmask);
+extern qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t& trace, int clipmask);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern cvar_t* g_dismemberment;
 /*

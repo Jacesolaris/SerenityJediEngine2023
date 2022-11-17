@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern int g_crosshairEntNum;
 extern void NPC_CheckEvasion(void);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound(void);
 

@@ -126,7 +126,7 @@ void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, co
 #endif
 }
 
-Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt)
+Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt)
 {
 	const gentity_t* ent = pEnt;
 
@@ -137,7 +137,7 @@ Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt)
 	return nullptr;
 }
 
-bool G_IsRidingTurboVehicle(gentity_t* pEnt)
+bool G_IsRidingTurboVehicle(const gentity_t* pEnt)
 {
 	const gentity_t* ent = pEnt;
 
@@ -171,10 +171,7 @@ float G_CanJumpToEnemyVeh(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 		const Vehicle_t* enemyVeh = G_IsRidingVehicle(rider->enemy);
 		if (enemyVeh)
 		{
-			vec3_t enemyFwd;
 			vec3_t toEnemy;
-			vec3_t riderFwd;
-			vec3_t riderRight;
 
 			// If He Is Close Enough And Going The Same Speed
 			//------------------------------------------------
@@ -184,12 +181,15 @@ float G_CanJumpToEnemyVeh(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 				pVeh->m_pParentEntity->resultspeed > 100.0f &&
 				fabsf(pVeh->m_pParentEntity->resultspeed - enemyVeh->m_pParentEntity->resultspeed) < 100.0f)
 			{
+				vec3_t riderRight;
+				vec3_t riderFwd;
 				// If He Is Either To The Left Or Right Of Me
 				//--------------------------------------------
 				AngleVectors(rider->currentAngles, riderFwd, riderRight, nullptr);
 				const float riderRightDot = DotProduct(riderRight, toEnemy);
 				if (pUcmd->rightmove > 0 && riderRightDot > 0.2 || pUcmd->rightmove < 0 && riderRightDot < -0.2)
 				{
+					vec3_t enemyFwd;
 					// If We Are Both Going About The Same Direction
 					//-----------------------------------------------
 					AngleVectors(rider->enemy->currentAngles, enemyFwd, nullptr, nullptr);
@@ -314,7 +314,7 @@ void G_AttachToVehicle(gentity_t* pEnt, usercmd_t** ucmd)
 #endif
 }
 
-void G_KnockOffVehicle(gentity_t* pRider, gentity_t* self, qboolean bPull)
+void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, qboolean bPull)
 {
 	vec3_t riderAngles, fDir, rDir, dir2Me;
 
@@ -539,13 +539,13 @@ void Animate(Vehicle_t* pVeh)
 }
 
 // Determine whether this entity is able to board this vehicle or not.
-bool ValidateBoard(Vehicle_t* pVeh, bgEntity_t* pEnt)
+bool ValidateBoard(Vehicle_t* pVeh, bgEntity_t* p_ent)
 {
 	// Determine where the entity is entering the vehicle from (left, right, or back).
 	vec3_t vVehToEnt;
 	vec3_t vVehDir;
 	const gentity_t* parent = pVeh->m_pParentEntity;
-	const gentity_t* ent = pEnt;
+	const gentity_t* ent = p_ent;
 	vec3_t vVehAngles;
 
 	if (pVeh->m_iDieTime > 0)
@@ -869,11 +869,11 @@ bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 	return true;
 }
 
-bool VEH_TryEject(Vehicle_t* pVeh,
-	gentity_t* parent,
-	gentity_t* ent,
-	int ejectDir,
-	vec3_t vExitPos)
+bool VEH_TryEject(const Vehicle_t* pVeh,
+                  gentity_t* parent,
+                  gentity_t* ent,
+                  int ejectDir,
+                  vec3_t vExitPos)
 {
 	float fEntDiag;
 	vec3_t vEntMins, vEntMaxs, vVehLeaveDir, vVehAngles;
@@ -1468,7 +1468,7 @@ static void DeathUpdate(Vehicle_t* pVeh)
 		if (!pVeh->m_pVehicleInfo->Inhabited(pVeh))
 		{
 			//explode now as long as we managed to kick everyone out
-			vec3_t lMins, lMaxs, bottom;
+			vec3_t bottom;
 			trace_t trace;
 
 #ifndef _JK2MP
@@ -1520,6 +1520,8 @@ static void DeathUpdate(Vehicle_t* pVeh)
 			parent->takedamage = qfalse; //so we don't recursively damage ourselves
 			if (pVeh->m_pVehicleInfo->explosionRadius > 0 && pVeh->m_pVehicleInfo->explosionDamage > 0)
 			{
+				vec3_t lMaxs;
+				vec3_t lMins;
 				VectorCopy(parent->mins, lMins);
 				lMins[2] = -4; //to keep it off the ground a *little*
 				VectorCopy(parent->maxs, lMaxs);
@@ -1673,7 +1675,8 @@ bool Initialize(Vehicle_t* pVeh)
 
 	//Initialize to landed (wings closed, gears down) animation
 	{
-		int iFlags = SETANIM_FLAG_NORMAL, iBlend = 300;
+		int iFlags = SETANIM_FLAG_NORMAL;
+		constexpr int iBlend = 300;
 #ifdef _JK2MP
 		pVeh->m_ulFlags |= VEH_GEARSOPEN;
 		BG_SetAnim(pVeh->m_pParentEntity->playerState,
@@ -1687,590 +1690,253 @@ bool Initialize(Vehicle_t* pVeh)
 	return true;
 }
 
-// Like a think or move command, this updates various vehicle properties.
-#ifdef _JK2MP
-void G_VehicleDamageBoxSizing(Vehicle_t* pVeh); //declared below
-#endif
-static bool Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
+static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 {
-	auto parent = pVeh->m_pParentEntity;
-	gentity_t* pilotEnt;
-	//static float fMod = 1000.0f / 60.0f;
-	vec3_t vVehAngles;
+	auto parent = p_veh->m_pParentEntity;
+	vec3_t v_veh_angles;
 	int i;
-	int prevSpeed;
-	int nextSpeed;
-	int curTime;
-	int halfMaxSpeed;
-	playerState_t* parentPS;
-	qboolean linkHeld = qfalse;
+	int prev_speed;
+	int next_speed;
+	int half_max_speed;	
 
-#ifdef _JK2MP
-	parentPS = pVeh->m_pParentEntity->playerState;
-#else
-	parentPS = &pVeh->m_pParentEntity->client->ps;
-#endif
+	playerState_t* parent_ps = &p_veh->m_pParentEntity->client->ps;
 
-#ifndef _JK2MP//SP
-	curTime = level.time;
-#elif QAGAME//MP GAME
-	curTime = level.time;
-#elif CGAME//MP CGAME
-	//FIXME: pass in ucmd?  Not sure if this is reliable...
-	curTime = pm->cmd.serverTime;
-#endif
+	const int cur_time = level.time;
 
 	//increment the ammo for all rechargeable weapons
 	for (i = 0; i < MAX_VEHICLE_WEAPONS; i++)
 	{
-		if (pVeh->m_pVehicleInfo->weapon[i].ID > VEH_WEAPON_BASE //have a weapon in this slot
-			&& pVeh->m_pVehicleInfo->weapon[i].ammoRechargeMS //its ammo is rechargable
-			&& pVeh->weaponStatus[i].ammo < pVeh->m_pVehicleInfo->weapon[i].ammoMax //its ammo is below max
-			&& pUmcd->serverTime - pVeh->weaponStatus[i].lastAmmoInc >= pVeh->m_pVehicleInfo->weapon[i].ammoRechargeMS)
+		if (p_veh->m_pVehicleInfo->weapon[i].ID > VEH_WEAPON_BASE //have a weapon in this slot
+			&& p_veh->m_pVehicleInfo->weapon[i].ammoRechargeMS //its ammo is rechargeable
+			&& p_veh->weaponStatus[i].ammo < p_veh->m_pVehicleInfo->weapon[i].ammoMax //its ammo is below max
+			&& p_umcd->serverTime - p_veh->weaponStatus[i].lastAmmoInc >= p_veh->m_pVehicleInfo->weapon[i].ammoRechargeMS)
 			//enough time has passed
 		{
 			//add 1 to the ammo
-			pVeh->weaponStatus[i].lastAmmoInc = pUmcd->serverTime;
-			pVeh->weaponStatus[i].ammo++;
+			p_veh->weaponStatus[i].lastAmmoInc = p_umcd->serverTime;
+			p_veh->weaponStatus[i].ammo++;
 			//NOTE: in order to send the vehicle's ammo info to the client, we copy the ammo into the first 2 ammo slots on the vehicle NPC's client->ps.ammo array
 			if (parent && parent->client)
 			{
-				parent->client->ps.ammo[i] = pVeh->weaponStatus[i].ammo;
+				parent->client->ps.ammo[i] = p_veh->weaponStatus[i].ammo;
 			}
 		}
 	}
 	for (i = 0; i < MAX_VEHICLE_TURRETS; i++)
 	{
-		if (pVeh->m_pVehicleInfo->turret[i].iWeapon > VEH_WEAPON_BASE //have a weapon in this slot
-			&& pVeh->m_pVehicleInfo->turret[i].iAmmoRechargeMS //its ammo is rechargable
-			&& pVeh->turretStatus[i].ammo < pVeh->m_pVehicleInfo->turret[i].iAmmoMax //its ammo is below max
-			&& pUmcd->serverTime - pVeh->turretStatus[i].lastAmmoInc >= pVeh->m_pVehicleInfo->turret[i].iAmmoRechargeMS)
+		if (p_veh->m_pVehicleInfo->turret[i].iWeapon > VEH_WEAPON_BASE //have a weapon in this slot
+			&& p_veh->m_pVehicleInfo->turret[i].iAmmoRechargeMS //its ammo is rechargeable
+			&& p_veh->turretStatus[i].ammo < p_veh->m_pVehicleInfo->turret[i].iAmmoMax //its ammo is below max
+			&& p_umcd->serverTime - p_veh->turretStatus[i].lastAmmoInc >= p_veh->m_pVehicleInfo->turret[i].iAmmoRechargeMS)
 			//enough time has passed
 		{
 			//add 1 to the ammo
-			pVeh->turretStatus[i].lastAmmoInc = pUmcd->serverTime;
-			pVeh->turretStatus[i].ammo++;
+			p_veh->turretStatus[i].lastAmmoInc = p_umcd->serverTime;
+			p_veh->turretStatus[i].ammo++;
 			//NOTE: in order to send the vehicle's ammo info to the client, we copy the ammo into the first 2 ammo slots on the vehicle NPC's client->ps.ammo array
 			if (parent && parent->client)
 			{
-				parent->client->ps.ammo[MAX_VEHICLE_WEAPONS + i] = pVeh->turretStatus[i].ammo;
+				parent->client->ps.ammo[MAX_VEHICLE_WEAPONS + i] = p_veh->turretStatus[i].ammo;
 			}
 		}
 	}
 
-	//increment shields for rechargable shields
-	if (pVeh->m_pVehicleInfo->shieldRechargeMS
-		&& parentPS->stats[STAT_ARMOR] > 0 //still have some shields left
-		&& parentPS->stats[STAT_ARMOR] < pVeh->m_pVehicleInfo->shields //its below max
-		&& pUmcd->serverTime - pVeh->lastShieldInc >= pVeh->m_pVehicleInfo->shieldRechargeMS) //enough time has passed
+	//increment shields for rechargeable shields
+	if (p_veh->m_pVehicleInfo->shieldRechargeMS
+		&& parent_ps->stats[STAT_ARMOR] > 0 //still have some shields left
+		&& parent_ps->stats[STAT_ARMOR] < p_veh->m_pVehicleInfo->shields //its below max
+		&& p_umcd->serverTime - p_veh->lastShieldInc >= p_veh->m_pVehicleInfo->shieldRechargeMS) //enough time has passed
 	{
-		parentPS->stats[STAT_ARMOR]++;
-		if (parentPS->stats[STAT_ARMOR] > pVeh->m_pVehicleInfo->shields)
+		parent_ps->stats[STAT_ARMOR]++;
+		if (parent_ps->stats[STAT_ARMOR] > p_veh->m_pVehicleInfo->shields)
 		{
-			parentPS->stats[STAT_ARMOR] = pVeh->m_pVehicleInfo->shields;
+			parent_ps->stats[STAT_ARMOR] = p_veh->m_pVehicleInfo->shields;
 		}
-		pVeh->m_iShields = parentPS->stats[STAT_ARMOR];
-#ifdef _JK2MP
-		G_VehUpdateShields(parent);
-#endif
+		p_veh->m_iShields = parent_ps->stats[STAT_ARMOR];
 	}
-
-#ifdef _JK2MP //sometimes this gets out of whack, probably init'ing
-	if (parent && parent->r.ownerNum != parent->s.owner)
-	{
-		parent->s.owner = parent->r.ownerNum;
-	}
-
-	//keep the PS value in sync. set it up here in case we return below at some point.
-	if (pVeh->m_iBoarding)
-	{
-		parent->client->ps.vehBoarding = qtrue;
-	}
-	else
-	{
-		parent->client->ps.vehBoarding = qfalse;
-	}
-#endif
 
 	// See whether this vehicle should be dieing or dead.
-	if (pVeh->m_iDieTime != 0
-#ifndef _JK2MP //sometimes this gets out of whack, probably init'ing
-		|| parent->health <= 0
-#endif
-		)
+	if (p_veh->m_iDieTime != 0)
 	{
 		//NOTE!!!: This HAS to be consistent with cgame!!!
 		// Keep track of the old orientation.
-		VectorCopy(pVeh->m_vOrientation, pVeh->m_vPrevOrientation);
+		VectorCopy(p_veh->m_vOrientation, p_veh->m_vPrevOrientation);
 
 		// Process the orient commands.
-		pVeh->m_pVehicleInfo->ProcessOrientCommands(pVeh);
+		p_veh->m_pVehicleInfo->ProcessOrientCommands(p_veh);
 		// Need to copy orientation to our entity's viewangles so that it renders at the proper angle and currentAngles is correct.
-		SetClientViewAngle(parent, pVeh->m_vOrientation);
-		if (pVeh->m_pPilot)
+		SetClientViewAngle(parent, p_veh->m_vOrientation);
+		if (p_veh->m_pPilot)
 		{
-			SetClientViewAngle(pVeh->m_pPilot, pVeh->m_vOrientation);
+			SetClientViewAngle(p_veh->m_pPilot, p_veh->m_vOrientation);
 		}
-		/*
-		for ( i = 0; i < pVeh->m_pVehicleInfo->maxPassengers; i++ )
-		{
-			if ( pVeh->m_ppPassengers[i] )
-			{
-				SetClientViewAngle( (gentity_t *)pVeh->m_ppPassengers[i], pVeh->m_vOrientation );
-			}
-		}
-		*/
 
 		// Process the move commands.
-		pVeh->m_pVehicleInfo->ProcessMoveCommands(pVeh);
+		p_veh->m_pVehicleInfo->ProcessMoveCommands(p_veh);
 
 		// Setup the move direction.
-		if (pVeh->m_pVehicleInfo->type == VH_FIGHTER)
+		if (p_veh->m_pVehicleInfo->type == VH_FIGHTER)
 		{
-			AngleVectors(pVeh->m_vOrientation, parent->client->ps.moveDir, nullptr, nullptr);
+			AngleVectors(p_veh->m_vOrientation, parent->client->ps.moveDir, nullptr, nullptr);
 		}
 		else
 		{
-			VectorSet(vVehAngles, 0, pVeh->m_vOrientation[YAW], 0);
-			AngleVectors(vVehAngles, parent->client->ps.moveDir, nullptr, nullptr);
+			VectorSet(v_veh_angles, 0, p_veh->m_vOrientation[YAW], 0);
+			AngleVectors(v_veh_angles, parent->client->ps.moveDir, nullptr, nullptr);
 		}
-		pVeh->m_pVehicleInfo->DeathUpdate(pVeh);
+		p_veh->m_pVehicleInfo->DeathUpdate(p_veh);
 		return false;
 	}
-	// Vehicle dead!
 
-#ifdef _JK2MP
-	else if (parent->health <= 0)
-	{
-		// Instant kill.
-		if (pVeh->m_pVehicleInfo->type == VH_FIGHTER &&
-			pVeh->m_iLastImpactDmg > 500)
-		{ //explode instantly in inferno-y death
-			pVeh->m_pVehicleInfo->StartDeathDelay(pVeh, -1/* -1 causes instant death */);
-		}
-		else
-		{
-			pVeh->m_pVehicleInfo->StartDeathDelay(pVeh, 0);
-		}
-		pVeh->m_pVehicleInfo->DeathUpdate(pVeh);
-		return false;
-	}
-#endif
-
-#ifdef _JK2MP //special check in case someone disconnects/dies while boarding
-#ifdef QAGAME
-	if (parent->spawnflags & 1)
-	{
-		if (pVeh->m_pPilot || !pVeh->m_bHasHadPilot)
-		{
-			if (pVeh->m_pPilot && !pVeh->m_bHasHadPilot)
-			{
-				pVeh->m_bHasHadPilot = qtrue;
-				pVeh->m_iPilotLastIndex = pVeh->m_pPilot->s.number;
-			}
-			pVeh->m_iPilotTime = level.time + parent->damage;
-		}
-		else if (pVeh->m_iPilotTime)
-		{ //die
-			gentity_t* oldPilot = &g_entities[pVeh->m_iPilotLastIndex];
-
-			if (!oldPilot->inuse || !oldPilot->client ||
-				oldPilot->client->pers.connected != CON_CONNECTED)
-			{ //no longer in the game?
-				G_Damage(parent, parent, parent, nullptr, parent->client->ps.origin, 99999, DAMAGE_NO_PROTECTION, MOD_SUICIDE);
-			}
-			else
-			{
-				vec3_t v;
-				VectorSubtract(parent->client->ps.origin, oldPilot->client->ps.origin, v);
-
-				if (VectorLength(v) < parent->speed)
-				{ //they are still within the minimum distance to their vehicle
-					pVeh->m_iPilotTime = level.time + parent->damage;
-				}
-				else if (pVeh->m_iPilotTime < level.time)
-				{ //dying time
-					G_Damage(parent, parent, parent, nullptr, parent->client->ps.origin, 99999, DAMAGE_NO_PROTECTION, MOD_SUICIDE);
-				}
-			}
-		}
-	}
-#endif
-#else
 	if (parent->spawnflags & 1)
 	{
 		//NOTE: in SP, this actually just checks LOS to the Player
-		if (pVeh->m_iPilotTime < level.time)
+		if (p_veh->m_iPilotTime < level.time)
 		{
 			//do another check?
-			if (!player || G_ClearLineOfSight(pVeh->m_pParentEntity->currentOrigin, player->currentOrigin,
-				pVeh->m_pParentEntity->s.number, MASK_OPAQUE))
+			if (!player || G_ClearLineOfSight(p_veh->m_pParentEntity->currentOrigin, player->currentOrigin,
+				p_veh->m_pParentEntity->s.number, MASK_OPAQUE))
 			{
-				pVeh->m_iPilotTime = level.time + pVeh->m_pParentEntity->endFrame;
+				p_veh->m_iPilotTime = level.time + p_veh->m_pParentEntity->endFrame;
 			}
 		}
-		if (pVeh->m_iPilotTime && pVeh->m_iPilotTime < level.time)
+		if (p_veh->m_iPilotTime && p_veh->m_iPilotTime < level.time)
 		{
-			//die
-			//FIXME: does this give proper credit to the enemy who shot you down?
 			G_Damage(parent, player, player, nullptr, parent->client->ps.origin, 99999, DAMAGE_NO_PROTECTION,
 				MOD_SUICIDE);
 		}
 	}
-#endif
-
-#ifndef _JK2MP
-	//	if (level.time<pVeh->m_iTurboTime || pVeh->m_pVehicleInfo->type==VH_ANIMAL)
-	// always knock guys around now...
-	{
-		vec3_t dir;
-		vec3_t projectedPosition;
-		VectorCopy(parent->client->ps.velocity, dir);
-		VectorMA(parent->currentOrigin, 0.1f, dir, projectedPosition);
-
-		float force = VectorNormalize(dir);
-		force /= 10.0f;
-		if (force > 30.0f)
-		{
-			trace_t tr;
-			G_VehicleTrace(&tr, parent->currentOrigin, parent->mins, parent->maxs, projectedPosition, parent->s.number,
-				CONTENTS_BODY);
-			if (tr.fraction < 1.0f &&
-				!tr.allsolid &&
-				!tr.startsolid &&
-				tr.entityNum != ENTITYNUM_NONE &&
-				tr.entityNum != ENTITYNUM_WORLD &&
-				(level.time < pVeh->m_iTurboTime || Q_irand(0, 3) == 0))
-			{
-				gentity_t* other = &g_entities[tr.entityNum];
-				if (other && other->client && !other->s.m_iVehicleNum)
-				{
-					g_throw(other, dir, force / 10.0f);
-					G_Knockdown(other, parent, dir, force, qtrue);
-					G_Damage(other, player, player, parent->client->ps.velocity, parent->currentOrigin, force,
-						DAMAGE_NO_ARMOR | DAMAGE_EXTRA_KNOCKBACK, MOD_IMPACT);
-				}
-			}
-		}
-	}
-#endif
-
-#ifdef _JK2MP //special check in case someone disconnects/dies while boarding
-	if (pVeh->m_iBoarding != 0)
-	{
-		pilotEnt = (gentity_t*)pVeh->m_pPilot;
-		if (pilotEnt)
-		{
-			if (!pilotEnt->inuse || !pilotEnt->client || pilotEnt->health <= 0 ||
-				pilotEnt->client->pers.connected != CON_CONNECTED)
-			{
-				pVeh->m_pVehicleInfo->Eject(pVeh, pVeh->m_pPilot, qtrue);
-				return false;
-			}
-		}
-	}
-#endif
 
 	// If we're not done mounting, can't do anything.
-	if (pVeh->m_iBoarding != 0)
+	if (p_veh->m_iBoarding != 0)
 	{
-		if (!pVeh->m_bWasBoarding)
+		if (!p_veh->m_bWasBoarding)
 		{
-			VectorCopy(parentPS->velocity, pVeh->m_vBoardingVelocity);
-			pVeh->m_bWasBoarding = true;
+			VectorCopy(parent_ps->velocity, p_veh->m_vBoardingVelocity);
+			p_veh->m_bWasBoarding = true;
 		}
 
 		// See if we're done boarding.
-		if (pVeh->m_iBoarding > -1 && pVeh->m_iBoarding <= level.time)
+		if (p_veh->m_iBoarding > -1 && p_veh->m_iBoarding <= level.time)
 		{
-			pVeh->m_bWasBoarding = false;
-			pVeh->m_iBoarding = 0;
+			p_veh->m_bWasBoarding = false;
+			p_veh->m_iBoarding = 0;
 		}
 		else
 		{
-#ifdef _JK2MP
-			goto maintainSelfDuringBoarding;
-#else
 			return false;
-#endif
 		}
 	}
 
-	parent = pVeh->m_pParentEntity;
+	parent = p_veh->m_pParentEntity;
 
 	// Validate vehicle.
 	if (!parent || !parent->client || parent->health <= 0)
 		return false;
 
 	// See if any of the riders are dead and if so kick em off.
-	if (pVeh->m_pPilot)
+	if (p_veh->m_pPilot)
 	{
-		pilotEnt = pVeh->m_pPilot;
-
-#ifdef _JK2MP
-		if (!pilotEnt->inuse || !pilotEnt->client || pilotEnt->health <= 0 ||
-			pilotEnt->client->pers.connected != CON_CONNECTED)
-#else
+		const gentity_t* pilotEnt = p_veh->m_pPilot;
 		if (pilotEnt->health <= 0)
-#endif
 		{
-			pVeh->m_pVehicleInfo->Eject(pVeh, pVeh->m_pPilot, qtrue);
+			p_veh->m_pVehicleInfo->Eject(p_veh, p_veh->m_pPilot, qtrue);
 		}
 	}
-
-#ifdef _JK2MP
 	// Copy over the commands for local storage.
-	memcpy(&parent->client->pers.cmd, &pVeh->m_ucmd, sizeof(usercmd_t));
-	pVeh->m_ucmd.buttons &= ~(BUTTON_TALK);
-#else
-	// Copy over the commands for local storage.
-	memcpy(&pVeh->m_ucmd, pUmcd, sizeof(usercmd_t));
-	memcpy(&parent->client->pers.lastCommand, pUmcd, sizeof(usercmd_t));
-#endif
-
-	/*
-	// Update time modifier.
-	pVeh->m_fTimeModifier = pVeh->m_ucmd.serverTime - parent->client->ps.commandTime;
-	//sanity check
-	if ( pVeh->m_fTimeModifier < 1 )
-	{
-		pVeh->m_fTimeModifier = 1;
-	}
-	else if ( pVeh->m_fTimeModifier > 200 )
-	{
-		pVeh->m_fTimeModifier = 200;
-	}
-	//normalize to 1.0f at 20fps
-	pVeh->m_fTimeModifier = pVeh->m_fTimeModifier / fMod;
-	*/
+	memcpy(&p_veh->m_ucmd, p_umcd, sizeof(usercmd_t));
+	memcpy(&parent->client->pers.lastCommand, p_umcd, sizeof(usercmd_t));
 
 	//check for weapon linking/unlinking command
 	for (i = 0; i < MAX_VEHICLE_WEAPONS; i++)
 	{
 		//HMM... can't get a seperate command for each weapon, so do them all...?
-		if (pVeh->m_pVehicleInfo->weapon[i].linkable == 2)
+		if (p_veh->m_pVehicleInfo->weapon[i].linkable == 2)
 		{
 			//always linked
 			//FIXME: just set this once, on Initialize...?
-			if (!pVeh->weaponStatus[i].linked)
+			if (!p_veh->weaponStatus[i].linked)
 			{
-				pVeh->weaponStatus[i].linked = qtrue;
+				p_veh->weaponStatus[i].linked = qtrue;
 			}
 		}
-#ifdef _JK2MP
-		else if ((pVeh->m_ucmd.buttons & BUTTON_USE_HOLDABLE))
-#else
-		//FIXME: implement... just a console command bound to a key?
-		else if (false)
-#endif
-		{
-#ifdef _JK2MP
-			bgEntity_t* rider = nullptr;
-			if (parent->s.owner != ENTITYNUM_NONE)
-			{
-				rider = PM_BGEntForNum(parent->s.owner); //&g_entities[parent->r.ownerNum];
-			}
-#else
-#endif
-			if (!pVeh->linkWeaponToggleHeld) //so we don't hold it down and toggle it back and forth
-			{
-				//okay to toggle
-				if (pVeh->m_pVehicleInfo->weapon[i].linkable == 1)
-				{
-					//link-toggleable
-					pVeh->weaponStatus[i].linked = static_cast<qboolean>(!pVeh->weaponStatus[i].linked);
-				}
-			}
-			linkHeld = qtrue;
-		}
 	}
-	if (linkHeld)
-	{
-		//so we don't hold it down and toggle it back and forth
-		pVeh->linkWeaponToggleHeld = qtrue;
-	}
-	else
-	{
-		//so we don't hold it down and toggle it back and forth
-		pVeh->linkWeaponToggleHeld = qfalse;
-	}
-#ifdef _JK2MP
-	//now pass it over the network so cgame knows about it
-	//NOTE: SP can just cheat and check directly
-	parentPS->vehWeaponsLinked = qfalse;
-	for (i = 0; i < MAX_VEHICLE_WEAPONS; i++)
-	{//HMM... can't get a seperate command for each weapon, so do them all...?
-		if (pVeh->weaponStatus[i].linked)
-		{
-			parentPS->vehWeaponsLinked = qtrue;
-		}
-	}
-#endif
+	p_veh->linkWeaponToggleHeld = qfalse;
 
 #ifdef QAGAME
 	for (i = 0; i < MAX_VEHICLE_TURRETS; i++)
-	{//HMM... can't get a seperate command for each weapon, so do them all...?
+	{//HMM... can't get a separate command for each weapon, so do them all...?
 		VEH_TurretThink(pVeh, parent, i);
 	}
 #endif
 
-#ifdef _JK2MP
-	maintainSelfDuringBoarding :
-
-	if (pVeh->m_pPilot && pVeh->m_pPilot->playerState && pVeh->m_iBoarding != 0)
-	{
-		VectorCopy(pVeh->m_vOrientation, pVeh->m_pPilot->playerState->viewangles);
-		pVeh->m_ucmd.buttons = 0;
-		pVeh->m_ucmd.forwardmove = 0;
-		pVeh->m_ucmd.rightmove = 0;
-		pVeh->m_ucmd.upmove = 0;
-	}
-#endif
-
 	// Keep track of the old orientation.
-	VectorCopy(pVeh->m_vOrientation, pVeh->m_vPrevOrientation);
+	VectorCopy(p_veh->m_vOrientation, p_veh->m_vPrevOrientation);
 
 	// Process the orient commands.
-	pVeh->m_pVehicleInfo->ProcessOrientCommands(pVeh);
+	p_veh->m_pVehicleInfo->ProcessOrientCommands(p_veh);
 	// Need to copy orientation to our entity's viewangles so that it renders at the proper angle and currentAngles is correct.
-	SetClientViewAngle(parent, pVeh->m_vOrientation);
-	if (pVeh->m_pPilot)
+	SetClientViewAngle(parent, p_veh->m_vOrientation);
+	if (p_veh->m_pPilot)
 	{
-#ifdef _JK2MP
-		if (!BG_UnrestrainedPitchRoll(pVeh->m_pPilot->playerState, pVeh))
+		if (!BG_UnrestrainedPitchRoll(&p_veh->m_pPilot->client->ps, p_veh))
 		{
-			vec3_t newVAngle;
-			newVAngle[PITCH] = pVeh->m_pPilot->playerState->viewangles[PITCH];
-			newVAngle[YAW] = pVeh->m_pPilot->playerState->viewangles[YAW];
-			newVAngle[ROLL] = pVeh->m_vOrientation[ROLL];
-			SetClientViewAngle((gentity_t*)pVeh->m_pPilot, newVAngle);
-		}
-#else
-		if (!BG_UnrestrainedPitchRoll(&pVeh->m_pPilot->client->ps, pVeh))
-		{
-			SetClientViewAngle(pVeh->m_pPilot, pVeh->m_vOrientation);
-		}
-#endif
-	}
-	/*
-	for ( i = 0; i < pVeh->m_pVehicleInfo->maxPassengers; i++ )
-	{
-		if ( pVeh->m_ppPassengers[i] )
-		{
-			SetClientViewAngle( (gentity_t *)pVeh->m_ppPassengers[i], pVeh->m_vOrientation );
+			SetClientViewAngle(p_veh->m_pPilot, p_veh->m_vOrientation);
 		}
 	}
-	*/
 
 	// Process the move commands.
-	prevSpeed = parentPS->speed;
-	pVeh->m_pVehicleInfo->ProcessMoveCommands(pVeh);
-	nextSpeed = parentPS->speed;
-	halfMaxSpeed = pVeh->m_pVehicleInfo->speedMax * 0.5f;
+	prev_speed = parent_ps->speed;
+	p_veh->m_pVehicleInfo->ProcessMoveCommands(p_veh);
+	next_speed = parent_ps->speed;
+	half_max_speed = p_veh->m_pVehicleInfo->speedMax * 0.5f;
 
 	// Shifting Sounds
 	//=====================================================================
-	if (pVeh->m_iTurboTime < curTime &&
-		pVeh->m_iSoundDebounceTimer < curTime &&
-		(nextSpeed > prevSpeed && nextSpeed > halfMaxSpeed && prevSpeed < halfMaxSpeed || nextSpeed > halfMaxSpeed && !
-			Q_irand(0, 1000))
-		)
+	if (p_veh->m_iTurboTime < cur_time &&
+		p_veh->m_iSoundDebounceTimer < cur_time &&
+		(next_speed > prev_speed && next_speed > half_max_speed && prev_speed < half_max_speed || next_speed > half_max_speed && !
+			Q_irand(0, 1000)))
 	{
 		int shiftSound = Q_irand(1, 4);
 		switch (shiftSound)
 		{
-		case 1: shiftSound = pVeh->m_pVehicleInfo->soundShift1;
+		case 1: shiftSound = p_veh->m_pVehicleInfo->soundShift1;
 			break;
-		case 2: shiftSound = pVeh->m_pVehicleInfo->soundShift2;
+		case 2: shiftSound = p_veh->m_pVehicleInfo->soundShift2;
 			break;
-		case 3: shiftSound = pVeh->m_pVehicleInfo->soundShift3;
+		case 3: shiftSound = p_veh->m_pVehicleInfo->soundShift3;
 			break;
-		case 4: shiftSound = pVeh->m_pVehicleInfo->soundShift4;
+		case 4: shiftSound = p_veh->m_pVehicleInfo->soundShift4;
 			break;
 		default:;
 		}
 		if (shiftSound)
 		{
-			pVeh->m_iSoundDebounceTimer = curTime + Q_irand(1000, 4000);
-#ifdef _JK2MP
-			// TODO: MP Shift Sound Playback
-#else
+			p_veh->m_iSoundDebounceTimer = cur_time + Q_irand(1000, 4000);
 			// NOTE: Use this type so it's spatialized and updates play origin as bike moves - MCG
-			G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shiftSound);
-#endif
+			G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, shiftSound);
 		}
 	}
 	//=====================================================================
 
 	// Setup the move direction.
-	if (pVeh->m_pVehicleInfo->type == VH_FIGHTER)
+	if (p_veh->m_pVehicleInfo->type == VH_FIGHTER)
 	{
-		AngleVectors(pVeh->m_vOrientation, parent->client->ps.moveDir, nullptr, nullptr);
+		AngleVectors(p_veh->m_vOrientation, parent->client->ps.moveDir, nullptr, nullptr);
 	}
 	else
 	{
-		VectorSet(vVehAngles, 0, pVeh->m_vOrientation[YAW], 0);
-		AngleVectors(vVehAngles, parent->client->ps.moveDir, nullptr, nullptr);
+		VectorSet(v_veh_angles, 0, p_veh->m_vOrientation[YAW], 0);
+		AngleVectors(v_veh_angles, parent->client->ps.moveDir, nullptr, nullptr);
 	}
 
-#ifdef _JK2MP
-	if (pVeh->m_pVehicleInfo->surfDestruction)
+	if (p_veh->m_pPilot)
 	{
-		if (pVeh->m_iRemovedSurfaces)
-		{
-			gentity_t* killer = parent;
-			G_VehicleDamageBoxSizing(pVeh);
-
-			//damage him constantly if any chunks are currently taken off
-			if (parent->client->ps.otherKiller < ENTITYNUM_WORLD &&
-				parent->client->ps.otherKillerTime > level.time)
-			{
-				gentity_t* potentialKiller = &g_entities[parent->client->ps.otherKiller];
-
-				if (potentialKiller->inuse && potentialKiller->client)
-				{ //he's valid I guess
-					killer = potentialKiller;
-				}
-			}
-			//FIXME: aside from bypassing shields, maybe set m_iShields to 0, too... ?
-			G_Damage(parent, killer, killer, nullptr, parent->client->ps.origin, Q_irand(2, 5), DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR, MOD_SUICIDE);
-		}
-
-		//make sure playerstate value stays in sync
-		parent->client->ps.vehSurfaces = pVeh->m_iRemovedSurfaces;
-	}
-#endif
-
-#ifdef _JK2MP
-	//keep the PS value in sync
-	if (pVeh->m_iBoarding)
-	{
-		parent->client->ps.vehBoarding = qtrue;
-	}
-	else
-	{
-		parent->client->ps.vehBoarding = qfalse;
-	}
-#endif
-
-#ifndef _JK2MP
-	// Make sure the vehicle takes on the enemy of it's rider (for homing missles for instance).
-	if (pVeh->m_pPilot)
-	{
-		parent->enemy = pVeh->m_pPilot->enemy;
-	}
-#endif
-
-	if (pVeh->m_pPilot)
-	{
-		if (pVeh->m_pVehicleInfo->type == VH_WALKER)
+		if (p_veh->m_pVehicleInfo->type == VH_WALKER)
 		{
 			parent->s.loopSound = G_SoundIndex("sound/vehicles/shuttle/loop.wav");
 		}
-		/*else if (pVeh->m_pVehicleInfo->type == VH_FIGHTER)
-		{
-			parent->s.loopSound = pVeh->m_pVehicleInfo->soundLoop;
-		}*/
 	}
 
 	return true;
@@ -2312,7 +1978,7 @@ static bool UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
 				if (pVeh->m_pVehicleInfo->Eject(pVeh, pRider, qfalse))
 				{
 					animNumber_t Anim;
-					const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, iBlend = 300;
+					constexpr int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, i_blend = 300;
 					if (pUmcd->rightmove > 0)
 					{
 						Anim = BOTH_ROLL_R;
@@ -2325,7 +1991,7 @@ static bool UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
 					}
 					VectorScale(parent->client->ps.velocity, 0.25f, rider->client->ps.velocity);
 #if 1
-					Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, iBlend);
+					Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, i_blend);
 #else
 
 #endif
@@ -2340,7 +2006,7 @@ static bool UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
 			{
 				// FIXME: Check trace to see if we should start playing the animation.
 				animNumber_t Anim;
-				const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, iBlend = 500;
+				constexpr int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, i_blend = 500;
 				if (pUmcd->rightmove > 0)
 				{
 					Anim = BOTH_VS_DISMOUNT_R;
@@ -2377,7 +2043,7 @@ static bool UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
 
 				VectorScale(parent->client->ps.velocity, 0.25f, rider->client->ps.velocity);
 
-				Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, iBlend);
+				Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, i_blend);
 			}
 		}
 		// Flying, so just fall off.
@@ -3233,7 +2899,7 @@ void G_SetSharedVehicleFunctions(vehicleInfo_t * pVehInfo)
 	pVehInfo->DeathUpdate = DeathUpdate;
 	pVehInfo->RegisterAssets = RegisterAssets;
 	pVehInfo->Initialize = Initialize;
-	pVehInfo->Update = Update;
+	pVehInfo->Update = update;
 	pVehInfo->UpdateRider = UpdateRider;
 	//	pVehInfo->ProcessMoveCommands			=		ProcessMoveCommands;
 	//	pVehInfo->ProcessOrientCommands			=		ProcessOrientCommands;

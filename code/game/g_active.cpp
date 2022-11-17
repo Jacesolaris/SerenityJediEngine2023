@@ -29,10 +29,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 #include "b_local.h"
 
-#ifdef _DEBUG
-#include <float.h>
-#endif //_DEBUG
-
 constexpr auto SLOWDOWN_DIST = 128.0f;
 constexpr auto MIN_NPC_SPEED = 16.0f;
 
@@ -89,7 +85,7 @@ extern qboolean PM_MeleeblockAnim(int anim);
 extern qboolean PM_CanRollFromSoulCal(const playerState_t* ps);
 extern qboolean BG_FullBodyTauntAnim(int anim);
 extern qboolean FlyingCreature(const gentity_t* ent);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern void G_AttachToVehicle(gentity_t* ent, usercmd_t** ucmd);
 extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0);
 extern void G_UpdateEmplacedWeaponData(gentity_t* ent);
@@ -101,7 +97,7 @@ extern int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, float radi
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lockMode);
-extern qboolean G_JediInNormalAI(gentity_t* ent);
+extern qboolean G_JediInNormalAI(const gentity_t* ent);
 extern void WP_SaberFatigueRegenerate(int overrideAmt);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void bg_reduce_blaster_mishap_level_advanced(playerState_t* ps);
@@ -111,7 +107,7 @@ extern float manual_saberblocking(const gentity_t* defender);
 extern float manual_running_and_saberblocking(const gentity_t* defender);
 extern qboolean manual_meleeblocking(const gentity_t* defender);
 extern qboolean manual_melee_dodging(const gentity_t* defender);
-extern qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern int PM_InGrappleMove(int move);
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean PM_SaberInBrokenParry(int move);
@@ -129,7 +125,7 @@ extern qboolean PM_SaberInTransition(int move);
 extern int IsPressingDashButton(const gentity_t* self);
 extern qboolean PM_SaberInTransitionAny(int move);
 extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 extern qboolean PM_Saberinstab(int move);
@@ -167,9 +163,9 @@ extern void G_Stumble(gentity_t* hit_ent);
 extern qboolean PM_SaberInBashedAnim(int anim);
 extern int PlayerCanAbsorbKick(const gentity_t* defender, const vec3_t pushDir);
 extern int BotCanAbsorbKick(const gentity_t* defender, const vec3_t pushDir);
-extern void WP_DeactivateSaber(gentity_t* self, qboolean clearLength);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength);
 extern qboolean PM_ReloadAnim(int anim);
-extern qboolean JET_Flying(gentity_t* self);
+extern qboolean JET_Flying(const gentity_t* self);
 extern qboolean PM_InAmputateMove(int anim);
 void ClientEndPowerUps(const gentity_t* ent);
 extern qboolean PM_Dyinganim(const playerState_t* ps);
@@ -203,7 +199,7 @@ int G_FindLookItem(gentity_t* self)
 	for (int e = 0; e < numListedEntities; e++)
 	{
 		vec3_t dir;
-		gentity_t* ent = entityList[e];
+		const gentity_t* ent = entityList[e];
 
 		if (!ent->item)
 		{

@@ -168,58 +168,58 @@ bool	VEH_StartStrafeRam(Vehicle_t* pVeh, bool Right, int Duration)
 
 #ifdef QAGAME //game-only.. for now
 // Like a think or move command, this updates various vehicle properties.
-bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
+bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 {
-	if (!g_vehicleInfo[VEHICLE_BASE].Update(pVeh, pUcmd))
+	if (!g_vehicleInfo[VEHICLE_BASE].Update(p_veh, pUcmd))
 	{
 		return false;
 	}
 
 	// See whether this vehicle should be exploding.
-	if (pVeh->m_iDieTime != 0)
+	if (p_veh->m_iDieTime != 0)
 	{
-		pVeh->m_pVehicleInfo->DeathUpdate(pVeh);
+		p_veh->m_pVehicleInfo->DeathUpdate(p_veh);
 	}
 
 	// Update move direction.
 #ifndef _JK2MP //this makes prediction unhappy, and rightfully so.
-	const auto parent = pVeh->m_pParentEntity;
+	const auto parent = p_veh->m_pParentEntity;
 
-	if (pVeh->m_ulFlags & VEH_FLYING)
+	if (p_veh->m_ulFlags & VEH_FLYING)
 	{
 		vec3_t vVehAngles;
-		VectorSet(vVehAngles, 0, pVeh->m_vOrientation[YAW], 0);
+		VectorSet(vVehAngles, 0, p_veh->m_vOrientation[YAW], 0);
 		AngleVectors(vVehAngles, parent->client->ps.moveDir, nullptr, nullptr);
 	}
 	else
 	{
 		vec3_t vVehAngles;
-		VectorSet(vVehAngles, pVeh->m_vOrientation[PITCH], pVeh->m_vOrientation[YAW], 0);
+		VectorSet(vVehAngles, p_veh->m_vOrientation[PITCH], p_veh->m_vOrientation[YAW], 0);
 		AngleVectors(vVehAngles, parent->client->ps.moveDir, nullptr, nullptr);
 	}
 
 	// Check For A Strafe Ram
 	//------------------------
-	if (!(pVeh->m_ulFlags & VEH_STRAFERAM) && !(pVeh->m_ulFlags & VEH_FLYING))
+	if (!(p_veh->m_ulFlags & VEH_STRAFERAM) && !(p_veh->m_ulFlags & VEH_FLYING))
 	{
 		// Started A Strafe
 		//------------------
-		if (pVeh->m_ucmd.rightmove && !pVeh->m_fStrafeTime)
+		if (p_veh->m_ucmd.rightmove && !p_veh->m_fStrafeTime)
 		{
-			pVeh->m_fStrafeTime = pVeh->m_ucmd.rightmove > 0 ? level.time : -1 * level.time;
+			p_veh->m_fStrafeTime = p_veh->m_ucmd.rightmove > 0 ? level.time : -1 * level.time;
 		}
 
 		// Ended A Strafe
 		//----------------
-		else if (!pVeh->m_ucmd.rightmove && pVeh->m_fStrafeTime)
+		else if (!p_veh->m_ucmd.rightmove && p_veh->m_fStrafeTime)
 		{
 			// If It Was A Short Burst, Start The Strafe Ram
 			//-----------------------------------------------
-			if (level.time - abs(pVeh->m_fStrafeTime) < 300)
+			if (level.time - abs(p_veh->m_fStrafeTime) < 300)
 			{
-				if (!VEH_StartStrafeRam(pVeh, pVeh->m_fStrafeTime > 0))
+				if (!VEH_StartStrafeRam(p_veh, p_veh->m_fStrafeTime > 0))
 				{
-					pVeh->m_fStrafeTime = 0;
+					p_veh->m_fStrafeTime = 0;
 				}
 			}
 
@@ -227,30 +227,30 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 			//----------------------------
 			else
 			{
-				pVeh->m_fStrafeTime = 0;
+				p_veh->m_fStrafeTime = 0;
 			}
 		}
 	}
 
 	// If Currently In A StrafeRam, Check To See If It Is Done (Timed Out)
 	//---------------------------------------------------------------------
-	else if (!pVeh->m_fStrafeTime)
+	else if (!p_veh->m_fStrafeTime)
 	{
-		pVeh->m_ulFlags &= ~VEH_STRAFERAM;
+		p_veh->m_ulFlags &= ~VEH_STRAFERAM;
 	}
 
 	// Exhaust Effects Start And Stop When The Accelerator Is Pressed
 	//----------------------------------------------------------------
-	if (pVeh->m_pVehicleInfo->iExhaustFX)
+	if (p_veh->m_pVehicleInfo->iExhaustFX)
 	{
 		// Start It On Each Exhaust Bolt
 		//-------------------------------
-		if (pVeh->m_ucmd.forwardmove && !(pVeh->m_ulFlags & VEH_ACCELERATORON))
+		if (p_veh->m_ucmd.forwardmove && !(p_veh->m_ulFlags & VEH_ACCELERATORON))
 		{
-			pVeh->m_ulFlags |= VEH_ACCELERATORON;
-			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+			p_veh->m_ulFlags |= VEH_ACCELERATORON;
+			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
-				G_PlayEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
+				G_PlayEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],
 					parent->s.number, parent->currentOrigin, 1, qtrue);
 			}
 
@@ -258,138 +258,138 @@ bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 			switch (shift_sound)
 			{
 			case 1:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift1;
 				break;
 			case 2:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift2;
 				break;
 			case 3:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift3;
 				break;
 			case 4:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift4;
 				break;
 			case 5:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift5;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift5;
 				break;
 			case 6:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift6;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift6;
 				break;
 			case 7:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift7;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift7;
 				break;
 			case 8:
-				shift_sound = pVeh->m_pVehicleInfo->soundShift8;
+				shift_sound = p_veh->m_pVehicleInfo->soundShift8;
 				break;
 			default:;
 			}
 			if (shift_sound)
 			{
-				G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shift_sound);
+				G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, shift_sound);
 			}
 		}
 
 		// Stop It On Each Exhaust Bolt
 		//------------------------------
-		else if (!pVeh->m_ucmd.forwardmove && pVeh->m_ulFlags & VEH_ACCELERATORON)
+		else if (!p_veh->m_ucmd.forwardmove && p_veh->m_ulFlags & VEH_ACCELERATORON)
 		{
-			pVeh->m_ulFlags &= ~VEH_ACCELERATORON;
-			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+			p_veh->m_ulFlags &= ~VEH_ACCELERATORON;
+			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
-				G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],	parent->s.number);
+				G_StopEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],	parent->s.number);
 				int	shift_sound = Q_irand2(1, 8);
 				switch (shift_sound)
 				{
 				case 1:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift1;
 					break;
 				case 2:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift2;
 					break;
 				case 3:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift3;
 					break;
 				case 4:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift4;
 					break;
 				case 5:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift5;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift5;
 					break;
 				case 6:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift6;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift6;
 					break;
 				case 7:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift7;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift7;
 					break;
 				case 8:
-					shift_sound = pVeh->m_pVehicleInfo->soundShift8;
+					shift_sound = p_veh->m_pVehicleInfo->soundShift8;
 					break;
 				default:;
 				}
 				if (shift_sound)
 				{
-					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shift_sound);
+					G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, shift_sound);
 				}
 			}
 		}
 		else
 		{
-			if (pVeh->m_ucmd.forwardmove)
+			if (p_veh->m_ucmd.forwardmove)
 			{
-				if (pVeh->m_iSoundDebounceTimer < level.time && Q_irand(0, 1) == 0)
+				if (p_veh->m_iSoundDebounceTimer < level.time && Q_irand(0, 1) == 0)
 				{
 					int shift_sound = Q_irand(1, 8);
 					switch (shift_sound)
 					{
 					case 1:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift1;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift1;
 						break;
 					case 2:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift2;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift2;
 						break;
 					case 3:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift3;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift3;
 						break;
 					case 4:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift4;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift4;
 						break;
 					case 5:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift5;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift5;
 						break;
 					case 6:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift6;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift6;
 						break;
 					case 7:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift7;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift7;
 						break;
 					case 8:
-						shift_sound = pVeh->m_pVehicleInfo->soundShift8;
+						shift_sound = p_veh->m_pVehicleInfo->soundShift8;
 						break;
 					default:;
 					}
 					if (shift_sound)
 					{
-						pVeh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 4000);
-						G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shift_sound);
+						p_veh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 4000);
+						G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, shift_sound);
 					}
 				}
 			}
 		}
 	}
 
-	if (!(pVeh->m_ulFlags & VEH_ARMORLOW) && pVeh->m_iArmor <= pVeh->m_pVehicleInfo->armor / 3)
+	if (!(p_veh->m_ulFlags & VEH_ARMORLOW) && p_veh->m_iArmor <= p_veh->m_pVehicleInfo->armor / 3)
 	{
-		pVeh->m_ulFlags |= VEH_ARMORLOW;
+		p_veh->m_ulFlags |= VEH_ARMORLOW;
 	}
 
 	// Armor Gone Effects (Fire)
 	//---------------------------
-	if (pVeh->m_pVehicleInfo->iArmorGoneFX)
+	if (p_veh->m_pVehicleInfo->iArmorGoneFX)
 	{
-		if (!(pVeh->m_ulFlags & VEH_ARMORGONE) && pVeh->m_iArmor <= 0)
+		if (!(p_veh->m_ulFlags & VEH_ARMORGONE) && p_veh->m_iArmor <= 0)
 		{
-			pVeh->m_ulFlags |= VEH_ARMORGONE;
-			G_PlayEffect(pVeh->m_pVehicleInfo->iArmorGoneFX, parent->playerModel, parent->crotchBolt, parent->s.number,
+			p_veh->m_ulFlags |= VEH_ARMORGONE;
+			G_PlayEffect(p_veh->m_pVehicleInfo->iArmorGoneFX, parent->playerModel, parent->crotchBolt, parent->s.number,
 				parent->currentOrigin, 1, qtrue);
 			parent->s.loopSound = G_SoundIndex("sound/vehicles/common/fire_lp.wav");
 		}
@@ -1284,7 +1284,7 @@ void G_SetSpeederVehicleFunctions(vehicleInfo_t* pVehInfo)
 	//	pVehInfo->DeathUpdate				=		DeathUpdate;
 	//	pVehInfo->RegisterAssets			=		RegisterAssets;
 	//	pVehInfo->Initialize				=		Initialize;
-	pVehInfo->Update = Update;
+	pVehInfo->Update = update;
 	//	pVehInfo->UpdateRider				=		UpdateRider;
 #endif
 

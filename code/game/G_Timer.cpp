@@ -433,7 +433,7 @@ TIMER_Start
 -------------------------
 */
 
-qboolean TIMER_Start(gentity_t* self, const char* identifier, int duration)
+qboolean TIMER_Start(const gentity_t* self, const char* identifier, int duration)
 {
 	if (TIMER_Done(self, identifier))
 	{
@@ -448,7 +448,7 @@ qboolean TIMER_Start(gentity_t* self, const char* identifier, int duration)
 TIMER_List
 -------------------------
 */
-std::vector<std::pair<std::string, int>> TIMER_List(gentity_t* ent)
+std::vector<std::pair<std::string, int>> TIMER_List(const gentity_t* ent)
 {
 	std::vector<std::pair<std::string, int>> returnValue;
 	const gtimer_t* p = g_timers[ent->s.number];

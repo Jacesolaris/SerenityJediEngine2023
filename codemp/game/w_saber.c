@@ -91,7 +91,7 @@ extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
 extern qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hitLoc);
 extern qboolean PM_CrouchAnim(int anim);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
@@ -15226,7 +15226,9 @@ qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, i
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberMBlockDirection(blocker, saberHitLocation, qfalse);
@@ -15277,7 +15279,9 @@ qboolean WP_SaberNPCMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberMBlockDirection(blocker, saberHitLocation, qfalse);
@@ -15328,7 +15332,9 @@ qboolean WP_SaberNPCParry(gentity_t* blocker, gentity_t* attacker, int saberNum,
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberBlockNonRandom(blocker, saberHitLocation, qfalse);
@@ -15379,7 +15385,9 @@ qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, in
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberBlockNonRandom(blocker, saberHitLocation, qfalse);
@@ -15430,7 +15438,9 @@ qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberBouncedSaberDirection(blocker, saberHitLocation, qfalse);
@@ -15481,7 +15491,9 @@ qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int sabe
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberFatiguedParryDirection(blocker, saberHitLocation, qfalse);
@@ -15532,7 +15544,9 @@ qboolean WP_SaberNPCFatiguedParry(gentity_t* blocker, gentity_t* attacker, int s
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberFatiguedParryDirection(blocker, saberHitLocation, qfalse);

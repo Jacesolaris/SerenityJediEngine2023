@@ -135,9 +135,9 @@ static void DeathUpdate(Vehicle_t* pVeh)
 }
 
 // Like a think or move command, this updates various vehicle properties.
-static bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
+static bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 {
-	return g_vehicleInfo[VEHICLE_BASE].Update(pVeh, pUcmd);
+	return g_vehicleInfo[VEHICLE_BASE].Update(p_veh, pUcmd);
 }
 #endif //QAGAME
 
@@ -991,7 +991,7 @@ void G_SetAnimalVehicleFunctions(vehicleInfo_t* pVehInfo)
 	pVehInfo->DeathUpdate = DeathUpdate;
 	//	pVehInfo->RegisterAssets			=		RegisterAssets;
 	//	pVehInfo->Initialize				=		Initialize;
-	pVehInfo->Update = Update;
+	pVehInfo->Update = update;
 	//	pVehInfo->UpdateRider				=		UpdateRider;
 #endif //QAGAME
 	pVehInfo->ProcessMoveCommands = ProcessMoveCommands;

@@ -172,13 +172,13 @@ bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, ve
 #ifdef QAGAME //ONLY in SP or on server, not cgame
 
 // Like a think or move command, this updates various vehicle properties.
-static bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
+static bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 {
-	const gentity_t* parent = pVeh->m_pParentEntity;
+	const gentity_t* parent = p_veh->m_pParentEntity;
 
-	assert(pVeh->m_pParentEntity);
+	assert(p_veh->m_pParentEntity);
 
-	if (!BG_FighterUpdate(pVeh, pUcmd, pVeh->m_pParentEntity->mins, pVeh->m_pParentEntity->maxs,
+	if (!BG_FighterUpdate(p_veh, pUcmd, p_veh->m_pParentEntity->mins, p_veh->m_pParentEntity->maxs,
 #ifdef _JK2MP
 		g_gravity.value,
 #else
@@ -189,45 +189,45 @@ static bool Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 		return false;
 	}
 
-	if (!g_vehicleInfo[VEHICLE_BASE].Update(pVeh, pUcmd))
+	if (!g_vehicleInfo[VEHICLE_BASE].Update(p_veh, pUcmd))
 	{
 		return false;
 	}
 
 	// Exhaust Effects Start And Stop When The Accelerator Is Pressed
 	//----------------------------------------------------------------
-	if (pVeh->m_pVehicleInfo->iExhaustFX)
+	if (p_veh->m_pVehicleInfo->iExhaustFX)
 	{
 		// Start It On Each Exhaust Bolt
 		//-------------------------------
-		if (pVeh->m_ucmd.forwardmove && !(pVeh->m_ulFlags & VEH_ACCELERATORON))
+		if (p_veh->m_ucmd.forwardmove && !(p_veh->m_ulFlags & VEH_ACCELERATORON))
 		{
-			pVeh->m_ulFlags |= VEH_ACCELERATORON;
-			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+			p_veh->m_ulFlags |= VEH_ACCELERATORON;
+			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
-				G_PlayEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
+				G_PlayEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],
 					parent->s.number, parent->currentOrigin, 1, qtrue);
 			}
 		}
 
 		// Stop It On Each Exhaust Bolt
 		//------------------------------
-		else if (!pVeh->m_ucmd.forwardmove && pVeh->m_ulFlags & VEH_ACCELERATORON)
+		else if (!p_veh->m_ucmd.forwardmove && p_veh->m_ulFlags & VEH_ACCELERATORON)
 		{
-			pVeh->m_ulFlags &= ~VEH_ACCELERATORON;
-			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+			p_veh->m_ulFlags &= ~VEH_ACCELERATORON;
+			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
-				G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
+				G_StopEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],
 					parent->s.number);
 			}
 		}
 		else
 		{
-			if (pVeh->m_ucmd.forwardmove && pVeh->m_ulFlags & VEH_FLYING)
+			if (p_veh->m_ucmd.forwardmove && p_veh->m_ulFlags & VEH_FLYING)
 			{
-				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 				{
-					G_PlayEffect(pVeh->m_pVehicleInfo->iTurboFX, parent->playerModel, pVeh->m_iExhaustTag[i], parent->s.number, parent->currentOrigin, 1, qtrue);
+					G_PlayEffect(p_veh->m_pVehicleInfo->iTurboFX, parent->playerModel, p_veh->m_iExhaustTag[i], parent->s.number, parent->currentOrigin, 1, qtrue);
 				}
 			}
 		}
@@ -1785,7 +1785,7 @@ void G_SetFighterVehicleFunctions(vehicleInfo_t* pVehInfo)
 	pVehInfo->AnimateRiders = AnimateRiders;
 	pVehInfo->Board = Board;
 	pVehInfo->Eject = Eject;
-	pVehInfo->Update = Update;
+	pVehInfo->Update = update;
 #endif //game-only
 	pVehInfo->ProcessMoveCommands = ProcessMoveCommands;
 	pVehInfo->ProcessOrientCommands = ProcessOrientCommands;

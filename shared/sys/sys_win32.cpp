@@ -37,7 +37,7 @@ static UINT timerResolution = 0;
 Sys_Basename
 ==============
 */
-const char* Sys_Basename(char* path)
+const char* Sys_Basename(const char* path)
 {
 	static char base[MAX_OSPATH] = { 0 };
 
@@ -66,7 +66,7 @@ const char* Sys_Basename(char* path)
 Sys_Dirname
 ==============
 */
-const char* Sys_Dirname(char* path)
+const char* Sys_Dirname(const char* path)
 {
 	static char dir[MAX_OSPATH] = { 0 };
 
@@ -302,8 +302,7 @@ DIRECTORY SCANNING
 constexpr auto MAX_FOUND_FILES = 0x1000;
 
 void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter, char** psList, int* numfiles) {
-	char		search[MAX_OSPATH], newsubdirs[MAX_OSPATH];
-	char		filename[MAX_OSPATH];
+	char		search[MAX_OSPATH];
 	_finddata_t findinfo;
 
 	if (*numfiles >= MAX_FOUND_FILES - 1) {
@@ -323,8 +322,10 @@ void Sys_ListFilteredFiles(const char* basedir, char* subdirs, char* filter, cha
 	}
 
 	do {
+		char filename[MAX_OSPATH];
 		if (findinfo.attrib & _A_SUBDIR) {
 			if (Q_stricmp(findinfo.name, ".") && Q_stricmp(findinfo.name, "..")) {
+				char newsubdirs[MAX_OSPATH];
 				if (strlen(subdirs)) {
 					Com_sprintf(newsubdirs, sizeof newsubdirs, "%s\\%s", subdirs, findinfo.name);
 				}

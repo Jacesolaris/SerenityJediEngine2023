@@ -35,9 +35,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "g_nav.h"
 
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
-extern qboolean NPC_CheckLookTarget(gentity_t* self);
+extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_Jedi_RateNewEnemy(const gentity_t* self, const gentity_t* enemy);
 extern int NAV_FindClosestWaypointForPoint2(vec3_t point);
@@ -82,7 +82,7 @@ NPC_AngerAlert
 #define	ANGER_ALERT_RADIUS			512
 #define	ANGER_ALERT_SOUND_RADIUS	256
 
-void G_AngerAlert(gentity_t* self)
+void G_AngerAlert(const gentity_t* self)
 {
 	if (self && self->NPC && self->NPC->scriptFlags & SCF_NO_GROUPS)
 	{
@@ -1529,7 +1529,7 @@ ValidEnemy
 -------------------------
 */
 
-qboolean NPC_ValidEnemy(gentity_t* ent)
+qboolean NPC_ValidEnemy(const gentity_t* ent)
 {
 	return G_ValidEnemy(NPCS.NPC, ent);
 }

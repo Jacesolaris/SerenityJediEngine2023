@@ -1446,7 +1446,6 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 			{
 				continue;
 			}
-			char animName[MAX_QPATH];
 
 			const int handle = gi.G2API_PrecacheGhoul2Model(va("models/players/%s/model.glm", value));
 			if (handle > 0) //FIXME: isn't 0 a valid handle?
@@ -1454,6 +1453,7 @@ void NPC_PrecacheAnimationCFG(const char* NPC_type)
 				const char* GLAName = gi.G2API_GetAnimFileNameIndex(handle);
 				if (GLAName)
 				{
+					char animName[MAX_QPATH];
 					Q_strncpyz(animName, GLAName, sizeof animName);
 					char* slash = strrchr(animName, '/');
 					if (slash)
@@ -2099,8 +2099,6 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	const char* p;
 	int n;
 	float f;
-	char* patch;
-	char sound[MAX_QPATH];
 	char playerModel[MAX_QPATH];
 	char customSkin[MAX_QPATH];
 	clientInfo_t* ci = &NPC->client->clientInfo;
@@ -2216,6 +2214,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	}
 	else
 	{
+		char* patch;
 		const char* token;
 		p = NPCParms;
 		COM_BeginParseSession();
@@ -2254,6 +2253,7 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 		// parse the NPC info block
 		while (true)
 		{
+			char sound[MAX_QPATH];
 			token = COM_ParseExt(&p, qtrue);
 			if (!token[0])
 			{

@@ -48,7 +48,7 @@ extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_SaberInTransitionAny(int move);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern saberMoveName_t pm_broken_parry_for_attack(int move);
 extern qboolean PM_InGetUp(const playerState_t* ps);
@@ -737,9 +737,12 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 					SabBeh_AnimateHeavySlowBounceAttacker(attacker);
 					attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 
-					if (d_slowmoaction->integer && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
+					if (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker))
 					{
-						G_StartStasisEffect(attacker, MEF_NO_SPIN, 200, 0.3f, 0);
+						if (d_slowmoaction->integer)
+						{
+							G_StartStasisEffect(attacker, MEF_NO_SPIN, 200, 0.3f, 0);
+						}
 						CGCam_BlockShakeSP(0.45f, 100);
 					}
 				}
@@ -869,9 +872,12 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 						attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 					}
 
-					if (d_slowmoaction->integer && (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker)))
+					if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 					{
-						G_StartStasisEffect(blocker, MEF_NO_SPIN, 200, 0.3f, 0);
+						if (d_slowmoaction->integer)
+						{
+							G_StartStasisEffect(blocker, MEF_NO_SPIN, 200, 0.3f, 0);
+						}
 						CGCam_BlockShakeSP(0.45f, 100);
 					}
 
@@ -912,8 +918,12 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 
 					PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_FIVE);
 
-					if (d_slowmoaction->integer && (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker)))
+					if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 					{
+						if (d_slowmoaction->integer)
+						{
+							G_StartStasisEffect(blocker, MEF_NO_SPIN, 200, 0.3f, 0);
+						}
 						CGCam_BlockShakeSP(0.45f, 100);
 					}
 
@@ -941,8 +951,12 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 					WP_SaberBlockedBounceBlock(blocker, attacker, saberNum, bladeNum);
 				}
 
-				if (d_slowmoaction->integer && (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker)))
+				if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 				{
+					if (d_slowmoaction->integer)
+					{
+						G_StartStasisEffect(blocker, MEF_NO_SPIN, 200, 0.3f, 0);
+					}
 					CGCam_BlockShakeSP(0.45f, 100);
 				}
 
@@ -1041,9 +1055,12 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 	{   //perfect Blocking
 		if (MBlocking) // A perfectly timed block
 		{
-			if (d_slowmoaction->integer && (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker)))
+			if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 			{
-				G_StartStasisEffect(blocker, MEF_NO_SPIN, 200, 0.3f, 0);
+				if (d_slowmoaction->integer)
+				{
+					G_StartStasisEffect(blocker, MEF_NO_SPIN, 200, 0.3f, 0);
+				}
 				CGCam_BlockShakeSP(0.45f, 100);
 			}
 

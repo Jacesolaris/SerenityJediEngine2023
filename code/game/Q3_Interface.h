@@ -634,7 +634,7 @@ using playType_t = enum //# playType_e
 	PLAY_NUMBEROF
 };
 
-const int Q3_TIME_SCALE = 1; //MILLISECONDS
+constexpr int Q3_TIME_SCALE = 1; //MILLISECONDS
 
 extern char cinematicSkipScript[64];
 

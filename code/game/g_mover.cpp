@@ -1371,7 +1371,7 @@ gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 	return nullptr;
 }
 
-qboolean G_TriggerActive(gentity_t* self);
+qboolean G_TriggerActive(const gentity_t* self);
 
 qboolean G_EntIsUnlockedDoor(int entityNum)
 {

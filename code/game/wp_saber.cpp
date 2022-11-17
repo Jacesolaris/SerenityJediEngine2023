@@ -82,14 +82,14 @@ extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
-extern void G_AddVoiceEvent(gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void CG_ChangeWeapon(int num);
 extern void cg_saber_do_weapon_hit_marks(const gclient_t* client, const gentity_t* saber_ent, gentity_t* hit_ent,
 	int saber_num,
 	int blade_num, vec3_t hit_pos, vec3_t hit_dir, vec3_t uaxis,
 	vec3_t splash_back_dir,
 	float size_time_scale);
-extern void G_AngerAlert(gentity_t* self);
+extern void G_AngerAlert(const gentity_t* self);
 extern void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward);
 extern void g_reflect_missile_npc(gentity_t* ent, gentity_t* missile, vec3_t forward);
 extern int G_CheckLedgeDive(gentity_t* self, float checkDist, const vec3_t checkVel, qboolean tryOpposite,
@@ -161,7 +161,7 @@ extern void Boba_StopFlameThrower(const gentity_t* self);
 extern qboolean PM_InRoll(const playerState_t* ps);
 int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern int PM_InGrappleMove(int anim);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern int SaberDroid_PowerLevelForSaberAnim(const gentity_t* self);
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
@@ -171,7 +171,7 @@ extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int lengt
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
-extern void G_KnockOffVehicle(gentity_t* pRider, gentity_t* self, qboolean bPull);
+extern void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, qboolean bPull);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean Rosh_BeingHealed(const gentity_t* self);
 extern qboolean G_OkayToLean(const playerState_t* ps, const usercmd_t* cmd, qboolean interruptOkay);
@@ -180,7 +180,7 @@ int wp_absorb_conversion(const gentity_t* attacked, int atd_abs_level, gentity_t
 	int at_force_spent);
 void WP_ForcePowerStart(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
-qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 void wp_saber_in_flight_reflect_check(gentity_t* self);
 extern qboolean SaberAttacking(const gentity_t* self);
 void WP_SaberDrop(const gentity_t* self, gentity_t* saber);
@@ -189,7 +189,7 @@ void WP_SaberReturn(const gentity_t* self, gentity_t* saber);
 qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-void WP_DeactivateSaber(gentity_t* self, qboolean clearLength = qfalse);
+void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
 qboolean FP_ForceDrainGrippableEnt(const gentity_t* victim);
 void G_SaberBounce(const gentity_t* attacker, gentity_t* victim);
 extern qboolean PM_FaceProtectAnim(int anim);
@@ -1604,7 +1604,7 @@ void wp_saber_fall_sound(const gentity_t* owner, const gentity_t* saber)
 	}
 }
 
-void wp_saber_swing_sound(gentity_t* ent, int saberNum, const swingType_t swingType)
+void wp_saber_swing_sound(const gentity_t* ent, int saberNum, const swingType_t swingType)
 {
 	int index = 1;
 	if (!ent || !ent->client)
@@ -1801,8 +1801,8 @@ void wp_saber_bounce_on_wall_sound(const gentity_t* ent, const int saber_num, co
 	}
 }
 
-void wp_saber_bounce_sound(gentity_t* ent, gentity_t* hitEnt, const gentity_t* play_on_ent, const int saber_num,
-	const int blade_num)
+void wp_saber_bounce_sound(const gentity_t* ent, gentity_t* hitEnt, const gentity_t* play_on_ent, const int saber_num,
+                           const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -4064,7 +4064,7 @@ void wp_saber_m_block_effect(const gentity_t* attacker, const int saber_num, con
 	}
 }
 
-void wp_saber_knockaway(gentity_t* attacker, trace_t* tr)
+void wp_saber_knockaway(const gentity_t* attacker, trace_t* tr)
 {
 	WP_SaberDrop(attacker, &g_entities[attacker->client->ps.saberEntityNum]);
 	wp_saber_knock_sound(attacker, nullptr, 0, 0);
@@ -5667,7 +5667,10 @@ qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, i
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim)
+			&& !PM_InKnockDown(&blocker->client->ps))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberMBlockDirection(blocker, saberHitLocation, qfalse);
@@ -5728,7 +5731,10 @@ qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, in
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim)
+			&& !PM_InKnockDown(&blocker->client->ps))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberBlockNonRandom(blocker, saberHitLocation, qfalse);
@@ -5789,7 +5795,10 @@ qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim)
+			&& !PM_InKnockDown(&blocker->client->ps))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberBouncedSaberDirection(blocker, saberHitLocation, qfalse);
@@ -5851,7 +5860,10 @@ qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int sabe
 		//either an NPC or a player who is blocking
 		if (!PM_SaberInTransitionAny(blocker->client->ps.saberMove)
 			&& !PM_SaberInBounce(blocker->client->ps.saberMove)
-			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove))
+			&& !PM_SaberInKnockaway(blocker->client->ps.saberMove)
+			&& !BG_InKnockDown(blocker->client->ps.legsAnim)
+			&& !BG_InKnockDown(blocker->client->ps.torsoAnim)
+			&& !PM_InKnockDown(&blocker->client->ps))
 		{
 			//I'm not attacking, in transition or in a bounce or knockaway, so play a parry
 			WP_SaberFatiguedParryDirection(blocker, saberHitLocation, qfalse);
@@ -11812,7 +11824,7 @@ qboolean IsSurrenderingAnimRequiresResponce(const gentity_t* self)
 qboolean WP_SaberMBlockDirection(gentity_t* self, vec3_t hitloc, const qboolean missileBlock)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
-	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.9f);
+	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.7f);
 
 	VectorSubtract(hitloc, self->client->renderInfo.eyePoint, diff);
 	diff[2] = 0;
@@ -11823,6 +11835,35 @@ qboolean WP_SaberMBlockDirection(gentity_t* self, vec3_t hitloc, const qboolean 
 
 	const float rightdot = DotProduct(right, diff);
 	const float zdiff = hitloc[2] - self->client->renderInfo.eyePoint[2];
+
+	if (self->client->ps.weaponstate == WEAPON_DROPPING ||
+		self->client->ps.weaponstate == WEAPON_RAISING)
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInAttack(self->client->ps.saberMove) ||
+		PM_SuperBreakLoseAnim(self->client->ps.torsoAnim) ||
+		PM_SuperBreakWinAnim(self->client->ps.torsoAnim) ||
+		PM_SaberInBrokenParry(self->client->ps.saberMove) ||
+		PM_SaberInKnockaway(self->client->ps.saberMove) ||
+		PM_InRoll(&self->client->ps) || 
+		BG_InKnockDown(self->client->ps.legsAnim) ||
+		BG_InKnockDown(self->client->ps.torsoAnim) || 
+		PM_InKnockDown(&self->client->ps))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (self->client->ps.blockPoints <= BLOCKPOINTS_FAIL || self->client->ps.forcePower <= BLOCKPOINTS_DANGER)
+	{
+		return qfalse;
+	}
 
 	if (!inFront && self->client->ps.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_1)
 	{
@@ -12006,7 +12047,7 @@ qboolean WP_SaberMBlockDirection(gentity_t* self, vec3_t hitloc, const qboolean 
 qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, const qboolean missileBlock)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
-	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.9f);
+	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.7f);
 
 	VectorSubtract(hitloc, self->client->renderInfo.eyePoint, diff);
 	diff[2] = 0;
@@ -12017,6 +12058,35 @@ qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, const qboolean m
 
 	const float rightdot = DotProduct(right, diff);
 	const float zdiff = hitloc[2] - self->client->renderInfo.eyePoint[2];
+
+	if (self->client->ps.weaponstate == WEAPON_DROPPING ||
+		self->client->ps.weaponstate == WEAPON_RAISING)
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInAttack(self->client->ps.saberMove) ||
+		PM_SuperBreakLoseAnim(self->client->ps.torsoAnim) ||
+		PM_SuperBreakWinAnim(self->client->ps.torsoAnim) ||
+		PM_SaberInBrokenParry(self->client->ps.saberMove) ||
+		PM_SaberInKnockaway(self->client->ps.saberMove) ||
+		PM_InRoll(&self->client->ps) ||
+		BG_InKnockDown(self->client->ps.legsAnim) ||
+		BG_InKnockDown(self->client->ps.torsoAnim) ||
+		PM_InKnockDown(&self->client->ps))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (self->client->ps.blockPoints <= BLOCKPOINTS_FAIL || self->client->ps.forcePower <= BLOCKPOINTS_DANGER)
+	{
+		return qfalse;
+	}
 
 	if (!inFront && self->client->ps.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_1)
 	{
@@ -12198,7 +12268,7 @@ qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, const qboolean m
 qboolean WP_SaberBouncedSaberDirection(gentity_t* self, vec3_t hitloc, const qboolean missileBlock)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
-	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.9f);
+	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.7f);
 
 	VectorSubtract(hitloc, self->client->renderInfo.eyePoint, diff);
 	diff[2] = 0;
@@ -12209,6 +12279,35 @@ qboolean WP_SaberBouncedSaberDirection(gentity_t* self, vec3_t hitloc, const qbo
 
 	const float rightdot = DotProduct(right, diff);
 	const float zdiff = hitloc[2] - self->client->renderInfo.eyePoint[2];
+
+	if (self->client->ps.weaponstate == WEAPON_DROPPING ||
+		self->client->ps.weaponstate == WEAPON_RAISING)
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInAttack(self->client->ps.saberMove) ||
+		PM_SuperBreakLoseAnim(self->client->ps.torsoAnim) ||
+		PM_SuperBreakWinAnim(self->client->ps.torsoAnim) ||
+		PM_SaberInBrokenParry(self->client->ps.saberMove) ||
+		PM_SaberInKnockaway(self->client->ps.saberMove) ||
+		PM_InRoll(&self->client->ps) ||
+		BG_InKnockDown(self->client->ps.legsAnim) ||
+		BG_InKnockDown(self->client->ps.torsoAnim) ||
+		PM_InKnockDown(&self->client->ps))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (self->client->ps.blockPoints <= BLOCKPOINTS_FAIL || self->client->ps.forcePower <= BLOCKPOINTS_DANGER)
+	{
+		return qfalse;
+	}
 
 	if (!inFront && self->client->ps.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_1)
 	{
@@ -12390,7 +12489,7 @@ qboolean WP_SaberBouncedSaberDirection(gentity_t* self, vec3_t hitloc, const qbo
 qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, const qboolean missileBlock)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
-	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.9f);
+	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.7f);
 
 	VectorSubtract(hitloc, self->client->renderInfo.eyePoint, diff);
 	diff[2] = 0;
@@ -12401,6 +12500,35 @@ qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, const qb
 
 	const float rightdot = DotProduct(right, diff);
 	const float zdiff = hitloc[2] - self->client->renderInfo.eyePoint[2];
+
+	if (self->client->ps.weaponstate == WEAPON_DROPPING ||
+		self->client->ps.weaponstate == WEAPON_RAISING)
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInAttack(self->client->ps.saberMove) ||
+		PM_SuperBreakLoseAnim(self->client->ps.torsoAnim) ||
+		PM_SuperBreakWinAnim(self->client->ps.torsoAnim) ||
+		PM_SaberInBrokenParry(self->client->ps.saberMove) ||
+		PM_SaberInKnockaway(self->client->ps.saberMove) ||
+		PM_InRoll(&self->client->ps) ||
+		BG_InKnockDown(self->client->ps.legsAnim) ||
+		BG_InKnockDown(self->client->ps.torsoAnim) ||
+		PM_InKnockDown(&self->client->ps))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (self->client->ps.blockPoints <= BLOCKPOINTS_FAIL || self->client->ps.forcePower <= BLOCKPOINTS_DANGER)
+	{
+		return qfalse;
+	}
 
 	if (!inFront && self->client->ps.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_1)
 	{
@@ -12584,7 +12712,7 @@ qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, const qb
 qboolean wp_saber_block_non_random_missile(gentity_t* self, vec3_t hitloc, const qboolean missileBlock)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
-	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.6f);
+	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.7f);
 
 	VectorSubtract(hitloc, self->client->renderInfo.eyePoint, diff);
 	diff[2] = 0;
@@ -12595,6 +12723,35 @@ qboolean wp_saber_block_non_random_missile(gentity_t* self, vec3_t hitloc, const
 
 	const float rightdot = DotProduct(right, diff);
 	const float zdiff = hitloc[2] - self->client->renderInfo.eyePoint[2];
+
+	if (self->client->ps.weaponstate == WEAPON_DROPPING ||
+		self->client->ps.weaponstate == WEAPON_RAISING)
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInAttack(self->client->ps.saberMove) ||
+		PM_SuperBreakLoseAnim(self->client->ps.torsoAnim) ||
+		PM_SuperBreakWinAnim(self->client->ps.torsoAnim) ||
+		PM_SaberInBrokenParry(self->client->ps.saberMove) ||
+		PM_SaberInKnockaway(self->client->ps.saberMove) ||
+		PM_InRoll(&self->client->ps) ||
+		BG_InKnockDown(self->client->ps.legsAnim) ||
+		BG_InKnockDown(self->client->ps.torsoAnim) ||
+		PM_InKnockDown(&self->client->ps))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (self->client->ps.blockPoints <= BLOCKPOINTS_FAIL || self->client->ps.forcePower <= BLOCKPOINTS_DANGER)
+	{
+		return qfalse;
+	}
 
 	if (!inFront && self->client->ps.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_1)
 	{
@@ -14047,7 +14204,7 @@ void wp_saber_update(gentity_t* self, const usercmd_t* ucmd)
 }
 
 constexpr auto MAX_RADIUS_ENTS = 256; //NOTE: This can cause entities to be lost;
-qboolean G_CheckEnemyPresence(gentity_t* ent, int dir, float radius, float tolerance)
+qboolean G_CheckEnemyPresence(const gentity_t* ent, int dir, float radius, float tolerance)
 {
 	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -22520,7 +22677,7 @@ void force_shoot_lightning(gentity_t* self)
 	}
 }
 
-void WP_DeactivateSaber(gentity_t* self, qboolean clearLength)
+void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength)
 {
 	const qboolean Blocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
@@ -22556,7 +22713,7 @@ void WP_DeactivateSaber(gentity_t* self, qboolean clearLength)
 	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
 }
 
-void WP_DeactivateLightSaber(gentity_t* self, qboolean clearLength)
+void WP_DeactivateLightSaber(const gentity_t* self, qboolean clearLength)
 {
 	const qboolean Blocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
@@ -26055,7 +26212,7 @@ qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower,
 extern void CG_PlayerLockedWeaponSpeech(int jumping);
 extern qboolean Rosh_TwinNearBy(const gentity_t* self);
 
-qboolean WP_ForcePowerUsable(gentity_t* self, forcePowers_t forcePower, int overrideAmt)
+qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt)
 {
 	if (!(self->client->ps.forcePowersKnown & 1 << forcePower))
 	{

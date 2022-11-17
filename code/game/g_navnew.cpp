@@ -85,7 +85,7 @@ NAV_CheckAhead
 -------------------------
 */
 
-qboolean NAV_CheckAhead(gentity_t* self, vec3_t end, trace_t& trace, int clipmask)
+qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t& trace, int clipmask)
 {
 	vec3_t mins;
 
@@ -146,13 +146,9 @@ NPC_ClearPathToGoal
 -------------------------
 */
 
-qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal)
+qboolean NPC_ClearPathToGoal(gentity_t* goal)
 {
 	trace_t trace;
-
-	//FIXME: What does do about area portals?  THIS IS BROKEN
-	//if ( gi.inPVS( NPC->currentOrigin, goal->currentOrigin ) == qfalse )
-	//	return qfalse;
 
 	//Look ahead and see if we're clear to move to our goal position
 	if (NAV_CheckAhead(NPC, goal->currentOrigin, trace, NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP))
@@ -191,7 +187,7 @@ qboolean NPC_ClearPathToGoal(vec3_t dir, gentity_t* goal)
 	return qfalse;
 }
 
-qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist)
+qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
 {
 	vec3_t mins, end;
 	trace_t trace;
@@ -213,7 +209,7 @@ qboolean NAV_DirSafe(gentity_t* self, vec3_t dir, float dist)
 	return qfalse;
 }
 
-qboolean NAV_MoveDirSafe(gentity_t* self, usercmd_t* cmd, float distScale = 1.0f)
+qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f)
 {
 	vec3_t moveDir;
 
@@ -237,7 +233,8 @@ qboolean NAV_MoveDirSafe(gentity_t* self, usercmd_t* cmd, float distScale = 1.0f
 			//not moving at all
 			return qtrue;
 		}
-		vec3_t fwd, right, fwdAngs = { 0, self->currentAngles[YAW], 0 };
+		vec3_t fwd, right;
+		const vec3_t fwdAngs = { 0, self->currentAngles[YAW], 0 };
 		AngleVectors(fwdAngs, fwd, right, nullptr);
 		VectorScale(fwd, cmd->forwardmove, fwd);
 		VectorScale(right, cmd->rightmove, right);

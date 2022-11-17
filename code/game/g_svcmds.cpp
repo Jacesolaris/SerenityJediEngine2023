@@ -141,7 +141,6 @@ extern void ExitEmplacedWeapon(gentity_t* ent);
 
 static void Svcmd_ExitView_f(void)
 {
-	extern cvar_t* g_skippingcin;
 	static int exitViewDebounce = 0;
 	if (exitViewDebounce > level.time)
 	{
@@ -150,6 +149,7 @@ static void Svcmd_ExitView_f(void)
 	exitViewDebounce = level.time + 500;
 	if (in_camera)
 	{
+		extern cvar_t* g_skippingcin;
 		//see if we need to exit an in-game cinematic
 		if (g_skippingcin->integer) // already doing cinematic skip?
 		{
@@ -728,7 +728,7 @@ void Svcmd_SaberAttackCycle_f(void)
 #endif
 }
 
-qboolean G_ReleaseEntity(gentity_t* grabber)
+qboolean G_ReleaseEntity(const gentity_t* grabber)
 {
 	if (grabber && grabber->client && grabber->client->ps.heldClient < ENTITYNUM_WORLD)
 	{
@@ -1744,7 +1744,7 @@ static svcmd_t svcmds[] = {
 
 	{"scale", Svcmd_Scale_f, CMD_NONE},
 };
-static const size_t numsvcmds = ARRAY_LEN(svcmds);
+static constexpr size_t numsvcmds = std::size(svcmds);
 
 /*
 =================

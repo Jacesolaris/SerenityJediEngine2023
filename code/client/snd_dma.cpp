@@ -58,8 +58,8 @@ extern qboolean Sys_LowPhysicalMemory();
 //
 // vars for bgrnd music track...
 //
-const int iMP3MusicStream_DiskBytesToRead = 10000; //4096;
-const int iMP3MusicStream_DiskBufferSize = iMP3MusicStream_DiskBytesToRead * 2; //*10;
+constexpr int iMP3MusicStream_DiskBytesToRead = 10000; //4096;
+constexpr int iMP3MusicStream_DiskBufferSize = iMP3MusicStream_DiskBytesToRead * 2; //*10;
 
 using MusicInfo_t = struct
 {
@@ -243,7 +243,7 @@ ALfloat listener_ori[6]; // Listener Orientation
 short s_rawdata[MAX_RAW_SAMPLES * 2]; // Used for Raw Samples (Music etc...)
 
 channel_t* S_OpenALPickChannel(int entnum, int entchannel);
-int S_MP3PreProcessLipSync(channel_t* ch, short* data);
+int S_MP3PreProcessLipSync(const channel_t* ch, const short* data);
 void UpdateSingleShotSounds();
 void UpdateLoopingSounds();
 void AL_UpdateRawSamples();
@@ -447,8 +447,6 @@ S_Init
 */
 void S_Init(void)
 {
-	qboolean r;
-
 	Com_Printf("\n------- sound initialization -------\n");
 
 	s_volume = Cvar_Get("s_volume", "0.5", CVAR_ARCHIVE);
@@ -623,6 +621,7 @@ void S_Init(void)
 	}
 	else
 	{
+		qboolean r;
 #endif
 		r = SNDDMA_Init(s_khz->integer);
 
@@ -1170,7 +1169,6 @@ channel_t* S_OpenALPickChannel(int entnum, int entchannel)
 	int ch_idx;
 	channel_t* ch;
 	bool foundChan = false;
-	float source_pos[3];
 
 	if (entchannel < 0)
 	{
@@ -1224,11 +1222,11 @@ channel_t* S_OpenALPickChannel(int entnum, int entchannel)
 		}
 	}
 
-	int longestDist;
-	int dist;
-
 	if (!foundChan)
 	{
+		int dist;
+		int longestDist;
+		float source_pos[3];
 		// Find sound effect furthest from listener
 		ch = s_channels + 1;
 
@@ -1676,7 +1674,7 @@ S_StartLocalLoopingSound
 */
 void S_StartLocalLoopingSound(sfxHandle_t sfxHandle)
 {
-	const vec3_t nullVec = { 0, 0, 0 };
+	constexpr vec3_t null_vec = { 0, 0, 0 };
 
 	if (!s_soundStarted || s_soundMuted)
 	{
@@ -1688,7 +1686,7 @@ void S_StartLocalLoopingSound(sfxHandle_t sfxHandle)
 		Com_Error(ERR_DROP, "S_StartLocalLoopingSound: handle %i out of range", sfxHandle);
 	}
 
-	S_AddLoopingSound(listener_number, nullVec, nullVec, sfxHandle);
+	S_AddLoopingSound(listener_number, null_vec, null_vec, sfxHandle);
 }
 
 // returns length in milliseconds of supplied sound effect...  (else 0 for bad handle now)
@@ -1721,8 +1719,6 @@ so sound doesn't stutter.
 */
 void S_ClearSoundBuffer(void)
 {
-	int clear;
-
 	if (!s_soundStarted || s_soundMuted)
 	{
 		return;
@@ -1740,6 +1736,7 @@ void S_ClearSoundBuffer(void)
 	if (!s_UseOpenAL)
 #endif
 	{
+		int clear;
 		if (dma.samplebits == 8)
 			clear = 0x80;
 		else
@@ -2827,9 +2824,6 @@ void S_GetSoundtime(void)
 
 void S_Update_(void)
 {
-	unsigned endtime;
-	int samps;
-
 	if (!s_soundStarted || s_soundMuted)
 	{
 		return;
@@ -3091,6 +3085,8 @@ void S_Update_(void)
 	}
 	else
 	{
+		int samps;
+		unsigned endtime;
 #endif
 		// Updates s_soundtime
 		S_GetSoundtime();
@@ -3493,7 +3489,6 @@ void AL_UpdateRawSamples()
 	ALint size;
 	ALint processed;
 	ALint state;
-	int i, j, src;
 
 #ifdef _DEBUG
 	// Clear Open AL Error
@@ -3521,6 +3516,8 @@ void AL_UpdateRawSamples()
 	// Add new data to a new Buffer and queue it on the Source
 	if (s_rawend > s_paintedtime)
 	{
+		int j;
+		int i;
 		size = (s_rawend - s_paintedtime) << 2;
 		if (size > (MAX_RAW_SAMPLES << 2))
 		{
@@ -3532,7 +3529,7 @@ void AL_UpdateRawSamples()
 		// Copy samples from RawSamples to audio buffer (sg.rawdata)
 		for (i = s_paintedtime, j = 0; i < s_rawend; i++, j += 2)
 		{
-			src = i & MAX_RAW_SAMPLES - 1;
+			const int src = i & MAX_RAW_SAMPLES - 1;
 			s_rawdata[j] = static_cast<short>(s_rawsamples[src].left >> 8);
 			s_rawdata[j + 1] = static_cast<short>(s_rawsamples[src].right >> 8);
 		}
@@ -3552,20 +3549,20 @@ void AL_UpdateRawSamples()
 		//  iterations++;
 
 		int iterations = 0;
-		const int largestBufferSize = MAX_RAW_SAMPLES; // in bytes (== quarter of Raw Samples data)
+		constexpr int largest_buffer_size = MAX_RAW_SAMPLES; // in bytes (== quarter of Raw Samples data)
 		while (size)
 		{
 			alGenBuffers(1, &buffer);
 
-			if (size > largestBufferSize)
+			if (size > largest_buffer_size)
 			{
-				alBufferData(buffer, AL_FORMAT_STEREO16, s_rawdata + (iterations * largestBufferSize >> 1),
-					largestBufferSize, 22050);
-				size -= largestBufferSize;
+				alBufferData(buffer, AL_FORMAT_STEREO16, s_rawdata + (iterations * largest_buffer_size >> 1),
+					largest_buffer_size, 22050);
+				size -= largest_buffer_size;
 			}
 			else
 			{
-				alBufferData(buffer, AL_FORMAT_STEREO16, s_rawdata + (iterations * largestBufferSize >> 1), size,
+				alBufferData(buffer, AL_FORMAT_STEREO16, s_rawdata + (iterations * largest_buffer_size >> 1), size,
 					22050);
 				size = 0;
 			}
@@ -3609,7 +3606,7 @@ void AL_UpdateRawSamples()
 }
 #endif
 
-int S_MP3PreProcessLipSync(channel_t* ch, short* data)
+int S_MP3PreProcessLipSync(const channel_t* ch, const short* data)
 {
 	int sample;
 	int sampleTotal = 0;
@@ -3739,11 +3736,10 @@ console functions
 
 static void S_Play_f(void)
 {
-	char name[256];
-
 	int i = 1;
 	while (i < Cmd_Argc())
 	{
+		char name[256];
 		if (!strrchr(Cmd_Argv(i), '.'))
 		{
 			Com_sprintf(name, sizeof name, "%s.wav", Cmd_Argv(1));
@@ -4757,8 +4753,6 @@ void S_StopBackgroundTrack(void)
 static qboolean S_UpdateBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, qboolean bFirstOrOnlyMusicTrack,
 	float fDefaultVolume)
 {
-	byte raw[30000]; // just enough to fit in a mac stack frame  (note that MP3 doesn't use full size of it)
-
 	float fMasterVol = fDefaultVolume; // s_musicVolume->value;
 
 	if (bMusic_IsDynamic)
@@ -4814,6 +4808,7 @@ static qboolean S_UpdateBackgroundTrack_Actual(MusicInfo_t* pMusicInfo, qboolean
 
 	while (s_rawend < s_soundtime + MAX_RAW_SAMPLES)
 	{
+		byte raw[30000];
 		const int bufferSamples = MAX_RAW_SAMPLES - (s_rawend - s_soundtime);
 
 		// decide how much data needs to be read from the file
@@ -5189,7 +5184,7 @@ void SND_setup()
 
 // ask how much mem an sfx has allocated...
 //
-static int SND_MemUsed(sfx_t* sfx)
+static int SND_MemUsed(const sfx_t* sfx)
 {
 	int iSize = 0;
 	if (sfx->pSoundData)
@@ -5309,7 +5304,7 @@ void S_FreeAllSFXMem(void)
 //
 // new param is so we can be usre of not freeing ourselves (without having to rely on possible uninitialised timers etc)
 //
-int SND_FreeOldestSound(sfx_t* pButNotThisOne /* = NULL */)
+int SND_FreeOldestSound(const sfx_t* pButNotThisOne /* = NULL */)
 {
 	int iBytesFreed = 0;
 	sfx_t* sfx;
@@ -5440,7 +5435,6 @@ void InitEAXManager()
 	EAXFXSLOTPROPERTIES FXSlotProp;
 	GUID Effect;
 	GUID FXSlotGuids[4];
-	int i;
 
 	s_bEALFileLoaded = false;
 
@@ -5482,6 +5476,7 @@ void InitEAXManager()
 			{
 				if (lpEAXManagerCreateFn(&s_lpEAXManager) == EM_OK)
 				{
+					int i;
 					// Configure our EAX 4.0 Effect Slots
 
 					s_NumFXSlots = 0;
@@ -5580,14 +5575,10 @@ void ReleaseEAXManager()
 static bool LoadEALFile(char* szEALFilename)
 {
 	char* ealData = nullptr;
-	long i, j, lID, lEnvID;
+	long lID, lEnvID;
 	EMPOINT EMPoint;
-	char szAperture[128];
-	char szFullEALFilename[MAX_QPATH];
 	long lNumInst, lNumInstA, lNumInstB;
 	bool bLoaded = false;
-	bool bValid = true;
-	char szString[256];
 
 	if (!s_lpEAXManager || !s_bEAX)
 		return false;
@@ -5618,6 +5609,7 @@ static bool LoadEALFile(char* szEALFilename)
 	}
 	else
 	{
+		char szFullEALFilename[MAX_QPATH];
 		// Failed to load via Quake loader, try manually
 		Com_sprintf(szFullEALFilename, MAX_QPATH, "base/%s", szEALFilename);
 		if (SUCCEEDED(s_lpEAXManager->LoadDataSet(szFullEALFilename, 0)))
@@ -5629,6 +5621,9 @@ static bool LoadEALFile(char* szEALFilename)
 
 	if (bLoaded)
 	{
+		bool bValid = true;
+		char szAperture[128];
+		long i;
 		// For a valid eal file ... need to find 'Center' tag, record num of instances,  and then find
 		// the right number of instances of 'Aperture0a' and 'Aperture0b'.
 
@@ -5718,9 +5713,11 @@ static bool LoadEALFile(char* szEALFilename)
 
 		if (s_lpEnvTable)
 		{
+			long j;
 			i = 0;
 			while (true)
 			{
+				char szString[256];
 				sprintf(szAperture, "Aperture%da", i);
 				if (s_lpEAXManager->GetSourceID(szAperture, &lID) == EM_OK)
 				{
@@ -5928,18 +5925,13 @@ static void UnloadEALFile()
 */
 static void UpdateEAXListener()
 {
-	EMPOINT ListPos, ListOri;
-	EMPOINT EMAperture;
+	EMPOINT ListPos;
 	EMPOINT EMSourcePoint;
-	long lID, lSourceID, lApertureNum;
-	int i, j, k;
-	float flDistance, flNearest;
+	long lID, lSourceID;
 	EAXREVERBPROPERTIES Reverb;
-	bool bFound;
 	long lVolume;
 	long lCurTime;
-	channel_t* ch;
-	EAXVECTOR LR, LP1, LP2, Pan;
+	EAXVECTOR LP1, LP2, Pan;
 	REVERBDATA ReverbData[3]; // Hardcoded to three (maximum no of reverbs)
 #ifdef DISPLAY_CLOSEST_ENVS
 	char szEnvName[256];
@@ -5952,6 +5944,16 @@ static void UpdateEAXListener()
 
 	if (s_lLastEnvUpdate + ENV_UPDATE_RATE < lCurTime)
 	{
+		channel_t* ch;
+		bool bFound;
+		float flNearest;
+		float flDistance;
+		int k;
+		int j;
+		int i;
+		long lApertureNum;
+		EMPOINT EMAperture;
+		EMPOINT ListOri;
 		// Update closest reverbs
 		s_lLastEnvUpdate = lCurTime;
 
@@ -6248,6 +6250,7 @@ static void UpdateEAXListener()
 
 		for (i = 0; i < Q_min(s_NumFXSlots, s_lNumEnvironments); i++)
 		{
+			EAXVECTOR LR;
 			if (s_FXSlotInfo[i].lEnvID == s_EnvironmentID)
 			{
 				// Listener's environment

@@ -265,7 +265,7 @@ void CG_SetClientViewAngles(vec3_t angles, const qboolean overrideViewEnt)
 extern qboolean PM_AdjustAnglesToGripper(gentity_t* gent, usercmd_t* cmd);
 extern qboolean PM_AdjustAnglesForSpinningFlip(gentity_t* ent, usercmd_t* ucmd, qboolean anglesOnly);
 extern qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd);
-extern Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
 qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 {

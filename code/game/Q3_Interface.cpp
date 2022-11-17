@@ -8043,7 +8043,7 @@ unsigned int CQuake3GameInterface::GetTime(void)
 //	 DWORD	CQuake3GameInterface::GetTimeScale(void ) {}
 
 // NOTE: This extern does not really fit here, fix later please...
-extern void G_SoundBroadcast(gentity_t* ent, int soundIndex);
+extern void G_SoundBroadcast(const gentity_t* ent, int soundIndex);
 // Plays a sound from an entity.
 int CQuake3GameInterface::PlayIcarusSound(int taskID, int entID, const char* name, const char* channel)
 {
@@ -10716,7 +10716,7 @@ int CQuake3GameInterface::GetVector(int entID, const char* name, vec3_t value)
 
 int CQuake3GameInterface::GetString(int entID, const char* name, char** value)
 {
-	gentity_t* ent = &g_entities[entID];
+	const gentity_t* ent = &g_entities[entID];
 	if (!ent)
 	{
 		return false;
