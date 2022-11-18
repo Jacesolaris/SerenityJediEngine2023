@@ -366,7 +366,7 @@ qboolean eweb_can_be_used(const gentity_t* self, const gentity_t* other, const g
 	return qfalse;
 }
 
-void eweb_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
 	if (!eweb_can_be_used(self, other, activator))
 	{

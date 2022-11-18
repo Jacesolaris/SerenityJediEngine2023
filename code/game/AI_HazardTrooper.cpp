@@ -86,7 +86,7 @@ enum
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
-static void HT_Speech(gentity_t* self, int speechType, float failChance)
+static void HT_Speech(const gentity_t* self, int speechType, float failChance)
 {
 	if (Q_flrand(0.0f, 1.0f) < failChance)
 	{
@@ -431,7 +431,6 @@ private:
 		gentity_t* scanner = mActors[scannerIndex];
 		const gNPCstats_t* scannerStats = &scanner->NPC->stats;
 		const float scannerMaxViewDist = scannerStats->visrange;
-		const float scannerMinVisability = 0.1f; //1.0f - scannerStats->vigilance;
 		const float scannerMaxHearDist = scannerStats->earshot;
 		const CVec3 scannerPos(scanner->currentOrigin);
 		CVec3 scannerFwd(scanner->currentAngles);
@@ -469,6 +468,7 @@ private:
 			//---------------------------------
 			if (targetDistance < scannerMaxViewDist)
 			{
+				constexpr float scannerMinVisability = 0.1f;
 				float targetVisibility = TargetVisibility(target);
 				targetVisibility *= targetDirection.Dot(scannerFwd);
 				if (targetVisibility > scannerMinVisability)

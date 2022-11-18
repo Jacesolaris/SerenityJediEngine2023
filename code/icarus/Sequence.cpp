@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define STL_ITERATE( a, b )		for ( a = b.begin(); a != b.end(); ++a )
 #define STL_INSERT( a, b )		a.insert( a.end(), b );
 
-inline CSequence::CSequence(void)
+inline CSequence::CSequence() : m_id(0)
 {
 	m_numCommands = 0;
 	//	m_numChildren	= 0;
@@ -45,10 +45,9 @@ inline CSequence::CSequence(void)
 	m_return = nullptr;
 }
 
-CSequence::~CSequence(void)
+CSequence::~CSequence()
 {
 	assert(!m_commands.size());
-	//assert(!m_numChildren);
 }
 
 /*
@@ -57,11 +56,9 @@ Create
 -------------------------
 */
 
-CSequence* CSequence::Create(void)
+CSequence* CSequence::Create()
 {
 	const auto seq = new CSequence;
-
-	//TODO: Emit warning
 	assert(seq);
 	if (seq == nullptr)
 		return nullptr;
@@ -77,7 +74,7 @@ Delete
 -------------------------
 */
 
-void CSequence::Delete(CIcarus* icarus)
+void CSequence::Delete(const CIcarus* icarus)
 {
 	//Notify the parent of the deletion
 	if (m_parent)
@@ -88,24 +85,18 @@ void CSequence::Delete(CIcarus* icarus)
 	//Clear all children
 	if (m_children.size() > 0)
 	{
-		/*for ( iterSeq = m_childrenMap.begin(); iterSeq != m_childrenMap.end(); iterSeq++ )
+		for (const auto& si : m_children)
 		{
-			(*iterSeq).second->SetParent( NULL );
-		}*/
-
-		for (auto si = m_children.begin(); si != m_children.end(); ++si)
-		{
-			(*si)->SetParent(nullptr);
+			si->SetParent(nullptr);
 		}
 	}
 	m_children.clear();
 	//m_childrenMap.clear();
 
 	//Clear all held commands
-	for (auto bi = m_commands.begin(); bi != m_commands.end(); ++bi)
+	for (const auto& command : m_commands)
 	{
-		(*bi)->Free(icarus);
-		delete* bi; //Free() handled internally -- not any more!!
+		command->Free(icarus);
 	}
 
 	m_commands.clear();
@@ -160,24 +151,14 @@ HasChild
 
 bool CSequence::HasChild(CSequence* sequence)
 {
-	for (auto ci = m_children.begin(); ci != m_children.end(); ++ci)
+	for (const auto& ci : m_children)
 	{
-		if (*ci == sequence)
+		if (ci == sequence)
 			return true;
 
-		if ((*ci)->HasChild(sequence))
+		if (ci->HasChild(sequence))
 			return true;
 	}
-
-	/*	sequenceID_m::iterator iterSeq = NULL;
-		for ( iterSeq = m_childrenMap.begin(); iterSeq != m_childrenMap.end(); iterSeq++ )
-		{
-			if ( ((*iterSeq).second) == sequence )
-				return true;
-
-			if ( (*iterSeq).second->HasChild( sequence ) )
-				return true;
-		}*/
 
 	return false;
 }
@@ -211,7 +192,7 @@ PopCommand
 
 CBlock* CSequence::PopCommand(int type)
 {
-	CBlock* command = nullptr;
+	CBlock* command;
 
 	//Make sure everything is ok
 	assert(type == POP_FRONT || type == POP_BACK);
@@ -236,6 +217,7 @@ CBlock* CSequence::PopCommand(int type)
 		m_numCommands--;
 
 		return command;
+	default:;
 	}
 
 	//Invalid flag
@@ -269,6 +251,7 @@ int CSequence::PushCommand(CBlock* block, int type)
 		m_numCommands++;
 
 		return true;
+	default:;
 	}
 
 	//Invalid flag
@@ -298,15 +281,9 @@ void CSequence::RemoveFlag(int flag, bool children)
 
 	if (children)
 	{
-		/*		sequenceID_m::iterator iterSeq = NULL;
-				for ( iterSeq = m_childrenMap.begin(); iterSeq != m_childrenMap.end(); iterSeq++ )
-				{
-					(*iterSeq).second->RemoveFlag( flag, true );
-				}*/
-
-		for (auto si = m_children.begin(); si != m_children.end(); ++si)
+		for (const auto& si : m_children)
 		{
-			(*si)->RemoveFlag(flag, true);
+			si->RemoveFlag(flag, true);
 		}
 	}
 }
@@ -388,7 +365,7 @@ SaveCommand
 -------------------------
 */
 
-int CSequence::SaveCommand(CBlock* block)
+int CSequence::SaveCommand(const CBlock* block)
 {
 	const auto pIcarus = static_cast<CIcarus*>(IIcarusInterface::GetIcarus());
 
@@ -568,15 +545,8 @@ int CSequence::Save()
 	pIcarus->BufferWrite(&id, sizeof id);
 
 	//Save the number of children
-	int iNumChildren = m_children.size();
-	pIcarus->BufferWrite(&iNumChildren, sizeof iNumChildren);
-
-	//Save out the children (only by GUID)
-	/*STL_ITERATE( iterSeq, m_childrenMap )
-	{
-		id = (*iterSeq).second->GetID();
-		pIcarus->BufferWrite( &id, sizeof( id ) );
-	}*/
+	const int i_num_children = m_children.size();
+	pIcarus->BufferWrite(&i_num_children, sizeof i_num_children);
 	sequence_l::iterator iterSeq;
 	STL_ITERATE(iterSeq, m_children)
 	{

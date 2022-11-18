@@ -1859,7 +1859,7 @@ a rof file
 -------------------------
 */
 
-void CGCam_StartRoff(char* roff)
+void CGCam_StartRoff(const char* roff)
 {
 	/*//RAFIXME - need to get this stuff figured out.
 	   CGCam_FollowDisable();

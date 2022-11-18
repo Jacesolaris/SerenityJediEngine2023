@@ -1479,7 +1479,7 @@ void Svcmd_Use_f(void)
 
 //======================================================
 
-void G_SetActiveState(char* targetstring, qboolean actState)
+void G_SetActiveState(const char* targetstring, qboolean actState)
 {
 	gentity_t* target = nullptr;
 	while (nullptr != (target = G_Find(target, FOFS(targetname), targetstring)))
@@ -1745,7 +1745,7 @@ static qboolean CanUseInfrontOfPartOfLevel(const gentity_t* ent) //originally fr
 constexpr auto USE_DISTANCE = 64.0f;
 extern qboolean eweb_can_be_used(const gentity_t* self, const gentity_t* other, const gentity_t* activator);
 
-qboolean CanUseInfrontOf(gentity_t* ent)
+qboolean CanUseInfrontOf(const gentity_t* ent)
 {
 	trace_t trace;
 	vec3_t src, dest, vf;

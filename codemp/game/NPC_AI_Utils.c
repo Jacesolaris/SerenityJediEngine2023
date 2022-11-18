@@ -656,7 +656,7 @@ void AI_DeleteSelfFromGroup(const gentity_t* self)
 }
 
 extern void ST_AggressionAdjust(const gentity_t* self, int change);
-extern void ST_MarkToCover(gentity_t* self);
+extern void ST_MarkToCover(const gentity_t* self);
 extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int minTime,
 	int maxTime);
 

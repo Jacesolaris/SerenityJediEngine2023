@@ -9840,7 +9840,7 @@ static void PM_Footsteps(void)
 								else
 #endif
 								{
-									if (HoldingBlock)
+									if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
 									{
 										if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 										{
@@ -13579,7 +13579,7 @@ void PM_Weapon(void)
 				else
 #endif
 				{
-					if (HoldingBlock)
+					if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
 					{
 						if (pm->ps->fd.saberAnimLevel == SS_DUAL)
 						{

@@ -6842,7 +6842,7 @@ static qboolean CG_RenderingFromMiscCamera()
 }
 
 qboolean cg_usingInFrontOf = qfalse;
-qboolean CanUseInfrontOf(gentity_t*);
+qboolean CanUseInfrontOf(const gentity_t*);
 
 static void CG_UseIcon()
 {

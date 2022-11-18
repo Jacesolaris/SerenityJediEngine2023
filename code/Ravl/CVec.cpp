@@ -423,7 +423,7 @@ bool	CVec4::IsInitialized() const
 ////////////////////////////////////////////////////////////////////////////////////////
 bool	CVec4::PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const
 {
-	const float  tolerance = 0.00000005f;
+	constexpr float  tolerance = 0.00000005f;
 
 	const float ax = A.v[0];
 	const float ay = A.v[1];
@@ -949,7 +949,7 @@ bool	CVec3::IsInitialized() const
 ////////////////////////////////////////////////////////////////////////////////////////
 bool	CVec3::PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const
 {
-	const float  tolerance = 0.00000005f;
+	constexpr float  tolerance = 0.00000005f;
 
 	const float ax = A.v[0];
 	const float ay = A.v[1];

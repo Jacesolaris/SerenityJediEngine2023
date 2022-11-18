@@ -38,7 +38,7 @@ public:
 
 	//Creation and deletion
 	static CSequence* Create(void);
-	void Delete(CIcarus* icarus);
+	void Delete(const CIcarus* icarus);
 
 	//Organization functions
 	void AddChild(CSequence*);
@@ -122,7 +122,7 @@ public:
 	};
 
 protected:
-	static int SaveCommand(CBlock* block);
+	static int SaveCommand(const CBlock* block);
 	static int LoadCommand(CBlock* block, CIcarus* icarus);
 
 	//Organization information

@@ -302,7 +302,7 @@ void CIcarus::DeleteSequence(CSequence* sequence)
 #endif
 }
 
-int CIcarus::AllocateSequences(int numSequences, int* idTable)
+int CIcarus::AllocateSequences(int numSequences, const int* idTable)
 {
 	CSequence* sequence;
 
@@ -799,7 +799,7 @@ void CIcarus::CreateBuffer()
 }
 
 // Write to a buffer.
-void CIcarus::BufferWrite(void* pSrcData, unsigned long ulNumBytesToWrite)
+void CIcarus::BufferWrite(const void* pSrcData, unsigned long ulNumBytesToWrite)
 {
 	if (!pSrcData)
 		return;

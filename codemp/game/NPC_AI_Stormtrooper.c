@@ -29,7 +29,7 @@ extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* mem
 extern qboolean AI_GroupContainsEntNum(AIGroupInfo_t* group, int entNum);
 extern void AI_GroupUpdateEnemyLastSeen(AIGroupInfo_t* group, vec3_t spot);
 extern void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group);
-extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
+extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern void NPC_CheckGetNewWeapon(void);
@@ -213,7 +213,7 @@ enum
 	SPEECH_PUSHED
 };
 
-static void ST_Speech(gentity_t* self, int speechType, float failChance)
+static void ST_Speech(const gentity_t* self, int speechType, float failChance)
 {
 	if (Q_flrand(0.0f, 1.0f) < failChance)
 	{
@@ -310,7 +310,7 @@ static void ST_Speech(gentity_t* self, int speechType, float failChance)
 	self->NPC->blockedSpeechDebounceTime = level.time + 2000;
 }
 
-void ST_MarkToCover(gentity_t* self)
+void ST_MarkToCover(const gentity_t* self)
 {
 	if (!self || !self->NPC)
 	{
@@ -809,7 +809,6 @@ qboolean NPC_CheckEnemyStealth(gentity_t* target)
 				const int lookTime = Q_irand(4500, 8500);
 				//NPCInfo->timeEnemyLastVisible = level.time + 2000;
 				TIMER_Set(NPCS.NPC, "enemyLastVisible", lookTime);
-				//TODO: Play a sound along the lines of, "Huh?  What was that?"
 				ST_Speech(NPCS.NPC, SPEECH_SIGHT, 0);
 				NPC_TempLookTarget(NPCS.NPC, target->s.number, lookTime, lookTime);
 				//FIXME: set desired yaw and pitch towards this guy?
@@ -1295,7 +1294,9 @@ void NPC_BSST_Patrol(void)
 	if (NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER && NPCS.NPC->client->ps.eFlags & EF_SPOTLIGHT)
 	{
 		//using spotlight search mode
-		vec3_t eyeFwd, end, mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
+		vec3_t eyeFwd, end;
+		const vec3_t maxs = { 2, 2, 2 };
+		const vec3_t mins = { -2, -2, -2 };
 		trace_t trace;
 		AngleVectors(NPCS.NPC->client->renderInfo.eyeAngles, eyeFwd, NULL, NULL);
 		VectorMA(NPCS.NPC->client->renderInfo.eyePoint, NPCS.NPCInfo->stats.visrange, eyeFwd, end);
@@ -1713,7 +1714,7 @@ static void ST_CheckFireState(void)
 			if (!Q_irand(0, 10))
 			{
 				//Fire on the last known position
-				vec3_t muzzle, dir, angles;
+				vec3_t muzzle;
 				qboolean tooClose = qfalse;
 				qboolean tooFar = qfalse;
 
@@ -1805,6 +1806,8 @@ static void ST_CheckFireState(void)
 
 				if (!tooClose && !tooFar)
 				{
+					vec3_t angles;
+					vec3_t dir;
 					//okay too shoot at last pos
 					VectorSubtract(NPCS.NPCInfo->enemyLastSeenLocation, muzzle, dir);
 					VectorNormalize(dir);
@@ -2018,6 +2021,7 @@ int ST_GetCPFlags(void)
 		case 3: //take the one on the other side of the enemy
 			cpFlags = CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
 			break;
+		default: ;
 		}
 	}
 	if (NPCS.NPC && NPCS.NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)
@@ -2206,7 +2210,6 @@ void ST_Commander(void)
 		//see if this member should start running (only if have no officer... FIXME: should always run from AEL_DANGER_GREAT?)
 		if (!group->commander || group->commander->NPC && group->commander->NPC->rank < RANK_ENSIGN)
 		{
-			// bug fix. Must test NPC. It was crashing server in t2_rogue map when the four assassin_droids appear
 			if (NPC_CheckForDanger(NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_DANGER)))
 			{
 				//going to run
@@ -2274,7 +2277,6 @@ void ST_Commander(void)
 				{
 					if (!group->commander || group->commander->NPC && group->commander->NPC->rank < RANK_ENSIGN)
 					{
-						// bug fix. Must test NPC. It was crashing server in t2_rogue map when the four assassin_droids appear
 						cpFlags |= CP_FLEE | CP_AVOID | CP_RETREAT;
 						squadState = SQUAD_RETREAT;
 					}
@@ -2560,7 +2562,7 @@ void ST_Commander(void)
 		//---------------------------------------------------------------------
 		if (TIMER_Done(NPCS.NPC, "checkGrenadeTooCloseDebouncer"))
 		{
-			int i, e;
+			int i1, e;
 			vec3_t mins;
 			vec3_t maxs;
 			int numListedEntities;
@@ -2570,10 +2572,10 @@ void ST_Commander(void)
 
 			TIMER_Set(NPCS.NPC, "checkGrenadeTooCloseDebouncer", Q_irand(300, 600));
 
-			for (i = 0; i < 3; i++)
+			for (i1 = 0; i1 < 3; i1++)
 			{
-				mins[i] = NPCS.NPC->r.currentOrigin[i] - 200;
-				maxs[i] = NPCS.NPC->r.currentOrigin[i] + 200;
+				mins[i1] = NPCS.NPC->r.currentOrigin[i1] - 200;
+				maxs[i1] = NPCS.NPC->r.currentOrigin[i1] + 200;
 			}
 
 			numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);

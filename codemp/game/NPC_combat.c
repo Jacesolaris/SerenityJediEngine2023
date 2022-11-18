@@ -104,7 +104,7 @@ G_TeamEnemy
 -------------------------
 */
 
-qboolean G_TeamEnemy(gentity_t* self)
+qboolean G_TeamEnemy(const gentity_t* self)
 {
 	//FIXME: Probably a better way to do this, is a linked list of your teammates already available?
 
@@ -157,7 +157,7 @@ qboolean G_TeamEnemy(gentity_t* self)
 	return qfalse;
 }
 
-qboolean G_CheckSaberAllyAttackDelay(gentity_t* self, gentity_t* enemy)
+qboolean G_CheckSaberAllyAttackDelay(const gentity_t* self, const gentity_t* enemy)
 {
 	//sets a delay for attacking non-saber attackers when we're a saber user
 	//assisting our human ally.
@@ -181,7 +181,7 @@ qboolean G_CheckSaberAllyAttackDelay(gentity_t* self, gentity_t* enemy)
 		{
 			return qtrue;
 		}
-		int delay = 500;
+		int delay;
 		if (distance > 2048)
 		{
 			//the farther they are, the shorter the delay
@@ -207,7 +207,7 @@ qboolean G_CheckSaberAllyAttackDelay(gentity_t* self, gentity_t* enemy)
 	return qfalse;
 }
 
-void G_AttackDelay(gentity_t* self, gentity_t* enemy)
+void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 {
 	if (enemy && self->client && self->NPC)
 	{
@@ -368,7 +368,8 @@ void G_AttackDelay(gentity_t* self, gentity_t* enemy)
 			return;
 		case WP_TURRET: // turret guns
 			return;
-			/*
+		default: ;
+		/*
 				case WP_DEMP2:
 					break;
 				case WP_TRIP_MINE:
@@ -589,6 +590,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 						case 2:
 							G_SoundOnEnt(self, CHAN_VOICE, "sound/chars/jedi2/28je2012.wav");
 							break;
+						default: ;
 						}
 						self->NPC->blockedSpeechDebounceTime = level.time + 2000;
 					}
@@ -778,6 +780,7 @@ void ChangeWeapon(const gentity_t* ent, int newWeapon)
 			case 2:
 				ent->NPC->burstSpacing = 1500; //attackdebounce
 				break;
+			default: ;
 			}
 		}
 		else
@@ -991,8 +994,7 @@ void ChangeWeapon(const gentity_t* ent, int newWeapon)
 void NPC_ChangeWeapon(int newWeapon)
 {
 	if (newWeapon != NPCS.NPC->client->ps.weapon)
-	{
-		qboolean changing = qtrue;
+	{		
 		G_AddEvent(NPCS.NPC, EV_GENERAL_SOUND, G_SoundIndex("sound/weapons/change.wav"));
 	}
 	ChangeWeapon(NPCS.NPC, newWeapon);
@@ -1239,7 +1241,7 @@ this function does not check teams, invulnerability, notarget, etc....
 
 Added: If can't shoot center, try head, if not, see if it's close enough to try anyway.
 */
-qboolean CanShoot(gentity_t* ent, gentity_t* shooter)
+qboolean CanShoot(const gentity_t* ent, gentity_t* shooter)
 {
 	trace_t tr;
 	vec3_t muzzle;
@@ -1587,7 +1589,7 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, int enemyTeam, qboolean che
 {
 	int num_choices = 0;
 	int choice[128]; //FIXME: need a different way to determine how many choices?
-	gentity_t* newenemy = NULL;
+	gentity_t* newenemy;
 	gentity_t* closestEnemy = NULL;
 	vec3_t diff;
 	float relDist;
@@ -1907,7 +1909,6 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, int enemyTeam, qboolean che
 gentity_t* NPC_PickAlly(qboolean facingEachOther, float range, qboolean ignoreGroup, qboolean movingOnly)
 {
 	gentity_t* closestAlly = NULL;
-	vec3_t diff;
 	float bestDist = range;
 
 	for (int entNum = 0; entNum < level.num_entities; entNum++)
@@ -1921,6 +1922,7 @@ gentity_t* NPC_PickAlly(qboolean facingEachOther, float range, qboolean ignoreGr
 				if (ally->client && (ally->client->playerTeam == NPCS.NPC->client->playerTeam ||
 					NPCS.NPC->client->playerTeam == NPCTEAM_ENEMY))
 				{
+					vec3_t diff;
 					//if on same team or if player is disguised as your team
 					if (ignoreGroup)
 					{
@@ -2383,7 +2385,7 @@ qboolean NPC_CheckDefend(float scale)
 //NOTE: BE SURE TO CHECK PVS BEFORE THIS!
 qboolean NPC_CheckCanAttack(float attack_scale, qboolean stationary)
 {
-	vec3_t delta, forward;
+	vec3_t delta;
 	vec3_t angleToEnemy;
 	vec3_t hitspot, muzzle, diff, enemy_org; //, enemy_head;
 	qboolean attack_ok = qfalse;
@@ -2442,6 +2444,7 @@ qboolean NPC_CheckCanAttack(float attack_scale, qboolean stationary)
 
 	if (NPCS.enemyVisibility >= VIS_FOV)
 	{
+		vec3_t forward;
 		//He's in our FOV
 		attack_ok = qtrue;
 		//CalcEntitySpot( NPC->enemy, SPOT_HEAD, enemy_head);

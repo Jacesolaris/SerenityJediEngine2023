@@ -24,7 +24,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_roff.h"
 #include "Q3_Interface.h"
 #include "../cgame/cg_local.h"
-#include "../cgame/cg_media.h"
 #include "g_functions.h"
 #include "qcommon/ojk_saved_game_helper.h"
 
@@ -221,7 +220,6 @@ static void G_RoffNotetrackCallback(gentity_t* ent, const char* notetrack)
 		}
 
 		objectID = G_EffectIndex(argument);
-		r = 0;
 
 		if (objectID)
 		{
@@ -731,7 +729,7 @@ int G_LoadRoff(const char* fileName)
 	return roff_id;
 }
 
-void G_FreeRoffs(void)
+void G_FreeRoffs()
 {
 	while (num_roffs)
 	{

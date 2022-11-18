@@ -1669,7 +1669,7 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 	if (ent->client->ps.heldByClient <= ENTITYNUM_WORLD)
 	{
-		gentity_t* grabbedBy = &g_entities[ent->client->ps.heldByClient];
+		const gentity_t* grabbedBy = &g_entities[ent->client->ps.heldByClient];
 
 		if (grabbedBy->inuse && grabbedBy->client &&
 			grabbedBy->ghoul2.size())

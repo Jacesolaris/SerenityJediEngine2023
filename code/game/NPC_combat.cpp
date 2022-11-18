@@ -1373,7 +1373,7 @@ Added: If can't shoot center, try head, if not, see if it's close enough to try 
 */
 extern qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent);
 
-qboolean CanShoot(gentity_t* ent, gentity_t* shooter)
+qboolean CanShoot(const gentity_t* ent, gentity_t* shooter)
 {
 	trace_t tr;
 	vec3_t muzzle;

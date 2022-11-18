@@ -773,7 +773,7 @@ NPC_TempLookTarget
 -------------------------
 */
 
-void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime)
+void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime)
 {
 	if (!self->client)
 	{

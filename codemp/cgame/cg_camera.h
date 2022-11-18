@@ -143,7 +143,7 @@ void CGCam_Track(int trackNum, float speed, float init_lerp);
 void CGCam_Distance(float distance, float initLerp);
 void CGCam_Roll(float	dest, float duration);
 
-void CGCam_StartRoff(char* roff);
+void CGCam_StartRoff(const char* roff);
 
 void CGCam_Smooth(float intensity, int duration);
 void CGCam_UpdateSmooth(vec3_t origin, vec3_t angles);

@@ -53,7 +53,7 @@ qboolean NAV_CheckNodeFailedForEnt(gentity_t* ent, int nodeNum)
 NPC_UnBlocked
 -------------------------
 */
-void NPC_ClearBlocked(gentity_t* self)
+void NPC_ClearBlocked(const gentity_t* self)
 {
 	if (self->NPC == NULL)
 		return;
@@ -62,7 +62,7 @@ void NPC_ClearBlocked(gentity_t* self)
 	self->NPC->blockingEntNum = ENTITYNUM_NONE;
 }
 
-void NPC_SetBlocked(gentity_t* self, gentity_t* blocker)
+void NPC_SetBlocked(const gentity_t* self, const gentity_t* blocker)
 {
 	if (self->NPC == NULL)
 		return;
@@ -103,12 +103,12 @@ int NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t 
 NAVNEW_PushBlocker
 -------------------------
 */
-void NAVNEW_PushBlocker(gentity_t* self, gentity_t* blocker, vec3_t right, qboolean setBlockedInfo)
+void NAVNEW_PushBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t right, qboolean setBlockedInfo)
 {
 	//try pushing blocker to one side
 	trace_t tr;
 	vec3_t mins, end;
-	float rightSucc, leftSucc;
+	float leftSucc;
 
 	if (self->NPC->shoveCount > 30)
 	{
@@ -153,6 +153,7 @@ void NAVNEW_PushBlocker(gentity_t* self, gentity_t* blocker, vec3_t right, qbool
 	}
 	else
 	{
+		float rightSucc;
 		VectorMA(blocker->r.currentOrigin, moveamt, right, end);
 		trap->Trace(&tr, blocker->r.currentOrigin, mins, blocker->r.maxs, end, blocker->s.number,
 			blocker->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
@@ -208,7 +209,7 @@ void NAVNEW_PushBlocker(gentity_t* self, gentity_t* blocker, vec3_t right, qbool
 NAVNEW_DanceWithBlocker
 -------------------------
 */
-qboolean NAVNEW_DanceWithBlocker(gentity_t* self, gentity_t* blocker, vec3_t movedir, vec3_t right)
+qboolean NAVNEW_DanceWithBlocker(gentity_t* self, const gentity_t* blocker, vec3_t movedir, vec3_t right)
 {
 	//sees if blocker has any lateral movement
 	if (blocker->client && !VectorCompare(blocker->client->ps.velocity, vec3_origin))
@@ -254,8 +255,8 @@ qboolean NAVNEW_DanceWithBlocker(gentity_t* self, gentity_t* blocker, vec3_t mov
 NAVNEW_SidestepBlocker
 -------------------------
 */
-qboolean NAVNEW_SidestepBlocker(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir, float blocked_dist,
-	vec3_t movedir, vec3_t right)
+qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t blocked_dir, float blocked_dist,
+                                vec3_t movedir, vec3_t right)
 {
 	//trace to sides of blocker and see if either is clear
 	trace_t tr;
@@ -427,7 +428,7 @@ qboolean NAVNEW_Bypass(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir, 
 NAVNEW_CheckDoubleBlock
 -------------------------
 */
-qboolean NAVNEW_CheckDoubleBlock(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir)
+qboolean NAVNEW_CheckDoubleBlock(const gentity_t* self, const gentity_t* blocker, vec3_t blocked_dir)
 {
 	//Stop double waiting
 	if (blocker->NPC && blocker->NPC->blockingEntNum == self->s.number)
@@ -563,7 +564,7 @@ qboolean NAVNEW_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info
 	return qtrue;
 }
 
-qboolean NAVNEW_TestNodeConnectionBlocked(int wp1, int wp2, gentity_t* ignoreEnt, int goalEntNum, qboolean checkWorld,
+qboolean NAVNEW_TestNodeConnectionBlocked(int wp1, int wp2, const gentity_t* ignoreEnt, int goalEntNum, qboolean checkWorld,
 	qboolean checkEnts)
 {
 	//see if the direct path between 2 nodes is blocked by architecture or an ent

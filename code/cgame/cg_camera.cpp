@@ -1813,7 +1813,7 @@ a rof file
 -------------------------
 */
 
-void CGCam_StartRoff(char* roff)
+void CGCam_StartRoff(const char* roff)
 {
 	CGCam_FollowDisable();
 	CGCam_TrackDisable();

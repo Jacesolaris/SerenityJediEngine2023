@@ -120,7 +120,7 @@ PARSING
 static char com_token[MAX_TOKEN_CHARS];
 //JLFCALLOUT MPNOTUSED
 int parseDataCount = -1;
-const int MAX_PARSE_DATA = 5;
+constexpr int MAX_PARSE_DATA = 5;
 parseData_t parseData[MAX_PARSE_DATA];
 
 void COM_ParseInit(void)
@@ -206,12 +206,12 @@ const char* SkipWhitespace(const char* data, qboolean* hasNewLines)
 int COM_Compress(char* data_p)
 {
 	char* out;
-	int c;
 	qboolean newline = qfalse, whitespace = qfalse;
 
 	char* in = out = data_p;
 	if (in)
 	{
+		int c;
 		while ((c = *in) != 0)
 		{
 			// skip double slash comments
@@ -803,8 +803,6 @@ FIXME: overflow check?
 */
 const char* Info_ValueForKey(const char* s, const char* key)
 {
-	char pkey[MAX_INFO_KEY];
-	static char value[2][MAX_INFO_VALUE]; // use two buffers so compares
 	// work without stomping on each other
 	static int valueindex = 0;
 
@@ -823,6 +821,8 @@ const char* Info_ValueForKey(const char* s, const char* key)
 		s++;
 	while (true)
 	{
+		static char value[2][MAX_INFO_VALUE];
+		char pkey[MAX_INFO_KEY];
 		char* o = pkey;
 		while (*s != '\\')
 		{
@@ -901,9 +901,6 @@ Info_RemoveKey
 */
 void Info_RemoveKey(char* s, const char* key)
 {
-	char pkey[MAX_INFO_KEY];
-	char value[MAX_INFO_VALUE];
-
 	if (strlen(s) >= MAX_INFO_STRING)
 	{
 		Com_Error(ERR_DROP, "Info_RemoveKey: oversize infostring");
@@ -916,6 +913,8 @@ void Info_RemoveKey(char* s, const char* key)
 
 	while (true)
 	{
+		char value[MAX_INFO_VALUE];
+		char pkey[MAX_INFO_KEY];
 		char* start = s;
 		if (*s == '\\')
 			s++;
@@ -1018,7 +1017,7 @@ void Info_SetValueForKey(char* s, const char* key, const char* value)
 Com_CharIsOneOfCharset
 ==================
 */
-static qboolean Com_CharIsOneOfCharset(char c, char* set)
+static qboolean Com_CharIsOneOfCharset(char c, const char* set)
 {
 	for (size_t i = 0; i < strlen(set); i++)
 	{

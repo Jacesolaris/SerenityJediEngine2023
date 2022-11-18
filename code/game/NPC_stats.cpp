@@ -1535,7 +1535,7 @@ extern void NPC_TavionScepter_Precache(void);
 extern void NPC_TavionSithSword_Precache(void);
 extern void npc_rosh_dark_precache(void);
 extern void NPC_Tusken_Precache(void);
-extern void NPC_Saboteur_Precache(void);
+extern void NPC_Saboteur_Precache();
 extern void npc_cultist_destroyer_precache(void);
 extern void NPC_GalakMech_Precache();
 

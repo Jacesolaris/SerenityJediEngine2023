@@ -34,7 +34,7 @@ constexpr auto PROXIMITY_STYLE = 1;
 constexpr auto TRIPWIRE_STYLE = 2;
 
 //---------------------------------------------------------
-void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace)
+void touchLaserTrap(gentity_t* ent, gentity_t* other, const trace_t* trace)
 //---------------------------------------------------------
 {
 	ent->s.eType = ET_GENERAL;
@@ -62,7 +62,7 @@ void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace)
 
 	if (ent->count == TRIPWIRE_STYLE)
 	{
-		const vec3_t mins = { -4, -4, -4 }, maxs = { 4, 4, 4 }; //FIXME: global these
+		constexpr vec3_t mins = { -4, -4, -4 }, maxs = { 4, 4, 4 }; //FIXME: global these
 		trace_t tr;
 		VectorMA(ent->currentOrigin, 32, ent->movedir, ent->s.origin2);
 		gi.trace(&tr, ent->s.origin2, mins, maxs, ent->currentOrigin, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 0);
@@ -132,7 +132,9 @@ void WP_prox_mine_think(gentity_t* ent)
 void laserTrapThink(gentity_t* ent)
 //---------------------------------------------------------
 {
-	vec3_t end, mins = { -4, -4, -4 }, maxs = { 4, 4, 4 };
+	vec3_t end;
+	constexpr vec3_t maxs = { 4, 4, 4 };
+	constexpr vec3_t mins = { -4, -4, -4 };
 	trace_t tr;
 
 	// turn on the beam effect
@@ -216,7 +218,7 @@ void CreateLaserTrap(gentity_t* laserTrap, vec3_t start, gentity_t* owner)
 }
 
 //---------------------------------------------------------
-static void WP_RemoveOldTraps(gentity_t* ent)
+static void WP_RemoveOldTraps(const gentity_t* ent)
 //---------------------------------------------------------
 {
 	gentity_t* found = nullptr;
@@ -276,8 +278,6 @@ static void WP_RemoveOldTraps(gentity_t* ent)
 void WP_PlaceLaserTrap(gentity_t* ent, qboolean alt_fire)
 //---------------------------------------------------------
 {
-	vec3_t start;
-
 	// limit to 10 placed at any one time
 	WP_RemoveOldTraps(ent);
 
@@ -286,6 +286,7 @@ void WP_PlaceLaserTrap(gentity_t* ent, qboolean alt_fire)
 
 	if (laserTrap)
 	{
+		vec3_t start;
 		// now make the new one
 		VectorCopy(muzzle, start);
 		WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);

@@ -111,7 +111,7 @@ protected:
 public:
 	CSequence* GetSequence(int id);
 	void DeleteSequence(CSequence* sequence);
-	int AllocateSequences(int numSequences, int* idTable);
+	int AllocateSequences(int numSequences, const int* idTable);
 	CSequencer* FindSequencer(int sequencerID);
 	CSequence* GetSequence();
 
@@ -261,7 +261,7 @@ public:
 	// Reset the buffer completely.
 	void ResetBuffer();
 	// Write to a buffer.
-	void BufferWrite(void* pSrcData, unsigned long ulNumBytesToWrite);
+	void BufferWrite(const void* pSrcData, unsigned long ulNumBytesToWrite);
 	// Read from a buffer.
 	void BufferRead(void* pDstBuff, unsigned long ulNumBytesToRead);
 };

@@ -963,7 +963,7 @@ void SP_target_scriptrunner(gentity_t* self)
 	self->use = target_scriptrunner_use;
 }
 
-void G_SetActiveState(char* targetstring, qboolean actState)
+void G_SetActiveState(const char* targetstring, qboolean actState)
 {
 	gentity_t* target = NULL;
 	while (NULL != (target = G_Find(target, FOFS(targetname), targetstring)))

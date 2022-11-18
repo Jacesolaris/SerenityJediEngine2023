@@ -1041,7 +1041,7 @@ void Info_SetValueForKey_Big(char* s, const char* key, const char* value) {
 Com_CharIsOneOfCharset
 ==================
 */
-static qboolean Com_CharIsOneOfCharset(char c, char* set) {
+static qboolean Com_CharIsOneOfCharset(char c, const char* set) {
 	for (size_t i = 0; i < strlen(set); i++) {
 		if (set[i] == c)
 			return qtrue;

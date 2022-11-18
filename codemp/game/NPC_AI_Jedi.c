@@ -51,7 +51,7 @@ extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolea
 
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
-extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
+extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
 void Boba_FireDecide(void);
@@ -253,7 +253,7 @@ qboolean npc_is_dark_jedi(const gentity_t* self)
 	return qfalse;
 }
 
-void Jedi_PlayBlockedPushSound(gentity_t* self)
+void Jedi_PlayBlockedPushSound(const gentity_t* self)
 {
 	if (self->s.number >= 0 && self->s.number < MAX_CLIENTS)
 	{
@@ -280,7 +280,7 @@ void Jedi_PlayBlockedPushSound(gentity_t* self)
 	}
 }
 
-void Jedi_PlayDeflectSound(gentity_t* self)
+void Jedi_PlayDeflectSound(const gentity_t* self)
 {
 	if (self->s.number >= 0 && self->s.number < MAX_CLIENTS)
 	{
@@ -307,7 +307,7 @@ void Jedi_PlayDeflectSound(gentity_t* self)
 	}
 }
 
-void NPC_Jedi_PlayConfusionSound(gentity_t* self)
+void NPC_Jedi_PlayConfusionSound(const gentity_t* self)
 {
 	if (self->health > 0)
 	{
@@ -2142,7 +2142,7 @@ SPEAKING
 ==========================================================================================
 */
 
-static qboolean Jedi_BattleTaunt(gentity_t* NPC)
+static qboolean Jedi_BattleTaunt(const gentity_t* NPC)
 {
 	if (TIMER_Done(NPCS.NPC, "chatter")
 		&& !Q_irand(0, 3)

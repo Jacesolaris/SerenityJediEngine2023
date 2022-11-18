@@ -39,7 +39,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 //NEEDED FOR MIND-TRICK on NPCS=========================================================
 extern void NPC_PlayConfusionSound(gentity_t* self);
-extern void NPC_Jedi_PlayConfusionSound(gentity_t* self);
+extern void NPC_Jedi_PlayConfusionSound(const gentity_t* self);
 extern void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone);
 //NEEDED FOR MIND-TRICK on NPCS=========================================================
 extern void Jedi_Decloak(gentity_t* self);
@@ -75,7 +75,7 @@ extern qboolean PM_SaberCanInterruptMove(int move, int anim);
 extern void Boba_FireWristMissile(gentity_t* self, int whichMissile);
 extern void Boba_EndWristMissile(const gentity_t* self, int whichMissile);
 extern qboolean PM_RollingAnim(int anim);
-extern void Jedi_PlayBlockedPushSound(gentity_t* self);
+extern void Jedi_PlayBlockedPushSound(const gentity_t* self);
 extern bot_state_t* botstates[MAX_CLIENTS];
 extern void Touch_Button(gentity_t* ent, gentity_t* other, trace_t* trace);
 extern void player_Freeze(const gentity_t* self);

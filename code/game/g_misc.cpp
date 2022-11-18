@@ -1819,7 +1819,7 @@ targetname - starts off, when used, turns on (toggles)
 
 FIXME: sometimes we want these to not be shootable... maybe just put them behind a force field?
 */
-extern void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace);
+extern void touchLaserTrap(gentity_t* ent, gentity_t* other, const trace_t* trace);
 extern void CreateLaserTrap(gentity_t* laserTrap, vec3_t start, gentity_t* owner);
 
 void misc_trip_mine_activate(gentity_t* self, gentity_t* other, gentity_t* activator)

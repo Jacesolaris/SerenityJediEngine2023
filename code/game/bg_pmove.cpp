@@ -332,7 +332,6 @@ qboolean PM_InForceFall()
 	{
 		return qfalse;
 	}
-	int ForceManaModifier = 0;
 	const int FFDebounce = pm->ps->forcePowerDebounce[FP_LEVITATION] - pm->ps->forcePowerLevel[FP_LEVITATION] * 100;
 
 	// can player force fall?
@@ -362,6 +361,7 @@ qboolean PM_InForceFall()
 		// is it time to reduce the players force power
 		if (pm->ps->forcePowerDebounce[FP_LEVITATION] < pm->cmd.serverTime)
 		{
+			int ForceManaModifier = 0;
 			// reduced the use of force power for duel and power duel matches
 			if (pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 			{

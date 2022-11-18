@@ -149,8 +149,8 @@ extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwD
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
 extern int Jedi_ReCalcParryTime(const gentity_t* self, evasionType_t evasionType);
 extern qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hitLoc);
-extern void Jedi_PlayDeflectSound(gentity_t* self);
-extern void Jedi_PlayBlockedPushSound(gentity_t* self);
+extern void Jedi_PlayDeflectSound(const gentity_t* self);
+extern void Jedi_PlayBlockedPushSound(const gentity_t* self);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
 extern void Jedi_Ambush(gentity_t* self);
 extern qboolean Jedi_SaberBusy(const gentity_t* self);
@@ -230,7 +230,7 @@ void wp_block_points_regenerate(const gentity_t* self, int override_amt);
 void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 void G_Stagger(gentity_t* hit_ent);
 extern qboolean PM_StabAnim(int anim);
-extern qboolean NPC_IsAlive(gentity_t* self, gentity_t* NPC);
+extern qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC);
 extern qboolean PM_InKataAnim(int anim);
 extern qboolean PM_StaggerAnim(int anim);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
@@ -4117,7 +4117,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 {
 	trace_t tr;
 	constexpr int mask = MASK_SHOT | CONTENTS_LIGHTSABER;
-	gentity_t* attacker = &g_entities[ignore];
+	const gentity_t* attacker = &g_entities[ignore];
 
 	vec3_t end2;
 	VectorCopy(end, end2);
@@ -18253,7 +18253,7 @@ void ForceHeal(gentity_t* self)
 }
 
 extern void NPC_PlayConfusionSound(gentity_t* self);
-extern void NPC_Jedi_PlayConfusionSound(gentity_t* self);
+extern void NPC_Jedi_PlayConfusionSound(const gentity_t* self);
 
 qboolean WP_CheckBreakControl(gentity_t* self)
 {

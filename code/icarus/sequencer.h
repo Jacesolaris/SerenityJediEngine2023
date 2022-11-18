@@ -109,7 +109,7 @@ public:
 	}
 
 	// moved to public on 2/12/2 to allow calling during shutdown
-	int Recall(CIcarus* icarus);
+	int Recall(const CIcarus* icarus);
 protected:
 	int EvaluateConditional(CBlock* block, CIcarus* icarus) const;
 
@@ -118,9 +118,9 @@ protected:
 	void Interrupt(void);
 
 	bstream_t* AddStream(void);
-	void DeleteStream(bstream_t* bstream);
+	void DeleteStream(const bstream_t* bstream);
 
-	int AddAffect(bstream_t* bstream, int retain, int* id, CIcarus* icarus);
+	int AddAffect(const bstream_t* bstream, int retain, int* id, CIcarus* icarus);
 
 	CSequence* AddSequence(CIcarus* icarus);
 	CSequence* AddSequence(CSequence* parent, CSequence* returnSeq, int flags, CIcarus* icarus);
@@ -128,7 +128,7 @@ protected:
 	CSequence* GetSequence(int id);
 
 	//NOTENOTE: This only removes references to the sequence, IT DOES NOT FREE THE ALLOCATED MEMORY!
-	static int RemoveSequence(CSequence* sequence, CIcarus* icarus);
+	static int RemoveSequence(CSequence* sequence, const CIcarus* icarus);
 	int DestroySequence(CSequence* sequence, CIcarus* icarus);
 
 	int PushCommand(CBlock* command, int flag);

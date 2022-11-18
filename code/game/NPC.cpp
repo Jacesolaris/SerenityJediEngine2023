@@ -38,7 +38,7 @@ extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 extern void NPC_BSNoClip(void);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void NPC_ApplyRoff(void);
-extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
+extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void Mark1_dying(gentity_t* self);
@@ -113,7 +113,7 @@ qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean NPC_IsAlive(gentity_t* self, gentity_t* NPC)
+qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC)
 {
 	if (!NPC)
 	{

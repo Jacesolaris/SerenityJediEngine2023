@@ -40,7 +40,7 @@ extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int lengt
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
-extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
+extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
@@ -114,7 +114,7 @@ extern void Boba_ChangeWeapon(int wp);
 static qboolean Jedi_SaberBlock(void);
 static qboolean Jedi_AttackDecide(int enemy_dist);
 extern void add_npc_block_point_bonus(const gentity_t* self);
-extern qboolean NPC_IsAlive(gentity_t* self, gentity_t* NPC);
+extern qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC);
 extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
@@ -365,7 +365,7 @@ qboolean Jedi_CultistForceUser(const gentity_t* self)
 	return qfalse;
 }
 
-void Jedi_PlayBlockedPushSound(gentity_t* self)
+void Jedi_PlayBlockedPushSound(const gentity_t* self)
 {
 	if (!self->s.number)
 	{
@@ -392,7 +392,7 @@ void Jedi_PlayBlockedPushSound(gentity_t* self)
 	}
 }
 
-void Jedi_PlayDeflectSound(gentity_t* self)
+void Jedi_PlayDeflectSound(const gentity_t* self)
 {
 	if (!self->s.number)
 	{
@@ -419,7 +419,7 @@ void Jedi_PlayDeflectSound(gentity_t* self)
 	}
 }
 
-void NPC_Jedi_PlayConfusionSound(gentity_t* self)
+void NPC_Jedi_PlayConfusionSound(const gentity_t* self)
 {
 	if (self->health > 0)
 	{
@@ -1147,7 +1147,7 @@ SPEAKING
 ==========================================================================================
 */
 
-qboolean Jedi_BattleTaunt(gentity_t* NPC)
+qboolean Jedi_BattleTaunt(const gentity_t* NPC)
 {
 	if (TIMER_Done(NPC, "chatter")
 		&& !Q_irand(0, 3)

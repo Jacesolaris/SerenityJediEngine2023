@@ -27,11 +27,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../game/objectives.h"
 
 // For printing objectives
-static const short objectiveStartingYpos = 75; // Y starting position for objective text
-static const short objectiveStartingXpos = 60; // X starting position for objective text
+static constexpr short objectiveStartingYpos = 75; // Y starting position for objective text
+static constexpr short objectiveStartingXpos = 60; // X starting position for objective text
 static constexpr int objectiveTextBoxWidth = 500; // Width (in pixels) of text box
 static constexpr int objectiveTextBoxHeight = 300; // Height (in pixels) of text box
-static const short missionYpos = 79;
+static constexpr short missionYpos = 79;
 
 const char* showLoadPowersName[] =
 {
@@ -302,7 +302,7 @@ void CG_DrawDataPadObjectives(const centity_t* cent)
 	constexpr short titleXPos = objectiveStartingXpos - 22; // X starting position for title text
 	constexpr short titleYPos = objectiveStartingYpos - 23; // Y starting position for title text
 	constexpr short graphic_size = 16; // Size (width and height) of graphic used to show status of objective
-	const short graphicXpos = objectiveStartingXpos - graphic_size - 8;
+	constexpr short graphicXpos = objectiveStartingXpos - graphic_size - 8;
 	// Amount of X to backup from text starting position
 	const short graphicYOffset = (iYPixelsPerLine - graphic_size) / 2;
 	// Amount of Y to raise graphic so it's in the center of the text line
@@ -407,8 +407,8 @@ int CG_WeaponCheck(int weaponIndex);
 // For printing load screen icons
 constexpr int MAXLOADICONSPERROW = 8; // Max icons displayed per row
 constexpr int MAXLOADWEAPONS = 16;
-const int MAXLOAD_FORCEICONSIZE = 40; // Size of force power icons
-const int MAXLOAD_FORCEICONPAD = 12; // Padding space between icons
+constexpr int MAXLOAD_FORCEICONSIZE = 40; // Size of force power icons
+constexpr int MAXLOAD_FORCEICONPAD = 12; // Padding space between icons
 
 static int CG_DrawLoadWeaponsPrintRow(const char* itemName, int weaponsBits, int rowIconCnt, int startIndex)
 {

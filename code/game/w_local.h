@@ -92,7 +92,7 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 void WP_ThermalThink(gentity_t* ent);
 gentity_t* WP_FireThermalDetonator(gentity_t* ent, qboolean alt_fire);
 gentity_t* WP_DropThermal(gentity_t* ent);
-void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace);
+void touchLaserTrap(gentity_t* ent, gentity_t* other, const trace_t* trace);
 void CreateLaserTrap(gentity_t* laserTrap, vec3_t start, gentity_t* owner);
 void WP_PlaceLaserTrap(gentity_t* ent, qboolean alt_fire);
 void WP_FireTuskenRifle(gentity_t* ent);

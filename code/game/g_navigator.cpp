@@ -1561,8 +1561,6 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 	TGraph::TNodes::iterator nodeIter;
 	TGraph::TEdges::iterator edgeIter;
 
-	ratl::ratl_compare closestNbrs[MIN_WAY_NEIGHBORS];
-
 	// Drop To Floor And Mark Floating
 	//---------------------------------
 	for (nodeIter = mGraph.nodes_begin(); nodeIter != mGraph.nodes_end(); ++nodeIter)
@@ -1681,6 +1679,7 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 		if (!at->mFlags.get_bit(c_way_node::WN_NOAUTOCONNECT) &&
 			(at->mType == PT_COMBATNODE || at->mType == PT_GOALNODE))
 		{
+			ratl::ratl_compare closestNbrs[MIN_WAY_NEIGHBORS];
 			// Get The List Of Nodes For This Cell Of The Map
 			//------------------------------------------------
 			TGraphCells::SCell& Cell = mCells.get_cell(at->mPoint[0], at->mPoint[1]);

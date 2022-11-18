@@ -67,7 +67,7 @@ extern void G_StartRoll(gentity_t* ent, int anim);
 extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern int killPlayerTimer;
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
-extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
+extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern qboolean G_TeamEnemy(const gentity_t* self);

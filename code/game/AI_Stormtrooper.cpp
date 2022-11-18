@@ -33,7 +33,7 @@ extern void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* mem
 extern qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, int entNum);
 extern void AI_GroupUpdateEnemyLastSeen(AIGroupInfo_t* group, vec3_t spot);
 extern void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group);
-extern void NPC_TempLookTarget(gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
+extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern void NPC_CheckGetNewWeapon(void);
@@ -88,13 +88,13 @@ static vec3_t impactPos;
 
 int groupSpeechDebounceTime[TEAM_NUM_TEAMS]; //used to stop several group AI from speaking all at once
 
-void NPC_Saboteur_Precache(void)
+void NPC_Saboteur_Precache()
 {
 	G_SoundIndex("sound/chars/shadowtrooper/cloak.wav");
 	G_SoundIndex("sound/chars/shadowtrooper/decloak.wav");
 }
 
-void Saboteur_Decloak(gentity_t* self, int uncloakTime)
+void Saboteur_Decloak(gentity_t* self, const int uncloakTime)
 {
 	if (self && self->client)
 	{
@@ -147,7 +147,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void ST_AggressionAdjust(const gentity_t* self, int change)
+void ST_AggressionAdjust(const gentity_t* self, const int change)
 {
 	int upper_threshold, lower_threshold;
 
@@ -273,7 +273,7 @@ qboolean NPC_IsGunner(const gentity_t* self)
 	return qfalse;
 }
 
-static void ST_Speech(gentity_t* self, int speechType, float failChance)
+static void ST_Speech(const gentity_t* self, const int speechType, const float failChance)
 {
 	if (Q_flrand(0.0f, 1.0f) < failChance)
 	{
@@ -370,7 +370,7 @@ static void ST_Speech(gentity_t* self, int speechType, float failChance)
 	self->NPC->blockedSpeechDebounceTime = level.time + 2000;
 }
 
-void ST_MarkToCover(gentity_t* self)
+void ST_MarkToCover(const gentity_t* self)
 {
 	if (!self || !self->NPC)
 	{

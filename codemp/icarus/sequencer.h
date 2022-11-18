@@ -129,7 +129,7 @@ protected:
 	void Interrupt(void);
 
 	bstream_t* AddStream(void);
-	void DeleteStream(bstream_t* bstream);
+	void DeleteStream(const bstream_t* bstream);
 
 	int AddAffect(bstream_t* bstream, int retain, int* id);
 

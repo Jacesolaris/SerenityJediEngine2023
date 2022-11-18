@@ -157,52 +157,42 @@ namespace ojk
 		// Tags for dispatching.
 		class BooleanTag
 		{
-		public:
 		};
 
 		class NumericTag
 		{
-		public:
 		};
 
 		class PointerTag
 		{
-		public:
 		};
 
 		class ClassTag
 		{
-		public:
 		};
 
 		class Array1dTag
 		{
-		public:
 		};
 
 		class Array2dTag
 		{
-		public:
 		};
 
 		class InplaceTag
 		{
-		public:
 		};
 
 		class CastTag
 		{
-		public:
 		};
 
 		class InternalTag
 		{
-		public:
 		};
 
 		class ExternalTag
 		{
-		public:
 		};
 
 		template <typename TSrc, typename TDst>
@@ -316,7 +306,7 @@ namespace ojk
 		enum { is_implemented = false };
 
 		static void sg_export(
-			SavedGameHelper& saved_game,
+			const SavedGameHelper& saved_game,
 			const T& instance)
 		{
 			static_cast<void>(saved_game);
@@ -326,8 +316,8 @@ namespace ojk
 		}
 
 		static void sg_import(
-			SavedGameHelper& saved_game,
-			T& instance)
+			const SavedGameHelper& saved_game,
+			const T& instance)
 		{
 			static_cast<void>(saved_game);
 			static_cast<void>(instance);

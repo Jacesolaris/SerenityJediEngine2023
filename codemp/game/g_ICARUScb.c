@@ -30,7 +30,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "bg_public.h"
 #include "b_local.h"
 #include "icarus/Q3_Interface.h"
-#include "icarus/Q3_Registers.h"
 #include "g_nav.h"
 #include "g_dynmusic.h"
 #include "g_roff.h"
@@ -5724,7 +5723,7 @@ Q3_SetCinematicSkipScript
 
 ============
 */
-static void Q3_SetCinematicSkipScript(char* scriptname)
+static void Q3_SetCinematicSkipScript(const char* scriptname)
 {
 	if (Q_stricmp("none", scriptname) == 0 || Q_stricmp("NULL", scriptname) == 0)
 	{
@@ -9162,7 +9161,6 @@ void ParseTags(int entID, const char* data)
 	while ((tagstart = strchr(data, '$')) != NULL)
 	{
 		ProcessTag(entID, tagstart);
-		tagstart = NULL;
 	}
 }
 

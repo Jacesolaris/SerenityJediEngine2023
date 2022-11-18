@@ -239,7 +239,7 @@ namespace ragl
 								{
 									if (mEdges.full())
 									{
-										assert("graph_region: Too Many Region Edges" == 0);
+										assert("graph_region: Too Many Region Edges" == nullptr);
 										Success = false;
 									}
 									else

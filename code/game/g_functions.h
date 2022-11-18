@@ -366,7 +366,7 @@ extern void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void NPC_Touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void touch_ammo_crystal_tigger(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void funcBBrushTouch(gentity_t* ent, gentity_t* other, trace_t* trace);
-extern void touchLaserTrap(gentity_t* ent, gentity_t* other, trace_t* trace);
+extern void touchLaserTrap(gentity_t* ent, gentity_t* other, const trace_t* trace);
 extern void prox_mine_stick(gentity_t* self, gentity_t* other, const trace_t* trace);
 extern void func_rotating_touch(gentity_t* self, gentity_t* other, trace_t* trace);
 extern void TouchTieBomb(gentity_t* self, gentity_t* other, trace_t* trace);
@@ -538,7 +538,7 @@ extern void pas_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void item_spawn_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void NPC_VehicleSpawnUse(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void misc_weapon_shooter_use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void eweb_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator);
 extern void radar_icon_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 
 //	void		(*pain)(gentity_t *self, gentity_t *attacker, int damage,int mod,int hitLoc);

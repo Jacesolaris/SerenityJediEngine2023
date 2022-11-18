@@ -944,7 +944,6 @@ void Touch_Item(gentity_t* ent, gentity_t* other, trace_t* trace)
 			TIMER_Set(other, "stick", pickUpTime);
 			TIMER_Set(other, "verifyCP", pickUpTime);
 			TIMER_Set(other, "attackDelay", 600);
-			respawn = 0;
 		}
 		if (other->client->ps.stats[STAT_WEAPONS] & 1 << ent->item->giTag)
 		{
@@ -1438,26 +1437,8 @@ Write the needed items to a config string
 so the client will know which ones to precache
 ===============
 */
-void save_registered_items(void)
+void save_registered_items()
 {
-	/*	char	string[MAX_ITEMS+1];
-		int		i;
-		int		count;
-
-		count = 0;
-		for ( i = 0 ; i < bg_numItems ; i++ ) {
-			if ( itemRegistered[i] ) {
-				count++;
-				string[i] = '1';
-			} else {
-				string[i] = '0';
-			}
-		}
-		string[ bg_numItems ] = 0;
-
-		gi.Printf( "%i items registered\n", count );
-		gi.SetConfigstring(CS_ITEMS, string);
-	*/
 	gi.SetConfigstring(CS_ITEMS, itemRegistered);
 }
 
@@ -2056,7 +2037,7 @@ void RemoveBarrier(gentity_t* ent)
 
 	if (!registered)
 	{
-		shieldDeactivateSound = G_SoundIndex("sound/barrier/barrier_off.wav");
+		shieldDeactivateSound = G_SoundIndex("sound/barrier/barrier_off.mp3v");
 		registered = qtrue;
 	}
 
@@ -2081,7 +2062,7 @@ void PlaceBarrier(gentity_t* ent)
 	if (!registered)
 	{
 		shieldLoopSound = G_SoundIndex("sound/barrier/barrier_loop.wav");
-		shieldActivateSound = G_SoundIndex("sound/barrier/barrier_on.wav");
+		shieldActivateSound = G_SoundIndex("sound/barrier/barrier_on.mp3");
 		registered = qtrue;
 	}
 

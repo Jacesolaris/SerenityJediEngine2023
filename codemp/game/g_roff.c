@@ -22,7 +22,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "g_local.h"
 #include "g_roff.h"
-#include "g_ICARUScb.h"
 
 roff_list_t roffs[MAX_ROFFSNEW];
 int num_roffs = 0;
@@ -31,17 +30,14 @@ qboolean g_bCollidableRoffs = qfalse;
 
 extern void Q3_TaskIDComplete(gentity_t* ent, taskID_t taskType);
 
-static void G_RoffNotetrackCallback(gentity_t* cent, const char* notetrack)
+static void G_RoffNotetrackCallback(const gentity_t* cent, const char* notetrack)
 {
-	int i = 0, r = 0, r2 = 0, anglesGathered = 0, posoffsetGathered = 0;
+	int i = 0, r = 0;
 	char type[256];
 	char argument[512];
 	char addlArg[512];
 	char errMsg[256];
-	char t[64];
-	char teststr[256];
 	int addlArgs = 0;
-	vec3_t parsedAngles, parsedOffset, useAngles, useOrigin, forward, right, up;
 
 	if (!cent || !notetrack)
 	{
@@ -99,6 +95,11 @@ static void G_RoffNotetrackCallback(gentity_t* cent, const char* notetrack)
 
 	if (strcmp(type, "effect") == 0)
 	{
+		vec3_t parsedOffset;
+		char teststr[256];
+		char t[64];
+		int posoffsetGathered = 0;
+		int r2 = 0;
 		if (!addlArgs)
 		{
 			VectorClear(parsedOffset);
@@ -175,12 +176,18 @@ static void G_RoffNotetrackCallback(gentity_t* cent, const char* notetrack)
 		}
 
 		const int objectID = G_EffectIndex(argument);
-		r = 0;
 
 		if (objectID)
 		{
+			vec3_t up;
+			vec3_t right;
+			vec3_t forward;
+			vec3_t useOrigin;
+			vec3_t useAngles;
 			if (addlArgs)
 			{
+				vec3_t parsedAngles;
+				int anglesGathered = 0;
 				//if there is an additional argument for an effect it is expected to be XANGLE-YANGLE-ZANGLE
 				i++;
 				while (anglesGathered < 3)
