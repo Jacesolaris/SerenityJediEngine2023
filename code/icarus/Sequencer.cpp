@@ -127,7 +127,7 @@ void CSequencer::Free(CIcarus* icarus)
 
 	while (!m_streamsCreated.empty())
 	{
-		bstream_t* streamToDel = m_streamsCreated.back();
+		const bstream_t* streamToDel = m_streamsCreated.back();
 		DeleteStream(streamToDel);
 	}
 
@@ -2436,7 +2436,7 @@ int CSequencer::Save()
 		pIcarus->BufferWrite(&id, sizeof id);
 	}
 
-	int curGroupID = m_curGroup == nullptr ? -1 : m_curGroup->GetGUID();
+	const int curGroupID = m_curGroup == nullptr ? -1 : m_curGroup->GetGUID();
 
 	// Right the group ID.
 	pIcarus->BufferWrite(&curGroupID, sizeof curGroupID);

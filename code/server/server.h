@@ -256,7 +256,7 @@ int SV_PointContents(const vec3_t p, int passEntityNum);
 Ghoul2 Insert Start
 */
 void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	const int passEntityNum, const int contentmask, const EG2_Collision eG2TraceType = G2_NOCOLLIDE, const int useLod = 0);
+              int passEntityNum, int contentmask, EG2_Collision eG2TraceType = G2_NOCOLLIDE, int useLod = 0);
 /*
 Ghoul2 Insert End
 */

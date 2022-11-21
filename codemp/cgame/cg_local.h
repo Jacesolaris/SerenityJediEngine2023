@@ -2246,7 +2246,7 @@ void CG_AdjustEyePos(const char* modelName);
 
 void		BG_CycleInven(playerState_t* ps, int direction);
 int			BG_ProperForceIndex(int power);
-void		BG_CycleForce(playerState_t* ps, int direction);
+void		bg_cycle_force(playerState_t* ps, int direction);
 
 const char* CG_GetStringEdString(char* refSection, char* refName);
 

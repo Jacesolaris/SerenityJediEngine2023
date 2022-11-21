@@ -196,17 +196,17 @@ namespace ragl
 			NULLEDGE = -1,
 		};
 
-		using TNodes = typename ratl::pool_vs<TNODE, MAXNODES>;
-		using TEdges = typename ratl::pool_vs<TEDGE, MAXEDGES>;
+		using TNodes = ratl::pool_vs<TNODE, MAXNODES>;
+		using TEdges = ratl::pool_vs<TEDGE, MAXEDGES>;
 		struct	SNodeNeighbor
 		{
 			short	mEdge;
 			short	mNode;
 		};
-		using TNodeNeighbors = typename ratl::vector_vs<SNodeNeighbor, MAXNODENEIGHBORS>;
-		using TLinks = typename ratl::array_vs< TNodeNeighbors, MAXNODES>;
+		using TNodeNeighbors = ratl::vector_vs<SNodeNeighbor, MAXNODENEIGHBORS>;
+		using TLinks = ratl::array_vs< TNodeNeighbors, MAXNODES>;
 
-		using TGraph = typename ragl::graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, MAXNODENEIGHBORS>;
+		using TGraph = ragl::graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, MAXNODENEIGHBORS>;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// cells class
@@ -231,14 +231,14 @@ namespace ragl
 					return	mCost < t.mCost;
 				}
 			};
-			using TSortNodes = typename ratl::vector_vs<SSortNode, NODESPERCELL * 25>;
-			using TCellNodes = typename ratl::vector_vs<short, NODESPERCELL>;
+			using TSortNodes = ratl::vector_vs<SSortNode, NODESPERCELL * 25>;
+			using TCellNodes = ratl::vector_vs<short, NODESPERCELL>;
 			struct SCell
 			{
 				TCellNodes	mNodes;
 				TCellNodes	mEdges;
 			};
-			using TCells = typename ratl::grid2_vs<SCell, CELLSX, CELLSY>;
+			using TCells = ratl::grid2_vs<SCell, CELLSX, CELLSY>;
 
 			////////////////////////////////////////////////////////////////////////////////
 			//

@@ -39,7 +39,7 @@ namespace ojk
 
 		// Reads a chunk from the file into the internal buffer.
 		bool read_chunk(
-			const uint32_t chunk_id) override;
+			uint32_t chunk_id) override;
 
 		// Returns true if all data read from the internal buffer.
 		bool is_all_data_read() const override;
@@ -50,7 +50,7 @@ namespace ojk
 		// Writes a chunk into the file from the internal buffer.
 		// Returns true on success or false otherwise.
 		bool write_chunk(
-			const uint32_t chunk_id) override;
+			uint32_t chunk_id) override;
 
 		// Reads a raw data from the internal buffer.
 		// Returns true on success or false otherwise.
@@ -161,7 +161,7 @@ namespace ojk
 		static std::string get_chunk_id_string(
 			uint32_t chunk_id);
 
-		static const uint32_t get_jo_magic_value();
+		static uint32_t get_jo_magic_value();
 	}; // SavedGame
 } // ojk
 

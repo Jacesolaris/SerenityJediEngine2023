@@ -22,6 +22,9 @@
 
  /* GIMP RGBA C-Source image dump (sdl_icon.c) */
 
+#ifndef SDL_ICON_H
+#define SDL_ICON_H
+
 static const struct {
 	uint32_t  	 width;
 	uint32_t  	 height;
@@ -204,3 +207,4 @@ static const struct {
   "ij}\377ij}\377ij}\377ij}\377ij}\377hi|\377jj~\377gh|\377//J\377\000\000\032\377"
   "\000\000\040\377\010\010(\377",
 };
+#endif // SDL_ICON_H

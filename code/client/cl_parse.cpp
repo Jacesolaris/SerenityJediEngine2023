@@ -84,7 +84,7 @@ CL_ParsePacketEntities
 
 ==================
 */
-void CL_ParsePacketEntities(msg_t* msg, clSnapshot_t* oldframe, clSnapshot_t* newframe) {
+void CL_ParsePacketEntities(msg_t* msg, const clSnapshot_t* oldframe, clSnapshot_t* newframe) {
 	int oldnum;
 
 	newframe->parseEntitiesNum = cl.parseEntitiesNum;

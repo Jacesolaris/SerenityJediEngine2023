@@ -3139,7 +3139,7 @@ void CG_NextForcePower_f(void)
 		cg.snap->ps.fd.forcePowerSelected = cg.forceSelect;
 	}
 
-	BG_CycleForce(&cg.snap->ps, 1);
+	bg_cycle_force(&cg.snap->ps, 1);
 
 	if (cg.snap->ps.fd.forcePowersKnown & 1 << cg.snap->ps.fd.forcePowerSelected)
 	{
@@ -3188,7 +3188,7 @@ void CG_PrevForcePower_f(void)
 		cg.snap->ps.fd.forcePowerSelected = cg.forceSelect;
 	}
 
-	BG_CycleForce(&cg.snap->ps, -1);
+	bg_cycle_force(&cg.snap->ps, -1);
 
 	if (cg.snap->ps.fd.forcePowersKnown & 1 << cg.snap->ps.fd.forcePowerSelected)
 	{

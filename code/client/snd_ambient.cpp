@@ -66,7 +66,7 @@ static const char* setNames[NUM_AS_SETS] =
 };
 
 // Used for enum / function matching
-static const parseFunc_t parseFuncs[NUM_AS_SETS] =
+static constexpr parseFunc_t parseFuncs[NUM_AS_SETS] =
 {
 	AS_GetGeneralSet,
 	AS_GetLocalSet,
@@ -1074,7 +1074,7 @@ void S_UpdateAmbientSet(const char* name, vec3_t origin)
 	{
 		return;
 	}
-	ambientSet_t* set = aSets->GetSet(name);
+	const ambientSet_t* set = aSets->GetSet(name);
 
 	if (set == nullptr)
 		return;
@@ -1083,7 +1083,7 @@ void S_UpdateAmbientSet(const char* name, vec3_t origin)
 	AS_UpdateCurrentSet(set->id);
 
 	const ambientSet_t* current = aSets->GetSet(currentSet);
-	ambientSet_t* old = aSets->GetSet(oldSet);
+	const ambientSet_t* old = aSets->GetSet(oldSet);
 
 	if (current)
 		AS_PlayAmbientSet(origin, set, &currentSetTime);
@@ -1102,7 +1102,7 @@ int S_AddLocalSet(const char* name, vec3_t listener_origin, vec3_t origin, int e
 {
 	int currentTime;
 
-	ambientSet_t* set = aSets->GetSet(name);
+	const ambientSet_t* set = aSets->GetSet(name);
 
 	if (set == nullptr)
 		return cl.serverTime;

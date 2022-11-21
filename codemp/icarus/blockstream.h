@@ -76,12 +76,12 @@ public:
 	void* GetData(void)	const { return m_data; }	//Get data member variable
 	int	GetSize(void)		const { return m_size; }	//Get size member variable
 
-	inline void* operator new(size_t size)
+	void* operator new(size_t size)
 	{	// Allocate the memory.
 		return Z_Malloc(size, TAG_ICARUS4, qtrue);
 	}
 	// Overloaded delete operator.
-	inline void operator delete(void* pRawData)
+	void operator delete(void* pRawData)
 	{	// Free the Memory.
 		Z_Free(pRawData);
 	}

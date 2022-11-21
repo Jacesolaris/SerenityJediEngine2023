@@ -74,7 +74,7 @@ public:
 
 	CSequence* GetChildByID(int id);
 	CSequence* GetChildByIndex(int iIndex);
-	bool HasChild(CSequence* sequence);
+	bool HasChild(CSequence* sequence) const;
 
 	int Save();
 	int Load(CIcarus* icarus);

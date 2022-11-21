@@ -565,7 +565,7 @@ static cvarTable_t cvarTable[] = {
 	{&cg_debugHealthBars, "cg_debugHealthBars", "0", CVAR_ARCHIVE},
 	{&cg_debugBlockBars, "cg_drawblockpointbar", "0", CVAR_ARCHIVE},
 
-	{&cg_SFXSabers, "cg_SFXSabers", "2", CVAR_ARCHIVE},
+	{&cg_SFXSabers, "cg_SFXSabers", "3", CVAR_ARCHIVE},
 	{&cg_SFXSabersGlowSize, "cg_SFXSabersGlowSize", "1.0", CVAR_ARCHIVE},
 	{&cg_SFXSabersCoreSize, "cg_SFXSabersCoreSize", "1.0", CVAR_ARCHIVE},
 

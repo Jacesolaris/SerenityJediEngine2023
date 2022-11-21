@@ -542,7 +542,7 @@ namespace ratl
 	class pool_vs : public pool_base<storage::value_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::value_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		pool_vs() {}
@@ -552,7 +552,7 @@ namespace ratl
 	class pool_os : public pool_base<storage::object_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::object_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		pool_os() {}
@@ -562,7 +562,7 @@ namespace ratl
 	class pool_is : public pool_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
 	{
 	public:
-		using TStorageTraits = typename storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
+		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;

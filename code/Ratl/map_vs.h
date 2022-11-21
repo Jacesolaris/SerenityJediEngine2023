@@ -1138,7 +1138,7 @@ namespace ratl
 	class set_vs : public set_base<storage::value_semantics_node<T, ARG_CAPACITY, tree_node>, 0 >
 	{
 	public:
-		using TStorageTraits = typename storage::value_semantics_node<T, ARG_CAPACITY, tree_node>;
+		using TStorageTraits = storage::value_semantics_node<T, ARG_CAPACITY, tree_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		set_vs() {}
@@ -1148,7 +1148,7 @@ namespace ratl
 	class set_os : public set_base<storage::object_semantics_node<T, ARG_CAPACITY, tree_node>, 0 >
 	{
 	public:
-		using TStorageTraits = typename storage::object_semantics_node<T, ARG_CAPACITY, tree_node>;
+		using TStorageTraits = storage::object_semantics_node<T, ARG_CAPACITY, tree_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		set_os() {}
@@ -1158,7 +1158,7 @@ namespace ratl
 	class set_is : public set_base<storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, tree_node>, 0 >
 	{
 	public:
-		using TStorageTraits = typename storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, tree_node>;
+		using TStorageTraits = storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, tree_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
@@ -1551,7 +1551,7 @@ namespace ratl
 		0 >
 	{
 	public:
-		using VStorageTraits = typename storage::value_semantics<V, ARG_CAPACITY>;
+		using VStorageTraits = storage::value_semantics<V, ARG_CAPACITY>;
 		using TTValue = typename VStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		map_vs() {}
@@ -1564,7 +1564,7 @@ namespace ratl
 		0 >
 	{
 	public:
-		using VStorageTraits = typename storage::object_semantics<V, ARG_CAPACITY>;
+		using VStorageTraits = storage::object_semantics<V, ARG_CAPACITY>;
 		using TTValue = typename VStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		map_os() {}
@@ -1577,7 +1577,7 @@ namespace ratl
 		0 >
 	{
 	public:
-		using VStorageTraits = typename storage::virtual_semantics<V, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
+		using VStorageTraits = storage::virtual_semantics<V, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename VStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;

@@ -52,8 +52,8 @@ public:
 public:
 	SFxHelper();
 
-	inline	int	GetTime(void) const { return mTime; }
-	inline	int	GetFrameTime(void) const { return mFrameTime; }
+	int	GetTime(void) const { return mTime; }
+	int	GetFrameTime(void) const { return mFrameTime; }
 
 	void	ReInit(refdef_t* pRefdef);
 	void	AdjustTime(int time);
@@ -62,42 +62,42 @@ public:
 	static void	Print(const char* msg, ...);
 
 	// File handling
-	static inline	int		OpenFile(const char* path, fileHandle_t* fh, int mode)
+	static int		OpenFile(const char* path, fileHandle_t* fh, int mode)
 	{
 		return FS_FOpenFileByMode(path, fh, FS_READ);
 	}
 
-	static inline	int		ReadFile(void* data, int len, fileHandle_t fh)
+	static int		ReadFile(void* data, int len, fileHandle_t fh)
 	{
 		FS_Read(data, len, fh);
 		return 1;
 	}
 
-	static inline	void	CloseFile(fileHandle_t fh)
+	static void	CloseFile(fileHandle_t fh)
 	{
 		FS_FCloseFile(fh);
 	}
 
 	// Sound
-	static inline	void	PlaySound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int volume, int radius)
+	static void	PlaySound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int volume, int radius)
 	{
 		//S_StartSound( origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle, volume, radius );
 		S_StartSound(origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle);
 	}
 
-	static inline	void	PlayLocalSound(sfxHandle_t sfxHandle, int entchannel)
+	static void	PlayLocalSound(sfxHandle_t sfxHandle, int entchannel)
 	{
 		//S_StartSound( origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle, volume, radius );
 		S_StartLocalSound(sfxHandle, entchannel);
 	}
 
-	static inline	int		RegisterSound(const char* sound)
+	static int		RegisterSound(const char* sound)
 	{
 		return S_RegisterSound(sound);
 	}
 
 	// Physics/collision
-	static inline	void	Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags)
+	static void	Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags)
 	{
 		TCGTrace* td = (TCGTrace*)cl.mSharedMemory;
 
@@ -124,7 +124,7 @@ public:
 		tr = td->mResult;
 	}
 
-	static inline	void	G2Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags)
+	static void	G2Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags)
 	{
 		TCGTrace* td = (TCGTrace*)cl.mSharedMemory;
 
@@ -151,7 +151,7 @@ public:
 		tr = td->mResult;
 	}
 
-	static inline	void	AddGhoul2Decal(int shader, vec3_t start, vec3_t dir, float size)
+	static void	AddGhoul2Decal(int shader, vec3_t start, vec3_t dir, float size)
 	{
 		TCGG2Mark* td = (TCGG2Mark*)cl.mSharedMemory;
 
@@ -163,7 +163,7 @@ public:
 		CGVM_G2Mark();
 	}
 
-	inline	void	AddFxToScene(refEntity_t* ent)
+	void	AddFxToScene(refEntity_t* ent)
 	{
 #ifdef _DEBUG
 		mMainRefs++;
@@ -172,7 +172,8 @@ public:
 #endif
 		re->AddRefEntityToScene(ent);
 	}
-	inline	void	AddFxToScene(miniRefEntity_t* ent)
+
+	void	AddFxToScene(miniRefEntity_t* ent)
 	{
 #ifdef _DEBUG
 		mMiniRefs++;
@@ -182,27 +183,27 @@ public:
 		re->AddMiniRefEntityToScene(ent);
 	}
 
-	static inline	void	AddLightToScene(vec3_t org, float radius, float red, float green, float blue)
+	static void	AddLightToScene(vec3_t org, float radius, float red, float green, float blue)
 	{
 		re->AddLightToScene(org, radius, red, green, blue);
 	}
 
-	static inline	int		RegisterShader(const char* shader)
+	static int		RegisterShader(const char* shader)
 	{
 		return re->RegisterShader(shader);
 	}
 
-	static inline	int		RegisterModel(const char* model)
+	static int		RegisterModel(const char* model)
 	{
 		return re->RegisterModel(model);
 	}
 
-	static inline	void	AddPolyToScene(int shader, int count, polyVert_t* verts)
+	static void	AddPolyToScene(int shader, int count, polyVert_t* verts)
 	{
 		re->AddPolyToScene(shader, count, verts, 1);
 	}
 
-	static inline void AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary)
+	static void AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary)
 	{
 		re->AddDecalToScene(shader, origin, dir, orientation, r, g, b, a, alphaFade, radius, temporary);
 	}

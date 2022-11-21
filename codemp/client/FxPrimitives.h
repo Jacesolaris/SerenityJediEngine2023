@@ -155,29 +155,29 @@ public:
 	virtual bool Update() { return true; }
 	virtual	void Draw(void) {}
 
-	inline	miniRefEntity_t& GetRefEnt(void) { return mRefEnt; }
+	miniRefEntity_t& GetRefEnt(void) { return mRefEnt; }
 
-	inline void		SetNext(CEffect* Next) { mNext = Next; }
-	inline CEffect* GetNext(void) const { return mNext; }
-	inline void		GetOrigin(vec3_t dest) const { VectorCopy(mOrigin1, dest); }
+	void		SetNext(CEffect* Next) { mNext = Next; }
+	CEffect* GetNext(void) const { return mNext; }
+	void		GetOrigin(vec3_t dest) const { VectorCopy(mOrigin1, dest); }
 
-	inline void SetSTScale(float s, float t) { mRefEnt.shaderTexCoord[0] = s; mRefEnt.shaderTexCoord[1] = t; }
+	void SetSTScale(float s, float t) { mRefEnt.shaderTexCoord[0] = s; mRefEnt.shaderTexCoord[1] = t; }
 
-	inline void SetSound(int vol, int rad) { mSoundRadius = rad; mSoundVolume = vol; }
-	inline void SetMin(vec3_t min) { if (min) { VectorCopy(min, mMin); } else { VectorClear(mMin); } }
-	inline void SetMax(vec3_t max) { if (max) { VectorCopy(max, mMax); } else { VectorClear(mMax); } }
-	inline void SetFlags(int flags) { mFlags = flags; }
-	inline void AddFlags(int flags) { mFlags |= flags; }
-	inline void ClearFlags(int flags) { mFlags &= ~flags; }
-	inline void SetOrigin1(vec3_t org) { if (org) { VectorCopy(org, mOrigin1); } else { VectorClear(mOrigin1); } }
-	inline void SetTimeStart(int time) { mTimeStart = time; if (mFlags & FX_SET_SHADER_TIME) { mRefEnt.shaderTime = time * 0.001f; } }
-	inline void	SetTimeEnd(int time) { mTimeEnd = time; }
-	inline void SetImpactFxID(int id) { mImpactFxID = id; }
-	inline void SetDeathFxID(int id) { mDeathFxID = id; }
-	inline EMatImpactEffect GetMatImpactFX() const { return mMatImpactFX; }
-	inline int	GetMatImpactParm() const { return mMatImpactParm; }
-	inline void SetMatImpactFX(EMatImpactEffect matFX) { mMatImpactFX = matFX; }
-	inline void SetMatImpactParm(int matParm) { mMatImpactParm = matParm; }
+	void SetSound(int vol, int rad) { mSoundRadius = rad; mSoundVolume = vol; }
+	void SetMin(vec3_t min) { if (min) { VectorCopy(min, mMin); } else { VectorClear(mMin); } }
+	void SetMax(vec3_t max) { if (max) { VectorCopy(max, mMax); } else { VectorClear(mMax); } }
+	void SetFlags(int flags) { mFlags = flags; }
+	void AddFlags(int flags) { mFlags |= flags; }
+	void ClearFlags(int flags) { mFlags &= ~flags; }
+	void SetOrigin1(vec3_t org) { if (org) { VectorCopy(org, mOrigin1); } else { VectorClear(mOrigin1); } }
+	void SetTimeStart(int time) { mTimeStart = time; if (mFlags & FX_SET_SHADER_TIME) { mRefEnt.shaderTime = time * 0.001f; } }
+	void	SetTimeEnd(int time) { mTimeEnd = time; }
+	void SetImpactFxID(int id) { mImpactFxID = id; }
+	void SetDeathFxID(int id) { mDeathFxID = id; }
+	EMatImpactEffect GetMatImpactFX() const { return mMatImpactFX; }
+	int	GetMatImpactParm() const { return mMatImpactParm; }
+	void SetMatImpactFX(EMatImpactEffect matFX) { mMatImpactFX = matFX; }
+	void SetMatImpactParm(int matParm) { mMatImpactParm = matParm; }
 };
 
 //---------------------------------------------------
@@ -247,13 +247,12 @@ protected:
 
 	void		Draw(void) override;
 public:
-
-	inline CLight(void)
+	CLight(void)
 	{
 		mEntNum = -1; mModelNum = -1; mBoltNum = -1;
 	}
 
-	inline void SetBoltinfo(CGhoul2Info_v* ghoul2, int entNum, int modelNum = -1, int boltNum = -1)
+	void SetBoltinfo(CGhoul2Info_v* ghoul2, int entNum, int modelNum = -1, int boltNum = -1)
 	{
 		mGhoul2 = ghoul2;
 		mEntNum = entNum;
@@ -263,14 +262,14 @@ public:
 
 	bool Update() override;
 
-	inline void SetSizeStart(float sz) { mSizeStart = sz; }
-	inline void SetSizeEnd(float sz) { mSizeEnd = sz; }
-	inline void SetSizeParm(float parm) { mSizeParm = parm; }
+	void SetSizeStart(float sz) { mSizeStart = sz; }
+	void SetSizeEnd(float sz) { mSizeEnd = sz; }
+	void SetSizeParm(float parm) { mSizeParm = parm; }
 
-	inline void SetOrgOffset(const vec3_t o) { if (o) { VectorCopy(o, mOrgOffset); } else { VectorClear(mOrgOffset); } }
-	inline void SetRGBStart(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBStart); } else { VectorClear(mRGBStart); } }
-	inline void SetRGBEnd(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBEnd); } else { VectorClear(mRGBEnd); } }
-	inline void SetRGBParm(float parm) { mRGBParm = parm; }
+	void SetOrgOffset(const vec3_t o) { if (o) { VectorCopy(o, mOrgOffset); } else { VectorClear(mOrgOffset); } }
+	void SetRGBStart(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBStart); } else { VectorClear(mRGBStart); } }
+	void SetRGBEnd(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBEnd); } else { VectorClear(mRGBEnd); } }
+	void SetRGBParm(float parm) { mRGBParm = parm; }
 };
 
 //------------------------------
@@ -310,8 +309,7 @@ protected:
 	void		UpdateRotation();
 
 public:
-
-	inline void SetBoltinfo(CGhoul2Info_v* ghoul2, int entNum, int modelNum = -1, int boltNum = -1)
+	void SetBoltinfo(CGhoul2Info_v* ghoul2, int entNum, int modelNum = -1, int boltNum = -1)
 	{
 		mGhoul2 = ghoul2;
 		mEntNum = entNum;
@@ -319,7 +317,7 @@ public:
 		mBoltNum = boltNum;
 	}
 
-	inline CParticle(void)
+	CParticle(void)
 	{
 		mRefEnt.reType = RT_SPRITE; mEntNum = -1; mModelNum = -1; mBoltNum = -1;
 	}
@@ -330,27 +328,27 @@ public:
 	virtual bool Cull(void);
 	void Draw(void) override;
 
-	inline void SetShader(qhandle_t sh) { mRefEnt.customShader = sh; }
+	void SetShader(qhandle_t sh) { mRefEnt.customShader = sh; }
 
-	inline void SetOrgOffset(const vec3_t o) { if (o) { VectorCopy(o, mOrgOffset); } else { VectorClear(mOrgOffset); } }
-	inline void SetVel(vec3_t vel) { if (vel) { VectorCopy(vel, mVel); } else { VectorClear(mVel); } }
-	inline void SetAccel(vec3_t ac) { if (ac) { VectorCopy(ac, mAccel); } else { VectorClear(mAccel); } }
+	void SetOrgOffset(const vec3_t o) { if (o) { VectorCopy(o, mOrgOffset); } else { VectorClear(mOrgOffset); } }
+	void SetVel(vec3_t vel) { if (vel) { VectorCopy(vel, mVel); } else { VectorClear(mVel); } }
+	void SetAccel(vec3_t ac) { if (ac) { VectorCopy(ac, mAccel); } else { VectorClear(mAccel); } }
 
-	inline void SetSizeStart(float sz) { mSizeStart = sz; mRefEnt.radius = sz; }
-	inline void SetSizeEnd(float sz) { mSizeEnd = sz; }
-	inline void SetSizeParm(float parm) { mSizeParm = parm; }
+	void SetSizeStart(float sz) { mSizeStart = sz; mRefEnt.radius = sz; }
+	void SetSizeEnd(float sz) { mSizeEnd = sz; }
+	void SetSizeParm(float parm) { mSizeParm = parm; }
 
-	inline void SetRGBStart(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBStart); } else { VectorClear(mRGBStart); } }
-	inline void SetRGBEnd(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBEnd); } else { VectorClear(mRGBEnd); } }
-	inline void SetRGBParm(float parm) { mRGBParm = parm; }
+	void SetRGBStart(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBStart); } else { VectorClear(mRGBStart); } }
+	void SetRGBEnd(vec3_t rgb) { if (rgb) { VectorCopy(rgb, mRGBEnd); } else { VectorClear(mRGBEnd); } }
+	void SetRGBParm(float parm) { mRGBParm = parm; }
 
-	inline void SetAlphaStart(float al) { mAlphaStart = al; }
-	inline void SetAlphaEnd(float al) { mAlphaEnd = al; }
-	inline void SetAlphaParm(float parm) { mAlphaParm = parm; }
+	void SetAlphaStart(float al) { mAlphaStart = al; }
+	void SetAlphaEnd(float al) { mAlphaEnd = al; }
+	void SetAlphaParm(float parm) { mAlphaParm = parm; }
 
-	inline void SetRotation(float rot) { mRefEnt.rotation = rot; }
-	inline void SetRotationDelta(float rot) { mRotationDelta = rot; }
-	inline void SetElasticity(float el) { mElasticity = el; }
+	void SetRotation(float rot) { mRefEnt.rotation = rot; }
+	void SetRotationDelta(float rot) { mRotationDelta = rot; }
+	void SetElasticity(float el) { mElasticity = el; }
 };
 
 //------------------------------
@@ -396,7 +394,7 @@ public:
 
 	bool Update() override;
 
-	inline void SetOrigin2(vec3_t org2) { VectorCopy(org2, mOrigin2); }
+	void SetOrigin2(vec3_t org2) { VectorCopy(org2, mOrigin2); }
 };
 
 //------------------------------
@@ -424,8 +422,8 @@ public:
 
 	void DrawSegment(vec3_t start, vec3_t end, float texcoord1, float texcoord2, float segPercent, float lastSegPercent);
 
-	inline void SetControlPoints(vec3_t ctrl1, vec3_t ctrl2) { VectorCopy(ctrl1, mControl1); VectorCopy(ctrl2, mControl2); }
-	inline void SetControlVel(vec3_t ctrl1v, vec3_t ctrl2v) { VectorCopy(ctrl1v, mControl1Vel); VectorCopy(ctrl2v, mControl2Vel); }
+	void SetControlPoints(vec3_t ctrl1, vec3_t ctrl2) { VectorCopy(ctrl1, mControl1); VectorCopy(ctrl2, mControl2); }
+	void SetControlVel(vec3_t ctrl1v, vec3_t ctrl2v) { VectorCopy(ctrl1v, mControl1Vel); VectorCopy(ctrl2v, mControl2Vel); }
 };
 
 //------------------------------
@@ -447,7 +445,7 @@ public:
 
 	void Initialize();
 
-	inline void SetChaos(float chaos) { mChaos = chaos; }
+	void SetChaos(float chaos) { mChaos = chaos; }
 };
 
 // Oriented quad
@@ -467,7 +465,7 @@ public:
 	bool Cull(void) override;
 	void Draw(void) override;
 
-	inline void SetNormal(vec3_t norm) { VectorCopy(norm, mNormal); }
+	void SetNormal(vec3_t norm) { VectorCopy(norm, mNormal); }
 };
 
 //------------------------------
@@ -494,9 +492,9 @@ public:
 
 	bool Update() override;
 
-	inline void SetLengthStart(float len) { mLengthStart = len; }
-	inline void SetLengthEnd(float len) { mLengthEnd = len; }
-	inline void SetLengthParm(float len) { mLengthParm = len; }
+	void SetLengthStart(float len) { mLengthStart = len; }
+	void SetLengthEnd(float len) { mLengthEnd = len; }
+	void SetLengthParm(float len) { mLengthParm = len; }
 };
 
 //------------------------------
@@ -521,12 +519,12 @@ public:
 	virtual void UpdateLength(void);
 	bool Update() override;
 
-	inline void SetSize2Start(float sz) { mSize2Start = sz; }
-	inline void SetSize2End(float sz) { mSize2End = sz; }
-	inline void SetSize2Parm(float parm) { mSize2Parm = parm; }
-	inline void SetTraceEnd(qboolean traceEnd) { mTraceEnd = traceEnd; }
+	void SetSize2Start(float sz) { mSize2Start = sz; }
+	void SetSize2End(float sz) { mSize2End = sz; }
+	void SetSize2Parm(float parm) { mSize2Parm = parm; }
+	void SetTraceEnd(qboolean traceEnd) { mTraceEnd = traceEnd; }
 
-	inline void SetNormal(vec3_t norm) { VectorCopy(norm, mRefEnt.axis[0]); }
+	void SetNormal(vec3_t norm) { VectorCopy(norm, mRefEnt.axis[0]); }
 };
 
 //------------------------------
@@ -560,15 +558,15 @@ public:
 	bool Cull(void) override { return false; }
 	bool Update() override;
 
-	inline void SetModel(qhandle_t model) { mRefEnt.hModel = model; }
-	inline void SetAngles(vec3_t ang) { if (ang) { VectorCopy(ang, mAngles); } else { VectorClear(mAngles); } }
-	inline void SetAngleDelta(vec3_t ang) { if (ang) { VectorCopy(ang, mAngleDelta); } else { VectorClear(mAngleDelta); } }
-	inline void SetEmitterFxID(int id) { mEmitterFxID = id; }
-	inline void SetDensity(float density) { mDensity = density; }
-	inline void SetVariance(float var) { mVariance = var; }
-	inline void SetOldTime(int time) { mOldTime = time; }
-	inline void SetLastOrg(vec3_t org) { if (org) { VectorCopy(org, mLastOrigin); } else { VectorClear(mLastOrigin); } }
-	inline void SetLastVel(vec3_t vel) { if (vel) { VectorCopy(vel, mOldVelocity); } else { VectorClear(mOldVelocity); } }
+	void SetModel(qhandle_t model) { mRefEnt.hModel = model; }
+	void SetAngles(vec3_t ang) { if (ang) { VectorCopy(ang, mAngles); } else { VectorClear(mAngles); } }
+	void SetAngleDelta(vec3_t ang) { if (ang) { VectorCopy(ang, mAngleDelta); } else { VectorClear(mAngleDelta); } }
+	void SetEmitterFxID(int id) { mEmitterFxID = id; }
+	void SetDensity(float density) { mDensity = density; }
+	void SetVariance(float var) { mVariance = var; }
+	void SetOldTime(int time) { mOldTime = time; }
+	void SetLastOrg(vec3_t org) { if (org) { VectorCopy(org, mLastOrigin); } else { VectorClear(mLastOrigin); } }
+	void SetLastVel(vec3_t vel) { if (vel) { VectorCopy(vel, mOldVelocity); } else { VectorClear(mOldVelocity); } }
 };
 
 // We're getting pretty low level here, not the kind of thing to abuse considering how much overhead this
@@ -603,8 +601,8 @@ public:
 	void CalcRotateMatrix();
 	void Rotate();
 
-	inline void SetNumVerts(int c) { mCount = c; }
-	inline void SetRot(vec3_t r) { if (r) { VectorCopy(r, mRotDelta); } else { VectorClear(mRotDelta); } }
-	inline void SetMotionTimeStamp(int t) { mTimeStamp = theFxHelper.GetTime() + t; }
-	inline int	GetMotionTimeStamp() const { return mTimeStamp; }
+	void SetNumVerts(int c) { mCount = c; }
+	void SetRot(vec3_t r) { if (r) { VectorCopy(r, mRotDelta); } else { VectorClear(mRotDelta); } }
+	void SetMotionTimeStamp(int t) { mTimeStamp = theFxHelper.GetTime() + t; }
+	int	GetMotionTimeStamp() const { return mTimeStamp; }
 };

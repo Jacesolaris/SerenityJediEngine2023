@@ -40,7 +40,7 @@ void GetAnglesForDirection(const vec3_t p1, const vec3_t p2, vec3_t out);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void ViewHeightFix(const gentity_t* ent);
 extern void AddLeanOfs(const gentity_t* ent, vec3_t point);
-extern void SubtractLeanOfs(const gentity_t* const ent, vec3_t point);
+extern void SubtractLeanOfs(const gentity_t* ent, vec3_t point);
 
 void CalcEntitySpot(const gentity_t* ent, const spot_t spot, vec3_t point)
 {
@@ -1031,7 +1031,7 @@ int NPC_FindNearestEnemy(const gentity_t* ent)
 
 	for (i = 0; i < numEnts; i++)
 	{
-		gentity_t* nearest = G_CheckControlledTurretEnemy(ent, radiusEnts[i], qtrue);
+		const gentity_t* nearest = G_CheckControlledTurretEnemy(ent, radiusEnts[i], qtrue);
 
 		//Don't consider self
 		if (nearest == ent)

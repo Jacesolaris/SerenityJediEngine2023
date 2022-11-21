@@ -147,8 +147,8 @@ constexpr auto SOUND_FULLVOLUME = 256;
 constexpr auto SOUND_ATTENUATE = 0.0008f;
 constexpr auto VOICE_ATTENUATE = 0.004f;
 
-const float SOUND_FMAXVOL = 0.75; //1.0;
-const int SOUND_MAXVOL = 255;
+constexpr float SOUND_FMAXVOL = 0.75; //1.0;
+constexpr int SOUND_MAXVOL = 255;
 
 channel_t s_channels[MAX_CHANNELS];
 
@@ -621,9 +621,8 @@ void S_Init(void)
 	}
 	else
 	{
-		qboolean r;
 #endif
-		r = SNDDMA_Init(s_khz->integer);
+		const qboolean r = SNDDMA_Init(s_khz->integer);
 
 		if (r)
 		{
@@ -3085,8 +3084,6 @@ void S_Update_(void)
 	}
 	else
 	{
-		int samps;
-		unsigned endtime;
 #endif
 		// Updates s_soundtime
 		S_GetSoundtime();
@@ -3098,14 +3095,14 @@ void S_Update_(void)
 		S_ScanChannelStarts();
 
 		// mix ahead of current position
-		endtime = static_cast<int>(s_soundtime + s_mixahead->value * dma.speed);
+		unsigned endtime = static_cast<int>(s_soundtime + s_mixahead->value * dma.speed);
 
 		// mix to an even submission block size
 		endtime = endtime + dma.submission_chunk - 1
 			& ~(dma.submission_chunk - 1);
 
 		// never mix more than the complete buffer
-		samps = dma.samples >> (dma.channels - 1);
+		const int samps = dma.samples >> (dma.channels - 1);
 		if (endtime - s_soundtime > static_cast<unsigned>(samps))
 			endtime = s_soundtime + samps;
 
@@ -3128,9 +3125,6 @@ void UpdateSingleShotSounds()
 	ALint state;
 	ALint processed;
 	channel_t* ch;
-#ifdef _DEBUG
-	char szString[256];
-#endif
 
 	// Firstly, check if any single-shot sounds have completed, or if they need more data (for streaming Sources),
 	// and/or if any of the currently playing (non-Ambient) looping sounds need to be stopped
@@ -3639,11 +3633,6 @@ void S_SetLipSyncs()
 	unsigned int samples;
 	int currentTime, timePlayed;
 	channel_t* ch;
-#ifdef _DEBUG
-#ifdef _MSC_VER
-	char szString[256];
-#endif
-#endif
 
 #ifdef _WIN32
 	currentTime = timeGetTime();
@@ -5149,7 +5138,7 @@ cvar_t* s_soundpoolmegs = nullptr;
 
 // currently passing in sfx as a param in case I want to do something with it later.
 //
-byte* SND_malloc(int iSize, sfx_t* sfx)
+byte* SND_malloc(int iSize, const sfx_t* sfx)
 {
 	const auto pData = static_cast<byte*>(Z_Malloc(iSize, TAG_SND_RAWDATA, qfalse));
 	// don't bother asking for zeroed mem
@@ -5271,7 +5260,7 @@ void S_DisplayFreeMemory()
 		iSoundDataSize = 0;
 		for (int i = 1; i < s_numSfx; i++)
 		{
-			sfx_t* sfx = &s_knownSfx[i];
+			const sfx_t* sfx = &s_knownSfx[i];
 
 			if (sfx->iLastLevelUsedOn == re.RegisterMedia_GetLevel())
 			{
@@ -5434,7 +5423,6 @@ void InitEAXManager()
 #ifdef USE_OPENAL
 	EAXFXSLOTPROPERTIES FXSlotProp;
 	GUID Effect;
-	GUID FXSlotGuids[4];
 
 	s_bEALFileLoaded = false;
 
@@ -5476,6 +5464,7 @@ void InitEAXManager()
 			{
 				if (lpEAXManagerCreateFn(&s_lpEAXManager) == EM_OK)
 				{
+					GUID FXSlotGuids[4];
 					int i;
 					// Configure our EAX 4.0 Effect Slots
 
@@ -5932,7 +5921,6 @@ static void UpdateEAXListener()
 	long lVolume;
 	long lCurTime;
 	EAXVECTOR LP1, LP2, Pan;
-	REVERBDATA ReverbData[3]; // Hardcoded to three (maximum no of reverbs)
 #ifdef DISPLAY_CLOSEST_ENVS
 	char szEnvName[256];
 #endif
@@ -5944,6 +5932,7 @@ static void UpdateEAXListener()
 
 	if (s_lLastEnvUpdate + ENV_UPDATE_RATE < lCurTime)
 	{
+		REVERBDATA ReverbData[3];
 		channel_t* ch;
 		bool bFound;
 		float flNearest;

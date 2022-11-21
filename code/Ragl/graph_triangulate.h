@@ -318,9 +318,9 @@ namespace ragl
 		void	finish(typename TGraph::user& user)
 		{
 			mGraph.clear_edges();
-			TEDGE	DefaultEdge;
 			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
+				TEDGE DefaultEdge;
 				user.setup_edge(DefaultEdge, (*it).mA, (*it).mB, (*it).mOnHull, mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
 				mGraph.connect_node(DefaultEdge, (*it).mA, (*it).mB);
 			}

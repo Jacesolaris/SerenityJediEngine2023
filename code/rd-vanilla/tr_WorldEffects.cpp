@@ -145,19 +145,20 @@ struct	SVecRange
 	CVec3	mMins;
 	CVec3	mMaxs;
 
-	inline void	Clear()
+	void	Clear()
 	{
 		mMins.Clear();
 		mMaxs.Clear();
 	}
 
-	inline void Pick(CVec3& V)
+	void Pick(CVec3& V)
 	{
 		V[0] = Q_flrand(mMins[0], mMaxs[0]);
 		V[1] = Q_flrand(mMins[1], mMaxs[1]);
 		V[2] = Q_flrand(mMins[2], mMaxs[2]);
 	}
-	inline void Wrap(CVec3& V)
+
+	void Wrap(CVec3& V)
 	{
 		if (V[0] <= mMins[0])
 		{
@@ -217,7 +218,7 @@ struct	SVecRange
 		}
 	}
 
-	inline bool In(const CVec3& V) const
+	bool In(const CVec3& V) const
 	{
 		return V > mMins && V < mMaxs;
 	}
@@ -228,16 +229,18 @@ struct	SFloatRange
 	float	mMin;
 	float	mMax;
 
-	inline void	Clear()
+	void	Clear()
 	{
 		mMin = 0;
 		mMin = 0;
 	}
-	inline void Pick(float& V) const
+
+	void Pick(float& V) const
 	{
 		V = Q_flrand(mMin, mMax);
 	}
-	inline bool In(const float& V) const
+
+	bool In(const float& V) const
 	{
 		return V > mMin && V < mMax;
 	}
@@ -248,16 +251,18 @@ struct	SIntRange
 	int	mMin;
 	int	mMax;
 
-	inline void	Clear()
+	void	Clear()
 	{
 		mMin = 0;
 		mMin = 0;
 	}
-	inline void Pick(int& V) const
+
+	void Pick(int& V) const
 	{
 		V = Q_irand(mMin, mMax);
 	}
-	inline bool In(const int& V) const
+
+	bool In(const int& V) const
 	{
 		return V > mMin && V < mMax;
 	}
@@ -461,7 +466,7 @@ private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Convert To Cell
 		////////////////////////////////////////////////////////////////////////////////////
-		inline	void	ConvertToCell(const CVec3& pos, int& x, int& y, int& z, int& bit)
+		void	ConvertToCell(const CVec3& pos, int& x, int& y, int& z, int& bit)
 		{
 			x = static_cast<int>(pos[0] / POINTCACHE_CELL_SIZE - mSize.mMins[0]);
 			y = static_cast<int>(pos[1] / POINTCACHE_CELL_SIZE - mSize.mMins[1]);
@@ -474,7 +479,7 @@ private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// CellOutside - Test to see if a given cell is outside
 		////////////////////////////////////////////////////////////////////////////////////
-		inline	bool	CellOutside(int x, int y, int z, int bit) const
+		bool	CellOutside(int x, int y, int z, int bit) const
 		{
 			if (x < 0 || x >= mWidth || (y < 0 || y >= mHeight) || (z < 0 || z >= mDepth) || (bit < 0 || bit >= 32))
 			{
@@ -505,7 +510,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Contents Outside
 	////////////////////////////////////////////////////////////////////////////////////
-	inline	bool	ContentsOutside(int contents) const
+	bool	ContentsOutside(int contents) const
 	{
 		if (contents & CONTENTS_WATER || contents & CONTENTS_SOLID)
 		{
@@ -783,7 +788,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// PointOutside - Test to see if a given point is outside
 	////////////////////////////////////////////////////////////////////////////////////
-	inline	bool	PointOutside(const CVec3& pos)
+	bool	PointOutside(const CVec3& pos)
 	{
 		if (!mCacheInit)
 		{
@@ -805,7 +810,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// PointOutside - Test to see if a given bounded plane is outside
 	////////////////////////////////////////////////////////////////////////////////////
-	inline	bool	PointOutside(const CVec3& pos, float width, float height)
+	bool	PointOutside(const CVec3& pos, float width, float height)
 	{
 		for (int zone = 0; zone < mWeatherZones.size(); zone++)
 		{
@@ -1098,7 +1103,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// UseSpawnPlane - Check To See If We Should Spawn On A Plane, Or Just Wrap The Box
 	////////////////////////////////////////////////////////////////////////////////////
-	inline bool	UseSpawnPlane() const
+	bool	UseSpawnPlane() const
 	{
 		return mGravity != 0.0f;
 	}

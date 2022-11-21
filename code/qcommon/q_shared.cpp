@@ -51,7 +51,7 @@ COM_GetExtension
 const char* COM_GetExtension(const char* name)
 {
 	const char* dot = strrchr(name, '.'), * slash;
-	if (dot && (!(slash = strrchr(name, '/')) || slash < dot))
+	if (dot && (!((slash = strrchr(name, '/'))) || slash < dot))
 		return dot + 1;
 	return "";
 }
@@ -64,7 +64,7 @@ COM_StripExtension
 void COM_StripExtension(const char* in, char* out, int destsize)
 {
 	const char* dot = strrchr(in, '.'), * slash;
-	if (dot && (!(slash = strrchr(in, '/')) || slash < dot))
+	if (dot && (!((slash = strrchr(in, '/'))) || slash < dot))
 		destsize = destsize < dot - in + 1 ? destsize : dot - in + 1;
 
 	if (in == out && destsize > 1)
@@ -104,7 +104,7 @@ COM_DefaultExtension
 void COM_DefaultExtension(char* path, int maxSize, const char* extension)
 {
 	const char* dot = strrchr(path, '.'), * slash;
-	if (dot && (!(slash = strrchr(path, '/')) || slash < dot))
+	if (dot && (!((slash = strrchr(path, '/'))) || slash < dot))
 		return;
 	Q_strcat(path, maxSize, extension);
 }
@@ -298,7 +298,7 @@ int COM_Compress(char* data_p)
 
 char* COM_ParseExt(const char** data_p, qboolean allowLineBreaks)
 {
-	int c = 0;
+	int c;
 	qboolean hasNewLines = qfalse;
 
 	const char* data = *data_p;
@@ -492,7 +492,7 @@ COM_MatchToken
 void COM_MatchToken(const char** buf_p, const char* match)
 {
 	const char* token = COM_Parse(buf_p);
-	if (strcmp(token, match))
+	if (strcmp(token, match) != 0)
 	{
 		Com_Error(ERR_DROP, "MatchToken: %s != %s", token, match);
 	}
@@ -670,7 +670,7 @@ int Q_parseSaberColor(const char* p, float* color)
 		|| c == 'w' || c == 'W' || c == 'x' || c == 'X'
 		|| c == 'y' || c == 'Y' || c == 'z' || c == 'Z')
 	{
-		int val;
+		int val = 0;
 		for (int i = 0; i < 6; i++)
 		{
 			int readHex;
@@ -938,7 +938,7 @@ void Info_RemoveKey(char* s, const char* key)
 		*o = 0;
 
 		//OJKNOTE: static analysis pointed out pkey may not be null-terminated
-		if (!strcmp(key, pkey))
+		if (strcmp(key, pkey) == 0)
 		{
 			memmove(start, s, strlen(s) + 1); // remove this part
 			return;
@@ -1033,7 +1033,7 @@ static qboolean Com_CharIsOneOfCharset(char c, const char* set)
 Com_SkipCharset
 ==================
 */
-char* Com_SkipCharset(char* s, char* sep)
+char* Com_SkipCharset(char* s, const char* sep)
 {
 	char* p = s;
 
@@ -1053,7 +1053,7 @@ char* Com_SkipCharset(char* s, char* sep)
 Com_SkipTokens
 ==================
 */
-char* Com_SkipTokens(char* s, int numTokens, char* sep)
+char* Com_SkipTokens(char* s, int numTokens, const char* sep)
 {
 	int sepCount = 0;
 	char* p = s;

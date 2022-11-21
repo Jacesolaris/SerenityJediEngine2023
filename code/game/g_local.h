@@ -481,7 +481,7 @@ void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 void ExplodeDeath(gentity_t* self);
 void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
 void G_ApplyKnockback(gentity_t* targ, const vec3_t newDir, float knockback);
-void g_throw(gentity_t* targ, const vec3_t new_dir, const float push);
+void g_throw(gentity_t* targ, const vec3_t new_dir, float push);
 
 // damage flags
 #define DAMAGE_RADIUS			0x00000001	// damage was indirect

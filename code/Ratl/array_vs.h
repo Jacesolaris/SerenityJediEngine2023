@@ -53,7 +53,7 @@ namespace ratl
 	class array_vs : public array_base<storage::value_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::value_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		array_vs() {}
@@ -63,7 +63,7 @@ namespace ratl
 	class array_os : public array_base<storage::object_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::object_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		array_os() {}
@@ -73,7 +73,7 @@ namespace ratl
 	class array_is : public array_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
 	{
 	public:
-		using TStorageTraits = typename storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
+		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;

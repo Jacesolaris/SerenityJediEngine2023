@@ -205,7 +205,7 @@ namespace ratl
 	class queue_vs : public queue_base<storage::value_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::value_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		queue_vs() {}
@@ -215,7 +215,7 @@ namespace ratl
 	class queue_os : public queue_base<storage::object_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		using TStorageTraits = typename storage::object_semantics<T, ARG_CAPACITY>;
+		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		queue_os() {}
@@ -225,7 +225,7 @@ namespace ratl
 	class queue_is : public queue_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
 	{
 	public:
-		using TStorageTraits = typename storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
+		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;

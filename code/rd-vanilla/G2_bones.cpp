@@ -2603,7 +2603,7 @@ static void G2_RagDollCurrentPosition(CGhoul2Info_v& ghoul2V, int g2Index, int f
 	}
 }
 
-void VectorAdvance(const vec3_t veca, const float scale, const vec3_t vecb, vec3_t vecc);
+void VectorAdvance(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc);
 
 #ifdef _DEBUG
 int ragTraceTime = 0;
@@ -3187,7 +3187,7 @@ static inline int G2_RagIndexForBoneNum(int boneNum)
 
 extern mdxaBone_t		worldMatrix;
 void G2_RagGetBoneBasePoseMatrixLow(const CGhoul2Info& ghoul2, int boneNum, mdxaBone_t& boneMatrix, mdxaBone_t& retMatrix, vec3_t scale);
-void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, const int boneNum, mdxaBone_t& matrix, const int frame);
+void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, int boneNum, mdxaBone_t& matrix, int frame);
 
 static inline void G2_RagGetWorldAnimMatrix(CGhoul2Info& ghoul2, boneInfo_t& bone, CRagDollUpdateParams* params, mdxaBone_t& retMatrix)
 {

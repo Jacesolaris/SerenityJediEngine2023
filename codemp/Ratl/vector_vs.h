@@ -716,7 +716,7 @@ namespace ratl
 	class vector_vs : public vector_base<storage::value_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		typedef typename storage::value_semantics<T, ARG_CAPACITY> TStorageTraits;
+		typedef storage::value_semantics<T, ARG_CAPACITY> TStorageTraits;
 		typedef typename TStorageTraits::TValue TTValue;
 		enum
 		{
@@ -729,7 +729,7 @@ namespace ratl
 	class vector_os : public vector_base<storage::object_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		typedef typename storage::object_semantics<T, ARG_CAPACITY> TStorageTraits;
+		typedef storage::object_semantics<T, ARG_CAPACITY> TStorageTraits;
 		typedef typename TStorageTraits::TValue TTValue;
 		enum
 		{
@@ -742,7 +742,7 @@ namespace ratl
 	class vector_is : public vector_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
 	{
 	public:
-		typedef typename storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> TStorageTraits;
+		typedef storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> TStorageTraits;
 		typedef typename TStorageTraits::TValue TTValue;
 		enum
 		{

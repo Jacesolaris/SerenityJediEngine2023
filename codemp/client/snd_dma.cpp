@@ -5193,7 +5193,7 @@ cvar_t* s_soundpoolmegs = nullptr;
 
 // currently passing in sfx as a param in case I want to do something with it later.
 //
-byte* SND_malloc(int iSize, sfx_t* sfx)
+byte* SND_malloc(int iSize, const sfx_t* sfx)
 {
 	const auto pData = static_cast<byte*>(Z_Malloc(iSize, TAG_SND_RAWDATA, qfalse)); // don't bother asking for zeroed mem
 

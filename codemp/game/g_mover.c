@@ -917,7 +917,7 @@ void Use_BinaryMover_Go(gentity_t* ent)
 	}
 }
 
-void un_lock_doors(gentity_t* const ent)
+void un_lock_doors(gentity_t* ent)
 {
 	//noise?
 	//go through and unlock the door and all the slaves
@@ -935,7 +935,7 @@ void un_lock_doors(gentity_t* const ent)
 	} while (slave);
 }
 
-void lock_doors(gentity_t* const ent)
+void lock_doors(gentity_t* ent)
 {
 	//noise?
 	//go through and lock the door and all the slaves

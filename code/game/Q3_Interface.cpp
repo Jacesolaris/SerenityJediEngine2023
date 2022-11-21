@@ -44,8 +44,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "qcommon/ojk_saved_game_helper.h"
 
 extern cvar_t* com_buildScript;
-extern void un_lock_doors(gentity_t* const ent);
-extern void lock_doors(gentity_t* const ent);
+extern void un_lock_doors(gentity_t* ent);
+extern void lock_doors(gentity_t* ent);
 
 extern void InitMover(gentity_t* ent);
 extern void MatchTeam(gentity_t* team_leader, int mover_state, int time);

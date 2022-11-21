@@ -59,7 +59,7 @@ public:
 	~hfile();
 
 	bool load(void* data, int datasize) const;
-	bool save(void* data, int datasize) const;
+	bool save(const void* data, int datasize) const;
 
 	bool is_open(void) const;
 	bool is_open_for_read(void) const;

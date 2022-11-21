@@ -1123,10 +1123,10 @@ void NPC_ChangeNPCWeapon(gentity_t* NPC, int newWeapon)
 }
 
 /*
-void NPC_ApplyWeaponFireDelay(void)
+void NPC_ApplyWeaponFireDelay()
 How long, if at all, in msec the actual fire should delay from the time the attack was started
 */
-void NPC_ApplyWeaponFireDelay(void)
+void NPC_ApplyWeaponFireDelay()
 {
 	if (NPC->attackDebounceTime > level.time)
 	{
@@ -1956,7 +1956,7 @@ int NPC_CheckMultipleEnemies(const gentity_t* closestTo, int enemyTeam, qboolean
 
 	for (int entNum = 0; entNum < globals.num_entities; entNum++)
 	{
-		gentity_t* newenemy = &g_entities[entNum];
+		const gentity_t* newenemy = &g_entities[entNum];
 
 		if (newenemy != NPC && (newenemy->client || newenemy->svFlags & SVF_NONNPC_ENEMY) && !(newenemy->flags &
 			FL_NOTARGET) && !(newenemy->s.eFlags & EF_NODRAW))
@@ -2945,9 +2945,9 @@ int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_
 	}
 	NPC_CollectCombatPoints(destPosition, collRad, points, flags); //position
 
-	for (auto cpi = points.begin(); cpi != points.end(); ++cpi)
+	for (const auto & point : points)
 	{
-		const int i = (*cpi).second;
+		const int i = point.second;
 
 		//Must not be one we want to ignore
 		if (i == ignorePoint)

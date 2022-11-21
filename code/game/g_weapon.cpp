@@ -310,7 +310,7 @@ void AddLeanOfs(const gentity_t* const ent, vec3_t point)
 }
 
 //---------------------------------------------------------
-void SubtractLeanOfs(const gentity_t* const ent, vec3_t point)
+void SubtractLeanOfs(const gentity_t* ent, vec3_t point)
 //---------------------------------------------------------
 {
 	if (ent->client)

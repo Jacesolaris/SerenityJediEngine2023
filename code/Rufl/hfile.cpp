@@ -294,7 +294,7 @@ bool hfile::load(void* data, int datasize) const
 
 	// Make Sure That The File Is Readable
 	//-------------------------------------
-	SOpenFile& sfile = Pool()[mHandle];
+	const SOpenFile& sfile = Pool()[mHandle];
 	if (!sfile.mForRead)
 	{
 		assert("HFILE: Unable to load from a file that is opened for save" == nullptr);
@@ -329,7 +329,7 @@ bool hfile::load(void* data, int datasize) const
 ////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////
-bool hfile::save(void* data, int datasize) const
+bool hfile::save(const void* data, int datasize) const
 {
 	// Go Ahead And Open The File For Reading
 	//----------------------------------------
@@ -345,7 +345,7 @@ bool hfile::save(void* data, int datasize) const
 
 	// Make Sure That The File Is Readable
 	//-------------------------------------
-	SOpenFile& sfile = Pool()[mHandle];
+	const SOpenFile& sfile = Pool()[mHandle];
 	if (sfile.mForRead)
 	{
 		assert("HFILE: Unable to save to a file that is opened for read" == nullptr);

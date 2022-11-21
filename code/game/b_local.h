@@ -334,7 +334,7 @@ extern qboolean G_BoundsOverlap(const vec3_t mins1, const vec3_t maxs1, const ve
 extern void NPC_SetMoveGoal(const gentity_t* ent, vec3_t point, int radius, qboolean isNavGoal = qfalse, int combatPoint = -1,
 	gentity_t* target_ent = nullptr);
 
-extern void NPC_ApplyWeaponFireDelay(void);
+extern void NPC_ApplyWeaponFireDelay();
 
 //NPC_FaceXXX suite
 extern qboolean NPC_FacePosition(vec3_t position, qboolean doPitch = qtrue);

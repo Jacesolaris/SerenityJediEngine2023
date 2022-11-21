@@ -112,23 +112,24 @@ public:
 
 	CFxRange(void) { mMin = 0.0f; mMax = 0.0f; }
 
-	inline void		SetRange(float min, float max) { mMin = min; mMax = max; }
+	void		SetRange(float min, float max) { mMin = min; mMax = max; }
 
-	inline float	GetMax(void) const { return mMax; }
-	inline float	GetMin(void) const { return mMin; }
-	inline float	GetVal(float fraction) const
+	float	GetMax(void) const { return mMax; }
+	float	GetMin(void) const { return mMin; }
+
+	float	GetVal(float fraction) const
 	{
 		if (mMin != mMax) { return mMin + fraction * (mMax - mMin); }
 		return mMin;
 	}
 
-	inline float	GetVal(void) const
+	float	GetVal(void) const
 	{
 		if (mMin != mMax) { return flrand(mMin, mMax); }
 		return mMin;
 	}
 
-	inline int		GetRoundedVal() const {
+	int		GetRoundedVal() const {
 		if (mMin == mMax) { return static_cast<int>(mMin); }
 		return static_cast<int>(flrand(mMin, mMax) + 0.5f);
 	}
@@ -661,14 +662,14 @@ public:
 	//rww - maybe this should be done differently.. it's more than a bit confusing.
 	//Remind me when I don't have 50 files checked out.
 	void	PlayEffect(int id, vec3_t org, vec3_t fwd, int vol = -1, int rad = -1, bool isPortal = false);				// builds arbitrary perp. right vector, does a cross product to define up
-	void	PlayEffect(int id, vec3_t origin, matrix3_t axis, const int boltInfo = -1, CGhoul2Info_v* ghoul2 = nullptr,
+	void	PlayEffect(int id, vec3_t origin, matrix3_t axis, int boltInfo = -1, CGhoul2Info_v* ghoul2 = nullptr,
 		int fxParm = -1, int vol = -1, int rad = -1, bool isPortal = false, int iLoopTime = false, bool isRelative = false);
 	void	PlayEffect(const char* file, vec3_t org, int vol = -1, int rad = -1);					// uses a default up axis
 	void	PlayEffect(const char* file, vec3_t org, vec3_t fwd, int vol = -1, int rad = -1);		// builds arbitrary perp. right vector, does a cross product to define up
 	void	PlayEffect(const char* file, vec3_t origin,
-		matrix3_t axis, const int boltInfo = -1, CGhoul2Info_v* ghoul2 = nullptr, int fxParm = -1, int vol = -1, int rad = -1, int iLoopTime = false, bool isRelative = false);
+		matrix3_t axis, int boltInfo = -1, CGhoul2Info_v* ghoul2 = nullptr, int fxParm = -1, int vol = -1, int rad = -1, int iLoopTime = false, bool isRelative = false);
 
-	void	StopEffect(const char* file, const int boltInfo, bool isPortal = false);	//find a scheduled Looping effect with these parms and kill it
+	void	StopEffect(const char* file, int boltInfo, bool isPortal = false);	//find a scheduled Looping effect with these parms and kill it
 	void	AddScheduledEffects(bool portal);								// call once per CGame frame
 
 	// kef -- called for a 2D effect instead of addRefToScene

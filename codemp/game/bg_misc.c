@@ -758,7 +758,6 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 				}
 				i++;
 			}
-			used_points = 0;
 		}
 	}
 
@@ -2243,19 +2242,18 @@ int BG_ProperForceIndex(int power)
 	return -1;
 }
 
-void BG_CycleForce(playerState_t* ps, int direction)
+void bg_cycle_force(playerState_t* ps, const int direction)
 {
-	int x = 0;
+	int i, x;
 	int foundnext = -1;
+
+	int presel = x = i = ps->fd.forcePowerSelected;
 
 	// no valid force powers
 	if (x >= NUM_FORCE_POWERS || x == -1)
-	{
 		return;
-		
-	}
 
-	const int presel = x = BG_ProperForceIndex(x);
+	presel = x = BG_ProperForceIndex(x);
 
 	// get the next/prev power and handle overflow
 	if (direction == 1) x++;
@@ -2263,7 +2261,7 @@ void BG_CycleForce(playerState_t* ps, int direction)
 	if (x >= NUM_FORCE_POWERS) x = 0;
 	if (x < 0) x = NUM_FORCE_POWERS - 1;
 
-	int i = forcePowerSorted[x]; //the "sorted" value of this power
+	i = forcePowerSorted[x]; //the "sorted" value of this power
 
 	while (x != presel)
 	{
@@ -2293,7 +2291,7 @@ void BG_CycleForce(playerState_t* ps, int direction)
 		ps->fd.forcePowerSelected = foundnext;
 }
 
-int BG_GetItemIndexByTag(int tag, int type)
+int BG_GetItemIndexByTag(const int tag, const int type)
 {
 	//Get the itemlist index from the tag and type
 	int i = 0;

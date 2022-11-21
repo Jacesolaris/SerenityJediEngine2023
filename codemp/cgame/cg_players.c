@@ -358,32 +358,32 @@ sfxHandle_t CG_CustomSound(int clientNum, const char* soundName)
 		{
 			return ci->sounds[i];
 		}
-		if (i < numCSiegeSounds && !strcmp(lSoundName, bg_customSiegeSoundNames[i]))
+		if (i < numCSiegeSounds && strcmp(lSoundName, bg_customSiegeSoundNames[i]) == 0)
 		{
 			//siege only
 			return ci->siegeSounds[i];
 		}
-		if (i < numCDuelSounds && !strcmp(lSoundName, cg_customDuelSoundNames[i]))
+		if (i < numCDuelSounds && strcmp(lSoundName, cg_customDuelSoundNames[i]) == 0)
 		{
 			//siege only
 			return ci->duelSounds[i];
 		}
-		if (clientNum >= MAX_CLIENTS && i < numCComSounds && !strcmp(lSoundName, cg_customCombatSoundNames[i]))
+		if (clientNum >= MAX_CLIENTS && i < numCComSounds && strcmp(lSoundName, cg_customCombatSoundNames[i]) == 0)
 		{
 			//npc only
 			return ci->combatSounds[i];
 		}
-		if (clientNum >= MAX_CLIENTS && i < numCExSounds && !strcmp(lSoundName, cg_customExtraSoundNames[i]))
+		if (clientNum >= MAX_CLIENTS && i < numCExSounds && strcmp(lSoundName, cg_customExtraSoundNames[i]) == 0)
 		{
 			//npc only
 			return ci->extraSounds[i];
 		}
-		if (clientNum >= MAX_CLIENTS && i < numCJediSounds && !strcmp(lSoundName, cg_customJediSoundNames[i]))
+		if (clientNum >= MAX_CLIENTS && i < numCJediSounds && strcmp(lSoundName, cg_customJediSoundNames[i]) == 0)
 		{
 			//npc only
 			return ci->jediSounds[i];
 		}
-		if (clientNum >= MAX_CLIENTS && i < numCCallSounds && !strcmp(lSoundName, cg_customCalloutSoundNames[i]))
+		if (clientNum >= MAX_CLIENTS && i < numCCallSounds && strcmp(lSoundName, cg_customCalloutSoundNames[i]) == 0)
 		{
 			//npc only
 			return ci->calloutSounds[i];
@@ -15330,7 +15330,7 @@ Based On:  G_GetAnimPoint
 ================
 */
 //Get the point in the leg animation and return a percentage of the current point in the anim between 0 and the total anim length (0.0f - 1.0f)
-float GetSelfLegAnimPoint(void)
+float GetSelfLegAnimPoint()
 {
 	return BG_GetLegsAnimPoint(&cg.predictedPlayerState, cg_entities[cg.predictedPlayerState.clientNum].localAnimIndex);
 }
@@ -15343,7 +15343,7 @@ Based On:  G_GetAnimPoint
 ================
 */
 //Get the point in the torso animation and return a percentage of the current point in the anim between 0 and the total anim length (0.0f - 1.0f)
-float GetSelfTorsoAnimPoint(void)
+float GetSelfTorsoAnimPoint()
 {
 	return bg_get_torso_anim_point(&cg.predictedPlayerState,
 		cg_entities[cg.predictedPlayerState.clientNum].localAnimIndex);

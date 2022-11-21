@@ -12,13 +12,9 @@
 namespace ojk
 {
 	SavedGame::SavedGame() :
-		error_message_(),
 		file_handle_(),
-		io_buffer_(),
-		saved_io_buffer_(),
 		io_buffer_offset_(),
 		saved_io_buffer_offset_(),
-		rle_buffer_(),
 		is_readable_(),
 		is_writable_(),
 		is_failed_()
@@ -131,7 +127,7 @@ namespace ojk
 
 		is_writable_ = true;
 
-		const int sg_version = iSAVEGAME_VERSION;
+		constexpr int sg_version = iSAVEGAME_VERSION;
 
 		SavedGameHelper sgsh(this);
 
@@ -1010,7 +1006,7 @@ namespace ojk
 		io_buffer_offset_ = 0;
 	}
 
-	const uint32_t SavedGame::get_jo_magic_value()
+	uint32_t SavedGame::get_jo_magic_value()
 	{
 		return 0x1234ABCD;
 	}

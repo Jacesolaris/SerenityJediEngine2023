@@ -662,10 +662,10 @@ void CG_NewClientinfo(int clientNum)
 	ci->infoValid = qfalse;
 	if (cg.snap && cg.snap->ps.clientNum == clientNum)
 	{
-		clientInfo_t newInfo;
+		constexpr clientInfo_t new_info{};
 		//adjust our True View position for this new model since this model is for this client
 		//Set the eye position based on the trueviewmodel.cfg if it has a position for this model.
-		CG_AdjustEyePos(newInfo.modelName);
+		CG_AdjustEyePos(new_info.modelName);
 	}
 }
 
@@ -1851,7 +1851,6 @@ static void CG_BreathPuffs(const centity_t* cent, vec3_t angles, vec3_t origin)
 		CG_PlayEffectBolted("misc/breath", cent->gent->playerModel, bolt, cent->currentState.clientNum, vEffectOrigin);
 	}
 
-	// TODO: It'd be nice if they breath faster when they're more damaged or when running...
 	if (gi.VoiceVolume[cent->currentState.number] > 0)
 	{
 		//make breath when talking
@@ -13467,7 +13466,7 @@ GetSelfLegAnimPoint
 ================
 */
 //Get the point in the leg animation and return a percentage of the current point in the anim between 0 and the total anim length (0.0f - 1.0f)
-float GetSelfLegAnimPoint(void)
+float GetSelfLegAnimPoint()
 {
 	float current = 0.0f;
 	int end = 0;
@@ -13499,7 +13498,7 @@ GetSelfTorsoAnimPoint
 ================
 */
 //Get the point in the torso animation and return a percentage of the current point in the anim between 0 and the total anim length (0.0f - 1.0f)
-float GetSelfTorsoAnimPoint(void)
+float GetSelfTorsoAnimPoint()
 {
 	float current = 0.0f;
 	int end = 0;

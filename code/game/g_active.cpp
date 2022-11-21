@@ -2438,7 +2438,7 @@ qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t pus
 	return qtrue;
 }
 
-extern void g_kick_throw(gentity_t* targ, const vec3_t new_dir, const float push);
+extern void g_kick_throw(gentity_t* targ, const vec3_t new_dir, float push);
 
 gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t kickEnd, int kickDamage, float kickPush,
 	qboolean doSoundOnWalls)

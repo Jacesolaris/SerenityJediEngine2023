@@ -209,7 +209,7 @@ channel_t* S_PickChannel(int entnum, int entchannel);
 //
 // new stuff from TA codebase
 
-byte* SND_malloc(int iSize, sfx_t* sfx);
+byte* SND_malloc(int iSize, const sfx_t* sfx);
 void	 SND_setup();
 int		 SND_FreeOldestSound(const sfx_t* pButNotThisOne = nullptr);
 void	 SND_TouchSFX(sfx_t* sfx);

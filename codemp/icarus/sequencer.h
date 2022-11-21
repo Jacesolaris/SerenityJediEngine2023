@@ -108,12 +108,12 @@ public:
 	static int Load(void);
 
 	// Overloaded new operator.
-	inline void* operator new(size_t size)
+	void* operator new(size_t size)
 	{	// Allocate the memory.
 		return Z_Malloc(size, TAG_ICARUS2, qtrue);
 	}
 	// Overloaded delete operator.
-	inline void operator delete(void* pRawData)
+	void operator delete(void* pRawData)
 	{	// Free the Memory.
 		Z_Free(pRawData);
 	}

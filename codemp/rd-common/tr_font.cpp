@@ -232,11 +232,11 @@ public:
 	const int GetAscender(void) const { return mAscender; }
 	const int GetDescender(void) const { return mDescender; }
 
-	const glyphInfo_t* GetLetter(const unsigned int uiLetter, int* piShader = nullptr);
+	const glyphInfo_t* GetLetter(unsigned int uiLetter, int* piShader = nullptr);
 	const int GetCollapsedAsianCode(ulong uiLetter) const;
 
-	const int GetLetterWidth(const unsigned int uiLetter);
-	const int GetLetterHorizAdvance(const unsigned int uiLetter);
+	const int GetLetterWidth(unsigned int uiLetter);
+	const int GetLetterHorizAdvance(unsigned int uiLetter);
 	const int GetShader(void) const { return mShader; }
 
 	void FlagNoAsianGlyphs(void) { m_hAsianShaders[0] = 0; m_iLanguageModificationCount = -1; }	// used during constructor

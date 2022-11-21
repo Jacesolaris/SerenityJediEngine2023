@@ -533,7 +533,7 @@ static cvarTable_t cvarTable[] =
 	{&ui_rgb_saber2_blue, "ui_rgb_saber2_blue", "", nullptr, 0},
 	{&ui_rgb_saber2_green, "ui_rgb_saber2_green", "", nullptr, 0},
 
-	{&ui_SFXSabers, "cg_SFXSabers", "2", nullptr, CVAR_ARCHIVE},
+	{&ui_SFXSabers, "cg_SFXSabers", "3", nullptr, CVAR_ARCHIVE},
 	{&ui_SFXSabersGlowSize, "cg_SFXSabersGlowSize", "1.0", nullptr, CVAR_ARCHIVE},
 	{&ui_SFXSabersCoreSize, "cg_SFXSabersCoreSize", "1.0", nullptr, CVAR_ARCHIVE},
 

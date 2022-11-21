@@ -149,7 +149,7 @@ HasChild
 -------------------------
 */
 
-bool CSequence::HasChild(CSequence* sequence)
+bool CSequence::HasChild(CSequence* sequence) const
 {
 	for (const auto& ci : m_children)
 	{
