@@ -472,8 +472,8 @@ extern void Use_BinaryMover(gentity_t* ent, gentity_t* other, gentity_t* activat
 extern void use_wall(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void Use_Target_Give(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void Use_Target_Delay(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void Use_Target_Score(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void Use_Target_Print(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void Use_Target_Score(gentity_t* self, gentity_t* other, const gentity_t* activator);
+extern void Use_Target_Print(gentity_t* self, gentity_t* other, const gentity_t* activator);
 extern void Use_Target_Speaker(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void target_laser_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void target_relay_use(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -482,7 +482,7 @@ extern void target_counter_use(gentity_t* self, gentity_t* other, gentity_t* act
 extern void target_random_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void target_scriptrunner_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void target_gravity_change_use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void target_friction_change_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void target_friction_change_use(gentity_t* self, gentity_t* other, const gentity_t* activator);
 extern void target_teleporter_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void Use_Multi(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void Use_target_push(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -499,7 +499,7 @@ extern void health_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void mega_ammo_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void target_level_change_use(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void target_change_parm_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void target_change_parm_use(const gentity_t* self, gentity_t* other, const gentity_t* activator);
 extern void turret_base_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void laser_arm_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void func_static_use(gentity_t* self, gentity_t* other, gentity_t* activator);
@@ -510,7 +510,7 @@ extern void target_autosave_use(gentity_t* self, gentity_t* other, gentity_t* ac
 extern void switch_models(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void misc_replicator_item_spawn(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void misc_replicator_item_remove(gentity_t* self, gentity_t* other, gentity_t* activator);
-extern void target_secret_use(gentity_t* self, gentity_t* other, gentity_t* activator);
+extern void target_secret_use(const gentity_t* self, gentity_t* other, const gentity_t* activator);
 extern void func_bobbing_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void func_rotating_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern void fx_runner_use(gentity_t* self, gentity_t* other, gentity_t* activator);

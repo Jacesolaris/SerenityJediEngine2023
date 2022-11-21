@@ -26,7 +26,7 @@ constexpr auto OL_H = 6;
 static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* title)
 {
 	int add = OL_H;
-	const vec4_t textcolor = { 0.4f, 0.4f, 0.8f, 1.0f };
+	constexpr vec4_t textcolor = { 0.4f, 0.4f, 0.8f, 1.0f };
 
 	cgi_R_Font_DrawString(x, OL_Y, title, textcolor, cgs.media.qhFontSmall, -1, OL_S);
 

@@ -50,9 +50,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern bool HFILEopen_read(int& handle, const char* filepath);
 extern bool HFILEopen_write(int& handle, const char* filepath);
-extern bool HFILEread(int& handle, void* data, int size);
-extern bool HFILEwrite(int& handle, const void* data, int size);
-extern bool HFILEclose(int& handle);
+extern bool HFILEread(const int& handle, void* data, int size);
+extern bool HFILEwrite(const int& handle, const void* data, int size);
+extern bool HFILEclose(const int& handle);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Defines

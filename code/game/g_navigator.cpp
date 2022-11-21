@@ -49,10 +49,10 @@ bool HFILEopen_write(int& handle, const char* filepath)
 	return handle != 0;
 }
 
-bool HFILEread(int& handle, void* data, int size) { return gi.FS_Read(data, size, handle) != 0; }
-bool HFILEwrite(int& handle, const void* data, int size) { return gi.FS_Write(data, size, handle) != 0; }
+bool HFILEread(const int& handle, void* data, int size) { return gi.FS_Read(data, size, handle) != 0; }
+bool HFILEwrite(const int& handle, const void* data, int size) { return gi.FS_Write(data, size, handle) != 0; }
 
-bool HFILEclose(int& handle)
+bool HFILEclose(const int& handle)
 {
 	gi.FS_FCloseFile(handle);
 	return true;

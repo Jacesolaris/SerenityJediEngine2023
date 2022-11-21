@@ -94,7 +94,7 @@ void BotAimLeading(bot_state_t* bs, vec3_t headlevel, float leadAmount);
 float BotWeaponCanLead(const bot_state_t* bs);
 int BotWeapon_Detpack(bot_state_t* bs, const gentity_t* target);
 void TraceMove(bot_state_t* bs, vec3_t move_dir, int targetNum);
-extern qboolean G_NameInTriggerClassList(char* list, char* str);
+extern qboolean G_NameInTriggerClassList(const char* list, const char* str);
 void BotBehave_DefendBasic(bot_state_t* bs, vec3_t defpoint);
 int BotSelectChoiceWeapon(bot_state_t* bs, int weapon, int doselection);
 void adjustfor_strafe(const bot_state_t* bs, vec3_t move_dir);

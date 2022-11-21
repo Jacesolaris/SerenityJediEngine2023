@@ -3,7 +3,7 @@
 //the max autosave file size define
 #define MAX_AUTOSAVE_FILESIZE 1024
 
-extern void Use_Autosave(gentity_t* ent, gentity_t* other, gentity_t* activator);
+extern void Use_Autosave(gentity_t* ent, gentity_t* other, const gentity_t* activator);
 
 void Touch_Autosave(gentity_t* self, gentity_t* other, trace_t* trace)
 {

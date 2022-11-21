@@ -219,8 +219,8 @@ extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 //////////////////////////////////////////////////
-extern qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
-extern qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
+extern qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
+extern qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
 //////////////////////////////////////////////////
 void player_Freeze(const gentity_t* self);
 void Player_CheckFreeze(const gentity_t* self);
@@ -252,7 +252,7 @@ void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_am
 extern qboolean PM_WalkingOrRunningAnim(int anim);
 extern void CG_CubeOutline(vec3_t mins, vec3_t maxs, int time, unsigned int color);
 void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
-qboolean WP_SaberParryNonRandom(gentity_t* self, vec3_t hitloc, const qboolean missileBlock);
+qboolean WP_SaberParryNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern void CGCam_BlockShakeSP(float intensity, int duration);
 static qhandle_t repulseLoopSound = 0;
 extern void Boba_FlyStop(gentity_t* self);
@@ -699,7 +699,7 @@ void g_create_g2_holstered_weapon_model(gentity_t* ent, const char* psWeaponMode
 			}
 			else
 			{
-				boltMatrix2.matrix[1][3] -= 1.0f; //TODO: this is no good for back holstered weapons
+				boltMatrix2.matrix[1][3] -= 1.0f;
 				gi.G2API_SetBoneAnglesMatrix(&ent->ghoul2[ent->holsterModel[weapon_num]], "ModView internal default",
 					boltMatrix2, BONE_ANGLES_PREMULT, nullptr, 0, 0);
 			}
@@ -3375,13 +3375,13 @@ qboolean wp_sabers_intersect(const gentity_t* ent1, const int ent1_saber_num, co
 		return qfalse;
 	}
 
-	for (int ent2_saber_num = 0; ent2_saber_num < MAX_SABERS; ent2_saber_num++)
+	for (const auto & ent2_saber_num : ent2->client->ps.saber)
 	{
-		for (int ent2_blade_num = 0; ent2_blade_num < ent2->client->ps.saber[ent2_saber_num].numBlades; ent2_blade_num
+		for (int ent2_blade_num = 0; ent2_blade_num < ent2_saber_num.numBlades; ent2_blade_num
 			++)
 		{
-			if (ent2->client->ps.saber[ent2_saber_num].type != SABER_NONE
-				&& ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].length > 0)
+			if (ent2_saber_num.type != SABER_NONE
+				&& ent2_saber_num.blade[ent2_blade_num].length > 0)
 			{
 				vec3_t dir;
 				vec3_t saber_tip_next2;
@@ -3407,16 +3407,16 @@ qboolean wp_sabers_intersect(const gentity_t* ent1, const int ent1_saber_num, co
 				VectorNormalize(dir);
 				VectorMA(saber_tip_next1, SABER_EXTRAPOLATE_DIST, dir, saber_tip_next1);
 
-				VectorCopy(ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].muzzlePointOld, saber_base2);
-				VectorCopy(ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].muzzlePoint, saber_base_next2);
-				VectorSubtract(ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].muzzlePoint,
-					ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].muzzlePointOld, dir);
+				VectorCopy(ent2_saber_num.blade[ent2_blade_num].muzzlePointOld, saber_base2);
+				VectorCopy(ent2_saber_num.blade[ent2_blade_num].muzzlePoint, saber_base_next2);
+				VectorSubtract(ent2_saber_num.blade[ent2_blade_num].muzzlePoint,
+					ent2_saber_num.blade[ent2_blade_num].muzzlePointOld, dir);
 				VectorNormalize(dir);
 				VectorMA(saber_base_next2, SABER_EXTRAPOLATE_DIST, dir, saber_base_next2);
-				VectorMA(saber_base2, ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].length,
-					ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].muzzleDirOld, saber_tip2);
-				VectorMA(saber_base_next2, ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].length,
-					ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].muzzleDir, saber_tip_next2);
+				VectorMA(saber_base2, ent2_saber_num.blade[ent2_blade_num].length,
+					ent2_saber_num.blade[ent2_blade_num].muzzleDirOld, saber_tip2);
+				VectorMA(saber_base_next2, ent2_saber_num.blade[ent2_blade_num].length,
+					ent2_saber_num.blade[ent2_blade_num].muzzleDir, saber_tip_next2);
 				VectorSubtract(saber_tip_next2, saber_tip2, dir);
 				VectorNormalize(dir);
 				VectorMA(saber_tip_next2, SABER_EXTRAPOLATE_DIST, dir, saber_tip_next2);
@@ -3437,7 +3437,7 @@ qboolean wp_sabers_intersect(const gentity_t* ent1, const int ent1_saber_num, co
 					}
 					//now check orientation of sabers, make sure they're not parallel or close to it
 					const float dot = DotProduct(ent1->client->ps.saber[ent1_saber_num].blade[ent1_blade_num].muzzleDir,
-						ent2->client->ps.saber[ent2_saber_num].blade[ent2_blade_num].
+						ent2_saber_num.blade[ent2_blade_num].
 						muzzleDir);
 					if (dot > 0.9f || dot < -0.9f)
 					{
@@ -3526,20 +3526,20 @@ qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, ve
 	}
 
 	//UGH, had to make this work for multiply-bladed sabers
-	for (int saber_num1 = 0; saber_num1 < MAX_SABERS; saber_num1++)
+	for (const auto & saber_num1 : ent1->client->ps.saber)
 	{
-		for (int blade_num1 = 0; blade_num1 < ent1->client->ps.saber[saber_num1].numBlades; blade_num1++)
+		for (int blade_num1 = 0; blade_num1 < saber_num1.numBlades; blade_num1++)
 		{
-			if (ent1->client->ps.saber[saber_num1].type != SABER_NONE
-				&& ent1->client->ps.saber[saber_num1].blade[blade_num1].length > 0)
+			if (saber_num1.type != SABER_NONE
+				&& saber_num1.blade[blade_num1].length > 0)
 			{
 				//valid saber and this blade is on
-				for (int saber_num2 = 0; saber_num2 < MAX_SABERS; saber_num2++)
+				for (const auto & saber_num2 : ent2->client->ps.saber)
 				{
-					for (int blade_num2 = 0; blade_num2 < ent2->client->ps.saber[saber_num2].numBlades; blade_num2++)
+					for (int blade_num2 = 0; blade_num2 < saber_num2.numBlades; blade_num2++)
 					{
-						if (ent2->client->ps.saber[saber_num2].type != SABER_NONE
-							&& ent2->client->ps.saber[saber_num2].blade[blade_num2].length > 0)
+						if (saber_num2.type != SABER_NONE
+							&& saber_num2.blade[blade_num2].length > 0)
 						{
 							vec3_t saber_point2;
 							vec3_t saber_tip_next2;
@@ -3548,15 +3548,15 @@ qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, ve
 							vec3_t saber_tip_next1;
 							vec3_t saber_base_next1;
 							//valid saber and this blade is on
-							VectorCopy(ent1->client->ps.saber[saber_num1].blade[blade_num1].muzzlePoint,
+							VectorCopy(saber_num1.blade[blade_num1].muzzlePoint,
 								saber_base_next1);
-							VectorMA(saber_base_next1, ent1->client->ps.saber[saber_num1].blade[blade_num1].length,
-								ent1->client->ps.saber[saber_num1].blade[blade_num1].muzzleDir, saber_tip_next1);
+							VectorMA(saber_base_next1, saber_num1.blade[blade_num1].length,
+								saber_num1.blade[blade_num1].muzzleDir, saber_tip_next1);
 
-							VectorCopy(ent2->client->ps.saber[saber_num2].blade[blade_num2].muzzlePoint,
+							VectorCopy(saber_num2.blade[blade_num2].muzzlePoint,
 								saber_base_next2);
-							VectorMA(saber_base_next2, ent2->client->ps.saber[saber_num2].blade[blade_num2].length,
-								ent2->client->ps.saber[saber_num2].blade[blade_num2].muzzleDir, saber_tip_next2);
+							VectorMA(saber_base_next2, saber_num2.blade[blade_num2].length,
+								saber_num2.blade[blade_num2].muzzleDir, saber_tip_next2);
 
 							const float line_seg_length = ShortestLineSegBewteen2LineSegs(
 								saber_base_next1, saber_tip_next1, saber_base_next2, saber_tip_next2, saber_point1,
@@ -3610,15 +3610,15 @@ qboolean wp_saber_damage_effects(trace_t* tr, const vec3_t start, const float le
 
 	VectorNormalize2(blade_vec, blade_dir);
 
-	for (int z = 0; z < MAX_G2_COLLISIONS; z++)
+	for (auto & z : tr->G2CollisionMap)
 	{
-		if (tr->G2CollisionMap[z].mEntityNum == -1)
+		if (z.mEntityNum == -1)
 		{
 			//actually, completely break out of this for loop since nothing after this in the aray should ever be valid either
 			continue; //break;//
 		}
 
-		CCollisionRecord& coll = tr->G2CollisionMap[z];
+		CCollisionRecord& coll = z;
 		const float dist_from_start = coll.mDistance;
 
 		for (i = 0; i < num_hit_ents; i++)
@@ -4211,7 +4211,7 @@ qboolean wp_saber_damage_for_trace(const int ignore, vec3_t start, vec3_t end, f
 	if (&g_entities[tr.entityNum])
 	{
 		gentity_t* hit_ent = &g_entities[tr.entityNum];
-		gentity_t* owner = g_entities[tr.entityNum].owner;
+		const gentity_t* owner = g_entities[tr.entityNum].owner;
 
 		if (wp_saber_must_block(hit_ent, owner, qfalse, tr.endpos, -1, -1))
 		{
@@ -7739,10 +7739,10 @@ void WP_SaberDamageTrace(gentity_t* ent, int saberNum, int bladeNum)
 						}
 
 						//make me parry	-(Im the blocker)
-						SabBeh_BlockvsAttack(hitOwner, ent, saberNum, bladeNum, saberHitLocation);
+						sab_beh_block_vs_attack(hitOwner, ent, saberNum, bladeNum, saberHitLocation);
 
 						//make me bounce -(Im the attacker)
-						SabBeh_AttackvBlock(ent, hitOwner, saberNum, bladeNum, saberHitLocation);
+						sab_beh_attack_vs_block(ent, hitOwner, saberNum, bladeNum, saberHitLocation);
 
 						collisionResolved = qtrue;
 					}
@@ -20375,7 +20375,6 @@ void ForceInsanity(gentity_t* self)
 
 void ForceBlinding(gentity_t* self)
 {
-	//TODO: CODE
 	trace_t tr;
 	vec3_t end, forward;
 	qboolean targetLive = qfalse;

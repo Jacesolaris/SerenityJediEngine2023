@@ -123,7 +123,7 @@ void multi_trigger_run(gentity_t* ent)
 }
 
 //determine if the class given is listed in the string using the | formatting
-qboolean G_NameInTriggerClassList(char* list, char* str)
+qboolean G_NameInTriggerClassList(const char* list, const char* str)
 {
 	char cmp[MAX_STRING_CHARS];
 	int i = 0;
@@ -1285,7 +1285,7 @@ trigger_teleport
 ==============================================================================
 */
 
-void trigger_teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	if (self->flags & FL_INACTIVE)
 	{
@@ -1567,7 +1567,7 @@ void SP_trigger_hurt(gentity_t* self)
 
 #define	INITIAL_SUFFOCATION_DELAY	500 //.5 seconds
 
-void space_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void space_touch(gentity_t* self, const gentity_t* other, trace_t* trace)
 {
 	if (!other || !other->inuse || !other->client)
 	{
@@ -1725,7 +1725,7 @@ void SP_trigger_shipboundary(gentity_t* self)
 	trap->LinkEntity((sharedEntity_t*)self);
 }
 
-void hyperspace_touch(gentity_t* self, gentity_t* other, trace_t* trace)
+void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	gentity_t* ent;
 

@@ -32,7 +32,7 @@ extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 /*QUAKED target_give (1 0 0) (-8 -8 -8) (8 8 8)
 Gives the activator all the items pointed to.
 */
-void Use_Target_Give(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Give(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
 	trace_t trace;
 
@@ -41,16 +41,16 @@ void Use_Target_Give(gentity_t* ent, gentity_t* other, gentity_t* activator)
 		return;
 	}
 
-	if (!ent->target)
+	if (!self->target)
 	{
 		return;
 	}
 
-	G_ActivateBehavior(ent, BSET_USE);
+	G_ActivateBehavior(self, BSET_USE);
 
 	memset(&trace, 0, sizeof trace);
 	gentity_t* t = nullptr;
-	while ((t = G_Find(t, FOFS(targetname), ent->target)) != nullptr)
+	while ((t = G_Find(t, FOFS(targetname), self->target)) != nullptr)
 	{
 		if (!t->item)
 		{
@@ -112,7 +112,7 @@ void SP_target_delay(gentity_t* ent)
 
 The activator is given this many points.
 */
-void Use_Target_Score(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Score(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	G_ActivateBehavior(ent, BSET_USE);
 
@@ -134,7 +134,7 @@ void SP_target_score(gentity_t* ent)
 "message"	text to print
 If "private", only the activator gets the message.  If no checks, all clients get the message.
 */
-void Use_Target_Print(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Print(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	G_ActivateBehavior(ent, BSET_USE);
 
@@ -924,7 +924,7 @@ void SP_target_gravity_change(gentity_t* self)
 	self->e_UseFunc = useF_target_gravity_change_use;
 }
 
-void target_friction_change_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void target_friction_change_use(gentity_t* self, gentity_t* other, const gentity_t* activator)
 {
 	G_ActivateBehavior(self, BSET_USE);
 
@@ -1180,7 +1180,7 @@ parm16
 */
 void Q3_SetParm(int entID, int parmNum, const char* parmValue);
 
-void target_change_parm_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void target_change_parm_use(const gentity_t* self, gentity_t* other, const gentity_t* activator)
 {
 	if (!activator || !self)
 	{
@@ -1276,7 +1276,7 @@ void SP_target_autosave(gentity_t* self)
 	self->e_UseFunc = useF_target_autosave_use;
 }
 
-void target_secret_use(gentity_t* self, gentity_t* other, gentity_t* activator)
+void target_secret_use(const gentity_t* self, gentity_t* other, const gentity_t* activator)
 {
 	//we'll assume that the activator is the player
 	gclient_t* const client = &level.clients[0];

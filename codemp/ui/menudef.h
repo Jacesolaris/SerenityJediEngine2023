@@ -23,6 +23,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // this file is parsed at runtime by botlib's text preprocessor (used for .menu scripting)
 // include guards aren't necessary
 
+#ifndef MENUDEF_H
+#define MENUDEF_H
 #define CT_LTBLUE1	0.367	0.261	0.722
 #define CT_DKBLUE1	0.199	0.0		0.398
 
@@ -422,3 +424,4 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define VOICECHAT_DEATHINSULT		"death_insult"			// you just killed me
 #define VOICECHAT_KILLGAUNTLET		"kill_gauntlet"			// I just killed you with the gauntlet
 #define VOICECHAT_PRAISE			"praise"				// you did something good
+#endif // MENUDEF_H

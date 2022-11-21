@@ -119,12 +119,14 @@ UpdateIPBans
 */
 static void UpdateIPBans(void)
 {
-	byteAlias_t b, m;
-	char ip[NET_ADDRSTRMAXLEN], iplist_final[MAX_CVAR_VALUE_STRING];
+	char iplist_final[MAX_CVAR_VALUE_STRING];
 
 	*iplist_final = 0;
 	for (int i = 0; i < numIPFilters; i++)
 	{
+		char ip[NET_ADDRSTRMAXLEN];
+		byteAlias_t m;
+		byteAlias_t b;
 		if (ipFilters[i].compare == 0xFFFFFFFFu)
 			continue;
 
@@ -223,7 +225,7 @@ G_ProcessIPBans
 */
 void G_ProcessIPBans(void)
 {
-	char* s = NULL, str[MAX_CVAR_VALUE_STRING] = { 0 };
+	char* s, str[MAX_CVAR_VALUE_STRING] = { 0 };
 
 	Q_strncpyz(str, g_banIPs.string, sizeof str);
 
@@ -388,10 +390,10 @@ void Svcmd_RemoveIP_f(void)
 void Svcmd_ListIP_f(void)
 {
 	int count = 0;
-	byteAlias_t b;
 
 	for (int i = 0; i < numIPFilters; i++)
 	{
+		byteAlias_t b;
 		if (ipFilters[i].compare == 0xffffffffu)
 			continue;
 

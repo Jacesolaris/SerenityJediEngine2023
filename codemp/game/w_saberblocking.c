@@ -746,7 +746,7 @@ qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker)
 	return qtrue;
 }
 
-qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
+qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//if the attack is blocked -(Im the attacker)
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
@@ -913,7 +913,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 	return qtrue;
 }
 
-qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
+qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//-(Im the blocker)
 	const qboolean perfectparry = g_perfect_blocking(blocker, attacker, hitLoc); //perfect Attack Blocking
@@ -1035,8 +1035,16 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 					}
 					else
 					{
-						//WP_SaberParry(blocker, attacker, saberNum, bladeNum);
-						WP_SaberBlockNonRandom(blocker, hitLoc, qfalse);
+						if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel == SS_STRONG)
+						{
+							//WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
+							WP_SaberFatiguedParryDirection(blocker, hitLoc, qfalse);
+						}
+						else
+						{
+							//WP_SaberParry(blocker, attacker, saberNum, bladeNum);
+							WP_SaberBlockNonRandom(blocker, hitLoc, qfalse);
+						}
 					}
 
 					if (attacker->r.svFlags & SVF_BOT) //NPC only
@@ -1073,8 +1081,16 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 				}
 				else
 				{
-					//WP_SaberBlockedBounceBlock(blocker, attacker, saberNum, bladeNum);
-					WP_SaberBouncedSaberDirection(blocker, hitLoc, qfalse);
+					if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel == SS_STRONG)
+					{
+						//WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
+						WP_SaberFatiguedParryDirection(blocker, hitLoc, qfalse);
+					}
+					else
+					{
+						//WP_SaberBlockedBounceBlock(blocker, attacker, saberNum, bladeNum);
+						WP_SaberBouncedSaberDirection(blocker, hitLoc, qfalse);
+					}
 				}
 
 				if (!(blocker->r.svFlags & SVF_BOT))
@@ -1106,34 +1122,42 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 			{
 				if (blocker->r.svFlags & SVF_BOT) //NPC only
 				{
-					if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_MISSILE)
-					{
-						//WP_SaberParry(blocker, attacker, saberNum, bladeNum);
-						WP_SaberBlockNonRandom(blocker, hitLoc, qfalse);
-
-						if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
-						{
-							Com_Printf(S_COLOR_CYAN"NPC normal Parry\n");
-						}
-					}
-					else if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_HALF)
+					if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel == SS_STRONG)
 					{
 						//WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
 						WP_SaberFatiguedParryDirection(blocker, hitLoc, qfalse);
-
-						if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
-						{
-							Com_Printf(S_COLOR_CYAN"NPC Fatigued Parry\n");
-						}
 					}
 					else
 					{
-						//WP_SaberMBlock(blocker, attacker, saberNum, bladeNum);
-						WP_SaberMBlockDirection(blocker, hitLoc, qfalse);
-
-						if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
+						if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_MISSILE)
 						{
-							Com_Printf(S_COLOR_CYAN"NPC good Parry\n");
+							//WP_SaberParry(blocker, attacker, saberNum, bladeNum);
+							WP_SaberBlockNonRandom(blocker, hitLoc, qfalse);
+
+							if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
+							{
+								Com_Printf(S_COLOR_CYAN"NPC normal Parry\n");
+							}
+						}
+						else if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_HALF)
+						{
+							//WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
+							WP_SaberFatiguedParryDirection(blocker, hitLoc, qfalse);
+
+							if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
+							{
+								Com_Printf(S_COLOR_CYAN"NPC Fatigued Parry\n");
+							}
+						}
+						else
+						{
+							//WP_SaberMBlock(blocker, attacker, saberNum, bladeNum);
+							WP_SaberMBlockDirection(blocker, hitLoc, qfalse);
+
+							if ((d_blockinfo.integer || g_DebugSaberCombat.integer) && !(blocker->r.svFlags & SVF_BOT))
+							{
+								Com_Printf(S_COLOR_CYAN"NPC good Parry\n");
+							}
 						}
 					}
 				}

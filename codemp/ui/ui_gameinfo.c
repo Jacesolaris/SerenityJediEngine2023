@@ -42,8 +42,7 @@ static char* ui_arenaInfos[MAX_ARENAS];
 UI_ParseInfos
 ===============
 */
-int UI_ParseInfos(char* buf, int max, char* infos[]) {
-	char	key[MAX_TOKEN_CHARS];
+int UI_ParseInfos(const char* buf, int max, char* infos[]) {
 	char	info[MAX_INFO_STRING];
 
 	int count = 0;
@@ -66,6 +65,7 @@ int UI_ParseInfos(char* buf, int max, char* infos[]) {
 
 		info[0] = '\0';
 		while (1) {
+			char key[MAX_TOKEN_CHARS];
 			token = COM_ParseExt(&buf, qtrue);
 			if (!token[0]) {
 				Com_Printf("Unexpected end of info file\n");
@@ -143,7 +143,6 @@ UI_LoadArenas
 #define MAPSBUFSIZE (MAX_MAPS * 64)
 void UI_LoadArenas(void)
 {
-	char		filename[MAX_QPATH];
 	char		dirlist[MAPSBUFSIZE];
 	int			dirlen;
 
@@ -155,6 +154,7 @@ void UI_LoadArenas(void)
 	char* dirptr = dirlist;
 	for (int i = 0; i < numdirs; i++, dirptr += dirlen + 1)
 	{
+		char filename[MAX_QPATH];
 		dirlen = strlen(dirptr);
 		strcpy(filename, "mpscripts/");
 		strcat(filename, dirptr);
@@ -242,7 +242,6 @@ void UI_LoadArenas(void)
 
 void UI_LoadSPArenas(void)
 {
-	char		filename[MAX_QPATH];
 	char		dirlist[MAPSBUFSIZE];
 	int			dirlen;
 
@@ -254,6 +253,7 @@ void UI_LoadSPArenas(void)
 	char* dirptr = dirlist;
 	for (int i = 0; i < numdirs; i++, dirptr += dirlen + 1)
 	{
+		char filename[MAX_QPATH];
 		dirlen = strlen(dirptr);
 		strcpy(filename, "mpscripts/");
 		strcat(filename, dirptr);
@@ -396,7 +396,6 @@ UI_LoadBots
 void UI_LoadBots(void)
 {
 	vmCvar_t	botsFile;
-	char		filename[128];
 	char		dirlist[1024];
 	int			dirlen;
 
@@ -417,6 +416,7 @@ void UI_LoadBots(void)
 	char* dirptr = dirlist;
 	for (int i = 0; i < numdirs; i++, dirptr += dirlen + 1)
 	{
+		char filename[128];
 		dirlen = strlen(dirptr);
 		strcpy(filename, "mpscripts/");
 		strcat(filename, dirptr);

@@ -42,7 +42,7 @@ void turretG2_base_use(gentity_t* self, gentity_t* other, gentity_t* activator);
 #define name3 "models/map_objects/wedge/laser_cannon_model.glm"
 
 //special routine for tracking angles between client and server -rww
-void G2Tur_SetBoneAngles(gentity_t* ent, char* bone, vec3_t angles)
+void G2Tur_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 {
 	int* thebone = &ent->s.boneIndex1;
 	int* firstFree = NULL;
@@ -511,8 +511,7 @@ void turretG2_head_think(gentity_t* self)
 static void turretG2_aim(gentity_t* self)
 //-----------------------------------------------------
 {
-	vec3_t enemyDir, org, org2;
-	vec3_t desiredAngles, setAngle;
+	vec3_t desiredAngles;
 	float diffYaw = 0.0f, diffPitch = 0.0f;
 	const float maxYawSpeed = self->spawnflags & SPF_TURRETG2_TURBO ? 30.0f : 14.0f;
 	const float maxPitchSpeed = self->spawnflags & SPF_TURRETG2_TURBO ? 15.0f : 3.0f;
@@ -524,6 +523,9 @@ static void turretG2_aim(gentity_t* self)
 
 	if (self->enemy)
 	{
+		vec3_t org2;
+		vec3_t org;
+		vec3_t enemyDir;
 		mdxaBone_t boltMatrix;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
@@ -588,6 +590,7 @@ static void turretG2_aim(gentity_t* self)
 
 	if (diffYaw)
 	{
+		vec3_t setAngle;
 		// cap max speed....
 		if (fabs(diffYaw) > maxYawSpeed)
 		{
@@ -706,7 +709,7 @@ static qboolean turretG2_find_enemies(gentity_t* self)
 {
 	qboolean found = qfalse;
 	float bestDist = self->radius * self->radius;
-	vec3_t enemyDir, org, org2;
+	vec3_t org, org2;
 	qboolean foundClient = qfalse;
 	gentity_t* entity_list[MAX_GENTITIES], * bestTarget = NULL;
 
@@ -807,6 +810,7 @@ static qboolean turretG2_find_enemies(gentity_t* self)
 
 		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
 		{
+			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
 			VectorSubtract(target->r.currentOrigin, self->r.currentOrigin, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -860,7 +864,6 @@ void turretG2_base_think(gentity_t* self)
 //-----------------------------------------------------
 {
 	qboolean turnOff = qtrue;
-	vec3_t enemyDir, org, org2;
 
 	self->nextthink = level.time + FRAMETIME;
 
@@ -934,6 +937,7 @@ void turretG2_base_think(gentity_t* self)
 		}
 		else
 		{
+			vec3_t enemyDir;
 			//FIXME: remain single-minded or look for a new enemy every now and then?
 			// enemy is alive
 			VectorSubtract(self->enemy->r.currentOrigin, self->r.currentOrigin, enemyDir);
@@ -944,6 +948,8 @@ void turretG2_base_think(gentity_t* self)
 				// was in valid radius
 				if (trap->InPVS(self->r.currentOrigin, self->enemy->r.currentOrigin))
 				{
+					vec3_t org2;
+					vec3_t org;
 					// Every now and again, check to see if we can even trace to the enemy
 					trace_t tr;
 

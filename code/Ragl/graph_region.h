@@ -185,7 +185,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		bool	find_regions(const typename TGraph::user& user)
 		{
-			for (typename TGraph::TNodes::iterator i = mGraph.nodes_begin(); i != mGraph.nodes_end(); i++)
+			for (typename TGraph::TNodes::iterator i = mGraph.nodes_begin(); i != mGraph.nodes_end(); ++i)
 			{
 				int CurNodeIndex = i.index();
 				if (mRegions[CurNodeIndex] == NULL_REGION)

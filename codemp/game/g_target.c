@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 /*QUAKED target_give (1 0 0) (-8 -8 -8) (8 8 8)
 Gives the activator all the items pointed to.
 */
-void Use_Target_Give(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Give(const gentity_t* self, gentity_t* other, gentity_t* activator)
 {
 	trace_t trace;
 
@@ -37,14 +37,14 @@ void Use_Target_Give(gentity_t* ent, gentity_t* other, gentity_t* activator)
 		return;
 	}
 
-	if (!ent->target)
+	if (!self->target)
 	{
 		return;
 	}
 
 	memset(&trace, 0, sizeof trace);
 	gentity_t* t = NULL;
-	while ((t = G_Find(t, FOFS(targetname), ent->target)) != NULL)
+	while ((t = G_Find(t, FOFS(targetname), self->target)) != NULL)
 	{
 		if (!t->item)
 		{
@@ -69,7 +69,7 @@ void SP_target_give(gentity_t* ent)
 takes away all the activators powerups.
 Used to drop flight powerups into death puts.
 */
-void Use_target_remove_powerups(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_target_remove_powerups(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	if (!activator->client)
 	{
@@ -147,7 +147,7 @@ void SP_target_delay(gentity_t* ent)
 
 The activator is given this many points.
 */
-void Use_Target_Score(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Score(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	AddScore(activator, ent->r.currentOrigin, ent->count);
 }
@@ -168,7 +168,7 @@ void SP_target_score(gentity_t* ent)
 "wait"		don't fire off again if triggered within this many milliseconds ago
 If "private", only the activator gets the message.  If no checks, all clients get the message.
 */
-void Use_Target_Print(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Target_Print(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	if (!ent || !ent->inuse)
 	{
@@ -409,11 +409,11 @@ void target_laser_think(gentity_t* self)
 {
 	vec3_t end;
 	trace_t tr;
-	vec3_t point;
 
 	// if pointed at another entity, set movedir to point at it
 	if (self->enemy)
 	{
+		vec3_t point;
 		VectorMA(self->enemy->s.origin, 0.5, self->enemy->r.mins, point);
 		VectorMA(point, 0.5, self->enemy->r.maxs, point);
 		VectorSubtract(point, self->s.origin, self->movedir);
@@ -1198,7 +1198,7 @@ qboolean CheckforGoodSpawnPoint(vec3_t location, qboolean playersolidcheck)
 #define FLAG_TELETOSAVE		1
 extern qboolean SPSpawnpointCheck(vec3_t spawnloc);
 
-void Use_Autosave(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void Use_Autosave(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	gentity_t* oldspawn = NULL;
 	vec3_t spawnloc;

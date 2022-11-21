@@ -9672,7 +9672,7 @@ void CG_DrawFlagStatus()
 #define SPFUELBAR_X			(SCREEN_WIDTH-SPFUELBAR_W-4.0f)
 #define SPFUELBAR_Y			240.0f
 
-void CG_DrawSprintFuel(void)
+void CG_DrawSprintFuel()
 {
 	vec4_t aColor;
 	vec4_t bColor;

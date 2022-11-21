@@ -317,7 +317,6 @@ namespace ragl
 				CVec3				nodeCenter(0, 0, 0);
 
 				TSortNodes* sortnodes = new TSortNodes;
-				SSortNode			sortnode;
 
 				TCells* sortcells = new TCells;
 				sortcells->copy_bounds(mCells);
@@ -342,6 +341,7 @@ namespace ragl
 							//--------------------------------
 							for (int i = 0; i < cell.mNodes.size() && !sortnodes->full(); i++)
 							{
+								SSortNode sortnode;
 								int	nodeHandle = cell.mNodes[i];
 
 								TNODE& node = mGraph.get_node(nodeHandle);
@@ -414,7 +414,6 @@ namespace ragl
 				CVec3				nodeCenter(0, 0, 0);
 
 				TSortNodes* sortedges = new TSortNodes;
-				SSortNode			sortnode;
 
 				TCells* sortcells = new TCells;
 				sortcells->copy_bounds(mCells);
@@ -439,6 +438,7 @@ namespace ragl
 							//--------------------------------
 							for (int e = 0; e < cell.mEdges.size() && !sortedges->full(); e++)
 							{
+								SSortNode sortnode;
 								int	edgeHandle = cell.mEdges[e];
 
 								TEDGE& edge = mGraph.get_edge(edgeHandle);
@@ -1362,7 +1362,7 @@ namespace ragl
 			////////////////////////////////////////////////////////////////////////////////
 			void			visit(search_node& t)
 			{
-				assert(mNodesPtr != 0);
+				assert(mNodesPtr != nullptr);
 				mPrevIndex = t.mNode;
 
 				// Add It To The Visited List, And Mark The Location In The Node Index Array

@@ -34,7 +34,7 @@ void G_DrawNode(vec3_t origin, int type);
 void G_DrawCombatPoint(vec3_t origin, int type);
 void TAG_ShowTags(int flags);
 
-qboolean NAV_CheckNodeFailedForEnt(gentity_t* ent, int nodeNum)
+qboolean NAV_CheckNodeFailedForEnt(const gentity_t* ent, int nodeNum)
 {
 	//FIXME: must be a better way to do this
 	for (int j = 0; j < MAX_FAILED_NODES; j++)

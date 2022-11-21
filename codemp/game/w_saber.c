@@ -107,7 +107,7 @@ extern int Jedi_ReCalcParryTime(gentity_t* self, evasionType_t evasionType);
 extern qboolean PM_SaberInnonblockableAttack(int anim);
 extern qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC);
 //////////////////////////////////////////////////
-extern qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
+extern qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
 //////////////////////////////////////////////////
 extern saberMoveName_t PM_AnimateOldKnockBack(int move);
 extern int G_AnimateOldKnockBack(int move);
@@ -149,7 +149,7 @@ extern int PM_InGrappleMove(int anim);
 extern qboolean PM_SaberInKillMove(int move);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
 extern qboolean PM_RestAnim(int anim);
-extern qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
+extern qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
 extern qboolean BG_HopAnim(int anim);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saberMove);
@@ -6572,10 +6572,10 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 			did_hit = qfalse;
 
 			//make me parry	-(Im the blocker)
-			SabBeh_BlockvsAttack(blocker, self, r_saber_num, r_blade_num, tr.endpos);
+			sab_beh_block_vs_attack(blocker, self, r_saber_num, r_blade_num, tr.endpos);
 
 			//make me bounce -(Im the attacker)
-			SabBeh_AttackvBlock(self, blocker, r_saber_num, r_blade_num, tr.endpos);
+			sab_beh_attack_vs_block(self, blocker, r_saber_num, r_blade_num, tr.endpos);
 		}
 		else
 		{
@@ -6628,10 +6628,10 @@ static QINLINE qboolean check_saber_damage(gentity_t* self, const int r_saber_nu
 				did_hit = qfalse;
 
 				//make me parry	-(Im the blocker)
-				SabBeh_BlockvsAttack(blocker, self, r_saber_num, r_blade_num, tr.endpos);
+				sab_beh_block_vs_attack(blocker, self, r_saber_num, r_blade_num, tr.endpos);
 
 				//make me bounce -(Im the attacker)
-				SabBeh_AttackvBlock(self, blocker, r_saber_num, r_blade_num, tr.endpos);
+				sab_beh_attack_vs_block(self, blocker, r_saber_num, r_blade_num, tr.endpos);
 			}
 			else
 			{

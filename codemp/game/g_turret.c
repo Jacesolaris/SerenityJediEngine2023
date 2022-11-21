@@ -54,7 +54,7 @@ void TurretPain(gentity_t* self, gentity_t* attacker, int damage)
 }
 
 //------------------------------------------------------------------------------------------------------------
-void TurretBasePain(gentity_t* self, gentity_t* attacker, int damage)
+void TurretBasePain(const gentity_t* self, gentity_t* attacker, int damage)
 //------------------------------------------------------------------------------------------------------------
 {
 	if (self->target_ent)
@@ -130,7 +130,7 @@ void auto_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker,
 }
 
 //------------------------------------------------------------------------------------------------------------
-void bottom_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void bottom_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
 //------------------------------------------------------------------------------------------------------------
 {
 	if (self->target_ent && self->target_ent->health > 0)
@@ -247,12 +247,11 @@ void turret_head_think(gentity_t* self)
 }
 
 //-----------------------------------------------------
-static void turret_aim(gentity_t* self)
+static void turret_aim(const gentity_t* self)
 //-----------------------------------------------------
 {
-	vec3_t enemyDir, org, org2;
 	vec3_t desiredAngles, setAngle;
-	float diffYaw = 0.0f, diffPitch = 0.0f;
+	float diff_yaw, diff_pitch;
 	const float pitchCap = 40.0f;
 	gentity_t* top = &g_entities[self->r.ownerNum];
 	if (!top)
@@ -280,12 +279,15 @@ static void turret_aim(gentity_t* self)
 			desiredAngles[PITCH] = pitchCap;
 		}
 
-		diffYaw = AngleSubtract(desiredAngles[YAW], top->r.currentAngles[YAW]);
-		diffPitch = AngleSubtract(desiredAngles[PITCH], top->r.currentAngles[PITCH]);
+		diff_yaw = AngleSubtract(desiredAngles[YAW], top->r.currentAngles[YAW]);
+		diff_pitch = AngleSubtract(desiredAngles[PITCH], top->r.currentAngles[PITCH]);
 		turnSpeed = flrand(-5, 5);
 	}
 	else if (self->enemy)
 	{
+		vec3_t org2;
+		vec3_t org;
+		vec3_t enemyDir;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
 		VectorCopy(self->enemy->r.currentOrigin, org);
@@ -324,8 +326,8 @@ static void turret_aim(gentity_t* self)
 			desiredAngles[PITCH] = pitchCap;
 		}
 
-		diffYaw = AngleSubtract(desiredAngles[YAW], top->r.currentAngles[YAW]);
-		diffPitch = AngleSubtract(desiredAngles[PITCH], top->r.currentAngles[PITCH]);
+		diff_yaw = AngleSubtract(desiredAngles[YAW], top->r.currentAngles[YAW]);
+		diff_pitch = AngleSubtract(desiredAngles[PITCH], top->r.currentAngles[PITCH]);
 	}
 	else
 	{
@@ -335,29 +337,29 @@ static void turret_aim(gentity_t* self)
 		desiredAngles[YAW] *= 60.0f;
 		desiredAngles[YAW] += self->s.angles[YAW];
 		desiredAngles[YAW] = AngleNormalize180(desiredAngles[YAW]);
-		diffYaw = AngleSubtract(desiredAngles[YAW], top->r.currentAngles[YAW]);
-		diffPitch = AngleSubtract(0, top->r.currentAngles[PITCH]);
+		diff_yaw = AngleSubtract(desiredAngles[YAW], top->r.currentAngles[YAW]);
+		diff_pitch = AngleSubtract(0, top->r.currentAngles[PITCH]);
 		turnSpeed = 1.0f;
 	}
 
-	if (diffYaw)
+	if (diff_yaw)
 	{
 		// cap max speed....
-		if (fabs(diffYaw) > turnSpeed)
+		if (fabs(diff_yaw) > turnSpeed)
 		{
-			diffYaw = diffYaw >= 0 ? turnSpeed : -turnSpeed;
+			diff_yaw = diff_yaw >= 0 ? turnSpeed : -turnSpeed;
 		}
 	}
-	if (diffPitch)
+	if (diff_pitch)
 	{
-		if (fabs(diffPitch) > turnSpeed)
+		if (fabs(diff_pitch) > turnSpeed)
 		{
 			// cap max speed
-			diffPitch = diffPitch > 0.0f ? turnSpeed : -turnSpeed;
+			diff_pitch = diff_pitch > 0.0f ? turnSpeed : -turnSpeed;
 		}
 	}
 	// ...then set up our desired yaw
-	VectorSet(setAngle, diffPitch, diffYaw, 0);
+	VectorSet(setAngle, diff_pitch, diff_yaw, 0);
 
 	VectorCopy(top->r.currentAngles, top->s.apos.trBase);
 	VectorScale(setAngle, 1000 / FRAMETIME, top->s.apos.trDelta);
@@ -365,7 +367,7 @@ static void turret_aim(gentity_t* self)
 	top->s.apos.trType = TR_LINEAR_STOP;
 	top->s.apos.trDuration = FRAMETIME;
 
-	if (diffYaw || diffPitch)
+	if (diff_yaw || diff_pitch)
 	{
 		top->s.loopSound = G_SoundIndex("sound/vehicles/weapons/hoth_turret/turn.wav");
 	}
@@ -421,7 +423,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 {
 	qboolean found = qfalse;
 	float bestDist = self->radius * self->radius;
-	vec3_t enemyDir, org, org2;
+	vec3_t org, org2;
 	gentity_t* entity_list[MAX_GENTITIES], * bestTarget = NULL;
 	trace_t tr;
 	const gentity_t* top = &g_entities[self->r.ownerNum];
@@ -493,6 +495,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 
 		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
 		{
+			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
 			VectorSubtract(target->r.currentOrigin, top->r.currentOrigin, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -535,7 +538,6 @@ void turret_base_think(gentity_t* self)
 //-----------------------------------------------------
 {
 	qboolean turnOff = qtrue;
-	vec3_t enemyDir, org, org2;
 
 	if (self->spawnflags & 1)
 	{
@@ -574,6 +576,7 @@ void turret_base_think(gentity_t* self)
 		//FIXME: remain single-minded or look for a new enemy every now and then?
 		if (self->enemy->health > 0)
 		{
+			vec3_t enemyDir;
 			// enemy is alive
 			VectorSubtract(self->enemy->r.currentOrigin, self->r.currentOrigin, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -583,6 +586,8 @@ void turret_base_think(gentity_t* self)
 				// was in valid radius
 				if (trap->InPVS(self->r.currentOrigin, self->enemy->r.currentOrigin))
 				{
+					vec3_t org2;
+					vec3_t org;
 					// Every now and again, check to see if we can even trace to the enemy
 					trace_t tr;
 

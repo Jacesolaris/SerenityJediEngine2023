@@ -2013,7 +2013,7 @@ void UI_DoCustomSaber(vec3_t origin, vec3_t dir, float length, float lengthMax, 
 	}
 }
 
-void UI_SaberDrawBlade(itemDef_t* item, char* saberName, int saberModel, saberType_t saberType, vec3_t origin, vec3_t angles, int bladeNum)
+void UI_SaberDrawBlade(itemDef_t* item, const char* saberName, int saberModel, saberType_t saberType, vec3_t origin, vec3_t angles, int bladeNum)
 {
 	char bladeColorString[MAX_QPATH];
 	vec3_t	bladeOrigin = { 0 };
@@ -2069,10 +2069,10 @@ void UI_SaberDrawBlade(itemDef_t* item, char* saberName, int saberModel, saberTy
 	BG_GiveMeVectorFromMatrix(&boltMatrix, POSITIVE_Z, axis[2]);//up
 
 	// Where do I get scale from?
-	const float scale = 1.0f;
 
 	if (tagHack)
 	{
+		const float scale = 1.0f;
 		switch (saberType)
 		{
 		case SABER_SINGLE:
@@ -2426,7 +2426,6 @@ void UI_GetSaberForMenu(char* saber, int saberNum)
 void UI_SaberDrawBlades(itemDef_t* item, vec3_t origin, vec3_t angles)
 {
 	//NOTE: only allows one saber type in view at a time
-	char saber[MAX_QPATH];
 	int saberModel;
 	int	numSabers = 1;
 
@@ -2438,6 +2437,7 @@ void UI_SaberDrawBlades(itemDef_t* item, vec3_t origin, vec3_t angles)
 
 	for (int saberNum = 0; saberNum < numSabers; saberNum++)
 	{
+		char saber[MAX_QPATH];
 		if (item->flags & ITF_ISCHARACTER)//hacked sabermoves sabers in character's hand
 		{
 			UI_GetSaberForMenu(saber, saberNum);
@@ -2509,7 +2509,6 @@ void UI_SaberAttachToChar(itemDef_t* item)
 	{
 		//bolt sabers
 		char modelPath[MAX_QPATH];
-		char skinPath[MAX_QPATH];
 		char saber[MAX_QPATH];
 
 		UI_GetSaberForMenu(saber, saberNum);
@@ -2519,11 +2518,12 @@ void UI_SaberAttachToChar(itemDef_t* item)
 			const int g2Saber = trap->G2API_InitGhoul2Model(&item->ghoul2, modelPath, 0, 0, 0, 0, 0); //add the model
 			if (g2Saber)
 			{
+				char skin_path[MAX_QPATH];
 				int boltNum;
 				//get the customSkin, if any
-				if (UI_SaberSkinForSaber(saber, skinPath))
+				if (UI_SaberSkinForSaber(saber, skin_path))
 				{
-					const int g2skin = trap->R_RegisterSkin(skinPath);
+					const int g2skin = trap->R_RegisterSkin(skin_path);
 					trap->G2API_SetSkin(item->ghoul2, g2Saber, 0, g2skin);//this is going to set the surfs on/off matching the skin file
 				}
 				else

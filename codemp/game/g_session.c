@@ -34,7 +34,6 @@ and tournament restarts.
 =======================================================================
 */
 
-//TODO: Replace with reading/writing to file(s)
 
 /*
 ================
@@ -43,11 +42,11 @@ G_WriteClientSessionData
 Called on game shutdown
 ================
 */
-void G_WriteClientSessionData(gclient_t* client)
+void G_WriteClientSessionData(const gclient_t* client)
 {
 	char s[MAX_CVAR_VALUE_STRING] = { 0 },
 		siegeClass[64] = { 0 }, IP[NET_ADDRSTRMAXLEN] = { 0 };
-	int i = 0;
+	int i;
 
 	// for the strings, replace ' ' with 1
 
@@ -98,7 +97,7 @@ Called on a reconnect
 void G_ReadSessionData(gclient_t* client)
 {
 	char s[MAX_CVAR_VALUE_STRING] = { 0 };
-	int i = 0, tempSessionTeam = 0, tempSpectatorState, tempTeamLeader;
+	int i, tempSessionTeam = 0, tempSpectatorState, tempTeamLeader;
 
 	const char* var = va("session%i", client - level.clients);
 	trap->Cvar_VariableStringBuffer(var, s, sizeof s);
@@ -149,7 +148,7 @@ G_InitSessionData
 Called on a first-time connect
 ================
 */
-void G_InitSessionData(gclient_t* client, char* userinfo, qboolean isBot)
+void G_InitSessionData(gclient_t* client, const char* userinfo, qboolean isBot)
 {
 	const char* value;
 

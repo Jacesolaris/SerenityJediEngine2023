@@ -625,7 +625,7 @@ qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker, int sabe
 	return qtrue;
 }
 
-qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
+qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//if the attack is blocked -(Im the attacker)
 	const qboolean Blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking (just holding block button)
@@ -785,7 +785,7 @@ qboolean SabBeh_AttackvBlock(gentity_t* attacker, gentity_t* blocker, int saberN
 	return qtrue;
 }
 
-qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
+qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc)
 {
 	//-(Im the blocker)
 
@@ -908,7 +908,14 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 					}
 					else
 					{
-						WP_SaberParry(blocker, attacker, saberNum, bladeNum);
+						if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel == SS_STRONG)
+						{
+							WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
+						}
+						else
+						{
+							WP_SaberParry(blocker, attacker, saberNum, bladeNum);
+						}
 					}
 
 					if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
@@ -948,7 +955,14 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 				}
 				else
 				{
-					WP_SaberBlockedBounceBlock(blocker, attacker, saberNum, bladeNum);
+					if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel == SS_STRONG)
+					{
+						WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
+					}
+					else
+					{
+						WP_SaberBlockedBounceBlock(blocker, attacker, saberNum, bladeNum);
+					}
 				}
 
 				if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
@@ -984,31 +998,38 @@ qboolean SabBeh_BlockvsAttack(gentity_t* blocker, gentity_t* attacker, int saber
 			{
 				if (blocker->NPC && !G_ControlledByPlayer(blocker)) //NPC only
 				{
-					if (blocker->client->ps.blockPoints <= BLOCKPOINTS_MISSILE)
-					{
-						WP_SaberParry(blocker, attacker, saberNum, bladeNum);
-
-						if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
-						{
-							gi.Printf(S_COLOR_CYAN"NPC normal Parry\n");
-						}
-					}
-					else if (blocker->client->ps.blockPoints <= BLOCKPOINTS_HALF)
+					if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel == SS_STRONG)
 					{
 						WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
-
-						if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
-						{
-							gi.Printf(S_COLOR_CYAN"NPC Fatigued Parry\n");
-						}
 					}
 					else
 					{
-						WP_SaberMBlock(blocker, attacker, saberNum, bladeNum);
-
-						if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+						if (blocker->client->ps.blockPoints <= BLOCKPOINTS_MISSILE)
 						{
-							gi.Printf(S_COLOR_CYAN"NPC good Parry\n");
+							WP_SaberParry(blocker, attacker, saberNum, bladeNum);
+
+							if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+							{
+								gi.Printf(S_COLOR_CYAN"NPC normal Parry\n");
+							}
+						}
+						else if (blocker->client->ps.blockPoints <= BLOCKPOINTS_HALF)
+						{
+							WP_SaberFatiguedParry(blocker, attacker, saberNum, bladeNum);
+
+							if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+							{
+								gi.Printf(S_COLOR_CYAN"NPC Fatigued Parry\n");
+							}
+						}
+						else
+						{
+							WP_SaberMBlock(blocker, attacker, saberNum, bladeNum);
+
+							if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
+							{
+								gi.Printf(S_COLOR_CYAN"NPC good Parry\n");
+							}
 						}
 					}
 				}

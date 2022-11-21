@@ -1728,9 +1728,8 @@ void QDECL G_Printf(const char* msg, ...)
 
 static void TranslateSyscalls(void)
 {
-	static gameImport_t import;
+	static gameImport_t import = {0};
 
-	memset(&import, 0, sizeof import);
 	trap = &import;
 
 	Com_Error = G_Error;

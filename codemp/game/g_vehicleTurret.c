@@ -34,8 +34,8 @@ extern void G_VehMuzzleFireFX(const gentity_t* ent, gentity_t* broadcaster, int 
 void VEH_TurretCheckFire(Vehicle_t* pVeh,
 	gentity_t* parent,
 	//gentity_t *turretEnemy,
-	turretStats_t* turretStats,
-	vehWeaponInfo_t* vehWeapon,
+	const turretStats_t* turretStats,
+	const vehWeaponInfo_t* vehWeapon,
 	int turretNum, int curMuzzle)
 {
 	// if it's time to fire and we have an enemy, then gun 'em down!  pushDebounce time controls next fire time
@@ -124,7 +124,7 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 	int turretNum, int curMuzzle, vec3_t desiredAngles)
 	//-----------------------------------------------------
 {
-	vec3_t curAngles, addAngles, newAngles, yawAngles, pitchAngles;
+	vec3_t curAngles, addAngles, newAngles;
 	float aimCorrect = qfalse;
 
 	WP_CalcVehMuzzle(parent, curMuzzle);
@@ -202,6 +202,7 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 	//set yaw
 	if (turretStats->yawBone)
 	{
+		vec3_t yawAngles;
 		VectorClear(yawAngles);
 		yawAngles[turretStats->yawAxis] = newAngles[YAW];
 		NPC_SetBoneAngles(parent, turretStats->yawBone, yawAngles);
@@ -209,6 +210,7 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 	//set pitch
 	if (turretStats->pitchBone)
 	{
+		vec3_t pitchAngles;
 		VectorClear(pitchAngles);
 		pitchAngles[turretStats->pitchAxis] = newAngles[PITCH];
 		NPC_SetBoneAngles(parent, turretStats->pitchBone, pitchAngles);
@@ -222,15 +224,16 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 //-----------------------------------------------------
 static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 	gentity_t* parent,
-	turretStats_t* turretStats,
+	const turretStats_t* turretStats,
 	int turretNum, int curMuzzle)
 	//-----------------------------------------------------
 {
 	qboolean found = qfalse;
 	float bestDist = turretStats->fAIRange * turretStats->fAIRange;
-	vec3_t enemyDir, org, org2;
+	vec3_t org2;
 	qboolean foundClient = qfalse;
-	gentity_t* entity_list[MAX_GENTITIES], * bestTarget = NULL;
+	gentity_t* entity_list[MAX_GENTITIES];
+	const gentity_t * bestTarget = NULL;
 
 	if (!pVeh->m_pPilot)
 	{
@@ -245,6 +248,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 
 	for (int i = 0; i < count; i++)
 	{
+		vec3_t org;
 		trace_t tr;
 		gentity_t* target = entity_list[i];
 
@@ -319,6 +323,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 		if (tr.entityNum == target->s.number
 			|| !tr.allsolid && !tr.startsolid && tr.fraction == 1.0)
 		{
+			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
 			VectorSubtract(target->r.currentOrigin, org2, enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
@@ -371,7 +376,6 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
 //-----------------------------------------------------
 {
 	qboolean doAim = qfalse;
-	vec3_t enemyDir;
 	turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
 	gentity_t* turretEnemy = NULL;
 
@@ -456,6 +460,7 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
 	{
 		if (turretEnemy->health > 0)
 		{
+			vec3_t enemyDir;
 			// enemy is alive
 			WP_CalcVehMuzzle(parent, curMuzzle);
 			VectorSubtract(turretEnemy->r.currentOrigin, pVeh->m_vMuzzlePos[curMuzzle], enemyDir);

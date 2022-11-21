@@ -983,7 +983,7 @@ NPC_TargetVisible
 -------------------------
 */
 
-qboolean NPC_TargetVisible(gentity_t* ent)
+qboolean NPC_TargetVisible(const gentity_t* ent)
 {
 	//Make sure we're in a valid range
 	if (DistanceSquared(ent->currentOrigin, NPC->currentOrigin) > NPCInfo->stats.visrange * NPCInfo->stats.visrange)

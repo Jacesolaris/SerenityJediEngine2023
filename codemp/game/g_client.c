@@ -2076,7 +2076,7 @@ if desired.
 */
 
 qboolean G_SetSaber(gentity_t* ent, int saberNum, char* saberName, qboolean siegeOverride);
-void G_ValidateSiegeClassForTeam(gentity_t* ent, int team);
+void G_ValidateSiegeClassForTeam(const gentity_t* ent, int team);
 
 typedef struct userinfoValidate_s
 {
@@ -4878,7 +4878,7 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 	return NULL;
 }
 
-void G_WriteClientSessionData(gclient_t* client);
+void G_WriteClientSessionData(const gclient_t* client);
 
 void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* saberName);
 
@@ -4895,7 +4895,7 @@ extern void PlayerPain(gentity_t* self, gentity_t* attacker, int damage);
 extern qboolean gSiegeRoundBegun;
 extern qboolean gSiegeRoundEnded;
 extern qboolean g_dontPenalizeTeam; //g_cmds.c
-void SetTeamQuick(gentity_t* ent, int team, qboolean doBegin);
+void SetTeamQuick(const gentity_t* ent, int team, qboolean doBegin);
 
 void ClientBegin(int clientNum, qboolean allowTeamReset)
 {

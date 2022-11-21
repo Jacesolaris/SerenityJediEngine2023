@@ -428,10 +428,10 @@ typedef struct displayContextDef_s {
 	void			(*addRefEntityToScene)				(const refEntity_t* re);
 	void			(*renderScene)						(const refdef_t* fd);
 	qhandle_t(*RegisterFont)						(const char* fontName);
-	int				(*Font_StrLenPixels)				(const char* text, const int iFontIndex, const float scale);
+	int				(*Font_StrLenPixels)				(const char* text, int iFontIndex, float scale);
 	int				(*Font_StrLenChars)					(const char* text);
-	int				(*Font_HeightPixels)				(const int iFontIndex, const float scale);
-	void			(*Font_DrawString)					(int ox, int oy, const char* text, const float* rgba, const int setIndex, int iCharLimit, const float scale);
+	int				(*Font_HeightPixels)				(int iFontIndex, float scale);
+	void			(*Font_DrawString)					(int ox, int oy, const char* text, const float* rgba, int setIndex, int iCharLimit, float scale);
 	qboolean(*Language_IsAsian)					(void);
 	qboolean(*Language_UsesSpaces)				(void);
 	unsigned int	(*AnyLanguage_ReadCharFromString)	(const char* psText, int* piAdvanceCount, qboolean* pbIsTrailingPunctuation);
@@ -488,7 +488,7 @@ typedef struct displayContextDef_s {
 	int				screenshotFormat;
 
 	struct {
-		float			(*Font_StrLenPixels)				(const char* text, const int iFontIndex, const float scale);
+		float			(*Font_StrLenPixels)				(const char* text, int iFontIndex, float scale);
 	} ext;
 } displayContextDef_t;
 

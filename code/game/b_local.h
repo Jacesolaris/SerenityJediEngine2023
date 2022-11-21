@@ -188,7 +188,7 @@ extern qboolean CanSee(const gentity_t* ent);
 extern qboolean InFOV(const gentity_t* ent, const gentity_t* from, int hFOV, int vFOV);
 extern qboolean InFOV(vec3_t origin, const gentity_t* from, int hFOV, int vFOV);
 extern qboolean InFOV(vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int vFOV);
-extern visibility_t NPC_CheckVisibility(gentity_t* ent, int flags);
+extern visibility_t NPC_CheckVisibility(const gentity_t* ent, int flags);
 extern qboolean InVisrange(const gentity_t* ent);
 
 //NPC_spawn

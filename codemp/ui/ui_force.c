@@ -145,11 +145,8 @@ void UI_InitForceShaders(void)
 }
 
 // Draw the stars spent on the current force power
-void UI_DrawForceStars(rectDef_t* rect, float scale, vec4_t color, int textStyle, int forceindex, int val, int min, int max)
+void UI_DrawForceStars(const rectDef_t* rect, float scale, vec4_t color, int textStyle, int forceindex, int val, int min, int max)
 {
-	const int pad = 4;
-	const int width = 16;
-
 	if (val < min || val > max)
 	{
 		val = min;
@@ -161,6 +158,8 @@ void UI_DrawForceStars(rectDef_t* rect, float scale, vec4_t color, int textStyle
 
 		for (int i = FORCE_LEVEL_1; i <= max; i++)
 		{
+			const int width = 16;
+			const int pad = 4;
 			const int starcolor = bgForcePowerCost[forceindex][i];
 
 			if (uiForcePowersDisabled[forceindex])
@@ -229,7 +228,6 @@ void UI_SaveForceTemplate()
 {
 	char* selectedName = UI_Cvar_VariableString("ui_SaveFCF");
 	char fcfString[512];
-	char forceStringValue[4];
 	fileHandle_t f;
 	int forcePlace = 0;
 	int i = 0;
@@ -261,6 +259,7 @@ void UI_SaveForceTemplate()
 
 	while (forcePlace < NUM_FORCE_POWERS)
 	{
+		char forceStringValue[4];
 		Com_sprintf(forceStringValue, sizeof forceStringValue, "%i", uiForcePowersRank[forcePlace]);
 		//Just use the force digit even if multiple digits. Shouldn't be longer than 1.
 		fcfString[strPlace] = forceStringValue[0];
@@ -473,7 +472,6 @@ void UpdateForceUsed()
 void UI_ReadLegalForce(void)
 {
 	char fcfString[512];
-	char forceStringValue[4];
 	int forcePlace = 0;
 	char singleBuf[64];
 	char info[MAX_INFO_VALUE];
@@ -487,6 +485,7 @@ void UI_ReadLegalForce(void)
 
 	while (forcePlace < NUM_FORCE_POWERS)
 	{
+		char forceStringValue[4];
 		Com_sprintf(forceStringValue, sizeof forceStringValue, "%i", uiForcePowersRank[forcePlace]);
 		//Just use the force digit even if multiple digits. Shouldn't be longer than 1.
 		fcfString[strPlace] = forceStringValue[0];
@@ -634,13 +633,13 @@ void UI_ReadLegalForce(void)
 void UI_UpdateForcePowers()
 {
 	const char* forcePowers = UI_Cvar_VariableString("forcepowers");
-	char readBuf[256];
 	int i = 0;
 
 	uiForceSide = 0;
 
 	if (forcePowers && forcePowers[0])
 	{
+		char readBuf[256];
 		while (forcePowers[i])
 		{
 			int i_r = 0;
@@ -882,7 +881,6 @@ qboolean UI_JediNonJedi_HandleKey(int flags, float* special, int key, int num, i
 	if (key == A_MOUSE1 || key == A_MOUSE2 || key == A_ENTER || key == A_KP_ENTER)
 	{
 		int i = num;
-		int x = 0;
 
 		if (key == A_MOUSE2)
 		{
@@ -908,7 +906,9 @@ qboolean UI_JediNonJedi_HandleKey(int flags, float* special, int key, int num, i
 
 		// Resetting power ranks based on if light or dark side is chosen
 		if (!num)
-		{//not a jedi?
+		{
+			int x = 0;
+			//not a jedi?
 			const int myTeam = (int)trap->Cvar_VariableValue("ui_myteam");
 			while (x < NUM_FORCE_POWERS)
 			{//clear all force powers
@@ -987,10 +987,9 @@ qboolean UI_ForceMaxRank_HandleKey(int flags, float* special, int key, int num, 
 // This function will either raise or lower a power by one rank.
 qboolean UI_ForcePowerRank_HandleKey(int flags, float* special, int key, int num, int min, int max, int type)
 {
-	qboolean raising;
-
 	if (key == A_MOUSE1 || key == A_MOUSE2 || key == A_ENTER || key == A_KP_ENTER || key == A_BACKSPACE)
 	{
+		qboolean raising;
 		int rank;
 
 		//this will give us the index as long as UI_FORCE_RANK is always one below the first force rank index

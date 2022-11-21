@@ -728,7 +728,7 @@ void WriteLevel(qboolean qbAutosave);
 void ReadLevel(qboolean qbAutosave, qboolean qbLoadTransition);
 qboolean game_allowed_to_save_here();
 
-extern qboolean G_ActivateBehavior(gentity_t* ent, int bset);
+extern qboolean G_ActivateBehavior(gentity_t* self, int bset);
 
 //Timing information
 void TIMER_Clear(void);

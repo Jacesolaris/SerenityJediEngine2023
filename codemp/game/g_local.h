@@ -1592,7 +1592,7 @@ void Touch_DoorTrigger(gentity_t* ent, gentity_t* other, trace_t* trace);
 //
 // g_trigger.c
 //
-void trigger_teleporter_touch(gentity_t* self, gentity_t* other, trace_t* trace);
+void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* trace);
 
 //
 // g_misc.c
@@ -1755,7 +1755,7 @@ void Svcmd_GameMem_f(void);
 // g_session.c
 //
 void G_ReadSessionData(gclient_t* client);
-void G_InitSessionData(gclient_t* client, char* userinfo, qboolean isBot);
+void G_InitSessionData(gclient_t* client, const char* userinfo, qboolean isBot);
 
 void G_InitWorldSession(void);
 void G_WriteSessionData(void);
@@ -1838,7 +1838,7 @@ void QDECL G_ClearClientLog(int client);
 
 // g_siege.c
 void InitSiegeMode(void);
-void G_SiegeClientExData(gentity_t* msgTarg);
+void G_SiegeClientExData(const gentity_t* msgTarg);
 
 // g_timer
 //Timing information

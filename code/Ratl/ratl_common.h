@@ -568,7 +568,7 @@ namespace ratl
 			};
 			using TArray = TStorage[SIZE];
 
-			static const int NEEDS_CONSTRUCT = 1;
+			static constexpr int NEEDS_CONSTRUCT = 1;
 			static const int TOTAL_SIZE = sizeof(TStorage);
 			static const int VALUE_SIZE = sizeof(TStorage);
 

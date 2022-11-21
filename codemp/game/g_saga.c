@@ -61,7 +61,7 @@ int gSiegeBeginTime = Q3_INFINITE;
 int g_preroundState = 0; //default to starting as spec (1 is starting ingame)
 
 void LogExit(const char* string);
-void SetTeamQuick(gentity_t* ent, int team, qboolean doBegin);
+void SetTeamQuick(const gentity_t* ent, int team, qboolean doBegin);
 
 static char gParseObjectives[MAX_SIEGE_INFO_SIZE];
 static char gObjectiveCfgStr[1024];
@@ -123,7 +123,7 @@ void InitSiegeMode(void)
 	char teams[2048];
 	static char objective[MAX_SIEGE_INFO_SIZE];
 	char objecStr[8192];
-	int i = 0;
+	int i;
 	//	int				j = 0;
 	int objectiveNumTeam1 = 0;
 	int objectiveNumTeam2 = 0;
@@ -513,7 +513,7 @@ qboolean G_SiegeGetCompletionStatus(int team, int objective)
 	return qfalse;
 }
 
-void UseSiegeTarget(gentity_t* other, gentity_t* en, char* target)
+void UseSiegeTarget(gentity_t* other, gentity_t* en, const char* target)
 {
 	//actually use the player which triggered the object which triggered the siege objective to trigger the target
 	gentity_t* ent;
@@ -634,7 +634,7 @@ void SiegeDoTeamAssign(void)
 	//yeah, this is great...
 	while (i < MAX_CLIENTS)
 	{
-		gentity_t* ent = &g_entities[i];
+		const gentity_t* ent = &g_entities[i];
 
 		if (ent->inuse && ent->client &&
 			ent->client->pers.connected == CON_CONNECTED)
@@ -781,7 +781,7 @@ void SiegeRoundComplete(int winningteam, int winningclient)
 	}
 }
 
-void G_ValidateSiegeClassForTeam(gentity_t* ent, int team)
+void G_ValidateSiegeClassForTeam(const gentity_t* ent, int team)
 {
 	int newClassIndex = -1;
 	if (ent->client->siegeClass == -1)
@@ -827,7 +827,7 @@ void G_ValidateSiegeClassForTeam(gentity_t* ent, int team)
 }
 
 //bypass most of the normal checks in SetTeam
-void SetTeamQuick(gentity_t* ent, int team, qboolean doBegin)
+void SetTeamQuick(const gentity_t* ent, int team, qboolean doBegin)
 {
 	char userinfo[MAX_INFO_STRING];
 
@@ -950,7 +950,6 @@ void SiegeBeginRound(int entNum)
 void SiegeCheckTimers(void)
 {
 	int i = 0;
-	gentity_t* ent;
 	int numTeam1 = 0;
 	int numTeam2 = 0;
 
@@ -971,6 +970,7 @@ void SiegeCheckTimers(void)
 
 	if (!gSiegeRoundBegun)
 	{
+		gentity_t* ent;
 		//check if anyone is active on this team - if not, keep the timer set up.
 		i = 0;
 
@@ -1121,11 +1121,8 @@ void SiegeObjectiveCompleted(int team, int objective, int final, int client)
 void siegeTriggerUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
 {
 	char teamstr[64];
-	char objectivestr[64];
 	static char desiredobjective[MAX_SIEGE_INFO_SIZE];
 	int clUser = ENTITYNUM_NONE;
-	int final = 0;
-	int i = 0;
 
 	desiredobjective[0] = '\0';
 
@@ -1158,10 +1155,12 @@ void siegeTriggerUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
 
 	if (BG_SiegeGetValueGroup(siege_info, teamstr, gParseObjectives))
 	{
+		char objectivestr[64];
 		Com_sprintf(objectivestr, sizeof objectivestr, "Objective%i", ent->objective);
 
 		if (BG_SiegeGetValueGroup(gParseObjectives, objectivestr, desiredobjective))
 		{
+			int final = 0;
 			if (BG_SiegeGetPairedValue(desiredobjective, "final", teamstr))
 			{
 				final = atoi(teamstr);
@@ -1169,6 +1168,7 @@ void siegeTriggerUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
 
 			if (BG_SiegeGetPairedValue(desiredobjective, "target", teamstr))
 			{
+				int i = 0;
 				while (teamstr[i])
 				{
 					if (teamstr[i] == '\r' ||
@@ -1302,11 +1302,10 @@ void SP_info_siege_radaricon(gentity_t* ent)
 	trap->LinkEntity((sharedEntity_t*)ent);
 }
 
-void decompTriggerUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
+void decompTriggerUse(const gentity_t* ent, gentity_t* other, gentity_t* activator)
 {
 	int final = 0;
 	char teamstr[1024];
-	char objectivestr[64];
 	static char desiredobjective[MAX_SIEGE_INFO_SIZE];
 
 	desiredobjective[0] = '\0';
@@ -1347,6 +1346,7 @@ void decompTriggerUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
 
 	if (BG_SiegeGetValueGroup(siege_info, teamstr, gParseObjectives))
 	{
+		char objectivestr[64];
 		Com_sprintf(objectivestr, sizeof objectivestr, "Objective%i", ent->objective);
 
 		if (BG_SiegeGetValueGroup(gParseObjectives, objectivestr, desiredobjective))
@@ -1603,7 +1603,7 @@ void SiegeItemThink(gentity_t* ent)
 	ent->nextthink = level.time + FRAMETIME / 2;
 }
 
-void SiegeItemTouch(gentity_t* self, gentity_t* other, trace_t* trace)
+void SiegeItemTouch(gentity_t* self, gentity_t* other, const trace_t* trace)
 {
 	if (!other || !other->inuse ||
 		!other->client || other->s.eType == ET_NPC)
@@ -2039,12 +2039,11 @@ void SP_misc_siege_item(gentity_t* ent)
 //info for all 32 clients should not get much past 450 bytes, which is well within a
 //reasonable range. We don't need to send anything about the max ammo or current weapon, because
 //currentState.weapon can be checked for the ent in question on the client. -rww
-void G_SiegeClientExData(gentity_t* msgTarg)
+void G_SiegeClientExData(const gentity_t* msgTarg)
 {
 	int count = 0;
 	int i = 0;
 	char str[MAX_STRING_CHARS];
-	char scratch[MAX_STRING_CHARS];
 
 	while (i < level.num_entities && count < MAX_EXDATA_ENTS_TO_SEND)
 	{
@@ -2054,6 +2053,7 @@ void G_SiegeClientExData(gentity_t* msgTarg)
 			ent->s.eType == ET_PLAYER && msgTarg->client->sess.sessionTeam == ent->client->sess.sessionTeam &&
 			trap->InPVS(msgTarg->client->ps.origin, ent->client->ps.origin))
 		{
+			char scratch[MAX_STRING_CHARS];
 			//another client in the same pvs, send his jive
 			if (count)
 			{

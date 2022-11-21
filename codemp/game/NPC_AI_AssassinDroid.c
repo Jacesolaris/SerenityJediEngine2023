@@ -8,7 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-qboolean BubbleShield_IsOn(gentity_t* self)
+qboolean BubbleShield_IsOn(const gentity_t* self)
 {
 	return self->flags & FL_SHIELDED;
 }
@@ -65,7 +65,6 @@ void BubbleShield_PushRadiusEnts()
 	int entityList[MAX_GENTITIES];
 	const float radius = ASSASSIN_SHIELD_SIZE;
 	vec3_t mins, maxs;
-	vec3_t smackDir;
 
 	for (i = 0; i < 3; i++)
 	{
@@ -76,6 +75,7 @@ void BubbleShield_PushRadiusEnts()
 	const int numEnts = trap->EntitiesInBox(mins, maxs, entityList, 128);
 	for (i = 0; i < numEnts; i++)
 	{
+		vec3_t smackDir;
 		gentity_t* radiusEnt = &g_entities[entityList[i]];
 		// Only Clients
 		//--------------

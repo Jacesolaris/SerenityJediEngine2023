@@ -46,7 +46,7 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl);
 void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* saberName);
 
 void Cmd_NPC_f(gentity_t* ent);
-void SetTeamQuick(gentity_t* ent, int team, qboolean doBegin);
+void SetTeamQuick(const gentity_t* ent, int team, qboolean doBegin);
 extern void G_RemoveWeather(void);
 extern void G_SetTauntAnim(gentity_t* ent, int taunt);
 
