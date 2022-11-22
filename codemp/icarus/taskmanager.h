@@ -92,7 +92,7 @@ public:
 
 	void Init(void);
 
-	int Add(CTask* task);
+	int Add(const CTask* task);
 
 	void SetGUID(int GUID);
 	void SetParent(CTaskGroup* group) { m_parent = group; }
@@ -159,7 +159,7 @@ protected:
 	int	Go(void);	//Heartbeat function called once per game frame
 	int CallbackCommand(CTask* task, int returnCode);
 
-	static inline bool Check(int targetID, CBlock* block, int memberNum);
+	static inline bool Check(int targetID, const CBlock* block, int memberNum);
 
 	int GetVector(int entID, CBlock* block, int& memberNum, vector_t& value);
 	int GetFloat(int entID, CBlock* block, int& memberNum, float& value) const;

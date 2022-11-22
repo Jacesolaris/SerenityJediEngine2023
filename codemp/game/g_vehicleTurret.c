@@ -119,8 +119,8 @@ void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, int curMuzzle, float fSpeed, genti
 qboolean VEH_TurretAim(Vehicle_t* pVeh,
 	gentity_t* parent,
 	gentity_t* turretEnemy,
-	turretStats_t* turretStats,
-	vehWeaponInfo_t* vehWeapon,
+	const turretStats_t* turretStats,
+	const vehWeaponInfo_t* vehWeapon,
 	int turretNum, int curMuzzle, vec3_t desiredAngles)
 	//-----------------------------------------------------
 {
@@ -250,7 +250,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 	{
 		vec3_t org;
 		trace_t tr;
-		gentity_t* target = entity_list[i];
+		const gentity_t* target = entity_list[i];
 
 		if (target == parent
 			|| !target->takedamage

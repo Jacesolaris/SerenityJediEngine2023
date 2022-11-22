@@ -296,7 +296,7 @@ namespace ragl
 				// I. Fill All The Cells With The Points Contained By Those Cells
 				//----------------------------------------------------------------
 				bool full = false;
-				for (typename TNodes::iterator it = mGraph.nodes_begin(); it != mGraph.nodes_end() && !full; it++)
+				for (typename TNodes::iterator it = mGraph.nodes_begin(); it != mGraph.nodes_end() && !full; ++it)
 				{
 					TNODE& node = *it;
 					SCell& cell = mCells.get(node[0], node[1]);
@@ -556,7 +556,7 @@ namespace ragl
 		typename TNodes::iterator	nodes_begin()
 		{
 			typename TNodes::iterator x = mNodes.begin();
-			x++;
+			++x;
 			return x;
 		}
 
@@ -612,7 +612,7 @@ namespace ragl
 		typename TEdges::iterator	edges_begin()
 		{
 			typename TEdges::iterator x = mEdges.begin();
-			x++;
+			++x;
 			return x;
 		}
 
@@ -1437,9 +1437,9 @@ namespace ragl
 		private:
 			TNodes* mNodesPtr;
 
-			int							mPathVisit;
-			int							mPrevIndex;
-			int							mNextIndex;
+			int							mPathVisit{};
+			int							mPrevIndex{};
+			int							mNextIndex{};
 			search_node					mNext;
 
 			ratl::bits_vs<MAXNODES>		mClosed;

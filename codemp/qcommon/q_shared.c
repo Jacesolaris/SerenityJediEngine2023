@@ -255,11 +255,11 @@ const char* SkipWhitespace(const char* data, qboolean* hasNewLines) {
 
 int COM_Compress(char* data_p) {
 	char* out;
-	int c;
 	qboolean newline = qfalse, whitespace = qfalse;
 
 	char* in = out = data_p;
 	if (in) {
+		int c;
 		while ((c = *in) != 0) {
 			// skip double slash comments
 			if (c == '/' && in[1] == '/') {
@@ -730,8 +730,6 @@ FIXME: overflow check?
 ===============
 */
 char* Info_ValueForKey(const char* s, const char* key) {
-	char	pkey[BIG_INFO_KEY];
-	static	char value[2][BIG_INFO_VALUE];	// use two buffers so compares
 	// work without stomping on each other
 	static	int	valueindex = 0;
 
@@ -748,6 +746,8 @@ char* Info_ValueForKey(const char* s, const char* key) {
 		s++;
 	while (1)
 	{
+		static	char value[2][BIG_INFO_VALUE];
+		char pkey[BIG_INFO_KEY];
 		char* o = pkey;
 		while (*s != '\\')
 		{

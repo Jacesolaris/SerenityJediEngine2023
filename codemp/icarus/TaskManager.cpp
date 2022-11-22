@@ -125,7 +125,7 @@ Add
 -------------------------
 */
 
-int CTaskGroup::Add(CTask* task)
+int CTaskGroup::Add(const CTask* task)
 {
 	m_completedTasks[task->GetGUID()] = false;
 	return TASK_OK;
@@ -355,7 +355,7 @@ Check
 -------------------------
 */
 
-inline bool CTaskManager::Check(int targetID, CBlock* block, int memberNum)
+inline bool CTaskManager::Check(int targetID, const CBlock* block, int memberNum)
 {
 	if (block->GetMember(memberNum)->GetID() == targetID)
 		return true;

@@ -990,7 +990,7 @@ static void DeathUpdate(Vehicle_t* pVeh)
 		if (!pVeh->m_pVehicleInfo->Inhabited(pVeh))
 		{
 			//explode now as long as we managed to kick everyone out
-			vec3_t lMins, lMaxs, bottom;
+			vec3_t bottom;
 			trace_t trace;
 
 			if (pVeh->m_pVehicleInfo->iExplodeFX)
@@ -1016,6 +1016,8 @@ static void DeathUpdate(Vehicle_t* pVeh)
 			parent->takedamage = qfalse; //so we don't recursively damage ourselves
 			if (pVeh->m_pVehicleInfo->explosionRadius > 0 && pVeh->m_pVehicleInfo->explosionDamage > 0)
 			{
+				vec3_t lMaxs;
+				vec3_t lMins;
 				VectorCopy(parent->r.mins, lMins);
 				lMins[2] = -4; //to keep it off the ground a *little*
 				VectorCopy(parent->r.maxs, lMaxs);
@@ -1136,7 +1138,8 @@ qboolean Initialize(Vehicle_t* pVeh)
 
 	//Initialize to landed (wings closed, gears down) animation
 	{
-		int iFlags = SETANIM_FLAG_NORMAL, iBlend = 300;
+		const int iFlags = SETANIM_FLAG_NORMAL;
+		
 		pVeh->m_ulFlags |= VEH_GEARSOPEN;
 		BG_SetAnim(pVeh->m_pParentEntity->playerState, bgAllAnims[pVeh->m_pParentEntity->localAnimIndex].anims,
 			SETANIM_BOTH, BOTH_VS_IDLE, iFlags);
@@ -1831,7 +1834,6 @@ static void AttachRiders(Vehicle_t* pVeh)
 		&& pVeh->m_iDroidUnitTag != -1)
 	{
 		mdxaBone_t boltMatrix;
-		vec3_t yawOnlyAngles, fwd;
 		gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
 		gentity_t* droid = (gentity_t*)pVeh->m_pDroidUnit;
 
@@ -1841,11 +1843,13 @@ static void AttachRiders(Vehicle_t* pVeh)
 
 		if (droid->client)
 		{
-			VectorSet(yawOnlyAngles, 0, parent->client->ps.viewangles[YAW], 0);
+			vec3_t fwd;
+			vec3_t yaw_only_angles;
+			VectorSet(yaw_only_angles, 0, parent->client->ps.viewangles[YAW], 0);
 
 			// Get the droid tag.
 			trap->G2API_GetBoltMatrix(parent->ghoul2, 0, pVeh->m_iDroidUnitTag, &boltMatrix,
-				yawOnlyAngles, parent->r.currentOrigin,
+				yaw_only_angles, parent->r.currentOrigin,
 				level.time, NULL, parent->modelScale);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, droid->client->ps.origin);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, fwd);
@@ -1971,7 +1975,6 @@ int G_FlyVehicleImpactDir(gentity_t* veh, trace_t* trace)
 {
 	trace_t localTrace;
 	vec3_t testMins, testMaxs;
-	vec3_t rWing, lWing;
 	vec3_t fwd, right;
 	vec3_t fPos;
 	const Vehicle_t* pVeh = veh->m_pVehicle;
@@ -1998,6 +2001,8 @@ int G_FlyVehicleImpactDir(gentity_t* veh, trace_t* trace)
 
 	if (noseClear)
 	{
+		vec3_t lWing;
+		vec3_t rWing;
 		//if nose is clear check for tearing the wings off
 		//sadly, the trace endpos given always matches the vehicle origin, so we
 		//can't get a real impact direction. First we'll trace forward and see if the wings are colliding

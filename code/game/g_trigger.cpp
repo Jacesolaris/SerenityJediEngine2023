@@ -1363,6 +1363,21 @@ void space_touch(const gentity_t* self, const gentity_t* other, trace_t* trace)
 			return;
 		}
 	}
+	//if (other->client->NPC_class == CLASS_PROBE
+	//	|| other->client->NPC_class == CLASS_INTERROGATOR
+	//	|| other->client->NPC_class == CLASS_MARK1
+	//	|| other->client->NPC_class == CLASS_MARK2
+	//	|| other->client->NPC_class == CLASS_SENTRY
+	//	|| other->client->NPC_class == CLASS_ATST
+	//	|| other->client->NPC_class == CLASS_SBD
+	//	|| other->client->NPC_class == CLASS_BATTLEDROID
+	//	|| other->client->NPC_class == CLASS_DROIDEKA)
+	//{
+	//	//if they are droids, then let that protect them from THE HORRORS OF SPACE.
+	//	other->client->inSpaceSuffocation = 0;
+	//	other->client->inSpaceIndex = ENTITYNUM_NONE;
+	//	return;
+	//}
 
 	if (!G_PointInBounds(other->client->ps.origin, self->absmin, self->absmax))
 	{

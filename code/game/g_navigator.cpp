@@ -1686,10 +1686,10 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 
 			// Create A Closest Neighbors Array And Initialize It Empty
 			//----------------------------------------------------------
-			for (int i = 0; i < MIN_WAY_NEIGHBORS; i++)
+			for (auto & closestNbr : closestNbrs)
 			{
-				closestNbrs[i].mHandle = 0;
-				closestNbrs[i].mCost = 0;
+				closestNbr.mHandle = 0;
+				closestNbr.mCost = 0;
 			}
 			int highestCost = 0;
 			int nonWPCount = 0;
@@ -1778,13 +1778,13 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 
 			// Now Connect All The Closest Neighbors
 			//---------------------------------------
-			for (int i = 0; i < MIN_WAY_NEIGHBORS; i++)
+			for (auto & closestNbr : closestNbrs)
 			{
-				if (closestNbrs[i].mHandle)
+				if (closestNbr.mHandle)
 				{
-					mUser.setup_edge(atToTgt, atHandle, closestNbrs[i].mHandle, false, *nodeIter,
-						mGraph.get_node(closestNbrs[i].mHandle), false);
-					mGraph.connect_node(atToTgt, atHandle, closestNbrs[i].mHandle);
+					mUser.setup_edge(atToTgt, atHandle, closestNbr.mHandle, false, *nodeIter,
+						mGraph.get_node(closestNbr.mHandle), false);
+					mGraph.connect_node(atToTgt, atHandle, closestNbr.mHandle);
 				}
 			}
 		}
@@ -4620,7 +4620,7 @@ float STEER::Persue(gentity_t* actor, gentity_t* target, float slowingDistance, 
 	DirectionToTarget.SafeNorm();
 
 	CVec3 ProjectForward(DirectionToTarget);
-	CVec3 ProjectRight;
+	CVec3 ProjectRight{};
 	CVec3 ProjectUp;
 
 	if (relativeToTargetFacing)
@@ -4767,7 +4767,7 @@ float STEER::Path(gentity_t* actor)
 {
 	if (NAV::HasPath(actor))
 	{
-		CVec3 NextPosition;
+		CVec3 NextPosition{};
 		float NextSlowingRadius;
 		bool Fly = false;
 		bool Jump = false;

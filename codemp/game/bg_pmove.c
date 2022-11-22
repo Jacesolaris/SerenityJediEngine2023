@@ -7262,7 +7262,7 @@ static void PM_CrashLandEffect(void)
 		case MATERIAL_LAVA:
 			effectID = EFFECT_LANDING_SAND;
 			break;
-		default: ;
+		default:;
 		}
 
 		if (effectID != -1)
@@ -9990,7 +9990,7 @@ static void PM_Footsteps(void)
 			g_entities[pm->ps->clientNum].client->IsSprinting = qfalse;
 #endif
 		}
-	}
+		}
 	else if (pm->ps->pm_flags & PMF_ROLLING && !BG_InRoll(pm->ps, pm->ps->legsAnim) &&
 		!PM_InRollComplete(pm->ps, pm->ps->legsAnim))
 	{
@@ -11272,7 +11272,7 @@ static void PM_Footsteps(void)
 			// no sound when completely underwater
 		}
 	}
-}
+	}
 
 /*
 ==============
@@ -18086,13 +18086,7 @@ void PM_VehFaceHyperspacePoint(const bgEntity_t * veh)
 
 #endif //VEH_CONTROL_SCHEME_4
 
-void bg_vehicle_adjust_b_box_for_orientation(const Vehicle_t * veh, vec3_t origin, vec3_t mins, vec3_t maxs,
-	int clientNum, const int tracemask,
-	void (*localTrace)(trace_t * results, const vec3_t start,
-		const vec3_t minimum_mins,
-		const vec3_t maximum_maxs, const vec3_t end,
-		int passEntityNum,
-		int contentMask))
+void bg_vehicle_adjust_b_box_for_orientation(const Vehicle_t * veh, vec3_t origin, vec3_t mins, vec3_t maxs, const int clientNum, const int tracemask, void (*local_trace)(trace_t * results, const vec3_t start, const vec3_t minimum_mins, const vec3_t maximum_maxs, const vec3_t end, int pass_entity_num, int content_mask))
 {
 	if (!veh
 		|| !veh->m_pVehicleInfo->length
@@ -18156,9 +18150,9 @@ void bg_vehicle_adjust_b_box_for_orientation(const Vehicle_t * veh, vec3_t origi
 	VectorSubtract(newMins, origin, newMins);
 	VectorSubtract(newMaxs, origin, newMaxs);
 	//now see if that's a valid way to be
-	if (localTrace)
+	if (local_trace)
 	{
-		localTrace(&trace, origin, newMins, newMaxs, origin, clientNum, tracemask);
+		local_trace(&trace, origin, newMins, newMaxs, origin, clientNum, tracemask);
 	}
 	else
 	{

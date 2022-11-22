@@ -69,7 +69,6 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
 	qboolean attack_ok = qfalse;
 	qboolean duck_ok = qfalse;
 	qboolean faced = qfalse;
-	const float attack_scale = 1.0;
 
 	//First see if we're hurt bad- if so, duck
 	//FIXME: if even when ducked, we can shoot someone, we should.
@@ -87,6 +86,7 @@ qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck)
 
 	if (!duck_ok)
 	{
+		const float attack_scale = 1.0;
 		//made this whole part a function call
 		attack_ok = NPC_CheckCanAttack(attack_scale, qtrue);
 		faced = qtrue;
@@ -201,7 +201,6 @@ NPC_BSHuntAndKill
 void NPC_BSHuntAndKill(void)
 {
 	qboolean turned = qfalse;
-	vec3_t vec;
 
 	if (!in_camera)
 	{
@@ -231,6 +230,7 @@ void NPC_BSHuntAndKill(void)
 			curAnim != BOTH_MELEE_L
 			&& curAnim != BOTH_MELEE_R && curAnim != BOTH_MELEEUP && curAnim != BOTH_WOOKIE_SLAP)
 		{
+			vec3_t vec;
 			//Don't move toward enemy if we're in a full-body attack anim
 			//FIXME, use IdealDistance to determin if we need to close distance
 			VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, vec);

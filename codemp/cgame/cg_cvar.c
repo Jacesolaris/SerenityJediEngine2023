@@ -77,8 +77,8 @@ static const cvarTable_t cvarTable[] = {
 static const size_t cvarTableSize = ARRAY_LEN(cvarTable);
 
 void CG_RegisterCvars(void) {
-	size_t i = 0;
-	const cvarTable_t* cv = NULL;
+	size_t i;
+	const cvarTable_t* cv;
 
 	for (i = 0, cv = cvarTable; i < cvarTableSize; i++, cv++) {
 		trap->Cvar_Register(cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags);
@@ -88,8 +88,8 @@ void CG_RegisterCvars(void) {
 }
 
 void CG_UpdateCvars(void) {
-	size_t i = 0;
-	const cvarTable_t* cv = NULL;
+	size_t i;
+	const cvarTable_t* cv;
 
 	for (i = 0, cv = cvarTable; i < cvarTableSize; i++, cv++) {
 		if (cv->vmCvar) {

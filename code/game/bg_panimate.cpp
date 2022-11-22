@@ -706,7 +706,7 @@ int PM_AnimLevelForSaberAnim(const int anim)
 int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 {
 	int anim = ps->torsoAnim;
-	const int animTimeElapsed = PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
+	const int anim_time_elapsed = PM_AnimLength(g_entities[ps->clientNum].client->clientInfo.animFileIndex,
 		static_cast<animNumber_t>(anim)) - ps->torsoAnimTimer;
 
 	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_D1_B____)
@@ -802,7 +802,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 400)
+		if (anim_time_elapsed < 400)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -856,7 +856,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 150)
+		if (anim_time_elapsed < 150)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -871,7 +871,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 550)
+		if (anim_time_elapsed < 550)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -890,7 +890,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 550)
+		if (anim_time_elapsed < 550)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -904,7 +904,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed <= 250)
+		if (anim_time_elapsed <= 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -914,9 +914,9 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 	case BOTH_JUMPATTACK6:
 	case BOTH_GRIEVOUS_LUNGE:
 		if (ps->torsoAnimTimer >= 1450
-			&& animTimeElapsed >= 400
+			&& anim_time_elapsed >= 400
 			|| ps->torsoAnimTimer >= 400
-			&& animTimeElapsed >= 1100)
+			&& anim_time_elapsed >= 1100)
 		{
 			//pretty much sideways
 			return FORCE_LEVEL_3;
@@ -929,7 +929,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -938,7 +938,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 	return FORCE_LEVEL_3;
 	case BOTH_SPINATTACK6:
 	case BOTH_SPINATTACKGRIEVOUS:
-		if (animTimeElapsed <= 200)
+		if (anim_time_elapsed <= 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -951,7 +951,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 500)
+		if (anim_time_elapsed < 500)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -959,7 +959,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 	}
 	return FORCE_LEVEL_3;
 	case BOTH_FORCELONGLEAP_ATTACK:
-		if (animTimeElapsed <= 200)
+		if (anim_time_elapsed <= 200)
 		{
 			//1st four frames of anim
 			return FORCE_LEVEL_3;
@@ -995,7 +995,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//start of anim
 			return FORCE_LEVEL_0;
@@ -1009,7 +1009,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 600)
+		if (anim_time_elapsed < 600)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1024,7 +1024,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1039,7 +1039,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1053,7 +1053,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1067,7 +1067,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1081,7 +1081,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1104,7 +1104,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 650) //600 )
+		if (anim_time_elapsed < 650) //600 )
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1118,7 +1118,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1132,7 +1132,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1146,7 +1146,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1160,7 +1160,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1194,7 +1194,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 400)
+		if (anim_time_elapsed < 400)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1209,7 +1209,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 400)
+		if (anim_time_elapsed < 400)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1220,7 +1220,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_DL_S_SB_1_W:
 	case BOTH_LK_DL_ST_S_SB_1_W:
-		if (animTimeElapsed < 1000)
+		if (anim_time_elapsed < 1000)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1233,7 +1233,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 650)
+		if (anim_time_elapsed < 650)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1251,7 +1251,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 450)
+		if (anim_time_elapsed < 450)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1268,7 +1268,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 150)
+		if (anim_time_elapsed < 150)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1287,7 +1287,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 350)
+		if (anim_time_elapsed < 350)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1307,7 +1307,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -1317,7 +1317,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saberNum)
 	}
 	case BOTH_ROLL_STAB:
 	{
-		if (animTimeElapsed > 400)
+		if (anim_time_elapsed > 400)
 		{
 			//end of anim
 			return FORCE_LEVEL_0;

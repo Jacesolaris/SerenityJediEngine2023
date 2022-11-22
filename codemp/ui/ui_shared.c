@@ -1793,11 +1793,10 @@ qboolean Script_Disable(itemDef_t* item, char** args)
 
 	if (String_Parse(args, &name))
 	{
-		char buff[1024];
-
 		// Is is specifying a cvar to get the item name from?
 		if (name[0] == '*')
 		{
+			char buff[1024];
 			name += 1;
 			DC->getCVarString(name, buff, sizeof buff);
 			name = buff;
@@ -1822,11 +1821,10 @@ qboolean Script_Scale(itemDef_t* item, char** args)
 
 	if (String_Parse(args, &name))
 	{
-		char buff[1024];
-
 		// Is is specifying a cvar to get the item name from?
 		if (name[0] == '*')
 		{
+			char buff[1024];
 			name += 1;
 			DC->getCVarString(name, buff, sizeof buff);
 			name = buff;
@@ -2068,10 +2066,10 @@ qboolean Script_Exec(itemDef_t* item, char** args)
 	char* val;
 	if (String_Parse(args, &val))
 	{
-		char buf[MAX_QPATH];
 		char* s = strstr(val, "vstr");
 		if (s)
 		{
+			char buf[MAX_QPATH];
 			s += 5;
 			DC->getCVarString(s, buf, MAX_QPATH);
 			strcpy(val, buf);
@@ -2289,9 +2287,10 @@ void Item_RunScript(itemDef_t* item, const char* s)
 
 qboolean Item_EnableShowViaCvar(itemDef_t* item, int flag)
 {
-	char script[2048], * p;
+	char* p;
 	if (item && item->enableCvar && *item->enableCvar && item->cvarTest && *item->cvarTest)
 	{
+		char script[2048];
 		char buff[2048];
 		DC->getCVarString(item->cvarTest, buff, sizeof buff);
 		Q_strncpyz(script, item->enableCvar, 2048);
@@ -2722,10 +2721,10 @@ int Item_ListBox_ThumbPosition(itemDef_t* item)
 
 int Item_ListBox_ThumbDrawPosition(itemDef_t* item)
 {
-	int min, max;
-
 	if (itemCapture == item)
 	{
+		int max;
+		int min;
 		if (item->window.flags & WINDOW_HORIZONTAL)
 		{
 			min = item->window.rect.x + SCROLLBAR_SIZE + 1;
@@ -3483,11 +3482,11 @@ int Item_Multi_CountSettings(itemDef_t* item)
 
 int Item_Multi_FindCvarByValue(itemDef_t* item)
 {
-	char buff[2048];
-	float value = 0;
 	const multiDef_t* multiPtr = item->typeData.multi;
 	if (multiPtr)
 	{
+		float value = 0;
+		char buff[2048];
 		if (multiPtr->strDef)
 		{
 			DC->getCVarString(item->cvar, buff, sizeof buff);
@@ -3519,11 +3518,11 @@ int Item_Multi_FindCvarByValue(itemDef_t* item)
 
 const char* Item_Multi_Setting(itemDef_t* item)
 {
-	char buff[2048];
-	float value = 0;
 	const multiDef_t* multiPtr = item->typeData.multi;
 	if (multiPtr)
 	{
+		float value = 0;
+		char buff[2048];
 		if (multiPtr->strDef)
 		{
 			if (item->cvar)
@@ -3655,12 +3654,12 @@ void Item_TextField_Paste(itemDef_t* item) {
 
 qboolean Item_TextField_HandleKey(itemDef_t* item, int key)
 {
-	char buff[2048];
-	itemDef_t* newItem;
 	editFieldDef_t* editPtr = item->typeData.edit;
 
 	if (item->cvar)
 	{
+		itemDef_t* newItem;
+		char buff[2048];
 		buff[0] = 0;
 		DC->getCVarString(item->cvar, buff, sizeof buff);
 		int len = strlen(buff);
@@ -3882,12 +3881,12 @@ static void Scroll_TextScroll_AutoFunc(void* p)
 static void Scroll_TextScroll_ThumbFunc(void* p)
 {
 	scrollInfo_t* si = p;
-	rectDef_t r;
 
 	textScrollDef_t* scrollPtr = si->item->typeData.textscroll;
 
 	if (DC->cursory != si->yStart)
 	{
+		rectDef_t r;
 		r.x = si->item->window.rect.x + si->item->window.rect.w - SCROLLBAR_SIZE - 1;
 		r.y = si->item->window.rect.y + SCROLLBAR_SIZE + 1;
 		r.h = si->item->window.rect.h - SCROLLBAR_SIZE * 2 - 2;
@@ -4160,8 +4159,6 @@ void Item_StopCapture(itemDef_t* item)
 
 qboolean Item_Slider_HandleKey(itemDef_t* item, int key, qboolean down)
 {
-	float x;
-
 	if (item->window.flags & WINDOW_HASFOCUS && item->cvar && Rect_ContainsPoint(
 		&item->window.rect, DC->cursorx, DC->cursory))
 	{
@@ -4170,8 +4167,8 @@ qboolean Item_Slider_HandleKey(itemDef_t* item, int key, qboolean down)
 			const editFieldDef_t* editDef = item->typeData.edit;
 			if (editDef)
 			{
+				float x;
 				rectDef_t testRect;
-				const float width = SLIDER_WIDTH;
 				if (item->text)
 				{
 					x = item->textRect.x + item->textRect.w + 8;
@@ -4189,6 +4186,7 @@ qboolean Item_Slider_HandleKey(itemDef_t* item, int key, qboolean down)
 
 				if (Rect_ContainsPoint(&testRect, DC->cursorx, DC->cursory))
 				{
+					const float width = SLIDER_WIDTH;
 					const float work = DC->cursorx - x;
 					value = work / width;
 					value *= editDef->maxVal - editDef->minVal;
@@ -5047,7 +5045,7 @@ void Item_Text_Paint(itemDef_t* item)
 void Item_TextField_Paint(itemDef_t* item)
 {
 	char buff[1024];
-	vec4_t newColor, lowLight;
+	vec4_t newColor;
 	const editFieldDef_t* editPtr = item->typeData.edit;
 
 	Item_Text_Paint(item);
@@ -5067,6 +5065,7 @@ void Item_TextField_Paint(itemDef_t* item)
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		lowLight[0] = 0.8 * parent->focusColor[0];
 		lowLight[1] = 0.8 * parent->focusColor[1];
 		lowLight[2] = 0.8 * parent->focusColor[2];
@@ -5301,13 +5300,12 @@ Controls_GetKeyAssignment
 */
 static void Controls_GetKeyAssignment(const char* command, int* twokeys)
 {
-	char b[256];
-
 	twokeys[0] = twokeys[1] = -1;
 	int count = 0;
 
 	for (int j = 0; j < MAX_KEYS; j++)
 	{
+		char b[256];
 		DC->getBindingBuf(j, b, sizeof b);
 		if (*b && !Q_stricmp(b, command))
 		{
@@ -5375,8 +5373,6 @@ char g_nameBind[96];
 
 void BindingFromName(const char* cvar)
 {
-	char sOR[32];
-
 	// iterate each command, set its default binding
 	for (size_t i = 0; i < g_bindCount; i++)
 	{
@@ -5389,6 +5385,7 @@ void BindingFromName(const char* cvar)
 
 			if (b2 != -1)
 			{
+				char sOR[32];
 				char keyname[2][32];
 
 				DC->keynumToStringBuf(b1, keyname[0], sizeof keyname[0]);
@@ -5413,12 +5410,13 @@ void BindingFromName(const char* cvar)
 
 void Item_Slider_Paint(itemDef_t* item)
 {
-	vec4_t newColor, lowLight;
+	vec4_t newColor;
 	float x;
 	menuDef_t* parent = item->parent;
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		lowLight[0] = 0.8 * parent->focusColor[0];
 		lowLight[1] = 0.8 * parent->focusColor[1];
 		lowLight[2] = 0.8 * parent->focusColor[2];
@@ -5450,7 +5448,7 @@ void Item_Slider_Paint(itemDef_t* item)
 
 void Item_Bind_Paint(itemDef_t* item)
 {
-	vec4_t newColor, lowLight;
+	vec4_t newColor;
 	int maxChars = 0;
 
 	menuDef_t* parent = item->parent;
@@ -5464,6 +5462,7 @@ void Item_Bind_Paint(itemDef_t* item)
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		if (g_bindItem == item)
 		{
 			lowLight[0] = 0.8f * 1.0f;
@@ -5881,7 +5880,6 @@ void Item_Image_Paint(itemDef_t* item)
 
 void Item_TextScroll_Paint(itemDef_t* item)
 {
-	char cvartext[1024];
 	textScrollDef_t* scrollPtr = item->typeData.textscroll;
 
 	const float count = scrollPtr->iLineCount;
@@ -5908,6 +5906,7 @@ void Item_TextScroll_Paint(itemDef_t* item)
 
 	if (item->cvar)
 	{
+		char cvartext[1024];
 		DC->getCVarString(item->cvar, cvartext, sizeof cvartext);
 		item->text = cvartext;
 		Item_TextScroll_BuildLines(item);
@@ -5945,7 +5944,7 @@ void Item_TextScroll_Paint(itemDef_t* item)
 // Draw routine for list boxes
 void Item_ListBox_Paint(itemDef_t* item)
 {
-	float x, y, sizeWidth, i, sizeHeight, thumb;
+	float x, y, sizeWidth, i, thumb;
 	qhandle_t image;
 	qhandle_t optionalImage1, optionalImage2, optionalImage3;
 	listBoxDef_t* listPtr = item->typeData.listbox;
@@ -6074,6 +6073,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 	// A vertical list box
 	else
 	{
+		float sizeHeight;
 		//JLF new variable (code idented with if)
 		if (!listPtr->scrollhidden)
 		{
@@ -6223,7 +6223,6 @@ void Item_ListBox_Paint(itemDef_t* item)
 				{
 					for (int j = 0; j < listPtr->numColumns; j++)
 					{
-						char temp[MAX_STRING_CHARS];
 						int imageStartX = listPtr->columnInfo[j].pos;
 						text = DC->feederItemText(item->special, i, j, &optionalImage1, &optionalImage2,
 							&optionalImage3);
@@ -6235,6 +6234,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 
 						if (text[0] == '@')
 						{
+							char temp[MAX_STRING_CHARS];
 							trap->SE_GetStringTextString(&text[1], temp, sizeof temp);
 							text = temp;
 						}
@@ -6396,7 +6396,6 @@ void Item_OwnerDraw_Paint(itemDef_t* item)
 void Item_Paint(itemDef_t* item)
 {
 	vec4_t red;
-	int xPos, textWidth;
 	vec4_t color = { 1, 1, 1, 1 };
 
 	red[0] = red[3] = 1;
@@ -6853,6 +6852,8 @@ void Item_Paint(itemDef_t* item)
 				Item_TextColor(item, &color);
 
 				{
+					int textWidth;
+					int xPos;
 					// stupid C language
 					float fDescScale = parent->descScale ? parent->descScale : 1;
 					const float fDescScaleCopy = fDescScale;
@@ -9208,8 +9209,6 @@ qboolean Item_Parse(int handle, itemDef_t* item)
 
 static void Item_TextScroll_BuildLines(itemDef_t* item)
 {
-	char text[2048];
-
 #if 1
 
 	// new asian-aware line breaker...  (pasted from elsewhere late @ night, hence aliasing-vars ;-)
@@ -9227,6 +9226,7 @@ static void Item_TextScroll_BuildLines(itemDef_t* item)
 
 	if (*psText == '@') // string reference
 	{
+		char text[2048];
 		trap->SE_GetStringTextString(&psText[1], text, sizeof text);
 		psText = text;
 	}

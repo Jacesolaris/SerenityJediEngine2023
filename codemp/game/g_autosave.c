@@ -5,7 +5,7 @@
 
 extern void Use_Autosave(gentity_t* ent, gentity_t* other, const gentity_t* activator);
 
-void Touch_Autosave(gentity_t* self, gentity_t* other, trace_t* trace)
+void Touch_Autosave(gentity_t* self, const gentity_t* other, trace_t* trace)
 {
 	//touch function used by SP_trigger_autosave
 	if (!other || !other->inuse || !other->client || !(other->s.number < MAX_CLIENTS))

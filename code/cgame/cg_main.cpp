@@ -644,7 +644,7 @@ static cvarTable_t cvarTable[] = {
 	{&cg_newgameplusJKO, "g_newgameplusJKO", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 };
 
-static const size_t cvarTableSize = std::size(cvarTable);
+static constexpr size_t cvarTableSize = std::size(cvarTable);
 
 /*
 =================

@@ -484,7 +484,7 @@ static void GM_CheckFireState(void)
 			if (!Q_irand(0, 10))
 			{
 				//Fire on the last known position
-				vec3_t muzzle, dir, angles;
+				vec3_t muzzle;
 				qboolean tooClose = qfalse;
 				qboolean tooFar = qfalse;
 
@@ -541,6 +541,8 @@ static void GM_CheckFireState(void)
 
 				if (!tooClose && !tooFar)
 				{
+					vec3_t angles;
+					vec3_t dir;
 					//okay too shoot at last pos
 					VectorSubtract(NPCS.NPCInfo->enemyLastSeenLocation, muzzle, dir);
 					VectorNormalize(dir);
@@ -786,7 +788,9 @@ void NPC_BSGM_Attack(void)
 				//attack still going
 				//do the trace and damage
 				trace_t trace;
-				vec3_t end, mins = { -3, -3, -3 }, maxs = { 3, 3, 3 };
+				vec3_t end;
+				const vec3_t maxs = { 3, 3, 3 };
+				const vec3_t mins = { -3, -3, -3 };
 				VectorMA(NPCS.NPC->client->renderInfo.muzzlePoint, 1024, NPCS.NPC->client->renderInfo.muzzleDir, end);
 				trap->Trace(&trace, NPCS.NPC->client->renderInfo.muzzlePoint, mins, maxs, end, NPCS.NPC->s.number,
 					MASK_SHOT, qfalse, 0, 0);
@@ -1046,7 +1050,6 @@ void NPC_BSGM_Attack(void)
 		NPCS.NPC, "attackDelay"))
 	{
 		vec3_t muzzle;
-		vec3_t angles;
 		vec3_t target;
 		vec3_t velocity = { 0, 0, 0 };
 		vec3_t mins = { -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE }, maxs = {
@@ -1084,6 +1087,7 @@ void NPC_BSGM_Attack(void)
 		}
 		else
 		{
+			vec3_t angles;
 			vectoangles(velocity, angles);
 
 			NPCS.NPCInfo->desiredYaw = AngleNormalize360(angles[YAW]);

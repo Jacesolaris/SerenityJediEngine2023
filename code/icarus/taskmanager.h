@@ -98,7 +98,7 @@ public:
 
 	void Init(void);
 
-	int Add(CTask* task);
+	int Add(const CTask* task);
 
 	void SetGUID(int GUID);
 	void SetParent(CTaskGroup* group) { m_parent = group; }
@@ -160,16 +160,16 @@ public:
 
 	static int Flush(void);
 
-	int SetCommand(CBlock* block, int type, CIcarus* icarus);
+	int SetCommand(CBlock* block, int type, const CIcarus* icarus);
 	int Completed(int id);
 
 	int Update(CIcarus* icarus);
 	int IsRunning(void) const { return !m_tasks.empty(); };
 	bool IsResident(void) const { return m_resident; };
 
-	CTaskGroup* AddTaskGroup(const char* name, CIcarus* icarus);
-	CTaskGroup* GetTaskGroup(const char* name, CIcarus* icarus);
-	CTaskGroup* GetTaskGroup(int id, CIcarus* icarus);
+	CTaskGroup* AddTaskGroup(const char* name, const CIcarus* icarus);
+	CTaskGroup* GetTaskGroup(const char* name, const CIcarus* icarus);
+	CTaskGroup* GetTaskGroup(int id, const CIcarus* icarus);
 
 	int MarkTask(int id, int operation, CIcarus* icarus);
 	CBlock* RecallTask(void);
@@ -193,36 +193,36 @@ public:
 
 protected:
 	int Go(CIcarus* icarus); //Heartbeat function called once per game frame
-	int CallbackCommand(CTask* task, int returnCode, CIcarus* icarus);
+	int CallbackCommand(const CTask* task, int returnCode, CIcarus* icarus);
 
-	static inline bool Check(int targetID, CBlock* block, int memberNum);
+	static inline bool Check(int targetID, const CBlock* block, int memberNum);
 
 	static int GetVector(int entID, CBlock* block, int& memberNum, vec3_t& value, CIcarus* icarus);
-	static int GetFloat(int entID, CBlock* block, int& memberNum, float& value, CIcarus* icarus);
+	static int GetFloat(int entID, CBlock* block, int& memberNum, float& value, const CIcarus* icarus);
 	static int Get(int entID, CBlock* block, int& memberNum, char** value, CIcarus* icarus);
 
 	int PushTask(CTask* task, int flag);
 	CTask* PopTask(int flag);
 
 	// Task functions
-	int Rotate(CTask* task, CIcarus* icarus) const;
-	int Remove(CTask* task, CIcarus* icarus);
-	int Camera(CTask* task, CIcarus* icarus);
-	int Print(CTask* task, CIcarus* icarus);
-	int Sound(CTask* task, CIcarus* icarus);
-	int Move(CTask* task, CIcarus* icarus) const;
-	int Kill(CTask* task, CIcarus* icarus);
-	int Set(CTask* task, CIcarus* icarus) const;
-	int Use(CTask* task, CIcarus* icarus);
-	int DeclareVariable(CTask* task, CIcarus* icarus);
-	int FreeVariable(CTask* task, CIcarus* icarus);
-	int Signal(CTask* task, CIcarus* icarus);
-	int Play(CTask* task, CIcarus* icarus) const;
+	int Rotate(const CTask* task, CIcarus* icarus) const;
+	int Remove(const CTask* task, CIcarus* icarus);
+	int Camera(const CTask* task, CIcarus* icarus);
+	int Print(const CTask* task, CIcarus* icarus);
+	int Sound(const CTask* task, CIcarus* icarus);
+	int Move(const CTask* task, CIcarus* icarus) const;
+	int Kill(const CTask* task, CIcarus* icarus);
+	int Set(const CTask* task, CIcarus* icarus) const;
+	int Use(const CTask* task, CIcarus* icarus);
+	int DeclareVariable(const CTask* task, CIcarus* icarus);
+	int FreeVariable(const CTask* task, CIcarus* icarus);
+	int Signal(const CTask* task, CIcarus* icarus);
+	int Play(const CTask* task, CIcarus* icarus) const;
 
-	int Wait(CTask* task, bool& completed, CIcarus* icarus);
-	int WaitSignal(CTask* task, bool& completed, CIcarus* icarus) const;
+	int Wait(const CTask* task, bool& completed, CIcarus* icarus);
+	int WaitSignal(const CTask* task, bool& completed, CIcarus* icarus) const;
 
-	static int SaveCommand(CBlock* block);
+	static int SaveCommand(const CBlock* block);
 
 	// Variables
 

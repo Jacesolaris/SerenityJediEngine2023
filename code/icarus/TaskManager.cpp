@@ -131,7 +131,7 @@ Add
 -------------------------
 */
 
-int CTaskGroup::Add(CTask* task)
+int CTaskGroup::Add(const CTask* task)
 {
 	m_completedTasks[task->GetGUID()] = false;
 	return TASK_OK;
@@ -215,9 +215,9 @@ int CTaskManager::Free(void)
 {
 	assert(!m_resident); //don't free me, i'm currently running!
 	//Clear out all pending tasks
-	for (auto ti = m_tasks.begin(); ti != m_tasks.end(); ++ti)
+	for (const auto & task : m_tasks)
 	{
-		(*ti)->Free();
+		task->Free();
 	}
 
 	m_tasks.clear();
@@ -254,7 +254,7 @@ AddTaskGroup
 -------------------------
 */
 
-CTaskGroup* CTaskManager::AddTaskGroup(const char* name, CIcarus* icarus)
+CTaskGroup* CTaskManager::AddTaskGroup(const char* name, const CIcarus* icarus)
 {
 	CTaskGroup* group;
 
@@ -298,7 +298,7 @@ GetTaskGroup
 -------------------------
 */
 
-CTaskGroup* CTaskManager::GetTaskGroup(const char* name, CIcarus* icarus)
+CTaskGroup* CTaskManager::GetTaskGroup(const char* name, const CIcarus* icarus)
 {
 	const auto tgi = m_taskGroupNameMap.find(name);
 
@@ -311,7 +311,7 @@ CTaskGroup* CTaskManager::GetTaskGroup(const char* name, CIcarus* icarus)
 	return (*tgi).second;
 }
 
-CTaskGroup* CTaskManager::GetTaskGroup(int id, CIcarus* icarus)
+CTaskGroup* CTaskManager::GetTaskGroup(int id, const CIcarus* icarus)
 {
 	const auto tgi = m_taskGroupIDMap.find(id);
 
@@ -352,7 +352,7 @@ Check
 -------------------------
 */
 
-inline bool CTaskManager::Check(int targetID, CBlock* block, int memberNum)
+inline bool CTaskManager::Check(int targetID, const CBlock* block, int memberNum)
 {
 	if (block->GetMember(memberNum)->GetID() == targetID)
 		return true;
@@ -366,7 +366,7 @@ GetFloat
 -------------------------
 */
 
-int CTaskManager::GetFloat(int entID, CBlock* block, int& memberNum, float& value, CIcarus* icarus)
+int CTaskManager::GetFloat(int entID, CBlock* block, int& memberNum, float& value, const CIcarus* icarus)
 {
 	//See if this is a get() command replacement
 	if (Check(CIcarus::ID_GET, block, memberNum))
@@ -661,9 +661,9 @@ int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value, CI
 
 		memberNum++;
 
-		for (int i = 0; i < 3; i++)
+		for (float & i : vval)
 		{
-			if (GetFloat(entID, block, memberNum, vval[i], icarus) == false)
+			if (GetFloat(entID, block, memberNum, i, icarus) == false)
 				return false;
 		}
 
@@ -829,7 +829,7 @@ SetCommand
 -------------------------
 */
 
-int CTaskManager::SetCommand(CBlock* command, int type, CIcarus* icarus)
+int CTaskManager::SetCommand(CBlock* command, int type, const CIcarus* icarus)
 {
 	CTask* task = CTask::Create(m_GUID++, command);
 
@@ -919,7 +919,7 @@ CallbackCommand
 -------------------------
 */
 
-int CTaskManager::CallbackCommand(CTask* task, int returnCode, CIcarus* icarus)
+int CTaskManager::CallbackCommand(const CTask* task, int returnCode, CIcarus* icarus)
 {
 	if (m_owner->Callback(this, task->GetBlock(), returnCode, icarus) == CSequencer::SEQ_OK)
 		return Go(icarus);
@@ -974,6 +974,7 @@ int CTaskManager::PushTask(CTask* task, int flag)
 		m_tasks.insert(m_tasks.end(), task);
 
 		return TASK_OK;
+	default: ;
 	}
 
 	//Invalid flag
@@ -1008,6 +1009,7 @@ CTask* CTaskManager::PopTask(int flag)
 		m_tasks.pop_back();
 
 		return task;
+	default: ;
 	}
 
 	//Invalid flag
@@ -1042,7 +1044,7 @@ CBlock* CTaskManager::GetCurrentTask(void)
 =================================================
 */
 
-int CTaskManager::Wait(CTask* task, bool& completed, CIcarus* icarus)
+int CTaskManager::Wait(const CTask* task, bool& completed, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1129,7 +1131,7 @@ WaitSignal
 -------------------------
 */
 
-int CTaskManager::WaitSignal(CTask* task, bool& completed, CIcarus* icarus) const
+int CTaskManager::WaitSignal(const CTask* task, bool& completed, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1161,7 +1163,7 @@ Print
 -------------------------
 */
 
-int CTaskManager::Print(CTask* task, CIcarus* icarus)
+int CTaskManager::Print(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1185,7 +1187,7 @@ Sound
 -------------------------
 */
 
-int CTaskManager::Sound(CTask* task, CIcarus* icarus)
+int CTaskManager::Sound(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal, * sVal2;
@@ -1210,7 +1212,7 @@ Rotate
 -------------------------
 */
 
-int CTaskManager::Rotate(CTask* task, CIcarus* icarus) const
+int CTaskManager::Rotate(const CTask* task, CIcarus* icarus) const
 {
 	vec3_t vector;
 	CBlock* block = task->GetBlock();
@@ -1257,7 +1259,7 @@ Remove
 -------------------------
 */
 
-int CTaskManager::Remove(CTask* task, CIcarus* icarus)
+int CTaskManager::Remove(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1280,7 +1282,7 @@ Camera
 -------------------------
 */
 
-int CTaskManager::Camera(CTask* task, CIcarus* icarus)
+int CTaskManager::Camera(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	vec3_t vector, vector2;
@@ -1416,6 +1418,7 @@ int CTaskManager::Camera(CTask* task, CIcarus* icarus)
 			fVal2, task->GetTimeStamp());
 		icarus->GetGame()->CameraShake(fVal, static_cast<int>(fVal2));
 		break;
+	default: ;
 	}
 
 	Completed(task->GetGUID());
@@ -1429,7 +1432,7 @@ Move
 -------------------------
 */
 
-int CTaskManager::Move(CTask* task, CIcarus* icarus) const
+int CTaskManager::Move(const CTask* task, CIcarus* icarus) const
 {
 	vec3_t vector, vector2;
 	CBlock* block = task->GetBlock();
@@ -1468,7 +1471,7 @@ Kill
 -------------------------
 */
 
-int CTaskManager::Kill(CTask* task, CIcarus* icarus)
+int CTaskManager::Kill(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1491,7 +1494,7 @@ Set
 -------------------------
 */
 
-int CTaskManager::Set(CTask* task, CIcarus* icarus) const
+int CTaskManager::Set(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal, * sVal2;
@@ -1513,7 +1516,7 @@ Use
 -------------------------
 */
 
-int CTaskManager::Use(CTask* task, CIcarus* icarus)
+int CTaskManager::Use(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1536,7 +1539,7 @@ DeclareVariable
 -------------------------
 */
 
-int CTaskManager::DeclareVariable(CTask* task, CIcarus* icarus)
+int CTaskManager::DeclareVariable(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1561,7 +1564,7 @@ FreeVariable
 -------------------------
 */
 
-int CTaskManager::FreeVariable(CTask* task, CIcarus* icarus)
+int CTaskManager::FreeVariable(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1584,7 +1587,7 @@ Signal
 -------------------------
 */
 
-int CTaskManager::Signal(CTask* task, CIcarus* icarus)
+int CTaskManager::Signal(const CTask* task, CIcarus* icarus)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1607,7 +1610,7 @@ Play
 -------------------------
 */
 
-int CTaskManager::Play(CTask* task, CIcarus* icarus) const
+int CTaskManager::Play(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal, * sVal2;
@@ -1631,7 +1634,7 @@ SaveCommand
 
 //FIXME: ARGH!  This is duplicated from CSequence because I can't directly link it any other way...
 
-int CTaskManager::SaveCommand(CBlock* block)
+int CTaskManager::SaveCommand(const CBlock* block)
 {
 	const auto pIcarus = static_cast<CIcarus*>(IIcarusInterface::GetIcarus());
 
@@ -1709,8 +1712,8 @@ void CTaskManager::Save()
 	pIcarus->BufferWrite(&m_GUID, sizeof m_GUID);
 
 	//Save out the number of tasks that will follow
-	int iNumTasks = m_tasks.size();
-	pIcarus->BufferWrite(&iNumTasks, sizeof iNumTasks);
+	const int i_num_tasks = m_tasks.size();
+	pIcarus->BufferWrite(&i_num_tasks, sizeof i_num_tasks);
 
 	//Save out all the tasks
 	tasks_l::iterator ti;
@@ -1731,8 +1734,8 @@ void CTaskManager::Save()
 	}
 
 	//Save out the number of task groups
-	int numTaskGroups = m_taskGroups.size();
-	pIcarus->BufferWrite(&numTaskGroups, sizeof numTaskGroups);
+	const int num_task_groups = m_taskGroups.size();
+	pIcarus->BufferWrite(&num_task_groups, sizeof num_task_groups);
 
 	//Save out the IDs of all the task groups
 	int numWritten = 0;
@@ -1743,7 +1746,7 @@ void CTaskManager::Save()
 		pIcarus->BufferWrite(&id, sizeof id);
 		numWritten++;
 	}
-	assert(numWritten == numTaskGroups);
+	assert(numWritten == num_task_groups);
 
 	//Save out the task groups
 	numWritten = 0;
@@ -1776,14 +1779,14 @@ void CTaskManager::Save()
 		pIcarus->BufferWrite(&id, sizeof id);
 		numWritten++;
 	}
-	assert(numWritten == numTaskGroups);
+	assert(numWritten == num_task_groups);
 
 	//Only bother if we've got tasks present
 	if (m_taskGroups.size())
 	{
 		//Save out the currently active group
-		int curGroupID = m_curGroup == nullptr ? -1 : m_curGroup->GetGUID();
-		pIcarus->BufferWrite(&curGroupID, sizeof curGroupID);
+		const int cur_group_id = m_curGroup == nullptr ? -1 : m_curGroup->GetGUID();
+		pIcarus->BufferWrite(&cur_group_id, sizeof cur_group_id);
 	}
 
 	//Save out the task group name maps
@@ -1813,7 +1816,7 @@ void CTaskManager::Save()
 		pIcarus->BufferWrite(&id, sizeof id);
 		numWritten++;
 	}
-	assert(numWritten == numTaskGroups);
+	assert(numWritten == num_task_groups);
 }
 
 /*

@@ -230,7 +230,7 @@ namespace ragl
 		{
 			ratl::vector_vs<int, MAXEDGES>		CullEdges;
 			typename TEdges::iterator stop = mEdges.end();
-			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
+			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
 				if (!(*it).mOnHull)
 				{
@@ -293,7 +293,7 @@ namespace ragl
 		void	alpha_shape(typename TGraph::user& user, float max, float min = 0)
 		{
 			ratl::vector_vs<int, MAXEDGES>		CullEdges;
-			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); it++)
+			for (typename TEdges::iterator it = mEdges.begin(); it != mEdges.end(); ++it)
 			{
 				const float cost = user.cost(mGraph.get_node((*it).mA), mGraph.get_node((*it).mB));
 				if (cost<min || cost>max)
@@ -478,9 +478,9 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		typedef		ratl::handle_pool_vs<edge, MAXEDGES>				TEdges;
-		typedef		typename ratl::handle_pool_vs<edge, MAXEDGES>::iterator		TEdgesIter;
-		typedef ratl::handle_pool_vs<face, MAXFACES>				TFaces;
+		using TEdges = ratl::handle_pool_vs<edge, MAXEDGES>;
+		using TEdgesIter = typename ratl::handle_pool_vs<edge, MAXEDGES>::iterator;
+		using TFaces = ratl::handle_pool_vs<face, MAXFACES>;
 		using TSortNodes = ratl::vector_vs<sort_node, MAXNODES>;
 
 		TGraph& mGraph;			// A Reference To The Graph Points To Triangulate
@@ -658,7 +658,7 @@ namespace ragl
 		{
 			// Iterate Over The Existing Convex Hull
 			//---------------------------------------
-			for (mHullIter = mHull.begin(); mHullIter != mHull.end(); mHullIter++)
+			for (mHullIter = mHull.begin(); mHullIter != mHull.end(); ++mHullIter)
 			{
 				edge& curEdge = mEdges[*mHullIter];
 
@@ -707,7 +707,7 @@ namespace ragl
 
 			// Iterate Through All The Edges Looking For Potential NON-Delauney Edges
 			//------------------------------------------------------------------------
-			for (TEdgesIter CurEdge = mEdges.begin(); CurEdge != mEdges.end(); CurEdge++)
+			for (TEdgesIter CurEdge = mEdges.begin(); CurEdge != mEdges.end(); ++CurEdge)
 			{
 				// If It Is On The Hull, We Don't Even Need To Look At It
 				//--------------------------------------------------------
@@ -744,9 +744,9 @@ namespace ragl
 						mLinks.get(mGraph.node_index(PtL), mGraph.node_index(PtR)) = EdgeHandle;
 
 						Flipped++;
-						EdgeAt.mFlips++;
-						FaceL.mFlips++;
-						FaceR.mFlips++;
+						++EdgeAt.mFlips;
+						++FaceL.mFlips;
+						++FaceR.mFlips;
 
 						// Flip The Edge We Found
 						//------------------------

@@ -3124,11 +3124,10 @@ void UpdateSingleShotSounds()
 	int j;
 	ALint state;
 	ALint processed;
-	channel_t* ch;
 
 	// Firstly, check if any single-shot sounds have completed, or if they need more data (for streaming Sources),
 	// and/or if any of the currently playing (non-Ambient) looping sounds need to be stopped
-	ch = s_channels + 1;
+	channel_t* ch = s_channels + 1;
 	for (int i = 1; i < s_numChannels; i++, ch++)
 	{
 		ch->bProcessed = false;
@@ -3220,6 +3219,7 @@ void UpdateSingleShotSounds()
 										else
 										{
 #ifdef _DEBUG
+											char szString[256];
 											sprintf(szString, "Missing lip-sync info. for %s\n",
 												ch->thesfx->sSoundName);
 											OutputDebugString(szString);
@@ -3664,6 +3664,7 @@ void S_SetLipSyncs()
 				{
 #ifdef _DEBUG
 #ifdef _MSC_VER
+					char szString[256];
 					sprintf(szString, "Missing lip-sync info. for %s\n", ch->thesfx->sSoundName);
 					OutputDebugString(szString);
 #endif
