@@ -164,7 +164,8 @@ CTaskManager
 =================================================
 */
 
-CTaskManager::CTaskManager(void)
+CTaskManager::CTaskManager(void): m_owner(nullptr), m_ownerID(0), m_curGroup(nullptr), m_GUID(0), m_count(0),
+                                  m_resident(false)
 {
 	static int uniqueID = 0;
 	m_id = uniqueID++;
@@ -366,7 +367,7 @@ GetFloat
 -------------------------
 */
 
-int CTaskManager::GetFloat(int entID, CBlock* block, int& memberNum, float& value, const CIcarus* icarus)
+int CTaskManager::GetFloat(int entID, const CBlock* block, int& memberNum, float& value, const CIcarus* icarus)
 {
 	//See if this is a get() command replacement
 	if (Check(CIcarus::ID_GET, block, memberNum))
@@ -375,7 +376,7 @@ int CTaskManager::GetFloat(int entID, CBlock* block, int& memberNum, float& valu
 		memberNum++;
 
 		//get( TYPE, NAME )
-		const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
+		const auto type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
 		const char* name = static_cast<char*>(block->GetMemberData(memberNum++));
 
 		//TODO: Emit warning
@@ -858,7 +859,7 @@ MarkTask
 -------------------------
 */
 
-int CTaskManager::MarkTask(int id, int operation, CIcarus* icarus)
+int CTaskManager::MarkTask(int id, int operation, const CIcarus* icarus)
 {
 	CTaskGroup* group = GetTaskGroup(id, icarus);
 
@@ -903,10 +904,10 @@ Completed
 int CTaskManager::Completed(int id)
 {
 	//Mark the task as completed
-	for (auto tgi = m_taskGroups.begin(); tgi != m_taskGroups.end(); ++tgi)
+	for (auto & taskGroup : m_taskGroups)
 	{
 		//If this returns true, then the task was marked properly
-		if ((*tgi)->MarkTaskComplete(id))
+		if (taskGroup->MarkTaskComplete(id))
 			break;
 	}
 
@@ -1729,7 +1730,7 @@ void CTaskManager::Save()
 		pIcarus->BufferWrite(&timeStamp, sizeof timeStamp);
 
 		//Save out the block
-		CBlock* block = (*ti)->GetBlock();
+		const CBlock* block = (*ti)->GetBlock();
 		SaveCommand(block);
 	}
 

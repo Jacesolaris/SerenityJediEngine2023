@@ -575,8 +575,9 @@ static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int
 ParseFlare
 ===============
 */
-static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, int index) {
-	const int		lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_BY_VERTEX };
+static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, int index)
+{
+	constexpr int		lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_BY_VERTEX };
 
 	// get fog volume
 	surf->fogIndex = LittleLong ds->fogNum + 1;
@@ -918,7 +919,7 @@ static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_
 	int			sideNum;
 	int			planeNum;
 	int			firstSide = 0;
-	const int			lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_NONE };
+	constexpr int			lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_NONE };
 
 	dfog_t* fogs = (dfog_t*)(fileBase + l->fileofs);
 	if (l->filelen % sizeof * fogs) {
@@ -1146,8 +1147,6 @@ R_LoadEntities
 */
 void R_LoadEntities(lump_t* l, world_t& worldData) {
 	const char* p;
-	char keyname[MAX_TOKEN_CHARS];
-	char value[MAX_TOKEN_CHARS];
 	float ambient = 1;
 
 	COM_BeginParseSession();
@@ -1170,6 +1169,8 @@ void R_LoadEntities(lump_t* l, world_t& worldData) {
 
 	// only parse the world spawn
 	while (true) {
+		char value[MAX_TOKEN_CHARS];
+		char keyname[MAX_TOKEN_CHARS];
 		// parse key
 		token = COM_ParseExt(&p, qtrue);
 

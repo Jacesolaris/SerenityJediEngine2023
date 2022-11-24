@@ -171,7 +171,7 @@ public:
 	CTaskGroup* GetTaskGroup(const char* name, const CIcarus* icarus);
 	CTaskGroup* GetTaskGroup(int id, const CIcarus* icarus);
 
-	int MarkTask(int id, int operation, CIcarus* icarus);
+	int MarkTask(int id, int operation, const CIcarus* icarus);
 	CBlock* RecallTask(void);
 
 	void Save();
@@ -198,7 +198,7 @@ protected:
 	static inline bool Check(int targetID, const CBlock* block, int memberNum);
 
 	static int GetVector(int entID, CBlock* block, int& memberNum, vec3_t& value, CIcarus* icarus);
-	static int GetFloat(int entID, CBlock* block, int& memberNum, float& value, const CIcarus* icarus);
+	static int GetFloat(int entID, const CBlock* block, int& memberNum, float& value, const CIcarus* icarus);
 	static int Get(int entID, CBlock* block, int& memberNum, char** value, CIcarus* icarus);
 
 	int PushTask(CTask* task, int flag);

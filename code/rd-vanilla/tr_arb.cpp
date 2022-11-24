@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // This vertex shader basically passes through most values and calculates no lighting. The only
 // unusual thing it does is add the inputed texel offsets to all four texture units (this allows
 // nearest neighbor pixel peeking).
-const unsigned char g_strGlowVShaderARB[] =
+constexpr unsigned char g_strGlowVShaderARB[] =
 {
 	"!!ARBvp1.0\
 	\
@@ -74,7 +74,7 @@ const unsigned char g_strGlowVShaderARB[] =
 
 // This Pixel Shader loads four texture units and adds them all together (with a modifier
 // multiplied to each in the process). The final output is r0 = t0 + t1 + t2 + t3.
-const unsigned char g_strGlowPShaderARB[] =
+constexpr unsigned char g_strGlowPShaderARB[] =
 {
 	"!!ARBfp1.0\
 	\

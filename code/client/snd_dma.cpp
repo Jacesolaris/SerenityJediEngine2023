@@ -3695,6 +3695,7 @@ void S_SetLipSyncs()
 				{
 #ifdef _DEBUG
 #ifdef _MSC_VER
+					char szString[256];
 					sprintf(szString, "Missing lip-sync info. for %s\n", ch->thesfx->sSoundName);
 					OutputDebugString(szString);
 #endif

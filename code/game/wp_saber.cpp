@@ -12117,7 +12117,14 @@ qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, const qboolean m
 				NPC_SetAnim(self, SETANIM_TORSO, BOTH_P6_S6_TR, SETANIM_AFLAG_PACE);
 				break;
 			default:
-				NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_TR, SETANIM_AFLAG_PACE);
+				if (self->client->NPC_class == CLASS_DESANN)
+				{
+					NPC_SetAnim(self, SETANIM_TORSO, BOTH_K1_S1_TR_ALT, SETANIM_AFLAG_PACE);
+				}
+				else
+				{
+					NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_TR, SETANIM_AFLAG_PACE);					
+				}
 				break;
 			}
 			self->client->ps.weaponTime = Q_irand(300, 600);
@@ -12133,7 +12140,14 @@ qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, const qboolean m
 				NPC_SetAnim(self, SETANIM_TORSO, BOTH_P6_S6_TL, SETANIM_AFLAG_PACE);
 				break;
 			default:
-				NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
+				if (self->client->NPC_class == CLASS_DESANN)
+				{
+					NPC_SetAnim(self, SETANIM_TORSO, BOTH_K1_S1_TL_ALT, SETANIM_AFLAG_PACE);
+				}
+				else
+				{
+					NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_TL, SETANIM_AFLAG_PACE);
+				}
 				break;
 			}
 			self->client->ps.weaponTime = Q_irand(300, 600);
