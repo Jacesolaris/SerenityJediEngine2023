@@ -4687,6 +4687,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 
 	qboolean doDodge = qfalse;
 	qboolean alwaysDodgeOrRoll = qfalse;
+	qboolean npc_can_dodge = qfalse;
 
 	if (self->client->NPC_class == CLASS_BOBAFETT || self->client->NPC_class == CLASS_MANDO)
 	{
@@ -4710,8 +4711,8 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			|| self->client->NPC_class == CLASS_SITHLORD && self->s.weapon != WP_SABER)
 		{
 			//either it will miss by a bit (and 25% chance) OR our saber is not in-hand OR saber is off
-			if (self->NPC && (NPC->client->ps.blockPoints < BLOCKPOINTS_THIRTY || NPC->client->ps.forcePower <
-				BLOCKPOINTS_HALF))
+			if (self->NPC && (self->client->ps.blockPoints < BLOCKPOINTS_THIRTY
+				|| self->client->ps.forcePower < BLOCKPOINTS_HALF))
 			{
 				//acrobat or fencer or above
 				if (self->client->ps.groundEntityNum != ENTITYNUM_NONE && //on the ground
@@ -4744,6 +4745,16 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 		doRoll = qtrue;
 	}
 
+	if (self->client->NPC_class == CLASS_REBORN && self->s.weapon != WP_SABER
+		|| self->client->NPC_class == CLASS_SITHLORD && self->s.weapon != WP_SABER
+		|| self->client->NPC_class == CLASS_BOBAFETT
+		|| self->client->NPC_class == CLASS_MANDO
+		|| self->s.weapon == WP_SABER && !self->client->ps.SaberActive()
+		|| self->s.weapon == WP_SABER && self->client->ps.saberInFlight)
+	{
+		npc_can_dodge = qtrue;
+	}
+
 	// Figure out what quadrant the block was in.
 	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
@@ -4772,23 +4783,48 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					}
 					else if (Q_irand(0, 1))
 					{
-						dodge_anim = BOTH_DODGE_FL;
-						evasion_type = EVASION_DODGE;
+						if (npc_can_dodge)
+						{
+							dodge_anim = BOTH_DODGE_FL;
+							evasion_type = EVASION_DODGE;
+						}
 					}
 					else
 					{
-						dodge_anim = BOTH_DODGE_BL;
-						evasion_type = EVASION_DODGE;
+						if (npc_can_dodge)
+						{
+							dodge_anim = BOTH_DODGE_BL;
+							evasion_type = EVASION_DODGE;
+						}
 					}
-					PM_AddFatigue(&self->client->ps, FATIGUE_DODGEING);
 				}
 				else
 				{
-					if (self->s.weapon == WP_SABER && !self->client->ps.saberInFlight)
+					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
 						WP_SaberBlockNonRandom(self, hitloc, qfalse);
 
 						evasion_type = EVASION_PARRY;
+					}
+					else
+					{
+						if (NPCInfo->stats.evasion >= 1)
+						{
+							if (rightdot > 0)
+							{
+								dodge_anim = BOTH_ROLL_L;
+								self->client->pers.cmd.rightmove = -127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+							else
+							{
+								dodge_anim = BOTH_ROLL_R;
+								self->client->pers.cmd.rightmove = 127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+						}
 					}
 
 					if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
@@ -4829,23 +4865,48 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					}
 					else if (Q_irand(0, 1))
 					{
-						dodge_anim = BOTH_DODGE_FR;
-						evasion_type = EVASION_DODGE;
+						if (npc_can_dodge)
+						{
+							dodge_anim = BOTH_DODGE_FR;
+							evasion_type = EVASION_DODGE;
+						}
 					}
 					else
 					{
-						dodge_anim = BOTH_DODGE_BR;
-						evasion_type = EVASION_DODGE;
+						if (npc_can_dodge)
+						{
+							dodge_anim = BOTH_DODGE_BR;
+							evasion_type = EVASION_DODGE;
+						}
 					}
-					PM_AddFatigue(&self->client->ps, FATIGUE_DODGEING);
 				}
 				else
 				{
-					if (self->s.weapon == WP_SABER && !self->client->ps.saberInFlight)
+					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
 						WP_SaberBlockNonRandom(self, hitloc, qfalse);
 
 						evasion_type = EVASION_PARRY;
+					}
+					else
+					{
+						if (NPCInfo->stats.evasion >= 1)
+						{
+							if (rightdot > 0)
+							{
+								dodge_anim = BOTH_ROLL_L;
+								self->client->pers.cmd.rightmove = -127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+							else
+							{
+								dodge_anim = BOTH_ROLL_R;
+								self->client->pers.cmd.rightmove = 127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+						}
 					}
 
 					if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
@@ -4872,10 +4933,31 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			}
 			else
 			{
-				if (self->s.weapon == WP_SABER && !self->client->ps.saberInFlight)
+				if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 				{
 					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
 					evasion_type = EVASION_PARRY;
+				}
+				else
+				{
+					if (NPCInfo->stats.evasion >= 1)
+					{
+						if (rightdot > 0)
+						{
+							dodge_anim = BOTH_ROLL_L;
+							self->client->pers.cmd.rightmove = -127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
+						}
+						else
+						{
+							dodge_anim = BOTH_ROLL_R;
+							self->client->pers.cmd.rightmove = 127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
+						}
+					}
 				}
 
 				if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
@@ -4908,7 +4990,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			//hmm, pretty low, but not low enough to use the low block, so we need to duck
 			if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
 			{
-				//duckChance = 2;
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasion_type = EVASION_DUCK;
 				if (d_JediAI->integer || g_DebugSaberCombat->integer)
@@ -4935,9 +5016,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					}
 					else
 					{
-						if (self->s.weapon == WP_SABER)
+						if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 						{
-							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE && !self->client->ps.saberInFlight)
+							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE)
 							{
 								WP_SaberBlockNonRandom(self, hitloc, qfalse);
 							}
@@ -4954,19 +5035,41 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						}
 						else
 						{
-							dodge_anim = BOTH_DODGE_L;
-							evasion_type = EVASION_DODGE;
-							PM_AddFatigue(&self->client->ps, FATIGUE_DODGEING);
+							if (npc_can_dodge)
+							{
+								dodge_anim = BOTH_DODGE_L;
+								evasion_type = EVASION_DODGE;
+							}
 						}
 					}
 				}
 				else
 				{
-					if (self->s.weapon == WP_SABER && !self->client->ps.saberInFlight)
+					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
 						WP_SaberBlockNonRandom(self, hitloc, qfalse);
 
 						evasion_type = EVASION_PARRY;
+					}
+					else
+					{
+						if (NPCInfo->stats.evasion >= 1)
+						{
+							if (rightdot > 0)
+							{
+								dodge_anim = BOTH_ROLL_L;
+								self->client->pers.cmd.rightmove = -127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+							else
+							{
+								dodge_anim = BOTH_ROLL_R;
+								self->client->pers.cmd.rightmove = 127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+						}
 					}
 				}
 				if (d_JediAI->integer || g_DebugSaberCombat->integer)
@@ -4986,9 +5089,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					}
 					else
 					{
-						if (self->s.weapon == WP_SABER)
+						if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 						{
-							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE && !self->client->ps.saberInFlight)
+							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE)
 							{
 								WP_SaberBlockNonRandom(self, hitloc, qfalse);
 							}
@@ -5005,18 +5108,41 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						}
 						else
 						{
-							dodge_anim = BOTH_DODGE_R;
-							evasion_type = EVASION_DODGE;
-							PM_AddFatigue(&self->client->ps, FATIGUE_DODGEING);
+							if (npc_can_dodge)
+							{
+								dodge_anim = BOTH_DODGE_R;
+								evasion_type = EVASION_DODGE;
+							}
 						}
 					}
 				}
 				else
 				{
-					if (self->s.weapon == WP_SABER && !self->client->ps.saberInFlight)
+					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
 						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
 						evasion_type = EVASION_PARRY;
+					}
+					else
+					{
+						if (NPCInfo->stats.evasion >= 1)
+						{
+							if (rightdot > 0)
+							{
+								dodge_anim = BOTH_ROLL_L;
+								self->client->pers.cmd.rightmove = -127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+							else
+							{
+								dodge_anim = BOTH_ROLL_R;
+								self->client->pers.cmd.rightmove = 127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+						}
 					}
 				}
 				if (d_JediAI->integer || g_DebugSaberCombat->integer)
@@ -5026,7 +5152,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			}
 			else
 			{
-				if (self->s.weapon == WP_SABER && !self->client->ps.saberInFlight)
+				if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 				{
 					WP_SaberBlockNonRandom(self, hitloc, qfalse);
 					evasion_type = EVASION_PARRY;
@@ -5068,7 +5194,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				//already in air, duck to pull up legs
 				TIMER_Start(self, "duck", Q_irand(500, 1500));
 				evasion_type = EVASION_DUCK;
-				if (incoming || !saber_busy)
+				if (incoming && self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight || !saber_busy)
 				{
 					//since the jump may be cleared if not safe, set a lower block too
 					if (rightdot >= 0)
@@ -5106,27 +5232,40 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			else
 			{
 				//gotta block!
-				if (incoming)
+				if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 				{
-					//since the jump may be cleared if not safe, set a lower block too
-					if (rightdot >= 0)
+					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
+					evasion_type = EVASION_PARRY;
+				}
+				else
+				{
+					if (NPCInfo->stats.evasion >= 1)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
-					}
-					else
-					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						if (rightdot > 0)
+						{
+							dodge_anim = BOTH_ROLL_L;
+							self->client->pers.cmd.rightmove = -127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
+						}
+						else
+						{
+							dodge_anim = BOTH_ROLL_R;
+							self->client->pers.cmd.rightmove = 127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
+						}
 					}
 				}
 				if ((evasion_type = Jedi_CheckFlipEvasions(self, rightdot, zdiff)) != EVASION_NONE)
 				{
 					if (d_slowmodeath->integer > 5 && self->enemy && !self->enemy->s.number)
 					{
-						//G_StartMatrixEffect(self);
 						G_StartStasisEffect(self);
 					}
 				}
-				else if (incoming || !saber_busy)
+				else if (incoming && self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight || !saber_busy)
 				{
 					//since the jump may be cleared if not safe, set a lower block too
 					if (rightdot >= 0)
@@ -5148,11 +5287,31 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						}
 					}
 				}
+				else
+				{
+					if (NPCInfo->stats.evasion >= 1)
+					{
+						if (rightdot > 0)
+						{
+							dodge_anim = BOTH_ROLL_L;
+							self->client->pers.cmd.rightmove = -127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
+						}
+						else
+						{
+							dodge_anim = BOTH_ROLL_R;
+							self->client->pers.cmd.rightmove = 127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
+						}
+					}
+				}
 			}
 		}
 		else
 		{
-			if (incoming || !saber_busy)
+			if (incoming && self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight || !saber_busy)
 			{
 				if (rightdot >= 0)
 				{
@@ -5175,15 +5334,31 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				if (incoming && incoming->s.weapon == WP_SABER)
 				{
 					//thrown saber!
-					if (rightdot >= 0)
+					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
 						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+
 						evasion_type = EVASION_PARRY;
 					}
 					else
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
-						evasion_type = EVASION_PARRY;
+						if (NPCInfo->stats.evasion >= 1)
+						{
+							if (rightdot > 0)
+							{
+								dodge_anim = BOTH_ROLL_L;
+								self->client->pers.cmd.rightmove = -127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+							else
+							{
+								dodge_anim = BOTH_ROLL_R;
+								self->client->pers.cmd.rightmove = 127;
+								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+								evasion_type = EVASION_DODGE;
+							}
+						}
 					}
 				}
 			}
