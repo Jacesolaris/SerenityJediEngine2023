@@ -56,8 +56,8 @@ namespace ratl
 	class vector_base : public ratl_base
 	{
 	public:
-		typedef T TStorageTraits;
-		typedef typename T::TValue TTValue;
+		using TStorageTraits = T;
+		using TTValue = typename T::TValue;
 		////////////////////////////////////////////////////////////////////////////////////
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ namespace ratl
 			int base = 0;
 			int head = mSize - 1;
 
-			while (1)
+			while (true)
 			{
 				int searchAt = (base + head) / 2;
 
@@ -716,8 +716,8 @@ namespace ratl
 	class vector_vs : public vector_base<storage::value_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		typedef storage::value_semantics<T, ARG_CAPACITY> TStorageTraits;
-		typedef typename TStorageTraits::TValue TTValue;
+		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
+		using TTValue = typename TStorageTraits::TValue;
 		enum
 		{
 			CAPACITY = ARG_CAPACITY
@@ -729,8 +729,8 @@ namespace ratl
 	class vector_os : public vector_base<storage::object_semantics<T, ARG_CAPACITY> >
 	{
 	public:
-		typedef storage::object_semantics<T, ARG_CAPACITY> TStorageTraits;
-		typedef typename TStorageTraits::TValue TTValue;
+		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
+		using TTValue = typename TStorageTraits::TValue;
 		enum
 		{
 			CAPACITY = ARG_CAPACITY
@@ -742,8 +742,8 @@ namespace ratl
 	class vector_is : public vector_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
 	{
 	public:
-		typedef storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> TStorageTraits;
-		typedef typename TStorageTraits::TValue TTValue;
+		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
+		using TTValue = typename TStorageTraits::TValue;
 		enum
 		{
 			CAPACITY = ARG_CAPACITY,

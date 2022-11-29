@@ -142,10 +142,9 @@ void Netchan_Transmit(netchan_t* chan, int length, const byte* data) {
 	msg_t		send;
 	byte		send_buf[MAX_PACKETLEN];
 
-	int fragmentLength = 0;
-
 	// fragment large reliable messages
 	if (length >= FRAGMENT_SIZE) {
+		int fragmentLength;
 		int fragmentStart = 0;
 		do {
 			// write the packet header

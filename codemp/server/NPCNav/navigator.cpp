@@ -380,7 +380,7 @@ Save
 int	CNode::Save(int numNodes, fileHandle_t file)
 {
 	//Write out the header
-	const unsigned int header = NODE_HEADER_ID;
+	constexpr auto header = NODE_HEADER_ID;
 	FS_Write(&header, sizeof header, file);
 
 	//Write out the basic information
@@ -676,7 +676,7 @@ bool CNavigator::Save(const char* filename, int checksum)
 		return false;
 
 	//Write out the header id
-	const unsigned int id = NAV_HEADER_ID;
+	constexpr auto id = NAV_HEADER_ID;
 
 	FS_Write(&id, sizeof id, file);
 
@@ -913,14 +913,14 @@ void CNavigator::ShowNodes(void)
 {
 	node_v::iterator	ni;
 
-	vec3_t	position;
 	float	dist;
 
 	STL_ITERATE(ni, m_nodes)
 	{
+		vec3_t position;
 		(*ni)->GetPosition(position);
 
-		const qboolean showRadius = qfalse;
+		constexpr qboolean showRadius = qfalse;
 		//if( NAVDEBUG_showRadius )
 		{
 			dist = DistanceSquared(SV_GentityNum(0)->r.currentOrigin, position);
@@ -946,12 +946,12 @@ using drawMap_m = std::map < int, bool >;
 void CNavigator::ShowEdges(void)
 {
 	node_v::iterator	ni;
-	vec3_t	start, end;
 
 	drawMap_m* drawMap = new drawMap_m[m_nodes.size()];
 
 	STL_ITERATE(ni, m_nodes)
 	{
+		vec3_t start;
 		(*ni)->GetPosition(start);
 		if (DistanceSquared(SV_GentityNum(0)->r.currentOrigin, start) >= 1048576)
 		{
@@ -966,6 +966,7 @@ void CNavigator::ShowEdges(void)
 		//Attempt to draw each connection
 		for (int i = 0; i < (*ni)->GetNumEdges(); i++)
 		{
+			vec3_t end;
 			int id = (*ni)->GetEdge(i);
 
 			if (id == -1)
@@ -1016,7 +1017,6 @@ int CNavigator::GetNodeRadius(int nodeID) const
 
 void CNavigator::CheckBlockedEdges(void)
 {
-	vec3_t	p1, p2;
 	trace_t	trace;
 	node_v::iterator	ni;
 
@@ -1029,6 +1029,8 @@ void CNavigator::CheckBlockedEdges(void)
 			const int flags = (*ni)->GetEdgeFlags(edgeNum);
 			if (flags & EFLAG_BLOCKED)
 			{
+				vec3_t p2;
+				vec3_t p1;
 				const int first = (*ni)->GetID();
 				const int second = (*ni)->GetEdge(edgeNum);
 				const CNode* start = m_nodes[first];
@@ -1222,12 +1224,12 @@ CollectNearestNodes
 int CNavigator::CollectNearestNodes(vec3_t origin, int radius, int maxCollect, nodeChain_l& nodeChain)
 {
 	node_v::iterator	ni;
-	vec3_t				position;
 	int					collected = 0;
 
 	//Get a distance rating for each node in the system
 	STL_ITERATE(ni, m_nodes)
 	{
+		vec3_t position;
 		//If we've got our quota, then stop looking
 		//Get the distance to the node
 		(*ni)->GetPosition(position);
@@ -1305,8 +1307,6 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 	CollectNearestNodes(ent->r.currentOrigin, NODE_COLLECT_RADIUS, NODE_COLLECT_MAX, nodeChain);
 	CollectNearestNodes(goal->r.currentOrigin, NODE_COLLECT_RADIUS, NODE_COLLECT_MAX, nodeChain2);
 
-	vec3_t				position;
-	vec3_t				position2;
 	int					radius;
 	int pathCost, bestCost = Q3_INFINITE;
 	int					nextNode = NODE_NONE, bestNode = NODE_NONE;
@@ -1319,6 +1319,7 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 	//Look through all nodes
 	STL_ITERATE(nci, nodeChain)
 	{
+		vec3_t position;
 		CNode* node = m_nodes[(*nci).nodeID];
 		const int nodeNum = (*nci).nodeID;
 
@@ -1382,6 +1383,7 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 
 		STL_ITERATE(nci2, nodeChain2)
 		{
+			vec3_t position2;
 			CNode* node2 = m_nodes[(*nci2).nodeID];
 			const int nodeNum2 = (*nci2).nodeID;
 			if (d_altRoutes->integer)
@@ -1508,12 +1510,12 @@ int CNavigator::GetNearestNode(sharedEntity_t* ent, int lastID, int flags, int t
 	//Collect all nodes within a certain radius
 	CollectNearestNodes(ent->r.currentOrigin, NODE_COLLECT_RADIUS, NODE_COLLECT_MAX, nodeChain);
 
-	vec3_t				position;
 	int bestDist = Q3_INFINITE;
 
 	//Look through all nodes
 	STL_ITERATE(nci, nodeChain)
 	{
+		vec3_t position;
 		const CNode* node = m_nodes[(*nci).nodeID];
 
 		node->GetPosition(position);
@@ -1609,13 +1611,13 @@ void CNavigator::ShowPath(int start, int end) const
 
 	const CNode* moveNode = startNode;
 
-	vec3_t	startPos, endPos;
-
 	int		runAway = 0;
 
 	//Draw out our path
 	while (moveNode != endNode)
 	{
+		vec3_t endPos;
+		vec3_t startPos;
 		const int bestNode = GetBestNode(moveNode->GetID(), end);
 
 		//Some nodes may be fragmented
@@ -1684,8 +1686,6 @@ void CNavigator::SetCheckedNode(int wayPoint, int ent, byte value)
 
 void CNavigator::CheckFailedNodes(sharedEntity_t* ent) const
 {
-	vec3_t	nodePos;
-
 	//Must have nodes
 	if (m_nodes.size() == 0)
 		return;
@@ -1698,6 +1698,7 @@ void CNavigator::CheckFailedNodes(sharedEntity_t* ent) const
 		{
 			if (ent->failedWaypoints[j] != 0)
 			{
+				vec3_t nodePos;
 				failed++;
 				//-1 because 0 is a valid node but also the default, so we add one when we add one
 				m_nodes[ent->failedWaypoints[j] - 1]->GetPosition(nodePos);
@@ -2585,7 +2586,7 @@ int CNavigator::GetProjectedNode(vec3_t origin, int nodeID) const
 	float	bestDot = 0.0f;
 	int		bestNode = NODE_NONE;
 
-	vec3_t	targetDir, basePos, tempDir, tempPos;
+	vec3_t	targetDir, basePos;
 
 	//Setup our target direction
 	node->GetPosition(basePos);
@@ -2596,6 +2597,8 @@ int CNavigator::GetProjectedNode(vec3_t origin, int nodeID) const
 	//Go through all the edges
 	for (int i = 0; i < node->GetNumEdges(); i++)
 	{
+		vec3_t tempPos;
+		vec3_t tempDir;
 		const CNode* tempNode = m_nodes[node->GetEdge(i)];
 		tempNode->GetPosition(tempPos);
 

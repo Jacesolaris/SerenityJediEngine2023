@@ -363,7 +363,6 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 	char* pPCM_Buffer = PCM_Buffer;
 	char* psReturn = NULL;
 	//	int  iSourceReadIndex = 0;
-	int	 iDestWriteIndex = 0;
 
 	DEC_INFO decinfo;
 
@@ -389,6 +388,7 @@ char* C_MP3_GetUnpackedSize(void* pvData, int iSourceBytesRemaining, int* piUnpa
 
 			if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 			{
+				int iDestWriteIndex = 0;
 				audio.decode_info(&decinfo);
 
 				// decode...
@@ -453,7 +453,6 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 
 	char* psReturn = NULL;
 	//	int  iSourceReadIndex = 0;
-	int	 iDestWriteIndex = 0;
 
 	DEC_INFO decinfo;
 
@@ -477,6 +476,7 @@ char* C_MP3_UnpackRawPCM(void* pvData, int iSourceBytesRemaining, int* piUnpacke
 
 			if (audio.decode_init(&head, iFrameBytes, reduction_code, iRealDataStart, bStereoDesired ? convert_code_stereo : convert_code_mono, freq_limit))
 			{
+				int iDestWriteIndex = 0;
 				audio.decode_info(&decinfo);
 
 				//				printf("\n output samprate = %6ld",decinfo.samprate);

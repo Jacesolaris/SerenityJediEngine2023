@@ -165,9 +165,9 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 		}
 	}
 #else
-	for (int i = 0; i < 5; i++)
+	for (auto & i : tr.viewParms.frustum)
 	{
-		frust = &tr.viewParms.frustum[i];
+		frust = &i;
 
 		dist = DotProduct(pt, frust->normal) - frust->dist;
 		if (dist < -radius)
@@ -737,7 +737,6 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, int entityNum,
 	vec3_t pvsOrigin, qboolean* mirror)
 {
 	cplane_t originalPlane, plane;
-	vec3_t transformed;
 
 	// create plane axis for the portal we are seeing
 	R_PlaneForSurface(drawSurf->surface, &originalPlane);
@@ -773,6 +772,7 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, int entityNum,
 	// the origin of the camera
 	for (int i = 0; i < tr.refdef.num_entities; i++)
 	{
+		vec3_t transformed;
 		trRefEntity_t* e = &tr.refdef.entities[i];
 		if (e->e.reType != RT_PORTALSURFACE)
 		{
@@ -921,7 +921,6 @@ static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128]
 	shader_t* shader;
 	int fogNum;
 	int dlighted;
-	vec4_t clip, eye;
 	int i;
 	unsigned int pointOr = 0;
 	unsigned int pointAnd = static_cast<unsigned>(~0);
@@ -936,6 +935,8 @@ static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128]
 
 	for (i = 0; i < tess.numVertexes; i++)
 	{
+		vec4_t eye;
+		vec4_t clip;
 		unsigned int pointFlags = 0;
 
 		R_TransformModelToClip(tess.xyz[i], tr.ori.modelMatrix, tr.viewParms.projectionMatrix, eye, clip);

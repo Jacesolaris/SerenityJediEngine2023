@@ -1262,7 +1262,7 @@ void CL_MouseMove(usercmd_t* cmd)
 	if ((in_mlooking || cl_freelook->integer) && !in_strafe.active)
 	{
 		// VVFIXME - This is supposed to be a CVAR
-		const float cl_pitchSensitivity = 1.0f;
+		constexpr float cl_pitchSensitivity = 1.0f;
 		const float pitch = cl_bUseFighterPitch ? m_pitchVeh->value : m_pitch->value;
 		if (cl_mPitchOverride)
 		{
@@ -1773,7 +1773,7 @@ void CL_SendCmd(void)
 	CL_WritePacket();
 }
 
-static const cmdList_t inputCmds[] =
+static constexpr cmdList_t inputCmds[] =
 {
 	{"centerview", "Centers view on screen", IN_CenterView, nullptr},
 	{"+moveup", "Jump", IN_UpDown, nullptr},

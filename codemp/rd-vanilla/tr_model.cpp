@@ -1309,14 +1309,6 @@ static qhandle_t RE_RegisterModel_Actual(const char* name) {
 			mod->md3[lod] = mod->md3[lod + 1];
 		}
 
-		/*
-		Ghoul2 Insert Start
-		*/
-
-#ifdef _DEBUG
-		const int ident = 0;
-#endif
-
 		RE_InsertModelIntoHash(name, mod);
 		return mod->index;
 		/*

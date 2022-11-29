@@ -220,7 +220,7 @@ using vidmode_t = struct vidmode_s
 	int width, height;
 };
 
-const vidmode_t r_vidModes[] =
+constexpr vidmode_t r_vidModes[] =
 {
 	{"Mode  0: 320x240", 320, 240},
 	{"Mode  1: 400x300", 400, 300},
@@ -245,7 +245,7 @@ const vidmode_t r_vidModes[] =
 	{"Mode 20: 3840x2160", 3840, 2160} //4K Video mode
 };
 
-static const int s_numVidModes = sizeof r_vidModes / sizeof r_vidModes[0];
+static constexpr int s_numVidModes = std::size(r_vidModes);
 
 qboolean R_GetModeInfo(int* width, int* height, int mode)
 {

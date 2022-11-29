@@ -244,7 +244,7 @@ void PC_SourceError(int handle, char* format, ...)
 	va_end(argptr);
 
 	filename[0] = '\0';
-	const int line = 0;
+	constexpr int line = 0;
 
 	Com_Printf(S_COLOR_RED "ERROR: %s, line %d: %s\n", filename, line, string);
 }
@@ -1268,8 +1268,6 @@ String_Alloc
 */
 const char* String_Alloc(const char* p)
 {
-	static const char* staticNULL = "";
-
 	if (p == nullptr)
 	{
 		return nullptr;
@@ -1277,6 +1275,7 @@ const char* String_Alloc(const char* p)
 
 	if (*p == 0)
 	{
+		static const char* staticNULL = "";
 		return staticNULL;
 	}
 
@@ -1740,7 +1739,6 @@ void Menu_SetItemText(const menuDef_t* menu, const char* itemName, const char* t
 			{
 				if (item->type == ITEM_TYPE_TEXTSCROLL)
 				{
-					char cvartext[1024];
 					textScrollDef_t* scrollPtr = static_cast<textScrollDef_t*>(item->typeData);
 					if (scrollPtr)
 					{
@@ -1750,6 +1748,7 @@ void Menu_SetItemText(const menuDef_t* menu, const char* itemName, const char* t
 
 					if (item->cvar)
 					{
+						char cvartext[1024];
 						DC->getCVarString(item->cvar, cvartext, sizeof cvartext);
 						item->text = cvartext;
 					}
@@ -2870,11 +2869,11 @@ Item_Multi_Setting
 */
 const char* Item_Multi_Setting(itemDef_t* item)
 {
-	char buff[1024];
-	float value = 0;
 	const multiDef_t* multiPtr = static_cast<multiDef_t*>(item->typeData);
 	if (multiPtr)
 	{
+		float value = 0;
+		char buff[1024];
 		if (multiPtr->strDef)
 		{
 			if (item->cvar)
@@ -3884,13 +3883,13 @@ qboolean ItemParse_backcolor(itemDef_t* item)
 {
 	float f;
 
-	for (int i = 0; i < 4; i++)
+	for (float & i : item->window.backColor)
 	{
 		if (PC_ParseFloat(&f))
 		{
 			return qfalse;
 		}
-		item->window.backColor[i] = f;
+		i = f;
 	}
 	return qtrue;
 }
@@ -4185,8 +4184,6 @@ ItemParse_cvar
 */
 qboolean ItemParse_cvar(itemDef_t* item)
 {
-	editFieldDef_t* editPtr;
-
 	Item_ValidateTypeData(item);
 	if (!PC_ParseStringMem(&item->cvar))
 	{
@@ -4195,6 +4192,7 @@ qboolean ItemParse_cvar(itemDef_t* item)
 
 	if (item->typeData)
 	{
+		editFieldDef_t* editPtr;
 		switch (item->type)
 		{
 		case ITEM_TYPE_EDITFIELD:
@@ -5434,12 +5432,11 @@ Controls_GetKeyAssignment
 */
 static void Controls_GetKeyAssignment(const char* command, int* twokeys)
 {
-	char	b[256];
-
 	twokeys[0] = twokeys[1] = -1;
 	int count = 0;
 
 	for (int j = 0; j < MAX_KEYS; j++) {
+		char b[256];
 		DC->getBindingBuf(j, b, sizeof b);
 		if (*b && !Q_stricmp(b, command)) {
 			twokeys[count] = j;
@@ -6099,14 +6096,14 @@ Item_TextColor
 */
 void Item_TextColor(itemDef_t* item, vec4_t* newColor)
 {
-	vec4_t lowLight;
-	const vec4_t greyColor = { .5, .5, .5, 1 };
+	constexpr vec4_t greyColor = { .5, .5, .5, 1 };
 	menuDef_t* parent = static_cast<menuDef_t*>(item->parent);
 
 	Fade(&item->window.flags, &item->window.foreColor[3], parent->fadeClamp, &item->window.nextTime, parent->fadeCycle, qtrue, parent->fadeAmount);
 
 	if (!(item->type == ITEM_TYPE_TEXT && item->window.flags & WINDOW_AUTOWRAPPED) && item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		lowLight[0] = 0.8 * parent->focusColor[0];
 		lowLight[1] = 0.8 * parent->focusColor[1];
 		lowLight[2] = 0.8 * parent->focusColor[2];
@@ -6153,7 +6150,6 @@ Item_Text_Wrapped_Paint
 */
 void Item_Text_Wrapped_Paint(itemDef_t* item)
 {
-	char text[1024];
 	const char* textPtr;
 	char buff[1024];
 	int width, height;
@@ -6164,6 +6160,7 @@ void Item_Text_Wrapped_Paint(itemDef_t* item)
 
 	if (item->text == nullptr)
 	{
+		char text[1024];
 		if (item->cvar == nullptr)
 		{
 			return;
@@ -6211,7 +6208,6 @@ Menu_Paint
 */
 void Item_Text_Paint(itemDef_t* item)
 {
-	char text[1024];
 	const char* textPtr;
 	int height, width;
 	vec4_t color;
@@ -6230,6 +6226,7 @@ void Item_Text_Paint(itemDef_t* item)
 
 	if (item->text == nullptr)
 	{
+		char text[1024];
 		if (item->cvar == nullptr)
 		{
 			return;
@@ -6312,7 +6309,7 @@ Item_TextField_Paint
 void Item_TextField_Paint(itemDef_t* item)
 {
 	char buff[1024];
-	vec4_t newColor, lowLight;
+	vec4_t newColor;
 	menuDef_t* parent = static_cast<menuDef_t*>(item->parent);
 	const editFieldDef_t* editPtr = static_cast<editFieldDef_t*>(item->typeData);
 
@@ -6327,6 +6324,7 @@ void Item_TextField_Paint(itemDef_t* item)
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		lowLight[0] = 0.8 * parent->focusColor[0];
 		lowLight[1] = 0.8 * parent->focusColor[1];
 		lowLight[2] = 0.8 * parent->focusColor[2];
@@ -6338,7 +6336,7 @@ void Item_TextField_Paint(itemDef_t* item)
 		memcpy(&newColor, &item->window.foreColor, sizeof(vec4_t));
 	}
 
-	const int offset = 8;//(item->text && *item->text) ? 8 : 0;
+	constexpr int offset = 8;//(item->text && *item->text) ? 8 : 0;
 	if (item->window.flags & WINDOW_HASFOCUS && g_editingField)
 	{
 		const char cursor = DC->getOverstrikeMode() ? '_' : '|';
@@ -6352,7 +6350,6 @@ void Item_TextField_Paint(itemDef_t* item)
 
 void Item_TextScroll_Paint(itemDef_t* item)
 {
-	char cvartext[1024];
 	float x, y;
 	textScrollDef_t* scrollPtr = static_cast<textScrollDef_t*>(item->typeData);
 
@@ -6362,6 +6359,7 @@ void Item_TextScroll_Paint(itemDef_t* item)
 	// Still a little iffy - BTO (VV)
 	if (item->cvar)
 	{
+		char cvartext[1024];
 		DC->getCVarString(item->cvar, cvartext, sizeof cvartext);
 		item->text = cvartext;
 	}
@@ -6631,7 +6629,7 @@ void Item_ListBox_Paint(itemDef_t* item)
 								color = &item->window.foreColor;
 							}
 
-							const int textyOffset = 0;
+							constexpr int textyOffset = 0;
 
 							DC->drawText(x + 4 + listPtr->columnInfo[j].pos, y + listPtr->elementHeight + textyOffset, item->textscale, *color, text, listPtr->columnInfo[j].maxChars, item->textStyle, item->font);
 						}
@@ -6692,8 +6690,6 @@ BindingFromName
 =================
 */
 void BindingFromName(const char* cvar) {
-	char	sOR[32];
-
 	// iterate each command, set its default binding
 	for (size_t i = 0; i < g_bindCount; i++) {
 		if (!Q_stricmp(cvar, g_bindCommands[i])) {
@@ -6703,6 +6699,7 @@ void BindingFromName(const char* cvar) {
 				break;
 
 			if (b2 != -1) {
+				char sOR[32];
 				char keyname[2][32];
 
 				DC->keynumToStringBuf(b1, keyname[0], sizeof keyname[0]);
@@ -6735,7 +6732,7 @@ Item_Bind_Paint
 */
 void Item_Bind_Paint(itemDef_t* item)
 {
-	vec4_t	newColor, lowLight;
+	vec4_t	newColor;
 	int		maxChars = 0;
 
 	menuDef_t* parent = static_cast<menuDef_t*>(item->parent);
@@ -6750,6 +6747,7 @@ void Item_Bind_Paint(itemDef_t* item)
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		if (g_bindItem == item)
 		{
 			lowLight[0] = 0.8f * 1.0f;
@@ -7415,10 +7413,10 @@ Item_Slider_ThumbPosition
 */
 int Item_ListBox_ThumbDrawPosition(itemDef_t* item)
 {
-	int min, max;
-
 	if (itemCapture == item)
 	{
+		int max;
+		int min;
 		if (item->window.flags & WINDOW_HORIZONTAL)
 		{
 			min = item->window.rect.x + SCROLLBAR_SIZE + 1;
@@ -7493,12 +7491,13 @@ Item_Slider_Paint
 */
 void Item_Slider_Paint(itemDef_t* item)
 {
-	vec4_t newColor, lowLight;
+	vec4_t newColor;
 	float x;
 	menuDef_t* parent = static_cast<menuDef_t*>(item->parent);
 
 	if (item->window.flags & WINDOW_HASFOCUS)
 	{
+		vec4_t lowLight;
 		lowLight[0] = 0.8 * parent->focusColor[0];
 		lowLight[1] = 0.8 * parent->focusColor[1];
 		lowLight[2] = 0.8 * parent->focusColor[2];
@@ -7535,7 +7534,6 @@ Item_Paint
 */
 static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 {
-	int		xPos, textWidth;
 	vec4_t red;
 	red[0] = red[3] = 1;
 	red[1] = red[2] = 0;
@@ -7566,7 +7564,7 @@ static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 			const float h = item->window.rectClient.h / 2;
 			const float rx = item->window.rectClient.x + w - item->window.rectEffects.x;
 			const float ry = item->window.rectClient.y + h - item->window.rectEffects.y;
-			const float a = 3 * M_PI / 180;
+			constexpr float a = 3 * M_PI / 180;
 			const float c = cos(a);
 			const float s = sin(a);
 			item->window.rectClient.x = rx * c - ry * s + item->window.rectEffects.x - w;
@@ -7999,7 +7997,10 @@ static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 
 			// items can be enabled and disabled based on cvars
 			if (!(item->cvarFlags & (CVAR_ENABLE | CVAR_DISABLE) && !Item_EnableShowViaCvar(item, CVAR_ENABLE)))
-			{	// Draw the desctext
+			{
+				int textWidth;
+				int xPos;
+				// Draw the desctext
 				const char* textPtr = item->descText;
 				if (*textPtr == '@')	// string reference
 				{
@@ -8350,7 +8351,6 @@ Item_Text_AutoWrapped_Paint
 */
 void Item_Text_AutoWrapped_Paint(itemDef_t* item)
 {
-	char text[1024];
 	const char* textPtr;
 	char buff[1024];
 	vec4_t color;
@@ -8360,6 +8360,7 @@ void Item_Text_AutoWrapped_Paint(itemDef_t* item)
 
 	if (item->text == nullptr)
 	{
+		char text[1024];
 		if (item->cvar == nullptr)
 		{
 			return;
@@ -9455,11 +9456,11 @@ Item_TextField_HandleKey
 */
 qboolean Item_TextField_HandleKey(itemDef_t* item, int key)
 {
-	char buff[1024];
 	editFieldDef_t* editPtr = static_cast<editFieldDef_t*>(item->typeData);
 
 	if (item->cvar)
 	{
+		char buff[1024];
 		itemDef_t* new_item;
 		memset(buff, 0, sizeof buff);
 		DC->getCVarString(item->cvar, buff, sizeof buff);
@@ -9652,12 +9653,12 @@ static void Scroll_TextScroll_AutoFunc(void* p)
 static void Scroll_TextScroll_ThumbFunc(void* p)
 {
 	scrollInfo_t* si = static_cast<scrollInfo_t*>(p);
-	rectDef_t	 r;
 
 	textScrollDef_t* scrollPtr = static_cast<textScrollDef_t*>(si->item->typeData);
 
 	if (DC->cursory != si->yStart)
 	{
+		rectDef_t r;
 		r.x = si->item->window.rect.x + si->item->window.rect.w - SCROLLBAR_SIZE - 1;
 		r.y = si->item->window.rect.y + SCROLLBAR_SIZE + 1;
 		r.h = si->item->window.rect.h - SCROLLBAR_SIZE * 2 - 2;
@@ -9866,9 +9867,9 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 {
 	listBoxDef_t* listPtr = static_cast<listBoxDef_t*>(item->typeData);
 	const int count = DC->feederCount(item->special);
-	int viewmax;
 	if (force || Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS)
 	{
+		int viewmax;
 		const int max = Item_ListBox_MaxScroll(item);
 		if (item->window.flags & WINDOW_HORIZONTAL)
 		{

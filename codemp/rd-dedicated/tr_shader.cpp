@@ -1200,7 +1200,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 			stage->bundle[0].oneShotAnimMap = oneShot;
 
 			// parse up to MAX_IMAGE_ANIMATIONS animations
-			while (1) {
+			while (true) {
 				token = COM_ParseExt(text, qfalse);
 				if (!token[0]) {
 					break;
@@ -1520,7 +1520,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 		{
 			char buffer[1024] = "";
 
-			while (1)
+			while (true)
 			{
 				token = COM_ParseExt(text, qfalse);
 				if (token[0] == 0)
@@ -1551,7 +1551,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 		{
 			char buffer[1024] = "";
 
-			while (1)
+			while (true)
 			{
 				token = COM_ParseExt(text, qfalse);
 				if (token[0] == 0)
@@ -1581,7 +1581,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 			char param[128];
 			strcpy(param, token);
 
-			while (1)
+			while (true)
 			{
 				token = COM_ParseExt(text, qfalse);
 				if (token[0] == 0)
@@ -1774,13 +1774,13 @@ static void ParseDeform(const char** text) {
 	}
 
 	if (!Q_stricmp(token, "move")) {
-		for (int i = 0; i < 3; i++) {
+		for (float & i : ds->moveVector) {
 			token = COM_ParseExt(text, qfalse);
 			if (token[0] == 0) {
 				Com_Printf(S_COLOR_YELLOW  "WARNING: missing deformVertexes parm in shader '%s'\n", shader.name);
 				return;
 			}
-			ds->moveVector[i] = atof(token);
+			i = atof(token);
 		}
 
 		ParseWaveForm(text, &ds->deformationWave);
@@ -1800,7 +1800,6 @@ skyParms <outerbox> <cloudheight> <innerbox>
 */
 static void ParseSkyParms(const char** text) {
 	const char* suf[6] = { "rt", "lf", "bk", "ft", "up", "dn" };
-	char		pathname[MAX_QPATH];
 
 	shader.sky = static_cast<skyParms_t*>(Hunk_Alloc(sizeof(skyParms_t), h_low));
 
@@ -1812,6 +1811,7 @@ static void ParseSkyParms(const char** text) {
 	}
 	if (strcmp(token, "-") != 0) {
 		for (int i = 0; i < 6; i++) {
+			char pathname[MAX_QPATH];
 			Com_sprintf(pathname, sizeof pathname, "%s_%s", token, suf[i]);
 			shader.sky->outerbox[i] = nullptr;
 		}
@@ -1975,15 +1975,14 @@ ParseSurfaceParm
 surfaceparm <name>
 ===============
 */
-static void ParseSurfaceParm(const char** text) {
-	const int		numInfoParms = sizeof infoParms / sizeof infoParms[0];
-
+static void ParseSurfaceParm(const char** text)
+{
 	const char* token = COM_ParseExt(text, qfalse);
-	for (int i = 0; i < numInfoParms; i++) {
-		if (!Q_stricmp(token, infoParms[i].name)) {
-			shader.surfaceFlags |= infoParms[i].surfaceFlags;
-			shader.contentFlags |= infoParms[i].contents;
-			shader.contentFlags &= infoParms[i].clearSolid;
+	for (const auto& infoParm : infoParms) {
+		if (!Q_stricmp(token, infoParm.name)) {
+			shader.surfaceFlags |= infoParm.surfaceFlags;
+			shader.contentFlags |= infoParm.contents;
+			shader.contentFlags &= infoParm.clearSolid;
 			break;
 		}
 	}
@@ -2502,7 +2501,7 @@ static shader_t* FinishShader(void) {
 	int				stage, lmStage; //rwwRMG - stageIndex for AGEN_BLEND
 
 	qboolean hasLightmapStage = qfalse;
-	const qboolean vertexLightmap = qfalse;
+	
 
 	//
 	// set sky stuff appropriate

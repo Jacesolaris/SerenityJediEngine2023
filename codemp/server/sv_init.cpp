@@ -39,7 +39,7 @@ given client
 */
 static void SV_SendConfigstring(client_t* client, int index)
 {
-	const int maxChunkSize = MAX_STRING_CHARS - 24;
+	constexpr int maxChunkSize = MAX_STRING_CHARS - 24;
 
 	const int len = strlen(sv.configstrings[index]);
 
@@ -48,10 +48,10 @@ static void SV_SendConfigstring(client_t* client, int index)
 		int sent = 0;
 		int remaining = len;
 		char* cmd;
-		char buf[MAX_STRING_CHARS];
 
 		while (remaining > 0)
 		{
+			char buf[MAX_STRING_CHARS];
 			if (sent == 0)
 			{
 				cmd = "bcs0";
@@ -117,9 +117,6 @@ SV_SetConfigstring
 */
 void SV_SetConfigstring(int index, const char* val)
 {
-	int i;
-	client_t* client;
-
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
 	{
 		Com_Error(ERR_DROP, "SV_SetConfigstring: bad index %i\n", index);
@@ -144,6 +141,8 @@ void SV_SetConfigstring(int index, const char* val)
 	// spawning a new server
 	if (sv.state == SS_GAME || sv.restarting)
 	{
+		client_t* client;
+		int i;
 		// send the data to all relevent clients
 		for (i = 0, client = svs.clients; i < sv_maxclients->integer; i++, client++)
 		{

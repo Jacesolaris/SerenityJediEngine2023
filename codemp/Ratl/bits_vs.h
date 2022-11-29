@@ -60,7 +60,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		void	clear_trailing_bits()
 		{
-			for (int i = this->SIZE; i < this->ARRAY_SIZE * this->BITS_INT_SIZE; i++)
+			for (int i = this->SIZE; i < this->ARRAY_SIZE * this->BITS_INT_SIZE; ++i)
 			{
 				this->mV[i >> this->BITS_SHIFT] &= ~(1 << (i & this->BITS_AND));
 			}

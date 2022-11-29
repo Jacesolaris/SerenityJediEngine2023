@@ -313,7 +313,7 @@ void CL_CheckSVStringEdRef(char* buf, const char* str)
 
 	while (i < strLen && str[i])
 	{
-		const qboolean gotStrip = qfalse;
+		constexpr qboolean gotStrip = qfalse;
 
 		if (str[i] == '@' && i + 1 < strLen)
 		{

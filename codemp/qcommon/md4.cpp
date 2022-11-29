@@ -154,13 +154,12 @@ static void mdfour_tail(byte* in, int n)
 
 static void mdfour_update(mdfour_ctx* md, byte* in, int n)
 {
-	uint32_t M[16];
-
 	m = md;
 
 	if (n == 0) mdfour_tail(in, n);
 
 	while (n >= 64) {
+		uint32_t M[16];
 		copy64(M, in);
 		mdfour64(M);
 		in += 64;

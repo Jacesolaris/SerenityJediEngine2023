@@ -63,7 +63,7 @@ textureMode_t modes[] = {
 	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
 };
 
-static const size_t numTextureModes = ARRAY_LEN(modes);
+static constexpr size_t numTextureModes = std::size(modes);
 
 /*
 ===============
@@ -1190,10 +1190,9 @@ R_InitFogTable
 */
 void R_InitFogTable(void)
 {
-	const float exp = 0.5;
-
 	for (int i = 0; i < FOG_TABLE_SIZE; i++)
 	{
+		constexpr float exp = 0.5;
 		const float d = pow(static_cast<float>(i) / (FOG_TABLE_SIZE - 1), exp);
 
 		tr.fogTable[i] = d;
@@ -1429,7 +1428,6 @@ R_SetColorMappings
 void R_SetColorMappings(void)
 {
 	int i;
-	int inf;
 
 	// setup the overbright lighting
 	tr.overbrightBits = r_overBrightBits->integer;
@@ -1477,6 +1475,7 @@ void R_SetColorMappings(void)
 
 	if (!glConfigExt.doGammaCorrectionWithShaders)
 	{
+		int inf;
 		for (i = 0; i < 256; i++)
 		{
 			if (g == 1)

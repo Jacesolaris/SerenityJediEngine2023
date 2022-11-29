@@ -209,7 +209,6 @@ Cvar_Validate
 */
 static const char* Cvar_Validate(cvar_t* var, const char* value, qboolean warn)
 {
-	static char s[MAX_CVAR_VALUE_STRING];
 	float valuef;
 	qboolean changed = qfalse;
 
@@ -283,6 +282,7 @@ static const char* Cvar_Validate(cvar_t* var, const char* value, qboolean warn)
 
 	if (changed)
 	{
+		static char s[MAX_CVAR_VALUE_STRING];
 		if (Q_isintegral(valuef))
 		{
 			Com_sprintf(s, sizeof s, "%d", static_cast<int>(valuef));
@@ -733,8 +733,6 @@ static const char* legacyCvars[] = {
 	"vm_ui"
 };
 
-static const size_t numLegacyCvars = ARRAY_LEN(legacyCvars);
-
 static bool FindLegacyCvar(const char* var_name) {
 	for (auto& legacyCvar : legacyCvars) {
 		if (!Q_stricmp(legacyCvar, var_name))
@@ -1106,8 +1104,6 @@ with the archive flag set to qtrue.
 ============
 */
 void Cvar_WriteVariables(fileHandle_t f) {
-	char buffer[1024];
-
 	if (cvar_sort) {
 		Com_DPrintf("Cvar_Sort: sort cvars\n");
 		cvar_sort = qfalse;
@@ -1120,6 +1116,7 @@ void Cvar_WriteVariables(fileHandle_t f) {
 			continue;
 
 		if (var->flags & CVAR_ARCHIVE) {
+			char buffer[1024];
 			// write the latched value, even if it hasn't taken effect yet
 			if (var->latchedString) {
 				if (strlen(var->name) + strlen(var->latchedString) + 10 > sizeof buffer) {

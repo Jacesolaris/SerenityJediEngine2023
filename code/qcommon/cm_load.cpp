@@ -148,7 +148,7 @@ void CMod_LoadShaders(lump_t* l, clipMap_t& cm)
 		Q_strncpyz(out->shader, in->shader, MAX_QPATH);
 		out->contentFlags = LittleLong in->contentFlags;
 		out->surfaceFlags = LittleLong in->surfaceFlags;
-		for (int j = 0; j <= ARRAY_LEN(replaceMaterials); j++)
+		for (int j = 0; j <= std::size(replaceMaterials); j++)
 		{
 			if (!Q_stricmp(out->shader, replaceMaterials[j].shader))
 			{
@@ -625,10 +625,8 @@ qboolean CM_DeleteCachedMap(qboolean bGuaranteedOkToDelete)
 }
 
 static void CM_LoadMap_Actual(const char* name, qboolean clientload, int* checksum, clipMap_t& cm) {
-	const int* buf;
 	dheader_t		header;
 	static unsigned	last_checksum;
-	void* subBSPData = nullptr;
 
 	if (!name || !name[0]) {
 		Com_Error(ERR_DROP, "CM_LoadMap: NULL name");
@@ -681,6 +679,8 @@ static void CM_LoadMap_Actual(const char* name, qboolean clientload, int* checks
 	}
 	else
 	{
+		void* subBSPData = nullptr;
+		const int* buf;
 		// ... else load map from scratch...
 		//
 		if (&cm == &cmg)

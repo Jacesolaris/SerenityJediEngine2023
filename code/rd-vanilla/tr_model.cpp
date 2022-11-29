@@ -459,7 +459,7 @@ model_t* R_GetAnimModelByHandle(CGhoul2Info* ghlInfo, qhandle_t index)
 		// Have to recalculate offset to get map animations for JKA Campaign
 		index -= ghlInfo->animModelIndexOffset;
 		int mapIndex{};
-		const int len = sizeof tr.models / sizeof tr.models[0];
+		constexpr int len = std::size(tr.models);
 		for (int i = 0; i < len; i++)
 		{
 			if (!Q_stricmp(va("models/players/_humanoid/_humanoid.gla"), tr.models[i]->name))

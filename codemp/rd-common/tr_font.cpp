@@ -905,7 +905,6 @@ CFontInfo::CFontInfo(const char* _fontName)
 		{
 			bDone = qtrue;
 
-			char sTemp[MAX_QPATH];
 			int iGlyphTPs = 0;
 			const char* psLang = nullptr;
 
@@ -950,10 +949,12 @@ CFontInfo::CFontInfo(const char* _fontName)
 					}
 				}
 				break;
+			default: ;
 				}
 
 				for (int i = 0; i < iGlyphTPs; i++)
 				{
+					char sTemp[MAX_QPATH];
 					Com_sprintf(sTemp, sizeof sTemp, "fonts/%s_%d_1024_%d.tga", psLang, 1024 / m_iAsianGlyphsAcross, i);
 
 					// RE_RegisterShaderNoMip( sTemp );	// don't actually need to load it, so...

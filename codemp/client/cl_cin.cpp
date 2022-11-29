@@ -520,10 +520,10 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 
 static void ROQ_GenYUVTables(void)
 {
-	const float t_ub = (1.77200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
-	const float t_vr = (1.40200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
-	const float t_ug = (0.34414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
-	const float t_vg = (0.71414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_ub = (1.77200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_vr = (1.40200f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_ug = (0.34414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
+	constexpr float t_vg = (0.71414f / 2.0f) * static_cast<float>(1 << 6) + 0.5f;
 	for (long i = 0; i < 256; i++)
 	{
 		const float x = static_cast<float>(2 * i - 255);
@@ -647,7 +647,7 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 {
 	long i, j, two, four;
 	unsigned short* aptr, * bptr, * cptr, * dptr;
-	long y0, y1, y2, y3, cr, cb;
+	long y0, y2, cr, cb;
 	byte* bbptr, * baptr, * bcptr, * bdptr;
 	union
 	{
@@ -672,6 +672,8 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 
 	if (!cinTable[currentHandle].half)
 	{
+		long y3;
+		long y1;
 		if (!cinTable[currentHandle].smootheddouble)
 		{
 			//
@@ -1038,10 +1040,9 @@ static void setupQuad(long xOff, long yOff)
 		for (long x = 0; x < static_cast<long>(cinTable[currentHandle].xsize); x += 16)
 			recurseQuad(x, y, 16, xOff, yOff);
 
-	byte* temp = nullptr;
-
 	for (long i = (numQuadCels - 64); i < numQuadCels; i++)
 	{
+		byte* temp = nullptr;
 		cin.qStatus[0][i] = temp; // eoq
 		cin.qStatus[1][i] = temp; // eoq
 	}

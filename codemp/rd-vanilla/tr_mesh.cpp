@@ -170,8 +170,6 @@ R_ComputeLOD
 =================
 */
 int R_ComputeLOD(trRefEntity_t* ent) {
-	float flod;
-	float projectedRadius;
 	int lod;
 
 	if (tr.currentModel->numLods < 2)
@@ -181,6 +179,8 @@ int R_ComputeLOD(trRefEntity_t* ent) {
 	}
 	else
 	{
+		float projectedRadius;
+		float flod;
 		// multiple LODs exist, so compute projected bounding sphere
 		// and use that as a criteria for selecting LOD
 

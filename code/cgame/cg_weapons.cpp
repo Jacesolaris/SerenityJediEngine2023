@@ -1051,7 +1051,9 @@ void CG_RegisterItemVisuals(int itemNum)
 			break;
 
 		case INV_BARRIER:
-			cgi_S_RegisterSound("sound/barrier/barrier_on.wav");
+			cgi_S_RegisterSound("sound/barrier/barrier_on.mp3");
+			cgi_S_RegisterSound("sound/barrier/barrier_loop.wav");
+			cgi_S_RegisterSound("sound/barrier/barrier_off.mp3");
 			break;
 		default:;
 		}
@@ -3849,13 +3851,11 @@ void CG_Weapon_f()
 								//PM_WeaponOkOnVehicle
 								CG_RegisterWeapon(WP_NONE);
 								G_SetWeapon(&g_entities[0], WP_NONE);
-								num = WP_NONE;
 							}
 							else
 							{
 								CG_RegisterWeapon(WP_MELEE);
 								G_SetWeapon(&g_entities[0], WP_MELEE);
-								num = WP_MELEE;
 							}
 						}
 						if (G_IsRidingVehicle(cg_entities[0].gent))

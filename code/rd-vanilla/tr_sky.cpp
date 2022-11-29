@@ -263,12 +263,11 @@ RB_ClipSkyPolygons
 */
 void RB_ClipSkyPolygons(const shaderCommands_t* input)
 {
-	vec3_t		p[5];	// need one extra point for clipping
-
 	ClearSkyBox();
 
 	for (int i = 0; i < input->numIndexes; i += 3)
 	{
+		vec3_t p[5];
 		for (int j = 0; j < 3; j++)
 		{
 			VectorSubtract(input->xyz[input->indexes[i + j]],
@@ -600,8 +599,7 @@ void R_BuildCloudData(shaderCommands_t* input)
 
 void R_InitSkyTexCoords(float heightCloud)
 {
-	const float radiusWorld = MAX_WORLD_COORD;
-	vec3_t skyVec;
+	constexpr float radiusWorld = MAX_WORLD_COORD;
 	vec3_t v;
 
 	// init zfar so MakeSkyVec works even though
@@ -614,6 +612,7 @@ void R_InitSkyTexCoords(float heightCloud)
 		{
 			for (int s = 0; s <= SKY_SUBDIVISIONS; s++)
 			{
+				vec3_t skyVec;
 				// compute vector from view origin to sky side integral point
 				MakeSkyVec((s - HALF_SKY_SUBDIVISIONS) / static_cast<float>(HALF_SKY_SUBDIVISIONS),
 					(t - HALF_SKY_SUBDIVISIONS) / static_cast<float>(HALF_SKY_SUBDIVISIONS),

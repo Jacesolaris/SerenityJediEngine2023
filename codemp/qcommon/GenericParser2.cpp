@@ -40,10 +40,10 @@ static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = fal
 		return token;
 	}
 
-	while (1)
+	while (true)
 	{
 		bool foundLineBreak = false;
-		while (1)
+		while (true)
 		{
 			c = *pointer;
 			if (c > ' ')
@@ -100,7 +100,7 @@ static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = fal
 	if (c == '\"')
 	{	// handle a string
 		pointer++;
-		while (1)
+		while (true)
 		{
 			c = *pointer++;
 			if (c == '\"')
@@ -340,7 +340,7 @@ void CGPValue::AddValue(const char* newValue, CTextPool** textPool)
 
 bool CGPValue::Parse(char** dataPtr, CTextPool** textPool)
 {
-	while (1)
+	while (true)
 	{
 		char* token = GetToken(dataPtr, true, true);
 
@@ -620,10 +620,9 @@ CGPGroup* CGPGroup::FindSubGroup(const char* name) const
 
 bool CGPGroup::Parse(char** dataPtr, CTextPool** textPool)
 {
-	char		lastToken[MAX_TOKEN_SIZE];
-
-	while (1)
+	while (true)
 	{
+		char lastToken[MAX_TOKEN_SIZE];
 		const char* token = GetToken(dataPtr, true);
 
 		if (!token[0])
@@ -1060,7 +1059,7 @@ bool GPV_IsList(TGPValue GPV)
 {
 	if (!GPV)
 	{
-		return 0;
+		return false;
 	}
 
 	return static_cast<CGPValue*>(GPV)->IsList();

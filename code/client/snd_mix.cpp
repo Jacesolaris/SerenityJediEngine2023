@@ -295,7 +295,7 @@ void S_PaintChannels(int endtime)
 				snd_vol = normal_vol;
 
 			int ltime = s_paintedtime;
-			sfx_t* sc = ch->thesfx;
+			const sfx_t* sc = ch->thesfx;
 
 			// we might have to make 2 passes if it is
 			//	a looping sound effect and the end of

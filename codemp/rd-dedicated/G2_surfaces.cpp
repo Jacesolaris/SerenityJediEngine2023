@@ -151,7 +151,6 @@ mdxmSurface_t* G2_FindSurface(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const 
 qboolean G2_SetSurfaceOnOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const char* surfaceName, const int offFlags)
 {
 	int					surfIndex = -1;
-	surfaceInfo_t		temp_slist_entry;
 	// find the model we want
 	model_t* mod = (model_t*)ghlInfo->currentModel;
 
@@ -186,7 +185,9 @@ qboolean G2_SetSurfaceOnOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const ch
 		newflags |= offFlags & (G2SURFACEFLAG_OFF | G2SURFACEFLAG_NODESCENDANTS);
 
 		if (newflags != flags)
-		{	// insert here then because it changed, no need to add an override otherwise
+		{
+			surfaceInfo_t temp_slist_entry;
+			// insert here then because it changed, no need to add an override otherwise
 			temp_slist_entry.offFlags = newflags;
 			temp_slist_entry.surface = surfaceNum;
 

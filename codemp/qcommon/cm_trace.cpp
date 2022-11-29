@@ -133,7 +133,6 @@ void CM_TestBoxInBrush(traceWork_t* tw, trace_t& trace, cbrush_t* brush) {
 	float		dist;
 	float		d1;
 	cbrushside_t* side;
-	vec3_t		startp;
 
 	if (!brush->numsides) {
 		return;
@@ -154,6 +153,7 @@ void CM_TestBoxInBrush(traceWork_t* tw, trace_t& trace, cbrush_t* brush) {
 		// the first six planes are the axial planes, so we only
 		// need to test the remainder
 		for (i = 6; i < brush->numsides; i++) {
+			vec3_t startp;
 			side = brush->sides + i;
 			plane = side->plane;
 
@@ -209,7 +209,6 @@ CM_TestInLeaf
 void CM_TestInLeaf(traceWork_t* tw, trace_t& trace, cLeaf_t* leaf, clipMap_t* local)
 {
 	int			k;
-	cPatch_t* patch;
 
 	// test box position against all brushes in the leaf
 	for (k = 0; k < leaf->numLeafBrushes; k++) {
@@ -234,10 +233,11 @@ void CM_TestInLeaf(traceWork_t* tw, trace_t& trace, cLeaf_t* leaf, clipMap_t* lo
 #ifdef BSPC
 	if (1) {
 #else
-	if (!cm_noCurves->integer) {
+	if (!cm_noCurves->integer)
+	{
 #endif //BSPC
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
-			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
+			cPatch_t* patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
 			if (!patch) {
 				continue;
 			}
@@ -630,7 +630,6 @@ CM_TraceThroughLeaf
 */
 void CM_TraceThroughLeaf(traceWork_t * tw, trace_t & trace, clipMap_t * local, cLeaf_t * leaf) {
 	int			k;
-	cPatch_t* patch;
 
 	// trace line against all brushes in the leaf
 	for (k = 0; k < leaf->numLeafBrushes; k++) {
@@ -657,10 +656,11 @@ void CM_TraceThroughLeaf(traceWork_t * tw, trace_t & trace, clipMap_t * local, c
 #ifdef BSPC
 	if (1) {
 #else
-	if (!cm_noCurves->integer) {
+	if (!cm_noCurves->integer)
+	{
 #endif
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
-			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
+			cPatch_t* patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
 			if (!patch) {
 				continue;
 			}
@@ -691,8 +691,7 @@ get the first intersection of the ray with the sphere
 ================
 */
 void CM_TraceThroughSphere(traceWork_t * tw, trace_t & trace, vec3_t origin, float radius, vec3_t start, vec3_t end) {
-	float scale;
-	vec3_t v1, dir, intersection;
+	vec3_t v1, dir;
 
 	// if inside the sphere
 	VectorSubtract(start, origin, dir);
@@ -744,6 +743,8 @@ void CM_TraceThroughSphere(traceWork_t * tw, trace_t & trace, vec3_t origin, flo
 			fraction /= length;
 		}
 		if (fraction < trace.fraction) {
+			vec3_t intersection;
+			float scale;
 			trace.fraction = fraction;
 			VectorSubtract(end, start, dir);
 			VectorMA(start, fraction, dir, intersection);
@@ -778,8 +779,8 @@ the cylinder extends halfheight above and below the origin
 ================
 */
 void CM_TraceThroughVerticalCylinder(traceWork_t * tw, trace_t & trace, vec3_t origin, float radius, float halfheight, vec3_t start, vec3_t end) {
-	float scale, l1;
-	vec3_t v1, dir, start2d, end2d, org2d, intersection;
+	float l1;
+	vec3_t v1, dir, start2d, end2d, org2d;
 
 	// 2d coordinates
 	VectorSet(start2d, start[0], start[1], 0);
@@ -841,11 +842,13 @@ void CM_TraceThroughVerticalCylinder(traceWork_t * tw, trace_t & trace, vec3_t o
 			fraction /= length;
 		}
 		if (fraction < trace.fraction) {
+			vec3_t intersection;
 			VectorSubtract(end, start, dir);
 			VectorMA(start, fraction, dir, intersection);
 			// if the intersection is between the cylinder lower and upper bound
 			if (intersection[2] <= origin[2] + halfheight &&
 				intersection[2] >= origin[2] - halfheight) {
+				float scale;
 				//
 				trace.fraction = fraction;
 				VectorSubtract(intersection, origin, dir);
@@ -977,7 +980,6 @@ CM_TraceToLeaf
 void CM_TraceToLeaf(traceWork_t * tw, trace_t & trace, cLeaf_t * leaf, clipMap_t * local)
 {
 	int			k;
-	cPatch_t* patch;
 
 	// trace line against all brushes in the leaf
 	for (k = 0; k < leaf->numLeafBrushes; k++)
@@ -1007,10 +1009,11 @@ void CM_TraceToLeaf(traceWork_t * tw, trace_t & trace, cLeaf_t * leaf, clipMap_t
 #ifdef BSPC
 	if (1) {
 #else
-	if (!cm_noCurves->integer) {
+	if (!cm_noCurves->integer)
+	{
 #endif
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
-			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
+			cPatch_t* patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
 			if (!patch) {
 				continue;
 			}
@@ -1451,7 +1454,7 @@ void CM_TransformedBoxTrace(trace_t * trace, const vec3_t start, const vec3_t en
 	qboolean	rotated;
 	vec3_t		offset;
 	vec3_t		symetricSize[2];
-	matrix3_t	matrix, transpose;
+	matrix3_t	matrix;
 	sphere_t	sphere;
 
 	if (!mins) {
@@ -1517,6 +1520,7 @@ void CM_TransformedBoxTrace(trace_t * trace, const vec3_t start, const vec3_t en
 
 	// if the bmodel was rotated and there was a collision
 	if (rotated && trace->fraction != 1.0) {
+		matrix3_t transpose;
 		// rotation of bmodel collision plane
 		TransposeMatrix(matrix, transpose);
 		RotatePoint(trace->plane.normal, transpose);

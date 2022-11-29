@@ -261,9 +261,7 @@ int R_MarkFragments(int numPoints, const vec3_t* points, const vec3_t projection
 	int				returnedPoints;
 	vec3_t			normals[MAX_VERTS_ON_POLY + 2];
 	float			dists[MAX_VERTS_ON_POLY + 2];
-	vec3_t			clipPoints[2][MAX_VERTS_ON_POLY];
 	float* v;
-	vec3_t			normal;
 	vec3_t			projectionDir;
 	vec3_t			v1, v2;
 
@@ -311,11 +309,14 @@ int R_MarkFragments(int numPoints, const vec3_t* points, const vec3_t projection
 	returnedPoints = 0;
 	returnedFragments = 0;
 
-	for (i = 0; i < numsurfaces; i++) {
+	for (i = 0; i < numsurfaces; i++)
+	{
+		vec3_t clipPoints[2][MAX_VERTS_ON_POLY];
 		if (*surfaces[i] == SF_GRID) {
 			const srfGridMesh_t* cv = (srfGridMesh_t*)surfaces[i];
 			for (int m = 0; m < cv->height - 1; m++) {
 				for (int n = 0; n < cv->width - 1; n++) {
+					vec3_t normal;
 					// We triangulate the grid and chop all triangles within
 					// the bounding planes of the to be projected polygon.
 					// LOD is not taken into account, not such a big deal though.
@@ -337,7 +338,7 @@ int R_MarkFragments(int numPoints, const vec3_t* points, const vec3_t projection
 					// so all triangles will still fit together.
 					// The 2 unit offset should avoid pretty much all LOD problems.
 
-					const int numClipPoints = 3;
+					constexpr int numClipPoints = 3;
 
 					const drawVert_t* dv = cv->verts + m * cv->width + n;
 

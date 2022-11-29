@@ -393,8 +393,8 @@ qboolean MP3Stream_GetSamples(channel_t* ch, int startingSampleNum, int count, s
 {
 	qboolean qbStreamStillGoing = qtrue;
 
-	const int iQuarterOfSlidingBuffer = sizeof ch->MP3SlidingDecodeBuffer / 4;
-	const int iThreeQuartersOfSlidingBuffer = sizeof ch->MP3SlidingDecodeBuffer * 3 / 4;
+	constexpr int iQuarterOfSlidingBuffer = sizeof ch->MP3SlidingDecodeBuffer / 4;
+	constexpr int iThreeQuartersOfSlidingBuffer = sizeof ch->MP3SlidingDecodeBuffer * 3 / 4;
 
 	//	Com_Printf("startingSampleNum %d\n",startingSampleNum);
 

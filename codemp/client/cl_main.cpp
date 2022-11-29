@@ -1451,10 +1451,9 @@ and determine if we need to download them
 =================
 */
 void CL_InitDownloads(void) {
-	char missingfiles[1024];
-
 	if (!cl_allowDownload->integer)
 	{
+		char missingfiles[1024];
 		// autodownload is disabled on the client
 		// but it's possible that some referenced files on the server are missing
 		if (FS_ComparePaks(missingfiles, sizeof missingfiles, qfalse))
@@ -1760,7 +1759,7 @@ static void CL_CheckSVStringEdRef(char* buf, const char* str)
 
 	while (i < strLen && str[i])
 	{
-		const qboolean gotStrip = qfalse;
+		constexpr qboolean gotStrip = qfalse;
 
 		if (str[i] == '@' && i + 1 < strLen)
 		{
@@ -1810,8 +1809,6 @@ Responses to broadcasts, etc
 =================
 */
 void CL_ConnectionlessPacket(netadr_t from, msg_t* msg) {
-	int challenge = 0;
-
 	MSG_BeginReadingOOB(msg);
 	MSG_ReadLong(msg);	// skip the -1
 
@@ -1828,6 +1825,7 @@ void CL_ConnectionlessPacket(netadr_t from, msg_t* msg) {
 	// challenge from the server we are connecting to
 	if (!Q_stricmp(c, "challengeResponse"))
 	{
+		int challenge = 0;
 		if (cls.state != CA_CONNECTING)
 		{
 			Com_Printf("Unwanted challenge response received.  Ignored.\n");
@@ -2117,9 +2115,9 @@ void CL_Frame(int msec) {
 	if (cl_framerate->integer)
 	{
 		avgFrametime += msec;
-		char mess[256];
 		if (!(frameCount & 0x1f))
 		{
+			char mess[256];
 			Com_sprintf(mess, sizeof mess, "Frame rate=%f\n\n", 1000.0f * (1.0 / (avgFrametime / 32.0f)));
 			//		Com_OPrintf("%s", mess);
 			Com_Printf("%s", mess);
@@ -2446,8 +2444,6 @@ constexpr auto MODEL_CHANGE_DELAY = 5000;
 int gCLModelDelay = 0;
 
 void CL_SetModel_f(void) {
-	char	name[256];
-
 	const char* arg = Cmd_Argv(1);
 	if (arg[0])
 	{
@@ -2470,6 +2466,7 @@ void CL_SetModel_f(void) {
 	}
 	else
 	{
+		char name[256];
 		Cvar_VariableStringBuffer("model", name, sizeof name);
 		Com_Printf("model is set to %s\n", name);
 	}
@@ -3041,9 +3038,9 @@ int CL_ServerStatus(const char* serverAddress, char* serverStatusString, int max
 
 	// if no server address then reset all server status requests
 	if (!serverAddress) {
-		for (int i = 0; i < MAX_SERVERSTATUSREQUESTS; i++) {
-			cl_serverStatusList[i].address.port = 0;
-			cl_serverStatusList[i].retrieved = qtrue;
+		for (auto & i : cl_serverStatusList) {
+			i.address.port = 0;
+			i.retrieved = qtrue;
 		}
 		return qfalse;
 	}
@@ -3098,7 +3095,6 @@ CL_ServerStatusResponse
 ===================
 */
 void CL_ServerStatusResponse(netadr_t from, msg_t* msg) {
-	char	info[MAX_INFO_STRING];
 	int		i, score, ping;
 
 	serverStatus_t* serverStatus = nullptr;
@@ -3119,8 +3115,9 @@ void CL_ServerStatusResponse(netadr_t from, msg_t* msg) {
 	Com_sprintf(&serverStatus->string[len], sizeof serverStatus->string - len, "%s", s);
 
 	if (serverStatus->print) {
+		char info[MAX_INFO_STRING];
 		Com_Printf("Server (%s)\n",
-			NET_AdrToString(serverStatus->address));
+		           NET_AdrToString(serverStatus->address));
 		Com_Printf("Server settings:\n");
 		// print cvars
 		while (*s) {
@@ -3208,7 +3205,6 @@ void CL_LocalServers_f(void) {
 	// The 'xxx' in the message is a challenge that will be echoed back
 	// by the server.  We don't care about that here, but master servers
 	// can use that to prevent spoofed server responses from invalid ip
-	const char* message = "\377\377\377\377getinfo xxx";
 
 	// send each message twice in case one is dropped
 	for (i = 0; i < 2; i++) {
@@ -3216,6 +3212,7 @@ void CL_LocalServers_f(void) {
 		// we support multiple server ports so a single machine
 		// can nicely run multiple servers
 		for (int j = 0; j < NUM_SERVER_PORTS; j++) {
+			const char* message = "\377\377\377\377getinfo xxx";
 			to.port = BigShort((short)(PORT_SERVER + j));
 
 			to.type = NA_BROADCAST;
@@ -3483,9 +3480,7 @@ CL_UpdateVisiblePings_f
 */
 qboolean CL_UpdateVisiblePings_f(int source) {
 	int i;
-	char		buff[MAX_STRING_CHARS];
 	int			pingTime;
-	int			max;
 	qboolean status = qfalse;
 
 	if (source < 0 || source > AS_FAVORITES) {
@@ -3496,6 +3491,7 @@ qboolean CL_UpdateVisiblePings_f(int source) {
 
 	int slots = CL_GetPingQueueCount();
 	if (slots < MAX_PINGREQUESTS) {
+		int max;
 		serverInfo_t* server;
 
 		switch (source) {
@@ -3567,6 +3563,7 @@ qboolean CL_UpdateVisiblePings_f(int source) {
 		status = qtrue;
 	}
 	for (i = 0; i < MAX_PINGREQUESTS; i++) {
+		char buff[MAX_STRING_CHARS];
 		if (!cl_pinglist[i].adr.port) {
 			continue;
 		}

@@ -11821,6 +11821,113 @@ qboolean IsSurrenderingAnimRequiresResponce(const gentity_t* self)
 	return qtrue;
 }
 
+
+
+qboolean wp_saber_block_check_random(gentity_t* self, vec3_t hitloc)
+{
+	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
+	const qboolean inFront = in_front(hitloc, self->client->ps.origin, self->client->ps.viewangles, -0.7f);
+
+	VectorSubtract(hitloc, self->client->renderInfo.eyePoint, diff);
+	diff[2] = 0;
+	VectorNormalize(diff);
+	fwdangles[1] = self->client->ps.viewangles[1];
+	// Ultimately we might care if the shot was ahead or behind, but for now, just quadrant is fine.
+	AngleVectors(fwdangles, nullptr, right, nullptr);
+
+	const float rightdot = DotProduct(right, diff);
+	const float zdiff = hitloc[2] - self->client->renderInfo.eyePoint[2];
+
+	if (self->client->ps.weaponstate == WEAPON_DROPPING ||
+		self->client->ps.weaponstate == WEAPON_RAISING)
+	{
+		return qfalse;
+	}
+	if (PM_SuperBreakLoseAnim(self->client->ps.torsoAnim)
+		|| PM_SuperBreakWinAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (PM_SaberInMassiveBounce(self->client->ps.torsoAnim) || PM_SaberInBashedAnim(self->client->ps.torsoAnim))
+	{
+		return qfalse;
+	}
+
+	if (!inFront && self->client->ps.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_1)
+	{
+		switch (self->client->ps.saberAnimLevel)
+		{
+		case SS_STAFF:
+			NPC_SetAnim(self, SETANIM_TORSO, BOTH_P7_S1_B_, SETANIM_AFLAG_PACE);
+			break;
+		case SS_DUAL:
+			NPC_SetAnim(self, SETANIM_TORSO, BOTH_P6_S1_B_, SETANIM_AFLAG_PACE);
+			break;
+		default:
+			NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_B_, SETANIM_AFLAG_PACE);
+			break;
+		}
+	}
+	else if (zdiff > -5)
+	{
+		if (rightdot > 0.3)
+		{
+			self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+		}
+		else if (rightdot < -0.3)
+		{
+			self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
+		}
+		else
+		{
+			self->client->ps.saberBlocked = BLOCKED_TOP;
+		}
+	}
+	else if (zdiff > -22)
+	{
+		if (zdiff < -10)
+		{
+			//NPC should duck, but NPC should never get here
+		}
+		if (rightdot > 0.1)
+		{
+			self->client->ps.saberBlocked = BLOCKED_UPPER_RIGHT;
+		}
+		else if (rightdot < -0.1)
+		{
+			self->client->ps.saberBlocked = BLOCKED_UPPER_LEFT;
+		}
+		else
+		{
+			self->client->ps.saberBlocked = BLOCKED_TOP;
+		}
+	}
+	else
+	{
+		if (rightdot >= 0)
+		{
+			self->client->ps.saberBlocked = BLOCKED_LOWER_RIGHT;
+		}
+		else
+		{
+			self->client->ps.saberBlocked = BLOCKED_LOWER_LEFT;
+		}
+	}
+
+	if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self) && self->client->ps.saberBlocked != BLOCKED_NONE)
+	{
+		const int parry_re_calc_time = Jedi_ReCalcParryTime(self, EVASION_PARRY);
+		if (self->client->ps.forcePowerDebounce[FP_SABER_DEFENSE] < level.time + parry_re_calc_time)
+		{
+			self->client->ps.forcePowerDebounce[FP_SABER_DEFENSE] = level.time + parry_re_calc_time;
+		}
+	}
+
+	self->client->ps.userInt3 &= ~(1 << FLAG_PREBLOCK);
+	return qtrue;
+}
+
 qboolean WP_SaberMBlockDirection(gentity_t* self, vec3_t hitloc, const qboolean missileBlock)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;

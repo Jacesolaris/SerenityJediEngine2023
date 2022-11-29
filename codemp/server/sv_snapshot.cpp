@@ -361,7 +361,6 @@ float g_svCullDist = -1.0f;
 static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t* frame,
 	snapshotEntityNumbers_t* eNums, qboolean portal) {
 	int i;
-	vec3_t	difference;
 
 	// during an error shutdown message we may need to transmit
 	// the shutdown message after the server has shutdown, so
@@ -485,7 +484,9 @@ static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t* fram
 		}
 
 		if (g_svCullDist != -1.0f)
-		{ //do a distance cull check
+		{
+			vec3_t difference;
+			//do a distance cull check
 			VectorAdd(ent->r.absmax, ent->r.absmin, difference);
 			VectorScale(difference, 0.5f, difference);
 			VectorSubtract(origin, difference, difference);

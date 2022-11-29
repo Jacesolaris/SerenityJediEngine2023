@@ -412,7 +412,6 @@ static void SV_KickBlankPlayers(void)
 {
 	client_t* cl;
 	int i;
-	char cleanName[64];
 
 	// make sure server is running
 	if (!com_sv_running->integer)
@@ -423,6 +422,7 @@ static void SV_KickBlankPlayers(void)
 	// check for a name match
 	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++)
 	{
+		char cleanName[64];
 		if (!cl->state)
 		{
 			continue;
@@ -458,8 +458,6 @@ Kick a user off of the server
 */
 static void SV_Kick_f(void)
 {
-	int i;
-
 	// make sure server is running
 	if (!com_sv_running->integer)
 	{
@@ -482,6 +480,7 @@ static void SV_Kick_f(void)
 	client_t* cl = SV_GetPlayerByHandle();
 	if (!cl)
 	{
+		int i;
 		if (!Q_stricmp(Cmd_Argv(1), "all"))
 		{
 			for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++)
@@ -644,9 +643,8 @@ Load saved bans from file.
 */
 static void SV_RehashBans_f(void)
 {
-	int index, filelen;
+	int filelen;
 	fileHandle_t readfrom;
-	char* textbuf, * maskpos, * newlinepos;
 	char filepath[MAX_QPATH];
 
 	// make sure server is running
@@ -664,6 +662,10 @@ static void SV_RehashBans_f(void)
 
 	if ((filelen = FS_SV_FOpenFileRead(filepath, &readfrom)) >= 0)
 	{
+		char* newlinepos;
+		char * maskpos;
+		char* textbuf;
+		int index;
 		if (filelen < 2)
 		{
 			// Don't bother if file is too short.
@@ -737,10 +739,9 @@ static void SV_WriteBans(void)
 
 	if ((writeto = FS_SV_FOpenFileWrite(filepath)))
 	{
-		char writebuf[128];
-
 		for (int index = 0; index < serverBansCount; index++)
 		{
+			char writebuf[128];
 			const serverBan_t* curban = &serverBans[index];
 
 			Com_sprintf(writebuf, sizeof writebuf, "%d %s %d\n",
@@ -764,7 +765,7 @@ static qboolean SV_DelBanEntryFromList(int index)
 {
 	if (index == serverBansCount - 1)
 		serverBansCount--;
-	else if (index < static_cast<int>(ARRAY_LEN(serverBans)) - 1)
+	else if (index < static_cast<int>(std::size(serverBans)) - 1)
 	{
 		memmove(serverBans + index, serverBans + index + 1, (serverBansCount - index - 1) * sizeof * serverBans);
 		serverBansCount--;
@@ -825,7 +826,6 @@ Ban a user from being able to play on this server based on his ip address.
 
 static void SV_AddBanToList(qboolean isexception)
 {
-	char addy2[NET_ADDRSTRMAXLEN];
 	netadr_t ip;
 	int index, mask;
 	serverBan_t* curban;
@@ -845,7 +845,7 @@ static void SV_AddBanToList(qboolean isexception)
 		return;
 	}
 
-	if (serverBansCount >= static_cast<int>(ARRAY_LEN(serverBans)))
+	if (serverBansCount >= static_cast<int>(std::size(serverBans)))
 	{
 		Com_Printf("Error: Maximum number of bans/exceptions exceeded.\n");
 		return;
@@ -902,6 +902,7 @@ static void SV_AddBanToList(qboolean isexception)
 	// first check whether a conflicting ban exists that would supersede the new one.
 	for (index = 0; index < serverBansCount; index++)
 	{
+		char addy2[NET_ADDRSTRMAXLEN];
 		curban = &serverBans[index];
 
 		if (curban->subnet <= mask)
@@ -965,7 +966,7 @@ Remove a ban or an exception from the list.
 
 static void SV_DelBanFromList(qboolean isexception)
 {
-	int index, count = 0, mask;
+	int index, mask;
 	netadr_t ip;
 
 	// make sure server is running
@@ -1013,6 +1014,7 @@ static void SV_DelBanFromList(qboolean isexception)
 	}
 	else
 	{
+		int count = 0;
 		const int todel = atoi(Cmd_Argv(1));
 
 		if (todel < 1 || todel > serverBansCount)
@@ -1178,7 +1180,6 @@ static void SV_Status_f()
 	playerState_t* ps;
 	const char* s;
 	int ping;
-	char state[32];
 	qboolean avoidTruncation = qfalse;
 
 	// make sure server is running
@@ -1248,6 +1249,7 @@ static void SV_Status_f()
 	Com_Printf("-- ----- ---- --------------- --------------------------------------- -----\n");
 	for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++)
 	{
+		char state[32];
 		if (!cl->state)
 			continue;
 
@@ -1819,7 +1821,7 @@ void SV_AutoRecordDemo(client_t* cl)
 		cl - svs.clients, demoPlayerName, Cvar_VariableString("mapname"), date);
 	Com_sprintf(demoFolderName, sizeof demoFolderName, "%s %s", Cvar_VariableString("mapname"), folderDate);
 	// sanitize filename
-	for (char** start = demoNames; start - demoNames < static_cast<ptrdiff_t>(ARRAY_LEN(demoNames)); start++)
+	for (char** start = demoNames; start - demoNames < static_cast<ptrdiff_t>(std::size(demoNames)); start++)
 	{
 		Q_strstrip(*start, "\n\r;:.?*<>|\\/\"", nullptr);
 	}
@@ -1879,7 +1881,6 @@ static int SV_FindLeafFolders(const char* baseFolder, char* result, int maxResul
 {
 	const auto fileList = static_cast<char*>(Z_Malloc(MAX_OSPATH * maxResults, TAG_FILESYS));
 	// too big for stack since this is recursive
-	char fullFolder[MAX_OSPATH];
 	int resultCount = 0;
 	const int numFiles = FS_GetFileList(baseFolder, "/", fileList, MAX_OSPATH * maxResults);
 
@@ -1888,6 +1889,7 @@ static int SV_FindLeafFolders(const char* baseFolder, char* result, int maxResul
 	{
 		if (Q_stricmp(fileName, ".") && Q_stricmp(fileName, ".."))
 		{
+			char fullFolder[MAX_OSPATH];
 			char* nextResult = nullptr;
 			Com_sprintf(fullFolder, sizeof fullFolder, "%s/%s", baseFolder, fileName);
 			if (result != nullptr)
@@ -1939,7 +1941,7 @@ void SV_BeginAutoRecordDemos()
 		}
 		if (sv_autoDemoMaxMaps->integer > 0 && sv.demosPruned == qfalse)
 		{
-			char autorecordDirList[500 * MAX_OSPATH], tmpFileList[5 * MAX_OSPATH];
+			char autorecordDirList[500 * MAX_OSPATH];
 			const int autorecordDirListCount = SV_FindLeafFolders("demos/autorecord", autorecordDirList, 500,
 				MAX_OSPATH);
 
@@ -1952,6 +1954,7 @@ void SV_BeginAutoRecordDemos()
 				// also delete the parent.
 				for (;;)
 				{
+					char tmpFileList[5 * MAX_OSPATH];
 					char* slash = strrchr(folder, '/');
 					if (slash == nullptr)
 					{
@@ -1986,7 +1989,6 @@ static void SV_Record_f(void)
 {
 	char demoName[MAX_OSPATH];
 	char name[MAX_OSPATH];
-	int i;
 	client_t* cl;
 
 	if (svs.clients == nullptr)
@@ -2013,6 +2015,7 @@ static void SV_Record_f(void)
 	}
 	else
 	{
+		int i;
 		for (i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++)
 		{
 			if (!cl->state)

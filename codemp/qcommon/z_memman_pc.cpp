@@ -499,9 +499,9 @@ static void Z_MemRecoverTest_f(void)
 	// fixme: findmeste: Remove this sometime
 	//
 	int iTotalMalloc = 0;
-	while (1)
+	while (true)
 	{
-		const int iThisMalloc = 5 * (1024 * 1024);
+		constexpr int iThisMalloc = 5 * (1024 * 1024);
 		Z_Malloc(iThisMalloc, TAG_SPECIAL_MEM_TEST, qfalse);	// and lose, just to consume memory
 		iTotalMalloc += iThisMalloc;
 

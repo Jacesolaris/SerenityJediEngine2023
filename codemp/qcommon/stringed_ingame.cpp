@@ -614,7 +614,7 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 						const char* psReference = GetCurrentReference_ParseOnly();
 						if (psReference[0])
 						{
-							static const char sSeperators[] = " \t";
+							static constexpr char sSeperators[] = " \t";
 							char sFlags[1024] = { 0 };	// 1024 chars should be enough to store 8 flag names
 							strncpy(sFlags, psLine, sizeof sFlags - 1);
 							char* psToken = strtok(sFlags, sSeperators);
@@ -752,7 +752,7 @@ const char* Leetify(const char* psString)
 	str = psString;
 	if (sp_leet->integer == 42)	// very specific test, so you won't hit it accidentally
 	{
-		static const
+		static constexpr
 			char cReplace[] = { 'o','0','l','1','e','3','a','4','s','5','t','7','i','!','h','#',
 								'O','0','L','1','E','3','A','4','S','5','T','7','I','!','H','#'	// laziness because of strchr()
 		};

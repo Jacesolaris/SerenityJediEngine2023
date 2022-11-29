@@ -25,7 +25,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 //#define DEBUG_SV_CHALLENGE // Enable for Com_DPrintf debugging output
 
-static const size_t SECRET_KEY_LENGTH = MD5_DIGEST_SIZE; // Key length equal to digest length is adequate
+static constexpr size_t SECRET_KEY_LENGTH = MD5_DIGEST_SIZE; // Key length equal to digest length is adequate
 
 static qboolean challengerInitialized = qfalse;
 static hmacMD5Context_t challenger;

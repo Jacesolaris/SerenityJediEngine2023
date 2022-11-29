@@ -73,12 +73,11 @@ void msis_init_MPEG2();
 /*=============================================================*/
 int L3table_init()
 {
-	int i;
-
 	static int iOnceOnly = 0;
 
 	if (!iOnceOnly++)
 	{
+		int i;
 		/*================ quant ===============================*/
 
 			/* 8 bit plus 2 lookup x = pow(2.0, 0.25*(global_gain-210)) */
@@ -151,12 +150,11 @@ ARRAY36* hwin_init_addr();
 /*--------------------------------------------------------------------*/
 void hwin_init()
 {
-	int i;
-
 	static int iOnceOnly = 0;
 
 	if (!iOnceOnly++)
 	{
+		int i;
 		ARRAY36* win = hwin_init_addr();
 
 		const double pi = 4.0 * atan(1.0);
@@ -213,12 +211,12 @@ const IMDCT_INIT_BLOCK* imdct_init_addr_6();
 /*-------------------------------------------------------------*/
 void imdct_init()
 {
-	int k, p;
-
 	static int iOnceOnly = 0;
 
 	if (!iOnceOnly++)
 	{
+		int p;
+		int k;
 		/*--- 18 point --*/
 		const IMDCT_INIT_BLOCK* addr = imdct_init_addr_18();
 		float* w = addr->w;
@@ -272,12 +270,11 @@ ARRAY8_2* msis_init_addr();
 /*-------------------------------------------------------------*/
 void msis_init()
 {
-	int i;
-
 	static int iOnceOnly = 0;
 
 	if (!iOnceOnly++)
 	{
+		int i;
 		ARRAY8_2* lr = msis_init_addr();
 
 		const double pi = 4.0 * atan(1.0);
@@ -317,12 +314,11 @@ ARRAY2_64_2* msis_init_addr_MPEG2();
 /*-------------------------------------------------------------*/
 void msis_init_MPEG2()
 {
-	float ms_factor[2];
-
 	static int iOnceOnly = 0;
 
 	if (!iOnceOnly++)
 	{
+		float ms_factor[2];
 		ms_factor[0] = 1.0;
 		ms_factor[1] = (float)sqrt(2.0);
 

@@ -99,7 +99,7 @@ static struct
 	{ AUDIO_F32MSB, "AUDIO_F32MSB" }
 };
 
-static const size_t formatToStringTableSize = ARRAY_LEN(formatToStringTable);
+static constexpr size_t formatToStringTableSize = std::size(formatToStringTable);
 
 /*
 ===============

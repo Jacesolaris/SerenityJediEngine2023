@@ -106,7 +106,7 @@ int CSequencer::Free(void)
 
 	while (!m_streamsCreated.empty())
 	{
-		bstream_t* streamToDel = m_streamsCreated.back();
+		const bstream_t* streamToDel = m_streamsCreated.back();
 		DeleteStream(streamToDel);
 	}
 
@@ -1360,7 +1360,6 @@ Checks for if statement pre-processing
 void CSequencer::CheckIf(CBlock** command)
 {
 	CBlock* block = *command;
-	int			successID;
 
 	if (block == nullptr)
 		return;
@@ -1371,6 +1370,7 @@ void CSequencer::CheckIf(CBlock** command)
 
 		if (ret /*TRUE*/)
 		{
+			int successID;
 			if (block->HasFlag(BF_ELSE))
 			{
 				successID = static_cast<int>(*static_cast<float*>(block->GetMemberData(block->GetNumMembers() - 2)));
@@ -1513,8 +1513,6 @@ Checks for loop command pre-processing
 void CSequencer::CheckLoop(CBlock** command)
 {
 	CBlock* block = *command;
-	int				iterations;
-	int				memberNum = 0;
 
 	if (block == nullptr)
 		return;
@@ -1522,6 +1520,8 @@ void CSequencer::CheckLoop(CBlock** command)
 	//Check for a loop
 	if (block->GetBlockID() == ID_LOOP)
 	{
+		int memberNum = 0;
+		int iterations;
 		//Get the loop ID
 		const CBlockMember* bm = block->GetMember(memberNum++);
 
@@ -1683,7 +1683,6 @@ void CSequencer::CheckAffect(CBlock** command)
 {
 	CBlock* block = *command;
 	const sharedEntity_t* ent = nullptr;
-	int			memberNum = 0;
 
 	if (block == nullptr)
 	{
@@ -1692,6 +1691,7 @@ void CSequencer::CheckAffect(CBlock** command)
 
 	if (block->GetBlockID() == ID_AFFECT)
 	{
+		int memberNum = 0;
 		CSequencer* sequencer = nullptr;
 		const char* entname = static_cast<char*>(block->GetMemberData(memberNum++));
 		ent = m_ie->I_GetEntityByName(entname);

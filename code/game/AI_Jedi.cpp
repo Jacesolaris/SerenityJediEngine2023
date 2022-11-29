@@ -126,7 +126,7 @@ extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const ve
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern cvar_t* g_DebugSaberCombat;
-extern qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
+extern qboolean wp_saber_block_check_random(gentity_t* self, vec3_t hitloc);
 
 int InFieldOfVision(vec3_t viewangles, const float fov, vec3_t angles)
 {
@@ -4802,7 +4802,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 
 						evasion_type = EVASION_PARRY;
 					}
@@ -4884,7 +4884,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 
 						evasion_type = EVASION_PARRY;
 					}
@@ -4935,7 +4935,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			{
 				if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 				{
-					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+					wp_saber_block_check_random(self, hitloc);
 
 					evasion_type = EVASION_PARRY;
 				}
@@ -5020,7 +5020,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE)
 							{
-								WP_SaberBlockNonRandom(self, hitloc, qfalse);
+								wp_saber_block_check_random(self, hitloc);
 							}
 							else
 							{
@@ -5047,7 +5047,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 
 						evasion_type = EVASION_PARRY;
 					}
@@ -5093,7 +5093,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 						{
 							if (self->client->ps.blockPoints > BLOCKPOINTS_FATIGUE)
 							{
-								WP_SaberBlockNonRandom(self, hitloc, qfalse);
+								wp_saber_block_check_random(self, hitloc);
 							}
 							else
 							{
@@ -5120,7 +5120,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 
 						evasion_type = EVASION_PARRY;
 					}
@@ -5154,7 +5154,8 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			{
 				if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 				{
-					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+					wp_saber_block_check_random(self, hitloc);
+
 					evasion_type = EVASION_PARRY;
 				}
 				else
@@ -5196,17 +5197,9 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				evasion_type = EVASION_DUCK;
 				if (incoming && self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight || !saber_busy)
 				{
-					//since the jump may be cleared if not safe, set a lower block too
-					if (rightdot >= 0)
-					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
-						evasion_type = EVASION_DUCK_PARRY;
-					}
-					else
-					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
-						evasion_type = EVASION_DUCK_PARRY;
-					}
+					wp_saber_block_check_random(self, hitloc);
+
+					evasion_type = EVASION_DUCK_PARRY;
 				}
 				else
 				{
@@ -5234,7 +5227,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				//gotta block!
 				if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 				{
-					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+					wp_saber_block_check_random(self, hitloc);
 
 					evasion_type = EVASION_PARRY;
 				}
@@ -5270,7 +5263,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					//since the jump may be cleared if not safe, set a lower block too
 					if (rightdot >= 0)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 						evasion_type = EVASION_PARRY;
 						if (d_JediAI->integer || g_DebugSaberCombat->integer)
 						{
@@ -5279,7 +5272,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					}
 					else
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 						evasion_type = EVASION_PARRY;
 						if (d_JediAI->integer || g_DebugSaberCombat->integer)
 						{
@@ -5315,7 +5308,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 			{
 				if (rightdot >= 0)
 				{
-					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+					wp_saber_block_check_random(self, hitloc);
 					evasion_type = EVASION_PARRY;
 					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
@@ -5324,7 +5317,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				}
 				else
 				{
-					WP_SaberBlockNonRandom(self, hitloc, qfalse);
+					wp_saber_block_check_random(self, hitloc);
 					evasion_type = EVASION_PARRY;
 					if (d_JediAI->integer || g_DebugSaberCombat->integer)
 					{
@@ -5336,7 +5329,7 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					//thrown saber!
 					if (self->s.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.saberInFlight)
 					{
-						WP_SaberBlockNonRandom(self, hitloc, qfalse);
+						wp_saber_block_check_random(self, hitloc);
 
 						evasion_type = EVASION_PARRY;
 					}

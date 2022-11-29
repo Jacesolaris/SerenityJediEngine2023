@@ -2037,7 +2037,7 @@ void RemoveBarrier(gentity_t* ent)
 
 	if (!registered)
 	{
-		shieldDeactivateSound = G_SoundIndex("sound/barrier/barrier_off.mp3v");
+		shieldDeactivateSound = G_SoundIndex("sound/barrier/barrier_off.mp3");
 		registered = qtrue;
 	}
 

@@ -349,7 +349,7 @@ void DeformText(const char* text) {
 
 			const float frow = row * 0.0625f;
 			const float fcol = col * 0.0625f;
-			const float size = 0.0625f;
+			constexpr float size = 0.0625f;
 
 			RB_AddQuadStampExt(origin, width, height, color, fcol, frow, fcol + size, frow + size);
 		}
@@ -377,8 +377,7 @@ quads, rebuild them as forward facing sprites
 =====================
 */
 static void AutospriteDeform(void) {
-	vec3_t	mid, delta;
-	vec3_t	left, up;
+	vec3_t	mid;
 	vec3_t	leftDir, upDir;
 
 	if (tess.numVertexes & 3) {
@@ -402,6 +401,9 @@ static void AutospriteDeform(void) {
 	}
 
 	for (int i = 0; i < oldVerts; i += 4) {
+		vec3_t up;
+		vec3_t left;
+		vec3_t delta;
 		// find the midpoint
 		const float* xyz = tess.xyz[i];
 
@@ -892,13 +894,14 @@ void RB_CalcFogTexCoords(float* st) {
 */
 void RB_CalcEnvironmentTexCoords(float* st)
 {
-	vec3_t		viewer, reflected;
+	vec3_t reflected;
 
 	float* v = tess.xyz[0];
 	float* normal = tess.normal[0];
 
 	for (int i = 0; i < tess.numVertexes; i++, v += 4, normal += 4, st += 2)
 	{
+		vec3_t viewer;
 		VectorSubtract(backEnd.ori.viewOrigin, v, viewer);
 		VectorNormalizeFast(viewer);
 
@@ -1012,9 +1015,8 @@ void RB_CalcRotateTexCoords(float degsPerSecond, float* st)
 vec3_t lightOrigin = { -960, 1980, 96 };		// FIXME: track dynamically
 
 void RB_CalcSpecularAlpha(unsigned char* alphas) {
-	vec3_t		viewer, reflected;
+	vec3_t reflected;
 	int			b;
-	vec3_t		lightDir;
 
 	float* v = tess.xyz[0];
 	float* normal = tess.normal[0];
@@ -1023,6 +1025,8 @@ void RB_CalcSpecularAlpha(unsigned char* alphas) {
 
 	const int numVertexes = tess.numVertexes;
 	for (int i = 0; i < numVertexes; i++, v += 4, normal += 4, alphas += 4) {
+		vec3_t lightDir;
+		vec3_t viewer;
 		if (backEnd.currentEntity &&
 			(backEnd.currentEntity->e.hModel || backEnd.currentEntity->e.ghoul2))	//this is a model so we can use world lights instead fake light
 		{
@@ -1273,7 +1277,6 @@ void RB_CalcDisintegrateVertDeform(void)
 {
 	float* xyz = (float*)tess.xyz;
 	float* normal = (float*)tess.normal;
-	vec3_t	temp;
 
 	if (backEnd.currentEntity->e.renderfx & RF_DISINTEGRATE2)
 	{
@@ -1281,6 +1284,7 @@ void RB_CalcDisintegrateVertDeform(void)
 
 		for (int i = 0; i < tess.numVertexes; i++, xyz += 4, normal += 4)
 		{
+			vec3_t temp;
 			VectorSubtract(backEnd.currentEntity->e.oldorigin, xyz, temp);
 
 			const float scale = VectorLengthSquared(temp);

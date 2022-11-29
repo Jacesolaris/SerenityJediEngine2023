@@ -89,7 +89,7 @@ mdxaBone_t worldMatrixInv;
 qhandle_t goreShader = -1;
 #endif
 
-const static mdxaBone_t identityMatrix =
+constexpr static mdxaBone_t identityMatrix =
 {
 	{
 		{0.0f, -1.0f, 0.0f, 0.0f},
@@ -1209,11 +1209,9 @@ void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, const int boneNum, mdxaBone_t& mat
 {
 	mdxaBone_t animMatrix;
 	mdxaSkel_t* skel;
-	mdxaSkel_t* pskel;
 	mdxaSkelOffsets_t* offsets;
 	int parent;
 	int bListIndex;
-	int parentBlistIndex;
 #ifdef _RAG_PRINT_TEST
 	bool actuallySet = false;
 #endif
@@ -1258,6 +1256,8 @@ void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, const int boneNum, mdxaBone_t& mat
 	parent = skel->parent;
 	if (boneNum > 0 && parent > -1)
 	{
+		int parentBlistIndex;
+		mdxaSkel_t* pskel;
 		//recursively call to assure all parent matrices are set up
 		G2_RagGetAnimMatrix(ghoul2, parent, matrix, frame);
 
@@ -1955,9 +1955,8 @@ constexpr auto MDX_TAG_ORIGIN = 2;
 void G2_ProcessSurfaceBolt2(CBoneCache& boneCache, const mdxmSurface_t* surface, int boltNum, boltInfo_v& boltList,
 	const surfaceInfo_t* surfInfo, const model_t* mod, mdxaBone_t& retMatrix)
 {
-	vec3_t axes[3], sides[3];
 	float pTri[3][3];
-	int j, k;
+	int k;
 
 	// now there are two types of tag surface - model ones and procedural generated types - lets decide which one we have here.
 	if (surfInfo && surfInfo->offFlags == G2SURFACEFLAG_GENERATED)
@@ -2091,6 +2090,9 @@ void G2_ProcessSurfaceBolt2(CBoneCache& boneCache, const mdxmSurface_t* surface,
 	// no, we are looking at a normal model tag
 	else
 	{
+		int j;
+		vec3_t sides[3];
+		vec3_t axes[3];
 		// whip through and actually transform each vertex
 		auto v = (mdxmVertex_t*)((byte*)surface + surface->ofsVerts);
 		const int* piBoneReferences = (int*)((byte*)surface + surface->ofsBoneReferences);
@@ -2378,7 +2380,7 @@ void RenderSurfaces(CRenderSurface& RS)
 						newSurf2->scale = 1.0f;
 						newSurf2->fade = 1.0f;
 						newSurf2->impactTime = 1.0f; // done with
-						const int magicFactor42 = 500; // ms, impact time
+						constexpr int magicFactor42 = 500; // ms, impact time
 						if (curTime > (*kcur).second.mGoreGrowStartTime && curTime < (*kcur).second.mGoreGrowStartTime +
 							magicFactor42)
 						{
@@ -2566,7 +2568,6 @@ void R_AddGhoulSurfaces(trRefEntity_t* ent)
 {
 	shader_t* cust_shader;
 #ifdef _G2_GORE
-	shader_t* gore_shader = nullptr;
 #endif
 	int i, whichLod;
 	skin_t* skin;
@@ -2636,6 +2637,7 @@ void R_AddGhoulSurfaces(trRefEntity_t* ent)
 		i = modelList[j];
 		if (ghoul2[i].mValid && !(ghoul2[i].mFlags & GHOUL2_NOMODEL) && !(ghoul2[i].mFlags & GHOUL2_NORENDER))
 		{
+			shader_t* gore_shader = nullptr;
 			//
 			// figure out whether we should be using a custom shader for this model
 			//
@@ -3536,11 +3538,11 @@ qboolean R_LoadMDXM(model_t* mod, void* buffer, const char* mod_name, qboolean& 
 	// first up, go load in the animation file we need that has the skeletal animation info for this model
 	mdxm->animIndex = RE_RegisterModel(va("%s.gla", mdxm->animName));
 
-	char animGLAName[MAX_QPATH];
 	const char* mapname = sv_mapname->string;
 
 	if (strcmp(mapname, "nomap") != 0)
 	{
+		char animGLAName[MAX_QPATH];
 		if (strrchr(mapname, '/')) //maps in subfolders use the root name, ( presuming only one level deep!)
 		{
 			mapname = strrchr(mapname, '/') + 1;

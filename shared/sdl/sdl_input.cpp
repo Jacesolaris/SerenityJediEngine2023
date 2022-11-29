@@ -1068,8 +1068,8 @@ static void IN_JoyMove(void)
 	total = SDL_JoystickNumButtons(stick);
 	if (total > 0)
 	{
-		if (total > static_cast<int>(ARRAY_LEN(stick_state.buttons)))
-			total = ARRAY_LEN(stick_state.buttons);
+		if (total > static_cast<int>(std::size(stick_state.buttons)))
+			total = std::size(stick_state.buttons);
 		for (i = 0; i < total; i++)
 		{
 			const auto pressed = static_cast<qboolean>(SDL_JoystickGetButton(stick, i) != 0);

@@ -145,12 +145,10 @@ static qboolean	R_CullSurface(surfaceType_t* surface, shader_t* shader) {
 		if (sface->plane.normal[2] > 0.0f &&
 			sface->numPoints > 0)
 		{ //it's facing up I guess
-			static int i;
 			static trace_t tr;
 			static vec3_t basePoint;
 			static vec3_t endPoint;
 			static vec3_t nNormal;
-			static vec3_t v;
 
 			//The fact that this point is in the middle of the array has no relation to the
 			//orientation in the surface outline.
@@ -171,10 +169,14 @@ static qboolean	R_CullSurface(surfaceType_t* surface, shader_t* shader) {
 			if (!tr.startsolid &&
 				!tr.allsolid &&
 				(tr.fraction == 1.0f || tr.surfaceFlags & SURF_NOIMPACT))
-			{ //either hit nothing or sky, so this surface is near the top of the level I guess. Or the floor of a really tall room, but if that's the case we're just screwed.
+			{
+				static vec3_t v;
+				//either hit nothing or sky, so this surface is near the top of the level I guess. Or the floor of a really tall room, but if that's the case we're just screwed.
 				VectorSubtract(basePoint, tr.endpos, v);
 				if (tr.fraction == 1.0f || VectorLength(v) < r_roofCullCeilDist->value)
-				{ //ignore it if it's not close to the top, unless it just hit nothing
+				{
+					static int i;
+					//ignore it if it's not close to the top, unless it just hit nothing
 					//Let's try to dig back into the brush based on the negative direction of the plane,
 					//and if we pop out on the other side we'll see if it's ground or not.
 					i = 4;

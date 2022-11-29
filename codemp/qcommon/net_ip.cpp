@@ -197,8 +197,6 @@ Sys_StringToSockaddr
 */
 static qboolean Sys_StringToSockaddr(const char* s, sockaddr_in* sadr)
 {
-	hostent* h;
-
 	memset(sadr, 0, sizeof * sadr);
 
 	sadr->sin_family = AF_INET;
@@ -210,6 +208,7 @@ static qboolean Sys_StringToSockaddr(const char* s, sockaddr_in* sadr)
 	}
 	else
 	{
+		hostent* h;
 		if ((h = gethostbyname(s)) == nullptr)
 			return qfalse;
 		sadr->sin_addr.s_addr = *(uint32_t*)h->h_addr_list[0];
@@ -248,7 +247,7 @@ int	recvfromCount;
 #endif
 
 qboolean NET_GetPacket(netadr_t* net_from, msg_t* net_message, fd_set* fdr) {
-	int ret, err;
+	int ret;
 	socklen_t fromlen;
 	sockaddr_in from;
 
@@ -263,7 +262,7 @@ qboolean NET_GetPacket(netadr_t* net_from, msg_t* net_message, fd_set* fdr) {
 	ret = recvfrom(ip_socket, (char*)net_message->data, net_message->maxsize, 0, (sockaddr*)&from, &fromlen);
 
 	if (ret == SOCKET_ERROR) {
-		err = socketError;
+		const int err = socketError;
 
 		if (err == EAGAIN || err == ECONNRESET)
 			return qfalse;
@@ -435,7 +434,7 @@ SOCKET NET_IPSocket(char* net_interface, int port, int* err) {
 	Com_Printf("----- Client Initialization -----\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("---------- Genuine SerenityJediEngine-(Solaris Edition)----------\n");
-	Com_Printf("---------------------Build date 28/11/2022-----------------------\n");
+	Com_Printf("---------------------Build date 29/11/2022-----------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -633,7 +632,7 @@ void NET_OpenSocks(int port) {
 	buf[1] = 3;		// command: UDP associate
 	buf[2] = 0;		// reserved
 	buf[3] = 1;		// address type: IPV4
-	const uint32_t innadr = INADDR_ANY; // 0.0.0.0
+	constexpr uint32_t innadr = INADDR_ANY; // 0.0.0.0
 	memcpy(&buf[4], &innadr, 4);
 	const uint16_t networkOrderPort = htons(port);		// port
 	memcpy(&buf[8], &networkOrderPort, 2);
@@ -1015,12 +1014,12 @@ Called from NET_Sleep which uses select() to determine which sockets have seen a
 
 void NET_Event(fd_set* fdr)
 {
-	byte bufData[MAX_MSGLEN + 1];
 	netadr_t from;
 	msg_t netmsg;
 
 	while (true)
 	{
+		byte bufData[MAX_MSGLEN + 1];
 		MSG_Init(&netmsg, bufData, sizeof bufData);
 
 		if (NET_GetPacket(&from, &netmsg, fdr))

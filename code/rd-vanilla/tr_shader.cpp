@@ -1274,7 +1274,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 			stage->bundle[0].oneShotAnimMap = oneShot;
 
 			// parse up to MAX_IMAGE_ANIMATIONS animations
-			while (1) {
+			while (true) {
 				token = COM_ParseExt(text, qfalse);
 				if (!token[0]) {
 					break;
@@ -1613,7 +1613,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 		{
 			char buffer[1024] = "";
 
-			while (1)
+			while (true)
 			{
 				token = COM_ParseExt(text, qfalse);
 				if (token[0] == 0)
@@ -1644,7 +1644,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 		{
 			char buffer[1024] = "";
 
-			while (1)
+			while (true)
 			{
 				token = COM_ParseExt(text, qfalse);
 				if (token[0] == 0)
@@ -1674,7 +1674,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 			char param[128];
 			strcpy(param, token);
 
-			while (1)
+			while (true)
 			{
 				token = COM_ParseExt(text, qfalse);
 				if (token[0] == 0)
@@ -1893,7 +1893,6 @@ skyParms <outerbox> <cloudheight> <innerbox>
 */
 static void ParseSkyParms(const char** text) {
 	const char* suf[6] = { "rt", "lf", "bk", "ft", "up", "dn" };
-	char		pathname[MAX_QPATH];
 
 	shader.sky = static_cast<skyParms_t*>(R_Hunk_Alloc(sizeof(skyParms_t), qtrue));
 
@@ -1905,6 +1904,7 @@ static void ParseSkyParms(const char** text) {
 	}
 	if (strcmp(token, "-") != 0) {
 		for (int i = 0; i < 6; i++) {
+			char pathname[MAX_QPATH];
 			Com_sprintf(pathname, sizeof pathname, "%s_%s", token, suf[i]);
 			shader.sky->outerbox[i] = R_FindImageFile(pathname, qtrue, qtrue, static_cast<qboolean>(!shader.noTC), GL_CLAMP);
 			if (!shader.sky->outerbox[i]) {
@@ -2051,15 +2051,14 @@ ParseSurfaceParm
 surfaceparm <name>
 ===============
 */
-static void ParseSurfaceParm(const char** text) {
-	const int		numInfoParms = sizeof infoParms / sizeof infoParms[0];
-
+static void ParseSurfaceParm(const char** text)
+{
 	const char* token = COM_ParseExt(text, qfalse);
-	for (int i = 0; i < numInfoParms; i++) {
-		if (!Q_stricmp(token, infoParms[i].name)) {
-			shader.surfaceFlags |= infoParms[i].surfaceFlags;
-			shader.contentFlags |= infoParms[i].contents;
-			shader.contentFlags &= infoParms[i].clearSolid;
+	for (const auto& infoParm : infoParms) {
+		if (!Q_stricmp(token, infoParm.name)) {
+			shader.surfaceFlags |= infoParm.surfaceFlags;
+			shader.contentFlags |= infoParm.contents;
+			shader.contentFlags &= infoParm.clearSolid;
 			break;
 		}
 	}

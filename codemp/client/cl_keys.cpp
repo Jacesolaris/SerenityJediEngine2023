@@ -380,7 +380,7 @@ keyname_t keynames[MAX_KEYS] =
 	{ 0x13e, 0x13e, "AUX30", A_AUX30, false								},
 	{ 0x13f, 0x13f, "AUX31", A_AUX31, false								}
 };
-static const size_t numKeynames = ARRAY_LEN(keynames);
+static constexpr size_t numKeynames = std::size(keynames);
 
 /*
 =============================================================================
@@ -400,7 +400,6 @@ x, y, amd width are in pixels
 */
 void Field_VariableSizeDraw(field_t* edit, int x, int y, int width, int size, qboolean showCursor, qboolean noColorEscape) {
 	int		prestep;
-	int		cursorChar;
 	char	str[MAX_STRING_CHARS];
 
 	int drawLen = edit->widthInChars - 1; // - 1 so there is always a space for the cursor
@@ -449,6 +448,7 @@ void Field_VariableSizeDraw(field_t* edit, int x, int y, int width, int size, qb
 
 	// draw the cursor
 	if (showCursor) {
+		int cursorChar;
 		if (cls.realtime >> 8 & 1) {
 			return;		// off blink
 		}
@@ -1223,7 +1223,7 @@ void CL_ParseBinding(int key, qboolean down, unsigned time)
 	// allow button up commands if in game even if key catcher is set
 	const qboolean allowUpCmds = static_cast<qboolean>(cls.state != CA_DISCONNECTED);
 
-	while (1)
+	while (true)
 	{
 		while (isspace(*p))
 			p++;

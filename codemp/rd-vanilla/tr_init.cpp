@@ -302,12 +302,12 @@ void R_Splash()
 	}
 	GL_State(GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO);
 
-	const int width = 640;
-	const int height = 480;
-	const float x1 = 320 - width / 2;
-	const float x2 = 320 + width / 2;
-	const float y1 = 240 - height / 2;
-	const float y2 = 240 + height / 2;
+	constexpr int width = 640;
+	constexpr int height = 480;
+	constexpr float x1 = 320 - width / 2;
+	constexpr float x2 = 320 + width / 2;
+	constexpr float y1 = 240 - height / 2;
+	constexpr float y2 = 240 + height / 2;
 
 	qglBegin(GL_TRIANGLE_STRIP);
 	qglTexCoord2f(0, 0);
@@ -786,7 +786,7 @@ static void InitOpenGL(void)
 
 	if (glConfig.vidWidth == 0)
 	{
-		const windowDesc_t windowDesc = { GRAPHICS_API_OPENGL };
+		constexpr windowDesc_t windowDesc = { GRAPHICS_API_OPENGL };
 		memset(&glConfig, 0, sizeof glConfig);
 		memset(&glConfigExt, 0, sizeof glConfigExt);
 
@@ -1327,12 +1327,12 @@ Workaround for ri->Printf's 1024 characters buffer limit.
 */
 void R_PrintLongString(const char* string)
 {
-	char buffer[1024];
 	const char* p = string;
 	int remainingLength = strlen(string);
 
 	while (remainingLength > 0)
 	{
+		char buffer[1024];
 		// Take as much characters as possible from the string without splitting words between buffers
 		// This avoids the client console splitting a word up when one half fits on the current line,
 		// but the second half would have to be written on a new line
@@ -1516,8 +1516,6 @@ static consoleCommand_t	commands[] = {
 	{ "weather",			R_SetWeatherEffect_f },
 	{ "r_weather",			R_WeatherEffect_f },
 };
-
-static const size_t num_commands = ARRAY_LEN(commands);
 
 #ifdef _DEBUG
 #define MIN_PRIMITIVES -1
@@ -1886,7 +1884,8 @@ void RE_GetLightStyle(int style, color4ub_t color)
 		Com_Error(ERR_FATAL, "RE_GetLightStyle: %d is out of range", style);
 	}
 
-	byteAlias_t* baDest = (byteAlias_t*)&color, * baSource = (byteAlias_t*)&styleColors[style];
+	byteAlias_t* baDest = (byteAlias_t*)&color;
+	const byteAlias_t * baSource = (byteAlias_t*)&styleColors[style];
 	baDest->i = baSource->i;
 }
 

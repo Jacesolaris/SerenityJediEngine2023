@@ -131,11 +131,7 @@ Handles all the complicated wrapping and degenerate cases
 static void MakeMeshNormals(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE])
 {
 	int i, k;
-	vec3_t normal;
-	vec3_t sum;
-	vec3_t base;
 	vec3_t delta;
-	vec3_t around[8], temp;
 	qboolean good[8];
 	float len;
 	static int neighbors[8][2] = {
@@ -176,6 +172,9 @@ static void MakeMeshNormals(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE
 	{
 		for (int j = 0; j < height; j++)
 		{
+			vec3_t around[8];
+			vec3_t base;
+			vec3_t sum;
 			int count = 0;
 			drawVert_t* dv = &ctrl[j][i];
 			VectorCopy(dv->xyz, base);
@@ -186,6 +185,7 @@ static void MakeMeshNormals(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE
 
 				for (int dist = 1; dist <= 3; dist++)
 				{
+					vec3_t temp;
 					int x = i + neighbors[k][0] * dist;
 					int y = j + neighbors[k][1] * dist;
 					if (wrapWidth)
@@ -229,6 +229,7 @@ static void MakeMeshNormals(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE
 			VectorClear(sum);
 			for (k = 0; k < 8; k++)
 			{
+				vec3_t normal;
 				if (!good[k] || !good[k + 1 & 7])
 				{
 					continue; // didn't get two points

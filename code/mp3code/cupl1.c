@@ -220,11 +220,11 @@ int L1audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
 {
 	int i;
 	static int first_pass = 1;
-	long step;
 
 	/*--- sf init done by layer II init ---*/
 	if (first_pass)
 	{
+		long step;
 		for (step = 4, i = 1; i < 16; i++, step <<= 1)
 			look_c_valueL1[i] = (float)(2.0 / (step - 1));
 		first_pass = 0;

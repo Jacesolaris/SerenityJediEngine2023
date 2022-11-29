@@ -266,7 +266,6 @@ If the line width has changed, reformat the buffer.
 void Con_CheckResize(void)
 {
 	int		i;
-	short	tbuf[CON_TEXTSIZE];
 
 	//	width = (SCREEN_WIDTH / SMALLCHAR_WIDTH) - 2;
 	int width = cls.glconfig.vidWidth / SMALLCHAR_WIDTH - 2;
@@ -288,6 +287,7 @@ void Con_CheckResize(void)
 	}
 	else
 	{
+		short tbuf[CON_TEXTSIZE];
 		// on wide screens, we will center the text
 		con.xadjust = 640.0f / cls.glconfig.vidWidth;
 		con.yadjust = 480.0f / cls.glconfig.vidHeight;
@@ -557,8 +557,6 @@ Draws the last few lines of output transparently over the game top
 void Con_DrawNotify(void)
 {
 	int		x;
-	int		skip;
-	const char* chattext;
 
 	int currentColor = 7;
 	re->SetColor(g_color_table[currentColor]);
@@ -643,6 +641,8 @@ void Con_DrawNotify(void)
 	// draw the chat line
 	if (Key_GetCatcher() & KEYCATCH_MESSAGE)
 	{
+		const char* chattext;
+		int skip;
 		if (chat_team)
 		{
 			chattext = SE_GetString("MP_SVGAME", "SAY_TEAM");

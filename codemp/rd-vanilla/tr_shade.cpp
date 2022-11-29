@@ -314,8 +314,6 @@ Draws vertex normals for debugging
 ================
 */
 static void DrawNormals(shaderCommands_t* input) {
-	vec3_t	temp;
-
 	GL_Bind(tr.whiteImage);
 	qglColor3f(1, 1, 1);
 	qglDepthRange(0, 0);	// never occluded
@@ -323,6 +321,7 @@ static void DrawNormals(shaderCommands_t* input) {
 
 	qglBegin(GL_LINES);
 	for (int i = 0; i < input->numVertexes; i++) {
+		vec3_t temp;
 		qglVertex3fv(input->xyz[i]);
 		VectorMA(input->xyz[i], 2, input->normal[i], temp);
 		qglVertex3fv(temp);
@@ -429,21 +428,12 @@ Perform dynamic lighting with another rendering pass
 */
 static void ProjectDlightTexture2(void) {
 	int		i;
-	vec3_t	origin;
 	byte	clipBits[SHADER_MAX_VERTEXES];
 	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
 	float	oldTexCoordsArray[SHADER_MAX_VERTEXES][2];
-	float	vertCoordsArray[SHADER_MAX_VERTEXES][4];
 	unsigned int		colorArray[SHADER_MAX_VERTEXES];
 	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
 	int		fogging;
-	vec3_t	posa;
-	vec3_t	posb;
-	vec3_t	posc;
-	vec3_t	dist;
-	vec3_t	e1;
-	vec3_t	e2;
-	vec3_t	normal;
 	vec3_t	floatColor;
 	byte colorTemp[4];
 
@@ -456,6 +446,9 @@ static void ProjectDlightTexture2(void) {
 
 	for (int l = 0; l < backEnd.refdef.num_dlights; l++)
 	{
+		vec3_t dist;
+		float vertCoordsArray[SHADER_MAX_VERTEXES][4];
+		vec3_t origin;
 		if (!(tess.dlightBits & 1 << l)) {
 			continue;	// this surface definately doesn't have any of this light
 		}
@@ -510,6 +503,12 @@ static void ProjectDlightTexture2(void) {
 		int numIndexes = 0;
 		for (i = 0; i < tess.numIndexes; i += 3)
 		{
+			vec3_t normal;
+			vec3_t e2;
+			vec3_t e1;
+			vec3_t posc;
+			vec3_t posb;
+			vec3_t posa;
 			const int a = tess.indexes[i];
 			const int b = tess.indexes[i + 1];
 			const int c = tess.indexes[i + 2];
@@ -643,7 +642,7 @@ static void ProjectDlightTexture2(void) {
 			int i = 0;
 			while (i < tess.shader->numUnfoggedPasses)
 			{
-				const int blendBits = GLS_SRCBLEND_BITS + GLS_DSTBLEND_BITS;
+				constexpr int blendBits = GLS_SRCBLEND_BITS + GLS_DSTBLEND_BITS;
 				if ((tess.shader->stages[i].bundle[0].image && !tess.shader->stages[i].bundle[0].isLightmap && !tess.shader->stages[i].bundle[0].numTexMods && tess.shader->stages[i].bundle[0].tcGen != TCGEN_ENVIRONMENT_MAPPED && tess.shader->stages[i].bundle[0].tcGen != TCGEN_FOG ||
 					tess.shader->stages[i].bundle[1].image && !tess.shader->stages[i].bundle[1].isLightmap && !tess.shader->stages[i].bundle[1].numTexMods && tess.shader->stages[i].bundle[1].tcGen != TCGEN_ENVIRONMENT_MAPPED && tess.shader->stages[i].bundle[1].tcGen != TCGEN_FOG) &&
 					(tess.shader->stages[i].stateBits & blendBits) == 0)
@@ -737,10 +736,7 @@ static void ProjectDlightTexture2(void) {
 
 static void ProjectDlightTexture(void) {
 	int		i;
-	vec3_t	origin;
 	byte	clipBits[SHADER_MAX_VERTEXES];
-	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
-	byte	colorArray[SHADER_MAX_VERTEXES][4];
 	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
 	int		fogging;
 	vec3_t	floatColor;
@@ -750,6 +746,9 @@ static void ProjectDlightTexture(void) {
 	}
 
 	for (int l = 0; l < backEnd.refdef.num_dlights; l++) {
+		byte colorArray[SHADER_MAX_VERTEXES][4];
+		float texCoordsArray[SHADER_MAX_VERTEXES][2];
+		vec3_t origin;
 		if (!(tess.dlightBits & 1 << l)) {
 			continue;	// this surface definately doesn't have any of this light
 		}
@@ -805,12 +804,12 @@ static void ProjectDlightTexture(void) {
 			}
 
 			float dUse = 0.0f;
-			const float maxScale = 1.5f;
-			const float maxGroundScale = 1.4f;
-			const float lightScaleTolerance = 0.1f;
+			constexpr float maxScale = 1.5f;
+			constexpr float lightScaleTolerance = 0.1f;
 
 			if (bestIndex == 2)
 			{
+				constexpr float maxGroundScale = 1.4f;
 				dUse = origin[2] - tess.xyz[i][2];
 				if (dUse < 0.0f)
 				{
@@ -987,7 +986,7 @@ static void ProjectDlightTexture(void) {
 			int i = 0;
 			while (i < tess.shader->numUnfoggedPasses)
 			{
-				const int blendBits = GLS_SRCBLEND_BITS + GLS_DSTBLEND_BITS;
+				constexpr int blendBits = GLS_SRCBLEND_BITS + GLS_DSTBLEND_BITS;
 				if ((tess.shader->stages[i].bundle[0].image && !tess.shader->stages[i].bundle[0].isLightmap && !tess.shader->stages[i].bundle[0].numTexMods ||
 					tess.shader->stages[i].bundle[1].image && !tess.shader->stages[i].bundle[1].isLightmap && !tess.shader->stages[i].bundle[1].numTexMods) &&
 					(tess.shader->stages[i].stateBits & blendBits) == 0)
@@ -1184,8 +1183,8 @@ static void ComputeColors(shaderStage_t* pStage, int forceRGBGen)
 		break;
 	case CGEN_CONST:
 		for (i = 0; i < tess.numVertexes; i++) {
-			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i],
-				* baSource = (byteAlias_t*)&pStage->constantColor;
+			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i];
+			const byteAlias_t * baSource = (byteAlias_t*)&pStage->constantColor;
 			baDest->i = baSource->i;
 		}
 		break;
@@ -1253,8 +1252,8 @@ static void ComputeColors(shaderStage_t* pStage, int forceRGBGen)
 	case CGEN_LIGHTMAPSTYLE:
 		for (i = 0; i < tess.numVertexes; i++)
 		{
-			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i],
-				* baSource = (byteAlias_t*)&styleColors[pStage->lightmapStyle];
+			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i];
+			const byteAlias_t * baSource = (byteAlias_t*)&styleColors[pStage->lightmapStyle];
 			baDest->i = baSource->i;
 		}
 		break;
@@ -1562,7 +1561,7 @@ static void RB_IterateStagesGeneric(shaderCommands_t* input)
 		}
 		if (g_bRenderGlowingObjects)
 		{
-			const float fogColor[3] = { 0.0f, 0.0f, 0.0f };
+			constexpr float fogColor[3] = { 0.0f, 0.0f, 0.0f };
 			qglFogfv(GL_FOG_COLOR, fogColor);
 		}
 		else

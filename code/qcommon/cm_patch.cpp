@@ -734,7 +734,7 @@ void CM_AddFacetBevels(facet_t* facet) {
 	int axis, dir, order, flipped;
 	float plane[4], d, newplane[4];
 	winding_t* w, * w2;
-	vec3_t mins, maxs, vec, vec2;
+	vec3_t mins, maxs, vec2;
 
 #ifndef ADDBEVELS
 	return;
@@ -799,6 +799,7 @@ void CM_AddFacetBevels(facet_t* facet) {
 	// test the non-axial plane edges
 	for (j = 0; j < w->numpoints; j++)
 	{
+		vec3_t vec;
 		k = (j + 1) % w->numpoints;
 		VectorSubtract(w->p[j], w->p[k], vec);
 		//if it's a degenerate edge
@@ -1442,7 +1443,6 @@ void CM_TraceThroughPatchCollide(traceWork_t* tw, const patchCollide_s* pc)
 	patchPlane_t* planes;
 	facet_t* facet;
 	float plane[4] = { 0.0f }, bestplane[4] = { 0.0f };
-	vec3_t startp, endp;
 #ifndef BSPC
 	static cvar_t* cv;
 #endif //BSPC
@@ -1458,6 +1458,8 @@ void CM_TraceThroughPatchCollide(traceWork_t* tw, const patchCollide_s* pc)
 	//
 	facet = pc->facets;
 	for (int i = 0; i < pc->numFacets; i++, facet++) {
+		vec3_t endp;
+		vec3_t startp;
 		enterFrac = -1.0;
 		leaveFrac = 1.0;
 		hitnum = -1;

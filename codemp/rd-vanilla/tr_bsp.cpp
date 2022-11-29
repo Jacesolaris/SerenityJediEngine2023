@@ -1560,7 +1560,7 @@ static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_
 	int			sideNum;
 	int			planeNum;
 	int			firstSide;
-	const int			lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_NONE };
+	constexpr int			lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_NONE };
 
 	dfog_t* fogs = (dfog_t*)(fileBase + l->fileofs);
 	if (l->filelen % sizeof * fogs) {
@@ -1770,8 +1770,6 @@ R_LoadEntities
 */
 void R_LoadEntities(lump_t* l, world_t& worldData) {
 	const char* p;
-	char keyname[MAX_TOKEN_CHARS];
-	char value[MAX_TOKEN_CHARS];
 	float ambient = 1;
 
 	world_t* w = &worldData;
@@ -1798,6 +1796,8 @@ void R_LoadEntities(lump_t* l, world_t& worldData) {
 
 	// only parse the world spawn
 	while (true) {
+		char value[MAX_TOKEN_CHARS];
+		char keyname[MAX_TOKEN_CHARS];
 		// parse key
 		token = COM_ParseExt(&p, qtrue);
 

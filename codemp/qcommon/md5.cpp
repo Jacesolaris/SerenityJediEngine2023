@@ -254,7 +254,6 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
 	unsigned char digest[16] = { "" };
 	fileHandle_t f;
 	MD5_CTX md5;
-	byte buffer[2048];
 	int total = 0;
 
 	Q_strncpyz(final, "", sizeof final);
@@ -278,6 +277,7 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
 		MD5Update(&md5, (unsigned char*)prefix, prefix_len);
 
 	for (;;) {
+		byte buffer[2048];
 		int r = FS_Read(buffer, sizeof buffer, f);
 		if (r < 1)
 			break;
@@ -304,8 +304,8 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
 
 void HMAC_MD5_Init(hmacMD5Context_t* ctx, unsigned char const* key, unsigned int keylen)
 {
-	unsigned char shortenedKey[MD5_DIGEST_SIZE];
 	if (keylen > MD5_BLOCK_SIZE) {
+		unsigned char shortenedKey[MD5_DIGEST_SIZE];
 		MD5Init(&ctx->md5Context);
 		MD5Update(&ctx->md5Context, key, keylen);
 		MD5Final(&ctx->md5Context, shortenedKey);

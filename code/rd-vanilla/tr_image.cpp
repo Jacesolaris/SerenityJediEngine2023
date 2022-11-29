@@ -63,7 +63,7 @@ textureMode_t modes[] = {
 	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
 };
 
-static const size_t numTextureModes = ARRAY_LEN(modes);
+static constexpr size_t numTextureModes = std::size(modes);
 
 /*
 ================
@@ -1103,9 +1103,8 @@ R_InitFogTable
 =================
 */
 void R_InitFogTable(void) {
-	const float exp = 0.5;
-
 	for (int i = 0; i < FOG_TABLE_SIZE; i++) {
+		const float exp = 0.5;
 		const float d = pow(static_cast<float>(i) / (FOG_TABLE_SIZE - 1), exp);
 
 		tr.fogTable[i] = d;
@@ -1279,11 +1278,11 @@ void R_CreateBuiltinImages(void) {
 	// with overbright bits active, we need an image which is some fraction of full color,
 	// for default lightmaps, etc
 	for (x = 0; x < DEFAULT_SIZE; x++) {
-		for (int y = 0; y < DEFAULT_SIZE; y++) {
-			data[y][x][0] =
-				data[y][x][1] =
-				data[y][x][2] = tr.identityLightByte;
-			data[y][x][3] = 255;
+		for (auto & y : data) {
+			y[x][0] =
+				y[x][1] =
+				y[x][2] = tr.identityLightByte;
+			y[x][3] = 255;
 		}
 	}
 

@@ -238,7 +238,6 @@ CM_TestInLeaf
 */
 void CM_TestInLeaf(traceWork_t* tw, cLeaf_t* leaf, clipMap_t* local) {
 	int			k;
-	cPatch_t* patch;
 
 	// test box position against all brushes in the leaf
 	for (k = 0; k < leaf->numLeafBrushes; k++) {
@@ -263,7 +262,9 @@ void CM_TestInLeaf(traceWork_t* tw, cLeaf_t* leaf, clipMap_t* local) {
 #ifdef BSPC
 	if (1) {
 #else
-	if (!cm_noCurves->integer) {
+	if (!cm_noCurves->integer)
+	{
+		cPatch_t* patch;
 #endif //BSPC
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
 			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
@@ -508,7 +509,6 @@ CM_TraceToLeaf
 */
 void CM_TraceToLeaf(traceWork_t * tw, cLeaf_t * leaf, clipMap_t * local) {
 	int			k;
-	cPatch_t* patch;
 
 	// trace line against all brushes in the leaf
 	for (k = 0; k < leaf->numLeafBrushes; k++) {
@@ -536,7 +536,9 @@ void CM_TraceToLeaf(traceWork_t * tw, cLeaf_t * leaf, clipMap_t * local) {
 #ifdef BSPC
 	if (1) {
 #else
-	if (!cm_noCurves->integer) {
+	if (!cm_noCurves->integer)
+	{
+		cPatch_t* patch;
 #endif
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
 			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
@@ -879,7 +881,6 @@ void CM_TransformedBoxTrace(trace_t * results, const vec3_t start, const vec3_t 
 	const vec3_t origin, const vec3_t angles) {
 	trace_t		trace;
 	vec3_t		start_l, end_l;
-	vec3_t		a;
 	vec3_t		forward, right, up;
 	vec3_t		temp;
 	qboolean	rotated;
@@ -935,6 +936,7 @@ void CM_TransformedBoxTrace(trace_t * results, const vec3_t start, const vec3_t 
 	CM_BoxTrace(&trace, start_l, end_l, symetricSize[0], symetricSize[1], model, brushmask);
 
 	if (rotated && trace.fraction != 1.0) {
+		vec3_t a;
 		// FIXME: figure out how to do this with existing angles
 		VectorNegate(angles, a);
 		AngleVectors(a, forward, right, up);

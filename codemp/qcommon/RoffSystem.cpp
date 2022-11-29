@@ -212,8 +212,6 @@ qboolean CROFFSystem::InitROFF(unsigned char* data, CROFF* obj)
 //---------------------------------------------------------------------------
 qboolean CROFFSystem::InitROFF2(unsigned char* data, CROFF* obj)
 {
-	int	i;
-
 	TROFF2Header* hdr = (TROFF2Header*)data;
 
 	obj->mROFFEntries = LittleLong hdr->mCount;
@@ -223,7 +221,9 @@ qboolean CROFFSystem::InitROFF2(unsigned char* data, CROFF* obj)
 	obj->mNumNoteTracks = LittleLong hdr->mNumNotes;
 
 	if (obj->mMoveRotateList != nullptr)
-	{ // Step past the header to get to the goods
+	{
+		int i;
+		// Step past the header to get to the goods
 		TROFF2Entry* roff_data = (TROFF2Entry*)&hdr[1];
 
 		// Copy all of the goods into our ROFF cache
@@ -298,19 +298,19 @@ void CROFFSystem::FixBadAngles(CROFF* obj)
 
 	for (int index = 0; index < obj->mROFFEntries; index++)
 	{
-		for (int t = 0; t < 3; t++)
+		for (float & t : obj->mMoveRotateList[index].mRotateOffset)
 		{
-			if (obj->mMoveRotateList[index].mRotateOffset[t] > 180.0f)
+			if (t > 180.0f)
 			{ // found a bad angle
 			//	Com_Printf( S_COLOR_YELLOW"Fixing bad roff angle\n <%6.2f> changed to <%6.2f>.\n",
 			//				roff_data[i].mRotateOffset[t], roff_data[i].mRotateOffset[t] - 360.0f );
-				obj->mMoveRotateList[index].mRotateOffset[t] -= 360.0f;
+				t -= 360.0f;
 			}
-			else if (obj->mMoveRotateList[index].mRotateOffset[t] < -180.0f)
+			else if (t < -180.0f)
 			{ // found a bad angle
 			//	Com_Printf( S_COLOR_YELLOW"Fixing bad roff angle\n <%6.2f> changed to <%6.2f>.\n",
 			//				roff_data[i].mRotateOffset[t], roff_data[i].mRotateOffset[t] + 360.0f );
-				obj->mMoveRotateList[index].mRotateOffset[t] += 360.0f;
+				t += 360.0f;
 			}
 		}
 	}
@@ -408,11 +408,11 @@ int CROFFSystem::Cache(const char* file, qboolean isClient)
 int	CROFFSystem::GetID(const char* file)
 {
 	// Attempt to find the requested roff
-	for (TROFFList::iterator itr = mROFFList.begin(); itr != mROFFList.end(); ++itr)
+	for (const auto & itr : mROFFList)
 	{
-		if (strcmp((*itr).second->mROFFFilePath, file) == 0)
+		if (strcmp(itr.second->mROFFFilePath, file) == 0)
 		{ // return the ID to this roff
-			return (*itr).first;
+			return itr.first;
 		}
 	}
 
@@ -532,14 +532,14 @@ qboolean CROFFSystem::Clean(qboolean isClient)
 // RETURN:
 //	none
 //---------------------------------------------------------------------------
-void CROFFSystem::List()
+void CROFFSystem::List() const
 {
 	Com_Printf(S_COLOR_GREEN"\n--Cached ROFF files--\n");
 	Com_Printf(S_COLOR_GREEN"ID   FILE\n");
 
-	for (TROFFList::iterator itr = mROFFList.begin(); itr != mROFFList.end(); ++itr)
+	for (const auto & itr : mROFFList)
 	{
-		Com_Printf(S_COLOR_GREEN"%2i - %s\n", (*itr).first, (*itr).second->mROFFFilePath);
+		Com_Printf(S_COLOR_GREEN"%2i - %s\n", itr.first, itr.second->mROFFFilePath);
 	}
 
 	Com_Printf(S_COLOR_GREEN"\nFiles: %i\n", mROFFList.size());
@@ -792,7 +792,7 @@ void CROFFSystem::UpdateEntities(qboolean isClient)
 	{
 		if ((*itr)->mIsClient != isClient)
 		{
-			itr++;
+			++itr;
 			continue;
 		}
 
@@ -808,7 +808,7 @@ void CROFFSystem::UpdateEntities(qboolean isClient)
 		}
 		else
 		{
-			itr++;
+			++itr;
 		}
 	}
 }
@@ -825,7 +825,7 @@ void CROFFSystem::UpdateEntities(qboolean isClient)
 //---------------------------------------------------------------------------
 qboolean CROFFSystem::ApplyROFF(SROFFEntity* roff_ent, CROFFSystem::CROFF* roff)
 {
-	vec3_t			f, r, u, result;
+	vec3_t result;
 	sharedEntity_t* ent = nullptr;
 	trajectory_t* originTrajectory = nullptr, * angleTrajectory = nullptr;
 	float* origin = nullptr, * angle = nullptr;
@@ -876,6 +876,9 @@ qboolean CROFFSystem::ApplyROFF(SROFFEntity* roff_ent, CROFFSystem::CROFF* roff)
 
 	if (roff_ent->mTranslated)
 	{
+		vec3_t u;
+		vec3_t r;
+		vec3_t f;
 		AngleVectors(roff_ent->mStartAngles, f, r, u);
 		VectorScale(f, roff->mMoveRotateList[roff_ent->mROFFFrame].mOriginOffset[0], result);
 		VectorMA(result, -roff->mMoveRotateList[roff_ent->mROFFFrame].mOriginOffset[1], r, result);

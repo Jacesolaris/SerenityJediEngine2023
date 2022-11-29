@@ -46,7 +46,7 @@ int RE_SavePNG(const char* filename, byte* buf, size_t width, size_t height, int
 	/* The following number is set by trial and error only. I cannot
 	see where it it is documented in the libpng manual.
 	*/
-	const int depth = 8;
+	constexpr int depth = 8;
 
 	fp = ri->FS_FOpenFileWrite(filename, qtrue);
 	if (!fp) {
@@ -159,7 +159,7 @@ struct PNGFileReader
 		*height = 0;
 
 		// Make sure we're actually reading PNG data.
-		const int SIGNATURE_LEN = 8;
+		constexpr int SIGNATURE_LEN = 8;
 
 		byte ident[SIGNATURE_LEN];
 		memcpy(ident, buf, SIGNATURE_LEN);

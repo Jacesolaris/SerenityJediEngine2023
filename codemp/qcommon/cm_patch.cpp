@@ -779,7 +779,7 @@ static inline void CM_AddFacetBevels(facet_t* facet) {
 	int axis, dir, flipped;
 	float plane[4], newplane[4];
 	winding_t* w, * w2;
-	vec3_t mins, maxs, vec, vec2;
+	vec3_t mins, maxs, vec2;
 
 	VectorCopy4(planes[facet->surfacePlane].plane, plane);
 
@@ -840,6 +840,7 @@ static inline void CM_AddFacetBevels(facet_t* facet) {
 	// test the non-axial plane edges
 	for (j = 0; j < w->numpoints; j++)
 	{
+		vec3_t vec;
 		int k = (j + 1) % w->numpoints;
 		VectorSubtract(w->p[j], w->p[k], vec);
 		//if it's a degenerate edge
@@ -1364,7 +1365,6 @@ void CM_TraceThroughPatchCollide(traceWork_t* tw, trace_t& trace, const patchCol
 	patchPlane_t* planes;
 	facet_t* facet;
 	float plane[4] = { 0.0f }, bestplane[4] = { 0.0f };
-	vec3_t startp, endp;
 #ifndef BSPC
 	static cvar_t* cv;
 #endif //BSPC
@@ -1388,6 +1388,8 @@ void CM_TraceThroughPatchCollide(traceWork_t* tw, trace_t& trace, const patchCol
 	//
 	facet = pc->facets;
 	for (i = 0; i < pc->numFacets; i++, facet++) {
+		vec3_t endp;
+		vec3_t startp;
 		enterFrac = -1.0;
 		leaveFrac = 1.0;
 		hitnum = -1;
@@ -1513,7 +1515,6 @@ qboolean CM_PositionTestInPatchCollide(traceWork_t* tw, const patchCollide_s* pc
 	int j;
 	float offset, t;
 	float plane[4];
-	vec3_t startp;
 
 	if (tw->isPoint) {
 		return qfalse;
@@ -1521,6 +1522,7 @@ qboolean CM_PositionTestInPatchCollide(traceWork_t* tw, const patchCollide_s* pc
 	//
 	facet_t* facet = pc->facets;
 	for (int i = 0; i < pc->numFacets; i++, facet++) {
+		vec3_t startp;
 		const patchPlane_t* planes = &pc->planes[facet->surfacePlane];
 		VectorCopy(planes->plane, plane);
 		plane[3] = planes->plane[3];
@@ -1621,9 +1623,9 @@ void CM_DrawDebugSurface(void (*drawPoly)(int color, int numPoints, float* point
 	int				i, n;
 	int				curplanenum, planenum, curinward, inward;
 	float			plane[4];
-	const vec3_t mins = { -15, -15, -28 }, maxs = { 15, 15, 28 };
+	constexpr vec3_t mins = { -15, -15, -28 }, maxs = { 15, 15, 28 };
 	//vec3_t mins = {0, 0, 0}, maxs = {0, 0, 0};
-	vec3_t v1, v2;
+	vec3_t v1;
 
 #ifndef BSPC
 	if (!cv2)
@@ -1651,6 +1653,7 @@ void CM_DrawDebugSurface(void (*drawPoly)(int color, int numPoints, float* point
 
 	for (i = 0, facet = pc->facets; i < pc->numFacets; i++, facet++) {
 		for (int k = 0; k < facet->numBorders + 1; k++) {
+			vec3_t v2;
 			//
 			if (k < facet->numBorders) {
 				planenum = facet->borderPlanes[k];

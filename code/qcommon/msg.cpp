@@ -372,7 +372,7 @@ int MSG_ReadLong(msg_t* msg)
 
 char* MSG_ReadString(msg_t* msg)
 {
-	static const int STRING_SIZE = MAX_STRING_CHARS;
+	static constexpr int STRING_SIZE = MAX_STRING_CHARS;
 	static char string[STRING_SIZE];
 
 	MSG_ReadByteAlign(msg);
@@ -401,7 +401,7 @@ char* MSG_ReadString(msg_t* msg)
 
 char* MSG_ReadStringLine(msg_t* msg)
 {
-	static const int STRING_SIZE = MAX_STRING_CHARS;
+	static constexpr int STRING_SIZE = MAX_STRING_CHARS;
 	static char string[STRING_SIZE];
 
 	MSG_ReadByteAlign(msg);
@@ -1262,7 +1262,7 @@ void MSG_WriteDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* t
 
 	int c = msg->cursize;
 
-	const int numFields = sizeof playerStateFields / sizeof playerStateFields[0];
+	constexpr int numFields = std::size(playerStateFields);
 	for (i = 0, field = playerStateFields; i < numFields; i++, field++)
 	{
 		const auto fromF = (int*)((byte*)from + field->offset);
@@ -1402,7 +1402,7 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 	int i;
 	int bits;
 	const netField_t* field;
-	int startBit, endBit;
+	int startBit;
 	int print;
 	playerState_t dummy;
 
@@ -1434,7 +1434,7 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 		print = 0;
 	}
 
-	const int numFields = sizeof playerStateFields / sizeof playerStateFields[0];
+	constexpr int numFields = std::size(playerStateFields);
 	for (i = 0, field = playerStateFields; i < numFields; i++, field++)
 	{
 		const auto fromF = (int*)((byte*)from + field->offset);
@@ -1525,6 +1525,7 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 
 	if (print)
 	{
+		int endBit;
 		if (msg->bit == 0)
 		{
 			endBit = msg->readcount * 8 - GENTITYNUM_BITS;

@@ -204,10 +204,10 @@ static qboolean Music_ParseMusic(CGenericParser2& Parser, MusicData_t* MusicData
 			for (const CGPValue* pValue = pEntryGroup->GetPairs(); pValue; pValue = pValue->GetNext())
 			{
 				const char* psKey = pValue->GetName();
-				const char* psValue = pValue->GetTopValue();
 
 				//if (!Q_strncmp(psKey,sKEY_MARKER,strlen(sKEY_MARKER)))	// for now, assume anything is a marker
 				{
+					const char* psValue = pValue->GetTopValue();
 					MusicFile.MusicEntryTimes[psKey] = atof(psValue);
 					bEntryFound = qtrue;						// harmless to keep setting
 				}
@@ -255,7 +255,7 @@ static qboolean Music_ParseMusic(CGenericParser2& Parser, MusicData_t* MusicData
 
 									// new check, don't keep this this exit point if it's within 1.5 seconds either way of an entry point...
 									//
-									const qboolean bTooCloseToEntryPoint = qfalse;
+									constexpr qboolean bTooCloseToEntryPoint = qfalse;
 									for (const auto& MusicEntryTime : MusicFile.MusicEntryTimes)
 									{
 										const float fThisEntryTime = MusicEntryTime.second;
@@ -912,7 +912,6 @@ qboolean Music_AllowedToTransition(float			fPlayingTimeElapsed,
 	float* pfNewTrackEntryTime /* = NULL */
 )
 {
-	const float fTimeEpsilon = 0.3f;	// arb., how close we have to be to an exit point to take it.
 	//		if set too high then music change is sloppy
 	//		if set too low[/precise] then we might miss an exit if client fps is poor
 
@@ -926,11 +925,12 @@ qboolean Music_AllowedToTransition(float			fPlayingTimeElapsed,
 		//
 		std::pair <MusicExitTimes_t::iterator, MusicExitTimes_t::iterator> itp = equal_range(pMusicFile->MusicExitTimes.begin(), pMusicFile->MusicExitTimes.end(), T);
 		if (itp.first != pMusicFile->MusicExitTimes.begin())
-			itp.first--;	// encompass the one before, in case we've just missed an exit point by < fTimeEpsilon
+			--itp.first;	// encompass the one before, in case we've just missed an exit point by < fTimeEpsilon
 		if (itp.second != pMusicFile->MusicExitTimes.end())
-			itp.second++;	// increase range to one beyond, so we can do normal STL being/end looping below
+			++itp.second;	// increase range to one beyond, so we can do normal STL being/end looping below
 		for (MusicExitTimes_t::iterator it = itp.first; it != itp.second; ++it)
 		{
+			constexpr float fTimeEpsilon = 0.3f;
 			const MusicExitTimes_t::iterator pExitTime = it;
 
 			if (Q_fabs(pExitTime->fTime - fPlayingTimeElapsed) <= fTimeEpsilon)

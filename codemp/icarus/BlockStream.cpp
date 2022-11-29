@@ -504,7 +504,7 @@ Create
 int CBlockStream::Create(const char* filename)
 {
 	const auto id_header = IBI_HEADER_ID;
-	const float version = IBI_VERSION;
+	constexpr float version = IBI_VERSION;
 
 	//Strip the extension and add the BLOCK_EXT extension
 	COM_StripExtension(filename, m_fileName, sizeof m_fileName);

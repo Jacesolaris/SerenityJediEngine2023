@@ -568,7 +568,7 @@ static cvarTable_t cvarTable[] =
 constexpr auto FP_UPDATED_NONE = -1;
 constexpr auto NOWEAPON = -1;
 
-static const size_t cvarTableSize = std::size(cvarTable);
+static constexpr size_t cvarTableSize = std::size(cvarTable);
 
 void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, int iMaxPixelWidth, int style,
 	int iFontIndex);

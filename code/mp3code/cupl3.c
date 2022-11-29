@@ -614,7 +614,6 @@ static void unpack_main(unsigned char* pcm, int igr)
 {
 	int ch;
 	int n1;
-	int m0;
 
 	for (ch = 0; ch < pMP3Stream->nchan; ch++)
 	{
@@ -679,6 +678,7 @@ static void unpack_main(unsigned char* pcm, int igr)
 	/*--- ms stereo processing  ---*/
 	if (pMP3Stream->ms_mode)
 	{
+		int m0;
 		if (pMP3Stream->is_mode == 0)
 		{
 			m0 = nsamp[igr][0];	/* process to longer of left/right */

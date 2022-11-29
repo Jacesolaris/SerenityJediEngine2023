@@ -95,8 +95,6 @@ SV_BotCalculatePaths
 */
 void SV_BotCalculatePaths(int /*rmg*/)
 {
-	const int maxNeighborDist = MAX_NEIGHBOR_LINK_DISTANCE;
-	vec3_t a;
 	vec3_t mins, maxs;
 
 	if (!gWPNum)
@@ -143,10 +141,11 @@ void SV_BotCalculatePaths(int /*rmg*/)
 				if (gWPArray[c] && gWPArray[c]->inuse && i != c &&
 					NotWithinRange(i, c))
 				{
+					vec3_t a;
+					constexpr int maxNeighborDist = MAX_NEIGHBOR_LINK_DISTANCE;
 					VectorSubtract(gWPArray[i]->origin, gWPArray[c]->origin, a);
 
 					const float nLDist = VectorLength(a);
-					const int forceJumpable = qfalse;//CanForceJumpTo(i, c, nLDist);
 
 					if (nLDist < maxNeighborDist &&
 						static_cast<int>(gWPArray[i]->origin[2]) == static_cast<int>(gWPArray[c]->origin[2]) &&
@@ -229,7 +228,7 @@ BotDrawDebugPolygons
 ==================
 */
 void BotDrawDebugPolygons(void (*drawPoly)(int color, int numPoints, float* points), int value) {
-	static cvar_t* bot_debug, * bot_groundonly, * bot_reachability, * bot_highlightarea;
+	static cvar_t* bot_debug;
 
 	if (!debugpolygons)
 		return;
@@ -237,6 +236,9 @@ void BotDrawDebugPolygons(void (*drawPoly)(int color, int numPoints, float* poin
 	if (!bot_debug) bot_debug = Cvar_Get("bot_debug", "0", 0);
 	//
 	if (bot_enable && bot_debug->integer) {
+		static cvar_t* bot_highlightarea;
+		static cvar_t* bot_reachability;
+		static cvar_t* bot_groundonly;
 		//show reachabilities
 		if (!bot_reachability) bot_reachability = Cvar_Get("bot_reachability", "0", 0);
 		//show ground faces only
@@ -531,7 +533,8 @@ BotImport_DebugLineShow
 ==================
 */
 void BotImport_DebugLineShow(int line, vec3_t start, vec3_t end, int color) {
-	vec3_t points[4], dir, cross, up = { 0, 0, 1 };
+	vec3_t points[4], dir, cross;
+	constexpr vec3_t up = { 0, 0, 1 };
 
 	VectorCopy(start, points[0]);
 	VectorCopy(start, points[1]);
@@ -659,7 +662,7 @@ extern botlib_export_t* GetBotLibAPI(int apiVersion, botlib_import_t* import);
 //
 static int bot_Z_AvailableMemory(void)
 {
-	const int iMaxBOTLIBMem = 8 * 1024 * 1024;	// adjust accordingly.
+	constexpr int iMaxBOTLIBMem = 8 * 1024 * 1024;	// adjust accordingly.
 	return iMaxBOTLIBMem - Z_MemSize(TAG_BOTLIB);
 }
 

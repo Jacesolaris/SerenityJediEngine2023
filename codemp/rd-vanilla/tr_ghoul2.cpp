@@ -127,7 +127,7 @@ static inline int G2_Find_Bone_ByNum(const model_t* mod, boneInfo_v& blist, cons
 }
 #endif
 
-const static mdxaBone_t identityMatrix =
+constexpr static mdxaBone_t identityMatrix =
 {
 	{
 		{0.0f, -1.0f, 0.0f, 0.0f},
@@ -1358,11 +1358,9 @@ void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, const int boneNum, mdxaBone_t& mat
 {
 	mdxaBone_t animMatrix;
 	mdxaSkel_t* skel;
-	mdxaSkel_t* pskel;
 	mdxaSkelOffsets_t* offsets;
 	int parent;
 	int bListIndex;
-	int parentBlistIndex;
 #ifdef _RAG_PRINT_TEST
 	bool actuallySet = false;
 #endif
@@ -1407,6 +1405,8 @@ void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, const int boneNum, mdxaBone_t& mat
 	parent = skel->parent;
 	if (boneNum > 0 && parent > -1)
 	{
+		int parentBlistIndex;
+		mdxaSkel_t* pskel;
 		//recursively call to assure all parent matrices are set up
 		G2_RagGetAnimMatrix(ghoul2, parent, matrix, frame);
 
@@ -2191,9 +2191,8 @@ void G2_TransformGhoulBones(boneInfo_v& rootBoneList, mdxaBone_t& rootMatrix, CG
 void G2_ProcessSurfaceBolt(mdxaBone_v& bonePtr, mdxmSurface_t* surface, int boltNum, boltInfo_v& boltList,
 	surfaceInfo_t* surfInfo, model_t* mod)
 {
-	matrix3_t axes, sides;
 	float pTri[3][3];
-	int j, k;
+	int k;
 
 	// now there are two types of tag surface - model ones and procedural generated types - lets decide which one we have here.
 	if (surfInfo && surfInfo->offFlags == G2SURFACEFLAG_GENERATED)
@@ -2330,6 +2329,9 @@ void G2_ProcessSurfaceBolt(mdxaBone_v& bonePtr, mdxmSurface_t* surface, int bolt
 	// no, we are looking at a normal model tag
 	else
 	{
+		int j;
+		matrix3_t sides;
+		matrix3_t axes;
 		const int* piBoneRefs = (int*)((byte*)surface + surface->ofsBoneReferences);
 
 		// whip through and actually transform each vertex
@@ -2570,7 +2572,7 @@ void RenderSurfaces(CRenderSurface& RS) //also ended up just ripping right from 
 						newSurf2->scale = 1.0f;
 						newSurf2->fade = 1.0f;
 						newSurf2->impactTime = 1.0f; // done with
-						const int magicFactor42 = 500; // ms, impact time
+						constexpr int magicFactor42 = 500; // ms, impact time
 						if (curTime > (*kcur).second.mGoreGrowStartTime && curTime < (*kcur).second.mGoreGrowStartTime +
 							magicFactor42)
 						{
@@ -2892,9 +2894,8 @@ void* G2_FindSurface_BC(const model_s* mod, int index, int lod)
 void G2_ProcessSurfaceBolt2(CBoneCache& boneCache, const mdxmSurface_t* surface, int boltNum, boltInfo_v& boltList,
 	const surfaceInfo_t* surfInfo, const model_t* mod, mdxaBone_t& retMatrix)
 {
-	matrix3_t axes, sides;
 	float pTri[3][3];
-	int j, k;
+	int k;
 
 	// now there are two types of tag surface - model ones and procedural generated types - lets decide which one we have here.
 	if (surfInfo && surfInfo->offFlags == G2SURFACEFLAG_GENERATED)
@@ -3040,6 +3041,9 @@ void G2_ProcessSurfaceBolt2(CBoneCache& boneCache, const mdxmSurface_t* surface,
 	// no, we are looking at a normal model tag
 	else
 	{
+		int j;
+		matrix3_t sides;
+		matrix3_t axes;
 		// whip through and actually transform each vertex
 		auto v = (mdxmVertex_t*)((byte*)surface + surface->ofsVerts);
 		auto piBoneReferences = (int*)((byte*)surface + surface->ofsBoneReferences);
@@ -3260,7 +3264,6 @@ void R_AddGhoulSurfaces(trRefEntity_t* ent)
 #endif
 	shader_t* cust_shader;
 #ifdef _G2_GORE
-	shader_t* gore_shader = nullptr;
 #endif
 	int i, whichLod;
 	skin_t* skin;
@@ -3331,6 +3334,7 @@ void R_AddGhoulSurfaces(trRefEntity_t* ent)
 		i = modelList[j];
 		if (ghoul2[i].mValid && !(ghoul2[i].mFlags & GHOUL2_NOMODEL) && !(ghoul2[i].mFlags & GHOUL2_NORENDER))
 		{
+			shader_t* gore_shader = nullptr;
 			//
 			// figure out whether we should be using a custom shader for this model
 			//

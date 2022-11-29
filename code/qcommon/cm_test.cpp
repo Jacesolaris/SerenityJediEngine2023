@@ -280,7 +280,6 @@ CM_PointContents
 
 int CM_PointContents(const vec3_t p, clipHandle_t model)
 {
-	int leafnum = 0;
 	int i;
 	cLeaf_t* leaf;
 	clipMap_t* local;
@@ -298,6 +297,7 @@ int CM_PointContents(const vec3_t p, clipHandle_t model)
 	}
 	else
 	{
+		int leafnum = 0;
 		local = &cmg;
 		const CPoint pt(p[0], p[1], p[2]);
 		/*		map<CPoint,int,CPointComparator>::iterator l=pointToLeaf.find(pt);
@@ -484,8 +484,6 @@ rotating entities
 int CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles)
 {
 	vec3_t p_l;
-	vec3_t temp;
-	vec3_t forward, right, up;
 
 	// subtract origin offset
 	VectorSubtract(p, origin, p_l);
@@ -494,6 +492,10 @@ int CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t
 	if (model != BOX_MODEL_HANDLE &&
 		(angles[0] || angles[1] || angles[2]))
 	{
+		vec3_t up;
+		vec3_t right;
+		vec3_t forward;
+		vec3_t temp;
 		AngleVectors(angles, forward, right, up);
 
 		VectorCopy(p_l, temp);
@@ -662,8 +664,6 @@ This is used to cull non-visible entities from snapshots
 */
 int CM_WriteAreaBits(byte* buffer, int area)
 {
-	int floodnum;
-
 	const int bytes = (cmg.numAreas + 7) >> 3;
 
 #ifndef BSPC
@@ -677,6 +677,7 @@ int CM_WriteAreaBits(byte* buffer, int area)
 	}
 	else
 	{
+		int floodnum;
 		floodnum = cmg.areas[area].floodnum;
 		for (int i = 0; i < cmg.numAreas; i++)
 		{

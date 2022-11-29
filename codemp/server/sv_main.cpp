@@ -115,8 +115,6 @@ not have future snapshot_t executed before it is executed
 ======================
 */
 void SV_AddServerCommand(client_t* client, const char* cmd) {
-	int i;
-
 	// do not send commands until the gamestate has been sent
 	if (client->state < CS_PRIMED) {
 		return;
@@ -128,6 +126,7 @@ void SV_AddServerCommand(client_t* client, const char* cmd) {
 	// we check == instead of >= so a broadcast print added by SV_DropClient()
 	// doesn't cause a recursive drop client
 	if (client->reliableSequence - client->reliableAcknowledge == MAX_RELIABLE_COMMANDS + 1) {
+		int i;
 		Com_Printf("===== pending server commands =====\n");
 		for (i = client->reliableAcknowledge + 1; i <= client->reliableSequence; i++) {
 			Com_Printf("cmd %5d: %s\n", i, client->reliableCommands[i & MAX_RELIABLE_COMMANDS - 1]);
@@ -222,8 +221,6 @@ but not on every player enter or exit.
 #define	HEARTBEAT_MSEC	300*1000
 #define	HEARTBEAT_GAME	"QuakeArena-1"
 void SV_MasterHeartbeat(void) {
-	static netadr_t	adr[MAX_MASTER_SERVERS];
-
 	// "dedicated 1" is for lan play, "dedicated 2" is for inet public play
 	if (!com_dedicated || com_dedicated->integer != 2) {
 		return;		// only dedicated servers send heartbeats
@@ -241,6 +238,7 @@ void SV_MasterHeartbeat(void) {
 
 	// send to group masters
 	for (int i = 0; i < MAX_MASTER_SERVERS; i++) {
+		static netadr_t adr[MAX_MASTER_SERVERS];
 		if (!sv_master[i]->string[0]) {
 			continue;
 		}
@@ -464,7 +462,6 @@ the simple info query.
 ================
 */
 void SVC_Status(netadr_t from) {
-	char	player[1024];
 	char	status[MAX_MSGLEN];
 	char	infostring[MAX_INFO_STRING];
 
@@ -507,6 +504,7 @@ void SVC_Status(netadr_t from) {
 	for (int i = 0; i < sv_maxclients->integer; i++) {
 		client_t* cl = &svs.clients[i];
 		if (cl->state >= CS_CONNECTED) {
+			char player[1024];
 			const playerState_t* ps = SV_GameClientNum(i);
 			Com_sprintf(player, sizeof player, "%i %i \"%s\"\n",
 				ps->persistant[PERS_SCORE], cl->ping, cl->name);
@@ -646,7 +644,6 @@ Redirect all printfs
 */
 void SVC_RemoteCommand(netadr_t from, msg_t* msg) {
 	qboolean	valid;
-	char		remaining[1024];
 	// TTimo - scaled down to accumulate, but not overflow anything network wise, print wise etc.
 	// (OOB messages are the bottleneck here)
 #define	SV_OUTPUTBUF_LENGTH	(1024 - 16)
@@ -690,6 +687,7 @@ void SVC_RemoteCommand(netadr_t from, msg_t* msg) {
 		Com_Printf("Bad rconpassword.\n");
 	}
 	else {
+		char remaining[1024];
 		remaining[0] = 0;
 
 		// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=543

@@ -285,15 +285,18 @@ float sv_sightRangeForLevel[6] =
 qboolean SV_PlayerCanSeeEnt(gentity_t* ent, int sightLevel)
 {//return true if this ent is in view
 	//NOTE: this is similar to the func CG_PlayerCanSeeCent in cg_players
-	vec3_t viewOrg, viewAngles, viewFwd, dir2Ent;
+	vec3_t viewOrg;
 	if (!ent)
 	{
 		return qfalse;
 	}
 	if (VM_Call(CG_CAMERA_POS, viewOrg))
 	{
+		vec3_t viewAngles;
 		if (VM_Call(CG_CAMERA_ANG, viewAngles))
 		{
+			vec3_t dir2Ent;
+			vec3_t viewFwd;
 			float dot = 0.25f;//1.0f;
 			const float range = sv_sightRangeForLevel[sightLevel];
 

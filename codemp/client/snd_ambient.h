@@ -28,8 +28,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define	AMBIENT_SET_FILENAME	"sound/sound.txt"
 
-const	int	MAX_WAVES_PER_GROUP = 8;
-const	int	MAX_SET_NAME_LENGTH = 64;
+constexpr	int	MAX_WAVES_PER_GROUP = 8;
+constexpr	int	MAX_SET_NAME_LENGTH = 64;
 
 // Enums
 

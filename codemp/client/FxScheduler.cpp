@@ -114,14 +114,14 @@ void CFxScheduler::StopEffect(const char* file, int boltInfo, bool isPortal)
 	}
 #endif
 
-	for (int i = 0; i < MAX_LOOPED_FX; i++)
+	for (auto & i : mLoopedEffectArray)
 	{
-		if (mLoopedEffectArray[i].mId == id &&
-			mLoopedEffectArray[i].mBoltInfo == boltInfo &&
-			mLoopedEffectArray[i].mPortalEffect == isPortal
+		if (i.mId == id &&
+			i.mBoltInfo == boltInfo &&
+			i.mPortalEffect == isPortal
 			)
 		{
-			memset(&mLoopedEffectArray[i], 0, sizeof mLoopedEffectArray[i]);
+			memset(&i, 0, sizeof i);
 			return;
 		}
 	}
@@ -231,11 +231,11 @@ void CFxScheduler::Clean(bool bRemoveTemplates /*= true*/, int idToPreserve /*= 
 			// and restore it after clearing.
 			std::string str;
 
-			for (TEffectID::iterator iter = mEffectIDs.begin(); iter != mEffectIDs.end(); ++iter)
+			for (const auto & mEffectID : mEffectIDs)
 			{
-				if ((*iter).second == idToPreserve)
+				if (mEffectID.second == idToPreserve)
 				{
-					str = (*iter).first;
+					str = mEffectID.first;
 					break;
 				}
 			}
@@ -565,7 +565,7 @@ SEffectTemplate* CFxScheduler::GetEffectCopy(int fxHandle, int* newHandle)
 	// never get a copy when time is frozen
 	if (fx_freeze->integer)
 	{
-		return 0;
+		return nullptr;
 	}
 #endif
 

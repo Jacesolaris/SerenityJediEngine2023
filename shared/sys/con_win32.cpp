@@ -177,8 +177,8 @@ CON_Show
 static void CON_Show(void)
 {
 	CONSOLE_SCREEN_BUFFER_INFO binfo;
-	const COORD writeSize = { MAX_EDIT_LINE, 1 };
-	const COORD writePos = { 0, 0 };
+	constexpr COORD writeSize = { MAX_EDIT_LINE, 1 };
+	constexpr COORD writePos = { 0, 0 };
 	SMALL_RECT writeArea = { 0, 0, 0, 0 };
 	COORD cursorPos;
 	CHAR_INFO line[MAX_EDIT_LINE];

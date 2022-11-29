@@ -169,7 +169,6 @@ the simple info query.
 ================
 */
 void SVC_Status(netadr_t from) {
-	char	player[1024];
 	char	status[MAX_MSGLEN];
 	int		score;
 	char	infostring[MAX_INFO_STRING];
@@ -186,6 +185,7 @@ void SVC_Status(netadr_t from) {
 	for (int i = 0; i < 1; i++) {
 		client_t* cl = &svs.clients[i];
 		if (cl->state >= CS_CONNECTED) {
+			char player[1024];
 			if (cl->gentity && cl->gentity->client) {
 				score = cl->gentity->client->persistant[PERS_SCORE];
 			}

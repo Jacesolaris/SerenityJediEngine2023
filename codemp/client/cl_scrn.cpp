@@ -102,7 +102,7 @@ static void SCR_DrawChar(int x, int y, float size, int ch) {
 	const float frow = row * 0.0625;
 	const float fcol = col * 0.0625;
 	size = 0.03125;
-	const float size2 = 0.0625;
+	constexpr float size2 = 0.0625;
 
 	re->DrawStretchPic(ax, ay, aw, ah,
 		fcol, frow,
@@ -131,10 +131,10 @@ void SCR_DrawSmallChar(int x, int y, int ch) {
 	const float frow = row * 0.0625;
 	const float fcol = col * 0.0625;
 
-	const float size = 0.03125;
+	constexpr float size = 0.03125;
 	//	size = 0.0625;
 
-	const float size2 = 0.0625;
+	constexpr float size2 = 0.0625;
 
 	re->DrawStretchPic(x * con.xadjust, y * con.yadjust,
 		SMALLCHAR_WIDTH * con.xadjust, SMALLCHAR_HEIGHT * con.yadjust,
@@ -339,9 +339,9 @@ void SCR_DrawDebugGraph(void)
 	//
 	// draw the graph
 	//
-	const int w = 640;
-	const int x = 0;
-	const int y = 480;
+	constexpr int w = 640;
+	constexpr int x = 0;
+	constexpr int y = 480;
 	re->SetColor(g_color_table[0]);
 	re->DrawStretchPic(x, y - cl_graphheight->integer,
 		w, cl_graphheight->integer, 0, 0, 0, 0, cls.whiteShader);

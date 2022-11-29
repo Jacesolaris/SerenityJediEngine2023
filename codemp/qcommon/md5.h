@@ -32,8 +32,8 @@ void MD5Init(MD5Context* ctx);
 void MD5Update(MD5Context* ctx, unsigned char const* buf, unsigned len);
 void MD5Final(MD5Context* ctx, unsigned char* digest);
 
-const size_t MD5_BLOCK_SIZE = 64;
-const size_t MD5_DIGEST_SIZE = 16;
+constexpr size_t MD5_BLOCK_SIZE = 64;
+constexpr size_t MD5_DIGEST_SIZE = 16;
 typedef struct {
 	MD5Context md5Context;
 	unsigned char iKeyPad[MD5_BLOCK_SIZE];

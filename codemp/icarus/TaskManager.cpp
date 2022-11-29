@@ -525,9 +525,7 @@ Get
 int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value)
 {
 	static	char	tempBuffer[128];	//FIXME: EEEK!
-	vector_t		vector;
 	char* tagName;
-	float			tagLookup;
 
 	//Look for a get() inline call
 	if (Check(ID_GET, block, memberNum))
@@ -610,6 +608,8 @@ int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value)
 	//Look for a tag() inline call
 	if (Check(ID_TAG, block, memberNum))
 	{
+		float tagLookup;
+		vector_t vector;
 		memberNum++;
 		ICARUS_VALIDATE(Get(entID, block, memberNum, &tagName));
 		ICARUS_VALIDATE(GetFloat(entID, block, memberNum, tagLookup));
@@ -686,8 +686,6 @@ Go
 
 int	CTaskManager::Go(void)
 {
-	bool	completed = false;
-
 	//Check for run away scripts
 	if (m_count++ > RUNAWAY_LIMIT)
 	{
@@ -699,6 +697,7 @@ int	CTaskManager::Go(void)
 	//If there are tasks to complete, do so
 	if (m_tasks.empty() == false)
 	{
+		bool completed = false;
 		//Get the next task
 		CTask* task = PopTask(POP_BACK);
 
@@ -1200,12 +1199,13 @@ int CTaskManager::Rotate(CTask* task)
 	vector_t	vector;
 	CBlock* block = task->GetBlock();
 	char* tagName;
-	float		tagLookup, duration;
+	float duration;
 	int			memberNum = 0;
 
 	//Check for a tag reference
 	if (Check(ID_TAG, block, memberNum))
 	{
+		float tagLookup;
 		memberNum++;
 
 		ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &tagName));

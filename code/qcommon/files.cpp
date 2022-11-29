@@ -3004,7 +3004,6 @@ void	FS_Flush(fileHandle_t f) {
 
 void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, callbackFunc_t callback, qboolean allowNonPureFilesOnDisk) {
 	int nfiles;
-	char filename[MAX_STRING_CHARS];
 
 	char** filenames = FS_ListFilteredFiles(dir, ext, nullptr, &nfiles);
 
@@ -3012,6 +3011,7 @@ void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, 
 
 	// pass all the files to callback (FindMatches)
 	for (int i = 0; i < nfiles; i++) {
+		char filename[MAX_STRING_CHARS];
 		FS_ConvertPath(filenames[i]);
 		Q_strncpyz(filename, filenames[i], MAX_STRING_CHARS);
 

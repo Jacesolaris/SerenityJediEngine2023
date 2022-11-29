@@ -98,6 +98,7 @@ void LAN_ResetPings(int source) {
 		servers = &cls.favoriteServers[0];
 		count = MAX_OTHER_SERVERS;
 		break;
+	default: ;
 	}
 	if (servers) {
 		for (int i = 0; i < count; i++) {
@@ -112,7 +113,6 @@ LAN_AddServer
 ====================
 */
 int LAN_AddServer(int source, const char* name, const char* address) {
-	int i;
 	netadr_t adr;
 	serverInfo_t* servers = nullptr;
 	int max = MAX_OTHER_SERVERS;
@@ -133,8 +133,10 @@ int LAN_AddServer(int source, const char* name, const char* address) {
 		count = &cls.numfavoriteservers;
 		servers = &cls.favoriteServers[0];
 		break;
+	default: ;
 	}
 	if (servers && *count < max) {
+		int i;
 		NET_StringToAdr(address, &adr);
 		for (i = 0; i < *count; i++) {
 			if (NET_CompareAdr(servers[i].adr, adr)) {
@@ -201,6 +203,7 @@ void LAN_RemoveServer(int source, const char* addr) {
 		count = &cls.numfavoriteservers;
 		servers = &cls.favoriteServers[0];
 		break;
+	default: ;
 	}
 	if (servers) {
 		netadr_t comp;
@@ -233,6 +236,7 @@ int LAN_GetServerCount(int source) {
 		return cls.numglobalservers;
 	case AS_FAVORITES:
 		return cls.numfavoriteservers;
+	default: ;
 	}
 	return 0;
 }
@@ -263,6 +267,7 @@ void LAN_GetServerAddressString(int source, int n, char* buf, int buflen) {
 			return;
 		}
 		break;
+	default: ;
 	}
 	buf[0] = '\0';
 }
@@ -293,6 +298,7 @@ void LAN_GetServerInfo(int source, int n, char* buf, int buflen) {
 			server = &cls.favoriteServers[n];
 		}
 		break;
+	default: ;
 	}
 	if (server && buf) {
 		buf[0] = '\0';
@@ -348,6 +354,7 @@ int LAN_GetServerPing(int source, int n) {
 			server = &cls.favoriteServers[n];
 		}
 		break;
+	default: ;
 	}
 	if (server) {
 		return server->ping;
@@ -378,6 +385,7 @@ static serverInfo_t* LAN_GetServerPtr(int source, int n) {
 			return &cls.favoriteServers[n];
 		}
 		break;
+	default: ;
 	}
 	return nullptr;
 }
@@ -436,6 +444,7 @@ int LAN_CompareServers(int source, int sortKey, int sortDir, int s1, int s2) {
 			res = 0;
 		}
 		break;
+	default: ;
 	}
 
 	if (sortDir) {
@@ -505,6 +514,7 @@ void LAN_MarkServerVisible(int source, int n, qboolean visible) {
 		case AS_FAVORITES:
 			server = &cls.favoriteServers[0];
 			break;
+		default: ;
 		}
 		if (server) {
 			for (n = 0; n < count; n++) {
@@ -530,6 +540,7 @@ void LAN_MarkServerVisible(int source, int n, qboolean visible) {
 				cls.favoriteServers[n].visible = visible;
 			}
 			break;
+		default: ;
 		}
 	}
 }
@@ -557,6 +568,7 @@ int LAN_ServerIsVisible(int source, int n) {
 			return cls.favoriteServers[n].visible;
 		}
 		break;
+	default: ;
 	}
 	return qfalse;
 }

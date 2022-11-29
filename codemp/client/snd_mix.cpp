@@ -186,8 +186,6 @@ S_TransferPaintBuffer
 */
 void S_TransferPaintBuffer(int endtime)
 {
-	int		val;
-
 	unsigned long* pbuf = (unsigned long*)dma.buffer;
 
 	if (s_testsound->integer) {
@@ -202,7 +200,9 @@ void S_TransferPaintBuffer(int endtime)
 		S_TransferStereo16(pbuf, endtime);
 	}
 	else
-	{	// general case
+	{
+		int val;
+		// general case
 		int* p = (int*)paintbuffer;
 		int count = (endtime - s_paintedtime) * dma.channels;
 		const int out_mask = dma.samples - 1;

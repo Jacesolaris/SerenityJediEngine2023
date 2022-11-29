@@ -44,9 +44,8 @@ the back end (before doing the lighting calculation)
 ===============
 */
 void R_TransformDlights(int count, dlight_t* dl, orientationr_t* ori) {
-	vec3_t	temp;
-
 	for (int i = 0; i < count; i++, dl++) {
+		vec3_t temp;
 		VectorSubtract(dl->origin, ori->origin, temp);
 		dl->transformed[0] = DotProduct(temp, ori->axis[0]);
 		dl->transformed[1] = DotProduct(temp, ori->axis[1]);
@@ -62,7 +61,7 @@ Determine which dynamic lights may effect this bmodel
 =============
 */
 void R_DlightBmodel(bmodel_t* bmodel, qboolean NoLight) {
-	int			i, j;
+	int			i;
 
 	// transform all the lights
 	R_TransformDlights(tr.refdef.num_dlights, tr.refdef.dlights, &tr.ori);
@@ -70,6 +69,7 @@ void R_DlightBmodel(bmodel_t* bmodel, qboolean NoLight) {
 	int mask = 0;
 	if (!NoLight)
 	{
+		int j;
 		for (i = 0; i < tr.refdef.num_dlights; i++) {
 			const dlight_t* dl = &tr.refdef.dlights[i];
 
@@ -375,7 +375,6 @@ by the Calc_* functions
 */
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent) {
 	int				i;
-	vec3_t			dir;
 	vec3_t			lightDir;
 	vec3_t			lightOrigin;
 
@@ -433,6 +432,7 @@ void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent) {
 	VectorScale(ent->lightDir, d, lightDir);
 
 	for (i = 0; i < refdef->num_dlights; i++) {
+		vec3_t dir;
 		const dlight_t* dl = &refdef->dlights[i];
 		VectorSubtract(dl->origin, lightOrigin, dir);
 		d = VectorNormalize(dir);

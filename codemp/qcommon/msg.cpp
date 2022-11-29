@@ -134,8 +134,6 @@ int	overflows;
 
 // negative bit values include signs
 void MSG_WriteBits(msg_t* msg, int value, int bits) {
-	int	i;
-
 	oldsize += bits;
 
 	// this isn't an exact overflow check, but close enough
@@ -195,6 +193,7 @@ void MSG_WriteBits(msg_t* msg, int value, int bits) {
 		}
 	}
 	else {
+		int i;
 		value &= (0xffffffff >> (32 - bits));
 		if (bits & 7) {
 			const int nbits = bits & 7;
@@ -221,7 +220,6 @@ int MSG_ReadBits(msg_t* msg, int bits) {
 	int			value;
 	int			get;
 	qboolean	sgn;
-	int			i;
 	value = 0;
 
 	if (bits < 0) {
@@ -256,6 +254,7 @@ int MSG_ReadBits(msg_t* msg, int bits) {
 		}
 	}
 	else {
+		int i;
 		int nbits = 0;
 		if (bits & 7) {
 			nbits = bits & 7;
@@ -1047,7 +1046,7 @@ void MSG_WriteDeltaEntity(msg_t* msg, entityState_s* from, entityState_s* to, qb
 	netField_t* field;
 	int* fromF, * toF;
 
-	const int numFields = static_cast<int>(ARRAY_LEN(entityStateFields));
+	constexpr int numFields = static_cast<int>(std::size(entityStateFields));
 
 	// all fields should be 32 bits to avoid any compiler packing issues
 	// the "number" field is not part of the field list
@@ -1170,7 +1169,7 @@ void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to,
 	netField_t* field;
 	int* fromF, * toF;
 	int			print;
-	int			startBit, endBit;
+	int			startBit;
 
 	if (number < 0 || number >= MAX_GENTITIES) {
 		Com_Error(ERR_DROP, "Bad delta entity number: %i", number);
@@ -1200,7 +1199,7 @@ void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to,
 		return;
 	}
 
-	const int numFields = static_cast<int>(ARRAY_LEN(entityStateFields));
+	constexpr int numFields = static_cast<int>(std::size(entityStateFields));
 	const int lc = MSG_ReadByte(msg);
 
 	if (lc > numFields || lc < 0)
@@ -1281,6 +1280,7 @@ void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to,
 	}
 
 	if (print) {
+		int endBit;
 		if (msg->bit == 0) {
 			endBit = msg->readcount * 8 - GENTITYNUM_BITS;
 		}
@@ -2115,13 +2115,13 @@ void MSG_CheckNETFPSFOverrides(qboolean psfOverrides)
 	{ //do PSF overrides instead of NETF
 		fileName = "psf_overrides.txt";
 		bitStorage = &g_psfBitStorage;
-		numFields = static_cast<int>(ARRAY_LEN(playerStateFields));
+		numFields = static_cast<int>(std::size(playerStateFields));
 	}
 	else
 	{
 		fileName = "netf_overrides.txt";
 		bitStorage = &g_netfBitStorage;
-		numFields = static_cast<int>(ARRAY_LEN(entityStateFields));
+		numFields = static_cast<int>(std::size(entityStateFields));
 	}
 
 	if (*bitStorage)
@@ -2333,7 +2333,7 @@ void MSG_WriteDeltaPlayerstate(msg_t * msg, playerState_s * from, playerState_s 
 #ifdef _OPTIMIZED_VEHICLE_NETWORKING
 	if (isVehiclePS)
 	{//a vehicle playerstate
-		numFields = static_cast<int>(ARRAY_LEN(vehPlayerStateFields));
+		numFields = static_cast<int>(std::size(vehPlayerStateFields));
 		PSFields = vehPlayerStateFields;
 	}
 	else
@@ -2342,13 +2342,13 @@ void MSG_WriteDeltaPlayerstate(msg_t * msg, playerState_s * from, playerState_s 
 			&& to->eFlags & EF_NODRAW)
 		{//pilot riding *inside* a vehicle!
 			MSG_WriteBits(msg, 1, 1);	// Pilot player state
-			numFields = static_cast<int>(ARRAY_LEN(pilotPlayerStateFields));
+			numFields = static_cast<int>(std::size(pilotPlayerStateFields));
 			PSFields = pilotPlayerStateFields;
 		}
 		else
 		{//normal client
 			MSG_WriteBits(msg, 0, 1);	// Normal player state
-			numFields = static_cast<int>(ARRAY_LEN(playerStateFields));
+			numFields = static_cast<int>(std::size(playerStateFields));
 		}
 	}
 	//=====_OPTIMIZED_VEHICLE_NETWORKING=======================================================================
@@ -2547,11 +2547,10 @@ MSG_ReadDeltaPlayerstate
 void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t * to, qboolean isVehiclePS)
 {
 	int			i, lc;
-	int			bits;
 	netField_t* field;
 	netField_t* PSFields = playerStateFields;
 	int			numFields;
-	int			startBit, endBit;
+	int			startBit;
 	int			print;
 	int* fromF, * toF;
 	int			trunc;
@@ -2587,7 +2586,7 @@ void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t *
 #ifdef _OPTIMIZED_VEHICLE_NETWORKING
 	if (isVehiclePS)
 	{//a vehicle playerstate
-		numFields = static_cast<int>(ARRAY_LEN(vehPlayerStateFields));
+		numFields = static_cast<int>(std::size(vehPlayerStateFields));
 		PSFields = vehPlayerStateFields;
 	}
 	else
@@ -2595,12 +2594,12 @@ void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t *
 		const int isPilot = MSG_ReadBits(msg, 1);
 		if (isPilot)
 		{//pilot riding *inside* a vehicle!
-			numFields = static_cast<int>(ARRAY_LEN(pilotPlayerStateFields));
+			numFields = static_cast<int>(std::size(pilotPlayerStateFields));
 			PSFields = pilotPlayerStateFields;
 		}
 		else
 		{//normal client
-			numFields = static_cast<int>(ARRAY_LEN(playerStateFields));
+			numFields = static_cast<int>(std::size(playerStateFields));
 		}
 	}
 	//=====_OPTIMIZED_VEHICLE_NETWORKING=======================================================================
@@ -2670,6 +2669,7 @@ void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t *
 
 	// read the arrays
 	if (MSG_ReadBits(msg, 1)) {
+		int bits;
 		// parse stats
 		if (MSG_ReadBits(msg, 1)) {
 			LOG("PS_STATS");
@@ -2724,6 +2724,7 @@ void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t *
 	}
 
 	if (print) {
+		int endBit;
 		if (msg->bit == 0) {
 			endBit = msg->readcount * 8 - GENTITYNUM_BITS;
 		}

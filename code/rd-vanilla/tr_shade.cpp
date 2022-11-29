@@ -492,7 +492,6 @@ Perform dynamic lighting with another rendering pass
 */
 static void ProjectDlightTexture2(void) {
 	int		i;
-	vec3_t	origin;
 	byte	clipBits[SHADER_MAX_VERTEXES];
 	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
 	float	oldTexCoordsArray[SHADER_MAX_VERTEXES][2];
@@ -504,13 +503,6 @@ static void ProjectDlightTexture2(void) {
 	int		fogging;
 #endif
 	shaderStage_t* dStage;
-	vec3_t	posa;
-	vec3_t	posb;
-	vec3_t	posc;
-	vec3_t	dist;
-	vec3_t	e1;
-	vec3_t	e2;
-	vec3_t	normal;
 	vec3_t	floatColor;
 	byte colorTemp[4];
 
@@ -523,6 +515,8 @@ static void ProjectDlightTexture2(void) {
 
 	for (int l = 0; l < backEnd.refdef.num_dlights; l++)
 	{
+		vec3_t dist;
+		vec3_t origin;
 		float vertCoordsArray[SHADER_MAX_VERTEXES][4];
 		if (!(tess.dlightBits & 1 << l)) {
 			continue;	// this surface definately doesn't have any of this light
@@ -577,6 +571,12 @@ static void ProjectDlightTexture2(void) {
 		numIndexes = 0;
 		for (i = 0; i < tess.numIndexes; i += 3)
 		{
+			vec3_t normal;
+			vec3_t e2;
+			vec3_t e1;
+			vec3_t posc;
+			vec3_t posb;
+			vec3_t posa;
 			const int a = tess.indexes[i];
 			const int b = tess.indexes[i + 1];
 			const int c = tess.indexes[i + 2];
@@ -813,12 +813,9 @@ static void ProjectDlightTexture2(void) {
 }
 static void ProjectDlightTexture(void) {
 	int		i;
-	vec3_t	origin;
 	float* texCoords;
 	byte* colors;
 	byte	clipBits[SHADER_MAX_VERTEXES];
-	float	texCoordsArray[SHADER_MAX_VERTEXES][2];
-	byte	colorArray[SHADER_MAX_VERTEXES][4];
 	glIndex_t	hitIndexes[SHADER_MAX_INDEXES];
 	int		numIndexes;
 	float	scale;
@@ -834,6 +831,9 @@ static void ProjectDlightTexture(void) {
 	}
 
 	for (int l = 0; l < backEnd.refdef.num_dlights; l++) {
+		byte colorArray[SHADER_MAX_VERTEXES][4];
+		float texCoordsArray[SHADER_MAX_VERTEXES][2];
+		vec3_t origin;
 		if (!(tess.dlightBits & 1 << l)) {
 			continue;	// this surface definately doesn't have any of this light
 		}
@@ -858,7 +858,6 @@ static void ProjectDlightTexture(void) {
 
 			VectorSubtract(origin, tess.xyz[i], dist);
 
-			int i1 = 1;
 			int bestIndex = 0;
 			float greatest = tess.normal[i][0];
 			if (greatest < 0.0f)
@@ -872,6 +871,7 @@ static void ProjectDlightTexture(void) {
 			}
 			else
 			{
+				int i1 = 1;
 				while (i1 < 3)
 				{
 					if (tess.normal[i][i1] > greatest && tess.normal[i][i1] > 0.0f ||
@@ -890,11 +890,11 @@ static void ProjectDlightTexture(void) {
 
 			float dUse;
 			constexpr float maxScale = 1.5f;
-			constexpr float maxGroundScale = 1.4f;
 			constexpr float lightScaleTolerance = 0.1f;
 
 			if (bestIndex == 2)
 			{
+				constexpr float maxGroundScale = 1.4f;
 				dUse = origin[2] - tess.xyz[i][2];
 				if (dUse < 0.0f)
 				{
@@ -1270,8 +1270,8 @@ static void ComputeColors(shaderStage_t* pStage, alphaGen_t forceAlphaGen, color
 		break;
 	case CGEN_CONST:
 		for (i = 0; i < tess.numVertexes; i++) {
-			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i],
-				* baSource = (byteAlias_t*)&pStage->constantColor;
+			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i];
+			const byteAlias_t * baSource = (byteAlias_t*)&pStage->constantColor;
 			baDest->i = baSource->i;
 		}
 		break;
@@ -1340,8 +1340,8 @@ static void ComputeColors(shaderStage_t* pStage, alphaGen_t forceAlphaGen, color
 	case CGEN_LIGHTMAPSTYLE:
 		for (i = 0; i < tess.numVertexes; i++)
 		{
-			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i],
-				* baSource = (byteAlias_t*)&styleColors[pStage->lightmapStyle];
+			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i];
+			const byteAlias_t * baSource = (byteAlias_t*)&styleColors[pStage->lightmapStyle];
 			baDest->ui = baSource->ui;
 		}
 		break;
@@ -1661,7 +1661,7 @@ static void RB_IterateStagesGeneric(shaderCommands_t* input)
 
 		if (g_bRenderGlowingObjects)
 		{
-			const float fogColor[3] = { 0.0f, 0.0f, 0.0f };
+			constexpr float fogColor[3] = { 0.0f, 0.0f, 0.0f };
 			qglFogfv(GL_FOG_COLOR, fogColor);
 		}
 		else

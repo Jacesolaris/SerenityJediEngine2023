@@ -2081,13 +2081,13 @@ inline void CBezier::DrawSegment(vec3_t start, vec3_t end, float texcoord1, floa
 	mInit = true;
 }
 
-const	float	BEZIER_RESOLUTION = 16.0f;
+constexpr	float	BEZIER_RESOLUTION = 16.0f;
 
 //----------------------------
 void CBezier::Draw(void)
 {
 	vec3_t	pos, old_pos;
-	const float	incr = 1.0f / BEZIER_RESOLUTION, tex = 1.0f;
+	const float	incr = 1.0f / BEZIER_RESOLUTION;
 
 	VectorCopy(mOrigin1, old_pos);
 
@@ -2097,6 +2097,7 @@ void CBezier::Draw(void)
 
 	for (float mu = incr; mu <= 1.0f; mu += incr)
 	{
+		constexpr float tex = 1.0f;
 		//Four point curve
 		const float mum1 = 1 - mu;
 		const float mum13 = mum1 * mum1 * mum1;
@@ -2153,8 +2154,8 @@ bool FX_WorldToScreen(vec3_t worldCoord, float* x, float* y)
 
 	//NOTE: did it this way because most draw functions expect virtual 640x480 coords
 	//	and adjust them for current resolution
-	const int xcenter = 640 / 2;//gives screen coords in virtual 640x480, to be adjusted when drawn
-	const int ycenter = 480 / 2;//gives screen coords in virtual 640x480, to be adjusted when drawn
+	constexpr int xcenter = 640 / 2;//gives screen coords in virtual 640x480, to be adjusted when drawn
+	constexpr int ycenter = 480 / 2;//gives screen coords in virtual 640x480, to be adjusted when drawn
 
 	VectorSubtract(worldCoord, theFxHelper.refdef->vieworg, local);
 
@@ -2187,7 +2188,7 @@ void CFlash::Init(void)
 	//to a localized flash (so I'll have the same initial RGBA values for both...I need them sync'd for an effect)
 
 	vec3_t	dif;
-	const float maxRange = 900;
+	constexpr float maxRange = 900;
 
 	VectorSubtract(mOrigin1, theFxHelper.refdef->vieworg, dif);
 	const float dis = VectorNormalize(dif);
@@ -2225,7 +2226,6 @@ void CFlash::Draw(void)
 {
 	// Interestingly, if znear is set > than this, then the flash
 	// doesn't appear at all.
-	const float FLASH_DISTANCE_FROM_VIEWER = 12.0f;
 	mRefEnt.reType = RT_SPRITE;
 
 	if (mFlags & FX_LOCALIZED_FLASH)
@@ -2242,6 +2242,7 @@ void CFlash::Draw(void)
 	}
 	else
 	{
+		constexpr float FLASH_DISTANCE_FROM_VIEWER = 12.0f;
 		VectorCopy(theFxHelper.refdef->vieworg, mRefEnt.origin);
 		VectorMA(mRefEnt.origin, FLASH_DISTANCE_FROM_VIEWER, theFxHelper.refdef->viewaxis[0], mRefEnt.origin);
 

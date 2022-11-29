@@ -1515,7 +1515,7 @@ public:
 	}
 
 #ifdef _DEBUG
-	virtual void DebugLine(vec3_t p1, vec3_t p2, int color, bool bbox)
+	void DebugLine(vec3_t p1, vec3_t p2, int color, bool bbox) override
 	{
 	}
 #endif
@@ -3506,7 +3506,6 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 
 		if (tr.startsolid || tr.allsolid || tr.fraction != 1.0f)
 		{ //currently in solid, see what we can do about it
-			vec3_t vSub;
 
 			startSolid = true;
 			anySolid = true;
@@ -3534,7 +3533,9 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 				//Com_Printf("%i: %f %f %f\n", bone.boneNumber, basePos[0], basePos[1], basePos[2]);
 			}
 			else
-			{ //if deep in solid want to try to rise up out of solid before hinting back to base
+			{
+				vec3_t vSub;
+				//if deep in solid want to try to rise up out of solid before hinting back to base
 				VectorSubtract(e.currentOrigin, params->position, vSub);
 				VectorNormalize(vSub);
 				VectorMA(params->position, 40.0f, vSub, goalSpot);
@@ -3772,8 +3773,6 @@ static void G2_RagDollSolve(CGhoul2Info_v& ghoul2V, int g2Index, float decay, in
 	mdxaBone_t temp2;
 	mdxaBone_t curRot;
 	mdxaBone_t curRotInv;
-	mdxaBone_t Gs[3];
-	mdxaBone_t Enew[3];
 
 	assert(ghoul2.mFileName[0]);
 	boneInfo_v& blist = ghoul2.mBlist;
@@ -3870,6 +3869,7 @@ static void G2_RagDollSolve(CGhoul2Info_v& ghoul2V, int g2Index, float decay, in
 		}
 		else
 		{
+			mdxaBone_t Gs[3];
 			vec3_t delAngles;
 			VectorClear(delAngles);
 
@@ -3904,6 +3904,7 @@ static void G2_RagDollSolve(CGhoul2Info_v& ghoul2V, int g2Index, float decay, in
 					numRagDep++;
 					for (k = 0; k < 3; k++)
 					{
+						mdxaBone_t Enew[3];
 						Multiply_3x4Matrix(&Enew[k], &Gs[k], &ragBones[depIndex]); //dest first arg
 						vec3_t tPosition;
 						tPosition[0] = Enew[k].matrix[0][3];
@@ -4075,8 +4076,6 @@ static void G2_IKSolve(CGhoul2Info_v& ghoul2V, int g2Index, float decay, int fra
 	mdxaBone_t temp2;
 	mdxaBone_t curRot;
 	mdxaBone_t curRotInv;
-	mdxaBone_t Gs[3];
-	mdxaBone_t Enew[3];
 
 	assert(ghoul2.mFileName[0]);
 	boneInfo_v& blist = ghoul2.mBlist;
@@ -4084,6 +4083,7 @@ static void G2_IKSolve(CGhoul2Info_v& ghoul2V, int g2Index, float decay, int fra
 	// END this is the objective function thing
 	for (int i = 0; i < numRags; i++)
 	{
+		mdxaBone_t Gs[3];
 		// these are used for affecting the end result
 		boneInfo_t& bone = *ragBoneData[i];
 
@@ -4142,6 +4142,7 @@ static void G2_IKSolve(CGhoul2Info_v& ghoul2V, int g2Index, float decay, int fra
 				numRagDep++;
 				for (k = 0; k < 3; k++)
 				{
+					mdxaBone_t Enew[3];
 					Multiply_3x4Matrix(&Enew[k], &Gs[k], &ragBones[depIndex]); //dest first arg
 					vec3_t tPosition;
 					tPosition[0] = Enew[k].matrix[0][3];

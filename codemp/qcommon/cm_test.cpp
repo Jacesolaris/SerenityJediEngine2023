@@ -251,8 +251,6 @@ rotating entities
 */
 int	CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles) {
 	vec3_t		p_l;
-	vec3_t		temp;
-	vec3_t		forward, right, up;
 
 	// subtract origin offset
 	VectorSubtract(p, origin, p_l);
@@ -261,6 +259,10 @@ int	CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t
 	if (model != BOX_MODEL_HANDLE &&
 		(angles[0] || angles[1] || angles[2]))
 	{
+		vec3_t up;
+		vec3_t right;
+		vec3_t forward;
+		vec3_t temp;
 		AngleVectors(angles, forward, right, up);
 
 		VectorCopy(p_l, temp);
@@ -407,8 +409,6 @@ This is used to cull non-visible entities from snapshots
 */
 int CM_WriteAreaBits(byte* buffer, int area)
 {
-	int		floodnum;
-
 	const int bytes = (cmg.numAreas + 7) >> 3;
 
 #ifndef BSPC
@@ -421,7 +421,7 @@ int CM_WriteAreaBits(byte* buffer, int area)
 	}
 	else
 	{
-		floodnum = cmg.areas[area].floodnum;
+		const int floodnum = cmg.areas[area].floodnum;
 		for (int i = 0; i < cmg.numAreas; i++)
 		{
 			if (cmg.areas[i].floodnum == floodnum || area == -1)

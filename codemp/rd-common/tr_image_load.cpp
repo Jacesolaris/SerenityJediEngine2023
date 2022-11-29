@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "tr_common.h"
 
-const int MAX_IMAGE_LOADERS = 10;
+constexpr int MAX_IMAGE_LOADERS = 10;
 struct ImageLoaderMap
 {
 	const char* extension;

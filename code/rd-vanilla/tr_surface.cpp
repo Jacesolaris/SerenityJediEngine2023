@@ -700,9 +700,8 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, float radius)
 //----------------------------------------------------------------------------
 {
 	vec3_t fwd, old;
-	vec3_t cur, off = { 10,10,10 };
+	vec3_t off = { 10,10,10 };
 	vec3_t rt, up;
-	vec3_t temp;
 	float oldPerc = 0.0f, perc, oldRadius;
 
 	refEntity_t* e = &backEnd.currentEntity->e;
@@ -723,6 +722,8 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, float radius)
 
 	for (int i = 16; i <= dis; i += 16)
 	{
+		vec3_t temp;
+		vec3_t cur;
 		// because of our large step size, we may not actually draw to the end.  In this case, fudge our percent so that we are basically complete
 		if (i + 16 > dis)
 		{
@@ -974,8 +975,8 @@ void RB_SurfacePolychain(srfPoly_t* p) {
 		VectorCopy(p->verts[i].xyz, tess.xyz[numv]);
 		tess.texCoords[numv][0][0] = p->verts[i].st[0];
 		tess.texCoords[numv][0][1] = p->verts[i].st[1];
-		byteAlias_t* baDest = (byteAlias_t*)&tess.vertexColors[numv++],
-			* baSource = (byteAlias_t*)&p->verts[i].modulate;
+		byteAlias_t* baDest = (byteAlias_t*)&tess.vertexColors[numv++];
+		const byteAlias_t * baSource = (byteAlias_t*)&p->verts[i].modulate;
 		baDest->i = baSource->i;
 	}
 
@@ -1195,13 +1196,12 @@ static void DoSprite(vec3_t origin, float radius, float rotation)
 //------------------
 static void RB_SurfaceSaberGlow()
 {
-	vec3_t		end;
-
 	refEntity_t* e = &backEnd.currentEntity->e;
 
 	// Render the glow part of the blade
 	for (float i = e->saberLength; i > 0; i -= e->radius * 0.65f)
 	{
+		vec3_t end;
 		VectorMA(e->origin, i, e->axis[0], end);
 
 		DoSprite(end, e->radius, 0.0f);//Q_flrand(0.0f, 1.0f) * 360.0f );
@@ -1356,7 +1356,6 @@ RB_SurfaceFace
 */
 void RB_SurfaceFace(srfSurfaceFace_t* surf) {
 	int			i;
-	byteAlias_t	ba;
 
 	RB_CHECKOVERFLOW(surf->numPoints, surf->numIndices);
 
@@ -1388,6 +1387,7 @@ void RB_SurfaceFace(srfSurfaceFace_t* surf) {
 	}
 
 	for (i = 0, v = surf->points[0], ndx = tess.numVertexes; i < numPoints; i++, v += VERTEXSIZE, ndx++) {
+		byteAlias_t ba;
 		VectorCopy(v, tess.xyz[ndx]);
 		tess.texCoords[ndx][0][0] = v[3];
 		tess.texCoords[ndx][0][1] = v[4];
@@ -1592,8 +1592,8 @@ constexpr auto BEZIER_STEP = 0.05f;	// must be in the range of 0 to 1;
 // FIXME: This function is horribly expensive
 static void RB_SurfaceLathe()
 {
-	vec2_t		pt, oldpt, l_oldpt;
-	vec2_t		pt2, oldpt2, l_oldpt2;
+	vec2_t		pt, l_oldpt;
+	vec2_t		pt2, l_oldpt2;
 	float d = 1.0f, pain = 0.0f;
 	int			i;
 
@@ -1629,6 +1629,8 @@ static void RB_SurfaceLathe()
 	// Do bezier profile strip, then lathe this around to make a 3d model
 	for (float mu = 0.0f; mu <= 1.01f * d; mu += bezierStep)
 	{
+		vec2_t oldpt2;
+		vec2_t oldpt;
 		// Four point curve
 		const float mum1 = 1 - mu;
 		const float mum13 = mum1 * mum1 * mum1;
@@ -1785,9 +1787,8 @@ static void RB_SurfaceClouds()
 				0.006f,
 				0.0f };
 
-	vec3_t		pt, oldpt;
-	vec3_t		pt2, oldpt2;
-	const float		latheStep = 30.0f;
+	vec3_t		pt;
+	vec3_t		pt2;
 	float* stripDef, * alphaDef, * curveDef, ct;
 
 	refEntity_t* e = &backEnd.currentEntity->e;
@@ -1812,6 +1813,9 @@ static void RB_SurfaceClouds()
 	// do the strip def, then lathe this around to make a 3d model
 	for (int i = 0; i < ct - 1; i++)
 	{
+		constexpr float latheStep = 30.0f;
+		vec3_t oldpt2;
+		vec3_t oldpt;
 		VectorSet(oldpt, stripDef[i] * (e->radius - e->rotation) + e->rotation, 0, curveDef[i] * e->radius * e->backlerp);
 		VectorSet(oldpt2, stripDef[i + 1] * (e->radius - e->rotation) + e->rotation, 0, curveDef[i + 1] * e->radius * e->backlerp);
 

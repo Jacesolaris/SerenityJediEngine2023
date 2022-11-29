@@ -170,7 +170,7 @@ public:
 	int			GetID(const char* file);			// find the roff id by filename
 	qboolean		Unload(int id);				// when a roff is done, it can be removed to free up resources
 	qboolean	Clean(qboolean isClient);					// should be called when level is done, frees all roff resources
-	void		List(void);						// dumps a list of all cached roff files to the console
+	void		List(void) const;						// dumps a list of all cached roff files to the console
 	qboolean		List(int id);					// dumps the contents of the specified roff to the console
 
 	qboolean	Play(int entID, int roffID, qboolean doTranslation, qboolean isClient);	// TODO: implement signal on playback completion.

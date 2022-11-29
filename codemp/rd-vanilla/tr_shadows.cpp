@@ -227,7 +227,6 @@ void RB_DoShadowTessEnd(vec3_t lightPos)
 	}
 
 #if 1 //controlled method - try to keep shadows in range so they don't show through so much -rww
-	vec3_t	worldxyz;
 	vec3_t	entLight;
 
 	VectorCopy(backEnd.currentEntity->lightDir, entLight);
@@ -241,6 +240,7 @@ void RB_DoShadowTessEnd(vec3_t lightPos)
 	// project vertexes away from light direction
 	for (i = 0; i < tess.numVertexes; i++)
 	{
+		vec3_t worldxyz;
 		//add or.origin to vert xyz to end up with world oriented coord, then figure
 		//out the ground pos for the vert to project the shadow volume to
 		VectorAdd(tess.xyz[i], backEnd.ori.origin, worldxyz);
@@ -273,7 +273,6 @@ void RB_DoShadowTessEnd(vec3_t lightPos)
 
 	numTris = tess.numIndexes / 3;
 	for (i = 0; i < numTris; i++) {
-		vec3_t	d1, d2, normal;
 		float	d;
 
 		const int i1 = tess.indexes[i * 3 + 0];
@@ -286,6 +285,9 @@ void RB_DoShadowTessEnd(vec3_t lightPos)
 
 		if (!lightPos)
 		{
+			vec3_t normal;
+			vec3_t d2;
+			vec3_t d1;
 			VectorSubtract(v2, v1, d1);
 			VectorSubtract(v3, v1, d2);
 			CrossProduct(d1, d2, normal);

@@ -602,10 +602,10 @@ static void SV_CloseDownload(client_t* cl) {
 	*cl->downloadName = 0;
 
 	// Free the temporary buffer space
-	for (int i = 0; i < MAX_DOWNLOAD_WINDOW; i++) {
-		if (cl->downloadBlocks[i]) {
-			Z_Free(cl->downloadBlocks[i]);
-			cl->downloadBlocks[i] = nullptr;
+	for (auto & download_block : cl->downloadBlocks) {
+		if (download_block) {
+			Z_Free(download_block);
+			download_block = nullptr;
 		}
 	}
 }
@@ -707,15 +707,14 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 {
 	int curindex;
 	int blockspersnap;
-	int unreferenced = 1;
-	char errorMessage[1024];
-	char pakbuf[MAX_QPATH];
 
 	if (!*cl->downloadName)
 		return;	// Nothing being downloaded
 
 	if (!cl->download)
 	{
+		char pakbuf[MAX_QPATH];
+		int unreferenced = 1;
 		qboolean idPack = qfalse;
 		qboolean missionPack = qfalse;
 
@@ -761,6 +760,7 @@ void SV_WriteDownloadToClient(client_t* cl, msg_t* msg)
 		if (!sv_allowDownload->integer ||
 			idPack || unreferenced ||
 			(cl->downloadSize = FS_SV_FOpenFileRead(cl->downloadName, &cl->download)) < 0) {
+			char errorMessage[1024];
 			// cannot auto-download file
 			if (unreferenced)
 			{
@@ -950,15 +950,17 @@ This routine would be a bit simpler with a goto but i abstained
 =================
 */
 static void SV_VerifyPaks_f(client_t* cl) {
-	int nChkSum1, nChkSum2, i, j;
-	int nClientChkSum[1024];
-	int nServerChkSum[1024];
+	int nChkSum1, nChkSum2;
 
 	// if we are pure, we "expect" the client to load certain things from
 	// certain pk3 files, namely we want the client to have loaded the
 	// ui and cgame that we think should be loaded based on the pure setting
 	//
 	if (sv_pure->integer != 0) {
+		int nServerChkSum[1024];
+		int nClientChkSum[1024];
+		int j;
+		int i;
 		nChkSum1 = nChkSum2 = 0;
 		// we run the game, so determine which cgame and ui the client "should" be running
 		//dlls are valid too now -rww

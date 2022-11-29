@@ -416,13 +416,13 @@ public:
 
 	std::vector<CGhoul2Info>& Get(int handle) override
 	{
-		static std::vector<CGhoul2Info> null;
 		assert(handle > 0); //null handle
 		assert((handle & G2_INDEX_MASK) >= 0 && (handle & G2_INDEX_MASK) < MAX_G2_MODELS); //junk handle
 		assert(mIds[handle & G2_INDEX_MASK] == handle); // not a valid handle, could be old or garbage
 		if (handle <= 0 || (handle & G2_INDEX_MASK) < 0 || (handle & G2_INDEX_MASK) >= MAX_G2_MODELS || mIds[handle &
 			G2_INDEX_MASK] != handle)
 		{
+			static std::vector<CGhoul2Info> null;
 			null.clear();
 			return null;
 		}

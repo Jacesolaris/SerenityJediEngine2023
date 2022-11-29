@@ -37,7 +37,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // The vertigons are applied as part of the renderer backend.  That is, they access OpenGL calls directly.
 
 unsigned char randomindex, randominterval;
-const float randomchart[256] = {
+constexpr float randomchart[256] = {
 	0.6554f, 0.6909f, 0.4806f, 0.6218f, 0.5717f, 0.3896f, 0.0677f, 0.7356f,
 	0.8333f, 0.1105f, 0.4445f, 0.8161f, 0.4689f, 0.0433f, 0.7152f, 0.0336f,
 	0.0186f, 0.9140f, 0.1626f, 0.6553f, 0.8340f, 0.7094f, 0.2020f, 0.8087f,
@@ -105,7 +105,7 @@ static void R_SurfaceSpriteFrameUpdate(void)
 {
 	vec3_t ang, diff, retwindvec;
 	float targetspeed;
-	const vec3_t up = { 0,0,1 };
+	constexpr vec3_t up = { 0,0,1 };
 
 	if (backEnd.refdef.time == lastSSUpdateTime)
 		return;
@@ -533,7 +533,6 @@ static void RB_DrawVerticalSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 	float triarea;
 	vec2_t vec1to2, vec1to3;
 
-	vec3_t v1, v2, v3;
 	float a1, a2, a3;
 	float l1, l2, l3;
 	vec2_t fog1, fog2, fog3;
@@ -544,7 +543,6 @@ static void RB_DrawVerticalSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 	float step;
 	float fa, fb, fc;
 
-	vec3_t curpoint;
 	float width, height;
 	float alpha, alphapos, thisspritesfadestart, light;
 
@@ -615,6 +613,9 @@ static void RB_DrawVerticalSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 
 	for (curindex = 0; curindex < input->numIndexes - 2; curindex += 3)
 	{
+		vec3_t v3;
+		vec3_t v2;
+		vec3_t v1;
 		curvert = input->indexes[curindex];
 		VectorCopy(input->xyz[curvert], v1);
 		if (stage->ss->facing)
@@ -742,6 +743,7 @@ static void RB_DrawVerticalSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 				alpha = 1.0 - (thisspritesfadestart - alphapos) / faderange;
 				if (alpha > 0.0)
 				{
+					vec3_t curpoint;
 					if (alpha > 1.0)
 						alpha = 1.0;
 
@@ -829,7 +831,6 @@ static void RB_DrawVerticalSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 
 static void RB_OrientedSurfaceSprite(vec3_t loc, float width, float height, byte light, byte alpha, vec2_t fog, int faceup)
 {
-	vec3_t loc2, right;
 	float points[16];
 	color4ub_t color;
 
@@ -873,6 +874,8 @@ static void RB_OrientedSurfaceSprite(vec3_t loc, float width, float height, byte
 	}
 	else
 	{
+		vec3_t right;
+		vec3_t loc2;
 		VectorMA(loc, height, ssViewUp, loc2);
 		VectorScale(ssViewRight, width * 0.5, right);
 
@@ -912,14 +915,11 @@ static void RB_OrientedSurfaceSprite(vec3_t loc, float width, float height, byte
 static void RB_DrawOrientedSurfaceSprites(shaderStage_t* stage, shaderCommands_t* input)
 {
 	int curvert;
-	vec3_t dist;
 	float minnormal;
 	vec2_t vec1to2, vec1to3;
 
-	vec3_t v1, v2, v3;
 	vec2_t fog1, fog2, fog3;
 
-	vec3_t curpoint;
 	vec2_t fogv;
 
 	const float cutdist = stage->ss->fadeMax * rangescalefactor, cutdist2 = cutdist * cutdist;
@@ -948,6 +948,7 @@ static void RB_DrawOrientedSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 	// Quickly calc all the alphas for each vertex
 	for (curvert = 0; curvert < input->numVertexes; curvert++)
 	{
+		vec3_t dist;
 		// Calc alpha at each point
 		VectorSubtract(ssViewOrigin, input->xyz[curvert], dist);
 		SSVertAlpha[curvert] = 1.0 - (VectorLengthSquared(dist) - fadedist2) * inv_fadediff;
@@ -955,6 +956,9 @@ static void RB_DrawOrientedSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 
 	for (int curindex = 0; curindex < input->numIndexes - 2; curindex += 3)
 	{
+		vec3_t v3;
+		vec3_t v2;
+		vec3_t v1;
 		curvert = input->indexes[curindex];
 		VectorCopy(input->xyz[curvert], v1);
 		if (input->normal[curvert][2] < minnormal)
@@ -1040,6 +1044,7 @@ static void RB_DrawOrientedSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 				randomindex += randominterval;
 				if (alpha > 0.0)
 				{
+					vec3_t curpoint;
 					if (alpha > 1.0)
 						alpha = 1.0;
 
@@ -1094,7 +1099,6 @@ static void RB_DrawOrientedSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 
 static void RB_EffectSurfaceSprite(vec3_t loc, float width, float height, byte light, byte alpha, float life, int faceup)
 {
-	vec3_t loc2, right;
 	float points[16];
 	color4ub_t color;
 
@@ -1138,6 +1142,8 @@ static void RB_EffectSurfaceSprite(vec3_t loc, float width, float height, byte l
 	}
 	else
 	{
+		vec3_t right;
+		vec3_t loc2;
 		VectorMA(loc, height, ssViewUp, loc2);
 		VectorScale(ssViewRight, width * 0.5, right);
 
@@ -1177,11 +1183,9 @@ static void RB_EffectSurfaceSprite(vec3_t loc, float width, float height, byte l
 static void RB_DrawEffectSurfaceSprites(shaderStage_t* stage, shaderCommands_t* input)
 {
 	int curindex, curvert;
-	vec3_t dist;
 	float triarea, minnormal;
 	vec2_t vec1to2, vec1to3;
 
-	vec3_t v1, v2, v3;
 	float a1, a2, a3;
 	float l1, l2, l3;
 
@@ -1191,7 +1195,6 @@ static void RB_DrawEffectSurfaceSprites(shaderStage_t* stage, shaderCommands_t* 
 	float effecttime, effectpos;
 	float density;
 
-	vec3_t curpoint;
 	float width, height;
 	float alpha, alphapos, thisspritesfadestart, light;
 	byte randomindex2;
@@ -1244,6 +1247,7 @@ static void RB_DrawEffectSurfaceSprites(shaderStage_t* stage, shaderCommands_t* 
 	// Quickly calc all the alphas for each vertex
 	for (curvert = 0; curvert < input->numVertexes; curvert++)
 	{
+		vec3_t dist;
 		// Calc alpha at each point
 		VectorSubtract(ssViewOrigin, input->xyz[curvert], dist);
 		SSVertAlpha[curvert] = 1.0f - (VectorLengthSquared(dist) - fadedist2) * inv_fadediff;
@@ -1257,6 +1261,9 @@ static void RB_DrawEffectSurfaceSprites(shaderStage_t* stage, shaderCommands_t* 
 
 	for (curindex = 0; curindex < input->numIndexes - 2; curindex += 3)
 	{
+		vec3_t v3;
+		vec3_t v2;
+		vec3_t v1;
 		curvert = input->indexes[curindex];
 		VectorCopy(input->xyz[curvert], v1);
 		if (input->normal[curvert][2] < minnormal)
@@ -1337,6 +1344,7 @@ static void RB_DrawEffectSurfaceSprites(shaderStage_t* stage, shaderCommands_t* 
 				alpha = 1.0f - (thisspritesfadestart - alphapos) / faderange;
 				if (alpha > 0.0f)
 				{
+					vec3_t curpoint;
 					if (alpha > 1.0f)
 						alpha = 1.0f;
 

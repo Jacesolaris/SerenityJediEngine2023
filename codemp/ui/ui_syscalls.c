@@ -496,10 +496,10 @@ void QDECL UI_Printf(const char* msg, ...) {
 		trap_Print(text);
 }
 
-static void TranslateSyscalls(void) {
-	static uiImport_t import;
+static void TranslateSyscalls(void)
+{
+	static uiImport_t import = {0};
 
-	memset(&import, 0, sizeof import);
 	trap = &import;
 
 	Com_Error = UI_Error;

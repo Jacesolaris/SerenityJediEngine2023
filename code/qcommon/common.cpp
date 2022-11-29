@@ -462,12 +462,12 @@ qboolean Com_AddStartupCommands(void) {
 
 void Info_Print(const char* s) {
 	char	key[512];
-	char	value[512];
 
 	if (*s == '\\')
 		s++;
 	while (*s)
 	{
+		char value[512];
 		char* o = key;
 		while (*s && *s != '\\')
 			*o++ = *s++;
@@ -1009,11 +1009,10 @@ Com_Init
 =================
 */
 void Com_Init(char* commandLine) {
-	char* s;
-
 	Com_Printf("%s %s %s\n", Q3_VERSION, PLATFORM_STRING, SOURCE_DATE);
 
 	try {
+		char* s;
 		Com_InitZoneMemory();
 		Cvar_Init();
 

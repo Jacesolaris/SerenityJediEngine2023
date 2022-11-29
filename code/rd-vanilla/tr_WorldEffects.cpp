@@ -601,7 +601,7 @@ public:
 		}
 	}
 
-	const char* GenCachedWeatherFilename(void)
+	static const char* GenCachedWeatherFilename()
 	{
 		return va("maps/%s.weather", sv_mapname->string);
 	}

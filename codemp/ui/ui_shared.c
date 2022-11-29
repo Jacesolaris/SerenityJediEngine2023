@@ -3143,10 +3143,10 @@ qboolean Item_ListBox_HandleKey(itemDef_t* item, int key, qboolean down, qboolea
 {
 	listBoxDef_t* listPtr = item->typeData.listbox;
 	const int count = DC->feederCount(item->special);
-	int viewmax;
 	if (force || Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags &
 		WINDOW_HASFOCUS)
 	{
+		int viewmax;
 		const int max = Item_ListBox_MaxScroll(item);
 		if (item->window.flags & WINDOW_HORIZONTAL)
 		{
@@ -6852,7 +6852,6 @@ void Item_Paint(itemDef_t* item)
 				Item_TextColor(item, &color);
 
 				{
-					int textWidth;
 					int xPos;
 					// stupid C language
 					float fDescScale = parent->descScale ? parent->descScale : 1;
@@ -6860,7 +6859,7 @@ void Item_Paint(itemDef_t* item)
 					int iYadj = 0;
 					while (1)
 					{
-						textWidth = DC->textWidth(textPtr, fDescScale, FONT_SMALL2);
+						const int textWidth = DC->textWidth(textPtr, fDescScale, FONT_SMALL2);
 
 						if (parent->descAlignment == ITEM_ALIGN_RIGHT)
 						{

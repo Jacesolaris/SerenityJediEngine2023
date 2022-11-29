@@ -148,10 +148,10 @@ qhandle_t RE_RegisterIndividualSkin(const char* name, qhandle_t hSkin)
 			}
 			surfName[strlen(surfName) - 4] = 0;	//remove the "_off"
 		}
-		if (static_cast<unsigned>(skin->numSurfaces) >= ARRAY_LEN(skin->surfaces))
+		if (static_cast<unsigned>(skin->numSurfaces) >= std::size(skin->surfaces))
 		{
 			assert(ARRAY_LEN(skin->surfaces) > static_cast<unsigned>(skin->numSurfaces));
-			ri->Printf(PRINT_ALL, "WARNING: RE_RegisterSkin( '%s' ) more than %u surfaces!\n", name, ARRAY_LEN(skin->surfaces));
+			ri->Printf(PRINT_ALL, "WARNING: RE_RegisterSkin( '%s' ) more than %u surfaces!\n", name, std::size(skin->surfaces));
 			break;
 		}
 		skinSurface_t* surf = static_cast<skinSurface_t*>(Hunk_Alloc(sizeof * skin->surfaces[0], h_low));

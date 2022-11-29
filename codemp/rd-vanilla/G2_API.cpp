@@ -2049,7 +2049,7 @@ qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, const int modelIndex, const 
 	//	G2ERROR(ghoul2.IsValid(),"Invalid ghlInfo");
 	G2ERROR(matrix, "NULL matrix");
 	G2ERROR(modelIndex >= 0 && modelIndex < ghoul2.size(), "Invalid ModelIndex");
-	const static mdxaBone_t identityMatrix =
+	constexpr static mdxaBone_t identityMatrix =
 	{
 		{
 			{0.0f, -1.0f, 0.0f, 0.0f},

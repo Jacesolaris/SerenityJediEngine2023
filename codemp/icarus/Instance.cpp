@@ -425,7 +425,7 @@ Save
 int ICARUS_Instance::Save(void)
 {
 	//Save out a ICARUS save block header with the ICARUS version
-	const double	version = ICARUS_VERSION;
+	constexpr double	version = ICARUS_VERSION;
 	m_interface->I_WriteSaveData(INT_ID('I', 'C', 'A', 'R'), &version, sizeof version);
 
 	//Save out the signals

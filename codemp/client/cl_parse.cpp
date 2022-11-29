@@ -123,7 +123,7 @@ void CL_ParsePacketEntities(msg_t* msg, clSnapshot_t* oldframe, clSnapshot_t* ne
 		}
 	}
 
-	while (1) {
+	while (true) {
 		// read the entity index number
 		const int newnum = MSG_ReadBits(msg, GENTITYNUM_BITS);
 
@@ -424,9 +424,6 @@ gamestate, and possibly during gameplay.
 ==================
 */
 void CL_SystemInfoChanged(void) {
-	char			key[BIG_INFO_KEY];
-	char			value[BIG_INFO_VALUE];
-
 	const char* systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SYSTEMINFO];
 	// NOTE TTimo:
 	// when the serverId changes, any further messages we send to the server will use this new serverId
@@ -459,6 +456,8 @@ void CL_SystemInfoChanged(void) {
 	// scan through all the variables in the systeminfo and locally set cvars to match
 	s = systemInfo;
 	while (s) {
+		char value[BIG_INFO_VALUE];
+		char key[BIG_INFO_KEY];
 		Info_NextPair(&s, key, value);
 		if (!key[0]) {
 			break;
@@ -507,7 +506,7 @@ void CL_ParseGamestate(msg_t* msg) {
 
 	// parse all the configstrings and baselines
 	cl.gameState.dataCount = 1;	// leave a 0 at the beginning for uninitialized configstrings
-	while (1) {
+	while (true) {
 		const int cmd = MSG_ReadByte(msg);
 
 		if (cmd == svc_EOF) {
@@ -725,7 +724,7 @@ void CL_ParseServerMessage(msg_t* msg) {
 	//
 	// parse the message
 	//
-	while (1) {
+	while (true) {
 		if (msg->readcount > msg->cursize) {
 			Com_Error(ERR_DROP, "CL_ParseServerMessage: read past end of server message");
 		}

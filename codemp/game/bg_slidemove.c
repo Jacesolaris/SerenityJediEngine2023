@@ -222,7 +222,6 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				{
 					//bounce off impact surf and turn away
 					vec3_t pushDir = { 0 }, turnAwayAngles, turnDelta;
-					float pitchTurnStrength, yawTurnStrength;
 					vec3_t moveDir;
 					//bounce
 					if (!turnHitEnt)
@@ -287,7 +286,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 					}
 					else
 					{
-						pitchTurnStrength = turnStrength * turnDelta[PITCH];
+						float pitchTurnStrength = turnStrength * turnDelta[PITCH];
 						if (pitchTurnStrength > MAX_IMPACT_TURN_ANGLE)
 						{
 							pitchTurnStrength = MAX_IMPACT_TURN_ANGLE;
@@ -308,7 +307,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 					}
 					else
 					{
-						yawTurnStrength = turnStrength * turnDelta[YAW];
+						float yawTurnStrength = turnStrength * turnDelta[YAW];
 						if (yawTurnStrength > MAX_IMPACT_TURN_ANGLE)
 						{
 							yawTurnStrength = MAX_IMPACT_TURN_ANGLE;
@@ -363,7 +362,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 						}
 						else
 						{
-							pitchTurnStrength = turnStrength * turnDelta[PITCH];
+							float pitchTurnStrength = turnStrength * turnDelta[PITCH];
 							if (pitchTurnStrength > MAX_IMPACT_TURN_ANGLE)
 							{
 								pitchTurnStrength = MAX_IMPACT_TURN_ANGLE;
@@ -384,7 +383,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 						}
 						else
 						{
-							yawTurnStrength = turnStrength * turnDelta[YAW];
+							float yawTurnStrength = turnStrength * turnDelta[YAW];
 							if (yawTurnStrength > MAX_IMPACT_TURN_ANGLE)
 							{
 								yawTurnStrength = MAX_IMPACT_TURN_ANGLE;

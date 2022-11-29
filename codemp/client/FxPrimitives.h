@@ -413,7 +413,7 @@ protected:
 public:
 
 	CBezier() { mInit = false; }
-	virtual ~CBezier() {}
+	~CBezier() override {}
 
 	void Die() override {}
 	bool Update() override;

@@ -605,7 +605,6 @@ static void CM_LoadMap_Actual(const char* name, qboolean clientload, int* checks
 	dheader_t		header;
 	static unsigned	last_checksum;
 	char			origName[MAX_OSPATH];
-	void* newBuff = nullptr;
 
 	if (!name || !name[0]) {
 		Com_Error(ERR_DROP, "CM_LoadMap: NULL name");
@@ -669,7 +668,7 @@ static void CM_LoadMap_Actual(const char* name, qboolean clientload, int* checks
 	const int iBSPLen = FS_FOpenFileRead(name, &h, qfalse);
 	if (h)
 	{
-		newBuff = Z_Malloc(iBSPLen, TAG_BSP_DISKIMAGE);
+		void* newBuff = Z_Malloc(iBSPLen, TAG_BSP_DISKIMAGE);
 		FS_Read(newBuff, iBSPLen, h);
 		FS_FCloseFile(h);
 

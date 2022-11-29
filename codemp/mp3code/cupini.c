@@ -191,12 +191,13 @@ static const AUDIO_DECODE_ROUTINE decode_routine_table[4] =
 /*---------------------------------------------------------*/
 static void table_init()
 {
-	int i, j;
-	int code;
 	static int iOnceOnly = 0;
 
 	if (!iOnceOnly++)
 	{
+		int code;
+		int j;
+		int i;
 		/*--  c_values (dequant) --*/
 		for (i = 1; i < 18; i++)
 			look_c_value[i] = 2.0F / steps[i];

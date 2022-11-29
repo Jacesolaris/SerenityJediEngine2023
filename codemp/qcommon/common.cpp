@@ -485,12 +485,12 @@ qboolean Com_AddStartupCommands(void)
 void Info_Print(const char* s)
 {
 	char key[BIG_INFO_KEY];
-	char value[BIG_INFO_VALUE];
 
 	if (*s == '\\')
 		s++;
 	while (*s)
 	{
+		char value[BIG_INFO_VALUE];
 		char* o = key;
 		while (*s && *s != '\\')
 			*o++ = *s++;
@@ -1220,13 +1220,13 @@ Com_Init
 */
 void Com_Init(char* commandLine)
 {
-	char* s;
 	int qport;
 
 	Com_Printf("%s %s %s\n", JK_VERSION, PLATFORM_STRING, SOURCE_DATE);
 
 	try
 	{
+		char* s;
 		// initialize the weak pseudo-random number generator for use later.
 		Com_InitRand();
 
@@ -1605,7 +1605,7 @@ void Com_Frame(void)
 #endif
 		int minMsec;
 		int timeVal;
-		static int lastTime = 0, bias = 0;
+		static int lastTime = 0;
 
 		int timeBeforeFirstEvents = 0;
 		int timeBeforeServer = 0;
@@ -1631,6 +1631,7 @@ void Com_Frame(void)
 				minMsec = SV_FrameMsec();
 			else
 			{
+				static int bias = 0;
 				if (com_minimized->integer && com_maxfpsMinimized->integer > 0)
 					minMsec = 1000 / com_maxfpsMinimized->integer;
 				else if (com_unfocused->integer && com_maxfpsUnfocused->integer > 0)

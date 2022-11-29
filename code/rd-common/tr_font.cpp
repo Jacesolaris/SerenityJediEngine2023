@@ -1968,12 +1968,12 @@ void R_FontList_f(void)
 {
 	Com_Printf("------------------------------------\n");
 
-	for (FontIndexMap_t::iterator it = g_mapFontIndexes.begin(); it != g_mapFontIndexes.end(); ++it)
+	for (const auto & g_mapFontIndexe : g_mapFontIndexes)
 	{
-		CFontInfo* font = GetFont((*it).second);
+		CFontInfo* font = GetFont(g_mapFontIndexe.second);
 		if (font)
 		{
-			Com_Printf("%3i:%s  ps:%hi h:%hi a:%hi d:%hi\n", (*it).second, font->m_sFontName,
+			Com_Printf("%3i:%s  ps:%hi h:%hi a:%hi d:%hi\n", g_mapFontIndexe.second, font->m_sFontName,
 				font->mPointSize, font->mHeight, font->mAscender, font->mDescender);
 		}
 	}

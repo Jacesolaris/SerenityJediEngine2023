@@ -139,9 +139,9 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 	}
 
 	// check against frustum planes
-	for (int i = 0; i < 4; i++)
+	for (auto & i : tr.viewParms.frustum)
 	{
-		const cplane_t* frust = &tr.viewParms.frustum[i];
+		const cplane_t* frust = &i;
 
 		const float dist = DotProduct(pt, frust->normal) - frust->dist;
 		if (dist < -radius)
@@ -585,11 +585,11 @@ void R_SetupFrustum(void)
 	VectorScale(tr.viewParms.ori.axis[0], xs, tr.viewParms.frustum[3].normal);
 	VectorMA(tr.viewParms.frustum[3].normal, -xc, tr.viewParms.ori.axis[2], tr.viewParms.frustum[3].normal);
 
-	for (int i = 0; i < 4; i++)
+	for (auto & i : tr.viewParms.frustum)
 	{
-		tr.viewParms.frustum[i].type = PLANE_NON_AXIAL;
-		tr.viewParms.frustum[i].dist = DotProduct(tr.viewParms.ori.origin, tr.viewParms.frustum[i].normal);
-		SetPlaneSignbits(&tr.viewParms.frustum[i]);
+		i.type = PLANE_NON_AXIAL;
+		i.dist = DotProduct(tr.viewParms.ori.origin, i.normal);
+		SetPlaneSignbits(&i);
 	}
 }
 
@@ -684,7 +684,6 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, int entityNum,
 	vec3_t pvsOrigin, qboolean* mirror)
 {
 	cplane_t originalPlane, plane;
-	vec3_t transformed;
 
 	// create plane axis for the portal we are seeing
 	R_PlaneForSurface(drawSurf->surface, &originalPlane);
@@ -720,6 +719,7 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, int entityNum,
 	// the origin of the camera
 	for (int i = 0; i < tr.refdef.num_entities; i++)
 	{
+		vec3_t transformed;
 		trRefEntity_t* e = &tr.refdef.entities[i];
 		if (e->e.reType != RT_PORTALSURFACE)
 		{
@@ -879,7 +879,6 @@ static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128]
 	shader_t* shader;
 	int fogNum;
 	int dlighted;
-	vec4_t clip, eye;
 	int i;
 	unsigned int pointOr = 0;
 	unsigned int pointAnd = static_cast<unsigned>(~0);
@@ -892,6 +891,8 @@ static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128]
 	assert(tess.numVertexes < 128);
 	for (i = 0; i < tess.numVertexes; i++)
 	{
+		vec4_t eye;
+		vec4_t clip;
 		unsigned int pointFlags = 0;
 
 		R_TransformModelToClip(tess.xyz[i], tr.ori.modelMatrix, tr.viewParms.projectionMatrix, eye, clip);
