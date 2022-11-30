@@ -901,10 +901,10 @@ Completed
 -------------------------
 */
 
-int CTaskManager::Completed(int id)
+int CTaskManager::Completed(int id) const
 {
 	//Mark the task as completed
-	for (auto & taskGroup : m_taskGroups)
+	for (const auto & taskGroup : m_taskGroups)
 	{
 		//If this returns true, then the task was marked properly
 		if (taskGroup->MarkTaskComplete(id))

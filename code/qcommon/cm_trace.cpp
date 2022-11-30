@@ -264,10 +264,9 @@ void CM_TestInLeaf(traceWork_t* tw, cLeaf_t* leaf, clipMap_t* local) {
 #else
 	if (!cm_noCurves->integer)
 	{
-		cPatch_t* patch;
 #endif //BSPC
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
-			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
+			cPatch_t* patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
 
 			if (!patch) {
 				continue;
@@ -538,10 +537,9 @@ void CM_TraceToLeaf(traceWork_t * tw, cLeaf_t * leaf, clipMap_t * local) {
 #else
 	if (!cm_noCurves->integer)
 	{
-		cPatch_t* patch;
 #endif
 		for (k = 0; k < leaf->numLeafSurfaces; k++) {
-			patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
+			cPatch_t* patch = local->surfaces[local->leafsurfaces[leaf->firstLeafSurface + k]];
 			if (!patch) {
 				continue;
 			}

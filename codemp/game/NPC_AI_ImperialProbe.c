@@ -277,7 +277,7 @@ ImperialProbe_FireBlaster
 */
 void ImperialProbe_FireBlaster(void)
 {
-	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
+	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
 	mdxaBone_t boltMatrix;
 
@@ -297,6 +297,9 @@ void ImperialProbe_FireBlaster(void)
 
 	if (NPCS.NPC->health)
 	{
+		vec3_t angleToEnemy1;
+		vec3_t delta1;
+		vec3_t enemy_org1;
 		CalcEntitySpot(NPCS.NPC->enemy, SPOT_CHEST, enemy_org1);
 		enemy_org1[0] += Q_irand(0, 10);
 		enemy_org1[1] += Q_irand(0, 10);
@@ -335,10 +338,10 @@ ImperialProbe_Ranged
 */
 void ImperialProbe_Ranged(qboolean visible, qboolean advance)
 {
-	int delay_min, delay_max;
-
 	if (TIMER_Done(NPCS.NPC, "attackDelay")) // Attack?
 	{
+		int delay_max;
+		int delay_min;
 		if (g_npcspskill.integer == 0)
 		{
 			delay_min = 500;

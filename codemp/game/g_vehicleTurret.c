@@ -352,13 +352,13 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 
 void VEH_TurretObeyPassengerControl(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
 {
-	turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
+	const turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
 	const gentity_t* passenger = (gentity_t*)pVeh->m_ppPassengers[turretStats->passengerNum - 1];
 
 	if (passenger && passenger->client && passenger->health > 0)
 	{
 		//a valid, living passenger client
-		vehWeaponInfo_t* vehWeapon = &g_vehWeaponInfo[turretStats->iWeapon];
+		const vehWeaponInfo_t* vehWeapon = &g_vehWeaponInfo[turretStats->iWeapon];
 		const int curMuzzle = pVeh->turretStatus[turretNum].nextMuzzle;
 		vec3_t aimAngles;
 		VectorCopy(passenger->client->ps.viewangles, aimAngles);
@@ -376,7 +376,7 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
 //-----------------------------------------------------
 {
 	qboolean doAim = qfalse;
-	turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
+	const turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
 	gentity_t* turretEnemy = NULL;
 
 	if (!turretStats || !turretStats->iAmmoMax)
@@ -404,7 +404,7 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
 		return;
 	}
 
-	vehWeaponInfo_t* vehWeapon = &g_vehWeaponInfo[turretStats->iWeapon];
+	const vehWeaponInfo_t* vehWeapon = &g_vehWeaponInfo[turretStats->iWeapon];
 	const float rangeSq = turretStats->fAIRange * turretStats->fAIRange;
 	const int curMuzzle = pVeh->turretStatus[turretNum].nextMuzzle;
 

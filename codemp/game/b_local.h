@@ -118,7 +118,7 @@ extern void NPC_ChangeWeapon(int newWeapon);
 extern void ShootThink(void);
 extern void WeaponThink(qboolean inCombat);
 extern qboolean HaveWeapon(int weapon);
-extern qboolean CanShoot(const gentity_t* ent, gentity_t* shooter);
+extern qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter);
 extern void NPC_CheckPossibleEnemy(gentity_t* other, visibility_t vis);
 extern gentity_t* NPC_PickEnemy(const gentity_t* closestTo, int enemyTeam, qboolean checkVis, qboolean findPlayersFirst,
 	qboolean findClosest);

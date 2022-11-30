@@ -98,7 +98,7 @@ public:
 
 protected:
 
-	int SaveCommand(CBlock* block) const;
+	int SaveCommand(const CBlock* block) const;
 
 	ICARUS_Instance* m_owner;
 

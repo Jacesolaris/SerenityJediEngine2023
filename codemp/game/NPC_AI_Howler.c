@@ -393,8 +393,7 @@ static void Howler_Attack(float enemyDist, qboolean howl)
 {
 	const int dmg = NPCS.NPCInfo->localState == LSTATE_BERZERK ? 5 : 2;
 
-	vec3_t boltOrg;
-	vec3_t fwd, yawAng;
+	vec3_t fwd;
 
 	if (!TIMER_Exists(NPCS.NPC, "attacking"))
 	{
@@ -412,6 +411,7 @@ static void Howler_Attack(float enemyDist, qboolean howl)
 		}
 		else if (enemyDist > MIN_DISTANCE && Q_irand(0, 1))
 		{
+			vec3_t yawAng;
 			//lunge attack
 			//jump foward
 			VectorSet(yawAng, 0, NPCS.NPC->client->ps.viewangles[YAW], 0);
@@ -476,6 +476,7 @@ static void Howler_Attack(float enemyDist, qboolean howl)
 			Howler_Howl();
 			if (!NPCS.NPC->count)
 			{
+				vec3_t boltOrg;
 				G_GetBoltPosition(NPCS.NPC, NPCS.NPC->NPC->genericBolt1, boltOrg, 0);
 				AngleVectors(NPCS.NPC->client->ps.viewangles, fwd, NULL, NULL);
 				G_PlayEffectID(G_EffectIndex("howler/sonic"), boltOrg, fwd);

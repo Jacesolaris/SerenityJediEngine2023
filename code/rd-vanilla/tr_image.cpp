@@ -1104,7 +1104,7 @@ R_InitFogTable
 */
 void R_InitFogTable(void) {
 	for (int i = 0; i < FOG_TABLE_SIZE; i++) {
-		const float exp = 0.5;
+		constexpr float exp = 0.5;
 		const float d = pow(static_cast<float>(i) / (FOG_TABLE_SIZE - 1), exp);
 
 		tr.fogTable[i] = d;

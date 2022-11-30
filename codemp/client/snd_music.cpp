@@ -203,10 +203,9 @@ static qboolean Music_ParseMusic(CGenericParser2& Parser, MusicData_t* MusicData
 			//
 			for (const CGPValue* pValue = pEntryGroup->GetPairs(); pValue; pValue = pValue->GetNext())
 			{
-				const char* psKey = pValue->GetName();
-
 				//if (!Q_strncmp(psKey,sKEY_MARKER,strlen(sKEY_MARKER)))	// for now, assume anything is a marker
 				{
+					const char* psKey = pValue->GetName();
 					const char* psValue = pValue->GetTopValue();
 					MusicFile.MusicEntryTimes[psKey] = atof(psValue);
 					bEntryFound = qtrue;						// harmless to keep setting

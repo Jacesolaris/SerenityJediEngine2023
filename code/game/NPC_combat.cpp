@@ -1371,14 +1371,14 @@ this function does not check teams, invulnerability, notarget, etc....
 
 Added: If can't shoot center, try head, if not, see if it's close enough to try anyway.
 */
-extern qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent);
+extern qboolean NPC_EntityIsBreakable(const gentity_t* ent);
 
-qboolean CanShoot(const gentity_t* ent, gentity_t* shooter)
+qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter)
 {
 	trace_t tr;
 	vec3_t muzzle;
 	vec3_t spot, diff;
-	const qboolean IS_BREAKABLE = NPC_EntityIsBreakable(shooter, ent);
+	const qboolean IS_BREAKABLE = NPC_EntityIsBreakable(ent);
 
 	CalcEntitySpot(shooter, SPOT_WEAPON, muzzle);
 	CalcEntitySpot(ent, SPOT_ORIGIN, spot); //FIXME preferred target locations for some weapons (feet for R/L)

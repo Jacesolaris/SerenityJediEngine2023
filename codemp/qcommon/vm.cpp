@@ -154,7 +154,7 @@ vm_t* VM_Create(vmSlots_t vmSlot) {
 
 #ifdef _DEBUG
 	if (vm_legacy->integer & 1 << vmSlot)
-		return NULL;
+		return nullptr;
 #endif
 
 	// see if we already have the VM

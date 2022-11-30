@@ -5208,9 +5208,9 @@ static int SND_FreeSFXMem(sfx_t* sfx)
 			alDeleteBuffers(1, &sfx->Buffer);
 #ifdef _DEBUG
 #ifdef _MSC_VER
-			char szString[256];
 			if (alGetError() != AL_NO_ERROR)
 			{
+				char szString[256];
 				sprintf(szString, "Failed to delete AL Buffer (%s) ... !\n", sfx->sSoundName);
 				OutputDebugString(szString);
 			}

@@ -1307,8 +1307,8 @@ void CGCam_DrawWideScreen(void)
 			modulate[0] = modulate[1] = modulate[2] = 0.0f;
 			modulate[3] = client_camera.bar_alpha;
 
-			CG_FillRect(cg.refdef.x, cg.refdef.y, 640, client_camera.bar_height, modulate);
-			CG_FillRect(cg.refdef.x, cg.refdef.y + 480 - client_camera.bar_height, 640, client_camera.bar_height,
+			CG_FillRect(cg.refdef.x, cg.refdef.y, 1280, client_camera.bar_height, modulate);
+			CG_FillRect(cg.refdef.x, cg.refdef.y + 480 - client_camera.bar_height, 1280, client_camera.bar_height,
 				modulate);
 		}
 	}
@@ -1317,7 +1317,7 @@ void CGCam_DrawWideScreen(void)
 	if (client_camera.fade_color[3] == 0.0f)
 		return;
 
-	CG_FillRect(cg.refdef.x, cg.refdef.y, 640, 480, client_camera.fade_color);
+	CG_FillRect(cg.refdef.x, cg.refdef.y, 1280, 480, client_camera.fade_color);
 }
 
 /*

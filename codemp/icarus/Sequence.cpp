@@ -86,9 +86,9 @@ void CSequence::Delete(void)
 			(*iterSeq).second->SetParent( NULL );
 		}*/
 
-		for (sequence_l::iterator si = m_children.begin(); si != m_children.end(); ++si)
+		for (const auto & si : m_children)
 		{
-			(*si)->SetParent(nullptr);
+			si->SetParent(nullptr);
 		}
 	}
 	m_children.clear();
@@ -141,12 +141,12 @@ HasChild
 
 bool CSequence::HasChild(CSequence* sequence)
 {
-	for (sequence_l::iterator ci = m_children.begin(); ci != m_children.end(); ++ci)
+	for (const auto & ci : m_children)
 	{
-		if (*ci == sequence)
+		if (ci == sequence)
 			return true;
 
-		if ((*ci)->HasChild(sequence))
+		if (ci->HasChild(sequence))
 			return true;
 	}
 
@@ -269,9 +269,9 @@ void CSequence::RemoveFlag(int flag, bool children)
 
 	if (children)
 	{
-		for (sequence_l::iterator si = m_children.begin(); si != m_children.end(); ++si)
+		for (const auto & si : m_children)
 		{
-			(*si)->RemoveFlag(flag, true);
+			si->RemoveFlag(flag, true);
 		}
 	}
 }
@@ -324,7 +324,7 @@ SaveCommand
 -------------------------
 */
 
-int CSequence::SaveCommand(CBlock* block) const
+int CSequence::SaveCommand(const CBlock* block) const
 {
 	unsigned char	flags;
 	int				numMembers, bID, size;

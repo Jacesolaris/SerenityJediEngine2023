@@ -624,9 +624,8 @@ void S_Init(void)
 	}
 	else
 	{
-		qboolean r;
 #endif
-		r = SNDDMA_Init(s_khz->integer);
+		const qboolean r = SNDDMA_Init(s_khz->integer);
 
 		if (r)
 		{
@@ -3149,8 +3148,6 @@ void S_Update_(void)
 	}
 	else
 	{
-		int samps;
-		unsigned endtime;
 #endif
 		// Updates s_soundtime
 		S_GetSoundtime();
@@ -3162,14 +3159,14 @@ void S_Update_(void)
 		S_ScanChannelStarts();
 
 		// mix ahead of current position
-		endtime = static_cast<int>(s_soundtime + s_mixahead->value * dma.speed);
+		unsigned endtime = static_cast<int>(s_soundtime + s_mixahead->value * dma.speed);
 
 		// mix to an even submission block size
 		endtime = (endtime + dma.submission_chunk - 1)
 			& ~(dma.submission_chunk - 1);
 
 		// never mix more than the complete buffer
-		samps = dma.samples >> (dma.channels - 1);
+		const int samps = dma.samples >> (dma.channels - 1);
 		if (endtime - s_soundtime > static_cast<unsigned>(samps))
 			endtime = s_soundtime + samps;
 
@@ -3565,7 +3562,6 @@ void AL_UpdateRawSamples()
 	// Add new data to a new Buffer and queue it on the Source
 	if (s_rawend > s_paintedtime)
 	{
-		int src;
 		int j;
 		int i;
 		size = (s_rawend - s_paintedtime) << 2;
@@ -3579,7 +3575,7 @@ void AL_UpdateRawSamples()
 		// Copy samples from RawSamples to audio buffer (sg.rawdata)
 		for (i = s_paintedtime, j = 0; i < s_rawend; i++, j += 2)
 		{
-			src = i & (MAX_RAW_SAMPLES - 1);
+			const int src = i & (MAX_RAW_SAMPLES - 1);
 			s_rawdata[j] = static_cast<short>(s_rawsamples[src].left >> 8);
 			s_rawdata[j + 1] = static_cast<short>(s_rawsamples[src].right >> 8);
 		}

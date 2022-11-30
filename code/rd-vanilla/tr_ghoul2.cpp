@@ -1257,12 +1257,12 @@ void G2_RagGetAnimMatrix(CGhoul2Info& ghoul2, const int boneNum, mdxaBone_t& mat
 	if (boneNum > 0 && parent > -1)
 	{
 		int parentBlistIndex;
-		mdxaSkel_t* pskel;
 		//recursively call to assure all parent matrices are set up
 		G2_RagGetAnimMatrix(ghoul2, parent, matrix, frame);
 
 		//assign the new skel ptr for our parent
-		pskel = (mdxaSkel_t*)((byte*)ghoul2.mBoneCache->header + sizeof(mdxaHeader_t) + offsets->offsets[parent]);
+		mdxaSkel_t* pskel = (mdxaSkel_t*)((byte*)ghoul2.mBoneCache->header + sizeof(mdxaHeader_t) + offsets->offsets[
+			parent]);
 
 		//taking bone matrix for the skeleton frame and parent's animFrameMatrix into account, determine our final animFrameMatrix
 		if (!pskel->name[0])

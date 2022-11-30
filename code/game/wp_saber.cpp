@@ -230,7 +230,7 @@ void wp_block_points_regenerate(const gentity_t* self, int override_amt);
 void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 void G_Stagger(gentity_t* hit_ent);
 extern qboolean PM_StabAnim(int anim);
-extern qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC);
+extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC);
 extern qboolean PM_InKataAnim(int anim);
 extern qboolean PM_StaggerAnim(int anim);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
@@ -16522,7 +16522,7 @@ void ForceThrow(gentity_t* self, qboolean pull, qboolean fake)
 						{
 							knockback /= 6.0f;
 						}
-						else // if ( modPowerLevel == 2 )
+						else
 						{
 							knockback /= 2.0f;
 						}

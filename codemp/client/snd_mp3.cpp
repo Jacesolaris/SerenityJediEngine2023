@@ -330,8 +330,6 @@ int MP3Stream_Decode(LP_MP3STREAM lpMP3Stream, qboolean bDoingMusic)
 
 qboolean MP3Stream_SeekTo(channel_t* ch, float fTimeToSeekTo)
 {
-	const float fEpsilon = 0.05f;	// accurate to 1/50 of a second, but plus or minus this gives 1/10 of second
-
 	MP3Stream_Rewind(ch);
 	//
 	// sanity... :-)
@@ -346,6 +344,7 @@ qboolean MP3Stream_SeekTo(channel_t* ch, float fTimeToSeekTo)
 	//
 	while (true)
 	{
+		constexpr float fEpsilon = 0.05f;
 		const float fPlayingTimeElapsed = MP3Stream_GetPlayingTimeInSeconds(&ch->MP3StreamHeader) - MP3Stream_GetRemainingTimeInSeconds(&ch->MP3StreamHeader);
 		const float fAbsTimeDiff = fabs(fTimeToSeekTo - fPlayingTimeElapsed);
 

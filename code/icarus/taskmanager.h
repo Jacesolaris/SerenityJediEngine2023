@@ -161,7 +161,7 @@ public:
 	static int Flush(void);
 
 	int SetCommand(CBlock* block, int type, const CIcarus* icarus);
-	int Completed(int id);
+	int Completed(int id) const;
 
 	int Update(CIcarus* icarus);
 	int IsRunning(void) const { return !m_tasks.empty(); };

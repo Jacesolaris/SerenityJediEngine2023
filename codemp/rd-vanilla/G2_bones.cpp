@@ -3424,8 +3424,8 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 		static vec3_t parentOrigin;
 		static vec3_t testMaxs;
 		static vec3_t testMins;
-		static const float velocityMultiplier = 60.0f;
-		static const float velocityDampening = 1.0f;
+		static constexpr float velocityMultiplier = 60.0f;
+		static constexpr float velocityDampening = 1.0f;
 		boneInfo_t& bone = *ragBoneData[i];
 		SRagEffector& e = ragEffectors[i];
 

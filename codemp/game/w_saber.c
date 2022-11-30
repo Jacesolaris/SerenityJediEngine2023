@@ -105,7 +105,7 @@ extern int g_block_the_attack(int move);
 void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
 extern int Jedi_ReCalcParryTime(gentity_t* self, evasionType_t evasionType);
 extern qboolean PM_SaberInnonblockableAttack(int anim);
-extern qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC);
+extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC);
 //////////////////////////////////////////////////
 extern qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
 //////////////////////////////////////////////////

@@ -677,8 +677,7 @@ int CM_WriteAreaBits(byte* buffer, int area)
 	}
 	else
 	{
-		int floodnum;
-		floodnum = cmg.areas[area].floodnum;
+		const int floodnum = cmg.areas[area].floodnum;
 		for (int i = 0; i < cmg.numAreas; i++)
 		{
 			if (cmg.areas[i].floodnum == floodnum || area == -1)

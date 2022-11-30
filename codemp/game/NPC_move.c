@@ -1167,7 +1167,7 @@ qboolean NPC_GetMoveDirectionAltRoute(vec3_t out, float* distance, qboolean tryS
 extern qboolean NPC_MoveDirClear(int forwardmove, int rightmove, qboolean reset);
 extern qboolean G_EntIsBreakable(int entityNum);
 
-qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent)
+qboolean NPC_EntityIsBreakable(const gentity_t* ent)
 {
 	if (ent
 		&& ent->inuse
@@ -1189,14 +1189,14 @@ qboolean NPC_EntityIsBreakable(gentity_t* self, const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC)
+qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC)
 {
 	if (!NPCS.NPC)
 	{
 		return qfalse;
 	}
 
-	if (self && self->client && NPC_EntityIsBreakable(self, NPCS.NPC) && NPCS.NPC->health > 0)
+	if (self && self->client && NPC_EntityIsBreakable(NPCS.NPC) && NPCS.NPC->health > 0)
 	{
 		return qtrue;
 	}

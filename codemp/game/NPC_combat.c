@@ -1241,7 +1241,7 @@ this function does not check teams, invulnerability, notarget, etc....
 
 Added: If can't shoot center, try head, if not, see if it's close enough to try anyway.
 */
-qboolean CanShoot(const gentity_t* ent, gentity_t* shooter)
+qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter)
 {
 	trace_t tr;
 	vec3_t muzzle;

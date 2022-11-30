@@ -7998,7 +7998,6 @@ static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 			// items can be enabled and disabled based on cvars
 			if (!(item->cvarFlags & (CVAR_ENABLE | CVAR_DISABLE) && !Item_EnableShowViaCvar(item, CVAR_ENABLE)))
 			{
-				int textWidth;
 				int xPos;
 				// Draw the desctext
 				const char* textPtr = item->descText;
@@ -8015,7 +8014,7 @@ static qboolean Item_Paint(itemDef_t* item, qboolean bDraw)
 				while (true)
 				{
 					// FIXME - add some type of parameter in the menu file like descfont to specify the font for the descriptions for this menu.
-					textWidth = DC->textWidth(textPtr, fDescScale, 4);	//  item->font);
+					int textWidth = DC->textWidth(textPtr, fDescScale, 4);	//  item->font);
 
 					if (parent->descAlignment == ITEM_ALIGN_RIGHT)
 					{

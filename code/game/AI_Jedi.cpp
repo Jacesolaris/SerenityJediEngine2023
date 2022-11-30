@@ -114,7 +114,7 @@ extern void Boba_ChangeWeapon(int wp);
 static qboolean Jedi_SaberBlock(void);
 static qboolean Jedi_AttackDecide(int enemy_dist);
 extern void add_npc_block_point_bonus(const gentity_t* self);
-extern qboolean NPC_IsAlive(gentity_t* self, const gentity_t* NPC);
+extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC);
 extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clearLength = qfalse);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
@@ -4810,20 +4810,10 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					{
 						if (NPCInfo->stats.evasion >= 1)
 						{
-							if (rightdot > 0)
-							{
-								dodge_anim = BOTH_ROLL_L;
-								self->client->pers.cmd.rightmove = -127;
-								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-								evasion_type = EVASION_DODGE;
-							}
-							else
-							{
-								dodge_anim = BOTH_ROLL_R;
-								self->client->pers.cmd.rightmove = 127;
-								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-								evasion_type = EVASION_DODGE;
-							}
+							dodge_anim = BOTH_ROLL_L;
+							self->client->pers.cmd.rightmove = -127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
 						}
 					}
 
@@ -4892,20 +4882,10 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 					{
 						if (NPCInfo->stats.evasion >= 1)
 						{
-							if (rightdot > 0)
-							{
-								dodge_anim = BOTH_ROLL_L;
-								self->client->pers.cmd.rightmove = -127;
-								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-								evasion_type = EVASION_DODGE;
-							}
-							else
-							{
-								dodge_anim = BOTH_ROLL_R;
-								self->client->pers.cmd.rightmove = 127;
-								G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-								evasion_type = EVASION_DODGE;
-							}
+							dodge_anim = BOTH_ROLL_R;
+							self->client->pers.cmd.rightmove = 127;
+							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+							evasion_type = EVASION_DODGE;
 						}
 					}
 
@@ -4943,20 +4923,10 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					if (NPCInfo->stats.evasion >= 1)
 					{
-						if (rightdot > 0)
-						{
-							dodge_anim = BOTH_ROLL_L;
-							self->client->pers.cmd.rightmove = -127;
-							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-							evasion_type = EVASION_DODGE;
-						}
-						else
-						{
-							dodge_anim = BOTH_ROLL_R;
-							self->client->pers.cmd.rightmove = 127;
-							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-							evasion_type = EVASION_DODGE;
-						}
+						dodge_anim = BOTH_ROLL_B;
+						self->client->pers.cmd.forwardmove = -127;
+						G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+						evasion_type = EVASION_DODGE;
 					}
 				}
 
@@ -5162,20 +5132,10 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 				{
 					if (NPCInfo->stats.evasion >= 1)
 					{
-						if (rightdot > 0)
-						{
-							dodge_anim = BOTH_ROLL_L;
-							self->client->pers.cmd.rightmove = -127;
-							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-							evasion_type = EVASION_DODGE;
-						}
-						else
-						{
-							dodge_anim = BOTH_ROLL_R;
-							self->client->pers.cmd.rightmove = 127;
-							G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
-							evasion_type = EVASION_DODGE;
-						}
+						dodge_anim = BOTH_ROLL_B;
+						self->client->pers.cmd.forwardmove = -127;
+						G_SoundOnEnt(self, CHAN_BODY, "sound/player/roll1.wav");
+						evasion_type = EVASION_DODGE;
 					}
 				}
 				if (d_JediAI->integer || g_DebugSaberCombat->integer)
