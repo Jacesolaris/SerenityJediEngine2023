@@ -49,7 +49,7 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 NPC_Rancor_Precache
 -------------------------
 */
-void NPC_Rancor_Precache(void)
+void NPC_Rancor_Precache()
 {
 	for (int i = 1; i < 5; i++)
 	{
@@ -59,7 +59,7 @@ void NPC_Rancor_Precache(void)
 	G_SoundIndex("sound/chars/rancor/chomp.wav");
 }
 
-void NPC_MutantRancor_Precache(void)
+void NPC_MutantRancor_Precache()
 {
 	G_SoundIndex("sound/chars/rancor/breath_start.wav");
 	G_SoundIndex("sound/chars/rancor/breath_loop.wav");

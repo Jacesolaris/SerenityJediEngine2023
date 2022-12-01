@@ -40,7 +40,7 @@ constexpr auto RIGHT_ARM_HEALTH = 40;
 NPC_ATST_Precache
 -------------------------
 */
-void NPC_ATST_Precache(void)
+void NPC_ATST_Precache()
 {
 	G_SoundIndex("sound/chars/atst/atst_damaged1");
 	G_SoundIndex("sound/chars/atst/atst_damaged2");

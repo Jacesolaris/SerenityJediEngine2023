@@ -42,21 +42,13 @@ extern cvar_t* g_dismemberment;
 NPC_Wampa_Precache
 -------------------------
 */
-void NPC_Wampa_Precache(void)
+void NPC_Wampa_Precache()
 {
-	/*
-	int i;
-	for ( i = 1; i < 4; i ++ )
+	for (int i = 1; i < 3; i++)
 	{
-		G_SoundIndex( va("sound/chars/wampa/growl%d.wav", i) );
+		G_SoundIndex(va("sound/chars/wampa/snort%d.wav", i));
 	}
-	for ( i = 1; i < 3; i ++ )
-	{
-		G_SoundIndex( va("sound/chars/wampa/snort%d.wav", i) );
-	}
-	*/
 	G_SoundIndex("sound/chars/rancor/swipehit.wav");
-	//G_SoundIndex( "sound/chars/wampa/chomp.wav" );
 }
 
 /*

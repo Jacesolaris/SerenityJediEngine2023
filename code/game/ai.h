@@ -79,7 +79,7 @@ void NPC_BSGrenadier_Default(void);
 void NPC_BSTusken_Default(void);
 
 //AI_SNIPER
-void NPC_BSSniper_Default(void);
+void NPC_BSSniper_Default();
 
 //AI_STORMTROOPER
 void Saboteur_Decloak(gentity_t* self, int uncloakTime = 2000);
@@ -88,8 +88,8 @@ void NPC_BSST_Default(void);
 void NPC_BSST_Sleep(void);
 
 //AI_JEDI;
-void NPC_BSJedi_Default(void);
-void NPC_BSJedi_FollowLeader(void);
+void NPC_BSJedi_Default();
+void NPC_BSJedi_FollowLeader();
 
 // AI_DROID
 void NPC_BSDroid_Default(void);

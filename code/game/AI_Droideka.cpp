@@ -28,7 +28,7 @@ extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 NPC_ATST_Precache
 -------------------------
 */
-void NPC_DROIDEKA_Precache(void)
+void npc_droideka_precache()
 {
 	G_SoundIndex("sound/chars/droideka/pain25");
 	G_SoundIndex("sound/chars/droideka/pain100");

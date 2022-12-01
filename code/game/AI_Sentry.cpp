@@ -56,7 +56,7 @@ enum
 NPC_Sentry_Precache
 -------------------------
 */
-void NPC_Sentry_Precache(void)
+void NPC_Sentry_Precache()
 {
 	G_SoundIndex("sound/chars/sentry/misc/sentry_explo");
 	G_SoundIndex("sound/chars/sentry/misc/sentry_pain");

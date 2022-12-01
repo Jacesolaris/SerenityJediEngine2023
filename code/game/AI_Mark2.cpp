@@ -48,7 +48,7 @@ enum
 
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire = qfalse);
 
-void NPC_Mark2_Precache(void)
+void NPC_Mark2_Precache()
 {
 	G_SoundIndex("sound/chars/mark2/misc/mark2_explo"); // blows up on death
 	G_SoundIndex("sound/chars/mark2/misc/mark2_pain");

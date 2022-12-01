@@ -35,8 +35,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
 	int weapon_num);
-extern void Boba_Precache(void);
-extern void Mando_Precache(void);
+extern void Boba_Precache();
+extern void Mando_Precache();
 extern qboolean HeIsJedi(const gentity_t* ent);
 extern cvar_t* com_outcast;
 

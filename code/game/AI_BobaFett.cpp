@@ -40,8 +40,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////////////
 // Forward References Of Functions
 ////////////////////////////////////////////////////////////////////////////////////////
-void Boba_Precache(void);
-void Mando_Precache(void);
+void Boba_Precache();
+void Mando_Precache();
 void Boba_DustFallNear(const vec3_t origin, int dustcount);
 void Boba_ChangeWeapon(int wp);
 qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown = qfalse);
@@ -217,7 +217,7 @@ enum EBobaTacticsState
 ////////////////////////////////////////////////////////////////////////////////////////
 extern void Saber_SithSwordPrecache(void);
 
-void Boba_Precache(void)
+void Boba_Precache()
 {
 	G_SoundIndex("sound/chars/boba/bf_blast-off.wav");
 	G_SoundIndex("sound/chars/boba/bf_jetpack_lp.wav");
@@ -244,7 +244,7 @@ void Boba_Precache(void)
 	Saber_SithSwordPrecache();
 }
 
-void Mando_Precache(void)
+void Mando_Precache()
 {
 	G_SoundIndex("sound/chars/boba/bf_blast-off.wav");
 	G_SoundIndex("sound/chars/boba/bf_jetpack_lp.wav");

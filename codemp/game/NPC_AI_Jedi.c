@@ -846,7 +846,7 @@ void Boba_SetJetpackAnims(gentity_t* self)
 	}
 }
 
-qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t pushDir)
+qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t pushDir)
 {
 	//certain NPCs can avoid knockdowns, check for that.
 	vec3_t pDir, fwd, right, ang;
@@ -4224,7 +4224,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 	}
 }
 
-static qboolean Jedi_Strafe(int strafeTimeMin, int strafeTimeMax, int nextStrafeTimeMin, int nextStrafeTimeMax,
+static qboolean jedi_strafe(int strafe_time_min, int strafe_time_max, int next_strafe_time_min, int next_strafe_time_max,
 	qboolean walking)
 {
 	if (Jedi_CultistDestroyer(NPCS.NPC))
@@ -4244,7 +4244,7 @@ static qboolean Jedi_Strafe(int strafeTimeMin, int strafeTimeMax, int nextStrafe
 		//		try to keep own back away from walls and ledges,
 		//		try to keep enemy's back to a ledge or wall
 		//		Maybe try to strafe toward designer-placed "safe spots" or "goals"?
-		const int strafeTime = Q_irand(strafeTimeMin, strafeTimeMax);
+		const int strafeTime = Q_irand(strafe_time_min, strafe_time_max);
 
 		if (Q_irand(0, 1))
 		{
@@ -4275,7 +4275,7 @@ static qboolean Jedi_Strafe(int strafeTimeMin, int strafeTimeMax, int nextStrafe
 
 		if (strafed)
 		{
-			TIMER_Set(NPCS.NPC, "noStrafe", strafeTime + Q_irand(nextStrafeTimeMin, nextStrafeTimeMax));
+			TIMER_Set(NPCS.NPC, "noStrafe", strafeTime + Q_irand(next_strafe_time_min, next_strafe_time_max));
 			if (walking)
 			{
 				//should be a slow strafe
@@ -6086,38 +6086,38 @@ static qboolean Jedi_SaberBlock(void)
 
 extern qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 
-qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
+qboolean Jedi_EvasionRoll(gentity_t* ai_ent)
 {
-	if (!aiEnt->enemy->client)
+	if (!ai_ent->enemy->client)
 	{
-		aiEnt->npc_roll_start = qfalse;
+		ai_ent->npc_roll_start = qfalse;
 		return qfalse;
 	}
-	if (aiEnt->enemy->client
-		&& aiEnt->enemy->s.weapon == WP_SABER
-		&& aiEnt->enemy->client->ps.saberLockTime > level.time)
+	if (ai_ent->enemy->client
+		&& ai_ent->enemy->s.weapon == WP_SABER
+		&& ai_ent->enemy->client->ps.saberLockTime > level.time)
 	{
 		//don't try to block/evade an enemy who is in a saberLock
-		aiEnt->npc_roll_start = qfalse;
+		ai_ent->npc_roll_start = qfalse;
 		return qfalse;
 	}
-	if (aiEnt->client->ps.saberEventFlags & SEF_LOCK_WON && aiEnt->enemy->painDebounceTime > level.time)
+	if (ai_ent->client->ps.saberEventFlags & SEF_LOCK_WON && ai_ent->enemy->painDebounceTime > level.time)
 	{
 		//pressing the advantage of winning a saber lock
-		aiEnt->npc_roll_start = qfalse;
+		ai_ent->npc_roll_start = qfalse;
 		return qfalse;
 	}
 
-	if (aiEnt->npc_roll_time >= level.time)
+	if (ai_ent->npc_roll_time >= level.time)
 	{
 		// Already in a roll...
-		aiEnt->npc_roll_start = qfalse;
+		ai_ent->npc_roll_start = qfalse;
 		return qfalse;
 	}
 
 	// Init...
-	aiEnt->npc_roll_direction = EVASION_ROLL_DIR_NONE;
-	aiEnt->npc_roll_start = qfalse;
+	ai_ent->npc_roll_direction = EVASION_ROLL_DIR_NONE;
+	ai_ent->npc_roll_start = qfalse;
 
 	qboolean canRollBack = qfalse;
 	qboolean canRollLeft = qfalse;
@@ -6125,31 +6125,31 @@ qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 
 	trace_t tr;
 	vec3_t fwd, right, up, start, end;
-	AngleVectors(aiEnt->r.currentAngles, fwd, right, up);
+	AngleVectors(ai_ent->r.currentAngles, fwd, right, up);
 
-	VectorSet(start, aiEnt->r.currentOrigin[0], aiEnt->r.currentOrigin[1], aiEnt->r.currentOrigin[2] + 24.0);
+	VectorSet(start, ai_ent->r.currentOrigin[0], ai_ent->r.currentOrigin[1], ai_ent->r.currentOrigin[2] + 24.0);
 	VectorMA(start, -128, fwd, end);
-	trap->Trace(&tr, start, NULL, NULL, end, aiEnt->s.number, MASK_NPCSOLID, qfalse, 0, 0);
+	trap->Trace(&tr, start, NULL, NULL, end, ai_ent->s.number, MASK_NPCSOLID, qfalse, 0, 0);
 
-	if (tr.fraction == 1.0 && !NPC_CheckFallPositionOK(aiEnt, end))
+	if (tr.fraction == 1.0 && !NPC_CheckFallPositionOK(ai_ent, end))
 	{
 		// We can roll back...
 		canRollBack = qtrue;
 	}
 
 	VectorMA(start, -128, right, end);
-	trap->Trace(&tr, start, NULL, NULL, end, aiEnt->s.number, MASK_NPCSOLID, qfalse, 0, 0);
+	trap->Trace(&tr, start, NULL, NULL, end, ai_ent->s.number, MASK_NPCSOLID, qfalse, 0, 0);
 
-	if (tr.fraction == 1.0 && !NPC_CheckFallPositionOK(aiEnt, end))
+	if (tr.fraction == 1.0 && !NPC_CheckFallPositionOK(ai_ent, end))
 	{
 		// We can roll back...
 		canRollLeft = qtrue;
 	}
 
 	VectorMA(start, 128, right, end);
-	trap->Trace(&tr, start, NULL, NULL, end, aiEnt->s.number, MASK_NPCSOLID, qfalse, 0, 0);
+	trap->Trace(&tr, start, NULL, NULL, end, ai_ent->s.number, MASK_NPCSOLID, qfalse, 0, 0);
 
-	if (tr.fraction == 1.0 && !NPC_CheckFallPositionOK(aiEnt, end))
+	if (tr.fraction == 1.0 && !NPC_CheckFallPositionOK(ai_ent, end))
 	{
 		// We can roll back...
 		canRollRight = qtrue;
@@ -6162,19 +6162,19 @@ qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 		switch (choice)
 		{
 		case 2:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
 			break;
 		case 1:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
 			break;
 		default:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_BACK;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_BACK;
 			break;
 		}
 
@@ -6187,14 +6187,14 @@ qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 		switch (choice)
 		{
 		case 1:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
 			break;
 		default:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_BACK;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_BACK;
 			break;
 		}
 
@@ -6207,14 +6207,14 @@ qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 		switch (choice)
 		{
 		case 1:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
 			break;
 		default:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_BACK;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_BACK;
 			break;
 		}
 
@@ -6227,14 +6227,14 @@ qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 		switch (choice)
 		{
 		case 1:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
 			break;
 		default:
-			aiEnt->npc_roll_time = level.time + 5000;
-			aiEnt->npc_roll_start = qtrue;
-			aiEnt->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
+			ai_ent->npc_roll_time = level.time + 5000;
+			ai_ent->npc_roll_start = qtrue;
+			ai_ent->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
 			break;
 		}
 
@@ -6242,23 +6242,23 @@ qboolean Jedi_EvasionRoll(gentity_t* aiEnt)
 	}
 	if (canRollLeft)
 	{
-		aiEnt->npc_roll_time = level.time + 5000;
-		aiEnt->npc_roll_start = qtrue;
-		aiEnt->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
+		ai_ent->npc_roll_time = level.time + 5000;
+		ai_ent->npc_roll_start = qtrue;
+		ai_ent->npc_roll_direction = EVASION_ROLL_DIR_LEFT;
 		return qtrue;
 	}
 	if (canRollRight)
 	{
-		aiEnt->npc_roll_time = level.time + 5000;
-		aiEnt->npc_roll_start = qtrue;
-		aiEnt->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
+		ai_ent->npc_roll_time = level.time + 5000;
+		ai_ent->npc_roll_start = qtrue;
+		ai_ent->npc_roll_direction = EVASION_ROLL_DIR_RIGHT;
 		return qtrue;
 	}
 	if (canRollBack)
 	{
-		aiEnt->npc_roll_time = level.time + 5000;
-		aiEnt->npc_roll_start = qtrue;
-		aiEnt->npc_roll_direction = EVASION_ROLL_DIR_BACK;
+		ai_ent->npc_roll_time = level.time + 5000;
+		ai_ent->npc_roll_start = qtrue;
+		ai_ent->npc_roll_direction = EVASION_ROLL_DIR_BACK;
 		return qtrue;
 	}
 
@@ -6538,7 +6538,7 @@ static void Jedi_EvasionSaber(vec3_t enemy_movedir, float enemy_dist, vec3_t ene
 				break;
 			default:
 				//Evade!
-				if (!Q_irand(0, 5) || !Jedi_Strafe(300, 1000, 0, 1000, qfalse))
+				if (!Q_irand(0, 5) || !jedi_strafe(300, 1000, 0, 1000, qfalse))
 				{
 					if (Jedi_DecideKick()
 						&& G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy)
@@ -7274,7 +7274,7 @@ static void Jedi_CombatTimersUpdate(int enemy_dist)
 		if (!Q_irand(0, 4))
 		{
 			//start a strafe
-			if (Jedi_Strafe(1000, 3000, 0, 4000, qtrue))
+			if (jedi_strafe(1000, 3000, 0, 4000, qtrue))
 			{
 				if (d_JediAI.integer || g_DebugSaberCombat.integer)
 				{
@@ -9905,7 +9905,7 @@ qboolean Rosh_BeingHealed(gentity_t* self)
 	return qfalse;
 }
 
-qboolean Rosh_TwinPresent(gentity_t* self)
+qboolean Rosh_TwinPresent()
 {
 	//look for the healer twins for the Rosh boss.
 	const gentity_t* foundTwin = G_Find(NULL, FOFS(NPC_type), "DKothos");
@@ -10394,7 +10394,7 @@ qboolean Jedi_InSpecialMove(void)
 					|| NPCS.NPC->client->ps.powerups[PW_INVINCIBLE] > level.time) //being healed
 				{
 					//FIXME: custom anims
-					if (Rosh_TwinPresent(NPCS.NPC))
+					if (Rosh_TwinPresent())
 					{
 						//twins are still alive
 						if (!NPCS.NPC->client->ps.weaponTime)
@@ -10513,7 +10513,7 @@ void NPC_CheckEvasion(void)
 			VectorSubtract(NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->r.currentOrigin, shotDir);
 			vectoangles(shotDir, ang);
 
-			if (NPCS.NPC->enemy->client->ps.weaponstate == WEAPON_FIRING && InFieldOfVision(
+			if (NPCS.NPC->enemy->client->ps.weaponstate == WEAPON_FIRING && in_field_of_vision(
 				NPCS.NPC->enemy->client->ps.viewangles, 90, ang))
 			{
 				// They are shooting at us. Evade!!!
@@ -10526,7 +10526,7 @@ void NPC_CheckEvasion(void)
 					NPC_StartFlee(NPCS.NPC->enemy, NPCS.NPC->enemy->r.currentOrigin, AEL_DANGER, 1000, 3000);
 				}
 			}
-			else if (InFieldOfVision(NPCS.NPC->enemy->client->ps.viewangles, 60, ang))
+			else if (in_field_of_vision(NPCS.NPC->enemy->client->ps.viewangles, 60, ang))
 			{
 				// Randomly (when they are targetting us)... Evade!!!
 				if (NPCS.NPC->enemy->s.weapon == WP_SABER)

@@ -41,9 +41,9 @@ extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern int GetTime(int lastTime);
 extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
-extern void NPC_EvasionSaber(void);
+extern void NPC_EvasionSaber();
 extern qboolean RT_Flying(const gentity_t* self);
-extern void NPC_CheckEvasion(void);
+extern void NPC_CheckEvasion();
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean NPC_CanUseAdvancedFighting();
@@ -1289,7 +1289,7 @@ NPC_BSST_Patrol
 -------------------------
 */
 
-void NPC_BSST_Patrol(void)
+void NPC_BSST_Patrol()
 {
 	//FIXME: pick up on bodies of dead buddies?
 	//Not a scriptflag, but...

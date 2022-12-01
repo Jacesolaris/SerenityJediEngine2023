@@ -1507,39 +1507,40 @@ void NPC_PrecacheWeapons(team_t playerTeam, int spawnflags, const char* NPCtype)
 		}
 	}
 }
-
-extern void npc_shadow_trooper_precache(void);
-extern void NPC_Gonk_Precache(void);
-extern void NPC_Mouse_Precache(void);
-extern void NPC_Seeker_Precache(void);
-extern void NPC_Remote_Precache(void);
-extern void NPC_R2D2_Precache(void);
-extern void NPC_R5D2_Precache(void);
-extern void NPC_Probe_Precache(void);
-extern void NPC_Interrogator_Precache(gentity_t* self);
-extern void NPC_MineMonster_Precache(void);
-extern void NPC_Howler_Precache(void);
-extern void NPC_Rancor_Precache(void);
-extern void NPC_MutantRancor_Precache(void);
-extern void NPC_Wampa_Precache(void);
-extern void NPC_ATST_Precache(void);
-extern void NPC_Sentry_Precache(void);
-extern void NPC_Mark1_Precache(void);
-extern void NPC_Mark2_Precache(void);
-extern void NPC_Protocol_Precache(void);
-extern void Boba_Precache(void);
-extern void Mando_Precache(void);
-extern void RT_Precache(void);
-extern void SandCreature_Precache(void);
-extern void NPC_TavionScepter_Precache(void);
-extern void NPC_TavionSithSword_Precache(void);
-extern void npc_rosh_dark_precache(void);
-extern void NPC_Tusken_Precache(void);
+extern void npc_droideka_precache();
+extern void npc_sbd_precache();
+extern void npc_shadow_trooper_precache();
+extern void NPC_Gonk_Precache();
+extern void NPC_Mouse_Precache();
+extern void NPC_Seeker_Precache();
+extern void NPC_Remote_Precache();
+extern void NPC_R2D2_Precache();
+extern void NPC_R5D2_Precache();
+extern void NPC_Probe_Precache();
+extern void NPC_Interrogator_Precache();
+extern void NPC_MineMonster_Precache();
+extern void NPC_Howler_Precache();
+extern void NPC_Rancor_Precache();
+extern void NPC_MutantRancor_Precache();
+extern void NPC_Wampa_Precache();
+extern void NPC_ATST_Precache();
+extern void NPC_Sentry_Precache();
+extern void NPC_Mark1_Precache();
+extern void NPC_Mark2_Precache();
+extern void NPC_Protocol_Precache();
+extern void Boba_Precache();
+extern void Mando_Precache();
+extern void RT_Precache();
+extern void SandCreature_Precache();
+extern void NPC_TavionScepter_Precache();
+extern void NPC_TavionSithSword_Precache();
+extern void npc_rosh_dark_precache();
+extern void NPC_Tusken_Precache();
 extern void NPC_Saboteur_Precache();
-extern void npc_cultist_destroyer_precache(void);
+extern void npc_cultist_destroyer_precache();
 extern void NPC_GalakMech_Precache();
 
-void NPC_Jawa_Precache(void)
+void NPC_Jawa_Precache()
 {
 	for (int i = 1; i < 7; i++)
 	{
@@ -1585,7 +1586,7 @@ void NPC_PrecacheByClassName(const char* type)
 	}
 	else if (!Q_stricmp("interrogator", type))
 	{
-		NPC_Interrogator_Precache(nullptr);
+		NPC_Interrogator_Precache();
 	}
 	else if (!Q_stricmp("probe", type))
 	{
@@ -1691,6 +1692,18 @@ void NPC_PrecacheByClassName(const char* type)
 	else if (!Q_stricmpn("jawa", type, 4))
 	{
 		NPC_Jawa_Precache();
+	}
+	else if (!Q_stricmp("SBD", type))
+	{
+		npc_sbd_precache();
+	}
+	else if (!Q_stricmp("droideka", type))
+	{
+		npc_droideka_precache();
+	}
+	else if (!Q_stricmp("droideka2", type))
+	{
+		npc_droideka_precache();
 	}
 }
 
@@ -4382,11 +4395,11 @@ qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC)
 	return qtrue;
 }
 
-void NPC_LoadParms(void) //jka version
+void NPC_LoadParms() //jka version
 {
-	int npcExtFNLen;
+	int npc_ext_fn_len;
 	char* buffer;
-	char npcExtensionListBuf[16384]; //	The list of file names read in
+	char npc_extension_list_buf[16384]; //	The list of file names read in
 
 	//set where to store the first one
 	int totallen = 0;
@@ -4394,19 +4407,19 @@ void NPC_LoadParms(void) //jka version
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int fileCnt = gi.FS_GetFileList("ext_data/npcs", ".npc", npcExtensionListBuf, sizeof npcExtensionListBuf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/npcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
 
-	char* holdChar = npcExtensionListBuf;
+	char* hold_char = npc_extension_list_buf;
 
-	for (int i = 0; i < fileCnt; i++, holdChar += npcExtFNLen + 1)
+	for (int i = 0; i < file_cnt; i++, hold_char += npc_ext_fn_len + 1)
 	{
-		npcExtFNLen = strlen(holdChar);
+		npc_ext_fn_len = strlen(hold_char);
 
-		int len = gi.FS_ReadFile(va("ext_data/npcs/%s", holdChar), reinterpret_cast<void**>(&buffer));
+		int len = gi.FS_ReadFile(va("ext_data/npcs/%s", hold_char), reinterpret_cast<void**>(&buffer));
 
 		if (len == -1)
 		{
-			gi.Printf("NPC_LoadParms: error reading file %s\n", holdChar);
+			gi.Printf("NPC_LoadParms: error reading file %s\n", hold_char);
 		}
 		else
 		{
@@ -4422,7 +4435,7 @@ void NPC_LoadParms(void) //jka version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					holdChar);
+					hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4433,11 +4446,11 @@ void NPC_LoadParms(void) //jka version
 	}
 }
 
-void NPC_LoadParms1(void) //jko version
+void NPC_LoadParms1() //jko version
 {
-	int npcExtFNLen;
+	int npc_ext_fn_len;
 	char* buffer;
-	char npcExtensionListBuf[16384]; //	The list of file names read in
+	char npc_extension_list_buf[16384]; //	The list of file names read in
 
 	//set where to store the first one
 	int totallen = 0;
@@ -4445,19 +4458,19 @@ void NPC_LoadParms1(void) //jko version
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int fileCnt = gi.FS_GetFileList("ext_data/jkonpcs", ".npc", npcExtensionListBuf, sizeof npcExtensionListBuf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/jkonpcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
 
-	char* holdChar = npcExtensionListBuf;
+	char* hold_char = npc_extension_list_buf;
 
-	for (int i = 0; i < fileCnt; i++, holdChar += npcExtFNLen + 1)
+	for (int i = 0; i < file_cnt; i++, hold_char += npc_ext_fn_len + 1)
 	{
-		npcExtFNLen = strlen(holdChar);
+		npc_ext_fn_len = strlen(hold_char);
 
-		int len = gi.FS_ReadFile(va("ext_data/jkonpcs/%s", holdChar), reinterpret_cast<void**>(&buffer));
+		int len = gi.FS_ReadFile(va("ext_data/jkonpcs/%s", hold_char), reinterpret_cast<void**>(&buffer));
 
 		if (len == -1)
 		{
-			gi.Printf("NPC_LoadParms: error reading file %s\n", holdChar);
+			gi.Printf("NPC_LoadParms: error reading file %s\n", hold_char);
 		}
 		else
 		{
@@ -4473,7 +4486,7 @@ void NPC_LoadParms1(void) //jko version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					holdChar);
+					hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4484,30 +4497,30 @@ void NPC_LoadParms1(void) //jko version
 	}
 }
 
-void NPC_LoadParms2(void) //mod version
+void NPC_LoadParms2() //mod version
 {
-	int npcExtFNLen;
+	int npc_ext_fn_len;
 	char* buffer;
-	char npcExtensionListBuf[16384]; //	The list of file names read in
+	char npc_extension_list_buf[16384]; //	The list of file names read in
 
 	int totallen = 0;
 	char* marker = NPCParms;
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int fileCnt = gi.FS_GetFileList("ext_data/crnpcs", ".npc", npcExtensionListBuf, sizeof npcExtensionListBuf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/crnpcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
 
-	char* holdChar = npcExtensionListBuf;
+	char* hold_char = npc_extension_list_buf;
 
-	for (int i = 0; i < fileCnt; i++, holdChar += npcExtFNLen + 1)
+	for (int i = 0; i < file_cnt; i++, hold_char += npc_ext_fn_len + 1)
 	{
-		npcExtFNLen = strlen(holdChar);
+		npc_ext_fn_len = strlen(hold_char);
 
-		int len = gi.FS_ReadFile(va("ext_data/crnpcs/%s", holdChar), reinterpret_cast<void**>(&buffer));
+		int len = gi.FS_ReadFile(va("ext_data/crnpcs/%s", hold_char), reinterpret_cast<void**>(&buffer));
 
 		if (len == -1)
 		{
-			gi.Printf("NPC_LoadParms: error reading file %s\n", holdChar);
+			gi.Printf("NPC_LoadParms: error reading file %s\n", hold_char);
 		}
 		else
 		{
@@ -4523,7 +4536,7 @@ void NPC_LoadParms2(void) //mod version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					holdChar);
+					hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4534,7 +4547,7 @@ void NPC_LoadParms2(void) //mod version
 	}
 }
 
-void NPC_LoadParms3(void) //yav version
+void NPC_LoadParms3() //yav version
 {
 	int npcExtFNLen;
 	char* buffer;
@@ -4583,7 +4596,7 @@ void NPC_LoadParms3(void) //yav version
 	}
 }
 
-void NPC_LoadParms4(void) //eoc version
+void NPC_LoadParms4() //eoc version
 {
 	int npcExtFNLen;
 	char* buffer;

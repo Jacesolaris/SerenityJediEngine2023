@@ -361,7 +361,7 @@ extern qboolean			BGPAFtextLoaded;
 extern animation_t		bgHumanoidAnimations[MAX_TOTALANIMATIONS];
 
 #define MAX_ANIM_FILES	32
-#define MAX_ANIM_EVENTS 300
+#define MAX_ANIM_EVENTS 600
 
 typedef enum
 {

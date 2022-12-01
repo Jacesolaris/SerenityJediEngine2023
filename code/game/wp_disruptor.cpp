@@ -97,7 +97,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 				traces++;
 				continue;
 			}
-			if (Jedi_DisruptorDodgeEvasion(traceEnt, ent, &tr, HL_NONE))
+			if (jedi_disruptor_dodge_evasion(traceEnt, ent, &tr, HL_NONE))
 			{
 				//act like we didn't even hit him
 				VectorCopy(tr.endpos, start);
@@ -282,7 +282,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 			}
 			else
 			{
-				hitDodged = Jedi_DisruptorDodgeEvasion(traceEnt, ent, &tr, HL_NONE);
+				hitDodged = jedi_disruptor_dodge_evasion(traceEnt, ent, &tr, HL_NONE);
 				//acts like we didn't even hit him
 			}
 		}

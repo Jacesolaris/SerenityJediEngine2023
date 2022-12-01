@@ -412,7 +412,7 @@ void Droid_Pain(void)
 NPC_Mouse_Precache
 -------------------------
 */
-void NPC_Mouse_Precache(void)
+void NPC_Mouse_Precache()
 {
 	for (int i = 1; i < 4; i++)
 	{
@@ -429,7 +429,7 @@ void NPC_Mouse_Precache(void)
 NPC_R5D2_Precache
 -------------------------
 */
-void NPC_R5D2_Precache(void)
+void NPC_R5D2_Precache()
 {
 	for (int i = 1; i < 5; i++)
 	{
@@ -447,7 +447,7 @@ void NPC_R5D2_Precache(void)
 NPC_R2D2_Precache
 -------------------------
 */
-void NPC_R2D2_Precache(void)
+void NPC_R2D2_Precache()
 {
 	for (int i = 1; i < 4; i++)
 	{
@@ -463,7 +463,7 @@ void NPC_R2D2_Precache(void)
 NPC_Gonk_Precache
 -------------------------
 */
-void NPC_Gonk_Precache(void)
+void NPC_Gonk_Precache()
 {
 	G_SoundIndex("sound/chars/gonk/misc/gonktalk1.wav");
 	G_SoundIndex("sound/chars/gonk/misc/gonktalk2.wav");
@@ -480,7 +480,7 @@ void NPC_Gonk_Precache(void)
 NPC_Protocol_Precache
 -------------------------
 */
-void NPC_Protocol_Precache(void)
+void NPC_Protocol_Precache()
 {
 	G_SoundIndex("sound/chars/mark2/misc/mark2_explo");
 	G_EffectIndex("env/med_explode");

@@ -2070,8 +2070,8 @@ void PlaceBarrier(gentity_t* ent)
 	{
 		if (!ent->client->ps.powerups[PW_GALAK_SHIELD])
 		{
-			ent->client->ps.powerups[PW_GALAK_SHIELD] = Q3_INFINITE;
 			G_AddEvent(ent, EV_GENERAL_SOUND, shieldActivateSound);
+			ent->client->ps.powerups[PW_GALAK_SHIELD] = Q3_INFINITE;
 			ent->client->ps.BarrierFuel -= 15;
 			ent->flags |= FL_SHIELDED; //reflect normal shots
 			ent->fx_time = level.time;

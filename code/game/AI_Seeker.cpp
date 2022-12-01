@@ -21,16 +21,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
 #include "../cgame/cg_local.h"
 #include "g_functions.h"
 
-extern void NPC_BSST_Patrol(void);
+extern void NPC_BSST_Patrol();
 extern void Boba_FireDecide();
 extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
 	qboolean altFire = qfalse);
 
-void Seeker_Strafe(void);
+void Seeker_Strafe();
 
 constexpr auto VELOCITY_DECAY = 0.7f;
 
@@ -50,7 +49,7 @@ constexpr auto SEEKER_FORWARD_MULTIPLIER = 2;
 constexpr auto SEEKER_SEEK_RADIUS = 1024;
 
 //------------------------------------
-void NPC_Seeker_Precache(void)
+void NPC_Seeker_Precache()
 {
 	G_SoundIndex("sound/chars/seeker/misc/fire.wav");
 	G_SoundIndex("sound/chars/seeker/misc/hiss.wav");
@@ -58,8 +57,7 @@ void NPC_Seeker_Precache(void)
 }
 
 //------------------------------------
-void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,int hitLoc)
 {
 	if (!(self->svFlags & SVF_CUSTOM_GRAVITY))
 	{
@@ -175,7 +173,7 @@ void Seeker_MaintainHeight(void)
 }
 
 //------------------------------------
-void Seeker_Strafe(void)
+void Seeker_Strafe()
 {
 	int side;
 	vec3_t end, right;
@@ -307,7 +305,7 @@ void Seeker_Hunt(qboolean visible, qboolean advance)
 }
 
 //------------------------------------
-void Seeker_Fire(void)
+void Seeker_Fire()
 {
 	vec3_t dir, enemy_org, muzzle;
 

@@ -3151,7 +3151,7 @@ void misc_atst_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 
 void SP_misc_atst_drivable(gentity_t* ent)
 {
-	extern void NPC_ATST_Precache(void);
+	extern void NPC_ATST_Precache();
 	extern void NPC_PrecacheAnimationCFG(const char* NPC_type);
 
 	ent->s.modelindex = G_ModelIndex("models/players/atst/model.glm");

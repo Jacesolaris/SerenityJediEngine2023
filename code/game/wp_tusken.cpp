@@ -72,7 +72,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 				traces++;
 				continue;
 			}
-			if (Jedi_DisruptorDodgeEvasion(traceEnt, ent, &tr, HL_NONE))
+			if (jedi_disruptor_dodge_evasion(traceEnt, ent, &tr, HL_NONE))
 			{
 				//act like we didn't even hit him
 				VectorCopy(tr.endpos, start);

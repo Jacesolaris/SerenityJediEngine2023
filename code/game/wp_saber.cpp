@@ -148,7 +148,7 @@ extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
 extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
 extern int Jedi_ReCalcParryTime(const gentity_t* self, evasionType_t evasionType);
-extern qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hitLoc);
+extern qboolean jedi_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
 extern void Jedi_PlayDeflectSound(const gentity_t* self);
 extern void Jedi_PlayBlockedPushSound(const gentity_t* self);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
@@ -9741,7 +9741,7 @@ const char* saberColorStringForColor[SABER_LIME + 1] =
 // Check if we are throwing it, launch it if needed, update position if needed.
 void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 {
-	vec3_t saberDiff;
+	vec3_t saber_diff;
 	trace_t tr;
 
 	if (self->client->ps.saberEntityNum <= 0 || self->client->ps.saberEntityNum >= ENTITYNUM_WORLD)
@@ -9784,7 +9784,7 @@ void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 	}
 	gentity_t* saberent = &g_entities[self->client->ps.saberEntityNum];
 
-	VectorSubtract(self->client->renderInfo.handRPoint, saberent->currentOrigin, saberDiff);
+	VectorSubtract(self->client->renderInfo.handRPoint, saberent->currentOrigin, saber_diff);
 
 	//is our saber in flight?
 	if (!self->client->ps.saberInFlight)
@@ -9805,7 +9805,7 @@ void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 					self->client->sess.missionStats.saberThrownCnt++;
 				}
 				//need to recalc this because we just moved it
-				VectorSubtract(self->client->renderInfo.handRPoint, saberent->currentOrigin, saberDiff);
+				VectorSubtract(self->client->renderInfo.handRPoint, saberent->currentOrigin, saber_diff);
 			}
 			else
 			{
@@ -9826,27 +9826,20 @@ void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 		if (self->client->ps.saberEntityState == SES_RETURNING)
 		{
 			//see if we're close enough to pick it up
-			if (VectorLengthSquared(saberDiff) <= 256)
+			if (VectorLengthSquared(saber_diff) <= 256)
 			{
 				//caught it
-				vec3_t axisPoint;
+				vec3_t axis_point;
 				trace_t trace;
-				VectorCopy(self->currentOrigin, axisPoint);
-				axisPoint[2] = self->client->renderInfo.handRPoint[2];
-				gi.trace(&trace, axisPoint, vec3_origin, vec3_origin, self->client->renderInfo.handRPoint,
+				VectorCopy(self->currentOrigin, axis_point);
+				axis_point[2] = self->client->renderInfo.handRPoint[2];
+				gi.trace(&trace, axis_point, vec3_origin, vec3_origin, self->client->renderInfo.handRPoint,
 					self->s.number, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
 
 				if (!trace.startsolid && trace.fraction >= 1.0f)
 				{
 					//our hand isn't through a wall
-					if (self->NPC && level.time - self->client->ps.saberThrowTime < MAX_DISARM_TIME)
-					{
-						WP_SaberCatch(self, saberent, qfalse);
-					}
-					else
-					{
-						WP_SaberCatch(self, saberent, qtrue);
-					}
+					WP_SaberCatch(self, saberent, qtrue);
 				}
 				return;
 			}
@@ -10034,7 +10027,7 @@ void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 		return;
 	}
 
-	const float saberDist = VectorLength(saberDiff);
+	const float saberDist = VectorLength(saber_diff);
 
 	if (self->client->ps.saberEntityState == SES_LEAVING)
 	{
@@ -14034,7 +14027,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd)
 				gi.trace(&trace, start, incoming->mins, incoming->maxs, end, incoming->s.number, MASK_SHOT, G2_COLLIDE,
 					10);
 
-				Jedi_DodgeEvasion(self, incoming->owner, &trace, HL_NONE);
+				jedi_dodge_evasion(self, incoming->owner, &trace, HL_NONE);
 			}
 			if (incoming->owner && incoming->owner->client && (!self->enemy || self->enemy->s.weapon != WP_SABER))
 			{
@@ -14684,7 +14677,7 @@ void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean noPen
 }
 
 extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
-extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
+extern qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir);
 
 void WP_ForceKnockdown(gentity_t* self, gentity_t* pusher, qboolean pull, qboolean strongKnockdown,
 	qboolean breakSaberLock)
@@ -14749,7 +14742,7 @@ void WP_ForceKnockdown(gentity_t* self, gentity_t* pusher, qboolean pull, qboole
 			//He can backflip instead of be knocked down
 			return;
 		}
-		if (Jedi_StopKnockdown(self, pusher, pushDir))
+		if (Jedi_StopKnockdown(self, pushDir))
 		{
 			//They can backflip instead of be knocked down
 			return;
@@ -22777,7 +22770,7 @@ void force_shoot_lightning(gentity_t* self)
 				&& traceEnt->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 			{
 				//FIXME: need a more reliable way to know we hit a jedi?
-				if (!Jedi_DodgeEvasion(traceEnt, self, &tr, HL_NONE))
+				if (!jedi_dodge_evasion(traceEnt, self, &tr, HL_NONE))
 				{
 					//act like we didn't even hit him
 					VectorCopy(tr.endpos, start);
@@ -23504,7 +23497,7 @@ void ForceShootDrain(gentity_t* self)
 					&& traceEnt->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0 &&
 					traceEnt->client->ps.weapon != WP_SABER)
 				{
-					if (!Q_irand(0, 4) && !Jedi_DodgeEvasion(traceEnt, self, &tr, HL_NONE))
+					if (!Q_irand(0, 4) && !jedi_dodge_evasion(traceEnt, self, &tr, HL_NONE))
 					{
 						//act like we didn't even hit him
 						continue;
@@ -23550,7 +23543,7 @@ void ForceShootDrain(gentity_t* self)
 					&& traceEnt->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0 &&
 					traceEnt->client->ps.weapon != WP_SABER)
 				{
-					if (!Q_irand(0, 2) && !Jedi_DodgeEvasion(traceEnt, self, &tr, HL_NONE))
+					if (!Q_irand(0, 2) && !jedi_dodge_evasion(traceEnt, self, &tr, HL_NONE))
 					{
 						//act like we didn't even hit him
 						VectorCopy(tr.endpos, start);

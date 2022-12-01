@@ -49,11 +49,11 @@ extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void ST_ClearTimers(const gentity_t* ent);
-extern void Jedi_ClearTimers(const gentity_t* ent);
+extern void jedi_clear_timers(const gentity_t* ent);
 extern void Howler_ClearTimers(const gentity_t* self);
 extern void NPC_GalakMech_Precache();
 constexpr auto NSF_DROP_TO_FLOOR = 16;
-extern void NPC_SBD_Precache(void);
+extern void npc_sbd_precache();
 extern void NPC_DROIDEKA_Init(gentity_t* ent);
 
 /*
@@ -476,7 +476,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 			wp_saber_add_g2_saber_models(ent);
 			G_RemoveHolsterModels(ent);
 		}
-		Jedi_ClearTimers(ent);
+		jedi_clear_timers(ent);
 	}
 	if (ent->client->ps.forcePowersKnown != 0)
 	{

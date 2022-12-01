@@ -197,11 +197,11 @@ extern void NPC_Spawn(gentity_t* self, const gentity_t* other, gentity_t* activa
 //NPC_stats
 extern int NPC_ReactionTime(void);
 extern qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC);
-extern void NPC_LoadParms(void); //academy
-extern void NPC_LoadParms1(void); //outcast
-extern void NPC_LoadParms2(void); //mods/DF/CW
-extern void NPC_LoadParms3(void); //yavinIV
-extern void NPC_LoadParms4(void); //EoC
+extern void NPC_LoadParms(); //academy
+extern void NPC_LoadParms1(); //outcast
+extern void NPC_LoadParms2(); //mods/DF/CW
+extern void NPC_LoadParms3(); //yavinIV
+extern void NPC_LoadParms4(); //EoC
 
 //NPC_utils
 extern int teamNumbers[TEAM_NUM_TEAMS];

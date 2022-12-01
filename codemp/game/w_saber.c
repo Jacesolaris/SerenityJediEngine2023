@@ -89,7 +89,7 @@ extern void Boba_FlyStart(gentity_t* self);
 extern qboolean in_camera;
 extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
-extern qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hitLoc);
+extern qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean PM_CrouchAnim(int anim);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
@@ -7481,7 +7481,7 @@ void wp_saber_start_missile_block_check(gentity_t* self, usercmd_t* ucmd)
 				trap->Trace(&trace, start, incoming->mins, incoming->maxs, end, incoming->s.number, MASK_SHOT, qfalse,
 					0, 0);
 
-				Jedi_DodgeEvasion(self, incoming->owner, &trace, HL_NONE);
+				jedi_dodge_evasion(self, incoming->owner, &trace, HL_NONE);
 			}
 			if (incoming->owner && incoming->owner->client && (!self->enemy || self->enemy->s.weapon != WP_SABER))
 			{

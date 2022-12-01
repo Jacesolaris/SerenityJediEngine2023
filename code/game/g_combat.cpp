@@ -47,7 +47,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 constexpr auto TURN_OFF = 0x00000100;
 extern cvar_t* g_DebugSaberCombat;
-extern qboolean Rosh_TwinPresent(gentity_t* self);
+extern qboolean Rosh_TwinPresent();
 extern void G_CheckCharmed(gentity_t* self);
 extern qboolean Wampa_CheckDropVictim(gentity_t* self, qboolean excludeMe);
 extern cvar_t* g_debugDamage;
@@ -6100,7 +6100,7 @@ extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_FaceProtectAnim(int anim);
 extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
 	qboolean forceKnockdown = qfalse);
-extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
+extern qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir);
 
 void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock)
 {
@@ -6118,7 +6118,7 @@ void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, flo
 	{
 		return;
 	}
-	if (Jedi_StopKnockdown(self, attacker, pushDir))
+	if (Jedi_StopKnockdown(self, pushDir))
 	{
 		//They can sometimes backflip instead of be knocked down
 		return;
@@ -6254,7 +6254,7 @@ void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, flo
 	{
 		return;
 	}
-	if (Jedi_StopKnockdown(self, attacker, pushDir))
+	if (Jedi_StopKnockdown(self, pushDir))
 	{
 		//They can sometimes backflip instead of be knocked down
 		return;
@@ -8302,7 +8302,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 				{
 					if (targ->health < 1)
 					{
-						if (targ->NPC == nullptr || !(targ->NPC->aiFlags & NPCAI_ROSH) || !Rosh_TwinPresent(targ))
+						if (targ->NPC == nullptr || !(targ->NPC->aiFlags & NPCAI_ROSH) || !Rosh_TwinPresent())
 						{
 							//NOTE: Rosh won't run his deathscript until he doesn't have the twins to heal him
 							G_ActivateBehavior(targ, BSET_DEATH);

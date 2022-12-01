@@ -2818,7 +2818,7 @@ qboolean UseForceonLocal(bot_state_t* bs, vec3_t origin, const qboolean pull)
 			vectoangles(viewDir, ang);
 			VectorCopy(ang, bs->goalAngles);
 
-			if (InFieldOfVision(bs->viewangles, 5, ang))
+			if (in_field_of_vision(bs->viewangles, 5, ang))
 			{
 				//use the force
 				if (pull)
@@ -4459,7 +4459,7 @@ qboolean UseForceonLocals(bot_state_t* bs, vec3_t origin, const qboolean pull)
 			vectoangles(viewDir, ang);
 			VectorCopy(ang, bs->goalAngles);
 
-			if (InFieldOfVision(bs->viewangles, 5, ang))
+			if (in_field_of_vision(bs->viewangles, 5, ang))
 			{
 				//use the force
 				if (pull)
@@ -5430,7 +5430,7 @@ void UpdateEventTracker(void)
 }
 
 //check if said angles are within our fov
-int InFieldOfVision(vec3_t viewangles, const float fov, vec3_t angles)
+int in_field_of_vision(vec3_t viewangles, const float fov, vec3_t angles)
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -5546,7 +5546,7 @@ void EnemyVisualUpdate(bot_state_t* bs)
 
 	trap->Trace(&tr, bs->eye, NULL, NULL, enemyOrigin, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-	if (tr.entityNum == bs->currentEnemy->s.number && InFieldOfVision(bs->viewangles, 90, a) && !BotMindTricked(
+	if (tr.entityNum == bs->currentEnemy->s.number && in_field_of_vision(bs->viewangles, 90, a) && !BotMindTricked(
 		bs->client, bs->currentEnemy->s.number)
 		|| BotCanHear(bs, bs->currentEnemy, dist))
 	{
@@ -5731,7 +5731,7 @@ int ScanForEnemies(bot_state_t* bs)
 					RequestSiegeAssistance(bs, REPLY_YES);
 			}
 
-			if (distcheck < closest && (InFieldOfVision(bs->viewangles, 90, a) && !BotMindTricked(bs->client, i) ||
+			if (distcheck < closest && (in_field_of_vision(bs->viewangles, 90, a) && !BotMindTricked(bs->client, i) ||
 				BotCanHear(bs, &g_entities[i], distcheck)) && OrgVisible(bs->eye, g_entities[i].client->ps.origin, -1))
 			{
 				if (BotMindTricked(bs->client, i))
@@ -5848,7 +5848,7 @@ void Advanced_ScanforEnemies(bot_state_t* bs)
 			vectoangles(a, a);
 			a[PITCH] = a[ROLL] = 0;
 
-			if (distcheck < closestdist && (InFieldOfVision(bs->viewangles, 90, a)
+			if (distcheck < closestdist && (in_field_of_vision(bs->viewangles, 90, a)
 				&& !BotMindTricked(bs->client, i)
 				|| BotCanHear(bs, &g_entities[i], distcheck))
 				&& OrgVisible(bs->eye, EnemyOrigin, -1))
@@ -5987,7 +5987,7 @@ void Advanced_ScanforEnemies(bot_state_t* bs)
 					RequestSiegeAssistance(bs, REPLY_YES);
 			}
 
-			if (distcheck < closestdist && (InFieldOfVision(bs->viewangles, 90, a) && !BotMindTricked(bs->client, i)
+			if (distcheck < closestdist && (in_field_of_vision(bs->viewangles, 90, a) && !BotMindTricked(bs->client, i)
 				|| BotCanHear(bs, &g_entities[i], distcheck)) && OrgVisible(
 					bs->eye, g_entities[i].client->ps.origin, -1))
 			{
@@ -8477,7 +8477,7 @@ void BotBehave_AttackBasic(bot_state_t* bs, const gentity_t* target)
 	}
 
 	if (!PM_SaberInKata(bs->cur_ps.saberMove) && bs->cur_ps.fd.forcePower > 80 &&
-		bs->cur_ps.weapon == WP_SABER && dist < 128 && InFieldOfVision(bs->viewangles, 90, ang))
+		bs->cur_ps.weapon == WP_SABER && dist < 128 && in_field_of_vision(bs->viewangles, 90, ang))
 	{
 		//KATA!
 		trap->EA_Attack(bs->client);
@@ -8536,7 +8536,7 @@ void BotBehave_AttackBasic(bot_state_t* bs, const gentity_t* target)
 	adjustfor_strafe(bs, moveDir);
 
 	if (bs->cur_ps.weapon == bs->virtualWeapon
-		&& bs->virtualWeapon == WP_SABER && InFieldOfVision(bs->viewangles, 100, ang))
+		&& bs->virtualWeapon == WP_SABER && in_field_of_vision(bs->viewangles, 100, ang))
 	{
 		//we're using a lightsaber
 		if (PM_SaberInIdle(bs->cur_ps.saberMove)
@@ -8575,8 +8575,8 @@ void BotBehave_AttackBasic(bot_state_t* bs, const gentity_t* target)
 	}
 
 	if (bs->frame_Enemy_Vis && bs->cur_ps.weapon == bs->virtualWeapon
-		&& (InFieldOfVision(bs->viewangles, 30, ang)
-			|| bs->virtualWeapon == WP_SABER && InFieldOfVision(bs->viewangles, 100, ang)))
+		&& (in_field_of_vision(bs->viewangles, 30, ang)
+			|| bs->virtualWeapon == WP_SABER && in_field_of_vision(bs->viewangles, 100, ang)))
 	{
 		//not switching weapons so attack
 		trap->EA_Attack(bs->client);
@@ -8798,8 +8798,8 @@ void SaberCombatHandling(bot_state_t* bs)
 	}
 
 	if (bs->frame_Enemy_Vis && bs->cur_ps.weapon == bs->virtualWeapon
-		&& (InFieldOfVision(bs->viewangles, 30, ang)
-			|| bs->virtualWeapon == WP_SABER && InFieldOfVision(bs->viewangles, 100, ang)))
+		&& (in_field_of_vision(bs->viewangles, 30, ang)
+			|| bs->virtualWeapon == WP_SABER && in_field_of_vision(bs->viewangles, 100, ang)))
 	{
 		//not switching weapons so attack
 		trap->EA_Attack(bs->client);
@@ -9184,7 +9184,7 @@ int CombatBotAI(bot_state_t* bs, float thinktime)
 			fovcheck *= 2;
 		}
 
-		if (InFieldOfVision(bs->viewangles, fovcheck, a))
+		if (in_field_of_vision(bs->viewangles, fovcheck, a))
 		{
 			if (bs->cur_ps.weapon == WP_THERMAL)
 			{
@@ -11094,7 +11094,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			//try dark side powers
 			//in order of priority top to bottom
 			if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_GRIP && bs->cur_ps.fd.forcePowersActive & 1 << FP_GRIP
-				&& InFieldOfVision(bs->viewangles, 50, a_fo))
+				&& in_field_of_vision(bs->viewangles, 50, a_fo))
 			{
 				//already gripping someone, so hold it
 				level.clients[bs->client].ps.fd.forcePowerSelected = FP_GRIP;
@@ -11102,7 +11102,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 				forceHostile = 1;
 			}
 			else if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_LIGHTNING && bs->frame_Enemy_Len <
-				FORCE_LIGHTNING_RADIUS && level.clients[bs->client].ps.fd.forcePower > 50 && InFieldOfVision(
+				FORCE_LIGHTNING_RADIUS && level.clients[bs->client].ps.fd.forcePower > 50 && in_field_of_vision(
 					bs->viewangles, 50, a_fo))
 			{
 				level.clients[bs->client].ps.fd.forcePowerSelected = FP_LIGHTNING;
@@ -11111,7 +11111,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			}
 			else if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_GRIP && bs->frame_Enemy_Len < MAX_GRIP_DISTANCE &&
 				level.clients[bs->client].ps.fd.forcePower > forcePowerNeeded[level.clients[bs->client].ps.fd.
-				forcePowerLevel[FP_GRIP]][FP_GRIP] && InFieldOfVision(bs->viewangles, 50, a_fo))
+				forcePowerLevel[FP_GRIP]][FP_GRIP] && in_field_of_vision(bs->viewangles, 50, a_fo))
 			{
 				level.clients[bs->client].ps.fd.forcePowerSelected = FP_GRIP;
 				useTheForce = 1;
@@ -11134,7 +11134,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 				forceHostile = 0;
 			}
 			else if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_DRAIN && bs->frame_Enemy_Len < MAX_DRAIN_DISTANCE &&
-				level.clients[bs->client].ps.fd.forcePower > 50 && InFieldOfVision(bs->viewangles, 50, a_fo) && bs->
+				level.clients[bs->client].ps.fd.forcePower > 50 && in_field_of_vision(bs->viewangles, 50, a_fo) && bs->
 				currentEnemy->client->ps.fd.forcePower > 10 && bs->currentEnemy->client->ps.fd.forceSide ==
 				FORCE_LIGHTSIDE)
 			{
@@ -11166,7 +11166,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			}
 			else if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_TELEPATHY && bs->frame_Enemy_Len < MAX_TRICK_DISTANCE
 				&& level.clients[bs->client].ps.fd.forcePower > forcePowerNeeded[level.clients[bs->client].ps.fd.
-				forcePowerLevel[FP_TELEPATHY]][FP_TELEPATHY] && InFieldOfVision(bs->viewangles, 50, a_fo) && !(bs->
+				forcePowerLevel[FP_TELEPATHY]][FP_TELEPATHY] && in_field_of_vision(bs->viewangles, 50, a_fo) && !(bs->
 					currentEnemy->client->ps.fd.forcePowersActive & 1 << FP_SEE))
 			{
 				level.clients[bs->client].ps.fd.forcePowerSelected = FP_TELEPATHY;
@@ -11208,7 +11208,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			//try neutral powers
 			if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_PUSH && bs->cur_ps.fd.forceGripBeingGripped > level.time &&
 				level.clients[bs->client].ps.fd.forcePower > forcePowerNeeded[level.clients[bs->client].ps.fd.
-				forcePowerLevel[FP_PUSH]][FP_PUSH] && InFieldOfVision(bs->viewangles, 50, a_fo))
+				forcePowerLevel[FP_PUSH]][FP_PUSH] && in_field_of_vision(bs->viewangles, 50, a_fo))
 			{
 				level.clients[bs->client].ps.fd.forcePowerSelected = FP_PUSH;
 				useTheForce = 1;
@@ -11235,7 +11235,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 				if (rand() % 10 < 5 && bs->doForcePushPullSpamTime > level.time)
 				{
 					if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_PULL && bs->frame_Enemy_Len < 256 && level.clients[
-						bs->client].ps.fd.forcePower > 75 && InFieldOfVision(bs->viewangles, 50, a_fo))
+						bs->client].ps.fd.forcePower > 75 && in_field_of_vision(bs->viewangles, 50, a_fo))
 					{
 						level.clients[bs->client].ps.fd.forcePowerSelected = FP_PULL;
 						useTheForce = 1;
@@ -11247,7 +11247,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 				else
 				{
 					if (bs->cur_ps.fd.forcePowersKnown & 1 << FP_PUSH && bs->frame_Enemy_Len < 256 && level.clients[
-						bs->client].ps.fd.forcePower > 75 && InFieldOfVision(bs->viewangles, 50, a_fo))
+						bs->client].ps.fd.forcePower > 75 && in_field_of_vision(bs->viewangles, 50, a_fo))
 					{
 						level.clients[bs->client].ps.fd.forcePowerSelected = FP_PUSH;
 						useTheForce = 1;
@@ -11467,7 +11467,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 
 			VectorSubtract(bs->currentEnemy->client->ps.origin, bs->eye, e_ang_vec);
 
-			if (InFieldOfVision(bs->viewangles, 100, e_ang_vec))
+			if (in_field_of_vision(bs->viewangles, 100, e_ang_vec))
 			{
 				if (bs->currentEnemy->client->ps.duelIndex == bs->client &&
 					bs->currentEnemy->client->ps.duelTime > level.time &&
@@ -12165,7 +12165,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			}
 			else if (bs->saberThrowTime < level.time && !bs->cur_ps.saberInFlight &&
 				bs->cur_ps.fd.forcePowersKnown & 1 << FP_SABERTHROW &&
-				InFieldOfVision(bs->viewangles, 30, a_fo) &&
+				in_field_of_vision(bs->viewangles, 30, a_fo) &&
 				(bs->frame_Enemy_Len > 512 && bs->frame_Enemy_Len < BOT_SABER_THROW_RANGE))
 			{
 				bs->doAltAttack = 1;
@@ -12286,7 +12286,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 			vectoangles(a, a);
 			VectorCopy(a, bs->goalAngles);
 
-			if (InFieldOfVision(bs->viewangles, 30, a) &&
+			if (in_field_of_vision(bs->viewangles, 30, a) &&
 				EntityVisibleBox(bs->origin, NULL, NULL, dif, bs->client, bs->shootGoal->s.number))
 			{
 				bs->doAttack = 1;
@@ -12522,7 +12522,7 @@ void StandardBotAI(bot_state_t* bs, float thinktime)
 				bs->goalAngles[PITCH] -= Q_irand(0, 3);
 			}
 
-			if (InFieldOfVision(bs->viewangles, 30, a) &&
+			if (in_field_of_vision(bs->viewangles, 30, a) &&
 				EntityVisibleBox(bs->origin, NULL, NULL, bs->dangerousObject->r.currentOrigin, bs->client,
 					bs->dangerousObject->s.number))
 			{
@@ -13702,8 +13702,8 @@ void BotBehave_AttackMove(bot_state_t* bs)
 	if (bs->frame_Enemy_Vis && bs->cur_ps.weapon == bs->virtualWeapon && range < MaximumAttackDistance[bs->
 		virtualWeapon]
 		&& range > MinimumAttackDistance[bs->virtualWeapon]
-		&& (InFieldOfVision(bs->viewangles, 30, ang)
-			|| bs->virtualWeapon == WP_SABER && InFieldOfVision(bs->viewangles, 100, ang)))
+		&& (in_field_of_vision(bs->viewangles, 30, ang)
+			|| bs->virtualWeapon == WP_SABER && in_field_of_vision(bs->viewangles, 100, ang)))
 	{
 		//don't attack unless you're inside your AttackDistance band and actually pointing at your enemy.
 		if (bs->virtualWeapon != WP_SABER && bs->cur_ps.BlasterAttackChainCount >= MISHAPLEVEL_HEAVY)

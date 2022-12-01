@@ -22,7 +22,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "b_local.h"
 extern qboolean PM_FlippingAnim(int anim);
-extern void NPC_BSST_Patrol(void);
+extern void NPC_BSST_Patrol();
 
 extern void RT_FlyStart(gentity_t* self);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
@@ -36,7 +36,7 @@ constexpr auto RT_FLYING_UPWARD_PUSH = 150;
 constexpr auto RT_FLYING_FORWARD_BASE_SPEED = 50;
 constexpr auto RT_FLYING_FORWARD_MULTIPLIER = 10;
 
-void RT_Precache(void)
+void RT_Precache()
 {
 	G_SoundIndex("sound/chars/boba/bf_blast-off.wav");
 	G_SoundIndex("sound/chars/boba/bf_jetpack_lp.wav");
@@ -66,15 +66,15 @@ void RT_RunStormtrooperAI(void)
 	NPC_BehaviorSet_Stormtrooper(bState);
 }
 
-void RT_FireDecide(void)
+void RT_FireDecide()
 {
 	qboolean enemyLOS = qfalse;
 	qboolean enemyCS = qfalse;
 	qboolean enemyInFOV = qfalse;
 	//qboolean move = qtrue;
 	qboolean shoot = qfalse;
-	qboolean hitAlly = qfalse;
-	vec3_t impactPos;
+	qboolean hit_ally = qfalse;
+	vec3_t impact_pos;
 
 	if (NPC->client->ps.groundEntityNum == ENTITYNUM_NONE
 		&& NPC->client->ps.forceJumpZStart
@@ -90,21 +90,21 @@ void RT_FireDecide(void)
 		return;
 	}
 
-	VectorClear(impactPos);
-	const float enemyDist = DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin);
+	VectorClear(impact_pos);
+	const float enemy_dist = DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin);
 
 	vec3_t enemyDir, shootDir;
 	VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, enemyDir);
 	VectorNormalize(enemyDir);
 	AngleVectors(NPC->client->ps.viewangles, shootDir, nullptr, nullptr);
 	const float dot = DotProduct(enemyDir, shootDir);
-	if (dot > 0.5f || enemyDist * (1.0f - dot) < 10000)
+	if (dot > 0.5f || enemy_dist * (1.0f - dot) < 10000)
 	{
 		//enemy is in front of me or they're very close and not behind me
 		enemyInFOV = qtrue;
 	}
 
-	if (enemyDist < MIN_ROCKET_DIST_SQUARED) //128
+	if (enemy_dist < MIN_ROCKET_DIST_SQUARED) //128
 	{
 		//enemy within 128
 		if ((NPC->client->ps.weapon == WP_FLECHETTE || NPC->client->ps.weapon == WP_REPEATER) &&
@@ -133,17 +133,17 @@ void RT_FireDecide(void)
 				//can we shoot our target?
 				if ((NPC->client->ps.weapon == WP_ROCKET_LAUNCHER
 					|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE)
-					|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemyDist <
+					|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemy_dist <
 					MIN_ROCKET_DIST_SQUARED) //128*128
 				{
 					enemyCS = qfalse; //not true, but should stop us from firing
-					hitAlly = qtrue; //us!
+					hit_ally = qtrue; //us!
 					//FIXME: if too close, run away!
 				}
 				else if (enemyInFOV)
 				{
 					//if enemy is FOV, go ahead and check for shooting
-					const int hit = NPC_ShotEntity(NPC->enemy, impactPos);
+					const int hit = NPC_ShotEntity(NPC->enemy, impact_pos);
 					const gentity_t* hitEnt = &g_entities[hit];
 
 					if (hit == NPC->enemy->s.number
@@ -163,7 +163,7 @@ void RT_FireDecide(void)
 						if (hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->playerTeam)
 						{
 							//would hit an ally, don't fire!!!
-							hitAlly = qtrue;
+							hit_ally = qtrue;
 						}
 						else
 						{
@@ -200,7 +200,7 @@ void RT_FireDecide(void)
 			//if have a clear shot, always try
 			//See if we should continue to fire on their last position
 			//!TIMER_Done( NPC, "stick" ) ||
-			if (!hitAlly //we're not going to hit an ally
+			if (!hit_ally //we're not going to hit an ally
 				&& enemyInFOV //enemy is in our FOV //FIXME: or we don't have a clear LOS?
 				&& NPCInfo->enemyLastSeenTime > 0) //we've seen the enemy
 			{
@@ -214,7 +214,7 @@ void RT_FireDecide(void)
 						qboolean tooFar = qfalse;
 
 						CalcEntitySpot(NPC, SPOT_HEAD, muzzle);
-						if (VectorCompare(impactPos, vec3_origin))
+						if (VectorCompare(impact_pos, vec3_origin))
 						{
 							//never checked ShotEntity this frame, so must do a trace...
 							trace_t tr;
@@ -224,7 +224,7 @@ void RT_FireDecide(void)
 							VectorMA(muzzle, 8192, forward, end);
 							gi.trace(&tr, muzzle, vec3_origin, vec3_origin, end, NPC->s.number, MASK_SHOT,
 								static_cast<EG2_Collision>(0), 0);
-							VectorCopy(tr.endpos, impactPos);
+							VectorCopy(tr.endpos, impact_pos);
 						}
 
 						//see if impact would be too close to me
@@ -254,7 +254,7 @@ void RT_FireDecide(void)
 							break;
 						}
 
-						float dist = DistanceSquared(impactPos, muzzle);
+						float dist = DistanceSquared(impact_pos, muzzle);
 
 						if (dist < distThreshold)
 						{
@@ -291,7 +291,7 @@ void RT_FireDecide(void)
 							default:
 								break;
 							}
-							dist = DistanceSquared(impactPos, NPCInfo->enemyLastSeenLocation);
+							dist = DistanceSquared(impact_pos, NPCInfo->enemyLastSeenLocation);
 							if (dist > distThreshold)
 							{
 								//impact would be too far from enemy
@@ -923,7 +923,7 @@ void RT_Flying_Think(void)
 //=====================================================================================
 //DEFAULT behavior
 //=====================================================================================
-extern void RT_CheckJump(void);
+extern void RT_CheckJump();
 
 void NPC_BSRT_Default(void)
 {

@@ -45,7 +45,7 @@ extern void G_VehUpdateShields(gentity_t* targ);
 extern void G_LetGoOfWall(const gentity_t* ent);
 extern void BG_ClearRocketLock(playerState_t* ps);
 void BotDamageNotification(const gclient_t* bot, gentity_t* attacker);
-extern qboolean Jedi_StopKnockdown(gentity_t* self, gentity_t* pusher, const vec3_t push_dir);
+extern qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir);
 extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean PM_LockedAnim(int anim);
@@ -5853,7 +5853,7 @@ void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, flo
 	{
 		return;
 	}
-	if (Jedi_StopKnockdown(self, attacker, pushDir))
+	if (Jedi_StopKnockdown(self, pushDir))
 	{
 		//They can sometimes backflip instead of be knocked down
 		return;
@@ -5994,7 +5994,7 @@ void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, flo
 	{
 		return;
 	}
-	if (Jedi_StopKnockdown(self, attacker, pushDir))
+	if (Jedi_StopKnockdown(self, pushDir))
 	{
 		//They can sometimes backflip instead of be knocked down
 		return;

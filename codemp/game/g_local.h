@@ -1819,8 +1819,8 @@ void ForceTeamForceReplenish(const gentity_t* self);
 void ForceSeeing(gentity_t* self);
 void ForceThrow(gentity_t* self, qboolean pull);
 void ForceTelepathy(gentity_t* self);
-qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hitLoc);
-qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, vec3_t dmgOrigin, int hitLoc);
+qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hit_loc);
+qboolean jedi_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, vec3_t dmg_origin, int hit_loc);
 void AnimateStun(gentity_t* self, gentity_t* inflictor, vec3_t impact);
 
 // g_log.c
@@ -1863,7 +1863,7 @@ qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hol
 
 int OrgVisible(vec3_t org1, vec3_t org2, int ignore);
 void BotOrder(gentity_t* ent, int clientnum, int ordernum);
-int InFieldOfVision(vec3_t viewangles, float fov, vec3_t angles);
+int in_field_of_vision(vec3_t viewangles, float fov, vec3_t angles);
 
 // ai_util.c
 void B_InitAlloc(void);

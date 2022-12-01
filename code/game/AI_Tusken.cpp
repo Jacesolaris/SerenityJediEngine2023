@@ -68,7 +68,7 @@ enum
 NPC_Tusken_Precache
 -------------------------
 */
-void NPC_Tusken_Precache(void)
+void NPC_Tusken_Precache()
 {
 	for (int i = 1; i < 5; i++)
 	{

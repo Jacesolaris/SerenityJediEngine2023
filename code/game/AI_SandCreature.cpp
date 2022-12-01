@@ -35,7 +35,7 @@ constexpr auto MAX_MISS_DIST = 500;
 #define MAX_MISS_DIST_SQ	(MAX_MISS_DIST*MAX_MISS_DIST)
 constexpr auto MIN_SCORE = -37500; //speed of (50*50) - dist of (200*200);
 
-void SandCreature_Precache(void)
+void SandCreature_Precache()
 {
 	G_EffectIndex("env/sand_dive");
 	G_EffectIndex("env/sand_spray");

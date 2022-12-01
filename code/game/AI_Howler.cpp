@@ -55,7 +55,7 @@ static void Howler_Attack(float enemyDist, qboolean howl = qfalse);
 NPC_Howler_Precache
 -------------------------
 */
-void NPC_Howler_Precache(void)
+void NPC_Howler_Precache()
 {
 	int i;
 	G_EffectIndex("howler/sonic");

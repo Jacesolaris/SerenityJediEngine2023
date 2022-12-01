@@ -88,7 +88,7 @@ extern qboolean BG_FullBodyEmoteAnim(int anim);
 extern qboolean BG_FullBodyCowerAnim(int anim);
 extern qboolean BG_FullBodyCowerstartAnim(int anim);
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);
-qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hitLoc);
+qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean PM_SaberInReturn(int move);
 extern qboolean PM_SuperBreakLoseAnim(int anim);
 extern qboolean PM_SuperBreakWinAnim(int anim);
@@ -4657,7 +4657,7 @@ void ForceTelepathy(gentity_t* self)
 			{
 				entityList[e] = ENTITYNUM_NONE;
 			}
-			else if (!InFieldOfVision(self->client->ps.viewangles, visionArc, a))
+			else if (!in_field_of_vision(self->client->ps.viewangles, visionArc, a))
 			{
 				//only bother with arc rules if the victim is a client
 				entityList[e] = ENTITYNUM_NONE;
@@ -5579,7 +5579,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 				VectorSubtract(thispush_org, tto, a);
 				vectoangles(a, a);
 
-				if (ent->client && !InFieldOfVision(self->client->ps.viewangles, visionArc, a) &&
+				if (ent->client && !in_field_of_vision(self->client->ps.viewangles, visionArc, a) &&
 					ForcePowerUsableOn(self, ent, powerUse))
 				{
 					//only bother with arc rules if the victim is a client
@@ -9120,9 +9120,9 @@ qboolean Jedi_DrainReaction(gentity_t* self, gentity_t* shooter)
 	return qfalse;
 }
 
-qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hitLoc)
+qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, const int hit_loc)
 {
-	int dodgeAnim = -1;
+	int dodge_anim = -1;
 
 	if (in_camera)
 	{
@@ -9309,14 +9309,14 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* t
 		}
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_NONE:
 		return qfalse;
 
 	case HL_FOOT_RT:
 	case HL_FOOT_LT:
-		dodgeAnim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
+		dodge_anim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
 		break;
 	case HL_LEG_RT:
 	case HL_LEG_LT:
@@ -9335,21 +9335,21 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* t
 		}
 		else
 		{
-			dodgeAnim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
+			dodge_anim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
 		}
 		break;
 
 	case HL_BACK_RT:
-		dodgeAnim = BOTH_DODGE_FL;
+		dodge_anim = BOTH_DODGE_FL;
 		break;
 	case HL_CHEST_RT:
-		dodgeAnim = BOTH_DODGE_FR;
+		dodge_anim = BOTH_DODGE_FR;
 		break;
 	case HL_BACK_LT:
-		dodgeAnim = BOTH_DODGE_FR;
+		dodge_anim = BOTH_DODGE_FR;
 		break;
 	case HL_CHEST_LT:
-		dodgeAnim = BOTH_DODGE_FR;
+		dodge_anim = BOTH_DODGE_FR;
 		break;
 	case HL_BACK:
 		if (self->client->pers.botclass == BCLASS_MANDOLORIAN
@@ -9367,7 +9367,7 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* t
 		}
 		else
 		{
-			dodgeAnim = Q_irand(BOTH_DODGE_FL, BOTH_DODGE_FR);
+			dodge_anim = Q_irand(BOTH_DODGE_FL, BOTH_DODGE_FR);
 		}
 		break;
 	case HL_CHEST:
@@ -9386,7 +9386,7 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* t
 		}
 		else
 		{
-			dodgeAnim = BOTH_DODGE_B;
+			dodge_anim = BOTH_DODGE_B;
 		}
 		break;
 	case HL_WAIST:
@@ -9405,29 +9405,29 @@ qboolean Jedi_DodgeEvasion(gentity_t* self, const gentity_t* shooter, trace_t* t
 		}
 		else
 		{
-			dodgeAnim = Q_irand(BOTH_DODGE_L, BOTH_DODGE_R);
+			dodge_anim = Q_irand(BOTH_DODGE_L, BOTH_DODGE_R);
 		}
 		break;
 	case HL_ARM_RT:
 	case HL_HAND_RT:
-		dodgeAnim = BOTH_DODGE_L;
+		dodge_anim = BOTH_DODGE_L;
 		break;
 	case HL_ARM_LT:
 	case HL_HAND_LT:
-		dodgeAnim = BOTH_DODGE_R;
+		dodge_anim = BOTH_DODGE_R;
 		break;
 	case HL_HEAD:
-		dodgeAnim = BOTH_CROUCHDODGE;
+		dodge_anim = BOTH_CROUCHDODGE;
 		break;
 	default:
 		return qfalse;
 	}
 
-	if (dodgeAnim != -1)
+	if (dodge_anim != -1)
 	{
 		//Our own happy way of forcing an anim:
 		self->client->ps.forceHandExtend = HANDEXTEND_DODGE;
-		self->client->ps.forceDodgeAnim = dodgeAnim;
+		self->client->ps.forceDodgeAnim = dodge_anim;
 		self->client->ps.forceHandExtendTime = level.time + 300;
 		self->client->ps.weaponTime = 300;
 		self->client->ps.saberMove = LS_NONE;
@@ -9440,44 +9440,44 @@ extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, in
 	vec3_t bladeDir, int mod);
 extern int G_GetHitLocation(const gentity_t* target, vec3_t ppoint);
 
-qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, vec3_t dmgOrigin, int hitLoc)
+qboolean jedi_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, vec3_t dmg_origin, int hit_loc)
 {
-	int dodgeAnim = -1;
+	int dodge_anim = -1;
 
 	/*===========================================================================
 	doing a positional dodge for direct hit damage (like sabers or blaster bolts)
 	===========================================================================*/
-	if (hitLoc == -1)
+	if (hit_loc == -1)
 	{
 		//Use the last surface impact data as the hit location
 		if (d_saberGhoul2Collision.integer && self->client
 			&& self->client->g2LastSurfaceModel == G2MODEL_PLAYER
 			&& self->client->g2LastSurfaceTime == level.time)
 		{
-			char hitSurface[MAX_QPATH];
+			char hit_surface[MAX_QPATH];
 
-			trap->G2API_GetSurfaceName(self->ghoul2, self->client->g2LastSurfaceHit, 0, hitSurface);
+			trap->G2API_GetSurfaceName(self->ghoul2, self->client->g2LastSurfaceHit, 0, hit_surface);
 
-			if (hitSurface[0])
+			if (hit_surface[0])
 			{
-				G_GetHitLocFromSurfName(self, hitSurface, &hitLoc, dmgOrigin, vec3_origin, vec3_origin, MOD_SABER);
+				G_GetHitLocFromSurfName(self, hit_surface, &hit_loc, dmg_origin, vec3_origin, vec3_origin, MOD_SABER);
 			}
 		}
 		else
 		{
 			//ok, that didn't work.  Try the old math way.
-			hitLoc = G_GetHitLocation(self, dmgOrigin);
+			hit_loc = G_GetHitLocation(self, dmg_origin);
 		}
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_NONE:
 		return qfalse;
 
 	case HL_FOOT_RT:
 	case HL_FOOT_LT:
-		dodgeAnim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
+		dodge_anim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
 		break;
 	case HL_LEG_RT:
 	case HL_LEG_LT:
@@ -9496,21 +9496,21 @@ qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, vec3_t 
 		}
 		else
 		{
-			dodgeAnim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
+			dodge_anim = Q_irand(BOTH_HOP_L, BOTH_HOP_R);
 		}
 		break;
 
 	case HL_BACK_RT:
-		dodgeAnim = BOTH_DODGE_FL;
+		dodge_anim = BOTH_DODGE_FL;
 		break;
 	case HL_CHEST_RT:
-		dodgeAnim = BOTH_DODGE_FR;
+		dodge_anim = BOTH_DODGE_FR;
 		break;
 	case HL_BACK_LT:
-		dodgeAnim = BOTH_DODGE_FR;
+		dodge_anim = BOTH_DODGE_FR;
 		break;
 	case HL_CHEST_LT:
-		dodgeAnim = BOTH_DODGE_FR;
+		dodge_anim = BOTH_DODGE_FR;
 		break;
 	case HL_BACK:
 		if (self->client->pers.botclass == BCLASS_MANDOLORIAN
@@ -9528,7 +9528,7 @@ qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, vec3_t 
 		}
 		else
 		{
-			dodgeAnim = Q_irand(BOTH_DODGE_FL, BOTH_DODGE_FR);
+			dodge_anim = Q_irand(BOTH_DODGE_FL, BOTH_DODGE_FR);
 		}
 		break;
 	case HL_CHEST:
@@ -9547,7 +9547,7 @@ qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, vec3_t 
 		}
 		else
 		{
-			dodgeAnim = BOTH_DODGE_B;
+			dodge_anim = BOTH_DODGE_B;
 		}
 		break;
 	case HL_WAIST:
@@ -9566,29 +9566,29 @@ qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, vec3_t 
 		}
 		else
 		{
-			dodgeAnim = Q_irand(BOTH_DODGE_L, BOTH_DODGE_R);
+			dodge_anim = Q_irand(BOTH_DODGE_L, BOTH_DODGE_R);
 		}
 		break;
 	case HL_ARM_RT:
 	case HL_HAND_RT:
-		dodgeAnim = BOTH_DODGE_L;
+		dodge_anim = BOTH_DODGE_L;
 		break;
 	case HL_ARM_LT:
 	case HL_HAND_LT:
-		dodgeAnim = BOTH_DODGE_R;
+		dodge_anim = BOTH_DODGE_R;
 		break;
 	case HL_HEAD:
-		dodgeAnim = BOTH_CROUCHDODGE;
+		dodge_anim = BOTH_CROUCHDODGE;
 		break;
 	default:
 		return qfalse;
 	}
 
-	if (dodgeAnim != -1)
+	if (dodge_anim != -1)
 	{
 		//Our own happy way of forcing an anim:
 		self->client->ps.forceHandExtend = HANDEXTEND_DODGE;
-		self->client->ps.forceDodgeAnim = dodgeAnim;
+		self->client->ps.forceDodgeAnim = dodge_anim;
 		self->client->ps.forceHandExtendTime = level.time + 300;
 		self->client->ps.weaponTime = 300;
 		self->client->ps.saberMove = LS_NONE;

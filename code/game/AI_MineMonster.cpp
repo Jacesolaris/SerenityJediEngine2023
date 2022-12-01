@@ -39,7 +39,7 @@ constexpr auto LSTATE_WAITING = 1;
 NPC_MineMonster_Precache
 -------------------------
 */
-void NPC_MineMonster_Precache(void)
+void NPC_MineMonster_Precache()
 {
 	for (int i = 0; i < 4; i++)
 	{

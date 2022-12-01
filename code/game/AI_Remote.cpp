@@ -38,7 +38,7 @@ enum
 
 void Remote_Idle(void);
 
-void NPC_Remote_Precache(void)
+void NPC_Remote_Precache()
 {
 	G_SoundIndex("sound/chars/remote/misc/fire.wav");
 	G_SoundIndex("sound/chars/remote/misc/hiss.wav");

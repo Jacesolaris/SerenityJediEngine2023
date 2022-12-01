@@ -37,8 +37,8 @@ void ViewHeightFix(const gentity_t* ent);
 qboolean LogAccuracyHit(const gentity_t* target, const gentity_t* attacker);
 extern qboolean G_BoxInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs, const vec3_t boundsMins,
 	const vec3_t boundsMaxs);
-extern qboolean Jedi_DodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hitLoc);
-extern qboolean Jedi_DisruptorDodgeEvasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hitLoc);
+extern qboolean jedi_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
+extern qboolean jedi_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean PM_DroidMelee(int npc_class);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);

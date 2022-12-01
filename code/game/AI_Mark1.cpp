@@ -61,7 +61,7 @@ extern gitem_t* FindItemForAmmo(ammo_t ammo);
 NPC_Mark1_Precache
 -------------------------
 */
-void NPC_Mark1_Precache(void)
+void NPC_Mark1_Precache()
 {
 	G_SoundIndex("sound/chars/mark1/misc/mark1_wakeup");
 	G_SoundIndex("sound/chars/mark1/misc/shutdown");

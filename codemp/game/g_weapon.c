@@ -926,7 +926,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 				}
 
 				//force player into a projective block move.
-				Jedi_DisruptorDodgeEvasion(traceEnt, ent, tr.endpos, -1);
+				jedi_disruptor_dodge_evasion(traceEnt, ent, tr.endpos, -1);
 
 				ignore = tr.entityNum;
 				VectorCopy(tr.endpos, start);
@@ -1181,7 +1181,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 				}
 
 				//force player into a projective block move.
-				Jedi_DisruptorDodgeEvasion(traceEnt, ent, tr.endpos, -1);
+				jedi_disruptor_dodge_evasion(traceEnt, ent, tr.endpos, -1);
 
 				ignore = tr.entityNum;
 				VectorCopy(tr.endpos, start);
@@ -3847,10 +3847,10 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 				WP_ForcePowerDrain(&traceEnt->client->ps, FP_SABER_DEFENSE,
 					WP_SaberBlockCost(traceEnt, ent, tr.endpos));
 				//force player into a projective block move.
-				hitDodged = WP_SaberBlockBolt(traceEnt, tr.endpos, qtrue);
+				WP_SaberBlockBolt(traceEnt, tr.endpos, qtrue);
 				return;
 			}
-			hitDodged = Jedi_DisruptorDodgeEvasion(traceEnt, ent, tr.endpos, -1);
+			hitDodged = jedi_disruptor_dodge_evasion(traceEnt, ent, tr.endpos, -1);
 			//acts like we didn't even hit him
 		}
 		if (!hitDodged)
@@ -5039,7 +5039,7 @@ qboolean WP_VehCheckTraceFromCamPos(gentity_t* ent, const vec3_t shotStart, vec3
 }
 
 //---------------------------------------------------------
-void FireVehicleWeapon(gentity_t* ent, qboolean alt_fire)
+void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	Vehicle_t* pVeh = ent->m_pVehicle;
@@ -5065,10 +5065,6 @@ void FireVehicleWeapon(gentity_t* ent, qboolean alt_fire)
 		//don't fire while being electrocuted
 		return;
 	}
-
-	// TODO?: If possible (probably not enough time), it would be nice if secondary fire was actually a mode switch/toggle
-	// so that, for instance, an x-wing can have 4-gun fire, or individual muzzle fire. If you wanted a different weapon, you
-	// would actually have to press the 2 key or something like that (I doubt I'd get a graphic for it anyways though). -AReis
 
 	// If this is not the alternate fire, fire a normal blaster shot...
 	if (pVeh->m_pVehicleInfo &&

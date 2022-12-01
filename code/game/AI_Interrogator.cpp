@@ -37,7 +37,7 @@ enum
 NPC_Interrogator_Precache
 -------------------------
 */
-void NPC_Interrogator_Precache(gentity_t* self)
+void NPC_Interrogator_Precache()
 {
 	G_SoundIndex("sound/chars/interrogator/misc/torture_droid_lp");
 	G_SoundIndex("sound/chars/mark1/misc/anger.wav");

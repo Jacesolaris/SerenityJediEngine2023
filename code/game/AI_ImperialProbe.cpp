@@ -40,7 +40,7 @@ enum
 
 void ImperialProbe_Idle(void);
 
-void NPC_Probe_Precache(void)
+void NPC_Probe_Precache()
 {
 	for (int i = 1; i < 4; i++)
 	{

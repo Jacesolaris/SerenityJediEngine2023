@@ -1860,7 +1860,7 @@ void G_UpdateClientBroadcasts(gentity_t* self)
 		if (level.gametype == GT_JEDIMASTER && self->client->ps.isJediMaster)
 		{
 			if (dist < maxJediMasterDistance
-				&& InFieldOfVision(other->client->ps.viewangles, maxJediMasterFOV, angles))
+				&& in_field_of_vision(other->client->ps.viewangles, maxJediMasterFOV, angles))
 			{
 				send = qtrue;
 			}
@@ -1870,7 +1870,7 @@ void G_UpdateClientBroadcasts(gentity_t* self)
 		if (other->client->ps.fd.forcePowersActive & 1 << FP_SEE)
 		{
 			if (dist < maxForceSightDistance
-				&& InFieldOfVision(other->client->ps.viewangles, maxForceSightFOV, angles))
+				&& in_field_of_vision(other->client->ps.viewangles, maxForceSightFOV, angles))
 			{
 				send = qtrue;
 			}
