@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 
 extern qboolean PM_ClientImpact(trace_t* trace, qboolean damageSelf);
-extern qboolean PM_ControlledByPlayer(void);
+extern qboolean PM_ControlledByPlayer();
 extern qboolean PM_InReboundHold(int anim);
 extern cvar_t* g_stepSlideFix;
 

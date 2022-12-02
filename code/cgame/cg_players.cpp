@@ -1007,7 +1007,7 @@ static void CG_PlayerAnimation(centity_t* cent, int* legsOld, int* legs, float* 
 	}
 }
 
-extern int PM_LegsAnimForFrame(gentity_t* ent, int legsFrame);
+extern int PM_LegsAnimForFrame(gentity_t* ent, int legs_frame);
 extern int PM_TorsoAnimForFrame(gentity_t* ent, int torsoFrame);
 
 static void CG_PlayerAnimEventDo(centity_t* cent, animevent_t* animEvent)

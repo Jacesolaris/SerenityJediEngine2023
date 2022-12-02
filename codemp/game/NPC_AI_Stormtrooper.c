@@ -1620,18 +1620,18 @@ static void ST_CheckMoveState(void)
 	}
 }
 
-void ST_ResolveBlockedShot(int hit)
+void ST_ResolveBlockedShot(const int hit)
 {
-	int stuckTime;
+	int stuck_time;
 
 	//figure out how long we intend to stand here, max
 	if (TIMER_Get(NPCS.NPC, "roamTime") > TIMER_Get(NPCS.NPC, "stick"))
 	{
-		stuckTime = TIMER_Get(NPCS.NPC, "roamTime") - level.time;
+		stuck_time = TIMER_Get(NPCS.NPC, "roamTime") - level.time;
 	}
 	else
 	{
-		stuckTime = TIMER_Get(NPCS.NPC, "stick") - level.time;
+		stuck_time = TIMER_Get(NPCS.NPC, "stick") - level.time;
 	}
 
 	if (TIMER_Done(NPCS.NPC, "duck"))
@@ -1647,7 +1647,7 @@ void ST_ResolveBlockedShot(int hit)
 				{
 					//they're not being forced to stand
 					//tell them to duck at least as long as I'm not moving
-					TIMER_Set(member, "duck", stuckTime);
+					TIMER_Set(member, "duck", stuck_time);
 					return;
 				}
 			}
@@ -1659,7 +1659,7 @@ void ST_ResolveBlockedShot(int hit)
 		if (TIMER_Done(NPCS.NPC, "stand"))
 		{
 			//stand for as long as we'll be here
-			TIMER_Set(NPCS.NPC, "stand", stuckTime);
+			TIMER_Set(NPCS.NPC, "stand", stuck_time);
 			return;
 		}
 	}
@@ -1715,7 +1715,7 @@ static void ST_CheckFireState(void)
 			{
 				//Fire on the last known position
 				vec3_t muzzle;
-				qboolean tooClose = qfalse;
+				qboolean too_close = qfalse;
 				qboolean tooFar = qfalse;
 
 				CalcEntitySpot(NPCS.NPC, SPOT_HEAD, muzzle);
@@ -1733,7 +1733,7 @@ static void ST_CheckFireState(void)
 				}
 
 				//see if impact would be too close to me
-				float distThreshold = 16384/*128*128*/; //default
+				float dist_threshold = 16384/*128*128*/; //default
 				switch (NPCS.NPC->s.weapon)
 				{
 				case WP_ROCKET_LAUNCHER:
@@ -1741,18 +1741,18 @@ static void ST_CheckFireState(void)
 				case WP_THERMAL:
 				case WP_TRIP_MINE:
 				case WP_DET_PACK:
-					distThreshold = 65536/*256*256*/;
+					dist_threshold = 65536/*256*256*/;
 					break;
 				case WP_REPEATER:
 					if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
 					{
-						distThreshold = 65536/*256*256*/;
+						dist_threshold = 65536/*256*256*/;
 					}
 					break;
 				case WP_CONCUSSION:
 					if (!(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
 					{
-						distThreshold = 65536/*256*256*/;
+						dist_threshold = 65536/*256*256*/;
 					}
 					break;
 				default:
@@ -1761,17 +1761,17 @@ static void ST_CheckFireState(void)
 
 				float dist = DistanceSquared(impactPos, muzzle);
 
-				if (dist < distThreshold)
+				if (dist < dist_threshold)
 				{
 					//impact would be too close to me
-					tooClose = qtrue;
+					too_close = qtrue;
 				}
 				else if (level.time - NPCS.NPCInfo->enemyLastSeenTime > 5000 ||
 					NPCS.NPCInfo->group && level.time - NPCS.NPCInfo->group->lastSeenEnemyTime > 5000)
 				{
 					//we've haven't seen them in the last 5 seconds
 					//see if it's too far from where he is
-					distThreshold = 65536/*256*256*/; //default
+					dist_threshold = 65536/*256*256*/; //default
 					switch (NPCS.NPC->s.weapon)
 					{
 					case WP_ROCKET_LAUNCHER:
@@ -1779,32 +1779,32 @@ static void ST_CheckFireState(void)
 					case WP_THERMAL:
 					case WP_TRIP_MINE:
 					case WP_DET_PACK:
-						distThreshold = 262144/*512*512*/;
+						dist_threshold = 262144/*512*512*/;
 						break;
 					case WP_REPEATER:
 						if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
 						{
-							distThreshold = 262144/*512*512*/;
+							dist_threshold = 262144/*512*512*/;
 						}
 						break;
 					case WP_CONCUSSION:
 						if (!(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
 						{
-							distThreshold = 262144/*512*512*/;
+							dist_threshold = 262144/*512*512*/;
 						}
 						break;
 					default:
 						break;
 					}
 					dist = DistanceSquared(impactPos, NPCS.NPCInfo->enemyLastSeenLocation);
-					if (dist > distThreshold)
+					if (dist > dist_threshold)
 					{
 						//impact would be too far from enemy
 						tooFar = qtrue;
 					}
 				}
 
-				if (!tooClose && !tooFar)
+				if (!too_close && !tooFar)
 				{
 					vec3_t angles;
 					vec3_t dir;
@@ -1824,7 +1824,7 @@ static void ST_CheckFireState(void)
 	}
 }
 
-void ST_TrackEnemy(const gentity_t* self, vec3_t enemyPos)
+void ST_TrackEnemy(const gentity_t* self, vec3_t enemy_pos)
 {
 	//clear timers
 	TIMER_Set(self, "attackDelay", Q_irand(1000, 2000));
@@ -1834,7 +1834,7 @@ void ST_TrackEnemy(const gentity_t* self, vec3_t enemyPos)
 	//leave my combat point
 	NPC_FreeCombatPoint(self->NPC->combatPoint, qfalse);
 	//go after his last seen pos
-	NPC_SetMoveGoal(self, enemyPos, 100.0f, qfalse, -1, NULL);
+	NPC_SetMoveGoal(self, enemy_pos, 100.0f, qfalse, -1, NULL);
 	if (Q_irand(0, 3) == 0)
 	{
 		NPCS.NPCInfo->aiFlags |= NPCAI_STOP_AT_LOS;

@@ -98,14 +98,10 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_InCartwheel(int anim);
 extern qboolean PM_InButterfly(int anim);
 extern qboolean PM_CanRollFromSoulCal(const playerState_t* ps);
-extern qboolean PM_CheckFlipOverAttackMove(qboolean checkEnemy);
-extern qboolean PM_CheckJumpForwardAttackMove(void);
-extern saberMoveName_t PM_SaberBackflipAttackMove(void);
-extern qboolean PM_CheckBackflipAttackMove(void);
-extern saberMoveName_t PM_SaberDualJumpAttackMove(void);
+extern saberMoveName_t PM_SaberBackflipAttackMove();
+extern qboolean PM_CheckBackflipAttackMove();
 extern qboolean PM_SaberInDamageMove(int move);
 extern saberMoveName_t PM_SaberLungeAttackMove(qboolean fallbackToNormalLunge);
-extern qboolean PM_CheckLungeAttackMove(void);
 extern qboolean PM_InSecondaryStyle();
 extern qboolean PM_KnockDownAnimExtended(int anim);
 extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
@@ -117,8 +113,7 @@ extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forc
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern float G_ForceWallJumpStrength(void);
 extern qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist);
-extern saberMoveName_t PM_CheckDualSpinProtect(void);
-extern saberMoveName_t PM_CheckPullAttack(void);
+extern saberMoveName_t PM_CheckPullAttack();
 extern qboolean JET_Flying(const gentity_t* self);
 extern void JET_FlyStart(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
@@ -178,12 +173,10 @@ extern cvar_t* g_saberNewControlScheme;
 extern cvar_t* g_stepSlideFix;
 extern cvar_t* g_noIgniteTwirl;
 
-int PM_BlockingPoseForSaberAnimLevelDual(void);
-int PM_BlockingPoseForSaberAnimLevelStaff(void);
-int PM_BlockingPoseForSaberAnimLevelSingle(void);
-int PM_IdlePoseForSaberAnimLevel(void);
-
-int PM_IdlePoseForSaberAnimLevel(void);
+int PM_BlockingPoseForSaberAnimLevelDual();
+int PM_BlockingPoseForSaberAnimLevelStaff();
+int PM_BlockingPoseForSaberAnimLevelSingle();
+int PM_IdlePoseForSaberAnimLevel();
 
 static void pm_set_water_level_at_point(vec3_t org, int* waterlevel, int* watertype);
 
@@ -237,7 +230,7 @@ Vehicle_t* PM_RidingVehicle(void)
 
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
-qboolean PM_ControlledByPlayer(void)
+qboolean PM_ControlledByPlayer()
 {
 	return G_ControlledByPlayer(pm->gent);
 }
@@ -513,10 +506,10 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 	//FIXME: check for obstructions in the dir we're going to jump
 	//		- including "do not enter" brushes!
 	//hit a flat wall during our long jump, see if we should grab it
-	vec3_t moveDir;
-	VectorCopy(pm->ps->velocity, moveDir);
-	VectorNormalize(moveDir);
-	if (DotProduct(moveDir, trace->plane.normal) > -0.65f)
+	vec3_t move_dir;
+	VectorCopy(pm->ps->velocity, move_dir);
+	VectorNormalize(move_dir);
+	if (DotProduct(move_dir, trace->plane.normal) > -0.65f)
 	{
 		//not enough of a direct impact, just slide off
 		return qfalse;
@@ -532,17 +525,17 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 	//grab it!
 	//Pick the proper anim
 	int anim;
-	vec3_t facingAngles, wallDir, fwdDir, rtDir;
-	VectorSubtract(trace->endpos, pm->gent->lastOrigin, wallDir);
-	wallDir[2] = 0;
-	VectorNormalize(wallDir);
-	VectorSet(facingAngles, 0, pm->ps->viewangles[YAW], 0);
-	AngleVectors(facingAngles, fwdDir, rtDir, nullptr);
-	const float fDot = DotProduct(fwdDir, wallDir);
-	if (fabs(fDot) >= 0.5f)
+	vec3_t facing_angles, wall_dir, fwd_dir, rt_dir;
+	VectorSubtract(trace->endpos, pm->gent->lastOrigin, wall_dir);
+	wall_dir[2] = 0;
+	VectorNormalize(wall_dir);
+	VectorSet(facing_angles, 0, pm->ps->viewangles[YAW], 0);
+	AngleVectors(facing_angles, fwd_dir, rt_dir, nullptr);
+	const float f_dot = DotProduct(fwd_dir, wall_dir);
+	if (fabs(f_dot) >= 0.5f)
 	{
 		//hit a wall in front/behind
-		if (fDot > 0.0f)
+		if (f_dot > 0.0f)
 		{
 			//in front
 			anim = BOTH_FORCEWALLREBOUND_FORWARD;
@@ -553,7 +546,7 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 			anim = BOTH_FORCEWALLREBOUND_BACK;
 		}
 	}
-	else if (DotProduct(rtDir, wallDir) > 0)
+	else if (DotProduct(rt_dir, wall_dir) > 0)
 	{
 		//hit a wall on the right
 		anim = BOTH_FORCEWALLREBOUND_RIGHT;
@@ -578,16 +571,16 @@ qboolean PM_ClientImpact( trace_t *trace, qboolean damageSelf )
 */
 qboolean PM_ClientImpact(trace_t* trace, const qboolean damageSelf)
 {
-	const int otherEntityNum = trace->entityNum;
+	const int other_entity_num = trace->entityNum;
 
 	if (!pm->gent)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* traceEnt = &g_entities[otherEntityNum];
+	const gentity_t* trace_ent = &g_entities[other_entity_num];
 
-	if (otherEntityNum == ENTITYNUM_WORLD || traceEnt->bmodel && traceEnt->s.pos.trType == TR_STATIONARY)
+	if (other_entity_num == ENTITYNUM_WORLD || trace_ent->bmodel && trace_ent->s.pos.trType == TR_STATIONARY)
 	{
 		//hit world or a non-moving brush
 		if (PM_CheckGrabWall(trace))
@@ -600,15 +593,15 @@ qboolean PM_ClientImpact(trace_t* trace, const qboolean damageSelf)
 	if (VectorLength(pm->ps->velocity) * (pm->gent->mass / 10) >= 100 && (pm->gent->client->NPC_class == CLASS_VEHICLE
 		|| pm->ps->lastOnGround + 100 < level.time))
 	{
-		DoImpact(pm->gent, &g_entities[otherEntityNum], damageSelf, trace);
+		DoImpact(pm->gent, &g_entities[other_entity_num], damageSelf, trace);
 	}
 
-	if (otherEntityNum >= ENTITYNUM_WORLD)
+	if (other_entity_num >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	if (!traceEnt || !(traceEnt->contents & pm->tracemask))
+	if (!trace_ent || !(trace_ent->contents & pm->tracemask))
 	{
 		//it's dead or not in my way anymore
 		return qtrue;
@@ -667,7 +660,7 @@ void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, const float overbounc
 		VectorCopy(in, out);
 		return;
 	}
-	const float oldInZ = in[2];
+	const float old_in_z = in[2];
 
 	float backoff = DotProduct(in, normal);
 
@@ -693,7 +686,7 @@ void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, const float overbounc
 			if (pm->ps->groundEntityNum != ENTITYNUM_NONE) //on the ground
 			{
 				//if walking on the ground, don't slide up slopes that are too steep to walk on
-				out[2] = oldInZ;
+				out[2] = old_in_z;
 			}
 		}
 	}
@@ -706,7 +699,7 @@ PM_Friction
 Handles both ground friction and water friction
 ==================
 */
-static void PM_Friction(void)
+static void PM_Friction()
 {
 	vec3_t vec;
 	float control;
@@ -912,7 +905,7 @@ Determine the rotation of the legs reletive
 to the facing dir
 ================
 */
-static void PM_SetMovementDir(void)
+static void PM_SetMovementDir()
 {
 	if (pm->cmd.forwardmove || pm->cmd.rightmove)
 	{
@@ -1206,7 +1199,7 @@ qboolean PM_ForceJumpingUp(const gentity_t* gent)
 	return qfalse;
 }
 
-static void PM_JumpForDir(void)
+static void PM_JumpForDir()
 {
 	int anim;
 	if (pm->cmd.forwardmove > 0)
@@ -1355,16 +1348,16 @@ static qboolean pm_check_jump()
 					&& pm->ps->legsAnimTimer > 0)
 				{
 					//in the air
-					vec3_t jFwdAngs, jFwdVec;
-					VectorSet(jFwdAngs, 0, pm->ps->viewangles[YAW], 0);
-					AngleVectors(jFwdAngs, jFwdVec, nullptr, nullptr);
-					float oldZVel = pm->ps->velocity[2];
-					if (pm->ps->legsAnimTimer > 150 && oldZVel < 0)
+					vec3_t j_fwd_angs, jFwdVec;
+					VectorSet(j_fwd_angs, 0, pm->ps->viewangles[YAW], 0);
+					AngleVectors(j_fwd_angs, jFwdVec, nullptr, nullptr);
+					float old_z_vel = pm->ps->velocity[2];
+					if (pm->ps->legsAnimTimer > 150 && old_z_vel < 0)
 					{
-						oldZVel = 0;
+						old_z_vel = 0;
 					}
 					VectorScale(jFwdVec, FORCE_LONG_LEAP_SPEED, pm->ps->velocity);
-					pm->ps->velocity[2] = oldZVel;
+					pm->ps->velocity[2] = old_z_vel;
 					pm->ps->pm_flags |= PMF_JUMP_HELD;
 					pm->ps->pm_flags |= PMF_JUMPING | PMF_SLOW_MO_FALL;
 					pm->ps->forcePowersActive |= 1 << FP_LEVITATION;
@@ -1417,10 +1410,10 @@ static qboolean pm_check_jump()
 				&& pm->gent)
 			{
 				//start a force long-jump!
-				vec3_t jFwdAngs, jFwdVec;
+				vec3_t j_fwd_angs, jFwdVec;
 				PM_SetAnim(pm, SETANIM_BOTH, BOTH_FORCELONGLEAP_START, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-				VectorSet(jFwdAngs, 0, pm->ps->viewangles[YAW], 0);
-				AngleVectors(jFwdAngs, jFwdVec, nullptr, nullptr);
+				VectorSet(j_fwd_angs, 0, pm->ps->viewangles[YAW], 0);
+				AngleVectors(j_fwd_angs, jFwdVec, nullptr, nullptr);
 				VectorScale(jFwdVec, FORCE_LONG_LEAP_SPEED, pm->ps->velocity);
 				pm->ps->velocity[2] = 320;
 				pml.groundPlane = qfalse;
@@ -1464,16 +1457,16 @@ static qboolean pm_check_jump()
 			else if (PM_ForceJumpingUp(pm->gent) && pm->ps->pm_flags & PMF_JUMP_HELD)
 			{
 				//force jumping && holding jump
-				float curHeight = pm->ps->origin[2] - pm->ps->forceJumpZStart;
+				float cur_height = pm->ps->origin[2] - pm->ps->forceJumpZStart;
 				//check for max force jump level and cap off & cut z vel
-				if ((curHeight <= forceJumpHeight[0] || //still below minimum jump height
+				if ((cur_height <= forceJumpHeight[0] || //still below minimum jump height
 					pm->ps->forcePower && pm->cmd.upmove >= 10) &&
 					////still have force power available and still trying to jump up
-					curHeight < forceJumpHeight[pm->ps->forcePowerLevel[FP_LEVITATION]])
+					cur_height < forceJumpHeight[pm->ps->forcePowerLevel[FP_LEVITATION]])
 					//still below maximum jump height
 				{
 					//can still go up
-					if (curHeight > forceJumpHeight[0])
+					if (cur_height > forceJumpHeight[0])
 					{
 						//passed normal jump height  *2?
 						if (!(pm->ps->forcePowersActive & 1 << FP_LEVITATION)) //haven't started forcejump yet
@@ -1561,25 +1554,25 @@ static qboolean pm_check_jump()
 							else if (pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1)
 							{
 								//FIXME: really want to know how far off ground we are, probably...
-								vec3_t facingFwd, facingRight, facingAngles = { 0, pm->ps->viewangles[YAW], 0 };
+								vec3_t facing_fwd, facing_right, facing_angles = { 0, pm->ps->viewangles[YAW], 0 };
 								int anim = -1;
-								AngleVectors(facingAngles, facingFwd, facingRight, nullptr);
-								float dotR = DotProduct(facingRight, pm->ps->velocity);
-								float dotF = DotProduct(facingFwd, pm->ps->velocity);
-								if (fabs(dotR) > fabs(dotF) * 1.5)
+								AngleVectors(facing_angles, facing_fwd, facing_right, nullptr);
+								float dot_r = DotProduct(facing_right, pm->ps->velocity);
+								float dot_f = DotProduct(facing_fwd, pm->ps->velocity);
+								if (fabs(dot_r) > fabs(dot_f) * 1.5)
 								{
-									if (dotR > 150)
+									if (dot_r > 150)
 									{
 										anim = BOTH_FORCEJUMPRIGHT1;
 									}
-									else if (dotR < -150)
+									else if (dot_r < -150)
 									{
 										anim = BOTH_FORCEJUMPLEFT1;
 									}
 								}
 								else
 								{
-									if (dotF > 150)
+									if (dot_f > 150)
 									{
 										if (pm->ps->weapon == WP_SABER) //saber out
 										{
@@ -1590,7 +1583,7 @@ static qboolean pm_check_jump()
 											anim = BOTH_FORCEJUMP1;
 										}
 									}
-									else if (dotF < -150)
+									else if (dot_f < -150)
 									{
 										anim = BOTH_FORCEJUMPBACK1;
 									}
@@ -1614,25 +1607,25 @@ static qboolean pm_check_jump()
 							{
 								//not in the middle of a legsAnim
 								int anim = pm->ps->legsAnim;
-								int newAnim = -1;
+								int new_anim = -1;
 								switch (anim)
 								{
 								case BOTH_FORCEJUMP1:
 								case BOTH_FORCEJUMP2:
-									newAnim = BOTH_FORCELAND1;
+									new_anim = BOTH_FORCELAND1;
 									break;
 								case BOTH_FORCEJUMPBACK1:
-									newAnim = BOTH_FORCELANDBACK1;
+									new_anim = BOTH_FORCELANDBACK1;
 									break;
 								case BOTH_FORCEJUMPLEFT1:
-									newAnim = BOTH_FORCELANDLEFT1;
+									new_anim = BOTH_FORCELANDLEFT1;
 									break;
 								case BOTH_FORCEJUMPRIGHT1:
-									newAnim = BOTH_FORCELANDRIGHT1;
+									new_anim = BOTH_FORCELANDRIGHT1;
 									break;
 								default:;
 								}
-								if (newAnim != -1)
+								if (new_anim != -1)
 								{
 									int parts = SETANIM_BOTH;
 									if (pm->ps->weaponTime)
@@ -1641,21 +1634,21 @@ static qboolean pm_check_jump()
 										parts = SETANIM_LEGS;
 									}
 
-									PM_SetAnim(pm, parts, newAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+									PM_SetAnim(pm, parts, new_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 								}
 							}
 						}
 					}
 
 					//need to scale this down, start with height velocity (based on max force jump height) and scale down to regular jump vel
-					pm->ps->velocity[2] = (forceJumpHeight[pm->ps->forcePowerLevel[FP_LEVITATION]] - curHeight) /
+					pm->ps->velocity[2] = (forceJumpHeight[pm->ps->forcePowerLevel[FP_LEVITATION]] - cur_height) /
 						forceJumpHeight[pm->ps->forcePowerLevel[FP_LEVITATION]] * forceJumpStrength[pm->ps->
 						forcePowerLevel[FP_LEVITATION]]; //JUMP_VELOCITY;
 					pm->ps->velocity[2] /= 10;
 					pm->ps->velocity[2] += JUMP_VELOCITY;
 					pm->ps->pm_flags |= PMF_JUMP_HELD;
 				}
-				else if (curHeight > forceJumpHeight[0] && curHeight < forceJumpHeight[pm->ps->forcePowerLevel[
+				else if (cur_height > forceJumpHeight[0] && cur_height < forceJumpHeight[pm->ps->forcePowerLevel[
 					FP_LEVITATION]] - forceJumpHeight[0])
 				{
 					//still have some headroom, don't totally stop it
@@ -1788,8 +1781,8 @@ static qboolean pm_check_jump()
 			//on the ground
 			//check for left-wall and right-wall special jumps
 			int anim = -1;
-			float vertPush = 0;
-			int forcePowerCostOverride = 0;
+			float vert_push = 0;
+			int force_power_cost_override = 0;
 
 			// Cartwheels/ariels/butterflies
 			if (pm->ps->weapon == WP_SABER && G_TryingCartwheel(pm->gent, &pm->cmd) && pm->cmd.buttons &
@@ -1811,7 +1804,7 @@ static qboolean pm_check_jump()
 							|| pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 						{
 							anim = BOTH_BUTTERFLY_RIGHT;
-							forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
+							force_power_cost_override = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 						}
 					}
 					else if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
@@ -1831,16 +1824,16 @@ static qboolean pm_check_jump()
 							}
 							else
 							{
-								vertPush = JUMP_VELOCITY;
+								vert_push = JUMP_VELOCITY;
 								if (Q_irand(0, 1))
 								{
 									anim = BOTH_ARIAL_RIGHT;
-									forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
+									force_power_cost_override = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 								}
 								else
 								{
 									anim = BOTH_CARTWHEEL_RIGHT;
-									forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
+									force_power_cost_override = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 								}
 							}
 						}
@@ -1856,7 +1849,7 @@ static qboolean pm_check_jump()
 							|| pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 						{
 							anim = BOTH_BUTTERFLY_LEFT;
-							forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
+							force_power_cost_override = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 						}
 					}
 					else if (pm->ps->clientNum >= MAX_CLIENTS && !PM_ControlledByPlayer()
@@ -1876,16 +1869,16 @@ static qboolean pm_check_jump()
 							}
 							else
 							{
-								vertPush = JUMP_VELOCITY;
+								vert_push = JUMP_VELOCITY;
 								if (Q_irand(0, 1))
 								{
 									anim = BOTH_ARIAL_LEFT;
-									forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
+									force_power_cost_override = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 								}
 								else
 								{
 									anim = BOTH_CARTWHEEL_LEFT;
-									forcePowerCostOverride = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
+									force_power_cost_override = G_CostForSpecialMove(SABER_ALT_ATTACK_POWER_LR);
 								}
 							}
 						}
@@ -1902,7 +1895,7 @@ static qboolean pm_check_jump()
 						&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_RUNS)))
 					{
 						//okay to do wall-runs with this saber
-						vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.0f;
+						vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.0f;
 						anim = BOTH_WALL_RUN_RIGHT;
 					}
 				}
@@ -1913,7 +1906,7 @@ static qboolean pm_check_jump()
 						&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_FLIPS)))
 					{
 						//okay to do wall-flips with this saber
-						vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
+						vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
 						anim = BOTH_WALL_FLIP_RIGHT;
 					}
 				}
@@ -1928,7 +1921,7 @@ static qboolean pm_check_jump()
 						&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_RUNS)))
 					{
 						//okay to do wall-runs with this saber
-						vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.0f;
+						vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.0f;
 						anim = BOTH_WALL_RUN_LEFT;
 					}
 				}
@@ -1939,7 +1932,7 @@ static qboolean pm_check_jump()
 						&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_FLIPS)))
 					{
 						//okay to do wall-flips with this saber
-						vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
+						vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
 						anim = BOTH_WALL_FLIP_LEFT;
 					}
 				}
@@ -1960,7 +1953,7 @@ static qboolean pm_check_jump()
 							&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_RUNS)))
 						{
 							//okay to do wall-runs with this saber
-							vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.0f;
+							vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.0f;
 							anim = BOTH_FORCEWALLRUNFLIP_START;
 						}
 					}
@@ -1971,7 +1964,7 @@ static qboolean pm_check_jump()
 							&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_FLIPS)))
 						{
 							//okay to do wall-flips with this saber
-							vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
+							vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
 							anim = BOTH_WALL_FLIP_BACK1;
 						}
 					}
@@ -1987,7 +1980,7 @@ static qboolean pm_check_jump()
 						&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_FLIPS)))
 					{
 						//okay to do backstabs with this saber
-						vertPush = JUMP_VELOCITY;
+						vert_push = JUMP_VELOCITY;
 						if (pm->gent->client && pm->gent->client->NPC_class == CLASS_ALORA && !Q_irand(0, 2))
 						{
 							anim = BOTH_ALORA_FLIP_B;
@@ -2061,7 +2054,7 @@ static qboolean pm_check_jump()
 							//NOTE: pretty much useless, so player never does these
 						{
 							//jump-spin FIXME: does direction matter?
-							vertPush = forceJumpStrength[FORCE_LEVEL_2] / 1.5f;
+							vert_push = forceJumpStrength[FORCE_LEVEL_2] / 1.5f;
 							if (pm->gent->client && pm->gent->client->NPC_class == CLASS_ALORA)
 							{
 								anim = BOTH_ALORA_SPIN;
@@ -2078,12 +2071,12 @@ static qboolean pm_check_jump()
 			if (anim != -1 && PM_HasAnimation(pm->gent, anim))
 			{
 				vec3_t fwd, right, traceto, mins = { pm->mins[0], pm->mins[1], 0 }, maxs = { pm->maxs[0], pm->maxs[1], 24 },
-					fwdAngles = { 0, pm->ps->viewangles[YAW], 0 };
+					fwd_angles = { 0, pm->ps->viewangles[YAW], 0 };
 				trace_t trace;
-				qboolean doTrace = qfalse;
+				qboolean do_trace = qfalse;
 				int contents = CONTENTS_SOLID;
 
-				AngleVectors(fwdAngles, fwd, right, nullptr);
+				AngleVectors(fwd_angles, fwd, right, nullptr);
 
 				//trace-check for a wall, if necc.
 				switch (anim)
@@ -2092,7 +2085,7 @@ static qboolean pm_check_jump()
 					contents |= CONTENTS_BODY;
 					//NOTE: purposely falls through to next case!
 				case BOTH_WALL_RUN_LEFT:
-					doTrace = qtrue;
+					do_trace = qtrue;
 					VectorMA(pm->ps->origin, -16, right, traceto);
 					break;
 
@@ -2100,34 +2093,34 @@ static qboolean pm_check_jump()
 					contents |= CONTENTS_BODY;
 					//NOTE: purposely falls through to next case!
 				case BOTH_WALL_RUN_RIGHT:
-					doTrace = qtrue;
+					do_trace = qtrue;
 					VectorMA(pm->ps->origin, 16, right, traceto);
 					break;
 
 				case BOTH_WALL_FLIP_BACK1:
 					contents |= CONTENTS_BODY;
-					doTrace = qtrue;
+					do_trace = qtrue;
 					VectorMA(pm->ps->origin, 32, fwd, traceto); //was 16
 					break;
 
 				case BOTH_FORCEWALLRUNFLIP_START:
 					contents |= CONTENTS_BODY;
-					doTrace = qtrue;
+					do_trace = qtrue;
 					VectorMA(pm->ps->origin, 32, fwd, traceto); //was 16
 					break;
 				default:;
 				}
 
-				vec3_t idealNormal = { 0 }, wallNormal = { 0 };
-				if (doTrace)
+				vec3_t ideal_normal = { 0 }, wallNormal = { 0 };
+				if (do_trace)
 				{
 					//FIXME: all these jump ones should check for head clearance
 					pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, contents,
 						static_cast<EG2_Collision>(0), 0);
 					VectorCopy(trace.plane.normal, wallNormal);
 					VectorNormalize(wallNormal);
-					VectorSubtract(pm->ps->origin, traceto, idealNormal);
-					VectorNormalize(idealNormal);
+					VectorSubtract(pm->ps->origin, traceto, ideal_normal);
+					VectorNormalize(ideal_normal);
 					if (anim == BOTH_WALL_FLIP_LEFT)
 					{
 						//sigh.. check for bottomless pit to the right
@@ -2192,7 +2185,7 @@ static qboolean pm_check_jump()
 								{
 									//instead of wall-running up, do the backflip
 									anim = BOTH_WALL_FLIP_BACK1;
-									vertPush = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
+									vert_push = forceJumpStrength[FORCE_LEVEL_2] / 2.25f;
 								}
 							}
 							else if (anim == BOTH_WALL_FLIP_BACK1)
@@ -2241,10 +2234,10 @@ static qboolean pm_check_jump()
 						}
 					}
 				}
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* trace_ent = &g_entities[trace.entityNum];
 
-				if (!doTrace || trace.fraction < 1.0f && (trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s
-					.solid != SOLID_BMODEL || DotProduct(wallNormal, idealNormal) > 0.7))
+				if (!do_trace || trace.fraction < 1.0f && (trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s
+					.solid != SOLID_BMODEL || DotProduct(wallNormal, ideal_normal) > 0.7))
 				{
 					//there is a wall there
 					if (anim != BOTH_WALL_RUN_LEFT
@@ -2295,52 +2288,52 @@ static qboolean pm_check_jump()
 							VectorMA(pm->ps->velocity, -150, fwd, pm->ps->velocity);
 						}
 						//kick if jumping off an ent
-						if (doTrace
+						if (do_trace
 							&& anim != BOTH_WALL_RUN_LEFT
 							&& anim != BOTH_WALL_RUN_RIGHT
 							&& anim != BOTH_FORCEWALLRUNFLIP_START)
 						{
 							if (pm->gent && trace.entityNum < ENTITYNUM_WORLD)
 							{
-								if (traceEnt
-									&& traceEnt->client
-									&& traceEnt->health > 0
-									&& traceEnt->takedamage
-									&& traceEnt->client->NPC_class != CLASS_GALAKMECH
-									&& traceEnt->client->NPC_class != CLASS_DESANN
-									&& traceEnt->client->NPC_class != CLASS_SITHLORD
-									&& traceEnt->client->NPC_class != CLASS_VADER
-									&& !(traceEnt->flags & FL_NO_KNOCKBACK))
+								if (trace_ent
+									&& trace_ent->client
+									&& trace_ent->health > 0
+									&& trace_ent->takedamage
+									&& trace_ent->client->NPC_class != CLASS_GALAKMECH
+									&& trace_ent->client->NPC_class != CLASS_DESANN
+									&& trace_ent->client->NPC_class != CLASS_SITHLORD
+									&& trace_ent->client->NPC_class != CLASS_VADER
+									&& !(trace_ent->flags & FL_NO_KNOCKBACK))
 								{
 									//push them away and do pain
-									vec3_t oppDir, fxDir;
-									float strength = VectorNormalize2(pm->ps->velocity, oppDir);
-									VectorScale(oppDir, -1, oppDir);
+									vec3_t opp_dir, fx_dir;
+									float strength = VectorNormalize2(pm->ps->velocity, opp_dir);
+									VectorScale(opp_dir, -1, opp_dir);
 									//FIXME: need knockdown anim
-									G_Damage(traceEnt, pm->gent, pm->gent, oppDir, traceEnt->currentOrigin, 10,
+									G_Damage(trace_ent, pm->gent, pm->gent, opp_dir, trace_ent->currentOrigin, 10,
 										DAMAGE_NO_ARMOR | DAMAGE_NO_HIT_LOC | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
-									VectorCopy(fwd, fxDir);
-									VectorScale(fxDir, -1, fxDir);
-									G_PlayEffect(G_EffectIndex("melee/kick_impact"), trace.endpos, fxDir);
-									if (traceEnt->health > 0)
+									VectorCopy(fwd, fx_dir);
+									VectorScale(fx_dir, -1, fx_dir);
+									G_PlayEffect(G_EffectIndex("melee/kick_impact"), trace.endpos, fx_dir);
+									if (trace_ent->health > 0)
 									{
 										//didn't kill him
-										if (traceEnt->s.number == 0 && !Q_irand(0, g_spskill->integer)
-											|| traceEnt->NPC != nullptr && Q_irand(RANK_CIVILIAN, traceEnt->NPC->rank)
+										if (trace_ent->s.number == 0 && !Q_irand(0, g_spskill->integer)
+											|| trace_ent->NPC != nullptr && Q_irand(RANK_CIVILIAN, trace_ent->NPC->rank)
 											+ Q_irand(-2, 2) < RANK_ENSIGN)
 										{
-											NPC_SetAnim(traceEnt, SETANIM_BOTH, BOTH_KNOCKDOWN2,
+											NPC_SetAnim(trace_ent, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 												SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-											g_throw(traceEnt, oppDir, strength);
+											g_throw(trace_ent, opp_dir, strength);
 										}
 									}
 								}
 							}
 						}
 						//up
-						if (vertPush)
+						if (vert_push)
 						{
-							pm->ps->velocity[2] = vertPush;
+							pm->ps->velocity[2] = vert_push;
 						}
 						//animate me
 						if (anim == BOTH_BUTTERFLY_RIGHT)
@@ -2396,7 +2389,7 @@ static qboolean pm_check_jump()
 							//holding it
 							G_SoundOnEnt(pm->gent, CHAN_BODY, "sound/weapons/force/jump.mp3");
 						}
-						WP_ForcePowerDrain(pm->gent, FP_LEVITATION, forcePowerCostOverride);
+						WP_ForcePowerDrain(pm->gent, FP_LEVITATION, force_power_cost_override);
 					}
 				}
 			}
@@ -2404,19 +2397,19 @@ static qboolean pm_check_jump()
 		else
 		{
 			//in the air
-			int legsAnim = pm->ps->legsAnim;
+			int legs_anim = pm->ps->legsAnim;
 
-			if (legsAnim == BOTH_WALL_RUN_LEFT || legsAnim == BOTH_WALL_RUN_RIGHT)
+			if (legs_anim == BOTH_WALL_RUN_LEFT || legs_anim == BOTH_WALL_RUN_RIGHT)
 			{
 				//running on a wall
 				vec3_t right, traceto, mins = { pm->mins[0], pm->mins[0], 0 }, maxs = { pm->maxs[0], pm->maxs[0], 24 },
-					fwdAngles = { 0, pm->ps->viewangles[YAW], 0 };
+					fwd_angles = { 0, pm->ps->viewangles[YAW], 0 };
 				trace_t trace;
 				int anim = -1;
 
-				AngleVectors(fwdAngles, nullptr, right, nullptr);
+				AngleVectors(fwd_angles, nullptr, right, nullptr);
 
-				if (legsAnim == BOTH_WALL_RUN_LEFT)
+				if (legs_anim == BOTH_WALL_RUN_LEFT)
 				{
 					if (pm->ps->legsAnimTimer > 400)
 					{
@@ -2430,7 +2423,7 @@ static qboolean pm_check_jump()
 						}
 					}
 				}
-				else if (legsAnim == BOTH_WALL_RUN_RIGHT)
+				else if (legs_anim == BOTH_WALL_RUN_RIGHT)
 				{
 					if (pm->ps->legsAnimTimer > 400)
 					{
@@ -2478,14 +2471,14 @@ static qboolean pm_check_jump()
 			{
 				//want to jump off wall
 				vec3_t fwd, traceto, mins = { pm->mins[0], pm->mins[0], 0 }, maxs = { pm->maxs[0], pm->maxs[0], 24 },
-					fwdAngles = { 0, pm->ps->viewangles[YAW], 0 };
+					fwd_angles = { 0, pm->ps->viewangles[YAW], 0 };
 				trace_t trace;
 				int anim = -1;
 
-				AngleVectors(fwdAngles, fwd, nullptr, nullptr);
+				AngleVectors(fwd_angles, fwd, nullptr, nullptr);
 
-				float animLen = PM_AnimLength(pm->gent->client->clientInfo.animFileIndex, BOTH_FORCEWALLRUNFLIP_START);
-				if (pm->ps->legsAnimTimer < animLen - 250) //was 400
+				float anim_len = PM_AnimLength(pm->gent->client->clientInfo.animFileIndex, BOTH_FORCEWALLRUNFLIP_START);
+				if (pm->ps->legsAnimTimer < anim_len - 250) //was 400
 				{
 					//not at start of anim
 					VectorMA(pm->ps->origin, 16, fwd, traceto);
@@ -2522,9 +2515,9 @@ static qboolean pm_check_jump()
 				}
 			}
 			else if ((pm->ps->legsAnimTimer <= 100
-				|| !PM_InSpecialJump(legsAnim) //not in a special jump anim
-				|| PM_InReboundJump(legsAnim) //we're already in a rebound
-				|| PM_InBackFlip(legsAnim)) //a backflip (needed so you can jump off a wall behind you)
+				|| !PM_InSpecialJump(legs_anim) //not in a special jump anim
+				|| PM_InReboundJump(legs_anim) //we're already in a rebound
+				|| PM_InBackFlip(legs_anim)) //a backflip (needed so you can jump off a wall behind you)
 				&& pm->ps->velocity[2] > -1200 //not falling down very fast
 				&& !(pm->ps->pm_flags & PMF_JUMP_HELD) //have to have released jump since last press
 				&& (pm->cmd.forwardmove || pm->cmd.rightmove) //pushing in a direction
@@ -2543,9 +2536,9 @@ static qboolean pm_check_jump()
 					&& (!pm->ps->dualSabers || !(pm->ps->saber[1].saberFlags & SFL_NO_WALL_GRAB)))
 				{
 					//okay to do wall-grabs with this saber
-					vec3_t checkDir, mins = { pm->mins[0], pm->mins[1], 0 }, maxs = {
+					vec3_t check_dir, mins = { pm->mins[0], pm->mins[1], 0 }, maxs = {
 							   pm->maxs[0], pm->maxs[1], 24
-					}, fwdAngles = { 0, pm->ps->viewangles[YAW], 0 };
+					}, fwd_angles = { 0, pm->ps->viewangles[YAW], 0 };
 					trace_t trace;
 					int anim = -1;
 
@@ -2554,41 +2547,41 @@ static qboolean pm_check_jump()
 						if (pm->cmd.rightmove > 0)
 						{
 							anim = BOTH_FORCEWALLREBOUND_RIGHT;
-							AngleVectors(fwdAngles, nullptr, checkDir, nullptr);
+							AngleVectors(fwd_angles, nullptr, check_dir, nullptr);
 						}
 						else if (pm->cmd.rightmove < 0)
 						{
 							anim = BOTH_FORCEWALLREBOUND_LEFT;
-							AngleVectors(fwdAngles, nullptr, checkDir, nullptr);
-							VectorScale(checkDir, -1, checkDir);
+							AngleVectors(fwd_angles, nullptr, check_dir, nullptr);
+							VectorScale(check_dir, -1, check_dir);
 						}
 					}
 					else if (pm->cmd.forwardmove > 0)
 					{
 						anim = BOTH_FORCEWALLREBOUND_FORWARD;
-						AngleVectors(fwdAngles, checkDir, nullptr, nullptr);
+						AngleVectors(fwd_angles, check_dir, nullptr, nullptr);
 					}
 					else if (pm->cmd.forwardmove < 0)
 					{
 						anim = BOTH_FORCEWALLREBOUND_BACK;
-						AngleVectors(fwdAngles, checkDir, nullptr, nullptr);
-						VectorScale(checkDir, -1, checkDir);
+						AngleVectors(fwd_angles, check_dir, nullptr, nullptr);
+						VectorScale(check_dir, -1, check_dir);
 					}
 					if (anim != -1)
 					{
-						vec3_t idealNormal;
+						vec3_t ideal_normal;
 						vec3_t traceto;
 						//trace in the dir we're pushing in and see if there's a vertical wall there
-						VectorMA(pm->ps->origin, 16, checkDir, traceto); //was 8
+						VectorMA(pm->ps->origin, 16, check_dir, traceto); //was 8
 						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, CONTENTS_SOLID,
 							static_cast<EG2_Collision>(0), 0); //FIXME: clip brushes too?
-						VectorSubtract(pm->ps->origin, traceto, idealNormal);
-						VectorNormalize(idealNormal);
+						VectorSubtract(pm->ps->origin, traceto, ideal_normal);
+						VectorNormalize(ideal_normal);
 						gentity_t* traceEnt = &g_entities[trace.entityNum];
 						if (trace.fraction < 1.0f
 							&& fabs(trace.plane.normal[2]) <= MAX_WALL_GRAB_SLOPE
 							&& (trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL ||
-								DotProduct(trace.plane.normal, idealNormal) > 0.7))
+								DotProduct(trace.plane.normal, ideal_normal) > 0.7))
 						{
 							//there is a wall there
 							float dot = DotProduct(pm->ps->velocity, trace.plane.normal);
@@ -2706,7 +2699,7 @@ static qboolean pm_check_jump()
 PM_CheckWaterJump
 =============
 */
-static qboolean PM_CheckWaterJump(void)
+static qboolean PM_CheckWaterJump()
 {
 	vec3_t spot;
 	vec3_t flatforward;
@@ -2773,7 +2766,7 @@ PM_WaterJumpMove
 Flying out of the water
 ===================
 */
-static void PM_WaterJumpMove(void)
+static void PM_WaterJumpMove()
 {
 	// waterjump has no control, but falls
 
@@ -2794,7 +2787,7 @@ PM_WaterMove
 
 ===================
 */
-static void PM_WaterMove(void)
+static void PM_WaterMove()
 {
 	vec3_t wishvel;
 	float wishspeed;
@@ -2923,7 +2916,7 @@ static void PM_WaterMove(void)
 	PM_SlideMove(qfalse);
 }
 
-qboolean PM_IsGunner(void)
+qboolean PM_IsGunner()
 {
 	switch (pm->ps->weapon)
 	{
@@ -6672,7 +6665,7 @@ PM_CheckDuck
 Sets mins, maxs, and pm->ps->viewheight
 ==============
 */
-static void PM_CheckDuck(void)
+static void PM_CheckDuck()
 {
 	trace_t trace;
 	int standheight;
@@ -6732,7 +6725,7 @@ static void PM_CheckDuck(void)
 		return;
 	}
 
-	const int oldHeight = pm->maxs[2];
+	const int old_height = pm->maxs[2];
 
 	if (PM_InRoll(pm->ps))
 	{
@@ -6774,7 +6767,7 @@ static void PM_CheckDuck(void)
 			}
 			if (pm->gent)
 			{
-				pm->ps->origin[2] += oldHeight - pm->maxs[2]; //diff will be zero if were already ducking
+				pm->ps->origin[2] += old_height - pm->maxs[2]; //diff will be zero if were already ducking
 				//Don't worry, we know we fit in a smaller size
 			}
 		}
@@ -6797,7 +6790,7 @@ static void PM_CheckDuck(void)
 			{
 				//unducking whilst in air will try to drop feet
 				pm->maxs[2] = standheight;
-				pm->ps->origin[2] += oldHeight - pm->maxs[2];
+				pm->ps->origin[2] += old_height - pm->maxs[2];
 				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask,
 					static_cast<EG2_Collision>(0), 0);
 				if (!trace.allsolid)
@@ -6808,7 +6801,7 @@ static void PM_CheckDuck(void)
 				else
 				{
 					//Put us back
-					pm->ps->origin[2] -= oldHeight - pm->maxs[2];
+					pm->ps->origin[2] -= old_height - pm->maxs[2];
 				}
 				//NOTE: this isn't the best way to check this, you may have room to unduck
 				//while in air, but your feet are close to landing.  Probably won't be a
@@ -12175,7 +12168,7 @@ static void PM_FinishWeaponChange(void)
 	}
 }
 
-int PM_ReadyPoseForSaberAnimLevel(void)
+int PM_ReadyPoseForSaberAnimLevel()
 {
 	int anim;
 
@@ -12212,7 +12205,7 @@ int PM_ReadyPoseForSaberAnimLevel(void)
 	return anim;
 }
 
-int PM_IdlePoseForSaberAnimLevel(void)
+int PM_IdlePoseForSaberAnimLevel()
 {
 	int anim;
 
@@ -12249,11 +12242,11 @@ int PM_IdlePoseForSaberAnimLevel(void)
 	return anim;
 }
 
-int PM_BlockingPoseForSaberAnimLevelDual(void)
+int PM_BlockingPoseForSaberAnimLevelDual()
 {
 	int anim = PM_ReadyPoseForSaberAnimLevel();
 
-	const qboolean HoldingBlockAndAttack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
+	const qboolean holding_block_and_attack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
 
 	const signed char forwardmove = pm->cmd.forwardmove;
 	const signed char rightmove = pm->cmd.rightmove;
@@ -12277,7 +12270,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				if (rightmove < 0)
 				{
 					//back left
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_TL;
 					}
@@ -12289,7 +12282,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else if (rightmove > 0)
 				{
 					//Back right
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_TR;
 					}
@@ -12301,7 +12294,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else
 				{
 					//straight back
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_T_;
 					}
@@ -12317,7 +12310,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				if (rightmove < 0)
 				{
 					//forwards left
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_BL;
 					}
@@ -12329,7 +12322,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else if (rightmove > 0)
 				{
 					//forwards right
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_BR;
 					}
@@ -12341,7 +12334,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else
 				{
 					//Top Block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_T_;
 					}
@@ -12357,7 +12350,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				if (rightmove < 0)
 				{
 					//left block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_TL;
 					}
@@ -12369,7 +12362,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				else if (rightmove > 0)
 				{
 					//right block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_TR;
 					}
@@ -12380,7 +12373,7 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 				}
 				else
 				{
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P6_S6_T_;
 					}
@@ -12395,11 +12388,11 @@ int PM_BlockingPoseForSaberAnimLevelDual(void)
 	return anim;
 }
 
-int PM_BlockingPoseForSaberAnimLevelStaff(void)
+int PM_BlockingPoseForSaberAnimLevelStaff()
 {
 	int anim = PM_ReadyPoseForSaberAnimLevel();
 
-	const qboolean HoldingBlockAndAttack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
+	const qboolean holding_block_and_attack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
 
 	const signed char forwardmove = pm->cmd.forwardmove;
 	const signed char rightmove = pm->cmd.rightmove;
@@ -12423,7 +12416,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				if (rightmove < 0)
 				{
 					//back left
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_TL;
 					}
@@ -12435,7 +12428,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else if (rightmove > 0)
 				{
 					//Back right
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_TR;
 					}
@@ -12447,7 +12440,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else
 				{
 					//straight back
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_T_;
 					}
@@ -12463,7 +12456,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				if (rightmove < 0)
 				{
 					//forwards left
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_BL;
 					}
@@ -12475,7 +12468,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else if (rightmove > 0)
 				{
 					//forwards right
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_BR;
 					}
@@ -12487,7 +12480,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else
 				{
 					//Top Block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_T_;
 					}
@@ -12503,7 +12496,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				if (rightmove < 0)
 				{
 					//left block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_TL;
 					}
@@ -12515,7 +12508,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				else if (rightmove > 0)
 				{
 					//right block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_TR;
 					}
@@ -12526,7 +12519,7 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 				}
 				else
 				{
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P7_S7_T_;
 					}
@@ -12541,11 +12534,11 @@ int PM_BlockingPoseForSaberAnimLevelStaff(void)
 	return anim;
 }
 
-int PM_BlockingPoseForSaberAnimLevelSingle(void)
+int PM_BlockingPoseForSaberAnimLevelSingle()
 {
 	int anim = PM_ReadyPoseForSaberAnimLevel();
 
-	const qboolean HoldingBlockAndAttack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
+	const qboolean holding_block_and_attack = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//Holding Block and attack Buttons
 
 	const signed char forwardmove = pm->cmd.forwardmove;
 	const signed char rightmove = pm->cmd.rightmove;
@@ -12569,7 +12562,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				if (rightmove < 0)
 				{
 					//back left
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_TL;
 					}
@@ -12581,7 +12574,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				else if (rightmove > 0)
 				{
 					//Back right
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_TR;
 					}
@@ -12593,7 +12586,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				else
 				{
 					//straight back
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_T_;
 					}
@@ -12609,7 +12602,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				if (rightmove < 0)
 				{
 					//forwards left
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_BL;
 					}
@@ -12621,7 +12614,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				else if (rightmove > 0)
 				{
 					//forwards right
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_BR;
 					}
@@ -12633,7 +12626,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				else
 				{
 					//Top Block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_T_;
 					}
@@ -12649,7 +12642,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				if (rightmove < 0)
 				{
 					//left block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_TL;
 					}
@@ -12661,7 +12654,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				else if (rightmove > 0)
 				{
 					//right block
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_P1_S1_TR;
 					}
@@ -12672,7 +12665,7 @@ int PM_BlockingPoseForSaberAnimLevelSingle(void)
 				}
 				else
 				{
-					if (HoldingBlockAndAttack)
+					if (holding_block_and_attack)
 					{
 						anim = BOTH_SABEREADY_STANCE;
 					}
@@ -15503,7 +15496,7 @@ qboolean PM_CanDoRollStab(void)
 	return qfalse;
 }
 
-qboolean PM_Can_Do_Kill_Move(void)
+qboolean PM_Can_Do_Kill_Move()
 {
 	if (!pm->ps->saberInFlight //not throwing saber
 		&& pm->cmd.buttons & BUTTON_ATTACK//pressing attack
