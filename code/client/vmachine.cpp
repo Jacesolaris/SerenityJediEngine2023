@@ -39,7 +39,7 @@ intptr_t	VM_Call(int callnum, ...)
 	if (cgvm.entryPoint) {
 		va_list ap;
 		va_start(ap, callnum);
-		for (int & arg : args)
+		for (int& arg : args)
 			arg = va_arg(ap, intptr_t);
 		va_end(ap);
 

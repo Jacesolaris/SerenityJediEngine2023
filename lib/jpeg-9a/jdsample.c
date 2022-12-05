@@ -274,7 +274,7 @@ jinit_upsampler(j_decompress_ptr cinfo)
 	jpeg_component_info* compptr;
 
 	const my_upsample_ptr upsample = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                            SIZEOF(my_upsampler));
+		SIZEOF(my_upsampler));
 	cinfo->upsample = (struct jpeg_upsampler*)upsample;
 	upsample->pub.start_pass = start_pass_upsample;
 	upsample->pub.upsample = sep_upsample;

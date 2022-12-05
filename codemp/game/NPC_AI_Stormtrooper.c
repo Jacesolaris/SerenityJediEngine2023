@@ -2021,7 +2021,7 @@ int ST_GetCPFlags(void)
 		case 3: //take the one on the other side of the enemy
 			cpFlags = CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
 			break;
-		default: ;
+		default:;
 		}
 	}
 	if (NPCS.NPC && NPCS.NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)

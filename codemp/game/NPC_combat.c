@@ -368,25 +368,25 @@ void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 			return;
 		case WP_TURRET: // turret guns
 			return;
-		default: ;
-		/*
-				case WP_DEMP2:
-					break;
-				case WP_TRIP_MINE:
-					break;
-				case WP_DET_PACK:
-					break;
-				case WP_STUN_BATON:
-					break;
-				case WP_ATST_MAIN:
-					break;
-				case WP_ATST_SIDE:
-					break;
-				case WP_TIE_FIGHTER:
-					break;
-				case WP_RAPID_FIRE_CONC:
-					break;
-				*/
+		default:;
+			/*
+					case WP_DEMP2:
+						break;
+					case WP_TRIP_MINE:
+						break;
+					case WP_DET_PACK:
+						break;
+					case WP_STUN_BATON:
+						break;
+					case WP_ATST_MAIN:
+						break;
+					case WP_ATST_SIDE:
+						break;
+					case WP_TIE_FIGHTER:
+						break;
+					case WP_RAPID_FIRE_CONC:
+						break;
+					*/
 		}
 
 		if (self->client->playerTeam == NPCTEAM_PLAYER)
@@ -590,7 +590,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 						case 2:
 							G_SoundOnEnt(self, CHAN_VOICE, "sound/chars/jedi2/28je2012.wav");
 							break;
-						default: ;
+						default:;
 						}
 						self->NPC->blockedSpeechDebounceTime = level.time + 2000;
 					}
@@ -780,7 +780,7 @@ void ChangeWeapon(const gentity_t* ent, int newWeapon)
 			case 2:
 				ent->NPC->burstSpacing = 1500; //attackdebounce
 				break;
-			default: ;
+			default:;
 			}
 		}
 		else
@@ -994,7 +994,7 @@ void ChangeWeapon(const gentity_t* ent, int newWeapon)
 void NPC_ChangeWeapon(int newWeapon)
 {
 	if (newWeapon != NPCS.NPC->client->ps.weapon)
-	{		
+	{
 		G_AddEvent(NPCS.NPC, EV_GENERAL_SOUND, G_SoundIndex("sound/weapons/change.wav"));
 	}
 	ChangeWeapon(NPCS.NPC, newWeapon);

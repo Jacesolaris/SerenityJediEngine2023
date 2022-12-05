@@ -177,7 +177,7 @@ alloc_funny_pointers(j_decompress_ptr cinfo)
 		 * We alloc both pointer lists with one call to save a few cycles.
 		 */
 		JSAMPARRAY xbuf = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-		                                             2 * (rgroup * (M + 4)) * SIZEOF(JSAMPROW));
+			2 * (rgroup * (M + 4)) * SIZEOF(JSAMPROW));
 		xbuf += rgroup;		/* want one row group at negative offsets */
 		mainp->xbuffer[0][ci] = xbuf;
 		xbuf += rgroup * (M + 4);
@@ -463,7 +463,7 @@ jinit_d_main_controller(j_decompress_ptr cinfo, boolean need_full_buffer)
 	jpeg_component_info* compptr;
 
 	const my_main_ptr mainp = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                     SIZEOF(my_main_controller));
+		SIZEOF(my_main_controller));
 	cinfo->main = &mainp->pub;
 	mainp->pub.start_pass = start_pass_main;
 

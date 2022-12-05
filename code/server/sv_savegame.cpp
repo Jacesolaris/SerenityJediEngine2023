@@ -229,7 +229,7 @@ void SV_LoadGame_f()
 
 				if (!Q_stricmp(psMapName, psMapNameOfLastSaveFileLoaded)))
 				{
-				psFilename = sLastSaveFileLoaded;
+					psFilename = sLastSaveFileLoaded;
 				}
 				else
 #endif
@@ -1208,7 +1208,7 @@ qboolean SG_ReadSavegame
 		{
 			saved_game.close();
 
-			::sv_testsave->integer = iPrevTestSave;
+		::sv_testsave->integer = iPrevTestSave;
 		}
 		);
 

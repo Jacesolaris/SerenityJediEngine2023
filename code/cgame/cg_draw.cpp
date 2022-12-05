@@ -432,8 +432,6 @@ static void CG_DrawCusSaberStyle(const centity_t* cent, const int xPos, const in
 	);
 }
 
-
-
 static void CG_DrawJK2blockingMode(const centity_t* cent, const int xPos, const int yPos)
 {
 	int blockindex;
@@ -486,7 +484,6 @@ static void CG_DrawJK2blockingMode(const centity_t* cent, const int xPos, const 
 		);
 	}
 }
-
 
 static void CG_DrawCusweapontype(const centity_t* cent, const int xPos, const int yPos, const float hudRatio)
 {
@@ -715,7 +712,6 @@ static void CG_DrawCusgunfatigue(const centity_t* cent, const int xPos, const in
 
 static void CG_DrawJK2SaberFatigue(const centity_t* cent, int x, int y)
 {
-
 	if (cent->gent->health < 1)
 	{
 		return;
@@ -1074,7 +1070,6 @@ void CG_DrawoldblockPoints(const centity_t* cent)
 	//then draw the other part greyed out
 	CG_FillRect(x + 0.5f, y + 0.5f, BPFUELBAR_W - 0.5f, BPFUELBAR_H - percent, cColor);
 }
-
 
 static void CG_DrawCusblockPoints(int x, int y, const float hudRatio)
 {
@@ -1599,7 +1594,7 @@ void CG_DrawJK2Ammo(const centity_t* cent, const int x, const int y)
 		case 7://FORCE_LEVEL_5://DUELS
 			CG_DrawPic(x, y, 80, 40, cgs.media.JK2HUDSaberStyleDuels);
 			break;
-		default: ;
+		default:;
 		}
 		return;
 	}
@@ -6328,9 +6323,9 @@ static float CG_DrawFPS(float y)
 	}
 	// average multiple frames together to smooth changes out a bit
 	int total = 0;
-	for (int i = 0; i < FPS_FRAMES; i++)
+	for (const unsigned short previousTime : previousTimes)
 	{
-		total += previousTimes[i];
+		total += previousTime;
 	}
 	if (!total)
 	{

@@ -39,7 +39,7 @@ extern void Boba_FlyStart(gentity_t* self);
 extern qboolean Boba_Flying(const gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
 
-void InitTrigger(gentity_t* self)
+void init_trigger(gentity_t* self)
 {
 	if (!VectorCompare(self->s.angles, vec3_origin))
 		G_SetMovedir(self->s.angles, self->movedir);
@@ -445,7 +445,7 @@ void SP_trigger_multiple(gentity_t* ent)
 		ent->team = nullptr;
 	}
 
-	InitTrigger(ent);
+	init_trigger(ent);
 	gi.linkentity(ent);
 }
 
@@ -497,7 +497,7 @@ void SP_trigger_once(gentity_t* ent)
 
 	ent->delay *= 1000; //1 = 1 msec, 1000 = 1 sec
 
-	InitTrigger(ent);
+	init_trigger(ent);
 	gi.linkentity(ent);
 }
 
@@ -846,7 +846,7 @@ speed - when used with the LINEAR spawnflag, pushes the client toward the positi
 */
 void SP_trigger_push(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	if (self->wait > 0)
 	{
@@ -1054,7 +1054,7 @@ DEAD_OK - even if dead, you will teleport
 */
 void SP_trigger_teleport(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	// unlike other triggers, we need to send this one to the client
 	self->svFlags &= ~SVF_NOCLIENT;
@@ -1288,7 +1288,7 @@ void SP_trigger_hurt(gentity_t* self)
 {
 	char* s;
 
-	InitTrigger(self);
+	init_trigger(self);
 
 	if (!(self->spawnflags & 4))
 	{
@@ -1401,7 +1401,7 @@ causes human clients to suffocate and have no gravity.
 */
 void SP_trigger_space(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 	self->contents = CONTENTS_TRIGGER;
 
 	self->e_TouchFunc = touchF_space_touch;
@@ -1491,7 +1491,7 @@ causes vehicle to turn toward target and travel in that direction for a set time
 */
 void SP_trigger_shipboundary(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 	self->contents = CONTENTS_TRIGGER;
 
 	if (!self->target || !self->target[0])
@@ -1632,7 +1632,7 @@ void SP_trigger_hyperspace(gentity_t* self)
 	//register the hyperspace end sound (start sounds are customized)
 	G_SoundIndex("sound/vehicles/common/hyperend.wav");
 
-	InitTrigger(self);
+	init_trigger(self);
 	self->contents = CONTENTS_TRIGGER;
 
 	if (!self->target || !self->target[0])

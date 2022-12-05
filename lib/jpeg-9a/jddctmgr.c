@@ -359,7 +359,7 @@ jinit_inverse_dct(j_decompress_ptr cinfo)
 	jpeg_component_info* compptr;
 
 	const my_idct_ptr idct = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    SIZEOF(my_idct_controller));
+		SIZEOF(my_idct_controller));
 	cinfo->idct = &idct->pub;
 	idct->pub.start_pass = start_pass;
 

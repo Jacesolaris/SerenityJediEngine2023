@@ -449,7 +449,7 @@ jinit_forward_dct(j_compress_ptr cinfo)
 	jpeg_component_info* compptr;
 
 	const my_fdct_ptr fdct = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    SIZEOF(my_fdct_controller));
+		SIZEOF(my_fdct_controller));
 	cinfo->fdct = &fdct->pub;
 	fdct->pub.start_pass = start_pass_fdctmgr;
 

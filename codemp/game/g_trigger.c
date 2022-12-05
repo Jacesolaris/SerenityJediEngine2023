@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 int gTrigFallSound;
 
-void InitTrigger(gentity_t* self)
+void init_trigger(gentity_t* self)
 {
 	if (!VectorCompare(self->s.angles, vec3_origin))
 	{
@@ -211,20 +211,20 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 			activator->client->holdingObjectiveItem &&
 			ent->targetname && ent->targetname[0])
 		{
-			gentity_t* objItem = &g_entities[activator->client->holdingObjectiveItem];
+			gentity_t* obj_item = &g_entities[activator->client->holdingObjectiveItem];
 
-			if (objItem && objItem->inuse)
+			if (obj_item && obj_item->inuse)
 			{
-				if (objItem->goaltarget && objItem->goaltarget[0] &&
-					!Q_stricmp(ent->targetname, objItem->goaltarget))
+				if (obj_item->goaltarget && obj_item->goaltarget[0] &&
+					!Q_stricmp(ent->targetname, obj_item->goaltarget))
 				{
-					if (objItem->genericValue7 != activator->client->sess.sessionTeam)
+					if (obj_item->genericValue7 != activator->client->sess.sessionTeam)
 					{
 						//The carrier of the item is not on the team which disallows objective scoring for it
-						if (objItem->target3 && objItem->target3[0])
+						if (obj_item->target3 && obj_item->target3[0])
 						{
 							//if it has a target3, fire it off instead of using the trigger
-							G_UseTargets2(objItem, objItem, objItem->target3);
+							G_UseTargets2(obj_item, obj_item, obj_item->target3);
 
 							//3-24-03 - want to fire off the target too I guess, if we have one.
 							if (ent->targetname && ent->targetname[0])
@@ -238,10 +238,10 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 						}
 
 						//now that the item has been delivered, it can go away.
-						SiegeItemRemoveOwner(objItem, activator);
-						objItem->nextthink = 0;
-						objItem->neverFree = qfalse;
-						G_FreeEntity(objItem);
+						SiegeItemRemoveOwner(obj_item, activator);
+						obj_item->nextthink = 0;
+						obj_item->neverFree = qfalse;
+						G_FreeEntity(obj_item);
 					}
 				}
 			}
@@ -257,11 +257,11 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 	{
 		//has "teambalance" property
 		int i = 0;
-		int team1ClNum = 0;
-		int team2ClNum = 0;
+		int team1_cl_num = 0;
+		int team2_cl_num = 0;
 		const int owningTeam = ent->genericValue3;
-		int newOwningTeam = 0;
-		int entityList[MAX_GENTITIES];
+		int new_owning_team;
+		int entity_list[MAX_GENTITIES];
 
 		if (level.gametype != GT_SIEGE)
 		{
@@ -277,13 +277,13 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 		}
 
 		//Count up the number of clients standing within the bounds of the trigger and the number of them on each team
-		const int numEnts = trap->EntitiesInBox(ent->r.absmin, ent->r.absmax, entityList, MAX_GENTITIES);
-		while (i < numEnts)
+		const int num_ents = trap->EntitiesInBox(ent->r.absmin, ent->r.absmax, entity_list, MAX_GENTITIES);
+		while (i < num_ents)
 		{
-			if (entityList[i] < MAX_CLIENTS)
+			if (entity_list[i] < MAX_CLIENTS)
 			{
 				//only care about clients
-				const gentity_t* cl = &g_entities[entityList[i]];
+				const gentity_t* cl = &g_entities[entity_list[i]];
 
 				//the client is valid
 				if (cl->inuse && cl->client &&
@@ -295,48 +295,48 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 					//See which team he's on
 					if (cl->client->sess.sessionTeam == SIEGETEAM_TEAM1)
 					{
-						team1ClNum++;
+						team1_cl_num++;
 					}
 					else
 					{
-						team2ClNum++;
+						team2_cl_num++;
 					}
 				}
 			}
 			i++;
 		}
 
-		if (!team1ClNum && !team2ClNum)
+		if (!team1_cl_num && !team2_cl_num)
 		{
 			//no one in the box? How did we get activated? Oh well.
 			return;
 		}
 
-		if (team1ClNum == team2ClNum)
+		if (team1_cl_num == team2_cl_num)
 		{
 			//if equal numbers the ownership will remain the same as it is now
 			return;
 		}
 
 		//decide who owns it now
-		if (team1ClNum > team2ClNum)
+		if (team1_cl_num > team2_cl_num)
 		{
-			newOwningTeam = SIEGETEAM_TEAM1;
+			new_owning_team = SIEGETEAM_TEAM1;
 		}
 		else
 		{
-			newOwningTeam = SIEGETEAM_TEAM2;
+			new_owning_team = SIEGETEAM_TEAM2;
 		}
 
-		if (owningTeam == newOwningTeam)
+		if (owningTeam == new_owning_team)
 		{
 			//it's the same one it already was, don't care then.
 			return;
 		}
 
 		//Set the new owner and set the variable which will tell us to activate a team-specific target
-		ent->genericValue3 = newOwningTeam;
-		ent->genericValue4 = newOwningTeam;
+		ent->genericValue3 = new_owning_team;
+		ent->genericValue4 = new_owning_team;
 	}
 
 	if (haltTrigger)
@@ -755,7 +755,7 @@ void SP_trigger_multiple(gentity_t* ent)
 		ent->team = NULL;
 	}
 
-	InitTrigger(ent);
+	init_trigger(ent);
 	trap->LinkEntity((sharedEntity_t*)ent);
 }
 
@@ -829,7 +829,7 @@ void SP_trigger_once(gentity_t* ent)
 
 	ent->delay *= 1000; //1 = 1 msec, 1000 = 1 sec
 
-	InitTrigger(ent);
+	init_trigger(ent);
 	trap->LinkEntity((sharedEntity_t*)ent);
 }
 
@@ -969,7 +969,7 @@ void SP_trigger_lightningstrike(gentity_t* ent)
 		ent->damage = 50;
 	}
 
-	InitTrigger(ent);
+	init_trigger(ent);
 	trap->LinkEntity((sharedEntity_t*)ent);
 }
 
@@ -1189,7 +1189,7 @@ speed - when used with the LINEAR spawnflag, pushes the client toward the positi
 */
 void SP_trigger_push(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	// unlike other triggers, we need to send this one to the client
 	self->r.svFlags &= ~SVF_NOCLIENT;
@@ -1328,7 +1328,7 @@ automatically near doors to allow spectators to move through them
 */
 void SP_trigger_teleport(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	// unlike other triggers, we need to send this one to the client
 	// unless is a spectator trigger
@@ -1522,7 +1522,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 
 void SP_trigger_hurt(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	gTrigFallSound = G_SoundIndex("*falling1.wav");
 
@@ -1628,7 +1628,7 @@ causes human clients to suffocate and have no gravity.
 */
 void SP_trigger_space(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 	self->r.contents = CONTENTS_TRIGGER;
 
 	self->touch = space_touch;
@@ -1719,7 +1719,7 @@ causes vehicle to turn toward target and travel in that direction for a set time
 */
 void SP_trigger_shipboundary(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 	self->r.contents = CONTENTS_TRIGGER;
 
 	if (!self->target || !self->target[0])
@@ -1860,7 +1860,7 @@ void SP_trigger_hyperspace(gentity_t* self)
 	//register the hyperspace end sound (start sounds are customized)
 	G_SoundIndex("sound/vehicles/common/hyperend.wav");
 
-	InitTrigger(self);
+	init_trigger(self);
 	self->r.contents = CONTENTS_TRIGGER;
 
 	if (!self->target || !self->target[0])
@@ -2203,7 +2203,7 @@ void trigger_visible_think(gentity_t* self)
 		if (!self->genericValue2)
 		{
 			//visibility check
-			if (!OrgVisible(player->client->renderInfo.eyePoint, self->s.origin, -1))
+			if (!org_visible(player->client->renderInfo.eyePoint, self->s.origin, -1))
 			{
 				continue;
 			}
@@ -2223,7 +2223,7 @@ void trigger_visible_think(gentity_t* self)
 
 void SP_trigger_visible(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	G_SpawnInt("FOV", "0", &self->genericValue1);
 
@@ -2241,7 +2241,7 @@ void SP_trigger_visible(gentity_t* self)
 
 void SP_trigger_location(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 	trap->LinkEntity((sharedEntity_t*)self);
 }
 
@@ -2249,6 +2249,6 @@ void SP_trigger_airspace(gentity_t* self)
 {
 	airspace[numAirspaces] = self;
 	numAirspaces++;
-	InitTrigger(self);
+	init_trigger(self);
 	trap->LinkEntity((sharedEntity_t*)self);
 }

@@ -2610,7 +2610,7 @@ static void CL_GenerateQKey(void)
 CL_Init
 ====================
 */
-void CL_Init(void) 
+void CL_Init(void)
 {
 	//	Com_Printf( "----- Client Initialization -----\n" );
 
@@ -3038,7 +3038,7 @@ int CL_ServerStatus(const char* serverAddress, char* serverStatusString, int max
 
 	// if no server address then reset all server status requests
 	if (!serverAddress) {
-		for (auto & i : cl_serverStatusList) {
+		for (auto& i : cl_serverStatusList) {
 			i.address.port = 0;
 			i.retrieved = qtrue;
 		}
@@ -3117,7 +3117,7 @@ void CL_ServerStatusResponse(netadr_t from, msg_t* msg) {
 	if (serverStatus->print) {
 		char info[MAX_INFO_STRING];
 		Com_Printf("Server (%s)\n",
-		           NET_AdrToString(serverStatus->address));
+			NET_AdrToString(serverStatus->address));
 		Com_Printf("Server settings:\n");
 		// print cvars
 		while (*s) {

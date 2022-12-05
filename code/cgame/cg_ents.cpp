@@ -461,7 +461,7 @@ static void CG_General(centity_t* cent)
 		rHandPos[2] = mat.matrix[2][3];
 
 		gi.G2API_GiveMeVectorFromMatrix(mat, ORIGIN, start);
-		CG_StunStartpoint(cent, end);
+		CG_StunStartpoint(end);
 		//GOING OUT
 	}
 
@@ -497,7 +497,7 @@ static void CG_General(centity_t* cent)
 		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15,
 			cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
-		CG_GrappleStartpoint(cent, end);
+		CG_GrappleStartpoint(end);
 		//GOING OUT
 	}
 
@@ -1353,9 +1353,9 @@ static void CG_Missile(centity_t* cent)
 		cgi_R_LerpTag(&lerped, weapon->missileModel, 0, 0, 1.0, "tag_extrem");
 
 		VectorCopy(cent->lerpOrigin, end);
-		for (int i = 0; i < 3; i++)
+		for (const float i : lerped.origin)
 		{
-			VectorMA(end, lerped.origin[i], s1->angles, end);
+			VectorMA(end, i, s1->angles, end);
 		}
 
 		const centity_t* parent = &cg_entities[s1->otherEntityNum];
@@ -1371,7 +1371,7 @@ static void CG_Missile(centity_t* cent)
 		FX_AddLine(start, end, 0.1f, 0.1f, 0.0f, 0.5f, 0.0f, BLUER, BLUER, 300,
 			cgi_R_RegisterShader("gfx/effects/blueline"), 0);
 
-		CG_StunStartpoint(cent, end);
+		CG_StunStartpoint(end);
 	}
 
 	if (s1->weapon == WP_MELEE)
@@ -1387,9 +1387,9 @@ static void CG_Missile(centity_t* cent)
 		cgi_R_LerpTag(&lerped, weapon->missileModel, 0, 0, 1.0, "tag_extrem");
 
 		VectorCopy(cent->lerpOrigin, end);
-		for (int i = 0; i < 3; i++)
+		for (const float i : lerped.origin)
 		{
-			VectorMA(end, lerped.origin[i], s1->angles, end);
+			VectorMA(end, i, s1->angles, end);
 		}
 
 		const centity_t* parent = &cg_entities[s1->otherEntityNum];
@@ -1402,7 +1402,7 @@ static void CG_Missile(centity_t* cent)
 		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15,
 			cgi_R_RegisterShader("gfx/misc/whiteline2"), FX_SIZE_LINEAR);
 
-		CG_GrappleStartpoint(cent, end);
+		CG_GrappleStartpoint(end);
 	}
 
 	// flicker between two skins
@@ -1718,11 +1718,11 @@ void CG_Cube(vec3_t mins, vec3_t maxs, vec3_t color, float alpha)
 
 	for (axis = 0, vec[0] = 0, vec[1] = 1, vec[2] = 2; axis < 3; axis++, vec[0]++, vec[1]++, vec[2]++)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int & i : vec)
 		{
-			if (vec[i] > 2)
+			if (i > 2)
 			{
-				vec[i] = 0;
+				i = 0;
 			}
 		}
 
@@ -1754,7 +1754,7 @@ void CG_Cube(vec3_t mins, vec3_t maxs, vec3_t color, float alpha)
 	}
 }
 
-void CG_CubeOutline(vec3_t mins, vec3_t maxs, int time, unsigned int color)
+void CG_CubeOutline(vec3_t mins, vec3_t maxs, const int time, const unsigned int color)
 {
 	vec3_t point1, point2, point3, point4;
 	int vec[3];
@@ -1762,11 +1762,11 @@ void CG_CubeOutline(vec3_t mins, vec3_t maxs, int time, unsigned int color)
 
 	for (axis = 0, vec[0] = 0, vec[1] = 1, vec[2] = 2; axis < 3; axis++, vec[0]++, vec[1]++, vec[2]++)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int & i : vec)
 		{
-			if (vec[i] > 2)
+			if (i > 2)
 			{
-				vec[i] = 0;
+				i = 0;
 			}
 		}
 
@@ -1800,7 +1800,7 @@ void CG_CubeOutline(vec3_t mins, vec3_t maxs, int time, unsigned int color)
 	}
 }
 
-void G_TestLine(vec3_t start, vec3_t end, int color, int time)
+void G_TestLine(vec3_t start, vec3_t end, const int color, const int time)
 {
 	gentity_t* te = G_TempEntity(start, EV_TESTLINE);
 	VectorCopy(start, te->s.origin);
@@ -1810,7 +1810,7 @@ void G_TestLine(vec3_t start, vec3_t end, int color, int time)
 	te->svFlags |= SVF_BROADCAST;
 }
 
-void G_DebugBoxLines(vec3_t mins, vec3_t maxs, int duration)
+void G_DebugBoxLines(vec3_t mins, vec3_t maxs, const int duration)
 {
 	vec3_t start;
 	vec3_t end;
@@ -1842,21 +1842,6 @@ void G_DebugBoxLines(vec3_t mins, vec3_t maxs, int duration)
 	start[0] -= x;
 	G_TestLine(start, end, 0x00000ff, duration);
 	G_TestLine(start, mins, 0x00000ff, duration);
-}
-
-void CG_Line(vec3_t start, vec3_t end, vec3_t color, float alpha)
-{
-	/*FX_AddLine( start,
-				end,
-				1.0f,
-				1.0,
-				1.0f,
-				alpha,
-				alpha,
-				color,
-				color,
-				100.0f,
-				cgs.media.whiteShader );*/
 }
 
 /*

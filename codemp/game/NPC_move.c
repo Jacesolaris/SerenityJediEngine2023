@@ -39,7 +39,7 @@ qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 static qboolean NPC_TryJump_Final();
 extern void G_DrawEdge(vec3_t start, vec3_t end, int type);
 
-void NPC_ConversationAnimation(gentity_t* NPC)
+void npc_conversation_animation()
 {
 	const int randAnim = irand(1, 10);
 
@@ -1532,7 +1532,7 @@ qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position)
 {
 	trace_t tr;
 	vec3_t testPos, downPos;
-	vec3_t mins, maxs;	
+	vec3_t mins, maxs;
 
 	if (NPC_IsJetpacking(NPC))
 	{

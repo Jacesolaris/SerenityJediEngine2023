@@ -389,6 +389,7 @@ extern qboolean PM_SaberInTransition(int move);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
 extern qboolean PM_ControlledByPlayer(void);
+extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend = SETANIM_BLEND_DEFAULT);
 
 void Svcmd_SaberAttackCycle_f(void)
 {
@@ -498,6 +499,7 @@ void Svcmd_SaberAttackCycle_f(void)
 						wp_saber_add_g2_saber_models(self, qfalse);
 					}
 					wp_saber_add_holstered_g2_saber_models(self, qtrue);
+					NPC_SetAnim(self, SETANIM_TORSO, BOTH_S6_S1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 			}
 			else if (!self->client->ps.saber[0].ActiveManualOnly())

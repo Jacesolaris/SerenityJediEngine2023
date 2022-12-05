@@ -58,7 +58,7 @@ void ClampVec(vec3_t dat, byte* res)
 	}
 }
 
-void GetOrigin(int clientID, vec3_t org)
+void GetOrigin(const int clientID, vec3_t org)
 {
 	if (clientID >= 0)
 	{
@@ -71,7 +71,7 @@ void GetOrigin(int clientID, vec3_t org)
 	}
 }
 
-void GetDir(int clientID, vec3_t org)
+void GetDir(const int clientID, vec3_t org)
 {
 	if (clientID >= 0)
 	{

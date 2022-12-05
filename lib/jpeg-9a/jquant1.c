@@ -383,7 +383,7 @@ LOCAL(ODITHER_MATRIX_PTR)
 make_odither_array(j_decompress_ptr cinfo, int ncolors)
 {
 	const ODITHER_MATRIX_PTR odither = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                              SIZEOF(ODITHER_MATRIX));
+		SIZEOF(ODITHER_MATRIX));
 	/* The inter-value distance for this color is MAXJSAMPLE/(ncolors-1).
 	 * Hence the dither value for the matrix cell with fill order f
 	 * (f=0..N-1) should be (N-1-2*f)/(2*N) * MAXJSAMPLE/(ncolors-1).
@@ -752,7 +752,7 @@ GLOBAL(void)
 jinit_1pass_quantizer(j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                              SIZEOF(my_cquantizer));
+		SIZEOF(my_cquantizer));
 	cinfo->cquantize = (struct jpeg_color_quantizer*)cquantize;
 	cquantize->pub.start_pass = start_pass_1_quant;
 	cquantize->pub.finish_pass = finish_pass_1_quant;

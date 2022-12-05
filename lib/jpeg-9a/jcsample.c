@@ -448,7 +448,7 @@ jinit_downsampler(j_compress_ptr cinfo)
 	boolean smoothok = TRUE;
 
 	const my_downsample_ptr downsample = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                                SIZEOF(my_downsampler));
+		SIZEOF(my_downsampler));
 	cinfo->downsample = (struct jpeg_downsampler*)downsample;
 	downsample->pub.start_pass = start_pass_downsample;
 	downsample->pub.downsample = sep_downsample;

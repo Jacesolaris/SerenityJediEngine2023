@@ -8097,7 +8097,7 @@ void ClientDisconnect(int clientNum)
 
 	if (ent->r.svFlags & SVF_BOT)
 	{
-		BotAIShutdownClient(clientNum, qfalse);
+		BotAIShutdownClient(clientNum);
 	}
 
 	G_ClearClientLog(clientNum);

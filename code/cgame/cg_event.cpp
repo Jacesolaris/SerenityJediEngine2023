@@ -31,8 +31,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entityNum, soundChannel_t channel, const char* soundName,
 	int customSoundSet);
 extern void fx_kothos_beam(vec3_t start, vec3_t end);
-extern void CG_GibPlayerHeadshot(vec3_t playerOrigin);
-extern void CG_GibPlayer(vec3_t playerOrigin);
+extern void CG_GibPlayerHeadshot(vec3_t player_origin);
+extern void CG_GibPlayer(vec3_t player_origin);
 extern float ShortestLineSegBewteen2LineSegs(vec3_t start1, vec3_t end1, vec3_t start2, vec3_t end2, vec3_t close_pnt1,
 	vec3_t close_pnt2);
 extern void CG_StrikeBolt(const centity_t* cent, vec3_t origin);

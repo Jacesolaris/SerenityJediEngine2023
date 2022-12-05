@@ -488,18 +488,18 @@ void* B_Alloc(int size);
 void B_Free(void* ptr);
 
 //resets the whole bot state
-void BotResetState(bot_state_t* bs);
+void bot_reset_state(bot_state_t* bs);
 //returns the number of bots in the game
-int NumBots(void);
+int num_bots(void);
 
 void BotUtilizePersonality(bot_state_t* bs);
 int BotDoChat(bot_state_t* bs, const char* section, int always);
-void StandardBotAI(bot_state_t* bs, float thinktime);
+void standard_bot_ai(bot_state_t* bs);
 void BotWaypointRender(void);
-int OrgVisibleBox(vec3_t org1, vec3_t mins, vec3_t maxs, vec3_t org2, int ignore);
-int BotIsAChickenWuss(bot_state_t* bs);
-int GetNearestVisibleWP(vec3_t org, int ignore);
-int GetBestIdleGoal(bot_state_t* bs);
+int org_visible_box(vec3_t org1, vec3_t mins, vec3_t maxs, vec3_t org2, int ignore);
+int bot_is_a_chicken_wuss(bot_state_t* bs);
+int get_nearest_visible_wp(vec3_t org, int ignore);
+int get_best_idle_goal(bot_state_t* bs);
 
 char* ConcatArgs(int start);
 

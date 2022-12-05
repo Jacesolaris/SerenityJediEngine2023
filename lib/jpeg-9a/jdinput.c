@@ -504,7 +504,7 @@ latch_quant_tables(j_decompress_ptr cinfo)
 			ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, qtblno);
 		/* OK, save away the quantization table */
 		JQUANT_TBL* qtbl = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-		                                              SIZEOF(JQUANT_TBL));
+			SIZEOF(JQUANT_TBL));
 		MEMCOPY(qtbl, cinfo->quant_tbl_ptrs[qtblno], SIZEOF(JQUANT_TBL));
 		compptr->quant_table = qtbl;
 	}
@@ -642,7 +642,7 @@ jinit_input_controller(j_decompress_ptr cinfo)
 {
 	/* Create subobject in permanent pool */
 	const my_inputctl_ptr inputctl = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_PERMANENT,
-	                                                            SIZEOF(my_input_controller));
+		SIZEOF(my_input_controller));
 	cinfo->inputctl = &inputctl->pub;
 	/* Initialize method pointers */
 	inputctl->pub.consume_input = consume_markers;

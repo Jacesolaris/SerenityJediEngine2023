@@ -4357,8 +4357,8 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_DEBRIS:
 		DEBUGNAME("EV_DEBRIS");
-		CG_Chunks(es->owner, es->origin, es->angles, es->origin2, es->angles2, es->speed,
-			es->eventParm, es->trickedentindex, es->modelindex, es->apos.trBase[0]);
+		CG_Chunks(es->owner, es->origin, es->origin2, es->angles2, es->speed, es->eventParm,
+		          es->trickedentindex, es->modelindex, es->apos.trBase[0]);
 		break;
 
 	case EV_MISC_MODEL_EXP:

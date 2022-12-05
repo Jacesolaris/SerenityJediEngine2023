@@ -404,7 +404,7 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_ST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, int mod,int hitLoc)
+void NPC_ST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, int mod, int hitLoc)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 

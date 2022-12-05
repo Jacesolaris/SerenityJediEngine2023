@@ -1885,7 +1885,7 @@ void RE_GetLightStyle(int style, color4ub_t color)
 	}
 
 	byteAlias_t* baDest = (byteAlias_t*)&color;
-	const byteAlias_t * baSource = (byteAlias_t*)&styleColors[style];
+	const byteAlias_t* baSource = (byteAlias_t*)&styleColors[style];
 	baDest->i = baSource->i;
 }
 

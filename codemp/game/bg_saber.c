@@ -152,7 +152,7 @@ void WP_ForcePowerDrain(playerState_t* ps, const forcePowers_t forcePower, const
 	}
 }
 
-void BG_ForcePowerKill(playerState_t* ps, forcePowers_t forcePower)
+void BG_ForcePowerKill(playerState_t* ps)
 {
 	if (ps->fd.forcePower < 5)
 	{
@@ -168,7 +168,7 @@ void BG_ForcePowerKill(playerState_t* ps, forcePowers_t forcePower)
 	}
 }
 
-qboolean BG_EnoughForcePowerForMove(int cost)
+qboolean BG_EnoughForcePowerForMove(const int cost)
 {
 	if (pm->ps->fd.forcePower < cost)
 	{

@@ -207,7 +207,7 @@ qboolean FighterOverValidLandingSurface(const Vehicle_t* pVeh)
 {
 	if (pVeh->m_LandTrace.fraction < 1.0f //ground present
 		&& pVeh->m_LandTrace.plane.normal[2] >= MIN_LANDING_SLOPE) //flat enough
-	//FIXME: also check for a certain surface flag ... "landing zones"?
+		//FIXME: also check for a certain surface flag ... "landing zones"?
 	{
 		return qtrue;
 	}
@@ -1774,7 +1774,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 	{
 		const int iFlags = SETANIM_FLAG_NORMAL;
 		BG_SetAnim(pVeh->m_pParentEntity->playerState, bgAllAnims[pVeh->m_pParentEntity->localAnimIndex].anims,
-		           SETANIM_BOTH, Anim, iFlags);
+			SETANIM_BOTH, Anim, iFlags);
 	}
 }
 

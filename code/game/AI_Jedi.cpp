@@ -5569,7 +5569,7 @@ extern int wp_debug_saber_colour(saber_colors_t saber_color);
 
 static qboolean Jedi_SaberBlock()
 {
-	vec3_t hitloc, saber_tip_old, saber_tip, top, bottom, axis_point, saber_point, dir; 
+	vec3_t hitloc, saber_tip_old, saber_tip, top, bottom, axis_point, saber_point, dir;
 	vec3_t point_dir, base_dir, tip_dir;
 	constexpr vec3_t saber_mins = { -4, -4, -4 };
 	constexpr vec3_t saber_maxs = { 4, 4, 4 };
@@ -7092,7 +7092,7 @@ static void Jedi_CombatTimersUpdate(const int enemy_dist)
 			}
 			else
 			{
-				if (!Q_irand(0, 2)) 
+				if (!Q_irand(0, 2))
 				{
 					Jedi_Aggression(NPC, -1);
 					if (d_JediAI->integer || g_DebugSaberCombat->integer)
@@ -8455,7 +8455,7 @@ NPC_Jedi_Pain
 -------------------------
 */
 
-void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod,int hitLoc)
+void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hitLoc)
 {
 	if (attacker->s.weapon == WP_SABER)
 	{

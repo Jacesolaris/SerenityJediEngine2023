@@ -347,7 +347,7 @@ alloc_large(j_common_ptr cinfo, int pool_id, size_t sizeofobject)
 		ERREXIT1(cinfo, JERR_BAD_POOL_ID, pool_id);	/* safety check */
 
 	const large_pool_ptr hdr_ptr = jpeg_get_large(cinfo, sizeofobject +
-	                                              SIZEOF(large_pool_hdr));
+		SIZEOF(large_pool_hdr));
 	if (hdr_ptr == NULL)
 		out_of_memory(cinfo, 4);	/* jpeg_get_large failed */
 	mem->total_space_allocated += sizeofobject + SIZEOF(large_pool_hdr);
@@ -398,15 +398,15 @@ alloc_sarray(j_common_ptr cinfo, int pool_id,
 
 	/* Get space for row pointers (small object) */
 	const JSAMPARRAY result = alloc_small(cinfo, pool_id,
-	                                      numrows * SIZEOF(JSAMPROW));
+		numrows * SIZEOF(JSAMPROW));
 
 	/* Get the rows themselves (large objects) */
 	JDIMENSION currow = 0;
 	while (currow < numrows) {
 		rowsperchunk = MIN(rowsperchunk, numrows - currow);
 		JSAMPROW workspace = alloc_large(cinfo, pool_id,
-		                                 rowsperchunk * samplesperrow
-		                                 * SIZEOF(JSAMPLE));
+			rowsperchunk * samplesperrow
+			* SIZEOF(JSAMPLE));
 		for (JDIMENSION i = rowsperchunk; i > 0; i--) {
 			result[currow++] = workspace;
 			workspace += samplesperrow;
@@ -442,15 +442,15 @@ alloc_barray(j_common_ptr cinfo, int pool_id,
 
 	/* Get space for row pointers (small object) */
 	const JBLOCKARRAY result = alloc_small(cinfo, pool_id,
-	                                       numrows * SIZEOF(JBLOCKROW));
+		numrows * SIZEOF(JBLOCKROW));
 
 	/* Get the rows themselves (large objects) */
 	JDIMENSION currow = 0;
 	while (currow < numrows) {
 		rowsperchunk = MIN(rowsperchunk, numrows - currow);
 		JBLOCKROW workspace = alloc_large(cinfo, pool_id,
-		                                  rowsperchunk * blocksperrow
-		                                  * SIZEOF(JBLOCK));
+			rowsperchunk * blocksperrow
+			* SIZEOF(JBLOCK));
 		for (JDIMENSION i = rowsperchunk; i > 0; i--) {
 			result[currow++] = workspace;
 			workspace += blocksperrow;
@@ -510,7 +510,7 @@ request_virt_sarray(j_common_ptr cinfo, int pool_id, boolean pre_zero,
 
 	/* get control block */
 	const jvirt_sarray_ptr result = alloc_small(cinfo, pool_id,
-	                                            SIZEOF(struct jvirt_sarray_control));
+		SIZEOF(struct jvirt_sarray_control));
 
 	result->mem_buffer = NULL;	/* marks array not yet realized */
 	result->rows_in_array = numrows;
@@ -538,7 +538,7 @@ request_virt_barray(j_common_ptr cinfo, int pool_id, boolean pre_zero,
 
 	/* get control block */
 	const jvirt_barray_ptr result = alloc_small(cinfo, pool_id,
-	                                            SIZEOF(struct jvirt_barray_control));
+		SIZEOF(struct jvirt_barray_control));
 
 	result->mem_buffer = NULL;	/* marks array not yet realized */
 	result->rows_in_array = numrows;

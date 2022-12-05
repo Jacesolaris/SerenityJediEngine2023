@@ -3883,7 +3883,7 @@ qboolean ItemParse_backcolor(itemDef_t* item)
 {
 	float f;
 
-	for (float & i : item->window.backColor)
+	for (float& i : item->window.backColor)
 	{
 		if (PC_ParseFloat(&f))
 		{

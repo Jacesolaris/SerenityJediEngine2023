@@ -113,9 +113,9 @@ static void ObjectivePrint_Line(const int color, const int objectIndex, int& mis
 		y = objectiveStartingYpos + iYPixelsPerLine * missionYcnt;
 
 		// Advance line if a graphic has printed
-		for (int i = 0; i < MAX_OBJ_GRAPHICS; i++)
+		for (const int obj_graphic : obj_graphics)
 		{
-			if (obj_graphics[i])
+			if (obj_graphic)
 			{
 				y += OBJ_GRAPHIC_SIZE + 4;
 			}

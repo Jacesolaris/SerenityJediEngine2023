@@ -602,7 +602,7 @@ static void SV_CloseDownload(client_t* cl) {
 	*cl->downloadName = 0;
 
 	// Free the temporary buffer space
-	for (auto & download_block : cl->downloadBlocks) {
+	for (auto& download_block : cl->downloadBlocks) {
 		if (download_block) {
 			Z_Free(download_block);
 			download_block = nullptr;

@@ -1535,7 +1535,7 @@ int RepairPaths(qboolean behindTheScenes)
 				//don't calculate on jump points because they might not always want to be visible (in cases of force jumping)
 				!(gWPArray[i]->flags & WPFLAG_CALCULATED) && //don't calculate it again
 				!OpposingEnds(i, i + 1) &&
-				(bot_wp_distconnect.value && VectorLength(a) > maxDistFactor || !OrgVisible(
+				(bot_wp_distconnect.value && VectorLength(a) > maxDistFactor || !org_visible(
 					gWPArray[i]->origin, gWPArray[i + 1]->origin, ENTITYNUM_NONE) && bot_wp_visconnect.value) &&
 				!DoorBlockingSection(i, i + 1))
 			{
@@ -1720,7 +1720,7 @@ void CalculatePaths(void)
 
 					if ((nLDist < maxNeighborDist || force_jumpable) &&
 						((int)gWPArray[i]->origin[2] == (int)gWPArray[c]->origin[2] || force_jumpable) &&
-						(OrgVisibleBox(gWPArray[i]->origin, mins, maxs, gWPArray[c]->origin, ENTITYNUM_NONE) ||
+						(org_visible_box(gWPArray[i]->origin, mins, maxs, gWPArray[c]->origin, ENTITYNUM_NONE) ||
 							force_jumpable))
 					{
 						gWPArray[i]->neighbors[gWPArray[i]->neighbornum].num = c;
@@ -1807,7 +1807,7 @@ void CalculateSiegeGoals(void)
 			dif[1] = (tent->r.absmax[1] + tent->r.absmin[1]) / 2;
 			dif[2] = (tent->r.absmax[2] + tent->r.absmin[2]) / 2;
 
-			const int wpindex = GetNearestVisibleWP(dif, tent->s.number);
+			const int wpindex = get_nearest_visible_wp(dif, tent->s.number);
 
 			if (wpindex != -1 && gWPArray[wpindex] && gWPArray[wpindex]->inuse)
 			{
@@ -1877,7 +1877,7 @@ int GetNearestVisibleWPToItem(vec3_t org, int ignore)
 			VectorSubtract(org, gWPArray[i]->origin, a);
 			const float flLen = VectorLength(a);
 
-			if (flLen < bestdist && trap->InPVS(org, gWPArray[i]->origin) && OrgVisibleBox(
+			if (flLen < bestdist && trap->InPVS(org, gWPArray[i]->origin) && org_visible_box(
 				org, mins, maxs, gWPArray[i]->origin, ignore))
 			{
 				bestdist = flLen;

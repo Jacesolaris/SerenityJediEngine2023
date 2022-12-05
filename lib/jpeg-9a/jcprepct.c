@@ -265,8 +265,8 @@ create_context_buffer(j_compress_ptr cinfo)
 	 * we need five row groups' worth of pointers for each component.
 	 */
 	JSAMPARRAY fake_buffer = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    cinfo->num_components * 5 * rgroup_height *
-	                                                    SIZEOF(JSAMPROW));
+		cinfo->num_components * 5 * rgroup_height *
+		SIZEOF(JSAMPROW));
 
 	for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
 		ci++, compptr++) {
@@ -309,7 +309,7 @@ jinit_c_prep_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 		ERREXIT(cinfo, JERR_BAD_BUFFER_MODE);
 
 	const my_prep_ptr prep = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    SIZEOF(my_prep_controller));
+		SIZEOF(my_prep_controller));
 	cinfo->prep = (struct jpeg_c_prep_controller*)prep;
 	prep->pub.start_pass = start_pass_prep;
 

@@ -909,7 +909,7 @@ GLOBAL(void)
 jinit_arith_encoder(j_compress_ptr cinfo)
 {
 	const arith_entropy_ptr entropy = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                             SIZEOF(arith_entropy_encoder));
+		SIZEOF(arith_entropy_encoder));
 	cinfo->entropy = &entropy->pub;
 	entropy->pub.start_pass = start_pass;
 	entropy->pub.finish_pass = finish_pass;

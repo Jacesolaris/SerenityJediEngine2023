@@ -296,7 +296,7 @@ bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 			p_veh->m_ulFlags &= ~VEH_ACCELERATORON;
 			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
-				G_StopEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],	parent->s.number);
+				G_StopEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i], parent->s.number);
 				int	shift_sound = Q_irand2(1, 8);
 				switch (shift_sound)
 				{

@@ -22,6 +22,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // Precompiled header file for the client game
 
+#ifndef CG_HEADERS_H
+#define CG_HEADERS_H
 #include "cg_local.h"
 
 #include "../game/g_local.h"
@@ -29,3 +31,4 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../game/b_local.h"
 
 // end
+#endif // CG_HEADERS_H

@@ -2778,7 +2778,6 @@ static shader_t* FinishShader(void) {
 	int				stage, lmStage; //rwwRMG - stageIndex for AGEN_BLEND
 
 	qboolean hasLightmapStage = qfalse;
-	
 
 	//
 	// set sky stuff appropriate

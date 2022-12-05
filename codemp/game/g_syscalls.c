@@ -1728,7 +1728,7 @@ void QDECL G_Printf(const char* msg, ...)
 
 static void TranslateSyscalls(void)
 {
-	static gameImport_t import = {0};
+	static gameImport_t import = { 0 };
 
 	trap = &import;
 

@@ -350,7 +350,7 @@ transencode_coef_controller(j_compress_ptr cinfo,
 	jvirt_barray_ptr* coef_arrays)
 {
 	const my_coef_ptr coef = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    SIZEOF(my_coef_controller));
+		SIZEOF(my_coef_controller));
 	cinfo->coef = &coef->pub;
 	coef->pub.start_pass = start_pass_coef;
 	coef->pub.compress_data = compress_output;
@@ -360,7 +360,7 @@ transencode_coef_controller(j_compress_ptr cinfo,
 
 	/* Allocate and pre-zero space for dummy DCT blocks. */
 	const JBLOCKROW buffer = (*cinfo->mem->alloc_large)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
+		C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
 	FMEMZERO((void FAR*) buffer, C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
 	for (int i = 0; i < C_MAX_BLOCKS_IN_MCU; i++) {
 		coef->dummy_buffer[i] = buffer + i;

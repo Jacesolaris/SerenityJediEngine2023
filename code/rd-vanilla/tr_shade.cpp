@@ -1271,7 +1271,7 @@ static void ComputeColors(shaderStage_t* pStage, alphaGen_t forceAlphaGen, color
 	case CGEN_CONST:
 		for (i = 0; i < tess.numVertexes; i++) {
 			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i];
-			const byteAlias_t * baSource = (byteAlias_t*)&pStage->constantColor;
+			const byteAlias_t* baSource = (byteAlias_t*)&pStage->constantColor;
 			baDest->i = baSource->i;
 		}
 		break;
@@ -1341,7 +1341,7 @@ static void ComputeColors(shaderStage_t* pStage, alphaGen_t forceAlphaGen, color
 		for (i = 0; i < tess.numVertexes; i++)
 		{
 			byteAlias_t* baDest = (byteAlias_t*)&tess.svars.colors[i];
-			const byteAlias_t * baSource = (byteAlias_t*)&styleColors[pStage->lightmapStyle];
+			const byteAlias_t* baSource = (byteAlias_t*)&styleColors[pStage->lightmapStyle];
 			baDest->ui = baSource->ui;
 		}
 		break;

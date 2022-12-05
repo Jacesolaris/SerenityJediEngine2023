@@ -1986,7 +1986,7 @@ qboolean PM_InSaberLock(int anim);
 void pm_saber_start_trans_anim(int clientNum, int saber_anim_level, int weapon, int anim, float* anim_speed, int broken, int fatigued);
 
 void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t forcePower, int overrideAmt);
-void BG_ForcePowerKill(playerState_t* ps, forcePowers_t forcePower);
+void BG_ForcePowerKill(playerState_t* ps);
 
 void	BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result);
 void	BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result);

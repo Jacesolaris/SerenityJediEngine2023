@@ -53,7 +53,7 @@ Interrogator_die
 -------------------------
 */
 void Interrogator_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-                      int hitLoc)
+	int hitLoc)
 {
 	self->client->ps.velocity[2] = -100;
 

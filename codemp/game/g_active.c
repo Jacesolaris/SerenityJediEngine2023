@@ -4757,7 +4757,7 @@ void ClientThink_real(gentity_t* ent)
 				if (g_npcspskill.integer == 0)//easy blocking
 				{// started function
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
@@ -4776,7 +4776,7 @@ void ClientThink_real(gentity_t* ent)
 				else if (g_npcspskill.integer == 1) // medium blocking
 				{
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
@@ -4795,7 +4795,7 @@ void ClientThink_real(gentity_t* ent)
 				else // hard blocking
 				{
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
@@ -4815,7 +4815,7 @@ void ClientThink_real(gentity_t* ent)
 				if (client->ps.pm_flags & PMF_ACCURATE_MISSILE_BLOCK_HELD)
 				{// started function
 					if (client->ps.BoltblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time... 
+					{// They just pressed block. Mark the time...
 						client->ps.BoltblockStartTime = level.time; //start the timer
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING))

@@ -1138,8 +1138,8 @@ bool Sys_GetFileTime(LPCSTR psFileName, FILETIME& ft)
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		if (GetFileTime(hFile,	// handle to file
-		                nullptr,	// LPFILETIME lpCreationTime
-		                nullptr,	// LPFILETIME lpLastAccessTime
+			nullptr,	// LPFILETIME lpCreationTime
+			nullptr,	// LPFILETIME lpLastAccessTime
 			&ft		// LPFILETIME lpLastWriteTime
 		)
 			)

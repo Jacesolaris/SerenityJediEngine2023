@@ -1774,7 +1774,7 @@ static void ParseDeform(const char** text) {
 	}
 
 	if (!Q_stricmp(token, "move")) {
-		for (float & i : ds->moveVector) {
+		for (float& i : ds->moveVector) {
 			token = COM_ParseExt(text, qfalse);
 			if (token[0] == 0) {
 				Com_Printf(S_COLOR_YELLOW  "WARNING: missing deformVertexes parm in shader '%s'\n", shader.name);
@@ -2501,7 +2501,6 @@ static shader_t* FinishShader(void) {
 	int				stage, lmStage; //rwwRMG - stageIndex for AGEN_BLEND
 
 	qboolean hasLightmapStage = qfalse;
-	
 
 	//
 	// set sky stuff appropriate

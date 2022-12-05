@@ -97,11 +97,11 @@ COrientedParticle* FX_AddOrientedParticle(int clientID, vec3_t org, vec3_t norm,
 	int boltNum = -1);
 
 CPoly* FX_AddPoly(const vec3_t* verts, const vec2_t* st, int numVerts,
-                  vec3_t vel, vec3_t accel,
-                  float alpha1, float alpha2, float alphaParm,
-                  vec3_t rgb1, vec3_t rgb2, float rgbParm,
-                  vec3_t rotationDelta, float bounce, int motionDelay,
-                  int killTime, qhandle_t shader, int flags);
+	vec3_t vel, vec3_t accel,
+	float alpha1, float alpha2, float alphaParm,
+	vec3_t rgb1, vec3_t rgb2, float rgbParm,
+	vec3_t rotationDelta, float bounce, int motionDelay,
+	int killTime, qhandle_t shader, int flags);
 
 CFlash* FX_AddFlash(vec3_t origin, vec3_t sRGB, vec3_t eRGB, float rgbParm,
 	int life, qhandle_t shader, int flags);

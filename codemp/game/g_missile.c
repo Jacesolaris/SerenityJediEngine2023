@@ -40,7 +40,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define TASER_DAMAGE			20
 
-float RandFloat(float min, float max);
+float rand_float(float min, float max);
 
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern void Jedi_Decloak(gentity_t* self);
@@ -120,7 +120,7 @@ void g_manual_block_missile(const gentity_t* ent, gentity_t* missile, vec3_t for
 
 	for (int i = 0; i < 3; i++)
 	{
-		bounce_dir[i] += RandFloat(-1.0f, 1.0f);
+		bounce_dir[i] += rand_float(-1.0f, 1.0f);
 	}
 
 	VectorNormalize(bounce_dir);
@@ -163,7 +163,7 @@ void g_missile_bouncedoff_saber(const gentity_t* ent, gentity_t* missile, vec3_t
 
 	for (int i = 0; i < 3; i++)
 	{
-		bounce_dir[i] += RandFloat(-6.0f, 6.0f);
+		bounce_dir[i] += rand_float(-6.0f, 6.0f);
 	}
 
 	VectorNormalize(bounce_dir);
@@ -206,7 +206,7 @@ void g_deflect_missile_to_attacker(const gentity_t* ent, gentity_t* missile, vec
 
 	for (int i = 0; i < 3; i++)
 	{
-		bounce_dir[i] += RandFloat(-1.0f, 1.0f);
+		bounce_dir[i] += rand_float(-1.0f, 1.0f);
 	}
 
 	VectorNormalize(bounce_dir);
@@ -270,7 +270,7 @@ void g_reflect_missile_to_attacker(const gentity_t* ent, gentity_t* missile, vec
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		bounce_dir[i] += RandFloat(-0.1f, 0.1f);
+		bounce_dir[i] += rand_float(-0.1f, 0.1f);
 	}
 
 	VectorNormalize(bounce_dir);
@@ -334,7 +334,7 @@ void g_reflect_missile_auto(const gentity_t* ent, gentity_t* missile, vec3_t for
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		bounce_dir[i] += RandFloat(-0.2f, 0.2f);
+		bounce_dir[i] += rand_float(-0.2f, 0.2f);
 	}
 
 	VectorNormalize(bounce_dir);
@@ -398,7 +398,7 @@ void g_reflect_missile_bot(const gentity_t* ent, gentity_t* missile, vec3_t forw
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		bounce_dir[i] += RandFloat(-0.2f, 0.2f);
+		bounce_dir[i] += rand_float(-0.2f, 0.2f);
 	}
 
 	VectorNormalize(bounce_dir);
@@ -1491,7 +1491,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 		FP_SABER_DEFENSE]) / FORCE_LEVEL_3;
 	gentity_t* prev_owner = &g_entities[bolt->r.ownerNum];
 	const float distance = vector_bolt_distance(blocker->r.currentOrigin, prev_owner->r.currentOrigin);
-	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue: qfalse;
+	const qboolean manual_proj_blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	const qboolean accurate_missile_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING ? qtrue : qfalse;
 	const int manual_run_blocking = manual_running_and_saberblocking(blocker);
 	const int npc_is_blocking = manual_npc_saberblocking(blocker);

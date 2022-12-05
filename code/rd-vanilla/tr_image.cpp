@@ -1278,7 +1278,7 @@ void R_CreateBuiltinImages(void) {
 	// with overbright bits active, we need an image which is some fraction of full color,
 	// for default lightmaps, etc
 	for (x = 0; x < DEFAULT_SIZE; x++) {
-		for (auto & y : data) {
+		for (auto& y : data) {
 			y[x][0] =
 				y[x][1] =
 				y[x][2] = tr.identityLightByte;

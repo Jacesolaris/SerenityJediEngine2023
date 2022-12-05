@@ -1861,8 +1861,8 @@ qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hol
 // ai_main.c
 #define MAX_FILEPATH			144
 
-int OrgVisible(vec3_t org1, vec3_t org2, int ignore);
-void BotOrder(gentity_t* ent, int clientnum, int ordernum);
+int org_visible(vec3_t org1, vec3_t org2, int ignore);
+void bot_order(gentity_t* ent, int clientnum, int ordernum);
 int in_field_of_vision(vec3_t viewangles, float fov, vec3_t angles);
 
 // ai_util.c
@@ -1877,12 +1877,12 @@ typedef struct bot_settings_s
 	char team[MAX_FILEPATH];
 } bot_settings_t;
 
-int BotAISetup(int restart);
-int BotAIShutdown(int restart);
-int BotAILoadMap(int restart);
-int BotAISetupClient(int client, const struct bot_settings_s* settings, qboolean restart);
-int BotAIShutdownClient(int client, qboolean restart);
-int BotAIStartFrame(int time);
+int bot_ai_setup(int restart);
+int bot_ai_shutdown(int restart);
+int BotAILoadMap();
+int bot_ai_setup_client(int client, const struct bot_settings_s* settings);
+int BotAIShutdownClient(const int client);
+int bot_ai_start_frame(int time);
 
 #include "g_team.h" // teamplay specific stuff
 

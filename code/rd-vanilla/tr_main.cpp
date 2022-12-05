@@ -165,7 +165,7 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 		}
 	}
 #else
-	for (auto & i : tr.viewParms.frustum)
+	for (auto& i : tr.viewParms.frustum)
 	{
 		frust = &i;
 

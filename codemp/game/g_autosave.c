@@ -69,11 +69,11 @@ maps.  This should not be used by map creators as it must be called from the aut
 editor code.
 */
 extern vmCvar_t bot_wp_edit;
-extern void InitTrigger(gentity_t* self);
+extern void init_trigger(gentity_t* self);
 
 void SP_trigger_autosave(gentity_t* self)
 {
-	InitTrigger(self);
+	init_trigger(self);
 
 	self->touch = Touch_Autosave;
 
@@ -193,7 +193,7 @@ void Save_Autosaves(void)
 {
 	//save the autosaves
 	const fileHandle_t f = 0;
-	
+
 	char fileBuf[MAX_AUTOSAVE_FILESIZE];
 	char loadPath[MAX_QPATH];
 	vmCvar_t mapname;

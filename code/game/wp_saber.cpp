@@ -674,11 +674,11 @@ void g_create_g2_holstered_weapon_model(gentity_t* ent, const char* psWeaponMode
 		{
 			// attach it to the hip. need some correction of rotation first though!
 			const int holster_origin = gi.G2API_AddBolt(&ent->ghoul2[ent->holsterModel[weapon_num]], "*holsterorigin");
-			mdxaBone_t boltMatrix2;
+			mdxaBone_t bolt_matrix2;
 			if (holster_origin != -1)
 			{
 				constexpr vec3_t origin = { 0, 0, 0 };
-				gi.G2API_GetBoltMatrix(ent->ghoul2, ent->holsterModel[weapon_num], holster_origin, &boltMatrix2, origin,
+				gi.G2API_GetBoltMatrix(ent->ghoul2, ent->holsterModel[weapon_num], holster_origin, &bolt_matrix2, origin,
 					origin, 0, nullptr, ent->s.modelScale);
 			}
 			gi.G2API_AttachG2Model(&ent->ghoul2[ent->holsterModel[weapon_num]], &ent->ghoul2[ent->playerModel],
@@ -699,9 +699,9 @@ void g_create_g2_holstered_weapon_model(gentity_t* ent, const char* psWeaponMode
 			}
 			else
 			{
-				boltMatrix2.matrix[1][3] -= 1.0f;
+				bolt_matrix2.matrix[1][3] -= 1.0f;
 				gi.G2API_SetBoneAnglesMatrix(&ent->ghoul2[ent->holsterModel[weapon_num]], "ModView internal default",
-					boltMatrix2, BONE_ANGLES_PREMULT, nullptr, 0, 0);
+					bolt_matrix2, BONE_ANGLES_PREMULT, nullptr, 0, 0);
 			}
 			// set up a bolt on the end so we can get where the saber muzzle is - we can assume this is always bolt 0
 			gi.G2API_AddBolt(&ent->ghoul2[ent->holsterModel[weapon_num]], "*flash");
@@ -1802,7 +1802,7 @@ void wp_saber_bounce_on_wall_sound(const gentity_t* ent, const int saber_num, co
 }
 
 void wp_saber_bounce_sound(const gentity_t* ent, gentity_t* hitEnt, const gentity_t* play_on_ent, const int saber_num,
-                           const int blade_num)
+	const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -3375,7 +3375,7 @@ qboolean wp_sabers_intersect(const gentity_t* ent1, const int ent1_saber_num, co
 		return qfalse;
 	}
 
-	for (const auto & ent2_saber_num : ent2->client->ps.saber)
+	for (const auto& ent2_saber_num : ent2->client->ps.saber)
 	{
 		for (int ent2_blade_num = 0; ent2_blade_num < ent2_saber_num.numBlades; ent2_blade_num
 			++)
@@ -3526,7 +3526,7 @@ qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, ve
 	}
 
 	//UGH, had to make this work for multiply-bladed sabers
-	for (const auto & saber_num1 : ent1->client->ps.saber)
+	for (const auto& saber_num1 : ent1->client->ps.saber)
 	{
 		for (int blade_num1 = 0; blade_num1 < saber_num1.numBlades; blade_num1++)
 		{
@@ -3534,7 +3534,7 @@ qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, ve
 				&& saber_num1.blade[blade_num1].length > 0)
 			{
 				//valid saber and this blade is on
-				for (const auto & saber_num2 : ent2->client->ps.saber)
+				for (const auto& saber_num2 : ent2->client->ps.saber)
 				{
 					for (int blade_num2 = 0; blade_num2 < saber_num2.numBlades; blade_num2++)
 					{
@@ -3610,7 +3610,7 @@ qboolean wp_saber_damage_effects(trace_t* tr, const vec3_t start, const float le
 
 	VectorNormalize2(blade_vec, blade_dir);
 
-	for (auto & z : tr->G2CollisionMap)
+	for (auto& z : tr->G2CollisionMap)
 	{
 		if (z.mEntityNum == -1)
 		{
@@ -11203,7 +11203,7 @@ float manual_saberblocking(const gentity_t* defender)
 
 	if (!(defender->client->buttons & BUTTON_BLOCK))
 	{
-		if (defender->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(defender) && defender->client->ps.weapon ==	WP_SABER)
+		if (defender->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(defender) && defender->client->ps.weapon == WP_SABER)
 		{
 			//bots just randomly parry to make up for them not intelligently parrying.
 			return qtrue;
@@ -11814,8 +11814,6 @@ qboolean IsSurrenderingAnimRequiresResponce(const gentity_t* self)
 	return qtrue;
 }
 
-
-
 qboolean wp_saber_block_check_random(gentity_t* self, vec3_t hitloc)
 {
 	vec3_t diff, fwdangles = { 0, 0, 0 }, right;
@@ -11947,9 +11945,9 @@ qboolean WP_SaberMBlockDirection(gentity_t* self, vec3_t hitloc, const qboolean 
 		PM_SuperBreakWinAnim(self->client->ps.torsoAnim) ||
 		PM_SaberInBrokenParry(self->client->ps.saberMove) ||
 		PM_SaberInKnockaway(self->client->ps.saberMove) ||
-		PM_InRoll(&self->client->ps) || 
+		PM_InRoll(&self->client->ps) ||
 		BG_InKnockDown(self->client->ps.legsAnim) ||
-		BG_InKnockDown(self->client->ps.torsoAnim) || 
+		BG_InKnockDown(self->client->ps.torsoAnim) ||
 		PM_InKnockDown(&self->client->ps))
 	{
 		return qfalse;
@@ -12223,7 +12221,7 @@ qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, const qboolean m
 				}
 				else
 				{
-					NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_TR, SETANIM_AFLAG_PACE);					
+					NPC_SetAnim(self, SETANIM_TORSO, BOTH_P1_S1_TR, SETANIM_AFLAG_PACE);
 				}
 				break;
 			}

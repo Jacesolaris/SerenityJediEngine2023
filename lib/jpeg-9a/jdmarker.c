@@ -1397,7 +1397,7 @@ jinit_marker_reader(j_decompress_ptr cinfo)
 {
 	/* Create subobject in permanent pool */
 	const my_marker_ptr marker = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_PERMANENT,
-	                                                        SIZEOF(my_marker_reader));
+		SIZEOF(my_marker_reader));
 	cinfo->marker = &marker->pub;
 	/* Initialize public method pointers */
 	marker->pub.reset_marker_reader = reset_marker_reader;

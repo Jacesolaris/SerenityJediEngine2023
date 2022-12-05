@@ -231,7 +231,7 @@ prepare_range_limit_table(j_decompress_ptr cinfo)
 	int i;
 
 	JSAMPLE* table = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                            (5 * (MAXJSAMPLE + 1) + CENTERJSAMPLE) * SIZEOF(JSAMPLE));
+		(5 * (MAXJSAMPLE + 1) + CENTERJSAMPLE) * SIZEOF(JSAMPLE));
 	table += MAXJSAMPLE + 1;	/* allow negative subscripts of simple table */
 	cinfo->sample_range_limit = table;
 	/* First segment of "simple" table: limit[x] = 0 for x < 0 */
@@ -524,7 +524,7 @@ GLOBAL(void)
 jinit_master_decompress(j_decompress_ptr cinfo)
 {
 	const my_master_ptr master = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                        SIZEOF(my_decomp_master));
+		SIZEOF(my_decomp_master));
 	cinfo->master = &master->pub;
 	master->pub.prepare_for_output_pass = prepare_for_output_pass;
 	master->pub.finish_output_pass = finish_output_pass;

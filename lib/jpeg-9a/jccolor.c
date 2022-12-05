@@ -398,7 +398,7 @@ GLOBAL(void)
 jinit_color_converter(j_compress_ptr cinfo)
 {
 	const my_cconvert_ptr cconvert = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                            SIZEOF(my_color_converter));
+		SIZEOF(my_color_converter));
 	cinfo->cconvert = &cconvert->pub;
 	/* set start_pass to null method until we find out differently */
 	cconvert->pub.start_pass = null_method;

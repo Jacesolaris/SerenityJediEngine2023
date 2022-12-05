@@ -434,7 +434,7 @@ class Ghoul2InfoArray : public IGhoul2InfoArray
 	void DeleteLow(int idx)
 	{
 		{
-			for (auto & model : mInfos[idx])
+			for (auto& model : mInfos[idx])
 			{
 				RemoveBoneCache(model.mBoneCache);
 				model.mBoneCache = nullptr;

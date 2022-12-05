@@ -250,13 +250,13 @@ void CG_BlockLine(vec3_t start, vec3_t end, int time, unsigned int color, int ra
 	le->color[3] = 1.0;
 }
 
-void CG_StunStartpoint(centity_t* ent, vec3_t startPos)
+void CG_StunStartpoint(vec3_t start_pos)
 {
 	refEntity_t model = { 0 };
 
 	model.reType = RT_SABER_GLOW;
-	VectorCopy(startPos, model.lightingOrigin);
-	VectorCopy(startPos, model.origin);
+	VectorCopy(start_pos, model.lightingOrigin);
+	VectorCopy(start_pos, model.origin);
 
 	model.customShader = cgs.media.blueSaberGlowShader;
 	model.shaderRGBA[0] = model.shaderRGBA[1] = model.shaderRGBA[2] = model.shaderRGBA[3] = 0xff;
@@ -264,13 +264,13 @@ void CG_StunStartpoint(centity_t* ent, vec3_t startPos)
 	trap->R_AddRefEntityToScene(&model);
 }
 
-void CG_GrappleStartpoint(centity_t* ent, vec3_t startPos)
+void CG_GrappleStartpoint(vec3_t start_pos)
 {
 	refEntity_t model = { 0 };
 
 	model.reType = RT_SABER_GLOW;
-	VectorCopy(startPos, model.lightingOrigin);
-	VectorCopy(startPos, model.origin);
+	VectorCopy(start_pos, model.lightingOrigin);
+	VectorCopy(start_pos, model.origin);
 
 	model.customShader = cgs.media.rgbSaberGlowShader;
 	model.shaderRGBA[0] = model.shaderRGBA[1] = model.shaderRGBA[2] = model.shaderRGBA[3] = 0xff;
@@ -331,7 +331,7 @@ offZ[20][20];
 #define FX_APPLY_PHYSICS	0x02000000
 #define FX_USE_ALPHA		0x08000000
 
-static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], qboolean stick, int time, vec3_t dmgDir)
+static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const qboolean stick, const int time, vec3_t dmg_dir)
 {
 	vec3_t rotDelta;
 	vec3_t vel, accel;
@@ -343,7 +343,7 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], qboolean stick, int time, 
 	if (!stick)
 	{
 		// We aren't a motion delayed chunk, so let us move quickly
-		VectorMA(vel, 0.3f, dmgDir, vel);
+		VectorMA(vel, 0.3f, dmg_dir, vel);
 	}
 
 	// Set up acceleration due to gravity, 800 is standard QuakeIII gravity, so let's use something close
@@ -435,38 +435,38 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], qboolean stick, int time, 
 	trap->FX_AddPoly(&apArgs);
 }
 
-static void CG_CalcBiLerp(vec3_t verts[4], vec3_t subVerts[4], vec2_t uv[4])
+static void CG_CalcBiLerp(vec3_t verts[4], vec3_t sub_verts[4], vec2_t uv[4])
 {
 	vec3_t temp;
 
 	// Nasty crap
-	VectorScale(verts[0], 1.0f - uv[0][0], subVerts[0]);
-	VectorMA(subVerts[0], uv[0][0], verts[1], subVerts[0]);
-	VectorScale(subVerts[0], 1.0f - uv[0][1], temp);
-	VectorScale(verts[3], 1.0f - uv[0][0], subVerts[0]);
-	VectorMA(subVerts[0], uv[0][0], verts[2], subVerts[0]);
-	VectorMA(temp, uv[0][1], subVerts[0], subVerts[0]);
+	VectorScale(verts[0], 1.0f - uv[0][0], sub_verts[0]);
+	VectorMA(sub_verts[0], uv[0][0], verts[1], sub_verts[0]);
+	VectorScale(sub_verts[0], 1.0f - uv[0][1], temp);
+	VectorScale(verts[3], 1.0f - uv[0][0], sub_verts[0]);
+	VectorMA(sub_verts[0], uv[0][0], verts[2], sub_verts[0]);
+	VectorMA(temp, uv[0][1], sub_verts[0], sub_verts[0]);
 
-	VectorScale(verts[0], 1.0f - uv[1][0], subVerts[1]);
-	VectorMA(subVerts[1], uv[1][0], verts[1], subVerts[1]);
-	VectorScale(subVerts[1], 1.0f - uv[1][1], temp);
-	VectorScale(verts[3], 1.0f - uv[1][0], subVerts[1]);
-	VectorMA(subVerts[1], uv[1][0], verts[2], subVerts[1]);
-	VectorMA(temp, uv[1][1], subVerts[1], subVerts[1]);
+	VectorScale(verts[0], 1.0f - uv[1][0], sub_verts[1]);
+	VectorMA(sub_verts[1], uv[1][0], verts[1], sub_verts[1]);
+	VectorScale(sub_verts[1], 1.0f - uv[1][1], temp);
+	VectorScale(verts[3], 1.0f - uv[1][0], sub_verts[1]);
+	VectorMA(sub_verts[1], uv[1][0], verts[2], sub_verts[1]);
+	VectorMA(temp, uv[1][1], sub_verts[1], sub_verts[1]);
 
-	VectorScale(verts[0], 1.0f - uv[2][0], subVerts[2]);
-	VectorMA(subVerts[2], uv[2][0], verts[1], subVerts[2]);
-	VectorScale(subVerts[2], 1.0f - uv[2][1], temp);
-	VectorScale(verts[3], 1.0f - uv[2][0], subVerts[2]);
-	VectorMA(subVerts[2], uv[2][0], verts[2], subVerts[2]);
-	VectorMA(temp, uv[2][1], subVerts[2], subVerts[2]);
+	VectorScale(verts[0], 1.0f - uv[2][0], sub_verts[2]);
+	VectorMA(sub_verts[2], uv[2][0], verts[1], sub_verts[2]);
+	VectorScale(sub_verts[2], 1.0f - uv[2][1], temp);
+	VectorScale(verts[3], 1.0f - uv[2][0], sub_verts[2]);
+	VectorMA(sub_verts[2], uv[2][0], verts[2], sub_verts[2]);
+	VectorMA(temp, uv[2][1], sub_verts[2], sub_verts[2]);
 
-	VectorScale(verts[0], 1.0f - uv[3][0], subVerts[3]);
-	VectorMA(subVerts[3], uv[3][0], verts[1], subVerts[3]);
-	VectorScale(subVerts[3], 1.0f - uv[3][1], temp);
-	VectorScale(verts[3], 1.0f - uv[3][0], subVerts[3]);
-	VectorMA(subVerts[3], uv[3][0], verts[2], subVerts[3]);
-	VectorMA(temp, uv[3][1], subVerts[3], subVerts[3]);
+	VectorScale(verts[0], 1.0f - uv[3][0], sub_verts[3]);
+	VectorMA(sub_verts[3], uv[3][0], verts[1], sub_verts[3]);
+	VectorScale(sub_verts[3], 1.0f - uv[3][1], temp);
+	VectorScale(verts[3], 1.0f - uv[3][0], sub_verts[3]);
+	VectorMA(sub_verts[3], uv[3][0], verts[2], sub_verts[3]);
+	VectorMA(temp, uv[3][1], sub_verts[3], sub_verts[3]);
 }
 
 // bilinear
@@ -517,17 +517,17 @@ void CG_InitGlass(void)
 #define TIME_DECAY_MED		0.04f
 #define TIME_DECAY_FAST		0.009f
 
-void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, float dmgRadius, int maxShards)
+void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_radius, const int max_shards)
 {
 	int i, t;
-	int mxHeight;
+	int mx_height;
 	float height, width;
-	float stepHeight;
-	float timeDecay;
+	float step_height;
+	float time_decay;
 	float x, z;
 	float xx, zz;
 	int time;
-	int glassShards = 0;
+	int glass_shards = 0;
 	qboolean stick;
 
 	// To do a smarter tesselation, we should figure out the relative height and width of the brush face,
@@ -535,73 +535,51 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 	//	hopefully be sufficient.
 	CG_CalcHeightWidth(verts, &height, &width);
 
-	trap->S_StartSound(dmgPt, -1, CHAN_AUTO, trap->S_RegisterSound("sound/effects/glassbreak1.wav"));
+	trap->S_StartSound(dmg_pt, -1, CHAN_AUTO, trap->S_RegisterSound("sound/effects/glassbreak1.wav"));
 
 	// Pick "LOD" for height
 	if (height < 100)
 	{
-		stepHeight = 0.2f;
-		mxHeight = 5;
-		timeDecay = TIME_DECAY_SLOW;
+		step_height = 0.2f;
+		mx_height = 5;
+		time_decay = TIME_DECAY_SLOW;
 	}
 	else if (height > 220)
 	{
-		stepHeight = 0.05f;
-		mxHeight = 20;
-		timeDecay = TIME_DECAY_FAST;
+		step_height = 0.05f;
+		mx_height = 20;
+		time_decay = TIME_DECAY_FAST;
 	}
 	else
 	{
-		stepHeight = 0.1f;
-		mxHeight = 10;
-		timeDecay = TIME_DECAY_MED;
+		step_height = 0.1f;
+		mx_height = 10;
+		time_decay = TIME_DECAY_MED;
 	}
-
-	// Pick "LOD" for width
-	/*
-	if ( width < 100 )
-	{
-		stepWidth = 0.2f;
-		mxWidth = 5;
-		timeDecay = ( timeDecay + TIME_DECAY_SLOW ) * 0.5f;
-	}
-	else if ( width > 220 )
-	{
-		stepWidth = 0.05f;
-		mxWidth = 20;
-		timeDecay = ( timeDecay + TIME_DECAY_FAST ) * 0.5f;
-	}
-	else
-	{
-		stepWidth = 0.1f;
-		mxWidth = 10;
-		timeDecay = ( timeDecay + TIME_DECAY_MED ) * 0.5f;
-	}
-	*/
 
 	//Attempt to scale the glass directly to the size of the window
 
-	float stepWidth = 0.25f - width * 0.0002; //(width*0.0005));
-	int mxWidth = width * 0.2;
-	timeDecay = (timeDecay + TIME_DECAY_FAST) * 0.5f;
+	float step_width = 0.25f - width * 0.0002; //(width*0.0005));
+	int mx_width = width * 0.2;
+	time_decay = (time_decay + TIME_DECAY_FAST) * 0.5f;
 
-	if (stepWidth < 0.01f)
+	if (step_width < 0.01f)
 	{
-		stepWidth = 0.01f;
+		step_width = 0.01f;
 	}
-	if (mxWidth < 5)
+	if (mx_width < 5)
 	{
-		mxWidth = 5;
+		mx_width = 5;
 	}
 
-	for (z = 0.0f, i = 0; z < 1.0f; z += stepHeight, i++)
+	for (z = 0.0f, i = 0; z < 1.0f; z += step_height, i++)
 	{
-		for (x = 0.0f, t = 0; x < 1.0f; x += stepWidth, t++)
+		for (x = 0.0f, t = 0; x < 1.0f; x += step_width, t++)
 		{
-			vec2_t biPoints[4];
-			vec3_t subVerts[4];
+			vec2_t bi_points[4];
+			vec3_t sub_verts[4];
 			// This is nasty..
-			if (t > 0 && t < mxWidth)
+			if (t > 0 && t < mx_width)
 			{
 				xx = x - offX[i][t];
 			}
@@ -610,7 +588,7 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				xx = x;
 			}
 
-			if (i > 0 && i < mxHeight)
+			if (i > 0 && i < mx_height)
 			{
 				zz = z - offZ[t][i];
 			}
@@ -619,9 +597,9 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				zz = z;
 			}
 
-			VectorSet2(biPoints[0], xx, zz);
+			VectorSet2(bi_points[0], xx, zz);
 
-			if (t + 1 > 0 && t + 1 < mxWidth)
+			if (t + 1 > 0 && t + 1 < mx_width)
 			{
 				xx = x - offX[i][t + 1];
 			}
@@ -630,7 +608,7 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				xx = x;
 			}
 
-			if (i > 0 && i < mxHeight)
+			if (i > 0 && i < mx_height)
 			{
 				zz = z - offZ[t + 1][i];
 			}
@@ -639,9 +617,9 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				zz = z;
 			}
 
-			VectorSet2(biPoints[1], xx + stepWidth, zz);
+			VectorSet2(bi_points[1], xx + step_width, zz);
 
-			if (t + 1 > 0 && t + 1 < mxWidth)
+			if (t + 1 > 0 && t + 1 < mx_width)
 			{
 				xx = x - offX[i + 1][t + 1];
 			}
@@ -650,7 +628,7 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				xx = x;
 			}
 
-			if (i + 1 > 0 && i + 1 < mxHeight)
+			if (i + 1 > 0 && i + 1 < mx_height)
 			{
 				zz = z - offZ[t + 1][i + 1];
 			}
@@ -659,9 +637,9 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				zz = z;
 			}
 
-			VectorSet2(biPoints[2], xx + stepWidth, zz + stepHeight);
+			VectorSet2(bi_points[2], xx + step_width, zz + step_height);
 
-			if (t > 0 && t < mxWidth)
+			if (t > 0 && t < mx_width)
 			{
 				xx = x - offX[i + 1][t];
 			}
@@ -670,7 +648,7 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				xx = x;
 			}
 
-			if (i + 1 > 0 && i + 1 < mxHeight)
+			if (i + 1 > 0 && i + 1 < mx_height)
 			{
 				zz = z - offZ[t][i + 1];
 			}
@@ -679,14 +657,14 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				zz = z;
 			}
 
-			VectorSet2(biPoints[3], xx, zz + stepHeight);
+			VectorSet2(bi_points[3], xx, zz + step_height);
 
-			CG_CalcBiLerp(verts, subVerts, biPoints);
+			CG_CalcBiLerp(verts, sub_verts, bi_points);
 
-			float dif = DistanceSquared(subVerts[0], dmgPt) * timeDecay - Q_flrand(0.0f, 1.0f) * 32;
+			float dif = DistanceSquared(sub_verts[0], dmg_pt) * time_decay - Q_flrand(0.0f, 1.0f) * 32;
 
 			// If we decrease dif, we are increasing the impact area, making it more likely to blow out large holes
-			dif -= dmgRadius * dmgRadius;
+			dif -= dmg_radius * dmg_radius;
 
 			if (dif > 1)
 			{
@@ -699,10 +677,10 @@ void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, flo
 				time = 0;
 			}
 
-			CG_DoGlassQuad(subVerts, biPoints, stick, time, dmgDir);
-			glassShards++;
+			CG_DoGlassQuad(sub_verts, bi_points, stick, time, dmg_dir);
+			glass_shards++;
 
-			if (maxShards && glassShards >= maxShards)
+			if (max_shards && glass_shards >= max_shards)
 			{
 				return;
 			}
@@ -716,14 +694,14 @@ CG_GlassShatter
 Break glass with fancy method
 ==================
 */
-void CG_GlassShatter(int entnum, vec3_t dmgPt, vec3_t dmgDir, float dmgRadius, int maxShards)
+void CG_GlassShatter(const int entnum, vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_radius, const int max_shards)
 {
 	if (cgs.inlineDrawModel[cg_entities[entnum].currentState.modelindex])
 	{
 		vec3_t normal;
 		vec3_t verts[4];
 		trap->R_GetBModelVerts(cgs.inlineDrawModel[cg_entities[entnum].currentState.modelindex], verts, normal);
-		CG_DoGlass(verts, normal, dmgPt, dmgDir, dmgRadius, maxShards);
+		CG_DoGlass(verts, dmg_pt, dmg_dir, dmg_radius, max_shards);
 	}
 	//otherwise something awful has happened.
 }
@@ -741,7 +719,7 @@ intensity ranges from 1 (minor tremble) to 16 (major quake)
 -------------------------
 */
 
-void CG_ExplosionEffects(vec3_t origin, float intensity, int radius, int time)
+void CG_ExplosionEffects(vec3_t origin, const float intensity, const int radius, const int time)
 {
 	//FIXME: When exactly is the vieworg calculated in relation to the rest of the frame?s
 
@@ -755,10 +733,10 @@ void CG_ExplosionEffects(vec3_t origin, float intensity, int radius, int time)
 	if (dist > radius)
 		return;
 
-	const float intensityScale = 1 - dist / (float)radius;
-	const float realIntensity = intensity * intensityScale;
+	const float intensity_scale = 1 - dist / (float)radius;
+	const float real_intensity = intensity * intensity_scale;
 
-	CGCam_Shake(realIntensity, time);
+	CGCam_Shake(real_intensity, time);
 }
 
 /*
@@ -769,12 +747,12 @@ Adds an explosion to a misc model breakables
 -------------------------
 */
 
-void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType)
+void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunkType)
 {
 	int ct = 13;
 	vec3_t org, mid;
 	const char* effect = NULL, * effect2 = NULL;
-	int eID2 = 0;
+	int e_id2 = 0;
 
 	VectorAdd(mins, maxs, mid);
 	VectorScale(mid, 0.5f, mid);
@@ -840,12 +818,12 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkT
 	// FIXME: real precache .. VERify that these need to be here...don't think they would because the effects should be registered in g_breakable
 	//rww - No they don't.. indexed effects gameside get precached on load clientside, as server objects are setup before client asset load time.
 	//However, we need to index them, so..
-	const int eID1 = trap->FX_RegisterEffect(effect);
+	const int e_id1 = trap->FX_RegisterEffect(effect);
 
 	if (effect2 && effect2[0])
 	{
 		// FIXME: real precache
-		eID2 = trap->FX_RegisterEffect(effect2);
+		e_id2 = trap->FX_RegisterEffect(effect2);
 	}
 
 	// spawn chunk roughly in the bbox of the thing..
@@ -864,11 +842,11 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkT
 
 		if (effect2 && effect2[0] && rand() & 1)
 		{
-			trap->FX_PlayEffectID(eID2, org, dir, -1, -1, qfalse);
+			trap->FX_PlayEffectID(e_id2, org, dir, -1, -1, qfalse);
 		}
 		else
 		{
-			trap->FX_PlayEffectID(eID1, org, dir, -1, -1, qfalse);
+			trap->FX_PlayEffectID(e_id1, org, dir, -1, -1, qfalse);
 		}
 	}
 }
@@ -881,22 +859,22 @@ Fun chunk spewer
 -------------------------
 */
 
-void CG_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
-	float speed, int numChunks, material_t chunkType, int customChunk, float baseScale)
+void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
+               const float speed, const int num_chunks, const material_t chunk_type, const int custom_chunk, float base_scale)
 {
-	int chunkModel = 0;
+	int chunk_model = 0;
 	leBounceSoundType_t bounce = LEBS_NONE;
 	float speedMod = 1.0f;
 	qboolean chunk = qfalse;
 
-	if (chunkType == MAT_NONE)
+	if (chunk_type == MAT_NONE)
 	{
 		// Well, we should do nothing
 		return;
 	}
 
 	// Set up our chunk sound info...breaking sounds are done here so they are done once on breaking..some return instantly because the chunks are done with effects instead of models
-	switch (chunkType)
+	switch (chunk_type)
 	{
 	default:
 		break;
@@ -941,88 +919,88 @@ void CG_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins,
 		return;
 	}
 
-	if (baseScale <= 0.0f)
+	if (base_scale <= 0.0f)
 	{
-		baseScale = 1.0f;
+		base_scale = 1.0f;
 	}
 
 	// Chunks
-	for (int i = 0; i < numChunks; i++)
+	for (int i = 0; i < num_chunks; i++)
 	{
-		if (customChunk > 0)
+		if (custom_chunk > 0)
 		{
 			// Try to use a custom chunk.
-			if (cgs.game_models[customChunk])
+			if (cgs.game_models[custom_chunk])
 			{
 				chunk = qtrue;
-				chunkModel = cgs.game_models[customChunk];
+				chunk_model = cgs.game_models[custom_chunk];
 			}
 		}
 
 		if (!chunk)
 		{
 			// No custom chunk.  Pick a random chunk type at run-time so we don't get the same chunks
-			switch (chunkType)
+			switch (chunk_type)
 			{
 			default:
 				break;
 			case MAT_METAL2: //bluegrey
-				chunkModel = cgs.media.chunkModels[CHUNK_METAL2][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_METAL2][Q_irand(0, 3)];
 				break;
 			case MAT_GREY_STONE: //gray
-				chunkModel = cgs.media.chunkModels[CHUNK_ROCK1][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_ROCK1][Q_irand(0, 3)];
 				break;
 			case MAT_LT_STONE: //tan
-				chunkModel = cgs.media.chunkModels[CHUNK_ROCK2][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_ROCK2][Q_irand(0, 3)];
 				break;
 			case MAT_DRK_STONE: //brown
-				chunkModel = cgs.media.chunkModels[CHUNK_ROCK3][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_ROCK3][Q_irand(0, 3)];
 				break;
 			case MAT_SNOWY_ROCK: //gray & brown
 				if (Q_irand(0, 1))
 				{
-					chunkModel = cgs.media.chunkModels[CHUNK_ROCK1][Q_irand(0, 3)];
+					chunk_model = cgs.media.chunkModels[CHUNK_ROCK1][Q_irand(0, 3)];
 				}
 				else
 				{
-					chunkModel = cgs.media.chunkModels[CHUNK_ROCK3][Q_irand(0, 3)];
+					chunk_model = cgs.media.chunkModels[CHUNK_ROCK3][Q_irand(0, 3)];
 				}
 				break;
 			case MAT_WHITE_METAL:
-				chunkModel = cgs.media.chunkModels[CHUNK_WHITE_METAL][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_WHITE_METAL][Q_irand(0, 3)];
 				break;
 			case MAT_CRATE1: //yellow multi-colored crate chunks
-				chunkModel = cgs.media.chunkModels[CHUNK_CRATE1][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_CRATE1][Q_irand(0, 3)];
 				break;
 			case MAT_CRATE2: //red multi-colored crate chunks
-				chunkModel = cgs.media.chunkModels[CHUNK_CRATE2][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_CRATE2][Q_irand(0, 3)];
 				break;
 			case MAT_ELEC_METAL:
 			case MAT_GLASS_METAL:
 			case MAT_METAL: //grey
-				chunkModel = cgs.media.chunkModels[CHUNK_METAL1][Q_irand(0, 3)];
+				chunk_model = cgs.media.chunkModels[CHUNK_METAL1][Q_irand(0, 3)];
 				break;
 			case MAT_METAL3:
 				if (rand() & 1)
 				{
-					chunkModel = cgs.media.chunkModels[CHUNK_METAL1][Q_irand(0, 3)];
+					chunk_model = cgs.media.chunkModels[CHUNK_METAL1][Q_irand(0, 3)];
 				}
 				else
 				{
-					chunkModel = cgs.media.chunkModels[CHUNK_METAL2][Q_irand(0, 3)];
+					chunk_model = cgs.media.chunkModels[CHUNK_METAL2][Q_irand(0, 3)];
 				}
 				break;
 			}
 		}
 
 		// It wouldn't look good to throw a bunch of RGB axis models...so make sure we have something to work with.
-		if (chunkModel)
+		if (chunk_model)
 		{
 			vec3_t dir;
 			localEntity_t* le = CG_AllocLocalEntity();
 			refEntity_t* re = &le->refEntity;
 
-			re->hModel = chunkModel;
+			re->hModel = chunk_model;
 			le->leType = LE_FRAGMENT;
 			le->endTime = cg.time + 1300 + Q_flrand(0.0f, 1.0f) * 900;
 
@@ -1058,7 +1036,7 @@ void CG_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins,
 			le->leBounceSoundType = bounce;
 
 			// Make sure that we have the desired start size set
-			le->radius = flrand(baseScale * 0.75f, baseScale * 1.25f);
+			le->radius = flrand(base_scale * 0.75f, base_scale * 1.25f);
 			re->nonNormalizedAxes = qtrue;
 			AxisCopy(axisDefault, re->axis); // could do an angles to axis, but this is cheaper and works ok
 			for (int k = 0; k < 3; k++)
@@ -1081,10 +1059,10 @@ void CG_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins,
 CG_ScorePlum
 ==================
 */
-void CG_ScorePlum(int client, vec3_t org, int score)
+void CG_ScorePlum(const int client, vec3_t org, const int score)
 {
 	vec3_t angles;
-	static vec3_t lastPos;
+	static vec3_t last_pos;
 
 	// only visualize for the client that scored
 	if (client != cg.predictedPlayerState.clientNum || cg_scorePlums.integer == 0)
@@ -1103,13 +1081,13 @@ void CG_ScorePlum(int client, vec3_t org, int score)
 	le->radius = score;
 
 	VectorCopy(org, le->pos.trBase);
-	if (org[2] >= lastPos[2] - 20 && org[2] <= lastPos[2] + 20)
+	if (org[2] >= last_pos[2] - 20 && org[2] <= last_pos[2] + 20)
 	{
 		le->pos.trBase[2] -= 20;
 	}
 
 	//trap->Print( "Plum origin %i %i %i -- %i\n", (int)org[0], (int)org[1], (int)org[2], (int)Distance(org, lastPos));
-	VectorCopy(org, lastPos);
+	VectorCopy(org, last_pos);
 
 	refEntity_t* re = &le->refEntity;
 
@@ -1126,10 +1104,10 @@ CG_MakeExplosion
 ====================
 */
 localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
-	qhandle_t hModel, int numFrames, qhandle_t shader,
-	int msec, qboolean isSprite, float scale, int flags)
+                                const qhandle_t h_model, int numFrames, const qhandle_t shader,
+                                const int msec, const qboolean isSprite, const float scale, const int flags)
 {
-	vec3_t newOrigin;
+	vec3_t new_origin;
 
 	if (msec <= 0)
 	{
@@ -1142,17 +1120,17 @@ localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
 	localEntity_t* ex = CG_AllocLocalEntity();
 	if (isSprite)
 	{
-		vec3_t tmpVec;
+		vec3_t tmp_vec;
 		ex->leType = LE_SPRITE_EXPLOSION;
 		ex->refEntity.rotation = rand() % 360;
 		ex->radius = scale;
-		VectorScale(dir, 16, tmpVec);
-		VectorAdd(tmpVec, origin, newOrigin);
+		VectorScale(dir, 16, tmp_vec);
+		VectorAdd(tmp_vec, origin, new_origin);
 	}
 	else
 	{
 		ex->leType = LE_EXPLOSION;
-		VectorCopy(origin, newOrigin);
+		VectorCopy(origin, new_origin);
 
 		// set axis with random rotate when necessary
 		if (!dir)
@@ -1175,7 +1153,7 @@ localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
 	// bias the time so all shader effects start correctly
 	ex->refEntity.shaderTime = ex->startTime / 1000.0f;
 
-	ex->refEntity.hModel = hModel;
+	ex->refEntity.hModel = h_model;
 	ex->refEntity.customShader = shader;
 	ex->lifeRate = (float)numFrames / msec;
 	ex->leFlags = flags;
@@ -1190,8 +1168,8 @@ localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
 		VectorScale(ex->refEntity.axis[2], scale, ex->refEntity.axis[2]);
 	}
 	// set origin
-	VectorCopy(newOrigin, ex->refEntity.origin);
-	VectorCopy(newOrigin, ex->refEntity.oldorigin);
+	VectorCopy(new_origin, ex->refEntity.origin);
+	VectorCopy(new_origin, ex->refEntity.oldorigin);
 
 	ex->color[0] = ex->color[1] = ex->color[2] = 1.0;
 
@@ -1203,7 +1181,7 @@ localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
 CG_LaunchGib
 ==================
 */
-void CG_LaunchGib(vec3_t origin, vec3_t velocity, qhandle_t hModel)
+void CG_LaunchGib(vec3_t origin, vec3_t velocity, const qhandle_t h_model)
 {
 	localEntity_t* le = CG_AllocLocalEntity();
 	refEntity_t* re = &le->refEntity;
@@ -1214,7 +1192,7 @@ void CG_LaunchGib(vec3_t origin, vec3_t velocity, qhandle_t hModel)
 
 	VectorCopy(origin, re->origin);
 	AxisCopy(axisDefault, re->axis);
-	re->hModel = hModel;
+	re->hModel = h_model;
 
 	le->pos.trType = TR_GRAVITY;
 	VectorCopy(origin, le->pos.trBase);
@@ -1247,56 +1225,56 @@ Generated a bunch of gibs launching out from the bodies location
 #define	GIB_VELOCITY	250
 #define	GIB_JUMP		250
 
-void CG_GibPlayer(vec3_t playerOrigin)
+void CG_GibPlayer(vec3_t player_origin)
 {
 	vec3_t origin, velocity;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * GIB_VELOCITY;
 	velocity[1] = crandom() * GIB_VELOCITY;
 	velocity[2] = GIB_JUMP + crandom() * GIB_VELOCITY;
@@ -1305,27 +1283,27 @@ void CG_GibPlayer(vec3_t playerOrigin)
 #define DECAPITATE_VELOCITY	  3000
 #define HEAD_JUMP			  3000
 
-void CG_GibPlayerHeadshot(vec3_t playerOrigin)
+void CG_GibPlayerHeadshot(vec3_t player_origin)
 {
 	vec3_t origin, velocity;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	origin[2] += 25;
 	velocity[0] = crandom() * DECAPITATE_VELOCITY;
 	velocity[1] = crandom() * DECAPITATE_VELOCITY;
 	velocity[2] = HEAD_JUMP + crandom() * DECAPITATE_VELOCITY;
 	//delete from here
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * DECAPITATE_VELOCITY;
 	velocity[1] = crandom() * DECAPITATE_VELOCITY;
 	velocity[2] = HEAD_JUMP + crandom() * DECAPITATE_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * DECAPITATE_VELOCITY;
 	velocity[1] = crandom() * DECAPITATE_VELOCITY;
 	velocity[2] = HEAD_JUMP + crandom() * DECAPITATE_VELOCITY;
 
-	VectorCopy(playerOrigin, origin);
+	VectorCopy(player_origin, origin);
 	velocity[0] = crandom() * DECAPITATE_VELOCITY;
 	velocity[1] = crandom() * DECAPITATE_VELOCITY;
 	velocity[2] = HEAD_JUMP + crandom() * DECAPITATE_VELOCITY;

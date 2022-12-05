@@ -1064,7 +1064,7 @@ void CGCam_Update(void)
 	if (client_camera.info_state & CAMERA_ROFFING)
 	{
 		CGCam_Roff();
-}
+	}
 
 	//Check for a zoom
 	if (client_camera.info_state & CAMERA_ACCEL)

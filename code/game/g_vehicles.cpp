@@ -870,10 +870,10 @@ bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 }
 
 bool VEH_TryEject(const Vehicle_t* pVeh,
-                  gentity_t* parent,
-                  gentity_t* ent,
-                  int ejectDir,
-                  vec3_t vExitPos)
+	gentity_t* parent,
+	gentity_t* ent,
+	int ejectDir,
+	vec3_t vExitPos)
 {
 	float fEntDiag;
 	vec3_t vEntMins, vEntMaxs, vVehLeaveDir, vVehAngles;
@@ -1697,7 +1697,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 	int i;
 	int prev_speed;
 	int next_speed;
-	int half_max_speed;	
+	int half_max_speed;
 
 	playerState_t* parent_ps = &p_veh->m_pParentEntity->client->ps;
 

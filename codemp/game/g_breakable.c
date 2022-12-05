@@ -994,7 +994,7 @@ void SP_misc_model_breakable(gentity_t* ent)
 
 			ent->s.loopSound = G_SoundIndex("sound/vehicles/tie-bomber/loop.wav");
 			const qboolean lightSet = qtrue;
-			
+
 			color[0] = 1;
 			color[1] = 1;
 			color[2] = 1;

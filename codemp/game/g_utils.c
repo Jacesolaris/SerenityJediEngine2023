@@ -70,7 +70,7 @@ const char* BuildShaderStateConfig(void)
 	{
 		char out[MAX_QPATH * 2 + 5];
 		Com_sprintf(out, MAX_QPATH * 2 + 5, "%s=%s:%5.2f@", remappedShaders[i].oldShader, remappedShaders[i].newShader,
-		            remappedShaders[i].timeOffset);
+			remappedShaders[i].timeOffset);
 		Q_strcat(buff, sizeof buff, out);
 	}
 	return buff;

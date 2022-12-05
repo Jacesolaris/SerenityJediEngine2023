@@ -592,7 +592,7 @@ extern void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* atta
 	int mod, int hitLoc = HL_NONE);
 extern void NPC_ST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
-extern void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,int mod, int hitLoc = HL_NONE);
+extern void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod, int hitLoc = HL_NONE);
 extern void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
 	int mod, int hitLoc = HL_NONE);
 extern void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
@@ -700,7 +700,7 @@ extern void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 extern void Mark1_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags = 0,
 	int hitLoc = HL_NONE);
 extern void Interrogator_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
-                             int dFlags = 0, int hitLoc = HL_NONE);
+	int dFlags = 0, int hitLoc = HL_NONE);
 extern void misc_atst_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,
 	int dFlags = 0, int hitLoc = HL_NONE);
 extern void misc_panel_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod,

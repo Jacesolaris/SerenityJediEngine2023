@@ -212,7 +212,7 @@ jinit_write_targa(j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
 	const tga_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                     SIZEOF(tga_dest_struct));
+		SIZEOF(tga_dest_struct));
 	dest->pub.start_output = start_output_tga;
 	dest->pub.finish_output = finish_output_tga;
 

@@ -498,7 +498,7 @@ void QDECL UI_Printf(const char* msg, ...) {
 
 static void TranslateSyscalls(void)
 {
-	static uiImport_t import = {0};
+	static uiImport_t import = { 0 };
 
 	trap = &import;
 

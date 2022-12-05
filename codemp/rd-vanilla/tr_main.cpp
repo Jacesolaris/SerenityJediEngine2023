@@ -139,7 +139,7 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 	}
 
 	// check against frustum planes
-	for (auto & i : tr.viewParms.frustum)
+	for (auto& i : tr.viewParms.frustum)
 	{
 		const cplane_t* frust = &i;
 
@@ -585,7 +585,7 @@ void R_SetupFrustum(void)
 	VectorScale(tr.viewParms.ori.axis[0], xs, tr.viewParms.frustum[3].normal);
 	VectorMA(tr.viewParms.frustum[3].normal, -xc, tr.viewParms.ori.axis[2], tr.viewParms.frustum[3].normal);
 
-	for (auto & i : tr.viewParms.frustum)
+	for (auto& i : tr.viewParms.frustum)
 	{
 		i.type = PLANE_NON_AXIAL;
 		i.dist = DotProduct(tr.viewParms.ori.origin, i.normal);

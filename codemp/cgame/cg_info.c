@@ -394,7 +394,7 @@ void CG_DrawInformation(void)
 		}
 		else if (valueNOFP == FORCE_JUMPONLY)
 		{
-			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")), UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 		else if (valueNOFP == FORCE_NEUTRALSONLY)

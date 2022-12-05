@@ -394,7 +394,7 @@ GLOBAL(void)
 jinit_c_coef_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 {
 	const my_coef_ptr coef = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                    SIZEOF(my_coef_controller));
+		SIZEOF(my_coef_controller));
 	cinfo->coef = (struct jpeg_c_coef_controller*)coef;
 	coef->pub.start_pass = start_pass_coef;
 
@@ -422,7 +422,7 @@ jinit_c_coef_controller(j_compress_ptr cinfo, boolean need_full_buffer)
 	}
 	else {
 		const JBLOCKROW buffer = (*cinfo->mem->alloc_large)((j_common_ptr)cinfo, JPOOL_IMAGE,
-		                                                    C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
+			C_MAX_BLOCKS_IN_MCU * SIZEOF(JBLOCK));
 		for (int i = 0; i < C_MAX_BLOCKS_IN_MCU; i++) {
 			coef->MCU_buffer[i] = buffer + i;
 		}

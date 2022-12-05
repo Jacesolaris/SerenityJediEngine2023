@@ -2759,7 +2759,6 @@ static void PM_Friction(void)
 		{
 			vel[2] = 0;
 		}
-		// FIXME: still have z friction underwater?
 		return;
 	}
 
@@ -4492,7 +4491,7 @@ static qboolean pm_check_jump(void)
 				pm->cmd.upmove = 0;
 				// keep track of force jump stat
 				pm->ps->fd.forceJumpSound = 1;
-				BG_ForcePowerKill(pm->ps, FP_SPEED);
+				BG_ForcePowerKill(pm->ps);
 				WP_ForcePowerDrain(pm->ps, FP_LEVITATION, FORCE_LONGJUMP_POWER);
 				return qtrue;
 			}

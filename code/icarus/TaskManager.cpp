@@ -164,8 +164,8 @@ CTaskManager
 =================================================
 */
 
-CTaskManager::CTaskManager(void): m_owner(nullptr), m_ownerID(0), m_curGroup(nullptr), m_GUID(0), m_count(0),
-                                  m_resident(false)
+CTaskManager::CTaskManager(void) : m_owner(nullptr), m_ownerID(0), m_curGroup(nullptr), m_GUID(0), m_count(0),
+m_resident(false)
 {
 	static int uniqueID = 0;
 	m_id = uniqueID++;
@@ -216,7 +216,7 @@ int CTaskManager::Free(void)
 {
 	assert(!m_resident); //don't free me, i'm currently running!
 	//Clear out all pending tasks
-	for (const auto & task : m_tasks)
+	for (const auto& task : m_tasks)
 	{
 		task->Free();
 	}
@@ -662,7 +662,7 @@ int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value, CI
 
 		memberNum++;
 
-		for (float & i : vval)
+		for (float& i : vval)
 		{
 			if (GetFloat(entID, block, memberNum, i, icarus) == false)
 				return false;
@@ -904,7 +904,7 @@ Completed
 int CTaskManager::Completed(int id) const
 {
 	//Mark the task as completed
-	for (const auto & taskGroup : m_taskGroups)
+	for (const auto& taskGroup : m_taskGroups)
 	{
 		//If this returns true, then the task was marked properly
 		if (taskGroup->MarkTaskComplete(id))
@@ -975,7 +975,7 @@ int CTaskManager::PushTask(CTask* task, int flag)
 		m_tasks.insert(m_tasks.end(), task);
 
 		return TASK_OK;
-	default: ;
+	default:;
 	}
 
 	//Invalid flag
@@ -1010,7 +1010,7 @@ CTask* CTaskManager::PopTask(int flag)
 		m_tasks.pop_back();
 
 		return task;
-	default: ;
+	default:;
 	}
 
 	//Invalid flag
@@ -1419,7 +1419,7 @@ int CTaskManager::Camera(const CTask* task, CIcarus* icarus)
 			fVal2, task->GetTimeStamp());
 		icarus->GetGame()->CameraShake(fVal, static_cast<int>(fVal2));
 		break;
-	default: ;
+	default:;
 	}
 
 	Completed(task->GetGUID());

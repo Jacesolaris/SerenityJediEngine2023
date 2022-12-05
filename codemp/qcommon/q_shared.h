@@ -1426,7 +1426,6 @@ typedef struct playerState_s {
 	int	    grapplelaststartTime;
 
 	int	    communicatingflags;
-
 } playerState_t;
 
 typedef struct siegePers_s

@@ -170,7 +170,7 @@ extern "C" {
 
 	int   Q_irand2(int min, int max);
 
-// plane_t structure
+	// plane_t structure
 	typedef struct cplane_s {
 		vec3_t	normal;
 		float	dist;

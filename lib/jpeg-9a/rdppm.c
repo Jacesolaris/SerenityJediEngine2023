@@ -406,7 +406,7 @@ jinit_read_ppm(j_compress_ptr cinfo)
 {
 	/* Create module interface object */
 	const ppm_source_ptr source = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                         SIZEOF(ppm_source_struct));
+		SIZEOF(ppm_source_struct));
 	/* Fill in method ptrs, except get_pixel_rows which start_input sets */
 	source->pub.start_input = start_input_ppm;
 	source->pub.finish_input = finish_input_ppm;

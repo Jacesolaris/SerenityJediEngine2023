@@ -90,7 +90,7 @@ Creates an entity in front of the current position, which
 can then be moved around
 =================
 */
-void CG_TestG2Model_f(void)
+void CG_TestG2Model_f()
 {
 	vec3_t angles;
 
@@ -130,14 +130,14 @@ void CG_TestG2Model_f(void)
 	AnglesToAxis(angles, cg.testModelEntity.axis);
 }
 
-void CG_ListModelSurfaces_f(void)
+void CG_ListModelSurfaces_f()
 {
 	CGhoul2Info_v& ghoul2 = *cg.testModelEntity.ghoul2;
 
 	gi.G2API_ListSurfaces(&ghoul2[cg.testModel]);
 }
 
-void CG_ListModelBones_f(void)
+void CG_ListModelBones_f()
 {
 	// test to see if we got enough args
 	if (cgi_Argc() < 2)
@@ -149,7 +149,7 @@ void CG_ListModelBones_f(void)
 	gi.G2API_ListBones(&ghoul2[cg.testModel], atoi(CG_Argv(1)));
 }
 
-void CG_TestModelSurfaceOnOff_f(void)
+void CG_TestModelSurfaceOnOff_f()
 {
 	// test to see if we got enough args
 	if (cgi_Argc() < 3)
@@ -161,7 +161,7 @@ void CG_TestModelSurfaceOnOff_f(void)
 	gi.G2API_SetSurfaceOnOff(&ghoul2[cg.testModel], CG_Argv(1), atoi(CG_Argv(2)));
 }
 
-void CG_TestModelSetAnglespre_f(void)
+void CG_TestModelSetAnglespre_f()
 {
 	vec3_t angles;
 
@@ -178,7 +178,7 @@ void CG_TestModelSetAnglespre_f(void)
 		POSITIVE_Y, nullptr, 0, 0);
 }
 
-void CG_TestModelSetAnglespost_f(void)
+void CG_TestModelSetAnglespost_f()
 {
 	vec3_t angles;
 
@@ -195,13 +195,13 @@ void CG_TestModelSetAnglespost_f(void)
 		POSITIVE_Y, nullptr, 0, 0);
 }
 
-void CG_TestModelAnimate_f(void)
+void CG_TestModelAnimate_f()
 {
-	char boneName[100];
+	char bone_name[100];
 	CGhoul2Info_v& ghoul2 = *cg.testModelEntity.ghoul2;
 
-	strcpy(boneName, CG_Argv(1));
-	gi.G2API_SetBoneAnim(&ghoul2[cg.testModel], boneName, atoi(CG_Argv(2)), atoi(CG_Argv(3)), BONE_ANIM_OVERRIDE_LOOP,
+	strcpy(bone_name, CG_Argv(1));
+	gi.G2API_SetBoneAnim(&ghoul2[cg.testModel], bone_name, atoi(CG_Argv(2)), atoi(CG_Argv(3)), BONE_ANIM_OVERRIDE_LOOP,
 		atof(CG_Argv(4)), cg.time, -1, -1);
 }
 
@@ -217,7 +217,7 @@ Creates an entity in front of the current position, which
 can then be moved around
 =================
 */
-void CG_TestModel_f(void)
+void CG_TestModel_f()
 {
 	vec3_t angles;
 
@@ -350,14 +350,14 @@ CG_CalcIdealThirdPersonViewTarget
 
 ===============
 */
-static void CG_CalcIdealThirdPersonViewTarget(void)
+static void CG_CalcIdealThirdPersonViewTarget()
 {
 	// Initialize IdealTarget
-	const auto usesViewEntity = static_cast<qboolean>(cg.snap->ps.viewEntity && cg.snap->ps.viewEntity <
+	const auto uses_view_entity = static_cast<qboolean>(cg.snap->ps.viewEntity && cg.snap->ps.viewEntity <
 		ENTITYNUM_WORLD);
 	VectorCopy(cg.refdef.vieworg, cameraFocusLoc);
 
-	if (usesViewEntity)
+	if (uses_view_entity)
 	{
 		const gentity_t* gent = &g_entities[cg.snap->ps.viewEntity];
 
@@ -424,7 +424,7 @@ static void CG_CalcIdealThirdPersonViewTarget(void)
 		VectorCopy(cameraFocusLoc, nudgepos);
 		nudgepos[2] += CAMERA_CROUCH_NUDGE;
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, nudgepos,
-			usesViewEntity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+			uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
 		if (trace.fraction < 1.0)
 		{
 			VectorCopy(trace.endpos, cameraFocusLoc);
@@ -446,7 +446,7 @@ static void CG_CalcIdealThirdPersonViewTarget(void)
 		VectorCopy(cameraFocusLoc, nudgepos);
 		nudgepos[2] += CAMERA_CROUCH_NUDGE;
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, nudgepos,
-			usesViewEntity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+			uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
 		if (trace.fraction < 1.0)
 		{
 			VectorCopy(trace.endpos, cameraFocusLoc);
@@ -464,9 +464,9 @@ CG_CalcIdealThirdPersonViewLocation
 
 ===============
 */
-static void CG_CalcIdealThirdPersonViewLocation(void)
+static void CG_CalcIdealThirdPersonViewLocation()
 {
-	const qboolean DoingDashAction = cg.predicted_player_state.communicatingflags & 1 << DASHING ? qtrue : qfalse;
+	const qboolean doing_dash_action = cg.predicted_player_state.communicatingflags & 1 << DASHING ? qtrue : qfalse;
 
 	if (cg.overrides.active & CG_OVERRIDE_3RD_PERSON_RNG)
 	{
@@ -502,22 +502,22 @@ static void CG_CalcIdealThirdPersonViewLocation(void)
 		VectorMA(cameraIdealTarget, -cg_thirdPersonRange.value, camerafwd, cameraIdealLoc);
 	}
 
-	if (!DoingDashAction && cg.renderingThirdPerson && cg.snap->ps.forcePowersActive & 1 << FP_SPEED && player->client->
+	if (!doing_dash_action && cg.renderingThirdPerson && cg.snap->ps.forcePowersActive & 1 << FP_SPEED && player->client->
 		ps.forcePowerDuration[FP_SPEED])
 	{
-		const float timeLeft = player->client->ps.forcePowerDuration[FP_SPEED] - cg.time;
+		const float time_left = player->client->ps.forcePowerDuration[FP_SPEED] - cg.time;
 		const float length = FORCE_SPEED_DURATION_FORCE_LEVEL_3 * forceSpeedValue[player->client->ps.forcePowerLevel[
 			FP_SPEED]];
 		const float amt = forceSpeedRangeMod[player->client->ps.forcePowerLevel[FP_SPEED]];
-		if (timeLeft < 500)
+		if (time_left < 500)
 		{
 			//start going back
-			VectorMA(cameraIdealLoc, timeLeft / 500 * amt, camerafwd, cameraIdealLoc);
+			VectorMA(cameraIdealLoc, time_left / 500 * amt, camerafwd, cameraIdealLoc);
 		}
-		else if (length - timeLeft < 1000)
+		else if (length - time_left < 1000)
 		{
 			//start zooming in
-			VectorMA(cameraIdealLoc, (length - timeLeft) / 1000 * amt, camerafwd, cameraIdealLoc);
+			VectorMA(cameraIdealLoc, (length - time_left) / 1000 * amt, camerafwd, cameraIdealLoc);
 		}
 		else
 		{
@@ -526,7 +526,7 @@ static void CG_CalcIdealThirdPersonViewLocation(void)
 	}
 }
 
-static void CG_ResetThirdPersonViewDamp(void)
+static void CG_ResetThirdPersonViewDamp()
 {
 	trace_t trace;
 
@@ -1308,12 +1308,11 @@ qboolean CG_CalcFOVFromX(float fov_x)
 float CG_ForceSpeedFOV()
 {
 	float fov;
-	const float timeLeft = player->client->ps.forcePowerDuration[FP_SPEED] - cg.time;
-	const float length = FORCE_SPEED_DURATION_FORCE_LEVEL_3 * forceSpeedValue[player->client->ps.forcePowerLevel[
-		FP_SPEED]];
+	const float time_left = player->client->ps.forcePowerDuration[FP_SPEED] - cg.time;
+	const float length = FORCE_SPEED_DURATION_FORCE_LEVEL_3 * forceSpeedValue[player->client->ps.forcePowerLevel[FP_SPEED]];
 	const float amt = forceSpeedFOVMod[player->client->ps.forcePowerLevel[FP_SPEED]];
-	if (!cg.renderingThirdPerson && (!cg.zoomMode && cg_trueguns.integer || cg.snap->ps.weapon == WP_SABER
-		|| cg.snap->ps.weapon == WP_MELEE) && cg_truefov.value)
+
+	if (!cg.renderingThirdPerson && cg_truefov.value && (!cg.zoomMode && cg_trueguns.integer || cg.snap->ps.weapon == WP_SABER || cg.snap->ps.weapon == WP_MELEE) )
 	{
 		fov = cg_truefov.value;
 	}
@@ -1321,15 +1320,15 @@ float CG_ForceSpeedFOV()
 	{
 		fov = cg_fov.value;
 	}
-	if (timeLeft < 500)
+	if (time_left < 500)
 	{
 		//start going back
-		fov = cg_fov.value + timeLeft / 500 * amt;
+		fov = cg_fov.value + time_left / 500 * amt;
 	}
-	else if (length - timeLeft < 1000)
+	else if (length - time_left < 1000)
 	{
 		//start zooming in
-		fov = cg_fov.value + (length - timeLeft) / 1000 * amt;
+		fov = cg_fov.value + (length - time_left) / 1000 * amt;
 	}
 	else
 	{
@@ -1346,10 +1345,10 @@ CG_CalcFov
 Fixed fov at intermissions, otherwise account for fov variable and zooms.
 ====================
 */
-static qboolean CG_CalcFov(void)
+static qboolean CG_CalcFov()
 {
 	float fov_x;
-	const qboolean DoingDashAction = cg.predicted_player_state.communicatingflags & 1 << DASHING ? qtrue : qfalse;
+	const qboolean doing_dash_action = cg.predicted_player_state.communicatingflags & 1 << DASHING ? qtrue : qfalse;
 
 	if (cg.predicted_player_state.pm_type == PM_INTERMISSION)
 	{
@@ -1389,7 +1388,7 @@ static qboolean CG_CalcFov(void)
 			}
 		}
 	}
-	else if (!DoingDashAction && (!cg.zoomMode || cg.zoomMode > 2) && cg.snap->ps.forcePowersActive & 1 << FP_SPEED &&
+	else if (!doing_dash_action && (!cg.zoomMode || cg.zoomMode > 2) && cg.snap->ps.forcePowersActive & 1 << FP_SPEED &&
 		player->client->ps.forcePowerDuration[FP_SPEED]) //cg.renderingThirdPerson &&
 	{
 		fov_x = CG_ForceSpeedFOV();
@@ -1401,8 +1400,8 @@ static qboolean CG_CalcFov(void)
 		{
 			fov_x = cg.overrides.fov;
 		}
-		else if (!cg.renderingThirdPerson && !cg.zoomMode && (cg_trueguns.integer || cg.snap->ps.weapon == WP_SABER ||
-			cg.snap->ps.weapon == WP_MELEE) && cg_truefov.value)
+		else if (!cg.renderingThirdPerson && !cg.zoomMode && cg_truefov.value && (cg_trueguns.integer || cg.snap->ps.weapon == WP_SABER ||
+			cg.snap->ps.weapon == WP_MELEE) )
 		{
 			fov_x = cg_truefov.value;
 		}
@@ -1420,8 +1419,7 @@ static qboolean CG_CalcFov(void)
 		}
 
 		// Disable zooming when in third person
-		if (cg.zoomMode && cg.zoomMode < 3)
-			//&& !cg.renderingThirdPerson ) // light amp goggles do none of the zoom silliness
+		if (cg.zoomMode && cg.zoomMode < 3) // light amp goggles do none of the zoom silliness
 		{
 			if (!cg.zoomLocked)
 			{
@@ -1797,13 +1795,11 @@ static qboolean CG_CalcViewValues(void)
 CG_PowerupTimerSounds
 =====================
 */
-static void CG_PowerupTimerSounds(void)
+static void CG_PowerupTimerSounds()
 {
 	// powerup timers going away
-	for (int i = 0; i < MAX_POWERUPS; i++)
+	for (const int time : cg.snap->ps.powerups)
 	{
-		const int time = cg.snap->ps.powerups[i];
-
 		if (time > 0 && time < cg.time)
 		{
 			//

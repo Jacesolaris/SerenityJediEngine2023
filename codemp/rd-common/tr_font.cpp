@@ -949,7 +949,7 @@ CFontInfo::CFontInfo(const char* _fontName)
 					}
 				}
 				break;
-			default: ;
+				default:;
 				}
 
 				for (int i = 0; i < iGlyphTPs; i++)
@@ -1681,7 +1681,7 @@ R_FontList_f
 void R_FontList_f(void) {
 	Com_Printf("------------------------------------\n");
 
-	for (const auto & g_mapFontIndexe : g_mapFontIndexes)
+	for (const auto& g_mapFontIndexe : g_mapFontIndexes)
 	{
 		CFontInfo* font = GetFont(g_mapFontIndexe.second);
 		if (font)

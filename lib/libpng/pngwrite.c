@@ -2028,7 +2028,7 @@ png_image_set_PLTE(png_image_write_control* display)
 
 				else /* Gray */
 					palette[i].blue = palette[i].red = palette[i].green =
-						PNG_sRGB_FROM_LINEAR(255 * *entry);
+					PNG_sRGB_FROM_LINEAR(255 * *entry);
 			}
 
 			else /* alpha */

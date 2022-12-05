@@ -114,7 +114,7 @@ void CFxScheduler::StopEffect(const char* file, int boltInfo, bool isPortal)
 	}
 #endif
 
-	for (auto & i : mLoopedEffectArray)
+	for (auto& i : mLoopedEffectArray)
 	{
 		if (i.mId == id &&
 			i.mBoltInfo == boltInfo &&
@@ -231,7 +231,7 @@ void CFxScheduler::Clean(bool bRemoveTemplates /*= true*/, int idToPreserve /*= 
 			// and restore it after clearing.
 			std::string str;
 
-			for (const auto & mEffectID : mEffectIDs)
+			for (const auto& mEffectID : mEffectIDs)
 			{
 				if (mEffectID.second == idToPreserve)
 				{

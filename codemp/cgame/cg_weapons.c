@@ -2094,8 +2094,8 @@ void CG_Weapon_f(void)
 		return;
 	}
 
-	if (num == 1 && cg.snap->ps.weapon == WP_SABER 
-		&& !(cg.predictedPlayerState.ManualBlockingFlags & 1 <<	HOLDINGBLOCK))
+	if (num == 1 && cg.snap->ps.weapon == WP_SABER
+		&& !(cg.predictedPlayerState.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 	{
 		if (cg.snap->ps.weaponTime < 1)
 		{

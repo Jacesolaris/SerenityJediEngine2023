@@ -256,7 +256,7 @@ NAVNEW_SidestepBlocker
 -------------------------
 */
 qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t blocked_dir, float blocked_dist,
-                                vec3_t movedir, vec3_t right)
+	vec3_t movedir, vec3_t right)
 {
 	//trace to sides of blocker and see if either is clear
 	trace_t tr;

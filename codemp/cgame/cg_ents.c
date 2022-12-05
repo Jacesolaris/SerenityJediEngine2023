@@ -50,13 +50,13 @@ tag location
 ======================
 */
 void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-	qhandle_t parentModel, const char* tagName)
+                            const qhandle_t parent_model, const char* tag_name)
 {
 	orientation_t lerped;
 
 	// lerp the tag
-	trap->R_LerpTag(&lerped, parentModel, parent->oldframe, parent->frame,
-		1.0 - parent->backlerp, tagName);
+	trap->R_LerpTag(&lerped, parent_model, parent->oldframe, parent->frame,
+		1.0 - parent->backlerp, tag_name);
 
 	// FIXME: allow origin offsets along tag?
 	VectorCopy(parent->origin, entity->origin);
@@ -79,15 +79,15 @@ tag location
 ======================
 */
 void CG_PositionRotatedEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-	qhandle_t parentModel, const char* tagName)
+                                   const qhandle_t parent_model, const char* tag_name)
 {
 	orientation_t lerped;
 	matrix3_t tempAxis;
 
 	//AxisClear( entity->axis );
 	// lerp the tag
-	trap->R_LerpTag(&lerped, parentModel, parent->oldframe, parent->frame,
-		1.0 - parent->backlerp, tagName);
+	trap->R_LerpTag(&lerped, parent_model, parent->oldframe, parent->frame,
+		1.0 - parent->backlerp, tag_name);
 
 	// FIXME: allow origin offsets along tag?
 	VectorCopy(parent->origin, entity->origin);
@@ -951,7 +951,7 @@ static void CG_General(centity_t* cent)
 		r_hand_pos[2] = mat.matrix[2][3];
 
 		BG_GiveMeVectorFromMatrix(&mat, ORIGIN, start);
-		CG_StunStartpoint(cent, end);
+		CG_StunStartpoint(end);
 		//GOING OUT
 	}
 
@@ -988,7 +988,7 @@ static void CG_General(centity_t* cent)
 		trap->FX_AddLine(start, end, 0.1f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, v4DKGREY2, v4DKGREY2, 0.0f, 300,
 			trap->R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
-		CG_GrappleStartpoint(cent, end);
+		CG_GrappleStartpoint(end);
 		//GOING OUT
 	}
 
@@ -2937,7 +2937,7 @@ static void CG_Missile(centity_t* cent)
 		trap->FX_AddLine(start, end, 0.1f, 0.1f, 0.0f, 0.5f, 0.0f, 0.0f, BLUER, BLUER, 0.0f, 300,
 			trap->R_RegisterShader("gfx/effects/blueLine"), 0);
 
-		CG_StunStartpoint(cent, end);
+		CG_StunStartpoint(end);
 	}
 
 	if (s1->weapon == WP_MELEE)
@@ -2973,7 +2973,7 @@ static void CG_Missile(centity_t* cent)
 		trap->FX_AddLine(start, end, 0.1f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, v4DKGREY2, v4DKGREY2, 0.0f, 300,
 			trap->R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
-		CG_GrappleStartpoint(cent, end);
+		CG_GrappleStartpoint(end);
 	}
 
 	// calculate the axis

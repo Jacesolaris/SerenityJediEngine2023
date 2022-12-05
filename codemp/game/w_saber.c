@@ -899,7 +899,7 @@ void BG_ReduceSaberMishapLevel(playerState_t* ps)
 //	g_randFix 0 == Same as basejka. Broken on Linux, fine on Windows
 //	g_randFix 1 == Use proper behaviour of RAND_MAX. Fine on Linux, fine on Windows
 //	g_randFix 2 == Intentionally break RAND_MAX. Broken on Linux, broken on Windows.
-float RandFloat(const float min, const float max)
+float rand_float(const float min, const float max)
 {
 	int randActual = rand();
 	float randMax = 32768.0f;
@@ -4376,7 +4376,6 @@ int wp_player_must_dodge(const gentity_t* self, const gentity_t* shooter)
 int wp_saber_must_bolt_block(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,
 	const int r_saber_num, const int r_blade_num)
 {
-
 	if (!self || !self->client || !atk)
 	{
 		return 0;

@@ -232,7 +232,7 @@ static long RllDecodeMonoToMono(unsigned char *from,short *to,unsigned int size,
 // Returns:		Number of samples placed in output buffer
 //-----------------------------------------------------------------------------
 static long RllDecodeMonoToStereo(const unsigned char* from, short* to, unsigned int size, char signedOutput,
-                                  unsigned short flag)
+	unsigned short flag)
 {
 	int prev;
 

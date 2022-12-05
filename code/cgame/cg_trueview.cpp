@@ -31,7 +31,7 @@ int true_view_valid;
 int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 {
 	int i = 0;
-	char checkKey[4096];
+	char check_key[4096];
 
 	while (buf[i])
 	{
@@ -60,11 +60,11 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 						break;
 					}
 
-					checkKey[j] = buf[i];
+					check_key[j] = buf[i];
 					j++;
 					i++;
 				}
-				checkKey[j] = 0;
+				check_key[j] = 0;
 
 				int k = i;
 
@@ -93,7 +93,7 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 						{
 							Com_Error(ERR_DROP,
 								"Unexpected closing bracket (too many) while parsing to end of group '%s'",
-								checkKey);
+								check_key);
 						}
 
 						if (buf[i] == '}' && !openB)
@@ -115,7 +115,7 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 					if (buf[i] != '/' || buf[i + 1] != '/')
 					{
 						//make sure we didn't stop on a comment, if we did then this is considered an error in the file.
-						if (!Q_stricmp(checkKey, key))
+						if (!Q_stricmp(check_key, key))
 						{
 							//guess so. Parse along to the next valid character, then put that into the output buffer and return 1.
 							while ((buf[i] == ' ' || buf[i] == '\n' || buf[i] == '\r' || buf[i] == SIEGECHAR_TAB) && buf

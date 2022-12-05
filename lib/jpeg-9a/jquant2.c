@@ -1193,7 +1193,7 @@ GLOBAL(void)
 jinit_2pass_quantizer(j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                              SIZEOF(my_cquantizer));
+		SIZEOF(my_cquantizer));
 	cinfo->cquantize = (struct jpeg_color_quantizer*)cquantize;
 	cquantize->pub.start_pass = start_pass_2_quant;
 	cquantize->pub.new_color_map = new_color_map_2_quant;

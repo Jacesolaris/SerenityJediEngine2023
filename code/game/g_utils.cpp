@@ -208,7 +208,7 @@ void G_PlayEffect(const int fxID, const vec3_t origin, const vec3_t axis[3])
 // Effect playing utilities	- bolt an effect to a ghoul2 models bolton point
 //-----------------------------
 void G_PlayEffect(const int fxID, const int modelIndex, const int boltIndex, const int entNum, const vec3_t origin,
-                  const int iLoopTime, qboolean isRelative) //iLoopTime 0 = not looping, 1 for infinite, else duration
+	const int iLoopTime, qboolean isRelative) //iLoopTime 0 = not looping, 1 for infinite, else duration
 {
 	gentity_t* tent = G_TempEntity(origin, EV_PLAY_EFFECT);
 	tent->s.eventParm = fxID;

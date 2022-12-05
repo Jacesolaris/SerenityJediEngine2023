@@ -735,7 +735,7 @@ void CG_LoadMenus(const char* menuFile);
 //
 // cg_view.c
 //
-void CG_TestModel_f(void);
+void CG_TestModel_f();
 void CG_TestModelNextFrame_f(void);
 void CG_TestModelPrevFrame_f(void);
 void CG_TestModelNextSkin_f(void);
@@ -746,13 +746,13 @@ void CG_DrawActiveFrame(int serverTime, stereoFrame_t stereoView);
 Ghoul2 Insert Start
 */
 
-void CG_TestG2Model_f(void);
-void CG_TestModelSurfaceOnOff_f(void);
-void CG_ListModelSurfaces_f(void);
-void CG_ListModelBones_f(void);
-void CG_TestModelSetAnglespre_f(void);
-void CG_TestModelSetAnglespost_f(void);
-void CG_TestModelAnimate_f(void);
+void CG_TestG2Model_f();
+void CG_TestModelSurfaceOnOff_f();
+void CG_ListModelSurfaces_f();
+void CG_ListModelBones_f();
+void CG_TestModelSetAnglespre_f();
+void CG_TestModelSetAnglespost_f();
+void CG_TestModelAnimate_f();
 /*
 Ghoul2 Insert End
 */
@@ -923,8 +923,8 @@ void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int rad
 void CG_BlockLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
 
 void CG_GrappleLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
-void CG_GrappleStartpoint(centity_t* ent, vec3_t startPos);
-void CG_StunStartpoint(centity_t* ent, vec3_t startPos);
+void CG_GrappleStartpoint(vec3_t start_pos);
+void CG_StunStartpoint(vec3_t start_pos);
 
 //
 // cg_snapshot.c
@@ -1242,7 +1242,7 @@ void CG_MissileStick(const centity_t* cent, int weapon, vec3_t origin);
 void cg_missile_hit_player(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);
 void cg_missile_hit_wall(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);
 
-void CG_DrawTargetBeam(vec3_t start, vec3_t end, vec3_t norm, const char* beamFx, const char* impactFx);
+void CG_DrawTargetBeam(vec3_t start, vec3_t end, vec3_t norm, const char* beam_fx, const char* impact_fx);
 
 qboolean CG_VehicleWeaponImpact(centity_t* cent);
 
@@ -1293,14 +1293,14 @@ void* cgi_UI_GetMenuByName(const char* menu);
 
 void SetWeaponSelectTime(void);
 
-void CG_PlayEffectBolted(const char* fxName, int modelIndex, int boltIndex, int entNum, vec3_t origin,
-	int iLoopTime = 0, bool isRelative = false);
-void CG_PlayEffectIDBolted(int fxID, int modelIndex, int boltIndex, int entNum, vec3_t origin, int iLoopTime = 0,
-	bool isRelative = false);
-void CG_PlayEffectOnEnt(const char* fxName, int clientNum, vec3_t origin, const vec3_t fwd);
-void CG_PlayEffectIDOnEnt(int fxID, int clientNum, vec3_t origin, const vec3_t fwd);
-void CG_PlayEffect(const char* fxName, vec3_t origin, const vec3_t fwd);
-void CG_PlayEffectID(int fxID, vec3_t origin, const vec3_t fwd);
+void CG_PlayEffectBolted(const char* fx_name, int model_index, int bolt_index, int ent_num, vec3_t origin,
+	int i_loop_time = 0, bool is_relative = false);
+void CG_PlayEffectIDBolted(int fx_id, int model_index, int bolt_index, int ent_num, vec3_t origin, int i_loop_time = 0,
+	bool is_relative = false);
+void CG_PlayEffectOnEnt(const char* fx_name, int client_num, vec3_t origin, const vec3_t fwd);
+void CG_PlayEffectIDOnEnt(int fx_id, int clientNum, vec3_t origin, const vec3_t fwd);
+void CG_PlayEffect(const char* fx_name, vec3_t origin, const vec3_t fwd);
+void CG_PlayEffectID(int fx_id, vec3_t origin, const vec3_t fwd);
 
 void CG_ClearLightStyles(void);
 void CG_RunLightStyles(void);

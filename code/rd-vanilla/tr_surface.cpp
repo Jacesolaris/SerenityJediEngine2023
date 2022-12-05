@@ -976,7 +976,7 @@ void RB_SurfacePolychain(srfPoly_t* p) {
 		tess.texCoords[numv][0][0] = p->verts[i].st[0];
 		tess.texCoords[numv][0][1] = p->verts[i].st[1];
 		byteAlias_t* baDest = (byteAlias_t*)&tess.vertexColors[numv++];
-		const byteAlias_t * baSource = (byteAlias_t*)&p->verts[i].modulate;
+		const byteAlias_t* baSource = (byteAlias_t*)&p->verts[i].modulate;
 		baDest->i = baSource->i;
 	}
 

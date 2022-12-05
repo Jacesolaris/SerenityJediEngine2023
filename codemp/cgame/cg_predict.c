@@ -239,7 +239,7 @@ CG_ClipMoveToEntities
 */
 extern void bg_vehicle_adjust_b_box_for_orientation(const Vehicle_t* veh, vec3_t origin, vec3_t mins, vec3_t maxs, int clientNum, int tracemask, void (*local_trace)(trace_t* results, const vec3_t start, const vec3_t minimum_mins, const vec3_t maximum_maxs, const vec3_t end, int pass_entity_num, int content_mask)); // bg_pmove.c
 
-static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,	int skipNumber, int mask, trace_t* tr, qboolean g2Check)
+static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skipNumber, int mask, trace_t* tr, qboolean g2Check)
 {
 	int i, x, zd, zu;
 	trace_t trace, oldTrace;

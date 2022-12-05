@@ -3603,7 +3603,6 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 
 		if (tr.startsolid || tr.allsolid || tr.fraction != 1.0f)
 		{ //currently in solid, see what we can do about it
-
 			startSolid = true;
 			anySolid = true;
 

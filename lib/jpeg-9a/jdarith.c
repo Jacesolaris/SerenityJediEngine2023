@@ -736,7 +736,7 @@ jinit_arith_decoder(j_decompress_ptr cinfo)
 	int i;
 
 	const arith_entropy_ptr entropy = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                             SIZEOF(arith_entropy_decoder));
+		SIZEOF(arith_entropy_decoder));
 	cinfo->entropy = &entropy->pub;
 	entropy->pub.start_pass = start_pass;
 	entropy->pub.finish_pass = finish_pass;

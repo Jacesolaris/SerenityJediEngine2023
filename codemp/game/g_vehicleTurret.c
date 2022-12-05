@@ -233,7 +233,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 	vec3_t org2;
 	qboolean foundClient = qfalse;
 	gentity_t* entity_list[MAX_GENTITIES];
-	const gentity_t * bestTarget = NULL;
+	const gentity_t* bestTarget = NULL;
 
 	if (!pVeh->m_pPilot)
 	{

@@ -1852,7 +1852,7 @@ static void UI_DrawPreviewCinematic(rectDef_t* rect, float scale, vec4_t color)
 	if (uiInfo.previewMovie > -2)
 	{
 		uiInfo.previewMovie = trap->CIN_PlayCinematic(va("%s.roq", uiInfo.movieList[uiInfo.movieIndex]), 0, 0, 0, 0,
-		                                              CIN_loop | CIN_silent);
+			CIN_loop | CIN_silent);
 		if (uiInfo.previewMovie >= 0)
 		{
 			trap->CIN_RunCinematic(uiInfo.previewMovie);
@@ -6864,8 +6864,8 @@ static void UI_RunMenuScript(char** args)
 				char addr[MAX_ADDRESSLENGTH] = { 0 };
 
 				trap->LAN_GetServerInfo(UI_SourceForLAN(),
-				                        uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff,
-				                        MAX_STRING_CHARS);
+					uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff,
+					MAX_STRING_CHARS);
 				string[0] = addr[0] = '\0';
 				Q_strncpyz(string, Info_ValueForKey(buff, "hostname"), sizeof string);
 				Q_strncpyz(addr, Info_ValueForKey(buff, "addr"), sizeof addr);
@@ -8362,7 +8362,7 @@ static int UI_GetServerStatusInfo(const char* serverAddress, serverStatusInfo_t*
 		trap->LAN_ServerStatus(serverAddress, NULL, 0);
 		return qfalse;
 	}
-	memset(info, 0, sizeof*info);
+	memset(info, 0, sizeof * info);
 	if (trap->LAN_ServerStatus(serverAddress, info->text, sizeof info->text))
 	{
 		Q_strncpyz(info->address, serverAddress, sizeof info->address);

@@ -1139,7 +1139,7 @@ qboolean Initialize(Vehicle_t* pVeh)
 	//Initialize to landed (wings closed, gears down) animation
 	{
 		const int iFlags = SETANIM_FLAG_NORMAL;
-		
+
 		pVeh->m_ulFlags |= VEH_GEARSOPEN;
 		BG_SetAnim(pVeh->m_pParentEntity->playerState, bgAllAnims[pVeh->m_pParentEntity->localAnimIndex].anims,
 			SETANIM_BOTH, BOTH_VS_IDLE, iFlags);
@@ -1539,7 +1539,7 @@ maintainSelfDuringBoarding:
 			break;
 		case 4: shiftSound = pVeh->m_pVehicleInfo->soundShift4;
 			break;
-		default: ;
+		default:;
 		}
 		if (shiftSound)
 		{

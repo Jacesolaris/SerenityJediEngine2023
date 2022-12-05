@@ -663,7 +663,7 @@ static void SV_RehashBans_f(void)
 	if ((filelen = FS_SV_FOpenFileRead(filepath, &readfrom)) >= 0)
 	{
 		char* newlinepos;
-		char * maskpos;
+		char* maskpos;
 		char* textbuf;
 		int index;
 		if (filelen < 2)

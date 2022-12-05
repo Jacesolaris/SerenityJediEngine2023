@@ -577,7 +577,6 @@ NPC_LadderMove
 
 static void NPC_LadderMove(vec3_t dir)
 {
-
 	if (dir[2] > 0 || dir[2] < 0 && NPC->client->ps.groundEntityNum == ENTITYNUM_NONE)
 	{
 		//Set our movement direction

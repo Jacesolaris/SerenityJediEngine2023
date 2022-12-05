@@ -86,7 +86,7 @@ void CSequence::Delete(void)
 			(*iterSeq).second->SetParent( NULL );
 		}*/
 
-		for (const auto & si : m_children)
+		for (const auto& si : m_children)
 		{
 			si->SetParent(nullptr);
 		}
@@ -141,7 +141,7 @@ HasChild
 
 bool CSequence::HasChild(CSequence* sequence)
 {
-	for (const auto & ci : m_children)
+	for (const auto& ci : m_children)
 	{
 		if (ci == sequence)
 			return true;
@@ -269,7 +269,7 @@ void CSequence::RemoveFlag(int flag, bool children)
 
 	if (children)
 	{
-		for (const auto & si : m_children)
+		for (const auto& si : m_children)
 		{
 			si->RemoveFlag(flag, true);
 		}

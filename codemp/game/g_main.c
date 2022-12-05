@@ -604,8 +604,8 @@ void G_InitGame(int levelTime, int randomSeed, int restart)
 
 	if (trap->Cvar_VariableIntegerValue("bot_enable"))
 	{
-		BotAISetup(restart);
-		BotAILoadMap(restart);
+		bot_ai_setup(restart);
+		BotAILoadMap();
 		G_InitBots();
 	}
 	else
@@ -1655,7 +1655,7 @@ void G_ShutdownGame(int restart)
 
 	if (trap->Cvar_VariableIntegerValue("bot_enable"))
 	{
-		BotAIShutdown(restart);
+		bot_ai_shutdown(restart);
 	}
 
 	B_CleanupAlloc(); //clean up all allocations made with B_Alloc
@@ -5169,7 +5169,7 @@ Q_EXPORT gameExport_t* QDECL GetModuleAPI(int apiVersion, gameImport_t* import)
 	ge.ClientThink = ClientThink;
 	ge.RunFrame = G_RunFrame;
 	ge.ConsoleCommand = ConsoleCommand;
-	ge.BotAIStartFrame = BotAIStartFrame;
+	ge.BotAIStartFrame = bot_ai_start_frame;
 	ge.ROFF_NotetrackCallback = _G_ROFF_NotetrackCallback;
 	ge.SpawnRMGEntity = G_SpawnRMGEntity;
 	ge.ICARUS_PlaySound = G_ICARUS_PlaySound;
@@ -5256,7 +5256,7 @@ Q_EXPORT intptr_t vmMain(int command, intptr_t arg0, intptr_t arg1, intptr_t arg
 		return ConsoleCommand();
 
 	case BOTAI_START_FRAME:
-		return BotAIStartFrame(arg0);
+		return bot_ai_start_frame(arg0);
 
 	case GAME_ROFF_NOTETRACK_CALLBACK:
 		_G_ROFF_NotetrackCallback(arg0, (const char*)arg1);

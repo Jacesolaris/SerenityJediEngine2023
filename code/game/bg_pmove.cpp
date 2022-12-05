@@ -10078,7 +10078,6 @@ static void PM_Footsteps()
 	int setAnimFlags = SETANIM_FLAG_NORMAL;
 
 	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
-	
 
 	if (pm->gent == nullptr || pm->gent->client == nullptr)
 		return;
@@ -12924,7 +12923,6 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 	qboolean manualBlocking = qfalse;
 
 	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
-	
 
 	if (new_move < LS_NONE || new_move >= LS_MOVE_MAX)
 	{
@@ -14262,7 +14260,7 @@ extern void CGCam_BlockShakeSP(float intensity, int duration);
 constexpr auto AMPUTATE_DAMAGE = 100;
 
 void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult_t result, int victoryStrength)
-{	
+{
 	int break_type;
 	qboolean singleVsSingle = qtrue;
 
@@ -16573,7 +16571,7 @@ qboolean PM_SaberBlocking(void)
 	{
 		qboolean wasAttackedByGun = qfalse;
 
-		if (pm->ps->saberMove > LS_PUTAWAY && pm->ps->saberMove <= LS_A_BL2TR && pm->ps->saberBlocked !=BLOCKED_PARRY_BROKEN &&
+		if (pm->ps->saberMove > LS_PUTAWAY && pm->ps->saberMove <= LS_A_BL2TR && pm->ps->saberBlocked != BLOCKED_PARRY_BROKEN &&
 			(pm->ps->saberBlocked < BLOCKED_FRONT || pm->ps->saberBlocked > BLOCKED_FRONT_PROJ))
 		{
 			//we parried another lightsaber while attacking, so treat it as a bounce
@@ -16612,7 +16610,7 @@ qboolean PM_SaberBlocking(void)
 						return qfalse;
 					}
 				}
-				else if (pm->cmd.buttons & BUTTON_ATTACK && !(pm->ps->ManualBlockingFlags & 1 <<HOLDINGBLOCK))
+				else if (pm->cmd.buttons & BUTTON_ATTACK && !(pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK))
 				{
 					//block is done or breaking out of it with an attack
 					pm->ps->weaponTime = 0;
@@ -18126,9 +18124,9 @@ void PM_WeaponLightsaber(void)
 			//	else
 			//	{
 			//		//newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
-			//		
+			//
 			//		//newmove = PM_SaberAttackForMovement(pm->cmd.forwardmove, pm->cmd.rightmove, curmove);
-			//		
+			//
 			//		switch (saberMoveData[curmove].endQuad)
 			//		{
 			//		case Q_T:

@@ -3665,7 +3665,7 @@ void StandardSetBodyAnim(gentity_t* self, int anim, int flags)
 
 void DismembermentTest(gentity_t* self);
 
-void Bot_SetForcedMovement(int bot, int forward, int right, int up);
+void bot_set_forced_movement(int bot, int forward, int right, int up);
 
 #ifndef FINAL_BUILD
 extern void DismembermentByNum(gentity_t* self, int num);
@@ -3758,7 +3758,7 @@ void Cmd_BotMoveForward_f(gentity_t* ent)
 
 	assert(sarg[0]);
 	const int bCl = atoi(sarg);
-	Bot_SetForcedMovement(bCl, arg, -1, -1);
+	bot_set_forced_movement(bCl, arg, -1, -1);
 }
 
 void Cmd_BotMoveBack_f(gentity_t* ent)
@@ -3771,7 +3771,7 @@ void Cmd_BotMoveBack_f(gentity_t* ent)
 
 	assert(sarg[0]);
 	const int bCl = atoi(sarg);
-	Bot_SetForcedMovement(bCl, arg, -1, -1);
+	bot_set_forced_movement(bCl, arg, -1, -1);
 }
 
 void Cmd_BotMoveRight_f(gentity_t* ent)
@@ -3784,7 +3784,7 @@ void Cmd_BotMoveRight_f(gentity_t* ent)
 
 	assert(sarg[0]);
 	const int bCl = atoi(sarg);
-	Bot_SetForcedMovement(bCl, -1, arg, -1);
+	bot_set_forced_movement(bCl, -1, arg, -1);
 }
 
 void Cmd_BotMoveLeft_f(gentity_t* ent)
@@ -3797,7 +3797,7 @@ void Cmd_BotMoveLeft_f(gentity_t* ent)
 
 	assert(sarg[0]);
 	const int bCl = atoi(sarg);
-	Bot_SetForcedMovement(bCl, -1, arg, -1);
+	bot_set_forced_movement(bCl, -1, arg, -1);
 }
 
 void Cmd_BotMoveUp_f(gentity_t* ent)
@@ -3810,7 +3810,7 @@ void Cmd_BotMoveUp_f(gentity_t* ent)
 
 	assert(sarg[0]);
 	const int bCl = atoi(sarg);
-	Bot_SetForcedMovement(bCl, -1, -1, arg);
+	bot_set_forced_movement(bCl, -1, -1, arg);
 }
 
 void Cmd_AddBot_f(const gentity_t* ent)

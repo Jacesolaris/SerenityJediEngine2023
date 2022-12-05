@@ -46,7 +46,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // Sequencer
 
-CSequencer::CSequencer(): m_ownerID(0), m_taskManager(nullptr)
+CSequencer::CSequencer() : m_ownerID(0), m_taskManager(nullptr)
 {
 	static int uniqueID = 1;
 	m_id = uniqueID++;
@@ -1210,7 +1210,7 @@ int CSequencer::EvaluateConditional(CBlock* block, CIcarus* icarus) const
 		}
 
 		break;
-	default: ;
+		default:;
 		}
 
 		break;
@@ -1379,7 +1379,7 @@ int CSequencer::EvaluateConditional(CBlock* block, CIcarus* icarus) const
 		}
 
 		break;
-	default: ;
+		default:;
 		}
 
 		break;

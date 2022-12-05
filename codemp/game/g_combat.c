@@ -44,7 +44,7 @@ extern void G_VehicleSetDamageLocFlags(gentity_t* veh, int impactDir, int deathP
 extern void G_VehUpdateShields(gentity_t* targ);
 extern void G_LetGoOfWall(const gentity_t* ent);
 extern void BG_ClearRocketLock(playerState_t* ps);
-void BotDamageNotification(const gclient_t* bot, gentity_t* attacker);
+void bot_damage_notification(const gclient_t* bot, gentity_t* attacker);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir);
 extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir, qboolean forceKnockdown);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
@@ -7451,11 +7451,11 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 
 		if (attacker && attacker->client)
 		{
-			BotDamageNotification(client, attacker);
+			bot_damage_notification(client, attacker);
 		}
 		else if (inflictor && inflictor->client)
 		{
-			BotDamageNotification(client, inflictor);
+			bot_damage_notification(client, inflictor);
 		}
 	}
 

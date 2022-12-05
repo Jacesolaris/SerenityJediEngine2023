@@ -2083,9 +2083,9 @@ void CG_Beam(const centity_t* cent);
 void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int fromTime, int toTime, vec3_t out);
 
 void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-	qhandle_t parentModel, const char* tagName);
+	qhandle_t parent_model, const char* tag_name);
 void CG_PositionRotatedEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-	qhandle_t parentModel, const char* tagName);
+	qhandle_t parent_model, const char* tag_name);
 
 /*
 Ghoul2 Insert Start
@@ -2158,18 +2158,18 @@ localEntity_t* CG_SmokePuff(const vec3_t p,
 	int leFlags,
 	qhandle_t hShader);
 void CG_BubbleTrail(vec3_t start, vec3_t end, float spacing);
-void CG_GlassShatter(int entnum, vec3_t dmgPt, vec3_t dmgDir, float dmgRadius, int maxShards);
+void CG_GlassShatter(int entnum, vec3_t dmg_pt, vec3_t dmg_dir, float dmg_radius, int max_shards);
 void CG_ScorePlum(int client, vec3_t org, int score);
 
-void CG_GibPlayer(vec3_t playerOrigin);
-void CG_GibPlayerHeadshot(vec3_t playerOrigin);
+void CG_GibPlayer(vec3_t player_origin);
+void CG_GibPlayerHeadshot(vec3_t player_origin);
 
-void CG_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
-	float speed, int numChunks, material_t chunkType, int customChunk, float baseScale);
+void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
+               float speed, int num_chunks, material_t chunk_type, int custom_chunk, float base_scale);
 void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType);
 
 localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
-	qhandle_t hModel, int numframes, qhandle_t shader, int msec,
+	qhandle_t h_model, int numframes, qhandle_t shader, int msec,
 	qboolean isSprite, float scale, int flags);// Overloaded in single player
 
 void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
@@ -2177,8 +2177,8 @@ void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int rad
 void CG_BlockLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
 
 void CG_GrappleLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
-void CG_GrappleStartpoint(centity_t* ent, vec3_t startPos);
-void CG_StunStartpoint(centity_t* ent, vec3_t startPos);
+void CG_GrappleStartpoint(vec3_t start_pos);
+void CG_StunStartpoint(vec3_t start_pos);
 
 void CG_InitGlass(void);
 

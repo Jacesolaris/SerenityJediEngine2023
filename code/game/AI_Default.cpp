@@ -31,7 +31,7 @@ extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceT
 extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound(void);
 
-void NPC_ConversationAnimation(void)
+void npc_conversation_animation(void)
 {
 	const int randAnim = Q_irand(1, 10);
 

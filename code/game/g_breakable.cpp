@@ -27,9 +27,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 //client side shortcut hacks from cg_local.h
 extern void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType);
-extern void CG_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
-	float speed, int numChunks, material_t chunkType, int customChunk, float baseScale,
-	int customSound = 0);
+extern void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
+                      float speed, int num_chunks, material_t chunk_type, int custom_chunk, float base_scale,
+                      int custom_sound = 0);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 
 extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int modelIndex, int frame,
@@ -178,8 +178,7 @@ void funcBBrushDieGo(gentity_t* self)
 	}
 
 	//FIXME: base numChunks off size?
-	CG_Chunks(self->s.number, org, dir, self->absmin, self->absmax, 300, numChunks, chunkType, 0, scale,
-		self->noise_index);
+	CG_Chunks(self->s.number, org, self->absmin, self->absmax, 300, numChunks, chunkType, 0, scale, self->noise_index);
 
 	self->e_ThinkFunc = thinkF_G_FreeEntity;
 	self->nextthink = level.time + 50;
@@ -256,7 +255,7 @@ void funcBBrushPain(gentity_t* self, gentity_t* inflictor, const gentity_t* atta
 		{
 			VectorSet(dir, 0, 0, 1);
 		}
-		CG_Chunks(self->s.number, org, dir, self->absmin, self->absmax, 300, Q_irand(1, 3), self->material, 0, scale);
+		CG_Chunks(self->s.number, org, self->absmin, self->absmax, 300, Q_irand(1, 3), self->material, 0, scale);
 	}
 
 	if (self->wait == -1)
@@ -544,8 +543,7 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 	VectorAdd(self->absmax, self->absmin, dis);
 	VectorScale(dis, 0.5f, dis);
 
-	CG_Chunks(self->s.number, dis, dir, self->absmin, self->absmax, 300, numChunks, self->material, self->s.modelindex3,
-		scale);
+	CG_Chunks(self->s.number, dis, self->absmin, self->absmax, 300, numChunks, self->material, self->s.modelindex3, scale);
 
 	self->e_PainFunc = painF_NULL;
 	self->e_DieFunc = dieF_NULL;
@@ -1454,7 +1452,7 @@ void SP_misc_model_breakable(gentity_t* ent)
 
 // Really naughty cheating.  Put in an EVENT at some point...
 extern void cgi_R_GetBModelVerts(int bmodelIndex, vec3_t* verts, vec3_t normal);
-extern void CG_DoGlass(vec3_t verts[4], vec3_t normal, vec3_t dmgPt, vec3_t dmgDir, float dmgRadius);
+extern void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, float dmgRadius);
 extern cgs_t cgs;
 
 //-----------------------------------------------------
@@ -1474,7 +1472,7 @@ void funcGlassDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, in
 
 	// Really naughty cheating.  Put in an EVENT at some point...
 	cgi_R_GetBModelVerts(cgs.inlineDrawModel[self->s.modelindex], verts, normal);
-	CG_DoGlass(verts, normal, self->pos1, self->pos2, self->splashRadius);
+	CG_DoGlass(verts, self->pos1, self->pos2, self->splashRadius);
 
 	self->takedamage = qfalse; //stop chain reaction runaway loops
 

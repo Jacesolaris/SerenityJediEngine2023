@@ -1487,7 +1487,7 @@ GLOBAL(void)
 jinit_huff_encoder(j_compress_ptr cinfo)
 {
 	const huff_entropy_ptr entropy = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
-	                                                            SIZEOF(huff_entropy_encoder));
+		SIZEOF(huff_entropy_encoder));
 	cinfo->entropy = &entropy->pub;
 	entropy->pub.start_pass = start_pass_huff;
 

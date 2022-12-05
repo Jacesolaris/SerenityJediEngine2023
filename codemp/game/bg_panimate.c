@@ -6027,7 +6027,7 @@ void pm_saber_start_trans_anim(const int clientNum, const int saber_anim_level, 
 	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_ROLL_STAB)
 	{
 		const saberInfo_t* saber = BG_MySaber(clientNum, 0);
-		
+
 		if (weapon == WP_SABER)
 		{
 			if (saber && saber->animSpeedScale != 1.0f)

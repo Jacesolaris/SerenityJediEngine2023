@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //prototypes
 extern void CG_PreInit();
 
-static intptr_t(QDECL* Q_syscall)(intptr_t arg, ...) = reinterpret_cast<intptr_t(__cdecl*)(intptr_t, ...)>(- 1);
+static intptr_t(QDECL* Q_syscall)(intptr_t arg, ...) = reinterpret_cast<intptr_t(__cdecl*)(intptr_t, ...)>(-1);
 
 extern "C" Q_EXPORT void QDECL dllEntry(intptr_t(QDECL * syscallptr)(intptr_t arg, ...))
 {

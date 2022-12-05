@@ -261,14 +261,14 @@ void CFxScheduler::StopEffect(const char* file, int boltInfo, bool isPortal)
 	}
 #endif
 
-	for (int i = 0; i < MAX_LOOPED_FX; i++)
+	for (auto & i : mLoopedEffectArray)
 	{
-		if (mLoopedEffectArray[i].mId == id &&
-			mLoopedEffectArray[i].mBoltInfo == boltInfo &&
-			mLoopedEffectArray[i].mPortalEffect == isPortal
+		if (i.mId == id &&
+			i.mBoltInfo == boltInfo &&
+			i.mPortalEffect == isPortal
 			)
 		{
-			memset(&mLoopedEffectArray[i], 0, sizeof mLoopedEffectArray[i]);
+			memset(&i, 0, sizeof i);
 			return;
 		}
 	}
@@ -279,33 +279,33 @@ void CFxScheduler::StopEffect(const char* file, int boltInfo, bool isPortal)
 
 void CFxScheduler::AddLoopedEffects()
 {
-	for (int i = 0; i < MAX_LOOPED_FX; i++)
+	for (auto & i : mLoopedEffectArray)
 	{
-		if (mLoopedEffectArray[i].mId && mLoopedEffectArray[i].mNextTime < theFxHelper.mTime)
+		if (i.mId && i.mNextTime < theFxHelper.mTime)
 		{
-			const int entNum = mLoopedEffectArray[i].mBoltInfo >> ENTITY_SHIFT & ENTITY_AND;
-			if (cg_entities[entNum].gent->inuse)
+			const int ent_num = i.mBoltInfo >> ENTITY_SHIFT & ENTITY_AND;
+			if (cg_entities[ent_num].gent->inuse)
 			{
 				// only play the looped effect when the ent is still inUse....
-				PlayEffect(mLoopedEffectArray[i].mId, cg_entities[entNum].lerpOrigin, nullptr,
-					mLoopedEffectArray[i].mBoltInfo, -1, mLoopedEffectArray[i].mPortalEffect, false,
-					mLoopedEffectArray[i].mIsRelative);
+				PlayEffect(i.mId, cg_entities[ent_num].lerpOrigin, nullptr,
+					i.mBoltInfo, -1, i.mPortalEffect, false,
+					i.mIsRelative);
 				//very important to send FALSE looptime to not recursively add me!
-				mLoopedEffectArray[i].mNextTime = theFxHelper.mTime + mEffectTemplates[mLoopedEffectArray[i].mId].
+				i.mNextTime = theFxHelper.mTime + mEffectTemplates[i.mId].
 					mRepeatDelay;
 			}
 			else
 			{
 				theFxHelper.Print(
 					"CFxScheduler::AddLoopedEffects- entity was removed without stopping any looping fx it owned.");
-				memset(&mLoopedEffectArray[i], 0, sizeof mLoopedEffectArray[i]);
+				memset(&i, 0, sizeof i);
 				continue;
 			}
-			if (mLoopedEffectArray[i].mLoopStopTime && mLoopedEffectArray[i].mLoopStopTime < theFxHelper.mTime)
+			if (i.mLoopStopTime && i.mLoopStopTime < theFxHelper.mTime)
 				//time's up
 			{
 				//kill this entry
-				memset(&mLoopedEffectArray[i], 0, sizeof mLoopedEffectArray[i]);
+				memset(&i, 0, sizeof i);
 			}
 		}
 	}
@@ -388,11 +388,11 @@ void CFxScheduler::Clean(bool bRemoveTemplates /*= true*/, int idToPreserve /*= 
 			// and restore it after clearing.
 			fxString_t str;
 
-			for (auto iter = mEffectIDs.begin(); iter != mEffectIDs.end(); ++iter)
+			for (const auto & mEffectID : mEffectIDs)
 			{
-				if ((*iter).second == idToPreserve)
+				if (mEffectID.second == idToPreserve)
 				{
-					str = (*iter).first;
+					str = mEffectID.first;
 					break;
 				}
 			}
@@ -1334,9 +1334,8 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t forward, b
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::AddScheduledEffects(bool portal)
+void CFxScheduler::AddScheduledEffects(const bool portal)
 {
-	
 	int oldEntNum = -1, oldBoltIndex = -1, oldModelNum = -1;
 	qboolean doesBoltExist = qfalse;
 

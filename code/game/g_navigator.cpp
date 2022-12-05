@@ -1686,7 +1686,7 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 
 			// Create A Closest Neighbors Array And Initialize It Empty
 			//----------------------------------------------------------
-			for (auto & closestNbr : closestNbrs)
+			for (auto& closestNbr : closestNbrs)
 			{
 				closestNbr.mHandle = 0;
 				closestNbr.mCost = 0;
@@ -1778,7 +1778,7 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 
 			// Now Connect All The Closest Neighbors
 			//---------------------------------------
-			for (auto & closestNbr : closestNbrs)
+			for (auto& closestNbr : closestNbrs)
 			{
 				if (closestNbr.mHandle)
 				{
@@ -2089,7 +2089,7 @@ void NAV::DecayDangerSenses()
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void NAV::RegisterDangerSense( gentity_t* actor, int alertEventIndex)
+void NAV::RegisterDangerSense(gentity_t* actor, int alertEventIndex)
 {
 	if (actor == nullptr || alertEventIndex < 0)
 	{

@@ -298,7 +298,7 @@ void CROFFSystem::FixBadAngles(CROFF* obj)
 
 	for (int index = 0; index < obj->mROFFEntries; index++)
 	{
-		for (float & t : obj->mMoveRotateList[index].mRotateOffset)
+		for (float& t : obj->mMoveRotateList[index].mRotateOffset)
 		{
 			if (t > 180.0f)
 			{ // found a bad angle
@@ -408,7 +408,7 @@ int CROFFSystem::Cache(const char* file, qboolean isClient)
 int	CROFFSystem::GetID(const char* file)
 {
 	// Attempt to find the requested roff
-	for (const auto & itr : mROFFList)
+	for (const auto& itr : mROFFList)
 	{
 		if (strcmp(itr.second->mROFFFilePath, file) == 0)
 		{ // return the ID to this roff
@@ -537,7 +537,7 @@ void CROFFSystem::List() const
 	Com_Printf(S_COLOR_GREEN"\n--Cached ROFF files--\n");
 	Com_Printf(S_COLOR_GREEN"ID   FILE\n");
 
-	for (const auto & itr : mROFFList)
+	for (const auto& itr : mROFFList)
 	{
 		Com_Printf(S_COLOR_GREEN"%2i - %s\n", itr.first, itr.second->mROFFFilePath);
 	}

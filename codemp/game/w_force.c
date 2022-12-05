@@ -7307,7 +7307,7 @@ static void WP_UpdateMindtrickEnts(gentity_t* self)
 			{
 				//Untrick this entity if the tricker (self) fires while in his fov
 				if (trap->InPVS(ent->client->ps.origin, self->client->ps.origin) &&
-					OrgVisible(ent->client->ps.origin, self->client->ps.origin, ent->s.number))
+					org_visible(ent->client->ps.origin, self->client->ps.origin, ent->s.number))
 				{
 					RemoveTrickedEnt(&self->client->ps.fd, i);
 				}
@@ -7798,7 +7798,7 @@ void FindGenericEnemyIndex(const gentity_t* self)
 
 			if (tlen < blen &&
 				in_front(ent->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, 0.8f) &&
-				OrgVisible(self->client->ps.origin, ent->client->ps.origin, self->s.number))
+				org_visible(self->client->ps.origin, ent->client->ps.origin, self->s.number))
 			{
 				blen = tlen;
 				besten = ent;
@@ -7930,7 +7930,7 @@ void SeekerDroneUpdate(gentity_t* self)
 			{
 				self->client->ps.genericEnemyIndex = ENTITYNUM_NONE;
 			}
-			else if (!OrgVisible(self->client->ps.origin, en->client->ps.origin, self->s.number))
+			else if (!org_visible(self->client->ps.origin, en->client->ps.origin, self->s.number))
 			{
 				self->client->ps.genericEnemyIndex = ENTITYNUM_NONE;
 			}
