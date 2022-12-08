@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 qboolean turret_base_spawn_top(gentity_t* base);
-void ObjectDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath);
+void ObjectDie(gentity_t* self, gentity_t* attacker);
 
 //------------------------------------------------------------------------------------------------------------
 void TurretPain(gentity_t* self, gentity_t* attacker, int damage)
@@ -125,7 +125,7 @@ void auto_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker,
 	}
 	else
 	{
-		ObjectDie(self, inflictor, attacker, damage, meansOfDeath);
+		ObjectDie(self, attacker);
 	}
 }
 

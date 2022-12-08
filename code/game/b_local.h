@@ -68,8 +68,8 @@ extern cvar_t* d_blockinfo;
 extern cvar_t* d_attackinfo;
 
 extern void NPC_Think(gentity_t* self);
-extern void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope = nullptr, vec3_t storeAngles = nullptr,
-	qboolean keepPitch = qfalse);
+extern void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope = nullptr, vec3_t store_angles = nullptr,
+	qboolean keep_pitch = qfalse);
 
 //NPC_reactions.cpp
 extern void NPC_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, vec3_t point, int damage, int mod,
@@ -106,14 +106,14 @@ extern void NPC_BSWait(void);
 extern void NPC_BSDefault(void);
 
 //NPC_behavior
-extern void NPC_BSAdvanceFight(void);
+extern void NPC_BSAdvanceFight();
 extern void NPC_BSSleep(void);
 extern void NPC_BSFollowLeader(void);
 extern void NPC_BSJump(void);
 extern void NPC_BSRemove(void);
 extern void NPC_BSSearch(void);
 extern void NPC_BSSearchStart(int homeWp, bState_t bState);
-extern void NPC_BSWander(void);
+extern void NPC_BSWander();
 extern qboolean NPC_BSFlee(void);
 extern void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin, int fleeTimeMax);
 extern void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin,
@@ -128,7 +128,7 @@ extern qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter);
 extern void NPC_CheckPossibleEnemy(gentity_t* other, visibility_t vis);
 extern gentity_t* NPC_PickEnemy(const gentity_t* closestTo, int enemyTeam, qboolean checkVis, qboolean findPlayersFirst,
 	qboolean findClosest);
-extern gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy = qtrue);
+extern gentity_t* NPC_CheckEnemy(qboolean find_new, qboolean too_far_ok, qboolean set_enemy = qtrue);
 extern qboolean NPC_CheckAttack(float scale);
 extern qboolean NPC_CheckDefend(float scale);
 extern qboolean NPC_CheckCanAttack(float attack_scale, qboolean stationary);

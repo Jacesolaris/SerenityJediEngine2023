@@ -390,13 +390,13 @@ static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const v
 }
 
 void CG_TraceItem(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber)
+                  const int skip_number)
 {
 	trace_t tr;
-	vec3_t localMins, localMaxs;
+	vec3_t local_mins, local_maxs;
 
-	VectorSet(localMins, -8, -8, -0);
-	VectorSet(localMaxs, 8, 8, 16);
+	VectorSet(local_mins, -8, -8, -0);
+	VectorSet(local_maxs, 8, 8, 16);
 
 	trap->CM_Trace(&tr, start, end, mins, maxs, 0, CONTENTS_SOLID, 0);
 	tr.entityNum = tr.fraction == 1.0f ? ENTITYNUM_NONE : ENTITYNUM_WORLD;
@@ -408,7 +408,7 @@ void CG_TraceItem(trace_t* result, const vec3_t start, const vec3_t mins, const 
 		const gitem_t* item = &bg_itemlist[ent->modelindex];
 		vec3_t itemMins, itemMaxs;
 
-		if (ent->number == skipNumber)
+		if (ent->number == skip_number)
 		{
 			continue;
 		}
@@ -423,8 +423,8 @@ void CG_TraceItem(trace_t* result, const vec3_t start, const vec3_t mins, const 
 			continue;
 		}
 
-		VectorAdd(localMins, ent->origin, itemMins);
-		VectorAdd(localMaxs, ent->origin, itemMaxs);
+		VectorAdd(local_mins, ent->origin, itemMins);
+		VectorAdd(local_maxs, ent->origin, itemMaxs);
 		const clipHandle_t cmodel = trap->CM_TempModel(itemMins, itemMaxs, 0);
 		trap->CM_Trace(&tr, start, end, mins, maxs, cmodel, -1, 0);
 
@@ -444,14 +444,14 @@ CG_Trace
 ================
 */
 void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber, int mask)
+              const int skip_number, const int mask)
 {
 	trace_t t;
 
 	trap->CM_Trace(&t, start, end, mins, maxs, 0, mask, 0);
 	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	// check all other solid models
-	CG_ClipMoveToEntities(start, mins, maxs, end, skipNumber, mask, &t, qfalse);
+	CG_ClipMoveToEntities(start, mins, maxs, end, skip_number, mask, &t, qfalse);
 
 	*result = t;
 }
@@ -462,14 +462,14 @@ CG_G2Trace
 ================
 */
 void CG_G2Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber, int mask)
+                const int skip_number, const int mask)
 {
 	trace_t t;
 
 	trap->CM_Trace(&t, start, end, mins, maxs, 0, mask, 0);
 	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	// check all other solid models
-	CG_ClipMoveToEntities(start, mins, maxs, end, skipNumber, mask, &t, qtrue);
+	CG_ClipMoveToEntities(start, mins, maxs, end, skip_number, mask, &t, qtrue);
 
 	*result = t;
 }

@@ -1806,7 +1806,7 @@ Ghoul2 Insert End
 
 void R_InitDecals(void);
 void RE_ClearDecals(void);
-void RE_AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary);
+void RE_AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alpha_fade, float radius, qboolean temporary);
 void R_AddDecals(void);
 
 // tr_surfacesprites

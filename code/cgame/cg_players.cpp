@@ -1143,19 +1143,19 @@ static void CG_PlayerAnimEventDo(centity_t* cent, animevent_t* animEvent)
 				}
 				else if (Q_stricmp("scepter_beam", animEvent->stringData) == 0)
 				{
-					int modelIndex = cent->gent->weaponModel[1];
-					if (modelIndex <= 0)
+					int model_index = cent->gent->weaponModel[1];
+					if (model_index <= 0)
 					{
-						modelIndex = cent->gent->cinematicModel;
+						model_index = cent->gent->cinematicModel;
 					}
-					if (modelIndex > 0)
+					if (model_index > 0)
 					{
 						//we have a cinematic model
-						const int boltIndex = gi.G2API_AddBolt(&cent->gent->ghoul2[modelIndex], "*flash");
-						if (boltIndex > -1)
+						const int bolt_index = gi.G2API_AddBolt(&cent->gent->ghoul2[model_index], "*flash");
+						if (bolt_index > -1)
 						{
 							//cinematic model has a flash bolt
-							CG_PlayEffectBolted("scepter/beam.efx", modelIndex, boltIndex, cent->currentState.clientNum,
+							CG_PlayEffectBolted("scepter/beam.efx", model_index, bolt_index, cent->currentState.clientNum,
 								cent->lerpOrigin, animEvent->eventData[AED_EFFECT_PROBABILITY], qtrue);
 						}
 					}

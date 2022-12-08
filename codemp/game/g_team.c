@@ -365,7 +365,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 	if (targ->client->ps.powerups[enemy_flag_pw])
 	{
 		attacker->client->pers.teamState.lastfraggedcarrier = level.time;
-		AddScore(attacker, targ->r.currentOrigin, CTF_FRAG_CARRIER_BONUS);
+		AddScore(attacker, CTF_FRAG_CARRIER_BONUS);
 		attacker->client->pers.teamState.fragcarrier++;
 		//PrintMsg(NULL, "%s" S_COLOR_WHITE " fragged %s's flag carrier!\n",
 		//	attacker->client->pers.netname, TeamName(team));
@@ -388,7 +388,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 	{
 		// attacker is on the same team as the flag carrier and
 		// fragged a guy who hurt our flag carrier
-		AddScore(attacker, targ->r.currentOrigin, CTF_CARRIER_DANGER_PROTECT_BONUS);
+		AddScore(attacker, CTF_CARRIER_DANGER_PROTECT_BONUS);
 
 		attacker->client->pers.teamState.carrierdefense++;
 		targ->client->pers.teamState.lasthurtcarrier = 0;
@@ -404,7 +404,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 		level.time - targ->client->pers.teamState.lasthurtcarrier < CTF_CARRIER_DANGER_PROTECT_TIMEOUT)
 	{
 		// attacker is on the same team as the skull carrier and
-		AddScore(attacker, targ->r.currentOrigin, CTF_CARRIER_DANGER_PROTECT_BONUS);
+		AddScore(attacker, CTF_CARRIER_DANGER_PROTECT_BONUS);
 
 		attacker->client->pers.teamState.carrierdefense++;
 		targ->client->pers.teamState.lasthurtcarrier = 0;
@@ -463,7 +463,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 		attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam)
 	{
 		// we defended the base flag
-		AddScore(attacker, targ->r.currentOrigin, CTF_FLAG_DEFENSE_BONUS);
+		AddScore(attacker, CTF_FLAG_DEFENSE_BONUS);
 		attacker->client->pers.teamState.basedefense++;
 
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
@@ -483,7 +483,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 			trap->InPVS(carrier->r.currentOrigin, attacker->r.currentOrigin)) &&
 			attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam)
 		{
-			AddScore(attacker, targ->r.currentOrigin, CTF_CARRIER_PROTECT_BONUS);
+			AddScore(attacker, CTF_CARRIER_PROTECT_BONUS);
 			attacker->client->pers.teamState.carrierdefense++;
 
 			attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
@@ -752,7 +752,7 @@ int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, int team)
 		//	cl->pers.netname, TeamName(team));
 		PrintCTFMessage(other->s.number, team, CTFMESSAGE_PLAYER_RETURNED_FLAG);
 
-		AddScore(other, ent->r.currentOrigin, CTF_RECOVERY_BONUS);
+		AddScore(other, CTF_RECOVERY_BONUS);
 		other->client->pers.teamState.flagrecovery++;
 		other->client->pers.teamState.lastreturnedflag = level.time;
 		//ResetFlag will remove this entity!  We must return zero
@@ -835,7 +835,7 @@ int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, int team)
 	other->client->ps.persistant[PERS_CAPTURES]++;
 
 	// other gets another 10 frag bonus
-	AddScore(other, ent->r.currentOrigin, CTF_CAPTURE_BONUS);
+	AddScore(other, CTF_CAPTURE_BONUS);
 
 	Team_CaptureFlagSound(ent, team);
 
@@ -854,12 +854,12 @@ int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, int team)
 		else if (player->client->sess.sessionTeam ==
 			cl->sess.sessionTeam)
 		{
-			AddScore(player, ent->r.currentOrigin, CTF_TEAM_BONUS);
+			AddScore(player, CTF_TEAM_BONUS);
 			// award extra points for capture assists
 			if (player->client->pers.teamState.lastreturnedflag +
 				CTF_RETURN_FLAG_ASSIST_TIMEOUT > level.time)
 			{
-				AddScore(player, ent->r.currentOrigin, CTF_RETURN_FLAG_ASSIST_BONUS);
+				AddScore(player, CTF_RETURN_FLAG_ASSIST_BONUS);
 				other->client->pers.teamState.assists++;
 
 				player->client->ps.persistant[PERS_ASSIST_COUNT]++;
@@ -868,7 +868,7 @@ int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, int team)
 			if (player->client->pers.teamState.lastfraggedcarrier +
 				CTF_FRAG_CARRIER_ASSIST_TIMEOUT > level.time)
 			{
-				AddScore(player, ent->r.currentOrigin, CTF_FRAG_CARRIER_ASSIST_BONUS);
+				AddScore(player, CTF_FRAG_CARRIER_ASSIST_BONUS);
 				other->client->pers.teamState.assists++;
 				player->client->ps.persistant[PERS_ASSIST_COUNT]++;
 				player->client->rewardTime = level.time + REWARD_SPRITE_TIME;
@@ -948,7 +948,7 @@ int Team_TouchEnemyFlag(gentity_t* ent, const gentity_t* other, int team)
 
 	Team_SetFlagStatus(team, FLAG_TAKEN);
 
-	AddScore(other, ent->r.currentOrigin, CTF_FLAG_BONUS);
+	AddScore(other, CTF_FLAG_BONUS);
 	cl->pers.teamState.flagsince = level.time;
 	Team_TakeFlagSound(ent, team);
 

@@ -315,7 +315,7 @@ otherwise riders would continue to slide.
 If qfalse is returned, *obstacle will be the blocking entity
 ============
 */
-void NPC_RemoveBody(gentity_t* self);
+void NPC_RemoveBody(gentity_t* ent);
 
 qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** obstacle)
 {
@@ -2558,36 +2558,36 @@ void G_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, 
 }
 
 //--------------------------------------
-void funcBBrushDieGo(gentity_t* self)
+void funcBBrushDieGo(gentity_t* ent)
 {
 	vec3_t org, dir, up;
-	gentity_t* attacker = self->enemy;
+	gentity_t* attacker = ent->enemy;
 	int size = 0;
-	const material_t chunkType = self->material;
+	const material_t chunkType = ent->material;
 
 	// if a missile is stuck to us, blow it up so we don't look dumb
 	for (int i = 0; i < MAX_GENTITIES; i++)
 	{
-		if (g_entities[i].s.groundEntityNum == self->s.number && g_entities[i].s.eFlags & EF_MISSILE_STICK)
+		if (g_entities[i].s.groundEntityNum == ent->s.number && g_entities[i].s.eFlags & EF_MISSILE_STICK)
 		{
-			G_Damage(&g_entities[i], self, self, NULL, NULL, 99999, 0, MOD_CRUSH); //?? MOD?
+			G_Damage(&g_entities[i], ent, ent, NULL, NULL, 99999, 0, MOD_CRUSH); //?? MOD?
 		}
 	}
 
 	//So chunks don't get stuck inside me
-	self->s.solid = 0;
-	self->r.contents = 0;
-	self->clipmask = 0;
-	trap->LinkEntity((sharedEntity_t*)self);
+	ent->s.solid = 0;
+	ent->r.contents = 0;
+	ent->clipmask = 0;
+	trap->LinkEntity((sharedEntity_t*)ent);
 
 	VectorSet(up, 0, 0, 1);
 
-	if (self->target && attacker != NULL)
+	if (ent->target && attacker != NULL)
 	{
-		G_UseTargets(self, attacker);
+		G_UseTargets(ent, attacker);
 	}
 
-	VectorSubtract(self->r.absmax, self->r.absmin, org); // size
+	VectorSubtract(ent->r.absmax, ent->r.absmin, org); // size
 
 	int numChunks = Q_flrand(0.0f, 1.0f) * 6 + 18;
 
@@ -2606,15 +2606,15 @@ void funcBBrushDieGo(gentity_t* self)
 
 	scale = scale / numChunks;
 
-	if (self->radius > 0.0f)
+	if (ent->radius > 0.0f)
 	{
 		// designer wants to scale number of chunks, helpful because the above scale code is far from perfect
 		//	I do this after the scale calculation because it seems that the chunk size generally seems to be very close, it's just the number of chunks is a bit weak
-		numChunks *= self->radius;
+		numChunks *= ent->radius;
 	}
 
-	VectorMA(self->r.absmin, 0.5, org, org);
-	VectorAdd(self->r.absmin, self->r.absmax, org);
+	VectorMA(ent->r.absmin, 0.5, org, org);
+	VectorAdd(ent->r.absmin, ent->r.absmax, org);
 	VectorScale(org, 0.5f, org);
 
 	if (attacker != NULL && attacker->client)
@@ -2627,26 +2627,26 @@ void funcBBrushDieGo(gentity_t* self)
 		VectorCopy(up, dir);
 	}
 
-	if (!(self->spawnflags & 2048)) // NO_EXPLOSION
+	if (!(ent->spawnflags & 2048)) // NO_EXPLOSION
 	{
 		// we are allowed to explode
-		G_MiscModelExplosion(self->r.absmin, self->r.absmax, size, chunkType);
+		G_MiscModelExplosion(ent->r.absmin, ent->r.absmax, size, chunkType);
 	}
 
-	if (self->genericValue15)
+	if (ent->genericValue15)
 	{
 		//a custom effect to play
 		vec3_t ang;
 		VectorSet(ang, 0.0f, 1.0f, 0.0f);
-		G_PlayEffectID(self->genericValue15, org, ang);
+		G_PlayEffectID(ent->genericValue15, org, ang);
 	}
 
-	if (self->splashDamage > 0 && self->splashRadius > 0)
+	if (ent->splashDamage > 0 && ent->splashRadius > 0)
 	{
 		//explode
 		AddSightEvent(attacker, org, 256, AEL_DISCOVERED, 100);
 		AddSoundEvent(attacker, org, 128, AEL_DISCOVERED, qfalse, qtrue);
-		g_radius_damage(org, self, self->splashDamage, self->splashRadius, self, NULL, MOD_UNKNOWN);
+		g_radius_damage(org, ent, ent->splashDamage, ent->splashRadius, ent, NULL, MOD_UNKNOWN);
 
 		gentity_t* te = G_TempEntity(org, EV_GENERAL_SOUND);
 		te->s.eventParm = G_SoundIndex("sound/weapons/explosions/cargoexplode.wav");
@@ -2659,12 +2659,12 @@ void funcBBrushDieGo(gentity_t* self)
 	}
 
 	//FIXME: base numChunks off size?
-	G_Chunks(self->s.number, org, dir, self->r.absmin, self->r.absmax, 300, numChunks, chunkType, 0,
-		scale * self->mass);
+	G_Chunks(ent->s.number, org, dir, ent->r.absmin, ent->r.absmax, 300, numChunks, chunkType, 0,
+		scale * ent->mass);
 
-	trap->AdjustAreaPortalState((sharedEntity_t*)self, qtrue);
-	self->think = G_FreeEntity;
-	self->nextthink = level.time + 50;
+	trap->AdjustAreaPortalState((sharedEntity_t*)ent, qtrue);
+	ent->think = G_FreeEntity;
+	ent->nextthink = level.time + 50;
 }
 
 void funcBBrushDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod)

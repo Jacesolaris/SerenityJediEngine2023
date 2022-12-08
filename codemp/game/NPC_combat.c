@@ -1996,7 +1996,7 @@ gentity_t* NPC_PickAlly(qboolean facingEachOther, float range, qboolean ignoreGr
 	return closestAlly;
 }
 
-gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy)
+gentity_t* NPC_CheckEnemy(qboolean find_new, qboolean too_far_ok, qboolean set_enemy)
 {
 	qboolean forcefindNew = qfalse;
 	gentity_t* newEnemy = NULL;
@@ -2005,7 +2005,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	{
 		if (!NPCS.NPC->enemy->inuse) //|| NPC->enemy == NPC )//wtf?  NPCs should never get mad at themselves!
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				G_ClearEnemy(NPCS.NPC);
 			}
@@ -2015,7 +2015,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	if (NPCS.NPC->NPC->scriptFlags & SCF_IGNORE_ENEMIES)
 	{
 		//We're ignoring all enemies for now
-		if (setEnemy)
+		if (set_enemy)
 		{
 			G_ClearEnemy(NPCS.NPC);
 		}
@@ -2054,14 +2054,14 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	{
 		if (NPC_EnemyTooFar(NPCS.NPC->enemy, 0, qfalse))
 		{
-			if (findNew)
+			if (find_new)
 			{
 				//See if there is a close one and take it if so, else keep this one
 				forcefindNew = qtrue;
 			}
-			else if (!tooFarOk) //FIXME: don't need this extra bool any more
+			else if (!too_far_ok) //FIXME: don't need this extra bool any more
 			{
-				if (setEnemy)
+				if (set_enemy)
 				{
 					G_ClearEnemy(NPCS.NPC);
 				}
@@ -2113,7 +2113,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	{
 		if (NPCS.NPC->enemy->health <= 0 || NPCS.NPC->enemy->flags & FL_NOTARGET)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				G_ClearEnemy(NPCS.NPC);
 			}
@@ -2136,7 +2136,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 				{
 					//They have a different enemy, take it!
 					newEnemy = NPCS.NPCInfo->defendEnt->enemy;
-					if (setEnemy)
+					if (set_enemy)
 					{
 						G_SetEnemy(NPCS.NPC, NPCS.NPCInfo->defendEnt->enemy);
 					}
@@ -2159,9 +2159,9 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 		//	is allowed to increment in a chasing bState)
 		qboolean foundenemy = qfalse;
 
-		if (!findNew)
+		if (!find_new)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				NPCS.NPC->lastEnemy = NPCS.NPC->enemy;
 				G_ClearEnemy(NPCS.NPC);
@@ -2181,7 +2181,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 			if (newEnemy)
 			{
 				foundenemy = qtrue;
-				if (setEnemy)
+				if (set_enemy)
 				{
 					G_SetEnemy(NPCS.NPC, newEnemy);
 				}
@@ -2192,7 +2192,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 		{
 			if (!foundenemy)
 			{
-				if (setEnemy)
+				if (set_enemy)
 				{
 					NPCS.NPC->lastEnemy = NPCS.NPC->enemy;
 					G_ClearEnemy(NPCS.NPC);

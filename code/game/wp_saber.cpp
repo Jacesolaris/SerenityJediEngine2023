@@ -193,7 +193,7 @@ void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
 qboolean FP_ForceDrainGrippableEnt(const gentity_t* victim);
 void G_SaberBounce(const gentity_t* attacker, gentity_t* victim);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
+extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 extern qboolean BG_InKnockDown(int anim);
 extern saberMoveName_t PM_BrokenParryForParry(int move);

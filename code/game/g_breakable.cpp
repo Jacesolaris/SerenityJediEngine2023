@@ -38,7 +38,7 @@ extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles,
 extern qboolean player_locked;
 
 //---------------------------------------------------
-static void CacheChunkEffects(material_t material)
+static void CacheChunkEffects(const material_t material)
 {
 	switch (material)
 	{
@@ -81,42 +81,42 @@ static void CacheChunkEffects(material_t material)
 }
 
 //--------------------------------------
-void funcBBrushDieGo(gentity_t* self)
+void funcBBrushDieGo(gentity_t* ent)
 {
 	vec3_t org, dir, up;
-	gentity_t* attacker = self->enemy;
+	gentity_t* attacker = ent->enemy;
 	int size = 0;
-	const material_t chunkType = self->material;
+	const material_t chunk_type = ent->material;
 
 	// if a missile is stuck to us, blow it up so we don't look dumb
 	// FIXME: flag me so I should know to do this check!
 	for (auto& g_entitie : g_entities)
 	{
-		if (g_entitie.s.groundEntityNum == self->s.number && g_entitie.s.eFlags & EF_MISSILE_STICK)
+		if (g_entitie.s.groundEntityNum == ent->s.number && g_entitie.s.eFlags & EF_MISSILE_STICK)
 		{
-			G_Damage(&g_entitie, self, self, nullptr, nullptr, 99999, 0, MOD_CRUSH); //?? MOD?
+			G_Damage(&g_entitie, ent, ent, nullptr, nullptr, 99999, 0, MOD_CRUSH); //?? MOD?
 		}
 	}
 
 	//NOTE: MUST do this BEFORE clearing contents, or you may not open the area portal!!!
-	gi.AdjustAreaPortalState(self, qtrue);
+	gi.AdjustAreaPortalState(ent, qtrue);
 
 	//So chunks don't get stuck inside me
-	self->s.solid = 0;
-	self->contents = 0;
-	self->clipmask = 0;
-	gi.linkentity(self);
+	ent->s.solid = 0;
+	ent->contents = 0;
+	ent->clipmask = 0;
+	gi.linkentity(ent);
 
 	VectorSet(up, 0, 0, 1);
 
-	if (self->target && attacker != nullptr)
+	if (ent->target && attacker != nullptr)
 	{
-		G_UseTargets(self, attacker);
+		G_UseTargets(ent, attacker);
 	}
 
-	VectorSubtract(self->absmax, self->absmin, org); // size
+	VectorSubtract(ent->absmax, ent->absmin, org); // size
 
-	int numChunks = Q_flrand(0.0f, 1.0f) * 6 + 18;
+	int num_chunks = Q_flrand(0.0f, 1.0f) * 6 + 18;
 
 	// This formula really has no logical basis other than the fact that it seemed to be the closest to yielding the results that I wanted.
 	// Volume is length * width * height...then break that volume down based on how many chunks we have
@@ -131,17 +131,17 @@ void funcBBrushDieGo(gentity_t* self)
 		size = 1;
 	}
 
-	scale = scale / numChunks;
+	scale = scale / num_chunks;
 
-	if (self->radius > 0.0f)
+	if (ent->radius > 0.0f)
 	{
 		// designer wants to scale number of chunks, helpful because the above scale code is far from perfect
 		//	I do this after the scale calculation because it seems that the chunk size generally seems to be very close, it's just the number of chunks is a bit weak
-		numChunks *= self->radius;
+		num_chunks *= ent->radius;
 	}
 
-	VectorMA(self->absmin, 0.5, org, org);
-	VectorAdd(self->absmin, self->absmax, org);
+	VectorMA(ent->absmin, 0.5, org, org);
+	VectorAdd(ent->absmin, ent->absmax, org);
 	VectorScale(org, 0.5f, org);
 
 	if (attacker != nullptr && attacker->client)
@@ -154,18 +154,18 @@ void funcBBrushDieGo(gentity_t* self)
 		VectorCopy(up, dir);
 	}
 
-	if (!(self->spawnflags & 2048)) // NO_EXPLOSION
+	if (!(ent->spawnflags & 2048)) // NO_EXPLOSION
 	{
 		// we are allowed to explode
-		CG_MiscModelExplosion(self->absmin, self->absmax, size, chunkType);
+		CG_MiscModelExplosion(ent->absmin, ent->absmax, size, chunk_type);
 	}
 
-	if (self->splashDamage > 0 && self->splashRadius > 0)
+	if (ent->splashDamage > 0 && ent->splashRadius > 0)
 	{
 		//explode
 		AddSightEvent(attacker, org, 256, AEL_DISCOVERED, 100);
 		AddSoundEvent(attacker, org, 128, AEL_DISCOVERED, qfalse, qtrue); //FIXME: am I on ground or not?
-		G_RadiusDamage(org, self, self->splashDamage, self->splashRadius, self, MOD_UNKNOWN);
+		G_RadiusDamage(org, ent, ent->splashDamage, ent->splashRadius, ent, MOD_UNKNOWN);
 
 		gentity_t* te = G_TempEntity(org, EV_GENERAL_SOUND);
 		te->s.eventParm = G_SoundIndex("sound/weapons/explosions/cargoexplode.wav");
@@ -178,10 +178,10 @@ void funcBBrushDieGo(gentity_t* self)
 	}
 
 	//FIXME: base numChunks off size?
-	CG_Chunks(self->s.number, org, self->absmin, self->absmax, 300, numChunks, chunkType, 0, scale, self->noise_index);
+	CG_Chunks(ent->s.number, org, ent->absmin, ent->absmax, 300, num_chunks, chunk_type, 0, scale, ent->noise_index);
 
-	self->e_ThinkFunc = thinkF_G_FreeEntity;
-	self->nextthink = level.time + 50;
+	ent->e_ThinkFunc = thinkF_G_FreeEntity;
+	ent->nextthink = level.time + 50;
 }
 
 void funcBBrushDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
@@ -288,9 +288,9 @@ static void InitBBrush(gentity_t* ent)
 	}
 
 	// if the "color" or "light" keys are set, setup constantLight
-	const qboolean lightSet = G_SpawnFloat("light", "100", &light);
-	const qboolean colorSet = G_SpawnVector("color", "1 1 1", color);
-	if (lightSet || colorSet)
+	const qboolean light_set = G_SpawnFloat("light", "100", &light);
+	const qboolean color_set = G_SpawnVector("color", "1 1 1", color);
+	if (light_set || color_set)
 	{
 		int r = color[0] * 255;
 		if (r > 255)
@@ -1567,7 +1567,7 @@ void SP_func_glass(gentity_t* self)
 	gi.linkentity(self);
 }
 
-qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker)
+qboolean G_EntIsBreakable(const int entityNum, const gentity_t* breaker)
 {
 	//breakable brush/model that can actually be broken
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)

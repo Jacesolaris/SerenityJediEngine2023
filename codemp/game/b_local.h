@@ -122,7 +122,7 @@ extern qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter);
 extern void NPC_CheckPossibleEnemy(gentity_t* other, visibility_t vis);
 extern gentity_t* NPC_PickEnemy(const gentity_t* closestTo, int enemyTeam, qboolean checkVis, qboolean findPlayersFirst,
 	qboolean findClosest);
-extern gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy); //setEnemy = qtrue
+extern gentity_t* NPC_CheckEnemy(qboolean find_new, qboolean too_far_ok, qboolean set_enemy); //setEnemy = qtrue
 extern qboolean NPC_CheckAttack(float scale);
 extern qboolean NPC_CheckDefend(float scale);
 extern qboolean NPC_CheckCanAttack(float attack_scale, qboolean stationary);

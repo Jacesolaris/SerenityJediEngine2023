@@ -2914,14 +2914,14 @@ void Use_Target_Escapetrig(const gentity_t* ent, gentity_t* other, const gentity
 				g_entities[i].client->sess.sessionTeam != TEAM_SPECTATOR &&
 				!(g_entities[i].client->ps.pm_flags & PMF_FOLLOW))
 			{
-				AddScore(&g_entities[i], g_entities[i].client->ps.origin, 100);
+				AddScore(&g_entities[i], 100);
 			}
 			i++;
 		}
 		if (activator && activator->inuse && activator->client)
 		{
 			//the one who escaped gets 500
-			AddScore(activator, activator->client->ps.origin, 500);
+			AddScore(activator, 500);
 		}
 
 		LogExit("Escaped!");

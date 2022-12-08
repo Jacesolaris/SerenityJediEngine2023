@@ -2052,9 +2052,9 @@ void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
 void CG_BuildSolidList(void);
 int	CG_PointContents(const vec3_t point, int passEntityNum);
 void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber, int mask);
+	int skip_number, int mask);
 void CG_G2Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber, int mask);
+	int skip_number, int mask);
 void CG_PredictPlayerState(void);
 void CG_LoadDeferredPlayers(void);
 

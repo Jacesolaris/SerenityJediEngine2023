@@ -386,7 +386,7 @@ static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, int ignoreAler
 	return bestEvent;
 }
 
-float G_GetLightLevel(vec3_t pos, vec3_t fromDir)
+float G_GetLightLevel(vec3_t pos, vec3_t from_dir)
 {
 	//rwwFIXMEFIXME: ...this is evil. We can possibly read from the server BSP data, or load the lightmap along
 	//with collision data and whatnot, but is it worth it?
@@ -400,14 +400,14 @@ float G_GetLightLevel(vec3_t pos, vec3_t fromDir)
 NPC_CheckSightEvents
 -------------------------
 */
-static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeDist, int ignoreAlert,
+static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float max_see_dist, int ignoreAlert,
 	qboolean mustHaveOwner, int minAlertLevel)
 {
 	int bestEvent = -1;
 	int bestAlert = -1;
 	int bestTime = -1;
 
-	maxSeeDist *= maxSeeDist;
+	max_see_dist *= max_see_dist;
 	for (int i = 0; i < level.numAlertEvents; i++)
 	{
 		//are we purposely ignoring this alert?
@@ -427,7 +427,7 @@ static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeD
 		const float dist = DistanceSquared(level.alertEvents[i].position, self->r.currentOrigin);
 
 		//can't see it
-		if (dist > maxSeeDist)
+		if (dist > max_see_dist)
 			continue;
 
 		const float radius = level.alertEvents[i].radius * level.alertEvents[i].radius;

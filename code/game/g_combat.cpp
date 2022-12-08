@@ -138,7 +138,7 @@ AddScore
 Adds score to both the client and his team
 ============
 */
-void AddScore(const gentity_t* ent, int score)
+void AddScore(const gentity_t* ent, const int score)
 {
 	if (!ent->client)
 	{
@@ -403,7 +403,7 @@ void G_DropKey(gentity_t* self)
 	self->message = nullptr;
 }
 
-void ObjectDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void ObjectDie(gentity_t* self, gentity_t* attacker)
 {
 	if (self->target)
 		G_UseTargets(self, attacker);
@@ -448,7 +448,7 @@ void ExplodeDeath(gentity_t* self)
 			attacker, MOD_UNKNOWN);
 	}
 
-	ObjectDie(self, self, self, 20, 0);
+	ObjectDie(self, self);
 }
 
 void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
@@ -1802,13 +1802,13 @@ int G_GetHitLocation(const gentity_t* target, const vec3_t ppoint)
 	return HL_NONE;
 }
 
-int G_PickPainAnim(const gentity_t* self, const vec3_t point, int damage, int hitLoc = HL_NONE)
+int G_PickPainAnim(const gentity_t* self, const vec3_t point, int hit_loc = HL_NONE)
 {
-	if (hitLoc == HL_NONE)
+	if (hit_loc == HL_NONE)
 	{
-		hitLoc = G_GetHitLocation(self, point);
+		hit_loc = G_GetHitLocation(self, point);
 	}
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_FOOT_RT:
 		return BOTH_PAIN12;
@@ -6238,7 +6238,7 @@ void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, flo
 	}
 }
 
-void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock)
+void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock)
 {
 	if (!self || !self->client)
 	{

@@ -216,7 +216,7 @@ NPC_ChoosePainAnimation
 
 constexpr auto MIN_PAIN_TIME = 200;
 
-extern int G_PickPainAnim(const gentity_t* self, const vec3_t point, int damage, int hitLoc);
+extern int G_PickPainAnim(const gentity_t* self, const vec3_t point, int hit_loc);
 
 void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc,
 	int voiceEvent = -1)
@@ -372,7 +372,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, const vec3
 			}
 			else if (mod != MOD_ELECTROCUTE)
 			{
-				pain_anim = G_PickPainAnim(self, point, damage, hitLoc);
+				pain_anim = G_PickPainAnim(self, point, hitLoc);
 			}
 
 			if (pain_anim == -1)

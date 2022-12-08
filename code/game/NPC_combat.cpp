@@ -2154,16 +2154,16 @@ gentity_t* NPC_PickAlly(qboolean facingEachOther, float range, qboolean ignoreGr
 	return closestAlly;
 }
 
-gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy)
+gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, const qboolean set_enemy)
 {
 	qboolean forcefind_new = qfalse;
-	gentity_t* newEnemy = nullptr;
+	gentity_t* new_enemy = nullptr;
 
 	if (NPC->enemy)
 	{
 		if (!NPC->enemy->inuse)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				G_ClearEnemy(NPC);
 			}
@@ -2173,7 +2173,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	if (NPC->svFlags & SVF_IGNORE_ENEMIES)
 	{
 		//We're ignoring all enemies for now
-		if (setEnemy)
+		if (set_enemy)
 		{
 			G_ClearEnemy(NPC);
 		}
@@ -2210,14 +2210,14 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	{
 		if (NPC_EnemyTooFar(NPC->enemy, 0, qfalse))
 		{
-			if (findNew)
+			if (find_new)
 			{
 				//See if there is a close one and take it if so, else keep this one
 				forcefind_new = qtrue;
 			}
-			else if (!tooFarOk) //FIXME: don't need this extra bool any more
+			else if (!too_far_ok) //FIXME: don't need this extra bool any more
 			{
-				if (setEnemy)
+				if (set_enemy)
 				{
 					G_ClearEnemy(NPC);
 				}
@@ -2243,7 +2243,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	{
 		if (NPC->enemy->health <= 0 || NPC->enemy->flags & FL_NOTARGET)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				G_ClearEnemy(NPC);
 			}
@@ -2264,8 +2264,8 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 				if (NPC->enemy != NPCInfo->defendEnt->enemy)
 				{
 					//They have a different enemy, take it!
-					newEnemy = NPCInfo->defendEnt->enemy;
-					if (setEnemy)
+					new_enemy = NPCInfo->defendEnt->enemy;
+					if (set_enemy)
 					{
 						G_SetEnemy(NPC, NPCInfo->defendEnt->enemy);
 					}
@@ -2283,9 +2283,9 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 	{
 		qboolean foundenemy = qfalse;
 
-		if (!findNew)
+		if (!find_new)
 		{
-			if (setEnemy)
+			if (set_enemy)
 			{
 				NPC->lastEnemy = NPC->enemy;
 				G_ClearEnemy(NPC);
@@ -2296,15 +2296,15 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 		//If enemy dead or un shootable, look for others on out enemy's team
 		if (NPC->client->enemyTeam != TEAM_NEUTRAL)
 		{
-			newEnemy = NPC_PickEnemy(closestTo, NPC->client->enemyTeam, qtrue, qfalse, qtrue);
+			new_enemy = NPC_PickEnemy(closestTo, NPC->client->enemyTeam, qtrue, qfalse, qtrue);
 			//3rd parm was (NPC->enemyTeam == TEAM_STARFLEET)
 
-			if (newEnemy)
+			if (new_enemy)
 			{
 				foundenemy = qtrue;
-				if (setEnemy)
+				if (set_enemy)
 				{
-					G_SetEnemy(NPC, newEnemy);
+					G_SetEnemy(NPC, new_enemy);
 				}
 			}
 		}
@@ -2313,7 +2313,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 		{
 			if (!foundenemy)
 			{
-				if (setEnemy)
+				if (set_enemy)
 				{
 					NPC->lastEnemy = NPC->enemy;
 					G_ClearEnemy(NPC);
@@ -2337,7 +2337,7 @@ gentity_t* NPC_CheckEnemy(qboolean findNew, qboolean tooFarOk, qboolean setEnemy
 			}
 		}
 	}
-	return newEnemy;
+	return new_enemy;
 }
 
 /*

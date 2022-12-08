@@ -183,16 +183,15 @@ void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t m
 CG_Trace
 ================
 */
-void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	const int skipNumber, const int mask, const EG2_Collision eG2TraceType,
-	const int useLod)
+void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, const int skip_number, const
+              int mask)
 {
 	trace_t t;
 
 	cgi_CM_BoxTrace(&t, start, end, mins, maxs, 0, mask);
 	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	// check all other solid models
-	CG_ClipMoveToEntities(start, mins, maxs, end, skipNumber, mask, &t);
+	CG_ClipMoveToEntities(start, mins, maxs, end, skip_number, mask, &t);
 
 	*result = t;
 }
@@ -245,9 +244,9 @@ int		CG_PointContents(const vec3_t point, int passEntityNum) {
 }
 #endif
 
-void CG_SetClientViewAngles(vec3_t angles, const qboolean overrideViewEnt)
+void CG_SetClientViewAngles(vec3_t angles, const qboolean override_view_ent)
 {
-	if (cg.snap->ps.viewEntity <= 0 || cg.snap->ps.viewEntity >= ENTITYNUM_WORLD || overrideViewEnt)
+	if (cg.snap->ps.viewEntity <= 0 || cg.snap->ps.viewEntity >= ENTITYNUM_WORLD || override_view_ent)
 	{
 		//don't clamp angles when looking through a viewEntity
 		for (int i = 0; i < 3; i++)
@@ -364,13 +363,13 @@ cg.snap->player_state and cg.nextFrame->player_state
 void CG_InterpolatePlayerState(const qboolean grabAngles)
 {
 	int i;
-	vec3_t oldOrg;
+	vec3_t old_org;
 
 	playerState_t* out = &cg.predicted_player_state;
 	const snapshot_t* prev = cg.snap;
 	const snapshot_t* next = cg.nextSnap;
 
-	VectorCopy(out->origin, oldOrg);
+	VectorCopy(out->origin, old_org);
 	*out = cg.snap->ps;
 
 	// if we are still allowing local input, short circuit the view angles
@@ -442,7 +441,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		// 0 = no smoothing, 1 = no movement
 		for (i = 0; i < 3; i++)
 		{
-			out->origin[i] = cg_smoothPlayerPos.value * (oldOrg[i] - out->origin[i]) + out->origin[i];
+			out->origin[i] = cg_smoothPlayerPos.value * (old_org[i] - out->origin[i]) + out->origin[i];
 		}
 	}
 	else if (on_plat && cg_smoothPlayerPlat.value > 0.0f && cg_smoothPlayerPlat.value < 1.0f)
@@ -487,7 +486,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 			// 0 = no smoothing, 1 = no movement
 			for (i = 0; i < 3; i++)
 			{
-				out->origin[i] = cg_smoothPlayerPlat.value * (oldOrg[i] - out->origin[i]) + out->origin[i];
+				out->origin[i] = cg_smoothPlayerPlat.value * (old_org[i] - out->origin[i]) + out->origin[i];
 			}
 		}
 		//		}

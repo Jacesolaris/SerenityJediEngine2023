@@ -1491,7 +1491,7 @@ void RE_ClearDecals(void);
 void RE_AddRefEntityToScene(const refEntity_t* ent);
 void RE_AddMiniRefEntityToScene(const miniRefEntity_t* ent);
 void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num);
-void RE_AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary);
+void RE_AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alpha_fade, float radius, qboolean temporary);
 void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b);
 void RE_AddAdditiveLightToScene(const vec3_t org, float intensity, float r, float g, float b);
 void RE_RenderScene(const refdef_t* fd);

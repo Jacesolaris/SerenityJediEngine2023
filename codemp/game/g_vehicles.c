@@ -58,7 +58,6 @@ Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt)
 	const gentity_t* ent = pEnt;
 
 	if (ent && ent->client && ent->client->NPC_class != CLASS_VEHICLE && ent->s.m_iVehicleNum != 0)
-		//ent->client && ( ent->client->ps.eFlags & EF_IN_VEHICLE ) && ent->owner )
 	{
 		return g_entities[ent->s.m_iVehicleNum].m_pVehicle;
 	}
@@ -476,11 +475,11 @@ qboolean Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 	return qtrue;
 }
 
-qboolean VEH_TryEject(Vehicle_t* pVeh,
-	gentity_t* parent,
-	gentity_t* ent,
-	int ejectDir,
-	vec3_t vExitPos)
+qboolean VEH_TryEject(const Vehicle_t* pVeh,
+                      const gentity_t* parent,
+                      gentity_t* ent,
+                      int ejectDir,
+                      vec3_t vExitPos)
 {
 	vec3_t vEntMins, vEntMaxs, vVehLeaveDir, vVehAngles;
 	trace_t m_ExitTrace;
@@ -519,6 +518,7 @@ qboolean VEH_TryEject(Vehicle_t* pVeh,
 		// Bottom?.
 	case VEH_EJECT_BOTTOM:
 		break;
+	default: ;
 	}
 	VectorNormalize(vVehLeaveDir);
 	//NOTE: not sure why following line was needed - MCG
@@ -1046,7 +1046,7 @@ extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 qboolean Initialize(Vehicle_t* pVeh)
 {
 	gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
-	int i = 0;
+	int i;
 
 	if (!parent || !parent->client)
 		return qfalse;
@@ -1592,7 +1592,7 @@ maintainSelfDuringBoarding:
 }
 
 // Update the properties of a Rider (that may reflect what happens to the vehicle).
-static qboolean UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
+static qboolean UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, const usercmd_t* pUmcd)
 {
 	if (pVeh->m_iBoarding != 0 && pVeh->m_iDieTime == 0)
 		return qtrue;
@@ -1772,7 +1772,7 @@ static qboolean UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmc
 extern void AttachRidersGeneric(const Vehicle_t* pVeh);
 
 // Attachs all the riders of this vehicle to their appropriate tag (*driver, *pass1, *pass2, whatever...).
-static void AttachRiders(Vehicle_t* pVeh)
+static void AttachRiders(const Vehicle_t* pVeh)
 {
 	int i = 0;
 

@@ -91,7 +91,7 @@ void G_DropKey(gentity_t* self)
 	self->message = NULL;
 }
 
-void ObjectDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void ObjectDie(gentity_t* self, gentity_t* attacker)
 {
 	if (self->target)
 	{
@@ -120,7 +120,7 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 	vec3_t point, point_dir;
 	vec3_t forward, right, up;
 	vec3_t tangles, tcenter;
-	int Vertical, Forward, Lateral;
+	int vertical, Forward, lateral;
 
 	// Get target forward, right and up.
 	if (target->client)
@@ -151,23 +151,23 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 	const float udot = DotProduct(up, point_dir);
 	if (udot > .800)
 	{
-		Vertical = 4;
+		vertical = 4;
 	}
 	else if (udot > .400)
 	{
-		Vertical = 3;
+		vertical = 3;
 	}
 	else if (udot > -.333)
 	{
-		Vertical = 2;
+		vertical = 2;
 	}
 	else if (udot > -.666)
 	{
-		Vertical = 1;
+		vertical = 1;
 	}
 	else
 	{
-		Vertical = 0;
+		vertical = 0;
 	}
 
 	// Get back to front (forward) position index.
@@ -197,28 +197,28 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 	const float rdot = DotProduct(right, point_dir);
 	if (rdot > .666)
 	{
-		Lateral = 4;
+		lateral = 4;
 	}
 	else if (rdot > .333)
 	{
-		Lateral = 3;
+		lateral = 3;
 	}
 	else if (rdot > -.333)
 	{
-		Lateral = 2;
+		lateral = 2;
 	}
 	else if (rdot > -.666)
 	{
-		Lateral = 1;
+		lateral = 1;
 	}
 	else
 	{
-		Lateral = 0;
+		lateral = 0;
 	}
 
-	const int HitLoc = Vertical * 25 + Forward * 5 + Lateral;
+	const int hit_loc = vertical * 25 + Forward * 5 + lateral;
 
-	if (HitLoc <= 10)
+	if (hit_loc <= 10)
 	{
 		// Feet.
 		if (rdot > 0)
@@ -227,7 +227,7 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 		}
 		return HL_FOOT_LT;
 	}
-	if (HitLoc <= 50)
+	if (hit_loc <= 50)
 	{
 		// Legs.
 		if (rdot > 0)
@@ -236,7 +236,7 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 		}
 		return HL_LEG_LT;
 	}
-	if (HitLoc == 56 || HitLoc == 60 || HitLoc == 61 || HitLoc == 65 || HitLoc == 66 || HitLoc == 70)
+	if (hit_loc == 56 || hit_loc == 60 || hit_loc == 61 || hit_loc == 65 || hit_loc == 66 || hit_loc == 70)
 	{
 		// Hands.
 		if (rdot > 0)
@@ -245,7 +245,7 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 		}
 		return HL_HAND_LT;
 	}
-	if (HitLoc == 83 || HitLoc == 87 || HitLoc == 88 || HitLoc == 92 || HitLoc == 93 || HitLoc == 97)
+	if (hit_loc == 83 || hit_loc == 87 || hit_loc == 88 || hit_loc == 92 || hit_loc == 93 || hit_loc == 97)
 	{
 		// Arms.
 		if (rdot > 0)
@@ -254,7 +254,7 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 		}
 		return HL_ARM_LT;
 	}
-	if (HitLoc >= 107 && HitLoc <= 109 || HitLoc >= 112 && HitLoc <= 114 || HitLoc >= 117 && HitLoc <= 119)
+	if (hit_loc >= 107 && hit_loc <= 109 || hit_loc >= 112 && hit_loc <= 114 || hit_loc >= 117 && hit_loc <= 119)
 	{
 		// Head.
 		return HL_HEAD;
@@ -296,13 +296,13 @@ int G_GetHitLocation(const gentity_t* target, vec3_t ppoint)
 	return HL_NONE;
 }
 
-int G_PickPainAnim(const gentity_t* self, vec3_t point, int damage, int hitLoc)
+int G_PickPainAnim(const gentity_t* self, vec3_t point, int hit_loc)
 {
-	if (hitLoc == HL_NONE)
+	if (hit_loc == HL_NONE)
 	{
-		hitLoc = G_GetHitLocation(self, point);
+		hit_loc = G_GetHitLocation(self, point);
 	}
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_FOOT_RT:
 		return BOTH_PAIN12;
@@ -377,11 +377,6 @@ void ExplodeDeath(gentity_t* self)
 
 	AngleVectors(self->s.angles, forward, NULL, NULL);
 
-	/*if ( self->fxID > 0 )
-	{
-		G_PlayEffect( self->fxID, self->r.currentOrigin, forward );
-	}*/
-
 	if (self->splashDamage > 0 && self->splashRadius > 0)
 	{
 		gentity_t* attacker = self;
@@ -393,7 +388,7 @@ void ExplodeDeath(gentity_t* self)
 			MOD_UNKNOWN);
 	}
 
-	ObjectDie(self, self, self, 20, 0);
+	ObjectDie(self, self);
 }
 
 /*
@@ -401,7 +396,7 @@ void ExplodeDeath(gentity_t* self)
 ScorePlum
 ============
 */
-void ScorePlum(const gentity_t* ent, vec3_t origin, int score)
+void ScorePlum(const gentity_t* ent, vec3_t origin, const int score)
 {
 	gentity_t* plum = G_TempEntity(origin, EV_SCOREPLUM);
 	// only send this temp entity to a single client
@@ -420,7 +415,7 @@ Adds score to both the client and his team
 ============
 */
 extern qboolean g_dontPenalizeTeam; //g_cmds.c
-void AddScore(const gentity_t* ent, vec3_t origin, int score)
+void AddScore(const gentity_t* ent, const int score)
 {
 	if (!ent->client)
 	{
@@ -3408,16 +3403,16 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 					g_entities[otherClNum].inuse && g_entities[otherClNum].client &&
 					otherClNum != attacker->s.number)
 				{
-					AddScore(&g_entities[otherClNum], self->r.currentOrigin, 1);
+					AddScore(&g_entities[otherClNum], 1);
 				}
 				else
 				{
-					AddScore(attacker, self->r.currentOrigin, -1);
+					AddScore(attacker, -1);
 				}
 			}
 			else
 			{
-				AddScore(attacker, self->r.currentOrigin, -1);
+				AddScore(attacker, -1);
 			}
 			if (level.gametype == GT_JEDIMASTER)
 			{
@@ -3438,7 +3433,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 				if (attacker->client && attacker->client->ps.isJediMaster ||
 					self->client && self->client->ps.isJediMaster)
 				{
-					AddScore(attacker, self->r.currentOrigin, 1);
+					AddScore(attacker, 1);
 					AddFatigueKillBonus(attacker, self, meansOfDeath);
 
 					if (self->client && self->client->ps.isJediMaster)
@@ -3453,14 +3448,14 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 
 					if (jm_ent && jm_ent->client)
 					{
-						AddScore(jm_ent, self->r.currentOrigin, 1);
+						AddScore(jm_ent, 1);
 						AddFatigueKillBonus(attacker, self, meansOfDeath);
 					}
 				}
 			}
 			else
 			{
-				AddScore(attacker, self->r.currentOrigin, 1);
+				AddScore(attacker, 1);
 				AddFatigueKillBonus(attacker, self, meansOfDeath);
 			}
 
@@ -3516,16 +3511,16 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 				g_entities[otherClNum].inuse && g_entities[otherClNum].client &&
 				otherClNum != self->s.number)
 			{
-				AddScore(&g_entities[otherClNum], self->r.currentOrigin, 1);
+				AddScore(&g_entities[otherClNum], 1);
 			}
 			else
 			{
-				AddScore(self, self->r.currentOrigin, -1);
+				AddScore(self, -1);
 			}
 		}
 		else
 		{
-			AddScore(self, self->r.currentOrigin, -1);
+			AddScore(self, -1);
 		}
 	}
 
@@ -3587,7 +3582,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 	if (MOD_TEAM_CHANGE == meansOfDeath)
 	{
 		// Give them back a point since they didn't really die.
-		AddScore(self, self->r.currentOrigin, 1);
+		AddScore(self, 1);
 	}
 	else
 	{
@@ -3601,7 +3596,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 			&& level.gametype != GT_POWERDUEL
 			&& level.gametype != GT_SIEGE)
 		{
-			AddScore(self, self->r.currentOrigin, 1);
+			AddScore(self, 1);
 			self->client->sess.losses -= 1;
 		}
 	}

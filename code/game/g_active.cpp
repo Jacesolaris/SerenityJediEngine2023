@@ -31,7 +31,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 constexpr auto SLOWDOWN_DIST = 128.0f;
 constexpr auto MIN_NPC_SPEED = 16.0f;
-
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern void TryUse(gentity_t* ent);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
@@ -258,7 +257,7 @@ int G_FindLookItem(gentity_t* self)
 	return bestEntNum;
 }
 
-extern void CG_SetClientViewAngles(vec3_t angles, qboolean overrideViewEnt);
+extern void CG_SetClientViewAngles(vec3_t angles, qboolean override_view_ent);
 
 qboolean G_ClearViewEntity(gentity_t* ent)
 {

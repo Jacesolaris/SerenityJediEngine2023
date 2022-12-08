@@ -828,8 +828,7 @@ void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
 // cg_predict.c
 //
 int CG_PointContents(const vec3_t point, int passEntityNum);
-void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber, int mask, EG2_Collision eG2TraceType = G2_NOCOLLIDE, int useLod = 0);
+void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skip_number, int mask);
 void CG_PredictPlayerState(void);
 
 //

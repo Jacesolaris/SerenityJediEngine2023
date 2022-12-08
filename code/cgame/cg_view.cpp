@@ -424,7 +424,7 @@ static void CG_CalcIdealThirdPersonViewTarget()
 		VectorCopy(cameraFocusLoc, nudgepos);
 		nudgepos[2] += CAMERA_CROUCH_NUDGE;
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, nudgepos,
-			uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		         uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
 		if (trace.fraction < 1.0)
 		{
 			VectorCopy(trace.endpos, cameraFocusLoc);
@@ -446,7 +446,7 @@ static void CG_CalcIdealThirdPersonViewTarget()
 		VectorCopy(cameraFocusLoc, nudgepos);
 		nudgepos[2] += CAMERA_CROUCH_NUDGE;
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, nudgepos,
-			uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		         uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
 		if (trace.fraction < 1.0)
 		{
 			VectorCopy(trace.endpos, cameraFocusLoc);
@@ -554,7 +554,7 @@ static void CG_ResetThirdPersonViewDamp()
 
 	// First thing we do is trace from the first person viewpoint out to the new target location.
 	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum,
-		MASK_CAMERACLIP);
+	         MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
 		VectorCopy(trace.endpos, cameraCurTarget);
@@ -562,7 +562,7 @@ static void CG_ResetThirdPersonViewDamp()
 
 	// Now we trace from the new target location to the new view location, to make sure there is nothing in the way.
 	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum,
-		MASK_CAMERACLIP);
+	         MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
 		VectorCopy(trace.endpos, cameraCurLoc);
@@ -634,12 +634,12 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 	{
 		//if being held by a sand creature, trace from his actual origin, since we could be underground or otherwise in solid once he eats us
 		CG_Trace(&trace, cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number].lerpOrigin,
-			cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		         cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
 	}
 	else
 	{
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum,
-			MASK_CAMERACLIP);
+		         MASK_CAMERACLIP);
 	}
 	if (trace.fraction < 1.0)
 	{
@@ -749,12 +749,12 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 	{
 		//if being held by a sand creature, trace from his actual origin, since we could be underground or otherwise in solid once he eats us
 		CG_Trace(&trace, cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number].lerpOrigin,
-			cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		         cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
 	}
 	else
 	{
 		CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum,
-			MASK_CAMERACLIP);
+		         MASK_CAMERACLIP);
 	}
 	if (trace.fraction < 1.0f)
 	{

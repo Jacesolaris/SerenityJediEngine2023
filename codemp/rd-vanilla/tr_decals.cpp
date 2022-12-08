@@ -153,17 +153,17 @@ passed to the renderer.
 #define	MAX_DECAL_FRAGMENTS	128
 #define	MAX_DECAL_POINTS		384
 
-void RE_AddDecalToScene(qhandle_t decalShader, const vec3_t origin, const vec3_t dir, float orientation, float red, float green, float blue, float alpha, qboolean alphaFade, float radius, qboolean temporary)
+void RE_AddDecalToScene(const qhandle_t shader, const vec3_t origin, const vec3_t dir, const float orientation, const float r, const float g, const float b, const float a, qboolean alpha_fade, const float radius, const qboolean temporary)
 {
 	matrix3_t		axis;
-	vec3_t			originalPoints[4];
+	vec3_t			original_points[4];
 	byte			colors[4];
 	int				i, j;
-	markFragment_t	markFragments[MAX_DECAL_FRAGMENTS], * mf;
-	vec3_t			markPoints[MAX_DECAL_POINTS];
+	markFragment_t	mark_fragments[MAX_DECAL_FRAGMENTS], * mf;
+	vec3_t			mark_points[MAX_DECAL_POINTS];
 	vec3_t			projection;
 
-	assert(decalShader);
+	assert(shader);
 
 	if (r_markcount->integer <= 0 && !temporary)
 		return;
@@ -177,29 +177,29 @@ void RE_AddDecalToScene(qhandle_t decalShader, const vec3_t origin, const vec3_t
 	RotatePointAroundVector(axis[2], axis[0], axis[1], orientation);
 	CrossProduct(axis[0], axis[2], axis[1]);
 
-	const float texCoordScale = 0.5 * 1.0 / radius;
+	const float tex_coord_scale = 0.5 * 1.0 / radius;
 
 	// create the full polygon
 	for (i = 0; i < 3; i++)
 	{
-		originalPoints[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
-		originalPoints[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
-		originalPoints[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
-		originalPoints[3][i] = origin[i] - radius * axis[1][i] + radius * axis[2][i];
+		original_points[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
+		original_points[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
+		original_points[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
+		original_points[3][i] = origin[i] - radius * axis[1][i] + radius * axis[2][i];
 	}
 
 	// get the fragments
 	VectorScale(dir, -20, projection);
-	const int numFragments = R_MarkFragments(4, originalPoints,
-		projection, MAX_DECAL_POINTS, markPoints[0],
-		MAX_DECAL_FRAGMENTS, markFragments);
+	const int num_fragments = R_MarkFragments(4, original_points,
+		projection, MAX_DECAL_POINTS, mark_points[0],
+		MAX_DECAL_FRAGMENTS, mark_fragments);
 
-	colors[0] = red * 255;
-	colors[1] = green * 255;
-	colors[2] = blue * 255;
-	colors[3] = alpha * 255;
+	colors[0] = r * 255;
+	colors[1] = g * 255;
+	colors[2] = b * 255;
+	colors[3] = a * 255;
 
-	for (i = 0, mf = markFragments; i < numFragments; i++, mf++)
+	for (i = 0, mf = mark_fragments; i < num_fragments; i++, mf++)
 	{
 		polyVert_t* v;
 		polyVert_t	verts[MAX_VERTS_ON_DECAL_POLY];
@@ -213,11 +213,11 @@ void RE_AddDecalToScene(qhandle_t decalShader, const vec3_t origin, const vec3_t
 		{
 			vec3_t		delta;
 
-			VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
+			VectorCopy(mark_points[mf->firstPoint + j], v->xyz);
 
 			VectorSubtract(v->xyz, origin, delta);
-			v->st[0] = 0.5 + DotProduct(delta, axis[1]) * texCoordScale;
-			v->st[1] = 0.5 + DotProduct(delta, axis[2]) * texCoordScale;
+			v->st[0] = 0.5 + DotProduct(delta, axis[1]) * tex_coord_scale;
+			v->st[1] = 0.5 + DotProduct(delta, axis[2]) * tex_coord_scale;
 
 			for (int k = 0; k < 4; k++)
 				v->modulate[k] = colors[k];
@@ -226,19 +226,19 @@ void RE_AddDecalToScene(qhandle_t decalShader, const vec3_t origin, const vec3_t
 		// if it is a temporary (shadow) mark, add it immediately and forget about it
 		if (temporary)
 		{
-			RE_AddPolyToScene(decalShader, mf->numPoints, verts, 1);
+			RE_AddPolyToScene(shader, mf->numPoints, verts, 1);
 			continue;
 		}
 
 		// otherwise save it persistantly
 		decalPoly_t* decal = RE_AllocDecal(DECALPOLY_TYPE_NORMAL);
 		decal->time = tr.refdef.time;
-		decal->shader = decalShader;
+		decal->shader = shader;
 		decal->poly.numVerts = mf->numPoints;
-		decal->color[0] = red;
-		decal->color[1] = green;
-		decal->color[2] = blue;
-		decal->color[3] = alpha;
+		decal->color[0] = r;
+		decal->color[1] = g;
+		decal->color[2] = b;
+		decal->color[3] = a;
 		memcpy(decal->verts, verts, mf->numPoints * sizeof verts[0]);
 	}
 }

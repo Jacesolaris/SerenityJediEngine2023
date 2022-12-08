@@ -1662,7 +1662,7 @@ void BeginIntermission(void);
 void InitBodyQue(void);
 void ClientSpawn(gentity_t* ent);
 void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod);
-void AddScore(const gentity_t* ent, vec3_t origin, int score);
+void AddScore(const gentity_t* ent, int score);
 void CalculateRanks(void);
 qboolean SpotWouldTelefrag(const gentity_t* spot);
 
@@ -1838,7 +1838,7 @@ void QDECL G_ClearClientLog(int client);
 
 // g_siege.c
 void InitSiegeMode(void);
-void G_SiegeClientExData(const gentity_t* msgTarg);
+void G_SiegeClientExData(const gentity_t* msg_targ);
 
 // g_timer
 //Timing information

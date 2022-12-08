@@ -49,7 +49,7 @@ extern qboolean BG_FullBodyTauntAnim(int anim);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
+extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_SaberInTransitionAny(int move);

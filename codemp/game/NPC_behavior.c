@@ -193,11 +193,11 @@ void NPC_BSAdvanceFight(void)
 	}
 }
 
-void Disappear(gentity_t* self)
+void Disappear(gentity_t* ent)
 {
-	self->s.eFlags |= EF_NODRAW;
-	self->think = 0;
-	self->nextthink = -1;
+	ent->s.eFlags |= EF_NODRAW;
+	ent->think = 0;
+	ent->nextthink = -1;
 }
 
 void MakeOwnerInvis(gentity_t* self);

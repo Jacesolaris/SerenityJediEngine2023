@@ -8465,7 +8465,7 @@ CG_`Entity
 */
 #define MAX_XHAIR_DIST_ACCURACY	20000.0f
 void CG_TraceItem(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int skipNumber);
+	int skip_number);
 
 static void CG_ScanForCrosshairEntity(void)
 {

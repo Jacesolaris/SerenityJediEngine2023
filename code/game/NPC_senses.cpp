@@ -341,7 +341,7 @@ qboolean InVisrange(const gentity_t* ent)
 NPC_CheckVisibility
 */
 
-visibility_t NPC_CheckVisibility(const gentity_t* ent, int flags)
+visibility_t NPC_CheckVisibility(const gentity_t* ent, const int flags)
 {
 	// flags should never be 0
 	if (!flags)
@@ -416,14 +416,14 @@ visibility_t NPC_CheckVisibility(const gentity_t* ent, int flags)
 NPC_CheckSoundEvents
 -------------------------
 */
-static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, int ignoreAlert, qboolean mustHaveOwner,
-	int minAlertLevel, qboolean onGroundOnly)
+static int G_CheckSoundEvents(gentity_t* self, float max_hear_dist, const int ignoreAlert, const qboolean mustHaveOwner,
+                              const int minAlertLevel, const qboolean onGroundOnly)
 {
-	int bestEvent = -1;
-	int bestAlert = -1;
-	int bestTime = -1;
+	int best_event = -1;
+	int best_alert = -1;
+	int best_time = -1;
 
-	maxHearDist *= maxHearDist;
+	max_hear_dist *= max_hear_dist;
 
 	for (int i = 0; i < level.numAlertEvents; i++)
 	{
@@ -447,7 +447,7 @@ static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, int ignoreAler
 		const float dist = DistanceSquared(level.alertEvents[i].position, self->currentOrigin);
 
 		//can't hear it
-		if (dist > maxHearDist)
+		if (dist > max_hear_dist)
 			continue;
 
 		if (self->client && self->client->NPC_class != CLASS_SAND_CREATURE)
@@ -469,29 +469,29 @@ static int G_CheckSoundEvents(gentity_t* self, float maxHearDist, int ignoreAler
 		}
 
 		//See if this one takes precedence over the previous one
-		if (level.alertEvents[i].level >= bestAlert //higher alert level
-			|| level.alertEvents[i].level == bestAlert && level.alertEvents[i].timestamp >= bestTime)
+		if (level.alertEvents[i].level >= best_alert //higher alert level
+			|| level.alertEvents[i].level == best_alert && level.alertEvents[i].timestamp >= best_time)
 			//same alert level, but this one is newer
 		{
 			//NOTE: equal is better because it's later in the array
-			bestEvent = i;
-			bestAlert = level.alertEvents[i].level;
-			bestTime = level.alertEvents[i].timestamp;
+			best_event = i;
+			best_alert = level.alertEvents[i].level;
+			best_time = level.alertEvents[i].timestamp;
 		}
 	}
 
-	return bestEvent;
+	return best_event;
 }
 
-float G_GetLightLevel(vec3_t pos, vec3_t fromDir)
+float G_GetLightLevel(vec3_t pos, vec3_t from_dir)
 {
-	vec3_t ambient = { 0 }, directed, lightDir;
+	vec3_t ambient = { 0 }, directed, light_dir;
 
-	cgi_R_GetLighting(pos, ambient, directed, lightDir);
+	cgi_R_GetLighting(pos, ambient, directed, light_dir);
 
-	const float lightLevel = VectorLength(ambient) + VectorLength(directed) * DotProduct(lightDir, fromDir);
+	const float light_level = VectorLength(ambient) + VectorLength(directed) * DotProduct(light_dir, from_dir);
 
-	return lightLevel;
+	return light_level;
 }
 
 /*
@@ -499,14 +499,14 @@ float G_GetLightLevel(vec3_t pos, vec3_t fromDir)
 NPC_CheckSightEvents
 -------------------------
 */
-static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeDist, int ignoreAlert,
-	qboolean mustHaveOwner, int minAlertLevel)
+static int G_CheckSightEvents(gentity_t* self, const int hFOV, const int vFOV, float max_see_dist, const int ignoreAlert,
+                              const qboolean mustHaveOwner, const int minAlertLevel)
 {
-	int bestEvent = -1;
-	int bestAlert = -1;
-	int bestTime = -1;
+	int best_event = -1;
+	int best_alert = -1;
+	int best_time = -1;
 
-	maxSeeDist *= maxSeeDist;
+	max_see_dist *= max_see_dist;
 	for (int i = 0; i < level.numAlertEvents; i++)
 	{
 		//are we purposely ignoring this alert?
@@ -526,7 +526,7 @@ static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeD
 		const float dist = DistanceSquared(level.alertEvents[i].position, self->currentOrigin);
 
 		//can't see it
-		if (dist > maxSeeDist)
+		if (dist > max_see_dist)
 			continue;
 
 		const float radius = level.alertEvents[i].radius * level.alertEvents[i].radius;
@@ -548,21 +548,21 @@ static int G_CheckSightEvents(gentity_t* self, int hFOV, int vFOV, float maxSeeD
 		//			is added to the actual light level at this position?
 
 		//See if this one takes precedence over the previous one
-		if (level.alertEvents[i].level >= bestAlert //higher alert level
-			|| level.alertEvents[i].level == bestAlert && level.alertEvents[i].timestamp >= bestTime)
+		if (level.alertEvents[i].level >= best_alert //higher alert level
+			|| level.alertEvents[i].level == best_alert && level.alertEvents[i].timestamp >= best_time)
 			//same alert level, but this one is newer
 		{
 			//NOTE: equal is better because it's later in the array
-			bestEvent = i;
-			bestAlert = level.alertEvents[i].level;
-			bestTime = level.alertEvents[i].timestamp;
+			best_event = i;
+			best_alert = level.alertEvents[i].level;
+			best_time = level.alertEvents[i].timestamp;
 		}
 	}
 
-	return bestEvent;
+	return best_event;
 }
 
-qboolean G_RememberAlertEvent(gentity_t* self, int alertIndex)
+qboolean G_RememberAlertEvent(gentity_t* self, const int alertIndex)
 {
 	if (!self || !self->NPC)
 	{
@@ -596,11 +596,11 @@ qboolean G_RememberAlertEvent(gentity_t* self, int alertIndex)
 
 	// Now, If It Is Dangerous Enough, We Want To Register This With The Pathfinding System
 	//--------------------------------------------------------------------------------------
-	const bool IsDangerous = at.level >= AEL_DANGER;
-	const bool IsFromNPC = at.owner && at.owner->client;
-	const bool IsFromEnemy = IsFromNPC && at.owner->client->playerTeam != self->client->playerTeam;
+	const bool is_dangerous = at.level >= AEL_DANGER;
+	const bool is_from_npc = at.owner && at.owner->client;
+	const bool is_from_enemy = is_from_npc && at.owner->client->playerTeam != self->client->playerTeam;
 
-	if (IsDangerous && (!IsFromNPC || IsFromEnemy))
+	if (is_dangerous && (!is_from_npc || is_from_enemy))
 	{
 		NAV::RegisterDangerSense(self, alertIndex);
 	}
@@ -616,8 +616,8 @@ NPC_CheckAlertEvents
 -------------------------
 */
 
-int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist, float maxHearDist,
-	int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel, qboolean onGroundOnly)
+int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolean checkSound, const float maxSeeDist, const float maxHearDist,
+                       const int ignoreAlert, const qboolean mustHaveOwner, const int minAlertLevel, const qboolean onGroundOnly)
 {
 	if (&g_entities[0] == nullptr || g_entities[0].health <= 0)
 	{
@@ -625,18 +625,18 @@ int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound
 		return -1;
 	}
 
-	int bestSoundEvent = -1;
-	int bestSoundAlert = -1;
-	int bestSightAlert = -1;
+	int best_sound_event = -1;
+	int best_sound_alert = -1;
+	int best_sight_alert = -1;
 
 	if (checkSound)
 	{
 		//get sound event
-		bestSoundEvent = G_CheckSoundEvents(self, maxHearDist, ignoreAlert, mustHaveOwner, minAlertLevel, onGroundOnly);
+		best_sound_event = G_CheckSoundEvents(self, maxHearDist, ignoreAlert, mustHaveOwner, minAlertLevel, onGroundOnly);
 		//get sound event alert level
-		if (bestSoundEvent >= 0)
+		if (best_sound_event >= 0)
 		{
-			bestSoundAlert = level.alertEvents[bestSoundEvent].level;
+			best_sound_alert = level.alertEvents[best_sound_event].level;
 		}
 	}
 
@@ -657,13 +657,13 @@ int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound
 		//get sight event alert level
 		if (best_sight_event >= 0)
 		{
-			bestSightAlert = level.alertEvents[best_sight_event].level;
+			best_sight_alert = level.alertEvents[best_sight_event].level;
 		}
 
 		//return the one that has a higher alert (or sound if equal)
 		//FIXME:	This doesn't take the distance of the event into account
 
-		if (best_sight_event >= 0 && bestSightAlert > bestSoundAlert)
+		if (best_sight_event >= 0 && best_sight_alert > best_sound_alert)
 		{
 			//valid best sight event, more important than the sound event
 			//get the light level of the alert event for this checker
@@ -681,9 +681,9 @@ int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound
 		}
 	}
 	//return the sound event
-	if (G_RememberAlertEvent(self, bestSoundEvent))
+	if (G_RememberAlertEvent(self, best_sound_event))
 	{
-		return bestSoundEvent;
+		return best_sound_event;
 	}
 	//no event or no new event
 	return -1;

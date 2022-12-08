@@ -208,7 +208,7 @@ NPC_ChoosePainAnimation
 
 #define	MIN_PAIN_TIME	200
 
-extern int G_PickPainAnim(const gentity_t* self, vec3_t point, int damage, int hitLoc);
+extern int G_PickPainAnim(const gentity_t* self, vec3_t point, int hitLoc);
 
 void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, vec3_t point, int damage, int mod, int hitLoc,
 	int voiceEvent)
@@ -331,7 +331,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, vec3_t poi
 			}
 			else if (mod != MOD_ELECTROCUTE)
 			{
-				pain_anim = G_PickPainAnim(self, point, damage, hitLoc);
+				pain_anim = G_PickPainAnim(self, point, hitLoc);
 			}
 
 			if (pain_anim == -1)
@@ -390,7 +390,7 @@ NPC_Pain
 */
 void NPC_Pain(gentity_t* self, gentity_t* attacker, int damage)
 {
-	npcteam_t otherTeam = NPCTEAM_FREE;
+	npcteam_t other_team = NPCTEAM_FREE;
 	int voiceEvent = -1;
 	gentity_t* other = attacker;
 	const int mod = gPainMOD;
@@ -415,12 +415,12 @@ void NPC_Pain(gentity_t* self, gentity_t* attacker, int damage)
 	//MCG: Ignore damage from your own team for now
 	if (other->client)
 	{
-		otherTeam = other->client->playerTeam;
+		other_team = other->client->playerTeam;
 	}
 
 	if (self->client->playerTeam
 		&& other->client
-		&& otherTeam == self->client->playerTeam)
+		&& other_team == self->client->playerTeam)
 	{
 		//hit by a teammate
 		if (other != self->enemy && self != other->enemy)

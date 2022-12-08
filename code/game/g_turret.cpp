@@ -29,7 +29,7 @@ extern cvar_t* g_spskill;
 
 void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 void finish_spawning_turret(gentity_t* base);
-void ObjectDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath);
+void ObjectDie(gentity_t* self, gentity_t* attacker);
 //special routine for tracking angles between client and server -rww
 void turret_SetBoneAngles(gentity_t* ent, const char* bone, const vec3_t angles);
 
@@ -133,7 +133,7 @@ void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 	}
 	else
 	{
-		ObjectDie(self, inflictor, attacker, damage, meansOfDeath);
+		ObjectDie(self, attacker);
 	}
 }
 

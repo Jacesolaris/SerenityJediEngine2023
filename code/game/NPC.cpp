@@ -27,7 +27,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "anims.h"
 #include "g_functions.h"
-#include "say.h"
 #include "Q3_Interface.h"
 #include "g_vehicles.h"
 
@@ -35,7 +34,7 @@ extern vec3_t playerMins;
 extern vec3_t playerMaxs;
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
-extern void NPC_BSNoClip(void);
+extern void NPC_BSNoClip();
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void NPC_ApplyRoff(void);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
@@ -279,97 +278,97 @@ qboolean G_OkayToRemoveCorpse(gentity_t* self)
 	return qtrue;
 }
 
-void NPC_RemoveBody(gentity_t* self)
+void NPC_RemoveBody(gentity_t* ent)
 {
-	self->nextthink = level.time + FRAMETIME / 2;
+	ent->nextthink = level.time + FRAMETIME / 2;
 
 	//run physics at 20fps
-	CorpsePhysics(self);
+	CorpsePhysics(ent);
 
-	if (self->NPC->nextBStateThink <= level.time)
+	if (ent->NPC->nextBStateThink <= level.time)
 	{
 		//run logic at 10 fps
-		if (self->m_iIcarusID != IIcarusInterface::ICARUS_INVALID && !stop_icarus)
+		if (ent->m_iIcarusID != IIcarusInterface::ICARUS_INVALID && !stop_icarus)
 		{
-			IIcarusInterface::GetIcarus()->Update(self->m_iIcarusID);
+			IIcarusInterface::GetIcarus()->Update(ent->m_iIcarusID);
 		}
-		self->NPC->nextBStateThink = level.time + FRAMETIME;
+		ent->NPC->nextBStateThink = level.time + FRAMETIME;
 
-		if (!G_OkayToRemoveCorpse(self))
+		if (!G_OkayToRemoveCorpse(ent))
 		{
 			return;
 		}
 
 		// I don't consider this a hack, it's creative coding . . .
 		// I agree, very creative... need something like this for ATST and GALAKMECH too!
-		if (self->client->NPC_class == CLASS_MARK1)
+		if (ent->client->NPC_class == CLASS_MARK1)
 		{
-			Mark1_dying(self);
+			Mark1_dying(ent);
 		}
 
 		// Since these blow up, remove the bounding box.
-		if (self->client->NPC_class == CLASS_REMOTE
-			|| self->client->NPC_class == CLASS_SENTRY
-			|| self->client->NPC_class == CLASS_PROBE
-			|| self->client->NPC_class == CLASS_INTERROGATOR
-			|| self->client->NPC_class == CLASS_PROBE
-			|| self->client->NPC_class == CLASS_MARK2)
+		if (ent->client->NPC_class == CLASS_REMOTE
+			|| ent->client->NPC_class == CLASS_SENTRY
+			|| ent->client->NPC_class == CLASS_PROBE
+			|| ent->client->NPC_class == CLASS_INTERROGATOR
+			|| ent->client->NPC_class == CLASS_PROBE
+			|| ent->client->NPC_class == CLASS_MARK2)
 		{
-			G_FreeEntity(self);
+			G_FreeEntity(ent);
 			return;
 		}
 
 		//FIXME: don't ever inflate back up?
-		self->maxs[2] = self->client->renderInfo.eyePoint[2] - self->currentOrigin[2] + 4;
-		if (self->maxs[2] < -8)
+		ent->maxs[2] = ent->client->renderInfo.eyePoint[2] - ent->currentOrigin[2] + 4;
+		if (ent->maxs[2] < -8)
 		{
-			self->maxs[2] = -8;
+			ent->maxs[2] = -8;
 		}
 
-		if (self->NPC->aiFlags & NPCAI_HEAL_ROSH)
+		if (ent->NPC->aiFlags & NPCAI_HEAL_ROSH)
 		{
 			//kothos twins' bodies are never removed
 			return;
 		}
 
-		if (self->client->NPC_class == CLASS_GALAKMECH)
+		if (ent->client->NPC_class == CLASS_GALAKMECH)
 		{
 			//never disappears
 			return;
 		}
 
-		if (self->NPC && self->NPC->timeOfDeath <= level.time)
+		if (ent->NPC && ent->NPC->timeOfDeath <= level.time)
 		{
-			self->NPC->timeOfDeath = level.time + 1000;
-			if (self->client->playerTeam == TEAM_ENEMY || self->client->NPC_class == CLASS_PROTOCOL)
+			ent->NPC->timeOfDeath = level.time + 1000;
+			if (ent->client->playerTeam == TEAM_ENEMY || ent->client->NPC_class == CLASS_PROTOCOL)
 			{
-				self->nextthink = level.time + FRAMETIME; // try back in a second
+				ent->nextthink = level.time + FRAMETIME; // try back in a second
 
-				if (DistanceSquared(g_entities[0].currentOrigin, self->currentOrigin) <= REMOVE_DISTANCE_SQR)
+				if (DistanceSquared(g_entities[0].currentOrigin, ent->currentOrigin) <= REMOVE_DISTANCE_SQR)
 				{
 					return;
 				}
 
-				if (InFOVFromPlayerView(self, 110, 90)) // generous FOV check
+				if (InFOVFromPlayerView(ent, 110, 90)) // generous FOV check
 				{
-					if (NPC_ClearLOS(&g_entities[0], self->currentOrigin))
+					if (NPC_ClearLOS(&g_entities[0], ent->currentOrigin))
 					{
 						return;
 					}
 				}
 			}
-			if (self->enemy)
+			if (ent->enemy)
 			{
-				if (self->client && self->client->ps.saberEntityNum > 0 && self->client->ps.saberEntityNum <
+				if (ent->client && ent->client->ps.saberEntityNum > 0 && ent->client->ps.saberEntityNum <
 					ENTITYNUM_WORLD)
 				{
-					gentity_t* saberent = &g_entities[self->client->ps.saberEntityNum];
+					gentity_t* saberent = &g_entities[ent->client->ps.saberEntityNum];
 					if (saberent)
 					{
 						G_FreeEntity(saberent);
 					}
 				}
-				G_FreeEntity(self);
+				G_FreeEntity(ent);
 			}
 		}
 	}
@@ -431,7 +430,7 @@ Effect to be applied when ditching the corpse
 ----------------------------------------
 */
 
-static void NPC_RemoveBodyEffect(void)
+static void NPC_RemoveBodyEffect()
 {
 	if (!NPC || !NPC->client || NPC->s.eFlags & EF_NODRAW)
 		return;
@@ -471,7 +470,7 @@ and returns.
 ====================================================================
 */
 
-void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAngles, qboolean keepPitch)
+void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t store_angles, const qboolean keep_pitch)
 {
 	vec3_t slope;
 	vec3_t nvf, ovf, ovr, new_angles = { 0, 0, 0 };
@@ -505,28 +504,28 @@ void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAng
 		VectorCopy(pass_slope, slope);
 	}
 
-	float oldPitch = 0;
+	float old_pitch = 0;
 	if (forwhom->client && forwhom->client->NPC_class == CLASS_VEHICLE)
 	{
 		//special code for vehicles
-		const Vehicle_t* pVeh = forwhom->m_pVehicle;
+		const Vehicle_t* p_veh = forwhom->m_pVehicle;
 
-		vec3_t tempAngles;
-		tempAngles[PITCH] = tempAngles[ROLL] = 0;
-		tempAngles[YAW] = pVeh->m_vOrientation[YAW];
-		AngleVectors(tempAngles, ovf, ovr, nullptr);
+		vec3_t temp_angles;
+		temp_angles[PITCH] = temp_angles[ROLL] = 0;
+		temp_angles[YAW] = p_veh->m_vOrientation[YAW];
+		AngleVectors(temp_angles, ovf, ovr, nullptr);
 	}
 	else
 	{
-		oldPitch = forwhom->currentAngles[PITCH];
+		old_pitch = forwhom->currentAngles[PITCH];
 		AngleVectors(forwhom->currentAngles, ovf, ovr, nullptr);
 	}
 
 	vectoangles(slope, new_angles);
 	float pitch = new_angles[PITCH] + 90;
-	if (keepPitch)
+	if (keep_pitch)
 	{
-		pitch += oldPitch;
+		pitch += old_pitch;
 	}
 	new_angles[ROLL] = new_angles[PITCH] = 0;
 
@@ -541,10 +540,10 @@ void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope, vec3_t storeAng
 
 	const float dot = DotProduct(nvf, ovf);
 
-	if (storeAngles)
+	if (store_angles)
 	{
-		storeAngles[PITCH] = dot * pitch;
-		storeAngles[ROLL] = (1 - Q_fabs(dot)) * pitch * mod;
+		store_angles[PITCH] = dot * pitch;
+		store_angles[ROLL] = (1 - Q_fabs(dot)) * pitch * mod;
 	}
 	else if (forwhom->client)
 	{

@@ -149,7 +149,7 @@ The activator is given this many points.
 */
 void Use_Target_Score(gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
-	AddScore(activator, ent->r.currentOrigin, ent->count);
+	AddScore(activator, ent->count);
 }
 
 void SP_target_score(gentity_t* ent)

@@ -5408,12 +5408,6 @@ static void PM_SetVehicleAngles(vec3_t normal)
 		//don't bother, this vehicle doesn't bank
 		return;
 	}
-	//FIXME: do 3 traces to define a plane and use that... smoothes it out some, too...
-	//pitch_roll_for_slope( pm->gent, normal, vAngles );
-	//FIXME: maybe have some pitch control in water and/or air?
-
-	//center of gravity affects pitch in air/water (FIXME: what about roll?)
-	//float pitchBias = 90.0f*pVeh->m_pVehicleInfo->centerOfGravity[0];//if centerOfGravity is all the way back (-1.0f), vehicle pitches up 90 degrees when in air
 
 	VectorClear(vAngles);
 
@@ -5427,12 +5421,12 @@ static void PM_SetVehicleAngles(vec3_t normal)
 	{
 		//have a valid surface below me
 		pitch_roll_for_slope(pm->gent, normal, vAngles);
-		const float deltaPitch = vAngles[PITCH] - pVeh->m_vOrientation[PITCH];
-		if (deltaPitch < -10.0f)
+		const float delta_pitch = vAngles[PITCH] - pVeh->m_vOrientation[PITCH];
+		if (delta_pitch < -10.0f)
 		{
 			vAngles[PITCH] = pVeh->m_vOrientation[PITCH] - 10.0f;
 		}
-		else if (deltaPitch > 10.0f)
+		else if (delta_pitch > 10.0f)
 		{
 			vAngles[PITCH] = pVeh->m_vOrientation[PITCH] + 10.0f;
 		}

@@ -207,52 +207,52 @@ qboolean G_OkayToRemoveCorpse(gentity_t* self)
 	return qtrue;
 }
 
-void NPC_RemoveBody(gentity_t* self)
+void NPC_RemoveBody(gentity_t* ent)
 {
-	self->nextthink = level.time + FRAMETIME / 2;
+	ent->nextthink = level.time + FRAMETIME / 2;
 
 	//run physics at 20fps
-	CorpsePhysics(self);
+	CorpsePhysics(ent);
 
-	if (self->NPC->nextBStateThink <= level.time)
+	if (ent->NPC->nextBStateThink <= level.time)
 	{
 		//racc - run logic at 20fps
-		trap->ICARUS_MaintainTaskManager(self->s.number);
-		self->NPC->nextBStateThink = level.time + FRAMETIME;
+		trap->ICARUS_MaintainTaskManager(ent->s.number);
+		ent->NPC->nextBStateThink = level.time + FRAMETIME;
 
-		if (!G_OkayToRemoveCorpse(self))
+		if (!G_OkayToRemoveCorpse(ent))
 		{
 			return;
 		}
-		if (self->client->NPC_class == CLASS_MARK1)
+		if (ent->client->NPC_class == CLASS_MARK1)
 		{
-			Mark1_dying(self);
+			Mark1_dying(ent);
 		}
 
 		// Since these blow up, remove the bounding box.
-		if (self->client->NPC_class == CLASS_REMOTE
-			|| self->client->NPC_class == CLASS_SENTRY
-			|| self->client->NPC_class == CLASS_PROBE
-			|| self->client->NPC_class == CLASS_INTERROGATOR
-			|| self->client->NPC_class == CLASS_PROBE
-			|| self->client->NPC_class == CLASS_MARK2)
+		if (ent->client->NPC_class == CLASS_REMOTE
+			|| ent->client->NPC_class == CLASS_SENTRY
+			|| ent->client->NPC_class == CLASS_PROBE
+			|| ent->client->NPC_class == CLASS_INTERROGATOR
+			|| ent->client->NPC_class == CLASS_PROBE
+			|| ent->client->NPC_class == CLASS_MARK2)
 		{
-			G_FreeEntity(self);
+			G_FreeEntity(ent);
 			return;
 		}
-		self->r.maxs[2] = self->client->renderInfo.eyePoint[2] - self->r.currentOrigin[2] + 4;
-		if (self->r.maxs[2] < -8)
+		ent->r.maxs[2] = ent->client->renderInfo.eyePoint[2] - ent->r.currentOrigin[2] + 4;
+		if (ent->r.maxs[2] < -8)
 		{
-			self->r.maxs[2] = -8;
+			ent->r.maxs[2] = -8;
 		}
 
-		if (self->NPC->aiFlags & NPCAI_HEAL_ROSH)
+		if (ent->NPC->aiFlags & NPCAI_HEAL_ROSH)
 		{
 			//kothos twins' bodies are never removed
 			return;
 		}
 
-		if (self->client->NPC_class == CLASS_GALAKMECH)
+		if (ent->client->NPC_class == CLASS_GALAKMECH)
 		{
 			//never disappears
 			return;
@@ -262,19 +262,19 @@ void NPC_RemoveBody(gentity_t* self)
 		//{//never disappears
 		//	return;
 		//}
-		if (self->NPC && self->NPC->timeOfDeath <= level.time)
+		if (ent->NPC && ent->NPC->timeOfDeath <= level.time)
 		{
-			self->NPC->timeOfDeath = level.time + 1000;
-			if (self->client->playerTeam == NPCTEAM_ENEMY || self->client->NPC_class == CLASS_PROTOCOL)
+			ent->NPC->timeOfDeath = level.time + 1000;
+			if (ent->client->playerTeam == NPCTEAM_ENEMY || ent->client->NPC_class == CLASS_PROTOCOL)
 			{
-				self->nextthink = level.time + FRAMETIME; // try back in a second
+				ent->nextthink = level.time + FRAMETIME; // try back in a second
 
-				if (DistancetoClosestPlayer(self->r.currentOrigin, -1) <= REMOVE_DISTANCE)
+				if (DistancetoClosestPlayer(ent->r.currentOrigin, -1) <= REMOVE_DISTANCE)
 				{
 					return;
 				}
 
-				if (InPlayersFOV(self->r.currentOrigin, -1, 110, 90, qtrue))
+				if (InPlayersFOV(ent->r.currentOrigin, -1, 110, 90, qtrue))
 				{
 					//a player sees the body, delay removal.
 					return;
@@ -282,16 +282,16 @@ void NPC_RemoveBody(gentity_t* self)
 			}
 			//if ( self->enemy )
 			{
-				if (self->client && self->client->ps.saberEntityNum > 0 && self->client->ps.saberEntityNum <
+				if (ent->client && ent->client->ps.saberEntityNum > 0 && ent->client->ps.saberEntityNum <
 					ENTITYNUM_WORLD)
 				{
-					gentity_t* saberent = &g_entities[self->client->ps.saberEntityNum];
+					gentity_t* saberent = &g_entities[ent->client->ps.saberEntityNum];
 					if (saberent)
 					{
 						G_FreeEntity(saberent);
 					}
 				}
-				G_FreeEntity(self);
+				G_FreeEntity(ent);
 			}
 		}
 	}

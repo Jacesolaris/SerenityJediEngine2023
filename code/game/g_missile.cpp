@@ -72,7 +72,7 @@ extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim, gentity_t* attack
 extern int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker);
 extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
 extern void CGCam_BlockShakeSP(float intensity, int duration);
-extern void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
+extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 extern qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 
