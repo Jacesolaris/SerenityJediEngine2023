@@ -696,7 +696,7 @@ int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAle
 		mustHaveOwner, minAlertLevel, onGroundOnly);
 }
 
-extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
+extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
 
 qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 {

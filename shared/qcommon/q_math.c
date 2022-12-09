@@ -247,8 +247,7 @@ int irand(int min, int max)
 
 int Q_irand(int value1, int value2)
 {
-	//return irand(value1, value2);
-	return rand() % (value2 - value1 + 1) + value1;
+	return irand(value1, value2);
 }
 
 int Q_irand2(int min, int max)

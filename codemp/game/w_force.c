@@ -94,7 +94,7 @@ extern qboolean PM_SuperBreakLoseAnim(int anim);
 extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_InWallHoldMove(int anim);
 extern int PM_InGrappleMove(int anim);
-extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
+extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 
 void G_LetGoOfLedge(const gentity_t* ent)
@@ -1296,9 +1296,8 @@ qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower)
 	return WP_ForcePowerAvailable(self, forcePower, 0); // OVERRIDEFIXME
 }
 
-int wp_absorb_conversion(const gentity_t* attacked, const int atd_abs_level, gentity_t* attacker, const int at_power,
-	const int at_power_level, const
-	int at_force_spent)
+int wp_absorb_conversion(const gentity_t* attacked, const int atd_abs_level, const int at_power,
+                         const int at_power_level, const int at_force_spent)
 {
 	if (at_power != FP_DRAIN &&
 		at_power != FP_GRIP &&
@@ -3563,29 +3562,29 @@ void ForceDrain(gentity_t* self)
 	WP_ForcePowerStart(self, FP_DRAIN, 500);
 }
 
-qboolean Jedi_DrainReaction(gentity_t* self, gentity_t* shooter);
+qboolean Jedi_DrainReaction(gentity_t* self);
 
-void ForceDrainDamage(gentity_t* self, gentity_t* traceEnt, vec3_t dir, vec3_t impactPoint)
+void ForceDrainDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, vec3_t impact_point)
 {
 	self->client->dangerTime = level.time;
 	self->client->ps.eFlags &= ~EF_INVULNERABLE;
 	self->client->invulnerableTimer = 0;
 
-	if (traceEnt && traceEnt->takedamage)
+	if (trace_ent && trace_ent->takedamage)
 	{
-		if (traceEnt->client && (!OnSameTeam(self, traceEnt) || g_friendlyFire.integer) && self->client->ps.fd.
-			forceDrainTime < level.time && traceEnt->client->ps.fd.forcePower)
+		if (trace_ent->client && (!OnSameTeam(self, trace_ent) || g_friendlyFire.integer) && self->client->ps.fd.
+			forceDrainTime < level.time && trace_ent->client->ps.fd.forcePower)
 		{
 			//an enemy or object
-			if (!traceEnt->client && traceEnt->s.eType == ET_NPC)
+			if (!trace_ent->client && trace_ent->s.eType == ET_NPC)
 			{
 				//g2animent
-				if (traceEnt->s.genericenemyindex < level.time)
+				if (trace_ent->s.genericenemyindex < level.time)
 				{
-					traceEnt->s.genericenemyindex = level.time + 2000;
+					trace_ent->s.genericenemyindex = level.time + 2000;
 				}
 			}
-			if (ForcePowerUsableOn(self, traceEnt, FP_DRAIN))
+			if (ForcePowerUsableOn(self, trace_ent, FP_DRAIN))
 			{
 				int modPowerLevel = -1;
 				int dmg = 0;
@@ -3602,11 +3601,10 @@ void ForceDrainDamage(gentity_t* self, gentity_t* traceEnt, vec3_t dir, vec3_t i
 					dmg = 4;
 				}
 
-				if (traceEnt->client)
+				if (trace_ent->client)
 				{
-					modPowerLevel = wp_absorb_conversion(traceEnt, traceEnt->client->ps.fd.forcePowerLevel[FP_ABSORB],
-						self, FP_DRAIN, self->client->ps.fd.forcePowerLevel[FP_DRAIN],
-						1);
+					modPowerLevel = wp_absorb_conversion(trace_ent, trace_ent->client->ps.fd.forcePowerLevel[FP_ABSORB],
+					                                     FP_DRAIN, self->client->ps.fd.forcePowerLevel[FP_DRAIN], 1);
 				}
 
 				if (modPowerLevel != -1)
@@ -3627,12 +3625,12 @@ void ForceDrainDamage(gentity_t* self, gentity_t* traceEnt, vec3_t dir, vec3_t i
 
 				if (dmg)
 				{
-					traceEnt->client->ps.fd.forcePower -= dmg;
-					Jedi_DrainReaction(traceEnt, self);
+					trace_ent->client->ps.fd.forcePower -= dmg;
+					Jedi_DrainReaction(trace_ent);
 				}
-				if (traceEnt->client->ps.fd.forcePower < 0)
+				if (trace_ent->client->ps.fd.forcePower < 0)
 				{
-					traceEnt->client->ps.fd.forcePower = 0;
+					trace_ent->client->ps.fd.forcePower = 0;
 				}
 
 				if (self->client->ps.stats[STAT_HEALTH] < self->client->ps.stats[STAT_MAX_HEALTH] &&
@@ -3646,16 +3644,16 @@ void ForceDrainDamage(gentity_t* self, gentity_t* traceEnt, vec3_t dir, vec3_t i
 					self->client->ps.stats[STAT_HEALTH] = self->health;
 				}
 
-				traceEnt->client->ps.fd.forcePowerRegenDebounceTime = level.time + 800;
+				trace_ent->client->ps.fd.forcePowerRegenDebounceTime = level.time + 800;
 				//don't let the client being drained get force power back right away
 
-				if (traceEnt->client->forcePowerSoundDebounce < level.time)
+				if (trace_ent->client->forcePowerSoundDebounce < level.time)
 				{
-					gentity_t* tent = G_TempEntity(impactPoint, EV_FORCE_DRAINED);
+					gentity_t* tent = G_TempEntity(impact_point, EV_FORCE_DRAINED);
 					tent->s.eventParm = DirToByte(dir);
-					tent->s.owner = traceEnt->s.number;
+					tent->s.owner = trace_ent->s.number;
 
-					traceEnt->client->forcePowerSoundDebounce = level.time + 400;
+					trace_ent->client->forcePowerSoundDebounce = level.time + 400;
 				}
 			}
 		}
@@ -3708,18 +3706,18 @@ static void FP_TraceSetStart(const gentity_t* ent, vec3_t start, vec3_t mins, ve
 #define	DESTRUCTION_RANGE				150
 
 //---------------------------------------------------------
-void WP_FireDestruction(gentity_t* ent, int forceLevel)
+void WP_FireDestruction(gentity_t* ent, int force_level)
 //---------------------------------------------------------
 {
 	vec3_t start, forward;
 	const int damage = DESTRUCTION_DAMAGE;
 	float vel = DESTRUCTION_VELOCITY;
 
-	if (forceLevel == FORCE_LEVEL_2)
+	if (force_level == FORCE_LEVEL_2)
 	{
 		vel *= 1.5f;
 	}
-	else if (forceLevel == FORCE_LEVEL_3)
+	else if (force_level == FORCE_LEVEL_3)
 	{
 		vel *= 2.0f;
 	}
@@ -3742,15 +3740,15 @@ void WP_FireDestruction(gentity_t* ent, int forceLevel)
 	VectorSet(missile->r.maxs, FORCE_DESTRUCTION_SIZE, FORCE_DESTRUCTION_SIZE, FORCE_DESTRUCTION_SIZE);
 	VectorScale(missile->r.maxs, -1, missile->r.mins);
 
-	missile->damage = damage * (1.0f + forceLevel) / 2.0f;
+	missile->damage = damage * (1.0f + force_level) / 2.0f;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
 
 	missile->methodOfDeath = MOD_CONC;
 	missile->splashMethodOfDeath = MOD_CONC;
 
 	missile->clipmask = MASK_SHOT;
-	missile->splashDamage = DESTRUCTION_SPLASH_DAMAGE * (1.0f + forceLevel) / 2.0f;
-	missile->splashRadius = DESTRUCTION_SPLASH_RADIUS * (1.0f + forceLevel) / 2.0f;
+	missile->splashDamage = DESTRUCTION_SPLASH_DAMAGE * (1.0f + force_level) / 2.0f;
+	missile->splashRadius = DESTRUCTION_SPLASH_RADIUS * (1.0f + force_level) / 2.0f;
 
 	// we don't want it to ever bounce
 	missile->bounceCount = 0;
@@ -4755,7 +4753,7 @@ qboolean PM_KnockDownAnimExtended(int anim);
 extern qboolean PM_StaggerAnim(int anim);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 
-static qboolean playeris_resisting_force_throw(const gentity_t* player, gentity_t* attacker, qboolean pull)
+static qboolean playeris_resisting_force_throw(const gentity_t* player, gentity_t* attacker)
 {
 	if (player->health <= 0)
 	{
@@ -5016,7 +5014,7 @@ float forcePushPullRadius[NUM_FORCE_POWER_LEVELS] =
 	512
 };
 
-void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean noPenalty)
+void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean no_penalty)
 {
 	int parts;
 	qboolean runningResist = qfalse;
@@ -5089,7 +5087,7 @@ void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean noPen
 	}
 	self->client->ps.powerups[PW_MEDITATE] = level.time + self->client->ps.torsoTimer + 1000;
 
-	if (!noPenalty)
+	if (!no_penalty)
 	{
 		char buf[128];
 
@@ -6192,7 +6190,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 
 				//switched to more logical wasWallGrabbing toggle.
 				if (!wasWallGrabbing && ShouldPlayerResistForceThrow(push_list[x], self, pull) ||
-					playeris_resisting_force_throw(push_list[x], self, pull)
+					playeris_resisting_force_throw(push_list[x], self)
 					&& push_list[x]->client->ps.saberFatigueChainCount < MISHAPLEVEL_HEAVY)
 				{
 					//racc - player blocked the throw.
@@ -7012,9 +7010,8 @@ void DoGripAction(gentity_t* self, forcePowers_t forcePower)
 	trap->Trace(&tr, self->client->ps.origin, NULL, NULL, gripEnt->client->ps.origin, self->s.number, MASK_PLAYERSOLID,
 		qfalse, 0, 0);
 
-	int grip_level = wp_absorb_conversion(gripEnt, gripEnt->client->ps.fd.forcePowerLevel[FP_ABSORB], self, FP_GRIP,
-		self->client->ps.fd.forcePowerLevel[FP_GRIP],
-		forcePowerNeeded[self->client->ps.fd.forcePowerLevel[FP_GRIP]][FP_GRIP]);
+	int grip_level = wp_absorb_conversion(gripEnt, gripEnt->client->ps.fd.forcePowerLevel[FP_ABSORB], FP_GRIP, self->client->ps.fd.forcePowerLevel[FP_GRIP],
+	                                      forcePowerNeeded[self->client->ps.fd.forcePowerLevel[FP_GRIP]][FP_GRIP]);
 
 	if (grip_level == -1)
 	{
@@ -9097,7 +9094,7 @@ void WP_BlockPointsUpdate(const gentity_t* self)
 	}
 }
 
-qboolean Jedi_DrainReaction(gentity_t* self, gentity_t* shooter)
+qboolean Jedi_DrainReaction(gentity_t* self)
 {
 	if (self->health > 0 && !PM_InKnockDown(&self->client->ps)
 		&& self->client->ps.torsoAnim != BOTH_FORCE_DRAIN_GRABBED)

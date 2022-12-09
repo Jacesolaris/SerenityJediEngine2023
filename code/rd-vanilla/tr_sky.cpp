@@ -153,7 +153,7 @@ constexpr auto MAX_CLIP_VERTS = 64;
 ClipSkyPolygon
 ================
 */
-static void ClipSkyPolygon(const int nump, vec3_t vecs, int stage)
+static void ClipSkyPolygon(const int nump, vec3_t vecs, const int stage)
 {
 	float* v;
 	qboolean back;

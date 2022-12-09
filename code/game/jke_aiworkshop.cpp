@@ -730,7 +730,7 @@ extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
 	int weapon_num);
-extern void wp_saber_add_g2_saber_models(gentity_t* ent, int specificSaberNum = -1);
+extern void wp_saber_add_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 extern void wp_saber_add_holstered_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 
 void Workshop_Set_Weapon_f(gentity_t* ent)

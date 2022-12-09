@@ -31,7 +31,7 @@ extern void CG_DrawAlert(vec3_t origin, float rating);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern qboolean PM_InRoll(const playerState_t* ps);
-extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean noPenalty);
+extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean no_penalty);
 
 #define	MAX_VIEW_DIST		2048
 #define MAX_VIEW_SPEED		100
@@ -73,7 +73,7 @@ extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, in
 extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
-extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length);
 extern void WP_ActivateSaber(gentity_t* self);
 
 extern qboolean PM_SaberInStart(int move);
@@ -95,7 +95,7 @@ extern void ForceDashAnimDash(gentity_t* self);
 
 extern qboolean NPC_SomeoneLookingAtMe(gentity_t* ent);
 
-extern int WP_GetVelocityForForceJump(const gentity_t* self, vec3_t jumpVel, const usercmd_t* ucmd);
+extern int WP_GetVelocityForForceJump(const gentity_t* self, vec3_t jump_vel, const usercmd_t* ucmd);
 
 extern void G_TestLine(vec3_t start, vec3_t end, int color, int time);
 
@@ -3658,7 +3658,6 @@ static void Jedi_CombatDistance(int enemy_dist)
 				NPCS.NPC->client->renderInfo.eyeAngles, 0.6f))
 			{
 				//knock it down
-				//WP_KnockdownTurret(NPCS.NPC, NPC->enemy);
 				//do the forcethrow call just for effect
 				ForceThrow(NPCS.NPC, qfalse);
 			}

@@ -95,18 +95,18 @@ extern qboolean G_HasKnockdownAnims(const gentity_t* ent);
 extern int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_LockedAnim(int anim);
-extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lockMode);
+extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
 extern qboolean G_JediInNormalAI(const gentity_t* ent);
 extern void WP_SaberFatigueRegenerate(int overrideAmt);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void bg_reduce_blaster_mishap_level_advanced(playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern float manual_saberblocking(const gentity_t* defender);
 extern float manual_running_and_saberblocking(const gentity_t* defender);
 extern qboolean manual_meleeblocking(const gentity_t* defender);
 extern qboolean manual_melee_dodging(const gentity_t* defender);
-extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern int PM_InGrappleMove(int move);
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean PM_SaberInBrokenParry(int move);
@@ -123,7 +123,7 @@ extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_SaberInTransition(int move);
 extern int IsPressingDashButton(const gentity_t* self);
 extern qboolean PM_SaberInTransitionAny(int move);
-extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
+extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern qboolean PM_SaberInMassiveBounce(int anim);
@@ -160,9 +160,9 @@ extern vmCvar_t cg_thirdPersonAlpha;
 extern vmCvar_t cg_thirdPersonAutoAlpha;
 extern void G_Stumble(gentity_t* hit_ent);
 extern qboolean PM_SaberInBashedAnim(int anim);
-extern int PlayerCanAbsorbKick(const gentity_t* defender, const vec3_t pushDir);
-extern int BotCanAbsorbKick(const gentity_t* defender, const vec3_t pushDir);
-extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength);
+extern int PlayerCanAbsorbKick(const gentity_t* defender, const vec3_t push_dir);
+extern int BotCanAbsorbKick(const gentity_t* defender, const vec3_t push_dir);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length);
 extern qboolean PM_ReloadAnim(int anim);
 extern qboolean JET_Flying(const gentity_t* self);
 extern qboolean PM_InAmputateMove(int anim);
@@ -598,7 +598,7 @@ Check for lava / slime contents and drowning
 =============
 */
 
-extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t force_power, int override_amt);
 
 void P_WorldEffects(gentity_t* ent)
 {
@@ -2039,7 +2039,7 @@ Events will be passed on to the clients for presentation,
 but any server game effects are handled here
 ================
 */
-extern void WP_SabersDamageTrace(gentity_t* ent, qboolean noEffects = qfalse);
+extern void WP_SabersDamageTrace(gentity_t* ent, qboolean no_effects = qfalse);
 extern void wp_saber_update_old_blade_data(gentity_t* ent);
 
 void ClientEvents(gentity_t* ent, int oldEventSequence)
@@ -2681,7 +2681,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						else
 						{
 							//stumble
-							AnimateStun(hitEnt, ent, trace.endpos);
+							AnimateStun(hitEnt, ent);
 						}
 					}
 				}

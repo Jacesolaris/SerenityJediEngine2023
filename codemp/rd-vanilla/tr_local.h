@@ -1469,9 +1469,9 @@ LIGHTS
 ============================================================
 */
 
-void R_DlightBmodel(bmodel_t* bmodel, bool NoLight);
+void R_DlightBmodel(const bmodel_t* bmodel, bool NoLight);
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent);
-void R_TransformDlights(int count, dlight_t* dl, orientationr_t* ori);
+void R_TransformDlights(int count, dlight_t* dl, const orientationr_t* ori);
 int R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
 
 /*
@@ -1497,7 +1497,7 @@ void R_BuildCloudData(const shaderCommands_t* shader);
 void R_InitSkyTexCoords(float cloudLayerHeight);
 void R_DrawSkyBox(shaderCommands_t* shader);
 void RB_DrawSun(void);
-void RB_ClipSkyPolygons(const shaderCommands_t* shader);
+void RB_ClipSkyPolygons(const shaderCommands_t* input);
 /*
 ============================================================
 

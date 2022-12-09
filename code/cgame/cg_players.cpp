@@ -38,10 +38,10 @@ constexpr auto CG_SWINGSPEED = 0.3f;
 #include "animtable.h"
 
 extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int bladeNum);
-extern void wp_saber_swing_sound(const gentity_t* ent, int saberNum, swingType_t swingType);
+extern void wp_saber_swing_sound(const gentity_t* ent, int saber_num, swingType_t swing_type);
 extern qboolean PM_InKataAnim(int anim);
 extern qboolean PM_InLedgeMove(int anim);
-extern void WP_SabersDamageTrace(gentity_t* ent, qboolean noEffects);
+extern void WP_SabersDamageTrace(gentity_t* ent, qboolean no_effects);
 extern void wp_saber_update_old_blade_data(gentity_t* ent);
 
 extern vmCvar_t cg_debugHealthBars;

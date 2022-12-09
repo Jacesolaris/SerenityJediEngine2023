@@ -63,7 +63,7 @@ extern qboolean G_EntIsDoor(int entityNum);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
-extern qboolean WP_SaberLose(gentity_t* self, vec3_t throwDir);
+extern qboolean WP_SaberLose(gentity_t* self, vec3_t throw_dir);
 extern int Jedi_ReCalcParryTime(const gentity_t* self, evasionType_t evasionType);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern saberMoveName_t PM_SaberAnimTransitionMove(saberMoveName_t curmove, saberMoveName_t newmove);
@@ -108,9 +108,9 @@ extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int lengt
 	int spinTime = 0);
 extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
 	int spinTime = 0);
-extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
-extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
+extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t force_power, int override_amt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern float G_ForceWallJumpStrength(void);
 extern qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist);
 extern saberMoveName_t PM_CheckPullAttack();
@@ -118,11 +118,11 @@ extern qboolean JET_Flying(const gentity_t* self);
 extern void JET_FlyStart(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
 extern qboolean PM_LockedAnim(int anim);
-extern qboolean G_TryingKataAttack(gentity_t* self, const usercmd_t* cmd);
+extern qboolean G_TryingKataAttack(const usercmd_t* cmd);
 extern qboolean G_TryingCartwheel(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingJumpAttack(gentity_t* self, usercmd_t* cmd);
 extern qboolean G_TryingJumpForwardAttack(const gentity_t* self, const usercmd_t* cmd);
-extern void wp_saber_swing_sound(const gentity_t* ent, int saberNum, swingType_t swingType);
+extern void wp_saber_swing_sound(const gentity_t* ent, int saber_num, swingType_t swing_type);
 extern qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel);
 extern qboolean PM_SaberInAttackPure(int move);
 qboolean PM_InKnockDown(const playerState_t* ps);
@@ -14625,7 +14625,7 @@ qboolean PM_InSaberLock(const int anim)
 }
 
 extern qboolean ValidAnimFileIndex(int index);
-extern qboolean g_check_increment_lock_anim(int anim, int winOrLose);
+extern qboolean g_check_increment_lock_anim(int anim, int win_or_lose);
 
 qboolean PM_SaberLocked(void)
 {
@@ -15463,7 +15463,7 @@ qboolean PM_CanDoKata(void)
 		&& pm->cmd.forwardmove >= 0 //not moving back (used to be !pm->cmd.forwardmove)
 		&& !pm->cmd.rightmove//not moving r/l
 		&& pm->cmd.upmove <= 0//not jumping...?
-		&& G_TryingKataAttack(pm->gent, &pm->cmd)
+		&& G_TryingKataAttack(&pm->cmd)
 		&& G_EnoughPowerForSpecialMove(pm->ps->forcePower, SABER_KATA_ATTACK_POWER, qtrue))// have enough power
 	{
 		return qtrue;

@@ -39,9 +39,9 @@ Out must have space for two more vertexes than in
 #define	SIDE_FRONT	0
 #define	SIDE_BACK	1
 #define	SIDE_ON		2
-static void R_ChopPolyBehindPlane(int numInPoints, vec3_t inPoints[MAX_VERTS_ON_POLY],
-	int* numOutPoints, vec3_t outPoints[MAX_VERTS_ON_POLY],
-	vec3_t normal, float dist, float epsilon) {
+static void R_ChopPolyBehindPlane(const int num_in_points, vec3_t in_points[MAX_VERTS_ON_POLY],
+                                  int* num_out_points, vec3_t out_points[MAX_VERTS_ON_POLY],
+                                  vec3_t normal, const float dist, const float epsilon) {
 	float		dists[MAX_VERTS_ON_POLY + 4] = { 0 };
 	int			sides[MAX_VERTS_ON_POLY + 4] = { 0 };
 	int			counts[3];
@@ -49,16 +49,16 @@ static void R_ChopPolyBehindPlane(int numInPoints, vec3_t inPoints[MAX_VERTS_ON_
 	int			i;
 
 	// don't clip if it might overflow
-	if (numInPoints >= MAX_VERTS_ON_POLY - 2) {
-		*numOutPoints = 0;
+	if (num_in_points >= MAX_VERTS_ON_POLY - 2) {
+		*num_out_points = 0;
 		return;
 	}
 
 	counts[0] = counts[1] = counts[2] = 0;
 
 	// determine sides for each point
-	for (i = 0; i < numInPoints; i++) {
-		dot = DotProduct(inPoints[i], normal);
+	for (i = 0; i < num_in_points; i++) {
+		dot = DotProduct(in_points[i], normal);
 		dot -= dist;
 		dists[i] = dot;
 		if (dot > epsilon) {
@@ -75,31 +75,31 @@ static void R_ChopPolyBehindPlane(int numInPoints, vec3_t inPoints[MAX_VERTS_ON_
 	sides[i] = sides[0];
 	dists[i] = dists[0];
 
-	*numOutPoints = 0;
+	*num_out_points = 0;
 
 	if (!counts[0]) {
 		return;
 	}
 	if (!counts[1]) {
-		*numOutPoints = numInPoints;
-		memcpy(outPoints, inPoints, numInPoints * sizeof(vec3_t));
+		*num_out_points = num_in_points;
+		memcpy(out_points, in_points, num_in_points * sizeof(vec3_t));
 		return;
 	}
 
-	for (i = 0; i < numInPoints; i++) {
-		const float* p1 = inPoints[i];
-		float* clip = outPoints[*numOutPoints];
+	for (i = 0; i < num_in_points; i++) {
+		const float* p1 = in_points[i];
+		float* clip = out_points[*num_out_points];
 
 		if (sides[i] == SIDE_ON) {
 			VectorCopy(p1, clip);
-			(*numOutPoints)++;
+			(*num_out_points)++;
 			continue;
 		}
 
 		if (sides[i] == SIDE_FRONT) {
 			VectorCopy(p1, clip);
-			(*numOutPoints)++;
-			clip = outPoints[*numOutPoints];
+			(*num_out_points)++;
+			clip = out_points[*num_out_points];
 		}
 
 		if (sides[i + 1] == SIDE_ON || sides[i + 1] == sides[i]) {
@@ -107,7 +107,7 @@ static void R_ChopPolyBehindPlane(int numInPoints, vec3_t inPoints[MAX_VERTS_ON_
 		}
 
 		// generate a split point
-		const float* p2 = inPoints[(i + 1) % numInPoints];
+		const float* p2 = in_points[(i + 1) % num_in_points];
 
 		const float d = dists[i] - dists[i + 1];
 		if (d == 0) {
@@ -123,7 +123,7 @@ static void R_ChopPolyBehindPlane(int numInPoints, vec3_t inPoints[MAX_VERTS_ON_
 			clip[j] = p1[j] + dot * (p2[j] - p1[j]);
 		}
 
-		(*numOutPoints)++;
+		(*num_out_points)++;
 	}
 }
 

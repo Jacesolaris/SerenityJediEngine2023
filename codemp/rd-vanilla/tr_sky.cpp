@@ -58,7 +58,7 @@ static float	sky_min, sky_max;
 AddSkyPolygon
 ================
 */
-static void AddSkyPolygon(int nump, vec3_t vecs)
+static void AddSkyPolygon(const int nump, vec3_t vecs)
 {
 	int		i;
 	vec3_t	v, av;
@@ -151,7 +151,7 @@ static void AddSkyPolygon(int nump, vec3_t vecs)
 ClipSkyPolygon
 ================
 */
-static void ClipSkyPolygon(int nump, vec3_t vecs, int stage)
+static void ClipSkyPolygon(const int nump, vec3_t vecs, const int stage)
 {
 	float* v;
 	qboolean back;
@@ -289,7 +289,7 @@ CLOUD VERTEX GENERATION
 **
 ** Parms: s, t range from -1 to 1
 */
-static void MakeSkyVec(float s, float t, int axis, float outSt[2], vec3_t outXYZ)
+static void MakeSkyVec(float s, float t, const int axis, float outSt[2], vec3_t outXYZ)
 {
 	// 1 = s, 2 = t, 3 = 2048
 	static int	st_to_vec[6][3] =
@@ -306,10 +306,10 @@ static void MakeSkyVec(float s, float t, int axis, float outSt[2], vec3_t outXYZ
 
 	vec3_t		b;
 
-	const float boxSize = backEnd.viewParms.zFar / 1.75;		// div sqrt(3)
-	b[0] = s * boxSize;
-	b[1] = t * boxSize;
-	b[2] = boxSize;
+	const float box_size = backEnd.viewParms.zFar / 1.75;		// div sqrt(3)
+	b[0] = s * box_size;
+	b[1] = t * box_size;
+	b[2] = box_size;
 
 	for (int j = 0; j < 3; j++)
 	{

@@ -275,11 +275,11 @@ constexpr auto FORCE_JUMP_CHARGE_TIME = 1000.0f; //Force jump reaches maximum po
 #define FORCE_POWERS_ROSH_FROM_TWINS ((1<<FP_SPEED)|(1<<FP_GRIP)|(1<<FP_RAGE)|(1<<FP_SABERTHROW))
 
 extern void WP_InitForcePowers(const gentity_t* ent);
-extern int WP_GetVelocityForForceJump(const gentity_t* self, vec3_t jumpVel, const usercmd_t* ucmd);
+extern int WP_GetVelocityForForceJump(const gentity_t* self, vec3_t jump_vel, const usercmd_t* ucmd);
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
 	int weapon_num);
-extern void wp_saber_add_g2_saber_models(gentity_t* ent, int specificSaberNum = -1);
+extern void wp_saber_add_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 extern void wp_saber_add_holstered_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 extern qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber, qboolean setColors = qtrue);
 extern qboolean WP_BreakSaber(gentity_t* ent, const char* surfName, saberType_t saberType = SABER_NONE);

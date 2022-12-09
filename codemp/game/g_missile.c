@@ -69,11 +69,11 @@ extern void CalcEntitySpot(const gentity_t* ent, spot_t spot, vec3_t point);
 extern qboolean pm_walking_or_standing(const gentity_t* self);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern float manual_npc_saberblocking(const gentity_t* defender);
-extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim, gentity_t* attacker, qboolean allowAnyMove);
+extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, vec3_t fwd);
 extern int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker);
-extern void WP_BlockPointsDrain(const gentity_t* self, int Fatigue);
+extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
 extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 extern float manual_running_and_saberblocking(const gentity_t* defender);
@@ -1511,7 +1511,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 		{
 			Com_Printf(S_COLOR_YELLOW"only randomly deflect away the bolt\n");
 		}
-		WP_BrokenBoltBlockKnockBack(blocker, bolt, qtrue);
+		WP_BrokenBoltBlockKnockBack(blocker);
 
 		PM_AddBlockFatigue(&blocker->client->ps, punish);
 	}
@@ -1535,7 +1535,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_FATIGUE)
 				{
 					//very Low points = bad blocks
-					WP_BrokenBoltBlockKnockBack(blocker, bolt, qtrue);
+					WP_BrokenBoltBlockKnockBack(blocker);
 					blocker->client->ps.saberBlocked = BLOCKED_NONE;
 					blocker->client->ps.saberMove = LS_NONE;
 				}
@@ -1583,7 +1583,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_FATIGUE)
 				{
 					//very Low points = bad blocks
-					WP_BrokenBoltBlockKnockBack(blocker, bolt, qtrue);
+					WP_BrokenBoltBlockKnockBack(blocker);
 					blocker->client->ps.saberBlocked = BLOCKED_NONE;
 					blocker->client->ps.saberMove = LS_NONE;
 				}
@@ -1653,7 +1653,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 				if (blocker->client->ps.fd.blockPoints <= BLOCKPOINTS_FATIGUE)
 				{
 					//very Low points = bad blocks
-					WP_BrokenBoltBlockKnockBack(blocker, bolt, qtrue);
+					WP_BrokenBoltBlockKnockBack(blocker);
 					blocker->client->ps.saberBlocked = BLOCKED_NONE;
 					blocker->client->ps.saberMove = LS_NONE;
 				}

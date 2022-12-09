@@ -64,7 +64,7 @@ gentity_t* g_lastClientDamaged;
 extern void Boba_FlyStop(gentity_t* self);
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern void G_StartRoll(gentity_t* ent, int anim);
-extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t force_power, int override_amt);
 extern int killPlayerTimer;
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
@@ -73,7 +73,7 @@ extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern qboolean G_TeamEnemy(const gentity_t* self);
 extern void CG_ChangeWeapon(int num);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
@@ -175,7 +175,7 @@ int WeaponRemovalTime(gentity_t* ent)
 
 extern cvar_t* g_AllowWeaponDropping;
 extern gentity_t* WP_DropThermal(gentity_t* ent);
-extern qboolean WP_SaberLose(gentity_t* self, vec3_t throwDir);
+extern qboolean WP_SaberLose(gentity_t* self, vec3_t throw_dir);
 
 gentity_t* TossClientItems(gentity_t* self)
 {
@@ -7096,7 +7096,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 		else if (targ->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT && !PM_InKnockDown(&targ->client->ps))
 		{
 			//stumble
-			AnimateStun(targ, attacker, point);
+			AnimateStun(targ, attacker);
 		}
 		else
 		{

@@ -42,8 +42,9 @@ This is unfortunate, but the skin files aren't
 compatible with our normal parsing rules.
 ==================
 */
-static char* CommaParse(char** data_p) {
-	int c = 0;
+static char* CommaParse(char** data_p)
+{
+	int c;
 	static	char	com_token[MAX_TOKEN_CHARS];
 
 	char* data = *data_p;
@@ -141,7 +142,7 @@ public:
 	bool operator()(const char *s1, const char *s2) const { return(stricmp(s1, s2) < 0); }
 };
 */
-using AnimationCFGs_t = std::map<sstring_t, char* /*, CStringComparator*/ >;
+using AnimationCFGs_t = std::map<sstring_t, char* >;
 AnimationCFGs_t AnimationCFGs;
 
 // I added this function for development purposes (and it's VM-safe) so we don't have problems
@@ -151,7 +152,7 @@ AnimationCFGs_t AnimationCFGs;
 // Usage:  call with psDest == NULL for a size enquire (for malloc),
 //				then with NZ ptr for it to copy to your supplied buffer...
 //
-int RE_GetAnimationCFG(const char* psCFGFilename, char* psDest, int iDestSize)
+int RE_GetAnimationCFG(const char* psCFGFilename, char* psDest, const int iDestSize)
 {
 	char* psText;
 
@@ -165,16 +166,16 @@ int RE_GetAnimationCFG(const char* psCFGFilename, char* psDest, int iDestSize)
 		// not found, so load it...
 		//
 		fileHandle_t f;
-		const int iLen = ri.FS_FOpenFileRead(psCFGFilename, &f, qfalse);
-		if (iLen <= 0)
+		const int i_len = ri.FS_FOpenFileRead(psCFGFilename, &f, qfalse);
+		if (i_len <= 0)
 		{
 			return 0;
 		}
 
-		psText = static_cast<char*>(R_Malloc(iLen + 1, TAG_ANIMATION_CFG, qfalse));
+		psText = static_cast<char*>(R_Malloc(i_len + 1, TAG_ANIMATION_CFG, qfalse));
 
-		ri.FS_Read(psText, iLen, f);
-		psText[iLen] = '\0';
+		ri.FS_Read(psText, i_len, f);
+		psText[i_len] = '\0';
 		ri.FS_FCloseFile(f);
 
 		AnimationCFGs[psCFGFilename] = psText;

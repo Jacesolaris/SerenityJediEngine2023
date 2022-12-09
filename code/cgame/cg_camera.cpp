@@ -39,7 +39,7 @@ void CGCam_TrackDisable(void);
 void CGCam_Distance(float distance, float initLerp);
 void CGCam_DistanceDisable(void);
 extern qboolean CG_CalcFOVFromX(float fov_x);
-extern void WP_SaberCatch(gentity_t* self, gentity_t* saber, qboolean switchToSaber);
+extern void WP_SaberCatch(gentity_t* self, gentity_t* saber, qboolean switch_to_saber);
 extern vmCvar_t cg_drawwidescreenmodesp;
 
 /*

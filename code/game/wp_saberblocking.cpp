@@ -58,7 +58,7 @@ extern saberMoveName_t PM_KnockawayForParry(int move);
 extern int G_KnockawayForParry(int move);
 extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
-extern qboolean WP_SaberLose(gentity_t* self, vec3_t throwDir);
+extern qboolean WP_SaberLose(gentity_t* self, vec3_t throw_dir);
 extern cvar_t* g_saberAutoBlocking;
 extern qboolean WP_SabersCheckLock(gentity_t* ent1, gentity_t* ent2);
 extern qboolean walk_check(const gentity_t* self);
@@ -70,7 +70,7 @@ extern qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean 
 extern saberMoveName_t PM_BrokenParryForParry(int move);
 extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
 extern void G_Stagger(gentity_t* hit_ent);
-extern void G_FatigueBPKnockaway(gentity_t* Blocker);
+extern void G_FatigueBPKnockaway(gentity_t* blocker);
 extern void G_StaggerAttacker(gentity_t* atk);
 extern void G_BounceAttacker(gentity_t* atk);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
@@ -87,13 +87,13 @@ extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int lengt
 	int spinTime = 0);
 extern void CGCam_BlockShakeSP(float intensity, int duration);
 extern int G_GetParryForBlock(int block);
-extern qboolean WP_SaberDisarmed(gentity_t* self, vec3_t throwDir);
+extern qboolean WP_SaberDisarmed(gentity_t* self, vec3_t throw_dir);
 extern void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 // Saber Blocks
-extern qboolean WP_SaberMBlock(gentity_t* victim, gentity_t* attacker, int saberNum, int bladeNum);
-extern qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
-extern qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
-extern qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum);
+extern qboolean WP_SaberMBlock(gentity_t* victim, gentity_t* attacker, int saber_num, int blade_num);
+extern qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
+extern qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
+extern qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
 void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker);
 extern cvar_t* g_DebugSaberCombat;
 extern qboolean PM_InSaberLock(int anim);

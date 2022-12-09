@@ -64,7 +64,7 @@ extern cvar_t* g_saberNewControlScheme;
 extern cvar_t* g_noIgniteTwirl;
 
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern qboolean ValidAnimFileIndex(int index);
 extern qboolean PM_ControlledByPlayer();
 extern qboolean PM_DroidMelee(int npc_class);
@@ -88,12 +88,12 @@ extern qboolean PM_SaberDrawPutawayAnim(int anim);
 extern void PM_SetJumped(float height, qboolean force);
 extern qboolean PM_InGetUpNoRoll(const playerState_t* ps);
 extern qboolean PM_CrouchAnim(int anim);
-extern qboolean G_TryingKataAttack(gentity_t* self, const usercmd_t* cmd);
+extern qboolean G_TryingKataAttack(const usercmd_t* cmd);
 extern qboolean G_TryingCartwheel(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingJumpAttack(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingJumpForwardAttack(const gentity_t* self, const usercmd_t* cmd);
 extern qboolean G_TryingLungeAttack(const gentity_t* self, const usercmd_t* cmd);
-extern qboolean G_TryingPullAttack(const gentity_t* self, const usercmd_t* cmd, qboolean amPulling);
+extern qboolean G_TryingPullAttack(const gentity_t* self, const usercmd_t* cmd, qboolean am_pulling);
 extern qboolean g_in_cinematic_saber_anim(const gentity_t* self);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_InSaberAnim(int anim);
@@ -3101,7 +3101,7 @@ saberMoveName_t PM_CheckStabDown()
 	if (pm->ps->clientNum < MAX_CLIENTS || PM_ControlledByPlayer()) //PLAYER ONLY
 	{
 		//player
-		if (G_TryingKataAttack(pm->gent, &pm->cmd))
+		if (G_TryingKataAttack(&pm->cmd))
 		{
 			//want to try a special
 			return LS_NONE;
@@ -4256,7 +4256,7 @@ saberMoveName_t PM_CheckDualSpinProtect()
 	if (pm->ps->saberMove == LS_READY //ready
 		&& pm->ps->saberAnimLevel == SS_DUAL //using dual saber style
 		&& pm->ps->saber[0].Active() && pm->ps->saber[1].Active() //both sabers on
-		&& G_TryingKataAttack(pm->gent, &pm->cmd)
+		&& G_TryingKataAttack(&pm->cmd)
 		&& G_EnoughPowerForSpecialMove(pm->ps->forcePower, SABER_ALT_ATTACK_POWER, qtrue)
 		//pm->ps->forcePower >= SABER_ALT_ATTACK_POWER//DUAL_SPIN_PROTECT_POWER//force push 3
 		&& pm->cmd.buttons & BUTTON_ATTACK) //pressing attack
@@ -4332,7 +4332,7 @@ saberMoveName_t PM_CheckStaffKata()
 	if (pm->ps->saberMove == LS_READY //ready
 		&& pm->ps->saberAnimLevel == SS_STAFF //using dual saber style
 		&& pm->ps->saber[0].Active() //saber on
-		&& G_TryingKataAttack(pm->gent, &pm->cmd)
+		&& G_TryingKataAttack(&pm->cmd)
 		&& G_EnoughPowerForSpecialMove(pm->ps->forcePower, SABER_ALT_ATTACK_POWER, qtrue)
 		&& pm->cmd.buttons & BUTTON_ATTACK) //pressing attack
 	{
@@ -4347,7 +4347,7 @@ saberMoveName_t PM_CheckStaffKata()
 	return LS_NONE;
 }
 
-extern qboolean WP_ForceThrowable(gentity_t* ent, const gentity_t* forwardEnt, const gentity_t* self, qboolean pull, float cone,
+extern qboolean WP_ForceThrowable(gentity_t* ent, const gentity_t* forward_ent, const gentity_t* self, qboolean pull, float cone,
 	float radius, vec3_t forward);
 
 saberMoveName_t PM_CheckPullAttack()

@@ -31,7 +31,7 @@ extern qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self);
 extern int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern void g_missile_reflect_effect(const gentity_t* ent, vec3_t org, vec3_t dir);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern int WP_SaberBlockCost(gentity_t* defender, const gentity_t* attacker, vec3_t hitLocs);
 
 static void WP_FireConcussionAlt(gentity_t* ent)

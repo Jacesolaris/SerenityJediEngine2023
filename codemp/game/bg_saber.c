@@ -1797,7 +1797,7 @@ void PM_SaberLockBreak(playerState_t* genemy, const qboolean victory, const int 
 	}
 }
 
-qboolean g_check_increment_lock_anim(const int anim, const int winOrLose)
+qboolean g_check_increment_lock_anim(const int anim, const int win_or_lose)
 {
 	qboolean increment = qfalse;
 
@@ -1818,7 +1818,7 @@ qboolean g_check_increment_lock_anim(const int anim, const int winOrLose)
 	case BOTH_LK_ST_S_T_L_1: //lock if I'm using staff vs. a single
 	case BOTH_LK_ST_ST_T_L_1: //lock if I'm using staff vs. a staff and I initiated
 	case BOTH_LK_ST_ST_T_L_2: //lock if I'm using staff vs. a staff and other initiated
-		if (winOrLose == SABER_LOCK_WIN)
+		if (win_or_lose == SABER_LOCK_WIN)
 		{
 			increment = qtrue;
 		}
@@ -1839,7 +1839,7 @@ qboolean g_check_increment_lock_anim(const int anim, const int winOrLose)
 	case BOTH_LK_ST_DL_T_L_1: //lock if I'm using staff vs. dual
 	case BOTH_LK_ST_ST_S_L_1: //lock if I'm using staff vs. a staff and I initiated
 	case BOTH_LK_ST_ST_S_L_2: //lock if I'm using staff vs. a staff and other initiated
-		if (winOrLose == SABER_LOCK_WIN)
+		if (win_or_lose == SABER_LOCK_WIN)
 		{
 			increment = qfalse;
 		}

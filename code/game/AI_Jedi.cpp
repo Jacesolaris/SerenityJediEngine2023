@@ -52,11 +52,11 @@ extern void ForceAbsorb(gentity_t* self);
 extern qboolean ForceDrain2(gentity_t* self);
 extern void ForceLightningStrike(gentity_t* self);
 extern int WP_MissileBlockForBlock(int saber_block);
-extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
-extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
-extern void WP_KnockdownTurret(gentity_t* self, gentity_t* pas);
-extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
+extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t force_power, int override_amt);
+extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t force_power, int override_amt);
+extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
+extern void WP_KnockdownTurret(gentity_t* pas);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
@@ -90,7 +90,7 @@ extern saberMoveName_t g_pick_auto_multi_kick(gentity_t* self, qboolean allowSin
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f);
 extern float NPC_EnemyRangeFromBolt(int boltIndex);
-extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lockMode);
+extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
@@ -115,7 +115,7 @@ static qboolean Jedi_SaberBlock();
 static qboolean Jedi_AttackDecide(int enemy_dist);
 extern void add_npc_block_point_bonus(const gentity_t* self);
 extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC);
-extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clearLength = qfalse);
+extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
@@ -2841,7 +2841,7 @@ static void Jedi_CombatDistance(const int enemy_dist)
 				0.6f))
 			{
 				//knock it down
-				WP_KnockdownTurret(NPC, NPC->enemy);
+				WP_KnockdownTurret(NPC->enemy);
 				//do the forcethrow call just for effect
 				ForceThrow(NPC, qfalse);
 			}

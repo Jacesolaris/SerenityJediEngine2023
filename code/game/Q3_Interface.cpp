@@ -69,7 +69,7 @@ extern void WP_SaberSetColor(const gentity_t* ent, int saberNum, int bladeNum, c
 extern void WP_SetSaber(gentity_t* ent, int saberNum, const char* saberName);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern void G_ChangePlayerModel(gentity_t* ent, const char* newModel);
-extern void WP_SetSaberOrigin(gentity_t* self, vec3_t newOrg);
+extern void WP_SetSaberOrigin(gentity_t* self, vec3_t new_org);
 extern void JET_FlyStart(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
 extern void Rail_LockCenterOfTrack(const char* trackName);

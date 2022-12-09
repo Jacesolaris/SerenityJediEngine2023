@@ -39,7 +39,7 @@ extern void WP_SetSaber(gentity_t* ent, int saberNum, const char* saberName);
 extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
 extern void wp_saber_fall_sound(const gentity_t* owner, const gentity_t* saber);
 extern saber_colors_t TranslateSaberColor(const char* name);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 
 extern cvar_t* g_spskill;
 extern cvar_t* g_sex;

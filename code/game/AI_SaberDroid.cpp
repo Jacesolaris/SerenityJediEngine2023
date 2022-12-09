@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_navigator.h"
 #include "wp_saber.h"
 
-extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern int PM_AnimLength(int index, animNumber_t anim);
 
 qboolean NPC_CheckPlayerTeamStealth(void);

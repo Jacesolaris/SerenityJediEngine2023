@@ -53,7 +53,7 @@ extern qboolean PM_InReboundHold(int anim);
 extern qboolean PM_InKnockDownNoGetup(const playerState_t* ps);
 extern qboolean PM_InGetUpNoRoll(const playerState_t* ps);
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
-extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
 extern qboolean PM_MeleeblockHoldAnim(int anim);

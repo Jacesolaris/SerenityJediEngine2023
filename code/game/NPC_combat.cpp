@@ -1256,7 +1256,7 @@ extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
-extern void WP_DeactivateSaber(const gentity_t* self, qboolean clearLength = qfalse);
+extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
