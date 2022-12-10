@@ -79,7 +79,7 @@ static void ClearAllInUse(void)
 	memset(g_entityInUseBits, 0, sizeof g_entityInUseBits);
 }
 
-void SetInUse(gentity_t* ent)
+void SetInUse(const gentity_t* ent)
 {
 	assert(reinterpret_cast<uintptr_t>(ent) >= reinterpret_cast<uintptr_t>(g_entities));
 	assert(reinterpret_cast<uintptr_t>(ent) <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
@@ -87,7 +87,7 @@ void SetInUse(gentity_t* ent)
 	g_entityInUseBits[entNum / 32] |= static_cast<unsigned>(1) << (entNum & 0x1f);
 }
 
-void ClearInUse(gentity_t* ent)
+void ClearInUse(const gentity_t* ent)
 {
 	assert(reinterpret_cast<uintptr_t>(ent) >= reinterpret_cast<uintptr_t>(g_entities));
 	assert(reinterpret_cast<uintptr_t>(ent) <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));

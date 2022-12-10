@@ -4435,7 +4435,7 @@ void cg_missile_hit_player(const centity_t* cent, const int weapon, vec3_t origi
 	case WP_DISRUPTOR:
 		if (cent->currentState.powerups & 1 << PW_FORCE_PROJECTILE)
 		{
-			FX_StrikeHitPlayer(origin, dir, humanoid);
+			FX_StrikeHitPlayer(origin, dir);
 		}
 		break;
 
@@ -4478,7 +4478,7 @@ void cg_missile_hit_player(const centity_t* cent, const int weapon, vec3_t origi
 	case WP_ROCKET_LAUNCHER:
 		if (cent->currentState.powerups & 1 << PW_FORCE_PROJECTILE)
 		{
-			FX_BlastHitPlayer(origin, dir, humanoid);
+			FX_BlastHitPlayer(origin, dir);
 		}
 		else
 		{

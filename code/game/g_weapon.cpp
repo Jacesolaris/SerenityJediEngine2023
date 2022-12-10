@@ -97,7 +97,7 @@ float weaponSpeed[WP_NUM_WEAPONS][2] =
 	{0, 0}, //WP_NOGHRI_STICK,
 };
 
-float WP_SpeedOfMissileForWeapon(int wp, qboolean alt_fire)
+float WP_SpeedOfMissileForWeapon(const int wp, const qboolean alt_fire)
 {
 	if (alt_fire)
 	{
@@ -107,16 +107,16 @@ float WP_SpeedOfMissileForWeapon(int wp, qboolean alt_fire)
 }
 
 //-----------------------------------------------------------------------------
-void WP_TraceSetStart(const gentity_t* ent, vec3_t start, const vec3_t mins, const vec3_t maxs)
+void WP_TraceSetStart(const gentity_t* ent, vec3_t start)
 //-----------------------------------------------------------------------------
 {
 	//make sure our start point isn't on the other side of a wall
 	trace_t tr;
-	vec3_t entMins, newstart;
-	vec3_t entMaxs;
+	vec3_t ent_mins, newstart;
+	vec3_t ent_maxs;
 
-	VectorSet(entMaxs, 5, 5, 5);
-	VectorScale(entMaxs, -1, entMins);
+	VectorSet(ent_maxs, 5, 5, 5);
+	VectorScale(ent_maxs, -1, ent_mins);
 
 	if (!ent->client)
 	{
@@ -126,7 +126,7 @@ void WP_TraceSetStart(const gentity_t* ent, vec3_t start, const vec3_t mins, con
 	VectorCopy(ent->currentOrigin, newstart);
 	newstart[2] = start[2]; // force newstart to be on the same plane as the muzzle ( start )
 
-	gi.trace(&tr, newstart, entMins, entMaxs, start, ent->s.number, MASK_SOLID | CONTENTS_SHOTCLIP,
+	gi.trace(&tr, newstart, ent_mins, ent_maxs, start, ent->s.number, MASK_SOLID | CONTENTS_SHOTCLIP,
 		static_cast<EG2_Collision>(0), 0);
 
 	if (tr.startsolid || tr.allsolid)
@@ -490,9 +490,8 @@ void CalcMuzzlePoint2(const gentity_t* const ent, vec3_t forwardVec, vec3_t righ
 }
 
 //---------------------------------------------------------
-void CalcMuzzlePoint(gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3_t up, vec3_t muzzlePoint,
-	float lead_in)
-	//---------------------------------------------------------
+void CalcMuzzlePoint(gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3_t up, vec3_t muzzlePoint, float lead_in)
+//---------------------------------------------------------
 {
 	vec3_t org;
 	mdxaBone_t boltMatrix;
@@ -718,7 +717,7 @@ void WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWea
 		VectorScale(maxs, -1, mins);
 
 		//make sure our start point isn't on the other side of a wall
-		WP_TraceSetStart(ent, start, mins, maxs);
+		WP_TraceSetStart(ent, start);
 
 		//QUERY: alt_fire true or not?  Does it matter?
 		gentity_t* missile = create_missile(start, dir, vehWeapon->fSpeed, 10000, ent, qfalse);
@@ -1292,7 +1291,7 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 	qboolean render_impact = qtrue;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 
 	WP_MissileTargetHint(ent, start, forwardVec);
 	VectorMA(start, shot_range, forwardVec, end);

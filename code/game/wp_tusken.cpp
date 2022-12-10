@@ -40,7 +40,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 	trace_t tr;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 
 	int ignore = ent->s.number;
 	int traces = 0;

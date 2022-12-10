@@ -38,7 +38,7 @@ enum
 	LSTATE_DROP
 };
 
-void ImperialProbe_Idle(void);
+void ImperialProbe_Idle();
 
 void NPC_Probe_Precache()
 {
@@ -67,7 +67,7 @@ Hunter_MaintainHeight
 
 constexpr auto VELOCITY_DECAY = 0.85f;
 
-void ImperialProbe_MaintainHeight(void)
+void ImperialProbe_MaintainHeight()
 {
 	float dif;
 	//	vec3_t	endPos;
@@ -170,7 +170,7 @@ constexpr auto HUNTER_STRAFE_VEL = 256;
 constexpr auto HUNTER_STRAFE_DIS = 200;
 constexpr auto HUNTER_UPWARD_PUSH = 32;
 
-void ImperialProbe_Strafe(void)
+void ImperialProbe_Strafe()
 {
 	vec3_t end, right;
 	trace_t tr;
@@ -208,7 +208,7 @@ ImperialProbe_Hunt
 constexpr auto HUNTER_FORWARD_BASE_SPEED = 10;
 constexpr auto HUNTER_FORWARD_MULTIPLIER = 5;
 
-void ImperialProbe_Hunt(qboolean visible, qboolean advance)
+void ImperialProbe_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -252,19 +252,19 @@ void ImperialProbe_Hunt(qboolean visible, qboolean advance)
 ImperialProbe_FireBlaster
 -------------------------
 */
-void ImperialProbe_FireBlaster(void)
+void ImperialProbe_FireBlaster()
 {
 	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 
 	//FIXME: use {0, NPC->client->ps.legsYaw, 0}
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 		NPC->genericBolt1,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+		&bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
 	G_PlayEffect("bryar_old/muzzle_flash", muzzle1);
 
@@ -272,15 +272,15 @@ void ImperialProbe_FireBlaster(void)
 
 	if (NPC->health)
 	{
-		vec3_t angleToEnemy1;
+		vec3_t angle_to_enemy1;
 		vec3_t delta1;
 		vec3_t enemy_org1;
 		CalcEntitySpot(NPC->enemy, SPOT_CHEST, enemy_org1);
 		enemy_org1[0] += Q_irand(0, 10);
 		enemy_org1[1] += Q_irand(0, 10);
 		VectorSubtract(enemy_org1, muzzle1, delta1);
-		vectoangles(delta1, angleToEnemy1);
-		AngleVectors(angleToEnemy1, forward, vright, up);
+		vectoangles(delta1, angle_to_enemy1);
+		AngleVectors(angle_to_enemy1, forward, vright, up);
 	}
 	else
 	{
@@ -311,7 +311,7 @@ void ImperialProbe_FireBlaster(void)
 ImperialProbe_Ranged
 -------------------------
 */
-void ImperialProbe_Ranged(qboolean visible, qboolean advance)
+void ImperialProbe_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{
@@ -335,7 +335,6 @@ void ImperialProbe_Ranged(qboolean visible, qboolean advance)
 
 		TIMER_Set(NPC, "attackDelay", Q_irand(delay_min, delay_max));
 		ImperialProbe_FireBlaster();
-		//		ucmd.buttons |= BUTTON_ATTACK;
 	}
 
 	if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
@@ -356,7 +355,7 @@ constexpr auto MIN_MELEE_RANGE = 320;
 constexpr auto MIN_DISTANCE = 128;
 #define MIN_DISTANCE_SQR	( MIN_DISTANCE * MIN_DISTANCE )
 
-void ImperialProbe_AttackDecision(void)
+void ImperialProbe_AttackDecision()
 {
 	// Always keep a good height off the ground
 	ImperialProbe_MaintainHeight();
@@ -409,18 +408,17 @@ void ImperialProbe_AttackDecision(void)
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hitLoc)
 {
 	VectorCopy(self->NPC->lastPathAngles, self->s.angles);
 
 	if (self->health < 30 || mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT) // demp2 always messes them up real good
 	{
-		vec3_t endPos;
+		vec3_t end_pos;
 		trace_t trace;
 
-		VectorSet(endPos, self->currentOrigin[0], self->currentOrigin[1], self->currentOrigin[2] - 128);
-		gi.trace(&trace, self->currentOrigin, nullptr, nullptr, endPos, self->s.number, MASK_SOLID,
+		VectorSet(end_pos, self->currentOrigin[0], self->currentOrigin[1], self->currentOrigin[2] - 128);
+		gi.trace(&trace, self->currentOrigin, nullptr, nullptr, end_pos, self->s.number, MASK_SOLID,
 			static_cast<EG2_Collision>(0), 0);
 
 		if (trace.fraction == 1.0f || mod == MOD_DEMP2) // demp2 always does this
@@ -439,13 +437,13 @@ void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 				self->client->ps.gravity = g_gravity->value * .1;
 			}
 
-			if ((mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT) && other)
+			if ((mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT) && attacker)
 			{
 				vec3_t dir;
 
 				NPC_SetAnim(self, SETANIM_BOTH, BOTH_PAIN1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 
-				VectorSubtract(self->currentOrigin, other->currentOrigin, dir);
+				VectorSubtract(self->currentOrigin, attacker->currentOrigin, dir);
 				VectorNormalize(dir);
 
 				VectorMA(self->client->ps.velocity, 550, dir, self->client->ps.velocity);
@@ -468,7 +466,7 @@ void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 		}
 	}
 
-	NPC_Pain(self, inflictor, other, point, damage, mod);
+	NPC_Pain(self, inflictor, attacker, point, damage, mod);
 }
 
 /*
@@ -477,7 +475,7 @@ ImperialProbe_Idle
 -------------------------
 */
 
-void ImperialProbe_Idle(void)
+void ImperialProbe_Idle()
 {
 	ImperialProbe_MaintainHeight();
 
@@ -489,7 +487,7 @@ void ImperialProbe_Idle(void)
 NPC_BSImperialProbe_Patrol
 -------------------------
 */
-void ImperialProbe_Patrol(void)
+void ImperialProbe_Patrol()
 {
 	ImperialProbe_MaintainHeight();
 
@@ -534,17 +532,17 @@ void ImperialProbe_Patrol(void)
 ImperialProbe_Wait
 -------------------------
 */
-void ImperialProbe_Wait(void)
+void ImperialProbe_Wait()
 {
 	if (NPCInfo->localState == LSTATE_DROP)
 	{
-		vec3_t endPos;
+		vec3_t end_pos;
 		trace_t trace;
 
 		NPCInfo->desiredYaw = AngleNormalize360(NPCInfo->desiredYaw + 25);
 
-		VectorSet(endPos, NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->currentOrigin[2] - 32);
-		gi.trace(&trace, NPC->currentOrigin, nullptr, nullptr, endPos, NPC->s.number, MASK_SOLID,
+		VectorSet(end_pos, NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->currentOrigin[2] - 32);
+		gi.trace(&trace, NPC->currentOrigin, nullptr, nullptr, end_pos, NPC->s.number, MASK_SOLID,
 			static_cast<EG2_Collision>(0), 0);
 
 		if (trace.fraction != 1.0f)
@@ -561,7 +559,7 @@ void ImperialProbe_Wait(void)
 NPC_BSImperialProbe_Default
 -------------------------
 */
-void NPC_BSImperialProbe_Default(void)
+void NPC_BSImperialProbe_Default()
 {
 	if (NPC->enemy)
 	{

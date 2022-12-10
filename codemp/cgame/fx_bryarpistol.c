@@ -331,7 +331,7 @@ FX_DestructionProjectileThink
 ---------------------------
 */
 
-void FX_DestructionProjectileThink(centity_t* cent, const struct weaponInfo_s* weapon)
+void FX_DestructionProjectileThink(centity_t* cent)
 {
 	vec3_t forward;
 

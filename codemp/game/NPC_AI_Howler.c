@@ -37,7 +37,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define HOWLER_RETREAT_DIST	300.0f
 #define HOWLER_PANIC_HEALTH	10
 
-static void Howler_Attack(float enemyDist, qboolean howl);
+static void Howler_Attack(float enemy_dist, qboolean howl);
 extern qboolean NPC_TryJump_Gent(gentity_t* goal, float max_xy_dist, float max_z_diff);
 extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex); //NPC_utils.c
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
@@ -77,7 +77,7 @@ void Howler_ClearTimers(const gentity_t* self)
 }
 
 //added from SP
-static qboolean NPC_Howler_Move(int randomJumpChance)
+static qboolean NPC_Howler_Move(const int random_jump_chance)
 {
 	if (!TIMER_Done(NPCS.NPC, "standing"))
 	{
@@ -93,7 +93,7 @@ static qboolean NPC_Howler_Move(int randomJumpChance)
 	{
 		NPCS.ucmd.buttons |= BUTTON_WALKING;
 	}
-	if ((!randomJumpChance || Q_irand(0, randomJumpChance))
+	if ((!random_jump_chance || Q_irand(0, random_jump_chance))
 		&& NPC_MoveToGoal(qtrue))
 	{
 		if (VectorCompare(NPCS.NPC->client->ps.moveDir, vec3_origin)
@@ -159,7 +159,7 @@ Howler_Patrol
 //Replaced with SP version
 static void Howler_Patrol(void)
 {
-	gentity_t* ClosestPlayer = FindClosestPlayer(NPCS.NPC->r.currentOrigin, NPCS.NPC->client->enemyTeam);
+	gentity_t* closest_player = FindClosestPlayer(NPCS.NPC->r.currentOrigin, NPCS.NPC->client->enemyTeam);
 	vec3_t dif;
 
 	NPCS.NPCInfo->localState = LSTATE_CLEAR;
@@ -183,12 +183,12 @@ static void Howler_Patrol(void)
 		G_SetEnemy(NPCS.NPC, &g_entities[0]);
 	}
 
-	if (ClosestPlayer)
+	if (closest_player)
 	{
 		//attack enemy players that are close.
-		if (Distance(ClosestPlayer->r.currentOrigin, NPCS.NPC->r.currentOrigin) < 256 * 256)
+		if (Distance(closest_player->r.currentOrigin, NPCS.NPC->r.currentOrigin) < 256 * 256)
 		{
-			G_SetEnemy(NPCS.NPC, ClosestPlayer);
+			G_SetEnemy(NPCS.NPC, closest_player);
 		}
 	}
 
@@ -207,7 +207,7 @@ Howler_Move
 -------------------------
 */
 //replaced with SP version
-static qboolean Howler_Move(qboolean visible)
+static qboolean Howler_Move()
 {
 	if (NPCS.NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -225,7 +225,7 @@ extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 
-static void Howler_TryDamage(int damage, qboolean tongue, qboolean knockdown)
+static void Howler_TryDamage(const int damage, const qboolean tongue, const qboolean knockdown)
 {
 	vec3_t start, end, dir;
 	trace_t tr;
@@ -389,7 +389,7 @@ static void Howler_Howl(void)
 //replaced with SP version
 void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
 
-static void Howler_Attack(float enemyDist, qboolean howl)
+static void Howler_Attack(float enemy_dist, qboolean howl)
 {
 	const int dmg = NPCS.NPCInfo->localState == LSTATE_BERZERK ? 5 : 2;
 
@@ -400,7 +400,7 @@ static void Howler_Attack(float enemyDist, qboolean howl)
 		int attackAnim = BOTH_GESTURE1;
 		// Going to do an attack
 		if (NPCS.NPC->enemy && NPCS.NPC->enemy->client && PM_InKnockDown(&NPCS.NPC->enemy->client->ps)
-			&& enemyDist <= MIN_DISTANCE)
+			&& enemy_dist <= MIN_DISTANCE)
 		{
 			attackAnim = BOTH_ATTACK2;
 		}
@@ -409,14 +409,14 @@ static void Howler_Attack(float enemyDist, qboolean howl)
 			//howl attack
 			G_SoundOnEnt(NPCS.NPC, CHAN_VOICE, "sound/chars/howler/howl.mp3");
 		}
-		else if (enemyDist > MIN_DISTANCE && Q_irand(0, 1))
+		else if (enemy_dist > MIN_DISTANCE && Q_irand(0, 1))
 		{
 			vec3_t yawAng;
 			//lunge attack
 			//jump foward
 			VectorSet(yawAng, 0, NPCS.NPC->client->ps.viewangles[YAW], 0);
 			AngleVectors(yawAng, fwd, NULL, NULL);
-			VectorScale(fwd, enemyDist * 3.0f, NPCS.NPC->client->ps.velocity);
+			VectorScale(fwd, enemy_dist * 3.0f, NPCS.NPC->client->ps.velocity);
 			NPCS.NPC->client->ps.velocity[2] = 200;
 			NPCS.NPC->client->ps.groundEntityNum = ENTITYNUM_NONE;
 
@@ -554,7 +554,7 @@ static void Howler_Combat(void)
 			}
 			else if (TIMER_Done(NPCS.NPC, "standing"))
 			{
-				faced = Howler_Move(qtrue);
+				faced = Howler_Move();
 			}
 		}
 		else

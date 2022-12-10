@@ -2261,7 +2261,7 @@ void FX_ConcAltShot(vec3_t start, vec3_t end);
 
 void FX_ForceDrained(vec3_t origin, vec3_t dir);
 
-void FX_DestructionProjectileThink(centity_t* cent, const struct weaponInfo_s* weapon);
+void FX_DestructionProjectileThink(centity_t* cent);
 void FX_DestructionHitWall(vec3_t origin, vec3_t normal);
 void FX_DestructionHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid);
 

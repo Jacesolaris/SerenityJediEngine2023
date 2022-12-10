@@ -189,7 +189,7 @@ void WP_FireRocket(gentity_t* ent, qboolean alt_fire)
 	}
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	gentity_t* missile = create_missile(start, forwardVec, vel, 10000, ent, alt_fire);

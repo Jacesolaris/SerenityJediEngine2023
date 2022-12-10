@@ -41,7 +41,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 	vec3_t angs, start;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	// Do the damages
@@ -168,7 +168,7 @@ static void WP_BowcasterAltFire(gentity_t* ent)
 	int damage = weaponData[WP_BOWCASTER].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, forwardVec);

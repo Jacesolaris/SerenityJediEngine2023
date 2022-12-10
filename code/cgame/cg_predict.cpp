@@ -282,7 +282,7 @@ qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 		overrid_angles = qtrue;
 	}
 
-	if (&g_entities[0] && g_entities[0].client)
+	if (g_entities[0].client)
 	{
 		if (!PM_AdjustAnglesToGripper(&g_entities[0], cmd))
 		{

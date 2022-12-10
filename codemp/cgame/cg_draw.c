@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "ui/ui_public.h"
 
 extern float CG_RadiusForCent(const centity_t* cent);
-qboolean CG_WorldCoordToScreenCoordFloat(vec3_t worldCoord, float* x, float* y);
+qboolean CG_WorldCoordToScreenCoordFloat(vec3_t world_coord, float* x, float* y);
 qboolean CG_CalcMuzzlePoint(int entityNum, vec3_t muzzle);
 static void CG_DrawSiegeTimer(int timeRemaining, qboolean isMyTeam);
 static void CG_DrawSiegeDeathTimer(int timeRemaining);
@@ -6921,12 +6921,12 @@ void CG_DrawSiegeInfo(const centity_t* cent, float chX, float chY, float chW, fl
 }
 
 //draw the health bar based on current "health" and maxhealth
-void CG_DrawHealthBar(const centity_t* cent, float chX, float chY, float chW, float chH)
+void CG_DrawHealthBar(const centity_t* cent, float ch_x, float ch_y, float ch_w, float ch_h)
 {
 	vec4_t aColor;
 	vec4_t cColor;
-	const float x = chX + (chW / 2 - HEALTH_WIDTH / 2);
-	const float y = chY + chH + 8.0f;
+	const float x = ch_x + (ch_w / 2 - HEALTH_WIDTH / 2);
+	const float y = ch_y + ch_h + 8.0f;
 	const float percent = (float)cent->currentState.health / (float)cent->currentState.maxhealth * HEALTH_WIDTH;
 
 	/*if (PM_DeathCinAnim(cent->currentState.legsAnim))
@@ -7663,14 +7663,14 @@ static void CG_DrawCrosshair(vec3_t worldPoint, int chEntValid)
 	trap->R_SetColor(NULL);
 }
 
-qboolean CG_WorldCoordToScreenCoordFloat(vec3_t worldCoord, float* x, float* y)
+qboolean CG_WorldCoordToScreenCoordFloat(vec3_t world_coord, float* x, float* y)
 {
 	vec3_t trans;
 
 	const float px = tan(cg.refdef.fov_x * (M_PI / 360));
 	const float py = tan(cg.refdef.fov_y * (M_PI / 360));
 
-	VectorSubtract(worldCoord, cg.refdef.vieworg, trans);
+	VectorSubtract(world_coord, cg.refdef.vieworg, trans);
 
 	const float xc = 640 / 2.0;
 	const float yc = 480 / 2.0;
@@ -7686,11 +7686,11 @@ qboolean CG_WorldCoordToScreenCoordFloat(vec3_t worldCoord, float* x, float* y)
 	return qtrue;
 }
 
-qboolean CG_WorldCoordToScreenCoord(vec3_t worldCoord, int* x, int* y)
+qboolean CG_WorldCoordToScreenCoord(vec3_t world_coord, int* x, int* y)
 {
 	float xF, yF;
 
-	if (CG_WorldCoordToScreenCoordFloat(worldCoord, &xF, &yF))
+	if (CG_WorldCoordToScreenCoordFloat(world_coord, &xF, &yF))
 	{
 		*x = (int)xF;
 		*y = (int)yF;
@@ -8146,12 +8146,12 @@ static void CG_DrawActivePowers(void)
 }
 
 //--------------------------------------------------------------
-static void CG_DrawRocketLocking(int lockEntNum, int lockTime)
+static void CG_DrawRocketLocking(const int lock_ent_num)
 //--------------------------------------------------------------
 {
 	int cx, cy;
 	vec3_t org;
-	const centity_t* cent = &cg_entities[lockEntNum];
+	const centity_t* cent = &cg_entities[lock_ent_num];
 	vec4_t color = { 0.0f, 0.0f, 0.0f, 0.0f };
 	float lockTimeInterval = (cgs.gametype == GT_SIEGE ? 2400.0f : 1200.0f) / 16.0f;
 	//FIXME: if in a vehicle, use the vehicle's lockOnTime...
@@ -10649,7 +10649,7 @@ static void CG_Draw2DScreenTints(void)
 
 		if (cg.snap->ps.rocketLockIndex != ENTITYNUM_NONE && cg.time - cg.snap->ps.rocketLockTime > 0)
 		{
-			CG_DrawRocketLocking(cg.snap->ps.rocketLockIndex, cg.snap->ps.rocketLockTime);
+			CG_DrawRocketLocking(cg.snap->ps.rocketLockIndex);
 		}
 
 		if (BG_HasYsalamiri(cgs.gametype, &cg.snap->ps))
@@ -10845,7 +10845,7 @@ static void CG_Draw2D(void)
 
 	if (cg.snap->ps.rocketLockIndex != ENTITYNUM_NONE && cg.time - cg.snap->ps.rocketLockTime > 0)
 	{
-		CG_DrawRocketLocking(cg.snap->ps.rocketLockIndex, cg.snap->ps.rocketLockTime);
+		CG_DrawRocketLocking(cg.snap->ps.rocketLockIndex);
 	}
 
 	if (cg.snap->ps.holocronBits)

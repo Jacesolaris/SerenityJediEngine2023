@@ -9450,7 +9450,7 @@ static void Jedi_Attack()
 			else
 			{
 				//the escalation in difficulty is nice, here, but cap it so it doesn't get *impossible* on hard
-				const float max_chance = static_cast<float>(RANK_LT) / 2.0f + 3.0f; //5?
+				constexpr float max_chance = static_cast<float>(RANK_LT) / 2.0f + 3.0f; //5?
 				if (!g_spskill->value)
 				{
 					chance = static_cast<float>(NPCInfo->rank) / 2.0f;

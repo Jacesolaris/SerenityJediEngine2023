@@ -522,7 +522,7 @@ void Menu_Reset(void);
 qboolean Menus_AnyFullScreenVisible(void);
 void  Menus_Activate(menuDef_t* menu);
 itemDef_t* Menu_FindItemByName(const menuDef_t* menu, const char* p);
-void Menu_ShowGroup(menuDef_t* menu, const char* itemName, qboolean showFlag);
+void Menu_ShowGroup(menuDef_t* menu, const char* groupName, qboolean showFlag);
 void Menu_ItemDisable(menuDef_t* menu, const char* name, qboolean disableFlag);
 int Menu_ItemsMatchingGroup(const menuDef_t* menu, const char* name);
 itemDef_t* Menu_GetMatchingItemByNumber(const menuDef_t* menu, int index, const char* name);

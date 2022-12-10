@@ -3056,7 +3056,7 @@ static void CG_Missile(centity_t* cent)
 	{
 		if (s1->weapon == WP_CONCUSSION)
 		{
-			FX_DestructionProjectileThink(cent, weapon);
+			FX_DestructionProjectileThink(cent);
 			//cgi_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.destructionSound);
 			return;
 		}

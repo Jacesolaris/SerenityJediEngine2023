@@ -66,7 +66,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 	}
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 
 	WP_MissileTargetHint(ent, start, forwardVec);
 	VectorMA(start, shotRange, forwardVec, end);

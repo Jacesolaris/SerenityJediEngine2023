@@ -5270,8 +5270,8 @@ CG_AddForceSightShell
 Adds the special effect
 ===============
 */
-extern void CG_AddHealthBarEnt(int entNum);
-extern void CG_AddBlockPointBarEnt(int entNum);
+extern void CG_AddHealthBarEnt(int ent_num);
+extern void CG_AddBlockPointBarEnt(int ent_num);
 
 void CG_AddForceSightShell(refEntity_t* ent, const centity_t* cent)
 {

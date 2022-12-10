@@ -38,7 +38,7 @@ static void WP_DEMP2_MainFire(gentity_t* ent)
 	int damage = weaponData[WP_DEMP2].damage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, forwardVec);
@@ -201,7 +201,7 @@ static void WP_DEMP2_AltFire(gentity_t* ent)
 	trace_t tr;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_HALF)

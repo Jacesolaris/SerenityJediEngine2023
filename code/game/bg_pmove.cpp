@@ -10238,6 +10238,7 @@ static void PM_Footsteps()
 									pm->ps->weapon == WP_SBD_PISTOL ||
 									pm->ps->weapon == WP_BLASTER ||
 									pm->ps->weapon == WP_DISRUPTOR ||
+									pm->ps->weapon == WP_TUSKEN_RIFLE ||
 									pm->ps->weapon == WP_BOWCASTER ||
 									pm->ps->weapon == WP_DEMP2 ||
 									pm->ps->weapon == WP_FLECHETTE ||
@@ -10287,6 +10288,7 @@ static void PM_Footsteps()
 							pm->ps->weapon == WP_SBD_PISTOL ||
 							pm->ps->weapon == WP_BLASTER ||
 							pm->ps->weapon == WP_DISRUPTOR ||
+							pm->ps->weapon == WP_TUSKEN_RIFLE ||
 							pm->ps->weapon == WP_BOWCASTER ||
 							pm->ps->weapon == WP_DEMP2 ||
 							pm->ps->weapon == WP_FLECHETTE ||
@@ -10347,6 +10349,7 @@ static void PM_Footsteps()
 						pm->ps->weapon == WP_SBD_PISTOL ||
 						pm->ps->weapon == WP_BLASTER ||
 						pm->ps->weapon == WP_DISRUPTOR ||
+						pm->ps->weapon == WP_TUSKEN_RIFLE ||
 						pm->ps->weapon == WP_BOWCASTER ||
 						pm->ps->weapon == WP_DEMP2 ||
 						pm->ps->weapon == WP_FLECHETTE ||
@@ -10431,6 +10434,7 @@ static void PM_Footsteps()
 							pm->ps->weapon == WP_SBD_PISTOL ||
 							pm->ps->weapon == WP_BLASTER ||
 							pm->ps->weapon == WP_DISRUPTOR ||
+							pm->ps->weapon == WP_TUSKEN_RIFLE ||
 							pm->ps->weapon == WP_BOWCASTER ||
 							pm->ps->weapon == WP_DEMP2 ||
 							pm->ps->weapon == WP_FLECHETTE ||
@@ -11035,6 +11039,7 @@ static void PM_Footsteps()
 				else if (pm->ps->weapon == WP_BOWCASTER ||
 					pm->ps->weapon == WP_FLECHETTE ||
 					pm->ps->weapon == WP_DISRUPTOR ||
+					pm->ps->weapon == WP_TUSKEN_RIFLE ||
 					pm->ps->weapon == WP_DEMP2 ||
 					pm->ps->weapon == WP_REPEATER ||
 					pm->ps->weapon == WP_BLASTER || pm->ps->weapon == WP_STUN_BATON)

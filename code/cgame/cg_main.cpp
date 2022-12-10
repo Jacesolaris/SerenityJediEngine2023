@@ -90,7 +90,7 @@ const char* inv_names[] =
 
 int force_icons[NUM_FORCE_POWERS];
 
-void CG_DrawDataPadHUD(centity_t* cent);
+void CG_DrawDataPadHUD(const centity_t* cent);
 void CG_DrawDataPadObjectives(const centity_t* cent);
 void CG_DrawIconBackground();
 void CG_DrawDataPadIconBackground(int backgroundType);

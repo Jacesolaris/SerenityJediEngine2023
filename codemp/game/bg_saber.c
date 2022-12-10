@@ -105,31 +105,31 @@ int PM_irand_timesync(const int val1, const int val2)
 	return i;
 }
 
-void WP_ForcePowerDrain(playerState_t* ps, const forcePowers_t forcePower, const int overrideAmt)
+void WP_ForcePowerDrain(playerState_t* ps, const forcePowers_t force_power, const int override_amt)
 {
 	//take away the power
-	int drain = overrideAmt;
+	int drain = override_amt;
 
 	if (!drain)
 	{
 		if (ps->fd.forcePowerLevel[FP_SPEED] == FORCE_LEVEL_1 &&
 			ps->fd.forcePowersActive & 1 << FP_SPEED)
 		{
-			drain = forcePowerNeededlevel1[ps->fd.forcePowerLevel[forcePower]][forcePower];
+			drain = forcePowerNeededlevel1[ps->fd.forcePowerLevel[force_power]][force_power];
 		}
 		else if (ps->fd.forcePowerLevel[FP_SPEED] == FORCE_LEVEL_2 &&
 			ps->fd.forcePowersActive & 1 << FP_SPEED)
 		{
-			drain = forcePowerNeededlevel2[ps->fd.forcePowerLevel[forcePower]][forcePower];
+			drain = forcePowerNeededlevel2[ps->fd.forcePowerLevel[force_power]][force_power];
 		}
 		else if (ps->fd.forcePowerLevel[FP_SPEED] == FORCE_LEVEL_3 &&
 			ps->fd.forcePowersActive & 1 << FP_SPEED)
 		{
-			drain = forcePowerNeeded[ps->fd.forcePowerLevel[forcePower]][forcePower];
+			drain = forcePowerNeeded[ps->fd.forcePowerLevel[force_power]][force_power];
 		}
 		else
 		{
-			drain = forcePowerNeeded[ps->fd.forcePowerLevel[forcePower]][forcePower];
+			drain = forcePowerNeeded[ps->fd.forcePowerLevel[force_power]][force_power];
 		}
 	}
 
@@ -608,119 +608,119 @@ saberMoveName_t transitionMove[Q_NUM_QUADS][Q_NUM_QUADS] =
 
 void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir)
 {
-	vec3_t vForward = { 0.0f };
-	vec3_t vRight = { 0.0f };
-	vec3_t vUp = { 0.0f };
-	vec3_t startQ = { 0.0f };
-	vec3_t endQ = { 0.0f };
+	vec3_t v_forward = { 0.0f };
+	vec3_t v_right = { 0.0f };
+	vec3_t v_up = { 0.0f };
+	vec3_t start_q = { 0.0f };
+	vec3_t end_q = { 0.0f };
 
-	AngleVectors(ps->viewangles, vForward, vRight, vUp);
+	AngleVectors(ps->viewangles, v_forward, v_right, v_up);
 
 	switch (saberMoveData[ps->saberMove].startQuad)
 	{
 	case Q_BR:
-		VectorScale(vRight, 1, startQ);
-		VectorMA(startQ, -1, vUp, startQ);
+		VectorScale(v_right, 1, start_q);
+		VectorMA(start_q, -1, v_up, start_q);
 		break;
 	case Q_R:
-		VectorScale(vRight, 2, startQ);
+		VectorScale(v_right, 2, start_q);
 		break;
 	case Q_TR:
-		VectorScale(vRight, 1, startQ);
-		VectorMA(startQ, 1, vUp, startQ);
+		VectorScale(v_right, 1, start_q);
+		VectorMA(start_q, 1, v_up, start_q);
 		break;
 	case Q_T:
-		VectorScale(vUp, 2, startQ);
+		VectorScale(v_up, 2, start_q);
 		break;
 	case Q_TL:
-		VectorScale(vRight, -1, startQ);
-		VectorMA(startQ, 1, vUp, startQ);
+		VectorScale(v_right, -1, start_q);
+		VectorMA(start_q, 1, v_up, start_q);
 		break;
 	case Q_L:
-		VectorScale(vRight, -2, startQ);
+		VectorScale(v_right, -2, start_q);
 		break;
 	case Q_BL:
-		VectorScale(vRight, -1, startQ);
-		VectorMA(startQ, -1, vUp, startQ);
+		VectorScale(v_right, -1, start_q);
+		VectorMA(start_q, -1, v_up, start_q);
 		break;
 	case Q_B:
-		VectorScale(vUp, -2, startQ);
+		VectorScale(v_up, -2, start_q);
 		break;
 	default:;
 	}
 	switch (saberMoveData[ps->saberMove].endQuad)
 	{
 	case Q_BR:
-		VectorScale(vRight, 1, endQ);
-		VectorMA(endQ, -1, vUp, endQ);
+		VectorScale(v_right, 1, end_q);
+		VectorMA(end_q, -1, v_up, end_q);
 		break;
 	case Q_R:
-		VectorScale(vRight, 2, endQ);
+		VectorScale(v_right, 2, end_q);
 		break;
 	case Q_TR:
-		VectorScale(vRight, 1, endQ);
-		VectorMA(endQ, 1, vUp, endQ);
+		VectorScale(v_right, 1, end_q);
+		VectorMA(end_q, 1, v_up, end_q);
 		break;
 	case Q_T:
-		VectorScale(vUp, 2, endQ);
+		VectorScale(v_up, 2, end_q);
 		break;
 	case Q_TL:
-		VectorScale(vRight, -1, endQ);
-		VectorMA(endQ, 1, vUp, endQ);
+		VectorScale(v_right, -1, end_q);
+		VectorMA(end_q, 1, v_up, end_q);
 		break;
 	case Q_L:
-		VectorScale(vRight, -2, endQ);
+		VectorScale(v_right, -2, end_q);
 		break;
 	case Q_BL:
-		VectorScale(vRight, -1, endQ);
-		VectorMA(endQ, -1, vUp, endQ);
+		VectorScale(v_right, -1, end_q);
+		VectorMA(end_q, -1, v_up, end_q);
 		break;
 	case Q_B:
-		VectorScale(vUp, -2, endQ);
+		VectorScale(v_up, -2, end_q);
 		break;
 	default:;
 	}
-	VectorMA(endQ, 2, vForward, endQ);
+	VectorMA(end_q, 2, v_forward, end_q);
 	VectorScale(throw_dir, 125, throw_dir);
-	VectorSubtract(endQ, startQ, throw_dir);
+	VectorSubtract(end_q, start_q, throw_dir);
 }
 
-qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir)
+qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throw_dir)
 {
-	vec3_t vForward;
-	vec3_t vRight;
-	vec3_t vUp;
+	vec3_t v_forward;
+	vec3_t v_right;
+	vec3_t v_up;
 
-	AngleVectors(ps->viewangles, vForward, vRight, vUp);
+	AngleVectors(ps->viewangles, v_forward, v_right, v_up);
 	switch (ps->saberBlocked)
 	{
 	case BLOCKED_UPPER_RIGHT:
-		VectorScale(vRight, 1, throwDir);
-		VectorMA(throwDir, 1, vUp, throwDir);
+		VectorScale(v_right, 1, throw_dir);
+		VectorMA(throw_dir, 1, v_up, throw_dir);
 		break;
 	case BLOCKED_UPPER_LEFT:
-		VectorScale(vRight, -1, throwDir);
-		VectorMA(throwDir, 1, vUp, throwDir);
+		VectorScale(v_right, -1, throw_dir);
+		VectorMA(throw_dir, 1, v_up, throw_dir);
 		break;
 	case BLOCKED_LOWER_RIGHT:
-		VectorScale(vRight, 1, throwDir);
-		VectorMA(throwDir, -1, vUp, throwDir);
+		VectorScale(v_right, 1, throw_dir);
+		VectorMA(throw_dir, -1, v_up, throw_dir);
 		break;
 	case BLOCKED_LOWER_LEFT:
-		VectorScale(vRight, -1, throwDir);
-		VectorMA(throwDir, -1, vUp, throwDir);
+		VectorScale(v_right, -1, throw_dir);
+		VectorMA(throw_dir, -1, v_up, throw_dir);
 		break;
 	case BLOCKED_TOP:
-		VectorScale(vUp, 2, throwDir);
+		VectorScale(v_up, 2, throw_dir);
 		break;
 	case BLOCKED_FRONT:
-		VectorScale(vUp, 2, throwDir);
+		VectorScale(v_up, 2, throw_dir);
 		break;
 	default:
 		return qfalse;
 	}
-	VectorMA(throwDir, 2, vForward, throwDir);
-	VectorScale(throwDir, 250, throwDir);
+	VectorMA(throw_dir, 2, v_forward, throw_dir);
+	VectorScale(throw_dir, 250, throw_dir);
 	return qtrue;
 }
 
@@ -862,8 +862,8 @@ int PM_ReturnforQuad(int quad);
 
 saberMoveName_t PM_SaberAnimTransitionMove(const saberMoveName_t curmove, const saberMoveName_t newmove)
 {
-	//FIXME: take FP_SABER_OFFENSE into account here somehow?
 	int retmove = newmove;
+
 	if (curmove == LS_READY)
 	{
 		//just standing there
@@ -1094,7 +1094,7 @@ extern qboolean BG_InKnockDown(int anim);
 
 saberMoveName_t PM_CheckStabDown(void)
 {
-	vec3_t faceFwd, facing_angles;
+	vec3_t face_fwd, facing_angles;
 	vec3_t fwd;
 	const bgEntity_t* ent = NULL;
 	trace_t tr;
@@ -1128,10 +1128,10 @@ saberMoveName_t PM_CheckStabDown(void)
 	}
 
 	VectorSet(facing_angles, 0, pm->ps->viewangles[YAW], 0);
-	AngleVectors(facing_angles, faceFwd, NULL, NULL);
+	AngleVectors(facing_angles, face_fwd, NULL, NULL);
 
 	//FIXME: need to only move forward until we bump into our target...?
-	VectorMA(pm->ps->origin, 164.0f, faceFwd, fwd);
+	VectorMA(pm->ps->origin, 164.0f, face_fwd, fwd);
 
 	pm->trace(&tr, pm->ps->origin, trmins, trmaxs, fwd, pm->ps->clientNum, MASK_PLAYERSOLID);
 
@@ -1387,12 +1387,12 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 		}
 		else if (pm->ps->saberAttackChainCount > 0)
 		{
-			const int chainAngle = PM_SaberAttackChainAngle(curmove, newmove);
-			if (chainAngle < 135 || chainAngle > 215)
+			const int chain_angle = PM_SaberAttackChainAngle(curmove, newmove);
+			if (chain_angle < 135 || chain_angle > 215)
 			{//if trying to chain to a move that doesn't continue the momentum
 				return qtrue;
 			}
-			if (chainAngle == 180)
+			if (chain_angle == 180)
 			{//continues the momentum perfectly, allow it to chain 66% of the time
 				if (pm->ps->saberAttackChainCount > 1)
 				{
@@ -1419,90 +1419,90 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 	return qfalse;
 }
 
-void PM_SetAnimFrame(playerState_t* gent, const int frame, qboolean torso, qboolean legs)
+void PM_SetAnimFrame(playerState_t* gent, const int frame)
 {
 	gent->saberLockFrame = frame;
 }
 
-int PM_SaberLockWinAnim(const qboolean victory, const qboolean superBreak)
+int PM_SaberLockWinAnim(const qboolean victory, const qboolean super_break)
 {
-	int winAnim = -1;
+	int win_anim = -1;
 	switch (pm->ps->torsoAnim)
 	{
 	case BOTH_BF2LOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			winAnim = BOTH_LK_S_S_T_SB_1_W;
+			win_anim = BOTH_LK_S_S_T_SB_1_W;
 		}
 		else if (!victory)
 		{
-			winAnim = BOTH_BF1BREAK;
+			win_anim = BOTH_BF1BREAK;
 		}
 		else
 		{
 			pm->ps->saberMove = LS_A_T2B;
-			winAnim = BOTH_A3_T__B_;
+			win_anim = BOTH_A3_T__B_;
 		}
 		break;
 	case BOTH_BF1LOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			winAnim = BOTH_LK_S_S_T_SB_1_W;
+			win_anim = BOTH_LK_S_S_T_SB_1_W;
 		}
 		else if (!victory)
 		{
-			winAnim = BOTH_KNOCKDOWN4;
+			win_anim = BOTH_KNOCKDOWN4;
 		}
 		else
 		{
 			pm->ps->saberMove = LS_K1_T_;
-			winAnim = BOTH_K1_S1_T_;
+			win_anim = BOTH_K1_S1_T_;
 		}
 		break;
 	case BOTH_CWCIRCLELOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			winAnim = BOTH_LK_S_S_S_SB_1_W;
+			win_anim = BOTH_LK_S_S_S_SB_1_W;
 		}
 		else if (!victory)
 		{
 			pm->ps->saberMove = pm->ps->saberBounceMove = LS_V1_BL;
 			pm->ps->saberBlocked = BLOCKED_PARRY_BROKEN;
-			winAnim = BOTH_V1_BL_S1;
+			win_anim = BOTH_V1_BL_S1;
 		}
 		else
 		{
-			winAnim = BOTH_CWCIRCLEBREAK;
+			win_anim = BOTH_CWCIRCLEBREAK;
 		}
 		break;
 	case BOTH_CCWCIRCLELOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			winAnim = BOTH_LK_S_S_S_SB_1_W;
+			win_anim = BOTH_LK_S_S_S_SB_1_W;
 		}
 		else if (!victory)
 		{
 			pm->ps->saberMove = pm->ps->saberBounceMove = LS_V1_BR;
 			pm->ps->saberBlocked = BLOCKED_PARRY_BROKEN;
-			winAnim = BOTH_V1_BR_S1;
+			win_anim = BOTH_V1_BR_S1;
 		}
 		else
 		{
-			winAnim = BOTH_CCWCIRCLEBREAK;
+			win_anim = BOTH_CCWCIRCLEBREAK;
 		}
 		break;
 	default:
 		//must be using new system:
 		break;
 	}
-	if (winAnim != -1)
+	if (win_anim != -1)
 	{
-		PM_SetAnim(SETANIM_BOTH, winAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+		PM_SetAnim(SETANIM_BOTH, win_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		pm->ps->weaponTime = pm->ps->torsoTimer;
 		pm->ps->saberBlocked = BLOCKED_NONE;
 		pm->ps->weaponstate = WEAPON_FIRING;
 	}
-	return winAnim;
+	return win_anim;
 }
 
 #ifdef _GAME
@@ -1512,20 +1512,20 @@ extern gentity_t g_entities[];
 #include "cgame/cg_local.h"
 #endif
 
-int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qboolean superBreak)
+int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qboolean super_break)
 {
-	int loseAnim = -1;
+	int lose_anim = -1;
 
 	switch (genemy->torsoAnim)
 	{
 	case BOTH_BF2LOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			loseAnim = BOTH_LK_S_S_T_SB_1_L;
+			lose_anim = BOTH_LK_S_S_T_SB_1_L;
 		}
 		else if (!victory)
 		{
-			loseAnim = BOTH_BF1BREAK;
+			lose_anim = BOTH_BF1BREAK;
 		}
 		else
 		{
@@ -1533,23 +1533,23 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 			{
 				//no-one won
 				genemy->saberMove = LS_K1_T_;
-				loseAnim = BOTH_K1_S1_T_;
+				lose_anim = BOTH_K1_S1_T_;
 			}
 			else
 			{
 				//FIXME: this anim needs to transition back to ready when done
-				loseAnim = BOTH_BF1BREAK;
+				lose_anim = BOTH_BF1BREAK;
 			}
 		}
 		break;
 	case BOTH_BF1LOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			loseAnim = BOTH_LK_S_S_T_SB_1_L;
+			lose_anim = BOTH_LK_S_S_T_SB_1_L;
 		}
 		else if (!victory)
 		{
-			loseAnim = BOTH_KNOCKDOWN4;
+			lose_anim = BOTH_KNOCKDOWN4;
 		}
 		else
 		{
@@ -1557,81 +1557,81 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 			{
 				//no-one won
 				genemy->saberMove = LS_A_T2B;
-				loseAnim = BOTH_A3_T__B_;
+				lose_anim = BOTH_A3_T__B_;
 			}
 			else
 			{
-				loseAnim = BOTH_KNOCKDOWN4;
+				lose_anim = BOTH_KNOCKDOWN4;
 			}
 		}
 		break;
 	case BOTH_CWCIRCLELOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			loseAnim = BOTH_LK_S_S_S_SB_1_L;
+			lose_anim = BOTH_LK_S_S_S_SB_1_L;
 		}
 		else if (!victory)
 		{
 			genemy->saberMove = genemy->saberBounceMove = LS_V1_BL;
 			genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
-			loseAnim = BOTH_V1_BL_S1;
+			lose_anim = BOTH_V1_BL_S1;
 		}
 		else
 		{
 			if (!victory)
 			{
 				//no-one won
-				loseAnim = BOTH_CCWCIRCLEBREAK;
+				lose_anim = BOTH_CCWCIRCLEBREAK;
 			}
 			else
 			{
 				genemy->saberMove = genemy->saberBounceMove = LS_V1_BL;
 				genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
-				loseAnim = BOTH_V1_BL_S1;
+				lose_anim = BOTH_V1_BL_S1;
 			}
 		}
 		break;
 	case BOTH_CCWCIRCLELOCK:
-		if (superBreak)
+		if (super_break)
 		{
-			loseAnim = BOTH_LK_S_S_S_SB_1_L;
+			lose_anim = BOTH_LK_S_S_S_SB_1_L;
 		}
 		else if (!victory)
 		{
 			genemy->saberMove = genemy->saberBounceMove = LS_V1_BR;
 			genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
-			loseAnim = BOTH_V1_BR_S1;
+			lose_anim = BOTH_V1_BR_S1;
 		}
 		else
 		{
 			if (!victory)
 			{
 				//no-one won
-				loseAnim = BOTH_CWCIRCLEBREAK;
+				lose_anim = BOTH_CWCIRCLEBREAK;
 			}
 			else
 			{
 				genemy->saberMove = genemy->saberBounceMove = LS_V1_BR;
 				genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
-				loseAnim = BOTH_V1_BR_S1;
+				lose_anim = BOTH_V1_BR_S1;
 			}
 		}
 		break;
 	default:;
 	}
-	if (loseAnim != -1)
+	if (lose_anim != -1)
 	{
 #ifdef _GAME
-		NPC_SetAnim(&g_entities[genemy->clientNum], SETANIM_BOTH, loseAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+		NPC_SetAnim(&g_entities[genemy->clientNum], SETANIM_BOTH, lose_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		genemy->weaponTime = genemy->torsoTimer; // + 250;
 #endif
 		genemy->saberBlocked = BLOCKED_NONE;
 		genemy->weaponstate = WEAPON_READY;
 	}
-	return loseAnim;
+	return lose_anim;
 }
 
-int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean superBreak, const qboolean won)
+int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean super_break, const qboolean won)
 {
 	int base_anim = duelist->torsoAnim;
 	switch (base_anim)
@@ -1657,11 +1657,11 @@ int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean superBreak, co
 	default:;
 	}
 	//what kind of break?
-	if (!superBreak)
+	if (!super_break)
 	{
 		base_anim -= 2;
 	}
-	else if (superBreak)
+	else if (super_break)
 	{
 		base_anim += 1;
 	}
@@ -1693,7 +1693,7 @@ int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean superBreak, co
 	PM_SetAnim(SETANIM_BOTH, base_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 #endif
 
-	if (superBreak
+	if (super_break
 		&& !won)
 	{
 		//if you lose a superbreak, you're defenseless
@@ -1729,30 +1729,30 @@ extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushD
 #endif
 void PM_SaberLockBreak(playerState_t* genemy, const qboolean victory, const int strength)
 {
-	const qboolean superBreak = strength + pm->cmd.buttons & BUTTON_ATTACK;
+	const qboolean super_break = strength + pm->cmd.buttons & BUTTON_ATTACK;
 
 	pm->ps->userInt3 &= ~(1 << FLAG_LOCKWINNER);
 	genemy->userInt3 &= ~(1 << FLAG_LOCKWINNER);
 
-	const int win_anim = PM_SaberLockWinAnim(victory, superBreak);
+	const int win_anim = PM_SaberLockWinAnim(victory, super_break);
 
 	if (win_anim != -1)
 	{
 		//a single vs. single break
-		PM_SaberLockLoseAnim(genemy, victory, superBreak);
+		PM_SaberLockLoseAnim(genemy, victory, super_break);
 	}
 	else
 	{
-		PM_SaberLockResultAnim(pm->ps, superBreak, qtrue);
+		PM_SaberLockResultAnim(pm->ps, super_break, qtrue);
 		pm->ps->weaponstate = WEAPON_FIRING;
-		PM_SaberLockResultAnim(genemy, superBreak, qfalse);
+		PM_SaberLockResultAnim(genemy, super_break, qfalse);
 		genemy->weaponstate = WEAPON_READY;
 	}
 
 	if (victory)
 	{
 		//someone lost the lock, so punish them by knocking them down
-		if (!superBreak)
+		if (!super_break)
 		{
 			//if we're not in a superbreak, force the loser to mishap.
 			pm->checkDuelLoss = genemy->clientNum + 1;
@@ -1761,20 +1761,20 @@ void PM_SaberLockBreak(playerState_t* genemy, const qboolean victory, const int 
 	else
 	{
 		//If no one lost, then shove each player away from the other
-		vec3_t oppDir;
+		vec3_t opp_dir;
 
 		const int newstrength = 8;
 
-		VectorSubtract(genemy->origin, pm->ps->origin, oppDir);
-		VectorNormalize(oppDir);
-		genemy->velocity[0] = oppDir[0] * (newstrength * 40);
-		genemy->velocity[1] = oppDir[1] * (newstrength * 40);
+		VectorSubtract(genemy->origin, pm->ps->origin, opp_dir);
+		VectorNormalize(opp_dir);
+		genemy->velocity[0] = opp_dir[0] * (newstrength * 40);
+		genemy->velocity[1] = opp_dir[1] * (newstrength * 40);
 		genemy->velocity[2] = 0;
 
-		VectorSubtract(pm->ps->origin, genemy->origin, oppDir);
-		VectorNormalize(oppDir);
-		pm->ps->velocity[0] = oppDir[0] * (newstrength * 40);
-		pm->ps->velocity[1] = oppDir[1] * (newstrength * 40);
+		VectorSubtract(pm->ps->origin, genemy->origin, opp_dir);
+		VectorNormalize(opp_dir);
+		pm->ps->velocity[0] = opp_dir[0] * (newstrength * 40);
+		pm->ps->velocity[1] = opp_dir[1] * (newstrength * 40);
 		pm->ps->velocity[2] = 0;
 	}
 
@@ -1856,14 +1856,14 @@ qboolean g_check_increment_lock_anim(const int anim, const int win_or_lose)
 
 void PM_SaberLocked(void)
 {
-	const bgEntity_t* eGenemy = PM_BGEntForNum(pm->ps->saberLockEnemy);
+	const bgEntity_t* e_genemy = PM_BGEntForNum(pm->ps->saberLockEnemy);
 
-	if (!eGenemy)
+	if (!e_genemy)
 	{
 		return;
 	}
 
-	playerState_t* genemy = eGenemy->playerState;
+	playerState_t* genemy = e_genemy->playerState;
 
 	if (!genemy)
 	{
@@ -1892,14 +1892,14 @@ void PM_SaberLocked(void)
 		if (pm->ps->saberLockAdvance)
 		{
 			int remaining;
-			int curFrame;
+			int cur_frame;
 			const int strength = 1;
 
 			pm->ps->saberLockAdvance = qfalse;
 
 			const animation_t* anim = &pm->animations[pm->ps->torsoAnim];
 
-			const float currentFrame = pm->ps->saberLockFrame;
+			const float current_frame = pm->ps->saberLockFrame;
 
 			//advance/decrement my frame number
 			if (BG_InSaberLockOld(pm->ps->torsoAnim))
@@ -1908,29 +1908,29 @@ void PM_SaberLocked(void)
 				if (pm->ps->torsoAnim == BOTH_CCWCIRCLELOCK ||
 					pm->ps->torsoAnim == BOTH_BF2LOCK)
 				{
-					curFrame = floor(currentFrame) - strength;
+					cur_frame = floor(current_frame) - strength;
 					//drop my frame one
-					if (curFrame <= anim->firstFrame)
+					if (cur_frame <= anim->firstFrame)
 					{
 						//I won!  Break out
 						PM_SaberLockBreak(genemy, qtrue, strength);
 						return;
 					}
-					PM_SetAnimFrame(pm->ps, curFrame, qtrue, qtrue);
-					remaining = curFrame - anim->firstFrame;
+					PM_SetAnimFrame(pm->ps, cur_frame);
+					remaining = cur_frame - anim->firstFrame;
 				}
 				else
 				{
-					curFrame = ceil(currentFrame) + strength;
+					cur_frame = ceil(current_frame) + strength;
 					//advance my frame one
-					if (curFrame >= anim->firstFrame + anim->numFrames)
+					if (cur_frame >= anim->firstFrame + anim->numFrames)
 					{
 						//I won!  Break out
 						PM_SaberLockBreak(genemy, qtrue, strength);
 						return;
 					}
-					PM_SetAnimFrame(pm->ps, curFrame, qtrue, qtrue);
-					remaining = anim->firstFrame + anim->numFrames - curFrame;
+					PM_SetAnimFrame(pm->ps, cur_frame);
+					remaining = anim->firstFrame + anim->numFrames - cur_frame;
 				}
 			}
 			else
@@ -1938,29 +1938,29 @@ void PM_SaberLocked(void)
 				//new locks
 				if (g_check_increment_lock_anim(pm->ps->torsoAnim, SABER_LOCK_WIN))
 				{
-					curFrame = ceil(currentFrame) + strength;
+					cur_frame = ceil(current_frame) + strength;
 					//advance my frame one
-					if (curFrame >= anim->firstFrame + anim->numFrames)
+					if (cur_frame >= anim->firstFrame + anim->numFrames)
 					{
 						//I won!  Break out
 						PM_SaberLockBreak(genemy, qtrue, strength);
 						return;
 					}
-					PM_SetAnimFrame(pm->ps, curFrame, qtrue, qtrue);
-					remaining = anim->firstFrame + anim->numFrames - curFrame;
+					PM_SetAnimFrame(pm->ps, cur_frame);
+					remaining = anim->firstFrame + anim->numFrames - cur_frame;
 				}
 				else
 				{
-					curFrame = floor(currentFrame) - strength;
+					cur_frame = floor(current_frame) - strength;
 					//drop my frame one
-					if (curFrame <= anim->firstFrame)
+					if (cur_frame <= anim->firstFrame)
 					{
 						//I won!  Break out
 						PM_SaberLockBreak(genemy, qtrue, strength);
 						return;
 					}
-					PM_SetAnimFrame(pm->ps, curFrame, qtrue, qtrue);
-					remaining = curFrame - anim->firstFrame;
+					PM_SetAnimFrame(pm->ps, cur_frame);
+					remaining = cur_frame - anim->firstFrame;
 				}
 			}
 			if (!PM_irand_timesync(0, 2))
@@ -1979,11 +1979,11 @@ void PM_SaberLocked(void)
 					{
 						BG_AddPredictableEventToPlayerstate(EV_PAIN, floor((float)80 / 100 * 100.0f), genemy);
 					}
-					PM_SetAnimFrame(genemy, anim->firstFrame + remaining, qtrue, qtrue);
+					PM_SetAnimFrame(genemy, anim->firstFrame + remaining);
 				}
 				else
 				{
-					PM_SetAnimFrame(genemy, anim->firstFrame + anim->numFrames - remaining, qtrue, qtrue);
+					PM_SetAnimFrame(genemy, anim->firstFrame + anim->numFrames - remaining);
 				}
 			}
 			else
@@ -1995,11 +1995,11 @@ void PM_SaberLocked(void)
 					{
 						BG_AddPredictableEventToPlayerstate(EV_PAIN, floor((float)80 / 100 * 100.0f), genemy);
 					}
-					PM_SetAnimFrame(genemy, anim->firstFrame + anim->numFrames - remaining, qtrue, qtrue);
+					PM_SetAnimFrame(genemy, anim->firstFrame + anim->numFrames - remaining);
 				}
 				else
 				{
-					PM_SetAnimFrame(genemy, anim->firstFrame + remaining, qtrue, qtrue);
+					PM_SetAnimFrame(genemy, anim->firstFrame + remaining);
 				}
 			}
 		}
@@ -2064,15 +2064,15 @@ saberMoveName_t PM_BrokenParryForParry(const int move)
 qboolean PM_CanBackstab(void)
 {
 	trace_t tr;
-	vec3_t flatAng;
+	vec3_t flat_ang;
 	vec3_t fwd, back;
 	const vec3_t trmins = { -15, -15, -8 };
 	const vec3_t trmaxs = { 15, 15, 8 };
 
-	VectorCopy(pm->ps->viewangles, flatAng);
-	flatAng[PITCH] = 0;
+	VectorCopy(pm->ps->viewangles, flat_ang);
+	flat_ang[PITCH] = 0;
 
-	AngleVectors(flatAng, fwd, 0, 0);
+	AngleVectors(flat_ang, fwd, 0, 0);
 
 	back[0] = pm->ps->origin[0] - fwd[0] * BACK_STAB_DISTANCE;
 	back[1] = pm->ps->origin[1] - fwd[1] * BACK_STAB_DISTANCE;

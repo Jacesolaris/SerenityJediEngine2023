@@ -68,7 +68,7 @@ static void WP_DropDetPack(gentity_t* self, vec3_t start, vec3_t dir)
 	VectorMA(muzzle, -4, forwardVec, muzzle);
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(self, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(self, start);
 	//make sure our start point isn't on the other side of a wall
 
 	gentity_t* missile = create_missile(start, forwardVec, 300, 10000, self, qfalse);

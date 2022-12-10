@@ -1271,21 +1271,21 @@ static void CG_Missile(centity_t* cent)
 	{
 		if (s1->weapon == WP_CONCUSSION)
 		{
-			FX_DestructionProjectileThink(cent, weapon);
+			FX_DestructionProjectileThink(cent);
 			cgi_R_AddLightToScene(cent->lerpOrigin, 125, 1.0f, 0.25f, 0.75f);
 			cgi_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.destructionSound);
 			return;
 		}
 		if (s1->weapon == WP_ROCKET_LAUNCHER)
 		{
-			FX_BlastProjectileThink(cent, weapon);
+			FX_BlastProjectileThink(cent);
 			cgi_R_AddLightToScene(cent->lerpOrigin, 125, 1.0f, 0.65f, 0.0f);
 			cgi_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.blastSound);
 			return;
 		}
 		if (s1->weapon == WP_DISRUPTOR)
 		{
-			FX_StrikeProjectileThink(cent, weapon);
+			FX_StrikeProjectileThink(cent);
 			cgi_R_AddLightToScene(cent->lerpOrigin, 125, 1.0f, 0.65f, 0.0f);
 			return;
 		}

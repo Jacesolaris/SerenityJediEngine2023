@@ -236,7 +236,7 @@ static void Svcmd_SaberBlade_f()
 		gi.Printf("USAGE: saberblade <sabernum> <bladenum> [0 = off, 1 = on, no arg = toggle]\n");
 		return;
 	}
-	if (&g_entities[0] == nullptr || g_entities[0].client == nullptr)
+	if (g_entities[0].client == nullptr)
 	{
 		return;
 	}
@@ -351,7 +351,7 @@ SetForceCmd SetForceTable[NUM_FORCE_POWERS] = {
 
 static void Svcmd_ForceSetLevel_f(int forcePower)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -393,7 +393,7 @@ extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimF
 
 void Svcmd_SaberAttackCycle_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -793,7 +793,7 @@ static void Svcmd_SetForceAll_f(void)
 
 static void Svcmd_ForceJump_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -826,7 +826,7 @@ static void Svcmd_ForceJump_f(void)
 
 static void Svcmd_SaberThrow_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -859,7 +859,7 @@ static void Svcmd_SaberThrow_f(void)
 
 static void Svcmd_ForceHeal_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -892,7 +892,7 @@ static void Svcmd_ForceHeal_f(void)
 
 static void Svcmd_ForcePush_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -925,7 +925,7 @@ static void Svcmd_ForcePush_f(void)
 
 static void Svcmd_ForcePull_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -958,7 +958,7 @@ static void Svcmd_ForcePull_f(void)
 
 static void Svcmd_ForceSpeed_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -991,7 +991,7 @@ static void Svcmd_ForceSpeed_f(void)
 
 static void Svcmd_ForceMindTrick_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -1024,7 +1024,7 @@ static void Svcmd_ForceMindTrick_f(void)
 
 static void Svcmd_SaberDefense_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -1057,7 +1057,7 @@ static void Svcmd_SaberDefense_f(void)
 
 static void Svcmd_SaberOffense_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -1090,7 +1090,7 @@ static void Svcmd_SaberOffense_f(void)
 
 static void Svcmd_ForceStasis_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -1123,7 +1123,7 @@ static void Svcmd_ForceStasis_f(void)
 
 static void Svcmd_ForceStrike_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -1156,7 +1156,7 @@ static void Svcmd_ForceStrike_f(void)
 
 static void Svcmd_ForceBlast_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}
@@ -1189,7 +1189,7 @@ static void Svcmd_ForceBlast_f(void)
 
 static void Svcmd_ForceBlinding_f(void)
 {
-	if (!&g_entities[0] || !g_entities[0].client)
+	if (!g_entities[0].client)
 	{
 		return;
 	}

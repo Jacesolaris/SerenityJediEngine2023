@@ -384,7 +384,7 @@ gentity_t* WP_FireThermalDetonator(gentity_t* ent, qboolean alt_fire)
 	bolt->health = 15;
 	bolt->e_DieFunc = dieF_thermal_die;
 
-	WP_TraceSetStart(ent, start, bolt->mins, bolt->maxs); //make sure our start point isn't on the other side of a wall
+	WP_TraceSetStart(ent, start); //make sure our start point isn't on the other side of a wall
 
 	float chargeAmount = 1.0f; // default of full charge
 

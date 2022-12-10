@@ -7116,7 +7116,7 @@ void PM_TorsoAnimation()
 		}
 		else if (PM_HasAnimation(pm->gent, BOTH_GESTURE1))
 		{
-			if (pm->ps->weapon == WP_DISRUPTOR)
+			if (pm->ps->weapon == WP_DISRUPTOR || pm->ps->weapon == WP_TUSKEN_RIFLE)
 			{
 				//2-handed PUSH
 				PM_SetAnim(pm, SETANIM_BOTH, BOTH_TUSKENTAUNT1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);

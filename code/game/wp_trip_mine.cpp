@@ -289,7 +289,7 @@ void WP_PlaceLaserTrap(gentity_t* ent, qboolean alt_fire)
 		vec3_t start;
 		// now make the new one
 		VectorCopy(muzzle, start);
-		WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+		WP_TraceSetStart(ent, start);
 		//make sure our start point isn't on the other side of a wall
 
 		CreateLaserTrap(laserTrap, start, ent);

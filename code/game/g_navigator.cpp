@@ -2064,15 +2064,15 @@ bool NAV::LoadFromEntitiesAndSaveToFile(const char* filename, int checksum)
 ////////////////////////////////////////////////////////////////////////////////////////
 void NAV::DecayDangerSenses()
 {
-	const float PerFrameDecay = 50.0f / static_cast<float>(MAX_ALERT_TIME);
-	for (int entIndex = 0; entIndex < TEntityAlertList::CAPACITY; entIndex++)
+	constexpr float per_frame_decay = 50.0f / static_cast<float>(MAX_ALERT_TIME);
+	for (int ent_index = 0; ent_index < TEntityAlertList::CAPACITY; ent_index++)
 	{
-		TAlertList& ae = mEntityAlertList[entIndex];
+		TAlertList& ae = mEntityAlertList[ent_index];
 		for (int alertIndex = 0; alertIndex < TAlertList::CAPACITY; alertIndex++)
 		{
 			if (ae[alertIndex].mHandle != 0)
 			{
-				ae[alertIndex].mDanger -= PerFrameDecay;
+				ae[alertIndex].mDanger -= per_frame_decay;
 
 				// If It Just Decayed To Nothing, Clear It
 				//-----------------------------------------

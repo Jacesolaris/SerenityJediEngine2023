@@ -584,8 +584,8 @@ void G_SayTo(gentity_t* ent, gentity_t* other, int mode, int color, const char* 
 //
 void G_RunThink(gentity_t* ent);
 void NORETURN QDECL G_Error(const char* fmt, ...);
-void SetInUse(gentity_t* ent);
-void ClearInUse(gentity_t* ent);
+void SetInUse(const gentity_t* ent);
+void ClearInUse(const gentity_t* ent);
 qboolean PInUse(unsigned int entNum);
 qboolean PInUse2(gentity_t* ent);
 void WriteInUseBits(void);

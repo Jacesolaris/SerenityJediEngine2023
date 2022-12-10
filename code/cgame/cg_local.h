@@ -800,7 +800,7 @@ void CG_TileClear(void);
 // cg_draw.c
 //
 void CG_CenterPrint(const char* str, int y);
-void CG_DrawActive(stereoFrame_t stereoView);
+void CG_DrawActive(stereoFrame_t stereo_view);
 void CG_ScrollText(const char* str, int iPixelWidth);
 void CG_CaptionText(const char* str, int sound);
 void CG_CaptionTextStop(void);
@@ -1198,17 +1198,17 @@ void FX_FlechetteProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 void FX_FlechetteWeaponHitWall(vec3_t origin, vec3_t normal);
 void FX_FlechetteWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid);
 
-void FX_DestructionProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
+void FX_DestructionProjectileThink(centity_t* cent);
 void FX_DestructionHitWall(vec3_t origin, vec3_t normal);
 void FX_DestructionHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid);
 
-void FX_BlastProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
+void FX_BlastProjectileThink(centity_t* cent);
 void FX_BlastHitWall(vec3_t origin, vec3_t normal);
-void FX_BlastHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid);
+void FX_BlastHitPlayer(vec3_t origin, vec3_t normal);
 
-void FX_StrikeProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
+void FX_StrikeProjectileThink(centity_t* cent);
 void FX_StrikeHitWall(vec3_t origin, vec3_t normal);
-void FX_StrikeHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid);
+void FX_StrikeHitPlayer(vec3_t origin, vec3_t normal);
 
 void FX_RocketHitWall(vec3_t origin, vec3_t normal);
 void FX_RocketHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid);

@@ -33,7 +33,7 @@ FX_DestructionProjectileThink
 ---------------------------
 */
 
-void FX_DestructionProjectileThink(centity_t* cent, const weaponInfo_s* weapon)
+void FX_DestructionProjectileThink(centity_t* cent)
 {
 	vec3_t forward;
 
@@ -61,7 +61,7 @@ void FX_DestructionHitWall(vec3_t origin, vec3_t normal)
 FX_DestructionHitPlayer
 ---------------------------
 */
-void FX_DestructionHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_DestructionHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -84,7 +84,7 @@ void FX_DestructionHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qbool
 FX_BlastProjectileThink
 ---------------------------
 */
-void FX_BlastProjectileThink(centity_t* cent, const weaponInfo_s* weapon)
+void FX_BlastProjectileThink(centity_t* cent)
 {
 	vec3_t forward;
 
@@ -113,7 +113,7 @@ FX_BlastHitPlayer
 ---------------------------
 */
 
-void FX_BlastHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BlastHitPlayer(vec3_t origin, vec3_t normal)
 {
 	theFxScheduler.PlayEffect(cgs.effects.blastHit, origin, normal);
 }
@@ -123,7 +123,7 @@ void FX_BlastHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
 FX_BlastProjectileThink
 ---------------------------
 */
-void FX_StrikeProjectileThink(centity_t* cent, const weaponInfo_s* weapon)
+void FX_StrikeProjectileThink(centity_t* cent)
 {
 	vec3_t forward;
 
@@ -152,7 +152,7 @@ FX_BlastHitPlayer
 ---------------------------
 */
 
-void FX_StrikeHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_StrikeHitPlayer(vec3_t origin, vec3_t normal)
 {
 	theFxScheduler.PlayEffect(cgs.effects.blastHit, origin, normal);
 }

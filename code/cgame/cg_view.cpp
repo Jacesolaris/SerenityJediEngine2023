@@ -1532,9 +1532,9 @@ CG_SaberClashFlare
 */
 extern int g_saberFlashTime;
 extern vec3_t g_saberFlashPos;
-extern qboolean CG_WorldCoordToScreenCoord(vec3_t worldCoord, int* x, int* y);
+extern qboolean CG_WorldCoordToScreenCoord(vec3_t world_coord, int* x, int* y);
 
-void CG_SaberClashFlare(void)
+void CG_SaberClashFlare()
 {
 	constexpr int max_time = 150;
 

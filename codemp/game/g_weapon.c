@@ -59,7 +59,7 @@ extern int wp_saber_must_bolt_block(gentity_t* self, const gentity_t* atk, qbool
 extern int wp_player_must_dodge(const gentity_t* self, const gentity_t* shooter);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern void g_missile_reflect_effect(const gentity_t* ent, vec3_t org, vec3_t dir);
-extern void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t forcePower, int overrideAmt);
+extern void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t force_power, int override_amt);
 
 #define RUNNING_SPREAD			2.0f
 

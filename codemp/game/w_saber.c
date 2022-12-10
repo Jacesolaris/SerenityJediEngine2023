@@ -8787,6 +8787,11 @@ void saberBackToOwner(gentity_t* saberent)
 		saberent->s.loopSound = saberOwner->client->saber[0].soundLoop;
 		saberent->s.loopIsSoundset = qfalse;
 
+		if (saberOwner->client->ps.forceHandExtend != HANDEXTEND_SABERPULL && owner_len <= 180)
+		{
+			saberOwner->client->ps.forceHandExtend = HANDEXTEND_SABERPULL;
+		}
+
 		if (owner_len <= 32)
 		{
 			G_Sound(saberent, CHAN_AUTO, G_SoundIndex("sound/weapons/saber/saber_catch.wav"));
@@ -8836,7 +8841,6 @@ void saberBackToOwner(gentity_t* saberent)
 
 			return;
 		}
-		saberOwner->client->ps.forceHandExtend = HANDEXTEND_SABERPULL;
 
 		saberMoveBack(saberent, qtrue);
 	}

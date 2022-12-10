@@ -2366,7 +2366,7 @@ static const char* CG_FeederItemText(float feederID, int index, int column,
 		team = TEAM_BLUE;
 	}
 
-	clientInfo_t* info = CG_InfoFromScoreIndex(index, team, &scoreIndex);
+	const clientInfo_t* info = CG_InfoFromScoreIndex(index, team, &scoreIndex);
 	const score_t* sp = &cg.scores[scoreIndex];
 
 	if (info && info->infoValid)

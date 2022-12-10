@@ -41,7 +41,7 @@ void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_BLASTER_PISTOL].damage : weaponData[WP_BLASTER_PISTOL].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -212,7 +212,7 @@ void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 		VectorCopy(muzzle, start);
 	}
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
@@ -378,7 +378,7 @@ void WP_FireBryarsbdMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean a
 	constexpr int velocity = BRYAR_PISTOL_VEL;
 	int damage = alt_fire ? weaponData[WP_SBD_PISTOL].altDamage : weaponData[WP_SBD_PISTOL].damage;
 
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	WP_MissileTargetHint(ent, start, dir);
@@ -533,7 +533,7 @@ void WP_FireJawaPistol(gentity_t* ent, qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_JAWA].damage : weaponData[WP_JAWA].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (!(ent->client->ps.forcePowersActive & 1 << FP_SEE) || ent->client->ps.forcePowerLevel[FP_SEE] < FORCE_LEVEL_2)
@@ -663,7 +663,7 @@ void WP_FireBryarPistolold(gentity_t* ent, qboolean alt_fire)
 	int damage = !alt_fire ? weaponData[WP_BRYAR_PISTOL].damage : weaponData[WP_BRYAR_PISTOL].altDamage;
 
 	VectorCopy(muzzle, start);
-	WP_TraceSetStart(ent, start, vec3_origin, vec3_origin);
+	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)

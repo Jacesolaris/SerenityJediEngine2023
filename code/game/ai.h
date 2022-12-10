@@ -95,7 +95,7 @@ void NPC_BSJedi_FollowLeader();
 void NPC_BSDroid_Default(void);
 
 // AI_ImperialProbe
-void NPC_BSImperialProbe_Default(void);
+void NPC_BSImperialProbe_Default();
 
 // AI_atst
 void NPC_BSATST_Default(void);

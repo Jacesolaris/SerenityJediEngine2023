@@ -53,7 +53,7 @@ GetStringForID
 -------------------------
 */
 
-const char* GetStringForID(stringID_table_t* table, int id)
+const char* GetStringForID(const stringID_table_t* table, const int id)
 {
 	int	index = 0;
 
