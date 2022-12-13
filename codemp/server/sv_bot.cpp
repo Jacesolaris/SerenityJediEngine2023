@@ -206,11 +206,11 @@ int SV_BotAllocateClient(void) {
 SV_BotFreeClient
 ==================
 */
-void SV_BotFreeClient(int clientNum) {
-	if (clientNum < 0 || clientNum >= sv_maxclients->integer) {
-		Com_Error(ERR_DROP, "SV_BotFreeClient: bad clientNum: %i", clientNum);
+void SV_BotFreeClient(int client_num) {
+	if (client_num < 0 || client_num >= sv_maxclients->integer) {
+		Com_Error(ERR_DROP, "SV_BotFreeClient: bad client_num: %i", client_num);
 	}
-	client_t* cl = &svs.clients[clientNum];
+	client_t* cl = &svs.clients[client_num];
 	cl->state = CS_FREE;
 	cl->name[0] = 0;
 	if (cl->gentity) {

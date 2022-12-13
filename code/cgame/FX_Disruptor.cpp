@@ -153,7 +153,7 @@ void FX_LightningStrike(vec3_t start, vec3_t end)
 FX_Strike_Beam
 ---------------------------
 */
-void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t normal, vec3_t targ1, vec3_t targ2)
+void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 {
 	vec3_t dir, chaos,
 		c1, c2,

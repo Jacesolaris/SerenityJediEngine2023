@@ -857,7 +857,7 @@ qboolean AI_RefreshGroup(AIGroupInfo_t* group)
 		}
 		if (group->commander && debugNPCAI->integer)
 		{
-			G_DebugLine(group->commander->currentOrigin, member->currentOrigin, FRAMETIME, 0x00ff00ff, qtrue);
+			G_DebugLine(group->commander->currentOrigin, member->currentOrigin, FRAMETIME, 0x00ff00ff);
 		}
 	}
 	if (group->enemy)

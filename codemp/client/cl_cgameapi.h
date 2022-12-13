@@ -20,7 +20,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-void			CGVM_Init(int serverMessageNum, int serverCommandSequence, int clientNum);
+void			CGVM_Init(int serverMessageNum, int serverCommandSequence, int client_num);
 void			CGVM_Shutdown(void);
 qboolean		CGVM_ConsoleCommand(void);
 void			CGVM_DrawActiveFrame(int serverTime, stereoFrame_t stereoView, qboolean demoPlayback);

@@ -942,7 +942,7 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			}
 		}
 	}
-	else if (npc_reflection && blocker->s.clientNum >= MAX_CLIENTS) //GOES TO ENEMY
+	else if (npc_reflection && blocker->s.client_num >= MAX_CLIENTS) //GOES TO ENEMY
 	{
 		gentity_t* enemy;
 

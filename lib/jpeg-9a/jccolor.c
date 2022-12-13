@@ -1,5 +1,5 @@
 /*
- * jccolor.c
+ * jc_color.c
  *
  * Copyright (C) 1991-1996, Thomas G. Lane.
  * Modified 2011-2013 by Guido Vollbeding.

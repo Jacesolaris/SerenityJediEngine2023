@@ -48,7 +48,7 @@ extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thr
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean NPC_CanUseAdvancedFighting();
 extern void NPC_AngerSound(void);
-extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir);
+extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 extern cvar_t* g_allowgunnerbash;
 
 extern cvar_t* d_asynchronousGroupAI;
@@ -2911,7 +2911,7 @@ void Noghri_StickTrace(void)
 #ifndef FINAL_BUILD
 			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
-				G_DebugLine(base, tip, FRAMETIME, 0x000000ff, qtrue);
+				G_DebugLine(base, tip, FRAMETIME, 0x000000ff);
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
@@ -2949,35 +2949,35 @@ void Noghri_StickTracenew(gentity_t* self)
 		return;
 	}
 
-	const int boltIndex = gi.G2API_AddBolt(&self->ghoul2[self->weaponModel[0]], "*weapon");
-	if (boltIndex != -1)
+	const int bolt_index = gi.G2API_AddBolt(&self->ghoul2[self->weaponModel[0]], "*weapon");
+	if (bolt_index != -1)
 	{
-		const int curTime = cg.time ? cg.time : level.time;
+		const int cur_time = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
-		int lastHit = ENTITYNUM_NONE;
-		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
+		int last_hit = ENTITYNUM_NONE;
+		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;
 			const vec3_t angles = { 0, self->currentAngles[YAW], 0 };
 			constexpr vec3_t mins = { -2, -2, -2 }, maxs = { 2, 2, 2 };
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(self->ghoul2, self->weaponModel[0],
-				boltIndex,
-				&boltMatrix, angles, self->currentOrigin, time,
+				bolt_index,
+				&bolt_matrix, angles, self->currentOrigin, time,
 				nullptr, self->s.modelScale);
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, base);
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, POSITIVE_Y, dir);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, base);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, POSITIVE_Y, dir);
 			VectorMA(base, 48, dir, tip);
 #ifndef FINAL_BUILD
 			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
-				G_DebugLine(base, tip, FRAMETIME, 0x000000ff, qtrue);
+				G_DebugLine(base, tip, FRAMETIME, 0x000000ff);
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, self->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entityNum != lastHit)
+			if (trace.fraction < 1.0f && trace.entityNum != last_hit)
 			{
 				//hit something
 				gentity_t* traceEnt = &g_entities[trace.entityNum];
@@ -2995,7 +2995,7 @@ void Noghri_StickTracenew(gentity_t* self)
 						//do pain on enemy
 						G_Knockdown(traceEnt, self, dir, 300, qtrue);
 					}
-					lastHit = trace.entityNum;
+					last_hit = trace.entityNum;
 					hit = qtrue;
 				}
 			}

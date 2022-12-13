@@ -52,7 +52,7 @@ static char cgParseObjectives[MAX_SIEGE_INFO_SIZE];
 
 extern void CG_LoadCISounds(clientInfo_t* ci, qboolean modelloaded); //cg_players.c
 
-void CG_DrawSiegeMessage(const char* str, int objectiveScreen);
+void CG_DrawSiegeMessage(const char* str, int objective_screen);
 void CG_DrawSiegeMessageNonMenu(const char* str);
 void CG_SiegeBriefingDisplay(int team, int dontshow);
 

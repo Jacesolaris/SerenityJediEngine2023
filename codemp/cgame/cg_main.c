@@ -42,7 +42,7 @@ Ghoul2 Insert End
 void CG_InitJetpackGhoul2(void);
 void CG_CleanJetpackGhoul2(void);
 
-void CG_Init(int serverMessageNum, int serverCommandSequence, int clientNum);
+void CG_Init(int serverMessageNum, int serverCommandSequence, int client_num);
 void CG_Shutdown(void);
 
 void CG_CalcEntityLerpPositions(centity_t* cent);
@@ -399,10 +399,10 @@ int CG_CrosshairPlayer(void)
 	if (cg.time > cg.crosshairClientTime + 1000)
 		return -1;
 
-	if (cg.crosshairClientNum >= MAX_CLIENTS)
+	if (cg.crosshairclient_num >= MAX_CLIENTS)
 		return -1;
 
-	return cg.crosshairClientNum;
+	return cg.crosshairclient_num;
 }
 
 int CG_LastAttacker(void)
@@ -1235,8 +1235,8 @@ static void CG_RegisterEffects(void)
 //===================================================================================
 
 extern char* forceHolocronModels[];
-int CG_HandleAppendedSkin(const char* modelName);
-void CG_CacheG2AnimInfo(const char* modelName);
+int CG_HandleAppendedSkin(const char* model_name);
+void CG_CacheG2AnimInfo(const char* model_name);
 
 /*
 =================
@@ -1877,12 +1877,12 @@ CG_RegisterClients
 */
 static void CG_RegisterClients(void)
 {
-	CG_LoadingClient(cg.clientNum);
-	CG_NewClientInfo(cg.clientNum, qfalse);
+	CG_LoadingClient(cg.client_num);
+	CG_NewClientInfo(cg.client_num, qfalse);
 
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
-		if (cg.clientNum == i)
+		if (cg.client_num == i)
 		{
 			continue;
 		}
@@ -2297,7 +2297,7 @@ void CG_SetScoreSelection(void* p)
 		{
 			blue++;
 		}
-		if (ps->clientNum == cg.scores[i].client)
+		if (ps->client_num == cg.scores[i].client)
 		{
 			cg.selectedScore = i;
 		}
@@ -2760,7 +2760,7 @@ Called after every level change or subsystem restart
 Will perform callbacks to make the loading info screen update.
 =================
 */
-void CG_Init(int serverMessageNum, int serverCommandSequence, int clientNum)
+void CG_Init(int serverMessageNum, int serverCommandSequence, int client_num)
 {
 	static gitem_t* item;
 	char buf[64];
@@ -2797,7 +2797,7 @@ void CG_Init(int serverMessageNum, int serverCommandSequence, int clientNum)
 	memset(&cgs, 0, sizeof cgs);
 	memset(cg_weapons, 0, sizeof cg_weapons);
 
-	cg.clientNum = clientNum;
+	cg.client_num = client_num;
 
 	cgs.processedSnapshotNum = serverMessageNum;
 	cgs.serverCommandSequence = serverCommandSequence;

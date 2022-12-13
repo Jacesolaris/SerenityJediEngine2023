@@ -9172,7 +9172,7 @@ void ICam_Shake(float intensity, int duration)
 //move the "player" script_targetname to whoever is in the lead
 void UpdatePlayerScriptTarget(void)
 {
-	int clientNum = -1;
+	int client_num = -1;
 
 	if (level.gametype != GT_SINGLE_PLAYER)
 	{
@@ -9180,7 +9180,7 @@ void UpdatePlayerScriptTarget(void)
 		return;
 	}
 
-	//find the clientNum for the top ranker
+	//find the client_num for the top ranker
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if (!g_entities[i].inuse)
@@ -9193,12 +9193,12 @@ void UpdatePlayerScriptTarget(void)
 				|| g_entities[i].client->ps.persistant[PERS_RANK] == RANK_TIED_FLAG))
 		{
 			//found them
-			clientNum = g_entities[i].client->ps.clientNum;
+			client_num = g_entities[i].client->ps.client_num;
 			break;
 		}
 	}
 
-	if (clientNum == -1)
+	if (client_num == -1)
 	{
 		//no clients ingame yet!
 		return;
@@ -9207,7 +9207,7 @@ void UpdatePlayerScriptTarget(void)
 	gentity_t* test = G_Find(NULL, FOFS(script_targetname), "player");
 	if (test)
 	{
-		if (test->client->ps.clientNum != clientNum)
+		if (test->client->ps.client_num != client_num)
 		{
 			//remove the "player" tag
 			test->script_targetname = NULL;
@@ -9220,9 +9220,9 @@ void UpdatePlayerScriptTarget(void)
 		}
 	}
 
-	g_entities[clientNum].script_targetname = "player";
-	g_entities[clientNum].targetname = "player";
-	g_entities[clientNum].NPC_targetname = "player";
+	g_entities[client_num].script_targetname = "player";
+	g_entities[client_num].targetname = "player";
+	g_entities[client_num].NPC_targetname = "player";
 }
 
 //remove the comma from a char string

@@ -440,7 +440,7 @@ void Tusken_StaffTrace(void)
 #ifndef FINAL_BUILD
 			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
-				G_DebugLine(base, tip, 1000, 0x000000ff, qtrue);
+				G_DebugLine(base, tip, 1000, 0x000000ff);
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
@@ -506,7 +506,7 @@ void Tusken_StaffTracenew(gentity_t* self)
 #ifndef FINAL_BUILD
 			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
-				G_DebugLine(base, tip, 1000, 0x000000ff, qtrue);
+				G_DebugLine(base, tip, 1000, 0x000000ff);
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, self->s.number, MASK_SHOT, G2_RETURNONHIT, 10);

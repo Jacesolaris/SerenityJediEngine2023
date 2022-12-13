@@ -1142,7 +1142,7 @@ void NPC_ApplyWeaponFireDelay()
 		break;
 
 	case WP_THERMAL:
-		if (client->ps.clientNum)
+		if (client->ps.client_num)
 		{
 			client->fireDelay = 700;
 		}

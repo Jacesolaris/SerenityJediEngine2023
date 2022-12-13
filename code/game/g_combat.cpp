@@ -87,7 +87,7 @@ extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
 extern qboolean PM_SpinningAnim(int anim);
 extern qboolean PM_RunningAnim(int anim);
-extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saberNum = 0);
+extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saber_num = 0);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean PM_FlippingAnim(int anim);
@@ -108,7 +108,7 @@ static int G_CheckSpecialDeathAnim(gentity_t* self, vec3_t point, int damage, in
 static void G_TrackWeaponUsage(const gentity_t* self, const gentity_t* inflictor, int add, int mod);
 static qboolean G_Dismemberable(const gentity_t* self, int hitLoc);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int mod);
 void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, int mod);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
@@ -2011,7 +2011,7 @@ void LimbThink(gentity_t* ent)
 	}
 }
 
-float hitLocHealthPercentage[HL_MAX] =
+float hitLochealth_percentage[HL_MAX] =
 {
 	0.0f, //HL_NONE = 0,
 	0.05f, //HL_FOOT_RT,
@@ -8631,11 +8631,6 @@ qboolean CanDamage(const gentity_t* targ, const vec3_t origin)
 	VectorScale(midpoint, 0.5, midpoint);
 
 	VectorCopy(midpoint, dest);
-	/*
-	vec3_t blah;
-	VectorCopy( origin, blah);
-	G_DebugLine(blah, dest, 5000, 0x0000ff, qtrue );
-	*/
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
 	if (tr.fraction == 1.0 && cantHitEnt || tr.entityNum == targ->s.number)
 		// if we also test the entitynum's we can bust up bbrushes better!

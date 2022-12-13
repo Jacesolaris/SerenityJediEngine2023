@@ -147,7 +147,7 @@ itemFlagsDef_t itemFlags[] = {
 	{NULL, 0}
 };
 
-extern int MenuFontToHandle(int iMenuFont);
+extern int MenuFontToHandle(int i_menu_font);
 
 /*
 ===============
@@ -1878,15 +1878,15 @@ qboolean Script_SetFocus(itemDef_t* item, char** args)
 
 	if (String_Parse(args, &name))
 	{
-		itemDef_t* focusItem = Menu_FindItemByName(item->parent, name);
-		if (focusItem && !(focusItem->window.flags & WINDOW_DECORATION) && !(focusItem->window.flags & WINDOW_HASFOCUS))
+		itemDef_t* focus_item = Menu_FindItemByName(item->parent, name);
+		if (focus_item && !(focus_item->window.flags & WINDOW_DECORATION) && !(focus_item->window.flags & WINDOW_HASFOCUS))
 		{
 			Menu_ClearFocus(item->parent);
-			focusItem->window.flags |= WINDOW_HASFOCUS;
+			focus_item->window.flags |= WINDOW_HASFOCUS;
 
-			if (focusItem->onFocus)
+			if (focus_item->onFocus)
 			{
-				Item_RunScript(focusItem, focusItem->onFocus);
+				Item_RunScript(focus_item, focus_item->onFocus);
 			}
 			if (DC->Assets.itemFocusSound)
 			{
@@ -7562,7 +7562,7 @@ void UI_CleanupGhoul2(void)
 }
 
 // asset_model <string>
-int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean isHumanoid);
+int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean is_humanoid);
 
 /*
 ===============
@@ -9935,7 +9935,7 @@ keywordHash_t menuParseKeywords[] = {
 	{"borderSize", MenuParse_borderSize, NULL},
 	{"cinematic", MenuParse_cinematic, NULL},
 	{"descAlignment", MenuParse_descAlignment,NULL},
-	{"desccolor", MenuParse_descColor, NULL},
+	{"descColor", MenuParse_descColor, NULL},
 	{"descX", MenuParse_descX, NULL},
 	{"descY", MenuParse_descY, NULL},
 	{"descScale", MenuParse_descScale, NULL},

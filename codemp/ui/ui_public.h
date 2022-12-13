@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 typedef struct uiClientState_s {
 	connstate_t		connState;
 	int				connectPacketCount;
-	int				clientNum;
+	int				client_num;
 	char			servername[MAX_STRING_CHARS];
 	char			updateInfoString[MAX_STRING_CHARS];
 	char			messageString[MAX_STRING_CHARS];

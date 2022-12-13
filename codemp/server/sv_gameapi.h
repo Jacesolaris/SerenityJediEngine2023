@@ -22,12 +22,12 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 void		GVM_InitGame(int levelTime, int randomSeed, int restart);
 void		GVM_ShutdownGame(int restart);
-char* GVM_ClientConnect(int clientNum, qboolean firstTime, qboolean isBot);
-void		GVM_ClientBegin(int clientNum);
-qboolean	GVM_ClientUserinfoChanged(int clientNum);
-void		GVM_ClientDisconnect(int clientNum);
-void		GVM_ClientCommand(int clientNum);
-void		GVM_ClientThink(int clientNum, usercmd_t* ucmd);
+char* GVM_ClientConnect(int client_num, qboolean firstTime, qboolean isBot);
+void		GVM_ClientBegin(int client_num);
+qboolean	GVM_ClientUserinfoChanged(int client_num);
+void		GVM_ClientDisconnect(int client_num);
+void		GVM_ClientCommand(int client_num);
+void		GVM_ClientThink(int client_num, usercmd_t* ucmd);
 void		GVM_RunFrame(int levelTime);
 qboolean	GVM_ConsoleCommand(void);
 int			GVM_BotAIStartFrame(int time);

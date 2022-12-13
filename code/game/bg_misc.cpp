@@ -435,7 +435,7 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 		s->eType = ET_PLAYER;
 	}
 
-	s->number = ps->clientNum;
+	s->number = ps->client_num;
 
 	s->pos.trType = TR_INTERPOLATE;
 	VectorCopy(ps->origin, s->pos.trBase);
@@ -446,7 +446,7 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 	s->angles2[YAW] = ps->movementDir;
 	s->legsAnim = ps->legsAnim;
 	s->torsoAnim = ps->torsoAnim;
-	s->clientNum = ps->clientNum; // ET_PLAYER looks here instead of at number
+	s->client_num = ps->client_num; // ET_PLAYER looks here instead of at number
 	// so corpses can also reference the proper config
 	s->eFlags = ps->eFlags;
 	s->eFlags2 = ps->eFlags2;
@@ -458,10 +458,10 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 	// NOTE: Although we store this stuff locally on a vehicle, who's to say we
 	// can't bring back these variables and fill them at the appropriate time? -Aurelio
 	// We need to bring these in from the vehicle NPC.
-	if (g_entities[ps->clientNum].client && g_entities[ps->clientNum].client->NPC_class == CLASS_VEHICLE && g_entities[
-		ps->clientNum].NPC)
+	if (g_entities[ps->client_num].client && g_entities[ps->client_num].client->NPC_class == CLASS_VEHICLE && g_entities[
+		ps->client_num].NPC)
 	{
-		const Vehicle_t* pVeh = g_entities[ps->clientNum].m_pVehicle;
+		const Vehicle_t* pVeh = g_entities[ps->client_num].m_pVehicle;
 		s->vehicleArmor = pVeh->m_iArmor;
 		VectorCopy(pVeh->m_vOrientation, s->vehicleAngles);
 	}
@@ -474,7 +474,7 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 		s->ManualBlockingTime = ps->ManualBlockingTime; //Blocking time 1 on
 		s->ManualblockStartTime = ps->ManualblockStartTime; //Blocking 2
 		s->ManualblockLastStartTime = ps->ManualblockLastStartTime; //Blocking 3
-		s->ManualMBlockingTime = ps->ManualMBlockingTime;
+		s->Manual_m_blockingTime = ps->Manual_m_blockingTime;
 
 		s->BoltblockStartTime = ps->BoltblockStartTime; //Blocking 2
 

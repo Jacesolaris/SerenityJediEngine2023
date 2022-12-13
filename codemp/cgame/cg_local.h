@@ -811,7 +811,7 @@ typedef struct chatBoxItem_s
 typedef struct cg_s {
 	int			clientFrame;		// incremented each frame
 
-	int			clientNum;
+	int			client_num;
 
 	qboolean	demoPlayback;
 	qboolean	levelShot;			// taking a level menu screenshot
@@ -938,7 +938,7 @@ typedef struct cg_s {
 	int			lastKillTime;
 
 	// crosshair client ID
-	int			crosshairClientNum;
+	int			crosshairclient_num;
 	int			crosshairClientTime;
 
 	int			crosshairVehNum;
@@ -2005,14 +2005,14 @@ extern  char systemChat[256];
 
 void CG_AddLagometerFrameInfo(void);
 void CG_AddLagometerSnapshotInfo(const snapshot_t* snap);
-void CG_CenterPrint(const char* str, int y, int charWidth);
-void CG_DrawHead(float x, float y, float w, float h, int clientNum, vec3_t headAngles);
-void CG_DrawActive(stereoFrame_t stereoView);
-void CG_DrawFlagModel(float x, float y, float w, float h, int team, qboolean force2D);
+void CG_CenterPrint(const char* str, int y, int char_width);
+void CG_DrawHead(const float x, const float y, const float w, const float h, const int client_num);
+void CG_DrawActive(stereoFrame_t stereo_view);
+void CG_DrawFlagModel(float x, float y, float w, float h, int team, qboolean force_2d);
 void CG_DrawTeamBackground(int x, int y, int w, int h, float alpha, int team);
 void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int font);
-void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, int style, int iMenuFont);
-int CG_Text_Width(const char* text, float scale, int iMenuFont);
+void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, int style, int i_menu_font);
+int CG_Text_Width(const char* text, float scale, int i_menu_font);
 int CG_Text_Height(const char* text, float scale, int iMenuFont);
 float CG_GetValue(int ownerDraw);
 qboolean CG_OwnerDrawVisible(int flags);
@@ -2022,7 +2022,7 @@ void CG_ShowResponseHead(void);
 void CG_GetTeamColor(vec4_t* color);
 const char* CG_GetGameStatusText(void);
 const char* CG_GetKillerText(void);
-void CG_Draw3DModel(float x, float y, float w, float h, qhandle_t model, void* ghoul2, int g2radius, qhandle_t skin, vec3_t origin, vec3_t angles);
+void CG_Draw3DModel(float x, float y, float w, float h, qhandle_t model, void* ghoul2, int g2_radius, qhandle_t skin, vec3_t origin, vec3_t angles);
 qboolean CG_YourTeamHasFlag(void);
 qboolean CG_OtherTeamHasFlag(void);
 qhandle_t CG_StatusHandle(int task);
@@ -2030,21 +2030,21 @@ qhandle_t CG_StatusHandle(int task);
 //
 // cg_player.c
 //
-qboolean CG_RagDoll(centity_t* cent, vec3_t forcedAngles);
-qboolean CG_G2TraceCollide(trace_t* tr, const vec3_t mins, const vec3_t maxs, const vec3_t lastValidStart, const vec3_t lastValidEnd);
+qboolean CG_RagDoll(centity_t* cent, vec3_t forced_angles);
+qboolean CG_G2TraceCollide(trace_t* tr, const vec3_t mins, const vec3_t maxs, const vec3_t last_valid_start, const vec3_t last_valid_end);
 void CG_AddGhoul2Mark(int shader, float size, vec3_t start, vec3_t end, int entnum,
-	vec3_t entposition, float entangle, void* ghoul2, vec3_t scale, int lifeTime);
+	vec3_t entposition, float entangle, void* ghoul2, vec3_t scale, int life_time);
 
 void CG_CreateNPCClient(clientInfo_t** ci);
-int FindGender(const char* modelPath, const centity_t* cent);
+int FindGender(const char* model_path, const centity_t* cent);
 void CG_DestroyNPCClient(clientInfo_t** ci);
 
 void CG_Player(centity_t* cent);
 void CG_ResetPlayerEntity(centity_t* cent);
-void CG_AddRefEntityWithPowerups(const refEntity_t* ent, const entityState_t* state, int team);
-void CG_NewClientInfo(int clientNum, qboolean entitiesInitialized);
-sfxHandle_t	CG_CustomSound(int clientNum, const char* soundName);
-void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
+void CG_AddRefEntityWithPowerups(const refEntity_t* ent, const entityState_t* state);
+void CG_NewClientInfo(int client_num, qboolean entities_initialized);
+sfxHandle_t	CG_CustomSound(int client_num, const char* sound_name);
+void CG_PlayerShieldHit(int entitynum, vec3_t dir, int amount);
 
 //
 // cg_predict.c
@@ -2192,7 +2192,7 @@ void CG_ProcessSnapshots(void);
 //
 void CG_LoadingString(const char* s);
 void CG_LoadingItem(int itemNum);
-void CG_LoadingClient(int clientNum);
+void CG_LoadingClient(int client_num);
 void CG_DrawInformation(void);
 
 //
@@ -2228,7 +2228,7 @@ void CG_ShaderStateChanged(void);
 //
 // cg_playerstate.c
 //
-int CG_IsMindTricked(int trickIndex1, int trickIndex2, int trickIndex3, int trickIndex4, int client);
+int CG_IsMindTricked(int trick_index1, int trick_index2, int trick_index3, int trick_index4, int client);
 void CG_Respawn(void);
 void CG_TransitionPlayerState(const playerState_t* ps, playerState_t* ops);
 void CG_CheckChangedPredictableEvents(const playerState_t* ps);

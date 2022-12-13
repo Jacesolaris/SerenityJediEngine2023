@@ -41,7 +41,7 @@ extern Vehicle_t* G_IsRidingVehicle(const gentity_t* ent);
 
 void CG_DrawIconBackground();
 void cg_draw_inventory_select();
-void CG_DrawForceSelect(void);
+void CG_DrawForceSelect();
 qboolean CG_WorldCoordToScreenCoord(vec3_t world_coord, int* x, int* y);
 qboolean CG_WorldCoordToScreenCoordFloat(vec3_t world_coord, float* x, float* y);
 extern qboolean PM_DeathCinAnim(int anim);
@@ -130,7 +130,7 @@ be alphaed out.
 static void CG_Draw_JKA_ForcePower(const centity_t* cent, const float hud_ratio)
 {
 	qboolean flash = qfalse;
-	vec4_t calcColor;
+	vec4_t calc_color;
 	float extra = 0, percent;
 
 	if (!cent->gent->client->ps.forcePowersKnown || G_IsRidingVehicle(cent->gent))
@@ -139,7 +139,7 @@ static void CG_Draw_JKA_ForcePower(const centity_t* cent, const float hud_ratio)
 	}
 
 	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.forceHUDTotalFlashTime > cg.time || cg_entities[cg.snap->ps.clientNum].currentState.userInt3 & 1 <<
+	if (cg.forceHUDTotalFlashTime > cg.time || cg_entities[cg.snap->ps.client_num].currentState.userInt3 & 1 <<
 		FLAG_FATIGUED)
 	{
 		flash = qtrue;
@@ -177,11 +177,11 @@ static void CG_Draw_JKA_ForcePower(const centity_t* cent, const float hud_ratio)
 		if (extra)
 		{
 			//supercharged
-			memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
+			memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
 			percent = 0.75f + sin(cg.time * 0.005f) * (extra / cent->gent->client->ps.forcePowerMax * 0.25f);
-			calcColor[0] *= percent;
-			calcColor[1] *= percent;
-			calcColor[2] *= percent;
+			calc_color[0] *= percent;
+			calc_color[1] *= percent;
+			calc_color[2] *= percent;
 		}
 		else if (value <= 0) // no more
 		{
@@ -191,29 +191,29 @@ static void CG_Draw_JKA_ForcePower(const centity_t* cent, const float hud_ratio)
 		{
 			if (flash)
 			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
+				memcpy(calc_color, colorTable[CT_RED], sizeof(vec4_t));
 			}
 			else
 			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
+				memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
 			}
 
 			percent = value / inc;
-			calcColor[3] = percent;
+			calc_color[3] = percent;
 		}
 		else
 		{
 			if (flash)
 			{
-				memcpy(calcColor, colorTable[CT_RED], sizeof(vec4_t));
+				memcpy(calc_color, colorTable[CT_RED], sizeof(vec4_t));
 			}
 			else
 			{
-				memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
+				memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
 			}
 		}
 
-		cgi_R_SetColor(calcColor);
+		cgi_R_SetColor(calc_color);
 
 		CG_DrawPic(SCREEN_WIDTH - (SCREEN_WIDTH - forceTics[i].xPos) + 5 * hud_ratio,
 			forceTics[i].yPos + 5,
@@ -316,7 +316,7 @@ void CG_DrawJK2ForcePower(const centity_t* cent, const int x, const int y)
 		value -= inc;
 	}
 
-	if (cg_com_outcast.integer == 2 && !(cent->currentState.weapon == WP_SABER)) //custom
+	if (cg_com_outcast.integer == 2 && (cent->currentState.weapon != WP_SABER)) //custom
 	{
 	}
 	else
@@ -1089,7 +1089,7 @@ static void CG_DrawCusblockPoints(const int x, const int y, const float hud_rati
 	}
 
 	const float hold = cg.snap->ps.blockPoints - BLOCK_POINTS_MAX / 2;
-	float blockPercent = static_cast<float>(hold) / (BLOCK_POINTS_MAX / 2);
+	float block_percent = static_cast<float>(hold) / (BLOCK_POINTS_MAX / 2);
 
 	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
 	if (cg.blockHUDTotalFlashTime > cg.time || cg.snap->ps.blockPoints < BLOCKPOINTS_WARNING)
@@ -1115,14 +1115,14 @@ static void CG_DrawCusblockPoints(const int x, const int y, const float hud_rati
 		cg.blockHUDActive = qtrue;
 	}
 
-	if (blockPercent < 0)
+	if (block_percent < 0)
 	{
-		blockPercent = 0;
+		block_percent = 0;
 	}
 
-	calc_color[0] *= blockPercent;
-	calc_color[1] *= blockPercent;
-	calc_color[2] *= blockPercent;
+	calc_color[0] *= block_percent;
+	calc_color[1] *= block_percent;
+	calc_color[2] *= block_percent;
 
 	cgi_R_SetColor(calc_color);
 
@@ -1138,13 +1138,13 @@ static void CG_DrawCusblockPoints(const int x, const int y, const float hud_rati
 
 	// Inner block circular
 	//==========================================================================================================//
-	if (blockPercent > 0)
+	if (block_percent > 0)
 	{
-		blockPercent = 1;
+		block_percent = 1;
 	}
 	else
 	{
-		blockPercent = static_cast<float>(cg.snap->ps.blockPoints) / (BLOCK_POINTS_MAX / 2);
+		block_percent = static_cast<float>(cg.snap->ps.blockPoints) / (BLOCK_POINTS_MAX / 2);
 	}
 
 	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
@@ -1157,9 +1157,9 @@ static void CG_DrawCusblockPoints(const int x, const int y, const float hud_rati
 		memcpy(calc_color, colorTable[CT_MAGENTA], sizeof(vec4_t));
 	}
 
-	calc_color[0] *= blockPercent;
-	calc_color[1] *= blockPercent;
-	calc_color[2] *= blockPercent;
+	calc_color[0] *= block_percent;
+	calc_color[1] *= block_percent;
+	calc_color[2] *= block_percent;
 
 	cgi_R_SetColor(calc_color);
 
@@ -3107,7 +3107,7 @@ static void CG_DrawSimpleForcePower(const centity_t* cent)
 	}
 
 	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.forceHUDTotalFlashTime > cg.time || cg_entities[cg.snap->ps.clientNum].currentState.userInt3 & 1 <<
+	if (cg.forceHUDTotalFlashTime > cg.time || cg_entities[cg.snap->ps.client_num].currentState.userInt3 & 1 <<
 		FLAG_FATIGUED)
 	{
 		flash = qtrue;
@@ -4281,7 +4281,7 @@ static void CG_DrawStats()
 		return;
 	}
 
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
 	if (cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
 	{
@@ -5166,7 +5166,7 @@ static void CG_ScanForCrosshairEntity(const qboolean scanAll)
 	trace_t trace;
 	const gentity_t* trace_ent = nullptr;
 	vec3_t start, end;
-	int ignoreEnt = cg.snap->ps.clientNum;
+	int ignoreEnt = cg.snap->ps.client_num;
 	const Vehicle_t* p_veh;
 
 	cg_forceCrosshair = qfalse;
@@ -5426,12 +5426,12 @@ static void CG_ScanForCrosshairEntity(const qboolean scanAll)
 	}
 
 	// update the fade timer
-	if (cg.crosshairClientNum != trace.entityNum)
+	if (cg.crosshairclient_num != trace.entityNum)
 	{
 		infoStringCount = 0;
 	}
 
-	cg.crosshairClientNum = trace.entityNum;
+	cg.crosshairclient_num = trace.entityNum;
 	cg.crosshairClientTime = cg.time;
 }
 
@@ -5451,7 +5451,7 @@ static void CG_DrawCrosshairItem()
 
 	CG_ScanForCrosshairEntity(scan_all);
 
-	if (cg_entities[cg.crosshairClientNum].currentState.eType == ET_ITEM)
+	if (cg_entities[cg.crosshairclient_num].currentState.eType == ET_ITEM)
 	{
 		CG_DrawPic(50, 285, 32, 32, cgs.media.useableHint);
 		return;
@@ -5483,7 +5483,7 @@ static void CG_DrawCrosshairNames()
 
 	const float w = CG_DrawStrlen(va("Civilian")) * TINYCHAR_WIDTH;
 
-	if (cg_entities[cg.crosshairClientNum].currentState.powerups & 1 << PW_CLOAKED)
+	if (cg_entities[cg.crosshairclient_num].currentState.powerups & 1 << PW_CLOAKED)
 	{
 		return;
 	}
@@ -6637,8 +6637,8 @@ float cg_draw_radar(const float y)
 
 		case ET_MISSILE:
 
-			if (cent->currentState.clientNum > MAX_CLIENTS //belongs to an NPC
-				&& cg_entities[cent->currentState.clientNum].currentState.NPC_class == CLASS_VEHICLE)
+			if (cent->currentState.client_num > MAX_CLIENTS //belongs to an NPC
+				&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE)
 			{
 				//a rocket belonging to an NPC, FIXME: only tracking rockets!
 
@@ -6651,7 +6651,7 @@ float cg_draw_radar(const float y)
 				{
 					//I'm in a vehicle
 					//if it's targeting me, then play an alarm sound if I'm in a vehicle
-					if (cent->currentState.otherEntityNum == cg.predicted_player_state.clientNum || cent->
+					if (cent->currentState.otherEntityNum == cg.predicted_player_state.client_num || cent->
 						currentState.otherEntityNum == cg.predicted_player_state.m_iVehicleNum)
 					{
 						if (radarLockSoundDebounceTime < cg.time)
@@ -6718,12 +6718,12 @@ float cg_draw_radar(const float y)
 
 				arrow_base_scale *= z_scale;
 
-				if (cent->currentState.clientNum >= MAX_CLIENTS //missile owned by an NPC
-					&& cg_entities[cent->currentState.clientNum].currentState.NPC_class == CLASS_VEHICLE
+				if (cent->currentState.client_num >= MAX_CLIENTS //missile owned by an NPC
+					&& cg_entities[cent->currentState.client_num].currentState.NPC_class == CLASS_VEHICLE
 					//NPC is a vehicle
-					&& cg_entities[cent->currentState.clientNum].currentState.m_iVehicleNum <= MAX_CLIENTS
+					&& cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum <= MAX_CLIENTS
 					//Vehicle has a player driver
-					&& cgs.clientinfo[cg_entities[cent->currentState.clientNum].currentState.m_iVehicleNum - 1].
+					&& cgs.clientinfo[cg_entities[cent->currentState.client_num].currentState.m_iVehicleNum - 1].
 					infoValid) //player driver is valid
 				{
 					cgi_R_SetColor(colorTable[CT_RED]);
@@ -6796,7 +6796,7 @@ static qboolean CG_RenderingFromMiscCamera()
 {
 	//centity_t *cent;
 
-	//cent = &cg_entities[cg.snap->ps.clientNum];
+	//cent = &cg_entities[cg.snap->ps.client_num];
 
 	if (cg.snap->ps.viewEntity > 0 &&
 		cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
@@ -6839,7 +6839,7 @@ qboolean CanUseInfrontOf(const gentity_t*);
 
 static void CG_UseIcon()
 {
-	cg_usingInFrontOf = CanUseInfrontOf(cg_entities[cg.snap->ps.clientNum].gent);
+	cg_usingInFrontOf = CanUseInfrontOf(cg_entities[cg.snap->ps.client_num].gent);
 	if (cg_usingInFrontOf)
 	{
 		cgi_R_SetColor(nullptr);
@@ -7202,7 +7202,7 @@ static void CG_Draw2D()
 {
 	char text[1024] = { 0 };
 	int w, y_pos;
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
 	// if we are taking a levelshot for the menu, don't draw anything
 	if (cg.levelShot)

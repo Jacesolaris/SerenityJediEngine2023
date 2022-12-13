@@ -533,7 +533,7 @@ static cvarTable_t cvarTable[] =
 	{&ui_rgb_saber2_blue, "ui_rgb_saber2_blue", "", nullptr, 0},
 	{&ui_rgb_saber2_green, "ui_rgb_saber2_green", "", nullptr, 0},
 
-	{&ui_SFXSabers, "cg_SFXSabers", "3", nullptr, CVAR_ARCHIVE},
+	{&ui_SFXSabers, "cg_SFXSabers", "5", nullptr, CVAR_ARCHIVE},
 	{&ui_SFXSabersGlowSize, "cg_SFXSabersGlowSize", "1.0", nullptr, CVAR_ARCHIVE},
 	{&ui_SFXSabersCoreSize, "cg_SFXSabersCoreSize", "1.0", nullptr, CVAR_ARCHIVE},
 
@@ -5115,20 +5115,20 @@ static void UI_UpdateSaberCvars(void)
 
 	if (TranslateSaberColor(Cvar_VariableString("ui_saber_color")) >= SABER_RGB)
 	{
-		char rgbColor[8];
-		Com_sprintf(rgbColor, 8, "x%02x%02x%02x", Cvar_VariableIntegerValue("ui_rgb_saber_red"),
+		char rgb_color[8];
+		Com_sprintf(rgb_color, 8, "x%02x%02x%02x", Cvar_VariableIntegerValue("ui_rgb_saber_red"),
 			Cvar_VariableIntegerValue("ui_rgb_saber_green"),
 			Cvar_VariableIntegerValue("ui_rgb_saber_blue"));
-		Cvar_Set("g_saber_color", rgbColor);
+		Cvar_Set("g_saber_color", rgb_color);
 	}
 
 	if (TranslateSaberColor(Cvar_VariableString("ui_saber2_color")) >= SABER_RGB)
 	{
-		char rgbColor[8];
-		Com_sprintf(rgbColor, 8, "x%02x%02x%02x", Cvar_VariableIntegerValue("ui_rgb_saber2_red"),
+		char rgb_color[8];
+		Com_sprintf(rgb_color, 8, "x%02x%02x%02x", Cvar_VariableIntegerValue("ui_rgb_saber2_red"),
 			Cvar_VariableIntegerValue("ui_rgb_saber2_green"),
 			Cvar_VariableIntegerValue("ui_rgb_saber2_blue"));
-		Cvar_Set("g_saber2_color", rgbColor);
+		Cvar_Set("g_saber2_color", rgb_color);
 	}
 }
 
@@ -7087,13 +7087,13 @@ static void UI_UpdateSaberHilt(qboolean secondSaber)
 /*
 static void UI_UpdateSaberColor( qboolean secondSaber )
 {
-	int sabernumber;
+	int saber_number;
 	if (secondSaber)
-		sabernumber = 2;
+		saber_number = 2;
 	else
-		sabernumber = 1;
+		saber_number = 1;
 
-	ui.Cmd_ExecuteText( EXEC_APPEND, va("sabercolor %i %s\n",sabernumber, Cvar_VariableString("g_saber_color")));
+	ui.Cmd_ExecuteText( EXEC_APPEND, va("sabercolor %i %s\n",saber_number, Cvar_VariableString("g_saber_color")));
 }
 */
 char GoToMenu[1024];

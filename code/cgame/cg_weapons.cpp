@@ -44,7 +44,7 @@ extern void G_StartNextItemEffect(gentity_t* ent, int meFlags = 0, int length = 
 
 extern qboolean PM_ReloadAnim(int anim);
 extern void FX_DEMP2_ProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
-extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soundPath);
+extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* sound_path);
 const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHeight,
 	const char* psText, int iFontHandle, float fScale,
 	const vec4_t v4Color);
@@ -1317,7 +1317,7 @@ static void CG_DoMuzzleFlash(centity_t* cent, vec3_t org, vec3_t dir, const weap
 			else
 			{
 				// We got an effect and we're firing, so let 'er rip.
-				theFxScheduler.PlayEffect(effect, cent->currentState.clientNum);
+				theFxScheduler.PlayEffect(effect, cent->currentState.client_num);
 			}
 		}
 	}
@@ -1357,7 +1357,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 	if (cg.renderingThirdPerson && !cg_trueguns.integer && !cg.zoomMode && ps->eFlags & EF2_DUAL_WEAPONS)
 	{
 		vec3_t origin;
-		cent = &cg_entities[ps->clientNum];
+		cent = &cg_entities[ps->client_num];
 		// special hack for lightning guns...
 		VectorCopy(cg.refdef.vieworg, origin);
 		VectorMA(origin, -10, cg.refdef.viewaxis[2], origin);
@@ -1398,7 +1398,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		return;
 	}
 
-	cent = &cg_entities[ps->clientNum];
+	cent = &cg_entities[ps->client_num];
 
 	if (ps->eFlags & EF_LOCKED_TO_WEAPON)
 	{
@@ -1692,7 +1692,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), torsoAnim, cent->currentState.weapon,
 				cent->currentState.eFlags & EF_FIRING);
 			hand.backlerp = 1.0f - (currentFrame - floor(currentFrame));
-			if (cg_debugAnim.integer == 1 && cent->currentState.clientNum == 0)
+			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,
 					cent->pe.torso.frame, hand.oldframe, hand.frame);
@@ -1712,7 +1712,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 	{
 		numSabers = 2;
 	}
-	for (int saberNum = 0; saberNum < numSabers; saberNum++)
+	for (int saber_num = 0; saber_num < numSabers; saber_num++)
 	{
 		refEntity_t gun = {};
 
@@ -1730,7 +1730,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 
 		if (cent->gent && cent->gent->client && cent->currentState.weapon == WP_SABER)
 		{
-			for (int bladeNum = 0; bladeNum < cent->gent->client->ps.saber[saberNum].numBlades; bladeNum++)
+			for (int blade_num = 0; blade_num < cent->gent->client->ps.saber[saber_num].numBlades; blade_num++)
 			{
 				vec3_t axis_[3];
 				vec3_t org_;
@@ -1748,16 +1748,16 @@ void CG_AddViewWeapon(playerState_t* ps)
 							lengthMax;
 					}
 				}
-				if (saberNum == 0 && bladeNum == 0)
+				if (saber_num == 0 && blade_num == 0)
 				{
 					VectorCopy(axis_[0], cent->gent->client->renderInfo.muzzleDir);
 				}
 				else
 				{
 					//need these points stored here when in 1st person saber
-					VectorCopy(org_, cent->gent->client->ps.saber[saberNum].blade[bladeNum].muzzlePoint);
+					VectorCopy(org_, cent->gent->client->ps.saber[saber_num].blade[blade_num].muzzlePoint);
 				}
-				VectorCopy(axis_[0], cent->gent->client->ps.saber[saberNum].blade[bladeNum].muzzleDir);
+				VectorCopy(axis_[0], cent->gent->client->ps.saber[saber_num].blade[blade_num].muzzleDir);
 			}
 		}
 		//---------
@@ -1805,7 +1805,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 
 		if (cent->gent && cent->gent->client)
 		{
-			if (saberNum == 0)
+			if (saber_num == 0)
 			{
 				VectorCopy(flash.origin, cent->gent->client->renderInfo.muzzlePoint);
 				VectorCopy(flash.axis[0], cent->gent->client->renderInfo.muzzleDir);
@@ -1890,7 +1890,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 
 			for (int i = 0; i < ct; i++)
 			{
-				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.clientNum);
+				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.client_num);
 			}
 
 			cent->gent->client->ps.weaponShotCount = 0;
@@ -1949,7 +1949,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 		return;
 	}
 
-	cent = &cg_entities[ps->clientNum];
+	cent = &cg_entities[ps->client_num];
 
 	if (ps->eFlags & EF_LOCKED_TO_WEAPON)
 	{
@@ -2219,7 +2219,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), torsoAnim, cent->currentState.weapon,
 				cent->currentState.eFlags & EF_FIRING);
 			hand.backlerp = 1.0f - (currentFrame - floor(currentFrame));
-			if (cg_debugAnim.integer == 1 && cent->currentState.clientNum == 0)
+			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,
 					cent->pe.torso.frame, hand.oldframe, hand.frame);
@@ -2239,7 +2239,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 	{
 		numSabers = 2;
 	}
-	for (int saberNum = 0; saberNum < numSabers; saberNum++)
+	for (int saber_num = 0; saber_num < numSabers; saber_num++)
 	{
 		refEntity_t gun = {};
 
@@ -2256,7 +2256,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 		if (cent->gent && cent->gent->client && cent->currentState.weapon == WP_SABER)
 		{
-			for (int bladeNum = 0; bladeNum < cent->gent->client->ps.saber[saberNum].numBlades; bladeNum++)
+			for (int blade_num = 0; blade_num < cent->gent->client->ps.saber[saber_num].numBlades; blade_num++)
 			{
 				vec3_t axis_[3];
 				vec3_t org_;
@@ -2274,16 +2274,16 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 							lengthMax;
 					}
 				}
-				if (saberNum == 0 && bladeNum == 0)
+				if (saber_num == 0 && blade_num == 0)
 				{
 					VectorCopy(axis_[0], cent->gent->client->renderInfo.muzzleDir);
 				}
 				else
 				{
 					//need these points stored here when in 1st person saber
-					VectorCopy(org_, cent->gent->client->ps.saber[saberNum].blade[bladeNum].muzzlePoint);
+					VectorCopy(org_, cent->gent->client->ps.saber[saber_num].blade[blade_num].muzzlePoint);
 				}
-				VectorCopy(axis_[0], cent->gent->client->ps.saber[saberNum].blade[bladeNum].muzzleDir);
+				VectorCopy(axis_[0], cent->gent->client->ps.saber[saber_num].blade[blade_num].muzzleDir);
 			}
 		}
 		//---------
@@ -2326,7 +2326,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 		if (cent->gent && cent->gent->client)
 		{
-			if (saberNum == 0)
+			if (saber_num == 0)
 			{
 				VectorCopy(flash.origin, cent->gent->client->renderInfo.muzzlePointOld);
 				VectorCopy(flash.axis[0], cent->gent->client->renderInfo.muzzleDirOld);
@@ -2411,7 +2411,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 			for (int i = 0; i < ct; i++)
 			{
-				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.clientNum);
+				theFxScheduler.PlayEffect("repeater/muzzle_smoke", cent->currentState.client_num);
 			}
 
 			cent->gent->client->ps.weaponShotCount = 0;
@@ -2528,7 +2528,7 @@ void CG_DrawDataPadWeaponSelect(void)
 	int i;
 	int sideLeftIconCnt, sideRightIconCnt;
 	int iconCnt;
-	vec4_t calcColor;
+	vec4_t calc_color;
 	char text[1024] = { 0 };
 	constexpr vec4_t textColor = { .875f, .718f, .121f, 1.0f };
 
@@ -2596,12 +2596,12 @@ void CG_DrawDataPadWeaponSelect(void)
 	int y = 300;
 
 	// Background
-	memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-	calcColor[3] = .60f;
-	cgi_R_SetColor(calcColor);
+	memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
+	calc_color[3] = .60f;
+	cgi_R_SetColor(calc_color);
 
 	// Left side ICONS
-	cgi_R_SetColor(calcColor);
+	cgi_R_SetColor(calc_color);
 	// Work backwards from current icon
 	int holdX = x - (bigIconSize / 2 + pad + smallIconSize);
 
@@ -2666,7 +2666,7 @@ void CG_DrawDataPadWeaponSelect(void)
 
 	// Right side ICONS
 	// Work forwards from current icon
-	cgi_R_SetColor(calcColor);
+	cgi_R_SetColor(calc_color);
 	holdX = x + bigIconSize / 2 + pad;
 	//height = smallIconSize * cg.iconHUDPercent;
 	for (iconCnt = 1; iconCnt < sideRightIconCnt + 1; i++)
@@ -2818,7 +2818,7 @@ void CG_DrawWeaponSelect(void)
 	int x2, y2, w2, h2;
 	int sideLeftIconCnt, sideRightIconCnt;
 	int sideMax, iconCnt;
-	vec4_t calcColor;
+	vec4_t calc_color;
 	constexpr vec4_t textColor = { .875f, .718f, .121f, 1.0f };
 	constexpr int yOffset = 0;
 
@@ -2929,12 +2929,12 @@ void CG_DrawWeaponSelect(void)
 	constexpr int y = 410;
 
 	// Background
-	memcpy(calcColor, colorTable[CT_WHITE], sizeof(vec4_t));
-	calcColor[3] = .60f;
-	cgi_R_SetColor(calcColor);
+	memcpy(calc_color, colorTable[CT_WHITE], sizeof(vec4_t));
+	calc_color[3] = .60f;
+	cgi_R_SetColor(calc_color);
 
 	// Left side ICONS
-	cgi_R_SetColor(calcColor);
+	cgi_R_SetColor(calc_color);
 	// Work backwards from current icon
 	int holdX = x - (bigIconSize / 2 + pad + smallIconSize);
 	//height = smallIconSize * cg.iconHUDPercent;
@@ -3076,7 +3076,7 @@ void CG_DrawWeaponSelect(void)
 
 	// Right side ICONS
 	// Work forwards from current icon
-	cgi_R_SetColor(calcColor);
+	cgi_R_SetColor(calc_color);
 	holdX = x + bigIconSize / 2 + pad;
 	//height = smallIconSize * cg.iconHUDPercent;
 	drewConc = qfalse;
@@ -3882,7 +3882,7 @@ void CG_Weapon_f()
 						}
 						else
 						{
-							cgi_S_StartSound(nullptr, cg.snap->ps.clientNum, CHAN_AUTO,
+							cgi_S_StartSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO,
 								cgs.sound_precache[cg_entities[0].gent->client->ps.saber[0].soundOff]);
 						}
 					}

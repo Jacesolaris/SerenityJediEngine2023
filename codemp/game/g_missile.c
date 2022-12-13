@@ -54,7 +54,7 @@ extern int wp_saber_must_bolt_block(gentity_t* self, const gentity_t* atk, qbool
 	int r_saber_num,
 	int r_blade_num);
 void wp_flechette_alt_blow(gentity_t* ent);
-extern qboolean G_DoDodge(gentity_t* self, gentity_t* shooter, vec3_t dmgOrigin, int hitLoc, int* dmg, int mod);
+extern qboolean G_DoDodge(gentity_t* self, gentity_t* shooter, vec3_t dmg_origin, int hit_loc, int* dmg, int mod);
 extern qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self);
 extern qboolean PM_RunningAnim(int anim);
 vec3_t g_crosshairWorldCoord = { 0, 0, 0 };
@@ -633,8 +633,8 @@ void g_missile_bounce_effect(gentity_t* ent, vec3_t org, vec3_t dir, qboolean hi
 		VectorCopy(org, te->s.origin);
 		VectorCopy(dir, te->s.angles);
 		te->s.eventParm = 0;
-		te->s.weapon = 0; //saberNum
-		te->s.legsAnim = 0; //bladeNum
+		te->s.weapon = 0; //saber_num
+		te->s.legsAnim = 0; //blade_num
 	}
 	break;
 	}

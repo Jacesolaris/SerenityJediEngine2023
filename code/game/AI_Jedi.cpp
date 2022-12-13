@@ -122,7 +122,7 @@ extern qboolean IsCowering(const gentity_t* self);
 extern qboolean IsAnimRequiresResponce(const gentity_t* self);
 extern void ForceGrip(const gentity_t* self);
 extern void ForceDashAnimDash(gentity_t* self);
-extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir);
+extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern cvar_t* g_DebugSaberCombat;
@@ -593,7 +593,7 @@ void Tavion_ScepterDamage()
 			VectorMA(base, 512, dir, tip);
 			if (d_saberCombat->integer > 1 || g_DebugSaberCombat->integer)
 			{
-				G_DebugLine(base, tip, 1000, 0x000000ff, qtrue);
+				G_DebugLine(base, tip, 1000, 0x000000ff);
 			}
 			gi.trace(&trace, base, vec3_origin, vec3_origin, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
 			if (trace.fraction < 1.0f)
@@ -910,7 +910,7 @@ void Jedi_Cloak(gentity_t* self)
 			self->client->ps.powerups[PW_UNCLOAKING] = level.time + 2000;
 			G_SoundOnEnt(self, CHAN_ITEM, "sound/chars/shadowtrooper/cloak.wav");
 
-			if (self->s.clientNum >= MAX_CLIENTS && !self->client->ps.SaberActive())
+			if (self->s.client_num >= MAX_CLIENTS && !self->client->ps.SaberActive())
 			{
 				NPC_SetAnim(self, SETANIM_TORSO, BOTH_FORCE_PROTECT_FAST, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			}
@@ -5708,8 +5708,7 @@ static qboolean Jedi_SaberBlock()
 	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		G_DebugLine(saber_point, hitloc, FRAMETIME,
-			wp_debug_saber_colour(NPC->enemy->client->ps.saber[closest_saber_num].blade[closest_blade_num].color),
-			qtrue);
+		            wp_debug_saber_colour(NPC->enemy->client->ps.saber[closest_saber_num].blade[closest_blade_num].color));
 	}
 	evasionType_t evasion_type;
 

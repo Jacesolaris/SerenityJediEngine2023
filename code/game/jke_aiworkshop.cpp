@@ -205,10 +205,10 @@ void WorkshopDrawClientsideInformation()
 		return;
 	}
 	// Draw the information for the NPC that is in our crosshairs
-	if (cg.crosshairClientNum != ENTITYNUM_NONE && cg.crosshairClientNum != 0 && g_entities[cg.crosshairClientNum].
+	if (cg.crosshairclient_num != ENTITYNUM_NONE && cg.crosshairclient_num != 0 && g_entities[cg.crosshairclient_num].
 		client)
 	{
-		gentity_t* crossEnt = &g_entities[cg.crosshairClientNum];
+		gentity_t* crossEnt = &g_entities[cg.crosshairclient_num];
 		WorkshopDrawEntityInformation(crossEnt, 10, "Crosshair AI");
 	}
 
@@ -284,18 +284,18 @@ void WorkshopDrawEntBox(gentity_t* ent, int colorOverride = -1)
 	vertices[5][1] += ent->maxs[1];
 	vertices[7][1] += ent->maxs[1];
 
-	G_DebugLine(vertices[0], vertices[1], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[2], vertices[3], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[0], vertices[2], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[1], vertices[3], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[0], vertices[4], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[1], vertices[5], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[2], vertices[6], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[3], vertices[7], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[4], vertices[5], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[6], vertices[7], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[4], vertices[6], DRAWBOX_REFRESH, color, qtrue);
-	G_DebugLine(vertices[5], vertices[7], DRAWBOX_REFRESH, color, qtrue);
+	G_DebugLine(vertices[0], vertices[1], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[2], vertices[3], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[0], vertices[2], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[1], vertices[3], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[0], vertices[4], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[1], vertices[5], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[2], vertices[6], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[3], vertices[7], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[4], vertices[5], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[6], vertices[7], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[4], vertices[6], DRAWBOX_REFRESH, color);
+	G_DebugLine(vertices[5], vertices[7], DRAWBOX_REFRESH, color);
 }
 
 //

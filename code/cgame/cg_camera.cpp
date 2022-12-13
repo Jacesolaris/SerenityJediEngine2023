@@ -60,7 +60,7 @@ CGCam_Init
 -------------------------
 */
 
-void CGCam_Init(void)
+void CGCam_Init()
 {
 	extern qboolean qbVidRestartOccured;
 	if (!qbVidRestartOccured)
@@ -74,9 +74,9 @@ void CGCam_Init(void)
 CGCam_Enable
 -------------------------
 */
-extern void CG_CalcVrect(void);
+extern void CG_CalcVrect();
 
-void CGCam_Enable(void)
+void CGCam_Enable()
 {
 	client_camera.bar_alpha = 0.0f;
 	client_camera.bar_time = cg.time;
@@ -154,7 +154,7 @@ CGCam_Disable
 -------------------------
 */
 
-void CGCam_Disable(void)
+void CGCam_Disable()
 {
 	in_camera = false;
 

@@ -444,7 +444,7 @@ using cg_t = struct
 	int rewardCount;
 
 	// crosshair client ID
-	int crosshairClientNum; //who you're looking at
+	int crosshairclient_num; //who you're looking at
 	int crosshairClientTime; //last time you looked at them
 
 	// powerup active flashing
@@ -715,7 +715,7 @@ extern vmCvar_t cg_missionstatusscreen;
 
 extern vmCvar_t cg_hudRatio;
 
-void CG_NewClientinfo(int clientNum);
+void CG_NewClientinfo(int client_num);
 //
 // cg_main.c
 //
@@ -816,13 +816,13 @@ void CG_DrawCenterString(void);
 // cg_player.c
 //
 void CG_AddGhoul2Mark(int type, float size, vec3_t hitloc, vec3_t hitdirection,
-	int entnum, vec3_t entposition, float entangle, CGhoul2Info_v& ghoul2, vec3_t modelScale,
-	int lifeTime = 0, int firstModel = 0, vec3_t uaxis = nullptr);
+	int entnum, vec3_t entposition, float entangle, CGhoul2Info_v& ghoul2, vec3_t model_scale,
+	int life_time = 0, int first_model = 0, vec3_t uaxis = nullptr);
 void CG_Player(centity_t* cent);
 void CG_ResetPlayerEntity(centity_t* cent);
 void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent);
 void CG_GetTagWorldPosition(refEntity_t* model, const char* tag, vec3_t pos, vec3_t axis[3]);
-void CG_PlayerShieldHit(int entitynum, vec3_t angles, int amount);
+void CG_PlayerShieldHit(int entitynum, vec3_t dir, int amount);
 
 //
 // cg_predict.c
@@ -1297,7 +1297,7 @@ void CG_PlayEffectBolted(const char* fx_name, int model_index, int bolt_index, i
 void CG_PlayEffectIDBolted(int fx_id, int model_index, int bolt_index, int ent_num, vec3_t origin, int i_loop_time = 0,
 	bool is_relative = false);
 void CG_PlayEffectOnEnt(const char* fx_name, int client_num, vec3_t origin, const vec3_t fwd);
-void CG_PlayEffectIDOnEnt(int fx_id, int clientNum, vec3_t origin, const vec3_t fwd);
+void CG_PlayEffectIDOnEnt(int fx_id, int client_num, vec3_t origin, const vec3_t fwd);
 void CG_PlayEffect(const char* fx_name, vec3_t origin, const vec3_t fwd);
 void CG_PlayEffectID(int fx_id, vec3_t origin, const vec3_t fwd);
 

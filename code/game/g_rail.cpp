@@ -38,7 +38,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////////////
 // Externs & Fwd Decl.
 ////////////////////////////////////////////////////////////////////////////////////////
-extern void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast);
+extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
 class CRailTrack;

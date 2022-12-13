@@ -377,7 +377,7 @@ void SP_target_speaker(gentity_t* ent)
 	ent->s.eType = ET_SPEAKER;
 	ent->s.eventParm = ent->noise_index;
 	ent->s.frame = ent->wait * 10;
-	ent->s.clientNum = ent->random * 10;
+	ent->s.client_num = ent->random * 10;
 
 	// check for prestarted looping sound
 	if (ent->spawnflags & 1)
@@ -963,12 +963,12 @@ void SP_target_scriptrunner(gentity_t* self)
 	self->use = target_scriptrunner_use;
 }
 
-void G_SetActiveState(const char* targetstring, qboolean actState)
+void G_SetActiveState(const char* targetstring, qboolean act_state)
 {
 	gentity_t* target = NULL;
 	while (NULL != (target = G_Find(target, FOFS(targetname), targetstring)))
 	{
-		target->flags = actState ? target->flags & ~FL_INACTIVE : target->flags | FL_INACTIVE;
+		target->flags = act_state ? target->flags & ~FL_INACTIVE : target->flags | FL_INACTIVE;
 	}
 }
 

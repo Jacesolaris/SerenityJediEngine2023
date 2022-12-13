@@ -72,7 +72,7 @@ float CG_GetValue(int ownerDraw)
 {
 	clientInfo_t* ci;
 
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 	const playerState_t* ps = &cg.snap->ps;
 
 	switch (ownerDraw)
@@ -297,7 +297,7 @@ const char* CG_GetGameStatusText(void)
 	return s;
 }
 
-extern int MenuFontToHandle(int iMenuFont);
+extern int MenuFontToHandle(int i_menu_font);
 
 // maxX param is initially an X limit, but is also used as feedback. 0 = text was clipped to fit within, else maxX = next pos
 //
@@ -944,7 +944,7 @@ void CG_KeyEvent(int key, qboolean down)
 	}
 }
 
-int CG_ClientNumFromName(const char* p)
+int CG_client_numFromName(const char* p)
 {
 	for (int i = 0; i < cgs.maxclients; i++)
 	{

@@ -425,34 +425,34 @@ Ghoul2 Insert End
 
 int G_EffectIndex(const char* name);
 void G_PlayEffect(const char* name, const vec3_t origin);
-void G_PlayEffect(const char* name, int clientNum);
+void G_PlayEffect(const char* name, int client_num);
 void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t fwd);
 void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3]);
-void G_PlayEffect(int fxID, const vec3_t origin);
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t fwd);
-void G_PlayEffect(int fxID, const vec3_t origin, const vec3_t axis[3]);
-void G_PlayEffect(int fxID, int modelIndex, int boltIndex, int entNum, const vec3_t origin, int iLoopTime = qfalse,
-	qboolean isRelative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
-void G_PlayEffect(int fxID, int entNum, const vec3_t fwd);
-void G_StopEffect(int fxID, int modelIndex, int boltIndex, int entNum);
+void G_PlayEffect(int fx_id, const vec3_t origin);
+void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t fwd);
+void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t axis[3]);
+void G_PlayEffect(int fx_id, int model_index, int bolt_index, int ent_num, const vec3_t origin, int i_loop_time = qfalse,
+	qboolean is_relative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
+void G_PlayEffect(int fx_id, int entNum, const vec3_t fwd);
+void G_StopEffect(int fx_id, int model_index, int bolt_index, int ent_num);
 void G_StopEffect(const char* name, int modelIndex, int boltIndex, int entNum);
 
 int G_BSPIndex(const char* name);
 
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
-int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
 	gentity_t* ent_list[MAX_GENTITIES]);
 gentity_t* G_PickTarget(char* targetname);
 void G_UseTargets(gentity_t* ent, gentity_t* activator);
 void G_UseTargets2(gentity_t* ent, gentity_t* activator, const char* string);
 void G_SetMovedir(vec3_t angles, vec3_t movedir);
 
-void G_InitGentity(gentity_t* e, qboolean bFreeG2);
+void G_InitGentity(gentity_t* e, qboolean b_free_g2);
 gentity_t* G_Spawn(void);
 gentity_t* G_TempEntity(const vec3_t origin, int event);
-void G_Sound(const gentity_t* ent, int soundIndex);
-void G_FreeEntity(gentity_t* e);
+void G_Sound(const gentity_t* ent, int sound_index);
+void G_FreeEntity(gentity_t* ed);
 
 void G_TouchTriggers(gentity_t* ent);
 void G_TouchTeamClients(gentity_t* ent);
@@ -462,11 +462,11 @@ char* vtos(const vec3_t v);
 
 float vectoyaw(const vec3_t vec);
 
-void G_AddEvent(gentity_t* ent, int event, int eventParm);
+void G_AddEvent(gentity_t* ent, int event, int event_parm);
 void G_SetOrigin(gentity_t* ent, const vec3_t origin);
 void G_SetAngles(gentity_t* ent, const vec3_t angles);
 
-void G_DebugLine(vec3_t A, vec3_t B, int duration, int color, qboolean deleteornot);
+void G_DebugLine(vec3_t a, vec3_t b, int duration, int color);
 
 //
 // g_combat.c
@@ -606,8 +606,8 @@ void Svcmd_Form_f(void);
 //
 // g_utils.cpp
 //
-void Svcmd_Use_f(void);
-extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* soundPath);
+void Svcmd_Use_f();
+extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* sound_path);
 extern void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int index);
 
 //
@@ -617,16 +617,16 @@ extern void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int 
 //
 // g_client.c
 //
-char* client_connect(int clientNum, qboolean first_time, SavedGameJustLoaded_e e_saved_game_just_loaded);
-void client_userinfo_changed(int clientNum);
-void ClientDisconnect(int clientNum);
-void client_begin(int clientNum, const usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
-void ClientCommand(int clientNum);
+char* client_connect(int client_num, qboolean first_time, SavedGameJustLoaded_e e_saved_game_just_loaded);
+void client_userinfo_changed(int client_num);
+void ClientDisconnect(int client_num);
+void client_begin(int client_num, const usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
+void ClientCommand(int client_num);
 
 //
 // g_active.c
 //
-void ClientThink(int clientNum, usercmd_t* cmd);
+void ClientThink(int client_num, usercmd_t* cmd);
 void ClientEndFrame(gentity_t* ent);
 
 //

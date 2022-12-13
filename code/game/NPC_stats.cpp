@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../Rufl/hstring.h"
 #include "../Ratl/vector_vs.h"
 
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern qboolean NPCsPrecached;
 extern vec3_t playerMins;
 extern vec3_t playerMaxs;
@@ -662,7 +662,7 @@ static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, cons
 			{
 				//a saber swing
 				animEvents[curAnimEvent].eventType = AEV_SABER_SWING;
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_SABERNUM] = 0;
+				animEvents[curAnimEvent].eventData[AED_SABER_SWING_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
 				animEvents[curAnimEvent].eventData[AED_SABER_SWING_PROBABILITY] = animEvents[curAnimEvent].eventData[
 					AED_SOUND_PROBABILITY];
@@ -686,7 +686,7 @@ static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, cons
 			{
 				//a saber spin
 				animEvents[curAnimEvent].eventType = AEV_SABER_SPIN;
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_SABERNUM] = 0;
+				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
 				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_PROBABILITY] = animEvents[curAnimEvent].eventData[
 					AED_SOUND_PROBABILITY];

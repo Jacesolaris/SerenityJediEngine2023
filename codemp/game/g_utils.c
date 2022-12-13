@@ -260,7 +260,7 @@ gentity_t* G_Find(gentity_t* from, const int fieldofs, const char* match)
 G_RadiusList - given an origin and a radius, return all entities that are in use that are within the list
 ============
 */
-int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
 	gentity_t* ent_list[MAX_GENTITIES])
 {
 	int entityList[MAX_GENTITIES];
@@ -286,7 +286,7 @@ int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean 
 	{
 		gentity_t* ent = &g_entities[entityList[e]];
 
-		if (ent == ignore || !ent->inuse || ent->takedamage != takeDamage)
+		if (ent == ignore || !ent->inuse || ent->takedamage != take_damage)
 			continue;
 
 		// find the distance from the edge of the bounding box
@@ -886,7 +886,7 @@ angles and bad trails.
 =================
 */
 
-gentity_t* FindRemoveAbleGent(void)
+gentity_t* find_remove_able_gent(void)
 {
 	//returns an entity that we can remove to prevent the game from overloading
 	//on map entities.
@@ -1019,7 +1019,7 @@ gentity_t* G_Spawn(void)
 		//in case we can't find an open entity, search for something we can safely replace
 		//to keep the game running.  This isn't the best solution but it's better than
 		//having the game shut down.
-		e = FindRemoveAbleGent();
+		e = find_remove_able_gent();
 		if (e)
 		{
 			//found something we can replace
@@ -1423,7 +1423,7 @@ Adds an event+parm and twiddles the event counter
 */
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);
 
-void G_AddEvent(gentity_t* ent, int event, int eventParm)
+void G_AddEvent(gentity_t* ent, int event, int event_parm)
 {
 	int bits;
 
@@ -1439,7 +1439,7 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm)
 		bits = ent->client->ps.externalEvent & EV_EVENT_BITS;
 		bits = bits + EV_EVENT_BIT1 & EV_EVENT_BITS;
 		ent->client->ps.externalEvent = event | bits;
-		ent->client->ps.externalEventParm = eventParm;
+		ent->client->ps.externalEventParm = event_parm;
 		ent->client->ps.externalEventTime = level.time;
 	}
 	else
@@ -1447,7 +1447,7 @@ void G_AddEvent(gentity_t* ent, int event, int eventParm)
 		bits = ent->s.event & EV_EVENT_BITS;
 		bits = bits + EV_EVENT_BIT1 & EV_EVENT_BITS;
 		ent->s.event = event | bits;
-		ent->s.eventParm = eventParm;
+		ent->s.eventParm = event_parm;
 	}
 	ent->eventTime = level.time;
 }
@@ -1637,7 +1637,7 @@ void G_EntitySound(gentity_t* ent, int channel, int soundIndex)
 {
 	gentity_t* te = G_TempEntity(ent->r.currentOrigin, EV_ENTITY_SOUND);
 	te->s.eventParm = soundIndex;
-	te->s.clientNum = ent->s.number;
+	te->s.client_num = ent->s.number;
 	te->s.trickedentindex = channel;
 }
 
@@ -1646,7 +1646,7 @@ void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath)
 {
 	gentity_t* te = G_TempEntity(ent->r.currentOrigin, EV_ENTITY_SOUND);
 	te->s.eventParm = G_SoundIndex((char*)soundPath);
-	te->s.clientNum = ent->s.number;
+	te->s.client_num = ent->s.number;
 	te->s.trickedentindex = channel;
 }
 

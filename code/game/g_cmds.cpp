@@ -161,13 +161,13 @@ void SanitizeString(char* in, char* out)
 
 /*
 ==================
-ClientNumberFromString
+client_numberFromString
 
 Returns a player number for either a number or name string
 Returns -1 if invalid
 ==================
 */
-int ClientNumberFromString(const gentity_t* to, char* s)
+int client_numberFromString(const gentity_t* to, char* s)
 {
 	gclient_t* cl;
 	int idnum;
@@ -2282,17 +2282,17 @@ void G_SetsaberdownorAnim(gentity_t* ent)
 }
 
 extern cvar_t* g_saberPickuppableDroppedSabers;
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern void CG_ChangeWeapon(int num);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 
-void Cmd_SaberDrop_f(gentity_t* ent, int saberNum)
+void Cmd_SaberDrop_f(gentity_t* ent, int saber_num)
 {
-	if (saberNum < 0)
+	if (saber_num < 0)
 	{
 		return;
 	}
-	if (saberNum > 1)
+	if (saber_num > 1)
 	{
 		return;
 	}
@@ -2300,7 +2300,7 @@ void Cmd_SaberDrop_f(gentity_t* ent, int saberNum)
 	{
 		return;
 	}
-	if (ent->weaponModel[saberNum] <= 0)
+	if (ent->weaponModel[saber_num] <= 0)
 	{
 		return;
 	}
@@ -2330,8 +2330,8 @@ void Cmd_SaberDrop_f(gentity_t* ent, int saberNum)
 		return;
 	}
 
-	if (!ent->client->ps.saber[saberNum].name
-		|| !ent->client->ps.saber[saberNum].name[0])
+	if (!ent->client->ps.saber[saber_num].name
+		|| !ent->client->ps.saber[saber_num].name[0])
 	{
 		return;
 	}
@@ -2339,15 +2339,15 @@ void Cmd_SaberDrop_f(gentity_t* ent, int saberNum)
 	//have a valid string to use for saberType
 
 	//turn it into a pick-uppable item!
-	if (G_DropSaberItem(ent->client->ps.saber[saberNum].name,
-		ent->client->ps.saber[saberNum].blade[0].color,
-		saberNum == 0 ? ent->client->renderInfo.handRPoint : ent->client->renderInfo.handLPoint,
+	if (G_DropSaberItem(ent->client->ps.saber[saber_num].name,
+		ent->client->ps.saber[saber_num].blade[0].color,
+		saber_num == 0 ? ent->client->renderInfo.handRPoint : ent->client->renderInfo.handLPoint,
 		ent->client->ps.velocity,
 		ent->currentAngles)
 		!= nullptr)
 	{
 		//dropped it
-		WP_RemoveSaber(ent, saberNum);
+		WP_RemoveSaber(ent, saber_num);
 	}
 
 	if (ent->weaponModel[0] <= 0
@@ -2380,9 +2380,9 @@ void G_RemoveWeather(void)
 ClientCommand
 =================
 */
-void ClientCommand(int clientNum)
+void ClientCommand(int client_num)
 {
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 	if (!ent->client)
 	{
 		return; // not fully in game yet
@@ -2712,12 +2712,12 @@ void ClientCommand(int clientNum)
 	else if (Q_stricmp(cmd, "dropsaber") == 0)
 	{
 		const char* cmd2 = gi.argv(1);
-		int saberNum = 2; //by default, drop both
+		int saber_num = 2; //by default, drop both
 		if (cmd2 && cmd2[0])
 		{
-			saberNum = atoi(cmd2);
+			saber_num = atoi(cmd2);
 		}
-		if (saberNum > 1)
+		if (saber_num > 1)
 		{
 			//drop both
 			Cmd_SaberDrop_f(ent, 1);
@@ -2726,7 +2726,7 @@ void ClientCommand(int clientNum)
 		else
 		{
 			//drop either left or right
-			Cmd_SaberDrop_f(ent, saberNum);
+			Cmd_SaberDrop_f(ent, saber_num);
 		}
 	}
 	else if (Q_stricmp(cmd, "weather") == 0)
@@ -2815,6 +2815,6 @@ void ClientCommand(int clientNum)
 	}
 	else
 	{
-		gi.SendServerCommand(clientNum, va("print \"Unknown command %s\n\"", cmd));
+		gi.SendServerCommand(client_num, va("print \"Unknown command %s\n\"", cmd));
 	}
 }

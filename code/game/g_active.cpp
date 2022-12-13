@@ -114,7 +114,7 @@ extern qboolean BG_SprintAnim(int anim);
 extern qboolean BG_SprintSaberAnim(int anim);
 extern void Weapon_GrapplingHook_Fire(gentity_t* ent);
 extern qboolean PlayerAffectedByStasis();
-extern void SabBeh_AnimateSlowBounceBlocker(gentity_t* blocker, gentity_t* attacker);
+extern void SabBeh_AnimateSlowBounceBlocker(gentity_t* blocker);
 extern void Player_CheckBurn(const gentity_t* self);
 extern void Player_CheckFreeze(const gentity_t* self);
 extern qboolean PM_SaberInAttackPure(int move);
@@ -1831,15 +1831,15 @@ void G_MatchPlayerWeapon(gentity_t* ent)
 				const int numSabers = wp_saber_init_blade_data(ent);
 				wp_saber_add_g2_saber_models(ent);
 				G_RemoveHolsterModels(ent);
-				for (int saberNum = 0; saberNum < numSabers; saberNum++)
+				for (int saber_num = 0; saber_num < numSabers; saber_num++)
 				{
-					ent->client->ps.saber[saberNum].type = g_entities[0].client->ps.saber[saberNum].type;
-					for (int bladeNum = 0; bladeNum < ent->client->ps.saber[saberNum].numBlades; bladeNum++)
+					ent->client->ps.saber[saber_num].type = g_entities[0].client->ps.saber[saber_num].type;
+					for (int blade_num = 0; blade_num < ent->client->ps.saber[saber_num].numBlades; blade_num++)
 					{
-						ent->client->ps.saber[saberNum].blade[0].active = g_entities[0].client->ps.saber[saberNum].blade
-							[bladeNum].active;
-						ent->client->ps.saber[saberNum].blade[0].length = g_entities[0].client->ps.saber[saberNum].blade
-							[bladeNum].length;
+						ent->client->ps.saber[saber_num].blade[0].active = g_entities[0].client->ps.saber[saber_num].blade
+							[blade_num].active;
+						ent->client->ps.saber[saber_num].blade[0].length = g_entities[0].client->ps.saber[saber_num].blade
+							[blade_num].length;
 					}
 				}
 				ent->client->ps.saberAnimLevel = g_entities[0].client->ps.saberAnimLevel;
@@ -1980,7 +1980,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			}
 		}
 		else if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
-			&& (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)) //npc
+			&& (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent)) //npc
 			&& !BG_InSlowBounce(&ent->client->ps)
 			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
 			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
@@ -1994,7 +1994,7 @@ void ClientTimerActions(gentity_t* ent, int msec)
 			WP_SaberFatigueRegenerate(1);
 		}
 
-		if (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
+		if (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
 			&& ent->client->ps.blockPoints < BLOCK_POINTS_MAX)
 		{
 			if (!PM_SaberInMassiveBounce(ent->client->ps.torsoAnim)
@@ -2256,13 +2256,13 @@ qboolean G_CanBeEnemy(const gentity_t* self, const gentity_t* enemy)
 
 extern void G_Stagger(gentity_t* hit_ent);
 
-qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t pushDir)
+qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t push_dir)
 {
 	const qboolean ActiveBlocking = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//manual Blocking
 	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
 	const qboolean NPCBlocking = ent->client->ps.ManualBlockingFlags & 1 << MBF_NPCKICKBLOCK ? qtrue : qfalse;	//NPC Blocking
 
-	if (PlayerCanAbsorbKick(ent, pushDir) && (HoldingBlock || ActiveBlocking) && (ent->s.number < MAX_CLIENTS ||
+	if (PlayerCanAbsorbKick(ent, push_dir) && (HoldingBlock || ActiveBlocking) && (ent->s.number < MAX_CLIENTS ||
 		G_ControlledByPlayer(ent))) //player only
 	{
 		if (ent->client->ps.blockPoints > 50)
@@ -2277,7 +2277,7 @@ qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t pus
 		}
 		G_Sound(ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 	}
-	else if (BotCanAbsorbKick(ent, pushDir) && NPCBlocking && ent->s.clientNum >= MAX_CLIENTS && !
+	else if (BotCanAbsorbKick(ent, push_dir) && NPCBlocking && ent->s.client_num >= MAX_CLIENTS && !
 		G_ControlledByPlayer(ent)) //NPC only
 	{
 		if (ent->client->ps.blockPoints > 50 && ent->client->ps.forcePower > 50) //NPC only
@@ -2439,36 +2439,36 @@ qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t pus
 
 extern void g_kick_throw(gentity_t* targ, const vec3_t new_dir, float push);
 
-gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t kickEnd, int kickDamage, float kickPush,
-	qboolean doSoundOnWalls)
+gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, vec3_t kick_end, const int kick_damage, const float kick_push,
+                       const qboolean do_sound_on_walls)
 {
-	vec3_t traceOrg;
-	vec3_t traceEnd;
-	constexpr vec3_t kickMins = { -2, -2, -2 };
-	constexpr vec3_t kickMaxs = { 4, 4, 4 };
+	vec3_t trace_org;
+	vec3_t trace_end;
+	constexpr vec3_t kick_mins = { -2, -2, -2 };
+	constexpr vec3_t kick_maxs = { 4, 4, 4 };
 	trace_t trace;
-	gentity_t* hitEnt = nullptr;
+	gentity_t* hit_ent = nullptr;
 
-	if (kickEnd && !VectorCompare(kickEnd, vec3_origin))
+	if (kick_end && !VectorCompare(kick_end, vec3_origin))
 	{
 		//they passed us the end point of the trace, just use that
 		//this makes the trace flat
-		VectorSet(traceOrg, ent->currentOrigin[0], ent->currentOrigin[1], kickEnd[2]);
-		VectorCopy(kickEnd, traceEnd);
+		VectorSet(trace_org, ent->currentOrigin[0], ent->currentOrigin[1], kick_end[2]);
+		VectorCopy(kick_end, trace_end);
 	}
 	else
 	{
 		//extrude
-		VectorSet(traceOrg, ent->currentOrigin[0], ent->currentOrigin[1], ent->currentOrigin[2] + ent->maxs[2] * 0.5f);
-		VectorMA(traceOrg, kickDist, kickDir, traceEnd);
+		VectorSet(trace_org, ent->currentOrigin[0], ent->currentOrigin[1], ent->currentOrigin[2] + ent->maxs[2] * 0.5f);
+		VectorMA(trace_org, kick_dist, kick_dir, trace_end);
 	}
 
-	gi.trace(&trace, traceOrg, kickMins, kickMaxs, traceEnd, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0),
+	gi.trace(&trace, trace_org, kick_mins, kick_maxs, trace_end, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0),
 		0); //clipmask ok?
 
 	if (trace.fraction < 1.0f || trace.startsolid && trace.entityNum < ENTITYNUM_NONE)
 	{
-		hitEnt = &g_entities[trace.entityNum];
+		hit_ent = &g_entities[trace.entityNum];
 
 		if (ent->client->ps.lastKickedEntNum != trace.entityNum)
 		{
@@ -2476,51 +2476,51 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 			ent->client->ps.lastKickedEntNum = trace.entityNum;
 		}
 
-		if (hitEnt)
+		if (hit_ent)
 		{
 			//we hit an entity
-			if (hitEnt->client)
+			if (hit_ent->client)
 			{
-				if (!(hitEnt->client->ps.pm_flags & PMF_TIME_KNOCKBACK)
-					&& TIMER_Done(hitEnt, "kickedDebounce") && G_CanBeEnemy(ent, hitEnt))
+				if (!(hit_ent->client->ps.pm_flags & PMF_TIME_KNOCKBACK)
+					&& TIMER_Done(hit_ent, "kickedDebounce") && G_CanBeEnemy(ent, hit_ent))
 				{
-					if (PM_InKnockDown(&hitEnt->client->ps) && !PM_InGetUp(&hitEnt->client->ps))
+					if (PM_InKnockDown(&hit_ent->client->ps) && !PM_InGetUp(&hit_ent->client->ps))
 					{
 						//don't hit people who are knocked down or being knocked down (okay to hit people getting up, though)
 						return nullptr;
 					}
-					if (PM_InRoll(&hitEnt->client->ps))
+					if (PM_InRoll(&hit_ent->client->ps))
 					{
 						//can't hit people who are rolling
 						return nullptr;
 					}
-					if (PM_Dyinganim(&hitEnt->client->ps))
+					if (PM_Dyinganim(&hit_ent->client->ps))
 					{
 						//don't hit people who are in a death anim
 						return nullptr;
 					}
 					//don't hit same ent more than once per kick
-					if (hitEnt->takedamage)
+					if (hit_ent->takedamage)
 					{
 						//hurt it
-						if (!in_camera && WP_AbsorbKick(hitEnt, ent, kickDir))
+						if (!in_camera && WP_AbsorbKick(hit_ent, ent, kick_dir))
 						{
 							//but the lucky devil absorbed it by backflipping
 							//toss them back a bit and make sure that the kicker gets the kill if the player falls off a cliff or something.
-							if (hitEnt->client)
+							if (hit_ent->client)
 							{
-								hitEnt->client->ps.otherKiller = ent->s.number;
-								hitEnt->client->ps.otherKillerDebounceTime = level.time + 10000;
-								hitEnt->client->ps.otherKillerTime = level.time + 10000;
-								hitEnt->client->otherKillerMOD = MOD_MELEE;
-								hitEnt->client->otherKillerVehWeapon = 0;
-								hitEnt->client->otherKillerWeaponType = WP_NONE;
-								hitEnt->client->ps.saberMove = LS_READY;
+								hit_ent->client->ps.otherKiller = ent->s.number;
+								hit_ent->client->ps.otherKillerDebounceTime = level.time + 10000;
+								hit_ent->client->ps.otherKillerTime = level.time + 10000;
+								hit_ent->client->otherKillerMOD = MOD_MELEE;
+								hit_ent->client->otherKillerVehWeapon = 0;
+								hit_ent->client->otherKillerWeaponType = WP_NONE;
+								hit_ent->client->ps.saberMove = LS_READY;
 							}
-							g_kick_throw(hitEnt, kickDir, 70);
-							return hitEnt;
+							g_kick_throw(hit_ent, kick_dir, 70);
+							return hit_ent;
 						}
-						G_Damage(hitEnt, ent, ent, kickDir, trace.endpos, kickDamage * 0.2f, DAMAGE_NO_KNOCKBACK,
+						G_Damage(hit_ent, ent, ent, kick_dir, trace.endpos, kick_damage * 0.2f, DAMAGE_NO_KNOCKBACK,
 							MOD_MELEE);
 					}
 					//do kick hit sound and impact effect
@@ -2532,16 +2532,16 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						}
 						else
 						{
-							vec3_t fxOrg, fxDir;
-							VectorCopy(kickDir, fxDir);
-							VectorMA(trace.endpos, Q_flrand(5.0f, 10.0f), fxDir, fxOrg);
-							VectorScale(fxDir, -1, fxDir);
-							G_PlayEffect(G_EffectIndex("melee/kick_impact.efx"), fxOrg, fxDir);
+							vec3_t fx_org, fx_dir;
+							VectorCopy(kick_dir, fx_dir);
+							VectorMA(trace.endpos, Q_flrand(5.0f, 10.0f), fx_dir, fx_org);
+							VectorScale(fx_dir, -1, fx_dir);
+							G_PlayEffect(G_EffectIndex("melee/kick_impact.efx"), fx_org, fx_dir);
 							G_Sound(ent, G_SoundIndex(va("sound/weapons/melee/punch%d", Q_irand(1, 4))));
 						}
 						TIMER_Set(ent, "kickSoundDebounce", 1000);
 					}
-					TIMER_Set(hitEnt, "kickedDebounce", 500);
+					TIMER_Set(hit_ent, "kickedDebounce", 500);
 
 					if (ent->client->ps.torsoAnim == BOTH_A7_HILT ||
 						ent->client->ps.torsoAnim == BOTH_SMACK_L ||
@@ -2550,42 +2550,42 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						ent->client->ps.torsoAnim == BOTH_A7_SLAP_L)
 					{
 						//hit in head
-						if (hitEnt->health > 0)
+						if (hit_ent->health > 0)
 						{
 							//knock down
-							if (kickPush >= 150.0f && !Q_irand(0, 1))
+							if (kick_push >= 150.0f && !Q_irand(0, 1))
 							{
 								//knock them down
-								if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+								if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 								{
-									g_kick_throw(hitEnt, kickDir, 80);
+									g_kick_throw(hit_ent, kick_dir, 80);
 								}
-								G_Knockdown(hitEnt, ent, kickDir, 80, qtrue);
+								G_Knockdown(hit_ent, ent, kick_dir, 80, qtrue);
 							}
 							else
 							{
 								//force them to play a pain anim
-								if (hitEnt->s.number < MAX_CLIENTS)
+								if (hit_ent->s.number < MAX_CLIENTS)
 								{
-									NPC_SetPainEvent(hitEnt);
+									NPC_SetPainEvent(hit_ent);
 								}
 								else
 								{
-									GEntity_PainFunc(hitEnt, ent, ent, hitEnt->currentOrigin, 0, MOD_MELEE);
+									GEntity_PainFunc(hit_ent, ent, ent, hit_ent->currentOrigin, 0, MOD_MELEE);
 								}
 							}
 							//just so we don't hit him again...
-							hitEnt->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
-							hitEnt->client->ps.pm_time = 100;
+							hit_ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+							hit_ent->client->ps.pm_time = 100;
 						}
 						else
 						{
-							if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+							if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 							{
-								g_kick_throw(hitEnt, kickDir, 80);
+								g_kick_throw(hit_ent, kick_dir, 80);
 							}
 							//see if we should play a better looking death on them
-							G_ThrownDeathAnimForDeathAnim(hitEnt, trace.endpos);
+							G_ThrownDeathAnimForDeathAnim(hit_ent, trace.endpos);
 						}
 					}
 					else if (ent->client->ps.legsAnim == BOTH_GETUP_BROLL_B
@@ -2593,102 +2593,102 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 						|| ent->client->ps.legsAnim == BOTH_GETUP_FROLL_B
 						|| ent->client->ps.legsAnim == BOTH_GETUP_FROLL_F)
 					{
-						if (hitEnt->health > 0)
+						if (hit_ent->health > 0)
 						{
 							//knock down
-							if (hitEnt->client->ps.groundEntityNum == ENTITYNUM_NONE)
+							if (hit_ent->client->ps.groundEntityNum == ENTITYNUM_NONE)
 							{
 								//he's in the air?  Send him flying back
-								if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+								if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 								{
-									g_kick_throw(hitEnt, kickDir, 80);
+									g_kick_throw(hit_ent, kick_dir, 80);
 								}
 							}
 							else
 							{
 								//just so we don't hit him again...
-								hitEnt->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
-								hitEnt->client->ps.pm_time = 100;
+								hit_ent->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+								hit_ent->client->ps.pm_time = 100;
 							}
 							//knock them down
-							G_Knockdown(hitEnt, ent, kickDir, 80, qtrue);
+							G_Knockdown(hit_ent, ent, kick_dir, 80, qtrue);
 						}
 						else
 						{
-							if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+							if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 							{
-								g_kick_throw(hitEnt, kickDir, 80);
+								g_kick_throw(hit_ent, kick_dir, 80);
 							}
 							//see if we should play a better looking death on them
-							G_ThrownDeathAnimForDeathAnim(hitEnt, trace.endpos);
+							G_ThrownDeathAnimForDeathAnim(hit_ent, trace.endpos);
 						}
 					}
-					else if (hitEnt->health <= 0)
+					else if (hit_ent->health <= 0)
 					{
 						//we kicked a dead guy
-						if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+						if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 						{
-							g_kick_throw(hitEnt, kickDir, kickPush * 2);
+							g_kick_throw(hit_ent, kick_dir, kick_push * 2);
 						}
-						G_ThrownDeathAnimForDeathAnim(hitEnt, trace.endpos);
+						G_ThrownDeathAnimForDeathAnim(hit_ent, trace.endpos);
 					}
 					else
 					{
-						if (!(hitEnt->flags & FL_NO_KNOCKBACK))
+						if (!(hit_ent->flags & FL_NO_KNOCKBACK))
 						{
-							g_kick_throw(hitEnt, kickDir, 80);
+							g_kick_throw(hit_ent, kick_dir, 80);
 						}
-						if ((hitEnt->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
-							hitEnt->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
-							&& !(hitEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
+						if ((hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
+							hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
+							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 						{
 							//knockdown
-							if (hitEnt->client->ps.saberAnimLevel == SS_STAFF)
+							if (hit_ent->client->ps.saberAnimLevel == SS_STAFF)
 							{
-								SabBeh_AnimateSlowBounceBlocker(hitEnt, ent);
+								SabBeh_AnimateSlowBounceBlocker(hit_ent);
 							}
 							else
 							{
-								if (kickPush >= 150.0f && !Q_irand(0, 2))
+								if (kick_push >= 150.0f && !Q_irand(0, 2))
 								{
-									G_Knockdown(hitEnt, ent, kickDir, 90, qtrue);
+									G_Knockdown(hit_ent, ent, kick_dir, 90, qtrue);
 								}
 								else
 								{
-									G_Knockdown(hitEnt, ent, kickDir, 800, qtrue);
+									G_Knockdown(hit_ent, ent, kick_dir, 800, qtrue);
 								}
 							}
 						}
 						else if (ent->client->ps.saberAnimLevel == SS_DESANN
-							&& (hitEnt->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
-								hitEnt->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
-							&& !(hitEnt->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
+							&& (hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
+								hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
+							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 						{
 							//knockdown
-							if (kickPush >= 150.0f && !Q_irand(0, 2))
+							if (kick_push >= 150.0f && !Q_irand(0, 2))
 							{
-								G_Knockdown(hitEnt, ent, kickDir, 90, qtrue);
+								G_Knockdown(hit_ent, ent, kick_dir, 90, qtrue);
 							}
 							else
 							{
-								G_Knockdown(hitEnt, ent, kickDir, 80, qtrue);
+								G_Knockdown(hit_ent, ent, kick_dir, 80, qtrue);
 							}
 						}
-						else if (kickPush >= 150.0f && !Q_irand(0, 2))
+						else if (kick_push >= 150.0f && !Q_irand(0, 2))
 						{
-							G_Knockdown(hitEnt, ent, kickDir, 90, qtrue);
+							G_Knockdown(hit_ent, ent, kick_dir, 90, qtrue);
 						}
 						else
 						{
 							//stumble
-							AnimateStun(hitEnt, ent);
+							AnimateStun(hit_ent, ent);
 						}
 					}
 				}
 			}
 			else
 			{
-				if (doSoundOnWalls)
+				if (do_sound_on_walls)
 				{
 					//do kick hit sound and impact effect
 					if (TIMER_Done(ent, "kickSoundDebounce"))
@@ -2708,12 +2708,12 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kickDir, float kickDist, vec3_t ki
 			}
 		}
 	}
-	return hitEnt;
+	return hit_ent;
 }
 
-qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
+qboolean G_CheckRollSafety(const gentity_t* self, const int anim, const float test_dist)
 {
-	vec3_t forward, right, testPos, angles;
+	vec3_t forward, right, test_pos, angles;
 	trace_t trace;
 	int contents = CONTENTS_SOLID | CONTENTS_BOTCLIP;
 
@@ -2745,25 +2745,25 @@ qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
 	{
 	case BOTH_GETUP_BROLL_R:
 	case BOTH_GETUP_FROLL_R:
-		VectorMA(self->currentOrigin, testDist, right, testPos);
+		VectorMA(self->currentOrigin, test_dist, right, test_pos);
 		break;
 	case BOTH_GETUP_BROLL_L:
 	case BOTH_GETUP_FROLL_L:
-		VectorMA(self->currentOrigin, -testDist, right, testPos);
+		VectorMA(self->currentOrigin, -test_dist, right, test_pos);
 		break;
 	case BOTH_GETUP_BROLL_F:
 	case BOTH_GETUP_FROLL_F:
-		VectorMA(self->currentOrigin, testDist, forward, testPos);
+		VectorMA(self->currentOrigin, test_dist, forward, test_pos);
 		break;
 	case BOTH_GETUP_BROLL_B:
 	case BOTH_GETUP_FROLL_B:
-		VectorMA(self->currentOrigin, -testDist, forward, testPos);
+		VectorMA(self->currentOrigin, -test_dist, forward, test_pos);
 		break;
 	default: //FIXME: add normal rolls?  Make generic for any forced-movement anim?
 		return qtrue;
 	}
 
-	gi.trace(&trace, self->currentOrigin, self->mins, self->maxs, testPos, self->s.number, contents,
+	gi.trace(&trace, self->currentOrigin, self->mins, self->maxs, test_pos, self->s.number, contents,
 		static_cast<EG2_Collision>(0), 0);
 	if (trace.fraction < 1.0f
 		|| trace.allsolid
@@ -2775,27 +2775,27 @@ qboolean G_CheckRollSafety(const gentity_t* self, int anim, float testDist)
 	return qtrue;
 }
 
-void G_CamPullBackForLegsAnim(const gentity_t* ent, qboolean useTorso = qfalse)
+void G_CamPullBackForLegsAnim(const gentity_t* ent, const qboolean use_torso = qfalse)
 {
 	if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 	{
-		const float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
-			useTorso
+		const float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+			use_torso
 			? static_cast<animNumber_t>(ent->client->ps.torsoAnim)
 			: static_cast<animNumber_t>(ent->client->ps.legsAnim));
-		const float elapsedTime = animLength - (useTorso
+		const float elapsed_time = anim_length - (use_torso
 			? ent->client->ps.torsoAnimTimer
 			: ent->client->ps.legsAnimTimer);
 		float back_dist;
-		if (elapsedTime < animLength / 2.0f)
+		if (elapsed_time < anim_length / 2.0f)
 		{
 			//starting anim
-			back_dist = elapsedTime / animLength * 120.0f;
+			back_dist = elapsed_time / anim_length * 120.0f;
 		}
 		else
 		{
 			//ending anim
-			back_dist = (animLength - elapsedTime) / animLength * 120.0f;
+			back_dist = (anim_length - elapsed_time) / anim_length * 120.0f;
 		}
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_RNG;
 		cg.overrides.thirdPersonRange = cg_thirdPersonRange.value + back_dist;
@@ -2806,10 +2806,10 @@ void G_CamCircleForLegsAnim(const gentity_t* ent)
 {
 	if (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))
 	{
-		const float animLength = PM_AnimLength(ent->client->clientInfo.animFileIndex,
+		const float anim_length = PM_AnimLength(ent->client->clientInfo.animFileIndex,
 			static_cast<animNumber_t>(ent->client->ps.legsAnim));
-		const float elapsedTime = animLength - ent->client->ps.legsAnimTimer;
-		const float angle = elapsedTime / animLength * 360.0f;
+		const float elapsed_time = anim_length - ent->client->ps.legsAnimTimer;
+		const float angle = elapsed_time / anim_length * 360.0f;
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
 		cg.overrides.thirdPersonAngle = cg_thirdPersonAngle.value + angle;
 	}
@@ -5430,7 +5430,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			ent->client->ps.forceJumpCharge = 0;
 		}
 	} //stiffenedup
-	else if (!in_camera && (ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
+	else if (!in_camera && (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent)
 		&& PM_SaberInMassiveBounce(ent->client->ps.torsoAnim) && ent->client->ps.torsoAnimTimer))
 	{
 		//npc can't move or turn
@@ -7229,10 +7229,10 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 
-	if (ent->client && ent->client->ps.ManualMBlockingTime <= level.time && ent->client->ps.ManualMBlockingTime > 0)
+	if (ent->client && ent->client->ps.Manual_m_blockingTime <= level.time && ent->client->ps.Manual_m_blockingTime > 0)
 	{
 		ent->client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
-		ent->client->ps.ManualMBlockingTime = 0;
+		ent->client->ps.Manual_m_blockingTime = 0;
 	}
 
 	if (ent->s.number == 0)
@@ -7784,7 +7784,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK))
 				{
 					client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCKANDATTACK;
-					client->ps.ManualMBlockingTime = level.time;
+					client->ps.Manual_m_blockingTime = level.time;
 				}
 				client->usercmd.buttons &= ~BUTTON_ATTACK;
 
@@ -7885,7 +7885,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 			client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 			client->ps.ManualBlockingTime = 0; //Blocking time 1 on
-			client->ps.ManualMBlockingTime = 0;
+			client->ps.Manual_m_blockingTime = 0;
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKWALKING);
 		}
 	}
@@ -7946,7 +7946,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		client->ps.ManualBlockingFlags &= ~(1 << MBF_MELEEDODGE);
 	}
 
-	if (ent->NPC || ent->s.clientNum >= MAX_CLIENTS && !G_ControlledByPlayer(ent) &&
+	if (ent->NPC || ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent) &&
 		client->ps.weapon == WP_SABER &&
 		client->ps.SaberActive()
 		&& !PM_SaberInMassiveBounce(client->ps.torsoAnim)
@@ -8562,12 +8562,12 @@ A new command has arrived from the client
 extern void PM_CheckForceUseButton(gentity_t* ent, usercmd_t* ucmd);
 extern qboolean PM_GentCantJump(const gentity_t* gent);
 
-void ClientThink(const int clientNum, usercmd_t* ucmd)
+void ClientThink(const int client_num, usercmd_t* ucmd)
 {
 	qboolean restore_ucmd = qfalse;
 	usercmd_t sav_ucmd = { 0 };
 
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 
 	if (ent->s.number < MAX_CLIENTS)
 	{

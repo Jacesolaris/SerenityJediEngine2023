@@ -403,13 +403,13 @@ static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t* fram
 
 		// entities can be flagged to be sent to only one client
 		if (ent->r.svFlags & SVF_SINGLECLIENT) {
-			if (ent->r.singleClient != frame->ps.clientNum) {
+			if (ent->r.singleClient != frame->ps.client_num) {
 				continue;
 			}
 		}
 		// entities can be flagged to be sent to everyone but one client
 		if (ent->r.svFlags & SVF_NOTSINGLECLIENT) {
-			if (ent->r.singleClient == frame->ps.clientNum) {
+			if (ent->r.singleClient == frame->ps.client_num) {
 				continue;
 			}
 		}
@@ -422,14 +422,14 @@ static void SV_AddEntitiesVisibleFromPoint(vec3_t origin, clientSnapshot_t* fram
 		}
 
 		// entities can request not to be sent to certain clients (NOTE: always send to ourselves)
-		if (e != frame->ps.clientNum && ent->r.svFlags & SVF_BROADCASTCLIENTS
-			&& !(ent->r.broadcastClients[frame->ps.clientNum / 32] & 1 << frame->ps.clientNum % 32))
+		if (e != frame->ps.client_num && ent->r.svFlags & SVF_BROADCASTCLIENTS
+			&& !(ent->r.broadcastClients[frame->ps.client_num / 32] & 1 << frame->ps.client_num % 32))
 		{
 			continue;
 		}
 		// broadcast entities are always sent, and so is the main player so we don't see noclip weirdness
-		if (ent->r.svFlags & SVF_BROADCAST || e == frame->ps.clientNum
-			|| ent->r.broadcastClients[frame->ps.clientNum / 32] & 1 << frame->ps.clientNum % 32)
+		if (ent->r.svFlags & SVF_BROADCAST || e == frame->ps.client_num
+			|| ent->r.broadcastClients[frame->ps.client_num / 32] & 1 << frame->ps.client_num % 32)
 		{
 			SV_AddEntToSnapshot(svEnt, ent, eNums);
 			continue;
@@ -557,7 +557,7 @@ static void SV_BuildClientSnapshot(client_t* client) {
 	}
 
 	// grab the current playerState_t
-	playerState_t* ps = SV_GameClientNum(client - svs.clients);
+	playerState_t* ps = SV_Gameclient_num(client - svs.clients);
 	frame->ps = *ps;
 #ifdef _ONEBIT_COMBO
 	frame->pDeltaOneBit = &ps->deltaOneBits;
@@ -582,11 +582,11 @@ static void SV_BuildClientSnapshot(client_t* client) {
 
 	// never send client's own entity, because it can
 	// be regenerated from the playerstate
-	const int clientNum = frame->ps.clientNum;
-	if (clientNum < 0 || clientNum >= MAX_GENTITIES) {
+	const int client_num = frame->ps.client_num;
+	if (client_num < 0 || client_num >= MAX_GENTITIES) {
 		Com_Error(ERR_DROP, "SV_SvEntityForGentity: bad gEnt");
 	}
-	svEnt = &sv.svEntities[clientNum];
+	svEnt = &sv.svEntities[client_num];
 	svEnt->snapshotCounter = sv.snapshotCounter;
 
 	// find the client's viewpoint

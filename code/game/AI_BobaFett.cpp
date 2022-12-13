@@ -93,7 +93,7 @@ bool Boba_Flee(); // If returns true, Jedi and Seeker AI not used
 ////////////////////////////////////////////////////////////////////////////////////////
 // External Functions
 ////////////////////////////////////////////////////////////////////////////////////////
-extern void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast);
+extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
 	int weapon_num);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);

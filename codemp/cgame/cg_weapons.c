@@ -438,7 +438,7 @@ void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t
 	}
 
 	if (cg.predictedPlayerState.pm_type == PM_SPECTATOR &&
-		cent->currentState.number == cg.predictedPlayerState.clientNum)
+		cent->currentState.number == cg.predictedPlayerState.client_num)
 	{
 		//spectator mode, don't draw it...
 		return;
@@ -493,7 +493,7 @@ void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t
 			cent->currentState.trickedentindex2,
 			cent->currentState.trickedentindex3,
 			cent->currentState.trickedentindex4,
-			cg.snap->ps.clientNum))
+			cg.snap->ps.client_num))
 		{
 			CG_AddWeaponWithPowerups(&gun, cent->currentState.powerups);
 			//don't draw the weapon if the player is invisible
@@ -583,7 +583,7 @@ void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t
 
 	// Do special charge bits
 	//-----------------------
-	if ((ps || cg.renderingThirdPerson || cg.predictedPlayerState.clientNum != cent->currentState.number || cg_trueguns.
+	if ((ps || cg.renderingThirdPerson || cg.predictedPlayerState.client_num != cent->currentState.number || cg_trueguns.
 		integer) &&
 		(cent->currentState.modelindex2 == WEAPON_CHARGING_ALT && cent->currentState.weapon == WP_BRYAR_PISTOL ||
 			cent->currentState.modelindex2 == WEAPON_CHARGING_ALT && cent->currentState.weapon == WP_BRYAR_OLD ||
@@ -657,14 +657,14 @@ void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t
 		else if (val > 1.0f)
 		{
 			val = 1.0f;
-			if (ps && cent->currentState.number == ps->clientNum)
+			if (ps && cent->currentState.number == ps->client_num)
 			{
 				CGCam_Shake(/*0.1f*/0.2f, 100);
 			}
 		}
 		else
 		{
-			if (ps && cent->currentState.number == ps->clientNum)
+			if (ps && cent->currentState.number == ps->client_num)
 			{
 				CGCam_Shake(val * val * /*0.3f*/0.6f, 100);
 			}
@@ -690,12 +690,12 @@ void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t
 	}
 
 	// make sure we aren't looking at cg.predictedPlayerEntity for LG
-	nonPredictedCent = &cg_entities[cent->currentState.clientNum];
+	nonPredictedCent = &cg_entities[cent->currentState.client_num];
 
-	// if the index of the nonPredictedCent is not the same as the clientNum
+	// if the index of the nonPredictedCent is not the same as the client_num
 	// then this is a fake player (like on teh single player podiums), so
 	// go ahead and use the cent
-	if (nonPredictedCent - cg_entities != cent->currentState.clientNum)
+	if (nonPredictedCent - cg_entities != cent->currentState.client_num)
 	{
 		nonPredictedCent = cent;
 	}
@@ -716,7 +716,7 @@ void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t
 	}
 
 	if (ps || cg.renderingThirdPerson || cg_trueguns.integer
-		|| cent->currentState.number != cg.predictedPlayerState.clientNum)
+		|| cent->currentState.number != cg.predictedPlayerState.client_num)
 	{
 		// Make sure we don't do the thirdperson model effects for the local player if we're in first person
 		vec3_t flashorigin, flashdir;
@@ -820,7 +820,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent,
 	}
 
 	if (cg.predictedPlayerState.pm_type == PM_SPECTATOR &&
-		cent->currentState.number == cg.predictedPlayerState.clientNum)
+		cent->currentState.number == cg.predictedPlayerState.client_num)
 	{
 		//spectator mode, don't draw it...
 		return;
@@ -875,7 +875,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent,
 			cent->currentState.trickedentindex2,
 			cent->currentState.trickedentindex3,
 			cent->currentState.trickedentindex4,
-			cg.snap->ps.clientNum))
+			cg.snap->ps.client_num))
 		{
 			CG_AddWeaponWithPowerups(&gun, cent->currentState.powerups);
 			//don't draw the weapon if the player is invisible
@@ -965,7 +965,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent,
 
 	// Do special charge bits
 	//-----------------------
-	if ((ps || cg.renderingThirdPerson || cg.predictedPlayerState.clientNum != cent->currentState.number || cg_trueguns.
+	if ((ps || cg.renderingThirdPerson || cg.predictedPlayerState.client_num != cent->currentState.number || cg_trueguns.
 		integer) &&
 		(cent->currentState.modelindex2 == WEAPON_CHARGING_ALT && cent->currentState.weapon == WP_BRYAR_PISTOL ||
 			cent->currentState.modelindex2 == WEAPON_CHARGING_ALT && cent->currentState.weapon == WP_BRYAR_OLD ||
@@ -1032,14 +1032,14 @@ void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent,
 		else if (val > 1.0f)
 		{
 			val = 1.0f;
-			if (ps && cent->currentState.number == ps->clientNum)
+			if (ps && cent->currentState.number == ps->client_num)
 			{
 				CGCam_Shake(/*0.1f*/0.2f, 100);
 			}
 		}
 		else
 		{
-			if (ps && cent->currentState.number == ps->clientNum)
+			if (ps && cent->currentState.number == ps->client_num)
 			{
 				CGCam_Shake(val * val * /*0.3f*/0.6f, 100);
 			}
@@ -1065,12 +1065,12 @@ void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent,
 	}
 
 	// make sure we aren't looking at cg.predictedPlayerEntity for LG
-	nonPredictedCent = &cg_entities[cent->currentState.clientNum];
+	nonPredictedCent = &cg_entities[cent->currentState.client_num];
 
-	// if the index of the nonPredictedCent is not the same as the clientNum
+	// if the index of the nonPredictedCent is not the same as the client_num
 	// then this is a fake player (like on teh single player podiums), so
 	// go ahead and use the cent
-	if (nonPredictedCent - cg_entities != cent->currentState.clientNum)
+	if (nonPredictedCent - cg_entities != cent->currentState.client_num)
 	{
 		nonPredictedCent = cent;
 	}
@@ -1091,7 +1091,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent,
 	}
 
 	if (ps || cg.renderingThirdPerson || cg_trueguns.integer
-		|| cent->currentState.number != cg.predictedPlayerState.clientNum)
+		|| cent->currentState.number != cg.predictedPlayerState.client_num)
 	{
 		// Make sure we don't do the thirdperson model effects for the local player if we're in first person
 		vec3_t flashorigin, flashdir;
@@ -1236,7 +1236,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 			// special hack for lightning gun...
 			VectorCopy(cg.refdef.vieworg, origin);
 			VectorMA(origin, -8, cg.refdef.viewaxis[2], origin);
-			CG_LightningBolt(&cg_entities[ps->clientNum], origin);
+			CG_LightningBolt(&cg_entities[ps->client_num], origin);
 		}
 		return;
 	}
@@ -1257,7 +1257,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		fovOffset = 0;
 	}
 
-	cent = &cg_entities[cg.predictedPlayerState.clientNum];
+	cent = &cg_entities[cg.predictedPlayerState.client_num];
 	CG_RegisterWeapon(ps->weapon);
 	weapon = &cg_weapons[ps->weapon];
 
@@ -1300,7 +1300,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		}
 		else
 		{
-			ci = &cgs.clientinfo[cent->currentState.clientNum];
+			ci = &cgs.clientinfo[cent->currentState.client_num];
 		}
 
 		trap->G2API_GetBoneFrame(cent->ghoul2, "lower_lumbar", cg.time, &currentFrame, cgs.game_models, 0);
@@ -1326,7 +1326,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON; // | RF_MINLIGHT;
 
 	// add everything onto the hand
-	CG_AddPlayerWeapon(&hand, ps, &cg_entities[cg.predictedPlayerState.clientNum], ps->persistant[PERS_TEAM], angles,
+	CG_AddPlayerWeapon(&hand, ps, &cg_entities[cg.predictedPlayerState.client_num], ps->persistant[PERS_TEAM], angles,
 		qfalse);
 
 	if (ps->eFlags & EF_DUAL_WEAPONS && ps->weapon == WP_BRYAR_PISTOL)
@@ -1370,7 +1370,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 			}
 			else
 			{
-				ci = &cgs.clientinfo[cent->currentState.clientNum];
+				ci = &cgs.clientinfo[cent->currentState.client_num];
 			}
 			trap->G2API_GetBoneFrame(cent->ghoul2, "lower_lumbar", cg.time, &currentFrame, cgs.game_models, 0);
 			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), ps->torsoAnim);
@@ -1395,7 +1395,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON;
 		angles[2] += 20;
 		// add everything onto the hand
-		cg_add_player_weaponduals(&hand, ps, &cg_entities[cg.predictedPlayerState.clientNum], ps->persistant[PERS_TEAM],
+		cg_add_player_weaponduals(&hand, ps, &cg_entities[cg.predictedPlayerState.client_num], ps->persistant[PERS_TEAM],
 			angles, qfalse, qtrue);
 	}
 }
@@ -1963,7 +1963,7 @@ void CG_NextWeapon_f(void)
 	}
 	else
 	{
-		trap->S_MuteSound(cg.snap->ps.clientNum, CHAN_WEAPON);
+		trap->S_MuteSound(cg.snap->ps.client_num, CHAN_WEAPON);
 	}
 }
 
@@ -2047,7 +2047,7 @@ void CG_PrevWeapon_f(void)
 	}
 	else
 	{
-		trap->S_MuteSound(cg.snap->ps.clientNum, CHAN_WEAPON);
+		trap->S_MuteSound(cg.snap->ps.client_num, CHAN_WEAPON);
 	}
 }
 
@@ -2107,7 +2107,7 @@ void CG_Weapon_f(void)
 
 				if (cg.weaponSelect != num)
 				{
-					trap->S_MuteSound(cg.snap->ps.clientNum, CHAN_WEAPON);
+					trap->S_MuteSound(cg.snap->ps.client_num, CHAN_WEAPON);
 				}
 
 				cg.weaponSelect = num;
@@ -2206,7 +2206,7 @@ void CG_Weapon_f(void)
 
 	if (cg.weaponSelect != num)
 	{
-		trap->S_MuteSound(cg.snap->ps.clientNum, CHAN_WEAPON);
+		trap->S_MuteSound(cg.snap->ps.client_num, CHAN_WEAPON);
 	}
 
 	cg.weaponSelect = num;
@@ -2331,7 +2331,7 @@ void CG_WeaponClean_f(void)
 
 	if (cg.weaponSelect != num)
 	{
-		trap->S_MuteSound(cg.snap->ps.clientNum, CHAN_WEAPON);
+		trap->S_MuteSound(cg.snap->ps.client_num, CHAN_WEAPON);
 	}
 
 	cg.weaponSelect = num;
@@ -2365,7 +2365,7 @@ void CG_OutOfAmmoChange(int oldWeapon)
 		}
 	}
 
-	trap->S_MuteSound(cg.snap->ps.clientNum, CHAN_WEAPON);
+	trap->S_MuteSound(cg.snap->ps.client_num, CHAN_WEAPON);
 }
 
 /*
@@ -2456,7 +2456,7 @@ void CG_FireWeapon(centity_t* cent, qboolean altFire)
 	// append the flash to the weapon model
 	cent->muzzleFlashTime = cg.time;
 
-	if (cg.predictedPlayerState.clientNum == cent->currentState.number)
+	if (cg.predictedPlayerState.client_num == cent->currentState.number)
 	{
 		if (ent->weapon == WP_BRYAR_PISTOL && altFire ||
 			ent->weapon == WP_BRYAR_OLD && altFire ||
@@ -2875,14 +2875,14 @@ qboolean CG_CalcMuzzlePoint(int entityNum, vec3_t muzzle)
 {
 	vec3_t forward;
 
-	if (entityNum == cg.snap->ps.clientNum)
+	if (entityNum == cg.snap->ps.client_num)
 	{
 		vec3_t gunpoint;
 		vec3_t right;
 		//I'm not exactly sure why we'd be rendering someone else's crosshair, but hey.
 		const int weapontype = cg.snap->ps.weapon;
 		vec3_t weaponMuzzle;
-		const centity_t* pEnt = &cg_entities[cg.predictedPlayerState.clientNum];
+		const centity_t* pEnt = &cg_entities[cg.predictedPlayerState.client_num];
 
 		VectorCopy(WP_MuzzlePoint[weapontype], weaponMuzzle);
 
@@ -3313,11 +3313,11 @@ void CG_CheckPlayerG2Weapons(const playerState_t* ps, centity_t* cent)
 		return;
 	}
 
-	if (cgs.clientinfo[ps->clientNum].team == TEAM_SPECTATOR ||
+	if (cgs.clientinfo[ps->client_num].team == TEAM_SPECTATOR ||
 		ps->persistant[PERS_TEAM] == TEAM_SPECTATOR)
 	{
-		cent->ghoul2weapon = cg_entities[ps->clientNum].ghoul2weapon = NULL;
-		cent->weapon = cg_entities[ps->clientNum].weapon = 0;
+		cent->ghoul2weapon = cg_entities[ps->client_num].ghoul2weapon = NULL;
+		cent->weapon = cg_entities[ps->client_num].weapon = 0;
 		return;
 	}
 
@@ -3325,7 +3325,7 @@ void CG_CheckPlayerG2Weapons(const playerState_t* ps, centity_t* cent)
 		cent->ghoul2weapon2 != CG_G2WeaponInstance2(cent, cent->currentState.weapon) &&
 		cent->currentState.eFlags & EF_DUAL_WEAPONS && cent->currentState.weapon != WP_SABER ||
 		cent->ghoul2weapon2 != NULL && (!(cent->currentState.eFlags & EF_DUAL_WEAPONS) ||
-			cent->currentState.weapon == WP_SABER)) && ps->clientNum == cent->currentState.number)
+			cent->currentState.weapon == WP_SABER)) && ps->client_num == cent->currentState.number)
 	{
 		CG_CopyG2WeaponInstance(cent, ps->weapon, cent->ghoul2);
 		cent->ghoul2weapon = CG_G2WeaponInstance(cent, ps->weapon);
@@ -3341,38 +3341,38 @@ void CG_CheckPlayerG2Weapons(const playerState_t* ps, centity_t* cent)
 		if (cent->weapon == WP_SABER && cent->weapon != ps->weapon && !ps->saberHolstered)
 		{
 			//switching away from the saber
-			if (cgs.clientinfo[ps->clientNum].saber[0].soundOff && !ps->saberHolstered)
+			if (cgs.clientinfo[ps->client_num].saber[0].soundOff && !ps->saberHolstered)
 			{
 				trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_AUTO,
-					cgs.clientinfo[ps->clientNum].saber[0].soundOff);
+					cgs.clientinfo[ps->client_num].saber[0].soundOff);
 			}
 
-			if (cgs.clientinfo[ps->clientNum].saber[1].soundOff &&
-				cgs.clientinfo[ps->clientNum].saber[1].model[0] &&
+			if (cgs.clientinfo[ps->client_num].saber[1].soundOff &&
+				cgs.clientinfo[ps->client_num].saber[1].model[0] &&
 				!ps->saberHolstered)
 			{
 				trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_AUTO,
-					cgs.clientinfo[ps->clientNum].saber[1].soundOff);
+					cgs.clientinfo[ps->client_num].saber[1].soundOff);
 			}
 		}
 		else if (ps->weapon == WP_SABER && cent->weapon != ps->weapon && !cent->saberWasInFlight)
 		{
 			//switching to the saber
 			//trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_AUTO, trap->S_RegisterSound( "sound/weapons/saber/saberon.wav" ));
-			if (cgs.clientinfo[ps->clientNum].saber[0].soundOn)
+			if (cgs.clientinfo[ps->client_num].saber[0].soundOn)
 			{
 				trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_AUTO,
-					cgs.clientinfo[ps->clientNum].saber[0].soundOn);
+					cgs.clientinfo[ps->client_num].saber[0].soundOn);
 			}
 
-			if (cgs.clientinfo[ps->clientNum].saber[1].soundOn)
+			if (cgs.clientinfo[ps->client_num].saber[1].soundOn)
 			{
 				trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_AUTO,
-					cgs.clientinfo[ps->clientNum].saber[1].soundOn);
+					cgs.clientinfo[ps->client_num].saber[1].soundOn);
 			}
 
-			BG_SI_SetDesiredLength(&cgs.clientinfo[ps->clientNum].saber[0], 0, -1);
-			BG_SI_SetDesiredLength(&cgs.clientinfo[ps->clientNum].saber[1], 0, -1);
+			BG_SI_SetDesiredLength(&cgs.clientinfo[ps->client_num].saber[0], 0, -1);
+			BG_SI_SetDesiredLength(&cgs.clientinfo[ps->client_num].saber[1], 0, -1);
 		}
 		cent->weapon = ps->weapon;
 	}

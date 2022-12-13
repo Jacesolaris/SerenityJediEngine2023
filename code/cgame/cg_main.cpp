@@ -45,7 +45,7 @@ qboolean CG_ConsoleCommand(void);
 void CG_Shutdown(void);
 int CG_GetCameraPos(vec3_t camerapos);
 int CG_GetCameraAng(vec3_t cameraang);
-void UseItem(int itemNum);
+void UseItem(int item_num);
 const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHeight,
 	const char* psText, int iFontHandle, float fScale,
 	const vec4_t v4Color);
@@ -154,7 +154,7 @@ extern "C" Q_EXPORT intptr_t QDECL vmMain(intptr_t command, intptr_t arg0, intpt
 	case CG_DRAW_DATAPAD_HUD:
 		if (cg.snap)
 		{
-			cent = &cg_entities[cg.snap->ps.clientNum];
+			cent = &cg_entities[cg.snap->ps.client_num];
 			CG_DrawDataPadHUD(cent);
 		}
 		return 0;
@@ -162,7 +162,7 @@ extern "C" Q_EXPORT intptr_t QDECL vmMain(intptr_t command, intptr_t arg0, intpt
 	case CG_DRAW_DATAPAD_OBJECTIVES:
 		if (cg.snap)
 		{
-			cent = &cg_entities[cg.snap->ps.clientNum];
+			cent = &cg_entities[cg.snap->ps.client_num];
 			CG_DrawDataPadObjectives(cent);
 		}
 		return 0;
@@ -565,7 +565,7 @@ static cvarTable_t cvarTable[] = {
 	{&cg_debugHealthBars, "cg_debugHealthBars", "0", CVAR_ARCHIVE},
 	{&cg_debugBlockBars, "cg_drawblockpointbar", "0", CVAR_ARCHIVE},
 
-	{&cg_SFXSabers, "cg_SFXSabers", "3", CVAR_ARCHIVE},
+	{&cg_SFXSabers, "cg_SFXSabers", "5", CVAR_ARCHIVE},
 	{&cg_SFXSabersGlowSize, "cg_SFXSabersGlowSize", "1.0", CVAR_ARCHIVE},
 	{&cg_SFXSabersCoreSize, "cg_SFXSabersCoreSize", "1.0", CVAR_ARCHIVE},
 
@@ -696,7 +696,7 @@ int CG_CrosshairPlayer()
 	{
 		return -1;
 	}
-	return cg.crosshairClientNum;
+	return cg.crosshairclient_num;
 }
 
 int CG_GetCameraPos(vec3_t camerapos)
@@ -2370,7 +2370,7 @@ static void CG_GameStateReceived(void)
 {
 	// clear everything
 
-	extern void CG_ClearAnimEvtCache(void);
+	extern void CG_ClearAnimEvtCache();
 	CG_ClearAnimEvtCache(); // else sound handles wrong after vid_restart
 
 	qbVidRestartOccured = qtrue;

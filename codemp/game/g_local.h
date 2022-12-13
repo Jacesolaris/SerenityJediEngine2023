@@ -315,7 +315,7 @@ struct gentity_s
 
 	struct gclient_s* client; // NULL if not a client
 
-	int clientNum; // ranges from 0 to MAX_CLIENTS-1
+	int client_num; // ranges from 0 to MAX_CLIENTS-1
 
 	gNPC_t* NPC; //Only allocated if the entity becomes an NPC
 	int cantHitEnemyCounter;
@@ -780,8 +780,8 @@ typedef struct
 {
 	int EntityNum;
 	int Debounce;
-	int SaberNum;
-	int BladeNum;
+	int saber_num;
+	int blade_num;
 } sabimpact_t;
 
 typedef gentity_t* follower_t;
@@ -1029,9 +1029,9 @@ struct gclient_s
 	vec3_t prevviewangle;
 	int prevviewtime;
 
-	//the SaberNum of the last enemy blade that you hit.
+	//the saber_num of the last enemy blade that you hit.
 	int lastSaberCollided;
-	//the BladeNum of the last enemy blade that you hit.
+	//the blade_num of the last enemy blade that you hit.
 	int lastBladeCollided;
 
 	sabimpact_t sabimpact[MAX_SABERS][MAX_BLADES];
@@ -1234,7 +1234,7 @@ typedef struct level_locals_s
 	int numNonSpectatorClients; // includes connecting clients
 	int numPlayingClients; // connected, non-spectators
 	int sortedClients[MAX_CLIENTS]; // sorted by score
-	int follow1, follow2; // clientNums for auto-follow spectators
+	int follow1, follow2; // client_nums for auto-follow spectators
 
 	int snd_fry; // sound index for standing in lava
 
@@ -1452,7 +1452,7 @@ void G_TeamCommand(team_t team, char* cmd);
 void G_ScaleNetHealth(gentity_t* self);
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
-int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean takeDamage,
+int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
 	gentity_t* ent_list[MAX_GENTITIES]);
 
 void g_throw(gentity_t* targ, const vec3_t new_dir, float push);
@@ -1484,7 +1484,7 @@ void G_EntitySound(gentity_t* ent, int channel, int soundIndex);
 void TryUse(gentity_t* ent);
 void G_SendG2KillQueue(void);
 void G_KillG2Queue(int entNum);
-void G_FreeEntity(gentity_t* e);
+void G_FreeEntity(gentity_t* ed);
 qboolean G_EntitiesFree(void);
 
 qboolean G_ActivateBehavior(gentity_t* self, int bset);
@@ -1503,7 +1503,7 @@ float* tv(float x, float y, float z);
 char* vtos(const vec3_t v);
 
 void G_AddPredictableEvent(const gentity_t* ent, int event, int eventParm);
-void G_AddEvent(gentity_t* ent, int event, int eventParm);
+void G_AddEvent(gentity_t* ent, int event, int event_parm);
 void G_SetOrigin(gentity_t* ent, vec3_t origin);
 qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
 void AddRemap(const char* oldShader, const char* newShader, float timeOffset);
@@ -1651,9 +1651,9 @@ void Weapon_StunThink(gentity_t* ent);
 //
 // g_client.c
 //
-int TeamCount(int ignoreClientNum, team_t team);
+int TeamCount(int ignoreclient_num, team_t team);
 int TeamLeader(int team);
-team_t PickTeam(int ignoreClientNum);
+team_t PickTeam(int ignoreclient_num);
 void SetClientViewAngle(gentity_t* ent, vec3_t angle);
 gentity_t* SelectSpawnPoint(vec3_t avoidPoint, vec3_t origin, vec3_t angles, team_t team, qboolean isbot);
 void MaintainBodyQueue(gentity_t* ent);
@@ -1720,13 +1720,13 @@ const char* G_GetStringEdString(char* refSection, char* refName);
 //
 // g_client.c
 //
-char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot);
-qboolean client_userinfo_changed(int clientNum);
-void ClientDisconnect(int clientNum);
-void ClientBegin(int clientNum, qboolean allowTeamReset);
+char* ClientConnect(int client_num, qboolean firstTime, qboolean isBot);
+qboolean client_userinfo_changed(int client_num);
+void ClientDisconnect(int client_num);
+void ClientBegin(int client_num, qboolean allowTeamReset);
 void G_BreakArm(gentity_t* ent, int arm);
 void G_UpdateClientAnims(gentity_t* self, float animSpeedScale);
-void ClientCommand(int clientNum);
+void ClientCommand(int client_num);
 void G_ClearVote(const gentity_t* ent);
 void G_ClearTeamVote(const gentity_t* ent, int team);
 
@@ -1734,7 +1734,7 @@ void G_ClearTeamVote(const gentity_t* ent, int team);
 // g_active.c
 //
 void G_CheckClientTimeouts(gentity_t* ent);
-void ClientThink(int clientNum, const usercmd_t* ucmd);
+void ClientThink(int client_num, const usercmd_t* ucmd);
 void ClientEndFrame(gentity_t* ent);
 void G_RunClient(gentity_t* ent);
 
@@ -1787,8 +1787,8 @@ void G_InitBots(void);
 char* G_GetBotInfoByNumber(int num);
 char* G_GetBotInfoByName(const char* name);
 void G_CheckBotSpawn(void);
-void G_RemoveQueuedBotBegin(int clientNum);
-qboolean G_BotConnect(int clientNum, qboolean restart);
+void G_RemoveQueuedBotBegin(int client_num);
+qboolean G_BotConnect(int client_num, qboolean restart);
 void Svcmd_AddBot_f(void);
 void Svcmd_BotList_f(void);
 qboolean G_DoesMapSupportGametype(const char* mapname, int gametype);
@@ -1801,7 +1801,7 @@ gentity_t* G_PreDefSound(vec3_t org, int pdSound);
 qboolean HasSetSaberOnly(void);
 void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 void wp_saber_position_update(gentity_t* self, usercmd_t* ucmd);
-qboolean WP_SaberCanBlockThrownSaber(gentity_t* self, vec3_t point, int dflags, int mod, qboolean projectile, int attackStr);
+qboolean WP_SaberCanBlockThrownSaber(gentity_t* self, vec3_t point, const qboolean projectile, int attack_str);
 void wp_saber_init_blade_data(const gentity_t* ent);
 void WP_InitForcePowers(const gentity_t* ent);
 void WP_SpawnInitForcePowers(gentity_t* ent);
@@ -1862,7 +1862,7 @@ qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hol
 #define MAX_FILEPATH			144
 
 int org_visible(vec3_t org1, vec3_t org2, int ignore);
-void bot_order(gentity_t* ent, int clientnum, int ordernum);
+void bot_order(gentity_t* ent, int client_num, int ordernum);
 int in_field_of_vision(vec3_t viewangles, float fov, vec3_t angles);
 
 // ai_util.c

@@ -44,7 +44,7 @@ static vec3_t playerMaxs = { 15, 15, DEFAULT_MAXS_2 };
 
 extern int g_siegeRespawnCheck;
 
-void WP_SaberAddG2Model(gentity_t* saberent, const char* saberModel, qhandle_t saberSkin);
+void WP_SaberAddG2Model(gentity_t* saberent, const char* saber_model, qhandle_t saber_skin);
 void WP_SaberRemoveG2Model(gentity_t* saberent);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
 extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
@@ -1263,7 +1263,7 @@ void MaintainBodyQueue(gentity_t* ent)
 	if (doRCG)
 	{
 		//bodyque func didn't manage to call ircg so call this to assure our limbs and ragdoll states are proper on the client.
-		trap->SendServerCommand(-1, va("rcg %i", ent->s.clientNum));
+		trap->SendServerCommand(-1, va("rcg %i", ent->s.client_num));
 	}
 }
 
@@ -1378,13 +1378,13 @@ TeamCount
 Returns number of players on a team
 ================
 */
-int TeamCount(int ignoreClientNum, team_t team)
+int TeamCount(int ignoreclient_num, team_t team)
 {
 	int count = 0;
 
 	for (int i = 0; i < level.maxclients; i++)
 	{
-		if (i == ignoreClientNum)
+		if (i == ignoreclient_num)
 		{
 			continue;
 		}
@@ -1437,12 +1437,12 @@ PickTeam
 
 ================
 */
-team_t PickTeam(int ignoreClientNum)
+team_t PickTeam(int ignoreclient_num)
 {
 	int counts[TEAM_NUM_TEAMS];
 
-	counts[TEAM_BLUE] = TeamCount(ignoreClientNum, TEAM_BLUE);
-	counts[TEAM_RED] = TeamCount(ignoreClientNum, TEAM_RED);
+	counts[TEAM_BLUE] = TeamCount(ignoreclient_num, TEAM_BLUE);
+	counts[TEAM_RED] = TeamCount(ignoreclient_num, TEAM_RED);
 
 	if (counts[TEAM_BLUE] > counts[TEAM_RED])
 	{
@@ -2075,7 +2075,7 @@ if desired.
 ============
 */
 
-qboolean G_SetSaber(gentity_t* ent, int saberNum, char* saberName, qboolean siegeOverride);
+qboolean G_SetSaber(gentity_t* ent, int saber_num, char* saberName, qboolean siegeOverride);
 void G_ValidateSiegeClassForTeam(const gentity_t* ent, int team);
 
 typedef struct userinfoValidate_s
@@ -2320,9 +2320,9 @@ void ScalePlayer(gentity_t* self, int scale)
 }
 
 qboolean WinterGear = qfalse; //sets weither or not the models go for winter gear skins
-qboolean client_userinfo_changed(const int clientNum)
+qboolean client_userinfo_changed(const int client_num)
 {
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 	gclient_t* client = ent->client;
 	int team;
 	int health;
@@ -2344,15 +2344,15 @@ qboolean client_userinfo_changed(const int clientNum)
 	char script1[MAX_INFO_STRING];
 	char script2[MAX_INFO_STRING];
 
-	trap->GetUserinfo(clientNum, userinfo, sizeof userinfo);
+	trap->GetUserinfo(client_num, userinfo, sizeof userinfo);
 
 	// check for malformed or illegal info strings
 	const char* s = G_ValidateUserinfo(userinfo);
 	if (s && *s)
 	{
-		G_SecurityLogPrintf("Client %d (%s) failed userinfo validation: %s [IP: %s]\n", clientNum,
+		G_SecurityLogPrintf("Client %d (%s) failed userinfo validation: %s [IP: %s]\n", client_num,
 			ent->client->pers.netname, s, client->sess.IP);
-		trap->DropClient(clientNum, va("Failed userinfo validation: %s", s));
+		trap->DropClient(client_num, va("Failed userinfo validation: %s", s));
 		G_LogPrintf("Userinfo: %s\n", userinfo);
 		return qfalse;
 	}
@@ -2384,10 +2384,10 @@ qboolean client_userinfo_changed(const int clientNum)
 	{
 		if (client->pers.netnameTime > level.time)
 		{
-			trap->SendServerCommand(clientNum, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NONAMECHANGE")));
+			trap->SendServerCommand(client_num, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NONAMECHANGE")));
 
 			Info_SetValueForKey(userinfo, "name", oldname);
-			trap->SetUserinfo(clientNum, userinfo);
+			trap->SetUserinfo(client_num, userinfo);
 			Q_strncpyz(client->pers.netname, oldname, sizeof client->pers.netname);
 			Q_strncpyz(client->pers.netname_nocolor, oldname, sizeof client->pers.netname_nocolor);
 			Q_StripColor(client->pers.netname_nocolor);
@@ -2396,7 +2396,7 @@ qboolean client_userinfo_changed(const int clientNum)
 		{
 			trap->SendServerCommand(-1, va("print \"%s" S_COLOR_WHITE " %s %s\n\"", oldname,
 				G_GetStringEdString("MP_SVGAME", "PLRENAME"), client->pers.netname));
-			G_LogPrintf("ClientRename: %i [%s] (%s) \"%s^7\" -> \"%s^7\"\n", clientNum, ent->client->sess.IP,
+			G_LogPrintf("ClientRename: %i [%s] (%s) \"%s^7\" -> \"%s^7\"\n", client_num, ent->client->sess.IP,
 				ent->client->pers.guid, oldname, ent->client->pers.netname);
 			client->pers.netnameTime = level.time + 5000;
 		}
@@ -4414,7 +4414,7 @@ qboolean client_userinfo_changed(const int clientNum)
 	}
 
 	// bots set their team a few frames later
-	if (level.gametype >= GT_TEAM && g_entities[clientNum].r.svFlags & SVF_BOT)
+	if (level.gametype >= GT_TEAM && g_entities[client_num].r.svFlags & SVF_BOT)
 	{
 		s = Info_ValueForKey(userinfo, "team");
 		if (!Q_stricmp(s, "red") || !Q_stricmp(s, "r"))
@@ -4422,7 +4422,7 @@ qboolean client_userinfo_changed(const int clientNum)
 		else if (!Q_stricmp(s, "blue") || !Q_stricmp(s, "b"))
 			team = TEAM_BLUE;
 		else
-			team = PickTeam(clientNum); // pick the team with the least number of players
+			team = PickTeam(client_num); // pick the team with the least number of players
 	}
 	else
 		team = client->sess.sessionTeam;
@@ -4560,7 +4560,7 @@ qboolean client_userinfo_changed(const int clientNum)
 	s = Info_ValueForKey(userinfo, "snaps");
 	if (atoi(s) < sv_fps.integer)
 	{
-		trap->SendServerCommand(clientNum, va(
+		trap->SendServerCommand(client_num, va(
 			"print \"" S_COLOR_YELLOW
 			"Recommend setting /snaps %d or higher to match this server's sv_fps\n\"",
 			sv_fps.integer));
@@ -4620,8 +4620,8 @@ qboolean client_userinfo_changed(const int clientNum)
 		Q_strcat(buf, sizeof buf, va("sdt\\%i\\", client->sess.siegeDesiredTeam));
 	}
 
-	trap->GetConfigstring(CS_PLAYERS + clientNum, oldClientinfo, sizeof oldClientinfo);
-	trap->SetConfigstring(CS_PLAYERS + clientNum, buf);
+	trap->GetConfigstring(CS_PLAYERS + client_num, oldClientinfo, sizeof oldClientinfo);
+	trap->SetConfigstring(CS_PLAYERS + client_num, buf);
 
 	// only going to be true for allowable server-side custom skeleton cases
 	if (model_changed)
@@ -4640,9 +4640,9 @@ qboolean client_userinfo_changed(const int clientNum)
 	if (g_logClientInfo.integer)
 	{
 		if (strcmp(oldClientinfo, buf) != 0)
-			G_LogPrintf("ClientUserinfoChanged: %i %s\n", clientNum, buf);
+			G_LogPrintf("ClientUserinfoChanged: %i %s\n", client_num, buf);
 		else
-			G_LogPrintf("ClientUserinfoChanged: %i <no change>\n", clientNum);
+			G_LogPrintf("ClientUserinfoChanged: %i <no change>\n", client_num);
 	}
 
 	return qtrue;
@@ -4684,18 +4684,18 @@ static qboolean CompareIPs(const char* ip1, const char* ip2)
 	return qtrue;
 }
 
-char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
+char* ClientConnect(int client_num, qboolean firstTime, qboolean isBot)
 {
 	char userinfo[MAX_INFO_STRING] = { 0 },
 		tmpIP[NET_ADDRSTRMAXLEN] = { 0 },
 		guid[33] = { 0 };
 
-	gentity_t* ent = &g_entities[clientNum];
+	gentity_t* ent = &g_entities[client_num];
 
-	ent->s.number = clientNum;
+	ent->s.number = client_num;
 	ent->classname = "connecting";
 
-	trap->GetUserinfo(clientNum, userinfo, sizeof userinfo);
+	trap->GetUserinfo(client_num, userinfo, sizeof userinfo);
 
 	if (g_lms.integer > 0 && BG_IsLMSGametype(g_gametype.integer))
 	{
@@ -4746,9 +4746,9 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 			for (int i = 0; i < sv_maxclients.integer; i++)
 			{
 #if 0
-				if (level.clients[i].pers.connected != CON_DISCONNECTED && i != clientNum)
+				if (level.clients[i].pers.connected != CON_DISCONNECTED && i != client_num)
 				{
-					if (CompareIPs(clientNum, i))
+					if (CompareIPs(client_num, i))
 					{
 						if (!level.security.clientConnectionActive[i])
 						{//This IP has a dead connection pending, wait for it to time out
@@ -4773,13 +4773,13 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 	if (ent->inuse)
 	{
 		// if a player reconnects quickly after a disconnect, the client disconnect may never be called, thus flag can get lost in the ether
-		G_LogPrintf("Forcing disconnect on active client: %i\n", clientNum);
+		G_LogPrintf("Forcing disconnect on active client: %i\n", client_num);
 		// so lets just fix up anything that should happen on a disconnect
-		ClientDisconnect(clientNum);
+		ClientDisconnect(client_num);
 	}
 
 	// they can connect
-	gclient_t* client = &level.clients[clientNum];
+	gclient_t* client = &level.clients[client_num];
 	ent->client = client;
 
 	//assign the pointer for bg entity access
@@ -4824,14 +4824,14 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 	{
 		ent->r.svFlags |= SVF_BOT;
 		ent->inuse = qtrue;
-		if (!G_BotConnect(clientNum, !firstTime))
+		if (!G_BotConnect(client_num, !firstTime))
 		{
 			return "BotConnectfailed";
 		}
 	}
 
 	// get and distribute relevent paramters
-	if (!client_userinfo_changed(clientNum))
+	if (!client_userinfo_changed(client_num))
 		return "Failed userinfo validation";
 
 	if (!isBot && firstTime)
@@ -4840,7 +4840,7 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 		{
 			//No IP sent when connecting, probably an unban hack attempt
 			client->pers.connected = CON_DISCONNECTED;
-			G_SecurityLogPrintf("Client %i (%s) sent no IP when connecting.\n", clientNum, client->pers.netname);
+			G_SecurityLogPrintf("Client %i (%s) sent no IP when connecting.\n", client_num, client->pers.netname);
 			return "Invalid userinfo detected";
 		}
 	}
@@ -4848,7 +4848,7 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 	if (firstTime)
 		Q_strncpyz(client->sess.IP, tmpIP, sizeof client->sess.IP);
 
-	G_LogPrintf("ClientConnect: %i [%s] (%s) \"%s^7\"\n", clientNum, tmpIP, guid, client->pers.netname);
+	G_LogPrintf("ClientConnect: %i [%s] (%s) \"%s^7\"\n", client_num, tmpIP, guid, client->pers.netname);
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
 	if (firstTime)
@@ -4868,7 +4868,7 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 
 	gentity_t* te = G_TempEntity(vec3_origin, EV_CLIENTJOIN);
 	te->r.svFlags |= SVF_BROADCAST;
-	te->s.eventParm = clientNum;
+	te->s.eventParm = client_num;
 
 	// for statistics
 	//	client->areabits = areabits;
@@ -4880,7 +4880,7 @@ char* ClientConnect(int clientNum, qboolean firstTime, qboolean isBot)
 
 void G_WriteClientSessionData(const gclient_t* client);
 
-void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* saberName);
+void WP_SetSaber(int entNum, saberInfo_t* sabers, int saber_num, const char* saberName);
 
 /*
 ===========
@@ -4897,13 +4897,13 @@ extern qboolean gSiegeRoundEnded;
 extern qboolean g_dontPenalizeTeam; //g_cmds.c
 void SetTeamQuick(const gentity_t* ent, int team, qboolean doBegin);
 
-void ClientBegin(int clientNum, qboolean allowTeamReset)
+void ClientBegin(int client_num, qboolean allowTeamReset)
 {
 	char userinfo[MAX_INFO_VALUE];
 	//contains the message of the day that is sent to new players.
 	char motd[1024];
 
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 
 	if (ent->r.svFlags & SVF_BOT && level.gametype >= GT_TEAM)
 	{
@@ -4913,7 +4913,7 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 
 			//SetTeam(ent, "");
 			ent->client->sess.sessionTeam = PickTeam(-1);
-			trap->GetUserinfo(clientNum, userinfo, MAX_INFO_STRING);
+			trap->GetUserinfo(client_num, userinfo, MAX_INFO_STRING);
 
 			if (ent->client->sess.sessionTeam == TEAM_SPECTATOR)
 			{
@@ -4931,7 +4931,7 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 
 			Info_SetValueForKey(userinfo, "team", team);
 
-			trap->SetUserinfo(clientNum, userinfo);
+			trap->SetUserinfo(client_num, userinfo);
 
 			ent->client->ps.persistant[PERS_TEAM] = ent->client->sess.sessionTeam;
 
@@ -4939,14 +4939,14 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 			G_ReadSessionData(ent->client);
 			ent->client->sess.sessionTeam = preSess;
 			G_WriteClientSessionData(ent->client);
-			if (!client_userinfo_changed(clientNum))
+			if (!client_userinfo_changed(client_num))
 				return;
-			ClientBegin(clientNum, qfalse);
+			ClientBegin(client_num, qfalse);
 			return;
 		}
 	}
 
-	gclient_t* client = level.clients + clientNum;
+	gclient_t* client = level.clients + client_num;
 
 	if (ent->r.linked)
 	{
@@ -5009,7 +5009,7 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 	wp_saber_init_blade_data(ent);
 
 	// First time model setup for that player.
-	trap->GetUserinfo(clientNum, userinfo, sizeof userinfo);
+	trap->GetUserinfo(client_num, userinfo, sizeof userinfo);
 	char* modelname = Info_ValueForKey(userinfo, "model");
 	SetupGameGhoul2Model(ent, modelname, NULL);
 
@@ -5050,7 +5050,7 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 		{
 			//don't do the "teleport in" effect if we're playing LMS and we're "out"
 			gentity_t* tent = G_TempEntity(ent->client->ps.origin, EV_PLAYER_TELEPORT_IN);
-			tent->s.clientNum = ent->s.clientNum;
+			tent->s.client_num = ent->s.client_num;
 		}
 		if (level.gametype != GT_DUEL || level.gametype == GT_POWERDUEL)
 		{
@@ -5058,7 +5058,7 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 				G_GetStringEdString("MP_SVGAME", "PLENTER")));
 		}
 	}
-	G_LogPrintf("ClientBegin: %i\n", clientNum);
+	G_LogPrintf("ClientBegin: %i\n", client_num);
 
 	if (client->pers.SJE_clientplugin)
 	{
@@ -5071,12 +5071,12 @@ void ClientBegin(int clientNum, qboolean allowTeamReset)
 		TextWrapCenterPrint(SJE_MOTD.string, motd);
 	}
 
-	trap->SendServerCommand(clientNum, va("cp \"%s\n\"", motd));
+	trap->SendServerCommand(client_num, va("cp \"%s\n\"", motd));
 
 	// count current clients and rank for scoreboard
 	CalculateRanks();
 
-	G_ClearClientLog(clientNum);
+	G_ClearClientLog(client_num);
 }
 
 qboolean AllForceDisabled(int force)
@@ -5460,7 +5460,7 @@ extern qboolean WP_HasForcePowers(const playerState_t* ps);
 
 void ClientSpawn(gentity_t* ent)
 {
-	int i = 0, index = 0, saveSaberNum = ENTITYNUM_NONE, wDisable = 0, savedSiegeIndex = 0, maxHealth = 100;
+	int i = 0, index = 0, savesaber_num = ENTITYNUM_NONE, wDisable = 0, savedSiegeIndex = 0, maxHealth = 100;
 	vec3_t spawn_origin, spawn_angles;
 	gentity_t* spawnPoint = NULL, * tent = NULL;
 	gclient_t* client = NULL;
@@ -5688,7 +5688,7 @@ void ClientSpawn(gentity_t* ent)
 
 	savedForce = client->ps.fd;
 
-	saveSaberNum = client->ps.saberEntityNum;
+	savesaber_num = client->ps.saberEntityNum;
 
 	savedSiegeIndex = client->siegeClass;
 
@@ -5748,8 +5748,8 @@ void ClientSpawn(gentity_t* ent)
 	}
 
 	//or the saber ent num
-	client->ps.saberEntityNum = saveSaberNum;
-	client->saberStoredIndex = saveSaberNum;
+	client->ps.saberEntityNum = savesaber_num;
+	client->saberStoredIndex = savesaber_num;
 
 	client->ps.fd = savedForce;
 
@@ -5822,7 +5822,7 @@ void ClientSpawn(gentity_t* ent)
 	client->ps.crouchheight = CROUCH_MAXS_2;
 	client->ps.standheight = DEFAULT_MAXS_2;
 
-	client->ps.clientNum = index;
+	client->ps.client_num = index;
 	//give default weapons
 	client->ps.stats[STAT_WEAPONS] = 1 << WP_NONE;
 
@@ -7820,7 +7820,7 @@ void ClientSpawn(gentity_t* ent)
 			VectorCopy(ent->client->ps.origin, ent->r.currentOrigin);
 
 			tent = G_TempEntity(ent->client->ps.origin, EV_PLAYER_TELEPORT_IN);
-			tent->s.clientNum = ent->s.clientNum;
+			tent->s.client_num = ent->s.client_num;
 
 			trap->LinkEntity((sharedEntity_t*)ent);
 		}
@@ -7944,13 +7944,13 @@ void G_ClearTeamVote(const gentity_t* ent, int team)
 	}
 }
 
-void ClientDisconnect(int clientNum)
+void ClientDisconnect(int client_num)
 {
 	// cleanup if we are kicking a bot that
 	// hasn't spawned yet
-	G_RemoveQueuedBotBegin(clientNum);
+	G_RemoveQueuedBotBegin(client_num);
 
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 	if (!ent->client || ent->client->pers.connected == CON_DISCONNECTED)
 	{
 		return;
@@ -7997,7 +7997,7 @@ void ClientDisconnect(int clientNum)
 	{
 		if (level.clients[i].sess.sessionTeam == TEAM_SPECTATOR
 			&& level.clients[i].sess.spectatorState == SPECTATOR_FOLLOW
-			&& level.clients[i].sess.spectatorClient == clientNum)
+			&& level.clients[i].sess.spectatorClient == client_num)
 		{
 			StopFollowing(&g_entities[i]);
 		}
@@ -8008,26 +8008,26 @@ void ClientDisconnect(int clientNum)
 		&& ent->client->sess.sessionTeam != TEAM_SPECTATOR)
 	{
 		gentity_t* tent = G_TempEntity(ent->client->ps.origin, EV_PLAYER_TELEPORT_OUT);
-		tent->s.clientNum = ent->s.clientNum;
+		tent->s.client_num = ent->s.client_num;
 
 		// They don't get to take powerups with them!
 		// Especially important for stuff like CTF flags
 		TossClientItems(ent);
 	}
 
-	G_LogPrintf("ClientDisconnect: %i [%s] (%s) \"%s^7\"\n", clientNum, ent->client->sess.IP, ent->client->pers.guid,
+	G_LogPrintf("ClientDisconnect: %i [%s] (%s) \"%s^7\"\n", client_num, ent->client->sess.IP, ent->client->pers.guid,
 		ent->client->pers.netname);
 
 	// if we are playing in tourney mode, give a win to the other player and clear his frags for this round
 	if (level.gametype == GT_DUEL && !level.intermissiontime && !level.warmupTime)
 	{
-		if (level.sortedClients[1] == clientNum)
+		if (level.sortedClients[1] == client_num)
 		{
 			level.clients[level.sortedClients[0]].ps.persistant[PERS_SCORE] = 0;
 			level.clients[level.sortedClients[0]].sess.wins++;
 			client_userinfo_changed(level.sortedClients[0]);
 		}
-		else if (level.sortedClients[0] == clientNum)
+		else if (level.sortedClients[0] == client_num)
 		{
 			level.clients[level.sortedClients[1]].ps.persistant[PERS_SCORE] = 0;
 			level.clients[level.sortedClients[1]].sess.wins++;
@@ -8091,16 +8091,16 @@ void ClientDisconnect(int clientNum)
 		}
 	}
 
-	trap->SetConfigstring(CS_PLAYERS + clientNum, "");
+	trap->SetConfigstring(CS_PLAYERS + client_num, "");
 
 	CalculateRanks();
 
 	if (ent->r.svFlags & SVF_BOT)
 	{
-		BotAIShutdownClient(clientNum);
+		BotAIShutdownClient(client_num);
 	}
 
-	G_ClearClientLog(clientNum);
+	G_ClearClientLog(client_num);
 }
 
 qboolean G_StandardHumanoid(gentity_t* self)

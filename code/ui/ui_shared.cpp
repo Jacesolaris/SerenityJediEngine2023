@@ -1160,7 +1160,7 @@ keywordHash_t menuParseKeywords[] = {
 	{"cinematic",			MenuParse_cinematic,	},
 	{"descAlignment",		MenuParse_descAlignment	},
 	{"descTextStyle",		MenuParse_descTextStyle	},
-	{"desccolor",			MenuParse_descColor		},
+	{"descColor",			MenuParse_descColor		},
 	{"descX",				MenuParse_descX			},
 	{"descY",				MenuParse_descY			},
 	{"descScale",			MenuParse_descScale		},
@@ -2226,17 +2226,17 @@ qboolean Script_SetFocus(itemDef_t* item, const char** args)
 
 	if (String_Parse(args, &name))
 	{
-		itemDef_t* focusItem = Menu_FindItemByName(static_cast<menuDef_t*>(item->parent), name);
-		if (focusItem && !(focusItem->window.flags & WINDOW_DECORATION) && !(focusItem->window.flags & WINDOW_HASFOCUS))
+		itemDef_t* focus_item = Menu_FindItemByName(static_cast<menuDef_t*>(item->parent), name);
+		if (focus_item && !(focus_item->window.flags & WINDOW_DECORATION) && !(focus_item->window.flags & WINDOW_HASFOCUS))
 		{
 			Menu_ClearFocus(static_cast<menuDef_t*>(item->parent));
 			//JLF
-			focusItem->window.flags |= WINDOW_HASFOCUS;
+			focus_item->window.flags |= WINDOW_HASFOCUS;
 			//END JLF
 
-			if (focusItem->onFocus)
+			if (focus_item->onFocus)
 			{
-				Item_RunScript(focusItem, focusItem->onFocus);
+				Item_RunScript(focus_item, focus_item->onFocus);
 			}
 			if (DC->Assets.itemFocusSound)
 			{

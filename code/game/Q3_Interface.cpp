@@ -65,8 +65,8 @@ extern void G_PlayDoorLoopSound(gentity_t* ent);
 extern void G_PlayDoorSound(gentity_t* ent, int type);
 extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void WP_SaberSetColor(const gentity_t* ent, int saberNum, int bladeNum, const char* colorName);
-extern void WP_SetSaber(gentity_t* ent, int saberNum, const char* saberName);
+extern void WP_SaberSetColor(const gentity_t* ent, int saber_num, int blade_num, const char* colorName);
+extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern void G_ChangePlayerModel(gentity_t* ent, const char* newModel);
 extern void WP_SetSaberOrigin(gentity_t* self, vec3_t new_org);
@@ -7577,10 +7577,10 @@ CQuake3GameInterface::~CQuake3GameInterface()
 	}
 
 	// Clear out all precached script's.
-	for (auto iterScript = m_ScriptList.begin(); iterScript != m_ScriptList.end(); ++iterScript)
+	for (const auto & iter_script : m_ScriptList)
 	{
-		CQuake3GameInterface::Free((*iterScript).second->buffer);
-		delete (*iterScript).second;
+		CQuake3GameInterface::Free(iter_script.second->buffer);
+		delete iter_script.second;
 	}
 
 	m_ScriptList.clear();
@@ -8043,7 +8043,7 @@ unsigned int CQuake3GameInterface::GetTime(void)
 //	 DWORD	CQuake3GameInterface::GetTimeScale(void ) {}
 
 // NOTE: This extern does not really fit here, fix later please...
-extern void G_SoundBroadcast(const gentity_t* ent, int soundIndex);
+extern void G_SoundBroadcast(const gentity_t* ent, int sound_index);
 // Plays a sound from an entity.
 int CQuake3GameInterface::PlayIcarusSound(int taskID, int entID, const char* name, const char* channel)
 {

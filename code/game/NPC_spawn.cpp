@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 
 extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
-extern void client_userinfo_changed(int clientNum);
+extern void client_userinfo_changed(int client_num);
 extern qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest);
 extern void Jedi_Cloak(gentity_t* self);
 extern void Saboteur_Cloak(gentity_t* self);
@@ -1254,7 +1254,7 @@ void NPC_Begin(gentity_t* ent)
 
 	client->airOutTime = level.time + 12000;
 
-	client->ps.clientNum = ent->s.number;
+	client->ps.client_num = ent->s.number;
 	// clear entity values
 
 	if (ent->health) // Was health supplied in map

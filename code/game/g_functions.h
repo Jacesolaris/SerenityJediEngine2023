@@ -163,7 +163,7 @@ extern void teleporter_think(gentity_t* ent);
 extern void funcBBrushDieGo(gentity_t* ent);
 extern void ExplodeDeath(gentity_t* ent);
 extern void RespawnItem(gentity_t* ent);
-extern void G_FreeEntity(gentity_t* ent);
+extern void G_FreeEntity(gentity_t* ed);
 extern void FinishSpawningItem(gentity_t* ent);
 extern void locateCamera(gentity_t* ent);
 extern void G_RunObject(gentity_t* ent);

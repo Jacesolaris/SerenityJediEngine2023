@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void G_DebugPrint(int level, const char* format, ...);
 
 extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
-extern qboolean client_userinfo_changed(int clientNum);
+extern qboolean client_userinfo_changed(int client_num);
 extern qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest);
 extern void Jedi_Cloak(gentity_t* self);
 
@@ -1267,7 +1267,7 @@ void NPC_Begin(gentity_t* ent)
 
 	client->airOutTime = level.time + 12000;
 
-	client->ps.clientNum = ent->s.number;
+	client->ps.client_num = ent->s.number;
 	// clear entity values
 
 	if (ent->health) // Was health supplied in map

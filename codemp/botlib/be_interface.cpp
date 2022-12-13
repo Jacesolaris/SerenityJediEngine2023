@@ -89,7 +89,7 @@ int Sys_MilliSeconds(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean ValidClientNumber(int num, char* str)
+qboolean Validclient_number(int num, char* str)
 {
 	if (num < 0 || num > botlibglobals.maxclients)
 	{
@@ -99,7 +99,7 @@ qboolean ValidClientNumber(int num, char* str)
 		return qfalse;
 	} //end if
 	return qtrue;
-} //end of the function BotValidateClientNumber
+} //end of the function BotValidateclient_number
 //===========================================================================
 //
 // Parameter:				-
@@ -115,7 +115,7 @@ qboolean ValidEntityNumber(int num, char* str)
 		return qfalse;
 	} //end if
 	return qtrue;
-} //end of the function BotValidateClientNumber
+} //end of the function BotValidateclient_number
 //===========================================================================
 //
 // Parameter:				-

@@ -647,10 +647,10 @@ void WP_RocketLock(const gentity_t* ent, float lockDist)
 	ang[1] = muzzlePoint[1] + ang[1] * lockDist;
 	ang[2] = muzzlePoint[2] + ang[2] * lockDist;
 
-	gi.trace(&tr, muzzlePoint, nullptr, nullptr, ang, ent->client->ps.clientNum, MASK_PLAYERSOLID,
+	gi.trace(&tr, muzzlePoint, nullptr, nullptr, ang, ent->client->ps.client_num, MASK_PLAYERSOLID,
 		static_cast<EG2_Collision>(0), 0);
 
-	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != ent->client->ps.clientNum)
+	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != ent->client->ps.client_num)
 	{
 		const gentity_t* bgEnt = &g_entities[tr.entityNum];
 		if (bgEnt && bgEnt->s.powerups & PW_CLOAKED)
@@ -1361,7 +1361,7 @@ qboolean DoesnotDrainMishap(const gentity_t* ent)
 
 void G_AddMercBalance(const gentity_t* ent, int amount)
 {
-	if (ent->s.clientNum >= MAX_CLIENTS)
+	if (ent->s.client_num >= MAX_CLIENTS)
 	{
 		return;
 	}

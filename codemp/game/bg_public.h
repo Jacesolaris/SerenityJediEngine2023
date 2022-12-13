@@ -406,11 +406,11 @@ extern stringID_table_t footstepTypeTable[NUM_FOOTSTEP_TYPES + 1];
 #define	AED_MOVE_RT					1
 #define	AED_MOVE_UP					2
 //indices for AEV_SABER_SWING data
-#define	AED_SABER_SWING_SABERNUM	0
+#define	AED_SABER_SWING_saber_num	0
 #define	AED_SABER_SWING_TYPE		1
 #define	AED_SABER_SWING_PROBABILITY	2
 //indices for AEV_SABER_SPIN data
-#define	AED_SABER_SPIN_SABERNUM		0
+#define	AED_SABER_SPIN_saber_num		0
 #define	AED_SABER_SPIN_TYPE			1	//0 = saberspinoff, 1 = saberspin, 2-4 = saberspin1-saberspin3
 #define	AED_SABER_SPIN_PROBABILITY	2
 
@@ -666,7 +666,7 @@ typedef enum {
 	PERS_TEAM,						// player team
 	PERS_SPAWN_COUNT,				// incremented every respawn
 	PERS_PLAYEREVENTS,				// 16 bits that can be flipped for events
-	PERS_ATTACKER,					// clientnum of last damage inflicter
+	PERS_ATTACKER,					// client_num of last damage inflicter
 	PERS_ATTACKEE_ARMOR,			// health/armor of last person we attacked
 	PERS_KILLED,					// count of the number of times you died
 	// player awards tracking
@@ -1983,7 +1983,7 @@ qboolean BG_InDeathAnim(int anim);
 qboolean BG_InSaberLockOld(int anim);
 qboolean PM_InSaberLock(int anim);
 
-void pm_saber_start_trans_anim(int clientNum, int saber_anim_level, int weapon, int anim, float* anim_speed, int broken, int fatigued);
+void pm_saber_start_trans_anim(int client_num, int saber_anim_level, int weapon, int anim, float* anim_speed, int broken, int fatigued);
 
 void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t force_power, int override_amt);
 void BG_ForcePowerKill(playerState_t* ps);
@@ -2037,7 +2037,7 @@ void BG_SI_Deactivate(saberInfo_t* saber);
 void BG_SI_BladeActivate(saberInfo_t* saber, int iBlade, qboolean bActive);
 qboolean BG_SI_Active(const saberInfo_t* saber);
 void BG_SI_SetLength(saberInfo_t* saber, float length);
-void BG_SI_SetDesiredLength(saberInfo_t* saber, float len, int bladeNum);
+void BG_SI_SetDesiredLength(saberInfo_t* saber, float len, int blade_num);
 void BG_SI_SetLengthGradual(saberInfo_t* saber, int time);
 float BG_SI_Length(const saberInfo_t* saber);
 float BG_SI_LengthMax(const saberInfo_t* saber);

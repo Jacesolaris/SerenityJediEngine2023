@@ -582,9 +582,9 @@ COLORS
 */
 
 /*
-** RB_CalcColorFromEntity
+** RB_calc_colorFromEntity
 */
-void RB_CalcColorFromEntity(unsigned char* dst_colors)
+void RB_calc_colorFromEntity(unsigned char* dst_colors)
 {
 	auto* pColors = (int*)dst_colors;
 
@@ -599,9 +599,9 @@ void RB_CalcColorFromEntity(unsigned char* dst_colors)
 }
 
 /*
-** RB_CalcColorFromOneMinusEntity
+** RB_calc_colorFromOneMinusEntity
 */
-void RB_CalcColorFromOneMinusEntity(unsigned char* dst_colors)
+void RB_calc_colorFromOneMinusEntity(unsigned char* dst_colors)
 {
 	auto* pColors = reinterpret_cast<int*>(dst_colors);
 	unsigned char inv_modulate[4];

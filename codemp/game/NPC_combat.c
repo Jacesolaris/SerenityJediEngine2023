@@ -168,7 +168,7 @@ qboolean G_CheckSaberAllyAttackDelay(const gentity_t* self, const gentity_t* ene
 	if (self->NPC
 		&& self->client->leader
 		&& self->client->leader->client
-		&& self->client->leader->client->ps.clientNum < MAX_CLIENTS
+		&& self->client->leader->client->ps.client_num < MAX_CLIENTS
 		&& self->enemy
 		&& self->enemy->s.weapon != WP_SABER
 		&& self->s.weapon == WP_SABER)
@@ -559,7 +559,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 		else if (self->client
 			&& self->client->NPC_class == CLASS_KYLE
 			&& self->client->leader
-			&& self->client->leader->client->ps.clientNum < MAX_CLIENTS
+			&& self->client->leader->client->ps.client_num < MAX_CLIENTS
 			&& !TIMER_Done(self, "kyleAngerSoundDebounce"))
 		{
 			//Kyle ally NPC doesn't yell if you have an enemy more than once every five seconds
@@ -615,7 +615,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 				if (self->client
 					&& self->client->NPC_class == CLASS_KYLE
 					&& self->client->leader
-					&& self->client->leader->client->ps.clientNum < MAX_CLIENTS)
+					&& self->client->leader->client->ps.client_num < MAX_CLIENTS)
 				{
 					//don't yell that you have an enemy more than once every 4-8 seconds
 					TIMER_Set(self, "kyleAngerSoundDebounce", Q_irand(4000, 8000));
@@ -1022,7 +1022,7 @@ void NPC_ApplyWeaponFireDelay(void)
 		*/ //rwwFIXMEFIXME: support for this
 
 	case WP_THERMAL:
-		if (NPCS.client->ps.clientNum)
+		if (NPCS.client->ps.client_num)
 		{
 			NPCS.client->ps.weaponTime = 700;
 		}

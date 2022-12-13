@@ -1362,7 +1362,7 @@ static int QDECL SortClients(const void* a, const void* b)
 TeamplayLocationsMessage
 
 Format:
-	clientNum location health armor weapon powerups
+	client_num location health armor weapon powerups
 
 ==================
 */
@@ -1411,7 +1411,7 @@ void TeamplayInfoMessage(const gentity_t* ent)
 		}
 	}
 
-	// We have the top eight players, sort them by clientNum
+	// We have the top eight players, sort them by client_num
 	qsort(clients, cnt, sizeof clients[0], SortClients);
 
 	// send the latest information on all clients

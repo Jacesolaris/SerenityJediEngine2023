@@ -275,7 +275,7 @@ models/players/visor/animation.cfg, etc
 */
 static char UIPAFtext[120000];
 
-int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean isHumanoid)
+int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean is_humanoid)
 {
 	char* text_p;
 	int i;
@@ -284,7 +284,7 @@ int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean i
 
 	fileHandle_t f;
 
-	if (!isHumanoid)
+	if (!is_humanoid)
 	{
 		i = 1;
 		while (i < uiNumAllAnims)
@@ -305,7 +305,7 @@ int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean i
 			{
 				//then use the static humanoid set.
 				animset = uiHumanoidAnimations;
-				isHumanoid = qtrue;
+				is_humanoid = qtrue;
 				nextIndex = 0;
 			}
 			else
@@ -328,7 +328,7 @@ int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean i
 #endif
 
 	// load the file
-	if (!UIPAFtextLoaded || !isHumanoid)
+	if (!UIPAFtextLoaded || !is_humanoid)
 	{
 		//rww - We are always using the same animation config now. So only load it once.
 		const int len = trap->FS_Open(filename, &f, FS_READ);
@@ -446,7 +446,7 @@ int UI_ParseAnimationFile(const char* filename, animation_t* animset, qboolean i
 	*/
 #endif // _DEBUG
 
-	if (isHumanoid)
+	if (is_humanoid)
 	{
 		bgAllAnims[0].anims = animset;
 		Q_strncpyz(bgAllAnims[0].filename, filename, sizeof bgAllAnims[0].filename);
@@ -707,9 +707,9 @@ void _UI_DrawRect(float x, float y, float width, float height, float size, const
 	trap->R_SetColor(NULL);
 }
 
-int MenuFontToHandle(int iMenuFont)
+int MenuFontToHandle(int i_menu_font)
 {
-	switch (iMenuFont)
+	switch (i_menu_font)
 	{
 	case 1: return uiInfo.uiDC.Assets.qhSmallFont;
 	case 2: return uiInfo.uiDC.Assets.qhMediumFont;
@@ -879,8 +879,8 @@ static void UI_BuildPlayerList()
 	char info[MAX_INFO_STRING];
 
 	trap->GetClientState(&cs);
-	trap->GetConfigString(CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING);
-	uiInfo.playerNumber = cs.clientNum;
+	trap->GetConfigString(CS_PLAYERS + cs.client_num, info, MAX_INFO_STRING);
+	uiInfo.playerNumber = cs.client_num;
 	uiInfo.teamLeader = atoi(Info_ValueForKey(info, "tl"));
 	const int team = atoi(Info_ValueForKey(info, "t"));
 	trap->GetConfigString(CS_SERVERINFO, info, sizeof info);
@@ -903,7 +903,7 @@ static void UI_BuildPlayerList()
 			{
 				Q_strncpyz(uiInfo.teamNames[uiInfo.myTeamCount], Info_ValueForKey(info, "n"), MAX_NETNAME);
 				Q_StripColor(uiInfo.teamNames[uiInfo.myTeamCount]);
-				uiInfo.teamClientNums[uiInfo.myTeamCount] = n;
+				uiInfo.teamclient_nums[uiInfo.myTeamCount] = n;
 				if (uiInfo.playerNumber == n)
 				{
 					playerTeamNumber = uiInfo.myTeamCount;
@@ -3636,7 +3636,7 @@ static qboolean UI_OwnerDrawVisible(int flags)
 			else
 			{
 				// if showing yourself
-				if (cg_selectedPlayer.integer < uiInfo.myTeamCount && uiInfo.teamClientNums[cg_selectedPlayer.
+				if (cg_selectedPlayer.integer < uiInfo.myTeamCount && uiInfo.teamclient_nums[cg_selectedPlayer.
 					integer] == uiInfo.playerNumber)
 				{
 					vis = qfalse;
@@ -3650,7 +3650,7 @@ static qboolean UI_OwnerDrawVisible(int flags)
 			if (uiInfo.teamLeader)
 			{
 				// if not showing yourself
-				if (!(cg_selectedPlayer.integer < uiInfo.myTeamCount && uiInfo.teamClientNums[cg_selectedPlayer.
+				if (!(cg_selectedPlayer.integer < uiInfo.myTeamCount && uiInfo.teamclient_nums[cg_selectedPlayer.
 					integer] == uiInfo.playerNumber))
 				{
 					vis = qfalse;
@@ -6949,7 +6949,7 @@ static void UI_RunMenuScript(char** args)
 				if (selectedPlayer < uiInfo.myTeamCount)
 				{
 					Q_strncpyz(buff, orders, sizeof buff);
-					trap->Cmd_ExecuteText(EXEC_APPEND, va(buff, uiInfo.teamClientNums[selectedPlayer]));
+					trap->Cmd_ExecuteText(EXEC_APPEND, va(buff, uiInfo.teamclient_nums[selectedPlayer]));
 					trap->Cmd_ExecuteText(EXEC_APPEND, "\n");
 				}
 				else
@@ -6957,11 +6957,11 @@ static void UI_RunMenuScript(char** args)
 					int i;
 					for (i = 0; i < uiInfo.myTeamCount; i++)
 					{
-						if (uiInfo.playerNumber == uiInfo.teamClientNums[i])
+						if (uiInfo.playerNumber == uiInfo.teamclient_nums[i])
 						{
 							continue;
 						}
-						Com_sprintf(buff, sizeof buff, orders, uiInfo.teamClientNums[i]);
+						Com_sprintf(buff, sizeof buff, orders, uiInfo.teamclient_nums[i]);
 						trap->Cmd_ExecuteText(EXEC_APPEND, buff);
 						trap->Cmd_ExecuteText(EXEC_APPEND, "\n");
 					}
@@ -7005,7 +7005,7 @@ static void UI_RunMenuScript(char** args)
 				else
 				{
 					Q_strncpyz(buff, orders, sizeof buff);
-					trap->Cmd_ExecuteText(EXEC_APPEND, va(buff, uiInfo.teamClientNums[selectedPlayer]));
+					trap->Cmd_ExecuteText(EXEC_APPEND, va(buff, uiInfo.teamclient_nums[selectedPlayer]));
 				}
 				trap->Cmd_ExecuteText(EXEC_APPEND, "\n");
 

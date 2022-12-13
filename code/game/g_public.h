@@ -197,11 +197,11 @@ using game_import_t = struct
 	//=========== server specific functionality =============
 
 	// kick a client off the server with a message
-	void (*DropClient)(int clientNum, const char* reason);
+	void (*DropClient)(int client_num, const char* reason);
 
 	// reliably sends a command string to be interpreted by the given
-	// client.  If clientNum is -1, it will be sent to all clients
-	void (*SendServerCommand)(int clientNum, const char* fmt, ...);
+	// client.  If client_num is -1, it will be sent to all clients
+	void (*SendServerCommand)(int client_num, const char* fmt, ...);
 
 	// config strings hold all the index strings, and various other information
 	// that is reliably communicated to all clients
@@ -418,13 +418,13 @@ using game_export_t = struct
 
 	// return NULL if the client is allowed to connect, otherwise return
 	// a text string with the reason for denial
-	char* (*ClientConnect)(int clientNum, qboolean firstTime, SavedGameJustLoaded_e e_saved_game_just_loaded);
+	char* (*ClientConnect)(int client_num, qboolean firstTime, SavedGameJustLoaded_e e_saved_game_just_loaded);
 
-	void (*client_begin)(int clientNum, const usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
-	void (*ClientUserinfoChanged)(int clientNum);
-	void (*ClientDisconnect)(int clientNum);
-	void (*ClientCommand)(int clientNum);
-	void (*ClientThink)(int clientNum, usercmd_t* cmd);
+	void (*client_begin)(int client_num, const usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
+	void (*ClientUserinfoChanged)(int client_num);
+	void (*ClientDisconnect)(int client_num);
+	void (*ClientCommand)(int client_num);
+	void (*ClientThink)(int client_num, usercmd_t* cmd);
 
 	void (*RunFrame)(int levelTime);
 	void (*ConnectNavs)(const char* mapname, int checkSum);

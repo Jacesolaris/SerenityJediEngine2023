@@ -76,8 +76,8 @@ extern cvar_t* g_IsSaberDoingAttackDamage;
 extern cvar_t* g_DebugSaberCombat;
 extern cvar_t* g_newgameplusJKA;
 extern cvar_t* g_newgameplusJKO;
-extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int bladeNum);
-extern qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int bladeNum);
+extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num);
+extern qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
@@ -85,10 +85,8 @@ extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern void CG_ChangeWeapon(int num);
 extern void cg_saber_do_weapon_hit_marks(const gclient_t* client, const gentity_t* saber_ent, gentity_t* hit_ent,
-	int saber_num,
-	int blade_num, vec3_t hit_pos, vec3_t hit_dir, vec3_t uaxis,
-	vec3_t splash_back_dir,
-	float size_time_scale);
+                                         const int saber_num,
+                                         const int blade_num, vec3_t hit_pos, vec3_t hit_dir, vec3_t uaxis, const float size_time_scale);
 extern void G_AngerAlert(const gentity_t* self);
 extern void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward);
 extern void g_reflect_missile_npc(gentity_t* ent, gentity_t* missile, vec3_t forward);
@@ -143,7 +141,7 @@ extern qboolean PM_SaberInRollStab(saberMoveName_t saberMove);
 extern qboolean PM_SaberInLungeStab(saberMoveName_t saberMove);
 extern qboolean PM_StabDownAnim(int anim);
 extern qboolean PM_LungRollAnim(int anim);
-extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saberNum = 0);
+extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saber_num = 0);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
 extern qboolean PM_VelocityForBlockedMove(const playerState_t* ps, vec3_t throwDir);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
@@ -219,8 +217,8 @@ extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 //////////////////////////////////////////////////
-extern qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, int saberNum, int bladeNum, vec3_t hitLoc);
-extern qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, int saberNum, int bladeNum, vec3_t hitLoc);
+extern qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const int saber_num, const int blade_num);
+extern qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, const int saber_num, const int blade_num);
 //////////////////////////////////////////////////
 void player_Freeze(const gentity_t* self);
 void Player_CheckFreeze(const gentity_t* self);
@@ -257,7 +255,7 @@ extern void CGCam_BlockShakeSP(float intensity, int duration);
 static qhandle_t repulseLoopSound = 0;
 extern void Boba_FlyStop(gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
-extern void SabBeh_SaberShouldBeDisarmedBlocker(gentity_t* blocker, int saberNum);
+extern void SabBeh_SaberShouldBeDisarmedBlocker(gentity_t* blocker, int saber_num);
 
 qboolean g_saberNoEffects = qfalse;
 qboolean g_noClashFlare = qfalse;
@@ -1550,7 +1548,7 @@ void wp_saber_fall_sound(const gentity_t* owner, const gentity_t* saber)
 	}
 	if (owner && owner->client)
 	{
-		//have an owner, use their data (assume saberNum is 0 because only the 0 saber can be thrown)
+		//have an owner, use their data (assume saber_num is 0 because only the 0 saber can be thrown)
 		if (owner->client->ps.saber[0].fallSound[0])
 		{
 			//have an override
@@ -2536,7 +2534,7 @@ float g_get_anim_point(const gentity_t* self)
 }
 
 extern float damageModifier[];
-extern float hitLocHealthPercentage[];
+extern float hitLochealth_percentage[];
 extern qboolean BG_SaberInTransitionDamageMove(const playerState_t* ps);
 qboolean BG_SaberInPartialDamageMove(gentity_t* self);
 
@@ -2681,7 +2679,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 							}
 							else
 							{
-								max_dmg = 50 * hitLocHealthPercentage[hitLoc[i]] * base_damage;
+								max_dmg = 50 * hitLochealth_percentage[hitLoc[i]] * base_damage;
 							}
 							if (max_dmg < totalDmg[i])
 							{
@@ -3215,17 +3213,16 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 							if (damage > 10) //only if doing damage move
 							{
 								cg_saber_do_weapon_hit_marks(ent->client,
-									ent->client->ps.saberInFlight
-									? &g_entities[ent->client->ps.saberEntityNum]
-									: nullptr,
-									victim,
-									saber_num,
-									blade_num,
-									dmgSpot[i],
-									dmgDir[i],
-									dmgBladeVec[i],
-									dmgNormal[i],
-									size_time_scale);
+								                             ent->client->ps.saberInFlight
+									                             ? &g_entities[ent->client->ps.saberEntityNum]
+									                             : nullptr,
+								                             victim,
+								                             saber_num,
+								                             blade_num,
+								                             dmgSpot[i],
+								                             dmgDir[i],
+								                             dmgBladeVec[i],
+								                             size_time_scale);
 							}
 						}
 						if (d_saberCombat->integer || g_DebugSaberCombat->integer)
@@ -3305,8 +3302,8 @@ void wp_saber_damage_add(const float tr_dmg, const int tr_victim_entity_num, vec
 		}
 
 		const float add_dmg = tr_dmg * dmg;
-		if (tr_hit_loc != HL_NONE && (hitLoc[cur_victim] == HL_NONE || hitLocHealthPercentage[tr_hit_loc] >
-			hitLocHealthPercentage[hitLoc[cur_victim]]))
+		if (tr_hit_loc != HL_NONE && (hitLoc[cur_victim] == HL_NONE || hitLochealth_percentage[tr_hit_loc] >
+			hitLochealth_percentage[hitLoc[cur_victim]]))
 		{
 			//this hitLoc is more critical than the previous one this frame
 			hitLoc[cur_victim] = tr_hit_loc;
@@ -6845,7 +6842,7 @@ void G_Stumble(gentity_t* hit_ent)
 
 /*
 ---------------------------------------------------------
-void WP_SaberDamageTrace( gentity_t *ent, int saberNum, int bladeNum )
+void WP_SaberDamageTrace( gentity_t *ent, int saber_num, int blade_num )
 
   Constantly trace from the old blade pos to new, down the saber beam and do damage
 
@@ -7736,10 +7733,10 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 						}
 
 						//make me parry	-(Im the blocker)
-						sab_beh_block_vs_attack(hit_owner, ent, saber_num, blade_num, saberHitLocation);
+						sab_beh_block_vs_attack(hit_owner, ent, saber_num, blade_num);
 
 						//make me bounce -(Im the attacker)
-						sab_beh_attack_vs_block(ent, hit_owner, saber_num, blade_num, saberHitLocation);
+						sab_beh_attack_vs_block(ent, hit_owner, saber_num, blade_num);
 
 						collision_resolved = qtrue;
 					}
@@ -9305,7 +9302,7 @@ qboolean saberShotOutOfHand(gentity_t* self, vec3_t throw_dir)
 		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKWALKING);
 		self->client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 		self->client->ps.ManualBlockingTime = 0; //Blocking time 1 on
-		self->client->ps.ManualMBlockingTime = 0;
+		self->client->ps.Manual_m_blockingTime = 0;
 	}
 	//optionally give it some thrown velocity
 	if (throw_dir && !VectorCompare(throw_dir, vec3_origin))
@@ -9358,7 +9355,7 @@ qboolean WP_SaberDisarmed(gentity_t* self, vec3_t throw_dir)
 		self->client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKWALKING);
 		self->client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 		self->client->ps.ManualBlockingTime = 0; //Blocking time 1 on
-		self->client->ps.ManualMBlockingTime = 0;
+		self->client->ps.Manual_m_blockingTime = 0;
 	}
 	//optionally give it some thrown velocity
 	if (throw_dir && !VectorCompare(throw_dir, vec3_origin))
@@ -9522,8 +9519,7 @@ void WP_SaberCatch(gentity_t* self, gentity_t* saber, const qboolean switch_to_s
 		G_Sound(saber, G_SoundIndex("sound/weapons/saber/saber_catch.wav"));
 
 		if (self->client->ps.weapon == WP_SABER)
-		{
-			//only do the first saber since we only throw the first one
+		{			//only do the first saber since we only throw the first one
 			wp_saber_add_g2_saber_models(self, qfalse);
 
 			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self)) //NPC only
@@ -9581,6 +9577,10 @@ void WP_SaberCatch(gentity_t* self, gentity_t* saber, const qboolean switch_to_s
 						self->client->ps.saber[0].Activate();
 					}
 				}
+			}
+			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self)) //NPC only
+			{
+				NPC_SetAnim(self, SETANIM_BOTH, BOTH_STAND1TO2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			}
 		}
 	}
@@ -21925,11 +21925,11 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 				if (chanceOfFizz > 0)
 				{
 					vec3_t end;
-					constexpr int npcBladeNum = 0;
-					constexpr int npcSaberNum = 0;
-					VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-						trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length * Q_flrand(0, 1),
-						trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+					constexpr int npcblade_num = 0;
+					constexpr int npcsaber_num = 0;
+					VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+						trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length * Q_flrand(0, 1),
+						trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 					G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 				}
 
@@ -22105,12 +22105,12 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length *
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length *
 								Q_flrand(0, 1),
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							G_PlayEffect(G_EffectIndex("saber/fizz.efx"), end, fwd);
 						}
 
@@ -22204,12 +22204,12 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						if (chanceOfFizz > 0)
 						{
 							vec3_t end;
-							constexpr int npcBladeNum = 0;
-							constexpr int npcSaberNum = 0;
-							VectorMA(trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzlePoint,
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].length *
+							constexpr int npcblade_num = 0;
+							constexpr int npcsaber_num = 0;
+							VectorMA(trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzlePoint,
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].length *
 								Q_flrand(0, 1),
-								trace_ent->client->ps.saber[npcSaberNum].blade[npcBladeNum].muzzleDir, end);
+								trace_ent->client->ps.saber[npcsaber_num].blade[npcblade_num].muzzleDir, end);
 							if (trace_ent->client->ps.blockPoints > 50)
 							{
 								G_PlayEffect(G_EffectIndex("saber/saber_Lightninghit.efx"), end, fwd);

@@ -179,14 +179,14 @@ static void CG_TellTarget_f(void)
 	char command[MAX_SAY_TEXT + 10];
 	char message[MAX_SAY_TEXT];
 
-	const int clientNum = CG_CrosshairPlayer();
-	if (clientNum == -1)
+	const int client_num = CG_CrosshairPlayer();
+	if (client_num == -1)
 	{
 		return;
 	}
 
 	trap->Cmd_Args(message, sizeof message);
-	Com_sprintf(command, sizeof command, "tell %i %s", clientNum, message);
+	Com_sprintf(command, sizeof command, "tell %i %s", client_num, message);
 	trap->SendClientCommand(command);
 }
 
@@ -195,14 +195,14 @@ static void CG_TellAttacker_f(void)
 	char command[MAX_SAY_TEXT + 10];
 	char message[MAX_SAY_TEXT];
 
-	const int clientNum = CG_LastAttacker();
-	if (clientNum == -1)
+	const int client_num = CG_LastAttacker();
+	if (client_num == -1)
 	{
 		return;
 	}
 
 	trap->Cmd_Args(message, sizeof message);
-	Com_sprintf(command, sizeof command, "tell %i %s", clientNum, message);
+	Com_sprintf(command, sizeof command, "tell %i %s", client_num, message);
 	trap->SendClientCommand(command);
 }
 

@@ -1847,7 +1847,7 @@ public:
 	int externalEventParm;
 	int externalEventTime;
 
-	int clientNum; // ranges from 0 to MAX_CLIENTS-1
+	int client_num; // ranges from 0 to MAX_CLIENTS-1
 	int weapon; // copied to entityState_t->weapon
 	int weaponstate;
 
@@ -2006,13 +2006,13 @@ public:
 		}
 	};
 
-	int SaberDisarmBonus(int bladeNum)
+	int SaberDisarmBonus(int blade_num)
 	{
 		int disarmBonus = 0;
 		if (saber[0].Active())
 		{
 			if (saber[0].bladeStyle2Start > 0
-				&& bladeNum >= saber[0].bladeStyle2Start)
+				&& blade_num >= saber[0].bladeStyle2Start)
 			{
 				disarmBonus += saber[0].disarmBonus2;
 			}
@@ -2025,7 +2025,7 @@ public:
 		{
 			//bonus for having 2 sabers
 			if (saber[1].bladeStyle2Start > 0
-				&& bladeNum >= saber[1].bladeStyle2Start)
+				&& blade_num >= saber[1].bladeStyle2Start)
 			{
 				disarmBonus += 1 + saber[1].disarmBonus2;
 			}
@@ -2068,7 +2068,7 @@ public:
 
 	int ManualBlockingFlags;      //Blockingflag on OK
 
-	int ManualMBlockingTime;      //MBlocking on
+	int Manual_m_blockingTime;      //m_blocking on
 	int ManualBlockingTime;       //Blocking 1
 	int ManualblockStartTime;     //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
@@ -2280,7 +2280,7 @@ public:
 		saved_game.write<int32_t>(externalEvent);
 		saved_game.write<int32_t>(externalEventParm);
 		saved_game.write<int32_t>(externalEventTime);
-		saved_game.write<int32_t>(clientNum);
+		saved_game.write<int32_t>(client_num);
 		saved_game.write<int32_t>(weapon);
 		saved_game.write<int32_t>(weaponstate);
 		saved_game.write<int32_t>(batteryCharge);
@@ -2437,7 +2437,7 @@ public:
 
 		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
 
-		saved_game.write<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.write<int32_t>(Manual_m_blockingTime);      //m_blocking on
 		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
 		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
@@ -2533,7 +2533,7 @@ public:
 		saved_game.read<int32_t>(externalEvent);
 		saved_game.read<int32_t>(externalEventParm);
 		saved_game.read<int32_t>(externalEventTime);
-		saved_game.read<int32_t>(clientNum);
+		saved_game.read<int32_t>(client_num);
 		saved_game.read<int32_t>(weapon);
 		saved_game.read<int32_t>(weaponstate);
 		saved_game.read<int32_t>(batteryCharge);
@@ -2690,7 +2690,7 @@ public:
 
 		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
 
-		saved_game.read<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.read<int32_t>(Manual_m_blockingTime);      //m_blocking on
 		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
 		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
@@ -2957,7 +2957,7 @@ using entityState_t = struct entityState_s
 	int modelindex;
 	int modelindex2;
 	int modelindex3;
-	int clientNum; // 0 to (MAX_CLIENTS - 1), for players and corpses
+	int client_num; // 0 to (MAX_CLIENTS - 1), for players and corpses
 	int frame;
 
 	int		NPC_class; //we need to see what it is on the client for a few effects.
@@ -3030,7 +3030,7 @@ using entityState_t = struct entityState_s
 
 	int ManualBlockingFlags;      //Blockingflag on OK
 
-	int ManualMBlockingTime;      //MBlocking on
+	int Manual_m_blockingTime;      //m_blocking on
 	int ManualBlockingTime;       //Blocking 1
 	int ManualblockStartTime;     //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
@@ -3099,7 +3099,7 @@ using entityState_t = struct entityState_s
 		saved_game.write<int32_t>(modelindex);
 		saved_game.write<int32_t>(modelindex2);
 		saved_game.write<int32_t>(modelindex3);
-		saved_game.write<int32_t>(clientNum);
+		saved_game.write<int32_t>(client_num);
 		saved_game.write<int32_t>(frame);
 		saved_game.write<int32_t>(solid);
 		saved_game.write<int32_t>(event);
@@ -3142,7 +3142,7 @@ using entityState_t = struct entityState_s
 
 		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
 
-		saved_game.write<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.write<int32_t>(Manual_m_blockingTime);      //m_blocking on
 		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
 		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
@@ -3216,7 +3216,7 @@ using entityState_t = struct entityState_s
 		saved_game.read<int32_t>(modelindex);
 		saved_game.read<int32_t>(modelindex2);
 		saved_game.read<int32_t>(modelindex3);
-		saved_game.read<int32_t>(clientNum);
+		saved_game.read<int32_t>(client_num);
 		saved_game.read<int32_t>(frame);
 		saved_game.read<int32_t>(solid);
 		saved_game.read<int32_t>(event);
@@ -3259,7 +3259,7 @@ using entityState_t = struct entityState_s
 
 		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
 
-		saved_game.read<int32_t>(ManualMBlockingTime);      //MBlocking on
+		saved_game.read<int32_t>(Manual_m_blockingTime);      //m_blocking on
 		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
 		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3

@@ -622,7 +622,7 @@ const netField_t	entityStateFields[] =
 { NETF(modelindex), 9 },	//0 to 511
 { NETF(modelindex2), 8 },
 { NETF(modelindex3), 8 },
-{ NETF(clientNum), 32 },
+{ NETF(client_num), 32 },
 { NETF(frame), 16 },
 
 { NETF(solid), 24 },
@@ -694,7 +694,7 @@ Ghoul2 Insert Start
 { NETF(ManualBlockingTime), 32 },//Blocking 1
 { NETF(ManualblockStartTime), 32 }, //Blocking 2
 { NETF(ManualblockLastStartTime), 32 }, //Blocking 3
-{ NETF(ManualMBlockingTime), 32 },
+{ NETF(Manual_m_blockingTime), 32 },
 { NETF(BoltblockStartTime), 32 },
 
 { NETF(MeleeblockStartTime), 32 }, //Blocking 2
@@ -1135,7 +1135,7 @@ static const netField_t playerStateFields[] =
 	{PSF(eventParms[1]), -9},
 	{PSF(externalEvent), 8},
 	{PSF(externalEventParm), 8},
-	{PSF(clientNum), 32},
+	{PSF(client_num), 32},
 	{PSF(weapon), 5},
 	{PSF(weaponstate), 4},
 	{PSF(batteryCharge), 16},
@@ -1202,7 +1202,7 @@ static const netField_t playerStateFields[] =
 	{PSF(ManualBlockingTime), 32}, //Blocking 1
 	{PSF(ManualblockStartTime), 32}, //Blocking 2
 	{PSF(ManualblockLastStartTime), 32}, //Blocking 3
-	{PSF(ManualMBlockingTime), 32},
+	{PSF(Manual_m_blockingTime), 32},
 	{PSF(BoltblockStartTime), 32 },
 
 	{PSF(MeleeblockStartTime), 32}, //Blocking 2

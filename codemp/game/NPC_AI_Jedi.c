@@ -1578,7 +1578,7 @@ float G_GroundDistance(const gentity_t* self)
 
 	down[2] -= 4096;
 
-	trap->Trace(&tr, self->client->ps.origin, self->r.mins, self->r.maxs, down, self->s.clientNum, MASK_SOLID, qfalse,
+	trap->Trace(&tr, self->client->ps.origin, self->r.mins, self->r.maxs, down, self->s.client_num, MASK_SOLID, qfalse,
 		0, 0);
 
 	VectorSubtract(self->r.currentOrigin, tr.endpos, down);
@@ -3079,7 +3079,7 @@ saberMoveName_t G_PickAutoMultiKick(gentity_t* self, qboolean allowSingles, qboo
 }
 
 extern qboolean G_CanKickEntity(const gentity_t* self, const gentity_t* target);
-extern saberMoveName_t G_PickAutoKick(gentity_t* self, const gentity_t* enemy, qboolean storeMove);
+extern saberMoveName_t G_PickAutoKick(gentity_t* self, const gentity_t* enemy);
 extern float NPC_EnemyRangeFromBolt(int boltIndex);
 extern qboolean PM_SaberInTransition(int move);
 extern void ForceDrain(gentity_t* self);
@@ -3692,7 +3692,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 			{
 				//let's try a kick
 				if (G_PickAutoMultiKick(NPCS.NPC, qfalse, qtrue) != LS_NONE
-					|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy) && G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy, qtrue)
+					|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy) && G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy)
 					!= LS_NONE)
 				{
 					//kicked!
@@ -3737,7 +3737,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 		{
 			//let's try a kick
 			if (G_PickAutoMultiKick(NPCS.NPC, qfalse, qtrue) != LS_NONE
-				|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy) && G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy, qtrue) !=
+				|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy) && G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy) !=
 				LS_NONE)
 			{
 				//kicked!
@@ -3770,7 +3770,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 			{
 				//let's try a kick
 				if (G_PickAutoMultiKick(NPCS.NPC, qfalse, qtrue) != LS_NONE
-					|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy) && G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy, qtrue)
+					|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy) && G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy)
 					!= LS_NONE)
 				{
 					//kicked!
@@ -4177,7 +4177,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 				//let's try a kick
 				if (G_PickAutoMultiKick(NPCS.NPC, qfalse, qtrue) != LS_NONE
 					|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy)
-					&& G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy, qtrue) != LS_NONE)
+					&& G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy) != LS_NONE)
 				{
 					//kicked!
 					TIMER_Set(NPCS.NPC, "kickDebounce", Q_irand(3000, 10000));
@@ -5887,7 +5887,7 @@ static qboolean Jedi_SaberBlock(void)
 	vec3_t pointDir, baseDir, tipDir, saberHitPoint, saberMins, saberMaxs;
 	float baseDirPerc, dist;
 	float bestDist = Q3_INFINITE;
-	int closestSaberNum = 0, closestBladeNum = 0;
+	int closestsaber_num = 0, closestblade_num = 0;
 	trace_t tr;
 	evasionType_t evasionType;
 
@@ -5919,20 +5919,20 @@ static qboolean Jedi_SaberBlock(void)
 	VectorSet(saberMins, -4, -4, -4);
 	VectorSet(saberMaxs, 4, 4, 4);
 
-	for (int saberNum = 0; saberNum < MAX_SABERS; saberNum++)
+	for (int saber_num = 0; saber_num < MAX_SABERS; saber_num++)
 	{
-		for (int bladeNum = 0; bladeNum < NPCS.NPC->enemy->client->saber[saberNum].numBlades; bladeNum++)
+		for (int blade_num = 0; blade_num < NPCS.NPC->enemy->client->saber[saber_num].numBlades; blade_num++)
 		{
-			if (NPCS.NPC->enemy->client->saber[saberNum].type != SABER_NONE
-				&& NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].length > 0)
+			if (NPCS.NPC->enemy->client->saber[saber_num].type != SABER_NONE
+				&& NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].length > 0)
 			{
 				//valid saber and this blade is on
-				VectorMA(NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzlePointOld,
-					NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].length,
-					NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzleDirOld, saberTipOld);
-				VectorMA(NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzlePoint,
-					NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].length,
-					NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzleDir, saberTip);
+				VectorMA(NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzlePointOld,
+					NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].length,
+					NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzleDirOld, saberTipOld);
+				VectorMA(NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzlePoint,
+					NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].length,
+					NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzleDir, saberTip);
 
 				VectorCopy(NPCS.NPC->r.currentOrigin, top);
 				top[2] = NPCS.NPC->r.absmax[2];
@@ -5940,13 +5940,13 @@ static qboolean Jedi_SaberBlock(void)
 				bottom[2] = NPCS.NPC->r.absmin[2];
 
 				dist = ShortestLineSegBewteen2LineSegs(
-					NPCS.NPC->enemy->client->saber[saberNum].blade[bladeNum].muzzlePoint, saberTip, bottom, top,
+					NPCS.NPC->enemy->client->saber[saber_num].blade[blade_num].muzzlePoint, saberTip, bottom, top,
 					saberPoint, axisPoint);
 				if (dist < bestDist)
 				{
 					bestDist = dist;
-					closestSaberNum = saberNum;
-					closestBladeNum = bladeNum;
+					closestsaber_num = saber_num;
+					closestblade_num = blade_num;
 				}
 			}
 		}
@@ -5971,12 +5971,12 @@ static qboolean Jedi_SaberBlock(void)
 	}
 
 	//now use the closest blade for my evasion check
-	VectorMA(NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzlePointOld,
-		NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].length,
-		NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzleDirOld, saberTipOld);
-	VectorMA(NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzlePoint,
-		NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].length,
-		NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzleDir, saberTip);
+	VectorMA(NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzlePointOld,
+		NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].length,
+		NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzleDirOld, saberTipOld);
+	VectorMA(NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzlePoint,
+		NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].length,
+		NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzleDir, saberTip);
 
 	VectorCopy(NPCS.NPC->r.currentOrigin, top);
 	top[2] = NPCS.NPC->r.absmax[2];
@@ -5984,23 +5984,23 @@ static qboolean Jedi_SaberBlock(void)
 	bottom[2] = NPCS.NPC->r.absmin[2];
 
 	dist = ShortestLineSegBewteen2LineSegs(
-		NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzlePoint, saberTip, bottom, top,
+		NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzlePoint, saberTip, bottom, top,
 		saberPoint, axisPoint);
-	VectorSubtract(saberPoint, NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzlePoint,
+	VectorSubtract(saberPoint, NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzlePoint,
 		pointDir);
 	const float pointDist = VectorLength(pointDir);
 
-	if (NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].length <= 0)
+	if (NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].length <= 0)
 	{
 		baseDirPerc = 0.5f;
 	}
 	else
 	{
-		baseDirPerc = pointDist / NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].length;
+		baseDirPerc = pointDist / NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].length;
 	}
 
-	VectorSubtract(NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzlePoint,
-		NPCS.NPC->enemy->client->saber[closestSaberNum].blade[closestBladeNum].muzzlePointOld, baseDir);
+	VectorSubtract(NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzlePoint,
+		NPCS.NPC->enemy->client->saber[closestsaber_num].blade[closestblade_num].muzzlePointOld, baseDir);
 	VectorSubtract(saberTip, saberTipOld, tipDir);
 	VectorScale(baseDir, baseDirPerc, baseDir);
 	VectorMA(baseDir, 1.0f - baseDirPerc, tipDir, dir);
@@ -6509,7 +6509,7 @@ static void Jedi_EvasionSaber(vec3_t enemy_movedir, float enemy_dist, vec3_t ene
 				if (Jedi_DecideKick() //let's try a kick
 					&& (G_PickAutoMultiKick(NPCS.NPC, qfalse, qtrue) != LS_NONE
 						|| G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy)
-						&& G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy, qtrue) != LS_NONE))
+						&& G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy) != LS_NONE))
 				{
 					//kicked
 					TIMER_Set(NPCS.NPC, "kickDebounce", Q_irand(3000, 10000));
@@ -6541,7 +6541,7 @@ static void Jedi_EvasionSaber(vec3_t enemy_movedir, float enemy_dist, vec3_t ene
 				{
 					if (Jedi_DecideKick()
 						&& G_CanKickEntity(NPCS.NPC, NPCS.NPC->enemy)
-						&& G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy, qtrue) != LS_NONE)
+						&& G_PickAutoKick(NPCS.NPC, NPCS.NPC->enemy) != LS_NONE)
 					{
 						//kicked!
 						TIMER_Set(NPCS.NPC, "kickDebounce", Q_irand(3000, 10000));

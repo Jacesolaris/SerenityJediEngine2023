@@ -1578,8 +1578,8 @@ void	RB_CalcFogTexCoords(float* dst_tex_coords);
 void	RB_CalcTurbulentTexCoords(const waveForm_t* wf, float* dst_tex_coords);
 
 void	RB_CalcWaveColor(const waveForm_t* wf, unsigned char* dst_colors);
-void	RB_CalcColorFromEntity(unsigned char* dst_colors);
-void	RB_CalcColorFromOneMinusEntity(unsigned char* dst_colors);
+void	RB_calc_colorFromEntity(unsigned char* dst_colors);
+void	RB_calc_colorFromOneMinusEntity(unsigned char* dst_colors);
 void	RB_CalcWaveAlpha(const waveForm_t* wf, unsigned char* dst_colors);
 void	RB_CalcSpecularAlpha(unsigned char* alphas);
 void	RB_CalcAlphaFromEntity(unsigned char* dst_colors);

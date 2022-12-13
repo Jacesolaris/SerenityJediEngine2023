@@ -47,7 +47,7 @@ sharedEntity_t* SV_GentityNum(int num) {
 	return ent;
 }
 
-playerState_t* SV_GameClientNum(int num) {
+playerState_t* SV_Gameclient_num(int num) {
 	playerState_t* ps = (playerState_t*)((byte*)sv.gameClients + sv.gameClientSize * num);
 
 	return ps;

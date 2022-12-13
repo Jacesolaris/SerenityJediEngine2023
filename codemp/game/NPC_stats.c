@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean NPCsPrecached;
 
 extern qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber);
-extern void WP_RemoveSaber(saberInfo_t* sabers, int saberNum);
+extern void WP_RemoveSaber(saberInfo_t* sabers, int saber_num);
 void NPC_PrecacheByClassName(const char* type);
 
 stringID_table_t TeamTable[] =

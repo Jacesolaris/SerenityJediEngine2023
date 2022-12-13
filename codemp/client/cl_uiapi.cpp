@@ -150,7 +150,7 @@ static void CL_GetClientState(uiClientState_t* state) {
 	Q_strncpyz(state->servername, cls.servername, sizeof state->servername);
 	Q_strncpyz(state->updateInfoString, cls.updateInfoString, sizeof state->updateInfoString);
 	Q_strncpyz(state->messageString, clc.serverMessage, sizeof state->messageString);
-	state->clientNum = cl.snap.ps.clientNum;
+	state->client_num = cl.snap.ps.client_num;
 }
 
 static void CL_GetGlconfig(glconfig_t* config) {

@@ -28,8 +28,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "cg_media.h"
 #include "FxScheduler.h"
 
-extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entityNum, soundChannel_t channel, const char* soundName,
-	int customSoundSet);
+extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChannel_t channel, const char* sound_name,
+	int custom_sound_set);
 extern void fx_kothos_beam(vec3_t start, vec3_t end);
 extern void CG_GibPlayerHeadshot(vec3_t player_origin);
 extern void CG_GibPlayer(vec3_t player_origin);
@@ -114,19 +114,19 @@ CG_ItemPickup
 A new item was picked up this frame
 ================
 */
-void CG_ItemPickup(int itemNum, qboolean bHadItem)
+void CG_ItemPickup(const int item_num, const qboolean b_had_item)
 {
-	cg.itemPickup = itemNum;
+	cg.itemPickup = item_num;
 	cg.itemPickupTime = cg.time;
 	cg.itemPickupBlendTime = cg.time;
 
 	// see if it should be the grabbed weapon
-	if (bg_itemlist[itemNum].giType == IT_WEAPON)
+	if (bg_itemlist[item_num].giType == IT_WEAPON)
 	{
-		const int nCurWpn = cg.predicted_player_state.weapon;
-		const int nNewWpn = bg_itemlist[itemNum].giTag;
+		const int n_cur_wpn = cg.predicted_player_state.weapon;
+		const int n_new_wpn = bg_itemlist[item_num].giTag;
 
-		if (nCurWpn == WP_SABER || bHadItem)
+		if (n_cur_wpn == WP_SABER || b_had_item)
 		{
 			//never switch away from the saber!
 			return;
@@ -141,11 +141,11 @@ void CG_ItemPickup(int itemNum, qboolean bHadItem)
 		// NOTE: automatically switching to any weapon you pick up is stupid and annoying and we won't do it.
 		//
 
-		if (nNewWpn == WP_SABER)
+		if (n_new_wpn == WP_SABER)
 		{
 			//always switch to saber
 			SetWeaponSelectTime();
-			cg.weaponSelect = nNewWpn;
+			cg.weaponSelect = n_new_wpn;
 		}
 		else if (0 == cg_autoswitch.integer)
 		{
@@ -154,28 +154,27 @@ void CG_ItemPickup(int itemNum, qboolean bHadItem)
 		else if (1 == cg_autoswitch.integer)
 		{
 			// safe switching
-			if (nNewWpn > nCurWpn &&
-				!(nNewWpn == WP_DET_PACK) &&
-				!(nNewWpn == WP_TRIP_MINE) &&
-				!(nNewWpn == WP_THERMAL) &&
-				!(nNewWpn == WP_ROCKET_LAUNCHER) &&
-				!(nNewWpn == WP_CONCUSSION))
+			if (n_new_wpn > n_cur_wpn &&
+				n_new_wpn != WP_DET_PACK &&
+				n_new_wpn != WP_TRIP_MINE &&
+				n_new_wpn != WP_THERMAL &&
+				n_new_wpn != WP_ROCKET_LAUNCHER &&
+				n_new_wpn != WP_CONCUSSION)
 			{
 				// switch to new wpn
-				//				cg.weaponSelectTime = cg.time;
 				SetWeaponSelectTime();
-				cg.weaponSelect = nNewWpn;
+				cg.weaponSelect = n_new_wpn;
 			}
 		}
 		else if (2 == cg_autoswitch.integer)
 		{
 			// best
-			if (nNewWpn > nCurWpn)
+			if (n_new_wpn > n_cur_wpn)
 			{
 				// switch to new wpn
 				//				cg.weaponSelectTime = cg.time;
 				SetWeaponSelectTime();
-				cg.weaponSelect = nNewWpn;
+				cg.weaponSelect = n_new_wpn;
 			}
 		}
 	}
@@ -188,7 +187,7 @@ CG_PainEvent
 Also called by playerstate transition
 ================
 */
-void CG_PainEvent(centity_t* cent, int health)
+void CG_PainEvent(centity_t* cent, const int health)
 {
 	char* snd;
 
@@ -228,11 +227,11 @@ UseItem
 */
 extern void CG_ToggleBinoculars();
 extern void CG_ToggleLAGoggles();
-void UseItem(int itemNum)
+void UseItem(const int item_num)
 {
-	const centity_t* cent = &cg_entities[cg.snap->ps.clientNum];
+	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
 
-	switch (itemNum)
+	switch (item_num)
 	{
 	case INV_ELECTROBINOCULARS:
 		CG_ToggleBinoculars();
@@ -261,7 +260,7 @@ void UseItem(int itemNum)
 CG_UseForce
 ===============
 */
-static void CG_UseForce(centity_t* cent)
+static void CG_UseForce()
 {
 	//FIXME: sound or graphic change or something?
 	//actual force power action is on game/pm side
@@ -285,7 +284,7 @@ void CG_UseItem(const centity_t* cent)
 	}
 
 	// print a message if the local player
-	if (es->number == cg.snap->ps.clientNum)
+	if (es->number == cg.snap->ps.client_num)
 	{
 		if (!itemNum)
 		{
@@ -308,9 +307,9 @@ Returns qtrue for event types that access cent->gent directly (and don't require
 to be the player / entity 0).
 ==============
 */
-qboolean CG_UnsafeEventType(int eventType)
+qboolean CG_UnsafeEventType(const int event_type)
 {
-	switch (eventType)
+	switch (event_type)
 	{
 	case EV_CHANGE_WEAPON:
 	case EV_DISRUPTOR_SNIPER_SHOT:
@@ -370,7 +369,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		return;
 	}
 
-	const int clientNum = cent->gent->s.number;
+	const int client_num = cent->gent->s.number;
 
 	switch (event)
 	{
@@ -424,7 +423,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_FALL_SHORT:
 		DEBUGNAME("EV_FALL_SHORT");
 		cgi_S_StartSound(nullptr, es->number, CHAN_AUTO, cgs.media.landSound);
-		if (clientNum == cg.predicted_player_state.clientNum)
+		if (client_num == cg.predicted_player_state.client_num)
 		{
 			// smooth landing z changes
 			cg.landChange = -8;
@@ -451,7 +450,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			//still alive
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_BODY, "*pain100.wav", CS_BASIC);
 		}
-		if (clientNum == cg.predicted_player_state.clientNum)
+		if (client_num == cg.predicted_player_state.client_num)
 		{
 			// smooth landing z changes
 			cg.landChange = -16;
@@ -464,7 +463,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_BODY, "*land1.wav", CS_BASIC);
 		cgi_S_StartSound(nullptr, es->number, CHAN_AUTO, cgs.media.landSound);
 		cent->pe.painTime = cg.time; // don't play a pain sound right after this
-		if (clientNum == cg.predicted_player_state.clientNum)
+		if (client_num == cg.predicted_player_state.client_num)
 		{
 			// smooth landing z changes
 			cg.landChange = -24;
@@ -481,7 +480,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		{
 			float oldStep;
 
-			if (clientNum != cg.predicted_player_state.clientNum)
+			if (client_num != cg.predicted_player_state.client_num)
 			{
 				break;
 			}
@@ -527,12 +526,12 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*jump1.wav", CS_BASIC);
 			//CHAN_VOICE //play all jump sounds
 		}
-		else if (cg_jumpSounds.integer == 2 && cg.snap->ps.clientNum != es->number)
+		else if (cg_jumpSounds.integer == 2 && cg.snap->ps.client_num != es->number)
 		{
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*jump1.wav", CS_BASIC);
 			//CHAN_VOICE //only play other players' jump sounds
 		}
-		else if (cg_jumpSounds.integer > 2 && cg.snap->ps.clientNum == es->number)
+		else if (cg_jumpSounds.integer > 2 && cg.snap->ps.client_num == es->number)
 		{
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*jump1.wav", CS_BASIC);
 			//CHAN_VOICE//only play my jump sounds
@@ -550,12 +549,12 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*jump1.wav", CS_BASIC);
 			//CHAN_VOICE //play all jump sounds
 		}
-		else if (cg_rollSounds.integer == 2 && cg.snap->ps.clientNum != es->number)
+		else if (cg_rollSounds.integer == 2 && cg.snap->ps.client_num != es->number)
 		{
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*jump1.wav", CS_BASIC);
 			//CHAN_VOICE //only play other players' jump sounds
 		}
-		else if (cg_rollSounds.integer > 2 && cg.snap->ps.clientNum == es->number)
+		else if (cg_rollSounds.integer > 2 && cg.snap->ps.client_num == es->number)
 		{
 			CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*jump1.wav", CS_BASIC);
 			//CHAN_VOICE//only play my jump sounds
@@ -653,14 +652,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_ITEM_PICKUP:
 		DEBUGNAME("EV_ITEM_PICKUP");
 		{
-			qboolean bHadItem = qfalse;
+			qboolean b_had_item = qfalse;
 
 			int index = es->eventParm; // player predicted
 
 			if (static_cast<char>(index) < 0)
 			{
 				index = -static_cast<char>(index);
-				bHadItem = qtrue;
+				b_had_item = qtrue;
 			}
 
 			if (index >= bg_numItems)
@@ -671,9 +670,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			cgi_S_StartSound(nullptr, es->number, CHAN_AUTO, cgi_S_RegisterSound(item->pickup_sound));
 
 			// show icon and name on status bar
-			if (es->number == cg.snap->ps.clientNum)
+			if (es->number == cg.snap->ps.client_num)
 			{
-				CG_ItemPickup(index, bHadItem);
+				CG_ItemPickup(index, b_had_item);
 			}
 		}
 		break;
@@ -684,7 +683,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_NOAMMO:
 		DEBUGNAME("EV_NOAMMO");
 		//cgi_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
-		if (es->number == cg.snap->ps.clientNum)
+		if (es->number == cg.snap->ps.client_num)
 		{
 			CG_OutOfAmmoChange();
 		}
@@ -758,7 +757,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_POWERUP_BATTLESUIT:
 		DEBUGNAME("EV_POWERUP_BATTLESUIT");
-		if (es->number == cg.snap->ps.clientNum)
+		if (es->number == cg.snap->ps.client_num)
 		{
 			cg.powerupActive = PW_BATTLESUIT;
 			cg.powerupTime = cg.time;
@@ -812,14 +811,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		int disint_effect;
 		int disint_length;
 		qhandle_t disint_sound1;
-		qhandle_t disintSound2;
+		qhandle_t disint_sound2;
 
 		switch (disint_pw)
 		{
 		case PW_DISRUPTION: // sniper rifle
 			disint_effect = EF_DISINTEGRATION; //ef_
 			disint_sound1 = cgs.media.disintegrateSound; //with scream
-			disintSound2 = cgs.media.disintegrate2Sound; //no scream
+			disint_sound2 = cgs.media.disintegrate2Sound; //no scream
 			disint_length = 2000;
 			make_not_solid = qtrue;
 			break;
@@ -832,7 +831,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			cent->gent->owner->fx_time = cg.time;
 			if (cent->gent->owner->client)
 			{
-				if (disint_sound1 && disintSound2)
+				if (disint_sound1 && disint_sound2)
 				{
 					//play an extra sound
 					// listed all the non-humanoids, because there's a lot more humanoids
@@ -853,7 +852,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 					}
 					else
 					{
-						cgi_S_StartSound(nullptr, cent->gent->s.number, CHAN_AUTO, disintSound2);
+						cgi_S_StartSound(nullptr, cent->gent->s.number, CHAN_AUTO, disint_sound2);
 					}
 				}
 				cent->gent->owner->s.powerups |= 1 << disint_pw;
@@ -933,12 +932,12 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		DEBUGNAME("EV_GLOBAL_SOUND");
 		if (cgs.sound_precache[es->eventParm])
 		{
-			cgi_S_StartSound(nullptr, cg.snap->ps.clientNum, CHAN_AUTO, cgs.sound_precache[es->eventParm]);
+			cgi_S_StartSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO, cgs.sound_precache[es->eventParm]);
 		}
 		else
 		{
 			s = CG_ConfigString(CS_SOUNDS + es->eventParm);
-			CG_TryPlayCustomSound(nullptr, cg.snap->ps.clientNum, CHAN_AUTO, s, CS_BASIC);
+			CG_TryPlayCustomSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO, s, CS_BASIC);
 		}
 		break;
 
@@ -990,16 +989,16 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		DEBUGNAME("EV_PLAY_EFFECT");
 		{
 			vec3_t axis[3];
-			const bool portalEnt = !!es->isPortalEnt;
+			const bool portal_ent = !!es->isPortalEnt;
 			//the fx runner spawning this effect is within a skyportal, so only render this effect within that portal.
 
 			s = CG_ConfigString(CS_EFFECTS + es->eventParm);
 
 			if (es->boltInfo != 0)
 			{
-				const bool isRelative = !!es->weapon;
-				theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, es->boltInfo, -1, portalEnt, es->loopSound,
-					isRelative); //loopSound 0 = not looping, 1 for infinite, else duration
+				const bool is_relative = !!es->weapon;
+				theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, es->boltInfo, -1, portal_ent, es->loopSound,
+					is_relative); //loopSound 0 = not looping, 1 for infinite, else duration
 			}
 			else
 			{
@@ -1010,11 +1009,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 				// the entNum the effect may be attached to
 				if (es->otherEntityNum)
 				{
-					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, es->otherEntityNum, portalEnt);
+					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, es->otherEntityNum, portal_ent);
 				}
 				else
 				{
-					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, -1, portalEnt);
+					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, -1, portal_ent);
 				}
 			}
 		}
@@ -1032,18 +1031,18 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_STOP_EFFECT:
 		DEBUGNAME("EV_STOP_EFFECT");
 		{
-			bool portalEnt = false;
+			bool portal_ent = false;
 
 			if (es->isPortalEnt)
 			{
 				//the fx runner spawning this effect is within a skyportal, so only render this effect within that portal.
-				portalEnt = true;
+				portal_ent = true;
 			}
 
 			s = CG_ConfigString(CS_EFFECTS + es->eventParm);
 			if (es->boltInfo != 0)
 			{
-				theFxScheduler.StopEffect(s, es->boltInfo, portalEnt);
+				theFxScheduler.StopEffect(s, es->boltInfo, portal_ent);
 			}
 		}
 		break;
@@ -1243,7 +1242,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_USE_FORCE:
 		DEBUGNAME("EV_USE_FORCEITEM");
-		CG_UseForce(cent);
+		CG_UseForce();
 		break;
 
 	case EV_USE_ITEM:

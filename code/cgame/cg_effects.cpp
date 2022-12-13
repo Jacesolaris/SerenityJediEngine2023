@@ -1066,10 +1066,10 @@ void CG_PlayEffectOnEnt(const char* fx_name, const int client_num, vec3_t origin
 	theFxScheduler.PlayEffect(fx_name, origin, axis, -1, client_num, false);
 }
 
-void CG_PlayEffectIDOnEnt(const int fx_id, const int clientNum, vec3_t origin, const vec3_t fwd)
+void CG_PlayEffectIDOnEnt(const int fx_id, const int client_num, vec3_t origin, const vec3_t fwd)
 {
 	const char* fx_name = CG_ConfigString(CS_EFFECTS + fx_id);
-	CG_PlayEffectOnEnt(fx_name, clientNum, origin, fwd);
+	CG_PlayEffectOnEnt(fx_name, client_num, origin, fwd);
 }
 
 void CG_PlayEffect(const char* fx_name, vec3_t origin, const vec3_t fwd)

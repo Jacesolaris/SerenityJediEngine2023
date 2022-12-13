@@ -63,7 +63,7 @@ bool HFILEclose(const int& handle)
 ////////////////////////////////////////////////////////////////////////////////////////
 extern gentity_t* G_FindDoorTrigger(const gentity_t* ent);
 extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
-extern qboolean G_CheckInSolidTeleport(const vec3_t& teleportPos, const gentity_t* self);
+extern qboolean G_CheckInSolidTeleport(const vec3_t& teleport_pos, const gentity_t* self);
 
 extern cvar_t* g_nav1;
 extern cvar_t* g_nav2;
@@ -4972,7 +4972,7 @@ bool TestCollision(gentity_t* actor, SSteerUser& suser, const CVec3& ProjectVelo
 		if (ContactNum != ENTITYNUM_WORLD && ContactNum != ENTITYNUM_NONE && g_entities[ContactNum].client != nullptr)
 		{
 			gentity_t* Contact = &g_entities[ContactNum];
-			//bool			ContactIsPlayer = (Contact->client->ps.clientNum==0);
+			//bool			ContactIsPlayer = (Contact->client->ps.client_num==0);
 			const CVec3 ContactVelocity(Contact->client->ps.velocity);
 			const float ContactSpeed = ContactVelocity.Len();
 
@@ -5151,15 +5151,15 @@ float STEER::AvoidCollisions(gentity_t* actor, gentity_t* leader)
 	{
 		if (actor->NPC->greetEnt && actor->NPC->greetEnt->owner == NPC)
 		{
-			suser.mIgnoreEntity = actor->NPC->greetEnt->s.clientNum;
+			suser.mIgnoreEntity = actor->NPC->greetEnt->s.client_num;
 		}
 		else if (actor->enemy)
 		{
-			suser.mIgnoreEntity = actor->enemy->s.clientNum;
+			suser.mIgnoreEntity = actor->enemy->s.client_num;
 		}
 		else if (leader)
 		{
-			suser.mIgnoreEntity = leader->s.clientNum;
+			suser.mIgnoreEntity = leader->s.client_num;
 		}
 	}
 

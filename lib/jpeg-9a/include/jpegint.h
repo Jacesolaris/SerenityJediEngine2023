@@ -292,7 +292,7 @@ struct jpeg_color_quantizer {
 #define jinit_c_main_controller	jICMainC
 #define jinit_c_prep_controller	jICPrepC
 #define jinit_c_coef_controller	jICCoefC
-#define jinit_color_converter	jICColor
+#define jinit_color_converter	jIc_color
 #define jinit_downsampler	jIDownsampler
 #define jinit_forward_dct	jIFDCT
 #define jinit_huff_encoder	jIHEncoder

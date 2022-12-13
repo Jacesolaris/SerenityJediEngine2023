@@ -826,8 +826,8 @@ netField_t	entityStateFields[] =
 { NETF(customRGBA[0]), 8 }, //0-255
 // only used in fx system (which rick did) and chunks
 { NETF(speed), 0 },
-// why are npc's clientnum's that big?
-{ NETF(clientNum), GENTITYNUM_BITS }, //with npc's clientnum can be > MAX_CLIENTS so use entnum bits now instead.
+// why are npc's client_num's that big?
+{ NETF(client_num), GENTITYNUM_BITS }, //with npc's client_num can be > MAX_CLIENTS so use entnum bits now instead.
 { NETF(apos.trBase[2]), 0 },
 { NETF(apos.trTime), 32 },
 // used mostly for players and npcs - appears to be static / never changing
@@ -1358,7 +1358,7 @@ netField_t	playerStateFields[] =
 { PSF(cloakFuel), 8 },
 { PSF(pm_time), -16 },
 { PSF(customRGBA[1]), 8 }, //0-255
-{ PSF(clientNum), GENTITYNUM_BITS },
+{ PSF(client_num), GENTITYNUM_BITS },
 { PSF(duelIndex), GENTITYNUM_BITS },
 { PSF(customRGBA[2]), 8 }, //0-255
 { PSF(gravity), 16 },
@@ -1539,7 +1539,7 @@ netField_t	pilotPlayerStateFields[] =
 { PSF(weaponstate), 4 },
 { PSF(pm_flags), 16 },
 { PSF(pm_time), -16 },
-{ PSF(clientNum), GENTITYNUM_BITS },
+{ PSF(client_num), GENTITYNUM_BITS },
 { PSF(weapon), 8 },
 { PSF(delta_angles[2]), 16 },
 { PSF(viewangles[2]), 0 },
@@ -1767,7 +1767,7 @@ netField_t	vehPlayerStateFields[] =
 { PSF(pm_flags), 16 },
 { PSF(pm_time), -16 },
 //{ PSF(customRGBA[1]), 8 }, //0-255
-{ PSF(clientNum), GENTITYNUM_BITS },
+{ PSF(client_num), GENTITYNUM_BITS },
 //{ PSF(duelIndex), GENTITYNUM_BITS },
 //{ PSF(customRGBA[2]), 8 }, //0-255
 { PSF(gravity), 16 },
@@ -1920,7 +1920,7 @@ netField_t	playerStateFields[] =
 { PSF(cloakFuel), 8 },
 { PSF(pm_time), -16 },
 { PSF(customRGBA[1]), 8 }, //0-255
-{ PSF(clientNum), GENTITYNUM_BITS },
+{ PSF(client_num), GENTITYNUM_BITS },
 { PSF(duelIndex), GENTITYNUM_BITS },
 { PSF(customRGBA[2]), 8 }, //0-255
 { PSF(gravity), 16 },

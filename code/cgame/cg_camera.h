@@ -137,10 +137,10 @@ using camera_t = struct camera_s
 extern bool in_camera;
 extern camera_t client_camera;
 
-void CGCam_Init(void);
+void CGCam_Init();
 
-void CGCam_Enable(void);
-void CGCam_Disable(void);
+void CGCam_Enable();
+void CGCam_Disable();
 
 void CGCam_SetPosition(vec3_t org);
 void CGCam_SetAngles(vec3_t ang);

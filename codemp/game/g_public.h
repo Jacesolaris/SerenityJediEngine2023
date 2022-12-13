@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // in entityStates (level eType), so the game must explicitly flag
 // special server behaviors
 #define	SVF_NOCLIENT			0x00000001	// don't send entity to clients, even if it has effects
-#define SVF_BROADCASTCLIENTS	0x00000002	// only broadcast to clients specified in r.broadcastClients[clientNum/32]
+#define SVF_BROADCASTCLIENTS	0x00000002	// only broadcast to clients specified in r.broadcastClients[client_num/32]
 #define SVF_BOT					0x00000008	// set if the entity is a bot
 #define SVF_PLAYER_USABLE		0x00000010	// player can use this with the use button
 #define	SVF_BROADCAST			0x00000020	// send to all connected clients
@@ -819,13 +819,13 @@ typedef struct gameImport_s {
 	qboolean(*AreasConnected)						(int area1, int area2);
 	int			(*DebugPolygonCreate)					(int color, int numPoints, vec3_t* points);
 	void		(*DebugPolygonDelete)					(int id);
-	void		(*DropClient)							(int clientNum, const char* reason);
+	void		(*DropClient)							(int client_num, const char* reason);
 	int			(*EntitiesInBox)						(const vec3_t mins, const vec3_t maxs, int* list, int maxcount);
 	qboolean(*EntityContact)						(const vec3_t mins, const vec3_t maxs, const sharedEntity_t* ent, int capsule);
 	void		(*GetConfigstring)						(int num, char* buffer, int bufferSize);
 	qboolean(*GetEntityToken)						(char* buffer, int bufferSize);
 	void		(*GetServerinfo)						(char* buffer, int bufferSize);
-	void		(*GetUsercmd)							(int clientNum, usercmd_t* cmd);
+	void		(*GetUsercmd)							(int client_num, usercmd_t* cmd);
 	void		(*GetUserinfo)							(int num, char* buffer, int bufferSize);
 	qboolean(*InPVS)								(const vec3_t p1, const vec3_t p2);
 	qboolean(*InPVSIgnorePortals)					(const vec3_t p1, const vec3_t p2);
@@ -833,7 +833,7 @@ typedef struct gameImport_s {
 	void		(*LocateGameData)						(sharedEntity_t* gEnts, int numGEntities, int sizeofGEntity_t, playerState_t* clients, int sizeofGClient);
 	int			(*PointContents)						(const vec3_t point, int passEntityNum);
 	void		(*SendConsoleCommand)					(int exec_when, const char* text);
-	void		(*SendServerCommand)					(int clientNum, const char* text);
+	void		(*SendServerCommand)					(int client_num, const char* text);
 	void		(*SetBrushModel)						(sharedEntity_t* ent, const char* name);
 	void		(*SetConfigstring)						(int num, const char* string);
 	void		(*SetServerCull)						(float cullDistance);
@@ -920,7 +920,7 @@ typedef struct gameImport_s {
 
 	// botlib
 	int			(*BotAllocateClient)					(void);
-	void		(*BotFreeClient)						(int clientNum);
+	void		(*BotFreeClient)						(int client_num);
 	int			(*BotLoadCharacter)						(char* charfile, float skill);
 	void		(*BotFreeCharacter)						(int character);
 	float		(*Characteristic_Float)					(int character, int index);
@@ -1005,9 +1005,9 @@ typedef struct gameImport_s {
 	int			(*BotLibLoadMap)						(const char* mapname);
 	int			(*BotLibUpdateEntity)					(int ent, void* bue);
 	int			(*BotLibTest)							(int parm0, char* parm1, vec3_t parm2, vec3_t parm3);
-	int			(*BotGetSnapshotEntity)					(int clientNum, int sequence);
-	int			(*BotGetServerCommand)					(int clientNum, char* message, int size);
-	void		(*BotUserCommand)						(int clientNum, usercmd_t* ucmd);
+	int			(*BotGetSnapshotEntity)					(int client_num, int sequence);
+	int			(*BotGetServerCommand)					(int client_num, char* message, int size);
+	void		(*BotUserCommand)						(int client_num, usercmd_t* ucmd);
 	void		(*BotUpdateWaypoints)					(int wpnum, wpobject_t** wps);
 	void		(*BotCalculatePaths)					(int rmg);
 
@@ -1127,12 +1127,12 @@ typedef struct gameImport_s {
 typedef struct gameExport_s {
 	void		(*InitGame)							(int levelTime, int randomSeed, int restart);
 	void		(*ShutdownGame)						(int restart);
-	char* (*ClientConnect)					(int clientNum, qboolean firstTime, qboolean isBot);
-	void		(*ClientBegin)						(int clientNum, qboolean allowTeamReset);
-	qboolean(*client_userinfo_changed)			(int clientNum);
-	void		(*ClientDisconnect)					(int clientNum);
-	void		(*ClientCommand)					(int clientNum);
-	void		(*ClientThink)						(int clientNum, usercmd_t* ucmd);
+	char* (*ClientConnect)					(int client_num, qboolean firstTime, qboolean isBot);
+	void		(*ClientBegin)						(int client_num, qboolean allowTeamReset);
+	qboolean(*client_userinfo_changed)			(int client_num);
+	void		(*ClientDisconnect)					(int client_num);
+	void		(*ClientCommand)					(int client_num);
+	void		(*ClientThink)						(int client_num, usercmd_t* ucmd);
 	void		(*RunFrame)							(int levelTime);
 	qboolean(*ConsoleCommand)					(void);
 	int			(*BotAIStartFrame)					(int time);

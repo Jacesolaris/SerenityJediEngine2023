@@ -36,10 +36,10 @@ extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
 	qboolean breakSaberLock);
 
-extern void WP_SetSaber(gentity_t* ent, int saberNum, const char* saberName);
-extern void WP_RemoveSaber(gentity_t* ent, int saberNum);
+extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName);
+extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern saber_colors_t TranslateSaberColor(const char* name);
-extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int bladeNum);
+extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num);
 extern qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel);
 extern void G_RemoveWeather(void);
 extern void RemoveBarrier(gentity_t* ent);
@@ -233,25 +233,25 @@ static void Svcmd_SaberBlade_f()
 {
 	if (gi.argc() < 2)
 	{
-		gi.Printf("USAGE: saberblade <sabernum> <bladenum> [0 = off, 1 = on, no arg = toggle]\n");
+		gi.Printf("USAGE: saberblade <saber_num> <blade_num> [0 = off, 1 = on, no arg = toggle]\n");
 		return;
 	}
 	if (g_entities[0].client == nullptr)
 	{
 		return;
 	}
-	const int sabernum = atoi(gi.argv(1)) - 1;
-	if (sabernum < 0 || sabernum > 1)
+	const int saber_num = atoi(gi.argv(1)) - 1;
+	if (saber_num < 0 || saber_num > 1)
 	{
 		return;
 	}
-	if (sabernum > 0 && !g_entities[0].client->ps.dualSabers)
+	if (saber_num > 0 && !g_entities[0].client->ps.dualSabers)
 	{
 		return;
 	}
 	//FIXME: what if don't even have a single saber at all?
-	const int bladenum = atoi(gi.argv(2)) - 1;
-	if (bladenum < 0 || bladenum >= g_entities[0].client->ps.saber[sabernum].numBlades)
+	const int blade_num = atoi(gi.argv(2)) - 1;
+	if (blade_num < 0 || blade_num >= g_entities[0].client->ps.saber[saber_num].numBlades)
 	{
 		return;
 	}
@@ -264,50 +264,50 @@ static void Svcmd_SaberBlade_f()
 	else
 	{
 		//toggle
-		turnOn = static_cast<qboolean>(!g_entities[0].client->ps.saber[sabernum].blade[bladenum].active);
+		turnOn = static_cast<qboolean>(!g_entities[0].client->ps.saber[saber_num].blade[blade_num].active);
 	}
 
-	g_entities[0].client->ps.SaberBladeActivate(sabernum, bladenum, turnOn);
+	g_entities[0].client->ps.SaberBladeActivate(saber_num, blade_num, turnOn);
 }
 
 static void Svcmd_SaberColor_f()
 {
 	//FIXME: just list the colors, each additional listing sets that blade
-	int saberNum = atoi(gi.argv(1));
+	int saber_num = atoi(gi.argv(1));
 	const char* color[MAX_BLADES];
-	int bladeNum;
+	int blade_num;
 
-	for (bladeNum = 0; bladeNum < MAX_BLADES; bladeNum++)
+	for (blade_num = 0; blade_num < MAX_BLADES; blade_num++)
 	{
-		color[bladeNum] = gi.argv(2 + bladeNum);
+		color[blade_num] = gi.argv(2 + blade_num);
 	}
 
-	if (saberNum < 1 || saberNum > 2 || gi.argc() < 3)
+	if (saber_num < 1 || saber_num > 2 || gi.argc() < 3)
 	{
-		gi.Printf("Usage:  saberColor <saberNum> <blade1 color> <blade2 color> ... <blade8 color>\n");
-		gi.Printf("valid saberNums:  1 or 2\n");
+		gi.Printf("Usage:  saberColor <saber_num> <blade1 color> <blade2 color> ... <blade8 color>\n");
+		gi.Printf("valid saber_nums:  1 or 2\n");
 		gi.Printf("valid colors:  red, orange, yellow, green, blue, and purple\n");
 
 		return;
 	}
-	saberNum--;
+	saber_num--;
 
 	const gentity_t* self = G_GetSelfForPlayerCmd();
 
-	for (bladeNum = 0; bladeNum < MAX_BLADES; bladeNum++)
+	for (blade_num = 0; blade_num < MAX_BLADES; blade_num++)
 	{
-		if (!color[bladeNum] || !color[bladeNum][0])
+		if (!color[blade_num] || !color[blade_num][0])
 		{
 			break;
 		}
-		self->client->ps.saber[saberNum].blade[bladeNum].color = TranslateSaberColor(color[bladeNum]);
+		self->client->ps.saber[saber_num].blade[blade_num].color = TranslateSaberColor(color[blade_num]);
 	}
 
-	if (saberNum == 0)
+	if (saber_num == 0)
 	{
 		gi.cvar_set("g_saber_color", color[0]);
 	}
-	else if (saberNum == 1)
+	else if (saber_num == 1)
 	{
 		gi.cvar_set("g_saber2_color", color[0]);
 	}
@@ -421,35 +421,35 @@ void Svcmd_SaberAttackCycle_f(void)
 		return;
 	}
 
-	if (self->s.clientNum >= MAX_CLIENTS //not the player
+	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF && self->client->ps.saberAnimLevel
 		== SS_STAFF)
 	{
 		return;
 	}
 
-	if (self->s.clientNum >= MAX_CLIENTS //not the player
+	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_ELECTROSTAFF && self->client->ps.
 		saberAnimLevel == SS_STAFF)
 	{
 		return;
 	}
 
-	if (self->s.clientNum >= MAX_CLIENTS //not the player
+	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_UNSTABLE && self->client->ps.
 		saberAnimLevel == SS_STAFF)
 	{
 		return;
 	}
 
-	if (self->s.clientNum >= MAX_CLIENTS //not the player
+	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_MAUL && self->client->ps.
 		saberAnimLevel == SS_STAFF)
 	{
 		return;
 	}
 
-	if (self->s.clientNum >= MAX_CLIENTS //not the player
+	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_SINGLE && self->client->ps.saberAnimLevel
 		== SS_DUAL)
 	{
@@ -465,10 +465,10 @@ void Svcmd_SaberAttackCycle_f(void)
 			if (self->client->ps.saber[1].ActiveManualOnly())
 			{
 				//turn it off
-				for (int bladeNum = 0; bladeNum < self->client->ps.saber[1].numBlades; bladeNum++)
+				for (int blade_num = 0; blade_num < self->client->ps.saber[1].numBlades; blade_num++)
 				{
 					qboolean skipThisBlade = qfalse;
-					if (WP_SaberBladeUseSecondBladeStyle(&self->client->ps.saber[1], bladeNum))
+					if (WP_SaberBladeUseSecondBladeStyle(&self->client->ps.saber[1], blade_num))
 					{
 						//check to see if we should check the secondary style's flags
 						if (self->client->ps.saber[1].saberFlags2 & SFL2_NO_MANUAL_DEACTIVATE2)
@@ -486,7 +486,7 @@ void Svcmd_SaberAttackCycle_f(void)
 					}
 					if (!skipThisBlade)
 					{
-						self->client->ps.saber[1].BladeActivate(bladeNum, qfalse);
+						self->client->ps.saber[1].BladeActivate(blade_num, qfalse);
 						G_SoundIndexOnEnt(self, CHAN_WEAPON, self->client->ps.saber[1].soundOff);
 					}
 				}
@@ -549,18 +549,18 @@ void Svcmd_SaberAttackCycle_f(void)
 			return;
 		}
 
-		for (int bladeNum = 1; bladeNum < self->client->ps.saber[0].numBlades; bladeNum++)
+		for (int blade_num = 1; blade_num < self->client->ps.saber[0].numBlades; blade_num++)
 		{
-			if (!self->client->ps.saber[0].blade[bladeNum].active)
+			if (!self->client->ps.saber[0].blade[blade_num].active)
 			{
 				//extra is off, turn it on
-				self->client->ps.saber[0].BladeActivate(bladeNum, qtrue);
+				self->client->ps.saber[0].BladeActivate(blade_num, qtrue);
 			}
 			else
 			{
 				//turn extra off
 				qboolean skipThisBlade = qfalse;
-				if (WP_SaberBladeUseSecondBladeStyle(&self->client->ps.saber[1], bladeNum))
+				if (WP_SaberBladeUseSecondBladeStyle(&self->client->ps.saber[1], blade_num))
 				{
 					//check to see if we should check the secondary style's flags
 					if (self->client->ps.saber[1].saberFlags2 & SFL2_NO_MANUAL_DEACTIVATE2)
@@ -578,7 +578,7 @@ void Svcmd_SaberAttackCycle_f(void)
 				}
 				if (!skipThisBlade)
 				{
-					self->client->ps.saber[0].BladeActivate(bladeNum, qfalse);
+					self->client->ps.saber[0].BladeActivate(blade_num, qfalse);
 					if (!playedSound)
 					{
 						G_SoundIndexOnEnt(self, CHAN_WEAPON, self->client->ps.saber[0].soundOff);
@@ -642,25 +642,25 @@ void Svcmd_SaberAttackCycle_f(void)
 		saberAnimLevel++;
 		if (saberAnimLevel > SS_STAFF)
 		{
-			if (self->s.clientNum >= MAX_CLIENTS //not the player
+			if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF && self->client->ps.
 				saberAnimLevel == SS_STAFF)
 			{
 				saberAnimLevel = SS_STAFF;
 			}
-			else if (self->s.clientNum >= MAX_CLIENTS //not the player
+			else if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_UNSTABLE && self->client->
 				ps.saberAnimLevel == SS_STAFF)
 			{
 				saberAnimLevel = SS_STAFF;
 			}
-			else if (self->s.clientNum >= MAX_CLIENTS //not the player
+			else if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_MAUL && self->client->ps.
 				saberAnimLevel == SS_STAFF)
 			{
 				saberAnimLevel = SS_STAFF;
 			}
-			else if (self->s.clientNum >= MAX_CLIENTS //not the player
+			else if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_SINGLE && self->client->ps.
 				saberAnimLevel == SS_DUAL)
 			{

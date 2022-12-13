@@ -1844,7 +1844,7 @@ void ItemUse_UseDisp(const gentity_t* ent, int type)
 		gentity_t* te = G_TempEntity(ent->client->ps.origin, EV_LOCALTIMER);
 		te->s.time = level.time;
 		te->s.time2 = TOSS_DEBOUNCE_TIME;
-		te->s.owner = ent->client->ps.clientNum;
+		te->s.owner = ent->client->ps.client_num;
 	}
 }
 

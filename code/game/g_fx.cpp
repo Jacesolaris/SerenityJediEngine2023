@@ -468,7 +468,7 @@ The following fields are for lightning:
 //----------------------------------------------------------
 
 //----------------------------------------------------------
-extern void G_SoundAtSpot(vec3_t org, int soundIndex, qboolean broadcast);
+extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
 
 void fx_rain_think(gentity_t* ent)
 {

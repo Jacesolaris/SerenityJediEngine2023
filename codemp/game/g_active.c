@@ -1808,10 +1808,10 @@ void SendPendingPredictableEvents(playerState_t* ps)
 		t->s.number = number;
 		t->s.eType = ET_EVENTS + event;
 		t->s.eFlags |= EF_PLAYER_EVENT;
-		t->s.otherEntityNum = ps->clientNum;
+		t->s.otherEntityNum = ps->client_num;
 		// send to everyone except the client who generated the event
 		t->r.svFlags |= SVF_NOTSINGLECLIENT;
-		t->r.singleClient = ps->clientNum;
+		t->r.singleClient = ps->client_num;
 		// set back external event
 		ps->externalEvent = extEvent;
 	}
@@ -2622,7 +2622,7 @@ typedef enum tauntTypes_e
 } tauntTypes_t;
 
 qboolean IsHoldingGun(const gentity_t* ent);
-extern saberInfo_t* BG_MySaber(int clientNum, int saberNum);
+extern saberInfo_t* BG_MySaber(int client_num, int saber_num);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean is_holding_block_button(const gentity_t* defender);
 void ReloadGun(gentity_t* ent);
@@ -2630,7 +2630,7 @@ void CancelReload(gentity_t* ent);
 
 void G_SetTauntAnim(gentity_t* ent, int taunt)
 {
-	const saberInfo_t* saber1 = BG_MySaber(ent->clientNum, 0);
+	const saberInfo_t* saber1 = BG_MySaber(ent->client_num, 0);
 	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
@@ -4074,7 +4074,7 @@ void ClientThink_real(gentity_t* ent)
 		G_HeldByMonster(ent, ucmd);
 	}
 
-	if (client && client->ps.clientNum < MAX_CLIENTS)
+	if (client && client->ps.client_num < MAX_CLIENTS)
 	{
 		//player stuff
 		if (in_camera)
@@ -4088,7 +4088,7 @@ void ClientThink_real(gentity_t* ent)
 				if (cinematicSkipScript[0])
 				{
 					//there's a skip script for this cutscene
-					trap->ICARUS_RunScript((sharedEntity_t*)&g_entities[client->ps.clientNum], cinematicSkipScript);
+					trap->ICARUS_RunScript((sharedEntity_t*)&g_entities[client->ps.client_num], cinematicSkipScript);
 					cinematicSkipScript[0] = 0;
 				}
 
@@ -4176,7 +4176,7 @@ void ClientThink_real(gentity_t* ent)
 	}
 
 	// spectators don't do much
-	if (client->ps.clientNum < MAX_CLIENTS && (client->sess.sessionTeam == TEAM_SPECTATOR || client->tempSpectate >
+	if (client->ps.client_num < MAX_CLIENTS && (client->sess.sessionTeam == TEAM_SPECTATOR || client->tempSpectate >
 		level.time))
 	{
 		if (client->sess.spectatorState == SPECTATOR_SCOREBOARD)
@@ -6268,12 +6268,12 @@ ClientThink
 A new command has arrived from the client
 ==================
 */
-void ClientThink(int clientNum, const usercmd_t* ucmd)
+void ClientThink(int client_num, const usercmd_t* ucmd)
 {
-	gentity_t* ent = g_entities + clientNum;
-	if (clientNum < MAX_CLIENTS)
+	gentity_t* ent = g_entities + client_num;
+	if (client_num < MAX_CLIENTS)
 	{
-		trap->GetUsercmd(clientNum, &ent->client->pers.cmd);
+		trap->GetUsercmd(client_num, &ent->client->pers.cmd);
 	}
 
 	// mark the time we got info, so we can display the
@@ -6309,7 +6309,7 @@ void ClientThink(int clientNum, const usercmd_t* ucmd)
 	{
 		ClientThink_real(ent);
 	}
-	else if (clientNum >= MAX_CLIENTS)
+	else if (client_num >= MAX_CLIENTS)
 	{
 		ClientThink_real(ent);
 	}
@@ -6359,20 +6359,20 @@ void SpectatorClientEndFrame(const gentity_t* ent)
 	// if we are doing a chase cam or a remote view, grab the latest info
 	if (ent->client->sess.spectatorState == SPECTATOR_FOLLOW)
 	{
-		int clientNum = ent->client->sess.spectatorClient;
+		int client_num = ent->client->sess.spectatorClient;
 
 		// team follow1 and team follow2 go to whatever clients are playing
-		if (clientNum == -1)
+		if (client_num == -1)
 		{
-			clientNum = level.follow1;
+			client_num = level.follow1;
 		}
-		else if (clientNum == -2)
+		else if (client_num == -2)
 		{
-			clientNum = level.follow2;
+			client_num = level.follow2;
 		}
-		if (clientNum >= 0)
+		if (client_num >= 0)
 		{
-			const gclient_t* cl = &level.clients[clientNum];
+			const gclient_t* cl = &level.clients[client_num];
 			if (cl->pers.connected == CON_CONNECTED && cl->sess.sessionTeam != TEAM_SPECTATOR)
 			{
 				ent->client->ps.eFlags = cl->ps.eFlags;

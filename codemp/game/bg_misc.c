@@ -2521,7 +2521,7 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t* ent, const playe
 	switch (item->giType)
 	{
 	case IT_WEAPON:
-		if (ent->generic1 == ps->clientNum && ent->powerups)
+		if (ent->generic1 == ps->client_num && ent->powerups)
 		{
 			return qfalse;
 		}
@@ -3262,7 +3262,7 @@ void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, qboolean s
 		s->eType = ET_PLAYER;
 	}
 
-	s->number = ps->clientNum;
+	s->number = ps->client_num;
 
 	s->pos.trType = TR_INTERPOLATE;
 	VectorCopy(ps->origin, s->pos.trBase);
@@ -3302,7 +3302,7 @@ void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, qboolean s
 	s->legsFlip = ps->legsFlip;
 	s->torsoFlip = ps->torsoFlip;
 
-	s->clientNum = ps->clientNum; // ET_PLAYER looks here instead of at number
+	s->client_num = ps->client_num; // ET_PLAYER looks here instead of at number
 	// so corpses can also reference the proper config
 	s->eFlags = ps->eFlags;
 	s->eFlags2 = ps->eFlags2;
@@ -3468,7 +3468,7 @@ void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s,
 		s->eType = ET_PLAYER;
 	}
 
-	s->number = ps->clientNum;
+	s->number = ps->client_num;
 
 	s->pos.trType = TR_LINEAR_STOP;
 	VectorCopy(ps->origin, s->pos.trBase);
@@ -3512,7 +3512,7 @@ void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s,
 	s->legsFlip = ps->legsFlip;
 	s->torsoFlip = ps->torsoFlip;
 
-	s->clientNum = ps->clientNum; // ET_PLAYER looks here instead of at number
+	s->client_num = ps->client_num; // ET_PLAYER looks here instead of at number
 	// so corpses can also reference the proper config
 	s->eFlags = ps->eFlags;
 	s->eFlags2 = ps->eFlags2;

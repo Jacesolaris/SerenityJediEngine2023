@@ -43,7 +43,7 @@ extern qboolean in_camera;
 int AcceptBotCommand(const char* cmd, const gentity_t* pl);
 //end rww
 
-void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* saberName);
+void WP_SetSaber(int entNum, saberInfo_t* sabers, int saber_num, const char* saberName);
 
 void Cmd_NPC_f(gentity_t* ent);
 void SetTeamQuick(const gentity_t* ent, int team, qboolean doBegin);
@@ -138,7 +138,7 @@ void DeathmatchScoreboardMessage(const gentity_t* ent)
 		{
 			ping = -1;
 		}
-		else if (g_entities[cl->ps.clientNum].r.svFlags & SVF_BOT)
+		else if (g_entities[cl->ps.client_num].r.svFlags & SVF_BOT)
 		{
 			//make fake pings for bots.
 			ping = Q_irand(40, 75);
@@ -253,13 +253,13 @@ qboolean StringIsInteger(const char* s)
 
 /*
 ==================
-ClientNumberFromString
+client_numberFromString
 
 Returns a player number for either a number or name string
 Returns -1 if invalid
 ==================
 */
-int ClientNumberFromString(const gentity_t* to, const char* s, qboolean allowconnecting)
+int client_numberFromString(const gentity_t* to, const char* s, qboolean allowconnecting)
 {
 	gclient_t* cl;
 	int idnum;
@@ -469,7 +469,7 @@ void Cmd_GiveOther_f(const gentity_t* ent)
 	}
 
 	trap->Argv(1, otherindex, sizeof otherindex);
-	const int i = ClientNumberFromString(ent, otherindex, qfalse);
+	const int i = client_numberFromString(ent, otherindex, qfalse);
 	if (i == -1)
 	{
 		return;
@@ -661,7 +661,7 @@ void Cmd_KillOther_f(const gentity_t* ent)
 	}
 
 	trap->Argv(1, otherindex, sizeof otherindex);
-	const int i = ClientNumberFromString(ent, otherindex, qfalse);
+	const int i = client_numberFromString(ent, otherindex, qfalse);
 	if (i == -1)
 	{
 		return;
@@ -794,7 +794,7 @@ void SetTeam(gentity_t* ent, const char* s)
 	//
 	gclient_t* client = ent->client;
 
-	const int clientNum = client - level.clients;
+	const int client_num = client - level.clients;
 	int specClient = 0;
 	spectatorState_t specState = SPECTATOR_NOT;
 	if (!Q_stricmp(s, "scoreboard") || !Q_stricmp(s, "score"))
@@ -839,14 +839,14 @@ void SetTeam(gentity_t* ent, const char* s)
 		}
 		else
 		{
-			team = PickTeam(clientNum);
+			team = PickTeam(client_num);
 		}
 
 		if (g_teamForceBalance.integer && !g_jediVmerc.integer)
 		{
 			int counts[TEAM_NUM_TEAMS];
 
-			//JAC: Invalid clientNum was being used
+			//JAC: Invalid client_num was being used
 			counts[TEAM_BLUE] = TeamCount(ent - g_entities, TEAM_BLUE);
 			counts[TEAM_RED] = TeamCount(ent - g_entities, TEAM_RED);
 
@@ -854,7 +854,7 @@ void SetTeam(gentity_t* ent, const char* s)
 			if (team == TEAM_RED && counts[TEAM_RED] - counts[TEAM_BLUE] > 1)
 			{
 				{
-					//JAC: Invalid clientNum was being used
+					//JAC: Invalid client_num was being used
 					trap->SendServerCommand(ent - g_entities,
 						va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "TOOMANYRED")));
 				}
@@ -863,7 +863,7 @@ void SetTeam(gentity_t* ent, const char* s)
 			if (team == TEAM_BLUE && counts[TEAM_BLUE] - counts[TEAM_RED] > 1)
 			{
 				{
-					//JAC: Invalid clientNum was being used
+					//JAC: Invalid client_num was being used
 					trap->SendServerCommand(ent - g_entities,
 						va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "TOOMANYBLUE")));
 				}
@@ -1028,10 +1028,10 @@ void SetTeam(gentity_t* ent, const char* s)
 	{
 		const int teamLeader = TeamLeader(team);
 		// if there is no team leader or the team leader is a bot and this client is not a bot
-		if (teamLeader == -1 || !(g_entities[clientNum].r.svFlags & SVF_BOT) && g_entities[teamLeader].r.svFlags &
+		if (teamLeader == -1 || !(g_entities[client_num].r.svFlags & SVF_BOT) && g_entities[teamLeader].r.svFlags &
 			SVF_BOT)
 		{
-			//SetLeader( team, clientNum );
+			//SetLeader( team, client_num );
 		}
 	}
 	// make sure there is a team leader on the team the player came from
@@ -1047,16 +1047,16 @@ void SetTeam(gentity_t* ent, const char* s)
 	if (oldTeam != TEAM_SPECTATOR)
 	{
 		gentity_t* tent = G_TempEntity(client->ps.origin, EV_PLAYER_TELEPORT_OUT);
-		tent->s.clientNum = clientNum;
+		tent->s.client_num = client_num;
 	}
 
 	// get and distribute relevent paramters
-	if (!client_userinfo_changed(clientNum))
+	if (!client_userinfo_changed(client_num))
 		return;
 
 	if (!g_preventTeamBegin)
 	{
-		ClientBegin(clientNum, qfalse);
+		ClientBegin(client_num, qfalse);
 	}
 }
 
@@ -1077,7 +1077,7 @@ void StopFollowing(gentity_t* ent)
 	ent->client->sess.spectatorState = SPECTATOR_FREE;
 	ent->client->ps.pm_flags &= ~PMF_FOLLOW;
 	ent->r.svFlags &= ~SVF_BOT;
-	ent->client->ps.clientNum = ent - g_entities;
+	ent->client->ps.client_num = ent - g_entities;
 	ent->client->ps.weapon = WP_NONE;
 	G_LeaveVehicle(ent, qfalse); // clears m_iVehicleNum as well
 	ent->client->ps.emplacedIndex = 0;
@@ -1503,7 +1503,7 @@ extern qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const sabe
 
 qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
 
-qboolean G_SetSaber(const gentity_t* ent, int saberNum, const char* saberName, qboolean siegeOverride)
+qboolean G_SetSaber(const gentity_t* ent, int saber_num, const char* saberName, qboolean siegeOverride)
 {
 	char truncSaberName[MAX_QPATH] = { 0 };
 
@@ -1517,7 +1517,7 @@ qboolean G_SetSaber(const gentity_t* ent, int saberNum, const char* saberName, q
 
 	Q_strncpyz(truncSaberName, saberName, sizeof truncSaberName);
 
-	if (saberNum == 0 && (!Q_stricmp("none", truncSaberName) || !Q_stricmp("remove", truncSaberName)))
+	if (saber_num == 0 && (!Q_stricmp("none", truncSaberName) || !Q_stricmp("remove", truncSaberName)))
 	{
 		//can't remove saber 0 like this
 		Q_strncpyz(truncSaberName, DEFAULT_SABER, sizeof truncSaberName);
@@ -1525,7 +1525,7 @@ qboolean G_SetSaber(const gentity_t* ent, int saberNum, const char* saberName, q
 
 	//Set the saber with the arg given. If the arg is
 	//not a valid sabername defaults will be used.
-	WP_SetSaber(ent->s.number, ent->client->saber, saberNum, truncSaberName);
+	WP_SetSaber(ent->s.number, ent->client->saber, saber_num, truncSaberName);
 
 	if (!ent->client->saber[0].model[0])
 	{
@@ -1594,7 +1594,7 @@ void Cmd_Follow_f(gentity_t* ent)
 	}
 
 	trap->Argv(1, arg, sizeof arg);
-	const int i = ClientNumberFromString(ent, arg, qfalse);
+	const int i = client_numberFromString(ent, arg, qfalse);
 	if (i == -1)
 	{
 		return;
@@ -1674,57 +1674,57 @@ void Cmd_FollowCycle_f(gentity_t* ent, int dir)
 		trap->Error(ERR_DROP, "Cmd_FollowCycle_f: bad dir %i", dir);
 	}
 
-	int clientnum = ent->client->sess.spectatorClient;
-	const int original = clientnum;
+	int client_num = ent->client->sess.spectatorClient;
+	const int original = client_num;
 
 	do
 	{
-		clientnum += dir;
-		if (clientnum >= level.maxclients)
+		client_num += dir;
+		if (client_num >= level.maxclients)
 		{
 			// Avoid /team follow1 crash
 			if (looped)
 			{
-				clientnum = original;
+				client_num = original;
 				break;
 			}
-			clientnum = 0;
+			client_num = 0;
 			looped = qtrue;
 		}
-		if (clientnum < 0)
+		if (client_num < 0)
 		{
 			if (looped)
 			{
-				clientnum = original;
+				client_num = original;
 				break;
 			}
-			clientnum = level.maxclients - 1;
+			client_num = level.maxclients - 1;
 			looped = qtrue;
 		}
 
 		// can only follow connected clients
-		if (level.clients[clientnum].pers.connected != CON_CONNECTED)
+		if (level.clients[client_num].pers.connected != CON_CONNECTED)
 		{
 			continue;
 		}
 
 		// can't follow another spectator
-		if (level.clients[clientnum].sess.sessionTeam == TEAM_SPECTATOR)
+		if (level.clients[client_num].sess.sessionTeam == TEAM_SPECTATOR)
 		{
 			continue;
 		}
 
 		// can't follow another spectator
-		if (level.clients[clientnum].tempSpectate >= level.time)
+		if (level.clients[client_num].tempSpectate >= level.time)
 		{
 			return;
 		}
 
 		// this is good, we can use it
-		ent->client->sess.spectatorClient = clientnum;
+		ent->client->sess.spectatorClient = client_num;
 		ent->client->sess.spectatorState = SPECTATOR_FOLLOW;
 		return;
-	} while (clientnum != original);
+	} while (client_num != original);
 
 	// leave it where it was
 }
@@ -1946,7 +1946,7 @@ static void Cmd_Tell_f(const gentity_t* ent)
 	}
 
 	trap->Argv(1, arg, sizeof arg);
-	const int targetNum = ClientNumberFromString(ent, arg, qfalse);
+	const int targetNum = client_numberFromString(ent, arg, qfalse);
 	if (targetNum == -1)
 	{
 		return;
@@ -2110,7 +2110,7 @@ void Cmd_GameCommand_f(const gentity_t* ent)
 	}
 
 	trap->Argv(1, arg, sizeof arg);
-	const int targetNum = ClientNumberFromString(ent, arg, qfalse);
+	const int targetNum = client_numberFromString(ent, arg, qfalse);
 	if (targetNum == -1)
 		return;
 
@@ -2248,7 +2248,7 @@ qboolean G_VoteGametype(const gentity_t* ent, int numArgs, const char* arg1, con
 
 qboolean G_VoteKick(const gentity_t* ent, int numArgs, const char* arg1, const char* arg2)
 {
-	const int clientid = ClientNumberFromString(ent, arg2, qtrue);
+	const int clientid = client_numberFromString(ent, arg2, qtrue);
 
 	if (clientid == -1)
 		return qfalse;
@@ -2415,7 +2415,7 @@ typedef struct voteString_s
 static voteString_t validVoteStrings[] = {
 	//	vote string				aliases										# args	valid gametypes							exec delay		short help
 	{"capturelimit", "caps", G_VoteCapturelimit, 1, GTB_CTF | GTB_CTY, qtrue, "<num>"},
-	{"clientkick", NULL, G_VoteClientkick, 1, GTB_ALL, qfalse, "<clientnum>"},
+	{"clientkick", NULL, G_VoteClientkick, 1, GTB_ALL, qfalse, "<client_num>"},
 	{"fraglimit", "frags", G_VoteFraglimit, 1, GTB_ALL & ~(GTB_SIEGE | GTB_CTF | GTB_CTY), qtrue, "<num>"},
 	{"g_doWarmup", "dowarmup warmup", G_VoteWarmup, 1, GTB_ALL, qtrue, "<0-1>"},
 	{"g_gametype", "gametype gt mode", G_VoteGametype, 1, GTB_ALL, qtrue, "<num or name>"},
@@ -2679,7 +2679,7 @@ void Cmd_Vote_f(const gentity_t* ent)
 
 qboolean G_TeamVoteLeader(const gentity_t* ent, int cs_offset, team_t team, int numArgs, const char* arg1, const char* arg2)
 {
-	const int clientid = numArgs == 2 ? ent->s.number : ClientNumberFromString(ent, arg2, qfalse);
+	const int clientid = numArgs == 2 ? ent->s.number : client_numberFromString(ent, arg2, qfalse);
 
 	if (clientid == -1)
 		return qfalse;
@@ -2975,7 +2975,7 @@ int G_ItemUsable(playerState_t* ps, int forcedUse)
 	case HI_SEEKER:
 		if (ps->eFlags & EF_SEEKERDRONE)
 		{
-			G_AddEvent(&g_entities[ps->clientNum], EV_ITEMUSEFAIL, SEEKER_ALREADYDEPLOYED);
+			G_AddEvent(&g_entities[ps->client_num], EV_ITEMUSEFAIL, SEEKER_ALREADYDEPLOYED);
 			return 0;
 		}
 
@@ -2983,7 +2983,7 @@ int G_ItemUsable(playerState_t* ps, int forcedUse)
 	case HI_SENTRY_GUN:
 		if (ps->fd.sentryDeployed)
 		{
-			G_AddEvent(&g_entities[ps->clientNum], EV_ITEMUSEFAIL, SENTRY_ALREADYPLACED);
+			G_AddEvent(&g_entities[ps->client_num], EV_ITEMUSEFAIL, SENTRY_ALREADYPLACED);
 			return 0;
 		}
 
@@ -3004,11 +3004,11 @@ int G_ItemUsable(playerState_t* ps, int forcedUse)
 		trtest[1] = fwdorg[1] + fwd[1] * 16;
 		trtest[2] = fwdorg[2] + fwd[2] * 16;
 
-		trap->Trace(&tr, ps->origin, mins, maxs, trtest, ps->clientNum, MASK_PLAYERSOLID, qfalse, 0, 0);
+		trap->Trace(&tr, ps->origin, mins, maxs, trtest, ps->client_num, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-		if (tr.fraction != 1 && tr.entityNum != ps->clientNum || tr.startsolid || tr.allsolid)
+		if (tr.fraction != 1 && tr.entityNum != ps->client_num || tr.startsolid || tr.allsolid)
 		{
-			G_AddEvent(&g_entities[ps->clientNum], EV_ITEMUSEFAIL, SENTRY_NOROOM);
+			G_AddEvent(&g_entities[ps->client_num], EV_ITEMUSEFAIL, SENTRY_NOROOM);
 			return 0;
 		}
 
@@ -3025,19 +3025,19 @@ int G_ItemUsable(playerState_t* ps, int forcedUse)
 		AngleVectors(ps->viewangles, fwd, NULL, NULL);
 		fwd[2] = 0;
 		VectorMA(ps->origin, 64, fwd, dest);
-		trap->Trace(&tr, ps->origin, mins, maxs, dest, ps->clientNum, MASK_SHOT, qfalse, 0, 0);
+		trap->Trace(&tr, ps->origin, mins, maxs, dest, ps->client_num, MASK_SHOT, qfalse, 0, 0);
 		if (tr.fraction > 0.9 && !tr.startsolid && !tr.allsolid)
 		{
 			vec3_t pos;
 			VectorCopy(tr.endpos, pos);
 			VectorSet(dest, pos[0], pos[1], pos[2] - 4096);
-			trap->Trace(&tr, pos, mins, maxs, dest, ps->clientNum, MASK_SOLID, qfalse, 0, 0);
+			trap->Trace(&tr, pos, mins, maxs, dest, ps->client_num, MASK_SOLID, qfalse, 0, 0);
 			if (!tr.startsolid && !tr.allsolid)
 			{
 				return 1;
 			}
 		}
-		G_AddEvent(&g_entities[ps->clientNum], EV_ITEMUSEFAIL, SHIELD_NOROOM);
+		G_AddEvent(&g_entities[ps->client_num], EV_ITEMUSEFAIL, SHIELD_NOROOM);
 		return 0;
 	case HI_JETPACK: //do something?
 		return 1;
@@ -3890,14 +3890,14 @@ extern void Save_Autosaves(void);
 extern void Delete_Autosaves(const gentity_t* ent);
 extern void G_SetsaberdownorAnim(gentity_t* ent);
 
-void ClientCommand(int clientNum)
+void ClientCommand(int client_num)
 {
 	char cmd[MAX_TOKEN_CHARS] = { 0 };
 
-	gentity_t* ent = g_entities + clientNum;
+	gentity_t* ent = g_entities + client_num;
 	if (!ent->client || ent->client->pers.connected != CON_CONNECTED)
 	{
-		G_SecurityLogPrintf("ClientCommand(%d) without an active connection\n", clientNum);
+		G_SecurityLogPrintf("ClientCommand(%d) without an active connection\n", client_num);
 		return; // not fully in game yet
 	}
 
@@ -4071,20 +4071,20 @@ void ClientCommand(int clientNum)
 	const command_t* command = (command_t*)Q_LinearSearch(cmd, commands, num_commands, sizeof commands[0], cmdcmp);
 	if (!command)
 	{
-		//trap->SendServerCommand(clientNum, va("print \"Unknown command %s\n\"", cmd));
+		//trap->SendServerCommand(client_num, va("print \"Unknown command %s\n\"", cmd));
 		return;
 	}
 	if (command->flags & CMD_NOINTERMISSION
 		&& (level.intermissionQueued || level.intermissiontime))
 	{
-		trap->SendServerCommand(clientNum, va("print \"%s (%s)\n\"",
+		trap->SendServerCommand(client_num, va("print \"%s (%s)\n\"",
 			G_GetStringEdString("MP_SVGAME", "CANNOT_TASK_INTERMISSION"), cmd));
 		return;
 	}
 	if (command->flags & CMD_CHEAT
 		&& !sv_cheats.integer)
 	{
-		trap->SendServerCommand(clientNum, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NOCHEATS")));
+		trap->SendServerCommand(client_num, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NOCHEATS")));
 		return;
 	}
 	if (command->flags & CMD_ALIVE
@@ -4092,7 +4092,7 @@ void ClientCommand(int clientNum)
 			|| ent->client->tempSpectate >= level.time
 			|| ent->client->sess.sessionTeam == TEAM_SPECTATOR))
 	{
-		trap->SendServerCommand(clientNum, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "MUSTBEALIVE")));
+		trap->SendServerCommand(client_num, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "MUSTBEALIVE")));
 		return;
 	}
 	command->func(ent);

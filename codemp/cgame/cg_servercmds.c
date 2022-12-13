@@ -674,8 +674,8 @@ void CG_HandleNPCSounds(const centity_t* cent)
 	}
 }
 
-int CG_HandleAppendedSkin(const char* modelName);
-void CG_CacheG2AnimInfo(const char* modelName);
+int CG_HandleAppendedSkin(const char* model_name);
+void CG_CacheG2AnimInfo(const char* model_name);
 
 // nmckenzie: DUEL_HEALTH - fixme - we could really clean this up immensely with some helper functions.
 void SetDuelistHealthsFromConfigString(const char* str) {
@@ -1213,7 +1213,7 @@ void CG_CheckSVStringEdRef(char* buf, const char* str)
 	buf[b] = 0;
 }
 
-static void CG_BodyQueueCopy(centity_t* cent, int clientNum, int knownWeapon)
+static void CG_BodyQueueCopy(centity_t* cent, int client_num, int knownWeapon)
 {
 	const int				flags = BONE_ANIM_OVERRIDE_FREEZE;
 
@@ -1222,12 +1222,12 @@ static void CG_BodyQueueCopy(centity_t* cent, int clientNum, int knownWeapon)
 		trap->G2API_CleanGhoul2Models(&cent->ghoul2);
 	}
 
-	if (clientNum < 0 || clientNum >= MAX_CLIENTS)
+	if (client_num < 0 || client_num >= MAX_CLIENTS)
 	{
 		return;
 	}
 
-	centity_t* source = &cg_entities[clientNum];
+	centity_t* source = &cg_entities[client_num];
 
 	if (!source)
 	{
@@ -1543,7 +1543,7 @@ static void CG_Print_f(void) {
 	trap->Print("%s", strEd);
 }
 
-void CG_ChatBox_AddString(char* chatStr);
+void CG_ChatBox_AddString(char* chat_str);
 static void CG_Chat_f(void) {
 	char cmd[MAX_STRING_CHARS] = { 0 }, text[MAX_SAY_TEXT] = { 0 };
 

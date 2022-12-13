@@ -297,7 +297,7 @@ CG_CalcVrect
 Sets the coordinates of the rendered window
 =================
 */
-void CG_CalcVrect(void)
+void CG_CalcVrect()
 {
 	constexpr int size = 100;
 
@@ -424,7 +424,7 @@ static void CG_CalcIdealThirdPersonViewTarget()
 		VectorCopy(cameraFocusLoc, nudgepos);
 		nudgepos[2] += CAMERA_CROUCH_NUDGE;
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, nudgepos,
-		         uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		         uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.client_num, MASK_CAMERACLIP);
 		if (trace.fraction < 1.0)
 		{
 			VectorCopy(trace.endpos, cameraFocusLoc);
@@ -446,7 +446,7 @@ static void CG_CalcIdealThirdPersonViewTarget()
 		VectorCopy(cameraFocusLoc, nudgepos);
 		nudgepos[2] += CAMERA_CROUCH_NUDGE;
 		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, nudgepos,
-		         uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		         uses_view_entity ? cg.snap->ps.viewEntity : cg.predicted_player_state.client_num, MASK_CAMERACLIP);
 		if (trace.fraction < 1.0)
 		{
 			VectorCopy(trace.endpos, cameraFocusLoc);
@@ -474,27 +474,27 @@ static void CG_CalcIdealThirdPersonViewLocation()
 	}
 	else if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_RANCOR
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator)
+		&& cg_entities[cg.snap->ps.client_num].gent->activator)
 	{
 		//stay back
-		VectorMA(cameraIdealTarget, -180.0f * cg_entities[cg.snap->ps.clientNum].gent->activator->s.modelScale[0],
+		VectorMA(cameraIdealTarget, -180.0f * cg_entities[cg.snap->ps.client_num].gent->activator->s.modelScale[0],
 			camerafwd, cameraIdealLoc);
 	}
 	else if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_WAMPA
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator->inuse)
+		&& cg_entities[cg.snap->ps.client_num].gent->activator
+		&& cg_entities[cg.snap->ps.client_num].gent->activator->inuse)
 	{
 		//stay back
-		VectorMA(cameraIdealTarget, -120.0f * cg_entities[cg.snap->ps.clientNum].gent->activator->s.modelScale[0],
+		VectorMA(cameraIdealTarget, -120.0f * cg_entities[cg.snap->ps.client_num].gent->activator->s.modelScale[0],
 			camerafwd, cameraIdealLoc);
 	}
 	else if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_SAND_CREATURE
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator)
+		&& cg_entities[cg.snap->ps.client_num].gent->activator)
 	{
 		//stay back
-		VectorMA(cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number].lerpOrigin, -180.0f,
+		VectorMA(cg_entities[cg_entities[cg.snap->ps.client_num].gent->activator->s.number].lerpOrigin, -180.0f,
 			camerafwd, cameraIdealLoc);
 	}
 	else
@@ -553,7 +553,7 @@ static void CG_ResetThirdPersonViewDamp()
 	VectorCopy(cameraIdealTarget, cameraCurTarget);
 
 	// First thing we do is trace from the first person viewpoint out to the new target location.
-	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum,
+	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.client_num,
 	         MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
@@ -561,7 +561,7 @@ static void CG_ResetThirdPersonViewDamp()
 	}
 
 	// Now we trace from the new target location to the new view location, to make sure there is nothing in the way.
-	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum,
+	CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.client_num,
 	         MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
@@ -630,15 +630,15 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 	// First thing we do is trace from the first person viewpoint out to the new target location.
 	if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_SAND_CREATURE
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator)
+		&& cg_entities[cg.snap->ps.client_num].gent->activator)
 	{
 		//if being held by a sand creature, trace from his actual origin, since we could be underground or otherwise in solid once he eats us
-		CG_Trace(&trace, cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number].lerpOrigin,
-		         cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		CG_Trace(&trace, cg_entities[cg_entities[cg.snap->ps.client_num].gent->activator->s.number].lerpOrigin,
+		         cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.client_num, MASK_CAMERACLIP);
 	}
 	else
 	{
-		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.clientNum,
+		CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.predicted_player_state.client_num,
 		         MASK_CAMERACLIP);
 	}
 	if (trace.fraction < 1.0)
@@ -741,19 +741,19 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 	}
 
 	// Now we trace from the first person viewpoint to the new view location, to make sure there is nothing in the way between the user and the camera...
-	//	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+	//	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.client_num, MASK_CAMERACLIP);
 	// (OLD) Now we trace from the new target location to the new view location, to make sure there is nothing in the way.
 	if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_SAND_CREATURE
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator)
+		&& cg_entities[cg.snap->ps.client_num].gent->activator)
 	{
 		//if being held by a sand creature, trace from his actual origin, since we could be underground or otherwise in solid once he eats us
-		CG_Trace(&trace, cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number].lerpOrigin,
-		         cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum, MASK_CAMERACLIP);
+		CG_Trace(&trace, cg_entities[cg_entities[cg.snap->ps.client_num].gent->activator->s.number].lerpOrigin,
+		         cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.client_num, MASK_CAMERACLIP);
 	}
 	else
 	{
-		CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.clientNum,
+		CG_Trace(&trace, cameraCurTarget, cameramins, cameramaxs, cameraCurLoc, cg.predicted_player_state.client_num,
 		         MASK_CAMERACLIP);
 	}
 	if (trace.fraction < 1.0f)
@@ -787,14 +787,14 @@ static void CG_OffsetThirdPersonView(void)
 
 	if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_RANCOR
-		&& cg_entities[cg.snap->ps.clientNum].gent->activator)
+		&& cg_entities[cg.snap->ps.client_num].gent->activator)
 	{
-		const centity_t* monster = &cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number];
+		const centity_t* monster = &cg_entities[cg_entities[cg.snap->ps.client_num].gent->activator->s.number];
 		VectorSet(cameraFocusAngles, 0, AngleNormalize180(monster->lerpAngles[YAW] + 180), 0);
 	}
 	else if (cg.snap && cg.snap->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
 	{
-		const centity_t* monster = &cg_entities[cg_entities[cg.snap->ps.clientNum].gent->activator->s.number];
+		const centity_t* monster = &cg_entities[cg_entities[cg.snap->ps.client_num].gent->activator->s.number];
 		VectorSet(cameraFocusAngles, 0, AngleNormalize180(monster->lerpAngles[YAW] + 180), 0);
 		cameraFocusAngles[PITCH] = 0.0f; //flatten it out
 	}
@@ -1638,7 +1638,7 @@ static qboolean CG_CalcViewValues(void)
 		{
 			//riding it, not *inside* it
 			//let us look up & down
-			cg.refdefViewAngles[PITCH] = cg_entities[ps->clientNum].lerpAngles[PITCH] * 0.2f;
+			cg.refdefViewAngles[PITCH] = cg_entities[ps->client_num].lerpAngles[PITCH] * 0.2f;
 		}
 	}
 	else if (cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
@@ -2013,7 +2013,7 @@ void CG_DrawActiveFrame(int serverTime, stereoFrame_t stereoView)
 
 	float mPitchOverride = 0.0f;
 	float mYawOverride = 0.0f;
-	if (cg.snap->ps.clientNum == 0 && cg_scaleVehicleSensitivity.integer)
+	if (cg.snap->ps.client_num == 0 && cg_scaleVehicleSensitivity.integer)
 	{
 		//pointless check, but..
 		if (cg_entities[0].gent->s.eFlags & EF_LOCKED_TO_WEAPON)
@@ -2183,7 +2183,7 @@ void CG_DrawActiveFrame(int serverTime, stereoFrame_t stereoView)
 	cgi_S_UpdateAmbientSet(CG_ConfigString(CS_AMBIENT_SET), cg.refdef.vieworg);
 	//NOTE: if we want to make you be able to hear far away sounds with electrobinoculars, add the hacked-in positional offset here (base on fov)
 
-	cgi_S_Respatialize(cg.snap->ps.clientNum, cg.refdef.vieworg, cg.refdef.viewaxis, inwater);
+	cgi_S_Respatialize(cg.snap->ps.client_num, cg.refdef.vieworg, cg.refdef.viewaxis, inwater);
 
 	// warning sounds when powerup is wearing off
 	CG_PowerupTimerSounds();
@@ -2211,7 +2211,7 @@ void CheckCameraLocation(vec3_t oldeye_origin)
 {
 	trace_t trace;
 
-	CG_Trace(&trace, oldeye_origin, cameramins, cameramaxs, cg.refdef.vieworg, cg.snap->ps.clientNum, MASK_CAMERACLIP);
+	CG_Trace(&trace, oldeye_origin, cameramins, cameramaxs, cg.refdef.vieworg, cg.snap->ps.client_num, MASK_CAMERACLIP);
 	if (trace.fraction <= 1.0)
 	{
 		VectorCopy(trace.endpos, cg.refdef.vieworg);

@@ -755,7 +755,7 @@ void SetTeamNumbers(void)
 		teamStrength[i] = 0;
 	}
 
-	//OJKFIXME: clientnum 0
+	//OJKFIXME: client_num 0
 	for (i = 0; i < 1; i++)
 	{
 		const gentity_t* found = &g_entities[i];

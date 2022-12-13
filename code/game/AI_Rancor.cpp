@@ -420,7 +420,7 @@ void Rancor_Swing(int boltIndex, qboolean tryGrab)
 #ifndef FINAL_BUILD
 		if (g_bobaDebug->integer > 0)
 		{
-			G_DebugLine(NPC->pos3, boltOrg, 1000, 0x000000ff, qtrue);
+			G_DebugLine(NPC->pos3, boltOrg, 1000, 0x000000ff);
 		}
 #endif
 		//remember pos3 for the trace from last hand pos to current hand pos next time
@@ -438,7 +438,7 @@ void Rancor_Swing(int boltIndex, qboolean tryGrab)
 #ifndef FINAL_BUILD
 			if (g_bobaDebug->integer > 0)
 			{
-				G_DebugLine(originUp, boltOrg, 1000, 0x000000ff, qtrue);
+				G_DebugLine(originUp, boltOrg, 1000, 0x000000ff);
 			}
 #endif
 			if (G_EntIsBreakable(trace.entityNum, NPC))
@@ -613,7 +613,7 @@ void Rancor_Smash(void)
 #ifndef FINAL_BUILD
 		if (g_bobaDebug->integer > 0)
 		{
-			G_DebugLine(NPC->pos3, boltOrg, 1000, 0x000000ff, qtrue);
+			G_DebugLine(NPC->pos3, boltOrg, 1000, 0x000000ff);
 		}
 #endif
 		//remember pos3 for the trace from last hand pos to current hand pos next time
@@ -631,7 +631,7 @@ void Rancor_Smash(void)
 #ifndef FINAL_BUILD
 			if (g_bobaDebug->integer > 0)
 			{
-				G_DebugLine(NPC->currentOrigin, boltOrg, 1000, 0x000000ff, qtrue);
+				G_DebugLine(NPC->currentOrigin, boltOrg, 1000, 0x000000ff);
 			}
 #endif
 			if (G_EntIsBreakable(trace.entityNum, NPC))

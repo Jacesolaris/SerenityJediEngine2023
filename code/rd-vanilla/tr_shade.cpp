@@ -1325,7 +1325,7 @@ static void ComputeColors(shaderStage_t* pStage, alphaGen_t forceAlphaGen, color
 		RB_CalcWaveColor(&pStage->rgbWave, (unsigned char*)tess.svars.colors);
 		break;
 	case CGEN_ENTITY:
-		RB_CalcColorFromEntity((unsigned char*)tess.svars.colors);
+		RB_calc_colorFromEntity((unsigned char*)tess.svars.colors);
 		if (forceAlphaGen == AGEN_IDENTITY &&
 			backEnd.currentEntity->e.shaderRGBA[3] == 0xff
 			)
@@ -1335,7 +1335,7 @@ static void ComputeColors(shaderStage_t* pStage, alphaGen_t forceAlphaGen, color
 
 		break;
 	case CGEN_ONE_MINUS_ENTITY:
-		RB_CalcColorFromOneMinusEntity((unsigned char*)tess.svars.colors);
+		RB_calc_colorFromOneMinusEntity((unsigned char*)tess.svars.colors);
 		break;
 	case CGEN_LIGHTMAPSTYLE:
 		for (i = 0; i < tess.numVertexes; i++)

@@ -68,7 +68,7 @@ extern void g_reflect_missile_auto(const gentity_t* ent, gentity_t* missile, vec
 extern void g_reflect_missile_bot(const gentity_t* ent, gentity_t* missile, vec3_t forward);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
-extern saberInfo_t* BG_MySaber(int clientNum, int saberNum);
+extern saberInfo_t* BG_MySaber(int client_num, int saber_num);
 int IsPressingDashButton(const gentity_t* self);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
@@ -3246,9 +3246,9 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 							&& !PM_InKnockDown(&trace_ent->client->ps))
 						{
 							//saber can block lightning
-							const int rSaberNum = 0;
+							const int rsaber_num = 0;
 							const int rBladeNum = 0;
-							trace_ent->client->saber[rSaberNum].blade[rBladeNum].storageTime = level.time;
+							trace_ent->client->saber[rsaber_num].blade[rBladeNum].storageTime = level.time;
 							if (saber_lightning_blocked && !hand_lightning_blocked)
 							{
 								const float chanceOfFizz = flrand(0.0f, 1.0f);
@@ -3259,10 +3259,10 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 								if (chanceOfFizz > 0)
 								{
 									vec3_t end2;
-									VectorMA(trace_ent->client->saber[rSaberNum].blade[rBladeNum].muzzlePoint,
-										trace_ent->client->saber[rSaberNum].blade[rBladeNum].lengthMax *
+									VectorMA(trace_ent->client->saber[rsaber_num].blade[rBladeNum].muzzlePoint,
+										trace_ent->client->saber[rsaber_num].blade[rBladeNum].lengthMax *
 										flrand(0, 1),
-										trace_ent->client->saber[rSaberNum].blade[rBladeNum].muzzleDir, end2);
+										trace_ent->client->saber[rsaber_num].blade[rBladeNum].muzzleDir, end2);
 									if (trace_ent->client->ps.fd.blockPoints > 50)
 									{
 										G_PlayEffectID(G_EffectIndex("saber/saber_Lightninghit.efx"), end2, ang);
@@ -3303,9 +3303,9 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 					else if (trace_ent->client->ps.weapon == WP_SABER)
 					{
 						//Serenitysabersystems saber can block lightning
-						const int rSaberNum = 0;
+						const int rsaber_num = 0;
 						const int rBladeNum = 0;
-						trace_ent->client->saber[rSaberNum].blade[rBladeNum].storageTime = level.time;
+						trace_ent->client->saber[rsaber_num].blade[rBladeNum].storageTime = level.time;
 						if (saber_lightning_blocked && !hand_lightning_blocked)
 						{
 							const float chanceOfFizz = flrand(0.0f, 1.0f);
@@ -3316,9 +3316,9 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 							if (chanceOfFizz > 0)
 							{
 								vec3_t end2;
-								VectorMA(trace_ent->client->saber[rSaberNum].blade[rBladeNum].muzzlePoint,
-									trace_ent->client->saber[rSaberNum].blade[rBladeNum].lengthMax * flrand(0, 1),
-									trace_ent->client->saber[rSaberNum].blade[rBladeNum].muzzleDir, end2);
+								VectorMA(trace_ent->client->saber[rsaber_num].blade[rBladeNum].muzzlePoint,
+									trace_ent->client->saber[rsaber_num].blade[rBladeNum].lengthMax * flrand(0, 1),
+									trace_ent->client->saber[rsaber_num].blade[rBladeNum].muzzleDir, end2);
 								if (trace_ent->client->ps.fd.blockPoints > 50)
 								{
 									G_PlayEffectID(G_EffectIndex("saber/saber_Lightninghit.efx"), end2, ang);
@@ -5201,7 +5201,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 	qboolean iGrip = qfalse;
 	int damageLevel = FORCE_LEVEL_0;
 
-	saberInfo_t* saber1 = BG_MySaber(self->clientNum, 0);
+	saberInfo_t* saber1 = BG_MySaber(self->client_num, 0);
 
 	visionArc = 0;
 

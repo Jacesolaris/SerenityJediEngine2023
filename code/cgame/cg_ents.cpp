@@ -32,12 +32,12 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../game/wp_saber.h"
 #include "../game/g_vehicles.h"
 
-extern void CG_AddSaberBlade(const centity_t* cent, centity_t* scent, refEntity_t* saber, int renderfx, int modelIndex,
-	vec3_t origin, vec3_t angles);
-extern void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, int saberNum, int modelIndex,
+extern void CG_AddSaberBlade(const centity_t* cent, centity_t* scent, const int renderfx, int model_index,
+                             vec3_t origin, vec3_t angles);
+extern void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, int saber_num, int modelIndex,
 	vec3_t origin,
 	vec3_t angles);
-extern void CG_ForcePushBlur(const vec3_t org, qboolean darkSide = qfalse);
+extern void CG_ForcePushBlur(const vec3_t org, qboolean dark_side = qfalse);
 extern void CG_AddForceSightShell(refEntity_t* ent, const centity_t* cent);
 extern qboolean CG_PlayerCanSeeCent(const centity_t* cent);
 
@@ -502,7 +502,7 @@ static void CG_General(centity_t* cent)
 	}
 
 	// player model
-	if (s1->number == cg.snap->ps.clientNum)
+	if (s1->number == cg.snap->ps.client_num)
 	{
 		ent.renderfx |= RF_THIRD_PERSON; // only draw from mirrors
 	}
@@ -691,8 +691,8 @@ static void CG_General(centity_t* cent)
 					if (cent->gent->owner->client->ps.saber[0].Length() > 0)
 					{
 						CG_AddSaberBlade(&cg_entities[cent->gent->owner->s.number],
-							&cg_entities[cent->gent->s.number], nullptr, ent.renderfx,
-							cent->gent->weaponModel[0], cent->lerpOrigin, cent->lerpAngles);
+						                 &cg_entities[cent->gent->s.number], ent.renderfx, cent->gent->weaponModel[0],
+						                 cent->lerpOrigin, cent->lerpAngles);
 					}
 					else if (cent->gent->owner->client->ps.saberEventFlags & SEF_INWATER)
 					{
@@ -715,7 +715,7 @@ static void CG_General(centity_t* cent)
 					{
 						cgi_S_AddLoopingSound(cent->currentState.number,
 							cent->lerpOrigin, vec3_origin,
-							cgs.sound_precache[g_entities[cent->currentState.clientNum].client->ps.
+							cgs.sound_precache[g_entities[cent->currentState.client_num].client->ps.
 							saber[0].soundLoop]);
 					}
 					else
@@ -756,8 +756,8 @@ static void CG_General(centity_t* cent)
 					{
 						//only add the blade if it's on
 						CG_AddSaberBlade(&cg_entities[cent->gent->owner->s.number],
-							&cg_entities[cent->gent->s.number], nullptr, ent.renderfx,
-							0, cent->lerpOrigin, cent->lerpAngles);
+						                 &cg_entities[cent->gent->s.number], ent.renderfx, 0,
+						                 cent->lerpOrigin, cent->lerpAngles);
 					}
 					else if (cent->gent->owner->client->ps.saberEventFlags & SEF_INWATER)
 					{
@@ -824,7 +824,7 @@ static void CG_General(centity_t* cent)
 				}
 			}
 			CG_AddSaberBlade(&cg_entities[cent->gent->owner->s.number],
-				nullptr, &ent, ent.renderfx, 0, nullptr, nullptr);
+			                 nullptr, ent.renderfx, 0, nullptr, nullptr);
 
 			if (cent->gent->owner->health)
 			{
@@ -960,7 +960,7 @@ static void CG_General(centity_t* cent)
 
 	//draw force sight shell around it, too
 	if (cg.snap->ps.forcePowersActive & 1 << FP_SEE
-		&& cg.snap->ps.clientNum != cent->currentState.number
+		&& cg.snap->ps.client_num != cent->currentState.number
 		&& CG_PlayerCanSeeCent(cent))
 	{
 		//so player can see dark missiles/explosives
@@ -986,9 +986,9 @@ Speaker entities can automatically play sounds
 */
 static void CG_Speaker(centity_t* cent)
 {
-	if (!cent->currentState.clientNum)
+	if (!cent->currentState.client_num)
 	{
-		// FIXME: use something other than clientNum...
+		// FIXME: use something other than client_num...
 		return; // not auto triggering
 	}
 
@@ -1000,8 +1000,8 @@ static void CG_Speaker(centity_t* cent)
 	cgi_S_StartSound(nullptr, cent->currentState.number, CHAN_ITEM, cgs.sound_precache[cent->currentState.eventParm]);
 
 	//	ent->s.frame = ent->wait * 10;
-	//	ent->s.clientNum = ent->random * 10;
-	cent->miscTime = static_cast<int>(cg.time + cent->currentState.frame * 100 + cent->currentState.clientNum * 100 *
+	//	ent->s.client_num = ent->random * 10;
+	cent->miscTime = static_cast<int>(cg.time + cent->currentState.frame * 100 + cent->currentState.client_num * 100 *
 		Q_flrand(-1.0f, 1.0f));
 }
 
@@ -1150,7 +1150,7 @@ static void CG_Item(centity_t* cent)
 	cgi_R_AddRefEntityToScene(&ent);
 
 	if (cg.snap->ps.forcePowersActive & 1 << FP_SEE
-		&& cg.snap->ps.clientNum != cent->currentState.number
+		&& cg.snap->ps.client_num != cent->currentState.number
 		&& CG_PlayerCanSeeCent(cent))
 	{
 		CG_AddForceSightShell(&ent, cent);
@@ -1449,7 +1449,7 @@ static void CG_Missile(centity_t* cent)
 	CG_AddRefEntityWithPowerups(&ent, s1->powerups, nullptr);
 
 	if (cg.snap->ps.forcePowersActive & 1 << FP_SEE
-		&& cg.snap->ps.clientNum != cent->currentState.number
+		&& cg.snap->ps.client_num != cent->currentState.number
 		&& CG_PlayerCanSeeCent(cent))
 	{
 		//so player can see dark missiles/explosives
@@ -1621,7 +1621,7 @@ static void CG_Mover(centity_t* cent)
 	CG_AddRefEntWithTransportEffect(cent, &ent);
 
 	if (cg.snap->ps.forcePowersActive & 1 << FP_SEE
-		&& cg.snap->ps.clientNum != cent->currentState.number
+		&& cg.snap->ps.client_num != cent->currentState.number
 		&& s1->eFlags & EF_FORCE_VISIBLE)
 	{
 		//so player can see func_breakables
@@ -1874,7 +1874,7 @@ static void CG_Portal(const centity_t* cent)
 	CrossProduct(ent.axis[0], ent.axis[1], ent.axis[2]);
 	ent.reType = RT_PORTALSURFACE;
 	ent.frame = s1->frame; // rotation speed
-	ent.skinNum = static_cast<int>(s1->clientNum / 256.0 * 360); // roll offset
+	ent.skinNum = static_cast<int>(s1->client_num / 256.0 * 360); // roll offset
 
 	/*
 	Ghoul2 Insert Start
@@ -1950,7 +1950,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 			cent->nextState->vehicleAngles[2], f);
 	}
 
-	if (cent->currentState.number == cg.snap->ps.clientNum)
+	if (cent->currentState.number == cg.snap->ps.client_num)
 	{
 		// if the player, take position from prediction
 		VectorCopy(cg.predicted_player_state.origin, cent->lerpOrigin);
@@ -1991,7 +1991,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 			cent->lerpAngles[2] = LerpAngle(current[2], next[2], f);
 
 			/*
-			if(cent->gent && cent->currentState.clientNum != 0 && !VectorCompare(current, next))
+			if(cent->gent && cent->currentState.client_num != 0 && !VectorCompare(current, next))
 			{
 				Com_Printf("%s last/next/lerp apos %s/%s/%s, f = %4.2f\n", cent->gent->script_targetname, vtos(current), vtos(next), vtos(cent->lerpAngles), f);
 			}
@@ -2022,7 +2022,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 			cent->lerpOrigin[2] = current[2] + f * (next[2] - current[2]);
 
 			/*
-			if ( cent->gent && cent->currentState.clientNum != 0 )
+			if ( cent->gent && cent->currentState.client_num != 0 )
 			{
 				Com_Printf("%s last/next/lerp pos %s/%s/%s, f = %4.2f\n", cent->gent->script_targetname, vtos(current), vtos(next), vtos(cent->lerpOrigin), f);
 			}
@@ -2040,7 +2040,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 		{
 			EvaluateTrajectory(&cent->currentState.pos, cg.snap->serverTime, cent->lerpOrigin);
 			/*
-			if(cent->gent && cent->currentState.clientNum != 0 )
+			if(cent->gent && cent->currentState.client_num != 0 )
 			{
 				Com_Printf("%s last/next/lerp pos %s, f = 1.0\n", cent->gent->script_targetname, vtos(cent->lerpOrigin) );
 			}
@@ -2101,7 +2101,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 #else
 void CG_CalcEntityLerpPositions(centity_t* cent)
 {
-	if (cent->currentState.number == cg.snap->ps.clientNum)
+	if (cent->currentState.number == cg.snap->ps.client_num)
 	{
 		// if the player, take position from prediction
 		VectorCopy(cg.predicted_player_state.origin, cent->lerpOrigin);
@@ -2110,7 +2110,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 		return;
 	}
 
-	if (cent->currentState.number != cg.snap->ps.clientNum && cent->interpolate && cent->currentState.pos.trType == TR_INTERPOLATE)
+	if (cent->currentState.number != cg.snap->ps.client_num && cent->interpolate && cent->currentState.pos.trType == TR_INTERPOLATE)
 	{
 		if (cent->interpolate)
 		{
@@ -2138,7 +2138,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 
 	//FIXME: prediction on clients in timescale results in jerky positional translation
 	if (cent->interpolate &&
-		(cent->currentState.number == cg.snap->ps.clientNum ||
+		(cent->currentState.number == cg.snap->ps.client_num ||
 			cent->interpolate && cent->currentState.pos.trType == TR_INTERPOLATE))
 	{
 		vec3_t		current, next;
@@ -2941,7 +2941,7 @@ void CG_AddPacketEntities(qboolean isPortal)
 	// generate and add the entity from the playerstate
 	playerState_t* ps = &cg.predicted_player_state;
 
-	PlayerStateToEntityState(ps, &cg_entities[ps->clientNum].currentState);
+	PlayerStateToEntityState(ps, &cg_entities[ps->client_num].currentState);
 
 	// add each entity sent over by the server
 	for (num = 0; num < cg.snap->numEntities; num++)

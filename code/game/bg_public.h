@@ -362,7 +362,7 @@ using persEnum_t = enum
 	PERS_PLAYEREVENTS,
 	// incremented for each reward sound
 	PERS_ATTACKER,
-	// clientnum of last damage inflicter
+	// client_num of last damage inflicter
 	PERS_KILLED,
 	// count of the number of times you died
 	// these were added for single player awards tracking
@@ -801,11 +801,11 @@ constexpr auto AED_MOVE_FWD = 0;
 constexpr auto AED_MOVE_RT = 1;
 constexpr auto AED_MOVE_UP = 2;
 //indices for AEV_SABER_SWING data
-constexpr auto AED_SABER_SWING_SABERNUM = 0;
+constexpr auto AED_SABER_SWING_saber_num = 0;
 constexpr auto AED_SABER_SWING_TYPE = 1;
 constexpr auto AED_SABER_SWING_PROBABILITY = 2;
 //indices for AEV_SABER_SPIN data
-constexpr auto AED_SABER_SPIN_SABERNUM = 0;
+constexpr auto AED_SABER_SPIN_saber_num = 0;
 constexpr auto AED_SABER_SPIN_TYPE = 1; //0 = saberspinoff, 1 = saberspin, 2-4 = saberspin1-saberspin3;
 constexpr auto AED_SABER_SPIN_PROBABILITY = 2;
 

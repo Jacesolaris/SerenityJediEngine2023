@@ -608,24 +608,24 @@ saberType_t TranslateSaberType(const char* name)
 	return SABER_SINGLE;
 }
 
-qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int bladeNum)
+qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num)
 {
 	if (saber
 		&& saber->bladeStyle2Start > 0
-		&& bladeNum >= saber->bladeStyle2Start)
+		&& blade_num >= saber->bladeStyle2Start)
 		return qtrue;
 
 	return qfalse;
 }
 
-qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int bladeNum)
+qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num)
 {
 	//use first blade style for this blade
-	if (!WP_SaberBladeUseSecondBladeStyle(saber, bladeNum) && saber->saberFlags2 & SFL2_TRANSITION_DAMAGE)
+	if (!WP_SaberBladeUseSecondBladeStyle(saber, blade_num) && saber->saberFlags2 & SFL2_TRANSITION_DAMAGE)
 		return qtrue;
 
 	//use second blade style for this blade
-	if (WP_SaberBladeUseSecondBladeStyle(saber, bladeNum) && saber->saberFlags2 & SFL2_TRANSITION_DAMAGE2)
+	if (WP_SaberBladeUseSecondBladeStyle(saber, blade_num) && saber->saberFlags2 & SFL2_TRANSITION_DAMAGE2)
 		return qtrue;
 
 	return qfalse;
@@ -3012,33 +3012,33 @@ qboolean WP_SaberValidForPlayerInMP(const char* saberName)
 	return atoi(allowed) == 0;
 }
 
-void WP_RemoveSaber(saberInfo_t* sabers, int saberNum)
+void WP_RemoveSaber(saberInfo_t* sabers, int saber_num)
 {
 	if (!sabers)
 	{
 		return;
 	}
 	//reset everything for this saber just in case
-	wp_saber_set_defaults(&sabers[saberNum]);
+	wp_saber_set_defaults(&sabers[saber_num]);
 
-	strcpy(sabers[saberNum].name, "none");
-	sabers[saberNum].model[0] = 0;
+	strcpy(sabers[saber_num].name, "none");
+	sabers[saber_num].model[0] = 0;
 
 	//ent->client->ps.dualSabers = qfalse;
-	BG_SI_Deactivate(&sabers[saberNum]);
-	BG_SI_SetLength(&sabers[saberNum], 0.0f);
-	//	if ( ent->weaponModel[saberNum] > 0 )
+	BG_SI_Deactivate(&sabers[saber_num]);
+	BG_SI_SetLength(&sabers[saber_num], 0.0f);
+	//	if ( ent->weaponModel[saber_num] > 0 )
 	//	{
-	//		trap->G2API_RemoveGhoul2Model( ent->ghoul2, ent->weaponModel[saberNum] );
-	//		ent->weaponModel[saberNum] = -1;
+	//		trap->G2API_RemoveGhoul2Model( ent->ghoul2, ent->weaponModel[saber_num] );
+	//		ent->weaponModel[saber_num] = -1;
 	//	}
-	//	if ( saberNum == 1 )
+	//	if ( saber_num == 1 )
 	//	{
 	//		ent->client->ps.dualSabers = qfalse;
 	//	}
 }
 
-void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* saberName)
+void WP_SetSaber(int entNum, saberInfo_t* sabers, int saber_num, const char* saberName)
 {
 	if (!sabers)
 	{
@@ -3046,10 +3046,10 @@ void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* sabe
 	}
 	if (Q_stricmp("none", saberName) == 0 || Q_stricmp("remove", saberName) == 0)
 	{
-		if (saberNum != 0)
+		if (saber_num != 0)
 		{
 			//can't remove saber 0 ever
-			WP_RemoveSaber(sabers, saberNum);
+			WP_RemoveSaber(sabers, saber_num);
 		}
 		return;
 	}
@@ -3057,11 +3057,11 @@ void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* sabe
 	if (entNum < MAX_CLIENTS &&
 		!WP_SaberValidForPlayerInMP(saberName))
 	{
-		WP_SaberParseParms(DEFAULT_SABER, &sabers[saberNum]); //get saber info
+		WP_SaberParseParms(DEFAULT_SABER, &sabers[saber_num]); //get saber info
 	}
 	else
 	{
-		WP_SaberParseParms(saberName, &sabers[saberNum]); //get saber info
+		WP_SaberParseParms(saberName, &sabers[saber_num]); //get saber info
 	}
 	if (sabers[1].saberFlags & SFL_TWO_HANDED)
 	{
@@ -3077,13 +3077,13 @@ void WP_SetSaber(int entNum, saberInfo_t* sabers, int saberNum, const char* sabe
 	}
 }
 
-void WP_SaberSetColor(saberInfo_t* sabers, int saberNum, int bladeNum, const char* colorName)
+void WP_SaberSetColor(saberInfo_t* sabers, int saber_num, int blade_num, const char* colorName)
 {
 	if (!sabers)
 	{
 		return;
 	}
-	sabers[saberNum].blade[bladeNum].color = TranslateSaberColor(colorName);
+	sabers[saber_num].blade[blade_num].color = TranslateSaberColor(colorName);
 }
 
 static char bgSaberParseTBuffer[MAX_SABER_DATA_SIZE];
@@ -3300,15 +3300,15 @@ void BG_SI_SetLength(saberInfo_t* saber, float length)
 }
 
 //not in sp, added it for my own convenience
-void BG_SI_SetDesiredLength(saberInfo_t* saber, float len, int bladeNum)
+void BG_SI_SetDesiredLength(saberInfo_t* saber, float len, int blade_num)
 {
 	int startBlade = 0, maxBlades = saber->numBlades;
 
-	if (bladeNum >= 0 && bladeNum < saber->numBlades)
+	if (blade_num >= 0 && blade_num < saber->numBlades)
 	{
 		//doing this on a specific blade
-		startBlade = bladeNum;
-		maxBlades = bladeNum + 1;
+		startBlade = blade_num;
+		maxBlades = blade_num + 1;
 	}
 	for (int i = startBlade; i < maxBlades; i++)
 	{

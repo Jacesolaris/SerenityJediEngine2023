@@ -2821,7 +2821,7 @@ extern void Rancor_DropVictim(gentity_t* self);
 extern qboolean g_dontFrickinCheck;
 extern qboolean g_endPDuel;
 extern qboolean g_noPDuelCheck;
-extern void saberReactivate(gentity_t* saberent, gentity_t* saberOwner);
+extern void saberReactivate(gentity_t* saberent, gentity_t* saber_owner);
 extern void saberBackToOwner(gentity_t* saberent);
 void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, int meansOfDeath);
 extern void BubbleShield_TurnOff(gentity_t* self);
@@ -4641,8 +4641,8 @@ void G_GetDismemberBolt(gentity_t* self, vec3_t boltPoint, int limbType)
 		gentity_t* te = G_TempEntity(boltPoint, EV_SABER_BODY_HIT);
 		te->s.otherEntityNum = self->s.number;
 		te->s.otherEntityNum2 = ENTITYNUM_NONE;
-		te->s.weapon = 0; //saberNum
-		te->s.legsAnim = 0; //bladeNum
+		te->s.weapon = 0; //saber_num
+		te->s.legsAnim = 0; //blade_num
 
 		VectorCopy(boltPoint, te->s.origin);
 		VectorCopy(boltAngles, te->s.angles);
@@ -5049,7 +5049,7 @@ int G_GetHitQuad(const gentity_t* self, vec3_t hitloc)
 
 int gGAvoidDismember = 0;
 
-void UpdateClientRenderBolts(gentity_t* self, vec3_t renderOrigin, vec3_t renderAngles);
+void UpdateClientRenderBolts(gentity_t* self, vec3_t render_origin, vec3_t render_angles);
 
 qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir,
 	vec3_t bladeDir, int mod)
@@ -6470,7 +6470,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 	{
 		//don't take damage when in a walker, or fighter
 		//unless the walker/fighter is dead!!! -rww
-		if (targ->client->ps.clientNum < MAX_CLIENTS && targ->client->ps.m_iVehicleNum)
+		if (targ->client->ps.client_num < MAX_CLIENTS && targ->client->ps.m_iVehicleNum)
 		{
 			gentity_t* veh = &g_entities[targ->client->ps.m_iVehicleNum];
 			if (veh->m_pVehicle && veh->health > 0)
@@ -7384,9 +7384,9 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 			trap->Trace(&testTrace, testStartPos, NULL, NULL, testEndPos, ENTITYNUM_NONE, MASK_SHOT, qfalse, 0, 0);
 
 			float chanceOfFizz = flrand(0.0f, 1.0f);
-			int rSaberNum = 0;
-			int rBladeNum = 0;
-			targ->client->saber[rSaberNum].blade[rBladeNum].storageTime = level.time;
+			int rsaber_num = 0;
+			int rblade_num = 0;
+			targ->client->saber[rsaber_num].blade[rblade_num].storageTime = level.time;
 
 			if (!testTrace.startsolid &&
 				!testTrace.allsolid &&
@@ -7400,7 +7400,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 					ang[1] = flrand(0, 360);
 					ang[2] = flrand(0, 360);
 
-					VectorMA(targ->client->saber[rSaberNum].blade[rBladeNum].muzzlePoint, targ->client->saber[rSaberNum].blade[rBladeNum].lengthMax * flrand(0, 1), targ->client->saber[rSaberNum].blade[rBladeNum].muzzleDir, testEndPos);
+					VectorMA(targ->client->saber[rsaber_num].blade[rblade_num].muzzlePoint, targ->client->saber[rsaber_num].blade[rblade_num].lengthMax * flrand(0, 1), targ->client->saber[rsaber_num].blade[rblade_num].muzzleDir, testEndPos);
 					G_PlayEffectID(G_EffectIndex("world / acid_fizz.efx"), testEndPos, ang);
 
 					targ->client->poisonDamage = 18;
@@ -7957,7 +7957,7 @@ qboolean CanDamage(const gentity_t* targ, vec3_t origin)
 G_RadiusDamage
 ============
 */
-qboolean G_DoDodge(gentity_t* self, gentity_t* shooter, vec3_t impactPoint, int hitLoc, int* dmg, int mod);
+qboolean G_DoDodge(gentity_t* self, gentity_t* shooter, vec3_t impactPoint, int hit_loc, int* dmg, int mod);
 
 void Do_DustFallNear(const vec3_t origin, int dustcount)
 {

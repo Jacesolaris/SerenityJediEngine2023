@@ -702,7 +702,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 		VectorMA(pm->ps->origin, time_left, pm->ps->velocity, end);
 
 		// see if we can make it there
-		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->clientNum, pm->tracemask);
+		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num, pm->tracemask);
 
 		if (trace.allsolid)
 		{
@@ -725,7 +725,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 		// save entity for contact
 		PM_AddTouchEnt(trace.entityNum);
 
-		if (pm->ps->clientNum >= MAX_CLIENTS)
+		if (pm->ps->client_num >= MAX_CLIENTS)
 		{
 			bgEntity_t* pEnt = pm_entSelf;
 
@@ -919,7 +919,7 @@ void PM_StepSlideMove(qboolean gravity)
 
 	const bgEntity_t* p_ent = pm_entSelf;
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		if (p_ent && p_ent->s.NPC_class == CLASS_VEHICLE &&
 			p_ent->m_pVehicle && p_ent->m_pVehicle->m_pVehicleInfo->hoverHeight > 0)
@@ -930,7 +930,7 @@ void PM_StepSlideMove(qboolean gravity)
 
 	VectorCopy(start_o, down);
 	down[2] -= STEPSIZE;
-	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask);
 	VectorSet(up, 0, 0, 1);
 	// never step up when you still have up velocity
 	if (pm->ps->velocity[2] > 0 && (trace.fraction == 1.0 || DotProduct(trace.plane.normal, up) < 0.7))
@@ -943,7 +943,7 @@ void PM_StepSlideMove(qboolean gravity)
 
 	VectorCopy(start_o, up);
 
-	if (pm->ps->clientNum >= MAX_CLIENTS)
+	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
 		// apply ground friction, even if on ladder
 		if (p_ent &&
@@ -969,7 +969,7 @@ void PM_StepSlideMove(qboolean gravity)
 	else
 	{
 #ifdef _GAME
-		if (g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
+		if (g_entities[pm->ps->client_num].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 		{
 			// BOTs get off easy - for the sake of lower CPU usage (routing) and looking better in general...
 			up[2] += STEPSIZE * 2;
@@ -984,7 +984,7 @@ void PM_StepSlideMove(qboolean gravity)
 	}
 
 	// test the player position if they were a step height higher
-	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->client_num, pm->tracemask);
 	if (trace.allsolid)
 	{
 		if (pm->debugLevel)
@@ -1004,11 +1004,11 @@ void PM_StepSlideMove(qboolean gravity)
 	// push down the final amount
 	VectorCopy(pm->ps->origin, down);
 	down[2] -= step_size;
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask);
 
 	if (pm->stepSlideFix)
 	{
-		if (pm->ps->clientNum < MAX_CLIENTS
+		if (pm->ps->client_num < MAX_CLIENTS
 			&& trace.plane.normal[2] < MIN_WALK_NORMAL)
 		{
 			//normal players cannot step up slopes that are too steep to walk on!
@@ -1032,7 +1032,7 @@ void PM_StepSlideMove(qboolean gravity)
 	if (!trace.allsolid
 		&& !skipStep) //normal players cannot step up slopes that are too steep to walk on!
 	{
-		if (pm->ps->clientNum >= MAX_CLIENTS //NPC
+		if (pm->ps->client_num >= MAX_CLIENTS //NPC
 			&& isGiant
 			&& trace.entityNum < MAX_CLIENTS
 			&& p_ent
@@ -1080,7 +1080,7 @@ void PM_StepSlideMove(qboolean gravity)
 
 #if 0
 	// if the down trace can trace back to the original position directly, don't step
-	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, start_o, pm->ps->clientNum, pm->tracemask);
+	pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, start_o, pm->ps->client_num, pm->tracemask);
 	if (trace.fraction == 1.0) {
 		// use the original move
 		VectorCopy(down_o, pm->ps->origin);
