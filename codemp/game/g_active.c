@@ -399,9 +399,9 @@ void P_WorldEffects(gentity_t* ent)
 }
 
 //==============================================================
-extern void G_ApplyKnockback(gentity_t* targ, vec3_t newDir, float knockback);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_ApplyKnockback(gentity_t* targ, vec3_t new_dir, float knockback);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t velocity)
 {

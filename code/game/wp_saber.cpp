@@ -50,7 +50,7 @@ static vec3_t dmgNormal[MAX_SABER_VICTIMS];
 static vec3_t dmgBladeVec[MAX_SABER_VICTIMS];
 static vec3_t dmgSpot[MAX_SABER_VICTIMS];
 static float dmgFraction[MAX_SABER_VICTIMS];
-static int hitLoc[MAX_SABER_VICTIMS];
+static int hit_loc[MAX_SABER_VICTIMS];
 static qboolean hitDismember[MAX_SABER_VICTIMS];
 static int hitDismemberLoc[MAX_SABER_VICTIMS];
 static vec3_t saberHitLocation, saberHitNormal = { 0, 0, 1.0 };
@@ -90,13 +90,13 @@ extern void cg_saber_do_weapon_hit_marks(const gclient_t* client, const gentity_
 extern void G_AngerAlert(const gentity_t* self);
 extern void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward);
 extern void g_reflect_missile_npc(gentity_t* ent, gentity_t* missile, vec3_t forward);
-extern int G_CheckLedgeDive(gentity_t* self, float checkDist, const vec3_t checkVel, qboolean tryOpposite,
-	qboolean tryPerp);
+extern int G_CheckLedgeDive(gentity_t* self, float check_dist, const vec3_t check_vel, qboolean try_opposite,
+	qboolean try_perp);
 extern void g_bounce_missile(gentity_t* ent, trace_t* trace);
 extern qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs);
 extern void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone);
 extern void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3_t normal,
-	int hitLoc = HL_NONE);
+	int hit_loc = HL_NONE);
 extern evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitloc, vec3_t phit_dir,
 	const gentity_t* incoming, float dist = 0.0f);
 extern void Jedi_RageStop(const gentity_t* self);
@@ -162,13 +162,13 @@ extern int PM_InGrappleMove(int anim);
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern int SaberDroid_PowerLevelForSaberAnim(const gentity_t* self);
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
-extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
+extern void G_StartStasisEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, qboolean bPull);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean Rosh_BeingHealed(const gentity_t* self);
@@ -191,8 +191,8 @@ void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 qboolean FP_ForceDrainGrippableEnt(const gentity_t* victim);
 void G_SaberBounce(const gentity_t* attacker, gentity_t* victim);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean BG_InKnockDown(int anim);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
 extern qboolean PM_SaberInDamageMove(int move);
@@ -2459,7 +2459,7 @@ void wp_saber_clear_damage_for_ent_num(gentity_t* attacker, const int entity_num
 			}
 			//now clear everything
 			totalDmg[i] = 0; //no damage
-			hitLoc[i] = HL_NONE;
+			hit_loc[i] = HL_NONE;
 			hitDismemberLoc[i] = HL_NONE;
 			hitDismember[i] = qfalse;
 			victimEntityNum[i] = ENTITYNUM_NONE; //like we never hit him
@@ -2671,15 +2671,15 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 							&& !g_saberRealisticCombat->integer)
 						{
 							//dmg vs other saber fighters is modded by hitloc and capped
-							totalDmg[i] *= damageModifier[hitLoc[i]];
+							totalDmg[i] *= damageModifier[hit_loc[i]];
 
-							if (hitLoc[i] == HL_NONE)
+							if (hit_loc[i] == HL_NONE)
 							{
 								max_dmg = 33 * base_damage;
 							}
 							else
 							{
-								max_dmg = 50 * hitLochealth_percentage[hitLoc[i]] * base_damage;
+								max_dmg = 50 * hitLochealth_percentage[hit_loc[i]] * base_damage;
 							}
 							if (max_dmg < totalDmg[i])
 							{
@@ -3115,7 +3115,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 						}
 						if (ent->client && !ent->s.number)
 						{
-							switch (hitLoc[i])
+							switch (hit_loc[i])
 							{
 							case HL_FOOT_RT:
 							case HL_FOOT_LT:
@@ -3229,11 +3229,11 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 						{
 							if (d_flags & DAMAGE_NO_DAMAGE)
 							{
-								gi.Printf(S_COLOR_RED"damage: fake, hitLoc %d\n", hitLoc[i]);
+								gi.Printf(S_COLOR_RED"damage: fake, hit_loc %d\n", hit_loc[i]);
 							}
 							else
 							{
-								gi.Printf(S_COLOR_RED"damage: %4.2f, hitLoc %d\n", totalDmg[i], hitLoc[i]);
+								gi.Printf(S_COLOR_RED"damage: %4.2f, hit_loc %d\n", totalDmg[i], hit_loc[i]);
 							}
 						}
 						//do the effect
@@ -3302,11 +3302,11 @@ void wp_saber_damage_add(const float tr_dmg, const int tr_victim_entity_num, vec
 		}
 
 		const float add_dmg = tr_dmg * dmg;
-		if (tr_hit_loc != HL_NONE && (hitLoc[cur_victim] == HL_NONE || hitLochealth_percentage[tr_hit_loc] >
-			hitLochealth_percentage[hitLoc[cur_victim]]))
+		if (tr_hit_loc != HL_NONE && (hit_loc[cur_victim] == HL_NONE || hitLochealth_percentage[tr_hit_loc] >
+			hitLochealth_percentage[hit_loc[cur_victim]]))
 		{
-			//this hitLoc is more critical than the previous one this frame
-			hitLoc[cur_victim] = tr_hit_loc;
+			//this hit_loc is more critical than the previous one this frame
+			hit_loc[cur_victim] = tr_hit_loc;
 		}
 
 		totalDmg[cur_victim] += add_dmg;
@@ -3862,7 +3862,7 @@ qboolean wp_saber_damage_effects(trace_t* tr, const float length, const float dm
 			}
 
 			//Get the hit location based on surface name
-			if (hitLoc[num_hit_ents] == HL_NONE && tr_hit_loc[num_hit_ents] == HL_NONE
+			if (hit_loc[num_hit_ents] == HL_NONE && tr_hit_loc[num_hit_ents] == HL_NONE
 				|| hitDismemberLoc[num_hit_ents] == HL_NONE && tr_dismember_loc[num_hit_ents] == HL_NONE
 				|| !hitDismember[num_hit_ents] && !tr_dismember[num_hit_ents])
 			{
@@ -6876,7 +6876,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 	memset(dmgNormal, 0, sizeof dmgNormal);
 	memset(dmgSpot, 0, sizeof dmgSpot);
 	memset(dmgFraction, 0, sizeof dmgFraction);
-	memset(hitLoc, HL_NONE, sizeof hitLoc);
+	memset(hit_loc, HL_NONE, sizeof hit_loc);
 	memset(hitDismemberLoc, HL_NONE, sizeof hitDismemberLoc);
 	memset(hitDismember, qfalse, sizeof hitDismember);
 	numVictims = 0;
@@ -21909,7 +21909,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 			{
 				//saber can block lightning
 				//make them do a parry
-				const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
+				const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 				vec3_t fwd;
 				vec3_t right;
 				vec3_t up;
@@ -21922,7 +21922,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 				VectorMA(fwd, Q_irand(0, 360), up, fwd);
 				VectorNormalize(fwd);
 
-				if (chanceOfFizz > 0)
+				if (chance_of_fizz > 0)
 				{
 					vec3_t end;
 					constexpr int npcblade_num = 0;
@@ -22089,7 +22089,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 					{
 						//saber can block lightning
 						//make them do a parry
-						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
+						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd;
 						vec3_t right;
 						vec3_t up;
@@ -22102,7 +22102,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						VectorMA(fwd, Q_irand(0, 360), up, fwd);
 						VectorNormalize(fwd);
 
-						if (chanceOfFizz > 0)
+						if (chance_of_fizz > 0)
 						{
 							vec3_t end;
 							constexpr int npcblade_num = 0;
@@ -22189,7 +22189,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						//saber can block lightning
 						const qboolean ActiveBlocking = trace_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
 						//make them do a parry
-						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
+						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd;
 						vec3_t right;
 						vec3_t up;
@@ -22201,7 +22201,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						VectorMA(fwd, Q_irand(0, 360), up, fwd);
 						VectorNormalize(fwd);
 
-						if (chanceOfFizz > 0)
+						if (chance_of_fizz > 0)
 						{
 							vec3_t end;
 							constexpr int npcblade_num = 0;
@@ -22260,7 +22260,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20,
 							35))
 					{
-						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
+						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd;
 						vec3_t right;
 						vec3_t up;
@@ -22272,7 +22272,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						VectorMA(fwd, Q_irand(0, 360), up, fwd);
 						VectorNormalize(fwd);
 
-						if (chanceOfFizz > 0)
+						if (chance_of_fizz > 0)
 						{
 							vec3_t end;
 							constexpr int npc_blade_num = 0;
@@ -22314,7 +22314,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						trace_ent->client->ps.forcePower > 20)
 					{
 						//make them do a parry
-						const float chanceOfFizz = Q_flrand(0.0f, 1.0f);
+						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd;
 						vec3_t right;
 						vec3_t up;
@@ -22326,7 +22326,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						VectorMA(fwd, Q_irand(0, 360), up, fwd);
 						VectorNormalize(fwd);
 
-						if (chanceOfFizz > 0)
+						if (chance_of_fizz > 0)
 						{
 							vec3_t end;
 							constexpr int npc_blade_num = 0;

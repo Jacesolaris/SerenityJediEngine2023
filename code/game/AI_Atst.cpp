@@ -83,7 +83,7 @@ Called by NPC's and player in an ATST
 -------------------------
 */
 
-void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc)
+void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc)
 {
 	int newBolt;
 
@@ -96,9 +96,9 @@ void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, in
 		G_SoundOnEnt(self, CHAN_LESS_ATTEN, "sound/chars/atst/atst_damaged2");
 	}
 
-	if (hitLoc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
+	if (hit_loc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
 	{
-		if (self->locationDamage[hitLoc] >= LEFT_ARM_HEALTH) // Blow it up?
+		if (self->locationDamage[hit_loc] >= LEFT_ARM_HEALTH) // Blow it up?
 		{
 			newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash3");
 			if (newBolt != -1)
@@ -111,9 +111,9 @@ void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, in
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "head_light_blaster_cann", TURN_OFF);
 		}
 	}
-	else if (hitLoc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
+	else if (hit_loc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
 	{
-		if (self->locationDamage[hitLoc] >= RIGHT_ARM_HEALTH)
+		if (self->locationDamage[hit_loc] >= RIGHT_ARM_HEALTH)
 		{
 			newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*flash4");
 			if (newBolt != -1)
@@ -134,9 +134,9 @@ NPC_ATST_Pain
 -------------------------
 */
 void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
-	g_atst_check_pain(self, other, point, damage, mod, hitLoc);
+	g_atst_check_pain(self, other, point, damage, mod, hit_loc);
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 }
 

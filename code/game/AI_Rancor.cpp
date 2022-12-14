@@ -324,12 +324,12 @@ void Rancor_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
-extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
-extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, int hit_loc,
+                                  qboolean force = qfalse);
+extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
+extern int NPC_GetEntsNearBolt(gentity_t** radius_ents, float radius, int bolt_index, vec3_t bolt_org);
 
 void Rancor_DropVictim(gentity_t* self)
 {
@@ -396,7 +396,7 @@ void Rancor_DropVictim(gentity_t* self)
 	self->count = 0; //drop him
 }
 
-void Rancor_Swing(int boltIndex, qboolean tryGrab)
+void Rancor_Swing(int bolt_index, qboolean tryGrab)
 {
 	gentity_t* radiusEnts[128];
 	const float radius = NPC->spawnflags & SPF_RANCOR_MUTANT ? 200 : 88;
@@ -407,7 +407,7 @@ void Rancor_Swing(int boltIndex, qboolean tryGrab)
 	VectorCopy(NPC->currentOrigin, originUp);
 	originUp[2] += NPC->maxs[2] * 0.75f;
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEnts, radius, boltIndex, boltOrg);
+	const int numEnts = NPC_GetEntsNearBolt(radiusEnts, radius, bolt_index, boltOrg);
 
 	//if ( NPCInfo->blockedEntity && G_EntIsBreakable( NPCInfo->blockedEntity->s.number, NPC ) )
 	{
@@ -813,7 +813,7 @@ void Rancor_Bite(void)
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					radiusEnts[i]->client->dismembered = false;
-					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, 1000, hit_loc, qtrue);
+					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hit_loc, qtrue);
 				}
 			}
 			G_Sound(radiusEnts[i], G_SoundIndex("sound/chars/rancor/chomp.wav"));
@@ -1075,8 +1075,7 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 					{
 						//make it look like we bit his head off
 						NPC->activator->client->dismembered = false;
-						G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, 1000, HL_HEAD,
-							qtrue);
+						G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, HL_HEAD, qtrue);
 					}
 					NPC_SetAnim(NPC->activator, SETANIM_BOTH, BOTH_SWIM_IDLE1,
 						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -1097,7 +1096,7 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 				if (NPC->activator->client)
 				{
 					NPC->activator->client->dismembered = false;
-					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue);
+					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, HL_WAIST, qtrue);
 				}
 				//KILL
 				G_Damage(NPC->activator, NPC, NPC, vec3_origin, NPC->activator->currentOrigin,
@@ -1141,7 +1140,7 @@ void Rancor_Attack(float distance, qboolean doCharge, qboolean aimAtBlockedEntit
 				{
 					//cut in half
 					NPC->activator->client->dismembered = false;
-					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue);
+					G_DoDismemberment(NPC->activator, NPC->enemy->currentOrigin, MOD_SABER, HL_WAIST, qtrue);
 					//KILL
 					G_Damage(NPC->activator, NPC, NPC, vec3_origin, NPC->activator->currentOrigin,
 						NPC->enemy->health + 1000,
@@ -1292,7 +1291,7 @@ NPC_Rancor_Pain
 -------------------------
 */
 void NPC_Rancor_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	qboolean hitByRancor = qfalse;
 

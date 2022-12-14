@@ -98,7 +98,7 @@ NPC_Sentry_Pain
 -------------------------
 */
 void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 

@@ -474,7 +474,7 @@ void Seeker_FindEnemy(void)
 {
 	float bestDis = SEEKER_SEEK_RADIUS * SEEKER_SEEK_RADIUS + 1;
 	vec3_t mins, maxs;
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	gentity_t* best = NULL;
 	float closestDist = SEEKER_SEEK_RADIUS * SEEKER_SEEK_RADIUS + 1;
 
@@ -491,11 +491,11 @@ void Seeker_FindEnemy(void)
 	VectorAdd(maxs, NPCS.NPC->r.currentOrigin, maxs);
 	VectorAdd(mins, NPCS.NPC->r.currentOrigin, mins);
 
-	const int numFound = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int numFound = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
 	for (int i = 0; i < numFound; i++)
 	{
-		gentity_t* ent = &g_entities[entityList[i]];
+		gentity_t* ent = &g_entities[entity_list[i]];
 
 		if (ent->s.number == NPCS.NPC->s.number
 			|| !ent->client

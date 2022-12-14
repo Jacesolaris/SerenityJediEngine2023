@@ -698,19 +698,19 @@ int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAle
 
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
 
-qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
+qboolean G_CheckForDanger(const gentity_t* self, int alert_event)
 {
 	//FIXME: more bStates need to call this?
-	if (alertEvent == -1)
+	if (alert_event == -1)
 	{
 		return qfalse;
 	}
 
-	if (level.alertEvents[alertEvent].level >= AEL_DANGER)
+	if (level.alertEvents[alert_event].level >= AEL_DANGER)
 	{
 		//run away!
-		if (!level.alertEvents[alertEvent].owner || !level.alertEvents[alertEvent].owner->client || level.alertEvents[
-			alertEvent].owner != self && level.alertEvents[alertEvent].owner->client->playerTeam != self->client->
+		if (!level.alertEvents[alert_event].owner || !level.alertEvents[alert_event].owner->client || level.alertEvents[
+			alert_event].owner != self && level.alertEvents[alert_event].owner->client->playerTeam != self->client->
 				playerTeam)
 		{
 			if (self->NPC)
@@ -720,19 +720,19 @@ qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 					//can't flee
 					return qfalse;
 				}
-				if (level.alertEvents[alertEvent].level >= AEL_DANGER_GREAT || self->s.weapon == WP_NONE || self->s.
+				if (level.alertEvents[alert_event].level >= AEL_DANGER_GREAT || self->s.weapon == WP_NONE || self->s.
 					weapon == WP_MELEE)
 				{
 					//flee for a longer period of time
-					NPC_StartFlee(level.alertEvents[alertEvent].owner, level.alertEvents[alertEvent].position,
-						level.alertEvents[alertEvent].level, 3000, 6000);
+					NPC_StartFlee(level.alertEvents[alert_event].owner, level.alertEvents[alert_event].position,
+						level.alertEvents[alert_event].level, 3000, 6000);
 				}
 				else if (!Q_irand(0, 10)) //FIXME: base on rank?  aggression?
 				{
 					//just normal danger and I have a weapon, so just a 25% chance of fleeing only for a few seconds
 					//FIXME: used to just find a better combat point, need that functionality back
-					NPC_StartFlee(level.alertEvents[alertEvent].owner, level.alertEvents[alertEvent].position,
-						level.alertEvents[alertEvent].level, 1000, 3000);
+					NPC_StartFlee(level.alertEvents[alert_event].owner, level.alertEvents[alert_event].position,
+						level.alertEvents[alert_event].level, 1000, 3000);
 				}
 				else
 				{
@@ -748,10 +748,10 @@ qboolean G_CheckForDanger(const gentity_t* self, int alertEvent)
 	return qfalse;
 }
 
-qboolean NPC_CheckForDanger(int alertEvent)
+qboolean NPC_CheckForDanger(int alert_event)
 {
 	//FIXME: more bStates need to call this?
-	return G_CheckForDanger(NPC, alertEvent);
+	return G_CheckForDanger(NPC, alert_event);
 }
 
 /*

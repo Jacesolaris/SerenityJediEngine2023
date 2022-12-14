@@ -191,7 +191,7 @@ Does not include "aim" in it's calculations
 
 FIXME: stop compressing angles into shorts!!!!
 */
-qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
+qboolean NPC_UpdateAngles(qboolean do_pitch, qboolean do_yaw)
 {
 #if 1
 
@@ -207,10 +207,10 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 	if (!NPCS.NPC->enemy && (level.time < NPCS.NPCInfo->aimTime || NPCS.NPC->client->renderInfo.renderFlags &
 		RF_LOCKEDANGLE))
 	{
-		if (doPitch)
+		if (do_pitch)
 			targetPitch = NPCS.NPCInfo->lockedDesiredPitch;
 
-		if (doYaw)
+		if (do_yaw)
 			targetYaw = NPCS.NPCInfo->lockedDesiredYaw;
 	}
 	else
@@ -218,13 +218,13 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 		// we're changing the lockedDesired Pitch/Yaw below so it's lost it's original meaning, get rid of the lock flag
 		NPCS.NPC->client->renderInfo.renderFlags &= ~RF_LOCKEDANGLE;
 
-		if (doPitch)
+		if (do_pitch)
 		{
 			targetPitch = NPCS.NPCInfo->desiredPitch;
 			NPCS.NPCInfo->lockedDesiredPitch = NPCS.NPCInfo->desiredPitch;
 		}
 
-		if (doYaw)
+		if (do_yaw)
 		{
 			targetYaw = NPCS.NPCInfo->desiredYaw;
 			NPCS.NPCInfo->lockedDesiredYaw = NPCS.NPCInfo->desiredYaw;
@@ -267,7 +267,7 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 		yawSpeed *= (float)NPCS.NPCInfo->lookMode / (float)LT_FULLFACE;
 	}
 
-	if (doYaw)
+	if (do_yaw)
 	{
 		// decay yaw error
 		error = AngleDelta(NPCS.NPC->client->ps.viewangles[YAW], targetYaw);
@@ -303,7 +303,7 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 	}
 
 	//FIXME: have a pitchSpeed?
-	if (doPitch)
+	if (do_pitch)
 	{
 		// decay pitch error
 		error = AngleDelta(NPCS.NPC->client->ps.viewangles[PITCH], targetPitch);
@@ -476,7 +476,7 @@ qboolean NPC_UpdateFiringAngles ( qboolean doPitch, qboolean doYaw )
 
   Includes aim when determining angles - so they don't always hit...
   */
-qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
+qboolean NPC_UpdateFiringAngles(qboolean do_pitch, qboolean do_yaw)
 {
 #if 0
 
@@ -553,21 +553,21 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 	// if angle changes are locked; just keep the current angles
 	if (level.time < NPCS.NPCInfo->aimTime)
 	{
-		if (doPitch)
+		if (do_pitch)
 			targetPitch = NPCS.NPCInfo->lockedDesiredPitch;
-		if (doYaw)
+		if (do_yaw)
 			targetYaw = NPCS.NPCInfo->lockedDesiredYaw;
 	}
 	else
 	{
-		if (doPitch)
+		if (do_pitch)
 			targetPitch = NPCS.NPCInfo->desiredPitch;
-		if (doYaw)
+		if (do_yaw)
 			targetYaw = NPCS.NPCInfo->desiredYaw;
 
-		if (doPitch)
+		if (do_pitch)
 			NPCS.NPCInfo->lockedDesiredPitch = NPCS.NPCInfo->desiredPitch;
-		if (doYaw)
+		if (do_yaw)
 			NPCS.NPCInfo->lockedDesiredYaw = NPCS.NPCInfo->desiredYaw;
 	}
 
@@ -584,7 +584,7 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 		NPCS.NPCInfo->aimErrorDebounceTime = level.time + Q_irand(250, 2000);
 	}
 
-	if (doYaw)
+	if (do_yaw)
 	{
 		// decay yaw diff
 		diff = AngleDelta(NPCS.NPC->client->ps.viewangles[YAW], targetYaw);
@@ -619,7 +619,7 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 		NPCS.ucmd.angles[YAW] = ANGLE2SHORT(targetYaw + diff + error) - NPCS.client->ps.delta_angles[YAW];
 	}
 
-	if (doPitch)
+	if (do_pitch)
 	{
 		// decay pitch diff
 		diff = AngleDelta(NPCS.NPC->client->ps.viewangles[PITCH], targetPitch);
@@ -667,7 +667,7 @@ static void NPC_UpdateShootAngles (vec3_t angles, qboolean doPitch, qboolean doY
 Does update angles on shootAngles
 */
 
-void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
+void NPC_UpdateShootAngles(vec3_t angles, qboolean do_pitch, qboolean do_yaw)
 {
 	//FIXME: shoot angles either not set right or not used!
 	float error;
@@ -675,12 +675,12 @@ void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
 	float targetPitch = 0;
 	float targetYaw = 0;
 
-	if (doPitch)
+	if (do_pitch)
 		targetPitch = angles[PITCH];
-	if (doYaw)
+	if (do_yaw)
 		targetYaw = angles[YAW];
 
-	if (doYaw)
+	if (do_yaw)
 	{
 		// decay yaw error
 		error = AngleDelta(NPCS.NPCInfo->shootAngles[YAW], targetYaw);
@@ -708,7 +708,7 @@ void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
 		NPCS.NPCInfo->shootAngles[YAW] = targetYaw + error;
 	}
 
-	if (doPitch)
+	if (do_pitch)
 	{
 		// decay pitch error
 		error = AngleDelta(NPCS.NPCInfo->shootAngles[PITCH], targetPitch);
@@ -1111,7 +1111,7 @@ NPC_PickEnemyExt
 -------------------------
 */
 
-gentity_t* NPC_PickEnemyExt(qboolean checkAlerts)
+gentity_t* NPC_PickEnemyExt(qboolean check_alerts)
 {
 	//If we've asked for the closest enemy
 	const int entID = NPC_FindNearestEnemy(NPCS.NPC);
@@ -1120,14 +1120,14 @@ gentity_t* NPC_PickEnemyExt(qboolean checkAlerts)
 	if (entID >= 0)
 		return &g_entities[entID];
 
-	if (checkAlerts)
+	if (check_alerts)
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			const alertEvent_t* event = &level.alertEvents[alertEvent];
+			const alertEvent_t* event = &level.alertEvents[alert_event];
 
 			//Don't pay attention to our own alerts
 			if (event->owner == NPCS.NPC)
@@ -1229,7 +1229,7 @@ NPC_FindEnemy
 -------------------------
 */
 
-qboolean NPC_FindEnemy(qboolean checkAlerts)
+qboolean NPC_FindEnemy(qboolean check_alerts)
 {
 	//We're ignoring all enemies for now
 	if (NPCS.NPC->NPC->scriptFlags & SCF_IGNORE_ENEMIES)
@@ -1265,7 +1265,7 @@ qboolean NPC_FindEnemy(qboolean checkAlerts)
 	if (NPC_ValidEnemy(NPCS.NPC->enemy))
 		return qtrue;
 
-	gentity_t* newenemy = NPC_PickEnemyExt(checkAlerts);
+	gentity_t* newenemy = NPC_PickEnemyExt(check_alerts);
 
 	//if we found one, take it as the enemy
 	if (NPC_ValidEnemy(newenemy))
@@ -1284,9 +1284,9 @@ NPC_CheckEnemyExt
 -------------------------
 */
 
-qboolean NPC_CheckEnemyExt(qboolean checkAlerts)
+qboolean NPC_CheckEnemyExt(qboolean check_alerts)
 {
-	return NPC_FindEnemy(checkAlerts);
+	return NPC_FindEnemy(check_alerts);
 }
 
 /*
@@ -1295,7 +1295,7 @@ NPC_FacePosition
 -------------------------
 */
 
-qboolean NPC_FacePosition(vec3_t position, qboolean doPitch)
+qboolean NPC_FacePosition(vec3_t position, qboolean do_pitch)
 {
 	vec3_t muzzle;
 	vec3_t angles;
@@ -1344,7 +1344,7 @@ qboolean NPC_FacePosition(vec3_t position, qboolean doPitch)
 	if (fabs(yawDelta) > VALID_ATTACK_CONE)
 		facing = qfalse;
 
-	if (doPitch)
+	if (do_pitch)
 	{
 		//Find the delta between our goal and our current facing
 		const float currentAngles = SHORT2ANGLE(NPCS.ucmd.angles[PITCH] + NPCS.client->ps.delta_angles[PITCH]);
@@ -1364,14 +1364,14 @@ NPC_FaceEntity
 -------------------------
 */
 
-qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch)
+qboolean NPC_FaceEntity(const gentity_t* ent, qboolean do_pitch)
 {
 	vec3_t entPos;
 
 	//Get the positions
 	CalcEntitySpot(ent, SPOT_HEAD_LEAN, entPos);
 
-	return NPC_FacePosition(entPos, doPitch);
+	return NPC_FacePosition(entPos, do_pitch);
 }
 
 /*
@@ -1380,7 +1380,7 @@ NPC_FaceEnemy
 -------------------------
 */
 
-qboolean NPC_FaceEnemy(qboolean doPitch)
+qboolean NPC_FaceEnemy(qboolean do_pitch)
 {
 	if (NPCS.NPC == NULL)
 		return qfalse;
@@ -1388,7 +1388,7 @@ qboolean NPC_FaceEnemy(qboolean doPitch)
 	if (NPCS.NPC->enemy == NULL)
 		return qfalse;
 
-	return NPC_FaceEntity(NPCS.NPC->enemy, doPitch);
+	return NPC_FaceEntity(NPCS.NPC->enemy, do_pitch);
 }
 
 /*
@@ -1442,7 +1442,7 @@ void NPC_ClearLookTarget(const gentity_t* self)
 NPC_SetLookTarget
 -------------------------
 */
-void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
+void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time)
 {
 	if (!self->client)
 	{
@@ -1455,8 +1455,8 @@ void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
 		return;
 	}
 
-	self->client->renderInfo.lookTarget = entNum;
-	self->client->renderInfo.lookTargetClearTime = clearTime;
+	self->client->renderInfo.lookTarget = ent_num;
+	self->client->renderInfo.lookTargetClearTime = clear_time;
 }
 
 /*
@@ -1535,7 +1535,7 @@ void G_CheckCharmed(gentity_t* self)
 	}
 }
 
-void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex)
+void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index)
 {
 	mdxaBone_t boltMatrix;
 	vec3_t result, angles;
@@ -1560,8 +1560,8 @@ void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelInde
 		return;
 	}
 
-	trap->G2API_GetBoltMatrix(self->ghoul2, modelIndex,
-		boltIndex,
+	trap->G2API_GetBoltMatrix(self->ghoul2, model_index,
+		bolt_index,
 		&boltMatrix, angles, self->r.currentOrigin, level.time,
 		NULL, self->modelScale);
 	if (pos)
@@ -1571,33 +1571,33 @@ void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelInde
 	}
 }
 
-float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex)
+float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index)
 {
 	vec3_t org;
 
-	if (!targEnt)
+	if (!targ_ent)
 	{
 		return Q3_INFINITE;
 	}
 
-	G_GetBoltPosition(NPCS.NPC, boltIndex, org, 0);
+	G_GetBoltPosition(NPCS.NPC, bolt_index, org, 0);
 
-	return Distance(targEnt->r.currentOrigin, org);
+	return Distance(targ_ent->r.currentOrigin, org);
 }
 
-float NPC_EnemyRangeFromBolt(int boltIndex)
+float NPC_EnemyRangeFromBolt(int bolt_index)
 {
-	return NPC_EntRangeFromBolt(NPCS.NPC->enemy, boltIndex);
+	return NPC_EntRangeFromBolt(NPCS.NPC->enemy, bolt_index);
 }
 
-int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int boltIndex, vec3_t boltOrg)
+int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg)
 {
 	vec3_t mins, maxs;
 
 	//get my handRBolt's position
 	vec3_t org;
 
-	G_GetBoltPosition(NPCS.NPC, boltIndex, org, 0);
+	G_GetBoltPosition(NPCS.NPC, bolt_index, org, 0);
 
 	VectorCopy(org, boltOrg);
 

@@ -298,7 +298,7 @@ qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** 
 	int i;
 	vec3_t mins, maxs;
 	vec3_t pusher_mins, pusher_maxs, totalMins, totalMaxs;
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 
 	*obstacle = nullptr;
 
@@ -346,10 +346,10 @@ qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** 
 		}
 	}
 
-	// unlink the pusher so we don't get it in the entityList
+	// unlink the pusher so we don't get it in the entity_list
 	gi.unlinkentity(pusher);
 
-	const int listed_entities = gi.EntitiesInBox(totalMins, totalMaxs, entityList, MAX_GENTITIES);
+	const int listed_entities = gi.EntitiesInBox(totalMins, totalMaxs, entity_list, MAX_GENTITIES);
 
 	// move the pusher to it's final position
 	VectorAdd(pusher->currentOrigin, move, pusher->currentOrigin);
@@ -362,7 +362,7 @@ qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** 
 	// see if any solid entities are inside the final position
 	for (int e = 0; e < listed_entities; e++)
 	{
-		gentity_t* check = entityList[e];
+		gentity_t* check = entity_list[e];
 
 		if (check->s.eFlags & EF_MISSILE_STICK && (not_moving || check->s.groundEntityNum < 0 || check->s.
 			groundEntityNum >= ENTITYNUM_NONE))
@@ -2094,7 +2094,7 @@ void SP_path_corner(gentity_t* self)
 }
 
 void func_train_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	if (self->target3)
 	{

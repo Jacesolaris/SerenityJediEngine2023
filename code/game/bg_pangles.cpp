@@ -69,7 +69,7 @@ extern qboolean player_locked;
 extern pmove_t* pm;
 extern pml_t pml;
 
-void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, int boltIndex, const char* animBone, const char* firstBone,
+void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, int bolt_index, const char* animBone, const char* firstBone,
 	const char* secondBone,
 	int time, const entityState_t* ent, int animFileIndex, int basePose,
 	vec3_t desiredPos, qboolean* ikInProgress, vec3_t origin,
@@ -167,7 +167,7 @@ void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, int boltIndex, const char* animBone, 
 		VectorCopy(angles, tAngles);
 		tAngles[PITCH] = tAngles[ROLL] = 0;
 
-		gi.G2API_GetBoltMatrix(ghoul2, 0, boltIndex, &holdPointMatrix, tAngles, origin, time, nullptr, scale);
+		gi.G2API_GetBoltMatrix(ghoul2, 0, bolt_index, &holdPointMatrix, tAngles, origin, time, nullptr, scale);
 		//Get the point position from the matrix.
 		holdPoint[0] = holdPointMatrix.matrix[0][3];
 		holdPoint[1] = holdPointMatrix.matrix[1][3];
@@ -1263,7 +1263,7 @@ qboolean PM_AdjustAngleForWallJump(gentity_t* ent, usercmd_t* ucmd, qboolean doM
 
 qboolean pm_adjust_angles_for_bf_kick(gentity_t* self, usercmd_t* ucmd, vec3_t fwdAngs, qboolean aimFront)
 {
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t mins, maxs;
 	const int radius = self->maxs[0] * 1.5f + self->maxs[0] * 1.5f + STAFF_KICK_RANGE + 24.0f;
 	//a little wide on purpose
@@ -1282,12 +1282,12 @@ qboolean pm_adjust_angles_for_bf_kick(gentity_t* self, usercmd_t* ucmd, vec3_t f
 		maxs[i] = center[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		vec3_t vec2Ent;
-		const gentity_t* ent = entityList[e];
+		const gentity_t* ent = entity_list[e];
 
 		if (ent == self)
 			continue;

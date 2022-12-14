@@ -255,9 +255,9 @@ void G_StopEffect(const int fx_id, const int model_index, const int bolt_index, 
 	gi.G2API_AttachEnt(&tent->s.boltInfo, &g_entities[ent_num].ghoul2[model_index], bolt_index, ent_num, model_index);
 }
 
-void G_StopEffect(const char* name, const int modelIndex, const int boltIndex, const int entNum)
+void G_StopEffect(const char* name, const int model_index, const int bolt_index, const int entNum)
 {
-	G_StopEffect(G_EffectIndex(name), modelIndex, boltIndex, entNum);
+	G_StopEffect(G_EffectIndex(name), model_index, bolt_index, entNum);
 }
 
 //===Bypass network for sounds on specific channels====================
@@ -2157,7 +2157,7 @@ void removeBoltSurface(gentity_t* ent)
 	G_FreeEntity(ent);
 }
 
-void G_SetBoltSurfaceRemoval(const int entNum, const int modelIndex, const int boltIndex, const int surfaceIndex,
+void G_SetBoltSurfaceRemoval(const int entNum, const int model_index, const int bolt_index, const int surfaceIndex,
 	float duration)
 {
 	constexpr vec3_t snapped = { 0, 0, 0 };
@@ -2166,8 +2166,8 @@ void G_SetBoltSurfaceRemoval(const int entNum, const int modelIndex, const int b
 
 	e->classname = "BoltRemoval";
 	e->cantHitEnemyCounter = entNum;
-	e->damage = modelIndex;
-	e->attackDebounceTime = boltIndex;
+	e->damage = model_index;
+	e->attackDebounceTime = bolt_index;
 	e->aimDebounceTime = surfaceIndex;
 
 	G_SetOrigin(e, snapped);

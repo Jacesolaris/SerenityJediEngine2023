@@ -50,7 +50,7 @@ extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolea
 #define	MAX_CHECK_THRESHOLD	1
 
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
@@ -68,8 +68,8 @@ extern void ForceRage(gentity_t* self);
 extern void ForceProtect(gentity_t* self);
 extern void ForceAbsorb(gentity_t* self);
 extern int WP_MissileBlockForBlock(int saber_block);
-extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir,
-	vec3_t bladeDir, int mod);
+extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit_loc, vec3_t point, vec3_t dir,
+	vec3_t blade_dir, int mod);
 extern qboolean WP_ForcePowerUsable(const gentity_t* self, forcePowers_t forcePower);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
@@ -408,8 +408,8 @@ void NPC_TavionSithSword_Precache(void)
 	G_SoundIndex("sound/weapons/scepter/recharge.wav");
 }
 
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 void Tavion_ScepterDamage(void)
 {
@@ -497,8 +497,8 @@ void Tavion_ScepterSlam(void)
 		return;
 	}
 
-	const int boltIndex = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[1], 0, "*weapon");
-	if (boltIndex != -1)
+	const int bolt_index = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[1], 0, "*weapon");
+	if (bolt_index != -1)
 	{
 		mdxaBone_t boltMatrix;
 		vec3_t handle, bottom, angles;
@@ -512,7 +512,7 @@ void Tavion_ScepterSlam(void)
 		VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
 
 		trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 2,
-			boltIndex,
+			bolt_index,
 			&boltMatrix, angles, NPCS.NPC->r.currentOrigin, level.time,
 			NULL, NPCS.NPC->modelScale);
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, handle);
@@ -684,13 +684,13 @@ void Tavion_SithSwordRecharge(void)
 		VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
 
 		NPCS.NPC->s.loopSound = G_SoundIndex("sound/weapons/scepter/recharge.wav");
-		const int boltIndex = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[0], 0, "*weapon");
+		const int bolt_index = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[0], 0, "*weapon");
 		NPCS.NPC->client->ps.legsTimer = NPCS.NPC->client->ps.torsoTimer = 0;
 		NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, BOTH_TAVION_SWORDPOWER, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 
 		//RAFIXME:  This probably needs to be moved to client side.
 		trap->G2API_GetBoltMatrix(NPCS.NPC->client->weaponGhoul2[0], 0,
-			boltIndex,
+			bolt_index,
 			&boltMatrix, angles, NPCS.NPC->r.currentOrigin, level.time,
 			NULL, NPCS.NPC->modelScale);
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
@@ -3080,7 +3080,7 @@ saberMoveName_t G_PickAutoMultiKick(gentity_t* self, qboolean allowSingles, qboo
 
 extern qboolean G_CanKickEntity(const gentity_t* self, const gentity_t* target);
 extern saberMoveName_t G_PickAutoKick(gentity_t* self, const gentity_t* enemy);
-extern float NPC_EnemyRangeFromBolt(int boltIndex);
+extern float NPC_EnemyRangeFromBolt(int bolt_index);
 extern qboolean PM_SaberInTransition(int move);
 extern void ForceDrain(gentity_t* self);
 extern qboolean PM_CrouchAnim(int anim);
@@ -3261,13 +3261,13 @@ static void Jedi_CombatDistance(int enemy_dist)
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 						NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
-					vec3_t smackDir;
-					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-					smackDir[2] += 20;
-					VectorNormalize(smackDir);
+					vec3_t smack_dir;
+					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+					smack_dir[2] += 20;
+					VectorNormalize(smack_dir);
 					//hurt them
 					G_Sound(NPCS.NPC, CHAN_AUTO, G_SoundIndex("sound/chars/%s/misc/pain0%d"));
-					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 						(g_npcspskill.integer + 1) * Q_irand(2, 5), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_SLAP_L)
 					{
@@ -3279,15 +3279,15 @@ static void Jedi_CombatDistance(int enemy_dist)
 							knockAnim = BOTH_KNOCKDOWN4;
 						}
 						//throw them
-						smackDir[2] = 1;
-						VectorNormalize(smackDir);
-						g_throw(NPCS.NPC->enemy, smackDir, 30);
+						smack_dir[2] = 1;
+						VectorNormalize(smack_dir);
+						g_throw(NPCS.NPC->enemy, smack_dir, 30);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_SLAP_R)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 40);
+						g_throw(NPCS.NPC->enemy, smack_dir, 40);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
@@ -3295,7 +3295,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 					{
 						//uppercut
 						//throw them
-						g_throw(NPCS.NPC->enemy, smackDir, 50);
+						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -3325,9 +3325,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
-				const int swingAnim = Q_irand(BOTH_A7_SLAP_L, BOTH_A7_SLAP_R);
+				const int swing_anim = Q_irand(BOTH_A7_SLAP_L, BOTH_A7_SLAP_R);
 				G_Sound(NPCS.NPC, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick1.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(10000, 15000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3343,9 +3343,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
-				const int swingAnim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B3);
+				const int swing_anim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B3);
 				G_Sound(NPCS.NPC, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick1.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(10000, 15000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3379,13 +3379,13 @@ static void Jedi_CombatDistance(int enemy_dist)
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 						NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
-					vec3_t smackDir;
-					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-					smackDir[2] += 20;
-					VectorNormalize(smackDir);
+					vec3_t smack_dir;
+					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+					smack_dir[2] += 20;
+					VectorNormalize(smack_dir);
 					//hurt them
 					G_Sound(NPCS.NPC, CHAN_AUTO, G_SoundIndex("sound/chars/%s/misc/pain0%d"));
-					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 						(g_npcspskill.integer + 1) * Q_irand(2, 5), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_SLAP_L)
 					{
@@ -3397,15 +3397,15 @@ static void Jedi_CombatDistance(int enemy_dist)
 							knockAnim = BOTH_KNOCKDOWN4;
 						}
 						//throw them
-						smackDir[2] = 1;
-						VectorNormalize(smackDir);
-						g_throw(NPCS.NPC->enemy, smackDir, 30);
+						smack_dir[2] = 1;
+						VectorNormalize(smack_dir);
+						g_throw(NPCS.NPC->enemy, smack_dir, 30);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_SLAP_R)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 40);
+						g_throw(NPCS.NPC->enemy, smack_dir, 40);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
@@ -3413,7 +3413,7 @@ static void Jedi_CombatDistance(int enemy_dist)
 					{
 						//uppercut
 						//throw them
-						g_throw(NPCS.NPC->enemy, smackDir, 50);
+						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -3444,9 +3444,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
-				const int swingAnim = Q_irand(BOTH_A7_SLAP_L, BOTH_A7_SLAP_R);
+				const int swing_anim = Q_irand(BOTH_A7_SLAP_L, BOTH_A7_SLAP_R);
 				G_Sound(NPCS.NPC, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick1.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(15000, 20000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3462,9 +3462,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
-				const int swingAnim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B);
+				const int swing_anim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B);
 				G_Sound(NPCS.NPC, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick1.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(15000, 20000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -6672,7 +6672,7 @@ gentity_t* Jedi_FindEnemyInCone(gentity_t* self, gentity_t* fallback, float minD
 	vec3_t forward, mins, maxs, dir;
 	const float bestDist = Q3_INFINITE;
 	gentity_t* enemy = fallback;
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	int e;
 	trace_t tr;
 
@@ -6688,11 +6688,11 @@ gentity_t* Jedi_FindEnemyInCone(gentity_t* self, gentity_t* fallback, float minD
 		mins[e] = self->r.currentOrigin[e] - 1024;
 		maxs[e] = self->r.currentOrigin[e] + 1024;
 	}
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (e = 0; e < numListedEntities; e++)
+	for (e = 0; e < num_listed_entities; e++)
 	{
-		gentity_t* check = &g_entities[entityList[e]];
+		gentity_t* check = &g_entities[entity_list[e]];
 		if (check == self)
 		{
 			//me
@@ -8836,20 +8836,20 @@ void NPC_Jedi_Pain(gentity_t* self, gentity_t* attacker, int damage)
 
 qboolean Jedi_CheckDanger(void)
 {
-	const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
+	const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
 
-	if (level.alertEvents[alertEvent].level >= AEL_DANGER)
+	if (level.alertEvents[alert_event].level >= AEL_DANGER)
 	{
 		//run away!
-		if (!level.alertEvents[alertEvent].owner
-			|| !level.alertEvents[alertEvent].owner->client
-			|| level.alertEvents[alertEvent].owner != NPCS.NPC && level.alertEvents[alertEvent].owner->client->
+		if (!level.alertEvents[alert_event].owner
+			|| !level.alertEvents[alert_event].owner->client
+			|| level.alertEvents[alert_event].owner != NPCS.NPC && level.alertEvents[alert_event].owner->client->
 			playerTeam != NPCS.NPC->client->playerTeam)
 		{
 			//no owner
 			return qfalse;
 		}
-		G_SetEnemy(NPCS.NPC, level.alertEvents[alertEvent].owner);
+		G_SetEnemy(NPCS.NPC, level.alertEvents[alert_event].owner);
 		NPCS.NPCInfo->enemyLastSeenTime = level.time;
 		TIMER_Set(NPCS.NPC, "attackDelay", Q_irand(500, 2500));
 		return qtrue;
@@ -10539,7 +10539,7 @@ void NPC_CheckEvasion(void)
 			}
 			else
 			{
-				int entityList[MAX_GENTITIES];
+				int entity_list[MAX_GENTITIES];
 
 				vec3_t mins;
 				vec3_t maxs;
@@ -10549,7 +10549,7 @@ void NPC_CheckEvasion(void)
 					mins[e] = NPCS.NPC->r.currentOrigin[e] - 256;
 					maxs[e] = NPCS.NPC->r.currentOrigin[e] + 256;
 				}
-				const int numEnts = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+				const int numEnts = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
 				for (int i = 0; i < numEnts; i++)
 				{

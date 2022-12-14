@@ -33,13 +33,13 @@ extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern void CG_DrawAlert(vec3_t origin, float rating);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
-extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
+extern void G_StartStasisEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
@@ -89,10 +89,10 @@ extern saberMoveName_t G_PickAutoKick(const gentity_t* self, const gentity_t* en
 extern saberMoveName_t g_pick_auto_multi_kick(gentity_t* self, qboolean allowSingles, qboolean storeMove);
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 extern qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f);
-extern float NPC_EnemyRangeFromBolt(int boltIndex);
+extern float NPC_EnemyRangeFromBolt(int bolt_index);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask);
@@ -4969,9 +4969,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							{
 								dodge_anim = BOTH_DASH_L;
 								self->client->pers.cmd.rightmove = -127;
-								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
-								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 7;
-								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 7;
 								G_SoundOnEnt(self, CHAN_BODY, "sound/weapons/force/dash.wav");
 								evasion_type = EVASION_DODGE;
 							}
@@ -5042,9 +5039,6 @@ evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitl
 							{
 								dodge_anim = BOTH_DASH_R;
 								self->client->pers.cmd.rightmove = 127;
-								AngleVectors(self->client->ps.viewangles, hitdir, nullptr, nullptr);
-								self->client->ps.velocity[0] = self->client->ps.velocity[0] * 7;
-								self->client->ps.velocity[1] = self->client->ps.velocity[1] * 7;
 								G_SoundOnEnt(self, CHAN_BODY, "sound/weapons/force/dash.wav");
 								evasion_type = EVASION_DODGE;
 							}
@@ -8454,7 +8448,7 @@ NPC_Jedi_Pain
 -------------------------
 */
 
-void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hitLoc)
+void NPC_Jedi_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hit_loc)
 {
 	if (attacker->s.weapon == WP_SABER)
 	{

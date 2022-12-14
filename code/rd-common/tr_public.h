@@ -290,12 +290,12 @@ using refexport_t = struct
 		vec3_t scale,
 		CMiniHeap*, EG2_Collision eG2TraceType, int useLod, float fRadius);
 	void (*G2API_CleanGhoul2Models)(CGhoul2Info_v& ghoul2);
-	void (*G2API_CopyGhoul2Instance)(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int modelIndex);
+	void (*G2API_CopyGhoul2Instance)(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int model_index);
 	void (*G2API_DetachEnt)(int* boltInfo);
 	qboolean(*G2API_DetachG2Model)(CGhoul2Info* ghlInfo);
 	qboolean(*G2API_GetAnimFileName)(CGhoul2Info* ghlInfo, char** filename);
-	char* (*G2API_GetAnimFileNameIndex)(qhandle_t modelIndex);
-	char* (*G2API_GetAnimFileInternalNameIndex)(qhandle_t modelIndex);
+	char* (*G2API_GetAnimFileNameIndex)(qhandle_t model_index);
+	char* (*G2API_GetAnimFileInternalNameIndex)(qhandle_t model_index);
 	int (*G2API_GetAnimIndex)(CGhoul2Info* ghlInfo);
 	qboolean(*G2API_GetAnimRange)(CGhoul2Info* ghlInfo, const char* boneName, int* startFrame, int* endFrame);
 	qboolean(*G2API_GetAnimRangeIndex)(CGhoul2Info* ghlInfo, int boneIndex, int* startFrame, int* endFrame);
@@ -306,7 +306,7 @@ using refexport_t = struct
 		float* currentFrame, int* startFrame, int* endFrame, int* flags,
 		float* animSpeed, int* modelList);
 	int (*G2API_GetBoneIndex)(CGhoul2Info* ghlInfo, const char* boneName, qboolean bAddIfNotFound);
-	qboolean(*G2API_GetBoltMatrix)(CGhoul2Info_v& ghoul2, int modelIndex, int boltIndex, mdxaBone_t* matrix,
+	qboolean(*G2API_GetBoltMatrix)(CGhoul2Info_v& ghoul2, int model_index, int bolt_index, mdxaBone_t* matrix,
 		const vec3_t angles, const vec3_t position, int AframeNum, qhandle_t* modelList,
 		const vec3_t scale);
 	int (*G2API_GetGhoul2ModelFlags)(CGhoul2Info* ghlInfo);
@@ -321,7 +321,7 @@ using refexport_t = struct
 	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t& boltMatrix, Eorientations flags, vec3_t& vec);
 	qboolean(*G2API_HaveWeGhoul2Models)(CGhoul2Info_v& ghoul2);
 	qboolean(*G2API_IKMove)(CGhoul2Info_v& ghoul2, int time, sharedIKMoveParams_t* params);
-	int (*G2API_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int modelIndex,
+	int (*G2API_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int model_index,
 		qhandle_t customSkin, qhandle_t customShader, int modelFlags, int lodBias);
 	qboolean(*G2API_IsPaused)(CGhoul2Info* ghlInfo, const char* boneName);
 	void (*G2API_ListBones)(CGhoul2Info* ghlInfo, int frame);
@@ -338,7 +338,7 @@ using refexport_t = struct
 	qboolean(*G2API_RagPCJGradientSpeed)(CGhoul2Info_v& ghoul2, const char* boneName, float speed);
 	qboolean(*G2API_RemoveBolt)(CGhoul2Info* ghlInfo, int index);
 	qboolean(*G2API_RemoveBone)(CGhoul2Info* ghlInfo, const char* boneName);
-	qboolean(*G2API_RemoveGhoul2Model)(CGhoul2Info_v& ghlInfo, int modelIndex);
+	qboolean(*G2API_RemoveGhoul2Model)(CGhoul2Info_v& ghlInfo, int model_index);
 	qboolean(*G2API_RemoveSurface)(CGhoul2Info* ghlInfo, int index);
 	void (*G2API_SaveGhoul2Models)(CGhoul2Info_v& ghoul2);
 	qboolean(*G2API_SetAnimIndex)(CGhoul2Info* ghlInfo, int index);
@@ -366,9 +366,9 @@ using refexport_t = struct
 	qboolean(*G2API_SetGhoul2ModelFlags)(CGhoul2Info* ghlInfo, int flags);
 	void (*G2API_SetGhoul2ModelIndexes)(CGhoul2Info_v& ghoul2, qhandle_t* modelList, qhandle_t* skinList);
 	qboolean(*G2API_SetLodBias)(CGhoul2Info* ghlInfo, int lodBias);
-	qboolean(*G2API_SetNewOrigin)(CGhoul2Info* ghlInfo, int boltIndex);
+	qboolean(*G2API_SetNewOrigin)(CGhoul2Info* ghlInfo, int bolt_index);
 	void (*G2API_SetRagDoll)(CGhoul2Info_v& ghoul2, CRagDollParams* parms);
-	qboolean(*G2API_SetRootSurface)(CGhoul2Info_v& ghlInfo, int modelIndex, const char* surfaceName);
+	qboolean(*G2API_SetRootSurface)(CGhoul2Info_v& ghlInfo, int model_index, const char* surfaceName);
 	qboolean(*G2API_SetShader)(CGhoul2Info* ghlInfo, qhandle_t customShader);
 	qboolean(*G2API_SetSkin)(CGhoul2Info* ghlInfo, qhandle_t customSkin, qhandle_t renderSkin);
 	qboolean(*G2API_SetSurfaceOnOff)(CGhoul2Info* ghlInfo, const char* surfaceName, int flags);

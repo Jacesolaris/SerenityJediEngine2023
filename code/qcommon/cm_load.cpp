@@ -1090,10 +1090,10 @@ int CM_LoadSubBSP(const char* name, qboolean clientload)
 	return count;
 }
 
-int CM_FindSubBSP(int modelIndex)
+int CM_FindSubBSP(int model_index)
 {
 	int count = cmg.numSubModels;
-	if (modelIndex < count)
+	if (model_index < count)
 	{	// belongs to the main bsp
 		return -1;
 	}
@@ -1101,7 +1101,7 @@ int CM_FindSubBSP(int modelIndex)
 	for (int i = 0; i < NumSubBSP; i++)
 	{
 		count += SubBSP[i].numSubModels;
-		if (modelIndex < count)
+		if (model_index < count)
 		{
 			return i;
 		}

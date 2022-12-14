@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern gentity_t* NPC_Spawn_Do(gentity_t* ent);
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
-extern void G_DamageFromKiller(gentity_t* pEnt, const gentity_t* pVehEnt, gentity_t* attacker, vec3_t org, int damage,
+extern void G_DamageFromKiller(gentity_t* p_ent, const gentity_t* p_veh_ent, gentity_t* attacker, vec3_t org, int damage,
 	int dflags, int mod);
 
 extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int setAnimParts, int anim, int setAnimFlags);

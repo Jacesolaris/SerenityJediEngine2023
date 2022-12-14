@@ -46,7 +46,7 @@ class CRagDollUpdateParams;
 struct model_s;
 // internal surface calls  G2_surfaces.cpp
 qboolean G2_SetSurfaceOnOff(CGhoul2Info* ghlInfo, const char* surfaceName, int offFlags);
-qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, int modelIndex, const char* surfaceName);
+qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, int model_index, const char* surfaceName);
 int G2_AddSurface(CGhoul2Info* ghoul2, int surfaceNumber, int polyNumber, float BarycentricI, float BarycentricJ,
 	int lod);
 qboolean G2_RemoveSurface(surfaceInfo_v& slist, int index);
@@ -140,15 +140,15 @@ void SaveGhoul2InfoArray();
 
 qhandle_t G2API_PrecacheGhoul2Model(const char* fileName);
 
-int G2API_InitGhoul2Model(CGhoul2Info_v& ghoul2, const char* fileName, int modelIndex,
+int G2API_InitGhoul2Model(CGhoul2Info_v& ghoul2, const char* fileName, int model_index,
 	qhandle_t customSkin = NULL_HANDLE,
 	qhandle_t customShader = NULL_HANDLE, int modelFlags = 0, int lodBias = 0);
 qboolean G2API_SetLodBias(CGhoul2Info* ghlInfo, int lodBias);
 qboolean G2API_SetSkin(CGhoul2Info* ghlInfo, qhandle_t customSkin, qhandle_t renderSkin = 0);
 qboolean G2API_SetShader(CGhoul2Info* ghlInfo, qhandle_t customShader);
-qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, int modelIndex);
+qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, int model_index);
 qboolean G2API_SetSurfaceOnOff(CGhoul2Info* ghlInfo, const char* surfaceName, int flags);
-qboolean G2API_SetRootSurface(CGhoul2Info_v& ghlInfo, int modelIndex, const char* surfaceName);
+qboolean G2API_SetRootSurface(CGhoul2Info_v& ghlInfo, int model_index, const char* surfaceName);
 qboolean G2API_RemoveSurface(CGhoul2Info* ghlInfo, int index);
 int G2API_AddSurface(CGhoul2Info* ghlInfo, int surfaceNumber, int polyNumber, float BarycentricI, float BarycentricJ,
 	int lod);
@@ -180,7 +180,7 @@ qboolean G2API_DetachG2Model(CGhoul2Info* ghlInfo);
 qboolean G2API_AttachEnt(int* boltInfo, CGhoul2Info* ghlInfoTo, int toBoltIndex, int entNum, int toModelNum);
 void G2API_DetachEnt(int* boltInfo);
 
-qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, int modelIndex, int boltIndex, mdxaBone_t* matrix,
+qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, int model_index, int bolt_index, mdxaBone_t* matrix,
 	const vec3_t angles, const vec3_t position, int frameNum, qhandle_t* modelList,
 	const vec3_t scale);
 
@@ -198,7 +198,7 @@ void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, 
 	CMiniHeap* G2VertSpace,
 	EG2_Collision eG2TraceType, int useLod, float fRadius);
 void G2API_GiveMeVectorFromMatrix(mdxaBone_t& boltMatrix, Eorientations flags, vec3_t& vec);
-void G2API_CopyGhoul2Instance(CGhoul2Info_v& Ghoul2From, CGhoul2Info_v& Ghoul2To, int modelIndex = -1);
+void G2API_CopyGhoul2Instance(CGhoul2Info_v& Ghoul2From, CGhoul2Info_v& Ghoul2To, int model_index = -1);
 void G2API_CleanGhoul2Models(CGhoul2Info_v& ghoul2);
 int G2API_GetParentSurface(CGhoul2Info* ghlInfo, int index);
 int G2API_GetSurfaceIndex(CGhoul2Info* ghlInfo, const char* surfaceName);
@@ -206,7 +206,7 @@ char* G2API_GetSurfaceName(CGhoul2Info* ghlInfo, int surfNumber);
 char* G2API_GetGLAName(CGhoul2Info* ghlInfo);
 qboolean G2API_SetBoneAnglesMatrix(CGhoul2Info* ghlInfo, const char* boneName, const mdxaBone_t& matrix, int flags,
 	qhandle_t* modelList, int blendTime = 0, int currentTime = 0);
-qboolean G2API_SetNewOrigin(CGhoul2Info* ghlInfo, int boltIndex);
+qboolean G2API_SetNewOrigin(CGhoul2Info* ghlInfo, int bolt_index);
 int G2API_GetBoneIndex(CGhoul2Info* ghlInfo, const char* boneName, qboolean bAddIfNotFound);
 qboolean G2API_StopBoneAnglesIndex(CGhoul2Info* ghlInfo, int index);
 qboolean G2API_StopBoneAnimIndex(CGhoul2Info* ghlInfo, int index);
@@ -222,8 +222,8 @@ int G2API_GetAnimIndex(CGhoul2Info* ghlInfo);
 void G2API_SaveGhoul2Models(CGhoul2Info_v& ghoul2);
 void G2API_LoadGhoul2Models(CGhoul2Info_v& ghoul2, char* buffer);
 void G2API_LoadSaveCodeDestructGhoul2Info(CGhoul2Info_v& ghoul2);
-char* G2API_GetAnimFileNameIndex(qhandle_t modelIndex);
-char* G2API_GetAnimFileInternalNameIndex(qhandle_t modelIndex);
+char* G2API_GetAnimFileNameIndex(qhandle_t model_index);
+char* G2API_GetAnimFileInternalNameIndex(qhandle_t model_index);
 int G2API_GetSurfaceRenderStatus(CGhoul2Info* ghlInfo, const char* surfaceName);
 
 // From tr_ghoul2.cpp

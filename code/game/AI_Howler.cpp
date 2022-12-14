@@ -39,13 +39,13 @@ constexpr auto HOWLER_RETREAT_DIST = 300.0f;
 constexpr auto HOWLER_PANIC_HEALTH = 10;
 
 extern void G_UcmdMoveForDir(const gentity_t* self, usercmd_t* cmd, vec3_t dir);
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0);
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index = 0);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
-extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
+extern int NPC_GetEntsNearBolt(gentity_t** radius_ents, float radius, int bolt_index, vec3_t bolt_org);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 
@@ -555,7 +555,7 @@ static void Howler_Combat()
 NPC_Howler_Pain
 -------------------------
 */
-void NPC_Howler_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod, int hitLoc)
+void NPC_Howler_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage, int mod, int hit_loc)
 {
 	if (!self || !self->NPC)
 	{

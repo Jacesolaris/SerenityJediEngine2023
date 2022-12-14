@@ -783,8 +783,8 @@ extern void CG_ChangeWeapon(int num);
 #endif
 
 #ifndef _JK2MP
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 #endif
 
 //NOTE NOTE NOTE NOTE NOTE NOTE

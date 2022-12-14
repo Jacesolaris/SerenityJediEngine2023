@@ -41,7 +41,7 @@ extern void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd);
 extern void WP_BlockPointsUpdate(const gentity_t* self);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
-extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern qboolean PM_LockAngles(gentity_t* ent, usercmd_t* ucmd);
 extern qboolean PM_AdjustAnglesToGripper(gentity_t* gent, usercmd_t* cmd);
 extern qboolean PM_AdjustAnglesToPuller(gentity_t* ent, const gentity_t* puller, usercmd_t* ucmd, qboolean faceAway);
@@ -86,13 +86,13 @@ extern qboolean BG_FullBodyTauntAnim(int anim);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern void G_AttachToVehicle(gentity_t* ent, usercmd_t** ucmd);
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0);
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index = 0);
 extern void G_UpdateEmplacedWeaponData(gentity_t* ent);
 extern void RunEmplacedWeapon(gentity_t* ent, usercmd_t** ucmd);
 extern qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs);
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean G_HasKnockdownAnims(const gentity_t* ent);
-extern int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
+extern int G_GetEntsNearBolt(gentity_t* self, gentity_t** radius_ents, float radius, int bolt_index, vec3_t bolt_org);
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
@@ -133,8 +133,8 @@ extern float manual_npc_kick_absorbing(const gentity_t* defender);
 extern qboolean BG_FullBodyEmoteAnim(int anim);
 extern qboolean BG_FullBodyCowerAnim(int anim);
 extern cvar_t* d_slowmoaction;
-extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartStasisEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
@@ -173,7 +173,7 @@ extern int IsPressingKickButton(const gentity_t* self);
 int G_FindLookItem(gentity_t* self)
 {
 	int bestEntNum = ENTITYNUM_NONE;
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t center, mins, maxs, fwdangles, forward;
 	constexpr float radius = 256;
 	float bestRating = 0.0f;
@@ -188,17 +188,17 @@ int G_FindLookItem(gentity_t* self)
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	if (!numListedEntities)
+	if (!num_listed_entities)
 	{
 		return ENTITYNUM_NONE;
 	}
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		vec3_t dir;
-		const gentity_t* ent = entityList[e];
+		const gentity_t* ent = entity_list[e];
 
 		if (!ent->item)
 		{
@@ -420,7 +420,7 @@ void G_ChooseLookEnemy(gentity_t* self, const usercmd_t* ucmd)
 	//FIXME: should be a more intelligent way of doing this, like auto aim?
 	//closest, most in front... did damage to... took damage from?  How do we know who the player is focusing on?
 	gentity_t* bestEnt = nullptr;
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t center, mins, maxs, fwdangles, forward;
 	constexpr float radius = 256;
 	float bestRating = 0.0f;
@@ -438,18 +438,18 @@ void G_ChooseLookEnemy(gentity_t* self, const usercmd_t* ucmd)
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	if (!numListedEntities)
+	if (!num_listed_entities)
 	{
 		//should we clear the enemy?
 		return;
 	}
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		vec3_t dir;
-		gentity_t* ent = entityList[e];
+		gentity_t* ent = entity_list[e];
 
 		if (!gi.inPVS(self->currentOrigin, ent->currentOrigin))
 		{
@@ -824,10 +824,10 @@ void G_SetClientSound(gentity_t* ent)
 }
 
 //==============================================================
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 
 void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t velocity)
 {
@@ -5839,15 +5839,15 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
 		mdxaBone_t boltMatrix;
 
 		// Getting the bolt here
-		int boltIndex = monster->gutBolt; //default to being held in his mouth
+		int bolt_index = monster->gutBolt; //default to being held in his mouth
 		if (monster->count == 1)
 		{
 			//being held in hand rather than the mouth, so use *that* bolt
-			boltIndex = monster->handRBolt;
+			bolt_index = monster->handRBolt;
 		}
 		vec3_t monAngles = { 0 };
 		monAngles[YAW] = monster->currentAngles[YAW]; //only use YAW when passing angles to G2
-		gi.G2API_GetBoltMatrix(monster->ghoul2, monster->playerModel, boltIndex,
+		gi.G2API_GetBoltMatrix(monster->ghoul2, monster->playerModel, bolt_index,
 			&boltMatrix, monAngles, monster->currentOrigin, cg.time ? cg.time : level.time,
 			nullptr, monster->s.modelScale);
 		// Storing ent position, bolt position, and bolt axis

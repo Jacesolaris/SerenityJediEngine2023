@@ -44,8 +44,8 @@ extern void G_TestLine(vec3_t start, vec3_t end, int color, int time);
 extern void G_BlockLine(vec3_t start, vec3_t end, int color, int time);
 extern float VectorDistance(vec3_t v1, vec3_t v2);
 qboolean G_FindClosestPointOnLineSegment(const vec3_t start, const vec3_t end, const vec3_t from, vec3_t result);
-extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir,
-	vec3_t bladeDir, int mod);
+extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit_loc, vec3_t point, vec3_t dir,
+	vec3_t blade_dir, int mod);
 extern int G_GetHitLocation(const gentity_t* target, vec3_t ppoint);
 int saberSpinSound = 0;
 extern saberMoveName_t PM_SaberBounceForAttack(int move);
@@ -5072,8 +5072,8 @@ void wp_saber_specific_do_hit(const gentity_t* self, const int saber_num, const 
 }
 
 extern qboolean G_EntIsBreakable(int entityNum);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 static qboolean saberDoClashEffect = qfalse;
 static vec3_t saberClashPos = { 0 };
 static vec3_t saberClashNorm = { 0 };
@@ -6209,7 +6209,7 @@ qboolean G_DoDodge(gentity_t* self, gentity_t* shooter, vec3_t dmg_origin, int h
 	return qfalse;
 }
 
-static int hitLoc[MAX_SABER_VICTIMS];
+static int hit_loc[MAX_SABER_VICTIMS];
 static vec3_t saberHitLocation;
 static qboolean hitDismember[MAX_SABER_VICTIMS];
 static int hitDismemberLoc[MAX_SABER_VICTIMS];
@@ -6270,7 +6270,7 @@ void wp_saber_clear_damage_for_ent_num(gentity_t* attacker, const int entity_num
 			}
 			//now clear everything
 			totalDmg[i] = 0; //no damage
-			hitLoc[i] = HL_NONE;
+			hit_loc[i] = HL_NONE;
 			hitDismemberLoc[i] = HL_NONE;
 			hitDismember[i] = qfalse;
 			victimEntityNum[i] = ENTITYNUM_NONE; //like we never hit him
@@ -6923,7 +6923,7 @@ qboolean Jedi_WaitingAmbush(const gentity_t* self);
 void Jedi_Ambush(gentity_t* self);
 evasionType_t jedi_saber_block_go(gentity_t* self, usercmd_t* cmd, vec3_t p_hitloc, vec3_t phit_dir, const gentity_t* incoming,
 	float dist);
-void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 int blockedfor_quad(int quad);
 int invert_quad(int quad);
 
@@ -9322,7 +9322,7 @@ void UpdateClientRenderinfo(gentity_t* self, vec3_t render_origin, vec3_t render
 }
 
 #define STAFF_KICK_RANGE 16
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex); //NPC_utils.c
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index); //NPC_utils.c
 
 extern qboolean BG_InKnockDown(int anim);
 

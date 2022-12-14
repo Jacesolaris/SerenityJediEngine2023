@@ -459,9 +459,9 @@ static void SV_G2API_CollisionDetect(
 		entNum, rayStart, rayEnd, scale, miniHeap, eG2TraceType, useLod, fRadius);
 }
 
-static void SV_G2API_CopyGhoul2Instance(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int modelIndex)
+static void SV_G2API_CopyGhoul2Instance(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int model_index)
 {
-	re.G2API_CopyGhoul2Instance(ghoul2From, ghoul2To, modelIndex);
+	re.G2API_CopyGhoul2Instance(ghoul2From, ghoul2To, model_index);
 }
 
 static void SV_G2API_DetachEnt(int* boltInfo)
@@ -479,14 +479,14 @@ static qboolean SV_G2API_GetAnimFileName(CGhoul2Info* ghlInfo, char** filename)
 	return re.G2API_GetAnimFileName(ghlInfo, filename);
 }
 
-static char* SV_G2API_GetAnimFileNameIndex(qhandle_t modelIndex)
+static char* SV_G2API_GetAnimFileNameIndex(qhandle_t model_index)
 {
-	return re.G2API_GetAnimFileNameIndex(modelIndex);
+	return re.G2API_GetAnimFileNameIndex(model_index);
 }
 
-static char* SV_G2API_GetAnimFileInternalNameIndex(qhandle_t modelIndex)
+static char* SV_G2API_GetAnimFileInternalNameIndex(qhandle_t model_index)
 {
-	return re.G2API_GetAnimFileInternalNameIndex(modelIndex);
+	return re.G2API_GetAnimFileInternalNameIndex(model_index);
 }
 
 static int SV_G2API_GetAnimIndex(CGhoul2Info* ghlInfo)
@@ -526,10 +526,10 @@ static int SV_G2API_GetBoneIndex(CGhoul2Info* ghlInfo, const char* boneName, qbo
 }
 
 static qboolean SV_G2API_GetBoltMatrix(
-	CGhoul2Info_v& ghoul2, const int modelIndex, const int boltIndex, mdxaBone_t* matrix, const vec3_t angles,
+	CGhoul2Info_v& ghoul2, const int model_index, const int bolt_index, mdxaBone_t* matrix, const vec3_t angles,
 	const vec3_t position, const int AframeNum, qhandle_t* modelList, const vec3_t scale)
 {
-	return re.G2API_GetBoltMatrix(ghoul2, modelIndex, boltIndex, matrix, angles,
+	return re.G2API_GetBoltMatrix(ghoul2, model_index, bolt_index, matrix, angles,
 		position, AframeNum, modelList, scale);
 }
 
@@ -584,10 +584,10 @@ static qboolean SV_G2API_IKMove(CGhoul2Info_v& ghoul2, int time, sharedIKMovePar
 	return re.G2API_IKMove(ghoul2, time, params);
 }
 
-static int SV_G2API_InitGhoul2Model(CGhoul2Info_v& ghoul2, const char* fileName, int modelIndex,
+static int SV_G2API_InitGhoul2Model(CGhoul2Info_v& ghoul2, const char* fileName, int model_index,
 	qhandle_t customSkin, qhandle_t customShader, int modelFlags, int lodBias)
 {
-	return re.G2API_InitGhoul2Model(ghoul2, fileName, modelIndex, customSkin, customShader, modelFlags, lodBias);
+	return re.G2API_InitGhoul2Model(ghoul2, fileName, model_index, customSkin, customShader, modelFlags, lodBias);
 }
 
 static qboolean SV_G2API_IsPaused(CGhoul2Info* ghlInfo, const char* boneName)
@@ -665,9 +665,9 @@ static qboolean SV_G2API_RemoveBone(CGhoul2Info* ghlInfo, const char* boneName)
 	return re.G2API_RemoveBone(ghlInfo, boneName);
 }
 
-static qboolean SV_G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, const int modelIndex)
+static qboolean SV_G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, const int model_index)
 {
-	return re.G2API_RemoveGhoul2Model(ghlInfo, modelIndex);
+	return re.G2API_RemoveGhoul2Model(ghlInfo, model_index);
 }
 
 static qboolean SV_G2API_RemoveSurface(CGhoul2Info* ghlInfo, const int index)
@@ -760,9 +760,9 @@ static qboolean SV_G2API_SetLodBias(CGhoul2Info* ghlInfo, int lodBias)
 	return re.G2API_SetLodBias(ghlInfo, lodBias);
 }
 
-static qboolean SV_G2API_SetNewOrigin(CGhoul2Info* ghlInfo, const int boltIndex)
+static qboolean SV_G2API_SetNewOrigin(CGhoul2Info* ghlInfo, const int bolt_index)
 {
-	return re.G2API_SetNewOrigin(ghlInfo, boltIndex);
+	return re.G2API_SetNewOrigin(ghlInfo, bolt_index);
 }
 
 static void SV_G2API_SetRagDoll(CGhoul2Info_v& ghoul2, CRagDollParams* parms)
@@ -770,9 +770,9 @@ static void SV_G2API_SetRagDoll(CGhoul2Info_v& ghoul2, CRagDollParams* parms)
 	return re.G2API_SetRagDoll(ghoul2, parms);
 }
 
-static qboolean SV_G2API_SetRootSurface(CGhoul2Info_v& ghlInfo, const int modelIndex, const char* surfaceName)
+static qboolean SV_G2API_SetRootSurface(CGhoul2Info_v& ghlInfo, const int model_index, const char* surfaceName)
 {
-	return re.G2API_SetRootSurface(ghlInfo, modelIndex, surfaceName);
+	return re.G2API_SetRootSurface(ghlInfo, model_index, surfaceName);
 }
 
 static qboolean SV_G2API_SetShader(CGhoul2Info* ghlInfo, qhandle_t customShader)

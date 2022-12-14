@@ -184,7 +184,7 @@ public:
 	vec3_t				rayEnd;
 	CollisionRecord_t* collRecMap;
 	int					entNum;
-	int					modelIndex;
+	int					model_index;
 	skin_t* skin;
 	shader_t* cust_shader;
 	size_t* TransformedVertsArray;
@@ -236,7 +236,7 @@ public:
 		lod(initlod),
 		collRecMap(initcollRecMap),
 		entNum(initentNum),
-		modelIndex(initmodelIndex),
+		model_index(initmodelIndex),
 		skin(initskin),
 		cust_shader(initcust_shader),
 		TransformedVertsArray(initTransformedVertsArray),
@@ -1070,7 +1070,7 @@ static bool G2_TracePolys(const mdxmSurface_t* surface, const mdxmSurfHierarchy_
 					newCol.mPolyIndex = j;
 					newCol.mEntityNum = TS.entNum;
 					newCol.mSurfaceIndex = surface->thisSurfaceIndex;
-					newCol.mModelIndex = TS.modelIndex;
+					newCol.mModelIndex = TS.model_index;
 					if (face > 0)
 					{
 						newCol.mFlags = G2_FRONTFACE;
@@ -1298,7 +1298,7 @@ static bool G2_RadiusTracePolys(
 				newCol.mPolyIndex = j;
 				newCol.mEntityNum = TS.entNum;
 				newCol.mSurfaceIndex = surface->thisSurfaceIndex;
-				newCol.mModelIndex = TS.modelIndex;
+				newCol.mModelIndex = TS.model_index;
 				//					if (face>0)
 				//					{
 				newCol.mFlags = G2_FRONTFACE;

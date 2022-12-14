@@ -200,13 +200,12 @@ void Wampa_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, int limbType, float limbRollBase,
-	float limbPitchBase, int deathAnim, qboolean postDeath);
-extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, const int limb_type);
+extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
 
-void Wampa_Slash(int boltIndex, qboolean backhand)
+void Wampa_Slash(int bolt_index, qboolean backhand)
 {
 	int radiusEntNums[128];
 	const float radius = 88;
@@ -214,7 +213,7 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 	vec3_t boltOrg;
 	const int damage = backhand ? Q_irand(10, 15) : Q_irand(20, 30);
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEntNums, radius, boltIndex, boltOrg);
+	const int numEnts = NPC_GetEntsNearBolt(radiusEntNums, radius, bolt_index, boltOrg);
 
 	for (int i = 0; i < numEnts; i++)
 	{
@@ -272,18 +271,17 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 				if (!Q_irand(0, 1))
 				{
 					//bite something off
-					const int hitLoc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
-					if (hitLoc == G2_MODELPART_HEAD)
+					const int hit_loc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
+					if (hit_loc == G2_MODELPART_HEAD)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATH17, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					else if (hitLoc == G2_MODELPART_WAIST)
+					else if (hit_loc == G2_MODELPART_WAIST)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATHBACKWARD2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hitLoc, 90, 0,
-						radiusEnt->client->ps.torsoAnim, qtrue);
+					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hit_loc);
 				}
 			}
 			else if (!Q_irand(0, 3) && radiusEnt->health > 0)

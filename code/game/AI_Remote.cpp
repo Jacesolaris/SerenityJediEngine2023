@@ -51,7 +51,7 @@ NPC_Remote_Pain
 -------------------------
 */
 void NPC_Remote_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	SaveNPCGlobals();
 	SetNPCGlobals(self);

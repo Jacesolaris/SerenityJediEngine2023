@@ -701,11 +701,11 @@ char* forceHolocronModels[] = {
 
 void CG_Disintegration(centity_t* cent, refEntity_t* ent)
 {
-	vec3_t tempAng, hitLoc;
+	vec3_t tempAng, hit_loc;
 
-	VectorCopy(cent->currentState.origin2, hitLoc);
+	VectorCopy(cent->currentState.origin2, hit_loc);
 
-	VectorSubtract(hitLoc, ent->origin, ent->oldorigin);
+	VectorSubtract(hit_loc, ent->origin, ent->oldorigin);
 
 	const float tempLength = VectorNormalize(ent->oldorigin);
 	vectoangles(ent->oldorigin, tempAng);
@@ -1648,7 +1648,7 @@ static void CG_General(centity_t* cent)
 		if (cent->bodyFadeTime > cg.time)
 		{
 			qboolean lightSide = cent->teamPowerType != 0 ? qtrue : qfalse;
-			vec3_t hitLoc, tempAng;
+			vec3_t hit_loc, tempAng;
 			float tempLength;
 			int curTimeDif = cg.time + 60000 - cent->bodyFadeTime;
 			int tMult = curTimeDif * 0.08;
@@ -1705,9 +1705,9 @@ static void CG_General(centity_t* cent)
 			}
 			//Set everything up on the disint ref
 			ent.shaderRGBA[0] = ent.shaderRGBA[1] = ent.shaderRGBA[2] = ent.shaderRGBA[3];
-			VectorCopy(cent->lerpOrigin, hitLoc);
+			VectorCopy(cent->lerpOrigin, hit_loc);
 
-			VectorSubtract(hitLoc, ent.origin, ent.oldorigin);
+			VectorSubtract(hit_loc, ent.origin, ent.oldorigin);
 
 			tempLength = VectorNormalize(ent.oldorigin);
 			vectoangles(ent.oldorigin, tempAng);

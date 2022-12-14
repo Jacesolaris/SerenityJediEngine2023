@@ -56,8 +56,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 #include <cfloat>
 
-extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
+extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, int hit_loc,
+                                  qboolean force = qfalse);
 extern qboolean G_EntIsUnlockedDoor(int entityNum);
 extern qboolean G_EntIsDoor(int entityNum);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
@@ -104,10 +104,10 @@ extern qboolean PM_SaberInDamageMove(int move);
 extern saberMoveName_t PM_SaberLungeAttackMove(qboolean fallbackToNormalLunge);
 extern qboolean PM_InSecondaryStyle();
 extern qboolean PM_KnockDownAnimExtended(int anim);
-extern void G_StartMatrixEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
-extern void G_StartStasisEffect(const gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
+extern void G_StartStasisEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
 extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
@@ -14409,8 +14409,8 @@ void PM_SaberLockBreak(gentity_t* gent, gentity_t* genemy, const saberLockResult
 									SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD); //force this
 								genemy->client->dismembered = false;
 
-								G_DoDismemberment(genemy, genemy->client->renderInfo.handRPoint, MOD_SABER, 1000,
-									HL_HAND_RT, qtrue);
+								G_DoDismemberment(genemy, genemy->client->renderInfo.handRPoint, MOD_SABER, HL_HAND_RT,
+								                  qtrue);
 
 								if (genemy->health >= 100)
 								{
@@ -15161,7 +15161,7 @@ saberMoveName_t PM_PickAutoKick(const gentity_t* enemy)
 
 saberMoveName_t g_pick_auto_multi_kick(gentity_t* self, const qboolean allowSingles, const qboolean storeMove)
 {
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t mins, maxs;
 	const int radius = self->maxs[0] * 1.5f + self->maxs[0] * 1.5f + STAFF_KICK_RANGE + 24.0f;
 	//a little wide on purpose
@@ -15191,11 +15191,11 @@ saberMoveName_t g_pick_auto_multi_kick(gentity_t* self, const qboolean allowSing
 		maxs[i] = center[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
-		gentity_t* ent = entityList[e];
+		gentity_t* ent = entity_list[e];
 
 		if (ent == self)
 			continue;

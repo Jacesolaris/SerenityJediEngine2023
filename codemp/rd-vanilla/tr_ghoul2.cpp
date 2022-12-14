@@ -3408,7 +3408,7 @@ void R_AddGhoulSurfaces(trRefEntity_t* ent)
 }
 
 #ifdef _G2_LISTEN_SERVER_OPT
-qboolean G2API_OverrideServerWithClientData(CGhoul2Info_v& ghoul2, int modelIndex);
+qboolean G2API_OverrideServerWithClientData(CGhoul2Info_v& ghoul2, int model_index);
 #endif
 
 bool G2_NeedsRecalc(CGhoul2Info* ghlInfo, int frameNum)

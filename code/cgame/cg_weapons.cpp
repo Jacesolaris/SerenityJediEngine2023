@@ -39,8 +39,8 @@ extern vmCvar_t cg_gunMomentumFall;
 extern vmCvar_t cg_gunMomentumEnable;
 extern vmCvar_t cg_gunMomentumInterval;
 extern vmCvar_t cg_SpinningBarrels;
-extern void G_StartNextItemEffect(gentity_t* ent, int meFlags = 0, int length = 1000, float timeScale = 0.0f,
-	int spinTime = 0);
+extern void G_StartNextItemEffect(gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
+	int spin_time = 0);
 
 extern qboolean PM_ReloadAnim(int anim);
 extern void FX_DEMP2_ProjectileThink(centity_t* cent, const weaponInfo_s* weapon);

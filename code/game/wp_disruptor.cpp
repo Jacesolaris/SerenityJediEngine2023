@@ -132,16 +132,16 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 				ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 			}
 
-			const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
+			const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
 			if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GALAKMECH)
 			{
 				//hehe
-				G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 3, DAMAGE_DEATH_KNOCKBACK, MOD_DISRUPTOR, hitLoc);
+				G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 3, DAMAGE_DEATH_KNOCKBACK, MOD_DISRUPTOR, hit_loc);
 			}
 			else
 			{
 				G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_DEATH_KNOCKBACK, MOD_DISRUPTOR,
-					hitLoc);
+					hit_loc);
 			}
 		}
 		else
@@ -303,16 +303,16 @@ void WP_DisruptorAltFire(gentity_t* ent)
 						ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 					}
 
-					const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
+					const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
 					if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GALAKMECH)
 					{
 						//hehe
 						G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-							fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hitLoc);
+							fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hit_loc);
 						break;
 					}
 					G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-						fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hitLoc);
+						fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hit_loc);
 					if (traceEnt->s.eType == ET_MOVER)
 					{
 						//stop the traces on any mover

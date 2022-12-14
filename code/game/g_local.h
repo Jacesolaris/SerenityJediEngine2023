@@ -418,7 +418,7 @@ int G_IconIndex(const char* name);
 Ghoul2 Insert Start
 */
 int G_SkinIndex(const char* name);
-void G_SetBoltSurfaceRemoval(int entNum, int modelIndex, int boltIndex, int surfaceIndex = -1, float duration = 5000);
+void G_SetBoltSurfaceRemoval(int entNum, int model_index, int bolt_index, int surfaceIndex = -1, float duration = 5000);
 /*
 Ghoul2 Insert End
 */
@@ -435,7 +435,7 @@ void G_PlayEffect(int fx_id, int model_index, int bolt_index, int ent_num, const
 	qboolean is_relative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
 void G_PlayEffect(int fx_id, int entNum, const vec3_t fwd);
 void G_StopEffect(int fx_id, int model_index, int bolt_index, int ent_num);
-void G_StopEffect(const char* name, int modelIndex, int boltIndex, int entNum);
+void G_StopEffect(const char* name, int model_index, int bolt_index, int entNum);
 
 int G_BSPIndex(const char* name);
 
@@ -473,11 +473,11 @@ void G_DebugLine(vec3_t a, vec3_t b, int duration, int color);
 //
 qboolean CanDamage(const gentity_t* targ, const vec3_t origin);
 void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const vec3_t dir, const vec3_t point,
-	int damage, int dflags, int mod, int hitLoc = HL_NONE);
+	int damage, int dflags, int mod, int hit_loc = HL_NONE);
 void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, float radius, const gentity_t* ignore, int mod);
 gentity_t* TossClientItems(gentity_t* self);
 void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hitLoc);
+	int dFlags, int hit_loc);
 void ExplodeDeath(gentity_t* self);
 void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
 void G_ApplyKnockback(gentity_t* targ, const vec3_t newDir, float knockback);
@@ -546,8 +546,8 @@ void SetClientViewAngle(gentity_t* ent, vec3_t angle);
 gentity_t* SelectSpawnPoint(vec3_t avoidPoint, team_t team, vec3_t origin, vec3_t angles);
 void respawn(gentity_t* ent);
 qboolean client_spawn(gentity_t* ent, SavedGameJustLoaded_e e_saved_game_just_loaded);
-void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc);
+void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death, int dflags,
+	int hit_loc);
 void AddScore(const gentity_t* ent, int score);
 qboolean SpotWouldTelefrag(const gentity_t* spot, team_t checkteam);
 void G_RemoveWeaponModels(gentity_t* ent);
@@ -675,11 +675,11 @@ extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alert
 	float addLight = 0.0f);
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
 	qboolean needLOS = qfalse, qboolean onGround = qfalse);
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
 	float maxHearDist, int ignoreAlert = -1, qboolean mustHaveOwner = qfalse,
 	int minAlertLevel = AEL_MINOR, qboolean onGroundOnly = qfalse);
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const gentity_t* ent);

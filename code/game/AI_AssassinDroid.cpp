@@ -64,11 +64,11 @@ void BubbleShield_TurnOff()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Push A Particular Ent
 ////////////////////////////////////////////////////////////////////////////////////////
-void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smackDir)
+void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smack_dir)
 {
-	G_Damage(pushed, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
+	G_Damage(pushed, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
 		DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
-	g_throw(pushed, smackDir, 10);
+	g_throw(pushed, smack_dir, 10);
 
 	// Make Em Electric
 	//------------------
@@ -97,7 +97,7 @@ void BubbleShield_PushRadiusEnts()
 	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
 	for (int entIndex = 0; entIndex < numEnts; entIndex++)
 	{
-		vec3_t smackDir;
+		vec3_t smack_dir;
 		// Only Clients
 		//--------------
 		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client)
@@ -121,11 +121,11 @@ void BubbleShield_PushRadiusEnts()
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smackDir);
-		const float smackDist = VectorNormalize(smackDir);
+		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
+		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			BubbleShield_PushEnt(radiusEnts[entIndex], smackDir);
+			BubbleShield_PushEnt(radiusEnts[entIndex], smack_dir);
 		}
 	}
 }

@@ -42,11 +42,11 @@ void BubbleShield_TurnOff(gentity_t* self)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Push A Particular Ent
 ////////////////////////////////////////////////////////////////////////////////////////
-void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smackDir)
+void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smack_dir)
 {
-	G_Damage(pushed, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+	G_Damage(pushed, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 		(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
-	g_throw(pushed, smackDir, 10);
+	g_throw(pushed, smack_dir, 10);
 
 	// Make Em Electric
 	//------------------
@@ -62,7 +62,7 @@ void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smackDir)
 void BubbleShield_PushRadiusEnts()
 {
 	int i;
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	const float radius = ASSASSIN_SHIELD_SIZE;
 	vec3_t mins, maxs;
 
@@ -72,11 +72,11 @@ void BubbleShield_PushRadiusEnts()
 		maxs[i] = NPCS.NPC->r.currentOrigin[i] + radius;
 	}
 
-	const int numEnts = trap->EntitiesInBox(mins, maxs, entityList, 128);
+	const int numEnts = trap->EntitiesInBox(mins, maxs, entity_list, 128);
 	for (i = 0; i < numEnts; i++)
 	{
-		vec3_t smackDir;
-		gentity_t* radiusEnt = &g_entities[entityList[i]];
+		vec3_t smack_dir;
+		gentity_t* radiusEnt = &g_entities[entity_list[i]];
 		// Only Clients
 		//--------------
 		if (!radiusEnt || !radiusEnt->client)
@@ -100,11 +100,11 @@ void BubbleShield_PushRadiusEnts()
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnt->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-		const float smackDist = VectorNormalize(smackDir);
+		VectorSubtract(radiusEnt->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			BubbleShield_PushEnt(radiusEnt, smackDir);
+			BubbleShield_PushEnt(radiusEnt, smack_dir);
 		}
 	}
 }

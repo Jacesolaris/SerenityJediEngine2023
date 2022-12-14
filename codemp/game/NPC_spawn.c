@@ -95,7 +95,7 @@ extern void NPC_Mark1_Pain(gentity_t* self, gentity_t* attacker, int damage);
 extern void NPC_GM_Pain(gentity_t* self, gentity_t* attacker, int damage);
 extern void NPC_Sentry_Pain(gentity_t* self, gentity_t* attacker, int damage);
 extern void NPC_Mark2_Pain(gentity_t* self, gentity_t* attacker, int damage);
-extern void PlayerPain(gentity_t* self, gentity_t* attacker, int damage);
+extern void PlayerPain(gentity_t* self, int damage);
 extern void GasBurst(gentity_t* self, gentity_t* attacker, int damage);
 extern void CrystalCratePain(gentity_t* self, gentity_t* attacker, int damage);
 extern void TurretPain(gentity_t* self, gentity_t* attacker, int damage);

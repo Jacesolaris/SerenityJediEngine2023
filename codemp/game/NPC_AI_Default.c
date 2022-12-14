@@ -643,23 +643,23 @@ void NPC_BSDefault(void)
 		{
 			//check for alert events
 			//FIXME: Check Alert events, see if we should investigate or just look at it
-			const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
+			const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
 
 			//There is an event to look at
-			if (alertEvent >= 0)
+			if (alert_event >= 0)
 			{
 				//heard/saw something
-				if (level.alertEvents[alertEvent].level >= AEL_DISCOVERED && NPCS.NPCInfo->scriptFlags &
+				if (level.alertEvents[alert_event].level >= AEL_DISCOVERED && NPCS.NPCInfo->scriptFlags &
 					SCF_LOOK_FOR_ENEMIES)
 				{
 					//was a big event
-					if (level.alertEvents[alertEvent].owner &&
-						level.alertEvents[alertEvent].owner->client &&
-						level.alertEvents[alertEvent].owner->health >= 0 &&
-						level.alertEvents[alertEvent].owner->client->playerTeam == NPCS.NPC->client->enemyTeam)
+					if (level.alertEvents[alert_event].owner &&
+						level.alertEvents[alert_event].owner->client &&
+						level.alertEvents[alert_event].owner->health >= 0 &&
+						level.alertEvents[alert_event].owner->client->playerTeam == NPCS.NPC->client->enemyTeam)
 					{
 						//an enemy
-						G_SetEnemy(NPCS.NPC, level.alertEvents[alertEvent].owner);
+						G_SetEnemy(NPCS.NPC, level.alertEvents[alert_event].owner);
 					}
 				}
 				else

@@ -1290,7 +1290,7 @@ struct gentity_s
 	int splashRadius;
 	int methodOfDeath;
 	int splashMethodOfDeath;
-	//int			hitLoc;//where you were last hit
+	//int			hit_loc;//where you were last hit
 	int locationDamage[HL_MAX]; // Damage accumulated on different body locations
 
 	//Entity pointers

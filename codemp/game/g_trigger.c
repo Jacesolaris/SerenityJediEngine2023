@@ -1690,8 +1690,8 @@ void shipboundary_think(gentity_t* ent)
 		return;
 	}
 
-	const int numListedEntities = trap->EntitiesInBox(ent->r.absmin, ent->r.absmax, iEntityList, MAX_GENTITIES);
-	while (i < numListedEntities)
+	const int num_listed_entities = trap->EntitiesInBox(ent->r.absmin, ent->r.absmax, iEntityList, MAX_GENTITIES);
+	while (i < num_listed_entities)
 	{
 		gentity_t* listedEnt = &g_entities[iEntityList[i]];
 		if (listedEnt->inuse && listedEnt->client && listedEnt->client->ps.m_iVehicleNum)

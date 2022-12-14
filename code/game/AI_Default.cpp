@@ -639,7 +639,7 @@ void NPC_BSDefault(void)
 	uses various scriptflags to determine how an npc should behave
 */
 extern void NPC_CheckGetNewWeapon(void);
-extern void NPC_BSST_Attack(void);
+extern void NPC_BSST_Attack();
 
 void NPC_BSDefault(void)
 {
@@ -667,24 +667,24 @@ void NPC_BSDefault(void)
 		{
 			//check for alert events
 			//FIXME: Check Alert events, see if we should investigate or just look at it
-			const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
+			const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
 
 			//There is an event to look at
-			if (alertEvent >= 0) //&& level.alertEvents[alertEvent].ID != NPCInfo->lastAlertID )
+			if (alert_event >= 0) //&& level.alertEvents[alert_event].ID != NPCInfo->lastAlertID )
 			{
 				//heard/saw something
-				if (level.alertEvents[alertEvent].level >= AEL_DISCOVERED && NPCInfo->scriptFlags &
+				if (level.alertEvents[alert_event].level >= AEL_DISCOVERED && NPCInfo->scriptFlags &
 					SCF_LOOK_FOR_ENEMIES)
 				{
 					//was a big event
-					if (level.alertEvents[alertEvent].owner
-						&& level.alertEvents[alertEvent].owner != NPC
-						&& level.alertEvents[alertEvent].owner->client
-						&& level.alertEvents[alertEvent].owner->health >= 0
-						&& level.alertEvents[alertEvent].owner->client->playerTeam == NPC->client->enemyTeam)
+					if (level.alertEvents[alert_event].owner
+						&& level.alertEvents[alert_event].owner != NPC
+						&& level.alertEvents[alert_event].owner->client
+						&& level.alertEvents[alert_event].owner->health >= 0
+						&& level.alertEvents[alert_event].owner->client->playerTeam == NPC->client->enemyTeam)
 					{
 						//an enemy
-						G_SetEnemy(NPC, level.alertEvents[alertEvent].owner);
+						G_SetEnemy(NPC, level.alertEvents[alert_event].owner);
 					}
 				}
 				else

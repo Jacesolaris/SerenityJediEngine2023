@@ -49,16 +49,16 @@ extern qboolean BG_FullBodyTauntAnim(int anim);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_SaberInTransitionAny(int move);
 extern qboolean PM_Saberinstab(int move);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean PM_RestAnim(int anim);
 extern void BG_ReduceSaberMishapLevel(playerState_t* ps);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean PM_SaberInParry(int move);
 extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
 extern void Boba_FlyStart(gentity_t* self);
@@ -3251,12 +3251,12 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 							trace_ent->client->saber[rsaber_num].blade[rBladeNum].storageTime = level.time;
 							if (saber_lightning_blocked && !hand_lightning_blocked)
 							{
-								const float chanceOfFizz = flrand(0.0f, 1.0f);
+								const float chance_of_fizz = flrand(0.0f, 1.0f);
 								vec3_t ang = { 0, 0, 0 };
 								ang[0] = flrand(0, 360);
 								ang[1] = flrand(0, 360);
 								ang[2] = flrand(0, 360);
-								if (chanceOfFizz > 0)
+								if (chance_of_fizz > 0)
 								{
 									vec3_t end2;
 									VectorMA(trace_ent->client->saber[rsaber_num].blade[rBladeNum].muzzlePoint,
@@ -3308,12 +3308,12 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						trace_ent->client->saber[rsaber_num].blade[rBladeNum].storageTime = level.time;
 						if (saber_lightning_blocked && !hand_lightning_blocked)
 						{
-							const float chanceOfFizz = flrand(0.0f, 1.0f);
+							const float chance_of_fizz = flrand(0.0f, 1.0f);
 							vec3_t ang = { 0, 0, 0 };
 							ang[0] = flrand(0, 360);
 							ang[1] = flrand(0, 360);
 							ang[2] = flrand(0, 360);
-							if (chanceOfFizz > 0)
+							if (chance_of_fizz > 0)
 							{
 								vec3_t end2;
 								VectorMA(trace_ent->client->saber[rsaber_num].blade[rBladeNum].muzzlePoint,
@@ -3410,7 +3410,7 @@ void force_shoot_lightning(gentity_t* self)
 		vec3_t v;
 		const float radius = FORCE_LIGHTNING_RADIUS;
 		float dot;
-		gentity_t* entityList[MAX_GENTITIES];
+		gentity_t* entity_list[MAX_GENTITIES];
 		int iEntityList[MAX_GENTITIES];
 		int i;
 
@@ -3425,7 +3425,7 @@ void force_shoot_lightning(gentity_t* self)
 		i = 0;
 		while (i < num_listed_entities)
 		{
-			entityList[i] = &g_entities[iEntityList[i]];
+			entity_list[i] = &g_entities[iEntityList[i]];
 
 			i++;
 		}
@@ -3435,7 +3435,7 @@ void force_shoot_lightning(gentity_t* self)
 			vec3_t size;
 			vec3_t ent_org;
 			vec3_t dir;
-			traceEnt = entityList[e];
+			traceEnt = entity_list[e];
 
 			if (!traceEnt)
 				continue;
@@ -3786,7 +3786,7 @@ int ForceShootDrain(gentity_t* self)
 			vec3_t maxs;
 			vec3_t v;
 			const float radius = MAX_DRAIN_DISTANCE;
-			gentity_t* entityList[MAX_GENTITIES];
+			gentity_t* entity_list[MAX_GENTITIES];
 			int iEntityList[MAX_GENTITIES];
 			int i;
 
@@ -3796,24 +3796,24 @@ int ForceShootDrain(gentity_t* self)
 				mins[i] = center[i] - radius;
 				maxs[i] = center[i] + radius;
 			}
-			const int numListedEntities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
+			const int num_listed_entities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
 
 			i = 0;
-			while (i < numListedEntities)
+			while (i < num_listed_entities)
 			{
-				entityList[i] = &g_entities[iEntityList[i]];
+				entity_list[i] = &g_entities[iEntityList[i]];
 
 				i++;
 			}
 
-			for (int e = 0; e < numListedEntities; e++)
+			for (int e = 0; e < num_listed_entities; e++)
 			{
 				vec3_t size;
 				vec3_t ent_org;
 				vec3_t dir;
 				// ReSharper disable once CppEntityAssignedButNoRead
 				float dot;
-				traceEnt = entityList[e];
+				traceEnt = entity_list[e];
 
 				if (!traceEnt)
 					continue;
@@ -3947,7 +3947,7 @@ int ForceShootDestruction(gentity_t* self)
 		vec3_t maxs;
 		vec3_t v;
 		const float radius = MAX_DRAIN_DISTANCE;
-		gentity_t* entityList[MAX_GENTITIES];
+		gentity_t* entity_list[MAX_GENTITIES];
 		int iEntityList[MAX_GENTITIES];
 		int i;
 
@@ -3957,24 +3957,24 @@ int ForceShootDestruction(gentity_t* self)
 			mins[i] = center[i] - radius;
 			maxs[i] = center[i] + radius;
 		}
-		const int numListedEntities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
+		const int num_listed_entities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
 
 		i = 0;
-		while (i < numListedEntities)
+		while (i < num_listed_entities)
 		{
-			entityList[i] = &g_entities[iEntityList[i]];
+			entity_list[i] = &g_entities[iEntityList[i]];
 
 			i++;
 		}
 
-		for (int e = 0; e < numListedEntities; e++)
+		for (int e = 0; e < num_listed_entities; e++)
 		{
 			vec3_t size;
 			vec3_t ent_org;
 			vec3_t dir;
 			// ReSharper disable once CppEntityAssignedButNoRead
 			float dot;
-			const gentity_t* traceEnt = entityList[e];
+			const gentity_t* traceEnt = entity_list[e];
 
 			if (!traceEnt)
 				continue;
@@ -4622,16 +4622,16 @@ void ForceTelepathy(gentity_t* self)
 		}
 		return;
 	}
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	int e = 0;
 	qboolean gotatleastone = qfalse;
 	vec3_t dir = { 0, 0, 1 };
 
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	while (e < numListedEntities)
+	while (e < num_listed_entities)
 	{
-		gentity_t* ent = &g_entities[entityList[e]];
+		gentity_t* ent = &g_entities[entity_list[e]];
 
 		if (ent)
 		{
@@ -4653,23 +4653,23 @@ void ForceTelepathy(gentity_t* self)
 
 			if (!ent->client)
 			{
-				entityList[e] = ENTITYNUM_NONE;
+				entity_list[e] = ENTITYNUM_NONE;
 			}
 			else if (!in_field_of_vision(self->client->ps.viewangles, visionArc, a))
 			{
 				//only bother with arc rules if the victim is a client
-				entityList[e] = ENTITYNUM_NONE;
+				entity_list[e] = ENTITYNUM_NONE;
 			}
 			else if (!ForcePowerUsableOn(self, ent, FP_TELEPATHY))
 			{
-				entityList[e] = ENTITYNUM_NONE;
+				entity_list[e] = ENTITYNUM_NONE;
 			}
 			else if (OnSameTeam(self, ent))
 			{
-				entityList[e] = ENTITYNUM_NONE;
+				entity_list[e] = ENTITYNUM_NONE;
 			}
 		}
-		ent = &g_entities[entityList[e]];
+		ent = &g_entities[entity_list[e]];
 
 		if (ent && ent != self && ent->client)
 		{
@@ -5179,9 +5179,9 @@ void ForceThrow(gentity_t* self, qboolean pull)
 	//shove things in front of you away
 	float dist;
 	gentity_t* ent;
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	gentity_t* push_list[MAX_GENTITIES];
-	int numListedEntities;
+	int num_listed_entities;
 	vec3_t mins, maxs;
 	vec3_t v;
 	int i, e;
@@ -5455,8 +5455,8 @@ void ForceThrow(gentity_t* self, qboolean pull)
 					g_entities[tr.entityNum].s.genericenemyindex = level.time + 2000;
 				}
 			}
-			numListedEntities = 0;
-			entityList[numListedEntities] = tr.entityNum;
+			num_listed_entities = 0;
+			entity_list[num_listed_entities] = tr.entityNum;
 
 			if (pull)
 			{
@@ -5477,7 +5477,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 			if (g_entities[tr.entityNum].r.contents == CONTENTS_TRIGGER && g_entities[tr.entityNum].s.eType != ET_ITEM)
 				return;
 
-			numListedEntities++;
+			num_listed_entities++;
 		}
 		else
 		{
@@ -5494,7 +5494,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 
 			funcNum = trap->EntitiesInBox(mins, maxs, funcList, MAX_GENTITIES);
 
-			if (numListedEntities <= 0)
+			if (num_listed_entities <= 0)
 				return;
 
 			for (i1 = 0; i1 < funcNum; i1++)
@@ -5503,8 +5503,8 @@ void ForceThrow(gentity_t* self, qboolean pull)
 				if (!funcEnt->client && funcEnt->s.number != tr.entityNum)
 				{
 					//we have one, add it to the actual push list.
-					entityList[numListedEntities] = funcEnt->s.number;
-					numListedEntities++;
+					entity_list[num_listed_entities] = funcEnt->s.number;
+					num_listed_entities++;
 				}
 			}
 		}
@@ -5512,13 +5512,13 @@ void ForceThrow(gentity_t* self, qboolean pull)
 	else
 	{
 		gentity_t* aimingAt;
-		numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+		num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
 		e = 0;
 
-		while (e < numListedEntities)
+		while (e < num_listed_entities)
 		{
-			ent = &g_entities[entityList[e]];
+			ent = &g_entities[entity_list[e]];
 
 			if (!ent->client && ent->s.eType == ET_NPC)
 			{
@@ -5581,7 +5581,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 					ForcePowerUsableOn(self, ent, powerUse))
 				{
 					//only bother with arc rules if the victim is a client
-					entityList[e] = ENTITYNUM_NONE;
+					entity_list[e] = ENTITYNUM_NONE;
 				}
 				else if (ent->client)
 				{
@@ -5589,14 +5589,14 @@ void ForceThrow(gentity_t* self, qboolean pull)
 					{
 						if (!ForcePowerUsableOn(self, ent, FP_PULL))
 						{
-							entityList[e] = ENTITYNUM_NONE;
+							entity_list[e] = ENTITYNUM_NONE;
 						}
 					}
 					else
 					{
 						if (!ForcePowerUsableOn(self, ent, FP_PUSH))
 						{
-							entityList[e] = ENTITYNUM_NONE;
+							entity_list[e] = ENTITYNUM_NONE;
 						}
 					}
 				}
@@ -5612,13 +5612,13 @@ void ForceThrow(gentity_t* self, qboolean pull)
 	{
 		if (pull)
 		{
-			for (e = 0; e < numListedEntities; e++)
+			for (e = 0; e < num_listed_entities; e++)
 			{
-				if (entityList[e] != ENTITYNUM_NONE &&
-					entityList[e] >= 0 &&
-					entityList[e] < MAX_GENTITIES)
+				if (entity_list[e] != ENTITYNUM_NONE &&
+					entity_list[e] >= 0 &&
+					entity_list[e] < MAX_GENTITIES)
 				{
-					ent = &g_entities[entityList[e]];
+					ent = &g_entities[entity_list[e]];
 				}
 				else
 				{
@@ -5773,13 +5773,13 @@ void ForceThrow(gentity_t* self, qboolean pull)
 		}
 		else
 		{
-			for (e = 0; e < numListedEntities; e++)
+			for (e = 0; e < num_listed_entities; e++)
 			{
-				if (entityList[e] != ENTITYNUM_NONE &&
-					entityList[e] >= 0 &&
-					entityList[e] < MAX_GENTITIES)
+				if (entity_list[e] != ENTITYNUM_NONE &&
+					entity_list[e] >= 0 &&
+					entity_list[e] < MAX_GENTITIES)
 				{
-					ent = &g_entities[entityList[e]];
+					ent = &g_entities[entity_list[e]];
 				}
 				else
 				{
@@ -5985,13 +5985,13 @@ void ForceThrow(gentity_t* self, qboolean pull)
 	}
 	else // ON THE GROUND ################################## NORMAL PUSH
 	{
-		for (e = 0; e < numListedEntities; e++)
+		for (e = 0; e < num_listed_entities; e++)
 		{
-			if (entityList[e] != ENTITYNUM_NONE &&
-				entityList[e] >= 0 &&
-				entityList[e] < MAX_GENTITIES)
+			if (entity_list[e] != ENTITYNUM_NONE &&
+				entity_list[e] >= 0 &&
+				entity_list[e] < MAX_GENTITIES)
 			{
-				ent = &g_entities[entityList[e]];
+				ent = &g_entities[entity_list[e]];
 			}
 			else
 			{
@@ -9433,8 +9433,8 @@ qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* 
 	}
 	return qfalse;
 }
-extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surfName, int* hitLoc, vec3_t point, vec3_t dir,
-	vec3_t bladeDir, int mod);
+extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit_loc, vec3_t point, vec3_t dir,
+	vec3_t blade_dir, int mod);
 extern int G_GetHitLocation(const gentity_t* target, vec3_t ppoint);
 
 qboolean jedi_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, vec3_t dmg_origin, int hit_loc)

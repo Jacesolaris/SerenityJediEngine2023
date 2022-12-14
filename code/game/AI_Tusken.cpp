@@ -194,26 +194,26 @@ void NPC_BSTusken_Patrol(void)
 		if (!(NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 		{
 			//Is there danger nearby
-			const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
-			if (NPC_CheckForDanger(alertEvent))
+			const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
+			if (NPC_CheckForDanger(alert_event))
 			{
 				NPC_UpdateAngles(qtrue, qtrue);
 				return;
 			}
 			//check for other alert events
 			//There is an event to look at
-			if (alertEvent >= 0) //&& level.alertEvents[alertEvent].ID != NPCInfo->lastAlertID )
+			if (alert_event >= 0) //&& level.alertEvents[alert_event].ID != NPCInfo->lastAlertID )
 			{
-				//NPCInfo->lastAlertID = level.alertEvents[alertEvent].ID;
-				if (level.alertEvents[alertEvent].level == AEL_DISCOVERED)
+				//NPCInfo->lastAlertID = level.alertEvents[alert_event].ID;
+				if (level.alertEvents[alert_event].level == AEL_DISCOVERED)
 				{
-					if (level.alertEvents[alertEvent].owner &&
-						level.alertEvents[alertEvent].owner->client &&
-						level.alertEvents[alertEvent].owner->health >= 0 &&
-						level.alertEvents[alertEvent].owner->client->playerTeam == NPC->client->enemyTeam)
+					if (level.alertEvents[alert_event].owner &&
+						level.alertEvents[alert_event].owner->client &&
+						level.alertEvents[alert_event].owner->health >= 0 &&
+						level.alertEvents[alert_event].owner->client->playerTeam == NPC->client->enemyTeam)
 					{
 						//an enemy
-						G_SetEnemy(NPC, level.alertEvents[alertEvent].owner);
+						G_SetEnemy(NPC, level.alertEvents[alert_event].owner);
 						//NPCInfo->enemyLastSeenTime = level.time;
 						TIMER_Set(NPC, "attackDelay", Q_irand(500, 2500));
 					}
@@ -222,9 +222,9 @@ void NPC_BSTusken_Patrol(void)
 				{
 					//FIXME: get more suspicious over time?
 					//Save the position for movement (if necessary)
-					VectorCopy(level.alertEvents[alertEvent].position, NPCInfo->investigateGoal);
+					VectorCopy(level.alertEvents[alert_event].position, NPCInfo->investigateGoal);
 					NPCInfo->investigateDebounceTime = level.time + Q_irand(500, 1000);
-					if (level.alertEvents[alertEvent].level == AEL_SUSPICIOUS)
+					if (level.alertEvents[alert_event].level == AEL_SUSPICIOUS)
 					{
 						//suspicious looks longer
 						NPCInfo->investigateDebounceTime += Q_irand(500, 2500);
@@ -404,8 +404,8 @@ void NPC_BSTusken_Attack(void)
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 void Tusken_StaffTrace(void)
 {
@@ -415,8 +415,8 @@ void Tusken_StaffTrace(void)
 		return;
 	}
 
-	const int boltIndex = gi.G2API_AddBolt(&NPC->ghoul2[NPC->weaponModel[0]], "*weapon");
-	if (boltIndex != -1)
+	const int bolt_index = gi.G2API_AddBolt(&NPC->ghoul2[NPC->weaponModel[0]], "*weapon");
+	if (bolt_index != -1)
 	{
 		const int curTime = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
@@ -430,7 +430,7 @@ void Tusken_StaffTrace(void)
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->weaponModel[0],
-				boltIndex,
+				bolt_index,
 				&boltMatrix, angles, NPC->currentOrigin, time,
 				nullptr, NPC->s.modelScale);
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, base);
@@ -481,8 +481,8 @@ void Tusken_StaffTracenew(gentity_t* self)
 		return;
 	}
 
-	const int boltIndex = gi.G2API_AddBolt(&self->ghoul2[self->weaponModel[0]], "*weapon");
-	if (boltIndex != -1)
+	const int bolt_index = gi.G2API_AddBolt(&self->ghoul2[self->weaponModel[0]], "*weapon");
+	if (bolt_index != -1)
 	{
 		const int curTime = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
@@ -496,7 +496,7 @@ void Tusken_StaffTracenew(gentity_t* self)
 			trace_t trace;
 
 			gi.G2API_GetBoltMatrix(self->ghoul2, self->weaponModel[0],
-				boltIndex,
+				bolt_index,
 				&boltMatrix, angles, self->currentOrigin, time,
 				nullptr, self->s.modelScale);
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, base);

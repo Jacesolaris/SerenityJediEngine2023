@@ -38,7 +38,7 @@ extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern void NPC_EvasionSaber(void);
 extern qboolean RT_Flying(const gentity_t* self);
-extern float NPC_EnemyRangeFromBolt(int boltIndex);
+extern float NPC_EnemyRangeFromBolt(int bolt_index);
 extern qboolean in_camera;
 extern void NPC_CheckEvasion(void);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
@@ -86,7 +86,7 @@ void NPC_Saboteur_Precache(void)
 
 extern void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
 
-void Saboteur_Decloak(gentity_t* self, int uncloakTime)
+void Saboteur_Decloak(gentity_t* self, int uncloak_time)
 {
 	//decloak this Saboteur
 	if (self && self->client)
@@ -96,7 +96,7 @@ void Saboteur_Decloak(gentity_t* self, int uncloakTime)
 			//Uncloak
 			self->client->ps.powerups[PW_CLOAKED] = 0;
 			G_SoundOnEnt(self, CHAN_ITEM, "sound/chars/shadowtrooper/decloak.wav");
-			TIMER_Set(self, "nocloak", uncloakTime);
+			TIMER_Set(self, "nocloak", uncloak_time);
 		}
 	}
 }
@@ -213,14 +213,14 @@ enum
 	SPEECH_PUSHED
 };
 
-static void ST_Speech(const gentity_t* self, int speechType, float failChance)
+static void ST_Speech(const gentity_t* self, int speech_type, float fail_chance)
 {
-	if (Q_flrand(0.0f, 1.0f) < failChance)
+	if (Q_flrand(0.0f, 1.0f) < fail_chance)
 	{
 		return;
 	}
 
-	if (failChance >= 0)
+	if (fail_chance >= 0)
 	{
 		//a negative failChance makes it always talk
 		if (self->NPC->group)
@@ -259,7 +259,7 @@ static void ST_Speech(const gentity_t* self, int speechType, float failChance)
 		return;
 	}
 
-	switch (speechType)
+	switch (speech_type)
 	{
 	case SPEECH_CHASE:
 		G_AddVoiceEvent(self, Q_irand(EV_CHASE1, EV_CHASE3), 2000);
@@ -325,13 +325,13 @@ void ST_MarkToCover(const gentity_t* self)
 	}
 }
 
-void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int minTime, int maxTime)
+void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time, int max_time)
 {
 	if (!self || !self->NPC)
 	{
 		return;
 	}
-	G_StartFlee(self, enemy, dangerPoint, dangerLevel, minTime, maxTime);
+	G_StartFlee(self, enemy, danger_point, danger_level, min_time, max_time);
 	if (self->NPC->group && self->NPC->group->numGroup > 1)
 	{
 		ST_Speech(self, SPEECH_COVER, 0); //FIXME: flee sound?
@@ -573,14 +573,14 @@ NPC_ST_Sleep
 
 void NPC_BSST_Sleep(void)
 {
-	const int alertEvent = NPC_CheckAlertEvents(qfalse, qtrue, -1, qfalse, AEL_MINOR);
+	const int alert_event = NPC_CheckAlertEvents(qfalse, qtrue, -1, qfalse, AEL_MINOR);
 	//only check sounds since we're alseep!
 
 	//There is an event we heard
-	if (alertEvent >= 0)
+	if (alert_event >= 0)
 	{
 		//See if it was enough to wake us up
-		if (level.alertEvents[alertEvent].level == AEL_DISCOVERED && NPCS.NPCInfo->scriptFlags & SCF_LOOK_FOR_ENEMIES)
+		if (level.alertEvents[alert_event].level == AEL_DISCOVERED && NPCS.NPCInfo->scriptFlags & SCF_LOOK_FOR_ENEMIES)
 		{
 			gentity_t* closestPlayer = FindClosestPlayer(NPCS.NPC->client->ps.origin, NPCS.NPC->client->enemyTeam);
 			if (closestPlayer)
@@ -871,7 +871,7 @@ extern float Q_flrand(float min, float max);
 qboolean NPC_CheckEnemiesInSpotlight(void)
 {
 	//racc = check for enemies in our immediate eyesight?
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	gentity_t* suspect = NULL;
 	int i;
 	vec3_t mins, maxs;
@@ -882,11 +882,11 @@ qboolean NPC_CheckEnemiesInSpotlight(void)
 		maxs[i] = NPCS.NPC->client->renderInfo.eyePoint[i] + NPCS.NPC->speed;
 	}
 
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (i = 0; i < numListedEntities; i++)
+	for (i = 0; i < num_listed_entities; i++)
 	{
-		gentity_t* enemy = &g_entities[entityList[i]];
+		gentity_t* enemy = &g_entities[entity_list[i]];
 
 		if (!enemy->inuse)
 			continue;
@@ -1217,14 +1217,14 @@ void NPC_BSST_Investigate(void)
 
 	if (!(NPCS.NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, NPCS.NPCInfo->lastAlertID, qfalse, AEL_MINOR);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, NPCS.NPCInfo->lastAlertID, qfalse, AEL_MINOR);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
 			if (NPCS.NPCInfo->confusionTime < level.time)
 			{
-				if (NPC_CheckForDanger(alertEvent))
+				if (NPC_CheckForDanger(alert_event))
 				{
 					//running like hell
 					ST_Speech(NPCS.NPC, SPEECH_COVER, 0); //FIXME: flee sound?
@@ -1232,9 +1232,9 @@ void NPC_BSST_Investigate(void)
 				}
 			}
 
-			if (level.alertEvents[alertEvent].ID != NPCS.NPCInfo->lastAlertID)
+			if (level.alertEvents[alert_event].ID != NPCS.NPCInfo->lastAlertID)
 			{
-				NPC_ST_InvestigateEvent(alertEvent, qtrue);
+				NPC_ST_InvestigateEvent(alert_event, qtrue);
 			}
 		}
 	}
@@ -1351,12 +1351,12 @@ void NPC_BSST_Patrol(void)
 
 	if (!(NPCS.NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			if (NPC_CheckForDanger(alertEvent))
+			if (NPC_CheckForDanger(alert_event))
 			{
 				//going to run?
 				ST_Speech(NPCS.NPC, SPEECH_COVER, 0);
@@ -1364,21 +1364,21 @@ void NPC_BSST_Patrol(void)
 			}
 			if (NPCS.NPC->client->NPC_class == CLASS_BOBAFETT)
 			{
-				if (!level.alertEvents[alertEvent].owner ||
-					!level.alertEvents[alertEvent].owner->client ||
-					level.alertEvents[alertEvent].owner->health <= 0 ||
-					level.alertEvents[alertEvent].owner->client->playerTeam != NPCS.NPC->client->enemyTeam)
+				if (!level.alertEvents[alert_event].owner ||
+					!level.alertEvents[alert_event].owner->client ||
+					level.alertEvents[alert_event].owner->health <= 0 ||
+					level.alertEvents[alert_event].owner->client->playerTeam != NPCS.NPC->client->enemyTeam)
 				{
 					//not an enemy
 					return;
 				}
 				ST_Speech(NPCS.NPC, SPEECH_CHASE, 0);
-				G_SetEnemy(NPCS.NPC, level.alertEvents[alertEvent].owner);
+				G_SetEnemy(NPCS.NPC, level.alertEvents[alert_event].owner);
 				NPCS.NPCInfo->enemyLastSeenTime = level.time;
 				TIMER_Set(NPCS.NPC, "attackDelay", Q_irand(500, 1500));
 				return;
 			}
-			if (NPC_ST_InvestigateEvent(alertEvent, qfalse))
+			if (NPC_ST_InvestigateEvent(alert_event, qfalse))
 			{
 				//actually going to investigate it
 				NPC_UpdateAngles(qtrue, qtrue);
@@ -2565,10 +2565,10 @@ void ST_Commander(void)
 			int i1, e;
 			vec3_t mins;
 			vec3_t maxs;
-			int numListedEntities;
+			int num_listed_entities;
 			qboolean fled = qfalse;
 			gentity_t* ent;
-			int entityList[MAX_GENTITIES];
+			int entity_list[MAX_GENTITIES];
 
 			TIMER_Set(NPCS.NPC, "checkGrenadeTooCloseDebouncer", Q_irand(300, 600));
 
@@ -2578,11 +2578,11 @@ void ST_Commander(void)
 				maxs[i1] = NPCS.NPC->r.currentOrigin[i1] + 200;
 			}
 
-			numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+			num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-			for (e = 0; e < numListedEntities; e++)
+			for (e = 0; e < num_listed_entities; e++)
 			{
-				ent = &g_entities[entityList[e]];
+				ent = &g_entities[entity_list[e]];
 
 				if (ent == NPCS.NPC)
 					continue;
@@ -2879,8 +2879,8 @@ void ST_Commander(void)
 	RestoreNPCGlobals();
 }
 
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 void Noghri_StickTrace(void)
 {
@@ -2893,8 +2893,8 @@ void Noghri_StickTrace(void)
 		return;
 	}
 
-	const int boltIndex = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[0], 0, "*weapon");
-	if (boltIndex != -1)
+	const int bolt_index = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[0], 0, "*weapon");
+	if (bolt_index != -1)
 	{
 		const int curTime = level.time;
 		qboolean hit = qfalse;
@@ -2911,7 +2911,7 @@ void Noghri_StickTrace(void)
 			VectorSet(maxs, 2, 2, 2);
 
 			trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 1,
-				boltIndex,
+				bolt_index,
 				&boltMatrix, angles, NPCS.NPC->r.currentOrigin, time,
 				NULL, NPCS.NPC->modelScale);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
@@ -3458,13 +3458,13 @@ void NPC_BSST_Attack(void)
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 						NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
-					vec3_t smackDir;
-					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-					smackDir[2] += 30;
-					VectorNormalize(smackDir);
+					vec3_t smack_dir;
+					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+					smack_dir[2] += 30;
+					VectorNormalize(smack_dir);
 					//hurt them
 					G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/chars/noghri/misc/taunt.mp3"));
-					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 						(g_npcspskill.integer + 1) * Q_irand(2, 5), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_L)
 					{
@@ -3476,15 +3476,15 @@ void NPC_BSST_Attack(void)
 							knockAnim = BOTH_KNOCKDOWN4;
 						}
 						//throw them
-						smackDir[2] = 1;
-						VectorNormalize(smackDir);
-						g_throw(NPCS.NPC->enemy, smackDir, 50);
+						smack_dir[2] = 1;
+						VectorNormalize(smack_dir);
+						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_R)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 65);
+						g_throw(NPCS.NPC->enemy, smack_dir, 65);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
@@ -3492,7 +3492,7 @@ void NPC_BSST_Attack(void)
 					{
 						//uppercut
 						//throw them
-						g_throw(NPCS.NPC->enemy, smackDir, 80);
+						g_throw(NPCS.NPC->enemy, smack_dir, 80);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -3519,17 +3519,17 @@ void NPC_BSST_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				int swingAnim;
+				int swing_anim;
 				if (NPCS.NPC->health > 70)
 				{
-					swingAnim = Q_irand(BOTH_MELEE_L, BOTH_MELEE_R); //smackdown or uppercut
+					swing_anim = Q_irand(BOTH_MELEE_L, BOTH_MELEE_R); //smackdown or uppercut
 				}
 				else
 				{
-					swingAnim = BOTH_MELEEUP; //smackdown or uppercut
+					swing_anim = BOTH_MELEEUP; //smackdown or uppercut
 				}
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/punch2.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(3500, 6500));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3561,13 +3561,13 @@ void NPC_BSST_Attack(void)
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 						NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
-					vec3_t smackDir;
-					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-					smackDir[2] += 30;
-					VectorNormalize(smackDir);
+					vec3_t smack_dir;
+					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+					smack_dir[2] += 30;
+					VectorNormalize(smack_dir);
 					//hurt them
 					G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/chars/%s/misc/taunt0%d.mp3"));
-					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 						(g_npcspskill.integer + 1) * Q_irand(1, 3), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F)
 					{
@@ -3579,15 +3579,15 @@ void NPC_BSST_Attack(void)
 							knockAnim = BOTH_KNOCKDOWN4;
 						}
 						//throw them
-						smackDir[2] = 1;
-						VectorNormalize(smackDir);
-						g_throw(NPCS.NPC->enemy, smackDir, 25);
+						smack_dir[2] = 1;
+						VectorNormalize(smack_dir);
+						g_throw(NPCS.NPC->enemy, smack_dir, 25);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F2)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 30);
+						g_throw(NPCS.NPC->enemy, smack_dir, 30);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
@@ -3595,7 +3595,7 @@ void NPC_BSST_Attack(void)
 					{
 						//uppercut
 						//throw them
-						g_throw(NPCS.NPC->enemy, smackDir, 50);
+						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -3625,9 +3625,9 @@ void NPC_BSST_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				const int swingAnim = Q_irand(BOTH_A7_KICK_F, BOTH_A7_KICK_F2);
+				const int swing_anim = Q_irand(BOTH_A7_KICK_F, BOTH_A7_KICK_F2);
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick2.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(2500, 4500));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3644,9 +3644,9 @@ void NPC_BSST_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				const int swingAnim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B);
+				const int swing_anim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B);
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick1.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(2500, 4500));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3678,12 +3678,12 @@ void NPC_BSST_Attack(void)
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 						NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
-					vec3_t smackDir;
-					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-					smackDir[2] += 10;
-					VectorNormalize(smackDir);
+					vec3_t smack_dir;
+					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+					smack_dir[2] += 10;
+					VectorNormalize(smack_dir);
 					//hurt them
-					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 						(g_npcspskill.integer + 1) * 1, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_R)
@@ -3696,21 +3696,21 @@ void NPC_BSST_Attack(void)
 							knockAnim = BOTH_PAIN2;
 						}
 						//throw them
-						smackDir[2] = 1;
-						VectorNormalize(smackDir);
-						g_throw(NPCS.NPC->enemy, smackDir, 10);
+						smack_dir[2] = 1;
+						VectorNormalize(smack_dir);
+						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_L)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 10);
+						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_PAIN3,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEEUP)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 10);
+						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_PAIN4,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
@@ -3718,7 +3718,7 @@ void NPC_BSST_Attack(void)
 					{
 						//uppercut
 						//throw them
-						g_throw(NPCS.NPC->enemy, smackDir, 10);
+						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_PAIN1,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -3748,17 +3748,17 @@ void NPC_BSST_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				int swingAnim;
+				int swing_anim;
 				if (NPCS.NPC->health > 50)
 				{
-					swingAnim = Q_irand(BOTH_MELEEUP, BOTH_MELEE3); //kick
+					swing_anim = Q_irand(BOTH_MELEEUP, BOTH_MELEE3); //kick
 				}
 				else
 				{
-					swingAnim = Q_irand(BOTH_MELEE_R, BOTH_MELEE_L); //kick
+					swing_anim = Q_irand(BOTH_MELEE_R, BOTH_MELEE_L); //kick
 				}
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick2.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(2500, 4500));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3791,13 +3791,13 @@ void NPC_BSST_Attack(void)
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 						NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
-					vec3_t smackDir;
-					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-					smackDir[2] += 30;
-					VectorNormalize(smackDir);
+					vec3_t smack_dir;
+					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+					smack_dir[2] += 30;
+					VectorNormalize(smack_dir);
 					//hurt them
 					G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick2.mp3"));
-					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 						(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F)
 					{
@@ -3809,15 +3809,15 @@ void NPC_BSST_Attack(void)
 							knockAnim = BOTH_KNOCKDOWN4;
 						}
 						//throw them
-						smackDir[2] = 1;
-						VectorNormalize(smackDir);
-						g_throw(NPCS.NPC->enemy, smackDir, 50);
+						smack_dir[2] = 1;
+						VectorNormalize(smack_dir);
+						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F2)
 					{
-						g_throw(NPCS.NPC->enemy, smackDir, 65);
+						g_throw(NPCS.NPC->enemy, smack_dir, 65);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
@@ -3825,7 +3825,7 @@ void NPC_BSST_Attack(void)
 					{
 						//uppercut
 						//throw them
-						g_throw(NPCS.NPC->enemy, smackDir, 80);
+						g_throw(NPCS.NPC->enemy, smack_dir, 80);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -3856,9 +3856,9 @@ void NPC_BSST_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				const int swingAnim = Q_irand(BOTH_A7_KICK_F, BOTH_A7_KICK_F2);
+				const int swing_anim = Q_irand(BOTH_A7_KICK_F, BOTH_A7_KICK_F2);
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick3.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(1000, 3000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);
@@ -3875,9 +3875,9 @@ void NPC_BSST_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				const int swingAnim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B);
+				const int swing_anim = Q_irand(BOTH_A7_KICK_B2, BOTH_A7_KICK_B);
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick1.mp3"));
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(1000, 3000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 300);

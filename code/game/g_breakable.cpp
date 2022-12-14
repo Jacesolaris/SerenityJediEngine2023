@@ -32,7 +32,7 @@ extern void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t 
                       int custom_sound = 0);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 
-extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int modelIndex, int frame,
+extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int model_index, int frame,
 	trType_t trType, int effectID);
 
 extern qboolean player_locked;
@@ -185,7 +185,7 @@ void funcBBrushDieGo(gentity_t* ent)
 }
 
 void funcBBrushDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	self->takedamage = qfalse; //stop chain reaction runaway loops
 
@@ -219,7 +219,7 @@ void funcBBrushUse(gentity_t* self, gentity_t* other, gentity_t* activator)
 }
 
 void funcBBrushPain(gentity_t* self, gentity_t* inflictor, const gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	if (self->painDebounceTime > level.time)
 	{
@@ -476,7 +476,7 @@ void SP_func_breakable(gentity_t* self)
 }
 
 void misc_model_breakable_pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	if (self->health > 0)
 	{
@@ -492,7 +492,7 @@ void misc_model_breakable_pain(gentity_t* self, gentity_t* inflictor, gentity_t*
 }
 
 void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hitLoc)
+	int dFlags, int hit_loc)
 {
 	float size = 0;
 	vec3_t dir, up, dis;
@@ -1457,7 +1457,7 @@ extern cgs_t cgs;
 
 //-----------------------------------------------------
 void funcGlassDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 {
 	vec3_t verts[4], normal;
 

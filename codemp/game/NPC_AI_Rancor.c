@@ -22,7 +22,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "b_local.h"
 
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex);
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index);
 
 // These define the working combat range for these suckers
 #define MIN_DISTANCE		128
@@ -148,12 +148,11 @@ void Rancor_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, int limbType, float limbRollBase,
-	float limbPitchBase, int deathAnim, qboolean postDeath);
-extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
-extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, const int limb_type);
+extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
+extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
 
 void Rancor_DropVictim(gentity_t* self)
 {
@@ -438,18 +437,17 @@ void Rancor_Bite(void)
 				if (!Q_irand(0, 1))
 				{
 					//bite something off
-					const int hitLoc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
-					if (hitLoc == G2_MODELPART_HEAD)
+					const int hit_loc = Q_irand(G2_MODELPART_HEAD, G2_MODELPART_RLEG);
+					if (hit_loc == G2_MODELPART_HEAD)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATH17, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					else if (hitLoc == G2_MODELPART_WAIST)
+					else if (hit_loc == G2_MODELPART_WAIST)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATHBACKWARD2,
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hitLoc, 90, 0,
-						radiusEnt->client->ps.torsoAnim, qtrue);
+					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hit_loc);
 				}
 			}
 			G_Sound(radiusEnt, CHAN_AUTO, G_SoundIndex("sound/chars/rancor/chomp.wav"));
@@ -552,8 +550,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 					//killed him
 					//make it look like we bit his head off
 					//NPC->activator->client->dismembered = qfalse;
-					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_HEAD,
-						90, 0, NPCS.NPC->activator->client->ps.torsoAnim, qtrue);
+					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_HEAD);
 					//G_DoDismemberment( NPC->activator, NPC->activator->r.currentOrigin, MOD_SABER, 1000, HL_HEAD, qtrue );
 					NPCS.NPC->activator->client->ps.forceHandExtend = HANDEXTEND_NONE;
 					NPCS.NPC->activator->client->ps.forceHandExtendTime = 0;
@@ -574,8 +571,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 				if (NPCS.NPC->activator->client)
 				{
 					//NPC->activator->client->dismembered = qfalse;
-					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_WAIST,
-						90, 0, NPCS.NPC->activator->client->ps.torsoAnim, qtrue);
+					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_WAIST);
 					//G_DoDismemberment( NPC->activator, NPC->enemy->r.currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue );
 				}
 				//KILL
@@ -621,8 +617,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 				{
 					//cut in half
 					//NPC->activator->client->dismembered = qfalse;
-					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_WAIST,
-						90, 0, NPCS.NPC->activator->client->ps.torsoAnim, qtrue);
+					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_WAIST);
 					//G_DoDismemberment( NPC->activator, NPC->enemy->r.currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue );
 					//KILL
 					G_Damage(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC, vec3_origin, NPCS.NPC->activator->r.currentOrigin,

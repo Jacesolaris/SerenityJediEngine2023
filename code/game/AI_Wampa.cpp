@@ -180,13 +180,13 @@ void Wampa_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
-extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
-extern int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
+extern qboolean G_DoDismemberment(gentity_t* self, vec3_t point, const int mod, int hit_loc,
+                                  qboolean force = qfalse);
+extern int NPC_GetEntsNearBolt(gentity_t** radius_ents, float radius, int bolt_index, vec3_t bolt_org);
 
-void Wampa_Slash(int boltIndex, qboolean backhand)
+void Wampa_Slash(int bolt_index, qboolean backhand)
 {
 	gentity_t* radiusEnts[128];
 	constexpr float radius = 88;
@@ -194,7 +194,7 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 	vec3_t boltOrg;
 	const int damage = backhand ? Q_irand(10, 15) : Q_irand(20, 30);
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEnts, radius, boltIndex, boltOrg);
+	const int numEnts = NPC_GetEntsNearBolt(radiusEnts, radius, bolt_index, boltOrg);
 
 	for (int i = 0; i < numEnts; i++)
 	{
@@ -269,7 +269,7 @@ void Wampa_Slash(int boltIndex, qboolean backhand)
 					}
 					radiusEnts[i]->client->dismembered = false;
 					//FIXME: the limb should just disappear, cuz I ate it
-					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, 1000, hit_loc, qtrue);
+					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hit_loc, qtrue);
 				}
 			}
 			else if (!Q_irand(0, 3) && radiusEnts[i]->health > 0)
@@ -468,7 +468,7 @@ NPC_Wampa_Pain
 -------------------------
 */
 void NPC_Wampa_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	qboolean hitByWampa = qfalse;
 	if (self->count)
@@ -647,7 +647,7 @@ qboolean Wampa_CheckDropVictim(gentity_t* self, qboolean excludeMe)
 	return qfalse;
 }
 
-extern float NPC_EnemyRangeFromBolt(int boltIndex);
+extern float NPC_EnemyRangeFromBolt(int bolt_index);
 
 qboolean Wampa_TryGrab(void)
 {
@@ -848,8 +848,8 @@ void NPC_BSWampa_Default(void)
 									}
 									NPC->activator->client->dismembered = false;
 									//FIXME: the limb should just disappear, cuz I ate it
-									G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, 1000,
-										hit_loc, qtrue);
+									G_DoDismemberment(NPC->activator, NPC->activator->currentOrigin, MOD_SABER, hit_loc,
+									                  qtrue);
 									TIMER_Set(NPC, "sniffCorpse", Q_irand(2000, 5000));
 								}
 								NPC_SetAnim(NPC->activator, SETANIM_BOTH, BOTH_HANG_PAIN,

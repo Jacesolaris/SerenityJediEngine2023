@@ -278,17 +278,17 @@ void G2_FindRecursiveSurface(const model_t* currentModel, int surfaceNum, surfac
 	}
 }
 
-qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int modelIndex, const char* surfaceName)
+qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int model_index, const char* surfaceName)
 {
 	uint32_t			flags;
-	assert(modelIndex >= 0 && modelIndex < ghoul2.size());
-	assert(ghoul2[modelIndex].currentModel);
-	assert(ghoul2[modelIndex].currentModel->mdxm);
+	assert(model_index >= 0 && model_index < ghoul2.size());
+	assert(ghoul2[model_index].currentModel);
+	assert(ghoul2[model_index].currentModel->mdxm);
 	// first find if we already have this surface in the list
-	const int surf = G2_IsSurfaceLegal(ghoul2[modelIndex].currentModel, surfaceName, &flags);
+	const int surf = G2_IsSurfaceLegal(ghoul2[model_index].currentModel, surfaceName, &flags);
 	if (surf != -1)
 	{
-		ghoul2[modelIndex].mSurfaceRoot = surf;
+		ghoul2[model_index].mSurfaceRoot = surf;
 		return qtrue;
 	}
 	assert(0);

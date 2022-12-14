@@ -222,26 +222,26 @@ void NPC_BSGrenadier_Patrol(void)
 		if (!(NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 		{
 			//Is there danger nearby
-			const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
-			if (NPC_CheckForDanger(alertEvent))
+			const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_SUSPICIOUS);
+			if (NPC_CheckForDanger(alert_event))
 			{
 				NPC_UpdateAngles(qtrue, qtrue);
 				return;
 			}
 			//check for other alert events
 			//There is an event to look at
-			if (alertEvent >= 0 && level.alertEvents[alertEvent].ID != NPCInfo->lastAlertID)
+			if (alert_event >= 0 && level.alertEvents[alert_event].ID != NPCInfo->lastAlertID)
 			{
-				NPCInfo->lastAlertID = level.alertEvents[alertEvent].ID;
-				if (level.alertEvents[alertEvent].level == AEL_DISCOVERED)
+				NPCInfo->lastAlertID = level.alertEvents[alert_event].ID;
+				if (level.alertEvents[alert_event].level == AEL_DISCOVERED)
 				{
-					if (level.alertEvents[alertEvent].owner &&
-						level.alertEvents[alertEvent].owner->client &&
-						level.alertEvents[alertEvent].owner->health >= 0 &&
-						level.alertEvents[alertEvent].owner->client->playerTeam == NPC->client->enemyTeam)
+					if (level.alertEvents[alert_event].owner &&
+						level.alertEvents[alert_event].owner->client &&
+						level.alertEvents[alert_event].owner->health >= 0 &&
+						level.alertEvents[alert_event].owner->client->playerTeam == NPC->client->enemyTeam)
 					{
 						//an enemy
-						G_SetEnemy(NPC, level.alertEvents[alertEvent].owner);
+						G_SetEnemy(NPC, level.alertEvents[alert_event].owner);
 						//NPCInfo->enemyLastSeenTime = level.time;
 						TIMER_Set(NPC, "attackDelay", Q_irand(500, 2500));
 					}
@@ -250,9 +250,9 @@ void NPC_BSGrenadier_Patrol(void)
 				{
 					//FIXME: get more suspicious over time?
 					//Save the position for movement (if necessary)
-					VectorCopy(level.alertEvents[alertEvent].position, NPCInfo->investigateGoal);
+					VectorCopy(level.alertEvents[alert_event].position, NPCInfo->investigateGoal);
 					NPCInfo->investigateDebounceTime = level.time + Q_irand(500, 1000);
-					if (level.alertEvents[alertEvent].level == AEL_SUSPICIOUS)
+					if (level.alertEvents[alert_event].level == AEL_SUSPICIOUS)
 					{
 						//suspicious looks longer
 						NPCInfo->investigateDebounceTime += Q_irand(500, 2500);

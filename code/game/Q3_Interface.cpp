@@ -63,7 +63,7 @@ extern void CG_ChangeWeapon(int num);
 extern int TAG_GetOrigin2(const char* owner, const char* name, vec3_t origin);
 extern void G_PlayDoorLoopSound(gentity_t* ent);
 extern void G_PlayDoorSound(gentity_t* ent, int type);
-extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void WP_SaberSetColor(const gentity_t* ent, int saber_num, int blade_num, const char* colorName);
 extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName);
@@ -74,9 +74,9 @@ extern void JET_FlyStart(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
 extern void Rail_LockCenterOfTrack(const char* trackName);
 extern void Rail_UnLockCenterOfTrack(const char* trackName);
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0);
-extern qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, int mod, int damage, int hitLoc,
-	qboolean force = qfalse);
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index = 0);
+extern qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, const int mod, int hit_loc,
+                                     qboolean force = qfalse);
 
 extern int BMS_START;
 extern int BMS_MID;
@@ -6983,7 +6983,7 @@ void RemoveOwner(gentity_t* self)
 void Q3_DismemberLimb(int entID, char* hitLocName)
 {
 	gentity_t* self = &g_entities[entID];
-	const int hitLoc = GetIDForString(HLTable, hitLocName);
+	const int hit_loc = GetIDForString(HLTable, hitLocName);
 	vec3_t point;
 
 	if (!self)
@@ -7006,14 +7006,14 @@ void Q3_DismemberLimb(int entID, char* hitLocName)
 		return;
 	}
 
-	if (hitLoc <= HL_NONE || hitLoc >= HL_MAX)
+	if (hit_loc <= HL_NONE || hit_loc >= HL_MAX)
 	{
 		Quake3Game()->DebugPrint(IGameInterface::WL_ERROR, "Q3_DismemberLimb: '%s' is not a valid hit location!\n",
 			hitLocName);
 		return;
 	}
 
-	switch (hitLoc)
+	switch (hit_loc)
 	{
 	case HL_FOOT_RT:
 		VectorCopy(self->client->renderInfo.footRPoint, point);
@@ -7061,7 +7061,7 @@ void Q3_DismemberLimb(int entID, char* hitLocName)
 		break;
 	default:;
 	}
-	G_DoDismembermentcin(self, point, MOD_SABER, 1000, hitLoc, qtrue);
+	G_DoDismembermentcin(self, point, MOD_SABER, hit_loc, qtrue);
 }
 
 /*

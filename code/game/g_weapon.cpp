@@ -247,7 +247,7 @@ void WP_Explode(gentity_t* self)
 // We need to have a dieFunc, otherwise G_Damage won't actually make us die.  I could modify G_Damage, but that entails too many changes
 //-----------------------------------------------------------------------------
 void WP_ExplosiveDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hitLoc)
+	int dFlags, int hit_loc)
 	//-----------------------------------------------------------------------------
 {
 	self->enemy = attacker;
@@ -271,7 +271,7 @@ bool WP_MissileTargetHint(gentity_t* shooter, vec3_t start, vec3_t out)
 
 int G_GetHitLocFromTrace(trace_t* trace, int mod)
 {
-	int hitLoc = HL_NONE;
+	int hit_loc = HL_NONE;
 	for (auto& i : trace->G2CollisionMap)
 	{
 		if (i.mEntityNum == -1)
@@ -284,13 +284,13 @@ int G_GetHitLocFromTrace(trace_t* trace, int mod)
 		{
 			G_GetHitLocFromSurfName(&g_entities[coll.mEntityNum],
 				gi.G2API_GetSurfaceName(&g_entities[coll.mEntityNum].ghoul2[coll.mModelIndex],
-					coll.mSurfaceIndex), &hitLoc, coll.mCollisionPosition,
+					coll.mSurfaceIndex), &hit_loc, coll.mCollisionPosition,
 				nullptr, nullptr, mod);
 			//we only want the first "entrance wound", so break
 			break;
 		}
 	}
-	return hitLoc;
+	return hit_loc;
 }
 
 //---------------------------------------------------------
@@ -1317,8 +1317,8 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 			// Create a simple impact type mark that doesn't last long in the world
 			G_PlayEffect(G_EffectIndex("disruptor/flesh_impact"), tr.endpos, tr.plane.normal);
 
-			const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
-			G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hitLoc);
+			const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
+			G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hit_loc);
 		}
 		else
 		{

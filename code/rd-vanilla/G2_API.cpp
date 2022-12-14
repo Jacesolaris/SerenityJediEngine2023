@@ -885,16 +885,16 @@ qboolean G2API_SetSurfaceOnOff(CGhoul2Info* ghlInfo, const char* surfaceName, co
 	return qfalse;
 }
 
-qboolean G2API_SetRootSurface(CGhoul2Info_v& ghlInfo, const int modelIndex, const char* surfaceName)
+qboolean G2API_SetRootSurface(CGhoul2Info_v& ghlInfo, const int model_index, const char* surfaceName)
 {
 	G2ERROR(ghlInfo.IsValid(), "Invalid ghlInfo");
 	G2ERROR(surfaceName, "Invalid surfaceName");
 	if (G2_SetupModelPointers(ghlInfo))
 	{
-		G2ERROR(modelIndex >= 0 && modelIndex < ghlInfo.size(), "Bad Model Index");
-		if (modelIndex >= 0 && modelIndex < ghlInfo.size())
+		G2ERROR(model_index >= 0 && model_index < ghlInfo.size(), "Bad Model Index");
+		if (model_index >= 0 && model_index < ghlInfo.size())
 		{
-			return G2_SetRootSurface(ghlInfo, modelIndex, surfaceName);
+			return G2_SetRootSurface(ghlInfo, model_index, surfaceName);
 		}
 	}
 	return qfalse;
@@ -942,10 +942,10 @@ int G2API_GetSurfaceRenderStatus(CGhoul2Info* ghlInfo, const char* surfaceName)
 	return -1;
 }
 
-qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, const int modelIndex)
+qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, const int model_index)
 {
 	// sanity check
-	if (!ghlInfo.size() || ghlInfo.size() <= modelIndex || modelIndex < 0 || ghlInfo[modelIndex].mModelindex < 0)
+	if (!ghlInfo.size() || ghlInfo.size() <= model_index || model_index < 0 || ghlInfo[model_index].mModelindex < 0)
 	{
 		// if we hit this assert then we are trying to delete a ghoul2 model on a ghoul2 instance that
 		// one way or another is already gone.
@@ -956,21 +956,21 @@ qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, const int modelIndex)
 
 #ifdef _G2_GORE
 	// Cleanup the gore attached to this model
-	if (ghlInfo[modelIndex].mGoreSetTag)
+	if (ghlInfo[model_index].mGoreSetTag)
 	{
-		DeleteGoreSet(ghlInfo[modelIndex].mGoreSetTag);
-		ghlInfo[modelIndex].mGoreSetTag = 0;
+		DeleteGoreSet(ghlInfo[model_index].mGoreSetTag);
+		ghlInfo[model_index].mGoreSetTag = 0;
 	}
 #endif
 
-	RemoveBoneCache(ghlInfo[modelIndex].mBoneCache);
-	ghlInfo[modelIndex].mBoneCache = nullptr;
+	RemoveBoneCache(ghlInfo[model_index].mBoneCache);
+	ghlInfo[model_index].mBoneCache = nullptr;
 
 	// set us to be the 'not active' state
-	ghlInfo[modelIndex].mModelindex = -1;
-	ghlInfo[modelIndex].mFileName[0] = 0;
+	ghlInfo[model_index].mModelindex = -1;
+	ghlInfo[model_index].mFileName[0] = 0;
 
-	ghlInfo[modelIndex] = CGhoul2Info();
+	ghlInfo[model_index] = CGhoul2Info();
 	return qtrue;
 }
 
@@ -1765,13 +1765,13 @@ void G2API_DetachEnt(int* boltInfo)
 
 bool G2_NeedsRecalc(CGhoul2Info* ghlInfo, int frameNum);
 
-qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, const int modelIndex, const int boltIndex, mdxaBone_t* matrix,
+qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, const int model_index, const int bolt_index, mdxaBone_t* matrix,
 	const vec3_t angles,
 	const vec3_t position, const int AframeNum, qhandle_t* modelList, const vec3_t scale)
 {
 	G2ERROR(ghoul2.IsValid(), "Invalid ghlInfo");
 	G2ERROR(matrix, "NULL matrix");
-	G2ERROR(modelIndex >= 0 && modelIndex < ghoul2.size(), "Invalid ModelIndex");
+	G2ERROR(model_index >= 0 && model_index < ghoul2.size(), "Invalid ModelIndex");
 	constexpr static mdxaBone_t identityMatrix =
 	{
 		{
@@ -1783,14 +1783,14 @@ qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, const int modelIndex, const 
 	G2_GenerateWorldMatrix(angles, position);
 	if (G2_SetupModelPointers(ghoul2))
 	{
-		if (matrix && modelIndex >= 0 && modelIndex < ghoul2.size())
+		if (matrix && model_index >= 0 && model_index < ghoul2.size())
 		{
 			const int frameNum = G2API_GetTime(AframeNum);
-			CGhoul2Info* ghlInfo = &ghoul2[modelIndex];
-			G2ERROR(boltIndex >= 0 && (boltIndex < (int)ghlInfo->mBltlist.size()),
-				va("Invalid Bolt Index (%d:%s)", boltIndex, ghlInfo->mFileName));
+			CGhoul2Info* ghlInfo = &ghoul2[model_index];
+			G2ERROR(bolt_index >= 0 && (bolt_index < (int)ghlInfo->mBltlist.size()),
+				va("Invalid Bolt Index (%d:%s)", bolt_index, ghlInfo->mFileName));
 
-			if (boltIndex >= 0 && ghlInfo && boltIndex < static_cast<int>(ghlInfo->mBltlist.size()))
+			if (bolt_index >= 0 && ghlInfo && bolt_index < static_cast<int>(ghlInfo->mBltlist.size()))
 			{
 				mdxaBone_t bolt;
 
@@ -1799,7 +1799,7 @@ qboolean G2API_GetBoltMatrix(CGhoul2Info_v& ghoul2, const int modelIndex, const 
 					G2_ConstructGhoulSkeleton(ghoul2, frameNum, true, scale);
 				}
 
-				G2_GetBoltMatrixLow(*ghlInfo, boltIndex, scale, bolt);
+				G2_GetBoltMatrixLow(*ghlInfo, bolt_index, scale, bolt);
 				// scale the bolt position by the scale factor for this model since at this point its still in model space
 				if (scale[0])
 				{
@@ -1875,9 +1875,9 @@ void G2API_SetGhoul2ModelIndexes(CGhoul2Info_v& ghoul2, qhandle_t* modelList, qh
 	}
 }
 
-char* G2API_GetAnimFileNameIndex(qhandle_t modelIndex)
+char* G2API_GetAnimFileNameIndex(qhandle_t model_index)
 {
-	const model_t* mod_m = R_GetModelByHandle(modelIndex);
+	const model_t* mod_m = R_GetModelByHandle(model_index);
 	G2ERROR(mod_m && mod_m->mdxm, "Bad Model");
 	if (mod_m && mod_m->mdxm)
 	{
@@ -1889,9 +1889,9 @@ char* G2API_GetAnimFileNameIndex(qhandle_t modelIndex)
 // as above, but gets the internal embedded name, not the name of the disk file.
 // This is needed for some unfortunate jiggery-hackery to do with frameskipping & the animevents.cfg file
 //
-char* G2API_GetAnimFileInternalNameIndex(qhandle_t modelIndex)
+char* G2API_GetAnimFileInternalNameIndex(qhandle_t model_index)
 {
-	const model_t* mod_a = R_GetModelByHandle(modelIndex);
+	const model_t* mod_a = R_GetModelByHandle(model_index);
 	G2ERROR(mod_a && mod_a->mdxa, "Bad Model");
 	if (mod_a && mod_a->mdxa)
 	{
@@ -2052,11 +2052,11 @@ void G2API_GiveMeVectorFromMatrix(mdxaBone_t& boltMatrix, Eorientations flags, v
 }
 
 // copy a model from one ghoul2 instance to another, and reset the root surface on the new model if need be
-// NOTE if modelIndex = -1 then copy all the models
-void G2API_CopyGhoul2Instance(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int modelIndex)
+// NOTE if model_index = -1 then copy all the models
+void G2API_CopyGhoul2Instance(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int model_index)
 {
-	//Ensiform: I'm commenting this out because modelIndex appears unused and legitimately set in gamecode
-	//assert(modelIndex==-1); // copy individual bolted parts is not used in jk2 and I didn't want to deal with it
+	//Ensiform: I'm commenting this out because model_index appears unused and legitimately set in gamecode
+	//assert(model_index==-1); // copy individual bolted parts is not used in jk2 and I didn't want to deal with it
 	// if ya want it, we will add it back correctly
 
 	G2ERROR(ghoul2From.IsValid(), "Invalid ghlInfo");
@@ -2131,15 +2131,15 @@ char* G2API_GetGLAName(CGhoul2Info* ghlInfo)
 	return nullptr;
 }
 
-qboolean G2API_SetNewOrigin(CGhoul2Info* ghlInfo, const int boltIndex)
+qboolean G2API_SetNewOrigin(CGhoul2Info* ghlInfo, const int bolt_index)
 {
 	if (G2_SetupModelPointers(ghlInfo))
 	{
-		G2ERROR(boltIndex >= 0 && boltIndex < (int)ghlInfo->mBltlist.size(), "invalid boltIndex");
+		G2ERROR(bolt_index >= 0 && bolt_index < (int)ghlInfo->mBltlist.size(), "invalid bolt_index");
 
-		if (boltIndex >= 0 && boltIndex < static_cast<int>(ghlInfo->mBltlist.size()))
+		if (bolt_index >= 0 && bolt_index < static_cast<int>(ghlInfo->mBltlist.size()))
 		{
-			ghlInfo->mNewOrigin = boltIndex;
+			ghlInfo->mNewOrigin = bolt_index;
 			ghlInfo->mFlags |= GHOUL2_NEWORIGIN;
 		}
 		return qtrue;

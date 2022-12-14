@@ -100,15 +100,15 @@ NPC_Mark2_Pain
 -------------------------
 */
 void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hitLoc)
+	int hit_loc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (hitLoc == HL_GENERIC1 + i && self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH) // Blow it up?
+		if (hit_loc == HL_GENERIC1 + i && self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH) // Blow it up?
 		{
-			if (self->locationDamage[hitLoc] >= AMMO_POD_HEALTH)
+			if (self->locationDamage[hit_loc] >= AMMO_POD_HEALTH)
 			{
 				const int newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], va("torso_canister%d", i + 1));
 				if (newBolt != -1)

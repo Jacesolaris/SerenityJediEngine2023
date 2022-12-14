@@ -11865,7 +11865,7 @@ static void CG_CreateSaberMarks(vec3_t start, vec3_t end, vec3_t normal)
 
 extern void FX_AddPrimitive(CEffect** effect, int killTime);
 //-------------------------------------------------------
-void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const int saber_num, const int modelIndex, vec3_t origin, vec3_t angles)
+void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const int saber_num, const int model_index, vec3_t origin, vec3_t angles)
 {
 	gclient_t* client = cent->gent->client;
 	if (!client)
@@ -11873,11 +11873,11 @@ void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const i
 		return;
 	}
 	if (!scent ||
-		modelIndex == -1 ||
-		scent->gent->ghoul2.size() <= modelIndex ||
-		scent->gent->ghoul2[modelIndex].mBltlist.size() <= 0 ||
+		model_index == -1 ||
+		scent->gent->ghoul2.size() <= model_index ||
+		scent->gent->ghoul2[model_index].mBltlist.size() <= 0 ||
 		//using a camera puts away your saber so you have no bolts
-		scent->gent->ghoul2[modelIndex].mModelindex == -1)
+		scent->gent->ghoul2[model_index].mModelindex == -1)
 	{
 		return;
 	}
@@ -11893,7 +11893,7 @@ void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const i
 		mdxaBone_t bolt_matrix;
 
 		// figure out where the actual model muzzle is
-		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, modelIndex, 0, &bolt_matrix, angles, origin, cg.time, cgs.model_draw,
+		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, model_index, 0, &bolt_matrix, angles, origin, cg.time, cgs.model_draw,
 			scent->currentState.modelScale);
 		// work the matrix axis stuff into the original axis and origins used.
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, saber_org);
@@ -13888,8 +13888,8 @@ CG_Player
 
 ===============
 */
-extern qboolean G_GetRootSurfNameWithVariant(gentity_t* ent, const char* rootSurfName, char* returnSurfName,
-	int returnSize);
+extern qboolean G_GetRootSurfNameWithVariant(gentity_t* ent, const char* root_surf_name, char* return_surf_name,
+	int return_size);
 extern qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles);
 int cg_saberOnSoundTime[MAX_GENTITIES] = { 0 };
 extern void CG_AddRadarEnt(const centity_t* cent);
@@ -14155,15 +14155,15 @@ void CG_Player(centity_t* cent)
 				mdxaBone_t bolt_matrix;
 				// Getting the bolt here
 				//in mouth
-				int boltIndex = monster->gent->gutBolt;
+				int bolt_index = monster->gent->gutBolt;
 				if (monster->gent->count == 1)
 				{
 					//in hand
-					boltIndex = monster->gent->handRBolt;
+					bolt_index = monster->gent->handRBolt;
 				}
 				vec3_t ranc_angles = { 0 };
 				ranc_angles[YAW] = monster->lerpAngles[YAW];
-				gi.G2API_GetBoltMatrix(monster->gent->ghoul2, monster->gent->playerModel, boltIndex,
+				gi.G2API_GetBoltMatrix(monster->gent->ghoul2, monster->gent->playerModel, bolt_index,
 					&bolt_matrix, ranc_angles, monster->lerpOrigin, cg.time,
 					cgs.model_draw, monster->currentState.modelScale);
 				// Storing ent position, bolt position, and bolt axis

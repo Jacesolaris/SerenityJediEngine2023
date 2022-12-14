@@ -280,8 +280,8 @@ int sje_number_of_allies(const gentity_t* ent)
 	return number_of_allies;
 }
 
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 // Somebody (a player) has touched the shield.  See if it is a "friend".
 void ShieldTouch(gentity_t* self, gentity_t* other, trace_t* trace)
 {
@@ -857,20 +857,20 @@ void pas_think(gentity_t* ent)
 	testMaxs[1] = ent->r.currentOrigin[1] + ent->r.maxs[1] - 4;
 	testMaxs[2] = ent->r.currentOrigin[2] + ent->r.maxs[2] - 4;
 
-	int numListedEntities = trap->EntitiesInBox(testMins, testMaxs, iEntityList, MAX_GENTITIES);
+	int num_listed_entities = trap->EntitiesInBox(testMins, testMaxs, iEntityList, MAX_GENTITIES);
 
-	while (i < numListedEntities)
+	while (i < num_listed_entities)
 	{
 		if (iEntityList[i] < MAX_CLIENTS)
 		{
 			//client stuck inside me. go nonsolid.
 			const int clNum = iEntityList[i];
 
-			numListedEntities = trap->EntitiesInBox(g_entities[clNum].r.absmin, g_entities[clNum].r.absmax, iEntityList,
+			num_listed_entities = trap->EntitiesInBox(g_entities[clNum].r.absmin, g_entities[clNum].r.absmax, iEntityList,
 				MAX_GENTITIES);
 
 			i = 0;
-			while (i < numListedEntities)
+			while (i < num_listed_entities)
 			{
 				if (iEntityList[i] == ent->s.number)
 				{
@@ -1471,7 +1471,7 @@ void Flamethrower_Fire(gentity_t* self)
 	vec3_t center, mins, maxs, v;
 
 	const float radius = FLAMETHROWER_RADIUS;
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	int iEntityList[MAX_GENTITIES];
 	int i;
 
@@ -1484,24 +1484,24 @@ void Flamethrower_Fire(gentity_t* self)
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
 
 	i = 0;
-	while (i < numListedEntities)
+	while (i < num_listed_entities)
 	{
-		entityList[i] = &g_entities[iEntityList[i]];
+		entity_list[i] = &g_entities[iEntityList[i]];
 
 		i++;
 	}
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
 		vec3_t size;
 		vec3_t ent_org;
 		vec3_t dir;
 		// ReSharper disable once CppEntityAssignedButNoRead
 		float dot;
-		gentity_t* traceEnt = entityList[e];
+		gentity_t* traceEnt = entity_list[e];
 
 		if (!traceEnt)
 			continue;

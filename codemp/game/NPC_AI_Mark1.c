@@ -218,7 +218,7 @@ void Mark1Dead_FireBlaster(void)
 Mark1_die
 -------------------------
 */
-void Mark1_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hitLoc)
+void Mark1_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hit_loc)
 {
 	G_Sound(self, CHAN_AUTO, G_SoundIndex(va("sound/chars/mark1/misc/death%d.wav", Q_irand(1, 2))));
 
@@ -309,14 +309,14 @@ NPC_Mark1_Pain
 void NPC_Mark1_Pain(gentity_t* self, gentity_t* attacker, int damage)
 {
 	int newBolt;
-	const int hitLoc = gPainHitLoc;
+	const int hit_loc = gPainHitLoc;
 
 	NPC_Pain(self, attacker, damage);
 
 	G_Sound(self, CHAN_AUTO, G_SoundIndex("sound/chars/mark1/misc/mark1_pain"));
 
 	// Hit in the CHEST???
-	if (hitLoc == HL_CHEST)
+	if (hit_loc == HL_CHEST)
 	{
 		const int chance = Q_irand(1, 4);
 
@@ -326,9 +326,9 @@ void NPC_Mark1_Pain(gentity_t* self, gentity_t* attacker, int damage)
 		}
 	}
 	// Hit in the left arm?
-	else if (hitLoc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
+	else if (hit_loc == HL_ARM_LT && self->locationDamage[HL_ARM_LT] > LEFT_ARM_HEALTH)
 	{
-		if (self->locationDamage[hitLoc] >= LEFT_ARM_HEALTH) // Blow it up?
+		if (self->locationDamage[hit_loc] >= LEFT_ARM_HEALTH) // Blow it up?
 		{
 			newBolt = trap->G2API_AddBolt(self->ghoul2, 0, "*flash3");
 			if (newBolt != -1)
@@ -340,9 +340,9 @@ void NPC_Mark1_Pain(gentity_t* self, gentity_t* attacker, int damage)
 		}
 	}
 	// Hit in the right arm?
-	else if (hitLoc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
+	else if (hit_loc == HL_ARM_RT && self->locationDamage[HL_ARM_RT] > RIGHT_ARM_HEALTH) // Blow it up?
 	{
-		if (self->locationDamage[hitLoc] >= RIGHT_ARM_HEALTH)
+		if (self->locationDamage[hit_loc] >= RIGHT_ARM_HEALTH)
 		{
 			newBolt = trap->G2API_AddBolt(self->ghoul2, 0, "*flash4");
 			if (newBolt != -1)
@@ -359,9 +359,9 @@ void NPC_Mark1_Pain(gentity_t* self, gentity_t* attacker, int damage)
 	{
 		for (int i = 0; i < 6; i++)
 		{
-			if (hitLoc == HL_GENERIC1 + i && self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH) // Blow it up?
+			if (hit_loc == HL_GENERIC1 + i && self->locationDamage[HL_GENERIC1 + i] > AMMO_POD_HEALTH) // Blow it up?
 			{
-				if (self->locationDamage[hitLoc] >= AMMO_POD_HEALTH)
+				if (self->locationDamage[hit_loc] >= AMMO_POD_HEALTH)
 				{
 					newBolt = trap->G2API_AddBolt(self->ghoul2, 0, va("*torso_tube%d", i + 1));
 					if (newBolt != -1)

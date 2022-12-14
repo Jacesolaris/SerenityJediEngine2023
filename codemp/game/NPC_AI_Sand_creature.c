@@ -1,10 +1,10 @@
 // leave this line at the top of all AI_xxxx.cpp files for PCH reasons...
 #include "b_local.h"
 
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndix);
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int modelIndix);
 extern void Rancor_DropVictim(gentity_t* self); //wahoo - :p
 
 #define MIN_ATTACK_DIST_SQ	128
@@ -456,9 +456,9 @@ void SandCreature_CheckMovingEnts(void)
 	}
 }
 
-void SandCreature_SeekAlert(int alertEvent)
+void SandCreature_SeekAlert(int alert_event)
 {
-	const alertEvent_t* alert = &level.alertEvents[alertEvent];
+	const alertEvent_t* alert = &level.alertEvents[alert_event];
 
 	NPCS.NPCInfo->enemyLastSeenTime = level.time;
 	VectorCopy(alert->position, NPCS.NPCInfo->enemyLastSeenLocation);
@@ -469,12 +469,12 @@ void SandCreature_CheckAlerts(void)
 {
 	if (!(NPCS.NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qfalse, qtrue, NPCS.NPCInfo->lastAlertID, qfalse, AEL_MINOR);
+		const int alert_event = NPC_CheckAlertEvents(qfalse, qtrue, NPCS.NPCInfo->lastAlertID, qfalse, AEL_MINOR);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			SandCreature_SeekAlert(alertEvent);
+			SandCreature_SeekAlert(alert_event);
 		}
 	}
 }
@@ -681,7 +681,7 @@ void SandCreature_PushEnts()
 	gentity_t* radiusEnts[128];
 	const float radius = 70;
 	vec3_t mins, maxs;
-	vec3_t smackDir;
+	vec3_t smack_dir;
 	int iradiusEnts[128];
 
 	for (int i = 0; i < 3; i++)
@@ -704,11 +704,11 @@ void SandCreature_PushEnts()
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-		const float smackDist = VectorNormalize(smackDir);
+		VectorSubtract(radiusEnts[entIndex]->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			g_throw(radiusEnts[entIndex], smackDir, 90);
+			g_throw(radiusEnts[entIndex], smack_dir, 90);
 		}
 	}
 }

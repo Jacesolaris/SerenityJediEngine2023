@@ -401,7 +401,7 @@ void G_DynamicMusicUpdate(void)
 
 	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
-		int entityList[MAX_GENTITIES];
+		int entity_list[MAX_GENTITIES];
 		vec3_t center;
 		gentity_t* player = &g_entities[i];
 
@@ -422,10 +422,10 @@ void G_DynamicMusicUpdate(void)
 			maxs[x] = center[x] + radius;
 		}
 
-		const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
-		for (int e = 0; e < numListedEntities; e++)
+		const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
+		for (int e = 0; e < num_listed_entities; e++)
 		{
-			gentity_t* ent = &g_entities[entityList[e]];
+			gentity_t* ent = &g_entities[entity_list[e]];
 			if (!ent || !ent->inuse)
 			{
 				continue;

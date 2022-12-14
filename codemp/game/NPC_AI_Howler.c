@@ -39,7 +39,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 static void Howler_Attack(float enemy_dist, qboolean howl);
 extern qboolean NPC_TryJump_Gent(gentity_t* goal, float max_xy_dist, float max_z_diff);
-extern void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex); //NPC_utils.c
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index); //NPC_utils.c
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 
 /*
@@ -222,8 +222,8 @@ static qboolean Howler_Move()
 //---------------------------------------------------------
 //replaced with SP version
 extern qboolean PM_InKnockDown(const playerState_t* ps);
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 static void Howler_TryDamage(const int damage, const qboolean tongue, const qboolean knockdown)
 {
@@ -283,8 +283,8 @@ static void Howler_TryDamage(const int damage, const qboolean tongue, const qboo
 }
 
 //Moved in from SP
-extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int boltIndex, vec3_t boltOrg);
-extern float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex);
+extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
+extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
 
 static void Howler_Howl(void)
 {

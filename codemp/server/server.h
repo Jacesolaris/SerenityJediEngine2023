@@ -419,7 +419,7 @@ clipHandle_t SV_ClipHandleForEntity(const sharedEntity_t* ent);
 
 void SV_SectorList_f(void);
 
-int SV_AreaEntities(const vec3_t mins, const vec3_t maxs, int* entityList, int maxcount);
+int SV_AreaEntities(const vec3_t mins, const vec3_t maxs, int* entity_list, int maxcount);
 // fills in a table of entity numbers with entities that have bounding boxes
 // that intersect the given area.  It is possible for a non-axial bmodel
 // to be returned that doesn't actually intersect the area on an exact

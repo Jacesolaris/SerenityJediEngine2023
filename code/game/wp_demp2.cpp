@@ -81,7 +81,7 @@ static void WP_DEMP2_MainFire(gentity_t* ent)
 void DEMP2_AltRadiusDamage(gentity_t* ent)
 {
 	float frac = (level.time - ent->fx_time) / 1300.0f; // synchronize with demp2 effect
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	int i;
 	vec3_t mins, maxs;
 	vec3_t v, dir;
@@ -98,11 +98,11 @@ void DEMP2_AltRadiusDamage(gentity_t* ent)
 		maxs[i] = ent->currentOrigin[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
-		gentity_t* gent = entityList[e];
+		gentity_t* gent = entity_list[e];
 
 		if (!gent->takedamage || !gent->contents)
 		{

@@ -321,7 +321,7 @@ qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** 
 {
 	int i;
 	vec3_t mins, maxs;
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	vec3_t totalMins, totalMaxs;
 
 	*obstacle = NULL;
@@ -363,10 +363,10 @@ qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** 
 		}
 	}
 
-	// unlink the pusher so we don't get it in the entityList
+	// unlink the pusher so we don't get it in the entity_list
 	trap->UnlinkEntity((sharedEntity_t*)pusher);
 
-	const int listedEntities = trap->EntitiesInBox(totalMins, totalMaxs, entityList, MAX_GENTITIES);
+	const int listedEntities = trap->EntitiesInBox(totalMins, totalMaxs, entity_list, MAX_GENTITIES);
 
 	// move the pusher to it's final position
 	VectorAdd(pusher->r.currentOrigin, move, pusher->r.currentOrigin);
@@ -376,7 +376,7 @@ qboolean g_mover_push(gentity_t* pusher, vec3_t move, vec3_t amove, gentity_t** 
 	// see if any solid entities are inside the final position
 	for (int e = 0; e < listedEntities; e++)
 	{
-		gentity_t* check = &g_entities[entityList[e]];
+		gentity_t* check = &g_entities[entity_list[e]];
 
 		// only push items and players
 		if (/*check->s.eType != ET_ITEM &&*/ check->s.eType != ET_PLAYER && check->s.eType != ET_NPC && !check->

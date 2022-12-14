@@ -175,18 +175,18 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 						ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 					}
 
-					const int hitLoc = G_GetHitLocFromTrace(&tr, MOD_CONC_ALT);
+					const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_CONC_ALT);
 					const auto noKnockBack = static_cast<qboolean>((traceEnt->flags & FL_NO_KNOCKBACK) != 0);
 					//will be set if they die, I want to know if it was on *before* they died
 					if (traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GALAKMECH)
 					{
 						//hehe
 						G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-							MOD_CONC_ALT, hitLoc);
+							MOD_CONC_ALT, hit_loc);
 						break;
 					}
 					G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-						MOD_CONC_ALT, hitLoc);
+						MOD_CONC_ALT, hit_loc);
 
 					//do knockback and knockdown manually
 					if (traceEnt->client)

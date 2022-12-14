@@ -6818,7 +6818,7 @@ Q3_LookTarget
 ?
 ============
 */
-extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 
 static void Q3_LookTarget(int entID, char* targetName)

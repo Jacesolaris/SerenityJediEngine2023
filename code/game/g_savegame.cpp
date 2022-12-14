@@ -415,7 +415,7 @@ static void enumerate_field(const save_field_t* p_field, const byte* pb_base)
 	}
 	break;
 
-	case F_ALERTEVENT: // convert all gentity_t ptrs in an alertEvent array into indexes...
+	case F_ALERTEVENT: // convert all gentity_t ptrs in an alert_event array into indexes...
 	{
 		const auto p = static_cast<alertEvent_t*>(pv);
 

@@ -194,14 +194,14 @@ void SP_misc_model_static(void) {
 		}
 	}
 
-	const int modelIndex = trap->R_RegisterModel(model);
-	if (modelIndex == 0) {
+	const int model_index = trap->R_RegisterModel(model);
+	if (model_index == 0) {
 		trap->Error(ERR_DROP, "misc_model_static failed to load model '%s'", model);
 		return;
 	}
 
 	cg_staticmodel_t* staticmodel = &cgs.miscStaticModels[cgs.numMiscStaticModels++];
-	staticmodel->model = modelIndex;
+	staticmodel->model = model_index;
 	AnglesToAxis(angles, staticmodel->axes);
 	for (int i = 0; i < 3; i++) {
 		VectorScale(staticmodel->axes[i], vScale[i], staticmodel->axes[i]);

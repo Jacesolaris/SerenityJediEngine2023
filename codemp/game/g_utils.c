@@ -263,7 +263,7 @@ G_RadiusList - given an origin and a radius, return all entities that are in use
 int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
 	gentity_t* ent_list[MAX_GENTITIES])
 {
-	int entityList[MAX_GENTITIES];
+	int entity_list[MAX_GENTITIES];
 	vec3_t mins, maxs;
 	vec3_t v;
 	int i;
@@ -280,11 +280,11 @@ int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean 
 		maxs[i] = origin[i] + radius;
 	}
 
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
-		gentity_t* ent = &g_entities[entityList[e]];
+		gentity_t* ent = &g_entities[entity_list[e]];
 
 		if (ent == ignore || !ent->inuse || ent->takedamage != take_damage)
 			continue;

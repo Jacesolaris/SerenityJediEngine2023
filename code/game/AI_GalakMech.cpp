@@ -261,13 +261,13 @@ NPC_GM_Pain
 
 extern void NPC_SetPainEvent(gentity_t* self);
 
-void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, const int hitLoc)
+void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, const int hit_loc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
 		//shield is currently down
 		//FIXME: allow for radius damage?
-		if (hitLoc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
+		if (hit_loc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 		{
 			const int newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*antenna_base");
 			if (newBolt != -1)
@@ -301,7 +301,7 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, con
 	if (!self->lockCount && !self->client->ps.torsoAnimTimer)
 	{
 		//don't interrupt laser sweep attack or other special attacks/moves
-		if (self->count < 4 && self->health > 100 && hitLoc != HL_GENERIC1)
+		if (self->count < 4 && self->health > 100 && hit_loc != HL_GENERIC1)
 		{
 			if (self->delay < level.time)
 			{
@@ -330,10 +330,10 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, con
 		}
 		else
 		{
-			NPC_Pain(self, inflictor, attacker, point, damage, mod, hitLoc);
+			NPC_Pain(self, inflictor, attacker, point, damage, mod, hit_loc);
 		}
 	}
-	else if (hitLoc == HL_GENERIC1)
+	else if (hit_loc == HL_GENERIC1)
 	{
 		NPC_SetPainEvent(self);
 		self->s.powerups |= 1 << PW_SHOCKED;
@@ -719,13 +719,13 @@ void NPC_BSGM_Attack(void)
 			if (enemyDist < MELEE_DIST_SQUARED && in_front(NPC->enemy->currentOrigin, NPC->currentOrigin,
 				NPC->client->ps.viewangles, 0.3f))
 			{
-				vec3_t smackDir;
-				VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smackDir);
-				smackDir[2] += 30;
-				VectorNormalize(smackDir);
+				vec3_t smack_dir;
+				VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smack_dir);
+				smack_dir[2] += 30;
+				VectorNormalize(smack_dir);
 				//hurt them
 				G_Sound(NPC->enemy, G_SoundIndex("sound/weapons/galak/skewerhit.wav"));
-				G_Damage(NPC->enemy, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
+				G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
 					DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
 				if (NPC->client->ps.torsoAnim == BOTH_ATTACK4)
 				{
@@ -737,16 +737,16 @@ void NPC_BSGM_Attack(void)
 						knockAnim = BOTH_KNOCKDOWN4;
 					}
 					//throw them
-					smackDir[2] = 1;
-					VectorNormalize(smackDir);
-					g_throw(NPC->enemy, smackDir, 50);
+					smack_dir[2] = 1;
+					VectorNormalize(smack_dir);
+					g_throw(NPC->enemy, smack_dir, 50);
 					NPC_SetAnim(NPC->enemy, SETANIM_BOTH, knockAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				else
 				{
 					//uppercut
 					//throw them
-					g_throw(NPC->enemy, smackDir, 100);
+					g_throw(NPC->enemy, smack_dir, 100);
 					//make them backflip
 					NPC_SetAnim(NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
@@ -863,19 +863,19 @@ void NPC_BSGM_Attack(void)
 			if (TIMER_Done(NPC, "attackDelay"))
 			{
 				//animate me
-				int swingAnim;
+				int swing_anim;
 				if (NPC->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 				{
 					//generator down, use random melee
-					swingAnim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5); //smackdown or uppercut
+					swing_anim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5); //smackdown or uppercut
 				}
 				else
 				{
 					//always knock-away
-					swingAnim = BOTH_ATTACK5; //uppercut
+					swing_anim = BOTH_ATTACK5; //uppercut
 				}
 				G_Sound(NPC->enemy, G_SoundIndex("sound/weapons/melee/punch1.mp3"));
-				NPC_SetAnim(NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPC, "attackDelay", NPC->client->ps.torsoAnimTimer + Q_irand(1000, 3000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPC, "smackTime", 600);
@@ -1239,14 +1239,14 @@ void NPC_BSGM_Attack(void)
 			NPCInfo->touchedByPlayer = nullptr;
 			//FIXME: some shield effect?
 			NPC->client->ps.powerups[PW_BATTLESUIT] = level.time + ARMOR_EFFECT_TIME;
-			vec3_t smackDir;
-			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smackDir);
-			smackDir[2] += 30;
-			VectorNormalize(smackDir);
-			G_Damage(NPC->enemy, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
+			vec3_t smack_dir;
+			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smack_dir);
+			smack_dir[2] += 30;
+			VectorNormalize(smack_dir);
+			G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
 				DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
 			//throw them
-			g_throw(NPC->enemy, smackDir, 100);
+			g_throw(NPC->enemy, smack_dir, 100);
 			NPC->enemy->s.powerups |= 1 << PW_SHOCKED;
 			if (NPC->enemy->client)
 			{

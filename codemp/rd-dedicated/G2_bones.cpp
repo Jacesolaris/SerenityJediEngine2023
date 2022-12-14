@@ -438,7 +438,7 @@ qboolean G2_Remove_Bone(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const cha
 qboolean G2_Set_Bone_Angles_Index(boneInfo_v& blist, const int index,
 	const float* angles, const int flags, const Eorientations yaw,
 	const Eorientations pitch, const Eorientations roll, qhandle_t* modelList,
-	const int modelIndex, const int blendTime, const int currentTime)
+	const int model_index, const int blendTime, const int currentTime)
 {
 	if (index >= static_cast<int>(blist.size()) || blist[index].boneNumber == -1)
 	{
@@ -478,7 +478,7 @@ qboolean G2_Set_Bone_Angles_Index(boneInfo_v& blist, const int index,
 // Given a model handle, and a bone name, we want to set angles specifically for overriding
 qboolean G2_Set_Bone_Angles(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const char* boneName, const float* angles,
 	const int flags, const Eorientations up, const Eorientations left, const Eorientations forward,
-	qhandle_t* modelList, const int modelIndex, const int blendTime, const int currentTime)
+	qhandle_t* modelList, const int model_index, const int blendTime, const int currentTime)
 {
 	const model_t* mod_a = const_cast<model_t*>(ghlInfo->animModel);
 
@@ -533,7 +533,7 @@ qboolean G2_Set_Bone_Angles(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const
 // Given a model handle, and a bone name, we want to set angles specifically for overriding - using a matrix directly
 qboolean G2_Set_Bone_Angles_Matrix_Index(boneInfo_v& blist, const int index,
 	const mdxaBone_t& matrix, const int flags, qhandle_t* modelList,
-	const int modelIndex, const int blendTime, const int currentTime)
+	const int model_index, const int blendTime, const int currentTime)
 {
 	if (index >= static_cast<int>(blist.size()) || blist[index].boneNumber == -1)
 	{
@@ -561,12 +561,12 @@ qboolean G2_Set_Bone_Angles_Matrix_Index(boneInfo_v& blist, const int index,
 
 // Given a model handle, and a bone name, we want to set angles specifically for overriding - using a matrix directly
 qboolean G2_Set_Bone_Angles_Matrix(const char* fileName, boneInfo_v& blist, const char* boneName, const mdxaBone_t& matrix,
-	const int flags, const qhandle_t* modelList, const int modelIndex, const int blendTime, const int currentTime)
+	const int flags, const qhandle_t* modelList, const int model_index, const int blendTime, const int currentTime)
 {
 	model_t* mod_m;
 	if (!fileName[0])
 	{
-		mod_m = R_GetModelByHandle(modelList[modelIndex]);
+		mod_m = R_GetModelByHandle(modelList[model_index]);
 	}
 	else
 	{
@@ -895,7 +895,7 @@ qboolean G2_Get_Bone_Anim_Index(boneInfo_v& blist, const int index, const int cu
 // given a model, bonelist and bonename, return the current frame, startframe and endframe of the current animation
 // NOTE if we aren't running an animation, then qfalse is returned
 qboolean G2_Get_Bone_Anim(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const char* boneName, const int currentTime,
-	float* currentFrame, int* startFrame, int* endFrame, int* flags, float* retAnimSpeed, qhandle_t* modelList, int modelIndex)
+	float* currentFrame, int* startFrame, int* endFrame, int* flags, float* retAnimSpeed, qhandle_t* modelList, int model_index)
 {
 	const model_t* mod_a = const_cast<model_t*>(ghlInfo->animModel);
 

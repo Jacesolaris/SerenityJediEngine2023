@@ -200,7 +200,7 @@ G_DROIDEKACheckPain
 Called by NPC's and player in an DROIDEKA
 -------------------------
 */
-void g_droideka_check_pain(const gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc)
+void g_droideka_check_pain(const gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc)
 {
 	if (rand() & 1)
 	{
@@ -218,12 +218,12 @@ NPC_DROIDEKA_Pain
 -------------------------
 */
 void NPC_DROIDEKA_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
 		//shield is currently down
-		if (hitLoc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
+		if (hit_loc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 		{
 			gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "torso_shield_off", TURN_OFF);
 			self->client->ps.powerups[PW_GALAK_SHIELD] = 0; //temp, for effect
@@ -249,7 +249,7 @@ void NPC_DROIDEKA_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 	if (!self->lockCount && !self->client->ps.torsoAnimTimer)
 	{
 		//don't interrupt laser sweep attack or other special attacks/moves
-		if (self->count < 4 && self->health > 100 && hitLoc != HL_GENERIC1)
+		if (self->count < 4 && self->health > 100 && hit_loc != HL_GENERIC1)
 		{
 			if (self->delay < level.time)
 			{
@@ -278,10 +278,10 @@ void NPC_DROIDEKA_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 		}
 		else
 		{
-			NPC_Pain(self, inflictor, attacker, point, damage, mod, hitLoc);
+			NPC_Pain(self, inflictor, attacker, point, damage, mod, hit_loc);
 		}
 	}
-	else if (hitLoc == HL_GENERIC1)
+	else if (hit_loc == HL_GENERIC1)
 	{
 		NPC_SetPainEvent(self);
 		self->s.powerups |= 1 << PW_SHOCKED;
@@ -440,13 +440,13 @@ void droideka_attack()
 			TIMER_Set(NPC, "attackDelay", NPC->client->ps.torsoAnimTimer);
 			NPCInfo->touchedByPlayer = nullptr;
 			NPC->client->ps.powerups[PW_BATTLESUIT] = level.time + SHIELD_EFFECT_TIME;
-			vec3_t smackDir;
-			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smackDir);
-			smackDir[2] += 30;
-			VectorNormalize(smackDir);
-			G_Damage(NPC->enemy, NPC, NPC, smackDir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(2, 5),
+			vec3_t smack_dir;
+			VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smack_dir);
+			smack_dir[2] += 30;
+			VectorNormalize(smack_dir);
+			G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(2, 5),
 				DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
-			g_throw(NPC->enemy, smackDir, 50);
+			g_throw(NPC->enemy, smack_dir, 50);
 			NPC->enemy->s.powerups |= 1 << PW_SHOCKED;
 			if (NPC->enemy->client)
 			{

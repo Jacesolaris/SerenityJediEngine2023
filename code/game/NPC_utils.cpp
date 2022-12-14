@@ -214,41 +214,41 @@ FIXME: stop compressing angles into shorts!!!!
 extern cvar_t* g_timescale;
 extern bool NPC_IsTrooper(const gentity_t* ent);
 
-qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
+qboolean NPC_UpdateAngles(const qboolean do_pitch, const qboolean do_yaw)
 {
 #if 1
 
 	float error;
 	float decay;
-	float targetPitch = 0;
-	float targetYaw = 0;
-	float yawSpeed;
+	float target_pitch = 0;
+	float target_yaw = 0;
+	float yaw_speed;
 	qboolean exact = qtrue;
 
 	// if angle changes are locked; just keep the current angles
 	// aimTime isn't even set anymore... so this code was never reached, but I need a way to lock NPC's yaw, so instead of making a new SCF_ flag, just use the existing render flag... - dmv
 	if (!NPC->enemy && (level.time < NPCInfo->aimTime || NPC->client->renderInfo.renderFlags & RF_LOCKEDANGLE))
 	{
-		if (doPitch)
-			targetPitch = NPCInfo->lockedDesiredPitch;
+		if (do_pitch)
+			target_pitch = NPCInfo->lockedDesiredPitch;
 
-		if (doYaw)
-			targetYaw = NPCInfo->lockedDesiredYaw;
+		if (do_yaw)
+			target_yaw = NPCInfo->lockedDesiredYaw;
 	}
 	else
 	{
 		// we're changing the lockedDesired Pitch/Yaw below so it's lost it's original meaning, get rid of the lock flag
 		NPC->client->renderInfo.renderFlags &= ~RF_LOCKEDANGLE;
 
-		if (doPitch)
+		if (do_pitch)
 		{
-			targetPitch = NPCInfo->desiredPitch;
+			target_pitch = NPCInfo->desiredPitch;
 			NPCInfo->lockedDesiredPitch = NPCInfo->desiredPitch;
 		}
 
-		if (doYaw)
+		if (do_yaw)
 		{
-			targetYaw = NPCInfo->desiredYaw;
+			target_yaw = NPCInfo->desiredYaw;
 			NPCInfo->lockedDesiredYaw = NPCInfo->desiredYaw;
 		}
 	}
@@ -256,7 +256,7 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 	if (NPC->s.weapon == WP_EMPLACED_GUN)
 	{
 		// FIXME: this seems to do nothing, actually...
-		yawSpeed = 20;
+		yaw_speed = 20;
 	}
 	else
 	{
@@ -264,17 +264,17 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 			&& !NPC->enemy)
 		{
 			//just slowly lookin' around
-			yawSpeed = 1;
+			yaw_speed = 1;
 		}
 		else
 		{
-			yawSpeed = NPCInfo->stats.yawSpeed;
+			yaw_speed = NPCInfo->stats.yawSpeed;
 		}
 	}
 
 	if (NPC->s.weapon == WP_SABER && NPC->client->ps.forcePowersActive & 1 << FP_SPEED)
 	{
-		yawSpeed *= 1.0f / g_timescale->value;
+		yaw_speed *= 1.0f / g_timescale->value;
 	}
 
 	if (!NPC_IsTrooper(NPC)
@@ -293,21 +293,21 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 			NPC->s.weapon == WP_WRIST_BLASTER ||
 			NPC->s.weapon == WP_NOGHRI_STICK)
 		{
-			yawSpeed *= 10.0f;
+			yaw_speed *= 10.0f;
 		}
 	}
 
-	if (doYaw)
+	if (do_yaw)
 	{
 		// decay yaw error
-		error = AngleDelta(NPC->client->ps.viewangles[YAW], targetYaw);
+		error = AngleDelta(NPC->client->ps.viewangles[YAW], target_yaw);
 		if (fabs(error) > MIN_ANGLE_ERROR)
 		{
 			if (error)
 			{
 				exact = qfalse;
 
-				decay = 60.0 + yawSpeed * 3;
+				decay = 60.0 + yaw_speed * 3;
 				decay *= 50.0f / 1000.0f; //msec
 
 				if (error < 0.0)
@@ -329,21 +329,21 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 			}
 		}
 
-		ucmd.angles[YAW] = ANGLE2SHORT(targetYaw + error) - client->ps.delta_angles[YAW];
+		ucmd.angles[YAW] = ANGLE2SHORT(target_yaw + error) - client->ps.delta_angles[YAW];
 	}
 
 	//FIXME: have a pitchSpeed?
-	if (doPitch)
+	if (do_pitch)
 	{
 		// decay pitch error
-		error = AngleDelta(NPC->client->ps.viewangles[PITCH], targetPitch);
+		error = AngleDelta(NPC->client->ps.viewangles[PITCH], target_pitch);
 		if (fabs(error) > MIN_ANGLE_ERROR)
 		{
 			if (error)
 			{
 				exact = qfalse;
 
-				decay = 60.0 + yawSpeed * 3;
+				decay = 60.0 + yaw_speed * 3;
 				decay *= 50.0f / 1000.0f; //msec
 
 				if (error < 0.0)
@@ -365,7 +365,7 @@ qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw)
 			}
 		}
 
-		ucmd.angles[PITCH] = ANGLE2SHORT(targetPitch + error) - client->ps.delta_angles[PITCH];
+		ucmd.angles[PITCH] = ANGLE2SHORT(target_pitch + error) - client->ps.delta_angles[PITCH];
 	}
 
 	ucmd.angles[ROLL] = ANGLE2SHORT(NPC->client->ps.viewangles[ROLL]) - client->ps.delta_angles[ROLL];
@@ -515,7 +515,7 @@ qboolean NPC_UpdateFiringAngles ( qboolean doPitch, qboolean doYaw )
 
   Includes aim when determining angles - so they don't always hit...
   */
-qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
+qboolean NPC_UpdateFiringAngles(const qboolean do_pitch, const qboolean do_yaw)
 {
 #if 0
 
@@ -585,29 +585,29 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 
 	float error, diff;
 	float decay;
-	float targetPitch = 0;
-	float targetYaw = 0;
+	float target_pitch = 0;
+	float target_yaw = 0;
 	qboolean exact = qtrue;
 
 	// if angle changes are locked; just keep the current angles
 	if (level.time < NPCInfo->aimTime)
 	{
-		if (doPitch)
-			targetPitch = NPCInfo->lockedDesiredPitch;
-		if (doYaw)
-			targetYaw = NPCInfo->lockedDesiredYaw;
+		if (do_pitch)
+			target_pitch = NPCInfo->lockedDesiredPitch;
+		if (do_yaw)
+			target_yaw = NPCInfo->lockedDesiredYaw;
 	}
 	else
 	{
-		if (doPitch)
-			targetPitch = NPCInfo->desiredPitch;
-		if (doYaw)
-			targetYaw = NPCInfo->desiredYaw;
+		if (do_pitch)
+			target_pitch = NPCInfo->desiredPitch;
+		if (do_yaw)
+			target_yaw = NPCInfo->desiredYaw;
 
 		//		NPCInfo->aimTime = level.time + 250;
-		if (doPitch)
+		if (do_pitch)
 			NPCInfo->lockedDesiredPitch = NPCInfo->desiredPitch;
-		if (doYaw)
+		if (do_yaw)
 			NPCInfo->lockedDesiredYaw = NPCInfo->desiredYaw;
 	}
 
@@ -624,10 +624,10 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 		NPCInfo->aimErrorDebounceTime = level.time + Q_irand(250, 2000);
 	}
 
-	if (doYaw)
+	if (do_yaw)
 	{
 		// decay yaw diff
-		diff = AngleDelta(NPC->client->ps.viewangles[YAW], targetYaw);
+		diff = AngleDelta(NPC->client->ps.viewangles[YAW], target_yaw);
 
 		if (diff)
 		{
@@ -663,13 +663,13 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 		}
 		*/
 
-		ucmd.angles[YAW] = ANGLE2SHORT(targetYaw + diff + error) - client->ps.delta_angles[YAW];
+		ucmd.angles[YAW] = ANGLE2SHORT(target_yaw + diff + error) - client->ps.delta_angles[YAW];
 	}
 
-	if (doPitch)
+	if (do_pitch)
 	{
 		// decay pitch diff
-		diff = AngleDelta(NPC->client->ps.viewangles[PITCH], targetPitch);
+		diff = AngleDelta(NPC->client->ps.viewangles[PITCH], target_pitch);
 		if (diff)
 		{
 			exact = qfalse;
@@ -696,7 +696,7 @@ qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw)
 
 		error = NPCInfo->lastAimErrorPitch;
 
-		ucmd.angles[PITCH] = ANGLE2SHORT(targetPitch + diff + error) - client->ps.delta_angles[PITCH];
+		ucmd.angles[PITCH] = ANGLE2SHORT(target_pitch + diff + error) - client->ps.delta_angles[PITCH];
 	}
 
 	ucmd.angles[ROLL] = ANGLE2SHORT(NPC->client->ps.viewangles[ROLL]) - client->ps.delta_angles[ROLL];
@@ -714,23 +714,23 @@ static void NPC_UpdateShootAngles (vec3_t angles, qboolean doPitch, qboolean doY
 Does update angles on shootAngles
 */
 
-void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
+void NPC_UpdateShootAngles(vec3_t angles, const qboolean do_pitch, const qboolean do_yaw)
 {
 	//FIXME: shoot angles either not set right or not used!
 	float error;
 	float decay;
-	float targetPitch = 0;
-	float targetYaw = 0;
+	float target_pitch = 0;
+	float target_yaw = 0;
 
-	if (doPitch)
-		targetPitch = angles[PITCH];
-	if (doYaw)
-		targetYaw = angles[YAW];
+	if (do_pitch)
+		target_pitch = angles[PITCH];
+	if (do_yaw)
+		target_yaw = angles[YAW];
 
-	if (doYaw)
+	if (do_yaw)
 	{
 		// decay yaw error
-		error = AngleDelta(NPCInfo->shootAngles[YAW], targetYaw);
+		error = AngleDelta(NPCInfo->shootAngles[YAW], target_yaw);
 		if (error)
 		{
 			decay = 60.0 + 80.0 * NPCInfo->stats.aim;
@@ -752,13 +752,13 @@ void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
 				}
 			}
 		}
-		NPCInfo->shootAngles[YAW] = targetYaw + error;
+		NPCInfo->shootAngles[YAW] = target_yaw + error;
 	}
 
-	if (doPitch)
+	if (do_pitch)
 	{
 		// decay pitch error
-		error = AngleDelta(NPCInfo->shootAngles[PITCH], targetPitch);
+		error = AngleDelta(NPCInfo->shootAngles[PITCH], target_pitch);
 		if (error)
 		{
 			decay = 60.0 + 80.0 * NPCInfo->stats.aim;
@@ -780,7 +780,7 @@ void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw)
 				}
 			}
 		}
-		NPCInfo->shootAngles[PITCH] = targetPitch + error;
+		NPCInfo->shootAngles[PITCH] = target_pitch + error;
 	}
 }
 
@@ -792,7 +792,7 @@ Sets the number of living clients on each team
 FIXME: Does not account for non-respawned players!
 FIXME: Don't include medics?
 */
-void SetTeamNumbers(void)
+void SetTeamNumbers()
 {
 	int i;
 
@@ -826,9 +826,9 @@ void SetTeamNumbers(void)
 extern stringID_table_t BSTable[];
 extern stringID_table_t BSETTable[];
 
-qboolean G_ActivateBehavior(gentity_t* self, int bset)
+qboolean G_ActivateBehavior(gentity_t* self, const int bset)
 {
-	auto bSID = static_cast<bState_t>(-1);
+	auto b_sid = static_cast<bState_t>(-1);
 
 	if (!self)
 	{
@@ -844,26 +844,26 @@ qboolean G_ActivateBehavior(gentity_t* self, int bset)
 
 	if (self->NPC)
 	{
-		bSID = static_cast<bState_t>(GetIDForString(BSTable, bs_name));
+		b_sid = static_cast<bState_t>(GetIDForString(BSTable, bs_name));
 	}
 
-	if (bSID != static_cast<bState_t>(-1))
+	if (b_sid != static_cast<bState_t>(-1))
 	{
 		self->NPC->tempBehavior = BS_DEFAULT;
-		self->NPC->behaviorState = bSID;
-		if (bSID == BS_SEARCH || bSID == BS_WANDER)
+		self->NPC->behaviorState = b_sid;
+		if (b_sid == BS_SEARCH || b_sid == BS_WANDER)
 		{
 			//FIXME: Reimplement?
 			if (self->waypoint != WAYPOINT_NONE)
 			{
-				NPC_BSSearchStart(self->waypoint, bSID);
+				NPC_BSSearchStart(self->waypoint, b_sid);
 			}
 			else
 			{
 				self->waypoint = NAV::GetNearestNode(self);
 				if (self->waypoint != WAYPOINT_NONE)
 				{
-					NPC_BSSearchStart(self->waypoint, bSID);
+					NPC_BSSearchStart(self->waypoint, b_sid);
 				}
 			}
 		}
@@ -1012,11 +1012,11 @@ extern gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t*
 
 int NPC_FindNearestEnemy(const gentity_t* ent)
 {
-	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
+	gentity_t* radius_ents[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
-	int nearestEntID = -1;
-	float nearestDist = static_cast<float>(WORLD_SIZE) * static_cast<float>(WORLD_SIZE);
-	int numChecks = 0;
+	int nearest_ent_id = -1;
+	float nearest_dist = static_cast<float>(WORLD_SIZE) * static_cast<float>(WORLD_SIZE);
+	int num_checks = 0;
 	int i;
 
 	//Setup the bbox to search in
@@ -1027,11 +1027,11 @@ int NPC_FindNearestEnemy(const gentity_t* ent)
 	}
 
 	//Get a number of entities in a given space
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, MAX_RADIUS_ENTS);
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, MAX_RADIUS_ENTS);
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
-		const gentity_t* nearest = G_CheckControlledTurretEnemy(ent, radiusEnts[i], qtrue);
+		const gentity_t* nearest = G_CheckControlledTurretEnemy(ent, radius_ents[i], qtrue);
 
 		//Don't consider self
 		if (nearest == ent)
@@ -1041,7 +1041,7 @@ int NPC_FindNearestEnemy(const gentity_t* ent)
 		if (NPC_ValidEnemy(nearest) == qfalse)
 			continue;
 
-		numChecks++;
+		num_checks++;
 		//Must be visible
 		if (NPC_TargetVisible(nearest) == qfalse)
 			continue;
@@ -1049,14 +1049,14 @@ int NPC_FindNearestEnemy(const gentity_t* ent)
 		const float distance = DistanceSquared(ent->currentOrigin, nearest->currentOrigin);
 
 		//Found one closer to us
-		if (distance < nearestDist)
+		if (distance < nearest_dist)
 		{
-			nearestEntID = nearest->s.number;
-			nearestDist = distance;
+			nearest_ent_id = nearest->s.number;
+			nearest_dist = distance;
 		}
 	}
 
-	return nearestEntID;
+	return nearest_ent_id;
 }
 
 /*
@@ -1065,23 +1065,23 @@ NPC_PickEnemyExt
 -------------------------
 */
 
-gentity_t* NPC_PickEnemyExt(qboolean checkAlerts = qfalse)
+gentity_t* NPC_PickEnemyExt(const qboolean check_alerts = qfalse)
 {
 	//If we've asked for the closest enemy
-	const int entID = NPC_FindNearestEnemy(NPC);
+	const int ent_id = NPC_FindNearestEnemy(NPC);
 
 	//If we have a valid enemy, use it
-	if (entID >= 0)
-		return &g_entities[entID];
+	if (ent_id >= 0)
+		return &g_entities[ent_id];
 
-	if (checkAlerts)
+	if (check_alerts)
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
+		const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qtrue, AEL_DISCOVERED);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			const alertEvent_t* event = &level.alertEvents[alertEvent];
+			const alertEvent_t* event = &level.alertEvents[alert_event];
 
 			//Don't pay attention to our own alerts
 			if (event->owner == NPC)
@@ -1110,7 +1110,7 @@ NPC_FindPlayer
 -------------------------
 */
 
-qboolean NPC_FindPlayer(void)
+qboolean NPC_FindPlayer()
 {
 	return NPC_TargetVisible(&g_entities[0]);
 }
@@ -1121,7 +1121,7 @@ NPC_CheckPlayerDistance
 -------------------------
 */
 
-static qboolean NPC_CheckPlayerDistance(void)
+static qboolean NPC_CheckPlayerDistance()
 {
 	//Make sure we have an enemy
 	if (NPC->enemy == nullptr)
@@ -1155,9 +1155,9 @@ static qboolean NPC_CheckPlayerDistance(void)
 NPC_FindEnemy
 -------------------------
 */
-qboolean NPC_FindEnemy(qboolean checkAlerts = qfalse)
+qboolean NPC_FindEnemy(const qboolean check_alerts = qfalse)
 {
-	gentity_t* newenemy = NPC_PickEnemyExt(checkAlerts);
+	gentity_t* newenemy = NPC_PickEnemyExt(check_alerts);
 
 	//We're ignoring all enemies for now
 	if (NPC->svFlags & SVF_IGNORE_ENEMIES)
@@ -1221,9 +1221,9 @@ NPC_CheckEnemyExt
 -------------------------
 */
 
-qboolean NPC_CheckEnemyExt(qboolean checkAlerts)
+qboolean NPC_CheckEnemyExt(const qboolean check_alerts)
 {
-	return NPC_FindEnemy(checkAlerts);
+	return NPC_FindEnemy(check_alerts);
 }
 
 /*
@@ -1232,7 +1232,7 @@ NPC_FacePosition
 -------------------------
 */
 
-qboolean NPC_FacePosition(vec3_t position, qboolean doPitch)
+qboolean NPC_FacePosition(vec3_t position, const qboolean do_pitch)
 {
 	vec3_t muzzle;
 	qboolean facing = qtrue;
@@ -1276,21 +1276,21 @@ qboolean NPC_FacePosition(vec3_t position, qboolean doPitch)
 	NPC_UpdateAngles(qtrue, qtrue);
 
 	//Find the delta between our goal and our current facing
-	const float yawDelta = AngleNormalize360(
+	const float yaw_delta = AngleNormalize360(
 		NPCInfo->desiredYaw - SHORT2ANGLE(ucmd.angles[YAW] + client->ps.delta_angles[YAW]));
 
 	//See if we are facing properly
-	if (fabs(yawDelta) > VALID_ATTACK_CONE)
+	if (fabs(yaw_delta) > VALID_ATTACK_CONE)
 		facing = qfalse;
 
-	if (doPitch)
+	if (do_pitch)
 	{
 		//Find the delta between our goal and our current facing
-		const float currentAngles = SHORT2ANGLE(ucmd.angles[PITCH] + client->ps.delta_angles[PITCH]);
-		const float pitchDelta = NPCInfo->desiredPitch - currentAngles;
+		const float current_angles = SHORT2ANGLE(ucmd.angles[PITCH] + client->ps.delta_angles[PITCH]);
+		const float pitch_delta = NPCInfo->desiredPitch - current_angles;
 
 		//See if we are facing properly
-		if (fabs(pitchDelta) > VALID_ATTACK_CONE)
+		if (fabs(pitch_delta) > VALID_ATTACK_CONE)
 			facing = qfalse;
 	}
 
@@ -1303,14 +1303,14 @@ NPC_FaceEntity
 -------------------------
 */
 
-qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch)
+qboolean NPC_FaceEntity(const gentity_t* ent, const qboolean do_pitch)
 {
-	vec3_t entPos;
+	vec3_t ent_pos;
 
 	//Get the positions
-	CalcEntitySpot(ent, SPOT_HEAD_LEAN, entPos);
+	CalcEntitySpot(ent, SPOT_HEAD_LEAN, ent_pos);
 
-	return NPC_FacePosition(entPos, doPitch);
+	return NPC_FacePosition(ent_pos, do_pitch);
 }
 
 /*
@@ -1319,7 +1319,7 @@ NPC_FaceEnemy
 -------------------------
 */
 
-qboolean NPC_FaceEnemy(qboolean doPitch)
+qboolean NPC_FaceEnemy(const qboolean do_pitch)
 {
 	if (NPC == nullptr)
 		return qfalse;
@@ -1327,7 +1327,7 @@ qboolean NPC_FaceEnemy(qboolean doPitch)
 	if (NPC->enemy == nullptr)
 		return qfalse;
 
-	return NPC_FaceEntity(NPC->enemy, doPitch);
+	return NPC_FaceEntity(NPC->enemy, do_pitch);
 }
 
 /*
@@ -1336,7 +1336,7 @@ NPC_CheckCanAttackExt
 -------------------------
 */
 
-qboolean NPC_CheckCanAttackExt(void)
+qboolean NPC_CheckCanAttackExt()
 {
 	//We don't want them to shoot
 	if (NPCInfo->scriptFlags & SCF_DONT_FIRE)
@@ -1375,15 +1375,15 @@ void NPC_ClearLookTarget(const gentity_t* self)
 NPC_SetLookTarget
 -------------------------
 */
-void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime)
+void NPC_SetLookTarget(const gentity_t* self, const int ent_num, const int clear_time)
 {
 	if (!self->client)
 	{
 		return;
 	}
 
-	self->client->renderInfo.lookTarget = entNum;
-	self->client->renderInfo.lookTargetClearTime = clearTime;
+	self->client->renderInfo.lookTarget = ent_num;
+	self->client->renderInfo.lookTargetClearTime = clear_time;
 }
 
 /*
@@ -1445,9 +1445,9 @@ void G_CheckCharmed(gentity_t* self)
 	{
 		//we were charmed, set us back!
 		//NOTE: presumptions here...
-		const team_t savTeam = self->client->enemyTeam;
+		const team_t sav_team = self->client->enemyTeam;
 		self->client->enemyTeam = self->client->playerTeam;
-		self->client->playerTeam = savTeam;
+		self->client->playerTeam = sav_team;
 		self->client->leader = nullptr;
 		self->NPC->charmedTime = 0;
 		if (self->health > 0)
@@ -1470,9 +1470,9 @@ void G_CheckCharmed(gentity_t* self)
 	{
 		//we were charmed, set us back!
 		//NOTE: presumptions here...
-		const team_t savTeam = self->client->enemyTeam;
+		const team_t sav_team = self->client->enemyTeam;
 		self->client->enemyTeam = self->client->playerTeam;
-		self->client->playerTeam = savTeam;
+		self->client->playerTeam = sav_team;
 		self->client->leader = nullptr;
 		self->NPC->darkCharmedTime = 0;
 		if (self->health > 0)
@@ -1508,71 +1508,71 @@ void G_CheckInsanity(gentity_t* self)
 	}
 }
 
-void G_GetBoltPosition(gentity_t* self, int boltIndex, vec3_t pos, int modelIndex = 0)
+void G_GetBoltPosition(gentity_t* self, const int bolt_index, vec3_t pos, const int model_index = 0)
 {
 	if (!self || !self->ghoul2.size())
 	{
 		return;
 	}
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	const vec3_t angles = { 0, self->currentAngles[YAW], 0 };
 
-	gi.G2API_GetBoltMatrix(self->ghoul2, modelIndex,
-		boltIndex,
-		&boltMatrix, angles, self->currentOrigin, cg.time ? cg.time : level.time,
+	gi.G2API_GetBoltMatrix(self->ghoul2, model_index,
+		bolt_index,
+		&bolt_matrix, angles, self->currentOrigin, cg.time ? cg.time : level.time,
 		nullptr, self->s.modelScale);
 	if (pos)
 	{
 		vec3_t result;
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, result);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, result);
 		VectorCopy(result, pos);
 	}
 }
 
-float NPC_EntRangeFromBolt(const gentity_t* targEnt, int boltIndex)
+float NPC_EntRangeFromBolt(const gentity_t* targ_ent, const int bolt_index)
 {
 	vec3_t org = { 0.0f };
 
-	if (!targEnt)
+	if (!targ_ent)
 	{
 		return Q3_INFINITE;
 	}
 
-	G_GetBoltPosition(NPC, boltIndex, org);
+	G_GetBoltPosition(NPC, bolt_index, org);
 
-	return Distance(targEnt->currentOrigin, org);
+	return Distance(targ_ent->currentOrigin, org);
 }
 
-float NPC_EnemyRangeFromBolt(int boltIndex)
+float NPC_EnemyRangeFromBolt(const int bolt_index)
 {
-	return NPC_EntRangeFromBolt(NPC->enemy, boltIndex);
+	return NPC_EntRangeFromBolt(NPC->enemy, bolt_index);
 }
 
-int G_GetEntsNearBolt(gentity_t* self, gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg)
+int G_GetEntsNearBolt(gentity_t* self, gentity_t** radius_ents, const float radius, const int bolt_index, vec3_t bolt_org)
 {
 	vec3_t mins, maxs;
 
 	//get my handRBolt's position
 	vec3_t org = { 0.0f };
 
-	G_GetBoltPosition(self, boltIndex, org);
+	G_GetBoltPosition(self, bolt_index, org);
 
-	VectorCopy(org, boltOrg);
+	VectorCopy(org, bolt_org);
 
 	//Setup the bbox to search in
 	for (int i = 0; i < 3; i++)
 	{
-		mins[i] = boltOrg[i] - radius;
-		maxs[i] = boltOrg[i] + radius;
+		mins[i] = bolt_org[i] - radius;
+		maxs[i] = bolt_org[i] + radius;
 	}
 
 	//Get the number of entities in a given space
-	return gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
+	return gi.EntitiesInBox(mins, maxs, radius_ents, 128);
 }
 
-int NPC_GetEntsNearBolt(gentity_t** radiusEnts, float radius, int boltIndex, vec3_t boltOrg)
+int NPC_GetEntsNearBolt(gentity_t** radius_ents, const float radius, const int bolt_index, vec3_t bolt_org)
 {
-	return G_GetEntsNearBolt(NPC, radiusEnts, radius, boltIndex, boltOrg);
+	return G_GetEntsNearBolt(NPC, radius_ents, radius, bolt_index, bolt_org);
 }
 
 extern qboolean RT_Flying(const gentity_t* self);

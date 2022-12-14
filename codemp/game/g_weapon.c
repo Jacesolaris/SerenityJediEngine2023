@@ -1677,7 +1677,7 @@ void DEMP2_AltRadiusDamage(gentity_t* ent)
 {
 	float frac = (level.time - ent->genericValue5) / 800.0f;
 	int iEntityList[MAX_GENTITIES];
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	gentity_t* myOwner = NULL;
 	int i;
 	vec3_t mins, maxs;
@@ -1717,18 +1717,18 @@ void DEMP2_AltRadiusDamage(gentity_t* ent)
 		maxs[i] = ent->r.currentOrigin[i] + radius;
 	}
 
-	const int numListedEntities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
 
 	i = 0;
-	while (i < numListedEntities)
+	while (i < num_listed_entities)
 	{
-		entityList[i] = &g_entities[iEntityList[i]];
+		entity_list[i] = &g_entities[iEntityList[i]];
 		i++;
 	}
 
-	for (int e = 0; e < numListedEntities; e++)
+	for (int e = 0; e < num_listed_entities; e++)
 	{
-		gentity_t* gent = entityList[e];
+		gentity_t* gent = entity_list[e];
 
 		if (!gent || !gent->takedamage || !gent->r.contents)
 		{

@@ -544,7 +544,7 @@ static void GLimp_InitExtensions(void)
 		Com_Printf("...GL_EXT_compiled_vertex_array not found\n");
 	}
 
-	bool bNVRegisterCombiners = false;
+	bool bNVRegisterCombiners;
 	// Register Combiners.
 	if (ri.GL_ExtensionSupported("GL_NV_register_combiners"))
 	{
@@ -598,7 +598,7 @@ static void GLimp_InitExtensions(void)
 	// function pointers. ARB rocks!
 
 	// Vertex Programs.
-	bool bARBVertexProgram = false;
+	bool bARBVertexProgram;
 	if (ri.GL_ExtensionSupported("GL_ARB_vertex_program"))
 	{
 		bARBVertexProgram = true;
@@ -610,7 +610,7 @@ static void GLimp_InitExtensions(void)
 	}
 
 	// Fragment Programs.
-	bool bARBFragmentProgram = false;
+	bool bARBFragmentProgram;
 	if (ri.GL_ExtensionSupported("GL_ARB_fragment_program"))
 	{
 		bARBFragmentProgram = true;
@@ -663,8 +663,8 @@ static void GLimp_InitExtensions(void)
 
 	// Figure out which texture rectangle extension to use.
 	bool bTexRectSupported = false;
-	if (Q_stricmpn(glConfig.vendor_string, "ATI Technologies", 16) == 0
-		&& Q_stricmpn(glConfig.version_string, "1.3.3", 5) == 0
+	if (Q_stricmpn(glConfig.vendor_string, "Advanced Micro Devices", 16) == 0
+		&& Q_stricmpn(glConfig.version_string, "Year-22,Month-12,Day-13,BuildNum-07", 5) == 0
 		&& glConfig.version_string[5] < '9') //1.3.34 and 1.3.37 and 1.3.38 are broken for sure, 1.3.39 is not
 	{
 		g_bTextureRectangleHack = true;

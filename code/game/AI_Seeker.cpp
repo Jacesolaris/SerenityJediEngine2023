@@ -57,7 +57,7 @@ void NPC_Seeker_Precache()
 }
 
 //------------------------------------
-void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod, int hitLoc)
+void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc)
 {
 	if (!(self->svFlags & SVF_CUSTOM_GRAVITY))
 	{
@@ -389,16 +389,16 @@ void Seeker_FindEnemy(void)
 {
 	float bestDis = SEEKER_SEEK_RADIUS * SEEKER_SEEK_RADIUS + 1;
 	vec3_t mins, maxs;
-	gentity_t* entityList[MAX_GENTITIES], * best = nullptr;
+	gentity_t* entity_list[MAX_GENTITIES], * best = nullptr;
 
 	VectorSet(maxs, SEEKER_SEEK_RADIUS, SEEKER_SEEK_RADIUS, SEEKER_SEEK_RADIUS);
 	VectorScale(maxs, -1, mins);
 
-	const int numFound = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
+	const int numFound = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
 	for (int i = 0; i < numFound; i++)
 	{
-		gentity_t* ent = entityList[i];
+		gentity_t* ent = entity_list[i];
 
 		if (ent->s.number == NPC->s.number || !ent->client || !ent->NPC || ent->health <= 0 || !ent->inuse)
 		{

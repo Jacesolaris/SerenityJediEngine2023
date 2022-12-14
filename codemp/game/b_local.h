@@ -197,14 +197,14 @@ extern int teamNumbers[TEAM_NUM_TEAMS];
 extern int teamStrength[TEAM_NUM_TEAMS];
 extern int teamCounter[TEAM_NUM_TEAMS];
 extern void CalcEntitySpot(const gentity_t* ent, spot_t spot, vec3_t point);
-extern qboolean NPC_UpdateAngles(qboolean doPitch, qboolean doYaw);
-extern void NPC_UpdateShootAngles(vec3_t angles, qboolean doPitch, qboolean doYaw);
-extern qboolean NPC_UpdateFiringAngles(qboolean doPitch, qboolean doYaw);
+extern qboolean NPC_UpdateAngles(qboolean do_pitch, qboolean do_yaw);
+extern void NPC_UpdateShootAngles(vec3_t angles, qboolean do_pitch, qboolean do_yaw);
+extern qboolean NPC_UpdateFiringAngles(qboolean do_pitch, qboolean do_yaw);
 extern void SetTeamNumbers(void);
 extern qboolean G_ActivateBehavior(gentity_t* self, int bset);
 extern void NPC_AimWiggle(vec3_t enemy_org);
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 
 //g_nav.cpp
 extern int NAV_FindClosestWaypointForEnt(gentity_t* ent, int targWp);
@@ -285,15 +285,15 @@ extern qboolean NPC_SetCombatPoint(int combatPointID);
 #define	MAX_COMBAT_POINT_CHECK	32
 
 extern qboolean NPC_ValidEnemy(const gentity_t* ent);
-extern qboolean NPC_CheckEnemyExt(qboolean checkAlerts); //checkAlerts = qfalse
+extern qboolean NPC_CheckEnemyExt(qboolean check_alerts); //checkAlerts = qfalse
 extern qboolean NPC_FindPlayer(void);
 extern qboolean NPC_CheckCanAttackExt(void);
 
 extern int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAlert, qboolean mustHaveOwner,
 	int minAlertLevel);
 //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
-extern qboolean NPC_CheckForDanger(int alertEvent);
-extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float soundDist);
+extern qboolean NPC_CheckForDanger(int alert_event);
+extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float sound_dist);
 
 extern int NPC_FindSquadPoint(vec3_t position);
 
@@ -310,9 +310,9 @@ extern qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs
 extern void NPC_ApplyWeaponFireDelay(void);
 
 //NPC_FaceXXX suite
-extern qboolean NPC_FacePosition(vec3_t position, qboolean doPitch); //doPitch = qtrue
-extern qboolean NPC_FaceEntity(const gentity_t* ent, qboolean doPitch); //doPitch = qtrue
-extern qboolean NPC_FaceEnemy(qboolean doPitch); //doPitch = qtrue
+extern qboolean NPC_FacePosition(vec3_t position, qboolean do_pitch); //doPitch = qtrue
+extern qboolean NPC_FaceEntity(const gentity_t* ent, qboolean do_pitch); //doPitch = qtrue
+extern qboolean NPC_FaceEnemy(qboolean do_pitch); //doPitch = qtrue
 
 //Skill level cvar
 extern vmCvar_t g_npcspskill;

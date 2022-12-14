@@ -2030,7 +2030,7 @@ void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* c
 		Vehicle_t* pVeh = ent->m_pVehicle;
 		pVeh->m_pVehicleInfo->RegisterAssets(pVeh);
 		ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, va("models/players/%s/model.glm", model_name),
-			pVeh->m_pVehicleInfo->modelIndex, G_SkinIndex(skinName),
+			pVeh->m_pVehicleInfo->model_index, G_SkinIndex(skinName),
 			NULL_HANDLE, 0, 0);
 	}
 	else

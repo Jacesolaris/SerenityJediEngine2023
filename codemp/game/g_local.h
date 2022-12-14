@@ -1525,12 +1525,11 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 	int dflags, int mod);
 qboolean g_radius_damage(vec3_t origin, gentity_t* attacker, float damage, float radius, const gentity_t* ignore,
 	gentity_t* missile, int mod);
-void body_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath);
+void body_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death);
 void TossClientWeapon(gentity_t* self, vec3_t direction, float speed);
 void TossClientItems(gentity_t* self);
 void ExplodeDeath(gentity_t* self);
-void G_CheckForDismemberment(gentity_t* ent, const gentity_t* enemy, vec3_t point, int damage, int deathAnim,
-	qboolean postDeath);
+void G_CheckForDismemberment(gentity_t* ent, const gentity_t* enemy, vec3_t point, const int damage);
 extern int gGAvoidDismember;
 void G_DodgeDrain(const gentity_t* victim, const gentity_t* attacker, int amount);
 
@@ -1661,7 +1660,7 @@ void ClientRespawn(gentity_t* ent);
 void BeginIntermission(void);
 void InitBodyQue(void);
 void ClientSpawn(gentity_t* ent);
-void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod);
+void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death);
 void AddScore(const gentity_t* ent, int score);
 void CalculateRanks(void);
 qboolean SpotWouldTelefrag(const gentity_t* spot);
@@ -1769,11 +1768,11 @@ extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alert
 	float addLight); //addLight = 0.0f
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
 	qboolean needLOS, qboolean onGround);
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
 	float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel);
 //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
-extern qboolean G_CheckForDanger(const gentity_t* self, int alertEvent);
+extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS2(gentity_t* self, gentity_t* ent, const vec3_t end);
 extern qboolean G_ClearLOS3(gentity_t* self, const vec3_t start, gentity_t* ent);

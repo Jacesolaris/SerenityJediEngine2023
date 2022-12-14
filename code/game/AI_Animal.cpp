@@ -173,10 +173,10 @@ void NPC_BSAnimal_Default(void)
 		//player is actually in the level now
 		threat_location = player->currentOrigin;
 	}
-	const int alertEvent = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR, qfalse);
-	if (alertEvent >= 0)
+	const int alert_event = NPC_CheckAlertEvents(qtrue, qtrue, -1, qfalse, AEL_MINOR, qfalse);
+	if (alert_event >= 0)
 	{
-		const alertEvent_t* event = &level.alertEvents[alertEvent];
+		const alertEvent_t* event = &level.alertEvents[alert_event];
 		if (event->owner != NPC && Distance(event->position, CurrentLocation.v) < event->radius)
 		{
 			threat_location = event->position;

@@ -420,7 +420,7 @@ void SpewDebugStuffToFile(animation_t* bgGlobalAnimations)
 #endif
 
 int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, animEventType_t eventType,
-	unsigned short modelIndex)
+	unsigned short model_index)
 {
 	for (int i = 0; i < MAX_ANIM_EVENTS; i++)
 	{
@@ -430,7 +430,7 @@ int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, a
 			if (animEvents[i].eventType == eventType)
 			{
 				//and it is of the same type
-				if (animEvents[i].modelOnly == modelIndex)
+				if (animEvents[i].modelOnly == model_index)
 				{
 					//and it is for the same model
 					return i;
@@ -447,7 +447,7 @@ int CG_CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, a
 ParseAnimationEvtBlock
 ======================
 */
-static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, const char* aeb_filename,
+static void ParseAnimationEvtBlock(int glaIndex, unsigned short model_index, const char* aeb_filename,
 	animevent_t* animEvents, const animation_t* animations, unsigned char& lastAnimEvent,
 	const char** text_p, bool bIsFrameSkipped)
 {
@@ -546,7 +546,7 @@ static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, cons
 		keyFrame += animations[animNum].firstFrame;
 
 		//see if this frame already has an event of this type on it, if so, overwrite it
-		int curAnimEvent = CG_CheckAnimFrameForEventType(animEvents, keyFrame, eventType, modelIndex);
+		int curAnimEvent = CG_CheckAnimFrameForEventType(animEvents, keyFrame, eventType, model_index);
 		if (curAnimEvent == -1)
 		{
 			//this anim frame doesn't already have an event of this type on it
@@ -558,7 +558,7 @@ static void ParseAnimationEvtBlock(int glaIndex, unsigned short modelIndex, cons
 		assert(keyFrame >= 0 && keyFrame < 65535); //
 		animEvents[curAnimEvent].keyFrame = keyFrame;
 		animEvents[curAnimEvent].glaIndex = glaIndex;
-		animEvents[curAnimEvent].modelOnly = modelIndex;
+		animEvents[curAnimEvent].modelOnly = model_index;
 		int tempVal;
 
 		//now read out the proper data based on the type
@@ -864,7 +864,7 @@ static void G_ParseAnimationEvtFile(int glaIndex, const char* eventsDirectory, i
 	const char* text_p = text;
 	fileHandle_t f;
 	char eventsPath[MAX_QPATH];
-	int modelIndex = 0;
+	int model_index = 0;
 
 	assert(fileIndex >= 0 && fileIndex < MAX_ANIM_FILES);
 
@@ -907,7 +907,7 @@ static void G_ParseAnimationEvtFile(int glaIndex, const char* eventsDirectory, i
 	if (modelSpecific)
 	{
 		const hstring modelName(eventsDirectory);
-		modelIndex = modelName.handle();
+		model_index = modelName.handle();
 	}
 
 	// read information for batches of sounds (UPPER or LOWER)
@@ -924,12 +924,12 @@ static void G_ParseAnimationEvtFile(int glaIndex, const char* eventsDirectory, i
 		//these stomp anything set in the include file (if it's an event of the same type on the same frame)!
 		if (!Q_stricmp(token, "UPPEREVENTS")) // A batch of upper events
 		{
-			ParseAnimationEvtBlock(glaIndex, modelIndex, eventsPath, torsoAnimEvents, animations,
+			ParseAnimationEvtBlock(glaIndex, model_index, eventsPath, torsoAnimEvents, animations,
 				afileset.torsoAnimEventCount, &text_p, bIsFrameSkipped);
 		}
 		else if (!Q_stricmp(token, "LOWEREVENTS")) // A batch of lower events
 		{
-			ParseAnimationEvtBlock(glaIndex, modelIndex, eventsPath, legsAnimEvents, animations,
+			ParseAnimationEvtBlock(glaIndex, model_index, eventsPath, legsAnimEvents, animations,
 				afileset.legsAnimEventCount, &text_p, bIsFrameSkipped);
 		}
 	}

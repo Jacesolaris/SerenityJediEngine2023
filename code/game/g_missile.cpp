@@ -72,8 +72,8 @@ extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim);
 extern int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker);
 extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
 extern void CGCam_BlockShakeSP(float intensity, int duration);
-extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_KnockOver(gentity_t* self, const gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 extern qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 
 //-------------------------------------------------------------------------
@@ -1271,7 +1271,7 @@ void G_SpawnNoghriGasCloud(gentity_t* ent)
 
 extern qboolean W_AccuracyLoggableWeapon(int weapon, qboolean alt_fire, int mod);
 
-void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3_t normal, int hitLoc = HL_NONE)
+void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3_t normal, int hit_loc = HL_NONE)
 {
 	// impact damage
 	if (other->takedamage)
@@ -1313,7 +1313,7 @@ void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec
 				}
 			}
 
-			G_Damage(other, ent, ent->owner, velocity, impact_pos, damage, ent->dflags, ent->methodOfDeath, hitLoc);
+			G_Damage(other, ent, ent->owner, velocity, impact_pos, damage, ent->dflags, ent->methodOfDeath, hit_loc);
 
 			if (ent->s.weapon == WP_DEMP2)
 			{
@@ -1453,7 +1453,7 @@ static void g_missile_add_alerts(gentity_t* ent)
 }
 
 //------------------------------------------------------
-void g_missile_impact(gentity_t* ent, trace_t* trace, int hitLoc = HL_NONE)
+void g_missile_impact(gentity_t* ent, trace_t* trace, int hit_loc = HL_NONE)
 {
 	vec3_t diff;
 
@@ -1878,7 +1878,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, int hitLoc = HL_NONE)
 			g_missile_reflect_effect(ent, trace->endpos, trace->plane.normal);
 		}
 	}
-	g_missile_impacted(ent, other, trace->endpos, trace->plane.normal, hitLoc);
+	g_missile_impacted(ent, other, trace->endpos, trace->plane.normal, hit_loc);
 }
 
 /*

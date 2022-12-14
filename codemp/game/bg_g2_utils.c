@@ -37,7 +37,7 @@ void BG_AttachToRancor(void* ghoul2, float rancYaw, vec3_t rancOrigin, int time,
 	vec3_t modelScale, qboolean inMouth, vec3_t out_origin, vec3_t out_angles, matrix3_t out_axis)
 {
 	mdxaBone_t boltMatrix;
-	int boltIndex;
+	int bolt_index;
 	vec3_t rancAngles;
 	vec3_t temp_angles;
 	// Getting the bolt here
@@ -45,25 +45,25 @@ void BG_AttachToRancor(void* ghoul2, float rancYaw, vec3_t rancOrigin, int time,
 	{
 		//in mouth
 #if defined(_GAME)
-		boltIndex = trap->G2API_AddBolt(ghoul2, 0, "jaw_bone");
+		bolt_index = trap->G2API_AddBolt(ghoul2, 0, "jaw_bone");
 #elif defined(_CGAME)
-		boltIndex = trap->G2API_AddBolt(ghoul2, 0, "jaw_bone");
+		bolt_index = trap->G2API_AddBolt(ghoul2, 0, "jaw_bone");
 #endif
 	}
 	else
 	{
 		//in right hand
 #if defined(_GAME)
-		boltIndex = trap->G2API_AddBolt(ghoul2, 0, "*r_hand");
+		bolt_index = trap->G2API_AddBolt(ghoul2, 0, "*r_hand");
 #elif defined(_CGAME)
-		boltIndex = trap->G2API_AddBolt(ghoul2, 0, "*r_hand");
+		bolt_index = trap->G2API_AddBolt(ghoul2, 0, "*r_hand");
 #endif
 	}
 	VectorSet(rancAngles, 0, rancYaw, 0);
 #if defined(_GAME)
-	trap->G2API_GetBoltMatrix(ghoul2, 0, boltIndex, &boltMatrix, rancAngles, rancOrigin, time, modelList, modelScale);
+	trap->G2API_GetBoltMatrix(ghoul2, 0, bolt_index, &boltMatrix, rancAngles, rancOrigin, time, modelList, modelScale);
 #elif defined(_CGAME)
-	trap->G2API_GetBoltMatrix(ghoul2, 0, boltIndex, &boltMatrix, rancAngles, rancOrigin, time, modelList, modelScale);
+	trap->G2API_GetBoltMatrix(ghoul2, 0, bolt_index, &boltMatrix, rancAngles, rancOrigin, time, modelList, modelScale);
 #endif
 	// Storing ent position, bolt position, and bolt axis
 	if (out_origin)
@@ -130,10 +130,10 @@ void BG_AttachToSandCreature(void* ghoul2,
 	vec3_t rancAngles;
 	vec3_t temp_angles;
 	// Getting the bolt here
-	const int boltIndex = trap->G2API_AddBolt(ghoul2, 0, "*mouth");
+	const int bolt_index = trap->G2API_AddBolt(ghoul2, 0, "*mouth");
 
 	VectorSet(rancAngles, 0, rancYaw, 0);
-	trap->G2API_GetBoltMatrix(ghoul2, 0, boltIndex,
+	trap->G2API_GetBoltMatrix(ghoul2, 0, bolt_index,
 		&boltMatrix, rancAngles, rancOrigin, time,
 		modelList, modelScale);
 	// Storing ent position, bolt position, and bolt axis

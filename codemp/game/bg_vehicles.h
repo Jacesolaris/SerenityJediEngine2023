@@ -322,7 +322,7 @@ typedef struct vehicleInfo_s
 	//*** IMPORTANT!!! *** vehFields table correponds to this structure!
 
 	//THE FOLLOWING FIELDS are not in the vehFields table because they are internal variables, not read in from the .veh file
-	int modelIndex; //set internally, not until this vehicle is spawned into the level
+	int model_index; //set internally, not until this vehicle is spawned into the level
 
 	// NOTE: Please note that most of this stuff has been converted from C++ classes to generic C.
 	// This part of the structure is used to simulate inheritance for vehicles. The basic idea is that all vehicle use

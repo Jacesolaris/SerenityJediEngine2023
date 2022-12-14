@@ -317,15 +317,15 @@ void CG_MiscEnt(void)
 		trap->Error(ERR_DROP, "^1MAX_STATIC_MODELS(%i) hit", MAX_STATIC_MODELS);
 	}
 
-	const int modelIndex = trap->R_RegisterModel(data->mModel);
-	if (modelIndex == 0)
+	const int model_index = trap->R_RegisterModel(data->mModel);
+	if (model_index == 0)
 	{
 		trap->Error(ERR_DROP, "client_model failed to load model '%s'", data->mModel);
 		return;
 	}
 
 	cg_staticmodel_t* staticmodel = &cgs.miscStaticModels[cgs.numMiscStaticModels++];
-	staticmodel->model = modelIndex;
+	staticmodel->model = model_index;
 	AnglesToAxis(data->mAngles, staticmodel->axes);
 	for (int i = 0; i < 3; i++)
 	{

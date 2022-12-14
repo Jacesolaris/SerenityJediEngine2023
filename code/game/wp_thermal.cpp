@@ -89,7 +89,7 @@ void thermalDetonatorExplode(gentity_t* ent)
 
 //-------------------------------------------------------------------------------------------------------------
 void thermal_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hitLoc)
+	int hit_loc)
 	//-------------------------------------------------------------------------------------------------------------
 {
 	thermalDetonatorExplode(self);

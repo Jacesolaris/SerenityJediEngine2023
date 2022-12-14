@@ -696,13 +696,13 @@ void NPC_BSGM_Attack(void)
 			if (enemyDist4 < MELEE_DIST_SQUARED && in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
 				NPCS.NPC->client->ps.viewangles, 0.3f))
 			{
-				vec3_t smackDir;
-				VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-				smackDir[2] += 30;
-				VectorNormalize(smackDir);
+				vec3_t smack_dir;
+				VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+				smack_dir[2] += 30;
+				VectorNormalize(smack_dir);
 				//hurt them
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/galak/skewerhit.wav"));
-				G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+				G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 					(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
 				if (NPCS.NPC->client->ps.torsoAnim == BOTH_ATTACK4)
 				{
@@ -714,16 +714,16 @@ void NPC_BSGM_Attack(void)
 						knockAnim = BOTH_KNOCKDOWN4;
 					}
 					//throw them
-					smackDir[2] = 1;
-					VectorNormalize(smackDir);
-					g_throw(NPCS.NPC->enemy, smackDir, 50);
+					smack_dir[2] = 1;
+					VectorNormalize(smack_dir);
+					g_throw(NPCS.NPC->enemy, smack_dir, 50);
 					NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				else
 				{
 					//uppercut
 					//throw them
-					g_throw(NPCS.NPC->enemy, smackDir, 100);
+					g_throw(NPCS.NPC->enemy, smack_dir, 100);
 					//make them backflip
 					NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
 						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -842,19 +842,19 @@ void NPC_BSGM_Attack(void)
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
 			{
 				//animate me
-				int swingAnim;
+				int swing_anim;
 				if (NPCS.NPC->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 				{
 					//generator down, use random melee
-					swingAnim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5); //smackdown or uppercut
+					swing_anim = Q_irand(BOTH_ATTACK4, BOTH_ATTACK5); //smackdown or uppercut
 				}
 				else
 				{
 					//always knock-away
-					swingAnim = BOTH_ATTACK5; //uppercut
+					swing_anim = BOTH_ATTACK5; //uppercut
 				}
 				//FIXME: swing sound
-				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swingAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, swing_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPCS.NPC, "attackDelay", NPCS.NPC->client->ps.torsoTimer + Q_irand(1000, 3000));
 				//delay the hurt until the proper point in the anim
 				TIMER_Set(NPCS.NPC, "smackTime", 600);
@@ -1215,7 +1215,7 @@ void NPC_BSGM_Attack(void)
 		if (NPCS.NPC->client->ps.powerups[PW_GALAK_SHIELD] > 0)
 		{
 			//zap him!
-			vec3_t smackDir;
+			vec3_t smack_dir;
 
 			//animate me
 			NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, BOTH_ATTACK6, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -1225,13 +1225,13 @@ void NPC_BSGM_Attack(void)
 			NPCS.NPCInfo->touchedByPlayer = NULL;
 			//FIXME: some shield effect?
 			NPCS.NPC->client->ps.powerups[PW_BATTLESUIT] = level.time + ARMOR_EFFECT_TIME;
-			VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smackDir);
-			smackDir[2] += 30;
-			VectorNormalize(smackDir);
-			G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smackDir, NPCS.NPC->r.currentOrigin,
+			VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+			smack_dir[2] += 30;
+			VectorNormalize(smack_dir);
+			G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
 				(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_UNKNOWN);
 			//throw them
-			g_throw(NPCS.NPC->enemy, smackDir, 100);
+			g_throw(NPCS.NPC->enemy, smack_dir, 100);
 			if (NPCS.NPC->enemy->client)
 			{
 				NPCS.NPC->enemy->client->ps.electrifyTime = level.time + 1000;

@@ -25,8 +25,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../cgame/cg_local.h"
 #include "g_functions.h"
 
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
+	qboolean break_saber_lock);
 
 constexpr auto MIN_ATTACK_DIST_SQ = 128;
 constexpr auto MIN_MISS_DIST = 100;
@@ -60,13 +60,13 @@ void SandCreature_ClearTimers(gentity_t* ent)
 }
 
 void NPC_SandCreature_Die(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	//FIXME: somehow make him solid when he dies?
 }
 
 void NPC_SandCreature_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hitLoc)
+	int mod, int hit_loc)
 {
 	if (TIMER_Done(self, "pain"))
 	{
@@ -499,9 +499,9 @@ void SandCreature_CheckMovingEnts(void)
 	}
 }
 
-void SandCreature_SeekAlert(int alertEvent)
+void SandCreature_SeekAlert(int alert_event)
 {
-	const alertEvent_t* alert = &level.alertEvents[alertEvent];
+	const alertEvent_t* alert = &level.alertEvents[alert_event];
 
 	//FIXME: check for higher alert status or closer than last location?
 	NPCInfo->enemyLastSeenTime = level.time;
@@ -513,14 +513,14 @@ void SandCreature_CheckAlerts(void)
 {
 	if (!(NPCInfo->scriptFlags & SCF_IGNORE_ALERTS))
 	{
-		const int alertEvent = NPC_CheckAlertEvents(qfalse, qtrue, NPCInfo->lastAlertID, qfalse, AEL_MINOR, qtrue);
+		const int alert_event = NPC_CheckAlertEvents(qfalse, qtrue, NPCInfo->lastAlertID, qfalse, AEL_MINOR, qtrue);
 
 		//There is an event to look at
-		if (alertEvent >= 0)
+		if (alert_event >= 0)
 		{
-			//if ( level.alertEvents[alertEvent].ID != NPCInfo->lastAlertID )
+			//if ( level.alertEvents[alert_event].ID != NPCInfo->lastAlertID )
 			{
-				SandCreature_SeekAlert(alertEvent);
+				SandCreature_SeekAlert(alert_event);
 			}
 		}
 	}
@@ -755,7 +755,7 @@ void SandCreature_PushEnts()
 	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
 	for (int entIndex = 0; entIndex < numEnts; entIndex++)
 	{
-		vec3_t smackDir;
+		vec3_t smack_dir;
 		// Only Clients
 		//--------------
 		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client || radiusEnts[entIndex] == NPC)
@@ -765,11 +765,11 @@ void SandCreature_PushEnts()
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smackDir);
-		const float smackDist = VectorNormalize(smackDir);
+		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
+		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			g_throw(radiusEnts[entIndex], smackDir, 90);
+			g_throw(radiusEnts[entIndex], smack_dir, 90);
 		}
 	}
 }

@@ -285,7 +285,7 @@ static void G_DynamicMusicUpdate( usercmd_t *ucmd )
 */
 static void G_DynamicMusicUpdate(void)
 {
-	gentity_t* entityList[MAX_GENTITIES];
+	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t mins, maxs;
 	vec3_t center;
 	int danger = 0;
@@ -362,10 +362,10 @@ static void G_DynamicMusicUpdate(void)
 		maxs[i] = center[i] + radius;
 	}
 
-	const int numListedEntities = gi.EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
-	for (int e = 0; e < numListedEntities; e++)
+	const int num_listed_entities = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
+	for (int e = 0; e < num_listed_entities; e++)
 	{
-		gentity_t* ent = entityList[e];
+		gentity_t* ent = entity_list[e];
 		if (!ent || !ent->inuse)
 		{
 			continue;
@@ -1449,7 +1449,7 @@ void g_player_guilt_death()
 }
 
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
-extern void G_MakeTeamVulnerable(void);
+extern void G_MakeTeamVulnerable();
 int killPlayerTimer = 0;
 
 static void G_CheckEndLevelTimers(gentity_t* ent)

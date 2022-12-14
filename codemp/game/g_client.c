@@ -4891,7 +4891,7 @@ to be placed into the level.  This will happen every level load,
 and on transition between teams, but doesn't happen on respawns
 ============
 */
-extern void PlayerPain(gentity_t* self, gentity_t* attacker, int damage);
+extern void PlayerPain(gentity_t* self, int damage);
 extern qboolean gSiegeRoundBegun;
 extern qboolean gSiegeRoundEnded;
 extern qboolean g_dontPenalizeTeam; //g_cmds.c

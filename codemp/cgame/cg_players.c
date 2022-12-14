@@ -3788,7 +3788,7 @@ PLAYER ANGLES
 #if 0
 typedef struct boneAngleParms_s {
 	void* ghoul2;
-	int modelIndex;
+	int model_index;
 	char* boneName;
 	vec3_t angles;
 	int flags;
@@ -3816,7 +3816,7 @@ void CG_G2SetBoneAngles(void* ghoul2, int model_index, const char* bone_name, co
 	//At the end of the frame we will check to use this information to call SetBoneAngles
 	memset(&cgBoneAnglePostSet, 0, sizeof(cgBoneAnglePostSet));
 	cgBoneAnglePostSet.ghoul2 = ghoul2;
-	cgBoneAnglePostSet.modelIndex = modelIndex;
+	cgBoneAnglePostSet.model_index = model_index;
 	cgBoneAnglePostSet.boneName = (char*)boneName;
 
 	cgBoneAnglePostSet.angles[0] = angles[0];
@@ -20124,7 +20124,7 @@ stillDoSaber:
 
 	if (cgBoneAnglePostSet.refreshSet)
 	{
-		trap->G2API_SetBoneAngles(cgBoneAnglePostSet.ghoul2, cgBoneAnglePostSet.modelIndex, cgBoneAnglePostSet.boneName,
+		trap->G2API_SetBoneAngles(cgBoneAnglePostSet.ghoul2, cgBoneAnglePostSet.model_index, cgBoneAnglePostSet.boneName,
 			cgBoneAnglePostSet.angles, cgBoneAnglePostSet.flags, cgBoneAnglePostSet.up, cgBoneAnglePostSet.right,
 			cgBoneAnglePostSet.forward, cgBoneAnglePostSet.modelList, cgBoneAnglePostSet.blendTime, cgBoneAnglePostSet.currentTime);
 
