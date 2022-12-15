@@ -27496,24 +27496,31 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 						if (self->client->ps.forcePowerLevel[FP_GRIP] > FORCE_LEVEL_2
 							&& (!grip_ent->client || !grip_ent->message && !(grip_ent->flags & FL_NO_KNOCKBACK)))
 						{
-							//level 2 just lifts them
-							float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
-							if (grip_dist < 20.0f)
+							if (grip_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(grip_ent)) // npc,s cant throw the player around with grip any more
 							{
-								if (grip_dist < 2.0f)
+								VectorSubtract(grip_org, grip_ent_org, grip_ent->client->ps.velocity);
+							}
+							else
+							{
+								//level 2 just lifts them
+								float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
+								if (grip_dist < 20.0f)
 								{
-									VectorClear(grip_ent->client->ps.velocity);
+									if (grip_dist < 2.0f)
+									{
+										VectorClear(grip_ent->client->ps.velocity);
+									}
+									else
+									{
+										VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
+											grip_ent->client->ps.velocity);
+									}
 								}
 								else
 								{
 									VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
 										grip_ent->client->ps.velocity);
 								}
-							}
-							else
-							{
-								VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
-									grip_ent->client->ps.velocity);
 							}
 						}
 					}
@@ -28241,24 +28248,31 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 					if (self->client->ps.forcePowerLevel[FP_GRASP] > FORCE_LEVEL_2
 						&& (!grip_ent->client || !grip_ent->message && !(grip_ent->flags & FL_NO_KNOCKBACK)))
 					{
-						//level 2 just lifts them
-						float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
-						if (grip_dist < 20.0f)
+						if (grip_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(grip_ent)) // npc,s cant throw the player around with grip any more
 						{
-							if (grip_dist < 2.0f)
+							VectorSubtract(grip_org, grip_ent_org, grip_ent->client->ps.velocity);
+						}
+						else
+						{
+							//level 2 just lifts them
+							float grip_dist = VectorNormalize(grip_ent->client->ps.velocity) / 3.0f;
+							if (grip_dist < 20.0f)
 							{
-								VectorClear(grip_ent->client->ps.velocity);
+								if (grip_dist < 2.0f)
+								{
+									VectorClear(grip_ent->client->ps.velocity);
+								}
+								else
+								{
+									VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
+										grip_ent->client->ps.velocity);
+								}
 							}
 							else
 							{
 								VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
 									grip_ent->client->ps.velocity);
 							}
-						}
-						else
-						{
-							VectorScale(grip_ent->client->ps.velocity, grip_dist * grip_dist,
-								grip_ent->client->ps.velocity);
 						}
 					}
 				}
