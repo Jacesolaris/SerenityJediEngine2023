@@ -37,7 +37,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "ai_main.h"
 
 //////////Defines////////////////
-extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int AnimIndex);
+extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int anim_index);
 extern qboolean PM_SaberInBounce(int move);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern bot_state_t* botstates[MAX_CLIENTS];
@@ -45,7 +45,7 @@ extern qboolean PM_SaberInTransitionAny(int move);
 extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean WP_SabersCheckLock(gentity_t* ent1, gentity_t* ent2);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
@@ -55,7 +55,7 @@ extern qboolean PM_InForceGetUp(const playerState_t* ps);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean WP_BrokenBoltBlockKnockBack(gentity_t* victim);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern saberMoveName_t pm_block_the_attack(int move);
 extern int g_block_the_attack(int move);
 extern saberMoveName_t PM_SaberBounceForAttack(int move);

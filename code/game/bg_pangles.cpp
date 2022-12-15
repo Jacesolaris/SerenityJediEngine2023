@@ -36,7 +36,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../ghoul2/ghoul2_gore.h"
 
 extern void CG_SetClientViewAngles(vec3_t angles, qboolean override_view_ent);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_InReboundJump(int anim);

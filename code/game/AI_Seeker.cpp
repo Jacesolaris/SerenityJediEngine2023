@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void NPC_BSST_Patrol();
 extern void Boba_FireDecide();
 extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
-	qboolean altFire = qfalse);
+	qboolean alt_fire = qfalse);
 
 void Seeker_Strafe();
 

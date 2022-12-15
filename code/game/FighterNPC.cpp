@@ -98,7 +98,7 @@ extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tM
 	const vec3_t end, int passEntityNum, int contentmask);
 #endif
 
-extern qboolean BG_UnrestrainedPitchRoll(playerState_t* ps, Vehicle_t* pVeh);
+extern qboolean BG_UnrestrainedPitchRoll();
 
 #ifdef _JK2MP
 
@@ -1092,7 +1092,7 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const play
 			{
 				//NOT everyone should do this
 				pVeh->m_vOrientation[PITCH] += pVeh->m_fTimeModifier;
-				if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+				if (!BG_UnrestrainedPitchRoll())
 				{
 					if (pVeh->m_vOrientation[PITCH] > 60.0f)
 					{
@@ -1103,7 +1103,7 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const play
 			else if (!(pVeh->m_pParentEntity->s.number % 2))
 			{
 				pVeh->m_vOrientation[PITCH] -= pVeh->m_fTimeModifier;
-				if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+				if (!BG_UnrestrainedPitchRoll())
 				{
 					if (pVeh->m_vOrientation[PITCH] > -60.0f)
 					{
@@ -1140,7 +1140,7 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const play
 			{
 				//NOT everyone should do this
 				pVeh->m_vOrientation[PITCH] += pVeh->m_fTimeModifier;
-				if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+				if (!BG_UnrestrainedPitchRoll())
 				{
 					if (pVeh->m_vOrientation[PITCH] > 60.0f)
 					{
@@ -1151,7 +1151,7 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const play
 			else if (!(pVeh->m_pParentEntity->s.number % 4))
 			{
 				pVeh->m_vOrientation[PITCH] -= pVeh->m_fTimeModifier;
-				if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+				if (!BG_UnrestrainedPitchRoll())
 				{
 					if (pVeh->m_vOrientation[PITCH] > -60.0f)
 					{
@@ -1382,7 +1382,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		return;
 	}
 
-	if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+	if (!BG_UnrestrainedPitchRoll())
 	{
 		pVeh->m_vOrientation[ROLL] = PredictedAngularDecrement(0.95f, angleTimeMod * 2.0f, pVeh->m_vOrientation[ROLL]);
 	}
@@ -1477,7 +1477,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 	else if (pVeh->m_pPilot && pVeh->m_pPilot->s.number < MAX_CLIENTS && parentPS->speed > 0.0f)
 		//&& !( pVeh->m_ucmd.forwardmove > 0 && pVeh->m_LandTrace.fraction != 1.0f ) )
 	{
-		if (BG_UnrestrainedPitchRoll(riderPS, pVeh))
+		if (BG_UnrestrainedPitchRoll())
 		{
 			VectorCopy(riderPS->viewangles, pVeh->m_vOrientation);
 			VectorCopy(riderPS->viewangles, parentPS->viewangles);
@@ -1577,7 +1577,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		pVeh->m_ucmd.upmove = 0;
 		//pVeh->m_ucmd.forwardmove = 0;
 		pVeh->m_vOrientation[PITCH] += pVeh->m_fTimeModifier;
-		if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+		if (!BG_UnrestrainedPitchRoll())
 		{
 			if (pVeh->m_vOrientation[PITCH] > 60.0f)
 			{
@@ -1602,7 +1602,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			}
 			else
 			{
-				if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+				if (!BG_UnrestrainedPitchRoll())
 				{
 					pVeh->m_vOrientation[YAW] -= pVeh->m_vOrientation[ROLL] * 0.05f * pVeh->m_fTimeModifier;
 				}
@@ -1616,7 +1616,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		//pVeh->m_pVehicleInfo->bankingSpeed*
 		const float strafeDif = AngleSubtract(strafeRoll, pVeh->m_vOrientation[ROLL]);
 		pVeh->m_vOrientation[ROLL] += strafeDif * 0.1f * pVeh->m_fTimeModifier;
-		if (!BG_UnrestrainedPitchRoll(riderPS, pVeh))
+		if (!BG_UnrestrainedPitchRoll())
 		{
 			//cap it reasonably
 			if (pVeh->m_pVehicleInfo->rollLimit != -1

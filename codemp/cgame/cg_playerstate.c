@@ -105,7 +105,7 @@ void CG_CheckAmmo(void)
 CG_DamageFeedback
 ==============
 */
-void CG_DamageFeedback(int yawByte, int pitchByte, int damage)
+void CG_DamageFeedback(int yaw_byte, int pitch_byte, int damage)
 {
 	float scale;
 
@@ -130,7 +130,7 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage)
 		kick = 10;
 
 	// if yaw and pitch are both 255, make the damage always centered (falling, etc)
-	if (yawByte == 255 && pitchByte == 255)
+	if (yaw_byte == 255 && pitch_byte == 255)
 	{
 		cg.damageX = 0;
 		cg.damageY = 0;
@@ -142,8 +142,8 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage)
 		vec3_t angles;
 		vec3_t dir;
 		// positional
-		const float pitch = pitchByte / 255.0 * 360;
-		const float yaw = yawByte / 255.0 * 360;
+		const float pitch = pitch_byte / 255.0 * 360;
+		const float yaw = yaw_byte / 255.0 * 360;
 
 		angles[PITCH] = pitch;
 		angles[YAW] = yaw;

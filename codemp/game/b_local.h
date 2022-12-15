@@ -189,7 +189,7 @@ extern float G_GroundDistance(const gentity_t* self);
 
 //NPC_stats
 extern int NPC_ReactionTime(void);
-extern qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC);
+extern qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc);
 extern void NPC_LoadParms(void);
 
 //NPC_utils

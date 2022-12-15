@@ -97,7 +97,7 @@ extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
 extern qboolean G_JediInNormalAI(const gentity_t* ent);
-extern void WP_SaberFatigueRegenerate(int overrideAmt);
+extern void WP_SaberFatigueRegenerate(int override_amt);
 extern void bg_reduce_blaster_mishap_level(playerState_t* ps);
 extern void bg_reduce_blaster_mishap_level_advanced(playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
@@ -2258,11 +2258,11 @@ extern void G_Stagger(gentity_t* hit_ent);
 
 qboolean WP_AbsorbKick(gentity_t* ent, const gentity_t* pusher, const vec3_t push_dir)
 {
-	const qboolean ActiveBlocking = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//manual Blocking
-	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
+	const qboolean active_blocking = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;	//manual Blocking
+	const qboolean holding_block = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Normal Blocking
 	const qboolean NPCBlocking = ent->client->ps.ManualBlockingFlags & 1 << MBF_NPCKICKBLOCK ? qtrue : qfalse;	//NPC Blocking
 
-	if (PlayerCanAbsorbKick(ent, push_dir) && (HoldingBlock || ActiveBlocking) && (ent->s.number < MAX_CLIENTS ||
+	if (PlayerCanAbsorbKick(ent, push_dir) && (holding_block || active_blocking) && (ent->s.number < MAX_CLIENTS ||
 		G_ControlledByPlayer(ent))) //player only
 	{
 		if (ent->client->ps.blockPoints > 50)

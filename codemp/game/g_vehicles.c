@@ -30,10 +30,10 @@ extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimF
 extern void G_DamageFromKiller(gentity_t* p_ent, const gentity_t* p_veh_ent, gentity_t* attacker, vec3_t org, int damage,
 	int dflags, int mod);
 
-extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int setAnimParts, int anim, int setAnimFlags);
+extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim, int set_anim_flags);
 extern void BG_SetLegsAnimTimer(playerState_t* ps, int time);
 extern void BG_SetTorsoAnimTimer(playerState_t* ps, int time);
-void G_VehUpdateShields(gentity_t* targ);
+void G_VehUpdateShields(const gentity_t* targ);
 #ifdef _GAME
 extern void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum);
 #endif
@@ -53,7 +53,7 @@ void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, co
 	trap->Trace(results, start, tMins, tMaxs, end, passEntityNum, contentmask, qfalse, 0, 0);
 }
 
-Vehicle_t* G_IsRidingVehicle(gentity_t* pEnt)
+Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt)
 {
 	const gentity_t* ent = pEnt;
 
@@ -1149,7 +1149,7 @@ qboolean Initialize(Vehicle_t* pVeh)
 }
 
 // Like a think or move command, this updates various vehicle properties.
-void G_VehicleDamageBoxSizing(Vehicle_t* pVeh); //declared below
+void G_VehicleDamageBoxSizing(const Vehicle_t* pVeh); //declared below
 static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 {
 	gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
@@ -1909,7 +1909,7 @@ static void UnGhost(Vehicle_t* pVeh, bgEntity_t* pEnt)
 }
 
 //try to resize the bounding box around a torn apart ship
-void G_VehicleDamageBoxSizing(Vehicle_t* pVeh)
+void G_VehicleDamageBoxSizing(const Vehicle_t* pVeh)
 {
 	vec3_t fwd, right, up;
 	vec3_t nose; //maxs
@@ -1971,7 +1971,7 @@ void G_VehicleDamageBoxSizing(Vehicle_t* pVeh)
 }
 
 //get one of 4 possible impact locations based on the trace direction
-int G_FlyVehicleImpactDir(gentity_t* veh, trace_t* trace)
+int G_FlyVehicleImpactDir(const gentity_t* veh, const trace_t* trace)
 {
 	trace_t localTrace;
 	vec3_t testMins, testMaxs;
@@ -2410,7 +2410,7 @@ anotherImpact:
 	}
 }
 
-void G_VehUpdateShields(gentity_t* targ)
+void G_VehUpdateShields(const gentity_t* targ)
 {
 	if (!targ || !targ->client
 		|| !targ->m_pVehicle || !targ->m_pVehicle->m_pVehicleInfo)
@@ -2436,7 +2436,7 @@ void SetPilot(Vehicle_t* pVeh, bgEntity_t* pPilot) { pVeh->m_pPilot = pPilot; }
 qboolean AddPassenger(Vehicle_t* pVeh) { return qfalse; }
 
 // Whether this vehicle is currently inhabited (by anyone) or not.
-qboolean Inhabited(Vehicle_t* pVeh) { return pVeh->m_pPilot || pVeh->m_iNumPassengers ? qtrue : qfalse; }
+qboolean Inhabited(const Vehicle_t* pVeh) { return pVeh->m_pPilot || pVeh->m_iNumPassengers ? qtrue : qfalse; }
 
 // Setup the shared functions (one's that all vehicles would generally use).
 void G_SetSharedVehicleFunctions(vehicleInfo_t* pVehInfo)

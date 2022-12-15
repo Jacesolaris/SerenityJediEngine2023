@@ -1324,7 +1324,7 @@ int PM_PowerLevelForSaberAnim(const playerState_t* ps, const int saber_num)
 	return FORCE_LEVEL_0;
 }
 
-qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
+qboolean PM_InAnimForSaberMove(int anim, const int saber_move)
 {
 	switch (anim)
 	{
@@ -1421,7 +1421,7 @@ qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
 	}
 	if (PM_SaberDrawPutawayAnim(anim))
 	{
-		if (saberMove == LS_DRAW || saberMove == LS_DRAW2 || saberMove == LS_DRAW3 || saberMove == LS_PUTAWAY)
+		if (saber_move == LS_DRAW || saber_move == LS_DRAW2 || saber_move == LS_DRAW3 || saber_move == LS_PUTAWAY)
 		{
 			return qtrue;
 		}
@@ -1429,7 +1429,7 @@ qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
 	}
 	if (PM_SaberStanceAnim(anim))
 	{
-		if (saberMove == LS_READY)
+		if (saber_move == LS_READY)
 		{
 			return qtrue;
 		}
@@ -1444,38 +1444,38 @@ qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
 	//drop the anim to the first level and start the checks there
 	anim -= (anim_level - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
 	//check level 1
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 2
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 3
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 4
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 5
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	if (anim >= BOTH_P1_S1_T_ && anim <= BOTH_H1_S1_BR)
 	{
 		//parries, knockaways and broken parries
-		return static_cast<qboolean>(anim == saberMoveData[saberMove].animToUse);
+		return static_cast<qboolean>(anim == saberMoveData[saber_move].animToUse);
 	}
 	return qfalse;
 }

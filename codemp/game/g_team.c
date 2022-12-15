@@ -332,7 +332,7 @@ Note that bonuses are not cumulative.  You get one, they are in importance
 order.
 ================
 */
-void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* attacker)
+void Team_FragBonuses(const gentity_t* targ, const gentity_t* attacker)
 {
 	int i;
 	int flag_pw, enemy_flag_pw;
@@ -344,7 +344,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 	if (!targ->client || !attacker->client || targ == attacker || OnSameTeam(targ, attacker))
 		return;
 
-	int team = targ->client->sess.sessionTeam;
+	const int team = targ->client->sess.sessionTeam;
 	const int otherteam = OtherTeam(targ->client->sess.sessionTeam);
 	if (otherteam < 0)
 		return; // whoever died isn't on a team
@@ -394,7 +394,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 		targ->client->pers.teamState.lasthurtcarrier = 0;
 
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-		team = attacker->client->sess.sessionTeam;
+		attacker->client->sess.sessionTeam;
 		attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 
 		return;
@@ -410,7 +410,7 @@ void Team_FragBonuses(gentity_t* targ, gentity_t* inflictor, const gentity_t* at
 		targ->client->pers.teamState.lasthurtcarrier = 0;
 
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
-		team = attacker->client->sess.sessionTeam;
+		attacker->client->sess.sessionTeam;
 		attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 
 		return;

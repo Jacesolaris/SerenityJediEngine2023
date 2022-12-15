@@ -83,7 +83,7 @@ qboolean PM_SpinningAnim(int anim);
 qboolean PM_InOnGroundAnim(int anim);
 qboolean PM_InRollComplete(const playerState_t* ps, int anim);
 
-int PM_AnimLength(int index, animNumber_t anim);
+int PM_AnimLength(animNumber_t anim);
 
 int PM_ReadyPoseForSaberAnimLevel(void);
 int PM_IdlePoseForSaberAnimLevel(void);
@@ -100,7 +100,7 @@ saberMoveName_t PM_SaberJumpForwardAttackMove(void);
 
 void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce);
 void PM_AddTouchEnt(int entityNum);
-void PM_AddEvent(int newEvent);
+void PM_AddEvent(int new_event);
 
 qboolean PM_SlideMove(qboolean gravity);
 void PM_StepSlideMove(qboolean gravity);
@@ -112,7 +112,7 @@ void PM_ForceLegsAnim(int anim);
 void PM_BeginWeaponChange(int weapon);
 void PM_FinishWeaponChange(void);
 
-void PM_SetAnim(int setAnimParts, int anim, int setAnimFlags);
+void PM_SetAnim(int setAnimParts, int anim, int set_anim_flags);
 
 void PM_WeaponLightsaber(void);
 void PM_SetSaberMove(saberMoveName_t new_move);

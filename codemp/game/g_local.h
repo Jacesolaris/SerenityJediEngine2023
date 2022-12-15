@@ -1568,7 +1568,7 @@ void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboole
 void g_run_missile(gentity_t* ent);
 
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life,
-	gentity_t* owner, qboolean altFire);
+	gentity_t* owner, qboolean alt_fire);
 void g_bounce_projectile(vec3_t start, vec3_t impact, vec3_t dir, vec3_t endout);
 void g_explode_missile(gentity_t* ent);
 

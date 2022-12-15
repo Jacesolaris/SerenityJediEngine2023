@@ -5,7 +5,7 @@
 #include "anims.h"
 
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length);
-extern int PM_AnimLength(int index, animNumber_t anim);
+extern int PM_AnimLength(const animNumber_t anim);
 
 qboolean NPC_CheckPlayerTeamStealth(void);
 

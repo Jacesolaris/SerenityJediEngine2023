@@ -480,9 +480,9 @@ qboolean PM_SaberInAttack(const int move)
 	return qfalse;
 }
 
-qboolean PM_SaberInKata(const saberMoveName_t saberMove)
+qboolean PM_SaberInKata(const saberMoveName_t saber_move)
 {
-	switch (saberMove)
+	switch (saber_move)
 	{
 	case LS_YODA_SPECIAL:
 	case LS_A1_SPECIAL:
@@ -501,9 +501,9 @@ qboolean PM_SaberInKata(const saberMoveName_t saberMove)
 	return qfalse;
 }
 
-qboolean PM_SaberInOverHeadSlash(const saberMoveName_t saberMove)
+qboolean PM_SaberInOverHeadSlash(const saberMoveName_t saber_move)
 {
-	switch (saberMove)
+	switch (saber_move)
 	{
 	case LS_A_FLIP_STAB:
 	case LS_A_FLIP_SLASH:
@@ -514,9 +514,9 @@ qboolean PM_SaberInOverHeadSlash(const saberMoveName_t saberMove)
 	return qfalse;
 }
 
-qboolean PM_SaberInBackAttack(const saberMoveName_t saberMove)
+qboolean PM_SaberInBackAttack(const saberMoveName_t saber_move)
 {
-	switch (saberMove)
+	switch (saber_move)
 	{
 	case LS_A_BACK:
 	case LS_A_BACK_CR:
@@ -627,7 +627,7 @@ qboolean PM_SaberDrawPutawayAnim(const int anim)
 	return qfalse;
 }
 
-qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
+qboolean PM_InAnimForSaberMove(int anim, const int saber_move)
 {
 	switch (anim)
 	{
@@ -724,7 +724,7 @@ qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
 	}
 	if (PM_SaberDrawPutawayAnim(anim))
 	{
-		if (saberMove == LS_DRAW || saberMove == LS_DRAW2 || saberMove == LS_DRAW3 || saberMove == LS_PUTAWAY)
+		if (saber_move == LS_DRAW || saber_move == LS_DRAW2 || saber_move == LS_DRAW3 || saber_move == LS_PUTAWAY)
 		{
 			return qtrue;
 		}
@@ -732,53 +732,53 @@ qboolean PM_InAnimForSaberMove(int anim, const int saberMove)
 	}
 	if (PM_SaberStanceAnim(anim))
 	{
-		if (saberMove == LS_READY)
+		if (saber_move == LS_READY)
 		{
 			return qtrue;
 		}
 		return qfalse;
 	}
-	const int animLevel = PM_AnimLevelForSaberAnim(anim);
-	if (animLevel <= 0)
+	const int anim_level = PM_AnimLevelForSaberAnim(anim);
+	if (anim_level <= 0)
 	{
 		//NOTE: this will always return false for the ready poses and putaway/draw...
 		return qfalse;
 	}
 	//drop the anim to the first level and start the checks there
-	anim -= (animLevel - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
+	anim -= (anim_level - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
 	//check level 1
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 2
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 3
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 4
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	//check level 5
 	anim += SABER_ANIM_GROUP_SIZE;
-	if (anim == saberMoveData[saberMove].animToUse)
+	if (anim == saberMoveData[saber_move].animToUse)
 	{
 		return qtrue;
 	}
 	if (anim >= BOTH_P1_S1_T_ && anim <= BOTH_H1_S1_BR)
 	{
 		//parries, knockaways and broken parries
-		return anim == saberMoveData[saberMove].animToUse;
+		return anim == saberMoveData[saber_move].animToUse;
 	}
 	return qfalse;
 }
@@ -3063,7 +3063,7 @@ qboolean PM_InKnockDown(const playerState_t* ps)
 	return qfalse;
 }
 
-qboolean BG_InFlipBack(int anim)
+qboolean BG_InFlipBack(const int anim)
 {
 	switch (anim)
 	{
@@ -3146,8 +3146,8 @@ qboolean PM_InSlapDown(const playerState_t* ps)
 int pm_power_level_for_saber_anims(const playerState_t* ps)
 {
 	const int anim = ps->torsoAnim;
-	const int animTimer = ps->torsoAnim;
-	const int animTimeElapsed = BG_AnimLength(0, anim) - animTimer;
+	const int anim_timer = ps->torsoAnim;
+	const int anim_time_elapsed = BG_AnimLength(0, anim) - anim_timer;
 
 	if (anim >= BOTH_A1_T__B_ && anim <= BOTH_D1_B____)
 	{
@@ -3233,7 +3233,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 400)
+		if (anim_time_elapsed < 400)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3287,7 +3287,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 150)
+		if (anim_time_elapsed < 150)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3302,7 +3302,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 550)
+		if (anim_time_elapsed < 550)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3321,7 +3321,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 550)
+		if (anim_time_elapsed < 550)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3335,7 +3335,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed <= 250)
+		if (anim_time_elapsed <= 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3345,9 +3345,9 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	case BOTH_JUMPATTACK6:
 	case BOTH_GRIEVOUS_LUNGE:
 		if (ps->torsoTimer >= 1450
-			&& animTimeElapsed >= 400
+			&& anim_time_elapsed >= 400
 			|| ps->torsoTimer >= 400
-			&& animTimeElapsed >= 1100)
+			&& anim_time_elapsed >= 1100)
 		{
 			//pretty much sideways
 			return FORCE_LEVEL_3;
@@ -3360,7 +3360,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3369,7 +3369,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	return FORCE_LEVEL_3;
 	case BOTH_SPINATTACK6:
 	case BOTH_SPINATTACKGRIEVOUS:
-		if (animTimeElapsed <= 200)
+		if (anim_time_elapsed <= 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3382,7 +3382,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 500)
+		if (anim_time_elapsed < 500)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3390,7 +3390,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	}
 	return FORCE_LEVEL_3;
 	case BOTH_FORCELONGLEAP_ATTACK:
-		if (animTimeElapsed <= 200)
+		if (anim_time_elapsed <= 200)
 		{
 			//1st four frames of anim
 			return FORCE_LEVEL_3;
@@ -3426,7 +3426,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//start of anim
 			return FORCE_LEVEL_0;
@@ -3440,7 +3440,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 600)
+		if (anim_time_elapsed < 600)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3455,7 +3455,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3470,7 +3470,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3484,7 +3484,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3498,7 +3498,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3512,7 +3512,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 200)
+		if (anim_time_elapsed < 200)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3535,7 +3535,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 650) //600 )
+		if (anim_time_elapsed < 650) //600 )
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3549,7 +3549,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3563,7 +3563,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3577,7 +3577,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3591,7 +3591,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3625,7 +3625,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 400)
+		if (anim_time_elapsed < 400)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3640,7 +3640,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 400)
+		if (anim_time_elapsed < 400)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3651,7 +3651,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_DL_S_SB_1_W:
 	case BOTH_LK_DL_ST_S_SB_1_W:
-		if (animTimeElapsed < 1000)
+		if (anim_time_elapsed < 1000)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3664,7 +3664,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 650)
+		if (anim_time_elapsed < 650)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3678,7 +3678,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 450)
+		if (anim_time_elapsed < 450)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3692,7 +3692,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 150)
+		if (anim_time_elapsed < 150)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3712,7 +3712,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 350)
+		if (anim_time_elapsed < 350)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3732,7 +3732,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 			//end of anim
 			return FORCE_LEVEL_0;
 		}
-		if (animTimeElapsed < 250)
+		if (anim_time_elapsed < 250)
 		{
 			//beginning of anim
 			return FORCE_LEVEL_0;
@@ -3742,7 +3742,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	}
 	case BOTH_ROLL_STAB:
 	{
-		if (animTimeElapsed > 400)
+		if (anim_time_elapsed > 400)
 		{
 			//end of anim
 			return FORCE_LEVEL_0;
@@ -4218,7 +4218,7 @@ qboolean PM_InOnGroundAnims(const playerState_t* ps)
 	case BOTH_FORCE_GETUP_B5:
 	case BOTH_FORCE_GETUP_B6:
 	case BOTH_STANDFROMPRONE:
-		if (ps->legsTimer > PM_AnimLength(0, ps->legsAnim) - 400)
+		if (ps->legsTimer > PM_AnimLength(ps->legsAnim) - 400)
 		{
 			//still pretty much horizontal at this point
 			return qtrue;
@@ -4664,7 +4664,7 @@ int BG_AnimLength(const int index, const animNumber_t anim)
 }
 
 //just use whatever pm->animations is
-int PM_AnimLength(int index, const animNumber_t anim)
+int PM_AnimLength(const animNumber_t anim)
 {
 	if (!pm->animations || (int)anim < 0 || anim >= MAX_ANIMATIONS)
 	{
@@ -4675,14 +4675,14 @@ int PM_AnimLength(int index, const animNumber_t anim)
 
 void PM_DebugLegsAnim(const int anim)
 {
-	const int oldAnim = pm->ps->legsAnim;
-	const int newAnim = anim;
+	const int old_anim = pm->ps->legsAnim;
+	const int new_anim = anim;
 
-	if (oldAnim < MAX_TOTALANIMATIONS && oldAnim >= BOTH_DEATH1 &&
-		newAnim < MAX_TOTALANIMATIONS && newAnim >= BOTH_DEATH1)
+	if (old_anim < MAX_TOTALANIMATIONS && old_anim >= BOTH_DEATH1 &&
+		new_anim < MAX_TOTALANIMATIONS && new_anim >= BOTH_DEATH1)
 	{
-		Com_Printf("OLD: %s\n", animTable[oldAnim]);
-		Com_Printf("NEW: %s\n", animTable[newAnim]);
+		Com_Printf("OLD: %s\n", animTable[old_anim]);
+		Com_Printf("NEW: %s\n", animTable[new_anim]);
 	}
 }
 
@@ -4772,7 +4772,7 @@ animation_t* BG_AnimsetAlloc(void)
 	return bgAllAnims[bgNumAllAnims].anims;
 }
 
-void BG_AnimsetFree(animation_t* animset)
+void BG_AnimsetFree()
 {
 }
 
@@ -4807,20 +4807,20 @@ stringID_table_t footstepTypeTable[NUM_FOOTSTEP_TYPES + 1] =
 	{NULL, -1}
 };
 
-int CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, animEventType_t eventType)
+int CheckAnimFrameForEventType(const animevent_t* anim_events, const int key_frame, const animEventType_t event_type)
 {
 	for (int i = 0; i < MAX_ANIM_EVENTS; i++)
 	{
-		if (eventType == AEV_AMBIENT)
+		if (event_type == AEV_AMBIENT)
 		{
 			//find the ambient animevent
-			if (animEvents[i].eventType == AEV_AMBIENT)
+			if (anim_events[i].eventType == AEV_AMBIENT)
 				return i;
 		}
-		else if (animEvents[i].keyFrame == keyFrame)
+		else if (anim_events[i].keyFrame == key_frame)
 		{
 			//there is an animevent on this frame already
-			if (animEvents[i].eventType == eventType)
+			if (anim_events[i].eventType == event_type)
 			{
 				//and it is of the same type
 				return i;
@@ -4831,11 +4831,11 @@ int CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, anim
 	return -1;
 }
 
-void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, const animation_t* animations, int* i,
+void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, const animation_t* animations,
 	const char** text_p)
 {
 	const char* token;
-	int num, n, lowestVal, highestVal, curAnimEvent, lastAnimEvent = 0;
+	int num, n, lowest_val, highest_val, cur_anim_event, last_anim_event = 0;
 
 	// get past starting bracket
 	while (1)
@@ -4854,8 +4854,8 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 	// read information for each frame
 	while (1)
 	{
-		char stringData[MAX_QPATH];
-		if (lastAnimEvent >= MAX_ANIM_EVENTS)
+		char string_data[MAX_QPATH];
+		if (last_anim_event >= MAX_ANIM_EVENTS)
 		{
 			Com_Error(ERR_DROP, "ParseAnimationEvtBlock: number events in animEvent file %s > MAX_ANIM_EVENTS(%i)",
 				aeb_filename, MAX_ANIM_EVENTS);
@@ -4879,13 +4879,13 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			//It's an ambient sound, do your thing.
 			//AEV_AMBIENT intervals random factor soundpath randomlow randomhi chance to play
 			//see if this frame already has an event of this type on it, if so, overwrite it
-			curAnimEvent = CheckAnimFrameForEventType(animEvents, 0, AEV_AMBIENT);
-			if (curAnimEvent == -1)
+			cur_anim_event = CheckAnimFrameForEventType(anim_events, 0, AEV_AMBIENT);
+			if (cur_anim_event == -1)
 			{
 				//this anim frame doesn't already have an event of this type on it
-				curAnimEvent = lastAnimEvent;
+				cur_anim_event = last_anim_event;
 			}
-			animEvents[curAnimEvent].eventType = AEV_AMBIENT;
+			anim_events[cur_anim_event].eventType = AEV_AMBIENT;
 
 			//Lets grab the time intervals
 			token = COM_Parse(text_p);
@@ -4893,7 +4893,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			{
 				break;
 			}
-			animEvents[curAnimEvent].ambtime = atoi(token);
+			anim_events[cur_anim_event].ambtime = atoi(token);
 
 			//Lets grab the random factor
 			token = COM_Parse(text_p);
@@ -4901,7 +4901,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			{
 				break;
 			}
-			animEvents[curAnimEvent].ambrandom = atoi(token);
+			anim_events[cur_anim_event].ambrandom = atoi(token);
 
 			//set sound channel
 			token = COM_Parse(text_p);
@@ -4911,31 +4911,31 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			}
 			if (stricmp(token, "CHAN_VOICE_ATTEN") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_ATTEN;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_ATTEN;
 			}
 			else if (stricmp(token, "CHAN_VOICE_GLOBAL") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_GLOBAL;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_GLOBAL;
 			}
 			else if (stricmp(token, "CHAN_ANNOUNCER") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_ANNOUNCER;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_ANNOUNCER;
 			}
 			else if (stricmp(token, "CHAN_BODY") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_BODY;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_BODY;
 			}
 			else if (stricmp(token, "CHAN_WEAPON") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_WEAPON;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_WEAPON;
 			}
 			else if (stricmp(token, "CHAN_VOICE") == 0)
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE;
 			}
 			else
 			{
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
 			}
 
 			//get sound string
@@ -4944,7 +4944,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			{
 				break;
 			}
-			strcpy(stringData, token);
+			strcpy(string_data, token);
 			//get lowest value
 			token = COM_Parse(text_p);
 			if (!token)
@@ -4952,7 +4952,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			lowestVal = atoi(token);
+			lowest_val = atoi(token);
 			//get highest value
 			token = COM_Parse(text_p);
 			if (!token)
@@ -4960,51 +4960,51 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			highestVal = atoi(token);
+			highest_val = atoi(token);
 			//Now precache all the sounds
-			if (lowestVal && highestVal)
+			if (lowest_val && highest_val)
 			{
-				if (highestVal - lowestVal >= MAX_RANDOM_ANIM_SOUNDS)
+				if (highest_val - lowest_val >= MAX_RANDOM_ANIM_SOUNDS)
 				{
-					highestVal = lowestVal + (MAX_RANDOM_ANIM_SOUNDS - 1);
+					highest_val = lowest_val + (MAX_RANDOM_ANIM_SOUNDS - 1);
 				}
-				for (n = lowestVal, num = AED_SOUNDINDEX_START; n <= highestVal && num <= AED_SOUNDINDEX_END; n++, num
+				for (n = lowest_val, num = AED_SOUNDINDEX_START; n <= highest_val && num <= AED_SOUNDINDEX_END; n++, num
 					++)
 				{
-					if (stringData[0] == '*' && n == lowestVal)
+					if (string_data[0] == '*' && n == lowest_val)
 					{
 						//You only need to do this once
-						animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] = 0;
-						animEvents[curAnimEvent].eventData[AED_CSOUND_RANDSTART] = lowestVal;
-						if (!animEvents[curAnimEvent].stringData)
+						anim_events[cur_anim_event].eventData[AED_SOUNDINDEX_START] = 0;
+						anim_events[cur_anim_event].eventData[AED_CSOUND_RANDSTART] = lowest_val;
+						if (!anim_events[cur_anim_event].stringData)
 						{
-							animEvents[curAnimEvent].stringData = (char*)BG_Alloc(MAX_QPATH);
+							anim_events[cur_anim_event].stringData = (char*)BG_Alloc(MAX_QPATH);
 						}
-						strcpy(animEvents[curAnimEvent].stringData, stringData);
+						strcpy(anim_events[cur_anim_event].stringData, string_data);
 					}
-					else if (stringData[0] != '*')
+					else if (string_data[0] != '*')
 						//else
 					{
-						animEvents[curAnimEvent].eventData[num] = trap->S_RegisterSound(va(stringData, n));
+						anim_events[cur_anim_event].eventData[num] = trap->S_RegisterSound(va(string_data, n));
 					}
 				}
-				animEvents[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = num - 1;
+				anim_events[cur_anim_event].eventData[AED_SOUND_NUMRANDOMSNDS] = num - 1;
 			}
 			else
 			{
-				if (stringData[0] == '*')
+				if (string_data[0] == '*')
 				{
-					animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] = 0;
-					animEvents[curAnimEvent].eventData[AED_CSOUND_RANDSTART] = 0;
-					if (!animEvents[curAnimEvent].stringData)
+					anim_events[cur_anim_event].eventData[AED_SOUNDINDEX_START] = 0;
+					anim_events[cur_anim_event].eventData[AED_CSOUND_RANDSTART] = 0;
+					if (!anim_events[cur_anim_event].stringData)
 					{
-						animEvents[curAnimEvent].stringData = (char*)BG_Alloc(MAX_QPATH);
+						anim_events[cur_anim_event].stringData = (char*)BG_Alloc(MAX_QPATH);
 					}
-					strcpy(animEvents[curAnimEvent].stringData, stringData);
+					strcpy(anim_events[cur_anim_event].stringData, string_data);
 				}
 				else
 				{
-					animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] = trap->S_RegisterSound(stringData);
+					anim_events[cur_anim_event].eventData[AED_SOUNDINDEX_START] = trap->S_RegisterSound(string_data);
 				}
 			}
 
@@ -5015,12 +5015,12 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_SOUND_PROBABILITY] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_SOUND_PROBABILITY] = atoi(token);
 
 			//bump the AnimEvent counter if this took the last number.
-			if (curAnimEvent == lastAnimEvent)
+			if (cur_anim_event == last_anim_event)
 			{
-				lastAnimEvent++;
+				last_anim_event++;
 			}
 			continue;
 		}
@@ -5030,8 +5030,8 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 		//	just need offsets.
 		//This way when animation numbers change, this table won't have to be updated,
 		//	at least not much.
-		const int animNum = GetIDForString(animTable, token);
-		if (animNum == -1)
+		const int anim_num = GetIDForString(animTable, token);
+		if (anim_num == -1)
 		{
 			//Unrecognized ANIM ENUM name, or we're skipping this line, keep going till you get a good one
 			//Com_Printf(S_COLOR_YELLOW"WARNING: Unknown token %s in animEvent file %s\n", token, aeb_filename );
@@ -5042,7 +5042,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			continue;
 		}
 
-		if (animations[animNum].numFrames == 0)
+		if (animations[anim_num].numFrames == 0)
 		{
 			//we don't use this anim
 			Com_Printf(S_COLOR_YELLOW"WARNING: %s mpanimevents.cfg: anim %s not used by this model\n", aeb_filename,
@@ -5053,8 +5053,8 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 		}
 
 		token = COM_Parse(text_p);
-		const animEventType_t eventType = GetIDForString(animEventTypeTable, token);
-		if (eventType == AEV_NONE || eventType == (animEventType_t)-1)
+		const animEventType_t event_type = GetIDForString(animEventTypeTable, token);
+		if (event_type == AEV_NONE || event_type == (animEventType_t)-1)
 		{
 			//Unrecognized ANIM EVENT TYPE, or we're skipping this line, keep going till you get a good one
 			//Com_Printf(S_COLOR_YELLOW"WARNING: Unknown token %s in animEvent file %s\n", token, aeb_filename );
@@ -5062,29 +5062,29 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 		}
 
 		//set our start frame
-		int keyFrame = animations[animNum].firstFrame;
+		int key_frame = animations[anim_num].firstFrame;
 		// Get offset to frame within sequence
 		token = COM_Parse(text_p);
 		if (!token)
 		{
 			break;
 		}
-		keyFrame += atoi(token);
+		key_frame += atoi(token);
 
 		//see if this frame already has an event of this type on it, if so, overwrite it
-		curAnimEvent = CheckAnimFrameForEventType(animEvents, keyFrame, eventType);
-		if (curAnimEvent == -1)
+		cur_anim_event = CheckAnimFrameForEventType(anim_events, key_frame, event_type);
+		if (cur_anim_event == -1)
 		{
 			//this anim frame doesn't already have an event of this type on it
-			curAnimEvent = lastAnimEvent;
+			cur_anim_event = last_anim_event;
 		}
 
 		//now that we know which event index we're going to plug the data into, start doing it
-		animEvents[curAnimEvent].eventType = eventType;
-		animEvents[curAnimEvent].keyFrame = keyFrame;
+		anim_events[cur_anim_event].eventType = event_type;
+		anim_events[cur_anim_event].keyFrame = key_frame;
 
 		//now read out the proper data based on the type
-		switch (animEvents[curAnimEvent].eventType)
+		switch (anim_events[cur_anim_event].eventType)
 		{
 		case AEV_SOUNDCHAN: //# animID AEV_SOUNDCHAN framenum CHANNEL soundpath randomlow randomhi chance to play
 			token = COM_Parse(text_p);
@@ -5092,19 +5092,19 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				break;
 
 			if (!Q_stricmp(token, "CHAN_VOICE_ATTEN"))
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_ATTEN;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_ATTEN;
 			else if (!Q_stricmp(token, "CHAN_VOICE_GLOBAL"))
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_GLOBAL;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE_GLOBAL;
 			else if (!Q_stricmp(token, "CHAN_ANNOUNCER"))
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_ANNOUNCER;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_ANNOUNCER;
 			else if (!Q_stricmp(token, "CHAN_BODY"))
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_BODY;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_BODY;
 			else if (!Q_stricmp(token, "CHAN_WEAPON"))
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_WEAPON;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_WEAPON;
 			else if (!Q_stricmp(token, "CHAN_VOICE"))
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_VOICE;
 			else
-				animEvents[curAnimEvent].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
+				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
 
 			//fall through to normal sound
 		case AEV_SOUND: //# animID AEV_SOUND framenum soundpath randomlow randomhi chance to play
@@ -5114,7 +5114,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			{
 				break;
 			}
-			strcpy(stringData, token);
+			strcpy(string_data, token);
 			//get lowest value
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5122,7 +5122,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			lowestVal = atoi(token);
+			lowest_val = atoi(token);
 			//get highest value
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5130,43 +5130,43 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			highestVal = atoi(token);
+			highest_val = atoi(token);
 			//Now precache all the sounds
 			//NOTE: If we can be assured sequential handles, we can store sound indices
 			//		instead of strings, unfortunately, if these sounds were previously
 			//		registered, we cannot be guaranteed sequential indices.  Thus an array
-			if (lowestVal && highestVal)
+			if (lowest_val && highest_val)
 			{
 				//assert(highestVal - lowestVal < MAX_RANDOM_ANIM_SOUNDS);
-				if (highestVal - lowestVal >= MAX_RANDOM_ANIM_SOUNDS)
+				if (highest_val - lowest_val >= MAX_RANDOM_ANIM_SOUNDS)
 				{
-					highestVal = lowestVal + (MAX_RANDOM_ANIM_SOUNDS - 1);
+					highest_val = lowest_val + (MAX_RANDOM_ANIM_SOUNDS - 1);
 				}
-				for (n = lowestVal, num = AED_SOUNDINDEX_START; n <= highestVal && num <= AED_SOUNDINDEX_END; n++, num
+				for (n = lowest_val, num = AED_SOUNDINDEX_START; n <= highest_val && num <= AED_SOUNDINDEX_END; n++, num
 					++)
 				{
-					if (stringData[0] == '*')
+					if (string_data[0] == '*')
 					{
 						//FIXME? Would be nice to make custom sounds work with mpanimevents.
-						animEvents[curAnimEvent].eventData[num] = 0;
+						anim_events[cur_anim_event].eventData[num] = 0;
 					}
 					else
 					{
-						animEvents[curAnimEvent].eventData[num] = trap->S_RegisterSound(va(stringData, n));
+						anim_events[cur_anim_event].eventData[num] = trap->S_RegisterSound(va(string_data, n));
 					}
 				}
-				animEvents[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = num - 1;
+				anim_events[cur_anim_event].eventData[AED_SOUND_NUMRANDOMSNDS] = num - 1;
 			}
 			else
 			{
-				if (stringData[0] == '*')
+				if (string_data[0] == '*')
 				{
 					//FIXME? Would be nice to make custom sounds work with mpanimevents.
-					animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] = 0;
+					anim_events[cur_anim_event].eventData[AED_SOUNDINDEX_START] = 0;
 				}
 				else
 				{
-					animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] = trap->S_RegisterSound(stringData);
+					anim_events[cur_anim_event].eventData[AED_SOUNDINDEX_START] = trap->S_RegisterSound(string_data);
 				}
 #ifndef FINAL_BUILD
 				if (!animEvents[curAnimEvent].eventData[AED_SOUNDINDEX_START] &&
@@ -5175,7 +5175,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 					Com_Printf(S_COLOR_RED "ParseAnimationSndBlock: sound %s does not exist (mpanimevents.cfg %s)!\n", stringData, aeb_filename);
 				}
 #endif
-				animEvents[curAnimEvent].eventData[AED_SOUND_NUMRANDOMSNDS] = 0;
+				anim_events[cur_anim_event].eventData[AED_SOUND_NUMRANDOMSNDS] = 0;
 			}
 			//get probability
 			token = COM_Parse(text_p);
@@ -5184,70 +5184,70 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_SOUND_PROBABILITY] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_SOUND_PROBABILITY] = atoi(token);
 
 			//last part - cheat and check and see if it's a special overridable saber sound we know of...
-			if (!Q_stricmpn("sound/weapons/saber/saberhup", stringData, 28))
+			if (!Q_stricmpn("sound/weapons/saber/saberhup", string_data, 28))
 			{
 				//a saber swing
-				animEvents[curAnimEvent].eventType = AEV_SABER_SWING;
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_saber_num] = 0;
+				anim_events[cur_anim_event].eventType = AEV_SABER_SWING;
+				anim_events[cur_anim_event].eventData[AED_SABER_SWING_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				animEvents[curAnimEvent].eventData[AED_SABER_SWING_PROBABILITY] = animEvents[curAnimEvent].eventData[
+				anim_events[cur_anim_event].eventData[AED_SABER_SWING_PROBABILITY] = anim_events[cur_anim_event].eventData[
 					AED_SOUND_PROBABILITY];
-				if (lowestVal < 4)
+				if (lowest_val < 4)
 				{
 					//fast swing
-					animEvents[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = 0; //SWING_FAST;
+					anim_events[cur_anim_event].eventData[AED_SABER_SWING_TYPE] = 0; //SWING_FAST;
 				}
-				else if (lowestVal < 7)
+				else if (lowest_val < 7)
 				{
 					//medium swing
-					animEvents[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = 1; //SWING_MEDIUM;
+					anim_events[cur_anim_event].eventData[AED_SABER_SWING_TYPE] = 1; //SWING_MEDIUM;
 				}
 				else
 				{
 					//strong swing
-					animEvents[curAnimEvent].eventData[AED_SABER_SWING_TYPE] = 2; //SWING_STRONG;
+					anim_events[cur_anim_event].eventData[AED_SABER_SWING_TYPE] = 2; //SWING_STRONG;
 				}
 			}
-			else if (!Q_stricmpn("sound/weapons/saber/saberspin", stringData, 29))
+			else if (!Q_stricmpn("sound/weapons/saber/saberspin", string_data, 29))
 			{
 				//a saber spin
-				animEvents[curAnimEvent].eventType = AEV_SABER_SPIN;
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_saber_num] = 0;
+				anim_events[cur_anim_event].eventType = AEV_SABER_SPIN;
+				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				animEvents[curAnimEvent].eventData[AED_SABER_SPIN_PROBABILITY] = animEvents[curAnimEvent].eventData[
+				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_PROBABILITY] = anim_events[cur_anim_event].eventData[
 					AED_SOUND_PROBABILITY];
-				if (stringData[29] == 'o')
+				if (string_data[29] == 'o')
 				{
 					//saberspinoff
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 0;
+					anim_events[cur_anim_event].eventData[AED_SABER_SPIN_TYPE] = 0;
 				}
-				else if (stringData[29] == '1')
+				else if (string_data[29] == '1')
 				{
 					//saberspin1
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 2;
+					anim_events[cur_anim_event].eventData[AED_SABER_SPIN_TYPE] = 2;
 				}
-				else if (stringData[29] == '2')
+				else if (string_data[29] == '2')
 				{
 					//saberspin2
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 3;
+					anim_events[cur_anim_event].eventData[AED_SABER_SPIN_TYPE] = 3;
 				}
-				else if (stringData[29] == '3')
+				else if (string_data[29] == '3')
 				{
 					//saberspin3
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 4;
+					anim_events[cur_anim_event].eventData[AED_SABER_SPIN_TYPE] = 4;
 				}
-				else if (stringData[29] == '%')
+				else if (string_data[29] == '%')
 				{
 					//saberspin%d
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 5;
+					anim_events[cur_anim_event].eventData[AED_SABER_SPIN_TYPE] = 5;
 				}
 				else
 				{
 					//just plain saberspin
-					animEvents[curAnimEvent].eventData[AED_SABER_SPIN_TYPE] = 1;
+					anim_events[cur_anim_event].eventData[AED_SABER_SPIN_TYPE] = 1;
 				}
 			}
 			break;
@@ -5258,7 +5258,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			{
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FOOTSTEP_TYPE] = GetIDForString(footstepTypeTable, token);
+			anim_events[cur_anim_event].eventData[AED_FOOTSTEP_TYPE] = GetIDForString(footstepTypeTable, token);
 			//get probability
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5266,7 +5266,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FOOTSTEP_PROBABILITY] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_FOOTSTEP_PROBABILITY] = atoi(token);
 			break;
 		case AEV_EFFECT: //# animID AEV_EFFECT framenum effectpath boltName
 			//get effect index
@@ -5275,7 +5275,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			{
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_EFFECTINDEX] = trap->FX_RegisterEffect(token);
+			anim_events[cur_anim_event].eventData[AED_EFFECTINDEX] = trap->FX_RegisterEffect(token);
 			//get bolt index
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5285,12 +5285,12 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 			if (Q_stricmp("none", token) != 0 && Q_stricmp("NULL", token) != 0)
 			{
 				//actually are specifying a bolt to use
-				if (!animEvents[curAnimEvent].stringData)
+				if (!anim_events[cur_anim_event].stringData)
 				{
 					//eh, whatever. no dynamic stuff, so this will do.
-					animEvents[curAnimEvent].stringData = (char*)BG_Alloc(2048);
+					anim_events[cur_anim_event].stringData = (char*)BG_Alloc(2048);
 				}
-				strcpy(animEvents[curAnimEvent].stringData, token);
+				strcpy(anim_events[cur_anim_event].stringData, token);
 			}
 			//NOTE: this string will later be used to add a bolt and store the index, as below:
 			//animEvent->eventData[AED_BOLTINDEX] = trap->G2API_AddBolt( &cent->gent->ghoul2[cent->gent->playerModel], animEvent->stringData );
@@ -5301,7 +5301,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_EFFECT_PROBABILITY] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_EFFECT_PROBABILITY] = atoi(token);
 			break;
 		case AEV_FIRE: //# animID AEV_FIRE framenum altfire chance to fire
 			//get altfire
@@ -5311,7 +5311,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FIRE_ALT] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_FIRE_ALT] = atoi(token);
 			//get probability
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5319,7 +5319,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_FIRE_PROBABILITY] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_FIRE_PROBABILITY] = atoi(token);
 			break;
 		case AEV_MOVE: //# animID AEV_MOVE framenum forwardpush rightpush uppush
 			//get forward push
@@ -5329,7 +5329,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_MOVE_FWD] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_MOVE_FWD] = atoi(token);
 			//get right push
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5337,7 +5337,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_MOVE_RT] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_MOVE_RT] = atoi(token);
 			//get upwards push
 			token = COM_Parse(text_p);
 			if (!token)
@@ -5345,16 +5345,16 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* animEvents, c
 				//WARNING!  BAD TABLE!
 				break;
 			}
-			animEvents[curAnimEvent].eventData[AED_MOVE_UP] = atoi(token);
+			anim_events[cur_anim_event].eventData[AED_MOVE_UP] = atoi(token);
 			break;
 		default: //unknown?
 			SkipRestOfLine(text_p);
 			continue;
 		}
 
-		if (curAnimEvent == lastAnimEvent)
+		if (cur_anim_event == last_anim_event)
 		{
-			lastAnimEvent++;
+			last_anim_event++;
 		}
 	}
 }
@@ -5374,48 +5374,48 @@ bgLoadedEvents_t bgAllEvents[MAX_ANIM_FILES];
 int bgNumAnimEvents = 1;
 static int bg_animParseIncluding = 0;
 
-int bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int eventFileIndex)
+int bg_parse_animation_evt_file(const char* as_filename, const int anim_file_index, const int event_file_index)
 {
 	const char* text_p;
 	char text[80000];
 	char sfilename[MAX_QPATH];
 	fileHandle_t f;
-	int i, upper_i, lower_i;
-	int usedIndex = -1;
-	int forcedIndex;
+	int i;
+	int used_index = -1;
+	int forced_index;
 
-	assert(animFileIndex < MAX_ANIM_FILES);
-	assert(eventFileIndex < MAX_ANIM_FILES);
+	assert(anim_file_index < MAX_ANIM_FILES);
+	assert(event_file_index < MAX_ANIM_FILES);
 
-	if (eventFileIndex == -1)
+	if (event_file_index == -1)
 	{
-		forcedIndex = 0;
+		forced_index = 0;
 	}
 	else
 	{
-		forcedIndex = eventFileIndex;
+		forced_index = event_file_index;
 	}
 
 	if (bg_animParseIncluding <= 0)
 	{
 		//if we should be parsing an included file, skip this part
-		if (bgAllEvents[forcedIndex].eventsParsed)
+		if (bgAllEvents[forced_index].eventsParsed)
 		{
 			//already cached this one
-			return forcedIndex;
+			return forced_index;
 		}
 	}
 
-	animevent_t* legsAnimEvents = bgAllEvents[forcedIndex].legsAnimEvents;
-	animevent_t* torsoAnimEvents = bgAllEvents[forcedIndex].torsoAnimEvents;
-	const animation_t* animations = bgAllAnims[animFileIndex].anims;
+	animevent_t* legs_anim_events = bgAllEvents[forced_index].legsAnimEvents;
+	animevent_t* torso_anim_events = bgAllEvents[forced_index].torsoAnimEvents;
+	const animation_t* animations = bgAllAnims[anim_file_index].anims;
 
 	if (bg_animParseIncluding <= 0)
 	{
 		//if we should be parsing an included file, skip this part
 		//Go through and see if this filename is already in the table.
 		i = 0;
-		while (i < bgNumAnimEvents && forcedIndex != 0)
+		while (i < bgNumAnimEvents && forced_index != 0)
 		{
 			if (!Q_stricmp(as_filename, bgAllEvents[i].filename))
 			{
@@ -5436,25 +5436,25 @@ int bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int 
 		for (i = 0; i < MAX_ANIM_EVENTS; i++)
 		{
 			//Type of event
-			torsoAnimEvents[i].eventType = AEV_NONE;
-			legsAnimEvents[i].eventType = AEV_NONE;
+			torso_anim_events[i].eventType = AEV_NONE;
+			legs_anim_events[i].eventType = AEV_NONE;
 			//Frame to play event on
-			torsoAnimEvents[i].keyFrame = -1;
-			legsAnimEvents[i].keyFrame = -1;
+			torso_anim_events[i].keyFrame = -1;
+			legs_anim_events[i].keyFrame = -1;
 			//we allow storage of one string, temporarily (in case we have to look up an index later, then make sure to set stringData to NULL so we only do the look-up once)
-			torsoAnimEvents[i].stringData = NULL;
-			legsAnimEvents[i].stringData = NULL;
+			torso_anim_events[i].stringData = NULL;
+			legs_anim_events[i].stringData = NULL;
 			//Unique IDs, can be soundIndex of sound file to play OR effect index or footstep type, etc.
 			for (int j = 0; j < AED_ARRAY_SIZE; j++)
 			{
-				torsoAnimEvents[i].eventData[j] = -1;
-				legsAnimEvents[i].eventData[j] = -1;
+				torso_anim_events[i].eventData[j] = -1;
+				legs_anim_events[i].eventData[j] = -1;
 			}
-			torsoAnimEvents[i].ambtime = 0;
-			legsAnimEvents[i].ambtime = 0;
+			torso_anim_events[i].ambtime = 0;
+			legs_anim_events[i].ambtime = 0;
 
-			torsoAnimEvents[i].ambrandom = 0;
-			legsAnimEvents[i].ambrandom = 0;
+			torso_anim_events[i].ambrandom = 0;
+			legs_anim_events[i].ambrandom = 0;
 		}
 	}
 
@@ -5482,8 +5482,6 @@ int bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int 
 
 	// parse the text
 	text_p = text;
-	upper_i = 0;
-	lower_i = 0;
 
 	COM_BeginParseSession("bg_parse_animation_evt_file");
 
@@ -5503,39 +5501,39 @@ int bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int 
 			const char* include_filename = COM_Parse(&text_p);
 			if (include_filename != NULL)
 			{
-				char fullIPath[MAX_QPATH];
-				strcpy(fullIPath, va("models/players/%s/", include_filename));
+				char full_i_path[MAX_QPATH];
+				strcpy(full_i_path, va("models/players/%s/", include_filename));
 				bg_animParseIncluding++;
-				bg_parse_animation_evt_file(fullIPath, animFileIndex, forcedIndex);
+				bg_parse_animation_evt_file(full_i_path, anim_file_index, forced_index);
 				bg_animParseIncluding--;
 			}
 		}
 
 		if (!Q_stricmp(token, "UPPEREVENTS")) // A batch of upper sounds
 		{
-			ParseAnimationEvtBlock(as_filename, torsoAnimEvents, animations, &upper_i, &text_p);
+			ParseAnimationEvtBlock(as_filename, torso_anim_events, animations, &text_p);
 		}
 		else if (!Q_stricmp(token, "LOWEREVENTS")) // A batch of lower sounds
 		{
-			ParseAnimationEvtBlock(as_filename, legsAnimEvents, animations, &lower_i, &text_p);
+			ParseAnimationEvtBlock(as_filename, legs_anim_events, animations, &text_p);
 		}
 	}
 
-	usedIndex = forcedIndex;
+	used_index = forced_index;
 fin:
 	//Mark this anim set so that we know we tried to load he sounds, don't care if the load failed
 	if (bg_animParseIncluding <= 0)
 	{
 		//if we should be parsing an included file, skip this part
-		bgAllEvents[forcedIndex].eventsParsed = qtrue;
-		strcpy(bgAllEvents[forcedIndex].filename, as_filename);
-		if (forcedIndex)
+		bgAllEvents[forced_index].eventsParsed = qtrue;
+		strcpy(bgAllEvents[forced_index].filename, as_filename);
+		if (forced_index)
 		{
 			bgNumAnimEvents++;
 		}
 	}
 
-	return usedIndex;
+	return used_index;
 }
 #endif
 
@@ -5548,17 +5546,17 @@ models/players/visor/animation.cfg, etc
 
 ======================
 */
-int bg_parse_animation_file(const char* filename, animation_t* animset, const qboolean is_humanoid)
+int bg_parse_animation_file(const char* filename, animation_t* anim_set, const qboolean is_humanoid)
 {
 	char* text_p;
 	int i;
 	int used_index;
 	int next_index = bgNumAllAnims;
-	qboolean dynAlloc = qfalse;
-	static char BGPAFtext[120000];
+	qboolean dyn_alloc = qfalse;
+	static char bgpa_ftext[120000];
 	fileHandle_t f;
 
-	BGPAFtext[0] = '\0';
+	bgpa_ftext[0] = '\0';
 
 	if (!is_humanoid)
 	{
@@ -5568,30 +5566,30 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 			//see if it's been loaded already
 			if (!Q_stricmp(bgAllAnims[i].filename, filename))
 			{
-				animset = bgAllAnims[i].anims;
+				bgAllAnims[i].anims;
 				return i; //alright, we already have it.
 			}
 			i++;
 		}
 
 		//Looks like it has not yet been loaded. Allocate space for the anim set if we need to, and continue along.
-		if (!animset)
+		if (!anim_set)
 		{
 			if (strstr(filename, "players/_humanoid/"))
 			{
 				//then use the static humanoid set.
-				animset = bgHumanoidAnimations;
+				anim_set = bgHumanoidAnimations;
 				next_index = 0;
 			}
 			else if (strstr(filename, "players/rockettrooper/"))
 			{
 				//rockettrooper always index 1
 				next_index = 1;
-				animset = BG_AnimsetAlloc();
-				dynAlloc = qtrue;
+				anim_set = BG_AnimsetAlloc();
+				dyn_alloc = qtrue;
 				//so we know to free this memory in case we have to return early. Don't want any leaks.
 
-				if (!animset)
+				if (!anim_set)
 				{
 					assert(!"Anim set alloc failed!");
 					return -1;
@@ -5599,11 +5597,11 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 			}
 			else
 			{
-				animset = BG_AnimsetAlloc();
-				dynAlloc = qtrue;
+				anim_set = BG_AnimsetAlloc();
+				dyn_alloc = qtrue;
 				//so we know to free this memory in case we have to return early. Don't want any leaks.
 
-				if (!animset)
+				if (!anim_set)
 				{
 					assert(!"Anim set alloc failed!");
 					return -1;
@@ -5614,7 +5612,7 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 #ifdef _DEBUG
 	else
 	{
-		assert(animset);
+		assert(anim_set);
 	}
 #endif
 
@@ -5623,12 +5621,12 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 	{
 		//rww - We are always using the same animation config now. So only load it once.
 		const int len = trap->FS_Open(filename, &f, FS_READ);
-		if (len <= 0 || len >= sizeof BGPAFtext - 1)
+		if (len <= 0 || len >= sizeof bgpa_ftext - 1)
 		{
 			trap->FS_Close(f);
-			if (dynAlloc)
+			if (dyn_alloc)
 			{
-				BG_AnimsetFree(animset);
+				BG_AnimsetFree();
 			}
 			if (len > 0)
 			{
@@ -5637,31 +5635,31 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 			return -1;
 		}
 
-		trap->FS_Read(BGPAFtext, len, f);
+		trap->FS_Read(bgpa_ftext, len, f);
 
-		BGPAFtext[len] = 0;
+		bgpa_ftext[len] = 0;
 		trap->FS_Close(f);
 	}
 	else
 	{
-		if (dynAlloc)
+		if (dyn_alloc)
 		{
 			assert(!"Should not have allocated dynamically for humanoid");
-			BG_AnimsetFree(animset);
+			BG_AnimsetFree();
 		}
 		return 0; //humanoid index
 	}
 
 	// parse the text
-	text_p = BGPAFtext;
+	text_p = bgpa_ftext;
 
 	//initialize anim array so that from 0 to MAX_ANIMATIONS, set default values of 0 1 0 100
 	for (i = 0; i < MAX_ANIMATIONS; i++)
 	{
-		animset[i].firstFrame = 0;
-		animset[i].numFrames = 0;
-		animset[i].loopFrames = -1;
-		animset[i].frameLerp = 100;
+		anim_set[i].firstFrame = 0;
+		anim_set[i].numFrames = 0;
+		anim_set[i].loopFrames = -1;
+		anim_set[i].frameLerp = 100;
 	}
 
 	// read information for each frame
@@ -5695,21 +5693,21 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 		{
 			break;
 		}
-		animset[anim_num].firstFrame = atoi(token);
+		anim_set[anim_num].firstFrame = atoi(token);
 
 		token = COM_Parse(&text_p);
 		if (!token)
 		{
 			break;
 		}
-		animset[anim_num].numFrames = atoi(token);
+		anim_set[anim_num].numFrames = atoi(token);
 
 		token = COM_Parse(&text_p);
 		if (!token)
 		{
 			break;
 		}
-		animset[anim_num].loopFrames = atoi(token);
+		anim_set[anim_num].loopFrames = atoi(token);
 
 		token = COM_Parse(&text_p);
 		if (!token)
@@ -5724,7 +5722,7 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 		if (fps < 0)
 		{
 			//backwards
-			animset[anim_num].frameLerp = floor(1000.0f / fps);
+			anim_set[anim_num].frameLerp = floor(1000.0f / fps);
 
 #ifdef __SABER_ANIMATION_SMOOTH__
 			{
@@ -5735,18 +5733,18 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 #ifdef __NO_SABER_SPINAROUND__
 					if (saberMoveData[x].animToUse + 77 * 4 == anim_num) // SS_TAVION
 					{
-						animset[anim_num].frameLerp *= 1.2;
+						anim_set[anim_num].frameLerp *= 1.2;
 						break;
 					}
 #endif
 					if (saberMoveData[x].animToUse + 77 * 5 == anim_num) // SS_DUAL
 					{
-						animset[anim_num].frameLerp *= 1.1;
+						anim_set[anim_num].frameLerp *= 1.1;
 						break;
 					}
 					if (saberMoveData[x].animToUse + 77 * 6 == anim_num) // SS_STAFF
 					{
-						animset[anim_num].frameLerp *= 1.1;
+						anim_set[anim_num].frameLerp *= 1.1;
 						break;
 					}
 				}
@@ -5755,7 +5753,7 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 		}
 		else
 		{
-			animset[anim_num].frameLerp = ceil(1000.0f / fps);
+			anim_set[anim_num].frameLerp = ceil(1000.0f / fps);
 
 #ifdef __SABER_ANIMATION_SMOOTH__
 			{
@@ -5766,18 +5764,18 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 #ifdef __NO_SABER_SPINAROUND__
 					if (saberMoveData[x].animToUse + 77 * 4 == anim_num) // SS_TAVION
 					{
-						animset[anim_num].frameLerp *= 1.2;
+						anim_set[anim_num].frameLerp *= 1.2;
 						break;
 					}
 #endif
 					if (saberMoveData[x].animToUse + 77 * 5 == anim_num) // SS_DUAL
 					{
-						animset[anim_num].frameLerp *= 1.1;
+						anim_set[anim_num].frameLerp *= 1.1;
 						break;
 					}
 					if (saberMoveData[x].animToUse + 77 * 6 == anim_num) // SS_STAFF
 					{
-						animset[anim_num].frameLerp *= 1.1;
+						anim_set[anim_num].frameLerp *= 1.1;
 						break;
 					}
 				}
@@ -5792,7 +5790,7 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 
 	if (is_humanoid)
 	{
-		bgAllAnims[0].anims = animset;
+		bgAllAnims[0].anims = anim_set;
 		strcpy(bgAllAnims[0].filename, filename);
 		BGPAFtextLoaded = qtrue;
 
@@ -5800,7 +5798,7 @@ int bg_parse_animation_file(const char* filename, animation_t* animset, const qb
 	}
 	else
 	{
-		bgAllAnims[next_index].anims = animset;
+		bgAllAnims[next_index].anims = anim_set;
 		strcpy(bgAllAnims[next_index].filename, filename);
 
 		used_index = bgNumAllAnims;
@@ -6012,7 +6010,7 @@ void PM_SetTorsoAnimTimer(const int time)
 }
 
 void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level, const int weapon, const int anim,
-	float* anim_speed, const int broken, const int fatigued)
+	float* anim_speed, const int fatigued)
 {
 	char buf[128];
 
@@ -6174,9 +6172,9 @@ PM_SetAnimFinal
 qboolean PM_RunningAnim(int anim);
 qboolean PM_WalkingAnim(int anim);
 
-void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int setAnimParts, const int anim, const int setAnimFlags)
+void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int set_anim_parts, const int anim, const int set_anim_flags)
 {
-	float editAnimSpeed = 1;
+	float edit_anim_speed = 1;
 
 	if (!animations)
 	{
@@ -6186,43 +6184,42 @@ void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int
 	assert(anim > -1);
 	assert(animations[anim].firstFrame > 0 || animations[anim].numFrames > 0);
 
-	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, anim, &editAnimSpeed, ps->brokenLimbs,
-		ps->userInt3);
+	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, anim, &edit_anim_speed, ps->userInt3);
 
 	// Set torso anim
-	if (setAnimParts & SETANIM_TORSO)
+	if (set_anim_parts & SETANIM_TORSO)
 	{
 		// Don't reset if it's already running the anim
-		if (ps->torsoAnim == anim && !(setAnimFlags & SETANIM_FLAG_RESTART) && !(setAnimFlags & SETANIM_FLAG_PACE))
+		if (ps->torsoAnim == anim && !(set_anim_flags & SETANIM_FLAG_RESTART) && !(set_anim_flags & SETANIM_FLAG_PACE))
 		{
 			goto setAnimLegs;
 		}
 		// or if a more important anim is running
 		if ((ps->torsoTimer > 0 || ps->torsoTimer == -1) &&
-			(setAnimFlags & SETANIM_FLAG_PACE && ps->torsoAnim == anim
-				|| !(setAnimFlags & SETANIM_FLAG_OVERRIDE)))
+			(set_anim_flags & SETANIM_FLAG_PACE && ps->torsoAnim == anim
+				|| !(set_anim_flags & SETANIM_FLAG_OVERRIDE)))
 		{
 			goto setAnimLegs;
 		}
 
 		BG_StartTorsoAnim(ps, anim);
 
-		if (setAnimFlags & SETANIM_FLAG_HOLD)
+		if (set_anim_flags & SETANIM_FLAG_HOLD)
 		{
-			if (setAnimFlags & SETANIM_FLAG_HOLDLESS)
+			if (set_anim_flags & SETANIM_FLAG_HOLDLESS)
 			{
 				// Make sure to only wait in full 1/20 sec server frame intervals.
-				if (editAnimSpeed > 0)
+				if (edit_anim_speed > 0)
 				{
 					if (animations[anim].numFrames < 2)
 					{
 						//single frame animations should just run with one frame worth of animation.
-						ps->torsoTimer = fabs(animations[anim].frameLerp) * (1 / editAnimSpeed);
+						ps->torsoTimer = fabs(animations[anim].frameLerp) * (1 / edit_anim_speed);
 					}
 					else
 					{
 						ps->torsoTimer = (animations[anim].numFrames - 1) * fabs(animations[anim].frameLerp) * (1 /
-							editAnimSpeed);
+							edit_anim_speed);
 					}
 
 					if (ps->torsoTimer > 1)
@@ -6241,29 +6238,29 @@ void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int
 
 setAnimLegs:
 	// Set legs anim
-	if (setAnimParts & SETANIM_LEGS)
+	if (set_anim_parts & SETANIM_LEGS)
 	{
 		// Don't reset if it's already running the anim
-		if (ps->legsAnim == anim && !(setAnimFlags & SETANIM_FLAG_RESTART) && !(setAnimFlags & SETANIM_FLAG_PACE))
+		if (ps->legsAnim == anim && !(set_anim_flags & SETANIM_FLAG_RESTART) && !(set_anim_flags & SETANIM_FLAG_PACE))
 		{
 			goto setAnimDone;
 		}
 		// or if a more important anim is running
-		if ((ps->legsTimer > 0 || ps->legsTimer == -1) && (setAnimFlags & SETANIM_FLAG_PACE && ps->legsAnim ==
+		if ((ps->legsTimer > 0 || ps->legsTimer == -1) && (set_anim_flags & SETANIM_FLAG_PACE && ps->legsAnim ==
 			anim
-			|| !(setAnimFlags & SETANIM_FLAG_OVERRIDE)))
+			|| !(set_anim_flags & SETANIM_FLAG_OVERRIDE)))
 		{
 			goto setAnimDone;
 		}
 
 		BG_StartLegsAnim(ps, anim);
 
-		if (setAnimFlags & SETANIM_FLAG_HOLD)
+		if (set_anim_flags & SETANIM_FLAG_HOLD)
 		{
-			if (setAnimFlags & SETANIM_FLAG_HOLDLESS)
+			if (set_anim_flags & SETANIM_FLAG_HOLDLESS)
 			{
 				int dur = (animations[anim].numFrames - 1) * fabs(animations[anim].frameLerp);
-				const int speedDif = dur - dur * editAnimSpeed;
+				const int speedDif = dur - dur * edit_anim_speed;
 				dur += speedDif;
 				if (dur > 1)
 				{
@@ -6290,16 +6287,15 @@ setAnimLegs:
 		}
 	}
 
-setAnimDone:
-	return;
+setAnimDone:;
 }
 
-void PM_SetAnimFinal(const int setAnimParts, const int anim, const int setAnimFlags)
+void PM_SetAnimFinal(const int set_anim_parts, const int anim, const int set_anim_flags)
 {
-	BG_SetAnimFinal(pm->ps, pm->animations, setAnimParts, anim, setAnimFlags);
+	BG_SetAnimFinal(pm->ps, pm->animations, set_anim_parts, anim, set_anim_flags);
 }
 
-qboolean BG_HasAnimation(const int animIndex, const int animation)
+qboolean BG_HasAnimation(const int anim_index, const int animation)
 {
 	//must be a valid anim number
 	if (animation < 0 || animation >= MAX_ANIMATIONS)
@@ -6308,10 +6304,10 @@ qboolean BG_HasAnimation(const int animIndex, const int animation)
 	}
 
 	//Must have a file index entry
-	if (animIndex < 0 || animIndex > bgNumAllAnims)
+	if (anim_index < 0 || anim_index > bgNumAllAnims)
 		return qfalse;
 
-	const animation_t* animations = bgAllAnims[animIndex].anims;
+	const animation_t* animations = bgAllAnims[anim_index].anims;
 
 	//No frames, no anim
 	if (animations[animation].numFrames == 0)
@@ -6321,16 +6317,17 @@ qboolean BG_HasAnimation(const int animIndex, const int animation)
 	return qtrue;
 }
 
-int PM_PickAnim(const int animIndex, const int minAnim, const int maxAnim)
+int PM_PickAnim(const int anim_index, const int min_anim, const int max_anim)
 {
 	int anim;
 	int count = 0;
 
 	do
 	{
-		anim = Q_irand(minAnim, maxAnim);
+		anim = Q_irand(min_anim, max_anim);
 		count++;
-	} while (!BG_HasAnimation(animIndex, anim) && count < 1000);
+	}
+	while (!BG_HasAnimation(anim_index, anim) && count < 1000);
 
 	if (count == 1000)
 	{
@@ -6345,7 +6342,7 @@ int PM_PickAnim(const int animIndex, const int minAnim, const int maxAnim)
 //of a pmove too so I have ported it to true BGishness.
 //Please do not reference pm in this function or any functions that it calls,
 //or I will cry. -rww
-void BG_SetAnim(playerState_t* ps, const animation_t* animations, int setAnimParts, int anim, const int setAnimFlags)
+void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim, const int set_anim_flags)
 {
 	if (!animations)
 	{
@@ -6377,7 +6374,7 @@ void BG_SetAnim(playerState_t* ps, const animation_t* animations, int setAnimPar
 			&& !PM_LockedAnim(anim))
 		{
 			//nothing can override these special anims
-			setAnimParts &= ~SETANIM_TORSO;
+			set_anim_parts &= ~SETANIM_TORSO;
 		}
 
 		if (ps->legsTimer
@@ -6385,56 +6382,56 @@ void BG_SetAnim(playerState_t* ps, const animation_t* animations, int setAnimPar
 			&& !PM_LockedAnim(anim))
 		{
 			//nothing can override these special anims
-			setAnimParts &= ~SETANIM_LEGS;
+			set_anim_parts &= ~SETANIM_LEGS;
 		}
 	}
 
-	if (setAnimFlags & SETANIM_FLAG_OVERRIDE)
+	if (set_anim_flags & SETANIM_FLAG_OVERRIDE)
 	{
-		if (setAnimParts & SETANIM_TORSO)
+		if (set_anim_parts & SETANIM_TORSO)
 		{
-			if (setAnimFlags & SETANIM_FLAG_RESTART || ps->torsoAnim != anim)
+			if (set_anim_flags & SETANIM_FLAG_RESTART || ps->torsoAnim != anim)
 			{
 				BG_SetTorsoAnimTimer(ps, 0);
 			}
 		}
-		if (setAnimParts & SETANIM_LEGS)
+		if (set_anim_parts & SETANIM_LEGS)
 		{
-			if (setAnimFlags & SETANIM_FLAG_RESTART || ps->legsAnim != anim)
+			if (set_anim_flags & SETANIM_FLAG_RESTART || ps->legsAnim != anim)
 			{
 				BG_SetLegsAnimTimer(ps, 0);
 			}
 		}
 	}
 
-	BG_SetAnimFinal(ps, animations, setAnimParts, anim, setAnimFlags);
+	BG_SetAnimFinal(ps, animations, set_anim_parts, anim, set_anim_flags);
 }
 
-void PM_SetAnim(const int setAnimParts, const int anim, const int setAnimFlags)
+void PM_SetAnim(const int setAnimParts, const int anim, const int set_anim_flags)
 {
-	BG_SetAnim(pm->ps, pm->animations, setAnimParts, anim, setAnimFlags);
+	BG_SetAnim(pm->ps, pm->animations, setAnimParts, anim, set_anim_flags);
 }
 
-float bg_get_torso_anim_point(const playerState_t* ps, int AnimIndex)
+float bg_get_torso_anim_point(const playerState_t* ps, const int anim_index)
 {
 	float attack_anim_length = 0;
 	float anim_speed_factor = 1.0f;
 
 	//Be sure to scale by the proper anim speed just as if we were going to play the animation
 	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->torsoAnim, &anim_speed_factor,
-		ps->brokenLimbs, ps->userInt3);
+		ps->userInt3);
 
 	if (anim_speed_factor > 0)
 	{
-		if (bgAllAnims[AnimIndex].anims[ps->torsoAnim].numFrames < 2)
+		if (bgAllAnims[anim_index].anims[ps->torsoAnim].numFrames < 2)
 		{
 			//single frame animations should just run with one frame worth of animation.
-			attack_anim_length = fabs(bgAllAnims[AnimIndex].anims[ps->torsoAnim].frameLerp) * (1 / anim_speed_factor);
+			attack_anim_length = fabs(bgAllAnims[anim_index].anims[ps->torsoAnim].frameLerp) * (1 / anim_speed_factor);
 		}
 		else
 		{
-			attack_anim_length = (bgAllAnims[AnimIndex].anims[ps->torsoAnim].numFrames - 1) * fabs(
-				bgAllAnims[AnimIndex].anims[ps->torsoAnim].frameLerp) * (1 / anim_speed_factor);
+			attack_anim_length = (bgAllAnims[anim_index].anims[ps->torsoAnim].numFrames - 1) * fabs(
+				bgAllAnims[anim_index].anims[ps->torsoAnim].frameLerp) * (1 / anim_speed_factor);
 		}
 
 		if (attack_anim_length > 1)
@@ -6451,38 +6448,38 @@ float bg_get_torso_anim_point(const playerState_t* ps, int AnimIndex)
 	return anim_percentage;
 }
 
-float BG_GetLegsAnimPoint(const playerState_t* ps, const int AnimIndex)
+float BG_GetLegsAnimPoint(const playerState_t* ps, const int anim_index)
 {
-	float attackAnimLength = 0;
-	float animSpeedFactor = 1.0f;
+	float attack_anim_length = 0;
+	float anim_speed_factor = 1.0f;
 
 	//Be sure to scale by the proper anim speed just as if we were going to play the animation
-	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->legsAnim, &animSpeedFactor,
-		ps->brokenLimbs, ps->userInt3);
+	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->legsAnim, &anim_speed_factor,
+		ps->userInt3);
 
-	if (animSpeedFactor > 0)
+	if (anim_speed_factor > 0)
 	{
-		if (bgAllAnims[AnimIndex].anims[ps->legsAnim].numFrames < 2)
+		if (bgAllAnims[anim_index].anims[ps->legsAnim].numFrames < 2)
 		{
 			//single frame animations should just run with one frame worth of animation.
-			attackAnimLength = fabs(bgAllAnims[AnimIndex].anims[ps->legsAnim].frameLerp) * (1 / animSpeedFactor);
+			attack_anim_length = fabs(bgAllAnims[anim_index].anims[ps->legsAnim].frameLerp) * (1 / anim_speed_factor);
 		}
 		else
 		{
-			attackAnimLength = (bgAllAnims[AnimIndex].anims[ps->legsAnim].numFrames - 1) * fabs(
-				bgAllAnims[AnimIndex].anims[ps->legsAnim].frameLerp) * (1 / animSpeedFactor);
+			attack_anim_length = (bgAllAnims[anim_index].anims[ps->legsAnim].numFrames - 1) * fabs(
+				bgAllAnims[anim_index].anims[ps->legsAnim].frameLerp) * (1 / anim_speed_factor);
 		}
 
-		if (attackAnimLength > 1)
+		if (attack_anim_length > 1)
 		{
 			//set the timer to be one unit of time less than the actual animation time so the timer will expire on the frame at which the animation finishes.
-			attackAnimLength--;
+			attack_anim_length--;
 		}
 	}
 
 	const float current_point = ps->legsTimer;
 
-	const float anim_percentage = current_point / attackAnimLength;
+	const float anim_percentage = current_point / attack_anim_length;
 
 	return anim_percentage;
 }

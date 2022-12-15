@@ -64,7 +64,7 @@ qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_nu
 qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num);
 void WP_SaberAddG2Model(gentity_t* saberent, const char* saber_model, qhandle_t saber_skin);
 void WP_SaberRemoveG2Model(gentity_t* saberent);
-extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int AnimIndex);
+extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int anim_index);
 qboolean walk_check(const gentity_t* self);
 qboolean saberKnockOutOfHand(gentity_t* saberent, gentity_t* saber_owner, vec3_t velocity);
 void AnimateKnockdown(gentity_t* self, gentity_t* inflictor);
@@ -76,7 +76,7 @@ extern qboolean G_TransitionParry(const gentity_t* self);
 qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 qboolean wp_saber_block_non_random_missile(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern qboolean g_accurate_blocking(const gentity_t* self, const gentity_t* attacker, vec3_t hit_loc);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_StandingAnim(int anim);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
@@ -128,12 +128,12 @@ extern qboolean PM_Dyinganim(const playerState_t* ps);
 extern int SabBeh_AnimateMassiveDualSlowBounce(int anim);
 extern int SabBeh_AnimateMassiveStaffSlowBounce(int anim);
 extern qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker);
-extern qboolean BG_SaberInFullDamageMove(const playerState_t* ps, int AnimIndex);
+extern qboolean BG_SaberInFullDamageMove(const playerState_t* ps, int anim_index);
 extern void G_ClearEnemy(gentity_t* self);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 qboolean WP_SaberMBlock(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 qboolean WP_SaberParry(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
 qboolean WP_SaberBlockedBounceBlock(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
 qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num);
@@ -152,8 +152,8 @@ extern qboolean PM_RestAnim(int anim);
 extern qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, int saber_num, int blade_num, vec3_t hit_loc);
 extern qboolean BG_HopAnim(int anim);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
-extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saberMove);
-extern qboolean PM_SaberInBackAttack(saberMoveName_t saberMove);
+extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saber_move);
+extern qboolean PM_SaberInBackAttack(saberMoveName_t saber_move);
 
 float VectorBlockDistance(vec3_t v1, vec3_t v2)
 {

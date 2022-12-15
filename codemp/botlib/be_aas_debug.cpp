@@ -561,7 +561,8 @@ void AAS_PrintTravelType(int traveltype)
 //===========================================================================
 void AAS_DrawArrow(vec3_t start, vec3_t end, int linecolor, int arrowcolor)
 {
-	vec3_t dir, cross, p1, p2, up = { 0, 0, 1 };
+	vec3_t dir, cross, p1, p2;
+	constexpr vec3_t up = { 0, 0, 1 };
 
 	VectorSubtract(end, start, dir);
 	VectorNormalize(dir);

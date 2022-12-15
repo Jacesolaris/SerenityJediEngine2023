@@ -103,7 +103,7 @@ extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 #endif
 
-extern qboolean BG_UnrestrainedPitchRoll(playerState_t* ps, Vehicle_t* pVeh);
+extern qboolean BG_UnrestrainedPitchRoll();
 
 void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend)
 {
@@ -1879,7 +1879,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 	SetClientViewAngle(parent, p_veh->m_vOrientation);
 	if (p_veh->m_pPilot)
 	{
-		if (!BG_UnrestrainedPitchRoll(&p_veh->m_pPilot->client->ps, p_veh))
+		if (!BG_UnrestrainedPitchRoll())
 		{
 			SetClientViewAngle(p_veh->m_pPilot, p_veh->m_vOrientation);
 		}

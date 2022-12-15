@@ -59,7 +59,7 @@ extern void Player_CheckBurn(const gentity_t* self);
 extern void player_Burn(const gentity_t* self);
 
 extern gitem_t* BG_FindItemForAmmo(ammo_t ammo);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 
 extern void ForceThrow(gentity_t* self, qboolean pull);
 extern void ForceLightning(gentity_t* self);
@@ -156,7 +156,7 @@ void npc_rosh_dark_precache(void)
 	G_EffectIndex("force/kothos_beam.efx");
 }
 
-void Jedi_ClearTimers(gentity_t* ent)
+void Jedi_ClearTimers(const gentity_t* ent)
 {
 	TIMER_Set(ent, "roamTime", 0);
 	TIMER_Set(ent, "chatter", 0);
@@ -4286,7 +4286,7 @@ static qboolean jedi_strafe(int strafe_time_min, int strafe_time_max, int next_s
 	return qfalse;
 }
 
-extern int PM_AnimLength(int index, animNumber_t anim);
+extern int PM_AnimLength(const animNumber_t anim);
 
 evasionType_t Jedi_CheckFlipEvasions(gentity_t* self, float rightdot, float zdiff)
 {
@@ -4317,7 +4317,7 @@ evasionType_t Jedi_CheckFlipEvasions(gentity_t* self, float rightdot, float zdif
 
 		AngleVectors(fwdAngles, NULL, right, NULL);
 
-		const float animLength = PM_AnimLength(self->localAnimIndex, self->client->ps.legsAnim);
+		const float animLength = PM_AnimLength(self->client->ps.legsAnim);
 		if (self->client->ps.legsAnim == BOTH_WALL_RUN_LEFT && rightdot < 0)
 		{
 			//I'm running on a wall to my left and the attack is on the left

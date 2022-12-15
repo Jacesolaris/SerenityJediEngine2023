@@ -1211,7 +1211,7 @@ ClientTimerActions
 Actions that happen once a second
 ==================
 */
-extern void WP_SaberFatigueRegenerate(int overrideAmt);
+extern void WP_SaberFatigueRegenerate(int override_amt);
 void ClientTimerActions(gentity_t* ent, int msec)
 {
 	gclient_t* client = ent->client;
@@ -2631,7 +2631,7 @@ void CancelReload(gentity_t* ent);
 void G_SetTauntAnim(gentity_t* ent, int taunt)
 {
 	const saberInfo_t* saber1 = BG_MySaber(ent->client_num, 0);
-	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean holding_block = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	// dead clients dont get to spam taunt
@@ -2665,7 +2665,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 		}
 	}
 
-	if (HoldingBlock || is_holding_block_button(ent))
+	if (holding_block || is_holding_block_button(ent))
 	{
 		return;
 	}

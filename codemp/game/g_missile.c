@@ -45,7 +45,7 @@ float rand_float(float min, float max);
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern void Jedi_Decloak(gentity_t* self);
 extern qboolean FighterIsLanded(const Vehicle_t* pVeh, const playerState_t* parentPS);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern float VectorDistance(vec3_t v1, vec3_t v2);
 qboolean PM_SaberInStart(int move);
 extern qboolean PM_SaberInReturn(int move);
@@ -575,7 +575,7 @@ void g_bounce_projectile(vec3_t start, vec3_t impact, vec3_t dir, vec3_t endout)
 }
 
 //-----------------------------------------------------------------------------
-gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire)
+gentity_t* create_missile(vec3_t org, vec3_t dir, const float vel, const int life, gentity_t* owner, const qboolean alt_fire)
 {
 	gentity_t* missile = G_Spawn();
 
@@ -586,7 +586,7 @@ gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t
 	missile->parent = owner;
 	missile->r.ownerNum = owner->s.number;
 
-	if (altFire)
+	if (alt_fire)
 	{
 		missile->s.eFlags |= EF_ALT_FIRING;
 	}
@@ -604,13 +604,12 @@ gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t
 	return missile;
 }
 
-void g_missile_bounce_effect(gentity_t* ent, vec3_t org, vec3_t dir, qboolean hitWorld)
+void g_missile_bounce_effect(gentity_t* ent, vec3_t org, vec3_t dir, const qboolean hit_world)
 {
-	//
 	switch (ent->s.weapon)
 	{
 	case WP_BOWCASTER:
-		if (hitWorld)
+		if (hit_world)
 		{
 			G_PlayEffectID(G_EffectIndex("bowcaster/bounce_wall"), org, dir);
 		}
@@ -640,7 +639,7 @@ void g_missile_bounce_effect(gentity_t* ent, vec3_t org, vec3_t dir, qboolean hi
 	}
 }
 
-void g_missile_reflect_effect(gentity_t* ent, vec3_t org, vec3_t dir)
+void g_missile_reflect_effect(gentity_t* ent, vec3_t dir)
 {
 	switch (ent->s.weapon)
 	{
@@ -1202,7 +1201,7 @@ extern int g_real_trace(gentity_t* attacker, trace_t* tr, vec3_t start, vec3_t m
 
 void g_run_missile(gentity_t* ent)
 {
-	vec3_t origin, groundSpot;
+	vec3_t origin, ground_spot;
 	trace_t tr;
 	int passent;
 	qboolean is_knocked_saber = qfalse;
@@ -1264,15 +1263,15 @@ void g_run_missile(gentity_t* ent)
 
 	if (ent->s.weapon == G2_MODEL_PART && !ent->bounceCount)
 	{
-		vec3_t lowerOrg;
+		vec3_t lower_org;
 		trace_t tr_g;
 
-		VectorCopy(ent->r.currentOrigin, lowerOrg);
-		lowerOrg[2] -= 1;
-		trap->Trace(&tr_g, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, lowerOrg, passent, ent->clipmask, qfalse, 0,
+		VectorCopy(ent->r.currentOrigin, lower_org);
+		lower_org[2] -= 1;
+		trap->Trace(&tr_g, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, lower_org, passent, ent->clipmask, qfalse, 0,
 			0);
 
-		VectorCopy(tr_g.endpos, groundSpot);
+		VectorCopy(tr_g.endpos, ground_spot);
 
 		if (!tr_g.startsolid && !tr_g.allsolid && tr_g.entityNum == ENTITYNUM_WORLD)
 		{
@@ -1385,8 +1384,8 @@ passthrough:
 			VectorClear(ent->s.pos.trDelta);
 			ent->s.pos.trTime = level.time;
 
-			VectorCopy(groundSpot, ent->s.pos.trBase);
-			VectorCopy(groundSpot, ent->r.currentOrigin);
+			VectorCopy(ground_spot, ent->s.pos.trBase);
+			VectorCopy(ground_spot, ent->r.currentOrigin);
 
 			if (ent->s.apos.trType != TR_STATIONARY)
 			{
@@ -1497,7 +1496,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 	const int npc_is_blocking = manual_npc_saberblocking(blocker);
 
 	//create the bolt saber block effect
-	g_missile_reflect_effect(blocker, trace->endpos, trace->plane.normal);
+	g_missile_reflect_effect(blocker, trace->plane.normal);
 
 	AngleVectors(blocker->client->ps.viewangles, fwd, NULL, NULL);
 

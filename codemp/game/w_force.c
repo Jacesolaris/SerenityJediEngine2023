@@ -60,7 +60,7 @@ extern void BG_ReduceSaberMishapLevel(playerState_t* ps);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
 	qboolean break_saber_lock);
 extern qboolean PM_SaberInParry(int move);
-extern void PM_AddFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 extern void Boba_FlyStart(gentity_t* self);
 extern qboolean in_camera;
 extern qboolean PM_RunningAnim(int anim);
@@ -95,7 +95,7 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_InWallHoldMove(int anim);
 extern int PM_InGrappleMove(int anim);
 extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
-extern void PM_AddBlockFatigue(playerState_t* ps, int Fatigue);
+extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 
 void G_LetGoOfLedge(const gentity_t* ent)
 {
@@ -2985,7 +2985,7 @@ qboolean melee_block_lightning(gentity_t* attacker, gentity_t* defender)
 qboolean saber_block_lightning(const gentity_t* attacker, const gentity_t* defender)
 {
 	//defender is attempting to block lightning.  Try to do it.
-	const qboolean ActiveBlocking = defender->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
+	const qboolean active_blocking = defender->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
 	int fp_block_cost;
 	const qboolean saber_light_block = qtrue;
 
@@ -3023,7 +3023,7 @@ qboolean saber_block_lightning(const gentity_t* attacker, const gentity_t* defen
 
 	if (saber_light_block)
 	{
-		if (ActiveBlocking)
+		if (active_blocking)
 		{
 			PM_AddBlockFatigue(&defender->client->ps, fp_block_cost);
 		}
@@ -8803,8 +8803,8 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		usingForce = qtrue;
 	}
 
-	const qboolean ActiveBlocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
-	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean active_blocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean holding_block = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!usingForce
@@ -8839,7 +8839,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 					BG_ReduceSaberMishapLevel(&self->client->ps);
 					bg_reduce_blaster_mishap_level(&self->client->ps);
 				}
-				else if (HoldingBlock || ActiveBlocking)
+				else if (holding_block || active_blocking)
 				{
 					//regen half as fast
 					self->client->ps.fd.forcePowerRegenDebounceTime += 2000; //1 point per 1 seconds.. super slow
@@ -8991,7 +8991,7 @@ powersetcheck:
 
 void WP_BlockPointsUpdate(const gentity_t* self)
 {
-	const qboolean HoldingBlock = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean holding_block = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!(self->r.svFlags & SVF_BOT))
@@ -9005,7 +9005,7 @@ void WP_BlockPointsUpdate(const gentity_t* self)
 			&& !PM_SaberInParry(self->client->ps.saberMove)
 			&& !PM_SaberInReturn(self->client->ps.saberMove)
 			&& !PM_Saberinstab(self->client->ps.saberMove)
-			&& !HoldingBlock
+			&& !holding_block
 			&& !(self->client->buttons & BUTTON_BLOCK))
 		{
 			//when not using the block, regenerate at 10 points per second

@@ -319,6 +319,7 @@ void FAR* out_desc;
 			case 3:
 				strm->msg = (char*)"invalid block type";
 				state->mode = BAD;
+			default: ;
 			}
 			DROPBITS(2);
 			break;

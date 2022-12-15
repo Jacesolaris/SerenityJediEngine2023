@@ -111,7 +111,7 @@ void g_missile_bounce_effect(const gentity_t* ent, vec3_t org, vec3_t dir, const
 	}
 }
 
-void g_missile_reflect_effect(const gentity_t* ent, vec3_t org, vec3_t dir)
+void g_missile_reflect_effect(const gentity_t* ent, vec3_t dir)
 {
 	switch (ent->s.weapon)
 	{
@@ -1089,7 +1089,7 @@ void g_bounce_roll_missile(gentity_t* ent, const trace_t* trace)
 	EvaluateTrajectoryDelta(&ent->s.pos, hit_time, velocity);
 	const float velocity_z = velocity[2];
 	velocity[2] = 0;
-	const float speedXY = VectorLength(velocity); //friction
+	const float speed_xy = VectorLength(velocity); //friction
 	VectorCopy(trace->plane.normal, normal);
 	const float normal_z = normal[2];
 	normal[2] = 0;
@@ -1108,7 +1108,7 @@ void g_bounce_roll_missile(gentity_t* ent, const trace_t* trace)
 	}
 
 	// check for stop
-	if (speedXY <= 0)
+	if (speed_xy <= 0)
 	{
 		G_SetOrigin(ent, trace->endpos);
 		VectorCopy(ent->currentAngles, ent->s.apos.trBase);
@@ -1271,7 +1271,7 @@ void G_SpawnNoghriGasCloud(gentity_t* ent)
 
 extern qboolean W_AccuracyLoggableWeapon(int weapon, qboolean alt_fire, int mod);
 
-void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3_t normal, int hit_loc = HL_NONE)
+void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3_t normal, const int hit_loc = HL_NONE)
 {
 	// impact damage
 	if (other->takedamage)
@@ -1453,7 +1453,7 @@ static void g_missile_add_alerts(gentity_t* ent)
 }
 
 //------------------------------------------------------
-void g_missile_impact(gentity_t* ent, trace_t* trace, int hit_loc = HL_NONE)
+void g_missile_impact(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NONE)
 {
 	vec3_t diff;
 
@@ -1521,11 +1521,6 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, int hit_loc = HL_NONE)
 			other->painDebounceTime = level.time + 1000;
 		}
 	}
-
-	/*if (other->contents & CONTENTS_LIGHTSABER)
-	{
-		ent->s.eFlags& EF_MISSILE_STICK;
-	}*/
 
 	if (ent->s.weapon == WP_DEMP2)
 	{
@@ -1816,7 +1811,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, int hit_loc = HL_NONE)
 		//do the effect
 		VectorCopy(ent->s.pos.trDelta, diff);
 		VectorNormalize(diff);
-		g_missile_reflect_effect(ent, trace->endpos, trace->plane.normal);
+		g_missile_reflect_effect(ent, trace->plane.normal);
 
 		return;
 	}
@@ -1867,7 +1862,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, int hit_loc = HL_NONE)
 				//do the effect
 				VectorCopy(ent->s.pos.trDelta, diff);
 				VectorNormalize(diff);
-				g_missile_reflect_effect(ent, trace->endpos, trace->plane.normal);
+				g_missile_reflect_effect(ent, trace->plane.normal);
 
 				return;
 			}
@@ -1875,7 +1870,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, int hit_loc = HL_NONE)
 		else
 		{
 			//still do the bounce effect
-			g_missile_reflect_effect(ent, trace->endpos, trace->plane.normal);
+			g_missile_reflect_effect(ent, trace->plane.normal);
 		}
 	}
 	g_missile_impacted(ent, other, trace->endpos, trace->plane.normal, hit_loc);
@@ -1946,7 +1941,7 @@ G_GroundTrace
 
 ==================
 */
-int g_ground_trace(const gentity_t* ent, pml_t* pPml)
+int g_ground_trace(const gentity_t* ent, pml_t* p_pml)
 {
 	vec3_t point;
 	trace_t trace;
@@ -1957,42 +1952,42 @@ int g_ground_trace(const gentity_t* ent, pml_t* pPml)
 
 	gi.trace(&trace, ent->currentOrigin, ent->mins, ent->maxs, point, ent->s.number, ent->clipmask,
 		static_cast<EG2_Collision>(0), 0);
-	pPml->groundTrace = trace;
+	p_pml->groundTrace = trace;
 
 	// do something corrective if the trace starts in a solid...
 	if (trace.allsolid)
 	{
-		pPml->groundPlane = qfalse;
-		pPml->walking = qfalse;
+		p_pml->groundPlane = qfalse;
+		p_pml->walking = qfalse;
 		return ENTITYNUM_NONE;
 	}
 
 	// if the trace didn't hit anything, we are in free fall
 	if (trace.fraction == 1.0)
 	{
-		pPml->groundPlane = qfalse;
-		pPml->walking = qfalse;
+		p_pml->groundPlane = qfalse;
+		p_pml->walking = qfalse;
 		return ENTITYNUM_NONE;
 	}
 
 	// check if getting thrown off the ground
 	if (ent->s.pos.trDelta[2] > 0 && DotProduct(ent->s.pos.trDelta, trace.plane.normal) > 10)
 	{
-		pPml->groundPlane = qfalse;
-		pPml->walking = qfalse;
+		p_pml->groundPlane = qfalse;
+		p_pml->walking = qfalse;
 		return ENTITYNUM_NONE;
 	}
 
 	// slopes that are too steep will not be considered on ground
 	if (trace.plane.normal[2] < MIN_WALK_NORMAL)
 	{
-		pPml->groundPlane = qtrue;
-		pPml->walking = qfalse;
+		p_pml->groundPlane = qtrue;
+		p_pml->walking = qfalse;
 		return ENTITYNUM_NONE;
 	}
 
-	pPml->groundPlane = qtrue;
-	pPml->walking = qtrue;
+	p_pml->groundPlane = qtrue;
+	p_pml->walking = qtrue;
 
 	return trace.entityNum;
 }
@@ -2262,7 +2257,7 @@ extern void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg);
 
 void g_run_missile(gentity_t* ent)
 {
-	vec3_t oldOrg;
+	vec3_t old_org;
 	trace_t tr;
 	int tr_hit_loc = HL_NONE;
 
@@ -2271,17 +2266,17 @@ void g_run_missile(gentity_t* ent)
 		//in a sand creature's mouth
 		if (ent->activator)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			// Getting the bolt here
 			//in hand
 			vec3_t scAngles = { 0 };
 			scAngles[YAW] = ent->activator->currentAngles[YAW];
 			gi.G2API_GetBoltMatrix(ent->activator->ghoul2, ent->activator->playerModel, ent->activator->gutBolt,
-				&boltMatrix, scAngles, ent->activator->currentOrigin,
+				&bolt_matrix, scAngles, ent->activator->currentOrigin,
 				cg.time ? cg.time : level.time,
 				nullptr, ent->activator->s.modelScale);
 			// Storing ent position, bolt position, and bolt axis
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, ent->currentOrigin);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, ent->currentOrigin);
 			G_SetOrigin(ent, ent->currentOrigin);
 		}
 		// check think function
@@ -2289,7 +2284,7 @@ void g_run_missile(gentity_t* ent)
 		return;
 	}
 
-	VectorCopy(ent->currentOrigin, oldOrg);
+	VectorCopy(ent->currentOrigin, old_org);
 
 	// get current position
 	if (ent->s.pos.trType == TR_INTERPOLATE)
@@ -2300,7 +2295,7 @@ void g_run_missile(gentity_t* ent)
 		{
 			//didn't explode
 			VectorCopy(ent->currentOrigin, ent->s.pos.trBase);
-			gi.trace(&tr, oldOrg, ent->mins, ent->maxs, ent->currentOrigin, ent->s.number, ent->clipmask,
+			gi.trace(&tr, old_org, ent->mins, ent->maxs, ent->currentOrigin, ent->s.number, ent->clipmask,
 				G2_RETURNONHIT, 10);
 			if (VectorCompare(ent->s.pos.trDelta, vec3_origin))
 			{
@@ -2308,19 +2303,19 @@ void g_run_missile(gentity_t* ent)
 			}
 			else
 			{
-				vec3_t ang, fwdDir, rtDir;
+				vec3_t ang, fwd_dir, rt_dir;
 
 				ent->s.apos.trType = TR_INTERPOLATE;
 				VectorSet(ang, 0, ent->s.apos.trBase[1], 0);
-				AngleVectors(ang, fwdDir, rtDir, nullptr);
+				AngleVectors(ang, fwd_dir, rt_dir, nullptr);
 				const float speed = VectorLength(ent->s.pos.trDelta) * 4;
 
 				//HMM, this works along an axis-aligned dir, but not along diagonals
 				//This is because when roll gets to 90, pitch becomes yaw, and vice-versa
 				//Maybe need to just set the angles directly?
-				ent->s.apos.trDelta[0] = DotProduct(fwdDir, ent->s.pos.trDelta);
+				ent->s.apos.trDelta[0] = DotProduct(fwd_dir, ent->s.pos.trDelta);
 				ent->s.apos.trDelta[1] = 0; //never spin!
-				ent->s.apos.trDelta[2] = DotProduct(rtDir, ent->s.pos.trDelta);
+				ent->s.apos.trDelta[2] = DotProduct(rt_dir, ent->s.pos.trDelta);
 
 				VectorNormalize(ent->s.apos.trDelta);
 				VectorScale(ent->s.apos.trDelta, speed, ent->s.apos.trDelta);
@@ -2380,11 +2375,11 @@ void g_run_missile(gentity_t* ent)
 			}
 
 			CCollisionRecord& coll = i;
-			const gentity_t* hitEnt = &g_entities[coll.mEntityNum];
+			const gentity_t* hit_ent = &g_entities[coll.mEntityNum];
 
 			// process collision records here...
 			// make sure we only do this once, not for all the entrance wounds we might generate
-			if (coll.mFlags & G2_FRONTFACE/* && !(hitModel)*/ && hitEnt->health)
+			if (coll.mFlags & G2_FRONTFACE/* && !(hitModel)*/ && hit_ent->health)
 			{
 				if (tr_hit_loc == HL_NONE)
 				{
@@ -2426,7 +2421,7 @@ void g_run_missile(gentity_t* ent)
 
 	if (ent->mass)
 	{
-		g_mover_touch_push_triggers(ent, oldOrg);
+		g_mover_touch_push_triggers(ent, old_org);
 	}
 
 	AddSightEvent(ent->owner, ent->currentOrigin, 512, AEL_DISCOVERED, 75);

@@ -99,7 +99,7 @@ void CG_CheckAmmo()
 CG_DamageFeedback
 ==============
 */
-void CG_DamageFeedback(const int yawByte, const int pitchByte, const int damage)
+void CG_DamageFeedback(const int yaw_byte, const int pitch_byte, const int damage)
 {
 	float scale;
 
@@ -124,7 +124,7 @@ void CG_DamageFeedback(const int yawByte, const int pitchByte, const int damage)
 		kick = 10;
 
 	// if yaw and pitch are both 255, make the damage always centered (falling, etc)
-	if (yawByte == 255 && pitchByte == 255)
+	if (yaw_byte == 255 && pitch_byte == 255)
 	{
 		cg.damageX = 0;
 		cg.damageY = 0;
@@ -136,8 +136,8 @@ void CG_DamageFeedback(const int yawByte, const int pitchByte, const int damage)
 		vec3_t angles;
 		vec3_t dir;
 		// positional
-		const float pitch = pitchByte / 255.0 * 360;
-		const float yaw = yawByte / 255.0 * 360;
+		const float pitch = pitch_byte / 255.0 * 360;
+		const float yaw = yaw_byte / 255.0 * 360;
 
 		angles[PITCH] = pitch;
 		angles[YAW] = yaw;
@@ -265,7 +265,6 @@ void CG_PainEvent(centity_t* cent, int health);
 
 void CG_CheckLocalSounds(const playerState_t* ps, const playerState_t* ops)
 {
-	int reward;
 
 	// hit changes
 	if (ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS])
@@ -291,12 +290,10 @@ void CG_CheckLocalSounds(const playerState_t* ps, const playerState_t* ops)
 		if (ps->persistant[PERS_EXCELLENT_COUNT] != ops->persistant[PERS_EXCELLENT_COUNT])
 		{
 			cgi_S_StartLocalSound(cgs.media.excellentSound, CHAN_ANNOUNCER);
-			reward = qtrue;
 		}
 		if (ps->persistant[PERS_GAUNTLET_FRAG_COUNT] != ops->persistant[PERS_GAUNTLET_FRAG_COUNT])
 		{
 			cgi_S_StartLocalSound(cgs.media.humiliationSound, CHAN_ANNOUNCER);
-			reward = qtrue;
 		}
 		/*if (ps->persistant[PERS_IMPRESSIVE_COUNT] != ops->persistant[PERS_IMPRESSIVE_COUNT])
 		{
@@ -315,13 +312,7 @@ void CG_CheckLocalSounds(const playerState_t* ps, const playerState_t* ops)
 			{
 				cgi_S_StartLocalSound(cgs.media.humiliationSound, CHAN_ANNOUNCER);
 			}
-				reward = qtrue;
 		}
-	}
-	else
-	{
-		// reward sounds
-		reward = qfalse;
 	}
 }
 

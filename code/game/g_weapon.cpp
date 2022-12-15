@@ -141,7 +141,7 @@ void WP_TraceSetStart(const gentity_t* ent, vec3_t start)
 	}
 }
 //-----------------------------------------------------------------------------
-gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire)
+gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire)
 //-----------------------------------------------------------------------------
 {
 	gentity_t* missile = G_Spawn();
@@ -153,7 +153,7 @@ gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t
 
 	const Vehicle_t* pVeh = G_IsRidingVehicle(owner);
 
-	missile->alt_fire = altFire;
+	missile->alt_fire = alt_fire;
 
 	missile->s.pos.trType = TR_LINEAR;
 	missile->s.pos.trTime = level.time; // - 10;	// move a bit on the very first frame

@@ -41,7 +41,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern int G_ShipSurfaceForSurfName(const char* surfaceName);
 extern qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface);
 extern void G_VehicleSetDamageLocFlags(gentity_t* veh, int impactDir, int deathPoint);
-extern void G_VehUpdateShields(gentity_t* targ);
+extern void G_VehUpdateShields(const gentity_t* targ);
 extern void G_LetGoOfWall(const gentity_t* ent);
 extern void BG_ClearRocketLock(playerState_t* ps);
 void bot_damage_notification(const gclient_t* bot, gentity_t* attacker);
@@ -56,9 +56,9 @@ extern qboolean PM_RollingAnim(int anim);
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean BG_KnockDownAnim(int anim);
 extern void ScalePlayer(gentity_t* self, int scale);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern qboolean PM_SaberInStart(int move);
-extern int PM_AnimLength(int index, animNumber_t anim);
+extern int PM_AnimLength(const animNumber_t anim);
 extern qboolean PM_SaberInReturn(int move);
 extern int pm_power_level_for_saber_anims(const playerState_t* ps);
 void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, int mod);
@@ -67,7 +67,7 @@ extern void g_atst_check_pain(gentity_t* self, gentity_t* other, int damage);
 qboolean PM_RunningAnim(int anim);
 void ThrowSaberToAttacker(gentity_t* self, const gentity_t* attacker);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
-extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int AnimIndex);
+extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps, int anim_index);
 extern void wp_force_power_regenerate(const gentity_t* self, int override_amt);
 extern float manual_saberblocking(const gentity_t* defender);
 extern void wp_block_points_regenerate(const gentity_t* self, int override_amt);
@@ -3524,7 +3524,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 	}
 
 	// Add team bonuses
-	Team_FragBonuses(self, inflictor, attacker);
+	Team_FragBonuses(self, attacker);
 
 	self->s.powerups &= ~PW_REMOVE_AT_DEATH; //removes everything but electricity and force push
 
@@ -3862,7 +3862,7 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 			//our saberMove was not already interupted by some other anim (like pain)
 			if (PM_SaberInStart(self->client->ps.saberMove))
 			{
-				const float anim_length = PM_AnimLength(0, self->client->ps.torsoAnim);
+				const float anim_length = PM_AnimLength(self->client->ps.torsoAnim);
 				if (anim_length - self->client->ps.torsoTimer > 750)
 				{
 					//start anim is already 3/4 of a second into it, can't interrupt it now

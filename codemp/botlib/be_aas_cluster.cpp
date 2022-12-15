@@ -1455,7 +1455,7 @@ void AAS_InitClustering(void)
 	//
 	int removedPortalAreas = 0;
 	botimport.Print(PRT_MESSAGE, "\r%6d removed portal areas", removedPortalAreas);
-	while (1)
+	while (true)
 	{
 		botimport.Print(PRT_MESSAGE, "\r%6d", removedPortalAreas);
 		//initialize the number of portals and clusters

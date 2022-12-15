@@ -285,7 +285,7 @@ int AAS_ValueForBSPEpairKey(int ent, char* key, char* value, int size)
 	if (!AAS_BSPEntityInRange(ent)) return qfalse;
 	for (const bsp_epair_t* epair = bspworld.entities[ent].epairs; epair; epair = epair->next)
 	{
-		if (!strcmp(epair->key, key))
+		if (strcmp(epair->key, key) == 0)
 		{
 			strncpy(value, epair->value, size - 1);
 			value[size - 1] = '\0';

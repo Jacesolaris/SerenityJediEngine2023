@@ -3014,7 +3014,7 @@ void CG_PlayerAnimEvents(const int anim_file_index, const int event_file_index, 
 	}
 }
 
-extern int CheckAnimFrameForEventType(const animevent_t* animEvents, int keyFrame, animEventType_t eventType);
+extern int CheckAnimFrameForEventType(const animevent_t* anim_events, int key_frame, animEventType_t event_type);
 //Checks for and plays Ambient model sounds
 void CG_PlayerAmbientEvents(centity_t* cent)
 {
@@ -3284,8 +3284,7 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 		anim_speed *= anim_speed_mult;
 
 		pm_saber_start_trans_anim(cent->currentState.number, cent->currentState.fireflag, cent->currentState.weapon,
-			new_animation, &anim_speed, cent->currentState.brokenLimbs,
-			cent->currentState.userInt3);
+		                          new_animation, &anim_speed, cent->currentState.userInt3);
 
 		if (torso_only)
 		{

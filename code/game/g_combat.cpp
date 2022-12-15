@@ -93,7 +93,7 @@ extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean PM_FlippingAnim(int anim);
 extern qboolean PM_InSpecialJump(int anim);
 extern qboolean PM_RollingAnim(int anim);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean PM_SaberInReturn(int move);
 extern int PM_AnimLength(int index, animNumber_t anim);

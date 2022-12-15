@@ -2239,7 +2239,7 @@ extern gentity_t* player;
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
 extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
-	qboolean altFire = qfalse);
+	qboolean alt_fire = qfalse);
 
 void panel_turret_shoot(gentity_t* self, vec3_t org, vec3_t dir)
 {

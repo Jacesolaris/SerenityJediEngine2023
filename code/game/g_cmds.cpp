@@ -1301,7 +1301,7 @@ extern qboolean NPC_IsMando(const gentity_t* self);
 
 void G_SetTauntAnim(gentity_t* ent, int taunt)
 {
-	const qboolean HoldingBlock = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean holding_block = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!ent || !ent->client)
@@ -1333,7 +1333,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 		}
 	}
 
-	if (HoldingBlock || is_holding_block_button(ent))
+	if (holding_block || is_holding_block_button(ent))
 	{
 		return;
 	}

@@ -65,10 +65,9 @@ enum {
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_UpdateEntity(int entnum, bot_entitystate_t* state)
+int AAS_UpdateEntity(int entnum, const bot_entitystate_t* state)
 {
 	int relink;
-	vec3_t absmins, absmaxs;
 
 	if (!aasworld.loaded)
 	{
@@ -151,6 +150,8 @@ int AAS_UpdateEntity(int entnum, bot_entitystate_t* state)
 		//don't link the world model
 		if (entnum != ENTITYNUM_WORLD)
 		{
+			vec3_t absmaxs;
+			vec3_t absmins;
 			//absolute mins and maxs
 			VectorAdd(ent->i.mins, ent->i.origin, absmins);
 			VectorAdd(ent->i.maxs, ent->i.origin, absmaxs);
@@ -370,12 +371,11 @@ void AAS_UnlinkInvalidEntities(void)
 //===========================================================================
 int AAS_NearestEntity(vec3_t origin, int modelindex)
 {
-	vec3_t dir;
-
 	int bestentnum = 0;
 	float bestdist = 99999;
 	for (int i = 0; i < aasworld.maxentities; i++)
 	{
+		vec3_t dir;
 		const aas_entity_t* ent = &aasworld.entities[i];
 		if (ent->i.modelindex != modelindex) continue;
 		VectorSubtract(ent->i.origin, origin, dir);

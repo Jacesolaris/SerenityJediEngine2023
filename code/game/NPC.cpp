@@ -2700,7 +2700,7 @@ void NPC_InitAnimTable(void)
 }
 
 extern cvar_t* com_outcast;
-extern int G_ParseAnimFileSet(const char* skeletonName, const char* modelName = nullptr);
+extern int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullptr);
 
 void NPC_InitGame(void)
 {

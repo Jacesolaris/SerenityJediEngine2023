@@ -103,7 +103,7 @@ extern void Jedi_RageStop(const gentity_t* self);
 extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_SwimmingAnim(int anim);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_SaberInKillAttack(int anim);
@@ -22187,7 +22187,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
-						const qboolean ActiveBlocking = trace_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
+						const qboolean active_blocking = trace_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;//Active Blocking
 						//make them do a parry
 						const float chance_of_fizz = Q_flrand(0.0f, 1.0f);
 						vec3_t fwd;
@@ -22243,7 +22243,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 						trace_ent->client->ps.weaponTime = Q_irand(300, 600);
 						dmg = 0;
 
-						if (ActiveBlocking)
+						if (active_blocking)
 						{
 							PM_AddBlockFatigue(&trace_ent->client->ps, fpBlockCost);
 						}
@@ -24309,7 +24309,7 @@ constexpr auto DESTRUCTION_NPC_DAMAGE_NORMAL = 20;
 constexpr auto DESTRUCTION_NPC_DAMAGE_HARD = 30;
 constexpr auto DESTRUCTION_SIZE = 3;
 
-gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean altFire = qfalse);
+gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
 //---------------------------------------------------------
 void WP_FireDestruction(gentity_t* ent, const int force_level)
 //---------------------------------------------------------

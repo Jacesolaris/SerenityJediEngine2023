@@ -195,8 +195,8 @@ extern qboolean InVisrange(const gentity_t* ent);
 extern void NPC_Spawn(gentity_t* self, const gentity_t* other, gentity_t* activator);
 
 //NPC_stats
-extern int NPC_ReactionTime(void);
-extern qboolean NPC_ParseParms(const char* NPCName, gentity_t* NPC);
+extern int NPC_ReactionTime();
+extern qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc);
 extern void NPC_LoadParms(); //academy
 extern void NPC_LoadParms1(); //outcast
 extern void NPC_LoadParms2(); //mods/DF/CW

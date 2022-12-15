@@ -1955,8 +1955,8 @@ void BG_G2ATSTAngles(void* ghoul2, int time, vec3_t cent_lerpAngles);
 //BG anim utility functions:
 
 int BG_AnimLength(int index, animNumber_t anim);
-float bg_get_torso_anim_point(const playerState_t* ps, int AnimIndex);
-float BG_GetLegsAnimPoint(const playerState_t* ps, int AnimIndex);
+float bg_get_torso_anim_point(const playerState_t* ps, int anim_index);
+float BG_GetLegsAnimPoint(const playerState_t* ps, int anim_index);
 
 qboolean PM_InSpecialJump(int anim);
 qboolean PM_InSaberStandAnim(int anim);
@@ -1974,7 +1974,7 @@ qboolean PM_SaberInIdle(int move);
 qboolean PM_FlippingAnim(int anim);
 qboolean PM_SpinningSaberAnim(int anim);
 qboolean pm_saber_in_special_attack(int anim);
-qboolean PM_SaberInKata(saberMoveName_t saberMove);
+qboolean PM_SaberInKata(saberMoveName_t saber_move);
 qboolean PM_InKataAnim(int anim);
 qboolean PM_KickingAnim(int anim);
 qboolean PM_PunchAnim(int anim);
@@ -1983,7 +1983,8 @@ qboolean BG_InDeathAnim(int anim);
 qboolean BG_InSaberLockOld(int anim);
 qboolean PM_InSaberLock(int anim);
 
-void pm_saber_start_trans_anim(int client_num, int saber_anim_level, int weapon, int anim, float* anim_speed, int broken, int fatigued);
+void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level, const int weapon, const int anim, float* anim_speed, const int
+                               fatigued);
 
 void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t force_power, int override_amt);
 void BG_ForcePowerKill(playerState_t* ps);
@@ -2002,13 +2003,13 @@ qboolean	BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item
 
 void	BG_InitAnimsets(void);
 void	BG_ClearAnimsets(void);
-int		bg_parse_animation_file(const char* filename, animation_t* animSet, qboolean isHumanoid);
+int		bg_parse_animation_file(const char* filename, animation_t* anim_set, qboolean is_humanoid);
 #ifndef _GAME
-int		bg_parse_animation_evt_file(const char* as_filename, int animFileIndex, int eventFileIndex);
+int		bg_parse_animation_evt_file(const char* as_filename, int anim_file_index, int event_file_index);
 #endif
 
-qboolean BG_HasAnimation(int animIndex, int animation);
-int		PM_PickAnim(int animIndex, int minAnim, int maxAnim);
+qboolean BG_HasAnimation(int anim_index, int animation);
+int		PM_PickAnim(int anim_index, int min_anim, int max_anim);
 
 int BG_GetItemIndexByTag(int tag, int type);
 

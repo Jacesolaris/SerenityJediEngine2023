@@ -73,7 +73,7 @@ extern qboolean PM_SaberInTransitionAny(int move);
 extern qboolean PM_SaberInBounce(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_SaberInAttack(int move);
-extern qboolean PM_InAnimForSaberMove(int anim, int saberMove);
+extern qboolean PM_InAnimForSaberMove(int anim, int saber_move);
 extern saberMoveName_t PM_SaberBounceForAttack(int move);
 extern saberMoveName_t PM_SaberAttackForMovement(int forwardmove, int rightmove, int curmove);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
@@ -223,7 +223,7 @@ extern saberMoveName_t transitionMove[Q_NUM_QUADS][Q_NUM_QUADS];
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
-Vehicle_t* PM_RidingVehicle(void)
+Vehicle_t* PM_RidingVehicle()
 {
 	return G_IsRidingVehicle(pm->gent);
 }
@@ -235,7 +235,7 @@ qboolean PM_ControlledByPlayer()
 	return G_ControlledByPlayer(pm->gent);
 }
 
-qboolean BG_UnrestrainedPitchRoll(playerState_t* ps, Vehicle_t* pVeh)
+qboolean BG_UnrestrainedPitchRoll()
 {
 	return qfalse;
 }
@@ -254,9 +254,9 @@ PM_AddEvent
 ===============
 */
 
-void PM_AddEvent(const int newEvent)
+void PM_AddEvent(const int new_event)
 {
-	AddEventToPlayerstate(newEvent, 0, pm->ps);
+	AddEventToPlayerstate(new_event, 0, pm->ps);
 }
 
 void PM_AddEventWithParm(const int newEvent, const int parm)
@@ -264,12 +264,12 @@ void PM_AddEventWithParm(const int newEvent, const int parm)
 	AddEventToPlayerstate(newEvent, parm, pm->ps);
 }
 
-qboolean PM_PredictJumpSafe(vec3_t jumpHorizDir, float jumpHorizSpeed, float jumpVertSpeed, int predictTimeLength)
+qboolean PM_PredictJumpSafe()
 {
 	return qtrue;
 }
 
-void PM_GrabWallForJump(int anim)
+void PM_GrabWallForJump(const int anim)
 {
 	//NOTE!!! assumes an appropriate anim is being passed in!!!
 	PM_SetAnim(pm, SETANIM_BOTH, anim, SETANIM_FLAG_RESTART | SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
@@ -325,7 +325,7 @@ qboolean PM_InForceFall()
 	{
 		return qfalse;
 	}
-	const int FFDebounce = pm->ps->forcePowerDebounce[FP_LEVITATION] - pm->ps->forcePowerLevel[FP_LEVITATION] * 100;
+	const int ff_debounce = pm->ps->forcePowerDebounce[FP_LEVITATION] - pm->ps->forcePowerLevel[FP_LEVITATION] * 100;
 
 	// can player force fall?
 	if (PM_CanForceFall())
@@ -333,7 +333,7 @@ qboolean PM_InForceFall()
 		PM_SetAnim(pm, SETANIM_BOTH, BOTH_FORCEINAIR1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 150);
 
 		// reduce falling velocity to a safe speed at set intervals
-		if (FFDebounce + FORCEFALLDEBOUNCE < pm->cmd.serverTime)
+		if (ff_debounce + FORCEFALLDEBOUNCE < pm->cmd.serverTime)
 		{
 			if (pm->ps->velocity[2] < FORCEFALLVELOCITY)
 			{
@@ -354,13 +354,13 @@ qboolean PM_InForceFall()
 		// is it time to reduce the players force power
 		if (pm->ps->forcePowerDebounce[FP_LEVITATION] < pm->cmd.serverTime)
 		{
-			int ForceManaModifier = 0;
+			int force_mana_modifier = 0;
 			// reduced the use of force power for duel and power duel matches
 			if (pm->ps->forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_2)
 			{
-				ForceManaModifier = -4;
+				force_mana_modifier = -4;
 			}
-			WP_ForcePowerDrain(pm->gent, FP_HEAL, FM_FORCEFALL + ForceManaModifier);
+			WP_ForcePowerDrain(pm->gent, FP_HEAL, FM_FORCEFALL + force_mana_modifier);
 
 			// removes force power at a rate of 0.1 secs * force jump level
 			pm->ps->forcePowerDebounce[FP_LEVITATION] = pm->cmd.serverTime + pm->ps->forcePowerLevel[FP_LEVITATION] *
@@ -375,7 +375,7 @@ qboolean PM_InForceFall()
 	return qfalse;
 }
 
-qboolean PM_CheckGrabWall(trace_t* trace)
+qboolean PM_CheckGrabWall(const trace_t* trace)
 {
 	if (!pm->gent || !pm->gent->client)
 	{
@@ -436,10 +436,10 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 			return qfalse;
 		}
 		//hit a flat wall during our long jump, see if we should grab it
-		vec3_t moveDir;
-		VectorCopy(pm->ps->velocity, moveDir);
-		VectorNormalize(moveDir);
-		if (DotProduct(moveDir, trace->plane.normal) > -0.65f)
+		vec3_t move_dir;
+		VectorCopy(pm->ps->velocity, move_dir);
+		VectorNormalize(move_dir);
+		if (DotProduct(move_dir, trace->plane.normal) > -0.65f)
 		{
 			//not enough of a direct impact, just slide off
 			return qfalse;
@@ -491,11 +491,11 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 		//if ( pm->gent->enemy->currentOrigin[2] < (pm->ps->origin[2]-128) )
 		{
 			//enemy is way below us
-			vec3_t enemyDir;
-			VectorSubtract(pm->gent->enemy->currentOrigin, pm->ps->origin, enemyDir);
-			enemyDir[2] = 0;
-			VectorNormalize(enemyDir);
-			if (DotProduct(enemyDir, trace->plane.normal) < 0.65f)
+			vec3_t enemy_dir;
+			VectorSubtract(pm->gent->enemy->currentOrigin, pm->ps->origin, enemy_dir);
+			enemy_dir[2] = 0;
+			VectorNormalize(enemy_dir);
+			if (DotProduct(enemy_dir, trace->plane.normal) < 0.65f)
 			{
 				//jumping off this wall would not launch me in the general direction of my enemy
 				return qfalse;
@@ -516,7 +516,7 @@ qboolean PM_CheckGrabWall(trace_t* trace)
 	}
 
 	//Okay, now see if jumping off this thing would send us into a do not enter brush
-	if (!PM_PredictJumpSafe(trace->plane.normal, JUMP_OFF_WALL_SPEED, G_ForceWallJumpStrength(), 1500))
+	if (!PM_PredictJumpSafe())
 	{
 		//we would hit a do not enter brush, so don't grab the wall
 		return qfalse;
@@ -10071,7 +10071,7 @@ static void PM_Footsteps()
 	qboolean flipping = qfalse;
 	int setAnimFlags = SETANIM_FLAG_NORMAL;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
 
 	if (pm->gent == nullptr || pm->gent->client == nullptr)
 		return;
@@ -10546,7 +10546,7 @@ static void PM_Footsteps()
 					}
 					else
 					{
-						if (HoldingBlock)
+						if (holding_block)
 						{
 							if (pm->ps->saberAnimLevel == SS_DUAL)
 							{
@@ -10875,7 +10875,7 @@ static void PM_Footsteps()
 							}
 							else
 							{
-								if (HoldingBlock)
+								if (holding_block)
 								{ //This controls saber movement anims //JaceSolaris
 									PM_SetAnim(pm, SETANIM_BOTH, BOTH_RUN_STAFF, setAnimFlags);
 								}
@@ -10904,7 +10904,7 @@ static void PM_Footsteps()
 							}
 							else
 							{
-								if (HoldingBlock)
+								if (holding_block)
 								{ //This controls saber movement anims //JaceSolaris
 									PM_SetAnim(pm, SETANIM_BOTH, BOTH_RUN_DUAL, setAnimFlags);
 								}
@@ -10958,7 +10958,7 @@ static void PM_Footsteps()
 									}
 									else
 									{
-										if (HoldingBlock)
+										if (holding_block)
 										{ //This controls saber movement anims //JaceSolaris
 											PM_SetAnim(pm, SETANIM_BOTH, BOTH_SPRINT_SABER, setAnimFlags);
 										}
@@ -11330,7 +11330,7 @@ static void PM_Footsteps()
 							}
 							else
 							{
-								if (HoldingBlock)
+								if (holding_block)
 								{
 									PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALK2, setAnimFlags);
 								}
@@ -11348,7 +11348,7 @@ static void PM_Footsteps()
 							}
 							else
 							{
-								if (HoldingBlock)
+								if (holding_block)
 								{
 									PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALK2, setAnimFlags);
 								}
@@ -11370,7 +11370,7 @@ static void PM_Footsteps()
 							}
 							else
 							{
-								if (HoldingBlock)
+								if (holding_block)
 								{
 									PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALK2, setAnimFlags);
 								}
@@ -11723,9 +11723,9 @@ PM_BeginWeaponChange
 */
 static void PM_BeginWeaponChange(const int weapon)
 {
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
 	if (pm->gent && pm->gent->client && pm->gent->client->pers.enterTime >= level.time - 500)
@@ -11759,7 +11759,7 @@ static void PM_BeginWeaponChange(const int weapon)
 		pm->ps->eFlags &= ~EF2_DUAL_WEAPONS;
 	}
 
-	if (pm->ps->weapon == WP_SABER && (HoldingBlock || ActiveBlocking))
+	if (pm->ps->weapon == WP_SABER && (holding_block || active_blocking))
 	{
 		return;
 	}
@@ -12895,15 +12895,15 @@ void PM_NPCFatigue(playerState_t* ps, const int newMove, int anim)
 	}
 }
 
-void PM_SaberFakeFlagUpdate(playerState_t* ps, int newMove, int currentMove);
+void PM_SaberFakeFlagUpdate(const int new_move);
 
-void WP_SaberFatigueRegenerate(const int overrideAmt)
+void WP_SaberFatigueRegenerate(const int override_amt)
 {
 	if (pm->ps->saberFatigueChainCount >= MISHAPLEVEL_NONE)
 	{
-		if (overrideAmt)
+		if (override_amt)
 		{
-			pm->ps->saberFatigueChainCount -= overrideAmt;
+			pm->ps->saberFatigueChainCount -= override_amt;
 		}
 		else
 		{
@@ -12921,7 +12921,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 	int parts = SETANIM_TORSO;
 	qboolean manualBlocking = qfalse;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
 
 	if (new_move < LS_NONE || new_move >= LS_MOVE_MAX)
 	{
@@ -13017,7 +13017,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				|| ((pm->ps->SaberStaff() && (!pm->ps->saber[0].singleBladeStyle || pm->ps->saber[0].blade[1].active))//saber staff with more than first blade active
 					|| pm->ps->saber[0].type == SABER_ARC))
 			{
-				if (HoldingBlock)
+				if (holding_block)
 				{
 					if (pm->ps->saberAnimLevel == SS_DUAL)
 					{
@@ -13040,7 +13040,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		}
 		else if (pm->ps->saber[0].readyAnim != -1)
 		{
-			if (HoldingBlock)
+			if (holding_block)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13062,7 +13062,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		}
 		else if (pm->ps->dualSabers && pm->ps->saber[1].readyAnim != -1)
 		{
-			if (HoldingBlock)
+			if (holding_block)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13088,7 +13088,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 					|| pm->ps->saber[0].blade[1].active))
 					|| pm->ps->saber[0].type == SABER_ARC)))
 		{
-			if (HoldingBlock)
+			if (holding_block)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13110,7 +13110,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		}
 		else
 		{
-			if (HoldingBlock)
+			if (holding_block)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -13483,23 +13483,23 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			{
 				parts = SETANIM_BOTH;
 			}
-			else if (PM_SpinningSaberAnim(anim) && !HoldingBlock)
+			else if (PM_SpinningSaberAnim(anim) && !holding_block)
 			{
 				//spins must be played on entire body
 				parts = SETANIM_BOTH;
 			}
 			//coming out of a spin, force full body setting
-			else if (PM_SpinningSaberAnim(pm->ps->legsAnim) && !HoldingBlock)
+			else if (PM_SpinningSaberAnim(pm->ps->legsAnim) && !holding_block)
 			{
 				//spins must be played on entire body
 				parts = SETANIM_BOTH;
 				pm->ps->legsAnimTimer = pm->ps->torsoAnimTimer = 0;
 			}
 			else if (!pm->cmd.forwardmove && !pm->cmd.rightmove && !pm->cmd.upmove && !(pm->ps->pm_flags & PMF_DUCKED)
-				|| HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+				|| holding_block && pm->cmd.buttons & BUTTON_WALKING)
 			{
 				//not trying to run, duck or jump
-				if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING
+				if (holding_block && pm->cmd.buttons & BUTTON_WALKING
 					&& !PM_SaberInParry(new_move)
 					&& !PM_SaberInKnockaway(new_move)
 					&& !PM_SaberInBrokenParry(new_move)
@@ -13572,7 +13572,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 
 			//update the attack fake flag
-			PM_SaberFakeFlagUpdate(pm->ps, new_move, anim);
+			PM_SaberFakeFlagUpdate(new_move);
 
 			if (!PM_SaberInBounce(new_move) && !PM_SaberInReturn(new_move)) //or new move isn't slowbounce move
 			{
@@ -13645,10 +13645,10 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			else if (PM_SaberInStart(new_move))
 			{
 				//don't damage on the first few frames of a start anim because it may pop from one position to some drastically different one, killing the enemy without hitting them.
-				int damageDelay = 150;
-				if (pm->ps->torsoAnimTimer < damageDelay)
+				constexpr int damage_delay = 150;
+				if (pm->ps->torsoAnimTimer < damage_delay)
 				{
-					damageDelay = pm->ps->torsoAnimTimer;
+					pm->ps->torsoAnimTimer;
 				}
 			}
 			if (pm->ps->saberAnimLevel == SS_STRONG)
@@ -17212,15 +17212,15 @@ Consults a chart to choose what to do with the lightsaber.
 =================
 */
 
-void PM_WeaponLightsaber(void)
+void PM_WeaponLightsaber()
 {
 	qboolean delayed_fire = qfalse, animLevelOverridden = qfalse;
 	int anim = -1;
 	int newmove = LS_NONE;
 
-	const qboolean HoldingBlock = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
-	const qboolean ActiveBlocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
-	const qboolean WalkingBlocking = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKWALKING ? qtrue : qfalse; //Walking Blocking
+	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
+	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
+	const qboolean walking_blocking = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKWALKING ? qtrue : qfalse; //Walking Blocking
 
 	if (pm->gent
 		&& pm->gent->client
@@ -17672,7 +17672,7 @@ void PM_WeaponLightsaber(void)
 				PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
 				break;
 			default:
-				if (HoldingBlock)
+				if (holding_block)
 				{
 					if (pm->ps->saberAnimLevel == SS_DUAL)
 					{
@@ -17893,7 +17893,7 @@ void PM_WeaponLightsaber(void)
 		}
 		// check for fire
 		//This section dictates want happens when you quit holding down attack.
-		else if (!(pm->cmd.buttons & BUTTON_ATTACK) || HoldingBlock || WalkingBlocking || ActiveBlocking)
+		else if (!(pm->cmd.buttons & BUTTON_ATTACK) || holding_block || walking_blocking || active_blocking)
 		{
 			//not attacking
 			pm->ps->weaponTime = 0;
@@ -18068,7 +18068,7 @@ void PM_WeaponLightsaber(void)
 		else if (pm->ps->weaponTime > 0)
 		{
 			// Last attack is not yet complete.
-			if (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING)
+			if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 			{
 				if (pm->ps->saberAnimLevel == SS_DUAL)
 				{
@@ -18352,7 +18352,7 @@ void PM_WeaponLightsaber(void)
 					pm->ps->legsAnim;
 					break;
 				default:;
-					if (HoldingBlock)
+					if (holding_block)
 					{
 						if (pm->ps->saberAnimLevel == SS_DUAL)
 						{
@@ -18404,7 +18404,7 @@ void PM_WeaponLightsaber(void)
 
 	pm->ps->weaponstate = WEAPON_FIRING;
 
-	if (pm->ps->weaponTime > 0 && (HoldingBlock && pm->cmd.buttons & BUTTON_WALKING))
+	if (pm->ps->weaponTime > 0 && (holding_block && pm->cmd.buttons & BUTTON_WALKING))
 	{
 		if (pm->ps->saberAnimLevel == SS_STAFF)
 		{
@@ -21291,10 +21291,10 @@ void Pmove(pmove_t* pmove)
 	}
 }
 
-void PM_SaberFakeFlagUpdate(playerState_t* ps, const int newMove, int currentMove)
+void PM_SaberFakeFlagUpdate(const int new_move)
 {
 	//checks to see if the attack fake flag needs to be removed.
-	if (!PM_SaberInTransition(newMove) && !PM_SaberInStart(newMove) && !PM_SaberInAttackPure(newMove))
+	if (!PM_SaberInTransition(new_move) && !PM_SaberInStart(new_move) && !PM_SaberInAttackPure(new_move))
 	{
 		//not going into an attack move, clear the flag
 		pm->ps->userInt3 &= ~(1 << FLAG_ATTACKFAKE);

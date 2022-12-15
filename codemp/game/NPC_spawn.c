@@ -44,7 +44,7 @@ extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 
 extern void ST_ClearTimers(const gentity_t* ent);
-extern void Jedi_ClearTimers(gentity_t* ent);
+extern void Jedi_ClearTimers(const gentity_t* ent);
 extern void npc_shadow_trooper_precache(void);
 extern void NPC_Gonk_Precache(void);
 extern void NPC_Mouse_Precache(void);
@@ -2370,7 +2370,7 @@ teamnodmg - team that NPC does not take damage from (turrets and other auto-defe
 "noCombatSounds" - set to 1 to prevent loading and usage of combat sounds (anger, victory, etc.)
 "noExtraSounds" - set to 1 to prevent loading and usage of "extra" sounds (chasing the enemy - detecting them, flanking them... also jedi combat sounds)
 */
-extern void NPC_PrecacheAnimationCFG(const char* NPC_type);
+extern void NPC_PrecacheAnimationCFG(const char* npc_type);
 void NPC_Precache(gentity_t* spawner);
 
 void NPC_PrecacheType(char* NPC_type)
