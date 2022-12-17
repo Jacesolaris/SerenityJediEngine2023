@@ -49,6 +49,7 @@ extern int delayedShutDown;
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern qboolean PM_ReloadAnim(int anim);
 void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 void G_ClearEnemy(gentity_t* self)
 {
@@ -2231,6 +2232,8 @@ gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, co
 				//He ducked into shadow while we weren't looking
 				//Drop enemy and see if we should search for him
 				NPC_LostEnemyDecideChase();
+
+				npc_check_speak(NPC);
 			}
 			else
 			{

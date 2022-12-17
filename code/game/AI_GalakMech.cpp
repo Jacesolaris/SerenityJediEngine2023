@@ -40,6 +40,7 @@ extern qboolean PM_CrouchAnim(int anim);
 extern qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying);
 extern void NAV_GetLastMove(navInfo_t& info);
 extern qboolean NPC_IsGunner(const gentity_t* self);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 constexpr auto MELEE_DIST_SQUARED = 6400; //80*80;
 constexpr auto MIN_LOB_DIST_SQUARED = 65536; //256*256;
@@ -53,7 +54,7 @@ constexpr auto GALAK_SHIELD_HEALTH = 250;
 static vec3_t shieldMins = { -60, -60, -24 };
 static vec3_t shieldMaxs = { 60, 60, 80 };
 
-extern qboolean NPC_CheckPlayerTeamStealth(void);
+extern qboolean NPC_CheckPlayerTeamStealth();
 
 static qboolean enemyLOS;
 static qboolean enemyCS;
@@ -117,20 +118,20 @@ void NPC_GalakMech_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void GM_CreateExplosion(gentity_t* self, const int boltID, qboolean doSmall = qfalse)
+static void GM_CreateExplosion(gentity_t* self, const int bolt_id, const qboolean doSmall = qfalse)
 {
-	if (boltID >= 0)
+	if (bolt_id >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			boltID,
-			&boltMatrix, self->currentAngles, self->currentOrigin, level.time,
+			bolt_id,
+			&bolt_matrix, self->currentAngles, self->currentOrigin, level.time,
 			nullptr, self->s.modelScale);
 
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
 		if (doSmall)
 		{
@@ -158,7 +159,7 @@ void GM_Dying(gentity_t* self)
 		self->client->ps.powerups[PW_SHOCKED] = level.time + 1000;
 		if (TIMER_Done(self, "dyingExplosion"))
 		{
-			int newBolt;
+			int new_bolt;
 			switch (Q_irand(1, 14))
 			{
 				// Find place to generate explosion
@@ -172,7 +173,7 @@ void GM_Dying(gentity_t* self)
 				else if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "r_arm_middle"))
 				{
 					//r_arm_middle still there
-					newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_arm_elbow");
+					new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_arm_elbow");
 					gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "r_arm_middle", TURN_OFF);
 				}
 				break;
@@ -187,56 +188,56 @@ void GM_Dying(gentity_t* self)
 				else if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "l_arm_wrist"))
 				{
 					//l_arm_wrist still there
-					newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_arm_cap_l_hand");
+					new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_arm_cap_l_hand");
 					gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "l_arm_wrist", TURN_OFF);
 				}
 				else if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "l_arm_middle"))
 				{
 					//l_arm_middle still there
-					newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_arm_cap_l_hand");
+					new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_arm_cap_l_hand");
 					gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "l_arm_middle", TURN_OFF);
 				}
 				else if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "l_arm_augment"))
 				{
 					//l_arm_augment still there
-					newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_arm_elbow");
+					new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_arm_elbow");
 					gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], "l_arm_augment", TURN_OFF);
 				}
 				break;
 			case 3:
 			case 4:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*hip_fr");
-				GM_CreateExplosion(self, newBolt);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*hip_fr");
+				GM_CreateExplosion(self, new_bolt);
 				break;
 			case 5:
 			case 6:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*shldr_l");
-				GM_CreateExplosion(self, newBolt);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*shldr_l");
+				GM_CreateExplosion(self, new_bolt);
 				break;
 			case 7:
 			case 8:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*uchest_r");
-				GM_CreateExplosion(self, newBolt);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*uchest_r");
+				GM_CreateExplosion(self, new_bolt);
 				break;
 			case 9:
 			case 10:
 				GM_CreateExplosion(self, self->headBolt);
 				break;
 			case 11:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_leg_knee");
-				GM_CreateExplosion(self, newBolt, qtrue);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_leg_knee");
+				GM_CreateExplosion(self, new_bolt, qtrue);
 				break;
 			case 12:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_leg_knee");
-				GM_CreateExplosion(self, newBolt, qtrue);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_leg_knee");
+				GM_CreateExplosion(self, new_bolt, qtrue);
 				break;
 			case 13:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_leg_foot");
-				GM_CreateExplosion(self, newBolt, qtrue);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*l_leg_foot");
+				GM_CreateExplosion(self, new_bolt, qtrue);
 				break;
 			case 14:
-				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_leg_foot");
-				GM_CreateExplosion(self, newBolt, qtrue);
+				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_leg_foot");
+				GM_CreateExplosion(self, new_bolt, qtrue);
 				break;
 			default:;
 			}
@@ -265,8 +266,6 @@ void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, con
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
-		//shield is currently down
-		//FIXME: allow for radius damage?
 		if (hit_loc == HL_GENERIC1 && self->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH)
 		{
 			const int newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*antenna_base");
@@ -380,7 +379,7 @@ GM_HoldPosition
 -------------------------
 */
 
-static void GM_HoldPosition(void)
+static void GM_HoldPosition()
 {
 	NPC_FreeCombatPoint(NPCInfo->combatPoint, qtrue);
 	if (!Q3_TaskIDPending(NPC, TID_MOVE_NAV))
@@ -395,7 +394,7 @@ static void GM_HoldPosition(void)
 GM_Move
 -------------------------
 */
-static qboolean GM_Move(void)
+static qboolean GM_Move()
 {
 	NPCInfo->combatMove = qtrue; //always move straight toward our goal
 
@@ -435,7 +434,7 @@ NPC_BSGM_Patrol
 -------------------------
 */
 
-void NPC_BSGM_Patrol(void)
+void NPC_BSGM_Patrol()
 {
 	if (NPC_CheckPlayerTeamStealth())
 	{
@@ -459,7 +458,7 @@ GM_CheckMoveState
 -------------------------
 */
 
-static void GM_CheckMoveState(void)
+static void GM_CheckMoveState()
 {
 	if (Q3_TaskIDPending(NPC, TID_MOVE_NAV))
 	{
@@ -488,7 +487,7 @@ GM_CheckFireState
 -------------------------
 */
 
-static void GM_CheckFireState(void)
+static void GM_CheckFireState()
 {
 	if (enemyCS)
 	{
@@ -511,15 +510,14 @@ static void GM_CheckFireState(void)
 			{
 				//Fire on the last known position
 				vec3_t muzzle;
-				qboolean tooClose = qfalse;
-				qboolean tooFar = qfalse;
+				qboolean too_close = qfalse;
+				qboolean too_far = qfalse;
 
 				CalcEntitySpot(NPC, SPOT_HEAD, muzzle);
 				if (VectorCompare(impactPos, vec3_origin))
 				{
 					//never checked ShotEntity this frame, so must do a trace...
 					trace_t tr;
-					//vec3_t	mins = {-2,-2,-2}, maxs = {2,2,2};
 					vec3_t forward, end;
 					AngleVectors(NPC->client->ps.viewangles, forward, nullptr, nullptr);
 					VectorMA(muzzle, 8192, forward, end);
@@ -528,43 +526,43 @@ static void GM_CheckFireState(void)
 				}
 
 				//see if impact would be too close to me
-				float distThreshold = 16384/*128*128*/; //default
+				float dist_threshold = 16384/*128*128*/; //default
 				if (NPC->s.weapon == WP_REPEATER)
 				{
 					if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 					{
-						distThreshold = 65536/*256*256*/;
+						dist_threshold = 65536/*256*256*/;
 					}
 				}
 
 				float dist = DistanceSquared(impactPos, muzzle);
 
-				if (dist < distThreshold)
+				if (dist < dist_threshold)
 				{
 					//impact would be too close to me
-					tooClose = qtrue;
+					too_close = qtrue;
 				}
 				else if (level.time - NPCInfo->enemyLastSeenTime > 5000)
 				{
 					//we've haven't seen them in the last 5 seconds
 					//see if it's too far from where he is
-					distThreshold = 65536/*256*256*/; //default
+					dist_threshold = 65536/*256*256*/; //default
 					if (NPC->s.weapon == WP_REPEATER)
 					{
 						if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 						{
-							distThreshold = 262144/*512*512*/;
+							dist_threshold = 262144/*512*512*/;
 						}
 					}
 					dist = DistanceSquared(impactPos, NPCInfo->enemyLastSeenLocation);
-					if (dist > distThreshold)
+					if (dist > dist_threshold)
 					{
 						//impact would be too far from enemy
-						tooFar = qtrue;
+						too_far = qtrue;
 					}
 				}
 
-				if (!tooClose && !tooFar)
+				if (!too_close && !too_far)
 				{
 					vec3_t dir;
 					vec3_t angles;
@@ -584,7 +582,7 @@ static void GM_CheckFireState(void)
 	}
 }
 
-void NPC_GM_StartLaser(void)
+void NPC_GM_StartLaser()
 {
 	if (!NPC->lockCount)
 	{
@@ -600,7 +598,7 @@ void NPC_GM_StartLaser(void)
 	}
 }
 
-void GM_StartGloat(void)
+void GM_StartGloat()
 {
 	NPC->wait = 0;
 	gi.G2API_SetSurfaceOnOff(&NPC->ghoul2[NPC->playerModel], "torso_galakface_off", TURN_ON);
@@ -619,7 +617,7 @@ NPC_BSGM_Attack
 -------------------------
 */
 
-void NPC_BSGM_Attack(void)
+void NPC_BSGM_Attack()
 {
 	//Don't do anything if we're hurt
 	if (NPC->painDebounceTime > level.time)
@@ -765,16 +763,16 @@ void NPC_BSGM_Attack(void)
 			if (TIMER_Done(NPC, "beamDelay"))
 			{
 				//time to start the beam
-				int laserAnim;
+				int laser_anim;
 				if (Q_irand(0, 1))
 				{
-					laserAnim = BOTH_ATTACK2;
+					laser_anim = BOTH_ATTACK2;
 				}
 				else
 				{
-					laserAnim = BOTH_ATTACK7;
+					laser_anim = BOTH_ATTACK7;
 				}
-				NPC_SetAnim(NPC, SETANIM_BOTH, laserAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				NPC_SetAnim(NPC, SETANIM_BOTH, laser_anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TIMER_Set(NPC, "attackDelay", NPC->client->ps.torsoAnimTimer + Q_irand(1000, 3000));
 				//turn on beam effect
 				NPC->lockCount = 2;
@@ -830,12 +828,12 @@ void NPC_BSGM_Attack(void)
 					if (trace.fraction < 1.0f)
 					{
 						//hit something
-						gentity_t* traceEnt = &g_entities[trace.entityNum];
-						if (traceEnt && traceEnt->takedamage)
+						gentity_t* trace_ent = &g_entities[trace.entityNum];
+						if (trace_ent && trace_ent->takedamage)
 						{
 							//damage it
 							G_SoundAtSpot(trace.endpos, G_SoundIndex("sound/weapons/galak/laserdamage.wav"), qfalse);
-							G_Damage(traceEnt, NPC, NPC, NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0,
+							G_Damage(trace_ent, NPC, NPC, NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0,
 								MOD_ENERGY);
 						}
 					}
@@ -948,10 +946,10 @@ void NPC_BSGM_Attack(void)
 			else
 			{
 				const int hit = NPC_ShotEntity(NPC->enemy, impactPos);
-				const gentity_t* hitEnt = &g_entities[hit];
+				const gentity_t* hit_ent = &g_entities[hit];
 				if (hit == NPC->enemy->s.number
-					|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam
-					|| hitEnt && hitEnt->takedamage)
+					|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam
+					|| hit_ent && hit_ent->takedamage)
 				{
 					//can hit enemy or will hit glass or other breakable, so shoot anyway
 					enemyCS = qtrue;
@@ -962,7 +960,7 @@ void NPC_BSGM_Attack(void)
 				{
 					//Hmm, have to get around this bastard
 					NPC_AimAdjust(1); //adjust aim better longer we can see enemy
-					if (hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->playerTeam)
+					if (hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->playerTeam)
 					{
 						//would hit an ally, don't fire!!!
 						hitAlly = qtrue;
@@ -1012,10 +1010,10 @@ void NPC_BSGM_Attack(void)
 		NPCInfo->enemyLastSeenTime = level.time;
 
 		const int hit = NPC_ShotEntity(NPC->enemy, impactPos);
-		const gentity_t* hitEnt = &g_entities[hit];
+		const gentity_t* hit_ent = &g_entities[hit];
 		if (hit == NPC->enemy->s.number
-			|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam
-			|| hitEnt && hitEnt->takedamage)
+			|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam
+			|| hit_ent && hit_ent->takedamage)
 		{
 			//can hit enemy or will hit glass or other breakable, so shoot anyway
 			enemyCS = qtrue;
@@ -1280,7 +1278,7 @@ void NPC_BSGM_Attack(void)
 	}
 }
 
-void NPC_BSGM_Default(void)
+void NPC_BSGM_Default()
 {
 	if (NPCInfo->scriptFlags & SCF_FIRE_WEAPON)
 	{
@@ -1349,31 +1347,6 @@ void NPC_BSGM_Default(void)
 		//have an enemy
 		NPC_BSGM_Attack();
 
-		if (TIMER_Done(NPC, "TalkTime"))
-		{
-			if (NPC_IsGunner(NPC))
-			{
-				// Do taunt...
-				const int CallOut = Q_irand(0, 3);
-
-				switch (CallOut)
-				{
-				case 0:
-				default:
-					G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-					break;
-				case 1:
-					G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-					break;
-				case 2:
-					G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-					break;
-				case 3:
-					G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-					break;
-				}
-			}
-			TIMER_Set(NPC, "TalkTime", 5000);
-		}
+		npc_check_speak(NPC);
 	}
 }

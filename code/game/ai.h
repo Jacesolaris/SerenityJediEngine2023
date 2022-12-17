@@ -70,7 +70,7 @@ using rank_t = enum //# rank_e
 	RANK_MAX
 };
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 //AI_GRENADIER
 void NPC_BSGrenadier_Default(void);

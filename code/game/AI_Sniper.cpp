@@ -31,7 +31,7 @@ extern qboolean FlyingCreature(const gentity_t* ent);
 extern void Saboteur_Cloak(gentity_t* self);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
 extern qboolean NPC_IsGunner(const gentity_t* self);
-extern void NPC_AngerSound(void);
+extern void NPC_AngerSound();
 
 constexpr auto SPF_NO_HIDE = 2;
 
@@ -50,7 +50,7 @@ constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
 
 extern void NPC_Tusken_Taunt(void);
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 static qboolean enemyLOS;
 static qboolean enemyCS;
@@ -1003,9 +1003,9 @@ void NPC_BSSniper_Default()
 			if (NPC_IsGunner(NPC))
 			{
 				// Do taunt...
-				const int CallOut = Q_irand(0, 3);
+				const int call_out = Q_irand(0, 3);
 
-				switch (CallOut)
+				switch (call_out)
 				{
 				case 0:
 				default:

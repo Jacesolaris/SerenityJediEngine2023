@@ -52,6 +52,7 @@ extern bool Boba_Flee();
 extern bool Boba_Tactics();
 extern void BubbleShield_Update();
 extern qboolean PM_LockedAnim(int anim);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 extern cvar_t* g_dismemberment;
 extern cvar_t* g_saberRealisticCombat;
@@ -72,6 +73,7 @@ cvar_t* d_saberInfo;
 cvar_t* d_combatinfo;
 cvar_t* d_blockinfo;
 cvar_t* d_attackinfo;
+cvar_t* d_npctalk;
 
 extern qboolean stop_icarus;
 
@@ -112,21 +114,21 @@ qboolean NPC_EntityIsBreakable(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC)
+qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* npc)
 {
-	if (!NPC)
+	if (!npc)
 	{
 		return qfalse;
 	}
 
-	if (self && self->client && NPC_EntityIsBreakable(NPC) && NPC->health > 0)
+	if (self && self->client && NPC_EntityIsBreakable(npc) && npc->health > 0)
 	{
 		return qtrue;
 	}
 
-	if (NPC->s.eType == ET_PLAYER)
+	if (npc->s.eType == ET_PLAYER)
 	{
-		if (NPC->health <= 0 && (NPC->client && NPC->client->ps.stats[STAT_HEALTH] <= 0))
+		if (npc->health <= 0 && (npc->client && npc->client->ps.stats[STAT_HEALTH] <= 0))
 		{
 			return qfalse;
 		}
@@ -809,10 +811,10 @@ void NPC_PostDeathThink( void )
 DeadThink
 ----------------------------------------
 */
-static void DeadThink(void)
+static void DeadThink()
 {
 	trace_t trace;
-	const float oldMaxs2 = NPC->maxs[2];
+	const float old_maxs2 = NPC->maxs[2];
 
 	NPC->maxs[2] = NPC->client->renderInfo.eyePoint[2] - NPC->currentOrigin[2] + 4;
 
@@ -820,7 +822,7 @@ static void DeadThink(void)
 	{
 		NPC->maxs[2] = -8;
 	}
-	if (NPC->maxs[2] > oldMaxs2)
+	if (NPC->maxs[2] > old_maxs2)
 	{
 		//inflating maxs, make sure we're not inflating into solid
 		gi.trace(&trace, NPC->currentOrigin, NPC->mins, NPC->maxs, NPC->currentOrigin, NPC->s.number, NPC->clipmask,
@@ -828,7 +830,7 @@ static void DeadThink(void)
 		if (trace.allsolid)
 		{
 			//must be inflating
-			NPC->maxs[2] = oldMaxs2;
+			NPC->maxs[2] = old_maxs2;
 		}
 	}
 
@@ -927,7 +929,7 @@ void RestoreNPCGlobals()
 }
 
 //We MUST do this, other funcs were using NPC illegally when "self" wasn't the global NPC
-void ClearNPCGlobals(void)
+void ClearNPCGlobals()
 {
 	NPC = nullptr;
 	NPCInfo = nullptr;
@@ -943,7 +945,7 @@ vec3_t NPCDEBUG_BLUE = { 0.0, 0.0, 1.0 };
 vec3_t NPCDEBUG_LIGHT_BLUE = { 0.3f, 0.7f, 1.0 };
 extern void CG_Cube(vec3_t mins, vec3_t maxs, vec3_t color, float alpha);
 
-void NPC_ShowDebugInfo(void)
+void NPC_ShowDebugInfo()
 {
 	if (showBBoxes)
 	{
@@ -967,7 +969,7 @@ void NPC_ShowDebugInfo(void)
 	}
 }
 
-void NPC_ApplyScriptFlags(void)
+void NPC_ApplyScriptFlags()
 {
 	if (NPCInfo->scriptFlags & SCF_CROUCHED)
 	{
@@ -1051,21 +1053,21 @@ extern qboolean JET_Flying(const gentity_t* self);
 extern void JET_FlyStart(gentity_t* self);
 extern void JET_FlyStop(gentity_t* self);
 
-void NPC_HandleAIFlags(void)
+void NPC_HandleAIFlags()
 {
 	// Update Guys With Jet Packs
 	//----------------------------
 	if (NPCInfo->scriptFlags & SCF_FLY_WITH_JET)
 	{
-		bool ShouldFly = !!(NPCInfo->aiFlags & NPCAI_FLY);
-		const bool IsFlying = !!JET_Flying(NPC);
-		bool IsInTheAir = NPC->client->ps.groundEntityNum == ENTITYNUM_NONE;
+		bool should_fly = !!(NPCInfo->aiFlags & NPCAI_FLY);
+		const bool is_flying = !!JET_Flying(NPC);
+		bool is_in_the_air = NPC->client->ps.groundEntityNum == ENTITYNUM_NONE;
 
-		if (IsFlying)
+		if (is_flying)
 		{
 			// Don't Stop Flying Until Near The Ground
 			//-----------------------------------------
-			if (IsInTheAir)
+			if (is_in_the_air)
 			{
 				vec3_t ground;
 				trace_t trace;
@@ -1074,20 +1076,20 @@ void NPC_HandleAIFlags(void)
 				gi.trace(&trace, NPC->currentOrigin, nullptr, nullptr, ground, NPC->s.number, NPC->clipmask,
 					static_cast<EG2_Collision>(0), 0);
 
-				IsInTheAir = !trace.allsolid && !trace.startsolid && trace.fraction > 0.9f;
+				is_in_the_air = !trace.allsolid && !trace.startsolid && trace.fraction > 0.9f;
 			}
 
 			// If Flying, Remember The Last Time
 			//-----------------------------------
-			if (IsInTheAir)
+			if (is_in_the_air)
 			{
 				NPC->lastInAirTime = level.time;
-				ShouldFly = true;
+				should_fly = true;
 			}
 
 			// Auto Turn Off Jet Pack After 1 Second On The Ground
 			//-----------------------------------------------------
-			else if (!ShouldFly && level.time - NPC->lastInAirTime > 3000)
+			else if (!should_fly && level.time - NPC->lastInAirTime > 3000)
 			{
 				NPCInfo->aiFlags &= ~NPCAI_FLY;
 			}
@@ -1095,14 +1097,14 @@ void NPC_HandleAIFlags(void)
 
 		// If We Should Be Flying And Are Not, Start Er Up
 		//-------------------------------------------------
-		if (ShouldFly && !IsFlying)
+		if (should_fly && !is_flying)
 		{
 			JET_FlyStart(NPC); // EVENTUALLY, Remove All Other Calls
 		}
 
 		// Otherwise, If Needed, Shut It Off
 		//-----------------------------------
-		else if (!ShouldFly && IsFlying)
+		else if (!should_fly && is_flying)
 		{
 			JET_FlyStop(NPC); // EVENTUALLY, Remove All Other Calls
 		}
@@ -1127,6 +1129,8 @@ void NPC_HandleAIFlags(void)
 			//We can't nav to our enemy
 			//Drop enemy and see if we should search for him
 			NPC_LostEnemyDecideChase();
+
+			npc_check_speak(NPC);
 		}
 	}
 
@@ -1902,7 +1906,7 @@ extern void NPC_BSSD_Default(void);
 extern void NPC_BehaviorSet_Trooper(int bState);
 extern bool NPC_IsTrooper(const gentity_t* ent);
 extern bool Pilot_MasterUpdate();
-extern void NPC_BSGM_Default(void);
+extern void NPC_BSGM_Default();
 extern void NPC_BSDROIDEKA_Default(void);
 
 void NPC_RunBehavior(int team, int bState)
@@ -2652,6 +2656,7 @@ void NPC_InitAI(void)
 	d_JediAI = gi.cvar("d_JediAI", "0", CVAR_CHEAT);
 	d_noGroupAI = gi.cvar("d_noGroupAI", "0", CVAR_CHEAT);
 	d_asynchronousGroupAI = gi.cvar("d_asynchronousGroupAI", "1", CVAR_CHEAT);
+	d_npctalk = gi.cvar("d_npctalk", "0", CVAR_ARCHIVE);
 
 	//0 = never (BORING)
 	//1 = kyle only

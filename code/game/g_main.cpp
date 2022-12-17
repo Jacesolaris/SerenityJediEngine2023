@@ -271,11 +271,11 @@ extern void CP_FindCombatPointWaypoints(void);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 
 void G_RunFrame(int levelTime);
-void ClearNPCGlobals(void);
+void ClearNPCGlobals();
 extern void AI_UpdateGroups();
 
 void ClearPlayerAlertEvents(void);
-extern void NPC_ShowDebugInfo(void);
+extern void NPC_ShowDebugInfo();
 extern int killPlayerTimer;
 
 /*

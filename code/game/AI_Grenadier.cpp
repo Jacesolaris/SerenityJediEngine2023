@@ -33,6 +33,7 @@ extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_
 extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern qboolean NPC_IsGunner(const gentity_t* self);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 constexpr auto MAX_VIEW_DIST = 1024;
 constexpr auto MAX_VIEW_SPEED = 250;
@@ -48,7 +49,7 @@ constexpr auto LIGHT_SCALE = 0.25f;
 constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 static qboolean enemyLOS;
 static qboolean enemyCS;
@@ -704,31 +705,6 @@ void NPC_BSGrenadier_Default(void)
 		//have an enemy
 		NPC_BSGrenadier_Attack();
 
-		if (TIMER_Done(NPC, "TalkTime"))
-		{
-			if (NPC_IsGunner(NPC))
-			{
-				// Do taunt...
-				const int CallOut = Q_irand(0, 3);
-
-				switch (CallOut)
-				{
-				case 0:
-				default:
-					G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-					break;
-				case 1:
-					G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-					break;
-				case 2:
-					G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-					break;
-				case 3:
-					G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-					break;
-				}
-			}
-			TIMER_Set(NPC, "TalkTime", 5000);
-		}
+		npc_check_speak(NPC);
 	}
 }

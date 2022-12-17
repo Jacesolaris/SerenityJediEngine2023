@@ -29,7 +29,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern int PM_AnimLength(int index, animNumber_t anim);
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 static qboolean enemyLOS;
 static qboolean enemyCS;
@@ -37,7 +37,7 @@ static qboolean faceEnemy;
 static qboolean doMove;
 static qboolean shoot;
 static float enemyDist;
-extern void NPC_AngerSound(void);
+extern void NPC_AngerSound();
 
 static void SaberDroid_HoldPosition(void)
 {

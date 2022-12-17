@@ -1189,7 +1189,7 @@ qboolean NPC_EntityIsBreakable(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC)
+qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* npc)
 {
 	if (!NPCS.NPC)
 	{

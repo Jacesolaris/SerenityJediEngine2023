@@ -50,7 +50,7 @@ enum
 	LSTATE_FIRED4,
 };
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
 void Mark1_BlasterAttack(qboolean advance);
 void DeathFX(const gentity_t* ent);

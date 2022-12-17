@@ -114,7 +114,7 @@ extern void Boba_ChangeWeapon(int wp);
 static qboolean Jedi_SaberBlock();
 static qboolean Jedi_AttackDecide(int enemy_dist);
 extern void add_npc_block_point_bonus(const gentity_t* self);
-extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* NPC);
+extern qboolean NPC_IsAlive(const gentity_t* self, const gentity_t* npc);
 extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRespecting(const gentity_t* self);
@@ -127,6 +127,7 @@ extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern cvar_t* g_DebugSaberCombat;
 extern qboolean wp_saber_block_check_random(gentity_t* self, vec3_t hitloc);
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 int in_field_of_vision(vec3_t viewangles, const float fov, vec3_t angles)
 {
@@ -2078,7 +2079,7 @@ static float enemyDist;
 constexpr auto MELEE_DIST_SQUARED = 6400;
 extern cvar_t* com_outcast;
 
-static void Jedi_CombatDistance(const int enemy_dist)
+static void jedi_combat_distance(const int enemy_dist)
 {
 	enemyDist = DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin);
 
@@ -5702,7 +5703,7 @@ static qboolean Jedi_SaberBlock()
 	if (d_JediAI->integer || g_DebugSaberCombat->integer)
 	{
 		G_DebugLine(saber_point, hitloc, FRAMETIME,
-		            wp_debug_saber_colour(NPC->enemy->client->ps.saber[closest_saber_num].blade[closest_blade_num].color));
+			wp_debug_saber_colour(NPC->enemy->client->ps.saber[closest_saber_num].blade[closest_blade_num].color));
 	}
 	evasionType_t evasion_type;
 
@@ -6432,8 +6433,7 @@ gentity_t* Jedi_FindEnemyInCone(const gentity_t* self, gentity_t* fallback, cons
 	return enemy;
 }
 
-static void Jedi_SetEnemyInfo(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir,
-	float* enemy_movespeed, const int prediction)
+void Jedi_SetEnemyInfo(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, const int prediction)
 {
 	if (!NPC || !NPC->enemy)
 	{
@@ -8310,7 +8310,7 @@ static void Jedi_Combat()
 		Jedi_CombatTimersUpdate(enemy_dist);
 		//We call this even if lost enemy to keep him moving and to update the taunting behavior
 		//maintain a distance from enemy appropriate for our aggression level
-		Jedi_CombatDistance(enemy_dist);
+		jedi_combat_distance(enemy_dist);
 	}
 
 	if (NPC->client->NPC_class != CLASS_BOBAFETT && NPC->client->NPC_class != CLASS_MANDO)
@@ -10676,83 +10676,14 @@ void NPC_BSJedi_Default()
 				NPC_CheckEvasion();
 			}
 
-			if (npc_is_jedi(NPC))
-			{
-				// Do deflect taunt...
-				G_AddVoiceEvent(NPC, Q_irand(EV_DEFLECT1, EV_DEFLECT3), 5000 + Q_irand(0, 15000));
-			}
-
 			Jedi_Attack();
 		}
 		else
 		{
-			// Jedi/Sith.
-			if (TIMER_Done(NPC, "TalkTime"))
-			{
-				if (npc_is_dark_jedi(NPC))
-				{
-					// Do taunt/anger...
-					const int call_out = Q_irand(0, 3);
-
-					switch (call_out)
-					{
-					case 3:
-						G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 1000 + Q_irand(0, 15000));
-						break;
-					case 2:
-						G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 1000 + Q_irand(0, 15000));
-						break;
-					case 1:
-						G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 1000 + Q_irand(0, 15000));
-						break;
-					default:
-						G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 1000 + Q_irand(0, 15000));
-						break;
-					}
-				}
-				else if (npc_is_light_jedi(NPC))
-				{
-					// Do taunt...
-					const int call_out = Q_irand(0, 2);
-
-					switch (call_out)
-					{
-					case 2:
-						G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 1000 + Q_irand(0, 15000));
-						break;
-					case 1:
-						G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 1000 + Q_irand(0, 15000));
-						break;
-					default:
-						G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 1000 + Q_irand(0, 15000));
-					}
-				}
-				else
-				{
-					// Do taunt/anger...
-					const int call_out = Q_irand(0, 3);
-
-					switch (call_out)
-					{
-					case 3:
-						G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 1000 + Q_irand(0, 15000));
-						break;
-					case 2:
-						G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 1000 + Q_irand(0, 15000));
-						break;
-					case 1:
-						G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 1000 + Q_irand(0, 15000));
-						break;
-					default:
-						G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 1000 + Q_irand(0, 15000));
-						break;
-					}
-				}
-				TIMER_Set(NPC, "TalkTime", 1000);
-			}
-
 			Jedi_Attack();
 		}
+
+		npc_check_speak(NPC);
 
 		//if we have multiple-jedi combat, probably need to keep checking (at certain debounce intervals) for a better (closer, more active) enemy and switch if needbe...
 		if ((!ucmd.buttons && !NPC->client->ps.forcePowersActive || NPC->enemy && NPC->enemy->health <= 0) &&
@@ -10762,15 +10693,15 @@ void NPC_BSJedi_Default()
 			//FIXME: build a list of all local enemies (since we have to find best anyway) for other AI factors- like when to use group attacks, determine when to change tactics, when surrounded, when blocked by another in the enemy group, etc.  Should we build this group list or let the enemies maintain their own list and we just access it?
 			gentity_t* sav_enemy = NPC->enemy; //FIXME: what about NPC->lastEnemy?
 			NPC->enemy = nullptr;
-			gentity_t* newEnemy = NPC_CheckEnemy(
+			gentity_t* new_enemy = NPC_CheckEnemy(
 				static_cast<qboolean>(NPCInfo->confusionTime < level.time&& NPCInfo->insanityTime < level.time),
 				qfalse, qfalse);
 			NPC->enemy = sav_enemy;
-			if (newEnemy && newEnemy != sav_enemy)
+			if (new_enemy && new_enemy != sav_enemy)
 			{
 				//picked up a new enemy!
 				NPC->lastEnemy = NPC->enemy;
-				G_SetEnemy(NPC, newEnemy);
+				G_SetEnemy(NPC, new_enemy);
 			}
 			NPCInfo->enemyCheckDebounceTime = level.time + Q_irand(1000, 3000);
 		}

@@ -3163,9 +3163,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			if (npc_is_dark_jedi(NPCS.NPC))
 			{
 				// Do taunt/anger...
-				const int CallOut = Q_irand(0, 3);
+				const int call_out = Q_irand(0, 3);
 
-				switch (CallOut)
+				switch (call_out)
 				{
 				case 3:
 					G_AddVoiceEvent(NPCS.NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + Q_irand(0, 15000));
@@ -3184,9 +3184,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			else if (npc_is_light_jedi(NPCS.NPC))
 			{
 				// Do taunt...
-				const int CallOut = Q_irand(0, 2);
+				const int call_out = Q_irand(0, 2);
 
-				switch (CallOut)
+				switch (call_out)
 				{
 				case 2:
 					G_AddVoiceEvent(NPCS.NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + Q_irand(0, 15000));
@@ -3201,9 +3201,9 @@ static void Jedi_CombatDistance(int enemy_dist)
 			else
 			{
 				// Do taunt/anger...
-				const int CallOut = Q_irand(0, 3);
+				const int call_out = Q_irand(0, 3);
 
-				switch (CallOut)
+				switch (call_out)
 				{
 				case 3:
 					G_AddVoiceEvent(NPCS.NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + Q_irand(0, 15000));
@@ -10681,9 +10681,9 @@ void NPC_BSJedi_Default(void)
 				if (npc_is_dark_jedi(NPCS.NPC))
 				{
 					// Do taunt/anger...
-					const int CallOut = Q_irand(0, 3);
+					const int call_out = Q_irand(0, 3);
 
-					switch (CallOut)
+					switch (call_out)
 					{
 					case 3:
 						G_AddVoiceEvent(NPCS.NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + Q_irand(0, 15000));
@@ -10702,9 +10702,9 @@ void NPC_BSJedi_Default(void)
 				else if (npc_is_light_jedi(NPCS.NPC))
 				{
 					// Do taunt...
-					const int CallOut = Q_irand(0, 2);
+					const int call_out = Q_irand(0, 2);
 
-					switch (CallOut)
+					switch (call_out)
 					{
 					case 2:
 						G_AddVoiceEvent(NPCS.NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + Q_irand(0, 15000));
@@ -10719,9 +10719,9 @@ void NPC_BSJedi_Default(void)
 				else
 				{
 					// Do taunt/anger...
-					const int CallOut = Q_irand(0, 3);
+					const int call_out = Q_irand(0, 3);
 
-					switch (CallOut)
+					switch (call_out)
 					{
 					case 3:
 						G_AddVoiceEvent(NPCS.NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + Q_irand(0, 15000));

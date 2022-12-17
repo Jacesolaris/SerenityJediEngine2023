@@ -97,6 +97,7 @@ extern qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, i
 void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker);
 extern cvar_t* g_DebugSaberCombat;
 extern qboolean PM_InSaberLock(int anim);
+extern void g_do_clash_taunting(const gentity_t* speaker_npc_self);
 ///////////Defines////////////////
 
 //////////Actions////////////////
@@ -109,11 +110,11 @@ void SabBeh_SaberShouldBeDisarmedAttacker(gentity_t* attacker, const int saber_n
 		if (!(attacker->client->ps.saber[saber_num].saberFlags & SFL_NOT_DISARMABLE))
 		{
 			//knocked the saber right out of his hand!
-			vec3_t throwDir = { 0, 0, 350 };
+			vec3_t throw_dir = { 0, 0, 350 };
 
 			G_Stagger(attacker);
 
-			WP_SaberDisarmed(attacker, throwDir);
+			WP_SaberDisarmed(attacker, throw_dir);
 		}
 	}
 }
@@ -126,11 +127,11 @@ void SabBeh_SaberShouldBeDisarmedBlocker(gentity_t* blocker, const int saber_num
 		if (!(blocker->client->ps.saber[saber_num].saberFlags & SFL_NOT_DISARMABLE))
 		{
 			//knocked the saber right out of his hand!
-			vec3_t throwDir = { 0, 0, 350 };
+			vec3_t throw_dir = { 0, 0, 350 };
 
 			G_Stagger(blocker);
 
-			WP_SaberDisarmed(blocker, throwDir);
+			WP_SaberDisarmed(blocker, throw_dir);
 		}
 	}
 }
@@ -872,6 +873,11 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 						attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 					}
 
+					if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+					{
+						g_do_clash_taunting(attacker);
+					}
+
 					if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 					{
 						if (d_slowmoaction->integer)
@@ -1025,6 +1031,8 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 						else
 						{
 							WP_SaberMBlock(blocker, attacker, saber_num, blade_num);
+
+							g_do_clash_taunting(blocker);
 
 							if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
 							{

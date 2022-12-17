@@ -1497,6 +1497,7 @@ struct gentity_s
 	int nearAllies; // Number of allies nearby on this frame
 	int calloutTime; // Prevent us from using callouts too often
 	int markTime; // Keep us marked in red
+	int check_speach_time;
 
 	char* radarIcon;
 	//amount of any of these above 1 bit.

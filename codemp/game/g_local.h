@@ -558,6 +558,7 @@ struct gentity_s
 	int bot_strafe_target_timer;
 	vec3_t bot_strafe_target_position;
 	int bot_check_speach_time;
+	int check_speach_time;
 
 	gentity_t* owner; // objects never interact with their owners, to
 	// prevent player missiles from immediately

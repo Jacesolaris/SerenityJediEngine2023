@@ -47,9 +47,10 @@ extern void NPC_CheckEvasion();
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean NPC_CanUseAdvancedFighting();
-extern void NPC_AngerSound(void);
+extern void NPC_AngerSound();
 extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
 extern cvar_t* g_allowgunnerbash;
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 extern cvar_t* d_asynchronousGroupAI;
 
@@ -74,7 +75,7 @@ constexpr auto TURNING_SCALE = 0.25f; //;
 constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 static qboolean enemyLOS;
 static qboolean enemyCS;
@@ -4538,32 +4539,7 @@ void NPC_BSST_Default()
 				NPC_BSST_Attack();
 			}
 
-			if (TIMER_Done(NPC, "TalkTime"))
-			{
-				if (NPC_IsGunner(NPC))
-				{
-					// Do taunt...
-					const int call_out = Q_irand(0, 3);
-
-					switch (call_out)
-					{
-					case 0:
-					default:
-						G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-						break;
-					case 1:
-						G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-						break;
-					case 2:
-						G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-						break;
-					case 3:
-						G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-						break;
-					}
-				}
-				TIMER_Set(NPC, "TalkTime", 5000);
-			}
+			npc_check_speak(NPC);
 		}
 	}
 }

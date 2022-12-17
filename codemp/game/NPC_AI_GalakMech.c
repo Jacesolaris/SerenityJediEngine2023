@@ -111,14 +111,14 @@ void NPC_GalakMech_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void GM_CreateExplosion(gentity_t* self, const int boltID, qboolean doSmall) //doSmall = qfalse
+static void GM_CreateExplosion(gentity_t* self, const int bolt_id, qboolean doSmall) //doSmall = qfalse
 {
-	if (boltID >= 0)
+	if (bolt_id >= 0)
 	{
 		mdxaBone_t boltMatrix;
 		vec3_t org, dir;
 
-		trap->G2API_GetBoltMatrix(self->ghoul2, 0, boltID, &boltMatrix, self->r.currentAngles, self->r.currentOrigin,
+		trap->G2API_GetBoltMatrix(self->ghoul2, 0, bolt_id, &boltMatrix, self->r.currentAngles, self->r.currentOrigin,
 			level.time, NULL, self->modelScale);
 
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);

@@ -66,6 +66,7 @@ extern cvar_t* d_saberInfo;
 extern cvar_t* d_combatinfo;
 extern cvar_t* d_blockinfo;
 extern cvar_t* d_attackinfo;
+extern cvar_t* d_npctalk;
 
 extern void NPC_Think(gentity_t* self);
 extern void pitch_roll_for_slope(gentity_t* forwhom, vec3_t pass_slope = nullptr, vec3_t store_angles = nullptr,
@@ -95,15 +96,15 @@ extern visibility_t enemyVisibility;
 //AI_Default
 extern qboolean NPC_CheckInvestigate(int alertEventNum);
 extern qboolean NPC_StandTrackAndShoot(gentity_t* NPC);
-extern void NPC_BSIdle(void);
+extern void NPC_BSIdle();
 extern void NPC_BSPointShoot(qboolean shoot);
-extern void NPC_BSStandGuard(void);
-extern void NPC_BSPatrol(void);
-extern void NPC_BSHuntAndKill(void);
-extern void NPC_BSStandAndShoot(void);
-extern void NPC_BSRunAndShoot(void);
+extern void NPC_BSStandGuard();
+extern void NPC_BSPatrol();
+extern void NPC_BSHuntAndKill();
+extern void NPC_BSStandAndShoot();
+extern void NPC_BSRunAndShoot();
 extern void NPC_BSWait(void);
-extern void NPC_BSDefault(void);
+extern void NPC_BSDefault();
 
 //NPC_behavior
 extern void NPC_BSAdvanceFight();
@@ -138,7 +139,7 @@ extern qboolean ShotThroughGlass(trace_t* tr, const gentity_t* target, vec3_t sp
 extern void G_ClearEnemy(gentity_t* self);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern gentity_t* NPC_PickAlly(qboolean facingEachOther, float range, qboolean ignoreGroup, qboolean movingOnly);
-extern void NPC_LostEnemyDecideChase(void);
+extern void NPC_LostEnemyDecideChase();
 extern float NPC_MaxDistSquaredForWeapon(void);
 extern qboolean NPC_EvaluateShot(int hit, qboolean glassOK);
 extern int NPC_ShotEntity(const gentity_t* ent, vec3_t impactPos = nullptr);

@@ -35,7 +35,7 @@ extern void NPC_AimAdjust(int change);
 extern qboolean FlyingCreature(const gentity_t* ent);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean NPC_IsGunner(const gentity_t* self);
-extern void NPC_AngerSound(void);
+extern void NPC_AngerSound();
 
 constexpr auto MAX_VIEW_DIST = 1024;
 constexpr auto MAX_VIEW_SPEED = 250;
@@ -51,7 +51,7 @@ constexpr auto LIGHT_SCALE = 0.25f;
 constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 static float enemyDist;
 
@@ -603,9 +603,9 @@ void NPC_BSTusken_Default(void)
 			if (NPC_IsGunner(NPC))
 			{
 				// Do taunt...
-				const int CallOut = Q_irand(0, 3);
+				const int call_out = Q_irand(0, 3);
 
-				switch (CallOut)
+				switch (call_out)
 				{
 				case 0:
 				default:

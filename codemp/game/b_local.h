@@ -88,7 +88,7 @@ extern npcStatic_t NPCS;
 
 //AI_Default
 extern qboolean NPC_CheckInvestigate(int alertEventNum);
-extern qboolean NPC_StandTrackAndShoot(const gentity_t* NPC, qboolean canDuck);
+extern qboolean NPC_StandTrackAndShoot(const gentity_t* npc, qboolean can_duck);
 extern void NPC_BSIdle(void);
 extern void NPC_BSPointShoot(qboolean shoot);
 extern void NPC_BSStandGuard(void);

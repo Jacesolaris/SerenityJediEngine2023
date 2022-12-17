@@ -13213,19 +13213,19 @@ void trace_move(bot_state_t* bs, vec3_t move_dir, const int target_num)
 
 extern void npc_conversation_animation();
 
-void bot_check_speak(gentity_t* bot, const qboolean moving)
+void bot_check_speak(gentity_t* self, const qboolean moving)
 {
 	char filename[256];
-	char bot_sound_dir[256];
+	char npc_sound_dir[256];
 	fileHandle_t f;
 
-	if (bot->bot_check_speach_time > level.time) return; // not yet...
+	if (self->bot_check_speach_time > level.time) return; // not yet...
 
-	bot->bot_check_speach_time = level.time + 5000 + irand(0, 15000);
+	self->bot_check_speach_time = level.time + 5000 + irand(0, 15000);
 
-	strcpy(bot_sound_dir, bot->client->botSoundDir);
+	strcpy(npc_sound_dir, self->client->botSoundDir);
 
-	if (botstates[bot->s.number]->currentEnemy && botstates[bot->s.number]->enemySeenTime >= level.time)
+	if (botstates[self->s.number]->currentEnemy && botstates[self->s.number]->enemySeenTime >= level.time)
 	{
 		// Have enemy...
 		const int rand_choice = irand(0, 50);
@@ -13233,157 +13233,157 @@ void bot_check_speak(gentity_t* bot, const qboolean moving)
 		switch (rand_choice)
 		{
 		case 0:
-			strcpy(filename, va("sound/chars/%s/misc/anger1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/anger1.mp3", npc_sound_dir));
 			break;
 		case 1:
-			strcpy(filename, va("sound/chars/%s/misc/anger2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/anger2.mp3", npc_sound_dir));
 			break;
 		case 2:
-			strcpy(filename, va("sound/chars/%s/misc/anger3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/anger3.mp3", npc_sound_dir));
 			break;
 		case 3:
-			strcpy(filename, va("sound/chars/%s/misc/chase1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/chase1.mp3", npc_sound_dir));
 			break;
 		case 4:
-			strcpy(filename, va("sound/chars/%s/misc/chase2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/chase2.mp3", npc_sound_dir));
 			break;
 		case 5:
-			strcpy(filename, va("sound/chars/%s/misc/chase3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/chase3.mp3", npc_sound_dir));
 			break;
 		case 6:
-			strcpy(filename, va("sound/chars/%s/misc/combat1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/combat1.mp3", npc_sound_dir));
 			break;
 		case 7:
-			strcpy(filename, va("sound/chars/%s/misc/combat2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/combat2.mp3", npc_sound_dir));
 			break;
 		case 8:
-			strcpy(filename, va("sound/chars/%s/misc/combat3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/combat3.mp3", npc_sound_dir));
 			break;
 		case 9:
-			strcpy(filename, va("sound/chars/%s/misc/confuse1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/confuse1.mp3", npc_sound_dir));
 			break;
 		case 10:
-			strcpy(filename, va("sound/chars/%s/misc/confuse2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/confuse2.mp3", npc_sound_dir));
 			break;
 		case 11:
-			strcpy(filename, va("sound/chars/%s/misc/confuse3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/confuse3.mp3", npc_sound_dir));
 			break;
 		case 12:
-			strcpy(filename, va("sound/chars/%s/misc/cover1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/cover1.mp3", npc_sound_dir));
 			break;
 		case 13:
-			strcpy(filename, va("sound/chars/%s/misc/cover2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/cover2.mp3", npc_sound_dir));
 			break;
 		case 14:
-			strcpy(filename, va("sound/chars/%s/misc/cover3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/cover3.mp3", npc_sound_dir));
 			break;
 		case 15:
-			strcpy(filename, va("sound/chars/%s/misc/cover4.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/cover4.mp3", npc_sound_dir));
 			break;
 		case 16:
-			strcpy(filename, va("sound/chars/%s/misc/cover5.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/cover5.mp3", npc_sound_dir));
 			break;
 		case 17:
-			strcpy(filename, va("sound/chars/%s/misc/deflect1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/deflect1.mp3", npc_sound_dir));
 			break;
 		case 18:
-			strcpy(filename, va("sound/chars/%s/misc/deflect2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/deflect2.mp3", npc_sound_dir));
 			break;
 		case 19:
-			strcpy(filename, va("sound/chars/%s/misc/deflect3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/deflect3.mp3", npc_sound_dir));
 			break;
 		case 20:
-			strcpy(filename, va("sound/chars/%s/misc/detected1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/detected1.mp3", npc_sound_dir));
 			break;
 		case 21:
-			strcpy(filename, va("sound/chars/%s/misc/detected2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/detected2.mp3", npc_sound_dir));
 			break;
 		case 22:
-			strcpy(filename, va("sound/chars/%s/misc/detected3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/detected3.mp3", npc_sound_dir));
 			break;
 		case 23:
-			strcpy(filename, va("sound/chars/%s/misc/detected4.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/detected4.mp3", npc_sound_dir));
 			break;
 		case 24:
-			strcpy(filename, va("sound/chars/%s/misc/detected5.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/detected5.mp3", npc_sound_dir));
 			break;
 		case 25:
-			strcpy(filename, va("sound/chars/%s/misc/escaping1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/escaping1.mp3", npc_sound_dir));
 			break;
 		case 26:
-			strcpy(filename, va("sound/chars/%s/misc/escaping2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/escaping2.mp3", npc_sound_dir));
 			break;
 		case 27:
-			strcpy(filename, va("sound/chars/%s/misc/escaping3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/escaping3.mp3", npc_sound_dir));
 			break;
 		case 28:
-			strcpy(filename, va("sound/chars/%s/misc/giveup1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/giveup1.mp3", npc_sound_dir));
 			break;
 		case 29:
-			strcpy(filename, va("sound/chars/%s/misc/giveup2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/giveup2.mp3", npc_sound_dir));
 			break;
 		case 30:
-			strcpy(filename, va("sound/chars/%s/misc/giveup3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/giveup3.mp3", npc_sound_dir));
 			break;
 		case 31:
-			strcpy(filename, va("sound/chars/%s/misc/giveup4.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/giveup4.mp3", npc_sound_dir));
 			break;
 		case 32:
-			strcpy(filename, va("sound/chars/%s/misc/gloat1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/gloat1.mp3", npc_sound_dir));
 			break;
 		case 33:
-			strcpy(filename, va("sound/chars/%s/misc/gloat2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/gloat2.mp3", npc_sound_dir));
 			break;
 		case 34:
-			strcpy(filename, va("sound/chars/%s/misc/gloat3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/gloat3.mp3", npc_sound_dir));
 			break;
 		case 35:
-			strcpy(filename, va("sound/chars/%s/misc/jchase1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jchase1.mp3", npc_sound_dir));
 			break;
 		case 36:
-			strcpy(filename, va("sound/chars/%s/misc/jchase2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jchase2.mp3", npc_sound_dir));
 			break;
 		case 37:
-			strcpy(filename, va("sound/chars/%s/misc/jchase3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jchase3.mp3", npc_sound_dir));
 			break;
 		case 38:
-			strcpy(filename, va("sound/chars/%s/misc/jdetected1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jdetected1.mp3", npc_sound_dir));
 			break;
 		case 39:
-			strcpy(filename, va("sound/chars/%s/misc/jdetected2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jdetected2.mp3", npc_sound_dir));
 			break;
 		case 40:
-			strcpy(filename, va("sound/chars/%s/misc/jdetected3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jdetected3.mp3", npc_sound_dir));
 			break;
 		case 41:
-			strcpy(filename, va("sound/chars/%s/misc/jlost1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jlost1.mp3", npc_sound_dir));
 			break;
 		case 42:
-			strcpy(filename, va("sound/chars/%s/misc/jlost2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jlost2.mp3", npc_sound_dir));
 			break;
 		case 43:
-			strcpy(filename, va("sound/chars/%s/misc/jlost3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/jlost3.mp3", npc_sound_dir));
 			break;
 		case 44:
-			strcpy(filename, va("sound/chars/%s/misc/outflank1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/outflank1.mp3", npc_sound_dir));
 			break;
 		case 45:
-			strcpy(filename, va("sound/chars/%s/misc/outflank2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/outflank2.mp3", npc_sound_dir));
 			break;
 		case 46:
-			strcpy(filename, va("sound/chars/%s/misc/outflank3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/outflank3.mp3", npc_sound_dir));
 			break;
 		case 47:
-			strcpy(filename, va("sound/chars/%s/misc/taunt.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/taunt.mp3", npc_sound_dir));
 			break;
 		case 48:
-			strcpy(filename, va("sound/chars/%s/misc/taunt1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/taunt1.mp3", npc_sound_dir));
 			break;
 		case 49:
-			strcpy(filename, va("sound/chars/%s/misc/taunt2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/taunt2.mp3", npc_sound_dir));
 			break;
 		default:
-			strcpy(filename, va("sound/chars/%s/misc/taunt3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/taunt3.mp3", npc_sound_dir));
 			break;
 		}
 	}
@@ -13395,37 +13395,37 @@ void bot_check_speak(gentity_t* bot, const qboolean moving)
 		switch (rand_choice)
 		{
 		case 0:
-			strcpy(filename, va("sound/chars/%s/misc/sight1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/sight1.mp3", npc_sound_dir));
 			break;
 		case 1:
-			strcpy(filename, va("sound/chars/%s/misc/sight2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/sight2.mp3", npc_sound_dir));
 			break;
 		case 2:
-			strcpy(filename, va("sound/chars/%s/misc/sight3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/sight3.mp3", npc_sound_dir));
 			break;
 		case 3:
-			strcpy(filename, va("sound/chars/%s/misc/look1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/look1.mp3", npc_sound_dir));
 			break;
 		case 4:
-			strcpy(filename, va("sound/chars/%s/misc/look2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/look2.mp3", npc_sound_dir));
 			break;
 		case 5:
-			strcpy(filename, va("sound/chars/%s/misc/look3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/look3.mp3", npc_sound_dir));
 			break;
 		case 6:
-			strcpy(filename, va("sound/chars/%s/misc/suspicious1.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/suspicious1.mp3", npc_sound_dir));
 			break;
 		case 7:
-			strcpy(filename, va("sound/chars/%s/misc/suspicious2.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/suspicious2.mp3", npc_sound_dir));
 			break;
 		case 8:
-			strcpy(filename, va("sound/chars/%s/misc/suspicious3.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/suspicious3.mp3", npc_sound_dir));
 			break;
 		case 9:
-			strcpy(filename, va("sound/chars/%s/misc/suspicious4.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/suspicious4.mp3", npc_sound_dir));
 			break;
 		default:
-			strcpy(filename, va("sound/chars/%s/misc/suspicious5.mp3", bot_sound_dir));
+			strcpy(filename, va("sound/chars/%s/misc/suspicious5.mp3", npc_sound_dir));
 			break;
 		}
 	}
@@ -13443,7 +13443,7 @@ void bot_check_speak(gentity_t* bot, const qboolean moving)
 	trap->Print("Bot sound file [%s] played.\n", filename);
 
 	// Play a taunt/etc...
-	G_SoundOnEnt(bot, CHAN_VOICE_ATTEN, filename);
+	G_SoundOnEnt(self, CHAN_VOICE_ATTEN, filename);
 
 	if (!moving)
 	{

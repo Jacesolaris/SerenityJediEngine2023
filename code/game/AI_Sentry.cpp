@@ -525,7 +525,7 @@ void Sentry_AttackDecision(void)
 	Sentry_RangedAttack(visible, advance);
 }
 
-qboolean NPC_CheckPlayerTeamStealth(void);
+qboolean NPC_CheckPlayerTeamStealth();
 
 /*
 -------------------------
