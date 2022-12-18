@@ -35,7 +35,7 @@ extern vec3_t playerMaxs;
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 extern void NPC_BSNoClip();
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void NPC_ApplyRoff(void);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
@@ -1964,6 +1964,16 @@ void NPC_RunBehavior(int team, int bState)
 		NPC_BehaviorSet_Jedi(bState);
 	}
 	else if (NPC->client->NPC_class == CLASS_SITHLORD && NPC->client->ps.weapon == WP_NONE)
+	{
+		//force-only reborn
+		NPC_BehaviorSet_Jedi(bState);
+	}
+	else if (NPC->client->NPC_class == CLASS_STORMTROOPER && NPC->client->ps.weapon == WP_TUSKEN_RIFLE || NPC->client->ps.weapon == WP_FLECHETTE)
+	{
+		//force-only reborn
+		NPC_BehaviorSet_Jedi(bState);
+	}
+	else if (NPC->client->NPC_class == CLASS_STORMCOMMANDO || NPC->client->NPC_class == CLASS_CLONETROOPER)
 	{
 		//force-only reborn
 		NPC_BehaviorSet_Jedi(bState);

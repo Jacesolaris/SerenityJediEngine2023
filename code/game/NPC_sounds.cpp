@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern void G_SpeechEvent(const gentity_t* self, int event);
 
-void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime)
+void G_AddVoiceEvent(const gentity_t* self, const int event, const int speak_debounce_time)
 {
 	if (!self->NPC)
 	{
@@ -87,7 +87,7 @@ void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime)
 	G_SpeechEvent(self, event);
 
 	//won't speak again for 5 seconds (unless otherwise specified)
-	self->NPC->blockedSpeechDebounceTime = level.time + (speakDebounceTime == 0 ? 5000 : speakDebounceTime);
+	self->NPC->blockedSpeechDebounceTime = level.time + (speak_debounce_time == 0 ? 5000 : speak_debounce_time);
 }
 
 void NPC_PlayConfusionSound(gentity_t* self)

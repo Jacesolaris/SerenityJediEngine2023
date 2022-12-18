@@ -46,7 +46,7 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean walk_check(const gentity_t* self);
 extern qboolean WP_SabersCheckLock(gentity_t* ent1, gentity_t* ent2);
 extern void PM_AddFatigue(playerState_t* ps, int fatigue);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern saberMoveName_t PM_BrokenParryForParry(int move);
 extern saberMoveName_t pm_broken_parry_for_attack(int move);

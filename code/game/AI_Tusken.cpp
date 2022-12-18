@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern void NPC_AimAdjust(int change);
@@ -36,6 +36,7 @@ extern qboolean FlyingCreature(const gentity_t* ent);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound();
+extern void npc_check_speak(gentity_t* speaker_npc);
 
 constexpr auto MAX_VIEW_DIST = 1024;
 constexpr auto MAX_VIEW_SPEED = 250;
@@ -407,7 +408,7 @@ void NPC_BSTusken_Attack(void)
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
 	qboolean break_saber_lock);
 
-void Tusken_StaffTrace(void)
+void Tusken_StaffTrace()
 {
 	if (!NPC->ghoul2.size()
 		|| NPC->weaponModel[0] <= 0)
@@ -418,10 +419,10 @@ void Tusken_StaffTrace(void)
 	const int bolt_index = gi.G2API_AddBolt(&NPC->ghoul2[NPC->weaponModel[0]], "*weapon");
 	if (bolt_index != -1)
 	{
-		const int curTime = cg.time ? cg.time : level.time;
+		const int cur_time = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
-		int lastHit = ENTITYNUM_NONE;
-		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
+		int last_hit = ENTITYNUM_NONE;
+		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
 		{
 			mdxaBone_t boltMatrix;
 			vec3_t tip, dir, base;
@@ -444,7 +445,7 @@ void Tusken_StaffTrace(void)
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entityNum != lastHit)
+			if (trace.fraction < 1.0f && trace.entityNum != last_hit)
 			{
 				//hit something
 				gentity_t* traceEnt = &g_entities[trace.entityNum];
@@ -465,7 +466,7 @@ void Tusken_StaffTrace(void)
 						//do pain on enemy
 						G_Knockdown(traceEnt, NPC, dir, 300, qtrue);
 					}
-					lastHit = trace.entityNum;
+					last_hit = trace.entityNum;
 					hit = qtrue;
 				}
 			}
@@ -575,7 +576,7 @@ qboolean G_TuskenAttackAnimDamage(gentity_t* self)
 	return qfalse;
 }
 
-void NPC_BSTusken_Default(void)
+void NPC_BSTusken_Default()
 {
 	if (NPCInfo->scriptFlags & SCF_FIRE_WEAPON)
 	{
@@ -598,31 +599,6 @@ void NPC_BSTusken_Default(void)
 		//have an enemy
 		NPC_BSTusken_Attack();
 
-		if (TIMER_Done(NPC, "TalkTime"))
-		{
-			if (NPC_IsGunner(NPC))
-			{
-				// Do taunt...
-				const int call_out = Q_irand(0, 3);
-
-				switch (call_out)
-				{
-				case 0:
-				default:
-					G_AddVoiceEvent(NPC, Q_irand(EV_TAUNT1, EV_TAUNT3), 3000);
-					break;
-				case 1:
-					G_AddVoiceEvent(NPC, Q_irand(EV_ANGER1, EV_ANGER1), 3000);
-					break;
-				case 2:
-					G_AddVoiceEvent(NPC, Q_irand(EV_COMBAT1, EV_COMBAT3), 3000);
-					break;
-				case 3:
-					G_AddVoiceEvent(NPC, Q_irand(EV_JCHASE1, EV_JCHASE3), 3000);
-					break;
-				}
-			}
-			TIMER_Set(NPC, "TalkTime", 5000);
-		}
+		npc_check_speak(NPC);
 	}
 }

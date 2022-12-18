@@ -48,7 +48,7 @@ extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern qboolean PM_SaberInTransitionAny(int move);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern saberMoveName_t pm_broken_parry_for_attack(int move);
 extern qboolean PM_InGetUp(const playerState_t* ps);
@@ -97,7 +97,7 @@ extern qboolean WP_SaberFatiguedParry(gentity_t* blocker, gentity_t* attacker, i
 void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker);
 extern cvar_t* g_DebugSaberCombat;
 extern qboolean PM_InSaberLock(int anim);
-extern void g_do_clash_taunting(const gentity_t* speaker_npc_self);
+extern void g_do_m_block_response(const gentity_t* speaker_npc_self);
 ///////////Defines////////////////
 
 //////////Actions////////////////
@@ -875,7 +875,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 
 					if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
 					{
-						g_do_clash_taunting(attacker);
+						g_do_m_block_response(attacker);
 					}
 
 					if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
@@ -1032,7 +1032,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 						{
 							WP_SaberMBlock(blocker, attacker, saber_num, blade_num);
 
-							g_do_clash_taunting(blocker);
+							g_do_m_block_response(blocker);
 
 							if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !G_ControlledByPlayer(blocker)))
 							{

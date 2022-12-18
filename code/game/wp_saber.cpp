@@ -82,7 +82,7 @@ extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void CG_ChangeWeapon(int num);
 extern void cg_saber_do_weapon_hit_marks(const gclient_t* client, const gentity_t* saber_ent, gentity_t* hit_ent,
 	int saber_num, int blade_num, vec3_t hit_pos, vec3_t hit_dir, vec3_t uaxis, float size_time_scale);

@@ -124,7 +124,7 @@ extern qboolean PM_SaberInTransition(int move);
 extern int IsPressingDashButton(const gentity_t* self);
 extern qboolean PM_SaberInTransitionAny(int move);
 extern void WP_BlockPointsDrain(const gentity_t* self, int fatigue);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 extern qboolean PM_Saberinstab(int move);

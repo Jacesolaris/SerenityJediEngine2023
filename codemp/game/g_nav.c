@@ -28,7 +28,7 @@ extern qboolean G_EntIsDoor(int entityNum);
 extern qboolean G_EntIsBreakable(int entityNum);
 extern qboolean G_EntIsRemovableUsable(int entNum);
 extern qboolean G_FindClosestPointOnLineSegment(const vec3_t start, const vec3_t end, const vec3_t from, vec3_t result);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 //For debug graphics
 void G_Line(vec3_t start, vec3_t end, vec3_t color, float alpha)
 {

@@ -39,7 +39,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "g_functions.h"
 
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_ClearLookTarget(const gentity_t* self);
@@ -2232,8 +2232,6 @@ gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, co
 				//He ducked into shadow while we weren't looking
 				//Drop enemy and see if we should search for him
 				NPC_LostEnemyDecideChase();
-
-				npc_check_speak(NPC);
 			}
 			else
 			{
@@ -2253,7 +2251,7 @@ gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, co
 		}
 	}
 
-	const gentity_t* closestTo = NPC;
+	const gentity_t* closest_to = NPC;
 
 	if (NPCInfo->defendEnt)
 	{
@@ -2277,7 +2275,7 @@ gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, co
 			else if (NPC->enemy == nullptr)
 			{
 				//We don't have an enemy, so find closest to defendEnt
-				closestTo = NPCInfo->defendEnt;
+				closest_to = NPCInfo->defendEnt;
 			}
 		}
 	}
@@ -2299,7 +2297,7 @@ gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, co
 		//If enemy dead or un shootable, look for others on out enemy's team
 		if (NPC->client->enemyTeam != TEAM_NEUTRAL)
 		{
-			new_enemy = NPC_PickEnemy(closestTo, NPC->client->enemyTeam, qtrue, qfalse, qtrue);
+			new_enemy = NPC_PickEnemy(closest_to, NPC->client->enemyTeam, qtrue, qfalse, qtrue);
 			//3rd parm was (NPC->enemyTeam == TEAM_STARFLEET)
 
 			if (new_enemy)
@@ -2340,6 +2338,9 @@ gentity_t* NPC_CheckEnemy(const qboolean find_new, const qboolean too_far_ok, co
 			}
 		}
 	}
+
+	npc_check_speak(NPC);
+
 	return new_enemy;
 }
 

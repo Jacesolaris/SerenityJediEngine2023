@@ -37,7 +37,7 @@ int teamCounter[TEAM_NUM_TEAMS];
 
 constexpr auto VALID_ATTACK_CONE = 2.0f; //Degrees;
 void GetAnglesForDirection(const vec3_t p1, const vec3_t p2, vec3_t out);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void ViewHeightFix(const gentity_t* ent);
 extern void AddLeanOfs(const gentity_t* ent, vec3_t point);
 extern void SubtractLeanOfs(const gentity_t* ent, vec3_t point);
@@ -1431,7 +1431,7 @@ qboolean NPC_CheckLookTarget(const gentity_t* self)
 NPC_CheckCharmed
 -------------------------
 */
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 
 void G_CheckCharmed(gentity_t* self)

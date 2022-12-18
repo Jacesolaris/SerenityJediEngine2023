@@ -57,7 +57,7 @@ extern qboolean PM_SaberInAttack(int move);
 extern cvar_t* g_sex;
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern void G_SpeechEvent(const gentity_t* self, int event);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);

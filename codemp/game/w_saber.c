@@ -91,7 +91,7 @@ extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InRoll(const playerState_t* ps);
 extern qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* tr, int hit_loc);
 extern qboolean PM_CrouchAnim(int anim);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void AddFatigueMeleeBonus(const gentity_t* attacker, const gentity_t* victim);
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);

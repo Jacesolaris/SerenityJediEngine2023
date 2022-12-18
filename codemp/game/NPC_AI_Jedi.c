@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean BG_SabersOff(const playerState_t* ps);
 
 extern void CG_DrawAlert(vec3_t origin, float rating);
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern qboolean PM_InRoll(const playerState_t* ps);
 extern void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, qboolean no_penalty);
@@ -6755,7 +6755,7 @@ gentity_t* Jedi_FindEnemyInCone(gentity_t* self, gentity_t* fallback, float minD
 
 static qboolean enemy_in_striking_range = qfalse;
 
-static void Jedi_SetEnemyInfo(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir,
+static void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir,
 	float* enemy_movespeed, int prediction)
 {
 	if (!NPCS.NPC || !NPCS.NPC->enemy)
@@ -6849,7 +6849,7 @@ void NPC_EvasionSaber(void)
 		vec3_t enemy_dir, enemy_movedir, enemy_dest;
 		float enemy_dist, enemy_movespeed;
 		//set enemy
-		Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+		jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 		Jedi_EvasionSaber(enemy_movedir, enemy_dist, enemy_dir);
 	}
 }
@@ -8463,7 +8463,7 @@ static void Jedi_Combat(void)
 	float enemy_dist, enemy_movespeed;
 
 	//See where enemy will be 300 ms from now
-	Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+	jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 
 	if (NPC_Jumping())
 	{
@@ -9475,7 +9475,7 @@ static void Jedi_Attack(void)
 							//be sure to continue evasion
 							vec3_t enemy_dir, enemy_movedir, enemy_dest;
 							float enemy_dist, enemy_movespeed;
-							Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+							jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 							Jedi_EvasionSaber(enemy_movedir, enemy_dist, enemy_dir);
 						}
 						return;
@@ -9490,7 +9490,7 @@ static void Jedi_Attack(void)
 							//be sure to continue evasion
 							vec3_t enemy_dir, enemy_movedir, enemy_dest;
 							float enemy_dist, enemy_movespeed;
-							Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+							jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 							Jedi_EvasionSaber(enemy_movedir, enemy_dist, enemy_dir);
 						}
 					}
@@ -9503,7 +9503,7 @@ static void Jedi_Attack(void)
 					//be sure to continue evasion
 					vec3_t enemy_dir, enemy_movedir, enemy_dest;
 					float enemy_dist, enemy_movespeed;
-					Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+					jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 					Jedi_EvasionSaber(enemy_movedir, enemy_dist, enemy_dir);
 				}
 			}
@@ -10496,7 +10496,7 @@ void NPC_CheckEvasion(void)
 	}
 
 	//See where enemy will be 300 ms from now
-	Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+	jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 
 	if (NPCS.NPC->enemy->s.weapon == WP_SABER)
 	{

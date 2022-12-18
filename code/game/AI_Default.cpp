@@ -27,14 +27,14 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern int g_crosshairEntNum;
 extern void NPC_CheckEvasion();
-extern void G_AddVoiceEvent(const gentity_t* self, int event, int speakDebounceTime);
+extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean NPC_IsGunner(const gentity_t* self);
 extern void NPC_AngerSound();
 
 //
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
-extern void Jedi_SetEnemyInfo(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, int prediction);
+extern void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, int prediction);
 
 void npc_check_speak(gentity_t* speaker_npc)
 {
@@ -42,7 +42,7 @@ void npc_check_speak(gentity_t* speaker_npc)
 	float enemy_dist, enemy_movespeed;
 
 	//See where enemy will be 300 ms from now
-	Jedi_SetEnemyInfo(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
+	jedi_set_enemy_info(enemy_dest, enemy_dir, &enemy_dist, enemy_movedir, &enemy_movespeed, 300);
 
 	if (speaker_npc->check_speach_time > level.time)
 	{
@@ -57,14 +57,14 @@ void npc_check_speak(gentity_t* speaker_npc)
 		if (npc_is_dark_jedi(speaker_npc))
 		{
 			// Do taunt/anger...
-			const int call_out = Q_irand(0, 8);
+			const int voice_event = Q_irand(0, 8);
 
 			if (d_npctalk->integer)
 			{
 				gi.Printf("Dark Jedi speaker_npc talking\n");
 			}
 
-			switch (call_out)
+			switch (voice_event)
 			{
 			case 0:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ANGER1, EV_ANGER3), 10000);
@@ -98,14 +98,14 @@ void npc_check_speak(gentity_t* speaker_npc)
 		else if (npc_is_light_jedi(speaker_npc))
 		{
 			// Do taunt...
-			const int call_out = Q_irand(0, 9);
+			const int voice_event = Q_irand(0, 9);
 
 			if (d_npctalk->integer)
 			{
 				gi.Printf("Light Jedi speaker_npc talking\n");
 			}
 
-			switch (call_out)
+			switch (voice_event)
 			{
 			case 0:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ANGER1, EV_ANGER3), 10000);
@@ -142,40 +142,40 @@ void npc_check_speak(gentity_t* speaker_npc)
 		else
 		{
 			// Do taunt/anger...
-			const int call_out = Q_irand(0, 33);
+			const int voice_event = Q_irand(0, 9);
 
 			if (d_npctalk->integer)
 			{
 				gi.Printf("Random speaker_npc talking\n");
 			}
 
-			switch (call_out)
+			switch (voice_event)
 			{
 			case 0:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ANGER1, EV_ANGER3), 10000);
 				break;
-			case 3:
+			case 1:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_CHASE1, EV_CHASE3), 10000);
 				break;
-			case 6:
+			case 2:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_COVER1, EV_COVER5), 10000);
 				break;
-			case 11:
+			case 3:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_DETECTED1, EV_DETECTED5), 10000);
 				break;
-			case 16:
+			case 4:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_ESCAPING1, EV_ESCAPING3), 10000);
 				break;
-			case 19:
+			case 5:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_GIVEUP1, EV_GIVEUP4), 10000);
 				break;
-			case 23:
+			case 6:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_SIGHT1, EV_SIGHT3), 10000);
 				break;
-			case 26:
+			case 7:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_LOOK1, EV_LOOK2), 10000);
 				break;
-			case 29:
+			case 8:
 				G_AddVoiceEvent(speaker_npc, Q_irand(EV_SUSPICIOUS1, EV_SUSPICIOUS5), 10000);
 				break;
 			default:
@@ -186,31 +186,31 @@ void npc_check_speak(gentity_t* speaker_npc)
 	}
 }
 
-void g_do_clash_taunting(const gentity_t* speaker_npc_self)
+void g_do_m_block_response(const gentity_t* speaker_npc_self)
 {
 
 	if (d_npctalk->integer)
 	{
 		gi.Printf("Combat speaker_npc talking\n");
 	}
-	const int call_out = Q_irand(0, 4);
+	const int voice_event = Q_irand(0, 4);
 
-	switch (call_out)
+	switch (voice_event)
 	{
 	case 0:
-		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_GLOAT1, EV_GLOAT3), 5000 + irand(0, 15000));
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_GLOAT1, EV_GLOAT3), 1000);
 		break;
 	case 1:
-		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_JCHASE1, EV_JCHASE3), 5000 + irand(0, 15000));
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_JCHASE1, EV_JCHASE3), 1000);
 		break;
 	case 2:
-		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_COMBAT1, EV_COMBAT3), 5000 + irand(0, 15000));
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_COMBAT1, EV_COMBAT3), 1000);
 		break;
 	case 3:
-		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_ANGER1, EV_ANGER3), 5000 + irand(0, 15000));
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_ANGER1, EV_ANGER3), 1000);
 		break;
 	default:
-		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_TAUNT1, EV_TAUNT3), 5000 + irand(0, 15000));
+		G_AddVoiceEvent(speaker_npc_self, Q_irand(EV_TAUNT1, EV_TAUNT3), 1000);
 		break;
 	}
 }
