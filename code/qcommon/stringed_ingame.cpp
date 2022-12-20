@@ -57,16 +57,17 @@ using vInts_t = std::vector<int>;
 
 cvar_t* se_language = nullptr;
 cvar_t* se_debug = nullptr;
-cvar_t* sp_leet = nullptr;	// kept as 'sp_' for JK2 compat.
+cvar_t* sp_leet = nullptr; // kept as 'sp_' for JK2 compat.
 
 #define __DEBUGOUT(_string)	OutputDebugString(_string)
 #define __ASSERT(_blah)		assert(_blah)
 
 using SE_Entry_t = struct SE_Entry_s
 {
-	std::string		m_strString;
-	std::string		m_strDebug;	// english and/or "#same", used for debugging only. Also prefixed by "SE:" to show which strings go through StringEd (ie aren't hardwired)
-	int			m_iFlags;
+	std::string m_strString;
+	std::string m_strDebug;
+	// english and/or "#same", used for debugging only. Also prefixed by "SE:" to show which strings go through StringEd (ie aren't hardwired)
+	int m_iFlags;
 
 	SE_Entry_s()
 	{
@@ -74,21 +75,19 @@ using SE_Entry_t = struct SE_Entry_s
 	}
 };
 
-using mapStringEntries_t = std::map <std::string, SE_Entry_t>;
+using mapStringEntries_t = std::map<std::string, SE_Entry_t>;
 
 class CStringEdPackage
 {
 private:
-
-	SE_BOOL				m_bEndMarkerFound_ParseOnly;
-	std::string				m_strCurrentEntryRef_ParseOnly;
-	std::string				m_strCurrentEntryEnglish_ParseOnly;
-	std::string				m_strCurrentFileRef_ParseOnly;
-	std::string				m_strLoadingLanguage_ParseOnly;	// eg "german"
-	SE_BOOL				m_bLoadingEnglish_ParseOnly;
+	SE_BOOL m_bEndMarkerFound_ParseOnly;
+	std::string m_strCurrentEntryRef_ParseOnly;
+	std::string m_strCurrentEntryEnglish_ParseOnly;
+	std::string m_strCurrentFileRef_ParseOnly;
+	std::string m_strLoadingLanguage_ParseOnly; // eg "german"
+	SE_BOOL m_bLoadingEnglish_ParseOnly;
 
 public:
-
 	CStringEdPackage()
 	{
 		Clear(SE_FALSE);
@@ -99,36 +98,35 @@ public:
 		Clear(SE_FALSE);
 	}
 
-	mapStringEntries_t	m_StringEntries;	// needs to be in public space now
-	SE_BOOL				m_bLoadDebug;		// ""
+	mapStringEntries_t m_StringEntries; // needs to be in public space now
+	SE_BOOL m_bLoadDebug; // ""
 	//
 	// flag stuff...
 	//
-	std::vector <std::string>		m_vstrFlagNames;
-	std::map	<std::string, int>	m_mapFlagMasks;
+	std::vector<std::string> m_vstrFlagNames;
+	std::map<std::string, int> m_mapFlagMasks;
 
-	void	Clear(SE_BOOL bChangingLanguages);
-	void	SetupNewFileParse(const char* psFileName, SE_BOOL bLoadDebug);
-	SE_BOOL	ReadLine(const char*& psParsePos, char* psDest) const;
+	void Clear(SE_BOOL bChangingLanguages);
+	void SetupNewFileParse(const char* psFileName, SE_BOOL bLoadDebug);
+	SE_BOOL ReadLine(const char*& psParsePos, char* psDest) const;
 	const char* ParseLine(const char* psLine);
-	int		GetFlagMask(const char* psFlagName);
+	int GetFlagMask(const char* psFlagName);
 	const char* ExtractLanguageFromPath(const char* psFileName) const;
-	SE_BOOL	EndMarkerFoundDuringParse(void) const
+	SE_BOOL EndMarkerFoundDuringParse(void) const
 	{
 		return m_bEndMarkerFound_ParseOnly;
 	}
 
 private:
-
-	void	AddEntry(const char* psLocalReference);
-	void	SetString(const char* psLocalReference, const char* psNewString, SE_BOOL bEnglishDebug);
-	SE_BOOL	SetReference(int iIndex, const char* psNewString);
-	void	AddFlagReference(const char* psLocalReference, const char* psFlagName);
+	void AddEntry(const char* psLocalReference);
+	void SetString(const char* psLocalReference, const char* psNewString, SE_BOOL bEnglishDebug);
+	SE_BOOL SetReference(int iIndex, const char* psNewString);
+	void AddFlagReference(const char* psLocalReference, const char* psFlagName);
 	const char* GetCurrentReference_ParseOnly(void) const;
-	SE_BOOL	CheckLineForKeyword(const char* psKeyword, const char*& psLine);
+	SE_BOOL CheckLineForKeyword(const char* psKeyword, const char*& psLine);
 	static const char* InsideQuotes(const char* psLine);
 	static const char* ConvertCRLiterals_Read(const char* psString);
-	void	REMKill(char* psBuffer) const;
+	void REMKill(char* psBuffer) const;
 	char* Filename_PathOnly(const char* psFilename) const;
 	static char* Filename_WithoutPath(const char* psFilename);
 	char* Filename_WithoutExt(const char* psFilename) const;
@@ -205,7 +203,7 @@ char* CStringEdPackage::Filename_WithoutExt(const char* psFilename) const
 	if (p &&
 		(p2 == nullptr || p2 && p > p2) &&
 		(p3 == nullptr || p3 && p > p3)
-		)
+	)
 		*p = 0;
 
 	return sString;
@@ -247,7 +245,7 @@ void CStringEdPackage::SetupNewFileParse(const char* psFileName, SE_BOOL bLoadDe
 	strcpy(sString, Filename_WithoutPath(Filename_WithoutExt(psFileName)));
 	Q_strupr(sString);
 
-	m_strCurrentFileRef_ParseOnly = sString;	// eg "OBJECTIVES"
+	m_strCurrentFileRef_ParseOnly = sString; // eg "OBJECTIVES"
 	m_strLoadingLanguage_ParseOnly = ExtractLanguageFromPath(psFileName);
 	m_bLoadingEnglish_ParseOnly = !Q_stricmp(m_strLoadingLanguage_ParseOnly.c_str(), "english") ? SE_TRUE : SE_FALSE;
 	m_bLoadDebug = bLoadDebug;
@@ -323,7 +321,7 @@ void CStringEdPackage::REMKill(char* psBuffer) const
 			//
 			// and remove any trailing whitespace...
 			//
-			if (psScanPos[0])	// any strlen? (else access violation with -1 below)
+			if (psScanPos[0]) // any strlen? (else access violation with -1 below)
 			{
 				int iWhiteSpaceScanPos = strlen(psScanPos) - 1;
 				while (iWhiteSpaceScanPos >= 0 && isspace(psScanPos[iWhiteSpaceScanPos]))
@@ -356,7 +354,7 @@ SE_BOOL CStringEdPackage::ReadLine(const char*& psParsePos, char* psDest) const
 			psParsePos += iCharsToCopy;
 			while (*psParsePos && strchr("\r\n", *psParsePos))
 			{
-				psParsePos++;	// skip over CR or CR/LF pairs
+				psParsePos++; // skip over CR or CR/LF pairs
 			}
 		}
 		else
@@ -392,8 +390,8 @@ const char* CStringEdPackage::InsideQuotes(const char* psLine)
 	// I *could* replace this string object with a declared array, but wasn't sure how big to leave it, and it'd have to
 	//	be static as well, hence permanent. (problem on consoles?)
 	//
-	static	std::string	str;
-	str = "";	// do NOT join to above line
+	static std::string str;
+	str = ""; // do NOT join to above line
 
 	// skip any leading whitespace...
 	//
@@ -419,7 +417,7 @@ const char* CStringEdPackage::InsideQuotes(const char* psLine)
 		//
 		while (str.c_str()[strlen(str.c_str()) - 1] == ' ' ||
 			str.c_str()[strlen(str.c_str()) - 1] == '\t'
-			)
+		)
 		{
 			str.erase(strlen(str.c_str()) - 1, 1);
 		}
@@ -441,7 +439,7 @@ const char* CStringEdPackage::InsideQuotes(const char* psLine)
 //
 int CStringEdPackage::GetFlagMask(const char* psFlagName)
 {
-	const std::map <std::string, int>::iterator itFlag = m_mapFlagMasks.find(psFlagName);
+	const auto itFlag = m_mapFlagMasks.find(psFlagName);
 	if (itFlag != m_mapFlagMasks.end())
 	{
 		const int& iMask = (*itFlag).second;
@@ -465,7 +463,7 @@ void CStringEdPackage::AddFlagReference(const char* psLocalReference, const char
 	//
 	// then add the reference to this flag to the currently-parsed reference...
 	//
-	const mapStringEntries_t::iterator itEntry = m_StringEntries.find(va("%s_%s", m_strCurrentFileRef_ParseOnly.c_str(), psLocalReference));
+	const auto itEntry = m_StringEntries.find(va("%s_%s", m_strCurrentFileRef_ParseOnly.c_str(), psLocalReference));
 	if (itEntry != m_StringEntries.end())
 	{
 		SE_Entry_t& Entry = (*itEntry).second;
@@ -482,8 +480,9 @@ void CStringEdPackage::AddFlagReference(const char* psLocalReference, const char
 //
 static char* CopeWithDumbStringData(const char* psSentence, const char* psThisLanguage)
 {
-	const int iBufferSize = strlen(psSentence) * 3;	// *3 to allow for expansion of anything even stupid string consisting entirely of elipsis chars
-	char* psNewString = static_cast<char*>(Z_Malloc(iBufferSize, TAG_TEMP_WORKSPACE, qfalse));
+	const int iBufferSize = strlen(psSentence) * 3;
+	// *3 to allow for expansion of anything even stupid string consisting entirely of elipsis chars
+	auto psNewString = static_cast<char*>(Z_Malloc(iBufferSize, TAG_TEMP_WORKSPACE, qfalse));
 	Q_strncpyz(psNewString, psSentence, iBufferSize);
 
 	// this is annoying, I have to just guess at which languages to do it for (ie NOT ASIAN/MBCS!!!) since the
@@ -500,12 +499,12 @@ static char* CopeWithDumbStringData(const char* psSentence, const char* psThisLa
 		!Q_stricmp(psThisLanguage, "SPANISH") ||
 		!Q_stricmp(psThisLanguage, "POLISH") ||
 		!Q_stricmp(psThisLanguage, "RUSSIAN")
-		)
+	)
 	{
 		char* p;
 
 		//	strXLS_Speech.Replace(va("%c",0x92),va("%c",0x27));	// "'"
-		while ((p = strchr(psNewString, 0x92)) != nullptr)  // "rich" (and illegal) apostrophe
+		while ((p = strchr(psNewString, 0x92)) != nullptr) // "rich" (and illegal) apostrophe
 		{
 			*p = 0x27;
 		}
@@ -529,7 +528,7 @@ static char* CopeWithDumbStringData(const char* psSentence, const char* psThisLa
 		}
 
 		//	strXLS_Speech.Replace(va("%c",0x85),"...");			// "..."-char ->  3-char "..."
-		while ((p = strchr(psNewString, 0x85)) != nullptr)  // "rich" (and illegal) apostrophe
+		while ((p = strchr(psNewString, 0x85)) != nullptr) // "rich" (and illegal) apostrophe
 		{
 			memmove(p + 2, p, strlen(p));
 			*p++ = '.';
@@ -586,7 +585,7 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 			// VERSION 	"1"
 			//
 			const char* psVersionNumber = InsideQuotes(psLine);
-			const int		iVersionNumber = atoi(psVersionNumber);
+			const int iVersionNumber = atoi(psVersionNumber);
 
 			if (iVersionNumber != iSE_VERSION)
 			{
@@ -609,19 +608,19 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 		else if (CheckLineForKeyword(sSE_KEYWORD_FLAGS, psLine))
 		{
 			// FLAGS 	FLAG_CAPTION FLAG_TYPEMATIC
-						//
+			//
 			const char* psReference = GetCurrentReference_ParseOnly();
 			if (psReference[0])
 			{
 				static constexpr char sSeperators[] = " \t";
-				char sFlags[1024] = { 0 };	// 1024 chars should be enough to store 8 flag names
+				char sFlags[1024] = {0}; // 1024 chars should be enough to store 8 flag names
 				strncpy(sFlags, psLine, sizeof sFlags - 1);
 				char* psToken = strtok(sFlags, sSeperators);
 				while (psToken != nullptr)
 				{
 					// psToken = flag name (in caps)
 					//
-					Q_strupr(psToken);	// jic
+					Q_strupr(psToken); // jic
 					AddFlagReference(psReference, psToken);
 
 					// read next flag for this string...
@@ -638,7 +637,7 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 		{
 			// ENDMARKER
 			//
-			m_bEndMarkerFound_ParseOnly = SE_TRUE;	// the only major error checking I bother to do (for file truncation)
+			m_bEndMarkerFound_ParseOnly = SE_TRUE; // the only major error checking I bother to do (for file truncation)
 		}
 		else if (!Q_stricmpn(sSE_KEYWORD_LANG, psLine, strlen(sSE_KEYWORD_LANG)))
 		{
@@ -656,13 +655,14 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 				{
 					psWordEnd++;
 				}
-				char sThisLanguage[1024] = { 0 };
+				char sThisLanguage[1024] = {0};
 				size_t iCharsToCopy = psWordEnd - psLine;
 				if (iCharsToCopy > sizeof sThisLanguage - 1)
 				{
 					iCharsToCopy = sizeof sThisLanguage - 1;
 				}
-				strncpy(sThisLanguage, psLine, iCharsToCopy);	// already declared as {0} so no need to zero-cap dest buffer
+				strncpy(sThisLanguage, psLine, iCharsToCopy);
+				// already declared as {0} so no need to zero-cap dest buffer
 
 				psLine += strlen(sThisLanguage);
 				const char* _psSentence = ConvertCRLiterals_Read(InsideQuotes(psLine));
@@ -684,7 +684,8 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 				{
 					// if loading a foreign language...
 					//
-					SE_BOOL bSentenceIsEnglish = !Q_stricmp(sThisLanguage, "english") ? SE_TRUE : SE_FALSE;	// see whether this is the english master or not
+					SE_BOOL bSentenceIsEnglish = !Q_stricmp(sThisLanguage, "english") ? SE_TRUE : SE_FALSE;
+					// see whether this is the english master or not
 
 					// this check can be omitted, I'm just being extra careful here...
 					//
@@ -694,7 +695,8 @@ const char* CStringEdPackage::ParseLine(const char* psLine)
 						//
 						if (Q_stricmp(m_strLoadingLanguage_ParseOnly.c_str(), sThisLanguage))
 						{
-							psErrorMessage = va("Language \"%s\" found when expecting \"%s\"!\n", sThisLanguage, m_strLoadingLanguage_ParseOnly.c_str());
+							psErrorMessage = va("Language \"%s\" found when expecting \"%s\"!\n", sThisLanguage,
+							                    m_strLoadingLanguage_ParseOnly.c_str());
 						}
 					}
 
@@ -733,7 +735,7 @@ void CStringEdPackage::AddEntry(const char* psLocalReference)
 	// the reason I don't just assign it anyway is because the optional .STE override files don't contain flags,
 	//	and therefore would wipe out the parsed flags of the .STR file...
 	//
-	const mapStringEntries_t::iterator itEntry = m_StringEntries.find(va("%s_%s", m_strCurrentFileRef_ParseOnly.c_str(), psLocalReference));
+	const auto itEntry = m_StringEntries.find(va("%s_%s", m_strCurrentFileRef_ParseOnly.c_str(), psLocalReference));
 	if (itEntry == m_StringEntries.end())
 	{
 		const SE_Entry_t SE_Entry;
@@ -746,12 +748,14 @@ const char* Leetify(const char* psString)
 {
 	static std::string str;
 	str = psString;
-	if (sp_leet->integer == 42)	// very specific test, so you won't hit it accidentally
+	if (sp_leet->integer == 42) // very specific test, so you won't hit it accidentally
 	{
 		static constexpr
-			char cReplace[] = { 'o','0','l','1','e','3','a','4','s','5','t','7','i','!','h','#',
-								'O','0','L','1','E','3','A','4','S','5','T','7','I','!','H','#'	// laziness because of strchr()
-		};
+			char cReplace[] = {
+				'o', '0', 'l', '1', 'e', '3', 'a', '4', 's', '5', 't', '7', 'i', '!', 'h', '#',
+				'O', '0', 'L', '1', 'E', '3', 'A', '4', 'S', '5', 'T', '7', 'I', '!', 'H',
+				'#' // laziness because of strchr()
+			};
 
 		char* p;
 		for (size_t i = 0; i < sizeof cReplace; i += 2)
@@ -766,7 +770,7 @@ const char* Leetify(const char* psString)
 
 void CStringEdPackage::SetString(const char* psLocalReference, const char* psNewString, SE_BOOL bEnglishDebug)
 {
-	const mapStringEntries_t::iterator itEntry = m_StringEntries.find(va("%s_%s", m_strCurrentFileRef_ParseOnly.c_str(), psLocalReference));
+	const auto itEntry = m_StringEntries.find(va("%s_%s", m_strCurrentFileRef_ParseOnly.c_str(), psLocalReference));
 	if (itEntry != m_StringEntries.end())
 	{
 		SE_Entry_t& Entry = (*itEntry).second;
@@ -783,7 +787,7 @@ void CStringEdPackage::SetString(const char* psLocalReference, const char* psNew
 				Entry.m_strDebug += /* m_bLoadingEnglish_ParseOnly ? "" : */ psNewString;
 				Entry.m_strDebug += sSE_DEBUGSTR_SUFFIX;
 			}
-			m_strCurrentEntryEnglish_ParseOnly = psNewString;	// for possible "#same" resolving in foreign later
+			m_strCurrentEntryEnglish_ParseOnly = psNewString; // for possible "#same" resolving in foreign later
 		}
 		else
 		{
@@ -791,23 +795,23 @@ void CStringEdPackage::SetString(const char* psLocalReference, const char* psNew
 			//
 			if (!Q_stricmp(psNewString, sSE_EXPORT_SAME))
 			{
-				Entry.m_strString = m_strCurrentEntryEnglish_ParseOnly;	// foreign "#same" is now english
+				Entry.m_strString = m_strCurrentEntryEnglish_ParseOnly; // foreign "#same" is now english
 				if (m_bLoadDebug)
 				{
 					Entry.m_strDebug = sSE_DEBUGSTR_PREFIX;
-					Entry.m_strDebug += sSE_EXPORT_SAME;				// english (debug) is now "#same"
+					Entry.m_strDebug += sSE_EXPORT_SAME; // english (debug) is now "#same"
 					Entry.m_strDebug += sSE_DEBUGSTR_SUFFIX;
 				}
 			}
 			else
 			{
-				Entry.m_strString = psNewString;							// foreign is just foreign
+				Entry.m_strString = psNewString; // foreign is just foreign
 			}
 		}
 	}
 	else
 	{
-		__ASSERT(0);	// should never happen
+		__ASSERT(0); // should never happen
 	}
 }
 
@@ -828,7 +832,7 @@ static const char* SE_Load_Actual(const char* psFileName, SE_BOOL bLoadDebug, SE
 
 		TheStringPackage.SetupNewFileParse(psFileName, bLoadDebug);
 
-		char sLineBuffer[16384];	// should be enough for one line of text (some of them can be BIG though)
+		char sLineBuffer[16384]; // should be enough for one line of text (some of them can be BIG though)
 		while (!psErrorMessage && TheStringPackage.ReadLine(psParsePos, sLineBuffer))
 		{
 			if (strlen(sLineBuffer))
@@ -900,7 +904,7 @@ const char* SE_Load(const char* psFileName, SE_BOOL bLoadDebug = SE_TRUE, SE_BOO
 	//
 	// ingame here tends to pass in names without paths, but I expect them when doing a language load, so...
 	//
-	char sTemp[1000] = { 0 };
+	char sTemp[1000] = {0};
 	if (!strchr(psFileName, '/'))
 	{
 		strcpy(sTemp, sSE_STRINGS_DIR);
@@ -952,7 +956,7 @@ const char* SE_Load(const char* psFileName, SE_BOOL bLoadDebug = SE_TRUE, SE_BOO
 //
 const char* SE_GetString(const char* psPackageReference, const char* psStringReference)
 {
-	char sReference[512];	// will always be enough, I've never seen one more than about 30 chars long
+	char sReference[512]; // will always be enough, I've never seen one more than about 30 chars long
 
 	Com_sprintf(sReference, sizeof sReference, "%s_%s", psPackageReference, psStringReference);
 
@@ -966,12 +970,12 @@ const char* SE_GetString(const char* psPackageAndStringReference)
 	extern const char* JK2SP_GetStringTextString(const char* Reference);
 	return JK2SP_GetStringTextString((const char*)psPackageAndStringReference);
 #else
-	char sReference[256];	// will always be enough, I've never seen one more than about 30 chars long
+	char sReference[256]; // will always be enough, I've never seen one more than about 30 chars long
 	assert(strlen(psPackageAndStringReference) < sizeof sReference);
 	Q_strncpyz(sReference, psPackageAndStringReference, sizeof sReference);
 	Q_strupr(sReference);
 
-	const mapStringEntries_t::iterator itEntry = TheStringPackage.m_StringEntries.find(sReference);
+	const auto itEntry = TheStringPackage.m_StringEntries.find(sReference);
 	if (itEntry != TheStringPackage.m_StringEntries.end())
 	{
 		const SE_Entry_t& Entry = (*itEntry).second;
@@ -985,25 +989,25 @@ const char* SE_GetString(const char* psPackageAndStringReference)
 
 	// should never get here, but fall back anyway... (except we DO use this to see if there's a debug-friendly key bind, which may not exist)
 	//
-//	__ASSERT(0);
-	return "";	// you may want to replace this with something based on _DEBUG or not?
+	//	__ASSERT(0);
+	return ""; // you may want to replace this with something based on _DEBUG or not?
 #endif
 }
 
 // convenience-function for the main GetFlags call...
 //
-int	SE_GetFlags(const char* psPackageReference, const char* psStringReference)
+int SE_GetFlags(const char* psPackageReference, const char* psStringReference)
 {
-	char sReference[256];	// will always be enough, I've never seen one more than about 30 chars long
+	char sReference[256]; // will always be enough, I've never seen one more than about 30 chars long
 
 	Com_sprintf(sReference, sizeof sReference, "%s_%s", psPackageReference, psStringReference);
 
 	return SE_GetFlags(sReference);
 }
 
-int	SE_GetFlags(const char* psPackageAndStringReference)
+int SE_GetFlags(const char* psPackageAndStringReference)
 {
-	const mapStringEntries_t::iterator itEntry = TheStringPackage.m_StringEntries.find(psPackageAndStringReference);
+	const auto itEntry = TheStringPackage.m_StringEntries.find(psPackageAndStringReference);
 	if (itEntry != TheStringPackage.m_StringEntries.end())
 	{
 		const SE_Entry_t& Entry = (*itEntry).second;
@@ -1023,7 +1027,7 @@ int SE_GetNumFlags(void)
 	return TheStringPackage.m_vstrFlagNames.size();
 }
 
-const char* SE_GetFlagName(int iFlagIndex)
+const char* SE_GetFlagName(const int iFlagIndex)
 {
 	if (iFlagIndex < static_cast<int>(TheStringPackage.m_vstrFlagNames.size()))
 	{
@@ -1050,13 +1054,15 @@ int SE_GetFlagMask(const char* psFlagName)
 // Groan, except for Bob. I mentioned that this was slow and only call it once, but he's calling it from
 //	every level-load...  Ok, cacheing it is...
 //
-std::vector <std::string> gvLanguagesAvailable;
+std::vector<std::string> gvLanguagesAvailable;
+
 int SE_GetNumLanguages(void)
 {
 	if (gvLanguagesAvailable.empty())
 	{
 		std::string strResults;
-		/*int iFilesFound = */SE_BuildFileList(
+		/*int iFilesFound = */
+		SE_BuildFileList(
 #ifdef _STRINGED
 			va("C:\\Source\\Tools\\StringEd\\test_data\\%s", sSE_STRINGS_DIR)
 #else
@@ -1065,7 +1071,7 @@ int SE_GetNumLanguages(void)
 			, strResults
 		);
 
-		std::set<std::string> strUniqueStrings;	// laziness <g>
+		std::set<std::string> strUniqueStrings; // laziness <g>
 		const char* p;
 		while ((p = SE_GetFoundFile(strResults)) != nullptr)
 		{
@@ -1099,7 +1105,7 @@ int SE_GetNumLanguages(void)
 
 // SE_GetNumLanguages() must have been called before this...
 //
-const char* SE_GetLanguageName(int iLangIndex)
+const char* SE_GetLanguageName(const int iLangIndex)
 {
 	if (iLangIndex < static_cast<int>(gvLanguagesAvailable.size()))
 	{
@@ -1112,7 +1118,7 @@ const char* SE_GetLanguageName(int iLangIndex)
 
 // SE_GetNumLanguages() must have been called before this...
 //
-const char* SE_GetLanguageDir(int iLangIndex)
+const char* SE_GetLanguageDir(const int iLangIndex)
 {
 	if (iLangIndex < static_cast<int>(gvLanguagesAvailable.size()))
 	{
@@ -1153,7 +1159,7 @@ void SE_Init(void)
 		const int iLanguages = SE_GetNumLanguages();
 		for (int iLang = 0; iLang < iLanguages; iLang++)
 		{
-			const char* psLanguage = SE_GetLanguageName(iLang);	// eg "german"
+			const char* psLanguage = SE_GetLanguageName(iLang); // eg "german"
 			Com_Printf("com_buildScript(2): Loading language \"%s\"...\n", psLanguage);
 			SE_LoadLanguage(psLanguage);
 		}
@@ -1162,7 +1168,8 @@ void SE_Init(void)
 	const char* psErrorMessage = SE_LoadLanguage(se_language->string);
 	if (psErrorMessage)
 	{
-		Com_Error(ERR_DROP, "SE_Init() Unable to load language: \"%s\"!\nError: \"%s\"\n", se_language->string, psErrorMessage);
+		Com_Error(ERR_DROP, "SE_Init() Unable to load language: \"%s\"!\nError: \"%s\"\n", se_language->string,
+		          psErrorMessage);
 	}
 }
 
@@ -1184,7 +1191,8 @@ const char* SE_LoadLanguage(const char* psLanguage, SE_BOOL bLoadDebug /* = SE_T
 		SE_NewLanguage();
 
 		std::string strResults;
-		/*int iFilesFound = */SE_BuildFileList(
+		/*int iFilesFound = */
+		SE_BuildFileList(
 #ifdef _STRINGED
 			va("C:\\Source\\Tools\\StringEd\\test_data\\%s", sSE_STRINGS_DIR)
 #else
@@ -1218,7 +1226,10 @@ const char* SE_LoadLanguage(const char* psLanguage, SE_BOOL bLoadDebug /* = SE_T
 //
 void SE_CheckForLanguageUpdates(void)
 {
-	if (se_language && se_language->modified)
+	if (se_language&& se_language
+	->
+	modified
+	)
 	{
 		const char* psErrorMessage = SE_LoadLanguage(se_language->string, SE_TRUE);
 		if (psErrorMessage)

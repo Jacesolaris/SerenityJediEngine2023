@@ -123,8 +123,9 @@ NPC_SetMoveGoal
 -------------------------
 */
 
-void NPC_SetMoveGoal(const gentity_t* ent, vec3_t point, int radius, qboolean isNavGoal, int combatPoint,
-	gentity_t* target_ent)
+void NPC_SetMoveGoal(const gentity_t* ent, vec3_t point, const int radius, const qboolean isNavGoal,
+                     const int combatPoint,
+                     gentity_t* target_ent)
 {
 	//Must be an NPC
 	if (ent->NPC == NULL)
@@ -179,7 +180,7 @@ NAV_HitNavGoal
 -------------------------
 */
 
-qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying)
+qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, const qboolean flying)
 {
 	vec3_t dmins, dmaxs, pmins, pmaxs;
 
@@ -231,7 +232,7 @@ NAV_ClearPathToPoint
 */
 
 qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_t point, int clipmask,
-	int okToHitEntNum)
+                              const int okToHitEntNum)
 {
 	//	trace_t	trace;
 	//	return NAV_CheckAhead( self, point, trace, clipmask|CONTENTS_BOTCLIP );
@@ -276,13 +277,13 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 	{
 		//Trace from point to navgoal
 		trap->Trace(&trace, point, mins, maxs, self->r.currentOrigin, self->parent->s.number,
-			(clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP) & ~CONTENTS_BODY, qfalse, 0, 0);
+		            (clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP) & ~CONTENTS_BODY, qfalse, 0, 0);
 		if (trace.startsolid && trace.contents & CONTENTS_BOTCLIP)
 		{
 			//started inside do not enter, so ignore them
 			clipmask &= ~CONTENTS_BOTCLIP;
 			trap->Trace(&trace, point, mins, maxs, self->r.currentOrigin, self->parent->s.number,
-				(clipmask | CONTENTS_MONSTERCLIP) & ~CONTENTS_BODY, qfalse, 0, 0);
+			            (clipmask | CONTENTS_MONSTERCLIP) & ~CONTENTS_BODY, qfalse, 0, 0);
 		}
 
 		if (trace.startsolid || trace.allsolid)
@@ -303,7 +304,7 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 
 		//Okay, didn't get all the way there, let's see if we got close enough:
 		if (NAV_HitNavGoal(self->r.currentOrigin, self->parent->r.mins, self->parent->r.maxs, trace.endpos,
-			NPCS.NPCInfo->goalRadius, FlyingCreature(self->parent)))
+		                   NPCS.NPCInfo->goalRadius, FlyingCreature(self->parent)))
 		{
 			return qtrue;
 		}
@@ -324,13 +325,13 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 	else
 	{
 		trap->Trace(&trace, self->r.currentOrigin, mins, maxs, point, self->s.number,
-			clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 0);
+		            clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 0);
 		if (trace.startsolid && trace.contents & CONTENTS_BOTCLIP)
 		{
 			//started inside do not enter, so ignore them
 			clipmask &= ~CONTENTS_BOTCLIP;
 			trap->Trace(&trace, self->r.currentOrigin, mins, maxs, point, self->s.number,
-				clipmask | CONTENTS_MONSTERCLIP, qfalse, 0, 0);
+			            clipmask | CONTENTS_MONSTERCLIP, qfalse, 0, 0);
 		}
 
 		if (trace.startsolid == qfalse && trace.allsolid == qfalse && trace.fraction == 1.0f)
@@ -368,7 +369,7 @@ NAV_FindClosestWaypointForEnt
 -------------------------
 */
 
-int NAV_FindClosestWaypointForEnt(gentity_t* ent, int targWp)
+int NAV_FindClosestWaypointForEnt(gentity_t* ent, const int targWp)
 {
 	//FIXME: Take the target into account
 	return trap->Nav_GetNearestNode((sharedEntity_t*)ent, ent->waypoint, NF_CLEAR_PATH, targWp);
@@ -444,7 +445,7 @@ NAV_SetBlockedInfo
 -------------------------
 */
 
-void NAV_SetBlockedInfo(const gentity_t* self, int entId)
+void NAV_SetBlockedInfo(const gentity_t* self, const int entId)
 {
 	self->NPC->aiFlags |= NPCAI_BLOCKED;
 	self->NPC->blockingEntNum = entId;
@@ -456,7 +457,7 @@ NAV_Steer
 -------------------------
 */
 
-int NAV_Steer(gentity_t* self, vec3_t dir, float distance)
+int NAV_Steer(gentity_t* self, vec3_t dir, const float distance)
 {
 	vec3_t right_test, left_test;
 	vec3_t deviation;
@@ -547,7 +548,7 @@ qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int c
 		if (VALIDSTRING(blocker->classname))
 		{
 			if (G_EntIsUnlockedDoor(blocker->s.number))
-				//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
+			//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
 			{
 				//We're too close, try and avoid the door (most likely stuck on a lip)
 				if (DistanceSquared(self->r.currentOrigin, trace->endpos) < MIN_DOOR_BLOCK_DIST_SQR)
@@ -567,7 +568,7 @@ NAV_TestBypass
 -------------------------
 */
 
-static qboolean NAV_TestBypass(gentity_t* self, float yaw, float blocked_dist, vec3_t movedir)
+static qboolean NAV_TestBypass(gentity_t* self, const float yaw, const float blocked_dist, vec3_t movedir)
 {
 	trace_t tr;
 	vec3_t avoidAngles;
@@ -601,7 +602,7 @@ NAV_Bypass
 -------------------------
 */
 
-qboolean NAV_Bypass(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir, float blocked_dist, vec3_t movedir)
+qboolean NAV_Bypass(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir, const float blocked_dist, vec3_t movedir)
 {
 	float dot;
 	vec3_t right;
@@ -790,13 +791,13 @@ qboolean NAV_StackedCanyon(const gentity_t* self, const gentity_t* blocker, vec3
 		//started inside do not enter, so ignore them
 		extraClip &= ~CONTENTS_BOTCLIP;
 		trap->Trace(&tr, test, self->r.mins, self->r.maxs, test, self->s.number, self->clipmask | extraClip, qfalse, 0,
-			0);
+		            0);
 	}
 
 	if (NAVDEBUG_showCollision)
 	{
 		vec3_t mins, maxs;
-		vec3_t RED = { 1.0f, 0.0f, 0.0f };
+		vec3_t RED = {1.0f, 0.0f, 0.0f};
 
 		VectorAdd(test, self->r.mins, mins);
 		VectorAdd(test, self->r.maxs, maxs);
@@ -814,7 +815,7 @@ qboolean NAV_StackedCanyon(const gentity_t* self, const gentity_t* blocker, vec3
 		//started inside do not enter, so ignore them
 		extraClip &= ~CONTENTS_BOTCLIP;
 		trap->Trace(&tr, test, self->r.mins, self->r.maxs, test, self->s.number, self->clipmask | extraClip, qfalse, 0,
-			0);
+		            0);
 	}
 
 	if (tr.startsolid == qfalse && tr.allsolid == qfalse)
@@ -823,7 +824,7 @@ qboolean NAV_StackedCanyon(const gentity_t* self, const gentity_t* blocker, vec3
 	if (NAVDEBUG_showCollision)
 	{
 		vec3_t mins, maxs;
-		vec3_t RED = { 1.0f, 0.0f, 0.0f };
+		vec3_t RED = {1.0f, 0.0f, 0.0f};
 
 		VectorAdd(test, self->r.mins, mins);
 		VectorAdd(test, self->r.maxs, maxs);
@@ -845,7 +846,7 @@ qboolean NAV_ResolveEntityCollision(gentity_t* self, gentity_t* blocker, vec3_t 
 
 	//Doors are ignored
 	if (G_EntIsUnlockedDoor(blocker->s.number))
-		//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
+	//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
 	{
 		if (DistanceSquared(self->r.currentOrigin, blocker->r.currentOrigin) > MIN_DOOR_BLOCK_DIST_SQR)
 			return qtrue;
@@ -887,7 +888,7 @@ NAV_TestForBlocked
 -------------------------
 */
 
-qboolean NAV_TestForBlocked(gentity_t* self, gentity_t* goal, gentity_t* blocker, float distance, int* flags)
+qboolean NAV_TestForBlocked(gentity_t* self, gentity_t* goal, gentity_t* blocker, const float distance, int* flags)
 {
 	if (goal == NULL)
 		return qfalse;
@@ -986,7 +987,7 @@ NAV_TestBestNode
 -------------------------
 */
 
-int NAV_TestBestNode(const gentity_t* self, int startID, int endID, qboolean failEdge)
+int NAV_TestBestNode(const gentity_t* self, const int startID, const int endID, const qboolean failEdge)
 {
 	//check only against architectrure
 	vec3_t end;
@@ -1042,7 +1043,7 @@ int NAV_TestBestNode(const gentity_t* self, int startID, int endID, qboolean fai
 		{
 			//special case: doors are architecture, but are dynamic, like entitites
 			if (G_EntIsUnlockedDoor(blocker->s.number))
-				//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
+			//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
 			{
 				//it's unlocked, go for it
 				//We're too close, try and avoid the door (most likely stuck on a lip)
@@ -1110,7 +1111,7 @@ NAV_GetNearestNode
 -------------------------
 */
 
-int NAV_GetNearestNode(gentity_t* self, int lastNode)
+int NAV_GetNearestNode(gentity_t* self, const int lastNode)
 {
 	return trap->Nav_GetNearestNode((sharedEntity_t*)self, lastNode, NF_CLEAR_PATH, WAYPOINT_NONE);
 }
@@ -1161,7 +1162,7 @@ int NAV_MoveToGoal(gentity_t* self, navInfo_t* info)
 	{
 		//Find the target's waypoint
 		if ((self->NPC->goalEntity->waypoint = NAV_GetNearestNode(self->NPC->goalEntity,
-			self->NPC->goalEntity->waypoint)) == WAYPOINT_NONE)
+		                                                          self->NPC->goalEntity->waypoint)) == WAYPOINT_NONE)
 			return WAYPOINT_NONE;
 	}
 
@@ -1267,7 +1268,7 @@ unsigned int waypoint_testDirection(vec3_t origin, const float yaw, const unsign
 	VectorMA(origin, minDist, trace_dir, test_pos);
 
 	trap->Trace(&tr, origin, mins, maxs, test_pos, ENTITYNUM_NONE,
-		CONTENTS_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 0);
+	            CONTENTS_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 0);
 
 	//return (unsigned int) ( (float) MAX_RADIUS_CHECK * tr.fraction );
 	return (unsigned int)((float)minDist * tr.fraction);
@@ -1323,7 +1324,7 @@ void SP_waypoint(gentity_t* ent)
 			if (G_CheckInSolid(ent, qtrue))
 			{
 				Com_Printf(S_COLOR_RED"ERROR: Waypoint %s at %s in solid!\n", ent->targetname,
-					vtos(ent->r.currentOrigin));
+				           vtos(ent->r.currentOrigin));
 				G_FreeEntity(ent);
 				return;
 			}
@@ -1364,7 +1365,7 @@ void SP_waypoint_small(gentity_t* ent)
 			if (G_CheckInSolid(ent, qtrue))
 			{
 				Com_Printf(S_COLOR_RED"ERROR: Waypoint_small %s at %s in solid!\n", ent->targetname,
-					vtos(ent->r.currentOrigin));
+				           vtos(ent->r.currentOrigin));
 				assert(0);
 				G_FreeEntity(ent);
 				return;
@@ -1405,7 +1406,7 @@ void SP_waypoint_navgoal(gentity_t* ent)
 	if (!(ent->spawnflags & 1) && G_CheckInSolid(ent, qfalse))
 	{
 		Com_Printf(S_COLOR_RED"ERROR: Waypoint_navgoal %s at %s in solid!\n", ent->targetname,
-			vtos(ent->r.currentOrigin));
+		           vtos(ent->r.currentOrigin));
 		assert(0);
 	}
 	TAG_Add(ent->targetname, NULL, ent->s.origin, ent->s.angles, radius, RTF_NAVGOAL);
@@ -1437,7 +1438,7 @@ void SP_waypoint_navgoal_8(gentity_t* ent)
 	if (!(ent->spawnflags & 1) && G_CheckInSolid(ent, qfalse))
 	{
 		Com_Printf(S_COLOR_RED"ERROR: Waypoint_navgoal_8 %s at %s in solid!\n", ent->targetname,
-			vtos(ent->r.currentOrigin));
+		           vtos(ent->r.currentOrigin));
 		assert(0);
 	}
 
@@ -1470,7 +1471,7 @@ void SP_waypoint_navgoal_4(gentity_t* ent)
 	if (!(ent->spawnflags & 1) && G_CheckInSolid(ent, qfalse))
 	{
 		Com_Printf(S_COLOR_RED"ERROR: Waypoint_navgoal_4 %s at %s in solid!\n", ent->targetname,
-			vtos(ent->r.currentOrigin));
+		           vtos(ent->r.currentOrigin));
 		assert(0);
 	}
 
@@ -1503,7 +1504,7 @@ void SP_waypoint_navgoal_2(gentity_t* ent)
 	if (!(ent->spawnflags & 1) && G_CheckInSolid(ent, qfalse))
 	{
 		Com_Printf(S_COLOR_RED"ERROR: Waypoint_navgoal_2 %s at %s in solid!\n", ent->targetname,
-			vtos(ent->r.currentOrigin));
+		           vtos(ent->r.currentOrigin));
 		assert(0);
 	}
 
@@ -1536,7 +1537,7 @@ void SP_waypoint_navgoal_1(gentity_t* ent)
 	if (!(ent->spawnflags & 1) && G_CheckInSolid(ent, qfalse))
 	{
 		Com_Printf(S_COLOR_RED"ERROR: Waypoint_navgoal_1 %s at %s in solid!\n", ent->targetname,
-			vtos(ent->r.currentOrigin));
+		           vtos(ent->r.currentOrigin));
 		assert(0);
 	}
 
@@ -1611,7 +1612,7 @@ void Svcmd_Nav_f()
 		if (Q_stricmp(cmd, "testgoal") == 0)
 		{
 			NAVDEBUG_curGoal = trap->Nav_GetNearestNode((sharedEntity_t*)&g_entities[0], g_entities[0].waypoint,
-				NF_CLEAR_PATH, WAYPOINT_NONE);
+			                                            NF_CLEAR_PATH, WAYPOINT_NONE);
 		}
 	}
 	else if (Q_stricmp(cmd, "totals") == 0)
@@ -1907,7 +1908,7 @@ void NAV_ShowDebugInfo(void)
 	{
 		//Get the nearest node to the player
 		int nearestNode = trap->Nav_GetNearestNode((sharedEntity_t*)&g_entities[0], g_entities[0].waypoint, NF_ANY,
-			WAYPOINT_NONE);
+		                                           WAYPOINT_NONE);
 		const int testNode = trap->Nav_GetBestNode(nearestNode, NAVDEBUG_curGoal, NODE_NONE);
 		vec3_t dest, start;
 
@@ -1944,10 +1945,10 @@ NAV_FindPlayerWaypoint
 -------------------------
 */
 
-void NAV_FindPlayerWaypoint(int clNum)
+void NAV_FindPlayerWaypoint(const int clNum)
 {
 	g_entities[clNum].waypoint = trap->Nav_GetNearestNode((sharedEntity_t*)&g_entities[clNum],
-		g_entities[clNum].lastWaypoint, NF_CLEAR_PATH, WAYPOINT_NONE);
+	                                                      g_entities[clNum].lastWaypoint, NF_CLEAR_PATH, WAYPOINT_NONE);
 }
 
 //

@@ -34,6 +34,7 @@ private:
 	uint64_t end;
 
 	int reset;
+
 public:
 	timing_c(void)
 	{

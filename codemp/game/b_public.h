@@ -48,11 +48,13 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define NPCAI_STOP_AT_LOS		0x00400000	//Stop Running When We Hit LOS
 #define NPCAI_NAV_THROUGH_BREAKABLES	0x00800000	//Navigation allows connections through breakable (func_glass, func_breakable or misc_model_breakable)
 
+
 #define NPCAI_KNEEL				0x01000000  //Kneel befor Zod
 #define NPCAI_FLY				0x02000000	//Fly, My Pretty!
 #define NPCAI_FLAMETHROW		0x04000000
 #define NPCAI_ROSH				0x08000000	//I am Rosh, when I'm hurt, drop to one knee and wait for Vil or Dasariah to heal me
 #define NPCAI_HEAL_ROSH			0x10000000	//Constantly look for NPC with NPC_type of rosh_dark, follow him, heal him if needbe
+
 
 #define NPCAI_JUMP				0x20000000	//Jump Now
 #define NPCAI_BOSS_CHARACTER	0x40000000	//Boss NPC flag for certain immunities/defenses
@@ -75,6 +77,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	SCF_NO_COMBAT_TALK	0x00000200	//NPC will not use their generic combat chatter stuff
 #define	SCF_CHASE_ENEMIES	0x00000400	//NPC chase enemies - FIXME: right now this is synonymous with using combat points... should it be?
 
+
 #define	SCF_LOOK_FOR_ENEMIES	0x00000800	//NPC be on the lookout for enemies
 #define	SCF_FACE_MOVE_DIR	0x00001000	//NPC face direction it's moving - FIXME: not really implemented right now
 #define	SCF_IGNORE_ALERTS	0x00002000	//NPC ignore alert events
@@ -89,6 +92,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	SCF_NO_FALLTODEATH	0x00400000	//NPC will not scream and tumble and fall to hit death over large drops
 #define	SCF_NO_ACROBATICS	0x00800000	//Jedi won't jump, roll or cartwheel
 #define	SCF_USE_SUBTITLES	0x01000000	//Regardless of subtitle setting, this NPC will display subtitles when it speaks lines
+
 
 #define	SCF_NO_ALERT_TALK	0x02000000	//Will not say alert sounds, but still can be woken up by alerts
 #define SCF_NAV_CAN_FLY		0x04000000	//Navigation allows connections through air

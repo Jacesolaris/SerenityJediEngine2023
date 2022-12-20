@@ -292,7 +292,7 @@ void AAS_FileInfo(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-char* AAS_LoadAASLump(fileHandle_t fp, int offset, int length, int* lastoffset, int size)
+char* AAS_LoadAASLump(const fileHandle_t fp, const int offset, const int length, int* lastoffset, const int size)
 {
 	//
 	if (!length)
@@ -328,7 +328,7 @@ char* AAS_LoadAASLump(fileHandle_t fp, int offset, int length, int* lastoffset, 
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_DData(unsigned char* data, int size)
+void AAS_DData(unsigned char* data, const int size)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -497,7 +497,7 @@ int AAS_LoadAASFile(char* filename)
 //===========================================================================
 static int AAS_WriteAASLump_offset;
 
-int AAS_WriteAASLump(fileHandle_t fp, aas_header_t* h, int lumpnum, void* data, int length)
+int AAS_WriteAASLump(const fileHandle_t fp, aas_header_t* h, const int lumpnum, void* data, const int length)
 {
 	aas_lump_t* lump = &h->lumps[lumpnum];
 

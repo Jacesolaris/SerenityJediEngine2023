@@ -38,13 +38,13 @@ void WP_Melee(gentity_t* ent)
 	int damage = ent->s.number ? g_spskill->integer * 2 + 1 : 3;
 	const float range = ent->s.number ? 64 : 32;
 	const qboolean isBobaPlayer = !ent->s.number && ent->client->NPC_class == CLASS_BOBAFETT && ent->client->ps.
-		forcePowerDuration[missileStates[BOBA_MISSILE_VIBROBLADE].dummyForcePower]
-		? qtrue
-		: qfalse;
+	                              forcePowerDuration[missileStates[BOBA_MISSILE_VIBROBLADE].dummyForcePower]
+		                              ? qtrue
+		                              : qfalse;
 	const qboolean isMandoPlayer = !ent->s.number && ent->client->NPC_class == CLASS_MANDO && ent->client->ps.
-		forcePowerDuration[missileStates[BOBA_MISSILE_VIBROBLADE].dummyForcePower]
-		? qtrue
-		: qfalse;
+	                               forcePowerDuration[missileStates[BOBA_MISSILE_VIBROBLADE].dummyForcePower]
+		                               ? qtrue
+		                               : qfalse;
 
 	VectorMA(muzzle, range, forwardVec, end);
 

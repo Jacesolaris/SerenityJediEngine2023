@@ -216,7 +216,7 @@ void PS_CreatePunctuationTable(script_t* script, punctuation_t* punctuations)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-const char* PunctuationFromNum(script_t* script, int num)
+const char* PunctuationFromNum(script_t* script, const int num)
 {
 	for (int i = 0; script->punctuations[i].p; i++)
 	{
@@ -437,7 +437,7 @@ int PS_ReadEscapeCharacter(script_t* script, char* ch)
 // Returns:					qtrue when a string was read succesfully
 // Changes Globals:		-
 //============================================================================
-int PS_ReadString(script_t* script, token_t* token, int quote)
+int PS_ReadString(script_t* script, token_t* token, const int quote)
 {
 	if (quote == '\"') token->type = TT_STRING;
 	else token->type = TT_LITERAL;
@@ -553,7 +553,7 @@ int PS_ReadName(script_t* script, token_t* token)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-void NumberValue(char* string, int subtype, unsigned long int* intvalue,
+void NumberValue(char* string, const int subtype, unsigned long int* intvalue,
 	long double* floatvalue)
 {
 	unsigned long int dotfound = 0;
@@ -941,7 +941,7 @@ int PS_ExpectTokenString(script_t * script, char* string)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PS_ExpectTokenType(script_t * script, int type, int subtype, token_t * token)
+int PS_ExpectTokenType(script_t * script, const int type, const int subtype, token_t * token)
 {
 	char str[MAX_TOKEN];
 
@@ -1034,7 +1034,7 @@ int PS_CheckTokenString(script_t * script, char* string)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PS_CheckTokenType(script_t * script, int type, int subtype, token_t * token)
+int PS_CheckTokenType(script_t * script, const int type, const int subtype, token_t * token)
 {
 	token_t tok;
 
@@ -1205,7 +1205,7 @@ signed long int ReadSignedInt(script_t * script)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-void SetScriptFlags(script_t * script, int flags)
+void SetScriptFlags(script_t * script, const int flags)
 {
 	script->flags = flags;
 } //end of the function SetScriptFlags
@@ -1382,7 +1382,7 @@ script_t* LoadScriptFile(const char* filename)
 // Returns:				-
 // Changes Globals:		-
 //============================================================================
-script_t* LoadScriptMemory(char* ptr, int length, char* name)
+script_t* LoadScriptMemory(char* ptr, const int length, char* name)
 {
 	void* buffer = GetClearedMemory(sizeof(script_t) + length + 1);
 	script_t* script = static_cast<script_t*>(buffer);

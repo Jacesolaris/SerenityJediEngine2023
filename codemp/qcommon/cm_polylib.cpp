@@ -27,10 +27,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // counters are only bumped when running single threaded,
 // because they are an awefull coherence problem
-int	c_active_windings;
-int	c_peak_windings;
-int	c_winding_allocs;
-int	c_winding_points;
+int c_active_windings;
+int c_peak_windings;
+int c_winding_allocs;
+int c_winding_points;
 
 void pw(winding_t* w)
 {
@@ -43,7 +43,7 @@ void pw(winding_t* w)
 AllocWinding
 =============
 */
-winding_t* AllocWinding(int points)
+winding_t* AllocWinding(const int points)
 {
 	c_winding_allocs++;
 	c_winding_points += points;
@@ -52,7 +52,7 @@ winding_t* AllocWinding(int points)
 		c_peak_windings = c_active_windings;
 
 	const int s = sizeof(float) * 3 * points + sizeof(int);
-	winding_t* w = static_cast<winding_t*>(Z_Malloc(s, TAG_BSP, qtrue));
+	auto w = static_cast<winding_t*>(Z_Malloc(s, TAG_BSP, qtrue));
 	//	Com_Memset (w, 0, s); // qtrue param in Z_Malloc does this
 	return w;
 }
@@ -67,7 +67,7 @@ void FreeWinding(winding_t* w)
 	Z_Free(w);
 }
 
-void	WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
+void WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
 {
 	mins[0] = mins[1] = mins[2] = MAX_MAP_BOUNDS;
 	maxs[0] = maxs[1] = maxs[2] = -MAX_MAP_BOUNDS;
@@ -90,10 +90,10 @@ void	WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
 BaseWindingForPlane
 =================
 */
-winding_t* BaseWindingForPlane(vec3_t normal, float dist)
+winding_t* BaseWindingForPlane(vec3_t normal, const float dist)
 {
 	float v;
-	vec3_t	org, vright, vup;
+	vec3_t org, vright, vup;
 
 	// find the major axis
 
@@ -172,14 +172,14 @@ winding_t* CopyWinding(winding_t* w)
 ChopWindingInPlace
 =============
 */
-void ChopWindingInPlace(winding_t** inout, vec3_t normal, float dist, float epsilon)
+void ChopWindingInPlace(winding_t** inout, vec3_t normal, const float dist, const float epsilon)
 {
-	float	dists[MAX_POINTS_ON_WINDING + 4] = { 0 };
-	int		sides[MAX_POINTS_ON_WINDING + 4] = { 0 };
-	int		counts[3];
-	static	float	dot;		// VC 4.2 optimizer bug if not static
-	int		i;
-	vec3_t	mid;
+	float dists[MAX_POINTS_ON_WINDING + 4] = {0};
+	int sides[MAX_POINTS_ON_WINDING + 4] = {0};
+	int counts[3];
+	static float dot; // VC 4.2 optimizer bug if not static
+	int i;
+	vec3_t mid;
 
 	winding_t* in = *inout;
 	counts[0] = counts[1] = counts[2] = 0;
@@ -210,9 +210,9 @@ void ChopWindingInPlace(winding_t** inout, vec3_t normal, float dist, float epsi
 		return;
 	}
 	if (!counts[1])
-		return;		// inout stays the same
+		return; // inout stays the same
 
-	const int maxpts = in->numpoints + 4;	// cant use counts[0]+2 because
+	const int maxpts = in->numpoints + 4; // cant use counts[0]+2 because
 	// of fp grouping errors
 
 	winding_t* f = AllocWinding(maxpts);
@@ -242,7 +242,8 @@ void ChopWindingInPlace(winding_t** inout, vec3_t normal, float dist, float epsi
 
 		dot = dists[i] / (dists[i] - dists[i + 1]);
 		for (int j = 0; j < 3; j++)
-		{	// avoid round off error when possible
+		{
+			// avoid round off error when possible
 			if (normal[j] == 1)
 				mid[j] = dist;
 			else if (normal[j] == -1)

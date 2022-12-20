@@ -95,7 +95,7 @@ void sentry_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 NPC_Sentry_Pain
 -------------------------
 */
-void NPC_Sentry_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Sentry_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	const int mod = gPainMOD;
 
@@ -182,9 +182,9 @@ void Sentry_Fire(void)
 	}
 
 	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0,
-		bolt,
-		&boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
-		NULL, NPCS.NPC->modelScale);
+	                          bolt,
+	                          &boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
+	                          NULL, NPCS.NPC->modelScale);
 
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzle);
 
@@ -390,7 +390,7 @@ void Sentry_Strafe(void)
 Sentry_Hunt
 -------------------------
 */
-void Sentry_Hunt(qboolean visible, qboolean advance)
+void Sentry_Hunt(const qboolean visible, const qboolean advance)
 {
 	float distance;
 	vec3_t forward;
@@ -437,7 +437,7 @@ void Sentry_Hunt(qboolean visible, qboolean advance)
 Sentry_RangedAttack
 -------------------------
 */
-void Sentry_RangedAttack(qboolean visible, qboolean advance)
+void Sentry_RangedAttack(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPCS.NPC, "attackDelay") && NPCS.NPC->attackDebounceTime < level.time && visible) // Attack?
 	{

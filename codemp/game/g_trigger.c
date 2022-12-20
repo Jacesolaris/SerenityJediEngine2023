@@ -553,7 +553,7 @@ void Touch_Multi(gentity_t* self, gentity_t* other, trace_t* trace)
 					other->client->ps.torsoAnim != BOTH_CONSOLE1)
 				{
 					G_SetAnim(other, NULL, SETANIM_TORSO, BOTH_BUTTON_HOLD, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD,
-						0);
+					          0);
 				}
 				else
 				{
@@ -1042,7 +1042,7 @@ void trigger_push_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		if (self->spawnflags & PUSH_MULTIPLE) // MULTIPLE - allow multiple entities to touch this trigger in one frame
 		{
 			if (self->painDebounceTime && level.time > self->painDebounceTime)
-				// if we haven't reached the next frame continue to let ents touch the trigger
+			// if we haven't reached the next frame continue to let ents touch the trigger
 			{
 				return;
 			}
@@ -1511,7 +1511,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		if (self->activator && self->activator->inuse && self->activator->client)
 		{
 			G_Damage(other, self->activator, self->activator, NULL, NULL, dmg, dflags | DAMAGE_NO_PROTECTION,
-				MOD_TRIGGER_HURT);
+			         MOD_TRIGGER_HURT);
 		}
 		else
 		{
@@ -2194,7 +2194,7 @@ void trigger_visible_think(gentity_t* self)
 		{
 			//FOV check
 			if (!InFOV3(self->s.origin, player->client->renderInfo.eyePoint, player->client->ps.viewangles,
-				self->genericValue1, self->genericValue1))
+			            self->genericValue1, self->genericValue1))
 			{
 				continue;
 			}

@@ -20,18 +20,18 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "qcommon/qcommon.h"
 
-typedef struct persisentData_t
+using persisentData_t = struct persisentData_t
 {
 	const void* data;
 	size_t size;
 
 	char name[MAX_QPATH];
-} persisentData_t;
+};
 
 #define MAX_PERSISENT_DATA_STORES (16)
 static persisentData_t persistentData[MAX_PERSISENT_DATA_STORES];
 
-static persisentData_t* FindEmptyStore(persisentData_t* stores, size_t count)
+static persisentData_t* FindEmptyStore(persisentData_t* stores, const size_t count)
 {
 	for (size_t i = 0; i < count; i++)
 	{
@@ -44,7 +44,7 @@ static persisentData_t* FindEmptyStore(persisentData_t* stores, size_t count)
 	return nullptr;
 }
 
-static persisentData_t* FindStoreWithName(persisentData_t* stores, size_t count, const char* name)
+static persisentData_t* FindStoreWithName(persisentData_t* stores, const size_t count, const char* name)
 {
 	for (size_t i = 0; i < count; i++)
 	{
@@ -57,7 +57,7 @@ static persisentData_t* FindStoreWithName(persisentData_t* stores, size_t count,
 	return nullptr;
 }
 
-bool PD_Store(const char* name, const void* data, size_t size)
+bool PD_Store(const char* name, const void* data, const size_t size)
 {
 	persisentData_t* store = FindEmptyStore(persistentData, MAX_PERSISENT_DATA_STORES);
 	if (store == nullptr)

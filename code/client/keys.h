@@ -24,46 +24,49 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "keycodes.h"
 
-typedef struct qkey_s {
-	qboolean	down;
-	int			repeats;		// if > 1, it is autorepeating
+using qkey_t = struct qkey_s
+{
+	qboolean down;
+	int repeats; // if > 1, it is autorepeating
 	char* binding;
-} qkey_t;
+};
 
-typedef struct keyGlobals_s {
-	qboolean	anykeydown;
-	qboolean	key_overstrikeMode;
-	int			keyDownCount;
+using keyGlobals_t = struct keyGlobals_s
+{
+	qboolean anykeydown;
+	qboolean key_overstrikeMode;
+	int keyDownCount;
 
-	qkey_t		keys[MAX_KEYS];
-} keyGlobals_t;
+	qkey_t keys[MAX_KEYS];
+};
 
-typedef struct keyname_s {
-	word		upper, lower;
+using keyname_t = struct keyname_s
+{
+	word upper, lower;
 	const char* name;
-	int			keynum;
-	bool		menukey;
-} keyname_t;
+	int keynum;
+	bool menukey;
+};
 
-extern keyGlobals_t	kg;
-extern keyname_t	keynames[MAX_KEYS];
+extern keyGlobals_t kg;
+extern keyname_t keynames[MAX_KEYS];
 
 // console
-extern field_t		g_consoleField;
-extern int			nextHistoryLine;	// the last line in the history buffer, not masked
-extern int			historyLine;		// the line being displayed from history buffer will be <= nextHistoryLine
-extern field_t		historyEditLines[COMMAND_HISTORY];
+extern field_t g_consoleField;
+extern int nextHistoryLine; // the last line in the history buffer, not masked
+extern int historyLine; // the line being displayed from history buffer will be <= nextHistoryLine
+extern field_t historyEditLines[COMMAND_HISTORY];
 
-void	Field_KeyDownEvent(field_t* edit, int key);
-void	Field_CharEvent(field_t* edit, int ch);
-void	Field_Draw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
-void	Field_BigDraw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
+void Field_KeyDownEvent(field_t* edit, int key);
+void Field_CharEvent(field_t* edit, int ch);
+void Field_Draw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
+void Field_BigDraw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
 
-void		Key_SetBinding(int keynum, const char* binding);
+void Key_SetBinding(int keynum, const char* binding);
 const char* Key_GetBinding(int keynum);
-qboolean	Key_IsDown(int keynum);
-int			Key_StringToKeynum(const char* str);
-qboolean	Key_GetOverstrikeMode(void);
-void		Key_SetOverstrikeMode(qboolean state);
-void		Key_ClearStates(void);
-int			Key_GetKey(const char* binding);
+qboolean Key_IsDown(int keynum);
+int Key_StringToKeynum(const char* str);
+qboolean Key_GetOverstrikeMode(void);
+void Key_SetOverstrikeMode(qboolean state);
+void Key_ClearStates(void);
+int Key_GetKey(const char* binding);

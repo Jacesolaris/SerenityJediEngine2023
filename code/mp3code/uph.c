@@ -44,23 +44,23 @@ Layer 3 audio
 #define MAXBITS 9
 
 static const HUFF_ELEMENT huff_table_0[4] =
-{ {0}, {0}, {0}, {64} };			/* dummy must not use */
+	{{0}, {0}, {0}, {64}}; /* dummy must not use */
 
 #include "htable.h"
 
 /*-- 6 bit lookup (purgebits, value) --*/
 static const unsigned char quad_table_a[][2] =
 {
-  {6, 11}, {6, 15}, {6, 13}, {6, 14}, {6, 7}, {6, 5}, {5, 9},
-  {5, 9}, {5, 6}, {5, 6}, {5, 3}, {5, 3}, {5, 10}, {5, 10},
-  {5, 12}, {5, 12}, {4, 2}, {4, 2}, {4, 2}, {4, 2}, {4, 1},
-  {4, 1}, {4, 1}, {4, 1}, {4, 4}, {4, 4}, {4, 4}, {4, 4},
-  {4, 8}, {4, 8}, {4, 8}, {4, 8}, {1, 0}, {1, 0}, {1, 0},
-  {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
-  {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
-  {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
-  {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
-  {1, 0},
+	{6, 11}, {6, 15}, {6, 13}, {6, 14}, {6, 7}, {6, 5}, {5, 9},
+	{5, 9}, {5, 6}, {5, 6}, {5, 3}, {5, 3}, {5, 10}, {5, 10},
+	{5, 12}, {5, 12}, {4, 2}, {4, 2}, {4, 2}, {4, 2}, {4, 1},
+	{4, 1}, {4, 1}, {4, 1}, {4, 4}, {4, 4}, {4, 4}, {4, 4},
+	{4, 8}, {4, 8}, {4, 8}, {4, 8}, {1, 0}, {1, 0}, {1, 0},
+	{1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
+	{1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
+	{1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
+	{1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0}, {1, 0},
+	{1, 0},
 };
 
 typedef struct
@@ -80,40 +80,40 @@ HUFF_SETUP;
 
 static const HUFF_SETUP table_look[] =
 {
-  {huff_table_0, 0, no_bits},
-  {huff_table_1, 0, one_shot},
-  {huff_table_2, 0, one_shot},
-  {huff_table_3, 0, one_shot},
-  {huff_table_0, 0, no_bits},
-  {huff_table_5, 0, one_shot},
-  {huff_table_6, 0, one_shot},
-  {huff_table_7, 0, no_linbits},
-  {huff_table_8, 0, no_linbits},
-  {huff_table_9, 0, no_linbits},
-  {huff_table_10, 0, no_linbits},
-  {huff_table_11, 0, no_linbits},
-  {huff_table_12, 0, no_linbits},
-  {huff_table_13, 0, no_linbits},
-  {huff_table_0, 0, no_bits},
-  {huff_table_15, 0, no_linbits},
-  {huff_table_16, 1, have_linbits},
-  {huff_table_16, 2, have_linbits},
-  {huff_table_16, 3, have_linbits},
-  {huff_table_16, 4, have_linbits},
-  {huff_table_16, 6, have_linbits},
-  {huff_table_16, 8, have_linbits},
-  {huff_table_16, 10, have_linbits},
-  {huff_table_16, 13, have_linbits},
-  {huff_table_24, 4, have_linbits},
-  {huff_table_24, 5, have_linbits},
-  {huff_table_24, 6, have_linbits},
-  {huff_table_24, 7, have_linbits},
-  {huff_table_24, 8, have_linbits},
-  {huff_table_24, 9, have_linbits},
-  {huff_table_24, 11, have_linbits},
-  {huff_table_24, 13, have_linbits},
-  {huff_table_0, 0, quad_a},
-  {huff_table_0, 0, quad_b},
+	{huff_table_0, 0, no_bits},
+	{huff_table_1, 0, one_shot},
+	{huff_table_2, 0, one_shot},
+	{huff_table_3, 0, one_shot},
+	{huff_table_0, 0, no_bits},
+	{huff_table_5, 0, one_shot},
+	{huff_table_6, 0, one_shot},
+	{huff_table_7, 0, no_linbits},
+	{huff_table_8, 0, no_linbits},
+	{huff_table_9, 0, no_linbits},
+	{huff_table_10, 0, no_linbits},
+	{huff_table_11, 0, no_linbits},
+	{huff_table_12, 0, no_linbits},
+	{huff_table_13, 0, no_linbits},
+	{huff_table_0, 0, no_bits},
+	{huff_table_15, 0, no_linbits},
+	{huff_table_16, 1, have_linbits},
+	{huff_table_16, 2, have_linbits},
+	{huff_table_16, 3, have_linbits},
+	{huff_table_16, 4, have_linbits},
+	{huff_table_16, 6, have_linbits},
+	{huff_table_16, 8, have_linbits},
+	{huff_table_16, 10, have_linbits},
+	{huff_table_16, 13, have_linbits},
+	{huff_table_24, 4, have_linbits},
+	{huff_table_24, 5, have_linbits},
+	{huff_table_24, 6, have_linbits},
+	{huff_table_24, 7, have_linbits},
+	{huff_table_24, 8, have_linbits},
+	{huff_table_24, 9, have_linbits},
+	{huff_table_24, 11, have_linbits},
+	{huff_table_24, 13, have_linbits},
+	{huff_table_0, 0, quad_a},
+	{huff_table_0, 0, quad_b},
 };
 
 /*========================================================*/
@@ -126,24 +126,25 @@ static unsigned int bitget(int n)
    unsigned int x;
 
    if (bitdat.bits < n)
-   {			*/	/* refill bit buf if necessary */
-   /*      while (bitdat.bits <= 24)
-		 {
-		bitdat.bitbuf = (bitdat.bitbuf << 8) | *bitdat.bs_ptr++;
-		bitdat.bits += 8;
-		 }
+   {			*/ /* refill bit buf if necessary */
+/*      while (bitdat.bits <= 24)
+	  {
+	 bitdat.bitbuf = (bitdat.bitbuf << 8) | *bitdat.bs_ptr++;
+	 bitdat.bits += 8;
 	  }
-	  bitdat.bits -= n;
-	  x = bitdat.bitbuf >> bitdat.bits;
-	  bitdat.bitbuf -= x << bitdat.bits;
-	  return x;
    }
-   */
-   /*----- get n bits  - checks for n+2 avail bits (linbits+sign) -----*/
-static unsigned int bitget_lb(int n)
+   bitdat.bits -= n;
+   x = bitdat.bitbuf >> bitdat.bits;
+   bitdat.bitbuf -= x << bitdat.bits;
+   return x;
+}
+*/
+/*----- get n bits  - checks for n+2 avail bits (linbits+sign) -----*/
+static unsigned int bitget_lb(const int n)
 {
 	if (bitdat.bits < (n + 2))
-	{				/* refill bit buf if necessary */
+	{
+		/* refill bit buf if necessary */
 		while (bitdat.bits <= 24)
 		{
 			bitdat.bitbuf = (bitdat.bitbuf << 8) | *bitdat.bs_ptr++;
@@ -157,10 +158,11 @@ static unsigned int bitget_lb(int n)
 }
 
 /*------------- get n bits but DO NOT remove from bitstream --*/
-static unsigned int bitget2(int n)
+static unsigned int bitget2(const int n)
 {
 	if (bitdat.bits < (MAXBITS + 2))
-	{				/* refill bit buf if necessary */
+	{
+		/* refill bit buf if necessary */
 		while (bitdat.bits <= 24)
 		{
 			bitdat.bitbuf = (bitdat.bitbuf << 8) | *bitdat.bs_ptr++;
@@ -170,6 +172,7 @@ static unsigned int bitget2(int n)
 	const unsigned int x = bitdat.bitbuf >> (bitdat.bits - n);
 	return x;
 }
+
 /*------------- remove n bits from bitstream ---------*/
 /* unused
 static void bitget_purge(int n)
@@ -215,7 +218,7 @@ static unsigned int bitget_1bit()
          code )
 /*========================================================*/
 /*========================================================*/
-void unpack_huff(int xy[][2], int n, int ntable)
+void unpack_huff(int xy[][2], int n, const int ntable)
 {
 	int i;
 	const HUFF_ELEMENT* t;
@@ -225,7 +228,7 @@ void unpack_huff(int xy[][2], int n, int ntable)
 
 	if (n <= 0)
 		return;
-	n = n >> 1;			/* huff in pairs */
+	n = n >> 1; /* huff in pairs */
 	/*-------------*/
 	const HUFF_ELEMENT* t0 = table_look[ntable].table;
 	const int linbits = table_look[ntable].linbits;
@@ -241,7 +244,7 @@ void unpack_huff(int xy[][2], int n, int ntable)
 			xy[i][1] = 0;
 		}
 		return;
-		/*------------------------------------------*/
+	/*------------------------------------------*/
 	case one_shot:
 		/*- single lookup, no escapes -*/
 		for (i = 0; i < n; i++)
@@ -261,10 +264,10 @@ void unpack_huff(int xy[][2], int n, int ntable)
 			xy[i][0] = x;
 			xy[i][1] = y;
 			if (bitdat.bs_ptr > bitdat.bs_ptr_end)
-				break;		// bad data protect
+				break; // bad data protect
 		}
 		return;
-		/*------------------------------------------*/
+	/*------------------------------------------*/
 	case no_linbits:
 		for (i = 0; i < n; i++)
 		{
@@ -276,7 +279,7 @@ void unpack_huff(int xy[][2], int n, int ntable)
 				code = mac_bitget2(bits);
 				if (t[1 + code].b.purgebits)
 					break;
-				t += t[1 + code].ptr;	/* ptr include 1+code */
+				t += t[1 + code].ptr; /* ptr include 1+code */
 				mac_bitget_purge(bits);
 			}
 			mac_bitget_purge(t[1 + code].b.purgebits);
@@ -291,10 +294,10 @@ void unpack_huff(int xy[][2], int n, int ntable)
 			xy[i][0] = x;
 			xy[i][1] = y;
 			if (bitdat.bs_ptr > bitdat.bs_ptr_end)
-				break;		// bad data protect
+				break; // bad data protect
 		}
 		return;
-		/*------------------------------------------*/
+	/*------------------------------------------*/
 	case have_linbits:
 		for (i = 0; i < n; i++)
 		{
@@ -305,7 +308,7 @@ void unpack_huff(int xy[][2], int n, int ntable)
 				code = bitget2(bits);
 				if (t[1 + code].b.purgebits)
 					break;
-				t += t[1 + code].ptr;	/* ptr includes 1+code */
+				t += t[1 + code].ptr; /* ptr includes 1+code */
 				mac_bitget_purge(bits);
 			}
 			mac_bitget_purge(t[1 + code].b.purgebits);
@@ -324,13 +327,14 @@ void unpack_huff(int xy[][2], int n, int ntable)
 			xy[i][0] = x;
 			xy[i][1] = y;
 			if (bitdat.bs_ptr > bitdat.bs_ptr_end)
-				break;		// bad data protect
+				break; // bad data protect
 		}
 	}
 	/*--- end switch ---*/
 }
+
 /*==========================================================*/
-int unpack_huff_quad(int vwxy[][4], int n, int nbits, int ntable)
+int unpack_huff_quad(int vwxy[][4], int n, int nbits, const int ntable)
 {
 	int i;
 	int code;
@@ -340,7 +344,7 @@ int unpack_huff_quad(int vwxy[][4], int n, int nbits, int ntable)
 	int tmp_nz = 15;
 	int i_non_zero = -1;
 
-	n = n >> 2;			/* huff in quads */
+	n = n >> 2; /* huff in quads */
 
 	if (ntable)
 		goto case_quad_b;
@@ -393,7 +397,7 @@ int unpack_huff_quad(int vwxy[][4], int n, int nbits, int ntable)
 		vwxy[i][2] = x;
 		vwxy[i][3] = y;
 		if (bitdat.bs_ptr > bitdat.bs_ptr_end)
-			break;			// bad data protect
+			break; // bad data protect
 	}
 	if (i && nbits < 0)
 	{
@@ -419,7 +423,7 @@ case_quad_b:
 			break;
 		nbits -= 4;
 		mac_bitget_check(8);
-		tmp = mac_bitget(4) ^ 15;	/* one's complement of bitstream */
+		tmp = mac_bitget(4) ^ 15; /* one's complement of bitstream */
 		if (tmp)
 		{
 			i_non_zero = i;
@@ -458,7 +462,7 @@ case_quad_b:
 		vwxy[i][2] = x;
 		vwxy[i][3] = y;
 		if (bitdat.bs_ptr > bitdat.bs_ptr_end)
-			break;			// bad data protect
+			break; // bad data protect
 	}
 	if (nbits < 0)
 	{
@@ -474,6 +478,7 @@ case_quad_b:
 	if ((tmp_nz & 3) == 0)
 		i_non_zero -= 2;
 
-	return i_non_zero;		/* return non-zero sample (to nearest pair) */
+	return i_non_zero; /* return non-zero sample (to nearest pair) */
 }
+
 /*-----------------------------------------------------*/

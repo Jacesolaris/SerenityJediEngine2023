@@ -28,8 +28,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 using winding_t = struct
 {
-	int		numpoints;
-	vec3_t	p[4];		// variable sized
+	int numpoints;
+	vec3_t p[4]; // variable sized
 };
 
 constexpr auto MAX_POINTS_ON_WINDING = 64;
@@ -51,10 +51,10 @@ constexpr auto MAX_MAP_BOUNDS = 65535;
 winding_t* AllocWinding(int points);
 winding_t* CopyWinding(winding_t* w);
 winding_t* BaseWindingForPlane(vec3_t normal, vec_t dist);
-void	FreeWinding(winding_t* w);
-void	WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs);
+void FreeWinding(winding_t* w);
+void WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs);
 
-void	ChopWindingInPlace(winding_t** w, vec3_t normal, vec_t dist, vec_t epsilon);
+void ChopWindingInPlace(winding_t** w, vec3_t normal, vec_t dist, vec_t epsilon);
 // frees the original if clipped
 
 void pw(winding_t* w);

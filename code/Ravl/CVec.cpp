@@ -50,7 +50,7 @@ const CVec4 CVec4::mZero(0.f, 0.f, 0.f, 0.f);
 ////////////////////////////////////////////////////////////////////////////////////////
 // Length
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec4::Len() const
+float CVec4::Len() const
 {
 	return sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]);
 }
@@ -58,7 +58,7 @@ float	CVec4::Len() const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Distance To Other Point
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec4::Dist(const CVec4& t) const
+float CVec4::Dist(const CVec4& t) const
 {
 	return sqrtf(
 		(t.v[0] - v[0]) * (t.v[0] - v[0]) +
@@ -70,9 +70,9 @@ float	CVec4::Dist(const CVec4& t) const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Normalize
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec4::Norm()
+float CVec4::Norm()
 {
-	const float	L = Len();
+	const float L = Len();
 	*this /= L;
 	return L;
 }
@@ -81,7 +81,7 @@ float	CVec4::Norm()
 // Safe Normalize
 //  Do Not Normalize If Length Is Too Small
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec4::SafeNorm()
+float CVec4::SafeNorm()
 {
 	const float d = this->Len();
 	if (d > 1E-10)
@@ -97,19 +97,19 @@ float	CVec4::SafeNorm()
 // Angular Normalize
 //  All floats Exist(-180, +180)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::AngleNorm()
+void CVec4::AngleNorm()
 {
 	v[0] = fmodf(v[0], 360.0f);
-	if (v[0] < -180.f)	v[0] += 360.0f;
-	if (v[0] > 180.f)		v[0] -= 360.0f;
+	if (v[0] < -180.f) v[0] += 360.0f;
+	if (v[0] > 180.f) v[0] -= 360.0f;
 
 	v[1] = fmodf(v[1], 360.0f);
-	if (v[1] < -180.f)	v[1] += 360.0f;
-	if (v[1] > 180.f)		v[1] -= 360.0f;
+	if (v[1] < -180.f) v[1] += 360.0f;
+	if (v[1] > 180.f) v[1] -= 360.0f;
 
 	v[2] = fmodf(v[2], 360.0f);
-	if (v[2] < -180.f)	v[2] += 360.0f;
-	if (v[2] > 180.f)		v[2] -= 360.0f;
+	if (v[2] < -180.f) v[2] += 360.0f;
+	if (v[2] > 180.f) v[2] -= 360.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ void	CVec4::AngleNorm()
 // This implimentation is a bit slow, needs some optimization work...
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::Perp()
+void CVec4::Perp()
 {
 	CVec4 r = *this;
 	r.Cross(mX);
@@ -145,7 +145,7 @@ void	CVec4::Perp()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Find Largest Element (Ignores 4th component for now)
 ////////////////////////////////////////////////////////////////////////////////////////
-int		CVec4::MaxElementIndex() const
+int CVec4::MaxElementIndex() const
 {
 	if (fabs(v[0]) > fabs(v[1]) && fabs(v[0]) > fabs(v[2]))
 	{
@@ -161,10 +161,10 @@ int		CVec4::MaxElementIndex() const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert To {Pitch, Yaw}   (DEGREES)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::VecToAng()
+void CVec4::VecToAng()
 {
-	float	yaw;
-	float	pitch;
+	float yaw;
+	float pitch;
 
 	if (!v[1] && !v[0])
 	{
@@ -209,7 +209,7 @@ void	CVec4::VecToAng()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw}   (DEGREES)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::AngToVec()
+void CVec4::AngToVec()
 {
 	float angle = yaw() * RAVL_VEC_DEGTORADCONST;
 	const float sy = sinf(angle);
@@ -227,7 +227,7 @@ void	CVec4::AngToVec()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw, Roll}   (DEGREES)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::AngToVec(CVec4& Right, CVec4& Up)
+void CVec4::AngToVec(CVec4& Right, CVec4& Up)
 {
 	float angle = yaw() * RAVL_VEC_DEGTORADCONST;
 	const float sy = sinf(angle);
@@ -261,10 +261,10 @@ void	CVec4::AngToVec(CVec4& Right, CVec4& Up)
 ///////////////////////////////////////////////////////////////////////////////////////
 // Convert To {Pitch, Yaw}   (RADIANS)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::VecToAngRad()
+void CVec4::VecToAngRad()
 {
-	float	yaw;
-	float	pitch;
+	float yaw;
+	float pitch;
 
 	if (!v[1] && !v[0])
 	{
@@ -301,7 +301,7 @@ void	CVec4::VecToAngRad()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw}   (RADIANS)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::AngToVecRad()
+void CVec4::AngToVecRad()
 {
 	const float sy = sinf(yaw());
 	const float cy = cosf(yaw());
@@ -317,7 +317,7 @@ void	CVec4::AngToVecRad()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw, Roll}   (RADIANS)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::AngToVecRad(CVec4& Right, CVec4& Up)
+void CVec4::AngToVecRad(CVec4& Right, CVec4& Up)
 {
 	const float sy = sinf(yaw());
 	const float cy = cosf(yaw());
@@ -348,7 +348,7 @@ void	CVec4::AngToVecRad(CVec4& Right, CVec4& Up)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert To Radians
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::ToRadians()
+void CVec4::ToRadians()
 {
 	v[0] = RAVL_VEC_DEGTORAD(v[0]);
 	v[1] = RAVL_VEC_DEGTORAD(v[1]);
@@ -358,7 +358,7 @@ void	CVec4::ToRadians()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert To Degrees
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::ToDegrees()
+void CVec4::ToDegrees()
 {
 	v[0] = RAVL_VEC_RADTODEG(v[0]);
 	v[1] = RAVL_VEC_RADTODEG(v[1]);
@@ -368,7 +368,7 @@ void	CVec4::ToDegrees()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copy Values From String
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::FromStr(const char* s)
+void CVec4::FromStr(const char* s)
 {
 	//	assert(s && s[0]);
 	sscanf(s, "(%f %f %f %f)", &v[0], &v[1], &v[2], &v[3]);
@@ -377,7 +377,7 @@ void	CVec4::FromStr(const char* s)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Write Values To A String
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::ToStr(char* s) const
+void CVec4::ToStr(char* s) const
 {
 	//	assert(s);
 	sprintf(s, "(%3.3f %3.3f %3.3f %3.3f)", v[0], v[1], v[2], v[3]);
@@ -388,10 +388,10 @@ void	CVec4::ToStr(char* s) const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Make Sure Entire Vector Has Valid Numbers
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::IsFinite() const
+bool CVec4::IsFinite() const
 {
 #if defined(_MSC_VER)
-	return 	_finite(v[0]) && _finite(v[1]) && _finite(v[2]) && _finite(v[3]);
+	return _finite(v[0]) && _finite(v[1]) && _finite(v[2]) && _finite(v[3]);
 #else
 	return isfinite(v[0]) && isfinite(v[1]) && isfinite(v[2]);
 #endif
@@ -400,7 +400,7 @@ bool	CVec4::IsFinite() const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Make Sure Vector Has Been Initialized
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::IsInitialized() const
+bool CVec4::IsInitialized() const
 {
 	return v[0] != RAVL_VEC_UDF && v[1] != RAVL_VEC_UDF && v[2] != RAVL_VEC_UDF && v[3] != RAVL_VEC_UDF;
 }
@@ -421,9 +421,9 @@ bool	CVec4::IsInitialized() const
 //       \_______/
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const
+bool CVec4::PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const
 {
-	constexpr float  tolerance = 0.00000005f;
+	constexpr float tolerance = 0.00000005f;
 
 	const float ax = A.v[0];
 	const float ay = A.v[1];
@@ -444,12 +444,13 @@ bool	CVec4::PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const
 	const float cxdx = cx - dx;
 	const float cydy = cy - dy;
 	const float czdz = cz - dz;
-	const float vol = (az - dz) * (bxdx * cydy - bydy * cxdx) + (ay - dy) * (bzdz * cxdx - bxdx * czdz) + (ax - dx) * (bydy *
+	const float vol = (az - dz) * (bxdx * cydy - bydy * cxdx) + (ay - dy) * (bzdz * cxdx - bxdx * czdz) + (ax - dx) * (
+		bydy *
 		czdz - bzdz * cydy);
 
-	if (vol > tolerance)  return  true;
-	if (vol < -1 * tolerance)  return  false;
-	return  false;
+	if (vol > tolerance) return true;
+	if (vol < -1 * tolerance) return false;
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -465,7 +466,7 @@ bool	CVec4::PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const
 //       \_______/
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::PtInCircle(const CVec4& Circle, float Radius) const
+bool CVec4::PtInCircle(const CVec4& Circle, const float Radius) const
 {
 	return Dist2(Circle) < Radius * Radius;
 }
@@ -490,15 +491,15 @@ bool	CVec4::PtInCircle(const CVec4& Circle, float Radius) const
 // A
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r, CVec4& P) const
+bool CVec4::LineInCircle(const CVec4& A, const CVec4& B, const float r, CVec4& P) const
 {
 	P = *this;
-	const float	Scale = P.ProjectToLine(A, B);
+	const float Scale = P.ProjectToLine(A, B);
 
 	// If The Projected Position Is Not On The Line Segment,
 	// Check If It Is Within Radius Of Endpoints A and B.
 	//-------------------------------------------------------
-	if (Scale < 0 || Scale>1)
+	if (Scale < 0 || Scale > 1)
 	{
 		return PtInCircle(A, r) || PtInCircle(B, r);
 	}
@@ -511,15 +512,15 @@ bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r, CVec4& P) cons
 ////////////////////////////////////////////////////////////////////////////////////////
 // Same As Test Above, Just Don't Bother Returning P
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r) const
+bool CVec4::LineInCircle(const CVec4& A, const CVec4& B, const float r) const
 {
-	CVec4	P(*this);
-	const float	Scale = P.ProjectToLine(A, B);
+	CVec4 P(*this);
+	const float Scale = P.ProjectToLine(A, B);
 
 	// If The Projected Position Is Not On The Line Segment,
 	// Check If It Is Within Radius Of Endpoints A and B.
 	//-------------------------------------------------------
-	if (Scale < 0 || Scale>1)
+	if (Scale < 0 || Scale > 1)
 	{
 		return PtInCircle(A, r) || PtInCircle(B, r);
 	}
@@ -532,7 +533,7 @@ bool	CVec4::LineInCircle(const CVec4& A, const CVec4& B, float r) const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Rotate
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::RotatePoint(const CVec4&, const CVec4&)
+void CVec4::RotatePoint(const CVec4&, const CVec4&)
 {
 	// TO DO: Use Matrix Code To Rotate
 }
@@ -540,7 +541,7 @@ void	CVec4::RotatePoint(const CVec4&, const CVec4&)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Reposition
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec4::Reposition(const CVec4& Translation, float RotationDegrees)
+void CVec4::Reposition(const CVec4& Translation, const float RotationDegrees)
 {
 	// Apply Any Rotation First
 	//--------------------------
@@ -568,7 +569,7 @@ const CVec3 CVec3::mZero(0.f, 0.f, 0.f);
 ////////////////////////////////////////////////////////////////////////////////////////
 // Length
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec3::Len() const
+float CVec3::Len() const
 {
 	return sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
@@ -576,7 +577,7 @@ float	CVec3::Len() const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Distance To Other Point
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec3::Dist(const CVec3& t) const
+float CVec3::Dist(const CVec3& t) const
 {
 	return sqrtf(
 		(t.v[0] - v[0]) * (t.v[0] - v[0]) +
@@ -587,9 +588,9 @@ float	CVec3::Dist(const CVec3& t) const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Normalize
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec3::Norm()
+float CVec3::Norm()
 {
-	const float	L = Len();
+	const float L = Len();
 	*this /= L;
 	return L;
 }
@@ -598,7 +599,7 @@ float	CVec3::Norm()
 // Safe Normalize
 //  Do Not Normalize If Length Is Too Small
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec3::SafeNorm()
+float CVec3::SafeNorm()
 {
 	const float d = this->Len();
 	if (d > 1E-10)
@@ -614,26 +615,26 @@ float	CVec3::SafeNorm()
 // Angular Normalize
 //  All floats Exist(-180, +180)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::AngleNorm()
+void CVec3::AngleNorm()
 {
 	v[0] = fmodf(v[0], 360.0f);
-	if (v[0] < -180.f)	v[0] += 360.0f;
-	if (v[0] > 180.f)		v[0] -= 360.0f;
+	if (v[0] < -180.f) v[0] += 360.0f;
+	if (v[0] > 180.f) v[0] -= 360.0f;
 
 	v[1] = fmodf(v[1], 360.0f);
-	if (v[1] < -180.f)	v[1] += 360.0f;
-	if (v[1] > 180.f)		v[1] -= 360.0f;
+	if (v[1] < -180.f) v[1] += 360.0f;
+	if (v[1] > 180.f) v[1] -= 360.0f;
 
 	v[2] = fmodf(v[2], 360.0f);
-	if (v[2] < -180.f)	v[2] += 360.0f;
-	if (v[2] > 180.f)		v[2] -= 360.0f;
+	if (v[2] < -180.f) v[2] += 360.0f;
+	if (v[2] > 180.f) v[2] -= 360.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Angular Normalize
 //  All floats Exist(-180, +180)
 ////////////////////////////////////////////////////////////////////////////////////////
-float	CVec3::Truncate(float maxlen)
+float CVec3::Truncate(const float maxlen)
 {
 	float len = this->Len();
 	if (len > maxlen && len > 1E-10)
@@ -654,7 +655,7 @@ float	CVec3::Truncate(float maxlen)
 // This implimentation is a bit slow, needs some optimization work...
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::Perp()
+void CVec3::Perp()
 {
 	CVec3 r = *this;
 	r.Cross(mX);
@@ -681,7 +682,7 @@ void	CVec3::Perp()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Find Largest Element (Ignores 4th component for now)
 ////////////////////////////////////////////////////////////////////////////////////////
-int		CVec3::MaxElementIndex() const
+int CVec3::MaxElementIndex() const
 {
 	if (fabs(v[0]) > fabs(v[1]) && fabs(v[0]) > fabs(v[2]))
 	{
@@ -697,10 +698,10 @@ int		CVec3::MaxElementIndex() const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert To {Pitch, Yaw}   (DEGREES)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::VecToAng()
+void CVec3::VecToAng()
 {
-	float	yaw;
-	float	pitch;
+	float yaw;
+	float pitch;
 
 	if (!v[1] && !v[0])
 	{
@@ -744,7 +745,7 @@ void	CVec3::VecToAng()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw}   (DEGREES)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::AngToVec()
+void CVec3::AngToVec()
 {
 	float angle = yaw() * RAVL_VEC_DEGTORADCONST;
 	const float sy = sinf(angle);
@@ -761,7 +762,7 @@ void	CVec3::AngToVec()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw, Roll}   (DEGREES)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::AngToVec(CVec3& Right, CVec3& Up)
+void CVec3::AngToVec(CVec3& Right, CVec3& Up)
 {
 	float angle = yaw() * RAVL_VEC_DEGTORADCONST;
 	const float sy = sinf(angle);
@@ -792,10 +793,10 @@ void	CVec3::AngToVec(CVec3& Right, CVec3& Up)
 ///////////////////////////////////////////////////////////////////////////////////////
 // Convert To {Pitch, Yaw}   (RADIANS)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::VecToAngRad()
+void CVec3::VecToAngRad()
 {
-	float	yaw;
-	float	pitch;
+	float yaw;
+	float pitch;
 
 	if (!v[1] && !v[0])
 	{
@@ -831,7 +832,7 @@ void	CVec3::VecToAngRad()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw}   (RADIANS)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::AngToVecRad()
+void CVec3::AngToVecRad()
 {
 	const float sy = sinf(yaw());
 	const float cy = cosf(yaw());
@@ -846,7 +847,7 @@ void	CVec3::AngToVecRad()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert From {Picth, Yaw, Roll}   (RADIANS)
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::AngToVecRad(CVec3& Right, CVec3& Up)
+void CVec3::AngToVecRad(CVec3& Right, CVec3& Up)
 {
 	const float sy = sinf(yaw());
 	const float cy = cosf(yaw());
@@ -874,7 +875,7 @@ void	CVec3::AngToVecRad(CVec3& Right, CVec3& Up)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert To Radians
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::ToRadians()
+void CVec3::ToRadians()
 {
 	v[0] = RAVL_VEC_DEGTORAD(v[0]);
 	v[1] = RAVL_VEC_DEGTORAD(v[1]);
@@ -884,7 +885,7 @@ void	CVec3::ToRadians()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Convert To Degrees
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::ToDegrees()
+void CVec3::ToDegrees()
 {
 	v[0] = RAVL_VEC_RADTODEG(v[0]);
 	v[1] = RAVL_VEC_RADTODEG(v[1]);
@@ -894,7 +895,7 @@ void	CVec3::ToDegrees()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copy Values From String
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::FromStr(const char* s)
+void CVec3::FromStr(const char* s)
 {
 	assert(s && s[0]);
 	sscanf(s, "(%f %f %f)", &v[0], &v[1], &v[2]);
@@ -903,7 +904,7 @@ void	CVec3::FromStr(const char* s)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Write Values To A String
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::ToStr(char* s) const
+void CVec3::ToStr(char* s) const
 {
 	assert(s);
 	sprintf(s, "(%3.3f %3.3f %3.3f)", v[0], v[1], v[2]);
@@ -914,10 +915,10 @@ void	CVec3::ToStr(char* s) const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Make Sure Entire Vector Has Valid Numbers
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::IsFinite() const
+bool CVec3::IsFinite() const
 {
 #if defined(_MSC_VER)
-	return 	_finite(v[0]) && _finite(v[1]) && _finite(v[2]);
+	return _finite(v[0]) && _finite(v[1]) && _finite(v[2]);
 #else
 	return isfinite(v[0]) && isfinite(v[1]) && isfinite(v[2]);
 #endif
@@ -926,7 +927,7 @@ bool	CVec3::IsFinite() const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Make Sure Vector Has Been Initialized
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::IsInitialized() const
+bool CVec3::IsInitialized() const
 {
 	return v[0] != RAVL_VEC_UDF && v[1] != RAVL_VEC_UDF && v[2] != RAVL_VEC_UDF;
 }
@@ -947,9 +948,9 @@ bool	CVec3::IsInitialized() const
 //       \_______/
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const
+bool CVec3::PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const
 {
-	constexpr float  tolerance = 0.00000005f;
+	constexpr float tolerance = 0.00000005f;
 
 	const float ax = A.v[0];
 	const float ay = A.v[1];
@@ -970,12 +971,13 @@ bool	CVec3::PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const
 	const float cxdx = cx - dx;
 	const float cydy = cy - dy;
 	const float czdz = cz - dz;
-	const float vol = (az - dz) * (bxdx * cydy - bydy * cxdx) + (ay - dy) * (bzdz * cxdx - bxdx * czdz) + (ax - dx) * (bydy *
+	const float vol = (az - dz) * (bxdx * cydy - bydy * cxdx) + (ay - dy) * (bzdz * cxdx - bxdx * czdz) + (ax - dx) * (
+		bydy *
 		czdz - bzdz * cydy);
 
-	if (vol > tolerance)  return  true;
-	if (vol < -1 * tolerance)  return  false;
-	return  false;
+	if (vol > tolerance) return true;
+	if (vol < -1 * tolerance) return false;
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -991,7 +993,7 @@ bool	CVec3::PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const
 //       \_______/
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::PtInCircle(const CVec3& Circle, float Radius) const
+bool CVec3::PtInCircle(const CVec3& Circle, const float Radius) const
 {
 	return Dist2(Circle) < Radius * Radius;
 }
@@ -1016,15 +1018,15 @@ bool	CVec3::PtInCircle(const CVec3& Circle, float Radius) const
 // A
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r, CVec3& P) const
+bool CVec3::LineInCircle(const CVec3& A, const CVec3& B, const float r, CVec3& P) const
 {
 	P = *this;
-	const float	Scale = P.ProjectToLine(A, B);
+	const float Scale = P.ProjectToLine(A, B);
 
 	// If The Projected Position Is Not On The Line Segment,
 	// Check If It Is Within Radius Of Endpoints A and B.
 	//-------------------------------------------------------
-	if (Scale < 0 || Scale>1)
+	if (Scale < 0 || Scale > 1)
 	{
 		return PtInCircle(A, r) || PtInCircle(B, r);
 	}
@@ -1037,15 +1039,15 @@ bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r, CVec3& P) cons
 ////////////////////////////////////////////////////////////////////////////////////////
 // Same As Test Above, Just Don't Bother Returning P
 ////////////////////////////////////////////////////////////////////////////////////////
-bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r) const
+bool CVec3::LineInCircle(const CVec3& A, const CVec3& B, const float r) const
 {
-	CVec3	P(*this);
-	const float	Scale = P.ProjectToLine(A, B);
+	CVec3 P(*this);
+	const float Scale = P.ProjectToLine(A, B);
 
 	// If The Projected Position Is Not On The Line Segment,
 	// Check If It Is Within Radius Of Endpoints A and B.
 	//-------------------------------------------------------
-	if (Scale < 0 || Scale>1)
+	if (Scale < 0 || Scale > 1)
 	{
 		return PtInCircle(A, r) || PtInCircle(B, r);
 	}
@@ -1058,7 +1060,7 @@ bool	CVec3::LineInCircle(const CVec3& A, const CVec3& B, float r) const
 ////////////////////////////////////////////////////////////////////////////////////////
 // Rotate
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::RotatePoint(const CVec3&, const CVec3&)
+void CVec3::RotatePoint(const CVec3&, const CVec3&)
 {
 	// TO DO: Use Matrix Code To Rotate
 }
@@ -1066,7 +1068,7 @@ void	CVec3::RotatePoint(const CVec3&, const CVec3&)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Reposition
 ////////////////////////////////////////////////////////////////////////////////////////
-void	CVec3::Reposition(const CVec3& Translation, float RotationDegrees)
+void CVec3::Reposition(const CVec3& Translation, const float RotationDegrees)
 {
 	// Apply Any Rotation First
 	//--------------------------

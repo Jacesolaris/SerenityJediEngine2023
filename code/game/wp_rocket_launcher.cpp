@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 void rocketThink(gentity_t* ent)
 //---------------------------------------------------------
 {
-	constexpr vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = {0, 0, 1};
 
 	if (ent->disconnectDebounceTime && ent->disconnectDebounceTime < level.time)
 	{
@@ -176,7 +176,7 @@ void rocketThink(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireRocket(gentity_t* ent, qboolean alt_fire)
+void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -282,7 +282,7 @@ void WP_FireRocket(gentity_t* ent, qboolean alt_fire)
 						if (DotProduct(dir, dir2) < 0.0f)
 						{
 							G_StartFlee(missile->enemy, ent, missile->enemy->currentOrigin, AEL_DANGER_GREAT, 3000,
-								5000);
+							            5000);
 							if (!TIMER_Done(missile->enemy, "flee"))
 							{
 								TIMER_Set(missile->enemy, "rocketChasing", 500);

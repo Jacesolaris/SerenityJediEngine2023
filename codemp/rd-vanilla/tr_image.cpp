@@ -40,7 +40,7 @@ int gl_filter_max = GL_LINEAR;
 /*
 ** R_GammaCorrect
 */
-void R_GammaCorrect(byte* buffer, int bufSize)
+void R_GammaCorrect(byte* buffer, const int bufSize)
 {
 	for (int i = 0; i < bufSize; i++)
 	{
@@ -145,7 +145,7 @@ static char* GenerateImageMappingName(const char* name)
 	return &sName[0];
 }
 
-static float R_BytesPerTex(int format)
+static float R_BytesPerTex(const int format)
 {
 	switch (format)
 	{
@@ -196,7 +196,7 @@ static float R_BytesPerTex(int format)
 R_SumOfUsedImages
 ===============
 */
-float R_SumOfUsedImages(qboolean bUseFormat)
+float R_SumOfUsedImages(const qboolean bUseFormat)
 {
 	int total = 0;
 	image_t* pImage;
@@ -319,7 +319,7 @@ Scale up the pixel values in a texture to increase the
 lighting range
 ================
 */
-void R_LightScaleTexture(unsigned* in, int inwidth, int inheight, qboolean only_gamma)
+void R_LightScaleTexture(unsigned* in, const int inwidth, const int inheight, const qboolean only_gamma)
 {
 	if (only_gamma)
 	{
@@ -373,7 +373,7 @@ Operates in place, quartering the size of the texture
 Proper linear filter
 ================
 */
-static void R_MipMap2(unsigned* in, int inWidth, int inHeight)
+static void R_MipMap2(unsigned* in, const int inWidth, const int inHeight)
 {
 	const int outWidth = inWidth >> 1;
 	const int outHeight = inHeight >> 1;
@@ -476,7 +476,7 @@ R_BlendOverTexture
 Apply a color blend over a set of pixels
 ==================
 */
-static void R_BlendOverTexture(byte* data, int pixelCount, byte blend[4])
+static void R_BlendOverTexture(byte* data, const int pixelCount, byte blend[4])
 {
 	int premult[3];
 
@@ -562,13 +562,13 @@ Upload32
 ===============
 */
 static void Upload32(unsigned* data,
-	GLenum format,
-	qboolean mipmap,
-	qboolean picmip,
-	qboolean isLightmap,
-	qboolean allowTC,
+                     const GLenum format,
+                     const qboolean mipmap,
+                     const qboolean picmip,
+                     const qboolean isLightmap,
+                     const qboolean allowTC,
 	int* pformat,
-	word* pUploadWidth, word* pUploadHeight, bool bRectangle = false)
+	word* pUploadWidth, word* pUploadHeight, const bool bRectangle = false)
 {
 	GLuint uiTarget = GL_TEXTURE_2D;
 	if (bRectangle)
@@ -925,8 +925,8 @@ qboolean RE_RegisterImages_LevelLoadEnd(void)
 //
 // This is called by both R_FindImageFile and anything that creates default images...
 //
-static image_t* R_FindImageFile_NoLoad(const char* name, qboolean mipmap, qboolean allowPicmip, qboolean allowTC,
-	int glWrapClampMode)
+static image_t* R_FindImageFile_NoLoad(const char* name, const qboolean mipmap, const qboolean allowPicmip, qboolean allowTC,
+                                       const int glWrapClampMode)
 {
 	if (!name)
 	{
@@ -976,9 +976,9 @@ R_CreateImage
 This is the only way any image_t are created
 ================
 */
-image_t* R_CreateImage(const char* name, const byte* pic, int width, int height,
-	GLenum format, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int glWrapClampMode,
-	bool bRectangle)
+image_t* R_CreateImage(const char* name, const byte* pic, const int width, const int height,
+                       const GLenum format, const qboolean mipmap, const qboolean allowPicmip, const qboolean allowTC, int glWrapClampMode,
+                       const bool bRectangle)
 {
 	qboolean isLightmap = qfalse;
 
@@ -1085,7 +1085,7 @@ Finds or loads the given image.
 Returns NULL if it fails, not a default image.
 ==============
 */
-image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int glWrapClampMode)
+image_t* R_FindImageFile(const char* name, const qboolean mipmap, const qboolean allowPicmip, const qboolean allowTC, int glWrapClampMode)
 {
 	int width, height;
 	byte* pic;
@@ -1208,7 +1208,7 @@ This is called for each texel of the fog texture on startup
 and for each vertex of transparent shaders in fog dynamically
 ================
 */
-float R_FogFactor(float s, float t)
+float R_FogFactor(float s, const float t)
 {
 	s -= 1.0 / 512;
 	if (s < 0)

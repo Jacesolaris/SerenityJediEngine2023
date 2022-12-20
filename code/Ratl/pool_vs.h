@@ -66,14 +66,15 @@ namespace ratl
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = T::CAPACITY;
+
 	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
-		array_base<TStorageTraits>	mData;
-		queue_vs<int, CAPACITY>		mFree;
-		bits_base<CAPACITY>			mUsed;
-		int							mSize;
+		array_base<TStorageTraits> mData;
+		queue_vs<int, CAPACITY> mFree;
+		bits_base<CAPACITY> mUsed;
+		int mSize;
 
 		void FillFreeList()
 		{
@@ -83,20 +84,21 @@ namespace ratl
 				mFree.push(i);
 			}
 		}
-		int			alloc_low()
+
+		int alloc_low()
 		{
 			assert(mSize < CAPACITY);
 			assert(!mUsed[mFree.top()]);
 
-			int NextIndex = mFree.top();				// Get The First Available Location
+			int NextIndex = mFree.top(); // Get The First Available Location
 
 			mUsed.set_bit(NextIndex);
 			mFree.pop();
 			mSize++;
-			return	NextIndex;
+			return NextIndex;
 		}
-	public:
 
+	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +110,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Number Of Objects Allocated
 		////////////////////////////////////////////////////////////////////////////////////
-		int			size()	 const
+		int size() const
 		{
 			return mSize;
 		}
@@ -116,7 +118,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If This Memory Pool Is Empty
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		empty()	 const
+		bool empty() const
 		{
 			return mSize == 0;
 		}
@@ -124,7 +126,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If This Memory Pool Is Full
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full()	 const
+		bool full() const
 		{
 			return mSize == CAPACITY;
 		}
@@ -150,7 +152,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear - Removes all allocation information
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mSize = 0;
 			mUsed.clear();
@@ -161,7 +163,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check If An Index Has Been Allocated
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		is_used_index(int i) const
+		bool is_used_index(int i) const
 		{
 			return mUsed[i];
 		}
@@ -176,7 +178,7 @@ namespace ratl
 			const int index = mData.pointer_to_index(me);
 
 			assert(index >= 0 && index < CAPACITY);
-			assert(mUsed[index]);	// I am disallowing obtaining the index of a freed item
+			assert(mUsed[index]); // I am disallowing obtaining the index of a freed item
 
 			return index;
 		}
@@ -191,7 +193,7 @@ namespace ratl
 			const int index = mData.pointer_to_index(me);
 
 			assert(index >= 0 && index < CAPACITY);
-			assert(mUsed[index]);	// I am disallowing obtaining the index of a freed item
+			assert(mUsed[index]); // I am disallowing obtaining the index of a freed item
 
 			return index;
 		}
@@ -209,21 +211,21 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Allocator
 		////////////////////////////////////////////////////////////////////////////////////
-		int			alloc_index()
+		int alloc_index()
 		{
 			int NextIndex = alloc_low();
 			mData.construct(NextIndex);
-			return	NextIndex;
+			return NextIndex;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Allocator
 		////////////////////////////////////////////////////////////////////////////////////
-		int			alloc_index(const TTValue& v)
+		int alloc_index(const TTValue& v)
 		{
 			int NextIndex = alloc_low();
 			mData.construct(NextIndex, v);
-			return	NextIndex;
+			return NextIndex;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +240,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free_index(int i)
+		void free_index(int i)
 		{
 			assert(mSize > 0);
 			assert(i >= 0 && i < CAPACITY);
@@ -254,7 +256,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free(const TTValue* me)
+		void free(const TTValue* me)
 		{
 			free(pointer_to_index(me));
 		}
@@ -263,25 +265,32 @@ namespace ratl
 		// Iterator
 		////////////////////////////////////////////////////////////////////////////////////
 		class const_iterator;
+
 		class iterator
 		{
 			friend class pool_root<T>;
 			friend class const_iterator;
-			int				mIndex;
+			int mIndex;
 			pool_root<T>* mOwner;
+
 		public:
 			// Constructors
 			//--------------
 			iterator() : mOwner(nullptr)
-			{}
-			iterator(pool_root<T>* p, int index) : mIndex(index), mOwner(p)
-			{}
+			{
+			}
+
+			iterator(pool_root<T>* p, const int index) : mIndex(index), mOwner(p)
+			{
+			}
+
 			iterator(const iterator& t) : mIndex(t.mIndex), mOwner(t.mOwner)
-			{}
+			{
+			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const iterator& t)
+			void operator=(const iterator& t)
 			{
 				mOwner = t.mOwner;
 				mIndex = t.mIndex;
@@ -289,39 +298,63 @@ namespace ratl
 
 			// Equality Operators
 			//--------------------
-			bool	operator!=(const iterator& t) { assert(mOwner && mOwner == t.mOwner);		return mIndex != t.mIndex; }
-			bool	operator==(const iterator& t) { assert(mOwner && mOwner == t.mOwner);		return mIndex == t.mIndex; }
+			bool operator!=(const iterator& t)
+			{
+				assert(mOwner && mOwner == t.mOwner);
+				return mIndex != t.mIndex;
+			}
+
+			bool operator==(const iterator& t)
+			{
+				assert(mOwner && mOwner == t.mOwner);
+				return mIndex == t.mIndex;
+			}
 
 			// Dereference Operators
 			//----------------------
-			TTValue& operator* () const { assert(mOwner && mOwner->is_used_index(mIndex));	return mOwner->mData[mIndex]; }
-			TTValue* operator->() const { assert(mOwner && mOwner->is_used_index(mIndex));	return &mOwner->mData[mIndex]; }
+			TTValue& operator*() const
+			{
+				assert(mOwner && mOwner->is_used_index(mIndex));
+				return mOwner->mData[mIndex];
+			}
+
+			TTValue* operator->() const
+			{
+				assert(mOwner && mOwner->is_used_index(mIndex));
+				return &mOwner->mData[mIndex];
+			}
 
 			// Handle & Index Access
 			//-----------------------
-			int		index() { assert(mOwner && mOwner->is_used_index(mIndex));	return mIndex; }
+			int index()
+			{
+				assert(mOwner && mOwner->is_used_index(mIndex));
+				return mIndex;
+			}
 
 			// Inc Operator
 			//-------------
-			iterator operator++(int)	 // postfix
+			iterator operator++(int) // postfix
 			{
-				assert(mIndex >= 0 && mIndex < CAPACITY);						// this typically means you did end()++
+				assert(mIndex >= 0 && mIndex < CAPACITY); // this typically means you did end()++
 				assert(mOwner && mOwner->is_used_index(mIndex));
 
 				iterator ret(*this);
 				mIndex = mOwner->mUsed.next_bit(mIndex + 1);
 				return ret;
 			}
+
 			// Inc Operator
 			//-------------
-			iterator operator++()	 // prefix
+			iterator operator++() // prefix
 			{
-				assert(mIndex >= 0 && mIndex < CAPACITY);						// this typically means you did end()++
+				assert(mIndex >= 0 && mIndex < CAPACITY); // this typically means you did end()++
 				assert(mOwner && mOwner->is_used_index(mIndex));
 				mIndex = mOwner->mUsed.next_bit(mIndex + 1);
 				return *this;
 			}
 		};
+
 		friend class iterator;
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -329,81 +362,123 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		class const_iterator
 		{
-			int					mIndex;
+			int mIndex;
 			const pool_root<T>* mOwner;
+
 		public:
 			// Constructors
 			//--------------
 			const_iterator() : mOwner(nullptr)
-			{}
-			const_iterator(const pool_root<T>* p, int index) : mIndex(index), mOwner(p)
-			{}
+			{
+			}
+
+			const_iterator(const pool_root<T>* p, const int index) : mIndex(index), mOwner(p)
+			{
+			}
+
 			const_iterator(const iterator& t) : mIndex(t.mIndex), mOwner(t.mOwner)
-			{}
+			{
+			}
+
 			const_iterator(const const_iterator& t) : mIndex(t.mIndex), mOwner(t.mOwner)
-			{}
+			{
+			}
 
 			// Equality Operators
 			//--------------------
-			bool	operator!=(const const_iterator& t) const { assert(mOwner && mOwner == t.mOwner);		return mIndex != t.mIndex; }
-			bool	operator==(const const_iterator& t) const { assert(mOwner && mOwner == t.mOwner);		return mIndex == t.mIndex; }
-			bool	operator!=(const iterator& t) const { assert(mOwner && mOwner == t.mOwner);		return mIndex != t.mIndex; }
-			bool	operator==(const iterator& t) const { assert(mOwner && mOwner == t.mOwner);		return mIndex == t.mIndex; }
+			bool operator!=(const const_iterator& t) const
+			{
+				assert(mOwner && mOwner == t.mOwner);
+				return mIndex != t.mIndex;
+			}
+
+			bool operator==(const const_iterator& t) const
+			{
+				assert(mOwner && mOwner == t.mOwner);
+				return mIndex == t.mIndex;
+			}
+
+			bool operator!=(const iterator& t) const
+			{
+				assert(mOwner && mOwner == t.mOwner);
+				return mIndex != t.mIndex;
+			}
+
+			bool operator==(const iterator& t) const
+			{
+				assert(mOwner && mOwner == t.mOwner);
+				return mIndex == t.mIndex;
+			}
 
 			// Dereference Operators
 			//----------------------
-			const TTValue& operator* () const { assert(mOwner && mOwner->is_used_index(mIndex));	return mOwner->mData[mIndex]; }
-			const TTValue* operator->() const { assert(mOwner && mOwner->is_used_index(mIndex));	return &mOwner->mData[mIndex]; }
+			const TTValue& operator*() const
+			{
+				assert(mOwner && mOwner->is_used_index(mIndex));
+				return mOwner->mData[mIndex];
+			}
+
+			const TTValue* operator->() const
+			{
+				assert(mOwner && mOwner->is_used_index(mIndex));
+				return &mOwner->mData[mIndex];
+			}
 
 			// Handle & Index Access
 			//-----------------------
-			int		index() const { assert(mOwner && mOwner->is_used_index(mIndex));	return mIndex; }
+			int index() const
+			{
+				assert(mOwner && mOwner->is_used_index(mIndex));
+				return mIndex;
+			}
 
 			// Inc Operator
 			//-------------
-			const_iterator operator++(int)	 // postfix
+			const_iterator operator++(int) // postfix
 			{
-				assert(mIndex >= 0 && mIndex < CAPACITY);						// this typically means you did end()++
+				assert(mIndex >= 0 && mIndex < CAPACITY); // this typically means you did end()++
 				assert(mOwner && mOwner->is_used_index(mIndex));
 
 				const_iterator ret(*this);
 				mIndex = mOwner->mUsed.next_bit(mIndex + 1);
 				return ret;
 			}
+
 			// Inc Operator
 			//-------------
-			const_iterator operator++()	 // prefix
+			const_iterator operator++() // prefix
 			{
-				assert(mIndex >= 0 && mIndex < CAPACITY);						// this typically means you did end()++
+				assert(mIndex >= 0 && mIndex < CAPACITY); // this typically means you did end()++
 				assert(mOwner && mOwner->is_used_index(mIndex));
 				mIndex = mOwner->mUsed.next_bit(mIndex + 1);
 				return *this;
 			}
 		};
+
 		friend class const_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The First Allocated Memory Block
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin()
+		iterator begin()
 		{
 			int idx = mUsed.next_bit(0);
-			return iterator(this, idx);			// Find The First Allocated
+			return iterator(this, idx); // Find The First Allocated
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At index
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	at_index(int index)
+		iterator at_index(int index)
 		{
-			assert(mUsed[index]);  // disallow iterators to non alloced things
+			assert(mUsed[index]); // disallow iterators to non alloced things
 			return iterator(this, index);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The End Of The Memroy (One Step Beyond)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	end()
+		iterator end()
 		{
 			return iterator(this, CAPACITY);
 		}
@@ -411,30 +486,30 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The First Allocated Memory Block
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	begin() const
+		const_iterator begin() const
 		{
 			int idx = mUsed.next_bit(0);
-			return iterator(this, idx);			// Find The First Allocated
+			return iterator(this, idx); // Find The First Allocated
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At index
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	at_index(int index) const
+		const_iterator at_index(int index) const
 		{
-			assert(mUsed[index]);  // disallow iterators to non alloced things
+			assert(mUsed[index]); // disallow iterators to non alloced things
 			return iterator(this, index);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The End Of The Memroy (One Step Beyond)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	end() const
+		const_iterator end() const
 		{
 			return iterator(this, CAPACITY);
 		}
 
-		template<class CAST_TO>
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return mData.verify_alloc(p);
@@ -484,7 +559,7 @@ namespace ratl
 			return pool_root<T>::value_at_index(i);
 		}
 
-		bool				is_used(int i) const
+		bool is_used(int i) const
 		{
 			return pool_root<T>::is_used_index(i);
 		}
@@ -500,23 +575,23 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Allocator	returns an index
 		////////////////////////////////////////////////////////////////////////////////////
-		int			alloc()
+		int alloc()
 		{
-			return	pool_root<T>::alloc_index();
+			return pool_root<T>::alloc_index();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Allocator	returns an index
 		////////////////////////////////////////////////////////////////////////////////////
-		int			alloc(const TTValue& v)
+		int alloc(const TTValue& v)
 		{
-			return	pool_root<T>::alloc_index(v);
+			return pool_root<T>::alloc_index(v);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free(int i)
+		void free(int i)
 		{
 			pool_root<T>::free_index(i);
 		}
@@ -524,7 +599,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At index
 		////////////////////////////////////////////////////////////////////////////////////
-		typename pool_root<T>::iterator	at(int index)
+		typename pool_root<T>::iterator at(int index)
 		{
 			return pool_root<T>::at_index(index);
 		}
@@ -532,41 +607,50 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At index
 		////////////////////////////////////////////////////////////////////////////////////
-		typename pool_root<T>::const_iterator	at(int index) const
+		typename pool_root<T>::const_iterator at(int index) const
 		{
 			return pool_root<T>::at_index(index);
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class pool_vs : public pool_base<storage::value_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class pool_vs : public pool_base<storage::value_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		pool_vs() {}
+
+		pool_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class pool_os : public pool_base<storage::object_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class pool_os : public pool_base<storage::object_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		pool_os() {}
+
+		pool_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class pool_is : public pool_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class pool_is : public pool_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		pool_is() {}
+
+		pool_is()
+		{
+		}
 	};
 }
 #endif

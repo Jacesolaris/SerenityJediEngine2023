@@ -27,15 +27,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 static void TranslateSyscalls(void);
 
-static intptr_t(QDECL* Q_syscall)(intptr_t arg, ...) = (intptr_t(QDECL*)(intptr_t, ...)) - 1;
-Q_EXPORT void dllEntry(intptr_t(QDECL* syscallptr)(intptr_t arg, ...))
+static intptr_t (QDECL* Q_syscall)(intptr_t arg, ...) = (intptr_t(QDECL*)(intptr_t, ...))- 1;
+Q_EXPORT void dllEntry(intptr_t (QDECL* syscallptr)(intptr_t arg, ...))
 {
 	Q_syscall = syscallptr;
 
 	TranslateSyscalls();
 }
 
-int PASSFLOAT(float x)
+int PASSFLOAT(const float x)
 {
 	byteAlias_t fi;
 	fi.f = x;
@@ -68,7 +68,7 @@ int trap_PrecisionTimer_End(void* theTimer)
 	return Q_syscall(G_PRECISIONTIMER_END, theTimer);
 }
 
-void trap_Cvar_Register(vmCvar_t* cvar, const char* var_name, const char* value, uint32_t flags)
+void trap_Cvar_Register(vmCvar_t* cvar, const char* var_name, const char* value, const uint32_t flags)
 {
 	Q_syscall(G_CVAR_REGISTER, cvar, var_name, value, flags);
 }
@@ -88,7 +88,7 @@ int trap_Cvar_VariableIntegerValue(const char* var_name)
 	return Q_syscall(G_CVAR_VARIABLE_INTEGER_VALUE, var_name);
 }
 
-void trap_Cvar_VariableStringBuffer(const char* var_name, char* buffer, int bufsize)
+void trap_Cvar_VariableStringBuffer(const char* var_name, char* buffer, const int bufsize)
 {
 	Q_syscall(G_CVAR_VARIABLE_STRING_BUFFER, var_name, buffer, bufsize);
 }
@@ -98,48 +98,49 @@ int trap_Argc(void)
 	return Q_syscall(G_ARGC);
 }
 
-void trap_Argv(int n, char* buffer, int bufferLength)
+void trap_Argv(const int n, char* buffer, const int bufferLength)
 {
 	Q_syscall(G_ARGV, n, buffer, bufferLength);
 }
 
-int trap_FS_FOpenFile(const char* qpath, fileHandle_t* f, fsMode_t mode)
+int trap_FS_FOpenFile(const char* qpath, fileHandle_t* f, const fsMode_t mode)
 {
 	return Q_syscall(G_FS_FOPEN_FILE, qpath, f, mode);
 }
 
-void trap_FS_Read(void* buffer, int len, fileHandle_t f)
+void trap_FS_Read(void* buffer, const int len, const fileHandle_t f)
 {
 	Q_syscall(G_FS_READ, buffer, len, f);
 }
 
-void trap_FS_Write(const void* buffer, int len, fileHandle_t f)
+void trap_FS_Write(const void* buffer, const int len, const fileHandle_t f)
 {
 	Q_syscall(G_FS_WRITE, buffer, len, f);
 }
 
-void trap_FS_FCloseFile(fileHandle_t f)
+void trap_FS_FCloseFile(const fileHandle_t f)
 {
 	Q_syscall(G_FS_FCLOSE_FILE, f);
 }
 
-void trap_SendConsoleCommand(int exec_when, const char* text)
+void trap_SendConsoleCommand(const int exec_when, const char* text)
 {
 	Q_syscall(G_SEND_CONSOLE_COMMAND, exec_when, text);
 }
 
-void trap_LocateGameData(sharedEntity_t* gEnts, int numGEntities, int sizeofGEntity_t, playerState_t* clients,
-	int sizeofGClient)
+void trap_LocateGameData(sharedEntity_t* gEnts, const int numGEntities, const int sizeofGEntity_t,
+                         playerState_t* clients,
+                         const int sizeofGClient)
 {
 	Q_syscall(G_LOCATE_GAME_DATA, gEnts, numGEntities, sizeofGEntity_t, clients, sizeofGClient);
 }
 
-void trap_DropClient(int client_num, const char* reason)
+void trap_DropClient(const int client_num, const char* reason)
 {
 	Q_syscall(G_DROP_CLIENT, client_num, reason);
 }
 
-void trap_SendServerCommand(int client_num, const char* text)
+void trap_SendServerCommand(const int client_num, const char* text)
 {
 	if (strlen(text) > 1022)
 	{
@@ -150,32 +151,32 @@ void trap_SendServerCommand(int client_num, const char* text)
 	Q_syscall(G_SEND_SERVER_COMMAND, client_num, text);
 }
 
-void trap_SetConfigstring(int num, const char* string)
+void trap_SetConfigstring(const int num, const char* string)
 {
 	Q_syscall(G_SET_CONFIGSTRING, num, string);
 }
 
-void trap_GetConfigstring(int num, char* buffer, int bufferSize)
+void trap_GetConfigstring(const int num, char* buffer, const int bufferSize)
 {
 	Q_syscall(G_GET_CONFIGSTRING, num, buffer, bufferSize);
 }
 
-void trap_GetUserinfo(int num, char* buffer, int bufferSize)
+void trap_GetUserinfo(const int num, char* buffer, const int bufferSize)
 {
 	Q_syscall(G_GET_USERINFO, num, buffer, bufferSize);
 }
 
-void trap_SetUserinfo(int num, const char* buffer)
+void trap_SetUserinfo(const int num, const char* buffer)
 {
 	Q_syscall(G_SET_USERINFO, num, buffer);
 }
 
-void trap_GetServerinfo(char* buffer, int bufferSize)
+void trap_GetServerinfo(char* buffer, const int bufferSize)
 {
 	Q_syscall(G_GET_SERVERINFO, buffer, bufferSize);
 }
 
-void trap_SetServerCull(float cullDistance)
+void trap_SetServerCull(const float cullDistance)
 {
 	Q_syscall(G_SET_SERVER_CULL, PASSFLOAT(cullDistance));
 }
@@ -186,18 +187,18 @@ void trap_SetBrushModel(sharedEntity_t* ent, const char* name)
 }
 
 void trap_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int passEntityNum, int contentmask)
+                const int passEntityNum, const int contentmask)
 {
 	Q_syscall(G_TRACE, results, start, mins, maxs, end, passEntityNum, contentmask, 0, 10);
 }
 
 void trap_G2Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int passEntityNum, int contentmask, int g2TraceType, int traceLod)
+                  const int passEntityNum, const int contentmask, const int g2TraceType, const int traceLod)
 {
 	Q_syscall(G_G2TRACE, results, start, mins, maxs, end, passEntityNum, contentmask, g2TraceType, traceLod);
 }
 
-int trap_PointContents(const vec3_t point, int passEntityNum)
+int trap_PointContents(const vec3_t point, const int passEntityNum)
 {
 	return Q_syscall(G_POINT_CONTENTS, point, passEntityNum);
 }
@@ -212,12 +213,12 @@ qboolean trap_InPVSIgnorePortals(const vec3_t p1, const vec3_t p2)
 	return Q_syscall(G_IN_PVS_IGNORE_PORTALS, p1, p2);
 }
 
-void trap_AdjustAreaPortalState(sharedEntity_t* ent, qboolean open)
+void trap_AdjustAreaPortalState(sharedEntity_t* ent, const qboolean open)
 {
 	Q_syscall(G_ADJUST_AREA_PORTAL_STATE, ent, open);
 }
 
-qboolean trap_AreasConnected(int area1, int area2)
+qboolean trap_AreasConnected(const int area1, const int area2)
 {
 	return Q_syscall(G_AREAS_CONNECTED, area1, area2);
 }
@@ -232,7 +233,7 @@ void trap_UnlinkEntity(sharedEntity_t* ent)
 	Q_syscall(G_UNLINKENTITY, ent);
 }
 
-int trap_EntitiesInBox(const vec3_t mins, const vec3_t maxs, int* list, int maxcount)
+int trap_EntitiesInBox(const vec3_t mins, const vec3_t maxs, int* list, const int maxcount)
 {
 	return Q_syscall(G_ENTITIES_IN_BOX, mins, maxs, list, maxcount);
 }
@@ -247,17 +248,17 @@ int trap_BotAllocateClient(void)
 	return Q_syscall(G_BOT_ALLOCATE_CLIENT);
 }
 
-void trap_BotFreeClient(int client_num)
+void trap_BotFreeClient(const int client_num)
 {
 	Q_syscall(G_BOT_FREE_CLIENT, client_num);
 }
 
-void trap_GetUsercmd(int client_num, usercmd_t* cmd)
+void trap_GetUsercmd(const int client_num, usercmd_t* cmd)
 {
 	Q_syscall(G_GET_USERCMD, client_num, cmd);
 }
 
-qboolean trap_GetEntityToken(char* buffer, int bufferSize)
+qboolean trap_GetEntityToken(char* buffer, const int bufferSize)
 {
 	return Q_syscall(G_GET_ENTITY_TOKEN, buffer, bufferSize);
 }
@@ -272,17 +273,17 @@ void trap_SiegePersGet(siegePers_t* pers)
 	Q_syscall(G_SIEGEPERSGET, pers);
 }
 
-int trap_FS_GetFileList(const char* path, const char* extension, char* listbuf, int bufsize)
+int trap_FS_GetFileList(const char* path, const char* extension, char* listbuf, const int bufsize)
 {
 	return Q_syscall(G_FS_GETFILELIST, path, extension, listbuf, bufsize);
 }
 
-int trap_DebugPolygonCreate(int color, int numPoints, vec3_t* points)
+int trap_DebugPolygonCreate(const int color, const int numPoints, vec3_t* points)
 {
 	return Q_syscall(G_DEBUG_POLYGON_CREATE, color, numPoints, points);
 }
 
-void trap_DebugPolygonDelete(int id)
+void trap_DebugPolygonDelete(const int id)
 {
 	Q_syscall(G_DEBUG_POLYGON_DELETE, id);
 }
@@ -298,7 +299,7 @@ void trap_SnapVector(float* v)
 }
 
 void trap_TraceCapsule(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int passEntityNum, int contentmask)
+                       const int passEntityNum, const int contentmask)
 {
 	Q_syscall(G_TRACECAPSULE, results, start, mins, maxs, end, passEntityNum, contentmask, 0, 10);
 }
@@ -308,12 +309,12 @@ qboolean trap_EntityContactCapsule(const vec3_t mins, const vec3_t maxs, const s
 	return Q_syscall(G_ENTITY_CONTACTCAPSULE, mins, maxs, ent);
 }
 
-qboolean trap_SMP_GetStringTextString(const char* text, char* buffer, int bufferLength)
+qboolean trap_SMP_GetStringTextString(const char* text, char* buffer, const int bufferLength)
 {
 	return Q_syscall(SP_GETSTRINGTEXTSTRING, text, buffer, bufferLength);
 }
 
-int trap_SP_GetStringTextString(const char* text, char* buffer, int bufferLength)
+int trap_SP_GetStringTextString(const char* text, char* buffer, const int bufferLength)
 {
 	return Q_syscall(SP_GETSTRINGTEXTSTRING, text, buffer, bufferLength);
 }
@@ -333,17 +334,17 @@ int trap_ROFF_Cache(char* file)
 	return Q_syscall(G_ROFF_CACHE, file);
 }
 
-qboolean trap_ROFF_Play(int entID, int roffID, qboolean doTranslation)
+qboolean trap_ROFF_Play(const int entID, const int roffID, const qboolean doTranslation)
 {
 	return Q_syscall(G_ROFF_PLAY, entID, roffID, doTranslation);
 }
 
-qboolean trap_ROFF_Purge_Ent(int entID)
+qboolean trap_ROFF_Purge_Ent(const int entID)
 {
 	return Q_syscall(G_ROFF_PURGE_ENT, entID);
 }
 
-void trap_TrueMalloc(void** ptr, int size)
+void trap_TrueMalloc(void** ptr, const int size)
 {
 	Q_syscall(G_TRUEMALLOC, ptr, size);
 }
@@ -358,7 +359,7 @@ int trap_ICARUS_RunScript(sharedEntity_t* ent, const char* name)
 	return Q_syscall(G_ICARUS_RUNSCRIPT, ent, name);
 }
 
-qboolean trap_ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate)
+qboolean trap_ICARUS_RegisterScript(const char* name, const qboolean bCalledDuringInterrogate)
 {
 	return Q_syscall(G_ICARUS_REGISTERSCRIPT, name, bCalledDuringInterrogate);
 }
@@ -373,22 +374,22 @@ qboolean trap_ICARUS_ValidEnt(sharedEntity_t* ent)
 	return Q_syscall(G_ICARUS_VALIDENT, ent);
 }
 
-qboolean trap_ICARUS_IsInitialized(int entID)
+qboolean trap_ICARUS_IsInitialized(const int entID)
 {
 	return Q_syscall(G_ICARUS_ISINITIALIZED, entID);
 }
 
-qboolean trap_ICARUS_MaintainTaskManager(int entID)
+qboolean trap_ICARUS_MaintainTaskManager(const int entID)
 {
 	return Q_syscall(G_ICARUS_MAINTAINTASKMANAGER, entID);
 }
 
-qboolean trap_ICARUS_IsRunning(int entID)
+qboolean trap_ICARUS_IsRunning(const int entID)
 {
 	return Q_syscall(G_ICARUS_ISRUNNING, entID);
 }
 
-qboolean trap_ICARUS_TaskIDPending(sharedEntity_t* ent, int taskID)
+qboolean trap_ICARUS_TaskIDPending(sharedEntity_t* ent, const int taskID)
 {
 	return Q_syscall(G_ICARUS_TASKIDPENDING, ent, taskID);
 }
@@ -413,17 +414,17 @@ void trap_ICARUS_Shutdown(void)
 	Q_syscall(G_ICARUS_SHUTDOWN);
 }
 
-void trap_ICARUS_TaskIDSet(sharedEntity_t* ent, int taskType, int taskID)
+void trap_ICARUS_TaskIDSet(sharedEntity_t* ent, const int taskType, const int taskID)
 {
 	Q_syscall(G_ICARUS_TASKIDSET, ent, taskType, taskID);
 }
 
-void trap_ICARUS_TaskIDComplete(sharedEntity_t* ent, int taskType)
+void trap_ICARUS_TaskIDComplete(sharedEntity_t* ent, const int taskType)
 {
 	Q_syscall(G_ICARUS_TASKIDCOMPLETE, ent, taskType);
 }
 
-void trap_ICARUS_SetVar(int taskID, int entID, const char* type_name, const char* data)
+void trap_ICARUS_SetVar(const int taskID, const int entID, const char* type_name, const char* data)
 {
 	Q_syscall(G_ICARUS_SETVAR, taskID, entID, type_name, data);
 }
@@ -458,27 +459,27 @@ void trap_Nav_Free(void)
 	Q_syscall(G_NAV_FREE);
 }
 
-qboolean trap_Nav_Load(const char* filename, int checksum)
+qboolean trap_Nav_Load(const char* filename, const int checksum)
 {
 	return Q_syscall(G_NAV_LOAD, filename, checksum);
 }
 
-qboolean trap_Nav_Save(const char* filename, int checksum)
+qboolean trap_Nav_Save(const char* filename, const int checksum)
 {
 	return Q_syscall(G_NAV_SAVE, filename, checksum);
 }
 
-int trap_Nav_AddRawPoint(vec3_t point, int flags, int radius)
+int trap_Nav_AddRawPoint(vec3_t point, const int flags, const int radius)
 {
 	return Q_syscall(G_NAV_ADDRAWPOINT, point, flags, radius);
 }
 
-void trap_Nav_CalculatePaths(qboolean recalc)
+void trap_Nav_CalculatePaths(const qboolean recalc)
 {
 	Q_syscall(G_NAV_CALCULATEPATHS, recalc);
 }
 
-void trap_Nav_HardConnect(int first, int second)
+void trap_Nav_HardConnect(const int first, const int second)
 {
 	Q_syscall(G_NAV_HARDCONNECT, first, second);
 }
@@ -493,32 +494,32 @@ void trap_Nav_ShowEdges(void)
 	Q_syscall(G_NAV_SHOWEDGES);
 }
 
-void trap_Nav_ShowPath(int start, int end)
+void trap_Nav_ShowPath(const int start, const int end)
 {
 	Q_syscall(G_NAV_SHOWPATH, start, end);
 }
 
-int trap_Nav_GetNearestNode(sharedEntity_t* ent, int lastID, int flags, int targetID)
+int trap_Nav_GetNearestNode(sharedEntity_t* ent, const int lastID, const int flags, const int targetID)
 {
 	return Q_syscall(G_NAV_GETNEARESTNODE, ent, lastID, flags, targetID);
 }
 
-int trap_Nav_GetBestNode(int startID, int endID, int rejectID)
+int trap_Nav_GetBestNode(const int startID, const int endID, const int rejectID)
 {
 	return Q_syscall(G_NAV_GETBESTNODE, startID, endID, rejectID);
 }
 
-int trap_Nav_GetNodePosition(int nodeID, vec3_t out)
+int trap_Nav_GetNodePosition(const int nodeID, vec3_t out)
 {
 	return Q_syscall(G_NAV_GETNODEPOSITION, nodeID, out);
 }
 
-int trap_Nav_GetNodeNumEdges(int nodeID)
+int trap_Nav_GetNodeNumEdges(const int nodeID)
 {
 	return Q_syscall(G_NAV_GETNODENUMEDGES, nodeID);
 }
 
-int trap_Nav_GetNodeEdge(int nodeID, int edge)
+int trap_Nav_GetNodeEdge(const int nodeID, const int edge)
 {
 	return Q_syscall(G_NAV_GETNODEEDGE, nodeID, edge);
 }
@@ -528,22 +529,22 @@ int trap_Nav_GetNumNodes(void)
 	return Q_syscall(G_NAV_GETNUMNODES);
 }
 
-qboolean trap_Nav_Connected(int startID, int endID)
+qboolean trap_Nav_Connected(const int startID, const int endID)
 {
 	return Q_syscall(G_NAV_CONNECTED, startID, endID);
 }
 
-int trap_Nav_GetPathCost(int startID, int endID)
+int trap_Nav_GetPathCost(const int startID, const int endID)
 {
 	return Q_syscall(G_NAV_GETPATHCOST, startID, endID);
 }
 
-int trap_Nav_GetEdgeCost(int startID, int endID)
+int trap_Nav_GetEdgeCost(const int startID, const int endID)
 {
 	return Q_syscall(G_NAV_GETEDGECOST, startID, endID);
 }
 
-int trap_Nav_GetProjectedNode(vec3_t origin, int nodeID)
+int trap_Nav_GetProjectedNode(vec3_t origin, const int nodeID)
 {
 	return Q_syscall(G_NAV_GETPROJECTEDNODE, origin, nodeID);
 }
@@ -553,17 +554,17 @@ void trap_Nav_CheckFailedNodes(sharedEntity_t* ent)
 	Q_syscall(G_NAV_CHECKFAILEDNODES, ent);
 }
 
-void trap_Nav_AddFailedNode(sharedEntity_t* ent, int nodeID)
+void trap_Nav_AddFailedNode(sharedEntity_t* ent, const int nodeID)
 {
 	Q_syscall(G_NAV_ADDFAILEDNODE, ent, nodeID);
 }
 
-qboolean trap_Nav_NodeFailed(sharedEntity_t* ent, int nodeID)
+qboolean trap_Nav_NodeFailed(sharedEntity_t* ent, const int nodeID)
 {
 	return Q_syscall(G_NAV_NODEFAILED, ent, nodeID);
 }
 
-qboolean trap_Nav_NodesAreNeighbors(int startID, int endID)
+qboolean trap_Nav_NodesAreNeighbors(const int startID, const int endID)
 {
 	return Q_syscall(G_NAV_NODESARENEIGHBORS, startID, endID);
 }
@@ -578,12 +579,12 @@ void trap_Nav_ClearAllFailedEdges(void)
 	Q_syscall(G_NAV_CLEARALLFAILEDEDGES);
 }
 
-int trap_Nav_EdgeFailed(int startID, int endID)
+int trap_Nav_EdgeFailed(const int startID, const int endID)
 {
 	return Q_syscall(G_NAV_EDGEFAILED, startID, endID);
 }
 
-void trap_Nav_AddFailedEdge(int entID, int startID, int endID)
+void trap_Nav_AddFailedEdge(const int entID, const int startID, const int endID)
 {
 	Q_syscall(G_NAV_ADDFAILEDEDGE, entID, startID, endID);
 }
@@ -598,27 +599,27 @@ void trap_Nav_CheckAllFailedEdges(void)
 	Q_syscall(G_NAV_CHECKALLFAILEDEDGES);
 }
 
-qboolean trap_Nav_RouteBlocked(int startID, int testEdgeID, int endID, int rejectRank)
+qboolean trap_Nav_RouteBlocked(const int startID, const int testEdgeID, const int endID, const int rejectRank)
 {
 	return Q_syscall(G_NAV_ROUTEBLOCKED, startID, testEdgeID, endID, rejectRank);
 }
 
-int trap_Nav_GetBestNodeAltRoute(int startID, int endID, int* pathCost, int rejectID)
+int trap_Nav_GetBestNodeAltRoute(const int startID, const int endID, int* pathCost, const int rejectID)
 {
 	return Q_syscall(G_NAV_GETBESTNODEALTROUTE, startID, endID, pathCost, rejectID);
 }
 
-int trap_Nav_GetBestNodeAltRoute2(int startID, int endID, int rejectID)
+int trap_Nav_GetBestNodeAltRoute2(const int startID, const int endID, const int rejectID)
 {
 	return Q_syscall(G_NAV_GETBESTNODEALT2, startID, endID, rejectID);
 }
 
-int trap_Nav_GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal, int flags)
+int trap_Nav_GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal, const int flags)
 {
 	return Q_syscall(G_NAV_GETBESTPATHBETWEENENTS, ent, goal, flags);
 }
 
-int trap_Nav_GetNodeRadius(int nodeID)
+int trap_Nav_GetNodeRadius(const int nodeID)
 {
 	return Q_syscall(G_NAV_GETNODERADIUS, nodeID);
 }
@@ -633,17 +634,17 @@ void trap_Nav_ClearCheckedNodes(void)
 	Q_syscall(G_NAV_CLEARCHECKEDNODES);
 }
 
-int trap_Nav_CheckedNode(int wayPoint, int ent)
+int trap_Nav_CheckedNode(const int wayPoint, const int ent)
 {
 	return Q_syscall(G_NAV_CHECKEDNODE, wayPoint, ent);
 }
 
-void trap_Nav_SetCheckedNode(int wayPoint, int ent, int value)
+void trap_Nav_SetCheckedNode(const int wayPoint, const int ent, const int value)
 {
 	Q_syscall(G_NAV_SETCHECKEDNODE, wayPoint, ent, value);
 }
 
-void trap_Nav_FlagAllNodes(int newFlag)
+void trap_Nav_FlagAllNodes(const int newFlag)
 {
 	Q_syscall(G_NAV_FLAGALLNODES, newFlag);
 }
@@ -653,7 +654,7 @@ qboolean trap_Nav_GetPathsCalculated(void)
 	return Q_syscall(G_NAV_GETPATHSCALCULATED);
 }
 
-void trap_Nav_SetPathsCalculated(qboolean newVal)
+void trap_Nav_SetPathsCalculated(const qboolean newVal)
 {
 	Q_syscall(G_NAV_SETPATHSCALCULATED, newVal);
 }
@@ -678,7 +679,7 @@ int trap_BotLibVarSet(char* var_name, char* value)
 	return Q_syscall(BOTLIB_LIBVAR_SET, var_name, value);
 }
 
-int trap_BotLibVarGet(char* var_name, char* value, int size)
+int trap_BotLibVarGet(char* var_name, char* value, const int size)
 {
 	return Q_syscall(BOTLIB_LIBVAR_GET, var_name, value, size);
 }
@@ -688,7 +689,7 @@ int trap_BotLibDefine(char* string)
 	return Q_syscall(BOTLIB_PC_ADD_GLOBAL_DEFINE, string);
 }
 
-int trap_BotLibStartFrame(float time)
+int trap_BotLibStartFrame(const float time)
 {
 	return Q_syscall(BOTLIB_START_FRAME, PASSFLOAT(time));
 }
@@ -698,32 +699,32 @@ int trap_BotLibLoadMap(const char* mapname)
 	return Q_syscall(BOTLIB_LOAD_MAP, mapname);
 }
 
-int trap_BotLibUpdateEntity(int ent, void* bue)
+int trap_BotLibUpdateEntity(const int ent, void* bue)
 {
 	return Q_syscall(BOTLIB_UPDATENTITY, ent, bue);
 }
 
-int trap_BotLibTest(int parm0, char* parm1, vec3_t parm2, vec3_t parm3)
+int trap_BotLibTest(const int parm0, char* parm1, vec3_t parm2, vec3_t parm3)
 {
 	return Q_syscall(BOTLIB_TEST, parm0, parm1, parm2, parm3);
 }
 
-int trap_BotGetSnapshotEntity(int client_num, int sequence)
+int trap_BotGetSnapshotEntity(const int client_num, const int sequence)
 {
 	return Q_syscall(BOTLIB_GET_SNAPSHOT_ENTITY, client_num, sequence);
 }
 
-int trap_BotGetServerCommand(int client_num, char* message, int size)
+int trap_BotGetServerCommand(const int client_num, char* message, const int size)
 {
 	return Q_syscall(BOTLIB_GET_CONSOLE_MESSAGE, client_num, message, size);
 }
 
-void trap_BotUserCommand(int client_num, usercmd_t* ucmd)
+void trap_BotUserCommand(const int client_num, usercmd_t* ucmd)
 {
 	Q_syscall(BOTLIB_USER_COMMAND, client_num, ucmd);
 }
 
-void trap_AAS_EntityInfo(int entnum, void* info)
+void trap_AAS_EntityInfo(const int entnum, void* info)
 {
 	Q_syscall(BOTLIB_AAS_ENTITY_INFO, entnum, info);
 }
@@ -733,7 +734,7 @@ int trap_AAS_Initialized(void)
 	return Q_syscall(BOTLIB_AAS_INITIALIZED);
 }
 
-void trap_AAS_PresenceTypeBoundingBox(int presencetype, vec3_t mins, vec3_t maxs)
+void trap_AAS_PresenceTypeBoundingBox(const int presencetype, vec3_t mins, vec3_t maxs)
 {
 	Q_syscall(BOTLIB_AAS_PRESENCE_TYPE_BOUNDING_BOX, presencetype, mins, maxs);
 }
@@ -755,17 +756,17 @@ int trap_AAS_PointReachabilityAreaIndex(vec3_t point)
 	return Q_syscall(BOTLIB_AAS_POINT_REACHABILITY_AREA_INDEX, point);
 }
 
-int trap_AAS_TraceAreas(vec3_t start, vec3_t end, int* areas, vec3_t* points, int maxareas)
+int trap_AAS_TraceAreas(vec3_t start, vec3_t end, int* areas, vec3_t* points, const int maxareas)
 {
 	return Q_syscall(BOTLIB_AAS_TRACE_AREAS, start, end, areas, points, maxareas);
 }
 
-int trap_AAS_BBoxAreas(vec3_t absmins, vec3_t absmaxs, int* areas, int maxareas)
+int trap_AAS_BBoxAreas(vec3_t absmins, vec3_t absmaxs, int* areas, const int maxareas)
 {
 	return Q_syscall(BOTLIB_AAS_BBOX_AREAS, absmins, absmaxs, areas, maxareas);
 }
 
-int trap_AAS_AreaInfo(int areanum, void* info)
+int trap_AAS_AreaInfo(const int areanum, void* info)
 {
 	return Q_syscall(BOTLIB_AAS_AREA_INFO, areanum, info);
 }
@@ -775,58 +776,61 @@ int trap_AAS_PointContents(vec3_t point)
 	return Q_syscall(BOTLIB_AAS_POINT_CONTENTS, point);
 }
 
-int trap_AAS_NextBSPEntity(int ent)
+int trap_AAS_NextBSPEntity(const int ent)
 {
 	return Q_syscall(BOTLIB_AAS_NEXT_BSP_ENTITY, ent);
 }
 
-int trap_AAS_ValueForBSPEpairKey(int ent, char* key, char* value, int size)
+int trap_AAS_ValueForBSPEpairKey(const int ent, char* key, char* value, const int size)
 {
 	return Q_syscall(BOTLIB_AAS_VALUE_FOR_BSP_EPAIR_KEY, ent, key, value, size);
 }
 
-int trap_AAS_VectorForBSPEpairKey(int ent, char* key, vec3_t v)
+int trap_AAS_VectorForBSPEpairKey(const int ent, char* key, vec3_t v)
 {
 	return Q_syscall(BOTLIB_AAS_VECTOR_FOR_BSP_EPAIR_KEY, ent, key, v);
 }
 
-int trap_AAS_FloatForBSPEpairKey(int ent, char* key, float* value)
+int trap_AAS_FloatForBSPEpairKey(const int ent, char* key, float* value)
 {
 	return Q_syscall(BOTLIB_AAS_FLOAT_FOR_BSP_EPAIR_KEY, ent, key, value);
 }
 
-int trap_AAS_IntForBSPEpairKey(int ent, char* key, int* value)
+int trap_AAS_IntForBSPEpairKey(const int ent, char* key, int* value)
 {
 	return Q_syscall(BOTLIB_AAS_INT_FOR_BSP_EPAIR_KEY, ent, key, value);
 }
 
-int trap_AAS_AreaReachability(int areanum)
+int trap_AAS_AreaReachability(const int areanum)
 {
 	return Q_syscall(BOTLIB_AAS_AREA_REACHABILITY, areanum);
 }
 
-int trap_AAS_AreaTravelTimeToGoalArea(int areanum, vec3_t origin, int goalareanum, int travelflags)
+int trap_AAS_AreaTravelTimeToGoalArea(const int areanum, vec3_t origin, const int goalareanum, const int travelflags)
 {
 	return Q_syscall(BOTLIB_AAS_AREA_TRAVEL_TIME_TO_GOAL_AREA, areanum, origin, goalareanum, travelflags);
 }
 
-int trap_AAS_EnableRoutingArea(int areanum, int enable)
+int trap_AAS_EnableRoutingArea(const int areanum, const int enable)
 {
 	return Q_syscall(BOTLIB_AAS_ENABLE_ROUTING_AREA, areanum, enable);
 }
 
-int trap_AAS_PredictRoute(void* route, int areanum, vec3_t origin, int goalareanum, int travelflags, int maxareas,
-	int maxtime, int stopevent, int stopcontents, int stoptfl, int stopareanum)
+int trap_AAS_PredictRoute(void* route, const int areanum, vec3_t origin, const int goalareanum, const int travelflags,
+                          const int maxareas,
+                          const int maxtime, const int stopevent, const int stopcontents, const int stoptfl,
+                          const int stopareanum)
 {
 	return Q_syscall(BOTLIB_AAS_PREDICT_ROUTE, route, areanum, origin, goalareanum, travelflags, maxareas, maxtime,
-		stopevent, stopcontents, stoptfl, stopareanum);
+	                 stopevent, stopcontents, stoptfl, stopareanum);
 }
 
-int trap_AAS_AlternativeRouteGoals(vec3_t start, int startareanum, vec3_t goal, int goalareanum, int travelflags,
-	void* altroutegoals, int maxaltroutegoals, int type)
+int trap_AAS_AlternativeRouteGoals(vec3_t start, const int startareanum, vec3_t goal, const int goalareanum,
+                                   const int travelflags,
+                                   void* altroutegoals, const int maxaltroutegoals, const int type)
 {
 	return Q_syscall(BOTLIB_AAS_ALTERNATIVE_ROUTE_GOAL, start, startareanum, goal, goalareanum, travelflags,
-		altroutegoals, maxaltroutegoals, type);
+	                 altroutegoals, maxaltroutegoals, type);
 }
 
 int trap_AAS_Swimming(vec3_t origin)
@@ -834,179 +838,181 @@ int trap_AAS_Swimming(vec3_t origin)
 	return Q_syscall(BOTLIB_AAS_SWIMMING, origin);
 }
 
-int trap_AAS_PredictClientMovement(void* move, int entnum, vec3_t origin, int presencetype, int onground,
-	vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime,
-	int stopevent, int stopareanum, int visualize)
+int trap_AAS_PredictClientMovement(void* move, const int entnum, vec3_t origin, const int presencetype,
+                                   const int onground,
+                                   vec3_t velocity, vec3_t cmdmove, const int cmdframes, const int maxframes,
+                                   const float frametime,
+                                   const int stopevent, const int stopareanum, const int visualize)
 {
 	return Q_syscall(BOTLIB_AAS_PREDICT_CLIENT_MOVEMENT, move, entnum, origin, presencetype, onground, velocity,
-		cmdmove, cmdframes, maxframes, PASSFLOAT(frametime), stopevent, stopareanum, visualize);
+	                 cmdmove, cmdframes, maxframes, PASSFLOAT(frametime), stopevent, stopareanum, visualize);
 }
 
-void trap_EA_Say(int client, char* str)
+void trap_EA_Say(const int client, char* str)
 {
 	Q_syscall(BOTLIB_EA_SAY, client, str);
 }
 
-void trap_EA_SayTeam(int client, char* str)
+void trap_EA_SayTeam(const int client, char* str)
 {
 	Q_syscall(BOTLIB_EA_SAY_TEAM, client, str);
 }
 
-void trap_EA_Command(int client, char* command)
+void trap_EA_Command(const int client, char* command)
 {
 	Q_syscall(BOTLIB_EA_COMMAND, client, command);
 }
 
-void trap_EA_Action(int client, int action)
+void trap_EA_Action(const int client, const int action)
 {
 	Q_syscall(BOTLIB_EA_ACTION, client, action);
 }
 
-void trap_EA_Gesture(int client)
+void trap_EA_Gesture(const int client)
 {
 	Q_syscall(BOTLIB_EA_GESTURE, client);
 }
 
-void trap_EA_Talk(int client)
+void trap_EA_Talk(const int client)
 {
 	Q_syscall(BOTLIB_EA_TALK, client);
 }
 
-void trap_EA_Attack(int client)
+void trap_EA_Attack(const int client)
 {
 	Q_syscall(BOTLIB_EA_ATTACK, client);
 }
 
-void trap_EA_Alt_Attack(int client)
+void trap_EA_Alt_Attack(const int client)
 {
 	Q_syscall(BOTLIB_EA_ALT_ATTACK, client);
 }
 
-void trap_EA_ForcePower(int client)
+void trap_EA_ForcePower(const int client)
 {
 	Q_syscall(BOTLIB_EA_FORCEPOWER, client);
 }
 
-void trap_EA_Use(int client)
+void trap_EA_Use(const int client)
 {
 	Q_syscall(BOTLIB_EA_USE, client);
 }
 
-void trap_EA_Respawn(int client)
+void trap_EA_Respawn(const int client)
 {
 	Q_syscall(BOTLIB_EA_RESPAWN, client);
 }
 
-void trap_EA_Crouch(int client)
+void trap_EA_Crouch(const int client)
 {
 	Q_syscall(BOTLIB_EA_CROUCH, client);
 }
 
-void trap_EA_MoveUp(int client)
+void trap_EA_MoveUp(const int client)
 {
 	Q_syscall(BOTLIB_EA_MOVE_UP, client);
 }
 
-void trap_EA_MoveDown(int client)
+void trap_EA_MoveDown(const int client)
 {
 	Q_syscall(BOTLIB_EA_MOVE_DOWN, client);
 }
 
-void trap_EA_MoveForward(int client)
+void trap_EA_MoveForward(const int client)
 {
 	Q_syscall(BOTLIB_EA_MOVE_FORWARD, client);
 }
 
-void trap_EA_MoveBack(int client)
+void trap_EA_MoveBack(const int client)
 {
 	Q_syscall(BOTLIB_EA_MOVE_BACK, client);
 }
 
-void trap_EA_MoveLeft(int client)
+void trap_EA_MoveLeft(const int client)
 {
 	Q_syscall(BOTLIB_EA_MOVE_LEFT, client);
 }
 
-void trap_EA_MoveRight(int client)
+void trap_EA_MoveRight(const int client)
 {
 	Q_syscall(BOTLIB_EA_MOVE_RIGHT, client);
 }
 
-void trap_EA_SelectWeapon(int client, int weapon)
+void trap_EA_SelectWeapon(const int client, const int weapon)
 {
 	Q_syscall(BOTLIB_EA_SELECT_WEAPON, client, weapon);
 }
 
-void trap_EA_Jump(int client)
+void trap_EA_Jump(const int client)
 {
 	Q_syscall(BOTLIB_EA_JUMP, client);
 }
 
-void trap_EA_DelayedJump(int client)
+void trap_EA_DelayedJump(const int client)
 {
 	Q_syscall(BOTLIB_EA_DELAYED_JUMP, client);
 }
 
-void trap_EA_Move(int client, vec3_t dir, float speed)
+void trap_EA_Move(const int client, vec3_t dir, const float speed)
 {
 	Q_syscall(BOTLIB_EA_MOVE, client, dir, PASSFLOAT(speed));
 }
 
-void trap_EA_View(int client, vec3_t viewangles)
+void trap_EA_View(const int client, vec3_t viewangles)
 {
 	Q_syscall(BOTLIB_EA_VIEW, client, viewangles);
 }
 
-void trap_EA_EndRegular(int client, float thinktime)
+void trap_EA_EndRegular(const int client, const float thinktime)
 {
 	Q_syscall(BOTLIB_EA_END_REGULAR, client, PASSFLOAT(thinktime));
 }
 
-void trap_EA_GetInput(int client, float thinktime, void* input)
+void trap_EA_GetInput(const int client, const float thinktime, void* input)
 {
 	Q_syscall(BOTLIB_EA_GET_INPUT, client, PASSFLOAT(thinktime), input);
 }
 
-void trap_EA_ResetInput(int client)
+void trap_EA_ResetInput(const int client)
 {
 	Q_syscall(BOTLIB_EA_RESET_INPUT, client);
 }
 
-int trap_BotLoadCharacter(char* charfile, float skill)
+int trap_BotLoadCharacter(char* charfile, const float skill)
 {
 	return Q_syscall(BOTLIB_AI_LOAD_CHARACTER, charfile, PASSFLOAT(skill));
 }
 
-void trap_BotFreeCharacter(int character)
+void trap_BotFreeCharacter(const int character)
 {
 	Q_syscall(BOTLIB_AI_FREE_CHARACTER, character);
 }
 
-float trap_Characteristic_Float(int character, int index)
+float trap_Characteristic_Float(const int character, const int index)
 {
 	byteAlias_t fi;
 	fi.i = Q_syscall(BOTLIB_AI_CHARACTERISTIC_FLOAT, character, index);
 	return fi.f;
 }
 
-float trap_Characteristic_BFloat(int character, int index, float min, float max)
+float trap_Characteristic_BFloat(const int character, const int index, const float min, const float max)
 {
 	byteAlias_t fi;
 	fi.i = Q_syscall(BOTLIB_AI_CHARACTERISTIC_BFLOAT, character, index, PASSFLOAT(min), PASSFLOAT(max));
 	return fi.f;
 }
 
-int trap_Characteristic_Integer(int character, int index)
+int trap_Characteristic_Integer(const int character, const int index)
 {
 	return Q_syscall(BOTLIB_AI_CHARACTERISTIC_INTEGER, character, index);
 }
 
-int trap_Characteristic_BInteger(int character, int index, int min, int max)
+int trap_Characteristic_BInteger(const int character, const int index, const int min, const int max)
 {
 	return Q_syscall(BOTLIB_AI_CHARACTERISTIC_BINTEGER, character, index, min, max);
 }
 
-void trap_Characteristic_String(int character, int index, char* buf, int size)
+void trap_Characteristic_String(const int character, const int index, char* buf, const int size)
 {
 	Q_syscall(BOTLIB_AI_CHARACTERISTIC_STRING, character, index, buf, size);
 }
@@ -1016,75 +1022,77 @@ int trap_BotAllocChatState(void)
 	return Q_syscall(BOTLIB_AI_ALLOC_CHAT_STATE);
 }
 
-void trap_BotFreeChatState(int handle)
+void trap_BotFreeChatState(const int handle)
 {
 	Q_syscall(BOTLIB_AI_FREE_CHAT_STATE, handle);
 }
 
-void trap_BotQueueConsoleMessage(int chatstate, int type, char* message)
+void trap_BotQueueConsoleMessage(const int chatstate, const int type, char* message)
 {
 	Q_syscall(BOTLIB_AI_QUEUE_CONSOLE_MESSAGE, chatstate, type, message);
 }
 
-void trap_BotRemoveConsoleMessage(int chatstate, int handle)
+void trap_BotRemoveConsoleMessage(const int chatstate, const int handle)
 {
 	Q_syscall(BOTLIB_AI_REMOVE_CONSOLE_MESSAGE, chatstate, handle);
 }
 
-int trap_BotNextConsoleMessage(int chatstate, void* cm)
+int trap_BotNextConsoleMessage(const int chatstate, void* cm)
 {
 	return Q_syscall(BOTLIB_AI_NEXT_CONSOLE_MESSAGE, chatstate, cm);
 }
 
-int trap_BotNumConsoleMessages(int chatstate)
+int trap_BotNumConsoleMessages(const int chatstate)
 {
 	return Q_syscall(BOTLIB_AI_NUM_CONSOLE_MESSAGE, chatstate);
 }
 
-void trap_BotInitialChat(int chatstate, char* type, int mcontext, char* var0, char* var1, char* var2, char* var3,
-	char* var4, char* var5, char* var6, char* var7)
+void trap_BotInitialChat(const int chatstate, char* type, const int mcontext, char* var0, char* var1, char* var2,
+                         char* var3,
+                         char* var4, char* var5, char* var6, char* var7)
 {
 	Q_syscall(BOTLIB_AI_INITIAL_CHAT, chatstate, type, mcontext, var0, var1, var2, var3, var4, var5, var6, var7);
 }
 
-int trap_BotNumInitialChats(int chatstate, char* type)
+int trap_BotNumInitialChats(const int chatstate, char* type)
 {
 	return Q_syscall(BOTLIB_AI_NUM_INITIAL_CHATS, chatstate, type);
 }
 
-int trap_BotReplyChat(int chatstate, char* message, int mcontext, int vcontext, char* var0, char* var1, char* var2,
-	char* var3, char* var4, char* var5, char* var6, char* var7)
+int trap_BotReplyChat(const int chatstate, char* message, const int mcontext, const int vcontext, char* var0,
+                      char* var1, char* var2,
+                      char* var3, char* var4, char* var5, char* var6, char* var7)
 {
 	return Q_syscall(BOTLIB_AI_REPLY_CHAT, chatstate, message, mcontext, vcontext, var0, var1, var2, var3, var4, var5,
-		var6, var7);
+	                 var6, var7);
 }
 
-int trap_BotChatLength(int chatstate)
+int trap_BotChatLength(const int chatstate)
 {
 	return Q_syscall(BOTLIB_AI_CHAT_LENGTH, chatstate);
 }
 
-void trap_BotEnterChat(int chatstate, int client, int sendto)
+void trap_BotEnterChat(const int chatstate, const int client, const int sendto)
 {
 	Q_syscall(BOTLIB_AI_ENTER_CHAT, chatstate, client, sendto);
 }
 
-void trap_BotGetChatMessage(int chatstate, char* buf, int size)
+void trap_BotGetChatMessage(const int chatstate, char* buf, const int size)
 {
 	Q_syscall(BOTLIB_AI_GET_CHAT_MESSAGE, chatstate, buf, size);
 }
 
-int trap_StringContains(char* str1, char* str2, int casesensitive)
+int trap_StringContains(char* str1, char* str2, const int casesensitive)
 {
 	return Q_syscall(BOTLIB_AI_STRING_CONTAINS, str1, str2, casesensitive);
 }
 
-int trap_BotFindMatch(char* str, void* match, unsigned long int context)
+int trap_BotFindMatch(char* str, void* match, const unsigned long int context)
 {
 	return Q_syscall(BOTLIB_AI_FIND_MATCH, str, match, context);
 }
 
-void trap_BotMatchVariable(void* match, int variable, char* buf, int size)
+void trap_BotMatchVariable(void* match, const int variable, char* buf, const int size)
 {
 	Q_syscall(BOTLIB_AI_MATCH_VARIABLE, match, variable, buf, size);
 }
@@ -1094,87 +1102,88 @@ void trap_UnifyWhiteSpaces(char* string)
 	Q_syscall(BOTLIB_AI_UNIFY_WHITE_SPACES, string);
 }
 
-void trap_BotReplaceSynonyms(char* string, unsigned long int context)
+void trap_BotReplaceSynonyms(char* string, const unsigned long int context)
 {
 	Q_syscall(BOTLIB_AI_REPLACE_SYNONYMS, string, context);
 }
 
-int trap_BotLoadChatFile(int chatstate, char* chatfile, char* chatname)
+int trap_BotLoadChatFile(const int chatstate, char* chatfile, char* chatname)
 {
 	return Q_syscall(BOTLIB_AI_LOAD_CHAT_FILE, chatstate, chatfile, chatname);
 }
 
-void trap_BotSetChatGender(int chatstate, int gender)
+void trap_BotSetChatGender(const int chatstate, const int gender)
 {
 	Q_syscall(BOTLIB_AI_SET_CHAT_GENDER, chatstate, gender);
 }
 
-void trap_BotSetChatName(int chatstate, char* name, int client)
+void trap_BotSetChatName(const int chatstate, char* name, const int client)
 {
 	Q_syscall(BOTLIB_AI_SET_CHAT_NAME, chatstate, name, client);
 }
 
-void trap_BotResetGoalState(int goalstate)
+void trap_BotResetGoalState(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_RESET_GOAL_STATE, goalstate);
 }
 
-void trap_BotResetAvoidGoals(int goalstate)
+void trap_BotResetAvoidGoals(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_RESET_AVOID_GOALS, goalstate);
 }
 
-void trap_BotRemoveFromAvoidGoals(int goalstate, int number)
+void trap_BotRemoveFromAvoidGoals(const int goalstate, const int number)
 {
 	Q_syscall(BOTLIB_AI_REMOVE_FROM_AVOID_GOALS, goalstate, number);
 }
 
-void trap_BotPushGoal(int goalstate, void* goal)
+void trap_BotPushGoal(const int goalstate, void* goal)
 {
 	Q_syscall(BOTLIB_AI_PUSH_GOAL, goalstate, goal);
 }
 
-void trap_BotPopGoal(int goalstate)
+void trap_BotPopGoal(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_POP_GOAL, goalstate);
 }
 
-void trap_BotEmptyGoalStack(int goalstate)
+void trap_BotEmptyGoalStack(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_EMPTY_GOAL_STACK, goalstate);
 }
 
-void trap_BotDumpAvoidGoals(int goalstate)
+void trap_BotDumpAvoidGoals(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_DUMP_AVOID_GOALS, goalstate);
 }
 
-void trap_BotDumpGoalStack(int goalstate)
+void trap_BotDumpGoalStack(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_DUMP_GOAL_STACK, goalstate);
 }
 
-void trap_BotGoalName(int number, char* name, int size)
+void trap_BotGoalName(const int number, char* name, const int size)
 {
 	Q_syscall(BOTLIB_AI_GOAL_NAME, number, name, size);
 }
 
-int trap_BotGetTopGoal(int goalstate, void* goal)
+int trap_BotGetTopGoal(const int goalstate, void* goal)
 {
 	return Q_syscall(BOTLIB_AI_GET_TOP_GOAL, goalstate, goal);
 }
 
-int trap_BotGetSecondGoal(int goalstate, void* goal)
+int trap_BotGetSecondGoal(const int goalstate, void* goal)
 {
 	return Q_syscall(BOTLIB_AI_GET_SECOND_GOAL, goalstate, goal);
 }
 
-int trap_BotChooseLTGItem(int goalstate, vec3_t origin, int* inventory, int travelflags)
+int trap_BotChooseLTGItem(const int goalstate, vec3_t origin, int* inventory, const int travelflags)
 {
 	return Q_syscall(BOTLIB_AI_CHOOSE_LTG_ITEM, goalstate, origin, inventory, travelflags);
 }
 
-int trap_BotChooseNBGItem(int goalstate, vec3_t origin, int* inventory, int travelflags, void* ltg, float maxtime)
+int trap_BotChooseNBGItem(const int goalstate, vec3_t origin, int* inventory, const int travelflags, void* ltg,
+                          const float maxtime)
 {
 	return Q_syscall(BOTLIB_AI_CHOOSE_NBG_ITEM, goalstate, origin, inventory, travelflags, ltg, PASSFLOAT(maxtime));
 }
@@ -1184,17 +1193,17 @@ int trap_BotTouchingGoal(vec3_t origin, void* goal)
 	return Q_syscall(BOTLIB_AI_TOUCHING_GOAL, origin, goal);
 }
 
-int trap_BotItemGoalInVisButNotVisible(int viewer, vec3_t eye, vec3_t viewangles, void* goal)
+int trap_BotItemGoalInVisButNotVisible(const int viewer, vec3_t eye, vec3_t viewangles, void* goal)
 {
 	return Q_syscall(BOTLIB_AI_ITEM_GOAL_IN_VIS_BUT_NOT_VISIBLE, viewer, eye, viewangles, goal);
 }
 
-int trap_BotGetLevelItemGoal(int index, char* classname, void* goal)
+int trap_BotGetLevelItemGoal(const int index, char* classname, void* goal)
 {
 	return Q_syscall(BOTLIB_AI_GET_LEVEL_ITEM_GOAL, index, classname, goal);
 }
 
-int trap_BotGetNextCampSpotGoal(int num, void* goal)
+int trap_BotGetNextCampSpotGoal(const int num, void* goal)
 {
 	return Q_syscall(BOTLIB_AI_GET_NEXT_CAMP_SPOT_GOAL, num, goal);
 }
@@ -1204,14 +1213,14 @@ int trap_BotGetMapLocationGoal(char* name, void* goal)
 	return Q_syscall(BOTLIB_AI_GET_MAP_LOCATION_GOAL, name, goal);
 }
 
-float trap_BotAvoidGoalTime(int goalstate, int number)
+float trap_BotAvoidGoalTime(const int goalstate, const int number)
 {
 	byteAlias_t fi;
 	fi.i = Q_syscall(BOTLIB_AI_AVOID_GOAL_TIME, goalstate, number);
 	return fi.f;
 }
 
-void trap_BotSetAvoidGoalTime(int goalstate, int number, float avoidtime)
+void trap_BotSetAvoidGoalTime(const int goalstate, const int number, const float avoidtime)
 {
 	Q_syscall(BOTLIB_AI_SET_AVOID_GOAL_TIME, goalstate, number, PASSFLOAT(avoidtime));
 }
@@ -1226,82 +1235,83 @@ void trap_BotUpdateEntityItems(void)
 	Q_syscall(BOTLIB_AI_UPDATE_ENTITY_ITEMS);
 }
 
-int trap_BotLoadItemWeights(int goalstate, char* filename)
+int trap_BotLoadItemWeights(const int goalstate, char* filename)
 {
 	return Q_syscall(BOTLIB_AI_LOAD_ITEM_WEIGHTS, goalstate, filename);
 }
 
-void trap_BotFreeItemWeights(int goalstate)
+void trap_BotFreeItemWeights(const int goalstate)
 {
 	Q_syscall(BOTLIB_AI_FREE_ITEM_WEIGHTS, goalstate);
 }
 
-void trap_BotInterbreedGoalFuzzyLogic(int parent1, int parent2, int child)
+void trap_BotInterbreedGoalFuzzyLogic(const int parent1, const int parent2, const int child)
 {
 	Q_syscall(BOTLIB_AI_INTERBREED_GOAL_FUZZY_LOGIC, parent1, parent2, child);
 }
 
-void trap_BotSaveGoalFuzzyLogic(int goalstate, char* filename)
+void trap_BotSaveGoalFuzzyLogic(const int goalstate, char* filename)
 {
 	Q_syscall(BOTLIB_AI_SAVE_GOAL_FUZZY_LOGIC, goalstate, filename);
 }
 
-void trap_BotMutateGoalFuzzyLogic(int goalstate, float range)
+void trap_BotMutateGoalFuzzyLogic(const int goalstate, const float range)
 {
 	Q_syscall(BOTLIB_AI_MUTATE_GOAL_FUZZY_LOGIC, goalstate, PASSFLOAT(range));
 }
 
-int trap_BotAllocGoalState(int state)
+int trap_BotAllocGoalState(const int state)
 {
 	return Q_syscall(BOTLIB_AI_ALLOC_GOAL_STATE, state);
 }
 
-void trap_BotFreeGoalState(int handle)
+void trap_BotFreeGoalState(const int handle)
 {
 	Q_syscall(BOTLIB_AI_FREE_GOAL_STATE, handle);
 }
 
-void trap_BotResetMoveState(int movestate)
+void trap_BotResetMoveState(const int movestate)
 {
 	Q_syscall(BOTLIB_AI_RESET_MOVE_STATE, movestate);
 }
 
-void trap_BotAddAvoidSpot(int movestate, vec3_t origin, float radius, int type)
+void trap_BotAddAvoidSpot(const int movestate, vec3_t origin, const float radius, const int type)
 {
 	Q_syscall(BOTLIB_AI_ADD_AVOID_SPOT, movestate, origin, PASSFLOAT(radius), type);
 }
 
-void trap_BotMoveToGoal(void* result, int movestate, void* goal, int travelflags)
+void trap_BotMoveToGoal(void* result, const int movestate, void* goal, const int travelflags)
 {
 	Q_syscall(BOTLIB_AI_MOVE_TO_GOAL, result, movestate, goal, travelflags);
 }
 
-int trap_BotMoveInDirection(int movestate, vec3_t dir, float speed, int type)
+int trap_BotMoveInDirection(const int movestate, vec3_t dir, const float speed, const int type)
 {
 	return Q_syscall(BOTLIB_AI_MOVE_IN_DIRECTION, movestate, dir, PASSFLOAT(speed), type);
 }
 
-void trap_BotResetAvoidReach(int movestate)
+void trap_BotResetAvoidReach(const int movestate)
 {
 	Q_syscall(BOTLIB_AI_RESET_AVOID_REACH, movestate);
 }
 
-void trap_BotResetLastAvoidReach(int movestate)
+void trap_BotResetLastAvoidReach(const int movestate)
 {
 	Q_syscall(BOTLIB_AI_RESET_LAST_AVOID_REACH, movestate);
 }
 
-int trap_BotReachabilityArea(vec3_t origin, int testground)
+int trap_BotReachabilityArea(vec3_t origin, const int testground)
 {
 	return Q_syscall(BOTLIB_AI_REACHABILITY_AREA, origin, testground);
 }
 
-int trap_BotMovementViewTarget(int movestate, void* goal, int travelflags, float lookahead, vec3_t target)
+int trap_BotMovementViewTarget(const int movestate, void* goal, const int travelflags, const float lookahead,
+                               vec3_t target)
 {
 	return Q_syscall(BOTLIB_AI_MOVEMENT_VIEW_TARGET, movestate, goal, travelflags, PASSFLOAT(lookahead), target);
 }
 
-int trap_BotPredictVisiblePosition(vec3_t origin, int areanum, void* goal, int travelflags, vec3_t target)
+int trap_BotPredictVisiblePosition(vec3_t origin, const int areanum, void* goal, const int travelflags, vec3_t target)
 {
 	return Q_syscall(BOTLIB_AI_PREDICT_VISIBLE_POSITION, origin, areanum, goal, travelflags, target);
 }
@@ -1311,27 +1321,27 @@ int trap_BotAllocMoveState(void)
 	return Q_syscall(BOTLIB_AI_ALLOC_MOVE_STATE);
 }
 
-void trap_BotFreeMoveState(int handle)
+void trap_BotFreeMoveState(const int handle)
 {
 	Q_syscall(BOTLIB_AI_FREE_MOVE_STATE, handle);
 }
 
-void trap_BotInitMoveState(int handle, void* initmove)
+void trap_BotInitMoveState(const int handle, void* initmove)
 {
 	Q_syscall(BOTLIB_AI_INIT_MOVE_STATE, handle, initmove);
 }
 
-int trap_BotChooseBestFightWeapon(int weaponstate, int* inventory)
+int trap_BotChooseBestFightWeapon(const int weaponstate, int* inventory)
 {
 	return Q_syscall(BOTLIB_AI_CHOOSE_BEST_FIGHT_WEAPON, weaponstate, inventory);
 }
 
-void trap_BotGetWeaponInfo(int weaponstate, int weapon, void* weaponinfo)
+void trap_BotGetWeaponInfo(const int weaponstate, const int weapon, void* weaponinfo)
 {
 	Q_syscall(BOTLIB_AI_GET_WEAPON_INFO, weaponstate, weapon, weaponinfo);
 }
 
-int trap_BotLoadWeaponWeights(int weaponstate, char* filename)
+int trap_BotLoadWeaponWeights(const int weaponstate, char* filename)
 {
 	return Q_syscall(BOTLIB_AI_LOAD_WEAPON_WEIGHTS, weaponstate, filename);
 }
@@ -1341,17 +1351,17 @@ int trap_BotAllocWeaponState(void)
 	return Q_syscall(BOTLIB_AI_ALLOC_WEAPON_STATE);
 }
 
-void trap_BotFreeWeaponState(int weaponstate)
+void trap_BotFreeWeaponState(const int weaponstate)
 {
 	Q_syscall(BOTLIB_AI_FREE_WEAPON_STATE, weaponstate);
 }
 
-void trap_BotResetWeaponState(int weaponstate)
+void trap_BotResetWeaponState(const int weaponstate)
 {
 	Q_syscall(BOTLIB_AI_RESET_WEAPON_STATE, weaponstate);
 }
 
-int trap_GeneticParentsAndChildSelection(int numranks, float* ranks, int* parent1, int* parent2, int* child)
+int trap_GeneticParentsAndChildSelection(const int numranks, float* ranks, int* parent1, int* parent2, int* child)
 {
 	return Q_syscall(BOTLIB_AI_GENETIC_PARENTS_AND_CHILD_SELECTION, numranks, ranks, parent1, parent2, child);
 }
@@ -1361,17 +1371,17 @@ int trap_PC_LoadSource(const char* filename)
 	return Q_syscall(BOTLIB_PC_LOAD_SOURCE, filename);
 }
 
-int trap_PC_FreeSource(int handle)
+int trap_PC_FreeSource(const int handle)
 {
 	return Q_syscall(BOTLIB_PC_FREE_SOURCE, handle);
 }
 
-int trap_PC_ReadToken(int handle, pc_token_t* pc_token)
+int trap_PC_ReadToken(const int handle, pc_token_t* pc_token)
 {
 	return Q_syscall(BOTLIB_PC_READ_TOKEN, handle, pc_token);
 }
 
-int trap_PC_SourceFileAndLine(int handle, char* filename, int* line)
+int trap_PC_SourceFileAndLine(const int handle, char* filename, int* line)
 {
 	return Q_syscall(BOTLIB_PC_SOURCE_FILE_AND_LINE, handle, filename, line);
 }
@@ -1381,7 +1391,7 @@ qhandle_t trap_R_RegisterSkin(const char* name)
 	return Q_syscall(G_R_REGISTERSKIN, name);
 }
 
-void trap_G2_ListModelBones(void* ghlInfo, int frame)
+void trap_G2_ListModelBones(void* ghlInfo, const int frame)
 {
 	Q_syscall(G_G2_LISTBONES, ghlInfo, frame);
 }
@@ -1402,36 +1412,38 @@ void trap_G2_SetGhoul2ModelIndexes(void* ghoul2, qhandle_t* modelList, qhandle_t
 }
 
 qboolean trap_G2API_GetBoltMatrix(void* ghoul2, const int model_index, const int bolt_index, mdxaBone_t* matrix,
-	const vec3_t angles, const vec3_t position, const int frameNum, qhandle_t* modelList,
-	vec3_t scale)
+                                  const vec3_t angles, const vec3_t position, const int frameNum, qhandle_t* modelList,
+                                  vec3_t scale)
 {
-	return Q_syscall(G_G2_GETBOLT, ghoul2, model_index, bolt_index, matrix, angles, position, frameNum, modelList, scale);
+	return Q_syscall(G_G2_GETBOLT, ghoul2, model_index, bolt_index, matrix, angles, position, frameNum, modelList,
+	                 scale);
 }
 
 qboolean trap_G2API_GetBoltMatrix_NoReconstruct(void* ghoul2, const int model_index, const int bolt_index,
-	mdxaBone_t* matrix, const vec3_t angles, const vec3_t position,
-	const int frameNum, qhandle_t* modelList, vec3_t scale)
+                                                mdxaBone_t* matrix, const vec3_t angles, const vec3_t position,
+                                                const int frameNum, qhandle_t* modelList, vec3_t scale)
 {
 	return Q_syscall(G_G2_GETBOLT_NOREC, ghoul2, model_index, bolt_index, matrix, angles, position, frameNum, modelList,
-		scale);
+	                 scale);
 }
 
 qboolean trap_G2API_GetBoltMatrix_NoRecNoRot(void* ghoul2, const int model_index, const int bolt_index,
-	mdxaBone_t* matrix, const vec3_t angles, const vec3_t position,
-	const int frameNum, qhandle_t* modelList, vec3_t scale)
+                                             mdxaBone_t* matrix, const vec3_t angles, const vec3_t position,
+                                             const int frameNum, qhandle_t* modelList, vec3_t scale)
 {
 	return Q_syscall(G_G2_GETBOLT_NOREC_NOROT, ghoul2, model_index, bolt_index, matrix, angles, position, frameNum,
-		modelList, scale);
+	                 modelList, scale);
 }
 
-int trap_G2API_InitGhoul2Model(void** ghoul2Ptr, const char* fileName, int model_index, qhandle_t customSkin,
-	qhandle_t customShader, int modelFlags, int lodBias)
+int trap_G2API_InitGhoul2Model(void** ghoul2Ptr, const char* fileName, const int model_index,
+                               const qhandle_t customSkin,
+                               const qhandle_t customShader, const int modelFlags, const int lodBias)
 {
 	return Q_syscall(G_G2_INITGHOUL2MODEL, ghoul2Ptr, fileName, model_index, customSkin, customShader, modelFlags,
-		lodBias);
+	                 lodBias);
 }
 
-qboolean trap_G2API_SetSkin(void* ghoul2, int model_index, qhandle_t customSkin, qhandle_t renderSkin)
+qboolean trap_G2API_SetSkin(void* ghoul2, const int model_index, const qhandle_t customSkin, const qhandle_t renderSkin)
 {
 	return Q_syscall(G_G2_SETSKIN, ghoul2, model_index, customSkin, renderSkin);
 }
@@ -1441,51 +1453,51 @@ int trap_G2API_Ghoul2Size(void* ghlInfo)
 	return Q_syscall(G_G2_SIZE, ghlInfo);
 }
 
-int trap_G2API_AddBolt(void* ghoul2, int model_index, const char* boneName)
+int trap_G2API_AddBolt(void* ghoul2, const int model_index, const char* boneName)
 {
 	return Q_syscall(G_G2_ADDBOLT, ghoul2, model_index, boneName);
 }
 
-void trap_G2API_SetBoltInfo(void* ghoul2, int model_index, int boltInfo)
+void trap_G2API_SetBoltInfo(void* ghoul2, const int model_index, const int boltInfo)
 {
 	Q_syscall(G_G2_SETBOLTINFO, ghoul2, model_index, boltInfo);
 }
 
-qboolean trap_G2API_SetBoneAngles(void* ghoul2, int model_index, const char* boneName, const vec3_t angles,
-	const int flags, const int up, const int right, const int forward,
-	qhandle_t* modelList, int blendTime, int currentTime)
+qboolean trap_G2API_SetBoneAngles(void* ghoul2, const int model_index, const char* boneName, const vec3_t angles,
+                                  const int flags, const int up, const int right, const int forward,
+                                  qhandle_t* modelList, const int blendTime, const int currentTime)
 {
 	return Q_syscall(G_G2_ANGLEOVERRIDE, ghoul2, model_index, boneName, angles, flags, up, right, forward, modelList,
-		blendTime, currentTime);
+	                 blendTime, currentTime);
 }
 
 qboolean trap_G2API_SetBoneAnim(void* ghoul2, const int model_index, const char* boneName, const int startFrame,
-	const int endFrame, const int flags, const float animSpeed, const int currentTime,
-	const float setFrame, const int blendTime)
+                                const int endFrame, const int flags, const float animSpeed, const int currentTime,
+                                const float setFrame, const int blendTime)
 {
 	return Q_syscall(G_G2_PLAYANIM, ghoul2, model_index, boneName, startFrame, endFrame, flags, PASSFLOAT(animSpeed),
-		currentTime, PASSFLOAT(setFrame), blendTime);
+	                 currentTime, PASSFLOAT(setFrame), blendTime);
 }
 
 qboolean trap_G2API_GetBoneAnim(void* ghoul2, const char* boneName, const int currentTime, float* currentFrame,
-	int* startFrame, int* endFrame, int* flags, float* animSpeed, int* modelList,
-	const int model_index)
+                                int* startFrame, int* endFrame, int* flags, float* animSpeed, int* modelList,
+                                const int model_index)
 {
 	return Q_syscall(G_G2_GETBONEANIM, ghoul2, boneName, currentTime, currentFrame, startFrame, endFrame, flags,
-		animSpeed, modelList, model_index);
+	                 animSpeed, modelList, model_index);
 }
 
-void trap_G2API_GetGLAName(void* ghoul2, int model_index, char* fillBuf)
+void trap_G2API_GetGLAName(void* ghoul2, const int model_index, char* fillBuf)
 {
 	Q_syscall(G_G2_GETGLANAME, ghoul2, model_index, fillBuf);
 }
 
-int trap_G2API_CopyGhoul2Instance(void* g2From, void* g2To, int model_index)
+int trap_G2API_CopyGhoul2Instance(void* g2From, void* g2To, const int model_index)
 {
 	return Q_syscall(G_G2_COPYGHOUL2INSTANCE, g2From, g2To, model_index);
 }
 
-void trap_G2API_CopySpecificGhoul2Model(void* g2From, int modelFrom, void* g2To, int modelTo)
+void trap_G2API_CopySpecificGhoul2Model(void* g2From, const int modelFrom, void* g2To, const int modelTo)
 {
 	Q_syscall(G_G2_COPYSPECIFICGHOUL2MODEL, g2From, modelFrom, g2To, modelTo);
 }
@@ -1495,12 +1507,12 @@ void trap_G2API_DuplicateGhoul2Instance(void* g2From, void** g2To)
 	Q_syscall(G_G2_DUPLICATEGHOUL2INSTANCE, g2From, g2To);
 }
 
-qboolean trap_G2API_HasGhoul2ModelOnIndex(void* ghlInfo, int model_index)
+qboolean trap_G2API_HasGhoul2ModelOnIndex(void* ghlInfo, const int model_index)
 {
 	return Q_syscall(G_G2_HASGHOUL2MODELONINDEX, ghlInfo, model_index);
 }
 
-qboolean trap_G2API_RemoveGhoul2Model(void* ghlInfo, int model_index)
+qboolean trap_G2API_RemoveGhoul2Model(void* ghlInfo, const int model_index)
 {
 	return Q_syscall(G_G2_REMOVEGHOUL2MODEL, ghlInfo, model_index);
 }
@@ -1516,22 +1528,23 @@ void trap_G2API_CleanGhoul2Models(void** ghoul2Ptr)
 }
 
 void trap_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position,
-	int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale,
-	int traceFlags, int useLod, float fRadius)
+                                const int frameNumber, const int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale,
+                                const int traceFlags, const int useLod, const float fRadius)
 {
 	Q_syscall(G_G2_COLLISIONDETECT, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale,
-		traceFlags, useLod, PASSFLOAT(fRadius));
+	          traceFlags, useLod, PASSFLOAT(fRadius));
 }
 
 void trap_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles,
-	const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd,
-	vec3_t scale, int traceFlags, int useLod, float fRadius)
+                                     const vec3_t position, const int frameNumber, const int entNum, vec3_t rayStart,
+                                     vec3_t rayEnd,
+                                     vec3_t scale, const int traceFlags, const int useLod, const float fRadius)
 {
 	Q_syscall(G_G2_COLLISIONDETECTCACHE, collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd,
-		scale, traceFlags, useLod, PASSFLOAT(fRadius));
+	          scale, traceFlags, useLod, PASSFLOAT(fRadius));
 }
 
-void trap_G2API_GetSurfaceName(void* ghoul2, int surfNumber, int model_index, char* fillBuf)
+void trap_G2API_GetSurfaceName(void* ghoul2, const int surfNumber, const int model_index, char* fillBuf)
 {
 	Q_syscall(G_G2_GETSURFACENAME, ghoul2, surfNumber, model_index, fillBuf);
 }
@@ -1551,7 +1564,7 @@ qboolean trap_G2API_SetNewOrigin(void* ghoul2, const int bolt_index)
 	return Q_syscall(G_G2_SETNEWORIGIN, ghoul2, bolt_index);
 }
 
-qboolean trap_G2API_DoesBoneExist(void* ghoul2, int model_index, const char* boneName)
+qboolean trap_G2API_DoesBoneExist(void* ghoul2, const int model_index, const char* boneName)
 {
 	return Q_syscall(G_G2_DOESBONEEXIST, ghoul2, model_index, boneName);
 }
@@ -1561,7 +1574,7 @@ int trap_G2API_GetSurfaceRenderStatus(void* ghoul2, const int model_index, const
 	return Q_syscall(G_G2_GETSURFACERENDERSTATUS, ghoul2, model_index, surfaceName);
 }
 
-void trap_G2API_AbsurdSmoothing(void* ghoul2, qboolean status)
+void trap_G2API_AbsurdSmoothing(void* ghoul2, const qboolean status)
 {
 	Q_syscall(G_G2_ABSURDSMOOTHING, ghoul2, status);
 }
@@ -1571,7 +1584,7 @@ void trap_G2API_SetRagDoll(void* ghoul2, sharedRagDollParams_t* params)
 	Q_syscall(G_G2_SETRAGDOLL, ghoul2, params);
 }
 
-void trap_G2API_AnimateG2Models(void* ghoul2, int time, sharedRagDollUpdateParams_t* params)
+void trap_G2API_AnimateG2Models(void* ghoul2, const int time, sharedRagDollUpdateParams_t* params)
 {
 	Q_syscall(G_G2_ANIMATEG2MODELS, ghoul2, time, params);
 }
@@ -1592,7 +1605,7 @@ qboolean trap_G2API_RagEffectorGoal(void* ghoul2, const char* boneName, vec3_t p
 }
 
 qboolean trap_G2API_GetRagBonePos(void* ghoul2, const char* boneName, vec3_t pos, vec3_t entAngles, vec3_t entPos,
-	vec3_t entScale)
+                                  vec3_t entScale)
 {
 	return Q_syscall(G_G2_GETRAGBONEPOS, ghoul2, boneName, pos, entAngles, entPos, entScale);
 }
@@ -1602,33 +1615,33 @@ qboolean trap_G2API_RagEffectorKick(void* ghoul2, const char* boneName, vec3_t v
 	return Q_syscall(G_G2_RAGEFFECTORKICK, ghoul2, boneName, velocity);
 }
 
-qboolean trap_G2API_RagForceSolve(void* ghoul2, qboolean force)
+qboolean trap_G2API_RagForceSolve(void* ghoul2, const qboolean force)
 {
 	return Q_syscall(G_G2_RAGFORCESOLVE, ghoul2, force);
 }
 
-qboolean trap_G2API_SetBoneIKState(void* ghoul2, int time, const char* boneName, int ikState,
-	sharedSetBoneIKStateParams_t* params)
+qboolean trap_G2API_SetBoneIKState(void* ghoul2, const int time, const char* boneName, const int ikState,
+                                   sharedSetBoneIKStateParams_t* params)
 {
 	return Q_syscall(G_G2_SETBONEIKSTATE, ghoul2, time, boneName, ikState, params);
 }
 
-qboolean trap_G2API_IKMove(void* ghoul2, int time, sharedIKMoveParams_t* params)
+qboolean trap_G2API_IKMove(void* ghoul2, const int time, sharedIKMoveParams_t* params)
 {
 	return Q_syscall(G_G2_IKMOVE, ghoul2, time, params);
 }
 
-qboolean trap_G2API_RemoveBone(void* ghoul2, const char* boneName, int model_index)
+qboolean trap_G2API_RemoveBone(void* ghoul2, const char* boneName, const int model_index)
 {
 	return Q_syscall(G_G2_REMOVEBONE, ghoul2, boneName, model_index);
 }
 
-void trap_G2API_AttachInstanceToEntNum(void* ghoul2, int entityNum, qboolean server)
+void trap_G2API_AttachInstanceToEntNum(void* ghoul2, const int entityNum, const qboolean server)
 {
 	Q_syscall(G_G2_ATTACHINSTANCETOENTNUM, ghoul2, entityNum, server);
 }
 
-void trap_G2API_ClearAttachedInstance(int entityNum)
+void trap_G2API_ClearAttachedInstance(const int entityNum)
 {
 	Q_syscall(G_G2_CLEARATTACHEDINSTANCE, entityNum);
 }
@@ -1643,7 +1656,7 @@ qboolean trap_G2API_OverrideServer(void* serverInstance)
 	return Q_syscall(G_G2_OVERRIDESERVER, serverInstance);
 }
 
-const char* trap_SetActiveSubBSP(int index)
+const char* trap_SetActiveSubBSP(const int index)
 {
 	return (char*)Q_syscall(G_SET_ACTIVE_SUBBSP, index);
 }
@@ -1658,38 +1671,39 @@ void trap_RMG_Init(void)
 	Q_syscall(G_RMG_INIT);
 }
 
-void trap_Bot_UpdateWaypoints(int wpnum, wpobject_t** wps)
+void trap_Bot_UpdateWaypoints(const int wpnum, wpobject_t** wps)
 {
 	Q_syscall(G_BOT_UPDATEWAYPOINTS, wpnum, wps);
 }
 
-void trap_Bot_CalculatePaths(int rmg)
+void trap_Bot_CalculatePaths(const int rmg)
 {
 	Q_syscall(G_BOT_CALCULATEPATHS, rmg);
 }
 
 // Translate import table funcptrs to syscalls
 
-int SVSyscall_FS_Read(void* buffer, int len, fileHandle_t f)
+int SVSyscall_FS_Read(void* buffer, const int len, const fileHandle_t f)
 {
 	trap_FS_Read(buffer, len, f);
 	return 0;
 }
 
-int SVSyscall_FS_Write(const void* buffer, int len, fileHandle_t f)
+int SVSyscall_FS_Write(const void* buffer, const int len, const fileHandle_t f)
 {
 	trap_FS_Write(buffer, len, f);
 	return 0;
 }
 
-qboolean SVSyscall_EntityContact(const vec3_t mins, const vec3_t maxs, const sharedEntity_t* ent, int capsule)
+qboolean SVSyscall_EntityContact(const vec3_t mins, const vec3_t maxs, const sharedEntity_t* ent, const int capsule)
 {
 	if (capsule) return trap_EntityContactCapsule(mins, maxs, ent);
 	return trap_EntityContact(mins, maxs, ent);
 }
 
 void SVSyscall_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod)
+                     const int passEntityNum, const int contentmask, const int capsule, const int traceFlags,
+                     const int useLod)
 {
 	if (capsule)
 		trap_TraceCapsule(results, start, mins, maxs, end, passEntityNum, contentmask);
@@ -1714,7 +1728,7 @@ void QDECL G_Error(int errorLevel, const char* error, ...)
 void QDECL G_Printf(const char* msg, ...)
 {
 	va_list argptr;
-	char text[4096] = { 0 };
+	char text[4096] = {0};
 
 	va_start(argptr, msg);
 	const int ret = Q_vsnprintf(text, sizeof text, msg, argptr);
@@ -1728,7 +1742,7 @@ void QDECL G_Printf(const char* msg, ...)
 
 static void TranslateSyscalls(void)
 {
-	static gameImport_t import = { 0 };
+	static gameImport_t import = {0};
 
 	trap = &import;
 

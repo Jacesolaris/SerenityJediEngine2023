@@ -83,6 +83,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define iG2_BONEWEIGHT_TOPBITS_SHIFT	((iG2_BITS_PER_BONEREF * iMAX_G2_BONEWEIGHTS_PER_VERT) - 8)	// 8 bits because of 8 in the BoneWeight[] array entry
 
+
+
 #define iG2_BONEWEIGHT_TOPBITS_AND		0x300	// 2 bits, giving 10 total, or 10 bits, for 1023/1024 above
 
 #define sDEFAULT_GLA_NAME "*default"	// used when making special simple ghoul2 models, usually from MD3 files
@@ -325,7 +327,7 @@ static inline int G2_GetVertBoneIndex(const mdxmVertex_t* pVert, const int iWeig
 }
 
 static inline float G2_GetVertBoneWeight(const mdxmVertex_t* pVert, const int iWeightNum, float& fTotalWeight,
-	int iNumWeights)
+                                         const int iNumWeights)
 {
 	float fBoneWeight;
 

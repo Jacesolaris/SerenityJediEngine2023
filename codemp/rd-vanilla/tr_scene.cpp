@@ -121,7 +121,7 @@ RE_AddPolyToScene
 
 =====================
 */
-void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys) {
+void RE_AddPolyToScene(const qhandle_t hShader, const int numVerts, const polyVert_t* verts, const int numPolys) {
 	int			fogIndex;
 
 	if (!tr.registered) {
@@ -313,7 +313,7 @@ RE_AddDynamicLightToScene
 
 =====================
 */
-void RE_AddDynamicLightToScene(const vec3_t org, float intensity, float r, float g, float b, int additive) {
+void RE_AddDynamicLightToScene(const vec3_t org, const float intensity, const float r, const float g, const float b, const int additive) {
 	if (!tr.registered) {
 		return;
 	}
@@ -338,7 +338,7 @@ RE_AddLightToScene
 
 =====================
 */
-void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b) {
+void RE_AddLightToScene(const vec3_t org, const float intensity, const float r, const float g, const float b) {
 	RE_AddDynamicLightToScene(org, intensity, r, g, b, qfalse);
 }
 
@@ -348,7 +348,7 @@ RE_AddAdditiveLightToScene
 
 =====================
 */
-void RE_AddAdditiveLightToScene(const vec3_t org, float intensity, float r, float g, float b) {
+void RE_AddAdditiveLightToScene(const vec3_t org, const float intensity, const float r, const float g, const float b) {
 	RE_AddDynamicLightToScene(org, intensity, r, g, b, qtrue);
 }
 

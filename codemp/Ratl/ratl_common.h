@@ -101,6 +101,7 @@ class hfile;
 
 // I don't know why this needs to be in the global namespace, but it does
 class TRatlNew;
+
 inline void* operator new(size_t, TRatlNew* where)
 {
 	return where;
@@ -123,7 +124,7 @@ namespace ratl
 	// This is mostly for future use.  For now, they only provide a simple interface with
 	// a couple extra functions (eql and clr).
 	////////////////////////////////////////////////////////////////////////////////////////
-	namespace	mem
+	namespace mem
 	{
 		////////////////////////////////////////////////////////////////////////////////////////
 		// The Align Struct Is The Root Memory Structure for Inheritance and Object Semantics
@@ -144,40 +145,45 @@ namespace ratl
 		} __attribute__((aligned(16)));
 #endif
 
-		inline void* cpy(void* dest, const void* src, size_t count)
+		inline void* cpy(void* dest, const void* src, const size_t count)
 		{
 			return memcpy(dest, src, count);
 		}
-		inline void* set(void* dest, int c, size_t count)
+
+		inline void* set(void* dest, const int c, const size_t count)
 		{
 			return memset(dest, c, count);
 		}
-		inline int		cmp(const void* buf1, const void* buf2, size_t count)
+
+		inline int cmp(const void* buf1, const void* buf2, const size_t count)
 		{
 			return memcmp(buf1, buf2, count);
 		}
-		inline bool	eql(const void* buf1, const void* buf2, size_t count)
+
+		inline bool eql(const void* buf1, const void* buf2, const size_t count)
 		{
 			return memcmp(buf1, buf2, count) == 0;
 		}
-		inline void* zero(void* dest, size_t count)
+
+		inline void* zero(void* dest, const size_t count)
 		{
 			return memset(dest, 0, count);
 		}
 
-		template<class T>
-		void	cpy(T* dest, const T* src)
+		template <class T>
+		void cpy(T* dest, const T* src)
 		{
 			cpy(dest, src, sizeof(T));
 		}
-		template<class T>
-		void	set(T* dest, int c)
+
+		template <class T>
+		void set(T* dest, const int c)
 		{
 			set(dest, c, sizeof(T));
 		}
 
-		template<class T>
-		void	swap(T* s1, T* s2)
+		template <class T>
+		void swap(T* s1, T* s2)
 		{
 			unsigned char temp[sizeof(T)];
 			cpy(static_cast<T*>(temp), s1);
@@ -185,19 +191,19 @@ namespace ratl
 			cpy(s2, static_cast<T*>(temp));
 		}
 
-		template<class T>
-		int		cmp(const T* buf1, const T* buf2)
+		template <class T>
+		int cmp(const T* buf1, const T* buf2)
 		{
 			return cmp(buf1, buf2, sizeof(T));
 		}
 
-		template<class T>
-		bool	eql(const T* buf1, const T* buf2)
+		template <class T>
+		bool eql(const T* buf1, const T* buf2)
 		{
 			return cmp(buf1, buf2, sizeof(T)) == 0;
 		}
 
-		template<class T>
+		template <class T>
 		void* zero(T* dest)
 		{
 			return set(dest, 0, sizeof(T));
@@ -206,52 +212,57 @@ namespace ratl
 
 	namespace str
 	{
-		inline int		len(const char* src)
+		inline int len(const char* src)
 		{
 			return strlen(src);
 		}
 
-		inline void	cpy(char* dest, const char* src)
+		inline void cpy(char* dest, const char* src)
 		{
 			strcpy(dest, src);
 		}
 
-		inline void	ncpy(char* dest, const char* src, int destBufferLen)
+		inline void ncpy(char* dest, const char* src, const int destBufferLen)
 		{
 			strncpy(dest, src, destBufferLen);
 		}
 
-		inline void	cat(char* dest, const char* src)
+		inline void cat(char* dest, const char* src)
 		{
 			strcat(dest, src);
 		}
 
-		inline void	ncat(char* dest, const char* src, int destBufferLen)
+		inline void ncat(char* dest, const char* src, const int destBufferLen)
 		{
 			ncpy(dest + len(dest), src, destBufferLen - len(dest));
 		}
 
-		inline int		cmp(const char* s1, const char* s2)
+		inline int cmp(const char* s1, const char* s2)
 		{
 			return strcmp(s1, s2);
 		}
-		inline bool	eql(const char* s1, const char* s2)
+
+		inline bool eql(const char* s1, const char* s2)
 		{
 			return strcmp(s1, s2) == 0;
 		}
-		inline int		icmp(const char* s1, const char* s2)
+
+		inline int icmp(const char* s1, const char* s2)
 		{
 			return Q_stricmp(s1, s2);
 		}
-		inline int		cmpi(const char* s1, const char* s2)
+
+		inline int cmpi(const char* s1, const char* s2)
 		{
 			return Q_stricmp(s1, s2);
 		}
-		inline bool	ieql(const char* s1, const char* s2)
+
+		inline bool ieql(const char* s1, const char* s2)
 		{
 			return Q_stricmp(s1, s2) == 0;
 		}
-		inline bool	eqli(const char* s1, const char* s2)
+
+		inline bool eqli(const char* s1, const char* s2)
 		{
 			return Q_stricmp(s1, s2) == 0;
 		}
@@ -261,9 +272,9 @@ namespace ratl
 			return strtok(s, gap);
 		}
 
-		void	to_upper(char* dest);
-		void	to_lower(char* dest);
-		void	printf(char* dest, const char* formatS, ...);
+		void to_upper(char* dest);
+		void to_lower(char* dest);
+		void printf(char* dest, const char* formatS, ...);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -272,17 +283,18 @@ namespace ratl
 	// If, during compile time the stuff under (condition) is zero, this code will not
 	// compile.
 	////////////////////////////////////////////////////////////////////////////////////////
-	template<int condition>
-	class	compile_assert
+	template <int condition>
+	class compile_assert
 	{
 #ifdef _DEBUG
-		int	junk[1 - 2 * !condition];		// Look At Where This Was Being Compiled
+		int junk[1 - 2 * !condition]; // Look At Where This Was Being Compiled
 	public:
 		compile_assert()
 		{
 			assert(condition);
 			junk[0] = FoolTheOptimizer++;
 		}
+
 		int operator()()
 		{
 			assert(condition);
@@ -307,38 +319,44 @@ namespace ratl
 	// This class might be a good place to put memory profile code in the future.
 	//
 	////////////////////////////////////////////////////////////////////////////////////////
-	class	ratl_base
+	class ratl_base
 	{
 	public:
-		void	save(hfile& file);
-		void	load(hfile& file);
+		void save(hfile& file);
+		void load(hfile& file);
 
-		void	ProfilePrint(const char* format, ...);
+		void ProfilePrint(const char* format, ...);
 
 	public:
-		static	void* OutputPrint;
+		static void* OutputPrint;
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// this is a simplified version of bits_vs
 	////////////////////////////////////////////////////////////////////////////////////////
-	template <int	SZ>
+	template <int SZ>
 	class bits_base
 	{
 	protected:
 		enum
 		{
-			BITS_SHIFT = 5,									// 5.  Such A Nice Number
-			BITS_INT_SIZE = 32,									// Size Of A Single Word
-			BITS_AND = BITS_INT_SIZE - 1,					// Used For And Operation
-			ARRAY_SIZE = (SZ + BITS_AND) / BITS_INT_SIZE,	// Num Words Used
-			BYTE_SIZE = ARRAY_SIZE * sizeof(unsigned int),	// Num Bytes Used
+			BITS_SHIFT = 5,
+			// 5.  Such A Nice Number
+			BITS_INT_SIZE = 32,
+			// Size Of A Single Word
+			BITS_AND = BITS_INT_SIZE - 1,
+			// Used For And Operation
+			ARRAY_SIZE = (SZ + BITS_AND) / BITS_INT_SIZE,
+			// Num Words Used
+			BYTE_SIZE = ARRAY_SIZE * sizeof(unsigned int),
+			// Num Bytes Used
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
-		unsigned int						mV[ARRAY_SIZE];
+		unsigned int mV[ARRAY_SIZE];
+
 	public:
 		enum
 		{
@@ -346,7 +364,7 @@ namespace ratl
 			CAPACITY = SZ,
 		};
 
-		bits_base(bool init = true, bool initValue = false)
+		bits_base(const bool init = true, const bool initValue = false)
 		{
 			if (init)
 			{
@@ -360,11 +378,13 @@ namespace ratl
 				}
 			}
 		}
+
 		void clear()
 		{
 			mem::zero(&mV, BYTE_SIZE);
 		}
-		void		set()
+
+		void set()
 		{
 			mem::set(&mV, 0xff, BYTE_SIZE);
 		}
@@ -374,12 +394,14 @@ namespace ratl
 			assert(i >= 0 && i < SIZE);
 			mV[i >> BITS_SHIFT] |= 1 << (i & BITS_AND);
 		}
+
 		void clear_bit(const int i)
 		{
 			assert(i >= 0 && i < SIZE);
 			mV[i >> BITS_SHIFT] &= ~(1 << (i & BITS_AND));
 		}
-		void mark_bit(const int i, bool set)
+
+		void mark_bit(const int i, const bool set)
 		{
 			assert(i >= 0 && i < SIZE);
 			if (set)
@@ -391,21 +413,23 @@ namespace ratl
 				mV[i >> BITS_SHIFT] &= ~(1 << (i & BITS_AND));
 			}
 		}
+
 		bool operator[](const int i) const
 		{
 			assert(i >= 0 && i < SIZE);
 			return (mV[i >> BITS_SHIFT] & 1 << (i & BITS_AND)) != 0;
 		}
-		int	next_bit(int start = 0, bool onBit = true) const
+
+		int next_bit(int start = 0, const bool onBit = true) const
 		{
-			assert(start >= 0 && start <= SIZE);  //we have to accept start==size for the way the loops are done
+			assert(start >= 0 && start <= SIZE); //we have to accept start==size for the way the loops are done
 			if (start >= SIZE)
 			{
-				return SIZE;			// Did Not Find
+				return SIZE; // Did Not Find
 			}
 			// Get The Word Which Contains The Start Bit & Mask Out Everything Before The Start Bit
 			//--------------------------------------------------------------------------------------
-			unsigned int	v = mV[start >> BITS_SHIFT];
+			unsigned int v = mV[start >> BITS_SHIFT];
 			if (!onBit)
 			{
 				v = ~v;
@@ -419,7 +443,7 @@ namespace ratl
 				start = (start & ~(BITS_INT_SIZE - 1)) + BITS_INT_SIZE;
 				if (start >= SIZE)
 				{
-					return SIZE;			// Did Not Find
+					return SIZE; // Did Not Find
 				}
 				v = mV[start >> BITS_SHIFT];
 				if (!onBit)
@@ -466,10 +490,10 @@ namespace ratl
 	////////////////////////////////////////////////////////////////////////////////////////
 	struct ratl_compare
 	{
-		float	mCost;
-		int		mHandle;
+		float mCost;
+		int mHandle;
 
-		bool	operator<(const ratl_compare& t) const
+		bool operator<(const ratl_compare& t) const
 		{
 			return mCost < t.mCost;
 		}
@@ -496,12 +520,13 @@ namespace ratl
 		static void clear_bit(const int i)
 		{
 		}
+
 		bool operator[](const int i) const
 		{
 			return true;
 		}
 
-		static int	next_bit(int start = 0, bool onBit = true)
+		static int next_bit(const int start = 0, const bool onBit = true)
 		{
 			assert(onBit); ///I didn't want to add the sz template arg, you could though
 			return start;
@@ -510,16 +535,17 @@ namespace ratl
 
 	namespace storage
 	{
-		template<class T, int SIZE>
+		template <class T, int SIZE>
 		struct value_semantics
 		{
 			enum
 			{
 				CAPACITY = SIZE,
 			};
-			using TAlign = T;		// this is any type that has the right alignment
-			using TValue = T;		// this is the actual thing the user uses
-			using TStorage = T;		// this is what we make our array of
+
+			using TAlign = T; // this is any type that has the right alignment
+			using TValue = T; // this is the actual thing the user uses
+			using TStorage = T; // this is what we make our array of
 
 			using TConstructed = bits_true;
 			using TArray = TStorage[SIZE];
@@ -530,62 +556,76 @@ namespace ratl
 				TOTAL_SIZE = sizeof(TStorage),
 				VALUE_SIZE = sizeof(TStorage),
 			};
+
 			static void construct(TStorage*)
 			{
 			}
+
 			static void construct(TStorage* me, const TValue& v)
 			{
 				*me = v;
 			}
+
 			static void destruct(TStorage*)
 			{
 			}
+
 			static TRatlNew* raw(TStorage* me)
 			{
 				return static_cast<TRatlNew*>(me);
 			}
+
 			static T* ptr(TStorage* me)
 			{
 				return me;
 			}
+
 			static const T* ptr(const TStorage* me)
 			{
 				return me;
 			}
+
 			static T& ref(TStorage* me)
 			{
 				return *me;
 			}
+
 			static const T& ref(const TStorage* me)
 			{
 				return *me;
 			}
+
 			static T* raw_array(TStorage* me)
 			{
 				return me;
 			}
+
 			static const T* raw_array(const TStorage* me)
 			{
 				return me;
 			}
+
 			static void swap(TStorage* s1, TStorage* s2)
 			{
 				mem::swap(ptr(s1), ptr(s2));
 			}
+
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return static_cast<TStorage*>(s1) - static_cast<TStorage*>(s2);
 			}
 		};
-		template<class T, int SIZE>
+
+		template <class T, int SIZE>
 		struct object_semantics
 		{
 			enum
 			{
 				CAPACITY = SIZE,
 			};
-			using TAlign = mem::alignStruct;		// this is any type that has the right alignment
-			using TValue = T;				// this is the actual thing the user uses
+
+			using TAlign = mem::alignStruct; // this is any type that has the right alignment
+			using TValue = T; // this is the actual thing the user uses
 
 			using TConstructed = bits_base<SIZE>;
 
@@ -593,6 +633,7 @@ namespace ratl
 			{
 				TAlign mMemory[(sizeof(T) + sizeof(TAlign) - 1) / sizeof(TAlign)];
 			};
+
 			using TArray = TStorage[SIZE];
 
 			enum
@@ -606,54 +647,65 @@ namespace ratl
 			{
 				new(raw(me)) TValue();
 			}
+
 			static void construct(TStorage* me, const TValue& v)
 			{
 				new(raw(me)) TValue(v);
 			}
+
 			static void destruct(TStorage* me)
 			{
 				ptr(me)->~T();
 			}
+
 			static TRatlNew* raw(TStorage* me)
 			{
 				return static_cast<TRatlNew*>(me);
 			}
+
 			static T* ptr(TStorage* me)
 			{
 				return static_cast<T*>(me);
 			}
+
 			static const T* ptr(const TStorage* me)
 			{
 				return static_cast<const T*>(me);
 			}
+
 			static T& ref(TStorage* me)
 			{
 				return *static_cast<T*>(me);
 			}
+
 			static const T& ref(const TStorage* me)
 			{
 				return *static_cast<const T*>(me);
 			}
+
 			static void swap(TStorage* s1, TStorage* s2)
 			{
 				TValue temp(ref(s1));
 				ref(s1) = ref(s2);
 				ref(s2) = temp;
 			}
+
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return static_cast<TStorage*>(s1) - static_cast<TStorage*>(s2);
 			}
 		};
-		template<class T, int SIZE, int MAX_CLASS_SIZE>
+
+		template <class T, int SIZE, int MAX_CLASS_SIZE>
 		struct virtual_semantics
 		{
 			enum
 			{
 				CAPACITY = SIZE,
 			};
-			using TAlign = mem::alignStruct;		// this is any type that has the right alignment
-			using TValue = T;				// this is the actual thing the user uses
+
+			using TAlign = mem::alignStruct; // this is any type that has the right alignment
+			using TValue = T; // this is the actual thing the user uses
 
 			using TConstructed = bits_base<SIZE>;
 
@@ -661,6 +713,7 @@ namespace ratl
 			{
 				TAlign mMemory[(MAX_CLASS_SIZE + sizeof(TAlign) - 1) / sizeof(TAlign)];
 			};
+
 			using TArray = TStorage[SIZE];
 
 			enum
@@ -674,41 +727,50 @@ namespace ratl
 			{
 				new(raw(me)) TValue();
 			}
+
 			static void destruct(TStorage* me)
 			{
 				ptr(me)->~T();
 			}
+
 			static TRatlNew* raw(TStorage* me)
 			{
 				return static_cast<TRatlNew*>(me);
 			}
+
 			static T* ptr(TStorage* me)
 			{
 				return static_cast<T*>(me);
 			}
+
 			static const T* ptr(const TStorage* me)
 			{
 				return static_cast<const T*>(me);
 			}
+
 			static T& ref(TStorage* me)
 			{
 				return *static_cast<T*>(me);
 			}
+
 			static const T& ref(const TStorage* me)
 			{
 				return *static_cast<const T*>(me);
 			}
+
 			// this is a bit suspicious, we are forced to do a memory swap, and for a class, that, say
 			// stores a pointer to itself, it won't work right
 			static void swap(TStorage* s1, TStorage* s2)
 			{
 				mem::swap(s1, s2);
 			}
+
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return static_cast<TStorage*>(s1) - static_cast<TStorage*>(s2);
 			}
-			template<class CAST_TO>
+
+			template <class CAST_TO>
 			static CAST_TO* verify_alloc(CAST_TO* p)
 			{
 #ifdef _DEBUG
@@ -725,21 +787,23 @@ namespace ratl
 
 		// The below versions are for nodes
 
-		template<class T, int SIZE, class NODE>
+		template <class T, int SIZE, class NODE>
 		struct value_semantics_node
 		{
 			enum
 			{
 				CAPACITY = SIZE,
 			};
+
 			struct SNode
 			{
-				NODE	nodeData;
-				T		value;
+				NODE nodeData;
+				T value;
 			};
-			using TAlign = SNode;		// this is any type that has the right alignment
-			using TValue = T;		// this is the actual thing the user uses
-			using TStorage = SNode;		// this is what we make our array of
+
+			using TAlign = SNode; // this is any type that has the right alignment
+			using TValue = T; // this is the actual thing the user uses
+			using TStorage = SNode; // this is what we make our array of
 
 			using TConstructed = bits_true;
 			using TArray = TStorage[SIZE];
@@ -750,68 +814,85 @@ namespace ratl
 				TOTAL_SIZE = sizeof(TStorage),
 				VALUE_SIZE = sizeof(TValue),
 			};
+
 			static void construct(TStorage*)
 			{
 			}
+
 			static void construct(TStorage* me, const TValue& v)
 			{
 				me->value = v;
 			}
+
 			static void destruct(TStorage*)
 			{
 			}
+
 			static TRatlNew* raw(TStorage* me)
 			{
 				return static_cast<TRatlNew*>(&me->value);
 			}
+
 			static T* ptr(TStorage* me)
 			{
 				return &me->value;
 			}
+
 			static const T* ptr(const TStorage* me)
 			{
 				return &me->value;
 			}
+
 			static T& ref(TStorage* me)
 			{
 				return me->value;
 			}
+
 			static const T& ref(const TStorage* me)
 			{
 				return me->value;
 			}
+
 			// this ugly unsafe cast-hack is a backhanded way of getting the node data from the value data
 			// this is so node support does not need to be added to the primitive containers
 			static NODE& node(TValue& v)
 			{
-				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
+				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&static_cast<TStorage*>
+					(nullptr)->nodeData) - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->value));
 			}
+
 			static const NODE& node(const TValue& v)
 			{
-				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
+				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&static_cast<
+					TStorage*>(nullptr)->nodeData) - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->value));
 			}
+
 			static void swap(TStorage* s1, TStorage* s2)
 			{
 				mem::swap(&s1->value, &s2->value);
 			}
+
 			// this is hideous
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return
-					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)nullptr)->value)) -
-					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)nullptr)->value));
+					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->
+						value)) -
+					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->
+						value));
 			}
 		};
 
-		template<class T, int SIZE, class NODE>
+		template <class T, int SIZE, class NODE>
 		struct object_semantics_node
 		{
 			enum
 			{
 				CAPACITY = SIZE,
 			};
-			using TAlign = mem::alignStruct;		// this is any type that has the right alignment
-			using TValue = T;		// this is the actual thing the user uses
+
+			using TAlign = mem::alignStruct; // this is any type that has the right alignment
+			using TValue = T; // this is the actual thing the user uses
 
 			using TConstructed = bits_base<SIZE>;
 
@@ -819,12 +900,14 @@ namespace ratl
 			{
 				TAlign mMemory[(sizeof(T) + sizeof(TAlign) - 1) / sizeof(TAlign)];
 			};
+
 			struct SNode
 			{
-				NODE				nodeData;
-				TValueStorage		value;
+				NODE nodeData;
+				TValueStorage value;
 			};
-			using TStorage = SNode;		// this is what we make our array of
+
+			using TStorage = SNode; // this is what we make our array of
 			using TArray = TStorage[SIZE];
 
 			enum
@@ -838,75 +921,94 @@ namespace ratl
 			{
 				new(raw(me)) TValue();
 			}
+
 			static void construct(TStorage* me, const TValue& v)
 			{
 				new(raw(me)) TValue(v);
 			}
+
 			static void destruct(TStorage* me)
 			{
 				ptr(me)->~T();
 			}
+
 			static TRatlNew* raw(TStorage* me)
 			{
 				return static_cast<TRatlNew*>(&me->value);
 			}
+
 			static T* ptr(TStorage* me)
 			{
 				return static_cast<T*>(&me->value);
 			}
+
 			static const T* ptr(const TStorage* me)
 			{
 				return static_cast<const T*>(&me->value);
 			}
+
 			static T& ref(TStorage* me)
 			{
 				return *static_cast<T*>(&me->value);
 			}
+
 			static const T& ref(const TStorage* me)
 			{
 				return *static_cast<const T*>(&me->value);
 			}
+
 			static NODE& node(TStorage* me)
 			{
 				return me->nodeData;
 			}
+
 			static const NODE& node(const TStorage* me)
 			{
 				return me->nodeData;
 			}
+
 			// this ugly unsafe cast-hack is a backhanded way of getting the node data from the value data
 			// this is so node support does not need to be added to the primitive containers
 			static NODE& node(TValue& v)
 			{
-				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
+				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&static_cast<TStorage*>
+					(nullptr)->nodeData) - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->value));
 			}
+
 			static const NODE& node(const TValue& v)
 			{
-				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
+				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&static_cast<
+					TStorage*>(nullptr)->nodeData) - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->value));
 			}
+
 			static void swap(TStorage* s1, TStorage* s2)
 			{
 				TValue temp(ref(s1));
 				ref(s1) = ref(s2);
 				ref(s2) = temp;
 			}
+
 			// this is hideous
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return
-					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)nullptr)->value)) -
-					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)nullptr)->value));
+					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->
+						value)) -
+					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->
+						value));
 			}
 		};
-		template<class T, int SIZE, int MAX_CLASS_SIZE, class NODE>
+
+		template <class T, int SIZE, int MAX_CLASS_SIZE, class NODE>
 		struct virtual_semantics_node
 		{
 			enum
 			{
 				CAPACITY = SIZE,
 			};
-			using TAlign = mem::alignStruct;		// this is any type that has the right alignment
-			using TValue = T;				// this is the actual thing the user uses
+
+			using TAlign = mem::alignStruct; // this is any type that has the right alignment
+			using TValue = T; // this is the actual thing the user uses
 
 			using TConstructed = bits_base<SIZE>;
 
@@ -914,12 +1016,14 @@ namespace ratl
 			{
 				TAlign mMemory[(MAX_CLASS_SIZE + sizeof(TAlign) - 1) / sizeof(TAlign)];
 			};
+
 			struct SNode
 			{
-				NODE				nodeData;
-				TValueStorage		value;
+				NODE nodeData;
+				TValueStorage value;
 			};
-			using TStorage = SNode;		// this is what we make our array of
+
+			using TStorage = SNode; // this is what we make our array of
 			using TArray = TStorage[SIZE];
 
 			enum
@@ -933,62 +1037,79 @@ namespace ratl
 			{
 				new(raw(me)) TValue();
 			}
+
 			static void destruct(TStorage* me)
 			{
 				ptr(me)->~T();
 			}
+
 			static TRatlNew* raw(TStorage* me)
 			{
 				return static_cast<TRatlNew*>(&me->value);
 			}
+
 			static T* ptr(TStorage* me)
 			{
 				return static_cast<T*>(&me->value);
 			}
+
 			static const T* ptr(const TStorage* me)
 			{
 				return static_cast<const T*>(&me->value);
 			}
+
 			static T& ref(TStorage* me)
 			{
 				return *static_cast<T*>(&me->value);
 			}
+
 			static const T& ref(const TStorage* me)
 			{
 				return *static_cast<const T*>(&me->value);
 			}
+
 			static NODE& node(TStorage* me)
 			{
 				return me->nodeData;
 			}
+
 			static const NODE& node(const TStorage* me)
 			{
 				return me->nodeData;
 			}
+
 			// this ugly unsafe cast-hack is a backhanded way of getting the node data from the value data
 			// this is so node support does not need to be added to the primitive containers
 			static NODE& node(TValue& v)
 			{
-				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
+				return *static_cast<NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&static_cast<TStorage*>
+					(nullptr)->nodeData) - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->value));
 			}
+
 			static const NODE& node(const TValue& v)
 			{
-				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&((TStorage*)nullptr)->nodeData) - static_cast<size_t>(&((TStorage*)nullptr)->value));
+				return *static_cast<const NODE*>(static_cast<unsigned char*>(&v) + static_cast<size_t>(&static_cast<
+					TStorage*>(nullptr)->nodeData) - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->value));
 			}
+
 			// this is a bit suspicious, we are forced to do a memory swap, and for a class, that, say
 			// stores a pointer to itself, it won't work right
 			static void swap(TStorage* s1, TStorage* s2)
 			{
 				mem::swap(&s1->value, &s2->value);
 			}
+
 			// this is hideous
 			static int pointer_to_index(const void* s1, const void* s2)
 			{
 				return
-					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&((TStorage*)nullptr)->value)) -
-					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&((TStorage*)nullptr)->value));
+					static_cast<TStorage*>((unsigned char*)s1 - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->
+						value)) -
+					static_cast<TStorage*>((unsigned char*)s2 - static_cast<size_t>(&static_cast<TStorage*>(nullptr)->
+						value));
 			}
-			template<class CAST_TO>
+
+			template <class CAST_TO>
 			static CAST_TO* verify_alloc(CAST_TO* p)
 			{
 #ifdef _DEBUG
@@ -1007,7 +1128,7 @@ namespace ratl
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Array Base Class, used for most containers
 	////////////////////////////////////////////////////////////////////////////////////////
-	template<class T>
+	template <class T>
 	class array_base : public ratl_base
 	{
 	public:
@@ -1019,6 +1140,7 @@ namespace ratl
 			CAPACITY = T::CAPACITY,
 			SIZE = T::CAPACITY,
 		};
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
@@ -1028,11 +1150,10 @@ namespace ratl
 		using TTConstructed = typename T::TConstructed;
 
 	private:
-		TTArray				mArray;
-		TTConstructed		mConstructed;
+		TTArray mArray;
+		TTConstructed mConstructed;
 
 	public:
-
 		array_base()
 		{
 		}
@@ -1085,6 +1206,7 @@ namespace ratl
 				mConstructed.set_bit(i);
 			}
 		}
+
 		void construct(int i, const TTValue& v)
 		{
 			assert(i >= 0 && i < SIZE);
@@ -1095,6 +1217,7 @@ namespace ratl
 				mConstructed.set_bit(i);
 			}
 		}
+
 		void fill(const TTValue& v)
 		{
 			clear();
@@ -1107,6 +1230,7 @@ namespace ratl
 				mConstructed.set();
 			}
 		}
+
 		void swap(int i, int j)
 		{
 			assert(i >= 0 && i < SIZE);
@@ -1127,7 +1251,8 @@ namespace ratl
 			}
 			return T::raw(mArray + i);
 		}
-		void	destruct(int i)
+
+		void destruct(int i)
 		{
 			assert(i >= 0 && i < SIZE);
 			assert(mConstructed[i]);
@@ -1137,6 +1262,7 @@ namespace ratl
 				mConstructed.clear_bit(i);
 			}
 		}
+
 		int pointer_to_index(const TTValue* me) const
 		{
 			const int index = T::pointer_to_index(me, mArray);
@@ -1144,6 +1270,7 @@ namespace ratl
 			assert(mConstructed[index]);
 			return index;
 		}
+
 		int pointer_to_index(const TRatlNew* me) const
 		{
 			const int index = T::pointer_to_index(me, mArray);
@@ -1151,15 +1278,18 @@ namespace ratl
 			assert(mConstructed[index]);
 			return index;
 		}
+
 		typename T::TValue* raw_array()
 		{
 			return T::raw_array(mArray);
 		}
+
 		const typename T::TValue* raw_array() const
 		{
 			return T::raw_array(mArray);
 		}
-		template<class CAST_TO>
+
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return T::verify_alloc(p);

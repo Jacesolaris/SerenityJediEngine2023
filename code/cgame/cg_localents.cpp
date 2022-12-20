@@ -93,7 +93,7 @@ localEntity_t* CG_AllocLocalEntity(void)
 	localEntity_t* le = cg_freeLocalEntities;
 	cg_freeLocalEntities = cg_freeLocalEntities->next;
 
-	memset(le, 0, sizeof * le);
+	memset(le, 0, sizeof *le);
 
 	// link into the active list
 	le->next = cg_activeLocalEntities.next;
@@ -134,7 +134,7 @@ void CG_FragmentBounceSound(localEntity_t* le, const trace_t* trace)
 			break;
 		case LEBS_METAL:
 			s = cgs.media.metalBounceSound[Q_irand(0, 1)];
-			// FIXME: make sure that this sound is registered properly...might still be rock bounce sound....
+		// FIXME: make sure that this sound is registered properly...might still be rock bounce sound....
 			break;
 		default:
 			break;
@@ -595,7 +595,7 @@ void CG_AddLocalEntities(void)
 			CG_AddLine(le);
 			break;
 
-			// Use for debug only
+		// Use for debug only
 		case LE_QUAD:
 			CG_AddQuad(le);
 			break;

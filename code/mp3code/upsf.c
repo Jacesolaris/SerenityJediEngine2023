@@ -42,50 +42,62 @@ unsigned int bitget(int n);
 /*------------------------------------------------------------*/
 static const int slen_table[16][2] =
 {
-  {0, 0}, {0, 1},
-  {0, 2}, {0, 3},
-  {3, 0}, {1, 1},
-  {1, 2}, {1, 3},
-  {2, 1}, {2, 2},
-  {2, 3}, {3, 1},
-  {3, 2}, {3, 3},
-  {4, 2}, {4, 3},
+	{0, 0}, {0, 1},
+	{0, 2}, {0, 3},
+	{3, 0}, {1, 1},
+	{1, 2}, {1, 3},
+	{2, 1}, {2, 2},
+	{2, 3}, {3, 1},
+	{3, 2}, {3, 3},
+	{4, 2}, {4, 3},
 };
 
 /* nr_table[size+3*is_right][block type 0,1,3  2, 2+mixed][4]  */
 /* for bt=2 nr is count for group of 3 */
 static const int nr_table[6][3][4] =
 {
- {{6, 5, 5, 5},
-  {3, 3, 3, 3},
-  {6, 3, 3, 3}},
+	{
+		{6, 5, 5, 5},
+		{3, 3, 3, 3},
+		{6, 3, 3, 3}
+	},
 
- {{6, 5, 7, 3},
-  {3, 3, 4, 2},
-  {6, 3, 4, 2}},
+	{
+		{6, 5, 7, 3},
+		{3, 3, 4, 2},
+		{6, 3, 4, 2}
+	},
 
- {{11, 10, 0, 0},
-  {6, 6, 0, 0},
-  {6, 3, 6, 0}},			/* adjusted *//* 15, 18, 0, 0,   */
-  /*-intensity stereo right chan--*/
-   {{7, 7, 7, 0},
-	{4, 4, 4, 0},
-	{6, 5, 4, 0}},
+	{
+		{11, 10, 0, 0},
+		{6, 6, 0, 0},
+		{6, 3, 6, 0}
+	}, /* adjusted */ /* 15, 18, 0, 0,   */
+	/*-intensity stereo right chan--*/
+	{
+		{7, 7, 7, 0},
+		{4, 4, 4, 0},
+		{6, 5, 4, 0}
+	},
 
-   {{6, 6, 6, 3},
-	{4, 3, 3, 2},
-	{6, 4, 3, 2}},
+	{
+		{6, 6, 6, 3},
+		{4, 3, 3, 2},
+		{6, 4, 3, 2}
+	},
 
-   {{8, 8, 5, 0},
-	{5, 4, 3, 0},
-	{6, 6, 3, 0}},
+	{
+		{8, 8, 5, 0},
+		{5, 4, 3, 0},
+		{6, 6, 3, 0}
+	},
 };
 
 /*=============================================================*/
 void unpack_sf_sub_MPEG1(SCALEFACT sf[],
-	GR* grdat,
-	int scfsi,	/* bit flag */
-	int gr)
+                         GR* grdat,
+                         const int scfsi, /* bit flag */
+                         const int gr)
 {
 	int sfb;
 
@@ -99,7 +111,8 @@ void unpack_sf_sub_MPEG1(SCALEFACT sf[],
 	if (block_type == 2)
 	{
 		if (mixed_block_flag)
-		{				/* mixed */
+		{
+			/* mixed */
 			for (sfb = 0; sfb < 8; sfb++)
 				sf[0].l[sfb] = bitget(slen0);
 			for (sfb = 3; sfb < 6; sfb++)
@@ -168,10 +181,11 @@ void unpack_sf_sub_MPEG1(SCALEFACT sf[],
 		for (; sfb < 21; sfb++)
 			sf[0].l[sfb] = bitget(slen1);
 }
+
 /*=============================================================*/
 void unpack_sf_sub_MPEG2(SCALEFACT sf[],
-	GR* grdat,
-	int is_and_ch, IS_SF_INFO* sf_info)
+                         GR* grdat,
+                         int is_and_ch, IS_SF_INFO* sf_info)
 {
 	int sfb;
 	int slen1, slen2, slen3, slen4;
@@ -185,7 +199,7 @@ void unpack_sf_sub_MPEG2(SCALEFACT sf[],
 	scalefac_compress = grdat->scalefac_compress;
 
 	preflag = 0;
-	intensity_scale = 0;		/* to avoid compiler warning */
+	intensity_scale = 0; /* to avoid compiler warning */
 	if (is_and_ch == 0)
 	{
 		if (scalefac_compress < 400)
@@ -216,7 +230,7 @@ void unpack_sf_sub_MPEG2(SCALEFACT sf[],
 			slen3 = slen4 = 0;
 			if (mixed_block_flag)
 			{
-				slen3 = slen2;	/* adjust for long/short mix logic */
+				slen3 = slen2; /* adjust for long/short mix logic */
 				slen2 = slen1;
 			}
 			preflag = 1;
@@ -224,7 +238,8 @@ void unpack_sf_sub_MPEG2(SCALEFACT sf[],
 		}
 	}
 	else
-	{				/* intensity stereo ch = 1 (right) */
+	{
+		/* intensity stereo ch = 1 (right) */
 		intensity_scale = scalefac_compress & 1;
 		scalefac_compress >>= 1;
 		if (scalefac_compress < 180)
@@ -275,23 +290,25 @@ void unpack_sf_sub_MPEG2(SCALEFACT sf[],
 		sf_info->slen[2] = slen3;
 		sf_info->intensity_scale = intensity_scale;
 	}
-	grdat->preflag = preflag;	/* return preflag */
+	grdat->preflag = preflag; /* return preflag */
 
 	/*--------------------------------------*/
 	if (block_type == 2)
 	{
 		if (mixed_block_flag)
-		{				/* mixed */
-			if (slen1 != 0)	/* long block portion */
+		{
+			/* mixed */
+			if (slen1 != 0) /* long block portion */
 				for (sfb = 0; sfb < 6; sfb++)
 					sf[0].l[sfb] = bitget(slen1);
 			else
 				for (sfb = 0; sfb < 6; sfb++)
 					sf[0].l[sfb] = 0;
-			sfb = 3;		/* start sfb for short */
+			sfb = 3; /* start sfb for short */
 		}
 		else
-		{				/* all short, initial short blocks */
+		{
+			/* all short, initial short blocks */
 			sfb = 0;
 			if (slen1 != 0)
 				for (i = 0; i < nr1; i++, sfb++)
@@ -384,4 +401,5 @@ void unpack_sf_sub_MPEG2(SCALEFACT sf[],
 		for (i = 0; i < nr4; i++, sfb++)
 			sf[0].l[sfb] = 0;
 }
+
 /*-------------------------------------------------*/

@@ -58,7 +58,7 @@ namespace Zone
 		using value_type = T;
 		using is_always_equal = std::true_type;
 
-		static T* allocate(std::size_t n)
+		static T* allocate(const std::size_t n)
 		{
 			void* mem = detail::Malloc(n * sizeof(T), tag);
 			return static_cast<T*>(mem);

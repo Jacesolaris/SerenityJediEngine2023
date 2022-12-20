@@ -28,7 +28,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../cgame/cg_local.h"
 
 extern qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self);
-extern int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
+extern int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point,
+                               int r_saber_num, int r_blade_num);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern void g_missile_reflect_effect(const gentity_t* ent, vec3_t dir);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
@@ -182,11 +183,11 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 					{
 						//hehe
 						G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-							MOD_CONC_ALT, hit_loc);
+						         MOD_CONC_ALT, hit_loc);
 						break;
 					}
 					G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-						MOD_CONC_ALT, hit_loc);
+					         MOD_CONC_ALT, hit_loc);
 
 					//do knockback and knockdown manually
 					if (traceEnt->client)
@@ -348,7 +349,7 @@ static void WP_FireConcussion(gentity_t* ent)
 	missile->bounceCount = 0;
 }
 
-void WP_Concussion(gentity_t* ent, qboolean alt_fire)
+void WP_Concussion(gentity_t* ent, const qboolean alt_fire)
 {
 	if (alt_fire)
 	{

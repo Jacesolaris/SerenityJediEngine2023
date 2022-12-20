@@ -55,7 +55,7 @@ void LoadDMSSongData(const char* buffer, char* song, DynamicMusicSet_t* songData
 	if (!BG_SiegeGetValueGroup(SongGroup, song, SongGroup))
 	{
 		Com_Printf("LoadDMSSongData Error: Couldn't find song data for DMS song %s.\n",
-			song);
+		           song);
 		return;
 	}
 
@@ -332,8 +332,8 @@ void TransitionBetweenState(void)
 			{
 				//on the money or close enough
 				trap->SetConfigstring(CS_MUSIC, va("%s %s",
-					oldSongGroup->Transitions[i].fileName,
-					newSongGroup->fileName));
+				                                   oldSongGroup->Transitions[i].fileName,
+				                                   newSongGroup->fileName));
 				DMSData.olddmState = DMSData.dmState;
 				DMSData.dmStartTime = level.time + oldSongGroup->Transitions[i].fileLength;
 				return;
@@ -562,7 +562,7 @@ void G_DynamicMusicUpdate(void)
 }
 
 //set the dynamic music system's desired state
-void SetDMSState(int DMSState)
+void SetDMSState(const int DMSState)
 {
 	if (DMSData.valid && DMSData.olddmState != DMSState)
 	{

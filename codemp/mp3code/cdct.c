@@ -39,15 +39,16 @@ portable C
 #include <float.h>
 #include <math.h>
 
-float coef32[31];	/* 32 pt dct coefs */		// !!!!!!!!!!!!!!!!!! (only generated once (always to same value)
+float coef32[31]; /* 32 pt dct coefs */ // !!!!!!!!!!!!!!!!!! (only generated once (always to same value)
 
 /*------------------------------------------------------------*/
 float* dct_coef_addr()
 {
 	return coef32;
 }
+
 /*------------------------------------------------------------*/
-static void forward_bf(int m, int n, float x[], float f[], float coef[])
+static void forward_bf(const int m, const int n, float x[], float f[], float coef[])
 {
 	int p0 = 0;
 	const int n2 = n >> 1;
@@ -63,8 +64,9 @@ static void forward_bf(int m, int n, float x[], float f[], float coef[])
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
-static void back_bf(int m, int n, float x[], float f[])
+static void back_bf(const int m, const int n, float x[], float f[])
 {
 	int j;
 
@@ -83,11 +85,12 @@ static void back_bf(int m, int n, float x[], float f[])
 		f[p] = x[q];
 	}
 }
+
 /*------------------------------------------------------------*/
 
 void fdct32(float x[], float c[])
 {
-	float a[32];			/* ping pong buffers */
+	float a[32]; /* ping pong buffers */
 	float b[32];
 	int p, q;
 
@@ -108,10 +111,11 @@ void fdct32(float x[], float c[])
 	back_bf(2, 16, a, b);
 	back_bf(1, 32, b, c);
 }
+
 /*------------------------------------------------------------*/
 void fdct32_dual(float x[], float c[])
 {
-	float a[32];			/* ping pong buffers */
+	float a[32]; /* ping pong buffers */
 	float b[32];
 
 	/* special first stage for dual chan (interleaved x) */
@@ -131,10 +135,11 @@ void fdct32_dual(float x[], float c[])
 	back_bf(2, 16, a, b);
 	back_bf(1, 32, b, c);
 }
+
 /*---------------convert dual to mono------------------------------*/
 void fdct32_dual_mono(float x[], float c[])
 {
-	float a[32];			/* ping pong buffers */
+	float a[32]; /* ping pong buffers */
 	float b[32];
 
 	/* special first stage  */
@@ -156,11 +161,12 @@ void fdct32_dual_mono(float x[], float c[])
 	back_bf(2, 16, a, b);
 	back_bf(1, 32, b, c);
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 16 pt fdct -------------------------------*/
 void fdct16(float x[], float c[])
 {
-	float a[16];			/* ping pong buffers */
+	float a[16]; /* ping pong buffers */
 	float b[16];
 	int p, q;
 
@@ -179,11 +185,12 @@ void fdct16(float x[], float c[])
 	back_bf(2, 8, a, b);
 	back_bf(1, 16, b, c);
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 16 pt fdct dual chan---------------------*/
 void fdct16_dual(float x[], float c[])
 {
-	float a[16];			/* ping pong buffers */
+	float a[16]; /* ping pong buffers */
 	float b[16];
 
 	/* special first stage for interleaved input */
@@ -203,11 +210,12 @@ void fdct16_dual(float x[], float c[])
 	back_bf(2, 8, a, b);
 	back_bf(1, 16, b, c);
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 16 pt fdct dual to mono-------------------*/
 void fdct16_dual_mono(float x[], float c[])
 {
-	float a[16];			/* ping pong buffers */
+	float a[16]; /* ping pong buffers */
 	float b[16];
 
 	/* special first stage  */
@@ -229,11 +237,12 @@ void fdct16_dual_mono(float x[], float c[])
 	back_bf(2, 8, a, b);
 	back_bf(1, 16, b, c);
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 8 pt fdct -------------------------------*/
 void fdct8(float x[], float c[])
 {
-	float a[8];			/* ping pong buffers */
+	float a[8]; /* ping pong buffers */
 	float b[8];
 	int p, q;
 
@@ -252,11 +261,12 @@ void fdct8(float x[], float c[])
 	back_bf(2, 4, b, a);
 	back_bf(1, 8, a, c);
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 8 pt fdct dual chan---------------------*/
 void fdct8_dual(float x[], float c[])
 {
-	float a[8];			/* ping pong buffers */
+	float a[8]; /* ping pong buffers */
 	float b[8];
 
 	/* special first stage for interleaved input */
@@ -274,11 +284,12 @@ void fdct8_dual(float x[], float c[])
 	back_bf(2, 4, b, a);
 	back_bf(1, 8, a, c);
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 8 pt fdct dual to mono---------------------*/
 void fdct8_dual_mono(float x[], float c[])
 {
-	float a[8];			/* ping pong buffers */
+	float a[8]; /* ping pong buffers */
 	float b[8];
 
 	/* special first stage  */
@@ -300,4 +311,5 @@ void fdct8_dual_mono(float x[], float c[])
 	back_bf(2, 4, b, a);
 	back_bf(1, 8, a, c);
 }
+
 /*------------------------------------------------------------*/

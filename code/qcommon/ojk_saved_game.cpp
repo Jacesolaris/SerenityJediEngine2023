@@ -36,7 +36,7 @@ namespace ojk
 
 		bool is_succeed = true;
 
-		static_cast<void>(::FS_FOpenFileRead(
+		static_cast<void>(FS_FOpenFileRead(
 			file_path.c_str(),
 			&file_handle_,
 			qtrue));
@@ -49,7 +49,7 @@ namespace ojk
 				S_COLOR_RED "Failed to open a saved game file: \"" +
 				file_path + "\".";
 
-			::Com_DPrintf(
+			Com_DPrintf(
 				"%s\n",
 				error_message_.c_str());
 		}
@@ -74,7 +74,7 @@ namespace ojk
 				{
 					is_succeed = false;
 
-					::Com_Printf(
+					Com_Printf(
 						S_COLOR_RED "File \"%s\" has version # %d (expecting %d)\n",
 						base_file_name.c_str(),
 						sg_version,
@@ -85,7 +85,7 @@ namespace ojk
 			{
 				is_succeed = false;
 
-				::Com_Printf(
+				Com_Printf(
 					S_COLOR_RED "Failed to read a version.\n");
 			}
 		}
@@ -109,7 +109,7 @@ namespace ojk
 		const std::string file_path = generate_path(
 			base_file_name);
 
-		file_handle_ = ::FS_FOpenFileWrite(
+		file_handle_ = FS_FOpenFileWrite(
 			file_path.c_str());
 
 		if (file_handle_ == 0)
@@ -118,7 +118,7 @@ namespace ojk
 				S_COLOR_RED "Failed to create a saved game file: \"" +
 				file_path + "\".";
 
-			::Com_Printf(
+			Com_Printf(
 				"%s\n",
 				error_message.c_str());
 
@@ -148,7 +148,7 @@ namespace ojk
 	{
 		if (file_handle_ != 0)
 		{
-			::FS_FCloseFile(file_handle_);
+			FS_FCloseFile(file_handle_);
 			file_handle_ = 0;
 		}
 
@@ -184,19 +184,19 @@ namespace ojk
 		const std::string chunk_id_string = get_chunk_id_string(
 			chunk_id);
 
-		::Com_DPrintf(
+		Com_DPrintf(
 			"Attempting read of chunk %s\n",
 			chunk_id_string.c_str());
 
 		uint32_t loaded_chunk_id = 0;
 		uint32_t loaded_data_size = 0;
 
-		int loaded_chunk_size = ::FS_Read(
+		int loaded_chunk_size = FS_Read(
 			&loaded_chunk_id,
 			static_cast<int>(sizeof loaded_chunk_id),
 			file_handle_);
 
-		loaded_chunk_size += ::FS_Read(
+		loaded_chunk_size += FS_Read(
 			&loaded_data_size,
 			static_cast<int>(sizeof loaded_data_size),
 			file_handle_);
@@ -244,7 +244,7 @@ namespace ojk
 
 		if (is_compressed)
 		{
-			loaded_chunk_size += ::FS_Read(
+			loaded_chunk_size += FS_Read(
 				&compressed_size,
 				static_cast<int>(sizeof compressed_size),
 				file_handle_);
@@ -252,7 +252,7 @@ namespace ojk
 			rle_buffer_.resize(
 				compressed_size);
 
-			loaded_chunk_size += ::FS_Read(
+			loaded_chunk_size += FS_Read(
 				rle_buffer_.data(),
 				compressed_size,
 				file_handle_);
@@ -269,7 +269,7 @@ namespace ojk
 			io_buffer_.resize(
 				loaded_data_size);
 
-			loaded_chunk_size += ::FS_Read(
+			loaded_chunk_size += FS_Read(
 				io_buffer_.data(),
 				loaded_data_size,
 				file_handle_);
@@ -295,7 +295,7 @@ namespace ojk
 #else
 		// Get checksum...
 		//
-		loaded_chunk_size += ::FS_Read(
+		loaded_chunk_size += FS_Read(
 			&loaded_checksum,
 			static_cast<int>(sizeof loaded_checksum),
 			file_handle_);
@@ -303,7 +303,7 @@ namespace ojk
 
 		// Make sure the checksums match...
 		//
-		const uint32_t checksum = ::Com_BlockChecksum(
+		const uint32_t checksum = Com_BlockChecksum(
 			io_buffer_.data(),
 			static_cast<int>(io_buffer_.size()));
 
@@ -385,11 +385,11 @@ namespace ojk
 		const std::string chunk_id_string = get_chunk_id_string(
 			chunk_id);
 
-		::Com_DPrintf(
+		Com_DPrintf(
 			"Attempting write of chunk %s\n",
 			chunk_id_string.c_str());
 
-		if (::sv_testsave->integer != 0)
+		if (sv_testsave->integer != 0)
 		{
 			return true;
 		}
@@ -400,14 +400,14 @@ namespace ojk
 			io_buffer_.data(),
 			src_size);
 
-		uint32_t saved_chunk_size = ::FS_Write(
+		uint32_t saved_chunk_size = FS_Write(
 			&chunk_id,
 			static_cast<int>(sizeof chunk_id),
 			file_handle_);
 
 		int compressed_size = -1;
 
-		if (::sv_compress_saved_games->integer != 0)
+		if (sv_compress_saved_games->integer != 0)
 		{
 			compress(
 				io_buffer_,
@@ -427,7 +427,7 @@ namespace ojk
 		{
 			const int size = -static_cast<int>(io_buffer_.size());
 
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				&size,
 				static_cast<int>(sizeof size),
 				file_handle_);
@@ -439,12 +439,12 @@ namespace ojk
 				file_handle_);
 #endif // JK2_MODE
 
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				&compressed_size,
 				static_cast<int>(sizeof compressed_size),
 				file_handle_);
 
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				rle_buffer_.data(),
 				compressed_size,
 				file_handle_);
@@ -455,7 +455,7 @@ namespace ojk
 				static_cast<int>(sizeof(magic_value)),
 				file_handle_);
 #else
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				&checksum,
 				static_cast<int>(sizeof checksum),
 				file_handle_);
@@ -478,7 +478,7 @@ namespace ojk
 
 				error_message_ = "Failed to write " + chunk_id_string + " chunk.";
 
-				::Com_Printf(
+				Com_Printf(
 					"%s%s\n",
 					S_COLOR_RED,
 					error_message_.c_str());
@@ -490,7 +490,7 @@ namespace ojk
 		{
 			const uint32_t size = io_buffer_.size();
 
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				&size,
 				static_cast<int>(sizeof size),
 				file_handle_);
@@ -502,7 +502,7 @@ namespace ojk
 				file_handle_);
 #endif // JK2_MODE
 
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				io_buffer_.data(),
 				size,
 				file_handle_);
@@ -513,7 +513,7 @@ namespace ojk
 				static_cast<int>(sizeof(magic_value)),
 				file_handle_);
 #else
-			saved_chunk_size += ::FS_Write(
+			saved_chunk_size += FS_Write(
 				&checksum,
 				static_cast<int>(sizeof checksum),
 				file_handle_);
@@ -535,7 +535,7 @@ namespace ojk
 
 				error_message_ = "Failed to write " + chunk_id_string + " chunk.";
 
-				::Com_Printf(
+				Com_Printf(
 					"%s%s\n",
 					S_COLOR_RED,
 					error_message_.c_str());
@@ -549,7 +549,7 @@ namespace ojk
 
 	bool SavedGame::read(
 		void* dst_data,
-		int dst_size)
+		const int dst_size)
 	{
 		if (is_failed_)
 		{
@@ -608,7 +608,7 @@ namespace ojk
 
 	bool SavedGame::write(
 		const void* src_data,
-		int src_size)
+		const int src_size)
 	{
 		if (is_failed_)
 		{
@@ -669,7 +669,7 @@ namespace ojk
 	}
 
 	bool SavedGame::skip(
-		int count)
+		const int count)
 	{
 		if (is_failed_)
 		{
@@ -760,13 +760,13 @@ namespace ojk
 		const std::string new_path = generate_path(
 			new_base_file_name);
 
-		const int rename_result = ::FS_MoveUserGenFile(
+		const int rename_result = FS_MoveUserGenFile(
 			old_path.c_str(),
 			new_path.c_str());
 
 		if (rename_result == 0)
 		{
-			::Com_Printf(
+			Com_Printf(
 				S_COLOR_RED "Error during savegame-rename."
 				" Check \"%s\" for write-protect or disk full!\n",
 				new_path.c_str());
@@ -779,7 +779,7 @@ namespace ojk
 		const std::string path = generate_path(
 			base_file_name);
 
-		::FS_DeleteUserGenFile(
+		FS_DeleteUserGenFile(
 			path.c_str());
 	}
 
@@ -804,7 +804,7 @@ namespace ojk
 
 		error_message_ = "SG: " + error_message_;
 
-		::Com_Error(
+		Com_Error(
 			ERR_DROP,
 			"%s",
 			error_message_.c_str());
@@ -983,7 +983,7 @@ namespace ojk
 	}
 
 	std::string SavedGame::get_chunk_id_string(
-		uint32_t chunk_id)
+		const uint32_t chunk_id)
 	{
 		std::string result(4, '\0');
 

@@ -192,7 +192,7 @@ void RT_FireDecide(void)
 				&& NPCS.NPCInfo->enemyLastSeenTime > 0) //we've seen the enemy
 			{
 				if (level.time - NPCS.NPCInfo->enemyLastSeenTime < 10000)
-					//we have seem the enemy in the last 10 seconds
+				//we have seem the enemy in the last 10 seconds
 				{
 					if (!Q_irand(0, 10))
 					{
@@ -211,7 +211,7 @@ void RT_FireDecide(void)
 							AngleVectors(NPCS.NPC->client->ps.viewangles, forward, NULL, NULL);
 							VectorMA(muzzle, 8192, forward, end);
 							trap->Trace(&tr, muzzle, vec3_origin, vec3_origin, end, NPCS.NPC->s.number, MASK_SHOT,
-								qfalse, 0, 0);
+							            qfalse, 0, 0);
 							VectorCopy(tr.endpos, impactPos);
 						}
 
@@ -702,7 +702,7 @@ void RT_Flying_Strafe(void)
 	}
 }
 
-void RT_Flying_Hunt(qboolean visible, qboolean advance)
+void RT_Flying_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -781,7 +781,7 @@ void RT_Flying_Hunt(qboolean visible, qboolean advance)
 	}
 }
 
-void RT_Flying_Ranged(qboolean visible, qboolean advance)
+void RT_Flying_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (NPCS.NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 	{

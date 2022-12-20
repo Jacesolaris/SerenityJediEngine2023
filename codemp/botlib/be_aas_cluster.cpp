@@ -78,7 +78,7 @@ void AAS_RemoveClusterAreas(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ClearCluster(int clusternum)
+void AAS_ClearCluster(const int clusternum)
 {
 	for (int i = 1; i < aasworld.numareas; i++)
 	{
@@ -94,7 +94,7 @@ void AAS_ClearCluster(int clusternum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_RemovePortalsClusterReference(int clusternum)
+void AAS_RemovePortalsClusterReference(const int clusternum)
 {
 	for (int portalnum = 1; portalnum < aasworld.numportals; portalnum++)
 	{
@@ -114,7 +114,7 @@ void AAS_RemovePortalsClusterReference(int clusternum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_UpdatePortal(int areanum, int clusternum)
+int AAS_UpdatePortal(const int areanum, const int clusternum)
 {
 	int portalnum;
 
@@ -171,7 +171,7 @@ int AAS_UpdatePortal(int areanum, int clusternum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FloodClusterAreas_r(int areanum, int clusternum)
+int AAS_FloodClusterAreas_r(const int areanum, const int clusternum)
 {
 	int i;
 
@@ -242,7 +242,7 @@ int AAS_FloodClusterAreas_r(int areanum, int clusternum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FloodClusterAreasUsingReachabilities(int clusternum)
+int AAS_FloodClusterAreasUsingReachabilities(const int clusternum)
 {
 	for (int i = 1; i < aasworld.numareas; i++)
 	{
@@ -278,7 +278,7 @@ int AAS_FloodClusterAreasUsingReachabilities(int clusternum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_NumberClusterPortals(int clusternum)
+void AAS_NumberClusterPortals(const int clusternum)
 {
 	aas_cluster_t* cluster = &aasworld.clusters[clusternum];
 	for (int i = 0; i < cluster->numportals; i++)
@@ -301,7 +301,7 @@ void AAS_NumberClusterPortals(int clusternum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_NumberClusterAreas(int clusternum)
+void AAS_NumberClusterAreas(const int clusternum)
 {
 	int i, portalnum;
 	aas_portal_t* portal;
@@ -665,7 +665,7 @@ qboolean AAS_CanMergeFaces(int *facenums, int numfaces, int planenum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ConnectedAreas_r(int* areanums, int numareas, int* connectedareas, int curarea)
+void AAS_ConnectedAreas_r(int* areanums, const int numareas, int* connectedareas, const int curarea)
 {
 	int j, otherareanum;
 
@@ -699,7 +699,7 @@ void AAS_ConnectedAreas_r(int* areanums, int numareas, int* connectedareas, int 
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_ConnectedAreas(int* areanums, int numareas)
+qboolean AAS_ConnectedAreas(int* areanums, const int numareas)
 {
 	int connectedareas[MAX_PORTALAREAS];
 
@@ -720,7 +720,7 @@ qboolean AAS_ConnectedAreas(int* areanums, int numareas)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_GetAdjacentAreasWithLessPresenceTypes_r(int* areanums, int numareas, int curareanum)
+int AAS_GetAdjacentAreasWithLessPresenceTypes_r(int* areanums, int numareas, const int curareanum)
 {
 	int j, otherareanum;
 
@@ -767,7 +767,7 @@ int AAS_GetAdjacentAreasWithLessPresenceTypes_r(int* areanums, int numareas, int
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_CheckAreaForPossiblePortals(int areanum)
+int AAS_CheckAreaForPossiblePortals(const int areanum)
 {
 	int i, j, k, fen, ben;
 	int areanums[MAX_PORTALAREAS], otherareanum;

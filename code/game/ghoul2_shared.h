@@ -509,6 +509,8 @@ public:
 	// to here
 #define BSAVE_END_FIELD mTransformedVertsArray	// this is the end point for loadsave, keep it up to date it you change anything
 
+
+
 	intptr_t* mTransformedVertsArray;
 	// used to create an array of pointers to transformed verts per surface for collision detection
 	CBoneCache* mBoneCache;
@@ -708,21 +710,21 @@ public:
 		}
 	}
 
-	CGhoul2Info& operator[](int idx)
+	CGhoul2Info& operator[](const int idx)
 	{
 		assert(mItem);
 		assert(idx >= 0 && idx < size());
 		return Array()[idx];
 	}
 
-	const CGhoul2Info& operator[](int idx) const
+	const CGhoul2Info& operator[](const int idx) const
 	{
 		assert(mItem);
 		assert(idx >= 0 && idx < size());
 		return Array()[idx];
 	}
 
-	void resize(int num)
+	void resize(const int num)
 	{
 		assert(num >= 0);
 		if (num)

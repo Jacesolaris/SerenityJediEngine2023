@@ -248,7 +248,7 @@ void SP_fx_runner(gentity_t* ent)
 	if (!ent->fxFile)
 	{
 		gi.Printf(S_COLOR_RED"ERROR: fx_runner %s at %s has no fxFile specified\n", ent->targetname,
-			vtos(ent->s.origin));
+		          vtos(ent->s.origin));
 		G_FreeEntity(ent);
 		return;
 	}
@@ -439,9 +439,9 @@ void SP_CreateWindZone(gentity_t* ent)
 
 	char temp[256];
 	sprintf(temp, "windzone ( %f %f %f ) ( %f %f %f ) ( %f %f %f )",
-		ent->mins[0], ent->mins[1], ent->mins[2],
-		ent->maxs[0], ent->maxs[1], ent->maxs[2],
-		windDir[0], windDir[1], windDir[2]
+	        ent->mins[0], ent->mins[1], ent->mins[2],
+	        ent->maxs[0], ent->maxs[1], ent->maxs[2],
+	        windDir[0], windDir[1], windDir[2]
 	);
 	G_FindConfigstringIndex(temp, CS_WORLD_FX, MAX_WORLD_FX, qtrue);
 }
@@ -811,7 +811,7 @@ void fx_explosion_trail_think(gentity_t* ent)
 	EvaluateTrajectory(&ent->s.pos, level.time, origin);
 
 	gi.trace(&tr, ent->currentOrigin, vec3_origin, vec3_origin, origin,
-		ent->owner ? ent->owner->s.number : ENTITYNUM_NONE, ent->clipmask, G2_RETURNONHIT, 10);
+	         ent->owner ? ent->owner->s.number : ENTITYNUM_NONE, ent->clipmask, G2_RETURNONHIT, 10);
 
 	if (tr.fraction < 1.0f)
 	{
@@ -925,7 +925,7 @@ void fx_explosion_trail_link(gentity_t* self)
 		if (!target)
 		{
 			gi.Printf(S_COLOR_RED"ERROR: fx_explosion_trail %s could not find target %s\n", self->targetname,
-				self->target);
+			          self->target);
 			G_FreeEntity(self);
 			return;
 		}
@@ -1054,7 +1054,7 @@ void fx_target_beam_fire(gentity_t* ent)
 	VectorNormalize(dir);
 
 	gi.trace(&trace, ent->s.origin, nullptr, nullptr, org, ENTITYNUM_NONE, MASK_SHOT, static_cast<EG2_Collision>(0),
-		0); //ignore
+	         0); //ignore
 	if (ent->spawnflags & 2)
 	{
 		open = qtrue;
@@ -1076,7 +1076,7 @@ void fx_target_beam_fire(gentity_t* ent)
 				if (ent->spawnflags & 4) // NO_KNOCKBACK
 				{
 					G_Damage(victim, ent, ent->activator, dir, trace.endpos, ent->damage, DAMAGE_NO_KNOCKBACK,
-						MOD_UNKNOWN);
+					         MOD_UNKNOWN);
 				}
 				else
 				{

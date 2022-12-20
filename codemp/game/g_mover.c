@@ -42,7 +42,7 @@ typedef struct pushed_s
 	float deltayaw;
 } pushed_t;
 
-pushed_t pushed[MAX_GENTITIES], * pushed_p;
+pushed_t pushed[MAX_GENTITIES], *pushed_p;
 
 #define MOVER_START_ON		1
 #define MOVER_FORCE_ACTIVATE	2
@@ -86,7 +86,7 @@ G_PlayDoorSound
 -------------------------
 */
 
-void G_PlayDoorSound(gentity_t* ent, int type)
+void G_PlayDoorSound(gentity_t* ent, const int type)
 {
 	if (!ent->soundSet || !ent->soundSet[0])
 	{
@@ -126,12 +126,12 @@ gentity_t* G_TestEntityPosition(const gentity_t* ent)
 			vMax[2] = 1;
 		}
 		trap->Trace(&tr, ent->client->ps.origin, ent->r.mins, vMax, ent->client->ps.origin, ent->s.number, mask, qfalse,
-			0, 0);
+		            0, 0);
 	}
 	else
 	{
 		trap->Trace(&tr, ent->s.pos.trBase, ent->r.mins, ent->r.maxs, ent->s.pos.trBase, ent->s.number, mask, qfalse, 0,
-			0);
+		            0);
 	}
 
 	if (tr.startsolid)
@@ -488,7 +488,7 @@ G_MoverTeam
 */
 void G_MoverTeam(gentity_t* ent)
 {
-	gentity_t* part, * obstacle;
+	gentity_t *part, *obstacle;
 
 	obstacle = NULL;
 
@@ -619,7 +619,7 @@ void CalcTeamDoorCenter(const gentity_t* ent, vec3_t center)
 SetMoverState
 ===============
 */
-void SetMoverState(gentity_t* ent, moverState_t moverState, int time)
+void SetMoverState(gentity_t* ent, const moverState_t moverState, const int time)
 {
 	vec3_t delta;
 	float f;
@@ -685,7 +685,7 @@ All entities in a mover team will move from pos1 to pos2
 in the same amount of time
 ================
 */
-void MatchTeam(gentity_t* team_leader, int mover_state, int time)
+void MatchTeam(gentity_t* team_leader, const int mover_state, const int time)
 {
 	for (gentity_t* slave = team_leader; slave; slave = slave->teamchain)
 	{
@@ -932,7 +932,8 @@ void un_lock_doors(gentity_t* ent)
 		slave->spawnflags &= ~MOVER_LOCKED;
 		slave->s.frame = 1; //second stage of anim
 		slave = slave->teamchain;
-	} while (slave);
+	}
+	while (slave);
 }
 
 void lock_doors(gentity_t* ent)
@@ -945,7 +946,8 @@ void lock_doors(gentity_t* ent)
 		slave->spawnflags |= MOVER_LOCKED;
 		slave->s.frame = 0; //first stage of anim
 		slave = slave->teamchain;
-	} while (slave);
+	}
+	while (slave);
 }
 
 /*
@@ -1140,7 +1142,7 @@ void Blocked_Door(gentity_t* ent, gentity_t* other)
 Touch_DoorTriggerSpectator
 ================
 */
-static vec3_t doorangles = { 10000000.0, 0, 0 };
+static vec3_t doorangles = {10000000.0, 0, 0};
 
 static void Touch_DoorTriggerSpectator(const gentity_t* ent, gentity_t* other, trace_t* trace)
 {
@@ -1226,7 +1228,7 @@ void Touch_DoorTrigger(gentity_t* ent, gentity_t* other, trace_t* trace)
 		if (!ent->parent->alliedTeam //we don't have a "teamallow" team
 			|| !other->client //we do have a "teamallow" team, but this isn't a client
 			|| other->client->sess.sessionTeam != ent->parent->alliedTeam)
-			//it is a client, but it's not on the right team
+		//it is a client, but it's not on the right team
 		{
 			return;
 		}
@@ -1324,7 +1326,7 @@ void Think_MatchTeam(gentity_t* ent)
 	MatchTeam(ent, ent->moverState, level.time);
 }
 
-qboolean G_EntIsDoor(int entityNum)
+qboolean G_EntIsDoor(const int entityNum)
 {
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
@@ -1387,7 +1389,7 @@ gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 
 qboolean G_TriggerActive(const gentity_t* self);
 
-qboolean G_EntIsUnlockedDoor(int entityNum)
+qboolean G_EntIsUnlockedDoor(const int entityNum)
 {
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
@@ -1447,7 +1449,7 @@ qboolean G_EntIsUnlockedDoor(int entityNum)
 			!(ent->spawnflags & MOVER_PLAYER_USE) &&
 			!(ent->spawnflags & MOVER_FORCE_ACTIVATE) &&
 			!(ent->spawnflags & MOVER_LOCKED))
-			//FIXME: what about MOVER_GOODIE?
+		//FIXME: what about MOVER_GOODIE?
 		{
 			return qtrue;
 		}
@@ -1937,7 +1939,7 @@ void Think_SetupTrainTargets(gentity_t* ent)
 	if (!ent->nextTrain)
 	{
 		Com_Printf("func_train at %s with an unfound target\n",
-			vtos(ent->r.absmin));
+		           vtos(ent->r.absmin));
 		//Free me?`
 		return;
 	}
@@ -1977,7 +1979,8 @@ void Think_SetupTrainTargets(gentity_t* ent)
 				//end of path
 				break;
 			}
-		} while (strcmp(next->classname, "path_corner") != 0);
+		}
+		while (strcmp(next->classname, "path_corner") != 0);
 
 		if (next)
 		{
@@ -2483,7 +2486,7 @@ BREAKABLE BRUSH
 ===============================================================================
 */
 //---------------------------------------------------
-void CacheChunkEffects(material_t material)
+void CacheChunkEffects(const material_t material)
 {
 	switch (material)
 	{
@@ -2524,7 +2527,7 @@ void CacheChunkEffects(material_t material)
 	}
 }
 
-void G_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType)
+void G_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunkType)
 {
 	vec3_t mid;
 
@@ -2539,8 +2542,9 @@ void G_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkTy
 	te->s.eventParm = chunkType;
 }
 
-void G_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
-	float speed, int numChunks, material_t chunkType, int customChunk, float baseScale)
+void G_Chunks(const int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
+              const float speed, const int numChunks, const material_t chunkType, const int customChunk,
+              const float baseScale)
 {
 	gentity_t* te = G_TempEntity(origin, EV_DEBRIS);
 
@@ -2660,7 +2664,7 @@ void funcBBrushDieGo(gentity_t* ent)
 
 	//FIXME: base numChunks off size?
 	G_Chunks(ent->s.number, org, dir, ent->r.absmin, ent->r.absmax, 300, numChunks, chunkType, 0,
-		scale * ent->mass);
+	         scale * ent->mass);
 
 	trap->AdjustAreaPortalState((sharedEntity_t*)ent, qtrue);
 	ent->think = G_FreeEntity;
@@ -2754,7 +2758,7 @@ void funcBBrushPain(gentity_t* self, gentity_t* attacker, int damage)
 			numChunks = ceil(numChunks * self->radius);
 		}
 		G_Chunks(self->s.number, org, dir, self->r.absmin, self->r.absmax, 300, numChunks, self->material, 0,
-			scale * self->mass);
+		         scale * self->mass);
 	}
 
 	if (self->wait == -1)
@@ -3019,7 +3023,7 @@ void SP_func_breakable(gentity_t* self)
 	self->genericValue4 = 1; //so damage sys knows it's a bbrush
 }
 
-qboolean G_EntIsBreakable(int entityNum)
+qboolean G_EntIsBreakable(const int entityNum)
 {
 	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
@@ -3228,7 +3232,7 @@ void func_usable_think(gentity_t* self)
 	}
 }
 
-qboolean G_EntIsRemovableUsable(int entNum)
+qboolean G_EntIsRemovableUsable(const int entNum)
 {
 	const gentity_t* ent = &g_entities[entNum];
 	if (ent->classname && !Q_stricmp("func_usable", ent->classname))

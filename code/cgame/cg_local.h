@@ -211,7 +211,7 @@ using centity_t = centity_s;
 
 using markPoly_t = struct markPoly_s
 {
-	markPoly_s* prevMark, * nextMark;
+	markPoly_s *prevMark, *nextMark;
 	int time;
 	qhandle_t markShader;
 	qboolean alphaFade; // fade alpha instead of rgb
@@ -255,7 +255,7 @@ using leBounceSound_t = enum
 
 using localEntity_t = struct localEntity_s
 {
-	localEntity_s* prev, * next;
+	localEntity_s *prev, *next;
 	leType_t leType;
 	int leFlags;
 
@@ -778,16 +778,16 @@ void CG_FillRect(float x, float y, float width, float height, const float* color
 void CG_Scissor(float x, float y, float width, float height);
 void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
 void CG_DrawPic2(float x, float y, float width, float height, float s1, float t1, float s2, float t2,
-	qhandle_t hShader);
+                 qhandle_t hShader);
 void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t hShader,
-	float aspectCorrection = 1.0f);
+                      float aspectCorrection = 1.0f);
 void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t hShader,
-	float aspectCorrection = 1.0f);
+                       float aspectCorrection = 1.0f);
 void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill);
 void CG_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color);
 
 void CG_DrawStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean shadow,
-	int charWidth, int charHeight);
+                      int charWidth, int charHeight);
 void CG_DrawSmallStringColor(int x, int y, const char* s, vec4_t color);
 void CG_DrawBigStringColor(int x, int y, const char* s, vec4_t color);
 
@@ -816,8 +816,8 @@ void CG_DrawCenterString(void);
 // cg_player.c
 //
 void CG_AddGhoul2Mark(int type, float size, vec3_t hitloc, vec3_t hitdirection,
-	int entnum, vec3_t entposition, float entangle, CGhoul2Info_v& ghoul2, vec3_t model_scale,
-	int life_time = 0, int first_model = 0, vec3_t uaxis = nullptr);
+                      int entnum, vec3_t entposition, float entangle, CGhoul2Info_v& ghoul2, vec3_t model_scale,
+                      int life_time = 0, int first_model = 0, vec3_t uaxis = nullptr);
 void CG_Player(centity_t* cent);
 void CG_ResetPlayerEntity(centity_t* cent);
 void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent);
@@ -828,7 +828,8 @@ void CG_PlayerShieldHit(int entitynum, vec3_t dir, int amount);
 // cg_predict.c
 //
 int CG_PointContents(const vec3_t point, int passEntityNum);
-void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skip_number, int mask);
+void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
+              int skip_number, int mask);
 void CG_PredictPlayerState(void);
 
 //
@@ -847,9 +848,9 @@ void CG_Beam(const centity_t* cent, int color);
 void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int atTime, vec3_t out);
 
 void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-	qhandle_t parentModel, const char* tagName);
+                            qhandle_t parentModel, const char* tagName);
 void CG_PositionRotatedEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-	qhandle_t parentModel, const char* tagName, orientation_t* tagOrient);
+                                   qhandle_t parentModel, const char* tagName, orientation_t* tagOrient);
 
 /*
 Ghoul2 Insert Start
@@ -890,11 +891,11 @@ void CG_OutOfAmmoChange(void); // should this be in pmove?
 void CG_InitMarkPolys(void);
 void CG_AddMarks(void);
 void CG_ImpactMark(qhandle_t markShader,
-	const vec3_t origin, const vec3_t dir,
-	float orientation,
-	float r, float g, float b, float a,
-	qboolean alphaFade,
-	float radius, qboolean temporary);
+                   const vec3_t origin, const vec3_t dir,
+                   float orientation,
+                   float r, float g, float b, float a,
+                   qboolean alphaFade,
+                   float radius, qboolean temporary);
 
 //
 // cg_localents.c
@@ -1028,18 +1029,18 @@ clipHandle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs); //, cons
 int cgi_CM_PointContents(const vec3_t p, clipHandle_t model);
 int cgi_CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles);
 void cgi_CM_BoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
-	const vec3_t mins, const vec3_t maxs,
-	clipHandle_t model, int brushmask);
+                     const vec3_t mins, const vec3_t maxs,
+                     clipHandle_t model, int brushmask);
 void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
-	const vec3_t mins, const vec3_t maxs,
-	clipHandle_t model, int brushmask,
-	const vec3_t origin, const vec3_t angles);
+                                const vec3_t mins, const vec3_t maxs,
+                                clipHandle_t model, int brushmask,
+                                const vec3_t origin, const vec3_t angles);
 
 // Returns the projection of a polygon onto the solid brushes in the world
 int cgi_CM_MarkFragments(int numPoints, const vec3_t* points,
-	const vec3_t projection,
-	int maxPoints, vec3_t pointBuffer,
-	int maxFragments, markFragment_t* fragmentBuffer);
+                         const vec3_t projection,
+                         int maxPoints, vec3_t pointBuffer,
+                         int maxFragments, markFragment_t* fragmentBuffer);
 
 // normal sounds will have their volume dynamically changed as their entity
 // moves and the listener moves
@@ -1050,7 +1051,7 @@ void cgi_S_StopSounds(void);
 void cgi_S_StartLocalSound(sfxHandle_t sfx, int channelNum);
 void cgi_S_ClearLoopingSounds(void);
 void cgi_S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx,
-	soundChannel_t chan = CHAN_AUTO);
+                           soundChannel_t chan = CHAN_AUTO);
 void cgi_S_UpdateEntityPosition(int entityNum, const vec3_t origin);
 
 // repatialize recalculates the volumes of sound as they should be heard by the
@@ -1073,11 +1074,11 @@ int cgi_R_Font_StrLenPixels(const char* text, int iFontIndex, float scale = 1.0f
 int cgi_R_Font_StrLenChars(const char* text);
 int cgi_R_Font_HeightPixels(int iFontIndex, float scale = 1.0f);
 void cgi_R_Font_DrawString(int ox, int oy, const char* text, const float* rgba, int setIndex, int iMaxPixelWidth,
-	float scale = 1.0f, float aspectCorrection = 1.0f);
+                           float scale = 1.0f, float aspectCorrection = 1.0f);
 qboolean cgi_Language_IsAsian(void);
 qboolean cgi_Language_UsesSpaces(void);
 unsigned cgi_AnyLanguage_ReadCharFromString(const char* psText, int* iAdvanceCount,
-	qboolean* pbIsTrailingPunctuation = nullptr);
+                                            qboolean* pbIsTrailingPunctuation = nullptr);
 
 void cgi_R_SetRefractProp(float alpha, float stretch, qboolean prepost, qboolean negate);
 
@@ -1097,17 +1098,17 @@ void cgi_R_AddLightToScene(const vec3_t org, float intensity, float r, float g, 
 void cgi_R_RenderScene(const refdef_t* fd);
 void cgi_R_SetColor(const float* rgba); // NULL = 1,1,1,1
 void cgi_R_DrawStretchPic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, qhandle_t hShader);
+                          float s1, float t1, float s2, float t2, qhandle_t hShader);
 
 void cgi_R_ModelBounds(qhandle_t model, vec3_t mins, vec3_t maxs);
 void cgi_R_LerpTag(orientation_t* tag, qhandle_t mod, int startFrame, int endFrame,
-	float frac, const char* tagName);
+                   float frac, const char* tagName);
 // Does weird, barely controllable rotation behaviour
 void cgi_R_DrawRotatePic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t hShader, float aspectCorrection);
+                         float s1, float t1, float s2, float t2, float a, qhandle_t hShader, float aspectCorrection);
 // rotates image around exact center point of passed in coords
 void cgi_R_DrawRotatePic2(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t hShader, float aspectCorrection);
+                          float s1, float t1, float s2, float t2, float a, qhandle_t hShader, float aspectCorrection);
 void cgi_R_SetRangeFog(float range);
 void cgi_R_LAGoggles(void);
 void cgi_R_Scissor(float x, float y, float w, float h);
@@ -1262,7 +1263,7 @@ void trap_R_GetLightStyle(int style, color4ub_t color);
 void trap_R_SetLightStyle(int style, int color);
 
 int trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits,
-	const char* psAudioFile = nullptr);
+                           const char* psAudioFile = nullptr);
 e_status trap_CIN_StopCinematic(int handle);
 e_status trap_CIN_RunCinematic(int handle);
 void trap_CIN_DrawCinematic(int handle);
@@ -1285,7 +1286,7 @@ void cgi_UI_MenuPaintAll(void);
 void cgi_UI_MenuCloseAll(void);
 void cgi_UI_String_Init(void);
 int cgi_UI_GetMenuItemInfo(const char* menuFile, const char* itemName, int* x, int* y, int* w, int* h, vec4_t color,
-	qhandle_t* background);
+                           qhandle_t* background);
 int cgi_UI_GetMenuInfo(char* menuFile, int* x, int* y, int* w, int* h);
 void cgi_UI_Menu_Paint(void* menu, qboolean force);
 void* cgi_UI_GetMenuByName(const char* menu);
@@ -1293,9 +1294,9 @@ void* cgi_UI_GetMenuByName(const char* menu);
 void SetWeaponSelectTime(void);
 
 void CG_PlayEffectBolted(const char* fx_name, int model_index, int bolt_index, int ent_num, vec3_t origin,
-	int i_loop_time = 0, bool is_relative = false);
+                         int i_loop_time = 0, bool is_relative = false);
 void CG_PlayEffectIDBolted(int fx_id, int model_index, int bolt_index, int ent_num, vec3_t origin, int i_loop_time = 0,
-	bool is_relative = false);
+                           bool is_relative = false);
 void CG_PlayEffectOnEnt(const char* fx_name, int client_num, vec3_t origin, const vec3_t fwd);
 void CG_PlayEffectIDOnEnt(int fx_id, int client_num, vec3_t origin, const vec3_t fwd);
 void CG_PlayEffect(const char* fx_name, vec3_t origin, const vec3_t fwd);

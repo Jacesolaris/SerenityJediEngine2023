@@ -17,7 +17,7 @@
 #if defined(PNG_READ_BGR_SUPPORTED) || defined(PNG_WRITE_BGR_SUPPORTED)
  /* Turn on BGR-to-RGB mapping */
 void PNGAPI
-png_set_bgr(png_structrp png_ptr)
+png_set_bgr(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_bgr");
 
@@ -31,7 +31,7 @@ png_set_bgr(png_structrp png_ptr)
 #if defined(PNG_READ_SWAP_SUPPORTED) || defined(PNG_WRITE_SWAP_SUPPORTED)
 /* Turn on 16 bit byte swapping */
 void PNGAPI
-png_set_swap(png_structrp png_ptr)
+png_set_swap(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_swap");
 
@@ -46,7 +46,7 @@ png_set_swap(png_structrp png_ptr)
 #if defined(PNG_READ_PACK_SUPPORTED) || defined(PNG_WRITE_PACK_SUPPORTED)
 /* Turn on pixel packing */
 void PNGAPI
-png_set_packing(png_structrp png_ptr)
+png_set_packing(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_packing");
 
@@ -66,7 +66,7 @@ png_set_packing(png_structrp png_ptr)
 #if defined(PNG_READ_PACKSWAP_SUPPORTED)||defined(PNG_WRITE_PACKSWAP_SUPPORTED)
 /* Turn on packed pixel swapping */
 void PNGAPI
-png_set_packswap(png_structrp png_ptr)
+png_set_packswap(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_packswap");
 
@@ -80,7 +80,7 @@ png_set_packswap(png_structrp png_ptr)
 
 #if defined(PNG_READ_SHIFT_SUPPORTED) || defined(PNG_WRITE_SHIFT_SUPPORTED)
 void PNGAPI
-png_set_shift(png_structrp png_ptr, png_const_color_8p true_bits)
+png_set_shift(const png_structrp png_ptr, const png_const_color_8p true_bits)
 {
 	png_debug(1, "in png_set_shift");
 
@@ -95,7 +95,7 @@ png_set_shift(png_structrp png_ptr, png_const_color_8p true_bits)
 #if defined(PNG_READ_INTERLACING_SUPPORTED) || \
     defined(PNG_WRITE_INTERLACING_SUPPORTED)
 int PNGAPI
-png_set_interlace_handling(png_structrp png_ptr)
+png_set_interlace_handling(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_interlace handling");
 
@@ -116,7 +116,7 @@ png_set_interlace_handling(png_structrp png_ptr)
  * that don't like bytes as parameters.
  */
 void PNGAPI
-png_set_filler(png_structrp png_ptr, png_uint_32 filler, int filler_loc)
+png_set_filler(png_structrp png_ptr, png_uint_32 filler, const int filler_loc)
 {
 	png_debug(1, "in png_set_filler");
 
@@ -198,7 +198,7 @@ png_set_filler(png_structrp png_ptr, png_uint_32 filler, int filler_loc)
 
 /* Added to libpng-1.2.7 */
 void PNGAPI
-png_set_add_alpha(png_structrp png_ptr, png_uint_32 filler, int filler_loc)
+png_set_add_alpha(const png_structrp png_ptr, const png_uint_32 filler, const int filler_loc)
 {
 	png_debug(1, "in png_set_add_alpha");
 
@@ -216,7 +216,7 @@ png_set_add_alpha(png_structrp png_ptr, png_uint_32 filler, int filler_loc)
 #if defined(PNG_READ_SWAP_ALPHA_SUPPORTED) || \
     defined(PNG_WRITE_SWAP_ALPHA_SUPPORTED)
 void PNGAPI
-png_set_swap_alpha(png_structrp png_ptr)
+png_set_swap_alpha(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_swap_alpha");
 
@@ -230,7 +230,7 @@ png_set_swap_alpha(png_structrp png_ptr)
 #if defined(PNG_READ_INVERT_ALPHA_SUPPORTED) || \
     defined(PNG_WRITE_INVERT_ALPHA_SUPPORTED)
 void PNGAPI
-png_set_invert_alpha(png_structrp png_ptr)
+png_set_invert_alpha(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_invert_alpha");
 
@@ -243,7 +243,7 @@ png_set_invert_alpha(png_structrp png_ptr)
 
 #if defined(PNG_READ_INVERT_SUPPORTED) || defined(PNG_WRITE_INVERT_SUPPORTED)
 void PNGAPI
-png_set_invert_mono(png_structrp png_ptr)
+png_set_invert_mono(const png_structrp png_ptr)
 {
 	png_debug(1, "in png_set_invert_mono");
 
@@ -255,7 +255,7 @@ png_set_invert_mono(png_structrp png_ptr)
 
 /* Invert monochrome grayscale data */
 void /* PRIVATE */
-png_do_invert(png_row_infop row_info, png_bytep row)
+png_do_invert(const png_row_infop row_info, const png_bytep row)
 {
 	png_debug(1, "in png_do_invert");
 
@@ -309,7 +309,7 @@ png_do_invert(png_row_infop row_info, png_bytep row)
 #if defined(PNG_READ_SWAP_SUPPORTED) || defined(PNG_WRITE_SWAP_SUPPORTED)
 /* Swaps byte order on 16 bit depth images */
 void /* PRIVATE */
-png_do_swap(png_row_infop row_info, png_bytep row)
+png_do_swap(const png_row_infop row_info, const png_bytep row)
 {
 	png_debug(1, "in png_do_swap");
 
@@ -444,7 +444,7 @@ static PNG_CONST png_byte fourbppswaptable[256] = {
 
 /* Swaps pixel packing order within bytes */
 void /* PRIVATE */
-png_do_packswap(png_row_infop row_info, png_bytep row)
+png_do_packswap(const png_row_infop row_info, const png_bytep row)
 {
 	png_debug(1, "in png_do_packswap");
 
@@ -483,7 +483,7 @@ png_do_packswap(png_row_infop row_info, png_bytep row)
  * end (not in the middle) of each pixel.
  */
 void /* PRIVATE */
-png_do_strip_channel(png_row_infop row_info, png_bytep row, int at_start)
+png_do_strip_channel(const png_row_infop row_info, const png_bytep row, const int at_start)
 {
 	png_bytep sp = row; /* source pointer */
 	png_bytep dp = row; /* destination pointer */
@@ -593,7 +593,7 @@ png_do_strip_channel(png_row_infop row_info, png_bytep row, int at_start)
 #if defined(PNG_READ_BGR_SUPPORTED) || defined(PNG_WRITE_BGR_SUPPORTED)
 /* Swaps red and blue bytes within a pixel */
 void /* PRIVATE */
-png_do_bgr(png_row_infop row_info, png_bytep row)
+png_do_bgr(const png_row_infop row_info, const png_bytep row)
 {
 	png_debug(1, "in png_do_bgr");
 
@@ -673,7 +673,7 @@ png_do_bgr(png_row_infop row_info, png_bytep row)
     defined(PNG_WRITE_CHECK_FOR_INVALID_INDEX_SUPPORTED)
 /* Added at libpng-1.5.10 */
 void /* PRIVATE */
-png_do_check_palette_indexes(png_structrp png_ptr, png_row_infop row_info)
+png_do_check_palette_indexes(const png_structrp png_ptr, const png_row_infop row_info)
 {
 	if (png_ptr->num_palette < 1 << row_info->bit_depth &&
 		png_ptr->num_palette > 0) /* num_palette can be 0 in MNG files */
@@ -776,8 +776,8 @@ png_do_check_palette_indexes(png_structrp png_ptr, png_row_infop row_info)
     defined(PNG_WRITE_USER_TRANSFORM_SUPPORTED)
 #ifdef PNG_USER_TRANSFORM_PTR_SUPPORTED
 void PNGAPI
-png_set_user_transform_info(png_structrp png_ptr, png_voidp
-	user_transform_ptr, int user_transform_depth, int user_transform_channels)
+png_set_user_transform_info(const png_structrp png_ptr, const png_voidp
+                            user_transform_ptr, const int user_transform_depth, const int user_transform_channels)
 {
 	png_debug(1, "in png_set_user_transform_info");
 
@@ -807,7 +807,7 @@ png_set_user_transform_info(png_structrp png_ptr, png_voidp
  */
 #ifdef PNG_USER_TRANSFORM_PTR_SUPPORTED
 png_voidp PNGAPI
-png_get_user_transform_ptr(png_const_structrp png_ptr)
+png_get_user_transform_ptr(const png_const_structrp png_ptr)
 {
 	if (png_ptr == NULL)
 		return NULL;
@@ -818,7 +818,7 @@ png_get_user_transform_ptr(png_const_structrp png_ptr)
 
 #ifdef PNG_USER_TRANSFORM_INFO_SUPPORTED
 png_uint_32 PNGAPI
-png_get_current_row_number(png_const_structrp png_ptr)
+png_get_current_row_number(const png_const_structrp png_ptr)
 {
 	/* See the comments in png.h - this is the sub-image row when reading an
 	 * interlaced image.
@@ -830,7 +830,7 @@ png_get_current_row_number(png_const_structrp png_ptr)
 }
 
 png_byte PNGAPI
-png_get_current_pass_number(png_const_structrp png_ptr)
+png_get_current_pass_number(const png_const_structrp png_ptr)
 {
 	if (png_ptr != NULL)
 		return png_ptr->pass;

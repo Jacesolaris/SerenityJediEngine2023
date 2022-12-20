@@ -6,7 +6,7 @@
 void EnablePlayerCameraPos(gentity_t* player);
 
 qboolean in_camera = qfalse;
-camera_t client_camera = { 0 };
+camera_t client_camera = {0};
 
 extern int g_TimeSinceLastFrame;
 
@@ -154,8 +154,8 @@ void GCam_FollowUpdate(void)
 		qboolean focused = qfalse;
 
 		if ((from->s.eType == ET_PLAYER
-			|| from->s.eType == ET_NPC
-			|| from->s.number < MAX_CLIENTS)
+				|| from->s.eType == ET_NPC
+				|| from->s.number < MAX_CLIENTS)
 			&& client_camera.cameraGroupTag && client_camera.cameraGroupTag[0])
 		{
 			const int newBolt = trap->G2API_AddBolt(&from->ghoul2, 0, client_camera.cameraGroupTag);
@@ -167,7 +167,7 @@ void GCam_FollowUpdate(void)
 				VectorSet(angle, 0, from->client->ps.viewangles[YAW], 0);
 
 				trap->G2API_GetBoltMatrix(&from->ghoul2, 0, newBolt, &boltMatrix, angle, from->client->ps.origin,
-					level.time, NULL, from->modelScale);
+				                          level.time, NULL, from->modelScale);
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, focus[num_subjects]);
 
 				focused = qtrue;
@@ -279,7 +279,7 @@ void GCam_SetPosition(vec3_t org)
 	VectorCopy(client_camera.origin, camerapos);
 }
 
-void GCam_Move(vec3_t dest, float duration)
+void GCam_Move(vec3_t dest, const float duration)
 {
 	if (client_camera.info_state & CAMERA_ROFFING)
 	{
@@ -304,7 +304,7 @@ void GCam_Move(vec3_t dest, float duration)
 	client_camera.move_time = level.time;
 }
 
-void GCam_Follow(int cameraGroup[MAX_CAMERA_GROUP_SUBJECTS], float speed, float initLerp)
+void GCam_Follow(int cameraGroup[MAX_CAMERA_GROUP_SUBJECTS], const float speed, const float initLerp)
 {
 	//Clear any previous
 	GCam_FollowDisable();
@@ -390,7 +390,7 @@ void GCam_SetAngles(vec3_t ang)
 	VectorCopy(client_camera.angles, cameraang);
 }
 
-void GCam_Pan(vec3_t dest, vec3_t panDirection, float duration)
+void GCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 {
 	float delta2;
 

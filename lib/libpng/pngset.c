@@ -21,8 +21,8 @@
 
 #ifdef PNG_bKGD_SUPPORTED
 void PNGAPI
-png_set_bKGD(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_color_16p background)
+png_set_bKGD(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_color_16p background)
 {
 	png_debug1(1, "in %s storage function", "bKGD");
 
@@ -36,10 +36,10 @@ png_set_bKGD(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_cHRM_SUPPORTED
 void PNGFAPI
-png_set_cHRM_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_fixed_point white_x, png_fixed_point white_y, png_fixed_point red_x,
-	png_fixed_point red_y, png_fixed_point green_x, png_fixed_point green_y,
-	png_fixed_point blue_x, png_fixed_point blue_y)
+png_set_cHRM_fixed(const png_const_structrp png_ptr, const png_inforp info_ptr,
+                   const png_fixed_point white_x, const png_fixed_point white_y, const png_fixed_point red_x,
+                   const png_fixed_point red_y, const png_fixed_point green_x, const png_fixed_point green_y,
+                   const png_fixed_point blue_x, const png_fixed_point blue_y)
 {
 	png_xy xy;
 
@@ -65,12 +65,12 @@ png_set_cHRM_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 
 void PNGFAPI
-png_set_cHRM_XYZ_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_fixed_point int_red_X, png_fixed_point int_red_Y,
-	png_fixed_point int_red_Z, png_fixed_point int_green_X,
-	png_fixed_point int_green_Y, png_fixed_point int_green_Z,
-	png_fixed_point int_blue_X, png_fixed_point int_blue_Y,
-	png_fixed_point int_blue_Z)
+png_set_cHRM_XYZ_fixed(const png_const_structrp png_ptr, const png_inforp info_ptr,
+                       const png_fixed_point int_red_X, const png_fixed_point int_red_Y,
+                       const png_fixed_point int_red_Z, const png_fixed_point int_green_X,
+                       const png_fixed_point int_green_Y, const png_fixed_point int_green_Z,
+                       const png_fixed_point int_blue_X, const png_fixed_point int_blue_Y,
+                       const png_fixed_point int_blue_Z)
 {
 	png_XYZ XYZ;
 
@@ -98,9 +98,9 @@ png_set_cHRM_XYZ_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
 void PNGAPI
-png_set_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
-	double white_x, double white_y, double red_x, double red_y,
-	double green_x, double green_y, double blue_x, double blue_y)
+png_set_cHRM(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const double white_x, const double white_y, const double red_x, const double red_y,
+             const double green_x, const double green_y, const double blue_x, const double blue_y)
 {
 	png_set_cHRM_fixed(png_ptr, info_ptr,
 		png_fixed(png_ptr, white_x, "cHRM White X"),
@@ -114,9 +114,9 @@ png_set_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 
 void PNGAPI
-png_set_cHRM_XYZ(png_const_structrp png_ptr, png_inforp info_ptr, double red_X,
-	double red_Y, double red_Z, double green_X, double green_Y, double green_Z,
-	double blue_X, double blue_Y, double blue_Z)
+png_set_cHRM_XYZ(const png_const_structrp png_ptr, const png_inforp info_ptr, const double red_X,
+                 const double red_Y, const double red_Z, const double green_X, const double green_Y, const double green_Z,
+                 const double blue_X, const double blue_Y, const double blue_Z)
 {
 	png_set_cHRM_XYZ_fixed(png_ptr, info_ptr,
 		png_fixed(png_ptr, red_X, "cHRM Red X"),
@@ -135,8 +135,8 @@ png_set_cHRM_XYZ(png_const_structrp png_ptr, png_inforp info_ptr, double red_X,
 
 #ifdef PNG_gAMA_SUPPORTED
 void PNGFAPI
-png_set_gAMA_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_fixed_point file_gamma)
+png_set_gAMA_fixed(const png_const_structrp png_ptr, const png_inforp info_ptr,
+                   const png_fixed_point file_gamma)
 {
 	png_debug1(1, "in %s storage function", "gAMA");
 
@@ -149,7 +149,7 @@ png_set_gAMA_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
 void PNGAPI
-png_set_gAMA(png_const_structrp png_ptr, png_inforp info_ptr, double file_gamma)
+png_set_gAMA(const png_const_structrp png_ptr, const png_inforp info_ptr, const double file_gamma)
 {
 	png_set_gAMA_fixed(png_ptr, info_ptr, png_fixed(png_ptr, file_gamma,
 		"png_set_gAMA"));
@@ -159,8 +159,8 @@ png_set_gAMA(png_const_structrp png_ptr, png_inforp info_ptr, double file_gamma)
 
 #ifdef PNG_hIST_SUPPORTED
 void PNGAPI
-png_set_hIST(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_uint_16p hist)
+png_set_hIST(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_uint_16p hist)
 {
 	png_debug1(1, "in %s storage function", "hIST");
 
@@ -200,10 +200,10 @@ png_set_hIST(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 void PNGAPI
-png_set_IHDR(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_uint_32 width, png_uint_32 height, int bit_depth,
-	int color_type, int interlace_type, int compression_type,
-	int filter_type)
+png_set_IHDR(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_uint_32 width, const png_uint_32 height, const int bit_depth,
+             const int color_type, const int interlace_type, const int compression_type,
+             const int filter_type)
 {
 	png_debug1(1, "in %s storage function", "IHDR");
 
@@ -241,8 +241,8 @@ png_set_IHDR(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_oFFs_SUPPORTED
 void PNGAPI
-png_set_oFFs(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_int_32 offset_x, png_int_32 offset_y, int unit_type)
+png_set_oFFs(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_int_32 offset_x, const png_int_32 offset_y, const int unit_type)
 {
 	png_debug1(1, "in %s storage function", "oFFs");
 
@@ -258,9 +258,9 @@ png_set_oFFs(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_pCAL_SUPPORTED
 void PNGAPI
-png_set_pCAL(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_charp purpose, png_int_32 X0, png_int_32 X1, int type,
-	int nparams, png_const_charp units, png_charpp params)
+png_set_pCAL(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_charp purpose, const png_int_32 X0, const png_int_32 X1, const int type,
+             const int nparams, const png_const_charp units, const png_charpp params)
 {
 	int i;
 
@@ -358,8 +358,8 @@ png_set_pCAL(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_sCAL_SUPPORTED
 void PNGAPI
-png_set_sCAL_s(png_const_structrp png_ptr, png_inforp info_ptr,
-	int unit, png_const_charp swidth, png_const_charp sheight)
+png_set_sCAL_s(const png_const_structrp png_ptr, const png_inforp info_ptr,
+               const int unit, const png_const_charp swidth, const png_const_charp sheight)
 {
 	png_size_t lengthw = 0, lengthh = 0;
 
@@ -423,8 +423,8 @@ png_set_sCAL_s(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
 void PNGAPI
-png_set_sCAL(png_const_structrp png_ptr, png_inforp info_ptr, int unit,
-	double width, double height)
+png_set_sCAL(const png_const_structrp png_ptr, const png_inforp info_ptr, const int unit,
+             const double width, const double height)
 {
 	png_debug1(1, "in %s storage function", "sCAL");
 
@@ -453,8 +453,8 @@ png_set_sCAL(png_const_structrp png_ptr, png_inforp info_ptr, int unit,
 
 #  ifdef PNG_FIXED_POINT_SUPPORTED
 void PNGAPI
-png_set_sCAL_fixed(png_const_structrp png_ptr, png_inforp info_ptr, int unit,
-	png_fixed_point width, png_fixed_point height)
+png_set_sCAL_fixed(const png_const_structrp png_ptr, const png_inforp info_ptr, const int unit,
+                   const png_fixed_point width, const png_fixed_point height)
 {
 	png_debug1(1, "in %s storage function", "sCAL");
 
@@ -482,8 +482,8 @@ png_set_sCAL_fixed(png_const_structrp png_ptr, png_inforp info_ptr, int unit,
 
 #ifdef PNG_pHYs_SUPPORTED
 void PNGAPI
-png_set_pHYs(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_uint_32 res_x, png_uint_32 res_y, int unit_type)
+png_set_pHYs(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_uint_32 res_x, const png_uint_32 res_y, const int unit_type)
 {
 	png_debug1(1, "in %s storage function", "pHYs");
 
@@ -498,8 +498,8 @@ png_set_pHYs(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 void PNGAPI
-png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
-	png_const_colorp palette, int num_palette)
+png_set_PLTE(const png_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_colorp palette, const int num_palette)
 {
 	png_debug1(1, "in %s storage function", "PLTE");
 
@@ -552,8 +552,8 @@ png_set_PLTE(png_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_sBIT_SUPPORTED
 void PNGAPI
-png_set_sBIT(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_color_8p sig_bit)
+png_set_sBIT(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_color_8p sig_bit)
 {
 	png_debug1(1, "in %s storage function", "sBIT");
 
@@ -567,7 +567,7 @@ png_set_sBIT(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_sRGB_SUPPORTED
 void PNGAPI
-png_set_sRGB(png_const_structrp png_ptr, png_inforp info_ptr, int srgb_intent)
+png_set_sRGB(const png_const_structrp png_ptr, const png_inforp info_ptr, const int srgb_intent)
 {
 	png_debug1(1, "in %s storage function", "sRGB");
 
@@ -579,8 +579,8 @@ png_set_sRGB(png_const_structrp png_ptr, png_inforp info_ptr, int srgb_intent)
 }
 
 void PNGAPI
-png_set_sRGB_gAMA_and_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
-	int srgb_intent)
+png_set_sRGB_gAMA_and_cHRM(const png_const_structrp png_ptr, const png_inforp info_ptr,
+                           const int srgb_intent)
 {
 	png_debug1(1, "in %s storage function", "sRGB_gAMA_and_cHRM");
 
@@ -601,9 +601,9 @@ png_set_sRGB_gAMA_and_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_iCCP_SUPPORTED
 void PNGAPI
-png_set_iCCP(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_charp name, int compression_type,
-	png_const_bytep profile, png_uint_32 proflen)
+png_set_iCCP(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_charp name, const int compression_type,
+             const png_const_bytep profile, const png_uint_32 proflen)
 {
 	png_debug1(1, "in %s storage function", "iCCP");
 
@@ -670,8 +670,8 @@ png_set_iCCP(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_TEXT_SUPPORTED
 void PNGAPI
-png_set_text(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_textp text_ptr, int num_text)
+png_set_text(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_textp text_ptr, const int num_text)
 {
 	const int ret = png_set_text_2(png_ptr, info_ptr, text_ptr, num_text);
 
@@ -680,8 +680,8 @@ png_set_text(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 
 int /* PRIVATE */
-png_set_text_2(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_textp text_ptr, int num_text)
+png_set_text_2(png_const_structrp png_ptr, const png_inforp info_ptr,
+               const png_const_textp text_ptr, const int num_text)
 {
 	png_debug1(1, "in %lx storage function", png_ptr == NULL ? "unexpected" :
 		(unsigned long)png_ptr->chunk_name);
@@ -870,8 +870,8 @@ png_set_text_2(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_tIME_SUPPORTED
 void PNGAPI
-png_set_tIME(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_const_timep mod_time)
+png_set_tIME(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_timep mod_time)
 {
 	png_debug1(1, "in %s storage function", "tIME");
 
@@ -895,8 +895,8 @@ png_set_tIME(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_tRNS_SUPPORTED
 void PNGAPI
-png_set_tRNS(png_structrp png_ptr, png_inforp info_ptr,
-	png_const_bytep trans_alpha, int num_trans, png_const_color_16p trans_color)
+png_set_tRNS(const png_structrp png_ptr, const png_inforp info_ptr,
+             const png_const_bytep trans_alpha, int num_trans, const png_const_color_16p trans_color)
 {
 	png_debug1(1, "in %s storage function", "tRNS");
 
@@ -955,8 +955,8 @@ png_set_tRNS(png_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_sPLT_SUPPORTED
 void PNGAPI
-png_set_sPLT(png_const_structrp png_ptr,
-	png_inforp info_ptr, png_const_sPLT_tp entries, int nentries)
+png_set_sPLT(const png_const_structrp png_ptr,
+             const png_inforp info_ptr, png_const_sPLT_tp entries, int nentries)
 	/*
 	 *  entries        - array of png_sPLT_t structures
 	 *                   to be added to the list of palettes
@@ -1049,7 +1049,7 @@ png_set_sPLT(png_const_structrp png_ptr,
 
 #ifdef PNG_STORE_UNKNOWN_CHUNKS_SUPPORTED
 static png_byte
-check_location(png_const_structrp png_ptr, int location)
+check_location(const png_const_structrp png_ptr, int location)
 {
 	location &= (PNG_HAVE_IHDR | PNG_HAVE_PLTE | PNG_AFTER_IDAT);
 
@@ -1087,7 +1087,7 @@ check_location(png_const_structrp png_ptr, int location)
 
 void PNGAPI
 png_set_unknown_chunks(png_const_structrp png_ptr,
-	png_inforp info_ptr, png_const_unknown_chunkp unknowns, int num_unknowns)
+                       const png_inforp info_ptr, png_const_unknown_chunkp unknowns, int num_unknowns)
 {
 	png_unknown_chunkp np;
 
@@ -1182,8 +1182,8 @@ png_set_unknown_chunks(png_const_structrp png_ptr,
 }
 
 void PNGAPI
-png_set_unknown_chunk_location(png_const_structrp png_ptr, png_inforp info_ptr,
-	int chunk, int location)
+png_set_unknown_chunk_location(const png_const_structrp png_ptr, const png_inforp info_ptr,
+                               const int chunk, int location)
 {
 	/* This API is pretty pointless in 1.6.0 because the location can be set
 	 * before the call to png_set_unknown_chunks.
@@ -1212,7 +1212,7 @@ png_set_unknown_chunk_location(png_const_structrp png_ptr, png_inforp info_ptr,
 
 #ifdef PNG_MNG_FEATURES_SUPPORTED
 png_uint_32 PNGAPI
-png_permit_mng_features(png_structrp png_ptr, png_uint_32 mng_features)
+png_permit_mng_features(const png_structrp png_ptr, const png_uint_32 mng_features)
 {
 	png_debug(1, "in png_permit_mng_features");
 
@@ -1227,7 +1227,7 @@ png_permit_mng_features(png_structrp png_ptr, png_uint_32 mng_features)
 
 #ifdef PNG_HANDLE_AS_UNKNOWN_SUPPORTED
 static unsigned int
-add_one_chunk(png_bytep list, unsigned int count, png_const_bytep add, int keep)
+add_one_chunk(png_bytep list, unsigned int count, const png_const_bytep add, const int keep)
 {
 	/* Utility function: update the 'keep' state of a chunk if it is already in
 	 * the list, otherwise add it to the list.
@@ -1252,8 +1252,8 @@ add_one_chunk(png_bytep list, unsigned int count, png_const_bytep add, int keep)
 }
 
 void PNGAPI
-png_set_keep_unknown_chunks(png_structrp png_ptr, int keep,
-	png_const_bytep chunk_list, int num_chunks_in)
+png_set_keep_unknown_chunks(const png_structrp png_ptr, const int keep,
+                            png_const_bytep chunk_list, const int num_chunks_in)
 {
 	png_bytep new_list;
 	unsigned int num_chunks;
@@ -1407,8 +1407,8 @@ png_set_keep_unknown_chunks(png_structrp png_ptr, int keep,
 
 #ifdef PNG_READ_USER_CHUNKS_SUPPORTED
 void PNGAPI
-png_set_read_user_chunk_fn(png_structrp png_ptr, png_voidp user_chunk_ptr,
-	png_user_chunk_ptr read_user_chunk_fn)
+png_set_read_user_chunk_fn(const png_structrp png_ptr, const png_voidp user_chunk_ptr,
+                           const png_user_chunk_ptr read_user_chunk_fn)
 {
 	png_debug(1, "in png_set_read_user_chunk_fn");
 
@@ -1422,8 +1422,8 @@ png_set_read_user_chunk_fn(png_structrp png_ptr, png_voidp user_chunk_ptr,
 
 #ifdef PNG_INFO_IMAGE_SUPPORTED
 void PNGAPI
-png_set_rows(png_const_structrp png_ptr, png_inforp info_ptr,
-	png_bytepp row_pointers)
+png_set_rows(const png_const_structrp png_ptr, const png_inforp info_ptr,
+             const png_bytepp row_pointers)
 {
 	png_debug1(1, "in %s storage function", "rows");
 
@@ -1442,7 +1442,7 @@ png_set_rows(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 void PNGAPI
-png_set_compression_buffer_size(png_structrp png_ptr, png_size_t size)
+png_set_compression_buffer_size(const png_structrp png_ptr, png_size_t size)
 {
 	if (png_ptr == NULL)
 		return;
@@ -1495,7 +1495,7 @@ png_set_compression_buffer_size(png_structrp png_ptr, png_size_t size)
 }
 
 void PNGAPI
-png_set_invalid(png_const_structrp png_ptr, png_inforp info_ptr, int mask)
+png_set_invalid(const png_const_structrp png_ptr, const png_inforp info_ptr, const int mask)
 {
 	if (png_ptr != NULL && info_ptr != NULL)
 		info_ptr->valid &= ~mask;
@@ -1504,8 +1504,8 @@ png_set_invalid(png_const_structrp png_ptr, png_inforp info_ptr, int mask)
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
 /* This function was added to libpng 1.2.6 */
 void PNGAPI
-png_set_user_limits(png_structrp png_ptr, png_uint_32 user_width_max,
-	png_uint_32 user_height_max)
+png_set_user_limits(const png_structrp png_ptr, const png_uint_32 user_width_max,
+                    const png_uint_32 user_height_max)
 {
 	/* Images with dimensions larger than these limits will be
 	 * rejected by png_set_IHDR().  To accept any PNG datastream
@@ -1520,7 +1520,7 @@ png_set_user_limits(png_structrp png_ptr, png_uint_32 user_width_max,
 
 /* This function was added to libpng 1.4.0 */
 void PNGAPI
-png_set_chunk_cache_max(png_structrp png_ptr, png_uint_32 user_chunk_cache_max)
+png_set_chunk_cache_max(const png_structrp png_ptr, const png_uint_32 user_chunk_cache_max)
 {
 	if (png_ptr != NULL)
 		png_ptr->user_chunk_cache_max = user_chunk_cache_max;
@@ -1528,8 +1528,8 @@ png_set_chunk_cache_max(png_structrp png_ptr, png_uint_32 user_chunk_cache_max)
 
 /* This function was added to libpng 1.4.1 */
 void PNGAPI
-png_set_chunk_malloc_max(png_structrp png_ptr,
-	png_alloc_size_t user_chunk_malloc_max)
+png_set_chunk_malloc_max(const png_structrp png_ptr,
+                         const png_alloc_size_t user_chunk_malloc_max)
 {
 	if (png_ptr != NULL)
 		png_ptr->user_chunk_malloc_max = user_chunk_malloc_max;
@@ -1538,7 +1538,7 @@ png_set_chunk_malloc_max(png_structrp png_ptr,
 
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
 void PNGAPI
-png_set_benign_errors(png_structrp png_ptr, int allowed)
+png_set_benign_errors(const png_structrp png_ptr, const int allowed)
 {
 	png_debug(1, "in png_set_benign_errors");
 
@@ -1568,7 +1568,7 @@ png_set_benign_errors(png_structrp png_ptr, int allowed)
  * a benign error.  This API can be used to override that behavior.
  */
 void PNGAPI
-png_set_check_for_invalid_index(png_structrp png_ptr, int allowed)
+png_set_check_for_invalid_index(const png_structrp png_ptr, const int allowed)
 {
 	png_debug(1, "in png_set_check_for_invalid_index");
 

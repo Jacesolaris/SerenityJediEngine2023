@@ -89,7 +89,7 @@ void G_UpdateCvars(void)
 
 				if (cv->trackChange)
 					trap->SendServerCommand(-1, va("print \"Server: %s changed to %s\n\"", cv->cvarName,
-						cv->vmCvar->string));
+					                               cv->vmCvar->string));
 			}
 		}
 	}

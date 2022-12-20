@@ -56,14 +56,14 @@ public:
 	void RemoveFlag(int, bool = false);
 	int HasFlag(int) const;
 	int GetFlags(void) const { return m_flags; }
-	void SetFlags(int flags) { m_flags = flags; }
+	void SetFlags(const int flags) { m_flags = flags; }
 
 	//Various encapsulation utilities
 	int GetIterations(void) const { return m_iterations; }
-	void SetIterations(int it) { m_iterations = it; }
+	void SetIterations(const int it) { m_iterations = it; }
 
 	int GetID(void) const { return m_id; }
-	void SetID(int id) { m_id = id; }
+	void SetID(const int id) { m_id = id; }
 
 	CSequence* GetReturn(void) const { return m_return; }
 
@@ -80,7 +80,7 @@ public:
 	int Load(CIcarus* icarus);
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);

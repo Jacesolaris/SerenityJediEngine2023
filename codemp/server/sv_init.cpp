@@ -37,7 +37,7 @@ Creates and sends the server command necessary to update the CS index for the
 given client
 ===============
 */
-static void SV_SendConfigstring(client_t* client, int index)
+static void SV_SendConfigstring(client_t* client, const int index)
 {
 	constexpr int maxChunkSize = MAX_STRING_CHARS - 24;
 
@@ -65,10 +65,10 @@ static void SV_SendConfigstring(client_t* client, int index)
 				cmd = "bcs1";
 			}
 			Q_strncpyz(buf, &sv.configstrings[index][sent],
-				maxChunkSize);
+			           maxChunkSize);
 
 			SV_SendServerCommand(client, "%s %i \"%s\"\n", cmd,
-				index, buf);
+			                     index, buf);
 
 			sent += maxChunkSize - 1;
 			remaining -= maxChunkSize - 1;
@@ -78,7 +78,7 @@ static void SV_SendConfigstring(client_t* client, int index)
 	{
 		// standard cs, just send it
 		SV_SendServerCommand(client, "cs %i \"%s\"\n", index,
-			sv.configstrings[index]);
+		                     sv.configstrings[index]);
 	}
 }
 
@@ -115,7 +115,7 @@ SV_SetConfigstring
 
 ===============
 */
-void SV_SetConfigstring(int index, const char* val)
+void SV_SetConfigstring(const int index, const char* val)
 {
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
 	{
@@ -169,7 +169,7 @@ SV_GetConfigstring
 
 ===============
 */
-void SV_GetConfigstring(int index, char* buffer, int bufferSize)
+void SV_GetConfigstring(const int index, char* buffer, const int bufferSize)
 {
 	if (bufferSize < 1)
 	{
@@ -194,7 +194,7 @@ SV_SetUserinfo
 
 ===============
 */
-void SV_SetUserinfo(int index, const char* val)
+void SV_SetUserinfo(const int index, const char* val)
 {
 	if (index < 0 || index >= sv_maxclients->integer)
 	{
@@ -216,7 +216,7 @@ SV_GetUserinfo
 
 ===============
 */
-void SV_GetUserinfo(int index, char* buffer, int bufferSize)
+void SV_GetUserinfo(const int index, char* buffer, const int bufferSize)
 {
 	if (bufferSize < 1)
 	{
@@ -262,7 +262,7 @@ SV_BoundMaxClients
 
 ===============
 */
-void SV_BoundMaxClients(int minimum)
+void SV_BoundMaxClients(const int minimum)
 {
 	// get the current maxclients value
 	Cvar_Get("sv_maxclients", "8", 0);
@@ -432,8 +432,8 @@ void SV_ClearServer(void)
 Ghoul2 Insert Start
 */
 
-// nope, can't do this anymore.. sv contains entitystates with STL in them.
-//	memset (&sv, 0, sizeof(sv));
+	// nope, can't do this anymore.. sv contains entitystates with STL in them.
+	//	memset (&sv, 0, sizeof(sv));
 	SV_InitSV();
 	/*
 	Ghoul2 Insert End
@@ -490,7 +490,7 @@ clients along with it.
 This is NOT called for map_restart
 ================
 */
-void SV_SpawnServer(char* server, qboolean killBots, ForceReload_e eForceReload)
+void SV_SpawnServer(char* server, const qboolean killBots, const ForceReload_e eForceReload)
 {
 	int i;
 	int checksum;
@@ -843,7 +843,7 @@ CL_RefPrintf
 DLL glue
 ================
 */
-void QDECL SV_RefPrintf(int print_level, const char* fmt, ...)
+void QDECL SV_RefPrintf(const int print_level, const char* fmt, ...)
 {
 	va_list argptr;
 	char msg[MAXPRINTMSG];
@@ -879,7 +879,7 @@ static char* GetSharedMemory(void) { return sv.mSharedMemory; }
 static vm_t* GetCurrentVM(void) { return currentVM; }
 static void* CM_GetCachedMapDiskImage(void) { return gpvCachedMapDiskImage; }
 static void CM_SetCachedMapDiskImage(void* ptr) { gpvCachedMapDiskImage = ptr; }
-static void CM_SetUsingCache(qboolean usingCache) { gbUsingCachedMapDataRightNow = usingCache; }
+static void CM_SetUsingCache(const qboolean usingCache) { gbUsingCachedMapDataRightNow = usingCache; }
 
 //server stuff D:
 extern void SV_GetConfigstring(int index, char* buffer, int bufferSize);
@@ -1016,26 +1016,26 @@ void SV_Init(void)
 	Cvar_Get("protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVERINFO | CVAR_ROM);
 	sv_mapname = Cvar_Get("mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM);
 	sv_privateClients = Cvar_Get("sv_privateClients", "0", CVAR_SERVERINFO,
-		"Number of reserved client slots available with password");
+	                             "Number of reserved client slots available with password");
 	Cvar_CheckRange(sv_privateClients, 0, MAX_CLIENTS, qtrue);
 	sv_hostname = Cvar_Get("sv_hostname", "*Jedi*", CVAR_SERVERINFO | CVAR_ARCHIVE,
-		"The name of the server that is displayed in the serverlist");
+	                       "The name of the server that is displayed in the serverlist");
 	sv_maxclients = Cvar_Get("sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH, "Max. connected clients");
 
 	//cvar_t	*sv_ratePolicy;		// 1-2
 	//cvar_t	*sv_clientRate;
 	sv_ratePolicy = Cvar_Get("sv_ratePolicy", "1", CVAR_ARCHIVE,
-		"Determines which policy of enforcement is used for client's \"rate\" cvar");
+	                         "Determines which policy of enforcement is used for client's \"rate\" cvar");
 	Cvar_CheckRange(sv_ratePolicy, 1, 2, qtrue);
 	sv_clientRate = Cvar_Get("sv_clientRate", "50000", CVAR_ARCHIVE);
 	sv_minRate = Cvar_Get("sv_minRate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO,
-		"Min bandwidth rate allowed on server. Use 0 for unlimited.");
+	                      "Min bandwidth rate allowed on server. Use 0 for unlimited.");
 	sv_maxRate = Cvar_Get("sv_maxRate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO,
-		"Max bandwidth rate allowed on server. Use 0 for unlimited.");
+	                      "Max bandwidth rate allowed on server. Use 0 for unlimited.");
 	sv_minPing = Cvar_Get("sv_minPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO);
 	sv_maxPing = Cvar_Get("sv_maxPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO);
 	sv_floodProtect = Cvar_Get("sv_floodProtect", "1", CVAR_ARCHIVE | CVAR_SERVERINFO,
-		"Protect against flooding of server commands");
+	                           "Protect against flooding of server commands");
 	// systeminfo
 	Cvar_Get("sv_cheats", "1", CVAR_SYSTEMINFO | CVAR_ROM, "Allow cheats on server if set to 1");
 	sv_serverid = Cvar_Get("sv_serverid", "0", CVAR_SYSTEMINFO | CVAR_ROM);
@@ -1051,7 +1051,7 @@ void SV_Init(void)
 	sv_snapsMin = Cvar_Get("sv_snapsMin", "10", CVAR_ARCHIVE); // 1 <=> sv_snapsMax
 	sv_snapsMax = Cvar_Get("sv_snapsMax", "40", CVAR_ARCHIVE); // sv_snapsMin <=> sv_fps
 	sv_snapsPolicy = Cvar_Get("sv_snapsPolicy", "1", CVAR_ARCHIVE,
-		"Determines which policy of enforcement is used for client's \"snaps\" cvar");
+	                          "Determines which policy of enforcement is used for client's \"snaps\" cvar");
 	Cvar_CheckRange(sv_snapsPolicy, 0, 2, qtrue);
 	sv_fps = Cvar_Get("sv_fps", "40", CVAR_SERVERINFO, "Server frames per second");
 	sv_timeout = Cvar_Get("sv_timeout", "200", CVAR_TEMP);
@@ -1059,7 +1059,7 @@ void SV_Init(void)
 	Cvar_Get("nextmap", "", CVAR_TEMP);
 
 	sv_allowDownload = Cvar_Get("sv_allowDownload", "0", CVAR_SERVERINFO,
-		"Allow clients to download mod files via UDP from the server");
+	                            "Allow clients to download mod files via UDP from the server");
 	sv_master[0] = Cvar_Get("sv_master1", MASTER_SERVER_NAME, CVAR_PROTECTED);
 	sv_master[1] = Cvar_Get("sv_master2", JKHUB_MASTER_SERVER_NAME, CVAR_PROTECTED);
 	for (int index = 2; index < MAX_MASTER_SERVERS; index++)

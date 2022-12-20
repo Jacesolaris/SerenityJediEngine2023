@@ -435,7 +435,7 @@ qboolean CL_GetDefaultState(int index, entityState_t* state);
 qboolean CL_GetServerCommand(int serverCommandNumber);
 qboolean CL_GetUserCmd(int cmdNumber, usercmd_t* ucmd);
 void CL_SetUserCmdValue(int userCmdValue, float sensitivityScale, float mPitchOverride, float mYawOverride,
-	float mSensitivityOverride, int fpSel, int invenSel);
+                        float mSensitivityOverride, int fpSel, int invenSel);
 
 void CL_Disconnect_f(void);
 void CL_GetChallengePacket(void);
@@ -530,7 +530,7 @@ void SCR_DebugGraph(float value, int color);
 int SCR_GetBigStringWidth(const char* str); // returns in virtual 640x480 coordinates
 
 void SCR_FillRect(float x, float y, float width, float height,
-	const float* color);
+                  const float* color);
 void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
 void SCR_DrawNamedPic(float x, float y, float width, float height, const char* picname);
 
@@ -539,7 +539,7 @@ void SCR_DrawBigString(int x, int y, const char* s, float alpha, qboolean noColo
 void SCR_DrawBigStringColor(int x, int y, const char* s, vec4_t color, qboolean noColorEscape);
 // ignores embedded color control characters
 void SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor,
-	qboolean noColorEscape);
+                            qboolean noColorEscape);
 void SCR_DrawSmallChar(int x, int y, int ch);
 
 //

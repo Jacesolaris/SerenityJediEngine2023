@@ -247,14 +247,14 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 			* (char**)(b + vehWeaponField->ofs) = (char*)BG_Alloc(1024);//(char *)BG_Alloc(strlen(value));
 			strcpy(*(char**)(b + vehWeaponField->ofs), value);
 #else
-			* (char**)(b + vehWeaponField->ofs) = G_NewString(value);
+			*(char**)(b + vehWeaponField->ofs) = G_NewString(value);
 #endif
 		}
 
 		break;
 	case VF_VECTOR:
 		_iFieldsRead = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-		//assert(_iFieldsRead==3 );
+	//assert(_iFieldsRead==3 );
 		if (_iFieldsRead != 3)
 		{
 			Com_Printf(
@@ -273,42 +273,42 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 		*(vehicleType_t*)(b + vehWeaponField->ofs) = vehType;
 		break;
 	case VF_ANIM:
-	{
-		const int anim = GetIDForString(animTable, value);
-		*(int*)(b + vehWeaponField->ofs) = anim;
-	}
-	break;
+		{
+			const int anim = GetIDForString(animTable, value);
+			*(int*)(b + vehWeaponField->ofs) = anim;
+		}
+		break;
 	case VF_WEAPON: // take string, resolve into index into VehWeaponParms
 		//*(int *)(b+vehWeaponField->ofs) = VEH_VehWeaponIndexForName( value );
 		break;
 	case VF_MODEL: // take the string, get the G_ModelIndex
 #ifdef QAGAME
-		* (int*)(b + vehWeaponField->ofs) = G_ModelIndex(value);
+		*(int*)(b + vehWeaponField->ofs) = G_ModelIndex(value);
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_MODEL_CLIENT: // (MP cgame only) take the string, get the G_ModelIndex
 #ifndef _JK2MP
-		* (int*)(b + vehWeaponField->ofs) = G_ModelIndex(value);
+		*(int*)(b + vehWeaponField->ofs) = G_ModelIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehWeaponField->ofs) = G_ModelIndex( value );
+	//*(int *)(b+vehWeaponField->ofs) = G_ModelIndex( value );
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_EFFECT: // take the string, get the G_EffectIndex
 #ifdef QAGAME
-		* (int*)(b + vehWeaponField->ofs) = G_EffectIndex(value);
+		*(int*)(b + vehWeaponField->ofs) = G_EffectIndex(value);
 #elif defined CGAME
 		* (int*)(b + vehWeaponField->ofs) = trap_FX_RegisterEffect(value);
 #endif
 		break;
 	case VF_EFFECT_CLIENT: // (MP cgame only) take the string, get the index
 #ifndef _JK2MP
-		* (int*)(b + vehWeaponField->ofs) = G_EffectIndex(value);
+		*(int*)(b + vehWeaponField->ofs) = G_EffectIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehWeaponField->ofs) = G_EffectIndex( value );
+	//*(int *)(b+vehWeaponField->ofs) = G_EffectIndex( value );
 #elif defined CGAME
 		* (int*)(b + vehWeaponField->ofs) = trap_FX_RegisterEffect(value);
 #endif
@@ -327,16 +327,16 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 		break;
 	case VF_SOUND: // take the string, get the G_SoundIndex
 #ifdef QAGAME
-		* (int*)(b + vehWeaponField->ofs) = G_SoundIndex(value);
+		*(int*)(b + vehWeaponField->ofs) = G_SoundIndex(value);
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_S_RegisterSound(value);
 #endif
 		break;
 	case VF_SOUND_CLIENT: // (MP cgame only) take the string, get the index
 #ifndef _JK2MP
-		* (int*)(b + vehWeaponField->ofs) = G_SoundIndex(value);
+		*(int*)(b + vehWeaponField->ofs) = G_SoundIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehWeaponField->ofs) = G_SoundIndex( value );
+	//*(int *)(b+vehWeaponField->ofs) = G_SoundIndex( value );
 #else
 		* (int*)(b + vehWeaponField->ofs) = trap_S_RegisterSound(value);
 #endif
@@ -861,14 +861,14 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 			* (char**)(b + vehField->ofs) = (char*)BG_Alloc(128);//(char *)BG_Alloc(strlen(value));
 			strcpy(*(char**)(b + vehField->ofs), value);
 #else
-			* (char**)(b + vehField->ofs) = G_NewString(value);
+			*(char**)(b + vehField->ofs) = G_NewString(value);
 #endif
 		}
 
 		break;
 	case VF_VECTOR:
 		_iFieldsRead = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-		//assert(_iFieldsRead==3 );
+	//assert(_iFieldsRead==3 );
 		if (_iFieldsRead != 3)
 		{
 			Com_Printf(S_COLOR_YELLOW"BG_ParseVehicleParm: VEC3 sscanf() failed to read 3 floats ('angle' key bug?)\n");
@@ -886,42 +886,42 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 		*(vehicleType_t*)(b + vehField->ofs) = vehType;
 		break;
 	case VF_ANIM:
-	{
-		const int anim = GetIDForString(animTable, value);
-		*(int*)(b + vehField->ofs) = anim;
-	}
-	break;
+		{
+			const int anim = GetIDForString(animTable, value);
+			*(int*)(b + vehField->ofs) = anim;
+		}
+		break;
 	case VF_WEAPON: // take string, resolve into index into VehWeaponParms
 		*(int*)(b + vehField->ofs) = VEH_VehWeaponIndexForName(value);
 		break;
 	case VF_MODEL: // take the string, get the G_ModelIndex
 #ifdef QAGAME
-		* (int*)(b + vehField->ofs) = G_ModelIndex(value);
+		*(int*)(b + vehField->ofs) = G_ModelIndex(value);
 #else
 		* (int*)(b + vehField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_MODEL_CLIENT: // (MP cgame only) take the string, get the G_ModelIndex
 #ifndef _JK2MP
-		* (int*)(b + vehField->ofs) = G_ModelIndex(value);
+		*(int*)(b + vehField->ofs) = G_ModelIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehField->ofs) = G_ModelIndex( value );
+	//*(int *)(b+vehField->ofs) = G_ModelIndex( value );
 #else
 		* (int*)(b + vehField->ofs) = trap_R_RegisterModel(value);
 #endif
 		break;
 	case VF_EFFECT: // take the string, get the G_EffectIndex
 #ifdef QAGAME
-		* (int*)(b + vehField->ofs) = G_EffectIndex(value);
+		*(int*)(b + vehField->ofs) = G_EffectIndex(value);
 #elif defined CGAME
 		* (int*)(b + vehField->ofs) = trap_FX_RegisterEffect(value);
 #endif
 		break;
 	case VF_EFFECT_CLIENT: // (MP cgame only) take the string, get the G_EffectIndex
 #ifndef _JK2MP
-		* (int*)(b + vehField->ofs) = G_EffectIndex(value);
+		*(int*)(b + vehField->ofs) = G_EffectIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehField->ofs) = G_EffectIndex( value );
+	//*(int *)(b+vehField->ofs) = G_EffectIndex( value );
 #elif defined CGAME
 		* (int*)(b + vehField->ofs) = trap_FX_RegisterEffect(value);
 #endif
@@ -940,16 +940,16 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 		break;
 	case VF_SOUND: // take the string, get the G_SoundIndex
 #ifdef QAGAME
-		* (int*)(b + vehField->ofs) = G_SoundIndex(value);
+		*(int*)(b + vehField->ofs) = G_SoundIndex(value);
 #else
 		* (int*)(b + vehField->ofs) = trap_S_RegisterSound(value);
 #endif
 		break;
 	case VF_SOUND_CLIENT: // (MP cgame only) take the string, get the G_SoundIndex
 #ifndef _JK2MP
-		* (int*)(b + vehField->ofs) = G_SoundIndex(value);
+		*(int*)(b + vehField->ofs) = G_SoundIndex(value);
 #elif defined QAGAME
-		//*(int *)(b+vehField->ofs) = G_SoundIndex( value );
+	//*(int *)(b+vehField->ofs) = G_SoundIndex( value );
 #else
 		* (int*)(b + vehField->ofs) = trap_S_RegisterSound(value);
 #endif
@@ -967,18 +967,18 @@ int veh_load_vehicle(const char* vehicle_name)
 	//load up specified vehicle and save in array: g_vehicleInfo
 	const char* token;
 	//we'll assume that no parm name is longer than 128
-	char parm_name[128] = { 0 };
-	char weap1[128] = { 0 }, weap2[128] = { 0 };
-	char weapMuzzle1[128] = { 0 };
-	char weapMuzzle2[128] = { 0 };
-	char weapMuzzle3[128] = { 0 };
-	char weapMuzzle4[128] = { 0 };
-	char weapMuzzle5[128] = { 0 };
-	char weapMuzzle6[128] = { 0 };
-	char weapMuzzle7[128] = { 0 };
-	char weapMuzzle8[128] = { 0 };
-	char weapMuzzle9[128] = { 0 };
-	char weapMuzzle10[128] = { 0 };
+	char parm_name[128] = {0};
+	char weap1[128] = {0}, weap2[128] = {0};
+	char weapMuzzle1[128] = {0};
+	char weapMuzzle2[128] = {0};
+	char weapMuzzle3[128] = {0};
+	char weapMuzzle4[128] = {0};
+	char weapMuzzle5[128] = {0};
+	char weapMuzzle6[128] = {0};
+	char weapMuzzle7[128] = {0};
+	char weapMuzzle8[128] = {0};
+	char weapMuzzle9[128] = {0};
+	char weapMuzzle10[128] = {0};
 	char* value;
 	const char* p;
 	vehicleInfo_t* vehicle;
@@ -1416,7 +1416,7 @@ void BG_VehWeaponLoadParms(void)
 	fileCnt = trap_FS_GetFileList("ext_data/vehicles/weapons", ".vwp", vehWeaponExtensionListBuf, sizeof(vehWeaponExtensionListBuf));
 #else
 	fileCnt = gi.FS_GetFileList("ext_data/vehicles/weapons", ".vwp", vehWeaponExtensionListBuf,
-		sizeof vehWeaponExtensionListBuf);
+	                            sizeof vehWeaponExtensionListBuf);
 #endif
 
 	holdChar = vehWeaponExtensionListBuf;

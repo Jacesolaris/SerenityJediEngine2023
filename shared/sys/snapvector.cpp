@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #if _MSC_VER
-static inline float roundfloat(float n)
+static inline float roundfloat(const float n)
 {
 	return n < 0.0f ? ceilf(n - 0.5f) : floorf(n + 0.5f);
 }

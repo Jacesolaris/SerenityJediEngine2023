@@ -313,8 +313,8 @@ static const int jpeg_zigzag_order2[2][2] = {
  */
 
 LOCAL(void)
-jpeg_make_d_derived_tbl(j_decompress_ptr cinfo, boolean isDC, int tblno,
-	d_derived_tbl** pdtbl)
+jpeg_make_d_derived_tbl(const j_decompress_ptr cinfo, const boolean isDC, const int tblno,
+                        d_derived_tbl** pdtbl)
 {
 	int i, l;
 	char huffsize[257];
@@ -451,7 +451,7 @@ jpeg_make_d_derived_tbl(j_decompress_ptr cinfo, boolean isDC, int tblno,
 LOCAL(boolean)
 jpeg_fill_bit_buffer(bitread_working_state* state,
 	register bit_buf_type get_buffer, register int bits_left,
-	int nbits)
+	const int nbits)
 	/* Load up the bit buffer to a depth of at least nbits */
 {
 	/* Copy heavily used state fields into locals (hopefully registers) */
@@ -576,7 +576,7 @@ static const int bmask[16] =	/* bmask[n] is mask for n rightmost bits */
 LOCAL(int)
 jpeg_huff_decode(bitread_working_state* state,
 	register bit_buf_type get_buffer, register int bits_left,
-	d_derived_tbl* htbl, int min_bits)
+	d_derived_tbl* htbl, const int min_bits)
 {
 	register int l = min_bits;
 
@@ -615,7 +615,7 @@ jpeg_huff_decode(bitread_working_state* state,
  */
 
 METHODDEF(void)
-finish_pass_huff(j_decompress_ptr cinfo)
+finish_pass_huff(const j_decompress_ptr cinfo)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 
@@ -631,7 +631,7 @@ finish_pass_huff(j_decompress_ptr cinfo)
  */
 
 LOCAL(boolean)
-process_restart(j_decompress_ptr cinfo)
+process_restart(const j_decompress_ptr cinfo)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 
@@ -685,7 +685,7 @@ process_restart(j_decompress_ptr cinfo)
   */
 
 METHODDEF(boolean)
-decode_mcu_DC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_DC_first(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 	const int Al = cinfo->Al;
@@ -750,7 +750,7 @@ decode_mcu_DC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu_AC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_AC_first(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 	register int s;
@@ -832,7 +832,7 @@ decode_mcu_AC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu_DC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_DC_refine(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 	BITREAD_STATE_VARS;
@@ -877,7 +877,7 @@ decode_mcu_DC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu_AC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_AC_refine(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 	register int s;
@@ -1283,7 +1283,7 @@ decode_mcu(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(void)
-start_pass_huff_decoder(j_decompress_ptr cinfo)
+start_pass_huff_decoder(const j_decompress_ptr cinfo)
 {
 	const huff_entropy_ptr entropy = (huff_entropy_ptr)cinfo->entropy;
 	int ci, tbl;
@@ -1486,7 +1486,7 @@ start_pass_huff_decoder(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_huff_decoder(j_decompress_ptr cinfo)
+jinit_huff_decoder(const j_decompress_ptr cinfo)
 {
 	int i;
 

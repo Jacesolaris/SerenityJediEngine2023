@@ -72,9 +72,9 @@ namespace ratl
 		static const int CAPACITY = T::CAPACITY;
 
 	private:
-		int							mHandles[CAPACITY];
-		int							mMASK_HANDLE_TO_INDEX;
-		int							mMASK_NUM_BITS;
+		int mHandles[CAPACITY];
+		int mMASK_HANDLE_TO_INDEX;
+		int mMASK_NUM_BITS;
 
 		void IncHandle(int index)
 		{
@@ -82,12 +82,12 @@ namespace ratl
 			if (mHandles[index] < 0)
 			{
 				// we rolled over
-				mHandles[index] = index;			// Reset The ID Counter
+				mHandles[index] = index; // Reset The ID Counter
 				mHandles[index] |= 1 << mMASK_NUM_BITS;
 			}
 		}
-	public:
 
+	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		//
@@ -100,7 +100,7 @@ namespace ratl
 			mMASK_HANDLE_TO_INDEX = 0;
 			mMASK_NUM_BITS = 0;
 
-			int	value = CAPACITY - 1;
+			int value = CAPACITY - 1;
 			while (value)
 			{
 				value >>= 1;
@@ -112,7 +112,7 @@ namespace ratl
 			for (int i = 0; i < CAPACITY; i++)
 			{
 #ifdef _DEBUG
-				mHandles[i] = i;			// Reset The ID Counter
+				mHandles[i] = i; // Reset The ID Counter
 				mHandles[i] |= ++HandleSaltValue << mMASK_NUM_BITS;
 #else
 				mHandles[i] = i;			// Reset The ID Counter
@@ -124,7 +124,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear - Removes all allocation information
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			pool_root<T>::clear();
 			// note that we do not refill the handles cause we want old handles to still be stale
@@ -137,22 +137,22 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constant Accessor
 		////////////////////////////////////////////////////////////////////////////////////
-		const TTValue& operator[](int handle) const
+		const TTValue& operator[](const int handle) const
 		{
-			assert(is_used(handle));		//typically this is a stale handle (already been freed)
+			assert(is_used(handle)); //typically this is a stale handle (already been freed)
 			return pool_root<T>::value_at_index(handle & mMASK_HANDLE_TO_INDEX);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Accessor
 		////////////////////////////////////////////////////////////////////////////////////
-		TTValue& operator[](int i)
+		TTValue& operator[](const int i)
 		{
-			assert(is_used(i));		//typically this is a stale handle (already been freed)
+			assert(is_used(i)); //typically this is a stale handle (already been freed)
 			return pool_root<T>::value_at_index(i & mMASK_HANDLE_TO_INDEX);
 		}
 
-		bool				is_used(int i) const
+		bool is_used(int i) const
 		{
 			if (mHandles[i & mMASK_HANDLE_TO_INDEX] == i)
 			{
@@ -164,34 +164,35 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Swap two items based on handle
 		////////////////////////////////////////////////////////////////////////////////////
-		void swap(const int i, int j) const
+		void swap(const int i, const int j) const
 		{
-			assert(is_used(i));		//typically this is a stale handle (already been freed)
-			assert(is_used(j));		//typically this is a stale handle (already been freed)
+			assert(is_used(i)); //typically this is a stale handle (already been freed)
+			assert(is_used(j)); //typically this is a stale handle (already been freed)
 			swap_index(handle_to_index(i), handle_to_index(j));
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Allocator	returns a handle
 		////////////////////////////////////////////////////////////////////////////////////
-		int			alloc()
+		int alloc()
 		{
 			int index = pool_root<T>::alloc_index();
-			return	mHandles[index];
+			return mHandles[index];
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Allocator, with value, returns a handle
 		////////////////////////////////////////////////////////////////////////////////////
-		int			alloc(const TTValue& v)
+		int alloc(const TTValue& v)
 		{
 			int index = pool_root<T>::alloc_index(v);
-			return	mHandles[index];
+			return mHandles[index];
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator, by index, not something generally needed
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free_index(int index)
+		void free_index(int index)
 		{
 			pool_root<T>::free_index(index);
 			IncHandle(index);
@@ -200,7 +201,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator, by handle
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free(int handle)
+		void free(const int handle)
 		{
 			assert(is_used(handle));
 			free_index(handle & mMASK_HANDLE_TO_INDEX);
@@ -209,7 +210,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Deallocator, by pointer
 		////////////////////////////////////////////////////////////////////////////////////
-		void		free(TTValue* me)
+		void free(TTValue* me)
 		{
 			free_index(pointer_to_index(me));
 		}
@@ -217,7 +218,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Convert a handle to a raw index, not generally something you should use
 		////////////////////////////////////////////////////////////////////////////////////
-		int			handle_to_index(int handle) const
+		int handle_to_index(const int handle) const
 		{
 			assert(is_used(handle));
 			return handle & mMASK_HANDLE_TO_INDEX;
@@ -226,23 +227,25 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// FInd the handle for a given index, this cannot check for stale handles, so it is ill advised
 		////////////////////////////////////////////////////////////////////////////////////
-		int			index_to_handle(int index) const
+		int index_to_handle(int index) const
 		{
-			assert(index >= 0 && index < CAPACITY&& pool_root<T>::is_used_index(index)); //disallowing this on stale handles
+			assert(index >= 0 && index < CAPACITY&& pool_root<T>::is_used_index(index));
+			//disallowing this on stale handles
 			return mHandles[index];
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// converts a T pointer to a handle, generally not something you need, cannot check for stale handles
 		////////////////////////////////////////////////////////////////////////////////////
-		int			pointer_to_handle(const TTValue* me) const
+		int pointer_to_handle(const TTValue* me) const
 		{
 			return index_to_handle(pool_root<T>::pointer_to_index(me));
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// converts a T pointer to a handle, generally not something you need, cannot check for stale handles
 		////////////////////////////////////////////////////////////////////////////////////
-		int			pointer_to_handle(const TRatlNew* me) const
+		int pointer_to_handle(const TRatlNew* me) const
 		{
 			return index_to_handle(pool_root<T>::pointer_to_index(me));
 		}
@@ -250,7 +253,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At handle
 		////////////////////////////////////////////////////////////////////////////////////
-		typename pool_root<T>::iterator	at(int handle)
+		typename pool_root<T>::iterator at(const int handle)
 		{
 			assert(is_used(handle));
 			return pool_root<T>::at_index(handle & mMASK_HANDLE_TO_INDEX);
@@ -259,42 +262,51 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Object At handle
 		////////////////////////////////////////////////////////////////////////////////////
-		typename pool_root<T>::const_iterator	at(int handle) const
+		typename pool_root<T>::const_iterator at(const int handle) const
 		{
 			assert(is_used(handle));
 			return pool_root<T>::at_index(handle & mMASK_HANDLE_TO_INDEX);
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class handle_pool_vs : public handle_pool_base<storage::value_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class handle_pool_vs : public handle_pool_base<storage::value_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		handle_pool_vs() {}
+
+		handle_pool_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class handle_pool_os : public handle_pool_base<storage::object_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class handle_pool_os : public handle_pool_base<storage::object_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		handle_pool_os() {}
+
+		handle_pool_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class handle_pool_is : public handle_pool_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class handle_pool_is : public handle_pool_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		handle_pool_is() {}
+
+		handle_pool_is()
+		{
+		}
 	};
 }
 #endif

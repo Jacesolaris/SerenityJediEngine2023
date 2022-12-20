@@ -216,8 +216,8 @@ typedef my_cquantizer* my_cquantize_ptr;
  */
 
 METHODDEF(void)
-prescan_quantize(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-	JSAMPARRAY output_buf, int num_rows)
+prescan_quantize(const j_decompress_ptr cinfo, const JSAMPARRAY input_buf,
+                 JSAMPARRAY output_buf, const int num_rows)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 	const register hist3d histogram = cquantize->histogram;
@@ -259,7 +259,7 @@ typedef struct {
 typedef box* boxptr;
 
 LOCAL(boxptr)
-find_biggest_color_pop(boxptr boxlist, int numboxes)
+find_biggest_color_pop(const boxptr boxlist, const int numboxes)
 /* Find the splittable box with the largest color population */
 /* Returns NULL if no splittable boxes remain */
 {
@@ -278,7 +278,7 @@ find_biggest_color_pop(boxptr boxlist, int numboxes)
 }
 
 LOCAL(boxptr)
-find_biggest_volume(boxptr boxlist, int numboxes)
+find_biggest_volume(const boxptr boxlist, const int numboxes)
 /* Find the splittable box with the largest (scaled) volume */
 /* Returns NULL if no splittable boxes remain */
 {
@@ -297,7 +297,7 @@ find_biggest_volume(boxptr boxlist, int numboxes)
 }
 
 LOCAL(void)
-update_box(j_decompress_ptr cinfo, boxptr boxp)
+update_box(const j_decompress_ptr cinfo, const boxptr boxp)
 /* Shrink the min/max bounds of a box to enclose only nonzero elements, */
 /* and recompute its volume and population */
 {
@@ -404,8 +404,8 @@ have_c2max:
 }
 
 LOCAL(int)
-median_cut(j_decompress_ptr cinfo, boxptr boxlist, int numboxes,
-	int desired_colors)
+median_cut(const j_decompress_ptr cinfo, const boxptr boxlist, int numboxes,
+           const int desired_colors)
 	/* Repeatedly select and split the largest box until we have enough boxes */
 {
 	int n, lb;
@@ -479,7 +479,7 @@ median_cut(j_decompress_ptr cinfo, boxptr boxlist, int numboxes,
 }
 
 LOCAL(void)
-compute_color(j_decompress_ptr cinfo, boxptr boxp, int icolor)
+compute_color(const j_decompress_ptr cinfo, const boxptr boxp, const int icolor)
 /* Compute representative color for a box, put it in colormap[icolor] */
 {
 	/* Current algorithm: mean weighted by pixels (not colors) */
@@ -518,7 +518,7 @@ compute_color(j_decompress_ptr cinfo, boxptr boxp, int icolor)
 }
 
 LOCAL(void)
-select_colors(j_decompress_ptr cinfo, int desired_colors)
+select_colors(const j_decompress_ptr cinfo, const int desired_colors)
 /* Master routine for color selection */
 {
 	/* Allocate workspace for box list */
@@ -618,8 +618,8 @@ select_colors(j_decompress_ptr cinfo, int desired_colors)
  */
 
 LOCAL(int)
-find_nearby_colors(j_decompress_ptr cinfo, int minc0, int minc1, int minc2,
-	JSAMPLE colorlist[])
+find_nearby_colors(const j_decompress_ptr cinfo, const int minc0, const int minc1, const int minc2,
+                   JSAMPLE colorlist[])
 	/* Locate the colormap entries close enough to an update box to be candidates
 	 * for the nearest entry to some cell(s) in the update box.  The update box
 	 * is specified by the center coordinates of its first cell.  The number of
@@ -753,8 +753,8 @@ find_nearby_colors(j_decompress_ptr cinfo, int minc0, int minc1, int minc2,
 }
 
 LOCAL(void)
-find_best_colors(j_decompress_ptr cinfo, int minc0, int minc1, int minc2,
-	int numcolors, JSAMPLE colorlist[], JSAMPLE bestcolor[])
+find_best_colors(const j_decompress_ptr cinfo, const int minc0, const int minc1, const int minc2,
+                 const int numcolors, JSAMPLE colorlist[], JSAMPLE bestcolor[])
 	/* Find the closest colormap entry for each cell in the update box,
 	 * given the list of candidate colors prepared by find_nearby_colors.
 	 * Return the indexes of the closest entries in the bestcolor[] array.
@@ -824,7 +824,7 @@ find_best_colors(j_decompress_ptr cinfo, int minc0, int minc1, int minc2,
 }
 
 LOCAL(void)
-fill_inverse_cmap(j_decompress_ptr cinfo, int c0, int c1, int c2)
+fill_inverse_cmap(const j_decompress_ptr cinfo, int c0, int c1, int c2)
 /* Fill the inverse-colormap entries in the update box that contains */
 /* histogram cell c0/c1/c2.  (Only that one cell MUST be filled, but */
 /* we can fill as many others as we wish.) */
@@ -878,8 +878,8 @@ fill_inverse_cmap(j_decompress_ptr cinfo, int c0, int c1, int c2)
  */
 
 METHODDEF(void)
-pass2_no_dither(j_decompress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPARRAY output_buf, int num_rows)
+pass2_no_dither(const j_decompress_ptr cinfo,
+                const JSAMPARRAY input_buf, const JSAMPARRAY output_buf, const int num_rows)
 	/* This version performs no dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -906,8 +906,8 @@ pass2_no_dither(j_decompress_ptr cinfo,
 }
 
 METHODDEF(void)
-pass2_fs_dither(j_decompress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPARRAY output_buf, int num_rows)
+pass2_fs_dither(const j_decompress_ptr cinfo,
+                const JSAMPARRAY input_buf, const JSAMPARRAY output_buf, const int num_rows)
 	/* This version performs Floyd-Steinberg dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -1060,7 +1060,7 @@ pass2_fs_dither(j_decompress_ptr cinfo,
  */
 
 LOCAL(void)
-init_error_limit(j_decompress_ptr cinfo)
+init_error_limit(const j_decompress_ptr cinfo)
 /* Allocate and fill in the error_limiter table */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -1093,7 +1093,7 @@ init_error_limit(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-finish_pass1(j_decompress_ptr cinfo)
+finish_pass1(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 
@@ -1115,7 +1115,7 @@ finish_pass2(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_pass_2_quant(j_decompress_ptr cinfo, boolean is_pre_scan)
+start_pass_2_quant(const j_decompress_ptr cinfo, const boolean is_pre_scan)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 	const hist3d histogram = cquantize->histogram;
@@ -1177,7 +1177,7 @@ start_pass_2_quant(j_decompress_ptr cinfo, boolean is_pre_scan)
  */
 
 METHODDEF(void)
-new_color_map_2_quant(j_decompress_ptr cinfo)
+new_color_map_2_quant(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 
@@ -1190,7 +1190,7 @@ new_color_map_2_quant(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_2pass_quantizer(j_decompress_ptr cinfo)
+jinit_2pass_quantizer(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_cquantizer));

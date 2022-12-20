@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "g_navigator.h"
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
 
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 
@@ -44,7 +44,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 	{
 		//extra checks
 		gi.trace(&tr, owner->currentOrigin, owner->mins, owner->maxs, owner->currentOrigin, owner->s.number,
-			owner->clipmask, static_cast<EG2_Collision>(0), 0);
+		         owner->clipmask, static_cast<EG2_Collision>(0), 0);
 		if (tr.startsolid || tr.allsolid)
 		{
 			//crap, they're already in solid somehow, don't bother tracing over
@@ -57,7 +57,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 		VectorCopy(owner->currentOrigin, p2);
 		p2[2] += STEPSIZE;
 		gi.trace(&tr, owner->currentOrigin, owner->mins, owner->maxs, p2, owner->s.number, owner->clipmask,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (!tr.startsolid && !tr.allsolid)
 		{
 			VectorCopy(tr.endpos, p2);
@@ -69,8 +69,8 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 	}
 	//trace over
 	gi.G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->headBolt, &boltMatrix,
-		eweb->s.apos.trBase, eweb->currentOrigin,
-		cg.time ? cg.time : level.time, nullptr, eweb->s.modelScale);
+	                       eweb->s.apos.trBase, eweb->currentOrigin,
+	                       cg.time ? cg.time : level.time, nullptr, eweb->s.modelScale);
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, p);
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, d);
 	d[2] = 0;
@@ -89,19 +89,19 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 			//extra checks
 			//just see if end point is not in solid
 			gi.trace(&tr, p, owner->mins, owner->maxs, p, owner->s.number, owner->clipmask,
-				static_cast<EG2_Collision>(0), 0);
+			         static_cast<EG2_Collision>(0), 0);
 			if (tr.startsolid || tr.allsolid)
 			{
 				//would be in solid there, so just trace over, I guess?
 				gi.trace(&tr, p2, owner->mins, owner->maxs, p, owner->s.number, owner->clipmask,
-					static_cast<EG2_Collision>(0), 0);
+				         static_cast<EG2_Collision>(0), 0);
 			}
 		}
 		else
 		{
 			//trace over
 			gi.trace(&tr, p2, owner->mins, owner->maxs, p, owner->s.number, owner->clipmask,
-				static_cast<EG2_Collision>(0), 0);
+			         static_cast<EG2_Collision>(0), 0);
 		}
 	}
 	if (!tr.startsolid && !tr.allsolid)
@@ -111,7 +111,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 		VectorCopy(p, p2);
 		p2[2] -= STEPSIZE;
 		gi.trace(&tr, p, owner->mins, owner->maxs, p2, owner->s.number, owner->clipmask, static_cast<EG2_Collision>(0),
-			0);
+		         0);
 
 		if (!tr.startsolid && !tr.allsolid) //&& tr.fraction == 1.0f)
 		{
@@ -186,7 +186,7 @@ constexpr auto EMPLACED_PLAYERUSE = 8;
 */
 //----------------------------------------------------------
 void eweb_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hit_loc)
+               int hit_loc)
 {
 	if (self->health <= 0)
 	{
@@ -424,7 +424,7 @@ void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 	if (self->waypoint == -1)
 	{
 		gi.Printf(S_COLOR_RED"ERROR: no waypoint for emplaced_gun %s at %s\n", self->targetname,
-			vtos(self->currentOrigin));
+		          vtos(self->currentOrigin));
 	}
 #endif
 
@@ -502,9 +502,9 @@ void SP_emplaced_eweb(gentity_t* ent)
 	ent->lowerLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cannon_Yrot", qtrue);
 	ent->upperLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cannon_Xrot", qtrue);
 	gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->lowerLumbarBone, vec3_origin, BONE_ANGLES_POSTMULT,
-		POSITIVE_Z, NEGATIVE_X, NEGATIVE_Y, nullptr, 0, 0);
+	                            POSITIVE_Z, NEGATIVE_X, NEGATIVE_Y, nullptr, 0, 0);
 	gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->upperLumbarBone, vec3_origin, BONE_ANGLES_POSTMULT,
-		POSITIVE_Z, NEGATIVE_X, NEGATIVE_Y, nullptr, 0, 0);
+	                            POSITIVE_Z, NEGATIVE_X, NEGATIVE_Y, nullptr, 0, 0);
 	//gi.G2API_SetBoneAngles( &ent->ghoul2[0], "cannon_Yrot", vec3_origin, BONE_ANGLES_POSTMULT, POSITIVE_Y, POSITIVE_Z, POSITIVE_X, NULL);
 	//set the constraints for this guy as an emplaced weapon, and his constraint angles
 	//ent->s.origin2[0] = 60.0f; //60 degrees in either direction
@@ -680,7 +680,7 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 		if (self->waypoint == -1)
 		{
 			gi.Printf(S_COLOR_RED"ERROR: no waypoint for emplaced_gun %s at %s\n", self->targetname,
-				vtos(self->currentOrigin));
+			          vtos(self->currentOrigin));
 		}
 #endif
 
@@ -697,7 +697,7 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 
 //----------------------------------------------------------
 void emplaced_gun_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hit_loc)
+                       int mod, int hit_loc)
 {
 	if (self->health <= 0)
 	{
@@ -724,7 +724,7 @@ void emplaced_blow(gentity_t* ent)
 
 //----------------------------------------------------------
 void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                      int hit_loc)
 {
 	vec3_t org;
 
@@ -783,7 +783,7 @@ void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker
 	ugly[PITCH] = self->lastAngles[PITCH] * 0.8f + Q_flrand(-1.0f, 1.0f) * 6;
 	ugly[ROLL] = Q_flrand(-1.0f, 1.0f) * 7;
 	gi.G2API_SetBoneAnglesIndex(&self->ghoul2[self->playerModel], self->lowerLumbarBone, ugly, BONE_ANGLES_POSTMULT,
-		POSITIVE_Y, POSITIVE_Z, POSITIVE_X, nullptr, 0, 0);
+	                            POSITIVE_Y, POSITIVE_Z, POSITIVE_X, nullptr, 0, 0);
 
 	VectorCopy(self->currentOrigin, org);
 	org[2] += 20;
@@ -876,7 +876,7 @@ void SP_emplaced_gun(gentity_t* ent)
 	ent->rootBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "base_bone", qtrue);
 	ent->lowerLumbarBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "swivel_bone", qtrue);
 	gi.G2API_SetBoneAnglesIndex(&ent->ghoul2[ent->playerModel], ent->lowerLumbarBone, vec3_origin, BONE_ANGLES_POSTMULT,
-		POSITIVE_Y, POSITIVE_Z, POSITIVE_X, nullptr, 0, 0);
+	                            POSITIVE_Y, POSITIVE_Z, POSITIVE_X, nullptr, 0, 0);
 
 	register_item(FindItemForWeapon(WP_EMPLACED_GUN));
 	ent->s.weapon = WP_EMPLACED_GUN;
@@ -911,12 +911,12 @@ void G_UpdateEmplacedWeaponData(gentity_t* ent)
 
 			//update the actual origin of the sitter
 			mdxaBone_t boltMatrix;
-			const vec3_t chairAng = { 0, ent->client->ps.viewangles[YAW], 0 };
+			const vec3_t chairAng = {0, ent->client->ps.viewangles[YAW], 0};
 
 			// Getting the seat bolt here
 			gi.G2API_GetBoltMatrix(chair->ghoul2, chair->playerModel, chair->headBolt,
-				&boltMatrix, chairAng, chair->currentOrigin, cg.time ? cg.time : level.time,
-				nullptr, chair->s.modelScale);
+			                       &boltMatrix, chairAng, chair->currentOrigin, cg.time ? cg.time : level.time,
+			                       nullptr, chair->s.modelScale);
 			// Storing ent position, bolt position, and bolt axis
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, ent->client->ps.origin);
 			gi.linkentity(ent);
@@ -981,7 +981,7 @@ void ExitEmplacedWeapon(gentity_t* ent)
 					start[2] += 18;
 					end[2] -= 18;
 					gi.trace(&trace, start, ent->mins, ent->maxs, end, ent->s.number, ent->clipmask,
-						static_cast<EG2_Collision>(0), 0);
+					         static_cast<EG2_Collision>(0), 0);
 					if (!trace.allsolid && !trace.startsolid)
 					{
 						G_SetOrigin(ent, trace.endpos);

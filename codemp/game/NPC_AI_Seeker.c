@@ -53,7 +53,7 @@ void NPC_Seeker_Precache(void)
 }
 
 //------------------------------------
-void NPC_Seeker_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Seeker_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	if (!(self->NPC->aiFlags & NPCAI_CUSTOM_GRAVITY))
 	{
@@ -92,7 +92,7 @@ void Seeker_MaintainHeight(void)
 
 			// Find the height difference
 			dif = NPCS.NPC->enemy->r.currentOrigin[2] + Q_flrand(NPCS.NPC->enemy->r.maxs[2] / 2,
-				NPCS.NPC->enemy->r.maxs[2] + 8) - NPCS.NPC->r.
+			                                                     NPCS.NPC->enemy->r.maxs[2] + 8) - NPCS.NPC->r.
 				currentOrigin[2];
 
 			float difFactor = 1.0f;
@@ -265,7 +265,7 @@ void Seeker_Strafe(void)
 }
 
 //------------------------------------
-void Seeker_Hunt(qboolean visible, qboolean advance)
+void Seeker_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -519,7 +519,7 @@ void Seeker_FindEnemy(void)
 			continue;
 
 		if (ent->client->playerTeam == NPCS.NPC->client->playerTeam || ent->client->playerTeam == NPCTEAM_NEUTRAL)
-			// don't attack same team or bots
+		// don't attack same team or bots
 		{
 			continue;
 		}
@@ -564,7 +564,7 @@ void Seeker_FindEnemy(void)
 	{
 		if (closestDist <= -NPCS.NPC->radius)
 			NPCS.NPC->fly_sound_debounce_time = level.time + (int)floor(2500.0f * (closestDist / -NPCS.NPC->radius)) +
-			500;
+				500;
 		else
 			NPCS.NPC->fly_sound_debounce_time = -1;
 	}

@@ -43,35 +43,46 @@ mod 11/15/95 for Layer I
 
 static const long steps[18] =
 {
-   0, 3, 5, 7, 9, 15, 31, 63, 127,
-   255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535 };
+	0, 3, 5, 7, 9, 15, 31, 63, 127,
+	255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535
+};
 
 /* ABCD_INDEX = lookqt[mode][sr_index][br_index]  */
 /* -1 = invalid  */
 static const signed char lookqt[4][3][16] =
 {
- {{1, -1, -1, -1, 2, -1, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1},	/*  44ks stereo */
-  {0, -1, -1, -1, 2, -1, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1},	/*  48ks */
-  {1, -1, -1, -1, 3, -1, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1}},	/*  32ks */
- {{1, -1, -1, -1, 2, -1, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1},	/*  44ks joint stereo */
-  {0, -1, -1, -1, 2, -1, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1},	/*  48ks */
-  {1, -1, -1, -1, 3, -1, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1}},	/*  32ks */
- {{1, -1, -1, -1, 2, -1, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1},	/*  44ks dual chan */
-  {0, -1, -1, -1, 2, -1, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1},	/*  48ks */
-  {1, -1, -1, -1, 3, -1, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1}},	/*  32ks */
-  // mono extended beyond legal br index
-  //  1,2,2,0,0,0,1,1,1,1,1,1,1,1,1,-1,          /*  44ks single chan */
-  //  0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,-1,          /*  48ks */
-  //  1,3,3,0,0,0,1,1,1,1,1,1,1,1,1,-1,          /*  32ks */
-  // legal mono
-   {{1, 2, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1},	/*  44ks single chan */
-	{0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1},	/*  48ks */
-	{1, 3, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1}},	/*  32ks */
+	{
+		{1, -1, -1, -1, 2, -1, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1}, /*  44ks stereo */
+		{0, -1, -1, -1, 2, -1, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1}, /*  48ks */
+		{1, -1, -1, -1, 3, -1, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1}
+	}, /*  32ks */
+	{
+		{1, -1, -1, -1, 2, -1, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1}, /*  44ks joint stereo */
+		{0, -1, -1, -1, 2, -1, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1}, /*  48ks */
+		{1, -1, -1, -1, 3, -1, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1}
+	}, /*  32ks */
+	{
+		{1, -1, -1, -1, 2, -1, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1}, /*  44ks dual chan */
+		{0, -1, -1, -1, 2, -1, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1}, /*  48ks */
+		{1, -1, -1, -1, 3, -1, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1}
+	}, /*  32ks */
+	// mono extended beyond legal br index
+	//  1,2,2,0,0,0,1,1,1,1,1,1,1,1,1,-1,          /*  44ks single chan */
+	//  0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,-1,          /*  48ks */
+	//  1,3,3,0,0,0,1,1,1,1,1,1,1,1,1,-1,          /*  32ks */
+	// legal mono
+	{
+		{1, 2, 2, 0, 0, 0, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1}, /*  44ks single chan */
+		{0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1}, /*  48ks */
+		{1, 3, 3, 0, 0, 0, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1}
+	}, /*  32ks */
 };
 
 static const long sr_table[8] =
-{ 22050L, 24000L, 16000L, 1L,
- 44100L, 48000L, 32000L, 1L };
+{
+	22050L, 24000L, 16000L, 1L,
+	44100L, 48000L, 32000L, 1L
+};
 
 /* bit allocation table look up */
 /* table per mpeg spec tables 3b2a/b/c/d  /e is mpeg2 */
@@ -79,40 +90,50 @@ static const long sr_table[8] =
 static const unsigned char look_bat[5][4][16] =
 {
 	/* LOOK_BATA */
-	 {{0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17},
-	  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 17},
-	  {0, 1, 2, 3, 4, 5, 6, 17, 0, 0, 0, 0, 0, 0, 0, 0},
-	  {0, 1, 2, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-	  /* LOOK_BATB */
-	   {{0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17},
+	{
+		{0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17},
 		{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 17},
 		{0, 1, 2, 3, 4, 5, 6, 17, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 1, 2, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		/* LOOK_BATC */
-		 {{0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-		  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		  {0, 1, 2, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0},
-		  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-		  /* LOOK_BATD */
-		   {{0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-			{0, 1, 2, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0},
-			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-			/* LOOK_BATE */
-			 {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-			  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-			  {0, 1, 2, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0},
-			  {0, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+		{0, 1, 2, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
+	/* LOOK_BATB */
+	{
+		{0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17},
+		{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 17},
+		{0, 1, 2, 3, 4, 5, 6, 17, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 2, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
+	/* LOOK_BATC */
+	{
+		{0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 2, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
+	/* LOOK_BATD */
+	{
+		{0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 2, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
+	/* LOOK_BATE */
+	{
+		{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 2, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
 };
 
 /* look_nbat[abcd_index]][4] */
 static const unsigned char look_nbat[5][4] =
 {
-  {3, 8, 12, 4},
-  {3, 8, 12, 7},
-  {2, 0, 6, 0},
-  {2, 0, 10, 0},
-  {4, 0, 7, 19},
+	{3, 8, 12, 4},
+	{3, 8, 12, 7},
+	{2, 0, 6, 0},
+	{2, 0, 10, 0},
+	{4, 0, 7, 19},
 };
 
 void sbt_mono(float* sample, short* pcm, int n);
@@ -150,32 +171,42 @@ void sbtB8_dual_right(float* sample, unsigned char* pcm, int n);
 
 static const SBT_FUNCTION sbt_table[2][3][5] =
 {
- {{sbt_mono, sbt_dual, sbt_dual_mono, sbt_dual_left, sbt_dual_right},
-  {sbt16_mono, sbt16_dual, sbt16_dual_mono, sbt16_dual_left, sbt16_dual_right},
-  {sbt8_mono, sbt8_dual, sbt8_dual_mono, sbt8_dual_left, sbt8_dual_right}},
- {{(SBT_FUNCTION)sbtB_mono,
-   (SBT_FUNCTION)sbtB_dual,
-   (SBT_FUNCTION)sbtB_dual_mono,
-   (SBT_FUNCTION)sbtB_dual_left,
-   (SBT_FUNCTION)sbtB_dual_right},
-  {(SBT_FUNCTION)sbtB16_mono,
-   (SBT_FUNCTION)sbtB16_dual,
-   (SBT_FUNCTION)sbtB16_dual_mono,
-   (SBT_FUNCTION)sbtB16_dual_left,
-   (SBT_FUNCTION)sbtB16_dual_right},
-  {(SBT_FUNCTION)sbtB8_mono,
-   (SBT_FUNCTION)sbtB8_dual,
-   (SBT_FUNCTION)sbtB8_dual_mono,
-   (SBT_FUNCTION)sbtB8_dual_left,
-   (SBT_FUNCTION)sbtB8_dual_right}},
+	{
+		{sbt_mono, sbt_dual, sbt_dual_mono, sbt_dual_left, sbt_dual_right},
+		{sbt16_mono, sbt16_dual, sbt16_dual_mono, sbt16_dual_left, sbt16_dual_right},
+		{sbt8_mono, sbt8_dual, sbt8_dual_mono, sbt8_dual_left, sbt8_dual_right}
+	},
+	{
+		{
+			(SBT_FUNCTION)sbtB_mono,
+			(SBT_FUNCTION)sbtB_dual,
+			(SBT_FUNCTION)sbtB_dual_mono,
+			(SBT_FUNCTION)sbtB_dual_left,
+			(SBT_FUNCTION)sbtB_dual_right
+		},
+		{
+			(SBT_FUNCTION)sbtB16_mono,
+			(SBT_FUNCTION)sbtB16_dual,
+			(SBT_FUNCTION)sbtB16_dual_mono,
+			(SBT_FUNCTION)sbtB16_dual_left,
+			(SBT_FUNCTION)sbtB16_dual_right
+		},
+		{
+			(SBT_FUNCTION)sbtB8_mono,
+			(SBT_FUNCTION)sbtB8_dual,
+			(SBT_FUNCTION)sbtB8_dual_mono,
+			(SBT_FUNCTION)sbtB8_dual_left,
+			(SBT_FUNCTION)sbtB8_dual_right
+		}
+	},
 };
 
 static const int out_chans[5] =
-{ 1, 2, 1, 1, 1 };
+	{1, 2, 1, 1, 1};
 
 int audio_decode_initL1(MPEG_HEAD* h, int framebytes_arg,
-	int reduction_code, int transform_code, int convert_code,
-	int freq_limit);
+                        int reduction_code, int transform_code, int convert_code,
+                        int freq_limit);
 void sbt_init();
 
 IN_OUT L1audio_decode(unsigned char* bs, signed short* pcm);
@@ -183,10 +214,11 @@ IN_OUT L2audio_decode(unsigned char* bs, signed short* pcm);
 IN_OUT L3audio_decode(unsigned char* bs, unsigned char* pcm);
 static const AUDIO_DECODE_ROUTINE decode_routine_table[4] =
 {
-   L2audio_decode,
-   (AUDIO_DECODE_ROUTINE)L3audio_decode,
-   L2audio_decode,
-   L1audio_decode, };
+	L2audio_decode,
+	(AUDIO_DECODE_ROUTINE)L3audio_decode,
+	L2audio_decode,
+	L1audio_decode,
+};
 
 /*---------------------------------------------------------*/
 static void table_init()
@@ -240,19 +272,20 @@ static void table_init()
 		}
 	}
 }
+
 /*---------------------------------------------------------*/
 int L1audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
-	int reduction_code, int transform_code, int convert_code,
-	int freq_limit);
+                        int reduction_code, int transform_code, int convert_code,
+                        int freq_limit);
 int L3audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
-	int reduction_code, int transform_code, int convert_code,
-	int freq_limit);
+                        int reduction_code, int transform_code, int convert_code,
+                        int freq_limit);
 
 /*---------------------------------------------------------*/
 /* mpeg_head defined in mhead.h  frame bytes is without pad */
-int audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
-	int reduction_code, int transform_code, int convert_code,
-	int freq_limit)
+int audio_decode_init(MPEG_HEAD* h, const int framebytes_arg,
+                      int reduction_code, const int transform_code, int convert_code,
+                      int freq_limit)
 {
 	int i;
 	static int first_pass = 1;
@@ -267,18 +300,18 @@ int audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
 	/* select decoder routine Layer I,II,III */
 	audio_decode_routine = decode_routine_table[h->option & 3];
 
-	if (h->option == 3)		/* layer I */
+	if (h->option == 3) /* layer I */
 		return L1audio_decode_init(h, framebytes_arg,
-			reduction_code, transform_code, convert_code, freq_limit);
+		                           reduction_code, transform_code, convert_code, freq_limit);
 
-	if (h->option == 1)		/* layer III */
+	if (h->option == 1) /* layer III */
 		return L3audio_decode_init(h, framebytes_arg,
-			reduction_code, transform_code, convert_code, freq_limit);
+		                           reduction_code, transform_code, convert_code, freq_limit);
 
 	int bit_code = 0;
 	if (convert_code & 8)
 		bit_code = 1;
-	convert_code = convert_code & 3;	/* higher bits used by dec8 freq cvt */
+	convert_code = convert_code & 3; /* higher bits used by dec8 freq cvt */
 	if (reduction_code < 0)
 		reduction_code = 0;
 	if (reduction_code > 2)
@@ -289,18 +322,18 @@ int audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
 	pMP3Stream->framebytes = framebytes_arg;
 	/* check if code handles */
 	if (h->option != 2)
-		return 0;			/* layer II only */
+		return 0; /* layer II only */
 	if (h->sr_index == 3)
-		return 0;			/* reserved */
+		return 0; /* reserved */
 
 	/* compute abcd index for bit allo table selection */
-	if (h->id)			/* mpeg 1 */
+	if (h->id) /* mpeg 1 */
 		abcd_index = lookqt[h->mode][h->sr_index][h->br_index];
 	else
-		abcd_index = 4;		/* mpeg 2 */
+		abcd_index = 4; /* mpeg 2 */
 
 	if (abcd_index < 0)
-		return 0;			// fail invalid Layer II bit rate index
+		return 0; // fail invalid Layer II bit rate index
 
 	for (i = 0; i < 4; i++)
 		for (int j = 0; j < 16; j++)
@@ -323,7 +356,8 @@ int audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
 
 	pMP3Stream->outvalues = 1152 >> reduction_code;
 	if (h->mode != 3)
-	{				/* adjust for 2 channel modes */
+	{
+		/* adjust for 2 channel modes */
 		for (i = 0; i < 4; i++)
 			pMP3Stream->nbat[i] *= 2;
 		pMP3Stream->max_sb *= 2;
@@ -355,7 +389,8 @@ int audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
 	decinfo.type = 0;
 
 	/* clear sample buffer, unused sub bands must be 0 */
-	for (i = 0; i < 2304 * 2; i++)	// the *2 here was inserted by me just in case, since the array is now *2, because of stereo files unpacking at 4608 bytes per frame (which may or may not be relevant, but in any case I don't think we use the L1 versions of MP3 now anyway
+	for (i = 0; i < 2304 * 2; i++)
+		// the *2 here was inserted by me just in case, since the array is now *2, because of stereo files unpacking at 4608 bytes per frame (which may or may not be relevant, but in any case I don't think we use the L1 versions of MP3 now anyway
 		sample[i] = 0.0F;
 
 	/* init sub-band transform */
@@ -363,15 +398,18 @@ int audio_decode_init(MPEG_HEAD* h, int framebytes_arg,
 
 	return 1;
 }
+
 /*---------------------------------------------------------*/
 void audio_decode_info(DEC_INFO* info)
 {
-	*info = decinfo;		/* info return, call after init */
+	*info = decinfo; /* info return, call after init */
 }
+
 /*---------------------------------------------------------*/
 void decode_table_init()
 {
 	/* dummy for asm version compatability */
 }
+
 /*---------------------------------------------------------*/
 #endif	// #ifdef COMPILE_ME

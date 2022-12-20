@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "bg_local.h"
 #include "g_vehicles.h"
 
-extern qboolean PM_ClientImpact(trace_t* trace, qboolean damageSelf);
+extern qboolean PM_ClientImpact(const trace_t* trace, qboolean damage_self);
 extern qboolean PM_ControlledByPlayer();
 extern qboolean PM_InReboundHold(int anim);
 extern cvar_t* g_stepSlideFix;
@@ -49,7 +49,7 @@ Returns qtrue if the velocity was clipped in some way
 ==================
 */
 constexpr auto MAX_CLIP_PLANES = 5;
-extern qboolean PM_GroundSlideOkay(float zNormal);
+extern qboolean PM_GroundSlideOkay(float z_normal);
 extern qboolean PM_InSpecialJump(int anim);
 
 qboolean PM_SlideMove(const float gravity)
@@ -112,7 +112,7 @@ qboolean PM_SlideMove(const float gravity)
 			{
 				// slide along the ground plane
 				PM_ClipVelocity(pm->ps->velocity, pml.groundTrace.plane.normal,
-					pm->ps->velocity, OVERCLIP);
+				                pm->ps->velocity, OVERCLIP);
 			}
 		}
 	}
@@ -147,7 +147,7 @@ qboolean PM_SlideMove(const float gravity)
 
 		// see if we can make it there
 		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num, slideMoveContents,
-			static_cast<EG2_Collision>(0), 0);
+		          static_cast<EG2_Collision>(0), 0);
 		if (trace.contents & CONTENTS_BOTCLIP
 			&& slideMoveContents & CONTENTS_BOTCLIP)
 		{
@@ -157,13 +157,13 @@ qboolean PM_SlideMove(const float gravity)
 				//crap, we're in a do not enter brush, take it out for the remainder of the traces and re-trace this one right now without it
 				slideMoveContents &= ~CONTENTS_BOTCLIP;
 				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num, slideMoveContents,
-					static_cast<EG2_Collision>(0), 0);
+				          static_cast<EG2_Collision>(0), 0);
 			}
 			else if (trace.plane.normal[2] > 0.0f)
 			{
 				//on top of a do not enter brush, it, just redo this one trace without it
 				pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, end, pm->ps->client_num,
-					slideMoveContents & ~CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
+				          slideMoveContents & ~CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
 			}
 		}
 
@@ -426,7 +426,7 @@ void PM_StepSlideMove(float gravity)
 	VectorCopy(start_o, down);
 	down[2] -= stepSize;
 	pm->trace(&trace, start_o, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask,
-		static_cast<EG2_Collision>(0), 0);
+	          static_cast<EG2_Collision>(0), 0);
 	VectorSet(up, 0, 0, 1);
 	// never step up when you still have up velocity
 	if (pm->ps->velocity[2] > 0 && (trace.fraction == 1.0 ||
@@ -450,7 +450,7 @@ void PM_StepSlideMove(float gravity)
 	// test the player position if they were a stepheight higher
 
 	pm->trace(&trace, start_o, pm->mins, pm->maxs, up, pm->ps->client_num, pm->tracemask, static_cast<EG2_Collision>(0),
-		0);
+	          0);
 	if (trace.allsolid || trace.startsolid || trace.fraction == 0)
 	{
 		if (pm->debugLevel)
@@ -495,7 +495,7 @@ void PM_StepSlideMove(float gravity)
 		VectorCopy(pm->ps->origin, down);
 		down[2] -= stepSize;
 		pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, down, pm->ps->client_num, pm->tracemask,
-			static_cast<EG2_Collision>(0), 0);
+		          static_cast<EG2_Collision>(0), 0);
 		if (pm->debugLevel)
 		{
 			G_DebugLine(pm->ps->origin, trace.endpos, 2000, 0xffffff);

@@ -205,7 +205,7 @@ libvar_t* droppedweight = nullptr; // bk001206 - init
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-bot_goalstate_t* BotGoalStateFromHandle(int handle)
+bot_goalstate_t* BotGoalStateFromHandle(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -225,7 +225,7 @@ bot_goalstate_t* BotGoalStateFromHandle(int handle)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotInterbreedGoalFuzzyLogic(int parent1, int parent2, int child)
+void BotInterbreedGoalFuzzyLogic(const int parent1, const int parent2, const int child)
 {
 	const bot_goalstate_t* p1 = BotGoalStateFromHandle(parent1);
 	const bot_goalstate_t* p2 = BotGoalStateFromHandle(parent2);
@@ -254,7 +254,7 @@ void BotSaveGoalFuzzyLogic(int goalstate, char* filename)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotMutateGoalFuzzyLogic(int goalstate, float range)
+void BotMutateGoalFuzzyLogic(const int goalstate, float range)
 {
 	const bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 
@@ -661,7 +661,7 @@ void BotInitLevelItems(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotGoalName(int number, char* name, int size)
+void BotGoalName(const int number, char* name, const int size)
 {
 	if (!itemconfig) return;
 	//
@@ -682,7 +682,7 @@ void BotGoalName(int number, char* name, int size)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotResetAvoidGoals(int goalstate)
+void BotResetAvoidGoals(const int goalstate)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -695,7 +695,7 @@ void BotResetAvoidGoals(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotDumpAvoidGoals(int goalstate)
+void BotDumpAvoidGoals(const int goalstate)
 {
 	char name[32];
 
@@ -717,7 +717,7 @@ void BotDumpAvoidGoals(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotAddToAvoidGoals(bot_goalstate_t* gs, int number, float avoidtime)
+void BotAddToAvoidGoals(bot_goalstate_t* gs, const int number, const float avoidtime)
 {
 	int i;
 
@@ -749,7 +749,7 @@ void BotAddToAvoidGoals(bot_goalstate_t* gs, int number, float avoidtime)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotRemoveFromAvoidGoals(int goalstate, int number)
+void BotRemoveFromAvoidGoals(const int goalstate, const int number)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -769,7 +769,7 @@ void BotRemoveFromAvoidGoals(int goalstate, int number)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-float BotAvoidGoalTime(int goalstate, int number)
+float BotAvoidGoalTime(const int goalstate, const int number)
 {
 	const bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return 0;
@@ -789,7 +789,7 @@ float BotAvoidGoalTime(int goalstate, int number)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotSetAvoidGoalTime(int goalstate, int number, float avoidtime)
+void BotSetAvoidGoalTime(const int goalstate, const int number, float avoidtime)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs)
@@ -823,7 +823,7 @@ void BotSetAvoidGoalTime(int goalstate, int number, float avoidtime)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotGetLevelItemGoal(int index, char* name, bot_goal_t* goal)
+int BotGetLevelItemGoal(const int index, char* name, bot_goal_t* goal)
 {
 	if (!itemconfig) return -1;
 	const levelitem_t* li = levelitems;
@@ -1136,7 +1136,7 @@ void BotUpdateEntityItems(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotDumpGoalStack(int goalstate)
+void BotDumpGoalStack(const int goalstate)
 {
 	char name[32];
 
@@ -1154,7 +1154,7 @@ void BotDumpGoalStack(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotPushGoal(int goalstate, bot_goal_t* goal)
+void BotPushGoal(const int goalstate, bot_goal_t* goal)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -1173,7 +1173,7 @@ void BotPushGoal(int goalstate, bot_goal_t* goal)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotPopGoal(int goalstate)
+void BotPopGoal(const int goalstate)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -1185,7 +1185,7 @@ void BotPopGoal(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotEmptyGoalStack(int goalstate)
+void BotEmptyGoalStack(const int goalstate)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -1197,7 +1197,7 @@ void BotEmptyGoalStack(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotGetTopGoal(int goalstate, bot_goal_t* goal)
+int BotGetTopGoal(const int goalstate, bot_goal_t* goal)
 {
 	const bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return qfalse;
@@ -1211,7 +1211,7 @@ int BotGetTopGoal(int goalstate, bot_goal_t* goal)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotGetSecondGoal(int goalstate, bot_goal_t* goal)
+int BotGetSecondGoal(const int goalstate, bot_goal_t* goal)
 {
 	const bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return qfalse;
@@ -1226,7 +1226,7 @@ int BotGetSecondGoal(int goalstate, bot_goal_t* goal)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotChooseLTGItem(int goalstate, vec3_t origin, int* inventory, int travelflags)
+int BotChooseLTGItem(const int goalstate, vec3_t origin, int* inventory, const int travelflags)
 {
 	int t;
 	float weight, avoidtime;
@@ -1390,8 +1390,8 @@ int BotChooseLTGItem(int goalstate, vec3_t origin, int* inventory, int travelfla
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotChooseNBGItem(int goalstate, vec3_t origin, int* inventory, int travelflags,
-	bot_goal_t* ltg, float maxtime)
+int BotChooseNBGItem(const int goalstate, vec3_t origin, int* inventory, const int travelflags,
+                     bot_goal_t* ltg, const float maxtime)
 {
 	int t, ltg_time;
 	float weight, avoidtime;
@@ -1572,7 +1572,7 @@ int BotTouchingGoal(vec3_t origin, bot_goal_t* goal)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotItemGoalInVisButNotVisible(int viewer, vec3_t eye, vec3_t viewangles, bot_goal_t* goal)
+int BotItemGoalInVisButNotVisible(const int viewer, vec3_t eye, vec3_t viewangles, bot_goal_t* goal)
 {
 	aas_entityinfo_t entinfo;
 	vec3_t middle;
@@ -1608,7 +1608,7 @@ int BotItemGoalInVisButNotVisible(int viewer, vec3_t eye, vec3_t viewangles, bot
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotResetGoalState(int goalstate)
+void BotResetGoalState(const int goalstate)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -1622,7 +1622,7 @@ void BotResetGoalState(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotLoadItemWeights(int goalstate, char* filename)
+int BotLoadItemWeights(const int goalstate, char* filename)
 {
 	bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return BLERR_CANNOTLOADITEMWEIGHTS;
@@ -1646,7 +1646,7 @@ int BotLoadItemWeights(int goalstate, char* filename)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotFreeItemWeights(int goalstate)
+void BotFreeItemWeights(const int goalstate)
 {
 	const bot_goalstate_t* gs = BotGoalStateFromHandle(goalstate);
 	if (!gs) return;
@@ -1659,7 +1659,7 @@ void BotFreeItemWeights(int goalstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotAllocGoalState(int client)
+int BotAllocGoalState(const int client)
 {
 	for (int i = 1; i <= MAX_CLIENTS; i++)
 	{
@@ -1678,7 +1678,7 @@ int BotAllocGoalState(int client)
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-void BotFreeGoalState(int handle)
+void BotFreeGoalState(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{

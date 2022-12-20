@@ -107,8 +107,8 @@ void WP_ATSTSideAltFire(gentity_t* ent)
 
 	// Scale damage down a bit if it is coming from an NPC
 	missile->splashDamage = weaponData[WP_ATST_SIDE].altSplashDamage * (ent->s.number == 0
-		? 1.0f
-		: ATST_SIDE_ALT_ROCKET_SPLASH_SCALE);
+		                                                                    ? 1.0f
+		                                                                    : ATST_SIDE_ALT_ROCKET_SPLASH_SCALE);
 	missile->splashRadius = weaponData[WP_ATST_SIDE].altSplashRadius;
 
 	// we don't want it to ever bounce

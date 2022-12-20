@@ -45,6 +45,7 @@ class CGPProperty
 {
 public:
 	using Values = GP2::Vector<gsl::cstring_view>;
+
 private:
 	gsl::cstring_view mKey;
 	Values mValues;
@@ -79,10 +80,12 @@ public:
 	/// Key-Value-Pairs
 	using Properties = GP2::Vector<CGPProperty>;
 	using SubGroups = GP2::Vector<CGPGroup>;
+
 private:
 	Properties mProperties;
 	gsl::cstring_view mName = CSTRING_VIEW("Top Level");
 	SubGroups mSubGroups;
+
 public:
 	CGPGroup() = default;
 	CGPGroup(const gsl::cstring_view& initName);

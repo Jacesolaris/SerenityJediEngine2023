@@ -364,7 +364,7 @@ static float g_playerHeight = 0.0f;
 R_AddWorldSurface
 ======================
 */
-static void R_AddWorldSurface(msurface_t* surf, int dlightBits, qboolean noViewCount = qfalse)
+static void R_AddWorldSurface(msurface_t* surf, int dlightBits, const qboolean noViewCount = qfalse)
 {
 	if (!noViewCount)
 	{
@@ -572,7 +572,7 @@ float GetQuadArea(vec3_t v1, vec3_t v2, vec3_t v3, vec3_t v4)
 		dis2[0] * dis2[0] + dis2[1] * dis2[1] + dis2[2] * dis2[2];
 }
 
-void RE_GetBModelVerts(int bmodelIndex, vec3_t* verts, vec3_t normal)
+void RE_GetBModelVerts(const int bmodelIndex, vec3_t* verts, vec3_t normal)
 {
 	msurface_t* surfs;
 	srfSurfaceFace_t* face;
@@ -1050,7 +1050,7 @@ WIREFRAME AUTOMAP GENERATION SYSTEM - END
 =============================================================
 */
 
-void R_AutomapElevationAdjustment(float newHeight)
+void R_AutomapElevationAdjustment(const float newHeight)
 {
 	g_playerHeight = newHeight;
 }
@@ -1495,7 +1495,7 @@ static mnode_t* R_PointInLeaf(const vec3_t p) {
 R_ClusterPVS
 ==============
 */
-static const byte* R_ClusterPVS(int cluster) {
+static const byte* R_ClusterPVS(const int cluster) {
 	if (!tr.world || !tr.world->vis || cluster < 0 || cluster >= tr.world->numClusters) {
 		return tr.world->novis;
 	}

@@ -47,7 +47,7 @@ CSequencer::CSequencer(void)
 
 CSequencer::~CSequencer(void)
 {
-	Free();	//Safe even if already freed
+	Free(); //Safe even if already freed
 }
 
 /*
@@ -60,7 +60,7 @@ Static creation function
 
 CSequencer* CSequencer::Create(void)
 {
-	CSequencer* sequencer = new CSequencer;
+	auto sequencer = new CSequencer;
 
 	return sequencer;
 }
@@ -72,7 +72,7 @@ Init
 Initializes the sequencer
 ========================
 */
-int CSequencer::Init(int ownerID, interface_export_t* ie, CTaskManager* taskManager, ICARUS_Instance* iICARUS)
+int CSequencer::Init(const int ownerID, interface_export_t* ie, CTaskManager* taskManager, ICARUS_Instance* iICARUS)
 {
 	m_ownerID = ownerID;
 	m_owner = iICARUS;
@@ -92,7 +92,7 @@ Releases all resources and re-inits the sequencer
 int CSequencer::Free(void)
 {
 	//Flush the sequences
-	for (sequence_l::iterator sli = m_sequences.begin(); sli != m_sequences.end(); ++sli)
+	for (auto sli = m_sequences.begin(); sli != m_sequences.end(); ++sli)
 	{
 		m_owner->DeleteSequence(*sli);
 	}
@@ -127,7 +127,7 @@ int CSequencer::Flush(CSequence* owner)
 	Recall();
 
 	//Flush the sequences
-	for (sequence_l::iterator sli = m_sequences.begin(); sli != m_sequences.end(); )
+	for (auto sli = m_sequences.begin(); sli != m_sequences.end();)
 	{
 		if (*sli == owner || owner->HasChild(*sli) || (*sli)->HasFlag(SQ_PENDING) || (*sli)->HasFlag(SQ_TASK))
 		{
@@ -160,8 +160,8 @@ Creates a stream for parsing
 
 bstream_t* CSequencer::AddStream(void)
 {
-	bstream_t* stream = new bstream_t;				//deleted in Route()
-	stream->stream = new CBlockStream;	//deleted in Route()
+	auto stream = new bstream_t; //deleted in Route()
+	stream->stream = new CBlockStream; //deleted in Route()
 	stream->last = m_curStream;
 
 	m_streamsCreated.push_back(stream);
@@ -178,7 +178,7 @@ Deletes parsing stream
 */
 void CSequencer::DeleteStream(const bstream_t* bstream)
 {
-	const std::vector<bstream_t*>::iterator finder = std::find(m_streamsCreated.begin(), m_streamsCreated.end(), bstream);
+	const auto finder = std::find(m_streamsCreated.begin(), m_streamsCreated.end(), bstream);
 	if (finder != m_streamsCreated.end())
 	{
 		m_streamsCreated.erase(finder);
@@ -211,7 +211,7 @@ GetTaskSequence
 
 CSequence* CSequencer::GetTaskSequence(CTaskGroup* group)
 {
-	const taskSequence_m::iterator tsi = m_taskSequences.find(group);
+	const auto tsi = m_taskSequences.find(group);
 
 	if (tsi == m_taskSequences.end())
 		return nullptr;
@@ -244,7 +244,7 @@ CSequence* CSequencer::AddSequence(void)
 	return sequence;
 }
 
-CSequence* CSequencer::AddSequence(CSequence* parent, CSequence* returnSeq, int flags)
+CSequence* CSequencer::AddSequence(CSequence* parent, CSequence* returnSeq, const int flags)
 {
 	CSequence* sequence = m_owner->GetSequence();
 
@@ -270,7 +270,7 @@ Retrieves a sequence by its ID
 ========================
 */
 
-CSequence* CSequencer::GetSequence(int id)
+CSequence* CSequencer::GetSequence(const int id)
 {
 	/*	sequenceID_m::iterator mi;
 
@@ -315,7 +315,7 @@ Run
 Runs a script
 ========================
 */
-int CSequencer::Run(char* buffer, long size)
+int CSequencer::Run(char* buffer, const long size)
 {
 	Recall();
 
@@ -352,7 +352,7 @@ Parses a user triggered run command
 int CSequencer::ParseRun(CBlock* block)
 {
 	char* buffer;
-	char		newname[MAX_STRING_SIZE];
+	char newname[MAX_STRING_SIZE];
 
 	//Get the name and format it
 	COM_StripExtension(static_cast<char*>(block->GetMemberData(0)), newname, sizeof newname);
@@ -500,7 +500,7 @@ Parses a loop command
 
 int CSequencer::ParseLoop(CBlock* block, bstream_t* bstream)
 {
-	int				memberNum = 0;
+	int memberNum = 0;
 
 	//Set the parent
 	CSequence* sequence = AddSequence(m_curSequence, m_curSequence, SQ_LOOP | SQ_RETAIN);
@@ -554,10 +554,10 @@ Adds a sequence that is saved until the affect is called by the parent
 ========================
 */
 
-int CSequencer::AddAffect(bstream_t* bstream, int retain, int* id)
+int CSequencer::AddAffect(bstream_t* bstream, const int retain, int* id)
 {
 	CSequence* sequence = AddSequence();
-	bstream_t	new_stream;
+	bstream_t new_stream;
 
 	sequence->SetFlag(SQ_AFFECT | SQ_PENDING);
 
@@ -594,9 +594,9 @@ Parses an affect command
 int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream)
 {
 	CSequencer* stream_sequencer = nullptr;
-	int			ret;
+	int ret;
 
-	char* entname = static_cast<char*>(block->GetMemberData(0));
+	auto entname = static_cast<char*>(block->GetMemberData(0));
 	const sharedEntity_t* ent = m_ie->I_GetEntityByName(entname);
 
 	if (!ent) // if there wasn't a valid entname in the affect, we need to check if it's a get command
@@ -612,7 +612,7 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream)
 
 		switch (id)
 		{
-			// these 3 cases probably aren't necessary
+		// these 3 cases probably aren't necessary
 		case TK_STRING:
 		case TK_IDENTIFIER:
 		case TK_CHAR:
@@ -620,32 +620,32 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream)
 			break;
 
 		case ID_GET:
-		{
-			//get( TYPE, NAME )
-			const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(1)));
-			const char* name = static_cast<char*>(block->GetMemberData(2));
-
-			switch (type) // what type are they attempting to get
 			{
-			case TK_STRING:
-				//only string is acceptable for affect, store result in p1
-				if (m_ie->I_GetString(m_ownerID, type, name, &p1) == false)
+				//get( TYPE, NAME )
+				const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(1)));
+				const char* name = static_cast<char*>(block->GetMemberData(2));
+
+				switch (type) // what type are they attempting to get
 				{
+				case TK_STRING:
+					//only string is acceptable for affect, store result in p1
+					if (m_ie->I_GetString(m_ownerID, type, name, &p1) == false)
+					{
+						delete block;
+						block = nullptr;
+						return false;
+					}
+					break;
+				default:
+					//FIXME: Make an enum id for the error...
+					m_ie->I_DPrintf(WL_ERROR, "Invalid parameter type on affect _1");
 					delete block;
 					block = nullptr;
 					return false;
 				}
-				break;
-			default:
-				//FIXME: Make an enum id for the error...
-				m_ie->I_DPrintf(WL_ERROR, "Invalid parameter type on affect _1");
-				delete block;
-				block = nullptr;
-				return false;
-			}
 
-			break;
-		}
+				break;
+			}
 
 		default:
 			//FIXME: Make an enum id for the error...
@@ -653,21 +653,22 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream)
 			delete block;
 			block = nullptr;
 			return false;
-		}//end id switch
+		} //end id switch
 
 		if (p1)
 		{
 			ent = m_ie->I_GetEntityByName(p1);
 		}
 		if (!ent)
-		{	// a valid entity name was not returned from the get command
+		{
+			// a valid entity name was not returned from the get command
 			m_ie->I_DPrintf(WL_WARNING, "'%s' : invalid affect() target\n");
 		}
 	} // end if(!ent)
 
 	if (ent)
 	{
-		stream_sequencer = gSequencers[ent->s.number];//ent->sequencer;
+		stream_sequencer = gSequencers[ent->s.number]; //ent->sequencer;
 	}
 
 	if (stream_sequencer == nullptr)
@@ -724,7 +725,7 @@ int CSequencer::ParseTask(CBlock* block, bstream_t* bstream)
 	m_curSequence->AddChild(sequence);
 
 	//Get the name of this task for reference later
-	const char* taskName = static_cast<const char*>(block->GetMemberData(0));
+	auto taskName = static_cast<const char*>(block->GetMemberData(0));
 
 	//Get a new task group from the task manager
 	CTaskGroup* group = m_taskManager->AddTaskGroup(taskName);
@@ -779,7 +780,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 	//Obtain all blocks
 	while (stream->BlockAvailable())
 	{
-		block = new CBlock;		//deleted in Free()
+		block = new CBlock; //deleted in Free()
 		stream->ReadBlock(block);
 
 		//TEMP: HACK!
@@ -788,7 +789,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 
 		switch (block->GetBlockID())
 		{
-			//Marks the end of a blocked section
+		//Marks the end of a blocked section
 		case ID_BLOCK_END:
 
 			//Save this as a pre-process marker
@@ -811,7 +812,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 
 			return SEQ_OK;
 
-			//Affect pre-processor
+		//Affect pre-processor
 		case ID_AFFECT:
 
 			if S_FAILED(ParseAffect(block, bstream))
@@ -819,7 +820,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 
 			break;
 
-			//Run pre-processor
+		//Run pre-processor
 		case ID_RUN:
 
 			if S_FAILED(ParseRun(block))
@@ -827,7 +828,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 
 			break;
 
-			//Loop pre-processor
+		//Loop pre-processor
 		case ID_LOOP:
 
 			if S_FAILED(ParseLoop(block, bstream))
@@ -835,7 +836,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 
 			break;
 
-			//Conditional pre-processor
+		//Conditional pre-processor
 		case ID_IF:
 
 			if S_FAILED(ParseIf(block, bstream))
@@ -864,7 +865,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 
 			break;
 
-			//FIXME: For now this is to catch problems, but can ultimately be removed
+		//FIXME: For now this is to catch problems, but can ultimately be removed
 		case ID_WAIT:
 		case ID_PRINT:
 		case ID_SOUND:
@@ -887,7 +888,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 			PushCommand(block, PUSH_FRONT);
 			break;
 
-			//Error
+		//Error
 		default:
 
 			m_ie->I_DPrintf(WL_ERROR, "'%d' : invalid block ID", block->GetBlockID());
@@ -901,7 +902,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream)
 	{
 		block = new CBlock;
 		block->Create(ID_BLOCK_END);
-		PushCommand(block, PUSH_FRONT);	//mark the end of the run
+		PushCommand(block, PUSH_FRONT); //mark the end of the run
 
 		/*
 		//Free the stream
@@ -949,7 +950,8 @@ void CSequencer::CheckRun(CBlock** command)
 	{
 		const int id = static_cast<int>(*static_cast<float*>(block->GetMemberData(1)));
 
-		m_ie->I_DPrintf(WL_DEBUG, "%4d run( \"%s\" ); [%d]", m_ownerID, static_cast<char*>(block->GetMemberData(0)), m_ie->I_GetTime());
+		m_ie->I_DPrintf(WL_DEBUG, "%4d run( \"%s\" ); [%d]", m_ownerID, static_cast<char*>(block->GetMemberData(0)),
+		                m_ie->I_GetTime());
 
 		if (m_curSequence->HasFlag(SQ_RETAIN))
 		{
@@ -978,7 +980,7 @@ void CSequencer::CheckRun(CBlock** command)
 		{
 			*command = PopCommand(POP_BACK);
 
-			Prep(command);	//Account for any other pre-processes
+			Prep(command); //Account for any other pre-processes
 			return;
 		}
 
@@ -1005,7 +1007,7 @@ void CSequencer::CheckRun(CBlock** command)
 		{
 			*command = PopCommand(POP_BACK);
 
-			Prep(command);	//Account for any other pre-processes
+			Prep(command); //Account for any other pre-processes
 		}
 
 		//FIXME: Check this...
@@ -1023,11 +1025,11 @@ EvaluateConditional
 int CSequencer::EvaluateConditional(CBlock* block) const
 {
 	CBlockMember* bm;
-	char			tempString1[128], tempString2[128];
-	vector_t		vec;
-	int				id, i, oper, memberNum = 0;
-	char* p1 = nullptr, * p2 = nullptr;
-	int				t1, t2;
+	char tempString1[128], tempString2[128];
+	vector_t vec;
+	int id, i, oper, memberNum = 0;
+	char *p1 = nullptr, *p2 = nullptr;
+	int t1, t2;
 
 	//
 	//	Get the first parameter
@@ -1068,107 +1070,107 @@ int CSequencer::EvaluateConditional(CBlock* block) const
 		break;
 
 	case ID_GET:
-	{
-		int		type;
-		char* name;
-
-		//get( TYPE, NAME )
-		type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-
-		//Get the type returned and hold onto it
-		t1 = type;
-
-		switch (type)
 		{
-		case TK_FLOAT:
-		{
-			float	fVal;
+			int type;
+			char* name;
 
-			if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
-				return false;
+			//get( TYPE, NAME )
+			type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
 
-			Com_sprintf(tempString1, sizeof tempString1, "%.3f", fVal);
-			p1 = static_cast<char*>(tempString1);
-		}
+			//Get the type returned and hold onto it
+			t1 = type;
 
-		break;
+			switch (type)
+			{
+			case TK_FLOAT:
+				{
+					float fVal;
 
-		case TK_INT:
-		{
-			float	fVal;
+					if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
+						return false;
 
-			if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
-				return false;
+					Com_sprintf(tempString1, sizeof tempString1, "%.3f", fVal);
+					p1 = static_cast<char*>(tempString1);
+				}
 
-			Com_sprintf(tempString1, sizeof tempString1, "%d", static_cast<int>(fVal));
-			p1 = static_cast<char*>(tempString1);
-		}
-		break;
+				break;
 
-		case TK_STRING:
+			case TK_INT:
+				{
+					float fVal;
 
-			if (m_ie->I_GetString(m_ownerID, type, name, &p1) == false)
-				return false;
+					if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
+						return false;
+
+					Com_sprintf(tempString1, sizeof tempString1, "%d", static_cast<int>(fVal));
+					p1 = static_cast<char*>(tempString1);
+				}
+				break;
+
+			case TK_STRING:
+
+				if (m_ie->I_GetString(m_ownerID, type, name, &p1) == false)
+					return false;
+
+				break;
+
+			case TK_VECTOR:
+				{
+					vector_t vVal;
+
+					if (m_ie->I_GetVector(m_ownerID, type, name, vVal) == false)
+						return false;
+
+					Com_sprintf(tempString1, sizeof tempString1, "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
+					p1 = static_cast<char*>(tempString1);
+				}
+
+				break;
+			}
 
 			break;
+		}
 
-		case TK_VECTOR:
+	case ID_RANDOM:
 		{
-			vector_t	vVal;
+			float min, max;
+			//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
 
-			if (m_ie->I_GetVector(m_ownerID, type, name, vVal) == false)
-				return false;
+			min = *static_cast<float*>(block->GetMemberData(memberNum++));
+			max = *static_cast<float*>(block->GetMemberData(memberNum++));
 
-			Com_sprintf(tempString1, sizeof tempString1, "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
+			//A float value is returned from the function
+			t1 = TK_FLOAT;
+
+			Com_sprintf(tempString1, sizeof tempString1, "%.3f", m_ie->I_Random(min, max));
 			p1 = static_cast<char*>(tempString1);
 		}
 
 		break;
-		}
-
-		break;
-	}
-
-	case ID_RANDOM:
-	{
-		float	min, max;
-		//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
-
-		min = *static_cast<float*>(block->GetMemberData(memberNum++));
-		max = *static_cast<float*>(block->GetMemberData(memberNum++));
-
-		//A float value is returned from the function
-		t1 = TK_FLOAT;
-
-		Com_sprintf(tempString1, sizeof tempString1, "%.3f", m_ie->I_Random(min, max));
-		p1 = static_cast<char*>(tempString1);
-	}
-
-	break;
 
 	case ID_TAG:
-	{
-		char* name;
-		float	type;
-
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-		type = *static_cast<float*>(block->GetMemberData(memberNum++));
-
-		t1 = TK_VECTOR;
-
-		//TODO: Emit warning
-		if (m_ie->I_GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
 		{
-			m_ie->I_DPrintf(WL_ERROR, "Unable to find tag \"%s\"!\n", name);
-			return false;
+			char* name;
+			float type;
+
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
+			type = *static_cast<float*>(block->GetMemberData(memberNum++));
+
+			t1 = TK_VECTOR;
+
+			//TODO: Emit warning
+			if (m_ie->I_GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
+			{
+				m_ie->I_DPrintf(WL_ERROR, "Unable to find tag \"%s\"!\n", name);
+				return false;
+			}
+
+			Com_sprintf(tempString1, sizeof tempString1, "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
+			p1 = static_cast<char*>(tempString1);
+
+			break;
 		}
-
-		Com_sprintf(tempString1, sizeof tempString1, "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
-		p1 = static_cast<char*>(tempString1);
-
-		break;
-	}
 
 	default:
 		//FIXME: Make an enum id for the error...
@@ -1194,7 +1196,7 @@ int CSequencer::EvaluateConditional(CBlock* block) const
 
 	default:
 		m_ie->I_DPrintf(WL_ERROR, "Invalid operator type found on conditional!\n");
-		return false;	//FIXME: Emit warning
+		return false; //FIXME: Emit warning
 	}
 
 	//
@@ -1236,109 +1238,109 @@ int CSequencer::EvaluateConditional(CBlock* block) const
 		break;
 
 	case ID_GET:
-	{
-		int		type;
-		char* name;
-
-		//get( TYPE, NAME )
-		type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-
-		//Get the type returned and hold onto it
-		t2 = type;
-
-		switch (type)
 		{
-		case TK_FLOAT:
-		{
-			float	fVal;
+			int type;
+			char* name;
 
-			if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
-				return false;
+			//get( TYPE, NAME )
+			type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
 
-			Com_sprintf(tempString2, sizeof tempString2, "%.3f", fVal);
-			p2 = static_cast<char*>(tempString2);
-		}
+			//Get the type returned and hold onto it
+			t2 = type;
 
-		break;
+			switch (type)
+			{
+			case TK_FLOAT:
+				{
+					float fVal;
 
-		case TK_INT:
-		{
-			float	fVal;
+					if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
+						return false;
 
-			if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
-				return false;
+					Com_sprintf(tempString2, sizeof tempString2, "%.3f", fVal);
+					p2 = static_cast<char*>(tempString2);
+				}
 
-			Com_sprintf(tempString2, sizeof tempString2, "%d", static_cast<int>(fVal));
-			p2 = static_cast<char*>(tempString2);
-		}
-		break;
+				break;
 
-		case TK_STRING:
+			case TK_INT:
+				{
+					float fVal;
 
-			if (m_ie->I_GetString(m_ownerID, type, name, &p2) == false)
-				return false;
+					if (m_ie->I_GetFloat(m_ownerID, type, name, &fVal) == false)
+						return false;
+
+					Com_sprintf(tempString2, sizeof tempString2, "%d", static_cast<int>(fVal));
+					p2 = static_cast<char*>(tempString2);
+				}
+				break;
+
+			case TK_STRING:
+
+				if (m_ie->I_GetString(m_ownerID, type, name, &p2) == false)
+					return false;
+
+				break;
+
+			case TK_VECTOR:
+				{
+					vector_t vVal;
+
+					if (m_ie->I_GetVector(m_ownerID, type, name, vVal) == false)
+						return false;
+
+					Com_sprintf(tempString2, sizeof tempString2, "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
+					p2 = static_cast<char*>(tempString2);
+				}
+
+				break;
+			}
 
 			break;
-
-		case TK_VECTOR:
-		{
-			vector_t	vVal;
-
-			if (m_ie->I_GetVector(m_ownerID, type, name, vVal) == false)
-				return false;
-
-			Com_sprintf(tempString2, sizeof tempString2, "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
-			p2 = static_cast<char*>(tempString2);
 		}
-
-		break;
-		}
-
-		break;
-	}
 
 	case ID_RANDOM:
 
-	{
-		float	min, max;
-		//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
+		{
+			float min, max;
+			//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
 
-		min = *static_cast<float*>(block->GetMemberData(memberNum++));
-		max = *static_cast<float*>(block->GetMemberData(memberNum++));
+			min = *static_cast<float*>(block->GetMemberData(memberNum++));
+			max = *static_cast<float*>(block->GetMemberData(memberNum++));
 
-		//A float value is returned from the function
-		t2 = TK_FLOAT;
+			//A float value is returned from the function
+			t2 = TK_FLOAT;
 
-		Com_sprintf(tempString2, sizeof tempString2, "%.3f", m_ie->I_Random(min, max));
-		p2 = static_cast<char*>(tempString2);
-	}
+			Com_sprintf(tempString2, sizeof tempString2, "%.3f", m_ie->I_Random(min, max));
+			p2 = static_cast<char*>(tempString2);
+		}
 
-	break;
+		break;
 
 	case ID_TAG:
 
-	{
-		char* name;
-		float	type;
-
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-		type = *static_cast<float*>(block->GetMemberData(memberNum++));
-
-		t2 = TK_VECTOR;
-
-		//TODO: Emit warning
-		if (m_ie->I_GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
 		{
-			m_ie->I_DPrintf(WL_ERROR, "Unable to find tag \"%s\"!\n", name);
-			return false;
+			char* name;
+			float type;
+
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
+			type = *static_cast<float*>(block->GetMemberData(memberNum++));
+
+			t2 = TK_VECTOR;
+
+			//TODO: Emit warning
+			if (m_ie->I_GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
+			{
+				m_ie->I_DPrintf(WL_ERROR, "Unable to find tag \"%s\"!\n", name);
+				return false;
+			}
+
+			Com_sprintf(tempString2, sizeof tempString2, "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
+			p2 = static_cast<char*>(tempString2);
+
+			break;
 		}
-
-		Com_sprintf(tempString2, sizeof tempString2, "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
-		p2 = static_cast<char*>(tempString2);
-
-		break;
-	}
 
 	default:
 		//FIXME: Make an enum id for the error...
@@ -1414,7 +1416,8 @@ void CSequencer::CheckIf(CBlock** command)
 
 		if (ret == false && block->HasFlag(BF_ELSE))
 		{
-			const int failureID = static_cast<int>(*static_cast<float*>(block->GetMemberData(block->GetNumMembers() - 1)));
+			const int failureID = static_cast<int>(*static_cast<float*>(block->
+				GetMemberData(block->GetNumMembers() - 1)));
 			CSequence* failureSeq = GetSequence(failureID);
 
 			//TODO: Emit warning
@@ -1587,7 +1590,7 @@ void CSequencer::CheckLoop(CBlock** command)
 	{
 		//We don't want to decrement -1
 		if (m_curSequence->GetIterations() > 0)
-			m_curSequence->SetIterations(m_curSequence->GetIterations() - 1);	//Nice, eh?
+			m_curSequence->SetIterations(m_curSequence->GetIterations() - 1); //Nice, eh?
 
 		//Either there's another iteration, or it's infinite
 		if (m_curSequence->GetIterations() != 0)
@@ -1709,7 +1712,7 @@ void CSequencer::CheckAffect(CBlock** command)
 
 			switch (id)
 			{
-				// these 3 cases probably aren't necessary
+			// these 3 cases probably aren't necessary
 			case TK_STRING:
 			case TK_IDENTIFIER:
 			case TK_CHAR:
@@ -1717,55 +1720,57 @@ void CSequencer::CheckAffect(CBlock** command)
 				break;
 
 			case ID_GET:
-			{
-				//get( TYPE, NAME )
-				const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-				const char* name = static_cast<char*>(block->GetMemberData(memberNum++));
-
-				switch (type) // what type are they attempting to get
 				{
-				case TK_STRING:
-					//only string is acceptable for affect, store result in p1
-					if (m_ie->I_GetString(m_ownerID, type, name, &p1) == false)
+					//get( TYPE, NAME )
+					const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
+					const char* name = static_cast<char*>(block->GetMemberData(memberNum++));
+
+					switch (type) // what type are they attempting to get
 					{
+					case TK_STRING:
+						//only string is acceptable for affect, store result in p1
+						if (m_ie->I_GetString(m_ownerID, type, name, &p1) == false)
+						{
+							return;
+						}
+						break;
+					default:
+						//FIXME: Make an enum id for the error...
+						m_ie->I_DPrintf(WL_ERROR, "Invalid parameter type on affect _1");
 						return;
 					}
-					break;
-				default:
-					//FIXME: Make an enum id for the error...
-					m_ie->I_DPrintf(WL_ERROR, "Invalid parameter type on affect _1");
-					return;
-				}
 
-				break;
-			}
+					break;
+				}
 
 			default:
 				//FIXME: Make an enum id for the error...
 				m_ie->I_DPrintf(WL_ERROR, "Invalid parameter type on affect _2");
 				return;
-			}//end id switch
+			} //end id switch
 
 			if (p1)
 			{
 				ent = m_ie->I_GetEntityByName(p1);
 			}
 			if (!ent)
-			{	// a valid entity name was not returned from the get command
+			{
+				// a valid entity name was not returned from the get command
 				m_ie->I_DPrintf(WL_WARNING, "'%s' : invalid affect() target\n");
 			}
 		} // end if(!ent)
 
 		if (ent)
 		{
-			sequencer = gSequencers[ent->s.number];//ent->sequencer;
+			sequencer = gSequencers[ent->s.number]; //ent->sequencer;
 		}
 		if (memberNum == 0)
-		{	//there was no get, increment manually before next step
+		{
+			//there was no get, increment manually before next step
 			memberNum++;
 		}
-		const int	type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum)));
-		const int	id = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum + 1)));
+		const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum)));
+		const int id = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum + 1)));
 
 		if (m_curSequence->HasFlag(SQ_RETAIN))
 		{
@@ -1791,7 +1796,8 @@ void CSequencer::CheckAffect(CBlock** command)
 		*command = PopCommand(POP_BACK);
 		Prep(command);
 		if (ent)
-		{	// ents need to update upon being affected
+		{
+			// ents need to update upon being affected
 			//ent->taskManager->Update();
 			gTaskManagers[ent->s.number]->Update();
 		}
@@ -1823,7 +1829,8 @@ void CSequencer::CheckAffect(CBlock** command)
 		*command = PopCommand(POP_BACK);
 		Prep(command);
 		if (ent)
-		{	// ents need to update upon being affected
+		{
+			// ents need to update upon being affected
 			//ent->taskManager->Update();
 			gTaskManagers[ent->s.number]->Update();
 		}
@@ -1846,7 +1853,7 @@ void CSequencer::CheckDo(CBlock** command)
 	if (block->GetBlockID() == ID_DO)
 	{
 		//Get the sequence
-		const char* groupName = static_cast<const char*>(block->GetMemberData(0));
+		auto groupName = static_cast<const char*>(block->GetMemberData(0));
 		CTaskGroup* group = m_taskManager->GetTaskGroup(groupName);
 		CSequence* sequence = GetTaskSequence(group);
 
@@ -1977,7 +1984,7 @@ Handles a completed task and returns a new task to be completed
 ========================
 */
 
-int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, int returnCode)
+int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, const int returnCode)
 {
 	CBlock* command;
 
@@ -1992,7 +1999,7 @@ int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, int returnCod
 		}
 
 		//Check to retain the command
-		if (m_curSequence->HasFlag(SQ_RETAIN))	//This isn't true for affect sequences...?
+		if (m_curSequence->HasFlag(SQ_RETAIN)) //This isn't true for affect sequences...?
 		{
 			PushCommand(block, PUSH_FRONT);
 		}
@@ -2038,7 +2045,8 @@ int CSequencer::Recall(void)
 	CBlock* block = nullptr;
 
 	if (!m_taskManager)
-	{ //uh.. ok.
+	{
+		//uh.. ok.
 		assert(0);
 		return true;
 	}
@@ -2065,7 +2073,7 @@ Affect
 -------------------------
 */
 
-int CSequencer::Affect(int id, int type)
+int CSequencer::Affect(const int id, const int type)
 {
 	CSequence* sequence = GetSequence(id);
 
@@ -2119,7 +2127,7 @@ Pushes a commands onto the current sequence
 ========================
 */
 
-int CSequencer::PushCommand(CBlock* command, int flag)
+int CSequencer::PushCommand(CBlock* command, const int flag)
 {
 	//Make sure everything is ok
 	assert(m_curSequence);
@@ -2141,7 +2149,7 @@ Pops a command off the current sequence
 ========================
 */
 
-CBlock* CSequencer::PopCommand(int flag)
+CBlock* CSequencer::PopCommand(const int flag)
 {
 	//Make sure everything is ok
 	if (m_curSequence == nullptr)
@@ -2196,7 +2204,7 @@ int CSequencer::DestroySequence(CSequence* sequence)
 	//m_sequenceMap.erase( sequence->GetID() );
 	m_sequences.remove(sequence);
 
-	for (taskSequence_m::iterator tsi = m_taskSequences.begin(); tsi != m_taskSequences.end(); )
+	for (auto tsi = m_taskSequences.begin(); tsi != m_taskSequences.end();)
 	{
 		if ((*tsi).second == sequence)
 		{
@@ -2262,7 +2270,7 @@ Save
 -------------------------
 */
 
-int	CSequencer::Save(void)
+int CSequencer::Save(void)
 {
 #if 0 //asfsfasadf
 	sequence_l::iterator		si;
@@ -2325,7 +2333,7 @@ Load
 -------------------------
 */
 
-int	CSequencer::Load(void)
+int CSequencer::Load(void)
 {
 #if 0 //asfsfasadf
 	//Get the owner of this sequencer

@@ -30,15 +30,16 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 constexpr auto MAX_CMD_BUFFER = 128 * 1024;
 constexpr auto MAX_CMD_LINE = 1024;
 
-using cmd_t = struct cmd_s {
+using cmd_t = struct cmd_s
+{
 	byte* data;
-	int		maxsize;
-	int		cursize;
+	int maxsize;
+	int cursize;
 };
 
-int			cmd_wait;
-cmd_t		cmd_text;
-byte		cmd_text_buf[MAX_CMD_BUFFER];
+int cmd_wait;
+cmd_t cmd_text;
+byte cmd_text_buf[MAX_CMD_BUFFER];
 
 //=============================================================================
 
@@ -51,13 +52,16 @@ next frame.  This allows commands like:
 bind g "cmd use rocket ; +attack ; wait ; -attack ; cmd use blaster"
 ============
 */
-void Cmd_Wait_f(void) {
-	if (Cmd_Argc() == 2) {
+void Cmd_Wait_f(void)
+{
+	if (Cmd_Argc() == 2)
+	{
 		cmd_wait = atoi(Cmd_Argv(1));
 		if (cmd_wait < 0)
 			cmd_wait = 1; // ignore the argument
 	}
-	else {
+	else
+	{
 		cmd_wait = 1;
 	}
 }
@@ -89,7 +93,8 @@ Cbuf_AddText
 Adds command text at the end of the buffer, does NOT add a final \n
 ============
 */
-void Cbuf_AddText(const char* text) {
+void Cbuf_AddText(const char* text)
+{
 	const int l = strlen(text);
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
@@ -109,15 +114,18 @@ Adds command text immediately after the current command
 Adds a \n to the text
 ============
 */
-void Cbuf_InsertText(const char* text) {
+void Cbuf_InsertText(const char* text)
+{
 	const int len = strlen(text) + 1;
-	if (len + cmd_text.cursize > cmd_text.maxsize) {
+	if (len + cmd_text.cursize > cmd_text.maxsize)
+	{
 		Com_Printf("Cbuf_InsertText overflowed\n");
 		return;
 	}
 
 	// move the existing command text
-	for (int i = cmd_text.cursize - 1; i >= 0; i--) {
+	for (int i = cmd_text.cursize - 1; i >= 0; i--)
+	{
 		cmd_text.data[i + len] = cmd_text.data[i];
 	}
 
@@ -135,16 +143,18 @@ void Cbuf_InsertText(const char* text) {
 Cbuf_ExecuteText
 ============
 */
-void Cbuf_ExecuteText(int exec_when, const char* text)
+void Cbuf_ExecuteText(const int exec_when, const char* text)
 {
 	switch (exec_when)
 	{
 	case EXEC_NOW:
-		if (text && strlen(text) > 0) {
+		if (text && strlen(text) > 0)
+		{
 			Com_DPrintf(S_COLOR_YELLOW "EXEC_NOW %s\n", text);
 			Cmd_ExecuteString(text);
 		}
-		else {
+		else
+		{
 			Cbuf_Execute();
 			Com_DPrintf(S_COLOR_YELLOW "EXEC_NOW %s\n", cmd_text.data);
 		}
@@ -167,8 +177,8 @@ Cbuf_Execute
 */
 void Cbuf_Execute(void)
 {
-	int		i;
-	char	line[MAX_CMD_LINE];
+	int i;
+	char line[MAX_CMD_LINE];
 
 	// This will keep // style comments all on one line by not breaking on
 	// a semicolon.  It will keep /* ... */ style comments all on one line by not
@@ -178,7 +188,8 @@ void Cbuf_Execute(void)
 
 	while (cmd_text.cursize)
 	{
-		if (cmd_wait > 0) {
+		if (cmd_wait > 0)
+		{
 			// skip out while text still remains in buffer, leaving it
 			// for next frame
 			cmd_wait--;
@@ -186,7 +197,7 @@ void Cbuf_Execute(void)
 		}
 
 		// find a \n or ; line break or comment: // or /* */
-		char* text = (char*)cmd_text.data;
+		auto text = (char*)cmd_text.data;
 
 		int quotes = 0;
 		for (i = 0; i < cmd_text.cursize; i++)
@@ -194,13 +205,16 @@ void Cbuf_Execute(void)
 			if (text[i] == '"')
 				quotes++;
 
-			if (!(quotes & 1)) {
-				if (i < cmd_text.cursize - 1) {
+			if (!(quotes & 1))
+			{
+				if (i < cmd_text.cursize - 1)
+				{
 					if (!in_star_comment && text[i] == '/' && text[i + 1] == '/')
 						in_slash_comment = qtrue;
 					else if (!in_slash_comment && text[i] == '/' && text[i + 1] == '*')
 						in_star_comment = qtrue;
-					else if (in_star_comment && text[i] == '*' && text[i + 1] == '/') {
+					else if (in_star_comment && text[i] == '*' && text[i + 1] == '/')
+					{
 						in_star_comment = qfalse;
 						// If we are in a star comment, then the part after it is valid
 						// Note: This will cause it to NUL out the terminating '/'
@@ -212,13 +226,15 @@ void Cbuf_Execute(void)
 				if (!in_slash_comment && !in_star_comment && text[i] == ';')
 					break;
 			}
-			if (!in_star_comment && (text[i] == '\n' || text[i] == '\r')) {
+			if (!in_star_comment && (text[i] == '\n' || text[i] == '\r'))
+			{
 				in_slash_comment = qfalse;
 				break;
 			}
 		}
 
-		if (i >= MAX_CMD_LINE - 1) {
+		if (i >= MAX_CMD_LINE - 1)
+		{
 			i = MAX_CMD_LINE - 1;
 		}
 
@@ -257,25 +273,29 @@ void Cbuf_Execute(void)
 Cmd_Exec_f
 ===============
 */
-void Cmd_Exec_f(void) {
-	union {
+void Cmd_Exec_f(void)
+{
+	union
+	{
 		char* c;
 		void* v;
 	} f;
-	char	filename[MAX_QPATH];
+	char filename[MAX_QPATH];
 
 	const bool quiet = !Q_stricmp(Cmd_Argv(0), "execq");
 
-	if (Cmd_Argc() != 2) {
+	if (Cmd_Argc() != 2)
+	{
 		Com_Printf("exec%s <filename> : execute a script file%s\n",
-			quiet ? "q" : "", quiet ? " without notification" : "");
+		           quiet ? "q" : "", quiet ? " without notification" : "");
 		return;
 	}
 
 	Q_strncpyz(filename, Cmd_Argv(1), sizeof filename);
 	COM_DefaultExtension(filename, sizeof filename, ".cfg");
 	FS_ReadFile(filename, &f.v);
-	if (!f.c) {
+	if (!f.c)
+	{
 		Com_Printf("couldn't exec %s\n", filename);
 		return;
 	}
@@ -294,8 +314,10 @@ Cmd_Vstr_f
 Inserts the current value of a variable as command text
 ===============
 */
-void Cmd_Vstr_f(void) {
-	if (Cmd_Argc() != 2) {
+void Cmd_Vstr_f(void)
+{
+	if (Cmd_Argc() != 2)
+	{
 		Com_Printf("vstr <variablename> : execute a variable command\n");
 		return;
 	}
@@ -328,16 +350,16 @@ using cmd_function_t = struct cmd_function_s
 {
 	cmd_function_s* next;
 	char* name;
-	xcommand_t				function;
-	completionFunc_t		complete;
+	xcommand_t function;
+	completionFunc_t complete;
 };
 
-static	int			cmd_argc;
-static	char* cmd_argv[MAX_STRING_TOKENS];		// points into cmd_tokenized
-static	char		cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];	// will have 0 bytes inserted
-static	char		cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
+static int cmd_argc;
+static char* cmd_argv[MAX_STRING_TOKENS]; // points into cmd_tokenized
+static char cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS]; // will have 0 bytes inserted
+static char cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
 
-static	cmd_function_t* cmd_functions;		// possible commands to execute
+static cmd_function_t* cmd_functions; // possible commands to execute
 
 /*
 ============
@@ -357,7 +379,8 @@ cmd_function_t* Cmd_FindCommand(const char* cmd_name)
 Cmd_Argc
 ============
 */
-int		Cmd_Argc(void) {
+int Cmd_Argc(void)
+{
 	return cmd_argc;
 }
 
@@ -366,7 +389,8 @@ int		Cmd_Argc(void) {
 Cmd_Argv
 ============
 */
-char* Cmd_Argv(int arg) {
+char* Cmd_Argv(const int arg)
+{
 	if (static_cast<unsigned>(arg) >= static_cast<unsigned>(cmd_argc))
 		return "";
 
@@ -381,7 +405,8 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void	Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength) {
+void Cmd_ArgvBuffer(const int arg, char* buffer, const int bufferLength)
+{
 	Q_strncpyz(buffer, Cmd_Argv(arg), bufferLength);
 }
 
@@ -392,15 +417,18 @@ Cmd_ArgsFrom
 Returns a single string containing argv(arg) to argv(argc()-1)
 ============
 */
-char* Cmd_ArgsFrom(int arg) {
-	static	char	cmd_args[BIG_INFO_STRING];
+char* Cmd_ArgsFrom(int arg)
+{
+	static char cmd_args[BIG_INFO_STRING];
 
 	cmd_args[0] = '\0';
 	if (arg < 0)
 		arg = 0;
-	for (int i = arg; i < cmd_argc; i++) {
+	for (int i = arg; i < cmd_argc; i++)
+	{
 		Q_strcat(cmd_args, sizeof cmd_args, cmd_argv[i]);
-		if (i != cmd_argc - 1) {
+		if (i != cmd_argc - 1)
+		{
 			Q_strcat(cmd_args, sizeof cmd_args, " ");
 		}
 	}
@@ -415,7 +443,8 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-char* Cmd_Args(void) {
+char* Cmd_Args(void)
+{
 	return Cmd_ArgsFrom(1);
 }
 
@@ -427,7 +456,8 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void	Cmd_ArgsBuffer(char* buffer, int bufferLength) {
+void Cmd_ArgsBuffer(char* buffer, const int bufferLength)
+{
 	Q_strncpyz(buffer, Cmd_ArgsFrom(1), bufferLength);
 }
 
@@ -439,7 +469,8 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void	Cmd_ArgsFromBuffer(int arg, char* buffer, int bufferLength) {
+void Cmd_ArgsFromBuffer(int arg, char* buffer, const int bufferLength)
+{
 	Q_strncpyz(buffer, Cmd_Args(), bufferLength);
 }
 
@@ -467,11 +498,13 @@ are inserted in the apropriate place, The argv array
 will point into this temporary buffer.
 ============
 */
-static void Cmd_TokenizeString2(const char* text_in, qboolean ignoreQuotes) {
+static void Cmd_TokenizeString2(const char* text_in, const qboolean ignoreQuotes)
+{
 	// clear previous args
 	cmd_argc = 0;
 
-	if (!text_in) {
+	if (!text_in)
+	{
 		return;
 	}
 
@@ -480,52 +513,65 @@ static void Cmd_TokenizeString2(const char* text_in, qboolean ignoreQuotes) {
 	const char* text = text_in;
 	char* textOut = cmd_tokenized;
 
-	while (true) {
-		if (cmd_argc == MAX_STRING_TOKENS) {
-			return;			// this is usually something malicious
+	while (true)
+	{
+		if (cmd_argc == MAX_STRING_TOKENS)
+		{
+			return; // this is usually something malicious
 		}
 
-		while (true) {
+		while (true)
+		{
 			// skip whitespace
-			while (*text && *(const unsigned char* /*eurofix*/)text <= ' ') {
+			while (*text && *(const unsigned char* /*eurofix*/)text <= ' ')
+			{
 				text++;
 			}
-			if (!*text) {
-				return;			// all tokens parsed
+			if (!*text)
+			{
+				return; // all tokens parsed
 			}
 
 			// skip // comments
-			if (text[0] == '/' && text[1] == '/') {
-				return;			// all tokens parsed
+			if (text[0] == '/' && text[1] == '/')
+			{
+				return; // all tokens parsed
 			}
 
 			// skip /* */ comments
-			if (text[0] == '/' && text[1] == '*') {
-				while (*text && (text[0] != '*' || text[1] != '/')) {
+			if (text[0] == '/' && text[1] == '*')
+			{
+				while (*text && (text[0] != '*' || text[1] != '/'))
+				{
 					text++;
 				}
-				if (!*text) {
-					return;		// all tokens parsed
+				if (!*text)
+				{
+					return; // all tokens parsed
 				}
 				text += 2;
 			}
-			else {
-				break;			// we are ready to parse a token
+			else
+			{
+				break; // we are ready to parse a token
 			}
 		}
 
 		// handle quoted strings
-	// NOTE TTimo this doesn't handle \" escaping
-		if (!ignoreQuotes && *text == '"') {
+		// NOTE TTimo this doesn't handle \" escaping
+		if (!ignoreQuotes && *text == '"')
+		{
 			cmd_argv[cmd_argc] = textOut;
 			cmd_argc++;
 			text++;
-			while (*text && *text != '"') {
+			while (*text && *text != '"')
+			{
 				*textOut++ = *text++;
 			}
 			*textOut++ = 0;
-			if (!*text) {
-				return;		// all tokens parsed
+			if (!*text)
+			{
+				return; // all tokens parsed
 			}
 			text++;
 			continue;
@@ -536,17 +582,21 @@ static void Cmd_TokenizeString2(const char* text_in, qboolean ignoreQuotes) {
 		cmd_argc++;
 
 		// skip until whitespace, quote, or command
-		while (*(const unsigned char* /*eurofix*/)text > ' ') {
-			if (!ignoreQuotes && text[0] == '"') {
+		while (*(const unsigned char* /*eurofix*/)text > ' ')
+		{
+			if (!ignoreQuotes && text[0] == '"')
+			{
 				break;
 			}
 
-			if (text[0] == '/' && text[1] == '/') {
+			if (text[0] == '/' && text[1] == '/')
+			{
 				break;
 			}
 
 			// skip /* */ comments
-			if (text[0] == '/' && text[1] == '*') {
+			if (text[0] == '/' && text[1] == '*')
+			{
 				break;
 			}
 
@@ -555,8 +605,9 @@ static void Cmd_TokenizeString2(const char* text_in, qboolean ignoreQuotes) {
 
 		*textOut++ = 0;
 
-		if (!*text) {
-			return;		// all tokens parsed
+		if (!*text)
+		{
+			return; // all tokens parsed
 		}
 	}
 }
@@ -566,7 +617,8 @@ static void Cmd_TokenizeString2(const char* text_in, qboolean ignoreQuotes) {
 Cmd_TokenizeString
 ============
 */
-void Cmd_TokenizeString(const char* text_in) {
+void Cmd_TokenizeString(const char* text_in)
+{
 	Cmd_TokenizeString2(text_in, qfalse);
 }
 
@@ -575,7 +627,8 @@ void Cmd_TokenizeString(const char* text_in) {
 Cmd_TokenizeStringIgnoreQuotes
 ============
 */
-void Cmd_TokenizeStringIgnoreQuotes(const char* text_in) {
+void Cmd_TokenizeStringIgnoreQuotes(const char* text_in)
+{
 	Cmd_TokenizeString2(text_in, qtrue);
 }
 
@@ -584,19 +637,21 @@ void Cmd_TokenizeStringIgnoreQuotes(const char* text_in) {
 Cmd_AddCommand
 ============
 */
-void	Cmd_AddCommand(const char* cmd_name, xcommand_t function) {
+void Cmd_AddCommand(const char* cmd_name, const xcommand_t function)
+{
 	// fail if the command already exists
 	if (Cmd_FindCommand(cmd_name))
 	{
 		// allow completion-only commands to be silently doubled
-		if (function != nullptr) {
+		if (function != nullptr)
+		{
 			Com_Printf("Cmd_AddCommand: %s already defined\n", cmd_name);
 		}
 		return;
 	}
 
 	// use a small malloc to avoid zone fragmentation
-	cmd_function_t* cmd = static_cast<cmd_function_s*>(S_Malloc(sizeof(cmd_function_t)));
+	auto cmd = static_cast<cmd_function_s*>(S_Malloc(sizeof(cmd_function_t)));
 	cmd->name = CopyString(cmd_name);
 	cmd->function = function;
 	cmd->complete = nullptr;
@@ -609,8 +664,10 @@ void	Cmd_AddCommand(const char* cmd_name, xcommand_t function) {
 Cmd_SetCommandCompletionFunc
 ============
 */
-void Cmd_SetCommandCompletionFunc(const char* command, completionFunc_t complete) {
-	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next) {
+void Cmd_SetCommandCompletionFunc(const char* command, const completionFunc_t complete)
+{
+	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
+	{
 		if (!Q_stricmp(command, cmd->name))
 			cmd->complete = complete;
 	}
@@ -621,17 +678,22 @@ void Cmd_SetCommandCompletionFunc(const char* command, completionFunc_t complete
 Cmd_RemoveCommand
 ============
 */
-void	Cmd_RemoveCommand(const char* cmd_name) {
+void Cmd_RemoveCommand(const char* cmd_name)
+{
 	cmd_function_t** back = &cmd_functions;
-	while (true) {
+	while (true)
+	{
 		cmd_function_t* cmd = *back;
-		if (!cmd) {
+		if (!cmd)
+		{
 			// command wasn't active
 			return;
 		}
-		if (strcmp(cmd_name, cmd->name) == 0) {
+		if (strcmp(cmd_name, cmd->name) == 0)
+		{
 			*back = cmd->next;
-			if (cmd->name) {
+			if (cmd->name)
+			{
 				Z_Free(cmd->name);
 			}
 			Z_Free(cmd);
@@ -646,8 +708,10 @@ void	Cmd_RemoveCommand(const char* cmd_name) {
 Cmd_CommandCompletion
 ============
 */
-void	Cmd_CommandCompletion(callbackFunc_t callback) {
-	for (const cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next) {
+void Cmd_CommandCompletion(const callbackFunc_t callback)
+{
+	for (const cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
+	{
 		callback(cmd->name);
 	}
 }
@@ -657,8 +721,10 @@ void	Cmd_CommandCompletion(callbackFunc_t callback) {
 Cmd_CompleteArgument
 ============
 */
-void Cmd_CompleteArgument(const char* command, char* args, int argNum) {
-	for (const cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next) {
+void Cmd_CompleteArgument(const char* command, char* args, const int argNum)
+{
+	for (const cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
+	{
 		if (!Q_stricmp(command, cmd->name) && cmd->complete)
 			cmd->complete(args, argNum);
 	}
@@ -671,19 +737,23 @@ Cmd_ExecuteString
 A complete command line has been parsed, so try to execute it
 ============
 */
-void	Cmd_ExecuteString(const char* text) {
+void Cmd_ExecuteString(const char* text)
+{
 	cmd_function_t* cmd;
 
 	// execute the command line
 	Cmd_TokenizeString(text);
-	if (!Cmd_Argc()) {
-		return;		// no tokens
+	if (!Cmd_Argc())
+	{
+		return; // no tokens
 	}
 
 	// check registered command functions
-	for (cmd_function_t** prev = &cmd_functions; *prev; prev = &cmd->next) {
+	for (cmd_function_t** prev = &cmd_functions; *prev; prev = &cmd->next)
+	{
 		cmd = *prev;
-		if (!Q_stricmp(Cmd_Argv(0), cmd->name)) {
+		if (!Q_stricmp(Cmd_Argv(0), cmd->name))
+		{
 			// rearrange the links so that the command will be
 			// near the head of the list next time it is used
 			*prev = cmd->next;
@@ -691,7 +761,8 @@ void	Cmd_ExecuteString(const char* text) {
 			cmd_functions = cmd;
 
 			// perform the action
-			if (!cmd->function) {
+			if (!cmd->function)
+			{
 				// let the cgame or game handle it
 				break;
 			}
@@ -701,22 +772,26 @@ void	Cmd_ExecuteString(const char* text) {
 	}
 
 	// check cvars
-	if (Cvar_Command()) {
+	if (Cvar_Command())
+	{
 		return;
 	}
 
 	// check client game commands
-	if (com_cl_running && com_cl_running->integer && CL_GameCommand()) {
+	if (com_cl_running && com_cl_running->integer && CL_GameCommand())
+	{
 		return;
 	}
 
 	// check server game commands
-	if (com_sv_running && com_sv_running->integer && SV_GameCommand()) {
+	if (com_sv_running && com_sv_running->integer && SV_GameCommand())
+	{
 		return;
 	}
 
 	// check ui commands
-	if (com_cl_running && com_cl_running->integer && UI_GameCommand()) {
+	if (com_cl_running && com_cl_running->integer && UI_GameCommand())
+	{
 		return;
 	}
 
@@ -733,16 +808,17 @@ Cmd_List_f
 void Cmd_List_f(void)
 {
 	const cmd_function_t* cmd = nullptr;
-	int				i, j;
+	int i, j;
 	const char* match = nullptr;
 
-	if (Cmd_Argc() > 1) {
+	if (Cmd_Argc() > 1)
+	{
 		match = Cmd_Argv(1);
 	}
 
 	for (cmd = cmd_functions, i = 0, j = 0;
-		cmd;
-		cmd = cmd->next, i++)
+	     cmd;
+	     cmd = cmd->next, i++)
 	{
 		if (!cmd->name || match && !Com_Filter(match, cmd->name, qfalse))
 			continue;
@@ -761,8 +837,10 @@ void Cmd_List_f(void)
 Cmd_CompleteCfgName
 ==================
 */
-void Cmd_CompleteCfgName(char* args, int argNum) {
-	if (argNum == 2) {
+void Cmd_CompleteCfgName(char* args, const int argNum)
+{
+	if (argNum == 2)
+	{
 		Field_CompleteFilename("", "cfg", qfalse, qtrue);
 	}
 }
@@ -772,7 +850,8 @@ void Cmd_CompleteCfgName(char* args, int argNum) {
 Cmd_Init
 ============
 */
-void Cmd_Init(void) {
+void Cmd_Init(void)
+{
 	Cmd_AddCommand("cmdlist", Cmd_List_f);
 	Cmd_AddCommand("exec", Cmd_Exec_f);
 	Cmd_AddCommand("execq", Cmd_Exec_f);

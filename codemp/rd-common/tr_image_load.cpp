@@ -56,7 +56,7 @@ Adds a new image loader to load the specified image file extension.
 The 'extension' string should not begin with a period (full stop).
 =================
 */
-qboolean R_ImageLoader_Add(const char* extension, ImageLoaderFn imageLoader)
+qboolean R_ImageLoader_Add(const char* extension, const ImageLoaderFn imageLoader)
 {
 	if (numImageLoaders >= MAX_IMAGE_LOADERS)
 	{

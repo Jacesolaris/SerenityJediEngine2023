@@ -88,7 +88,7 @@ void R_PerformanceCounters(void) {
 R_IssueRenderCommands
 ====================
 */
-void R_IssueRenderCommands(qboolean runPerformanceCounters)
+void R_IssueRenderCommands(const qboolean runPerformanceCounters)
 {
 	renderCommandList_t* cmdList = &backEndData->commands;
 
@@ -133,7 +133,7 @@ R_GetCommandBufferReserved
 make sure there is enough command space
 ============
 */
-void* R_GetCommandBufferReserved(unsigned int bytes, int reservedBytes)
+void* R_GetCommandBufferReserved(unsigned int bytes, const int reservedBytes)
 {
 	renderCommandList_t* cmdList = &backEndData->commands;
 	bytes = PAD(bytes, sizeof(void*));
@@ -158,7 +158,7 @@ R_GetCommandBuffer
 returns NULL if there is not enough space for important commands
 ============
 */
-void* R_GetCommandBuffer(unsigned int bytes) {
+void* R_GetCommandBuffer(const unsigned int bytes) {
 	return R_GetCommandBufferReserved(bytes, PAD(sizeof(swapBuffersCommand_t), sizeof(void*)));
 }
 
@@ -168,7 +168,7 @@ R_AddDrawSurfCmd
 
 =============
 */
-void	R_AddDrawSurfCmd(drawSurf_t* drawSurfs, int numDrawSurfs) {
+void	R_AddDrawSurfCmd(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 	drawSurfsCommand_t* cmd = static_cast<drawSurfsCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 	if (!cmd) {
 		return;
@@ -212,8 +212,8 @@ void	RE_SetColor(const float* rgba) {
 RE_StretchPic
 =============
 */
-void RE_StretchPic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, qhandle_t hShader) {
+void RE_StretchPic(const float x, const float y, const float w, const float h,
+                   const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader) {
 	stretchPicCommand_t* cmd = static_cast<stretchPicCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 
 	if (!tr.registered) {
@@ -239,8 +239,8 @@ void RE_StretchPic(float x, float y, float w, float h,
 RE_RotatePic
 =============
 */
-void RE_RotatePic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t hShader) {
+void RE_RotatePic(const float x, const float y, const float w, const float h,
+                  const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader) {
 	rotatePicCommand_t* cmd = static_cast<rotatePicCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 
 	if (!tr.registered) {
@@ -267,8 +267,8 @@ void RE_RotatePic(float x, float y, float w, float h,
 RE_RotatePic2
 =============
 */
-void RE_RotatePic2(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t hShader) {
+void RE_RotatePic2(const float x, const float y, const float w, const float h,
+                   const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader) {
 	rotatePicCommand_t* cmd = static_cast<rotatePicCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 
 	if (!tr.registered) {
@@ -325,7 +325,7 @@ If running in stereo, RE_BeginFrame will be called twice
 for each RE_EndFrame
 ====================
 */
-void RE_BeginFrame(stereoFrame_t stereoFrame) {
+void RE_BeginFrame(const stereoFrame_t stereoFrame) {
 	if (!tr.registered) {
 		return;
 	}
@@ -474,7 +474,7 @@ void RE_EndFrame(int* frontEndMsec, int* backEndMsec) {
 RE_TakeVideoFrame
 =============
 */
-void RE_TakeVideoFrame(int width, int height, byte* captureBuffer, byte* encodeBuffer, qboolean motionJpeg)
+void RE_TakeVideoFrame(const int width, const int height, byte* captureBuffer, byte* encodeBuffer, const qboolean motionJpeg)
 {
 	if (!tr.registered)
 		return;

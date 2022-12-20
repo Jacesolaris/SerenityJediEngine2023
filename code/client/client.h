@@ -32,24 +32,25 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../cgame/cg_public.h"
 
 // snapshots are a view of the server at a given time
-using clSnapshot_t = struct {
-	qboolean		valid;			// cleared if delta parsing was invalid
-	int				snapFlags;		// rate delayed and dropped commands
+using clSnapshot_t = struct
+{
+	qboolean valid; // cleared if delta parsing was invalid
+	int snapFlags; // rate delayed and dropped commands
 
-	int				serverTime;		// server time the message is valid for (in msec)
+	int serverTime; // server time the message is valid for (in msec)
 
-	int				messageNum;		// copied from netchan->incoming_sequence
-	int				deltaNum;		// messageNum the delta is from
-	int				ping;			// time from when cmdNum-1 was sent to time packet was reeceived
-	byte			areamask[MAX_MAP_AREA_BYTES];		// portalarea visibility bits
+	int messageNum; // copied from netchan->incoming_sequence
+	int deltaNum; // messageNum the delta is from
+	int ping; // time from when cmdNum-1 was sent to time packet was reeceived
+	byte areamask[MAX_MAP_AREA_BYTES]; // portalarea visibility bits
 
-	int				cmdNum;			// the next cmdNum the server is expecting
-	playerState_t	ps;						// complete information about the current player at this time
+	int cmdNum; // the next cmdNum the server is expecting
+	playerState_t ps; // complete information about the current player at this time
 
-	int				numEntities;			// all of the entities that need to be presented
-	int				parseEntitiesNum;		// at the time of this snapshot
+	int numEntities; // all of the entities that need to be presented
+	int parseEntitiesNum; // at the time of this snapshot
 
-	int				serverCommandNum;		// execute all commands up to this before
+	int serverCommandNum; // execute all commands up to this before
 	// making the snapshot current
 };
 
@@ -69,66 +70,68 @@ constexpr auto MAX_PARSE_ENTITIES = 1024;
 
 extern int g_console_field_width;
 
-using clientActive_t = struct {
-	int			timeoutcount;
+using clientActive_t = struct
+{
+	int timeoutcount;
 
-	clSnapshot_t	frame;			// latest received from server
+	clSnapshot_t frame; // latest received from server
 
-	int			serverTime;
-	int			oldServerTime;		// to prevent time from flowing bakcwards
-	int			oldFrameServerTime;	// to check tournament restarts
-	int			serverTimeDelta;	// cl.serverTime = cls.realtime + cl.serverTimeDelta
+	int serverTime;
+	int oldServerTime; // to prevent time from flowing bakcwards
+	int oldFrameServerTime; // to check tournament restarts
+	int serverTimeDelta; // cl.serverTime = cls.realtime + cl.serverTimeDelta
 	// this value changes as net lag varies
-	qboolean	extrapolatedSnapshot;	// set if any cgame frame has been forced to extrapolate
+	qboolean extrapolatedSnapshot; // set if any cgame frame has been forced to extrapolate
 	// cleared when CL_AdjustTimeDelta looks at it
-	qboolean	newSnapshots;		// set on parse, cleared when CL_AdjustTimeDelta looks at it
+	qboolean newSnapshots; // set on parse, cleared when CL_AdjustTimeDelta looks at it
 
-	gameState_t	gameState;			// configstrings
-	char		mapname[MAX_QPATH];	// extracted from CS_SERVERINFO
+	gameState_t gameState; // configstrings
+	char mapname[MAX_QPATH]; // extracted from CS_SERVERINFO
 
-	int			parseEntitiesNum;	// index (not anded off) into cl_parse_entities[]
+	int parseEntitiesNum; // index (not anded off) into cl_parse_entities[]
 
-	int			mouseDx[2], mouseDy[2];	// added to by mouse events
-	int			mouseIndex;
-	int			joystickAxis[MAX_JOYSTICK_AXIS];	// set by joystick events
+	int mouseDx[2], mouseDy[2]; // added to by mouse events
+	int mouseIndex;
+	int joystickAxis[MAX_JOYSTICK_AXIS]; // set by joystick events
 
-	int			cgameUserCmdValue;	// current weapon to add to usercmd_t
-	float		cgameSensitivity;
+	int cgameUserCmdValue; // current weapon to add to usercmd_t
+	float cgameSensitivity;
 
 	// cmds[cmdNumber] is the predicted command, [cmdNumber-1] is the last
 	// properly generated command
-	usercmd_t	cmds[CMD_BACKUP];	// each mesage will send several old cmds
-	int			cmdNumber;			// incremented each frame, because multiple
+	usercmd_t cmds[CMD_BACKUP]; // each mesage will send several old cmds
+	int cmdNumber; // incremented each frame, because multiple
 	// frames may need to be packed into a single packet
 
-	int			packetTime[PACKET_BACKUP];	// cls.realtime sent, for calculating pings
-	int			packetCmdNumber[PACKET_BACKUP];	// cmdNumber when packet was sent
+	int packetTime[PACKET_BACKUP]; // cls.realtime sent, for calculating pings
+	int packetCmdNumber[PACKET_BACKUP]; // cmdNumber when packet was sent
 
 	// the client maintains its own idea of view angles, which are
 	// sent to the server each frame.  It is cleared to 0 upon entering each level.
 	// the server sends a delta each frame which is added to the locally
 	// tracked view angles to account for standing on rotating objects,
 	// and teleport direction changes
-	vec3_t		viewangles;
+	vec3_t viewangles;
 
 	// these are just parsed out of the configstrings for convenience
-	int			serverId;
+	int serverId;
 
 	// non-gameserver infornamtion
-	int			cinematictime;		// cls.realtime for first cinematic frame (FIXME: NO LONGER USED!, but I wasn't sure if I could remove it because of struct sizes assumed elsewhere? -Ste)
+	int cinematictime;
+	// cls.realtime for first cinematic frame (FIXME: NO LONGER USED!, but I wasn't sure if I could remove it because of struct sizes assumed elsewhere? -Ste)
 
 	// big stuff at end of structure so most offsets are 15 bits or less
-	clSnapshot_t	frames[PACKET_BACKUP];
+	clSnapshot_t frames[PACKET_BACKUP];
 
-	entityState_t	parseEntities[MAX_PARSE_ENTITIES];
+	entityState_t parseEntities[MAX_PARSE_ENTITIES];
 
 	//DJC added - making force powers in single player work like those in
 	//multiplayer.  This makes hot swapping code more portable.
-	qboolean		gcmdSendValue;
-	byte			gcmdValue;
+	qboolean gcmdSendValue;
+	byte gcmdValue;
 };
 
-extern	clientActive_t		cl;
+extern clientActive_t cl;
 
 /*
 =============================================================================
@@ -142,29 +145,30 @@ or just a streaming cinematic.
 =============================================================================
 */
 
-using clientConnection_t = struct {
-	int			lastPacketSentTime;			// for retransmits
-	int			lastPacketTime;
-	char		servername[MAX_OSPATH];		// name of server from original connect
-	netadr_t	serverAddress;
-	int			connectTime;		// for connection retransmits
-	int			connectPacketCount;	// for display on connection dialog
+using clientConnection_t = struct
+{
+	int lastPacketSentTime; // for retransmits
+	int lastPacketTime;
+	char servername[MAX_OSPATH]; // name of server from original connect
+	netadr_t serverAddress;
+	int connectTime; // for connection retransmits
+	int connectPacketCount; // for display on connection dialog
 
-	int			challenge;			// from the server to use for connecting
+	int challenge; // from the server to use for connecting
 
-	int			reliableSequence;
-	int			reliableAcknowledge;
+	int reliableSequence;
+	int reliableAcknowledge;
 	char* reliableCommands[MAX_RELIABLE_COMMANDS];
 
 	// reliable messages received from server
-	int			serverCommandSequence;
+	int serverCommandSequence;
 	char* serverCommands[MAX_RELIABLE_COMMANDS];
 
 	// big stuff at end of structure so most offsets are 15 bits or less
-	netchan_t	netchan;
+	netchan_t netchan;
 };
 
-extern	clientConnection_t clc;
+extern clientConnection_t clc;
 
 /*
 ==================================================================
@@ -175,107 +179,109 @@ no client connection is active at all
 ==================================================================
 */
 
-using clientStatic_t = struct {
-	connstate_t	state;				// connection status
+using clientStatic_t = struct
+{
+	connstate_t state; // connection status
 
-	char		servername[MAX_OSPATH];		// name of server from original connect (used by reconnect)
+	char servername[MAX_OSPATH]; // name of server from original connect (used by reconnect)
 
 	// when the server clears the hunk, all of these must be restarted
-	qboolean	rendererStarted;
-	qboolean	soundStarted;
-	qboolean	soundRegistered;
-	qboolean	uiStarted;
-	qboolean	cgameStarted;
+	qboolean rendererStarted;
+	qboolean soundStarted;
+	qboolean soundRegistered;
+	qboolean uiStarted;
+	qboolean cgameStarted;
 
-	int			framecount;
-	int			frametime;			// msec since last frame
-	float		frametimeFraction;	// fraction of a msec since last frame
+	int framecount;
+	int frametime; // msec since last frame
+	float frametimeFraction; // fraction of a msec since last frame
 
-	int			realtime;			// ignores pause
-	float		realtimeFraction;	// fraction of a msec accumulated
-	int			realFrametime;		// ignoring pause, so console always works
+	int realtime; // ignores pause
+	float realtimeFraction; // fraction of a msec accumulated
+	int realFrametime; // ignoring pause, so console always works
 
 	// update server info
-	char		updateInfoString[MAX_INFO_STRING];
+	char updateInfoString[MAX_INFO_STRING];
 
 	// rendering info
-	glconfig_t	glconfig;
-	qhandle_t	charSetShader;
-	qhandle_t	whiteShader;
-	qhandle_t	consoleShader;
+	glconfig_t glconfig;
+	qhandle_t charSetShader;
+	qhandle_t whiteShader;
+	qhandle_t consoleShader;
 };
 
 constexpr auto CON_TEXTSIZE = 0x30000; //was 32768;
 constexpr auto NUM_CON_TIMES = 4;
 
-using console_t = struct {
-	qboolean	initialized;
+using console_t = struct
+{
+	qboolean initialized;
 
-	short	text[CON_TEXTSIZE];
-	int		current;		// line where next message will be printed
-	int		x;				// offset in current line for next print
-	int		display;		// bottom of console displays this line
+	short text[CON_TEXTSIZE];
+	int current; // line where next message will be printed
+	int x; // offset in current line for next print
+	int display; // bottom of console displays this line
 
-	int 	linewidth;		// characters across screen
-	int		totallines;		// total lines in console scrollback
+	int linewidth; // characters across screen
+	int totallines; // total lines in console scrollback
 
-	float	xadjust;		// for wide aspect screens
-	float	yadjust;
+	float xadjust; // for wide aspect screens
+	float yadjust;
 
-	float	displayFrac;	// aproaches finalFrac at scr_conspeed
-	float	finalFrac;		// 0.0 to 1.0 lines of console to display
+	float displayFrac; // aproaches finalFrac at scr_conspeed
+	float finalFrac; // 0.0 to 1.0 lines of console to display
 
-	int		vislines;		// in scanlines
+	int vislines; // in scanlines
 
-	int		times[NUM_CON_TIMES];	// cls.realtime time the line was generated
+	int times[NUM_CON_TIMES]; // cls.realtime time the line was generated
 	// for transparent notify lines
-	vec4_t	color;
+	vec4_t color;
 };
 
-extern	clientStatic_t		cls;
+extern clientStatic_t cls;
 
 //=============================================================================
 
-extern	refexport_t		re;		// interface to refresh .dll
+extern refexport_t re; // interface to refresh .dll
 
 //
 // cvars
 //
-extern	cvar_t* cl_nodelta;
-extern	cvar_t* cl_debugMove;
-extern	cvar_t* cl_noprint;
-extern	cvar_t* cl_timegraph;
-extern	cvar_t* cl_packetdup;
-extern	cvar_t* cl_shownet;
-extern	cvar_t* cl_timeNudge;
-extern	cvar_t* cl_showTimeDelta;
+extern cvar_t* cl_nodelta;
+extern cvar_t* cl_debugMove;
+extern cvar_t* cl_noprint;
+extern cvar_t* cl_timegraph;
+extern cvar_t* cl_packetdup;
+extern cvar_t* cl_shownet;
+extern cvar_t* cl_timeNudge;
+extern cvar_t* cl_showTimeDelta;
 
-extern	cvar_t* cl_yawspeed;
-extern	cvar_t* cl_pitchspeed;
-extern	cvar_t* cl_run;
-extern	cvar_t* cl_anglespeedkey;
+extern cvar_t* cl_yawspeed;
+extern cvar_t* cl_pitchspeed;
+extern cvar_t* cl_run;
+extern cvar_t* cl_anglespeedkey;
 
-extern	cvar_t* cl_sensitivity;
-extern	cvar_t* cl_freelook;
+extern cvar_t* cl_sensitivity;
+extern cvar_t* cl_freelook;
 
-extern	cvar_t* cl_mouseAccel;
-extern	cvar_t* cl_showMouseRate;
+extern cvar_t* cl_mouseAccel;
+extern cvar_t* cl_showMouseRate;
 
-extern	cvar_t* cl_allowAltEnter;
+extern cvar_t* cl_allowAltEnter;
 
-extern	cvar_t* cl_inGameVideo;
+extern cvar_t* cl_inGameVideo;
 
-extern	cvar_t* m_pitch;
-extern	cvar_t* m_yaw;
-extern	cvar_t* m_forward;
-extern	cvar_t* m_side;
-extern	cvar_t* m_filter;
+extern cvar_t* m_pitch;
+extern cvar_t* m_yaw;
+extern cvar_t* m_forward;
+extern cvar_t* m_side;
+extern cvar_t* m_filter;
 
-extern	cvar_t* cl_activeAction;
+extern cvar_t* cl_activeAction;
 
-extern	cvar_t* cl_consoleKeys;
-extern	cvar_t* cl_consoleUseScanCode;
-extern  cvar_t* cl_com_outcast;
+extern cvar_t* cl_consoleKeys;
+extern cvar_t* cl_consoleUseScanCode;
+extern cvar_t* cl_com_outcast;
 
 //=================================================
 
@@ -296,17 +302,18 @@ qboolean CL_CheckPaused(void);
 //
 // cl_input
 //
-using kbutton_t = struct {
-	int			down[2];		// key nums holding it down
-	unsigned	downtime;		// msec timestamp
-	unsigned	msec;			// msec down this frame if both a down and up happened
-	qboolean	active;			// current state
-	qboolean	wasPressed;		// set when down, not cleared when up
+using kbutton_t = struct
+{
+	int down[2]; // key nums holding it down
+	unsigned downtime; // msec timestamp
+	unsigned msec; // msec down this frame if both a down and up happened
+	qboolean active; // current state
+	qboolean wasPressed; // set when down, not cleared when up
 };
 
-extern	kbutton_t	in_mlook, in_klook;
-extern 	kbutton_t 	in_strafe;
-extern 	kbutton_t 	in_speed;
+extern kbutton_t in_mlook, in_klook;
+extern kbutton_t in_strafe;
+extern kbutton_t in_speed;
 
 void CL_InitInput(void);
 void CL_SendCmd(void);
@@ -316,7 +323,8 @@ void CL_WritePacket(void);
 void IN_CenterView(void);
 
 float CL_KeyState(kbutton_t* key);
-const char* Key_KeynumToString(int keynum/*, qboolean bTranslate*/); //note: translate is only called for menu display not configs
+const char* Key_KeynumToString(int keynum/*, qboolean bTranslate*/);
+//note: translate is only called for menu display not configs
 
 //
 // cl_parse.c
@@ -349,23 +357,26 @@ void Con_Close(void);
 //
 // cl_scrn.c
 //
-void	SCR_Init(void);
-void	SCR_UpdateScreen(void);
+void SCR_Init(void);
+void SCR_UpdateScreen(void);
 
-void	SCR_DebugGraph(float value, int color);
+void SCR_DebugGraph(float value, int color);
 
-int		SCR_GetBigStringWidth(const char* str);	// returns in virtual 640x480 coordinates
+int SCR_GetBigStringWidth(const char* str); // returns in virtual 640x480 coordinates
 
-void	SCR_FillRect(float x, float y, float width, float height,
-	const float* color);
-void	SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
-void	SCR_DrawNamedPic(float x, float y, float width, float height, const char* picname);
+void SCR_FillRect(float x, float y, float width, float height,
+                  const float* color);
+void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
+void SCR_DrawNamedPic(float x, float y, float width, float height, const char* picname);
 
-void	SCR_DrawBigString(int x, int y, const char* s, float alpha, qboolean noColorEscape);			// draws a string with embedded color control characters with fade
-void	SCR_DrawBigStringColor(int x, int y, const char* s, vec4_t color, qboolean noColorEscape);	// ignores embedded color control characters
-void	SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean noColorEscape);
-void	SCR_DrawBigChar(int x, int y, int ch);
-void	SCR_DrawSmallChar(int x, int y, int ch);
+void SCR_DrawBigString(int x, int y, const char* s, float alpha, qboolean noColorEscape);
+// draws a string with embedded color control characters with fade
+void SCR_DrawBigStringColor(int x, int y, const char* s, vec4_t color, qboolean noColorEscape);
+// ignores embedded color control characters
+void SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor,
+                            qboolean noColorEscape);
+void SCR_DrawBigChar(int x, int y, int ch);
+void SCR_DrawSmallChar(int x, int y, int ch);
 
 #ifdef JK2_MODE
 void	SCR_PrecacheScreenshot();
@@ -383,7 +394,8 @@ void SCR_DrawCinematic(void);
 void SCR_RunCinematic(void);
 void SCR_StopCinematic(qboolean bAllowRefusal = qfalse);
 
-int CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits, const char* psAudioFile /* = NULL */);
+int CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits,
+                      const char* psAudioFile /* = NULL */);
 e_status CIN_StopCinematic(int handle);
 e_status CIN_RunCinematic(int handle);
 void CIN_DrawCinematic(int handle);

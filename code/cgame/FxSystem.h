@@ -44,7 +44,7 @@ inline void Vector2Clear(vec2_t a)
 	a[1] = 0.0f;
 }
 
-inline void Vector2Set(vec2_t a, float b, float c)
+inline void Vector2Set(vec2_t a, const float b, const float c)
 {
 	a[0] = b;
 	a[1] = c;
@@ -82,7 +82,7 @@ struct SFxHelper
 
 	//G2
 	static int GetOriginAxisFromBolt(const centity_t& cent, int modelNum, int boltNum, vec3_t /*out*/origin,
-		vec3_t /*out*/* axis);
+	                                 vec3_t /*out*/* axis);
 
 	// Physics/collision
 	static void Trace(trace_t* tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags);

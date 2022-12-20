@@ -53,52 +53,64 @@ namespace ratl
 
 	class tree_node
 	{
-		int		mParent;
-		int		mLeft;
-		int		mRight;
+		int mParent;
+		int mLeft;
+		int mRight;
+
 	public:
 		enum
 		{
-			RED_BIT = 0x40000000, // to save space we are putting the red bool in a high bit
+			RED_BIT = 0x40000000,
+			// to save space we are putting the red bool in a high bit
 			// this is in the parent only
-			NULL_NODE = 0x3fffffff, // this must not have the red bit set
+			NULL_NODE = 0x3fffffff,
+			// this must not have the red bit set
 		};
-		void	init()
+
+		void init()
 		{
 			mLeft = NULL_NODE;
 			mRight = NULL_NODE;
 			mParent = NULL_NODE | RED_BIT;
 		}
+
 		int left() const
 		{
 			return mLeft;
 		}
+
 		int right() const
 		{
 			return mRight;
 		}
+
 		int parent() const
 		{
 			return mParent & ~RED_BIT;
 		}
+
 		bool red() const
 		{
 			return !!(mParent & RED_BIT);
 		}
-		void set_left(int l)
+
+		void set_left(const int l)
 		{
 			mLeft = l;
 		}
-		void set_right(int r)
+
+		void set_right(const int r)
 		{
 			mRight = r;
 		}
-		void set_parent(int p)
+
+		void set_parent(const int p)
 		{
 			mParent &= RED_BIT;
 			mParent |= p;
 		}
-		void set_red(bool isRed)
+
+		void set_red(const bool isRed)
 		{
 			if (isRed)
 			{
@@ -113,7 +125,7 @@ namespace ratl
 
 	//fixme void *, comparison function pointer-ize this for code bloat.
 
-	template<class T, int IS_MULTI>
+	template <class T, int IS_MULTI>
 	class tree_base
 	{
 	public:
@@ -125,9 +137,9 @@ namespace ratl
 		static const int CAPACITY = T::CAPACITY;
 
 	private:
-		pool_base<TStorageTraits>		mPool;				// The Allocation Data Pool
-		int								mRoot;
-		int								mLastAdd;
+		pool_base<TStorageTraits> mPool; // The Allocation Data Pool
+		int mRoot;
+		int mLastAdd;
 
 		void link_left(int node, int left)
 		{
@@ -150,7 +162,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive find function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			find_internal(const TTValue& key, int at) const
+		int find_internal(const TTValue& key, int at) const
 		{
 			// FAIL TO FIND?
 			//---------------
@@ -181,7 +193,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive find function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			find_internal(const TTValue& key, int target, int at, int& parent) const
+		int find_internal(const TTValue& key, const int target, int at, int& parent) const
 		{
 			// FAIL TO FIND?
 			//---------------
@@ -217,7 +229,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive insertion - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			insert_internal(const TTValue& key, int& at)
+		int insert_internal(const TTValue& key, int& at)
 		{
 			// If At Is A NULL_NODE, We Have Found A Leaf.
 			//----------------------------------------------
@@ -227,25 +239,26 @@ namespace ratl
 				{
 					mRoot = mLastAdd;
 				}
-				return tree_node::NULL_NODE;					// There Are No Excess Red Children (No Childeren At All, Actually)
+				return tree_node::NULL_NODE; // There Are No Excess Red Children (No Childeren At All, Actually)
 			}
 
-			int		nxtChild;						// The Child We Will Eventually Add Underneath
+			int nxtChild; // The Child We Will Eventually Add Underneath
 			//int		altChild;						// The "other" Child
-			bool	nxtRotateLeft;
-			int		excessRedChild;					// If The Insert Results In An Excess Red Child, This Will Be It
+			bool nxtRotateLeft;
+			int excessRedChild; // If The Insert Results In An Excess Red Child, This Will Be It
 
 			// Choose Which Side To Add The New Node Under
 			//---------------------------------------------
-			if (key < mPool[at])						// The Key Classes Must Support A < Operator
+			if (key < mPool[at]) // The Key Classes Must Support A < Operator
 			{
 				int tmp = T::node(mPool[at]).left();
 				excessRedChild = insert_internal(key, tmp);
-				link_left(at, tmp);//T::node(mPool[at]).set_left(tmp);
+				link_left(at, tmp); //T::node(mPool[at]).set_left(tmp);
 
 				if (tmp == tree_node::NULL_NODE)
 				{
-					link_left(at, mLastAdd);//T::node(mPool[at]).set_left(mLastAdd);			// If mLeft Of The Current Node Is NULL, We Must Have Added DIRECTLY Below nAt
+					link_left(at, mLastAdd);
+					//T::node(mPool[at]).set_left(mLastAdd);			// If mLeft Of The Current Node Is NULL, We Must Have Added DIRECTLY Below nAt
 				}
 				nxtChild = T::node(mPool[at]).left();
 				//altChild = T::node(mPool[at]).right();
@@ -259,7 +272,8 @@ namespace ratl
 
 				if (tmp == tree_node::NULL_NODE)
 				{
-					link_right(at, mLastAdd); // T::node(mPool[at]).set_right(mLastAdd);			// If mRight Of The Current Node Is NULL, We Must Have Added DIRECTLY Below nAt
+					link_right(at, mLastAdd);
+					// T::node(mPool[at]).set_right(mLastAdd);			// If mRight Of The Current Node Is NULL, We Must Have Added DIRECTLY Below nAt
 				}
 				nxtChild = T::node(mPool[at]).right();
 				//altChild = T::node(mPool[at]).left();
@@ -289,7 +303,7 @@ namespace ratl
 				}
 				else
 				{
-					const int	excessRedChildCompare =
+					const int excessRedChildCompare =
 						nxtRotateLeft ? T::node(mPool[nxtChild]).right() : T::node(mPool[nxtChild]).left();
 					if (excessRedChild == excessRedChildCompare)
 					{
@@ -337,7 +351,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive erase - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	erase_internal(const TTValue& key, int& at)
+		bool erase_internal(const TTValue& key, int& at)
 		{
 			// If At Is A NULL_NODE, We Have Found A Leaf.
 			//---------------------------------------------
@@ -357,7 +371,7 @@ namespace ratl
 				int a = T::node(mPool[at]).left();
 				const bool r = erase_internal(key, a);
 				link_left(at, a); // T::node(mPool[at]).set_left(a);
-				if (!r)		// If It Was Not Red, We Need To Rebalance
+				if (!r) // If It Was Not Red, We Need To Rebalance
 				{
 					return rebalance(at, true);
 				}
@@ -371,7 +385,7 @@ namespace ratl
 				int a = T::node(mPool[at]).right();
 				const bool r = erase_internal(key, a);
 				link_right(at, a); // T::node(mPool[at]).set_right(a);
-				if (!r)		// If It Was Not Red, We Need To Rebalance
+				if (!r) // If It Was Not Red, We Need To Rebalance
 				{
 					return rebalance(at, false);
 				}
@@ -386,10 +400,12 @@ namespace ratl
 			//-------------------------------------
 			if (T::node(mPool[at]).left() == tree_node::NULL_NODE || T::node(mPool[at]).right() == tree_node::NULL_NODE)
 			{
-				const bool	atWasRed = T::node(mPool[at]).red();
-				int		oldAt = at;
+				const bool atWasRed = T::node(mPool[at]).red();
+				int oldAt = at;
 
-				at = T::node(mPool[at]).left() == tree_node::NULL_NODE ? T::node(mPool[at]).right() : T::node(mPool[at]).left();	// If Left Is Null, At Goes Right
+				at = T::node(mPool[at]).left() == tree_node::NULL_NODE
+					     ? T::node(mPool[at]).right()
+					     : T::node(mPool[at]).left(); // If Left Is Null, At Goes Right
 
 				// Actually Free It!
 				//-------------------
@@ -416,7 +432,7 @@ namespace ratl
 			// Find A Successor Leaf
 			//-----------------------
 			int at_parent = T::node(mPool[at]).parent();
-			int	successor = T::node(mPool[at]).right();
+			int successor = T::node(mPool[at]).right();
 
 			int parent_successor = -1;
 			while (T::node(mPool[successor]).left() != tree_node::NULL_NODE)
@@ -425,7 +441,7 @@ namespace ratl
 				successor = T::node(mPool[successor]).left();
 			}
 
-			const int	successor_right = T::node(mPool[successor]).right();
+			const int successor_right = T::node(mPool[successor]).right();
 
 			link_left(successor, T::node(mPool[at]).left());
 
@@ -466,7 +482,7 @@ namespace ratl
 			link_right(at, a); // T::node(mPool[at]).set_right(a);
 			// And Keep Going
 			//----------------
-			if (!r)		// If It Was Not Red, We Need To Rebalance
+			if (!r) // If It Was Not Red, We Need To Rebalance
 			{
 				return rebalance(at, false);
 			}
@@ -476,7 +492,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// HELPER: Change the color of a node and children
 		////////////////////////////////////////////////////////////////////////////////////
-		void		set_colors(tree_node& at, bool red, bool childRed)
+		void set_colors(tree_node& at, const bool red, bool childRed)
 		{
 			at.set_red(red);
 			if (at.left() != tree_node::NULL_NODE)
@@ -492,16 +508,16 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// HELPER: Rotate node located at (at) either left or right
 		////////////////////////////////////////////////////////////////////////////////////
-		void		rotate(int& at, bool left)
+		void rotate(int& at, const bool left)
 		{
-			int	t;
+			int t;
 			if (left)
 			{
 				assert(T::node(mPool[at]).right() != tree_node::NULL_NODE);
 
 				t = T::node(mPool[at]).right();
 				link_right(at, T::node(mPool[t]).left()); // T::node(mPool[at]).set_right(T::node(mPool[t]).left());
-				link_left(t, at);	// T::node(mPool[t]).set_left(at);
+				link_left(t, at); // T::node(mPool[t]).set_left(at);
 				at = t;
 			}
 			else
@@ -510,7 +526,7 @@ namespace ratl
 
 				t = T::node(mPool[at]).left();
 				link_left(at, T::node(mPool[t]).right()); // T::node(mPool[at]).set_left(T::node(mPool[t]).right());
-				link_right(t, at);	//T::node(mPool[t]).set_right(at);
+				link_right(t, at); //T::node(mPool[t]).set_right(at);
 				at = t;
 			}
 		}
@@ -518,23 +534,23 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// HELPER: Localally rebalance the tree here
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		rebalance(int& at, bool left)
+		bool rebalance(int& at, bool left)
 		{
 			// Decide Which Child, Left Or Right?
 			//------------------------------------
-			int	w = left ? T::node(mPool[at]).right() : T::node(mPool[at]).left();	// w is the child of at
+			int w = left ? T::node(mPool[at]).right() : T::node(mPool[at]).left(); // w is the child of at
 			if (w == tree_node::NULL_NODE)
 			{
-				const bool	atWasRed = T::node(mPool[at]).red();			// Remember what mPool[at] WAS
-				T::node(mPool[at]).set_red(false);						// Mark mPool[at] as BLACK
-				return  atWasRed;						// Return what it used to be
+				const bool atWasRed = T::node(mPool[at]).red(); // Remember what mPool[at] WAS
+				T::node(mPool[at]).set_red(false); // Mark mPool[at] as BLACK
+				return atWasRed; // Return what it used to be
 			}
 
 			// Get A Reference To The Child W, And Record It's Children x And y
 			//------------------------------------------------------------------
 			tree_node& wAt = T::node(mPool[w]);
-			int		x = left ? wAt.left() : wAt.right();// x and y are the grand children of at
-			int		y = left ? wAt.right() : wAt.left();
+			int x = left ? wAt.left() : wAt.right(); // x and y are the grand children of at
+			int y = left ? wAt.right() : wAt.left();
 
 			// Is The Child Black?
 			//---------------------
@@ -545,10 +561,10 @@ namespace ratl
 				if ((x == tree_node::NULL_NODE || !T::node(mPool[x]).red()) &&
 					(y == tree_node::NULL_NODE || !T::node(mPool[y]).red()))
 				{
-					const bool	atWasRed = T::node(mPool[at]).red();		// Remember what mPool[at] WAS
-					T::node(mPool[at]).set_red(false);		// Mark mPool[at] as BLACK
-					wAt.set_red(true);					// Mark The Child As RED
-					return  atWasRed;					// Return what it used to be
+					const bool atWasRed = T::node(mPool[at]).red(); // Remember what mPool[at] WAS
+					T::node(mPool[at]).set_red(false); // Mark mPool[at] as BLACK
+					wAt.set_red(true); // Mark The Child As RED
+					return atWasRed; // Return what it used to be
 				}
 
 				// If Y Is Valid
@@ -586,9 +602,9 @@ namespace ratl
 
 			// The Child Must Have Been Red
 			//------------------------------
-			wAt.set_red(T::node(mPool[at]).red());				// Switch Child Color
+			wAt.set_red(T::node(mPool[at]).red()); // Switch Child Color
 			T::node(mPool[at]).set_red(true);
-			rotate(at, left);					// Rotate At
+			rotate(at, left); // Rotate At
 
 			// Select The Next Rebalance Child And Recurse
 			//----------------------------------------------
@@ -606,10 +622,11 @@ namespace ratl
 			}
 			return true;
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive front function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			front(int at) const
+		int front(int at) const
 		{
 			if (at != tree_node::NULL_NODE &&
 				T::node(mPool[at]).left() != tree_node::NULL_NODE)
@@ -622,7 +639,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive back function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			back(int at) const
+		int back(int at) const
 		{
 			if (at != tree_node::NULL_NODE && T::node(mPool[at]).right() != tree_node::NULL_NODE)
 			{
@@ -630,13 +647,14 @@ namespace ratl
 			}
 			return at;
 		}
+
 	protected:
-		int			front() const
+		int front() const
 		{
 			return front(mRoot);
 		}
 
-		int			back() const
+		int back() const
 		{
 			return back(mRoot);
 		}
@@ -644,7 +662,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive next function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			next(int at) const
+		int next(int at) const
 		{
 			assert(at != tree_node::NULL_NODE);
 			const TTValue& kAt = mPool[at];
@@ -654,8 +672,8 @@ namespace ratl
 				return front(nAt.right());
 			}
 
-			int		child = at;
-			int		parent = tree_node::NULL_NODE;
+			int child = at;
+			int parent = tree_node::NULL_NODE;
 			find_internal(kAt, at, mRoot, parent);
 
 			while (parent != tree_node::NULL_NODE && child == T::node(mPool[parent]).right())
@@ -669,7 +687,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This is the map internal recursive previous function - do not use externally
 		////////////////////////////////////////////////////////////////////////////////////
-		int			previous(int at) const
+		int previous(int at) const
 		{
 			assert(at != tree_node::NULL_NODE);
 			const TTValue& kAt = mPool[at];
@@ -679,8 +697,8 @@ namespace ratl
 				return back(kAt.left());
 			}
 
-			int		child = at;
-			int		parent = tree_node::NULL_NODE;
+			int child = at;
+			int parent = tree_node::NULL_NODE;
 			find_internal(nAt, at, mRoot, parent);
 
 			while (parent != tree_node::NULL_NODE && child == T::node(mPool[parent]).left())
@@ -692,7 +710,6 @@ namespace ratl
 		}
 
 	public:
-
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		////////////////////////////////////////////////////////////////////////////////////
@@ -703,7 +720,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Objects Are In This Map
 		////////////////////////////////////////////////////////////////////////////////////
-		int			size() const
+		int size() const
 		{
 			return mPool.size();
 		}
@@ -711,7 +728,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Are There Any Objects In This Map?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		empty() const
+		bool empty() const
 		{
 			return mPool.empty();
 		}
@@ -719,7 +736,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Is This Map Filled?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full() const
+		bool full() const
 		{
 			return mPool.full();
 		}
@@ -727,7 +744,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear All Data From The Map
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mRoot = tree_node::NULL_NODE;
 			mPool.clear();
@@ -740,8 +757,8 @@ namespace ratl
 		{
 			//fixme handle duplicates more sensibly?
 			assert(!full());
-			mLastAdd = mPool.alloc(key);			// Grab A New One
-			T::node(mPool[mLastAdd]).init();	// Initialize Our Data And Color
+			mLastAdd = mPool.alloc(key); // Grab A New One
+			T::node(mPool[mLastAdd]).init(); // Initialize Our Data And Color
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -750,8 +767,8 @@ namespace ratl
 		TTValue& alloc_key()
 		{
 			assert(!full());
-			mLastAdd = mPool.alloc();			// Grab A New One
-			T::node(mPool[mLastAdd]).init();	// Initialize Our Data And Color
+			mLastAdd = mPool.alloc(); // Grab A New One
+			T::node(mPool[mLastAdd]).init(); // Initialize Our Data And Color
 			return mPool[mLastAdd];
 		}
 
@@ -761,12 +778,13 @@ namespace ratl
 		TRatlNew* alloc_key_raw()
 		{
 			assert(!full());
-			TRatlNew* ret = mPool.alloc_raw();			// Grab A New One
+			TRatlNew* ret = mPool.alloc_raw(); // Grab A New One
 			mLastAdd = mPool.pointer_to_index(ret);
-			T::node(mPool[mLastAdd]).init();	// Initialize Our Data And Color
+			T::node(mPool[mLastAdd]).init(); // Initialize Our Data And Color
 			return ret;
 		}
-		template<class CAST_TO>
+
+		template <class CAST_TO>
 		CAST_TO* verify_alloc_key(CAST_TO* p) const
 		{
 			return mPool.verify_alloc(p);
@@ -775,7 +793,8 @@ namespace ratl
 		void insert_alloced_key()
 		{
 			assert(mLastAdd >= 0 && mLastAdd < CAPACITY);
-			assert(!IS_MULTI || find_index(mPool[mLastAdd]) != tree_node::NULL_NODE); //fixme handle duplicates more sensibly?
+			assert(!IS_MULTI || find_index(mPool[mLastAdd]) != tree_node::NULL_NODE);
+			//fixme handle duplicates more sensibly?
 
 			insert_internal(mPool[mLastAdd], mRoot);
 			assert(mRoot != tree_node::NULL_NODE);
@@ -788,6 +807,7 @@ namespace ratl
 			assert(mLastAdd >= 0 && mLastAdd < CAPACITY);
 			return mLastAdd;
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Removes The Element Pointed To At (it) And Decrements (it)  - O((log n)^2)
 		////////////////////////////////////////////////////////////////////////////////////
@@ -804,13 +824,15 @@ namespace ratl
 				T::node(mPool[mRoot]).set_parent(tree_node::NULL_NODE);
 			}
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Seach For A Given Key.  Will Return -1 if Failed  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		int	find_index(const TTValue& key) const
+		int find_index(const TTValue& key) const
 		{
 			return find_internal(key, mRoot);
 		}
+
 		const TTValue& index_to_key(int i) const
 		{
 			assert(i >= 0 && i < CAPACITY);
@@ -820,7 +842,7 @@ namespace ratl
 		//fixme lower bound, upper bound, equal range
 	};
 
-	template<class T, int IS_MULTI>
+	template <class T, int IS_MULTI>
 	class set_base : public tree_base<T, IS_MULTI>
 	{
 	public:
@@ -857,7 +879,8 @@ namespace ratl
 		{
 			return tree_base<T, IS_MULTI>::alloc_key_raw();
 		}
-		template<class CAST_TO>
+
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return verify_alloc_key(p);
@@ -871,7 +894,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Removes The First Element With Key (key)  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		void		erase(const TTValue& key)
+		void erase(const TTValue& key)
 		{
 			//fixme this is a double search currently
 			int i = find_index(key);
@@ -893,15 +916,16 @@ namespace ratl
 			friend class set_base<TStorageTraits, IS_MULTI>;
 			friend class const_iterator;
 
-			int			mLoc;
+			int mLoc;
 			set_base<TStorageTraits, IS_MULTI>* mOwner;
 
 		public:
-			iterator(set_base<TStorageTraits, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			iterator(set_base<TStorageTraits, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
 			}
+
 			iterator(const iterator& o) :
 				mLoc(o.mLoc),
 				mOwner(o.mOwner)
@@ -914,13 +938,14 @@ namespace ratl
 				mLoc = o.mLoc;
 			}
 
-			iterator	operator++()		//prefix
+			iterator operator++() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->next(mLoc);
 				return *this;
 			}
-			iterator	operator++(int)		//postfix
+
+			iterator operator++(int) //postfix
 			{
 				assert(mOwner);
 				iterator old(*this);
@@ -928,13 +953,14 @@ namespace ratl
 				return old;
 			}
 
-			iterator	operator--()		//prefix
+			iterator operator--() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->previous(mLoc);
 				return *this;
 			}
-			iterator	operator--(int)		//postfix
+
+			iterator operator--(int) //postfix
 			{
 				assert(mOwner);
 				iterator old(*this);
@@ -942,8 +968,8 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
-			bool	operator==(const iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool operator!=(const iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool operator==(const iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			const TTValue& operator*() const
 			{
@@ -951,6 +977,7 @@ namespace ratl
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->index_to_key(mLoc);
 			}
+
 			const TTValue* operator->() const
 			{
 				assert(mOwner);
@@ -958,48 +985,55 @@ namespace ratl
 				return &mOwner->index_to_key(mLoc);
 			}
 		};
+
 		class const_iterator
 		{
 			friend class set_base<TStorageTraits, IS_MULTI>;
 
-			int		mLoc;
+			int mLoc;
 
 			const set_base<TStorageTraits, IS_MULTI>* mOwner;
 
 		public:
-			const_iterator(const set_base<TStorageTraits, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			const_iterator(const set_base<TStorageTraits, IS_MULTI>* owner = nullptr,
+			               const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
 			}
+
 			const_iterator(const const_iterator& o) :
 				mLoc(o.mLoc),
 				mOwner(o.mOwner)
 			{
 			}
+
 			const_iterator(const iterator& o) :
 				mLoc(o.mLoc),
 				mOwner(o.mOwner)
 			{
 			}
+
 			void operator=(const const_iterator& o)
 			{
 				mOwner = o.mOwner;
 				mLoc = o.mLoc;
 			}
+
 			void operator=(const iterator& o)
 			{
 				mOwner = o.mOwner;
 				mLoc = o.mLoc;
 			}
 
-			const_iterator	operator++()		//prefix
+			const_iterator operator++() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->next(mLoc);
 				return *this;
 			}
-			const_iterator	operator++(int)		//postfix
+
+			const_iterator operator++(int) //postfix
 			{
 				assert(mOwner);
 				const_iterator old(*this);
@@ -1007,13 +1041,14 @@ namespace ratl
 				return old;
 			}
 
-			const_iterator	operator--()		//prefix
+			const_iterator operator--() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->previous(mLoc);
 				return *this;
 			}
-			const_iterator	operator--(int)		//postfix
+
+			const_iterator operator--(int) //postfix
 			{
 				assert(mOwner);
 				const_iterator old(*this);
@@ -1021,10 +1056,10 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const const_iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
-			bool	operator==(const const_iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
-			bool	operator!=(const iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
-			bool	operator==(const iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool operator!=(const const_iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool operator==(const const_iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool operator!=(const iterator p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool operator==(const iterator p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			const TTValue& operator*() const
 			{
@@ -1032,6 +1067,7 @@ namespace ratl
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->index_to_key(mLoc);
 			}
+
 			const TTValue* operator->() const
 			{
 				assert(mOwner);
@@ -1039,13 +1075,14 @@ namespace ratl
 				return &mOwner->index_to_key(mLoc);
 			}
 		};
+
 		friend class iterator;
 		friend class const_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Seach For A Given Key.  Will Return end() if Failed  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	find(const TTValue& key)
+		iterator find(const TTValue& key)
 		{
 			return iterator(this, find_index(key));
 		}
@@ -1053,7 +1090,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Smallest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin()
+		iterator begin()
 		{
 			return iterator(this, tree_base<T, IS_MULTI>::front());
 		}
@@ -1061,7 +1098,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Largest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	rbegin()
+		iterator rbegin()
 		{
 			return iterator(this, tree_base<T, IS_MULTI>::back());
 		}
@@ -1069,7 +1106,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Invalid Iterator, Use As A Stop Condition In Your For Loops  - O(1)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	end()
+		iterator end()
 		{
 			return iterator(this);
 		}
@@ -1077,7 +1114,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Seach For A Given Key.  Will Return end() if Failed  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	find(const TTValue& key) const
+		const_iterator find(const TTValue& key) const
 		{
 			return const_iterator(this, find_index(key));
 		}
@@ -1085,7 +1122,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An const_iterator To The Smallest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	begin() const
+		const_iterator begin() const
 		{
 			return const_iterator(this, tree_base<T, IS_MULTI>::front());
 		}
@@ -1093,7 +1130,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An const_iterator To The Largest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	rbegin() const
+		const_iterator rbegin() const
 		{
 			return const_iterator(this, tree_base<T, IS_MULTI>::back());
 		}
@@ -1101,14 +1138,15 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Invalid const_iterator, Use As A Stop Condition In Your For Loops  - O(1)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	end() const
+		const_iterator end() const
 		{
 			return const_iterator(this);
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Removes The Element Pointed To At (it) And Decrements (it)  - O((log n)^2)
 		////////////////////////////////////////////////////////////////////////////////////
-		void		erase(const iterator& it)
+		void erase(const iterator& it)
 		{
 			assert(it.mOwner == this && it.mLoc >= 0 && it.mLoc < CAPACITY);
 			erase_index(it.mLoc);
@@ -1117,7 +1155,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	lower_bound(const TTValue& key)
+		iterator lower_bound(const TTValue& key)
 		{
 			return iterator(this, find_index(key));
 		}
@@ -1125,7 +1163,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	upper_bound(const TTValue& key)
+		iterator upper_bound(const TTValue& key)
 		{
 			// fixme, this don't work
 			iterator ubound(this, find_index(key));
@@ -1134,38 +1172,47 @@ namespace ratl
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class set_vs : public set_base<storage::value_semantics_node<T, ARG_CAPACITY, tree_node>, 0 >
+	template <class T, int ARG_CAPACITY>
+	class set_vs : public set_base<storage::value_semantics_node<T, ARG_CAPACITY, tree_node>, 0>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics_node<T, ARG_CAPACITY, tree_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		set_vs() {}
+
+		set_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class set_os : public set_base<storage::object_semantics_node<T, ARG_CAPACITY, tree_node>, 0 >
+	template <class T, int ARG_CAPACITY>
+	class set_os : public set_base<storage::object_semantics_node<T, ARG_CAPACITY, tree_node>, 0>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics_node<T, ARG_CAPACITY, tree_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		set_os() {}
+
+		set_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class set_is : public set_base<storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, tree_node>, 0 >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class set_is : public set_base<storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, tree_node>, 0>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics_node<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE, tree_node>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		set_is() {}
+
+		set_is()
+		{
+		}
 	};
 
-	template<class K, class V, int IS_MULTI>
+	template <class K, class V, int IS_MULTI>
 	class map_base : public tree_base<K, IS_MULTI>
 	{
 	public:
@@ -1178,8 +1225,10 @@ namespace ratl
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = K::CAPACITY;
+
 	private:
-		array_base<TValueStorageTraits>	mValues;
+		array_base<TValueStorageTraits> mValues;
+
 	public:
 		map_base()
 		{
@@ -1191,12 +1240,14 @@ namespace ratl
 			tree_base<K, IS_MULTI>::clear();
 			mValues.clear();
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Adds Element Value At Location Key  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
 		void insert(const TKTValue& key, const TVTValue& value)
 		{
-			assert(!IS_MULTI || (tree_base<K, IS_MULTI>::find_index(key) == tree_node::NULL_NODE)); //fixme handle duplicates more sensibly?
+			assert(!IS_MULTI || (tree_base<K, IS_MULTI>::find_index(key) == tree_node::NULL_NODE));
+			//fixme handle duplicates more sensibly?
 
 			tree_base<K, IS_MULTI>::alloc_key(key);
 			tree_base<K, IS_MULTI>::insert_alloced_key();
@@ -1209,7 +1260,8 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		TVTValue& insert(const TKTValue& key)
 		{
-			assert(!IS_MULTI || (tree_base<K, IS_MULTI>::find_index(key) == tree_node::NULL_NODE)); //fixme handle duplicates more sensibly?
+			assert(!IS_MULTI || (tree_base<K, IS_MULTI>::find_index(key) == tree_node::NULL_NODE));
+			//fixme handle duplicates more sensibly?
 
 			tree_base<K, IS_MULTI>::alloc_key(key);
 			tree_base<K, IS_MULTI>::insert_alloced_key();
@@ -1219,12 +1271,14 @@ namespace ratl
 			mValues.construct(idx);
 			return mValues[idx];
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Adds Element Value At Location Key  returns a rew pointer for placement new
 		////////////////////////////////////////////////////////////////////////////////////
 		TRatlNew* insert_raw(const TKTValue& key)
 		{
-			assert(!IS_MULTI || (tree_base<K, IS_MULTI>::find_index(key) == tree_node::NULL_NODE)); //fixme handle duplicates more sensibly?
+			assert(!IS_MULTI || (tree_base<K, IS_MULTI>::find_index(key) == tree_node::NULL_NODE));
+			//fixme handle duplicates more sensibly?
 
 			tree_base<K, IS_MULTI>::alloc_key(key);
 			tree_base<K, IS_MULTI>::insert_alloced_key();
@@ -1249,7 +1303,7 @@ namespace ratl
 			return mValues.alloc_raw(tree_base<K, IS_MULTI>::index_of_alloced_key());
 		}
 
-		template<class CAST_TO>
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return mValues.verify_alloc(p);
@@ -1258,7 +1312,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Removes The First Element With Key (key)  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		void		erase(const TKTValue& key)
+		void erase(const TKTValue& key)
 		{
 			//fixme this is a double search currently
 			int i = tree_base<K, IS_MULTI>::find_index(key);
@@ -1277,20 +1331,22 @@ namespace ratl
 		//
 		////////////////////////////////////////////////////////////////////////////////////
 		class const_iterator;
+
 		class iterator
 		{
 			friend class map_base<K, V, IS_MULTI>;
 			friend class const_iterator;
 
-			int							mLoc;
+			int mLoc;
 			map_base<K, V, IS_MULTI>* mOwner;
 
 		public:
-			iterator(map_base<K, V, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			iterator(map_base<K, V, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
 			}
+
 			iterator(const iterator& o) :
 				mLoc(o.mLoc),
 				mOwner(o.mOwner)
@@ -1303,13 +1359,14 @@ namespace ratl
 				mLoc = o.mLoc;
 			}
 
-			iterator	operator++()		//prefix
+			iterator operator++() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->next(mLoc);
 				return *this;
 			}
-			iterator	operator++(int)		//postfix
+
+			iterator operator++(int) //postfix
 			{
 				assert(mOwner);
 				iterator old(*this);
@@ -1317,13 +1374,14 @@ namespace ratl
 				return old;
 			}
 
-			iterator	operator--()		//prefix
+			iterator operator--() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->previous(mLoc);
 				return *this;
 			}
-			iterator	operator--(int)		//postfix
+
+			iterator operator--(int) //postfix
 			{
 				assert(mOwner);
 				iterator old(*this);
@@ -1331,8 +1389,8 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
-			bool	operator==(const iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool operator!=(const iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool operator==(const iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			TVTValue& operator*() const
 			{
@@ -1340,18 +1398,21 @@ namespace ratl
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->mValues[mLoc];
 			}
+
 			const TKTValue& key() const
 			{
 				assert(mOwner);
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->index_to_key(mLoc);
 			}
+
 			TVTValue& value() const
 			{
 				assert(mOwner);
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->mValues[mLoc];
 			}
+
 			TVTValue* operator->() const
 			{
 				assert(mOwner);
@@ -1359,47 +1420,53 @@ namespace ratl
 				return &mOwner->mValues[mLoc];
 			}
 		};
+
 		class const_iterator
 		{
 			friend class map_base<K, V, IS_MULTI>;
 
-			int									mLoc;
+			int mLoc;
 			const map_base<K, V, IS_MULTI>* mOwner;
 
 		public:
-			const_iterator(const map_base<K, V, IS_MULTI>* owner = nullptr, int loc = tree_node::NULL_NODE) :
+			const_iterator(const map_base<K, V, IS_MULTI>* owner = nullptr, const int loc = tree_node::NULL_NODE) :
 				mLoc(loc),
 				mOwner(owner)
 			{
 			}
+
 			const_iterator(const const_iterator& o) :
 				mLoc(o.mLoc),
 				mOwner(o.mOwner)
 			{
 			}
+
 			const_iterator(const iterator& o) :
 				mLoc(o.mLoc),
 				mOwner(o.mOwner)
 			{
 			}
+
 			void operator=(const const_iterator& o)
 			{
 				mOwner = o.mOwner;
 				mLoc = o.mLoc;
 			}
+
 			void operator=(const iterator& o)
 			{
 				mOwner = o.mOwner;
 				mLoc = o.mLoc;
 			}
 
-			const_iterator	operator++()		//prefix
+			const_iterator operator++() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->next(mLoc);
 				return *this;
 			}
-			const_iterator	operator++(int)		//postfix
+
+			const_iterator operator++(int) //postfix
 			{
 				assert(mOwner);
 				const_iterator old(*this);
@@ -1407,13 +1474,14 @@ namespace ratl
 				return old;
 			}
 
-			const_iterator	operator--()		//prefix
+			const_iterator operator--() //prefix
 			{
 				assert(mOwner);
 				mLoc = mOwner->previous(mLoc);
 				return *this;
 			}
-			const_iterator	operator--(int)		//postfix
+
+			const_iterator operator--(int) //postfix
 			{
 				assert(mOwner);
 				const_iterator old(*this);
@@ -1421,10 +1489,10 @@ namespace ratl
 				return old;
 			}
 
-			bool	operator!=(const const_iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
-			bool	operator==(const const_iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
-			bool	operator!=(const iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
-			bool	operator==(const iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool operator!=(const const_iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool operator==(const const_iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
+			bool operator!=(const iterator& p) const { return mLoc != p.mLoc || mOwner != p.mOwner; }
+			bool operator==(const iterator& p) const { return mLoc == p.mLoc && mOwner == p.mOwner; }
 
 			const TVTValue& operator*() const
 			{
@@ -1432,18 +1500,21 @@ namespace ratl
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->mValues[mLoc];
 			}
+
 			const TKTValue& key() const
 			{
 				assert(mOwner);
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->index_to_key(mLoc);
 			}
+
 			const TVTValue& value() const
 			{
 				assert(mOwner);
 				assert(mLoc >= 0 && mLoc < CAPACITY); // deferencing end()?
 				return mOwner->mValues[mLoc];
 			}
+
 			const TVTValue* operator->() const
 			{
 				assert(mOwner);
@@ -1451,13 +1522,14 @@ namespace ratl
 				return &mOwner->mValues[mLoc];
 			}
 		};
+
 		friend class iterator;
 		friend class const_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Seach For A Given Key.  Will Return end() if Failed  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	find(const TKTValue& key)
+		iterator find(const TKTValue& key)
 		{
 			return iterator(this, tree_base<K, IS_MULTI>::find_index(key));
 		}
@@ -1465,7 +1537,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Smallest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin()
+		iterator begin()
 		{
 			return iterator(this, tree_base<K, IS_MULTI>::front());
 		}
@@ -1473,7 +1545,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The Largest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	rbegin()
+		iterator rbegin()
 		{
 			return iterator(this, tree_base<K, IS_MULTI>::back());
 		}
@@ -1481,7 +1553,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Invalid Iterator, Use As A Stop Condition In Your For Loops  - O(1)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	end()
+		iterator end()
 		{
 			return iterator(this);
 		}
@@ -1489,7 +1561,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Seach For A Given Key.  Will Return end() if Failed  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	find(const TKTValue& key) const
+		const_iterator find(const TKTValue& key) const
 		{
 			return const_iterator(this, find_index(key));
 		}
@@ -1497,7 +1569,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An const_iterator To The Smallest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	begin() const
+		const_iterator begin() const
 		{
 			return const_iterator(this, tree_base<K, IS_MULTI>::front());
 		}
@@ -1505,7 +1577,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An const_iterator To The Largest Element  - O(log n)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	rbegin() const
+		const_iterator rbegin() const
 		{
 			return const_iterator(this, tree_base<K, IS_MULTI>::back());
 		}
@@ -1513,19 +1585,21 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Invalid const_iterator, Use As A Stop Condition In Your For Loops  - O(1)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	end() const
+		const_iterator end() const
 		{
 			return const_iterator(this);
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Removes The Element Pointed To At (it) And Decrements (it)  - O((log n)^2)
 		////////////////////////////////////////////////////////////////////////////////////
-		void		erase(const iterator& it)
+		void erase(const iterator& it)
 		{
 			assert(it.mOwner == this && it.mLoc >= 0 && it.mLoc < CAPACITY);
 			erase_index(it.mLoc);
 			mValues.destruct(it.mLoc);
 		}
+
 	private:
 		static bool check_validity()
 		{
@@ -1544,44 +1618,53 @@ namespace ratl
 		}
 	};
 
-	template<class K, class V, int ARG_CAPACITY>
+	template <class K, class V, int ARG_CAPACITY>
 	class map_vs : public map_base<
-		storage::value_semantics_node<K, ARG_CAPACITY, tree_node>,
-		storage::value_semantics<V, ARG_CAPACITY>,
-		0 >
+			storage::value_semantics_node<K, ARG_CAPACITY, tree_node>,
+			storage::value_semantics<V, ARG_CAPACITY>,
+			0>
 	{
 	public:
 		using VStorageTraits = storage::value_semantics<V, ARG_CAPACITY>;
 		using TTValue = typename VStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		map_vs() {}
+
+		map_vs()
+		{
+		}
 	};
 
-	template<class K, class V, int ARG_CAPACITY>
+	template <class K, class V, int ARG_CAPACITY>
 	class map_os : public map_base<
-		storage::value_semantics_node<K, ARG_CAPACITY, tree_node>,
-		storage::object_semantics<V, ARG_CAPACITY>,
-		0 >
+			storage::value_semantics_node<K, ARG_CAPACITY, tree_node>,
+			storage::object_semantics<V, ARG_CAPACITY>,
+			0>
 	{
 	public:
 		using VStorageTraits = storage::object_semantics<V, ARG_CAPACITY>;
 		using TTValue = typename VStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		map_os() {}
+
+		map_os()
+		{
+		}
 	};
 
-	template<class K, class V, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	template <class K, class V, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
 	class map_is : public map_base<
-		storage::value_semantics_node<K, ARG_CAPACITY, tree_node>,
-		storage::virtual_semantics<V, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>,
-		0 >
+			storage::value_semantics_node<K, ARG_CAPACITY, tree_node>,
+			storage::virtual_semantics<V, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>,
+			0>
 	{
 	public:
 		using VStorageTraits = storage::virtual_semantics<V, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename VStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		map_is() {}
+
+		map_is()
+		{
+		}
 	};
 }
 

@@ -60,7 +60,7 @@ typedef arith_entropy_decoder* arith_entropy_ptr;
 #define AC_STAT_BINS 256
 
 LOCAL(int)
-get_byte(j_decompress_ptr cinfo)
+get_byte(const j_decompress_ptr cinfo)
 /* Read next input byte; we do not support suspension in this module. */
 {
 	struct jpeg_source_mgr* src = cinfo->src;
@@ -100,7 +100,7 @@ get_byte(j_decompress_ptr cinfo)
  */
 
 LOCAL(int)
-arith_decode(j_decompress_ptr cinfo, unsigned char* st)
+arith_decode(const j_decompress_ptr cinfo, unsigned char* st)
 {
 	const register arith_entropy_ptr e = (arith_entropy_ptr)cinfo->entropy;
 	register int data;
@@ -184,7 +184,7 @@ arith_decode(j_decompress_ptr cinfo, unsigned char* st)
  */
 
 LOCAL(void)
-process_restart(j_decompress_ptr cinfo)
+process_restart(const j_decompress_ptr cinfo)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 
@@ -233,7 +233,7 @@ process_restart(j_decompress_ptr cinfo)
   */
 
 METHODDEF(boolean)
-decode_mcu_DC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_DC_first(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 	int m;
@@ -308,7 +308,7 @@ decode_mcu_DC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu_AC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_AC_first(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 	int m;
@@ -385,7 +385,7 @@ decode_mcu_AC_first(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu_DC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_DC_refine(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 
@@ -415,7 +415,7 @@ decode_mcu_DC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu_AC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu_AC_refine(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 
@@ -483,7 +483,7 @@ decode_mcu_AC_refine(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(boolean)
-decode_mcu(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
+decode_mcu(const j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 	int sign;
@@ -610,7 +610,7 @@ decode_mcu(j_decompress_ptr cinfo, JBLOCKROW* MCU_data)
  */
 
 METHODDEF(void)
-start_pass(j_decompress_ptr cinfo)
+start_pass(const j_decompress_ptr cinfo)
 {
 	const arith_entropy_ptr entropy = (arith_entropy_ptr)cinfo->entropy;
 	int ci, tbl;
@@ -731,7 +731,7 @@ finish_pass(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_arith_decoder(j_decompress_ptr cinfo)
+jinit_arith_decoder(const j_decompress_ptr cinfo)
 {
 	int i;
 

@@ -67,14 +67,14 @@ namespace ratl
 {
 #ifdef _DEBUG
 	int HandleSaltValue = 1027; //this is used in debug for global uniqueness of handles
-	int FoolTheOptimizer = 5;		//this is used to make sure certain things aren't optimized out
+	int FoolTheOptimizer = 5; //this is used to make sure certain things aren't optimized out
 #endif
 
-	void	ratl_base::save(hfile& file)
+	void ratl_base::save(hfile& file)
 	{
 	}
 
-	void	ratl_base::load(hfile& file)
+	void ratl_base::load(hfile& file)
 	{
 	}
 
@@ -112,7 +112,7 @@ namespace ratl
 		}
 	}
 #else
-	void	ratl_base::ProfilePrint(const char* format, ...)
+	void ratl_base::ProfilePrint(const char* format, ...)
 	{
 	}
 #endif

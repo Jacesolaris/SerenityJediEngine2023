@@ -36,8 +36,10 @@ CL_Netchan_Encode
 
 ==============
 */
-static void CL_Netchan_Encode(msg_t* msg) {
-	if (msg->cursize <= CL_ENCODE_START) {
+static void CL_Netchan_Encode(msg_t* msg)
+{
+	if (msg->cursize <= CL_ENCODE_START)
+	{
 		return;
 	}
 
@@ -61,16 +63,18 @@ static void CL_Netchan_Encode(msg_t* msg) {
 	int index = 0;
 	//
 	byte key = clc.challenge ^ serverId ^ messageAcknowledge;
-	for (int i = CL_ENCODE_START; i < msg->cursize; i++) {
+	for (int i = CL_ENCODE_START; i < msg->cursize; i++)
+	{
 		// modify the key with the last received now acknowledged server command
 		if (!string[index])
 			index = 0;
-		if (/*string[index] > 127 || */	// eurofix: remove this so we can chat in european languages...	-ste
+		if (/*string[index] > 127 || */ // eurofix: remove this so we can chat in european languages...	-ste
 			string[index] == '%')
 		{
 			key ^= '.' << (i & 1);
 		}
-		else {
+		else
+		{
 			key ^= string[index] << (i & 1);
 		}
 		index++;
@@ -88,7 +92,8 @@ CL_Netchan_Decode
 
 ==============
 */
-static void CL_Netchan_Decode(msg_t* msg) {
+static void CL_Netchan_Decode(msg_t* msg)
+{
 	const int srdc = msg->readcount;
 	const int sbit = msg->bit;
 	int soob = msg->oob;
@@ -104,17 +109,19 @@ static void CL_Netchan_Decode(msg_t* msg) {
 	const byte* string = (unsigned char*)clc.reliableCommands[reliableAcknowledge & MAX_RELIABLE_COMMANDS - 1];
 	long index = 0;
 	// xor the client challenge with the netchan sequence number (need something that changes every message)
-	byte key = clc.challenge ^ LittleLong * (unsigned*)msg->data;
-	for (long i = msg->readcount + CL_DECODE_START; i < msg->cursize; i++) {
+	byte key = clc.challenge ^ LittleLong *(unsigned*)msg->data;
+	for (long i = msg->readcount + CL_DECODE_START; i < msg->cursize; i++)
+	{
 		// modify the key with the last sent and with this message acknowledged client command
 		if (!string[index])
 			index = 0;
-		if (/*string[index] > 127 || */	// eurofix: remove this so we can chat in european languages...	-ste
+		if (/*string[index] > 127 || */ // eurofix: remove this so we can chat in european languages...	-ste
 			string[index] == '%')
 		{
 			key ^= '.' << (i & 1);
 		}
-		else {
+		else
+		{
 			key ^= string[index] << (i & 1);
 		}
 		index++;
@@ -129,7 +136,8 @@ static void CL_Netchan_Decode(msg_t* msg) {
 CL_Netchan_TransmitNextFragment
 =================
 */
-void CL_Netchan_TransmitNextFragment(netchan_t* chan) {
+void CL_Netchan_TransmitNextFragment(netchan_t* chan)
+{
 	Netchan_TransmitNextFragment(chan);
 }
 
@@ -140,7 +148,8 @@ void CL_Netchan_TransmitNextFragment(netchan_t* chan) {
 CL_Netchan_Transmit
 ================
 */
-void CL_Netchan_Transmit(netchan_t* chan, msg_t* msg) {
+void CL_Netchan_Transmit(netchan_t* chan, msg_t* msg)
+{
 	//	int i;
 	MSG_WriteByte(msg, clc_EOF);
 	//	for(i=CL_ENCODE_START;i<msg->cursize;i++) {
@@ -152,7 +161,7 @@ void CL_Netchan_Transmit(netchan_t* chan, msg_t* msg) {
 	Netchan_Transmit(chan, msg->cursize, msg->data);
 }
 
-extern 	int oldsize;
+extern int oldsize;
 int newsize = 0;
 
 /*
@@ -160,7 +169,8 @@ int newsize = 0;
 CL_Netchan_Process
 =================
 */
-qboolean CL_Netchan_Process(netchan_t* chan, msg_t* msg) {
+qboolean CL_Netchan_Process(netchan_t* chan, msg_t* msg)
+{
 	//	int i;
 	//	static		int newsize = 0;
 

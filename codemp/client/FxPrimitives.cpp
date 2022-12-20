@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "cl_cgameapi.h"
 #include "FxScheduler.h"
 
-extern int		drawnFx;
+extern int drawnFx;
 
 //--------------------------
 //
@@ -32,11 +32,11 @@ extern int		drawnFx;
 //
 //--------------------------
 CEffect::CEffect(void) : mNext(nullptr), mOrigin1{}, mTimeStart(0), mTimeEnd(0),
-mFlags(0),
-mMatImpactFX(MATIMPACTFX_NONE),
-mMatImpactParm(-1), mMin{}, mMax{}, mImpactFxID(0), mDeathFxID(0),
-mSoundRadius(-1),
-mSoundVolume(-1)
+                         mFlags(0),
+                         mMatImpactFX(MATIMPACTFX_NONE),
+                         mMatImpactParm(-1), mMin{}, mMax{}, mImpactFxID(0), mDeathFxID(0),
+                         mSoundRadius(-1),
+                         mSoundVolume(-1)
 {
 	memset(&mRefEnt, 0, sizeof mRefEnt);
 }
@@ -63,7 +63,7 @@ void CParticle::Die(void)
 {
 	if (mFlags & FX_DEATH_RUNS_FX && !(mFlags & FX_KILL_ON_IMPACT))
 	{
-		vec3_t	norm;
+		vec3_t norm;
 
 		// Man, this just seems so, like, uncool and stuff...
 		VectorSet(norm, flrand(-1.0f, 1.0f), flrand(-1.0f, 1.0f), flrand(-1.0f, 1.0f));
@@ -76,7 +76,7 @@ void CParticle::Die(void)
 //----------------------------
 bool CParticle::Cull(void)
 {
-	vec3_t	dir;
+	vec3_t dir;
 
 	if (mFlags & FX_PLAYER_VIEW)
 	{
@@ -119,7 +119,7 @@ void CParticle::Draw(void)
 
 	if (mFlags & FX_PLAYER_VIEW)
 	{
-		vec4_t	color;
+		vec4_t color;
 
 		color[0] = mRefEnt.shaderRGBA[0] / 255.0;
 		color[1] = mRefEnt.shaderRGBA[1] / 255.0;
@@ -127,7 +127,8 @@ void CParticle::Draw(void)
 		color[3] = mRefEnt.shaderRGBA[3] / 255.0;
 
 		// add this 2D effect to the proper list. it will get drawn after the trap->RenderScene call
-		theFxScheduler.Add2DEffect(mOrigin1[0], mOrigin1[1], mRefEnt.radius, mRefEnt.radius, color, mRefEnt.customShader);
+		theFxScheduler.Add2DEffect(mOrigin1[0], mOrigin1[1], mRefEnt.radius, mRefEnt.radius, color,
+		                           mRefEnt.customShader);
 	}
 	else
 	{
@@ -153,25 +154,27 @@ bool CParticle::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
 
-		vec3_t	org;
-		matrix3_t	ax;
+		vec3_t org;
+		matrix3_t ax;
 
 		// Get our current position and direction
 		if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, org, ax))
-		{	//could not get bolt
+		{
+			//could not get bolt
 			return false;
 		}
-		vec3_t 	realVel, realAccel;
+		vec3_t realVel, realAccel;
 
 		VectorMA(org, mOrgOffset[0], ax[0], org);
 		VectorMA(org, mOrgOffset[1], ax[1], org);
 		VectorMA(org, mOrgOffset[2], ax[2], org);
 
-		const float	time = (theFxHelper.mTime - mTimeStart) * 0.001f;
+		const float time = (theFxHelper.mTime - mTimeStart) * 0.001f;
 		// calc the real velocity and accel vectors
 		VectorScale(ax[0], mVel[0], realVel);
 		VectorMA(realVel, mVel[1], ax[1], realVel);
@@ -213,21 +216,21 @@ bool CParticle::Update(void)
 //----------------------------
 bool CParticle::UpdateOrigin(void)
 {
-	vec3_t	new_origin;
+	vec3_t new_origin;
 
 	VectorMA(mVel, theFxHelper.mRealTime, mAccel, mVel);
 
 	// Predict the new position
-	new_origin[0] = mOrigin1[0] + theFxHelper.mRealTime * mVel[0];// + (theFxHelper.mHalfRealTimeSq * mVel[0]);
-	new_origin[1] = mOrigin1[1] + theFxHelper.mRealTime * mVel[1];// + (theFxHelper.mHalfRealTimeSq * mVel[1]);
-	new_origin[2] = mOrigin1[2] + theFxHelper.mRealTime * mVel[2];// + (theFxHelper.mHalfRealTimeSq * mVel[2]);
+	new_origin[0] = mOrigin1[0] + theFxHelper.mRealTime * mVel[0]; // + (theFxHelper.mHalfRealTimeSq * mVel[0]);
+	new_origin[1] = mOrigin1[1] + theFxHelper.mRealTime * mVel[1]; // + (theFxHelper.mHalfRealTimeSq * mVel[1]);
+	new_origin[2] = mOrigin1[2] + theFxHelper.mRealTime * mVel[2]; // + (theFxHelper.mHalfRealTimeSq * mVel[2]);
 
 	// Only perform physics if this object is tagged to do so
 	if (mFlags & FX_APPLY_PHYSICS && !(mFlags & FX_PLAYER_VIEW))
 	{
 		if (mFlags & FX_EXPENSIVE_PHYSICS)
 		{
-			trace_t	trace;
+			trace_t trace;
 
 			if (mFlags & FX_USE_BBOX)
 			{
@@ -260,7 +263,7 @@ bool CParticle::UpdateOrigin(void)
 
 				if (mFlags & FX_GHOUL2_TRACE && mFlags & FX_IMPACT_RUNS_FX)
 				{
-					static vec3_t bsNormal = { 0, 1, 0 };
+					static vec3_t bsNormal = {0, 1, 0};
 
 					theFxScheduler.PlayEffect(mImpactFxID, trace.endpos, bsNormal);
 				}
@@ -269,7 +272,7 @@ bool CParticle::UpdateOrigin(void)
 
 				return true;
 			}
-			if (trace.fraction < 1.0f)//&& !trace.startsolid && !trace.allsolid )
+			if (trace.fraction < 1.0f) //&& !trace.startsolid && !trace.allsolid )
 			{
 				if (mFlags & FX_IMPACT_RUNS_FX && !(trace.surfaceFlags & SURF_NOIMPACT))
 				{
@@ -332,7 +335,7 @@ bool CParticle::UpdateOrigin(void)
 void CParticle::UpdateSize(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
+	float perc1 = 1.0f, perc2 = 1.0f;
 
 	if (mFlags & FX_SIZE_LINEAR)
 	{
@@ -401,7 +404,8 @@ void CParticle::UpdateSize(void)
 
 void ClampRGB(const vec3_t in, byte* out)
 {
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; i++)
+	{
 		int r = Q_ftol(in[i] * 255.0f);
 
 		if (r < 0)
@@ -419,8 +423,8 @@ void ClampRGB(const vec3_t in, byte* out)
 void CParticle::UpdateRGB(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
-	vec3_t	res;
+	float perc1 = 1.0f, perc2 = 1.0f;
+	vec3_t res;
 
 	if (mFlags & FX_RGB_LINEAR)
 	{
@@ -497,7 +501,7 @@ void CParticle::UpdateRGB(void)
 void CParticle::UpdateAlpha(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
+	float perc1 = 1.0f, perc2 = 1.0f;
 
 	if (mFlags & FX_ALPHA_LINEAR)
 	{
@@ -601,10 +605,10 @@ COrientedParticle::COrientedParticle(void) : mNormal{}
 //----------------------------
 bool COrientedParticle::Cull(void)
 {
-	vec3_t	dir;
+	vec3_t dir;
 	//	float	len;
 
-		// Get the direction to the view
+	// Get the direction to the view
 	VectorSubtract(mOrigin1, theFxHelper.refdef->vieworg, dir);
 
 	// Check if it's behind the viewer
@@ -615,16 +619,16 @@ bool COrientedParticle::Cull(void)
 
 	//	len = VectorLengthSquared( dir );
 
-		// don't cull stuff that's associated with inview wpns
+	// don't cull stuff that's associated with inview wpns
 	if (mFlags & FX_DEPTH_HACK)
 	{
 		return false;
 	}
 	// Can't be too close
-//	if ( len < fx_nearCull->value * fx_nearCull->value)
-//	{
-//		return true;
-//	}
+	//	if ( len < fx_nearCull->value * fx_nearCull->value)
+	//	{
+	//		return true;
+	//	}
 
 	return false;
 }
@@ -664,24 +668,26 @@ bool COrientedParticle::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
-		vec3_t	org;
-		matrix3_t	ax;
+		vec3_t org;
+		matrix3_t ax;
 
 		// Get our current position and direction
 		if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, org, ax))
-		{	//could not get bolt
+		{
+			//could not get bolt
 			return false;
 		}
-		vec3_t 	realVel, realAccel;
+		vec3_t realVel, realAccel;
 
 		VectorMA(org, mOrgOffset[0], ax[0], org);
 		VectorMA(org, mOrgOffset[1], ax[1], org);
 		VectorMA(org, mOrgOffset[2], ax[2], org);
 
-		const float	time = (theFxHelper.mTime - mTimeStart) * 0.001f;
+		const float time = (theFxHelper.mTime - mTimeStart) * 0.001f;
 		// calc the real velocity and accel vectors
 		VectorScale(ax[0], mVel[0], realVel);
 		VectorMA(realVel, mVel[1], ax[1], realVel);
@@ -707,7 +713,7 @@ bool COrientedParticle::Update(void)
 		//vec3_t	offsetAngles;
 		//VectorSet( offsetAngles, 0, 90, 90 );
 
-		matrix3_t	offsetAxis;
+		matrix3_t offsetAxis;
 		//NOTE: mNormal is actually PITCH YAW and ROLL offsets
 		AnglesToAxis(mNormal, offsetAxis);
 		MatrixMultiply(offsetAxis, ax, mRefEnt.axis);
@@ -719,7 +725,8 @@ bool COrientedParticle::Update(void)
 	}
 
 	if (!Cull())
-	{	// Only update these if the thing is visible.
+	{
+		// Only update these if the thing is visible.
 		UpdateSize();
 		UpdateRGB();
 		UpdateAlpha();
@@ -769,18 +776,20 @@ bool CLine::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
 
-		matrix3_t	ax;
+		matrix3_t ax;
 		// Get our current position and direction
 		if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, mOrigin1, ax))
-		{	//could not get bolt
+		{
+			//could not get bolt
 			return false;
 		}
 
-		VectorAdd(mOrigin1, mOrgOffset, mOrigin1);	//add the offset to the bolt point
+		VectorAdd(mOrigin1, mOrgOffset, mOrigin1); //add the offset to the bolt point
 
 		VectorMA(mOrigin1, mVel[0], ax[0], mOrigin2);
 		VectorMA(mOrigin2, mVel[1], ax[1], mOrigin2);
@@ -861,18 +870,20 @@ bool CElectricity::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
 
-		matrix3_t	ax;
+		matrix3_t ax;
 		// Get our current position and direction
 		if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, mOrigin1, ax))
-		{	//could not get bolt
+		{
+			//could not get bolt
 			return false;
 		}
 
-		VectorAdd(mOrigin1, mOrgOffset, mOrigin1);	//add the offset to the bolt point
+		VectorAdd(mOrigin1, mOrgOffset, mOrigin1); //add the offset to the bolt point
 
 		VectorMA(mOrigin1, mVel[0], ax[0], mOrigin2);
 		VectorMA(mOrigin2, mVel[1], ax[1], mOrigin2);
@@ -929,20 +940,22 @@ bool CTail::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
-		vec3_t	org;
-		matrix3_t	ax;
-		if (mModelNum >= 0 && mBoltNum >= 0)	//bolt style
+		vec3_t org;
+		matrix3_t ax;
+		if (mModelNum >= 0 && mBoltNum >= 0) //bolt style
 		{
 			if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, org, ax))
-			{	//could not get bolt
+			{
+				//could not get bolt
 				return false;
 			}
 		}
 
-		vec3_t 	realVel, realAccel;
+		vec3_t realVel, realAccel;
 
 		VectorMA(org, mOrgOffset[0], ax[0], org);
 		VectorMA(org, mOrgOffset[1], ax[1], org);
@@ -958,7 +971,7 @@ bool CTail::Update(void)
 		VectorMA(realAccel, mAccel[1], ax[1], realAccel);
 		VectorMA(realAccel, mAccel[2], ax[2], realAccel);
 
-		const float	time = (theFxHelper.mTime - mTimeStart) * 0.001f;
+		const float time = (theFxHelper.mTime - mTimeStart) * 0.001f;
 
 		// Get our real velocity at the current time, taking into account the effects of acceleration.  NOTE: not sure if this is even 100% correct math-wise
 		VectorMA(realVel, time, realAccel, realVel);
@@ -1003,7 +1016,7 @@ bool CTail::Update(void)
 void CTail::UpdateLength(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
+	float perc1 = 1.0f, perc2 = 1.0f;
 
 	if (mFlags & FX_LENGTH_LINEAR)
 	{
@@ -1098,7 +1111,8 @@ CCylinder::CCylinder(void) : mSize2Start(0), mSize2End(0), mSize2Parm(0)
 bool CCylinder::Cull(void)
 {
 	if (mTraceEnd)
-	{ //eh, don't cull variable-length cylinders
+	{
+		//eh, don't cull variable-length cylinders
 		return false;
 	}
 
@@ -1145,7 +1159,7 @@ void CCylinder::Draw(void)
 void CCylinder::UpdateSize2(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
+	float perc1 = 1.0f, perc2 = 1.0f;
 
 	if (mFlags & FX_SIZE2_LINEAR)
 	{
@@ -1224,18 +1238,20 @@ bool CCylinder::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
 
-		matrix3_t	ax;
+		matrix3_t ax;
 		// Get our current position and direction
 		if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, mOrigin1, ax))
-		{	//could not get bolt
+		{
+			//could not get bolt
 			return false;
 		}
 
-		VectorAdd(mOrigin1, mOrgOffset, mOrigin1);	//add the offset to the bolt point
+		VectorAdd(mOrigin1, mOrgOffset, mOrigin1); //add the offset to the bolt point
 
 		VectorCopy(ax[0], mRefEnt.axis[0]);
 		//FIXME: should mNormal be a modifier on the forward axis?
@@ -1267,9 +1283,9 @@ bool CCylinder::Update(void)
 //
 //----------------------------
 CEmitter::CEmitter(void) : mOldOrigin{}, mLastOrigin{}, mOldVelocity{}, mOldTime(0), mAngles{}, mAngleDelta{},
-mEmitterFxID(0),
-mDensity(0),
-mVariance(0)
+                           mEmitterFxID(0),
+                           mDensity(0),
+                           mVariance(0)
 {
 	// There may or may not be a model, but if there isn't one,
 	//	we just won't bother adding the refEnt in our Draw func
@@ -1296,7 +1312,8 @@ void CEmitter::Draw(void)
 		VectorScale(mRefEnt.axis[1], mRefEnt.radius, mRefEnt.axis[1]);
 		VectorScale(mRefEnt.axis[2], mRefEnt.radius, mRefEnt.axis[2]);
 
-		theFxHelper.AddFxToScene(static_cast<miniRefEntity_t*>(nullptr));// I hate having to do this, but this needs to get added as a regular refEntity
+		theFxHelper.AddFxToScene(static_cast<miniRefEntity_t*>(nullptr));
+		// I hate having to do this, but this needs to get added as a regular refEntity
 		theFxHelper.AddFxToScene(&mRefEnt);
 	}
 
@@ -1304,7 +1321,7 @@ void CEmitter::Draw(void)
 	//	either choke up the effects system on a fast machine, or look really nasty on a low end one.
 	if (mFlags & FX_EMIT_FX)
 	{
-		vec3_t	org;
+		vec3_t org;
 
 		constexpr auto TRAIL_RATE = 12; // we "think" at about a 60hz rate;
 
@@ -1367,10 +1384,11 @@ bool CEmitter::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
-		assert(0);//need this?
+		assert(0); //need this?
 	}
 	if (mTimeStart < theFxHelper.mTime && UpdateOrigin() == false)
 	{
@@ -1431,7 +1449,8 @@ bool CEmitter::Update(void)
 //----------------------------
 void CEmitter::UpdateAngles(void)
 {
-	VectorMA(mAngles, theFxHelper.mFrameTime * 0.01f, mAngleDelta, mAngles); // was 0.001f, but then you really have to jack up the delta to even notice anything
+	VectorMA(mAngles, theFxHelper.mFrameTime * 0.01f, mAngleDelta, mAngles);
+	// was 0.001f, but then you really have to jack up the delta to even notice anything
 	AnglesToAxis(mAngles, mRefEnt.axis);
 }
 
@@ -1462,14 +1481,16 @@ bool CLight::Update(void)
 	if (mFlags & FX_RELATIVE)
 	{
 		if (!re->G2API_IsGhoul2InfovValid(*mGhoul2))
-		{	// the thing we are bolted to is no longer valid, so we may as well just die.
+		{
+			// the thing we are bolted to is no longer valid, so we may as well just die.
 			return false;
 		}
 
-		matrix3_t	ax;
+		matrix3_t ax;
 		// Get our current position and direction
 		if (!theFxHelper.GetOriginAxisFromBolt(mGhoul2, mEntNum, mModelNum, mBoltNum, mOrigin1, ax))
-		{	//could not get bolt
+		{
+			//could not get bolt
 			return false;
 		}
 
@@ -1492,7 +1513,7 @@ bool CLight::Update(void)
 void CLight::UpdateSize(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
+	float perc1 = 1.0f, perc2 = 1.0f;
 
 	if (mFlags & FX_SIZE_LINEAR)
 	{
@@ -1565,8 +1586,8 @@ void CLight::UpdateSize(void)
 void CLight::UpdateRGB(void)
 {
 	// completely biased towards start if it doesn't get overridden
-	float	perc1 = 1.0f, perc2 = 1.0f;
-	vec3_t	res;
+	float perc1 = 1.0f, perc2 = 1.0f;
+	vec3_t res;
 
 	if (mFlags & FX_RGB_LINEAR)
 	{
@@ -1648,10 +1669,10 @@ constexpr auto OLD_MUZZLE = 3;
 //----------------------------
 void CTrail::Draw()
 {
-	polyVert_t	verts[3];
+	polyVert_t verts[3];
 	//	vec3_t		color;
 
-		// build the first tri out of the new muzzle...new tip...old muzzle
+	// build the first tri out of the new muzzle...new tip...old muzzle
 	VectorCopy(mVerts[NEW_MUZZLE].origin, verts[0].xyz);
 	VectorCopy(mVerts[NEW_TIP].origin, verts[1].xyz);
 	VectorCopy(mVerts[OLD_MUZZLE].origin, verts[2].xyz);
@@ -1765,7 +1786,7 @@ bool CTrail::Update()
 //----------------------------
 bool CPoly::Cull(void)
 {
-	vec3_t	dir;
+	vec3_t dir;
 
 	// Get the direction to the view
 	VectorSubtract(mOrigin1, theFxHelper.refdef->vieworg, dir);
@@ -1790,7 +1811,7 @@ bool CPoly::Cull(void)
 //----------------------------
 void CPoly::Draw(void)
 {
-	polyVert_t	verts[MAX_CPOLY_VERTS];
+	polyVert_t verts[MAX_CPOLY_VERTS];
 
 	for (int i = 0; i < mCount; i++)
 	{
@@ -1850,7 +1871,7 @@ void CPoly::CalcRotateMatrix(void)
 //--------------------------------
 void CPoly::Rotate(void)
 {
-	const float	dif = fabs(static_cast<float>(mLastFrameTime - theFxHelper.mFrameTime));
+	const float dif = fabs(static_cast<float>(mLastFrameTime - theFxHelper.mFrameTime));
 
 	if (dif > 0.1f * mLastFrameTime)
 	{
@@ -1917,8 +1938,8 @@ void CPoly::PolyInit(void)
 		return;
 	}
 
-	int		i;
-	vec3_t	org = { 0.0f, 0.0f ,0.0f };
+	int i;
+	vec3_t org = {0.0f, 0.0f, 0.0f};
 
 	// Find our midpoint
 	for (i = 0; i < mCount; i++)
@@ -1950,14 +1971,14 @@ Bezier curve line
 */
 bool CBezier::Cull(void)
 {
-	vec3_t	dir;
+	vec3_t dir;
 
 	VectorSubtract(mOrigin1, theFxHelper.refdef->vieworg, dir);
 
 	//Check if it's in front of the viewer
 	if (DotProduct(theFxHelper.refdef->viewaxis[0], dir) >= 0)
 	{
-		return false;	//don't cull
+		return false; //don't cull
 	}
 
 	VectorSubtract(mOrigin2, theFxHelper.refdef->vieworg, dir);
@@ -2005,11 +2026,12 @@ bool CBezier::Update(void)
 }
 
 //----------------------------
-inline void CBezier::DrawSegment(vec3_t start, vec3_t end, float texcoord1, float texcoord2, float segPercent, float lastSegPercent)
+inline void CBezier::DrawSegment(vec3_t start, vec3_t end, const float texcoord1, const float texcoord2,
+                                 const float segPercent, const float lastSegPercent)
 {
-	vec3_t			lineDir, cross, viewDir;
-	static vec3_t	lastEnd[2];
-	polyVert_t		verts[4];
+	vec3_t lineDir, cross, viewDir;
+	static vec3_t lastEnd[2];
+	polyVert_t verts[4];
 
 	VectorSubtract(end, start, lineDir);
 	VectorSubtract(end, theFxHelper.refdef->vieworg, viewDir);
@@ -2050,7 +2072,8 @@ inline void CBezier::DrawSegment(vec3_t start, vec3_t end, float texcoord1, floa
 
 	if (texcoord1 == 0.0f)
 	{
-		for (int k = 0; k < 4; k++) {
+		for (int k = 0; k < 4; k++)
+		{
 			verts[0].modulate[k] = verts[1].modulate[k] = 0;
 		}
 	}
@@ -2081,17 +2104,17 @@ inline void CBezier::DrawSegment(vec3_t start, vec3_t end, float texcoord1, floa
 	mInit = true;
 }
 
-constexpr	float	BEZIER_RESOLUTION = 16.0f;
+constexpr float BEZIER_RESOLUTION = 16.0f;
 
 //----------------------------
 void CBezier::Draw(void)
 {
-	vec3_t	pos, old_pos;
-	constexpr float	incr = 1.0f / BEZIER_RESOLUTION;
+	vec3_t pos, old_pos;
+	constexpr float incr = 1.0f / BEZIER_RESOLUTION;
 
 	VectorCopy(mOrigin1, old_pos);
 
-	mInit = false;	//Signify a new batch for vert gluing
+	mInit = false; //Signify a new batch for vert gluing
 
 	float tc1 = 0.0f;
 
@@ -2149,13 +2172,13 @@ bool CFlash::Update(void)
 
 bool FX_WorldToScreen(vec3_t worldCoord, float* x, float* y)
 {
-	vec3_t	local, transformed;
-	vec3_t	vfwd, vright, vup;
+	vec3_t local, transformed;
+	vec3_t vfwd, vright, vup;
 
 	//NOTE: did it this way because most draw functions expect virtual 640x480 coords
 	//	and adjust them for current resolution
-	constexpr int xcenter = 640 / 2;//gives screen coords in virtual 640x480, to be adjusted when drawn
-	constexpr int ycenter = 480 / 2;//gives screen coords in virtual 640x480, to be adjusted when drawn
+	constexpr int xcenter = 640 / 2; //gives screen coords in virtual 640x480, to be adjusted when drawn
+	constexpr int ycenter = 480 / 2; //gives screen coords in virtual 640x480, to be adjusted when drawn
 
 	VectorSubtract(worldCoord, theFxHelper.refdef->vieworg, local);
 
@@ -2187,7 +2210,7 @@ void CFlash::Init(void)
 	//now I want to be sure that whatever RGB changes occur to a non-localized flash will also occur
 	//to a localized flash (so I'll have the same initial RGBA values for both...I need them sync'd for an effect)
 
-	vec3_t	dif;
+	vec3_t dif;
 	constexpr float maxRange = 900;
 
 	VectorSubtract(mOrigin1, theFxHelper.refdef->vieworg, dif);
@@ -2230,7 +2253,7 @@ void CFlash::Draw(void)
 
 	if (mFlags & FX_LOCALIZED_FLASH)
 	{
-		vec4_t	color;
+		vec4_t color;
 
 		color[0] = mRefEnt.shaderRGBA[0] / 255.0;
 		color[1] = mRefEnt.shaderRGBA[1] / 255.0;
@@ -2255,9 +2278,10 @@ void CFlash::Draw(void)
 }
 
 void FX_AddPrimitive(CEffect** pEffect, int killTime);
+
 void FX_FeedTrail(effectTrailArgStruct_t* a)
 {
-	CTrail* fx = new CTrail;
+	auto fx = new CTrail;
 	int i = 0;
 
 	while (i < 4)
@@ -2284,4 +2308,5 @@ void FX_FeedTrail(effectTrailArgStruct_t* a)
 
 	FX_AddPrimitive((CEffect**)&fx, a->mKillTime);
 }
+
 // end

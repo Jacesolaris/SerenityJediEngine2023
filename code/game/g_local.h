@@ -54,11 +54,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define	START_TIME_LINK_ENTS		FRAMETIME*1 // time-delay after map start at which all ents have been spawned, so can link them
 
+
+
 #define	START_TIME_FIND_LINKS		FRAMETIME*2 // time-delay after map start at which you can find linked entities
 #define	START_TIME_MOVERS_SPAWNED	FRAMETIME*2 // time-delay after map start at which all movers should be spawned
 #define	START_TIME_REMOVE_ENTS		FRAMETIME*3 // time-delay after map start to remove temporary ents
 #define	START_TIME_NAV_CALC			FRAMETIME*4 // time-delay after map start to connect waypoints and calc routes
 #define	START_TIME_FIND_WAYPOINT	FRAMETIME*5 // time-delay after map start after which it's okay to try to find your best waypoint
+
+
 
 // gentity->flags
 #define	FL_SHIELDED				0x00000001	// protected from all damage except lightsabers
@@ -431,8 +435,9 @@ void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3]);
 void G_PlayEffect(int fx_id, const vec3_t origin);
 void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t fwd);
 void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t axis[3]);
-void G_PlayEffect(int fx_id, int model_index, int bolt_index, int ent_num, const vec3_t origin, int i_loop_time = qfalse,
-	qboolean is_relative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
+void G_PlayEffect(int fx_id, int model_index, int bolt_index, int ent_num, const vec3_t origin,
+                  int i_loop_time = qfalse,
+                  qboolean is_relative = qfalse); //iLoopTime 0 = not looping, 1 for infinite, else duration
 void G_PlayEffect(int fx_id, int entNum, const vec3_t fwd);
 void G_StopEffect(int fx_id, int model_index, int bolt_index, int ent_num);
 void G_StopEffect(const char* name, int model_index, int bolt_index, int entNum);
@@ -442,7 +447,7 @@ int G_BSPIndex(const char* name);
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
 int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
-	gentity_t* ent_list[MAX_GENTITIES]);
+                 gentity_t* ent_list[MAX_GENTITIES]);
 gentity_t* G_PickTarget(char* targetname);
 void G_UseTargets(gentity_t* ent, gentity_t* activator);
 void G_UseTargets2(gentity_t* ent, gentity_t* activator, const char* string);
@@ -473,11 +478,12 @@ void G_DebugLine(vec3_t a, vec3_t b, int duration, int color);
 //
 qboolean CanDamage(const gentity_t* targ, const vec3_t origin);
 void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const vec3_t dir, const vec3_t point,
-	int damage, int dflags, int mod, int hit_loc = HL_NONE);
-void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, float radius, const gentity_t* ignore, int mod);
+              int damage, int dflags, int mod, int hit_loc = HL_NONE);
+void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, float damage, float radius, const gentity_t* ignore,
+                    int mod);
 gentity_t* TossClientItems(gentity_t* self);
 void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hit_loc);
+                       int dFlags, int hit_loc);
 void ExplodeDeath(gentity_t* self);
 void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
 void G_ApplyKnockback(gentity_t* targ, const vec3_t newDir, float knockback);
@@ -496,6 +502,8 @@ void g_throw(gentity_t* targ, const vec3_t new_dir, float push);
 #define DAMAGE_DISMEMBER		0x00000400	// do dismemberment
 #define DAMAGE_NO_KILL			0x00000800	// do damage, but don't kill them
 #define DAMAGE_HEAVY_WEAP_CLASS	0x00001000	// doing heavy weapon type damage, certain objects may only take damage by missiles containing this flag
+
+
 
 #define DAMAGE_CUSTOM_HUD		0x00002000	// really dumb, but....
 #define	DAMAGE_IMPACT_DIE		0x00004000	// if a vehicle hits a wall it should instantly die
@@ -547,7 +555,7 @@ gentity_t* SelectSpawnPoint(vec3_t avoidPoint, team_t team, vec3_t origin, vec3_
 void respawn(gentity_t* ent);
 qboolean client_spawn(gentity_t* ent, SavedGameJustLoaded_e e_saved_game_just_loaded);
 void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death, int dflags,
-	int hit_loc);
+                int hit_loc);
 void AddScore(const gentity_t* ent, int score);
 qboolean SpotWouldTelefrag(const gentity_t* spot, team_t checkteam);
 void G_RemoveWeaponModels(gentity_t* ent);
@@ -672,13 +680,13 @@ qboolean TryWorkshopCommand(gentity_t* ent);
 // NPC_senses.cpp
 //
 extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
-	float addLight = 0.0f);
+                          float addLight = 0.0f);
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
-	qboolean needLOS = qfalse, qboolean onGround = qfalse);
+                          qboolean needLOS = qfalse, qboolean onGround = qfalse);
 extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
-	float maxHearDist, int ignoreAlert = -1, qboolean mustHaveOwner = qfalse,
-	int minAlertLevel = AEL_MINOR, qboolean onGroundOnly = qfalse);
+                              float maxHearDist, int ignoreAlert = -1, qboolean mustHaveOwner = qfalse,
+                              int minAlertLevel = AEL_MINOR, qboolean onGroundOnly = qfalse);
 extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
 extern qboolean G_ClearLOS(gentity_t* self, const gentity_t* ent, const vec3_t end);
@@ -709,7 +717,7 @@ using reference_tag_t = struct reference_tag_s
 
 extern void TAG_Init(void);
 extern reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, int radius,
-	int flags);
+                                int flags);
 
 extern int TAG_GetOrigin(const char* owner, const char* name, vec3_t origin);
 extern int TAG_GetAngles(const char* owner, const char* name, vec3_t angles);

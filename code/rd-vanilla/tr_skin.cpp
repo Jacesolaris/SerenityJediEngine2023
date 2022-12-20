@@ -262,7 +262,7 @@ bool RE_SplitSkins(const char* INname, char* skinhead, char* skintorso, char* sk
 }
 
 // given a name, go get the skin we want and return
-qhandle_t RE_RegisterIndividualSkin(const char* name, qhandle_t hSkin)
+qhandle_t RE_RegisterIndividualSkin(const char* name, const qhandle_t hSkin)
 {
 	skinSurface_t* surf;
 	char* text, * text_p;
@@ -446,7 +446,7 @@ void	R_InitSkins(void) {
 R_GetSkinByHandle
 ===============
 */
-skin_t* R_GetSkinByHandle(qhandle_t hSkin) {
+skin_t* R_GetSkinByHandle(const qhandle_t hSkin) {
 	if (hSkin < 1 || hSkin >= tr.numSkins) {
 		return tr.skins[0];
 	}

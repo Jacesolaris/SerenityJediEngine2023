@@ -22,29 +22,32 @@
 
 #include "q_shared.h"
 
-typedef struct MD5Context {
+using MD5_CTX = struct MD5Context
+{
 	uint32_t buf[4];
 	uint32_t bits[2];
 	unsigned char in[64];
-} MD5_CTX;
+};
 
 void MD5Init(MD5Context* ctx);
-void MD5Update(MD5Context* ctx, unsigned char const* buf, unsigned len);
+void MD5Update(MD5Context* ctx, const unsigned char* buf, unsigned len);
 void MD5Final(MD5Context* ctx, unsigned char* digest);
 
 constexpr size_t MD5_BLOCK_SIZE = 64;
 constexpr size_t MD5_DIGEST_SIZE = 16;
-typedef struct {
+
+using hmacMD5Context_t = struct
+{
 	MD5Context md5Context;
 	unsigned char iKeyPad[MD5_BLOCK_SIZE];
 	unsigned char oKeyPad[MD5_BLOCK_SIZE];
-} hmacMD5Context_t;
+};
 
 // Initialize a new HMAC-MD5 construct using the specified secret key.
-void HMAC_MD5_Init(hmacMD5Context_t* ctx, unsigned char const* key, unsigned int keylen);
+void HMAC_MD5_Init(hmacMD5Context_t* ctx, const unsigned char* key, unsigned int keylen);
 
 // Update the HMAC message with len number of bytes from the given buffer.
-void HMAC_MD5_Update(hmacMD5Context_t* ctx, unsigned char const* buf, unsigned int len);
+void HMAC_MD5_Update(hmacMD5Context_t* ctx, const unsigned char* buf, unsigned int len);
 
 // Finalize the HMAC calculation and fill the given buffer with the digest bytes.
 // 'digest' must point to a buffer that can hold MD5_DIGEST_SIZE bytes!

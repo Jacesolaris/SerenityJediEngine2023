@@ -133,7 +133,7 @@ R_BoxSurfaces_r
 
 =================
 */
-void R_BoxSurfaces_r(mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** list, int listsize, int* listlength, vec3_t dir) {
+void R_BoxSurfaces_r(mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** list, const int listsize, int* listlength, vec3_t dir) {
 	int			s;
 
 	// do the tail recursion in a loop
@@ -197,8 +197,8 @@ R_AddMarkFragments
 =================
 */
 void R_AddMarkFragments(int numClipPoints, vec3_t clipPoints[2][MAX_VERTS_ON_POLY],
-	int numPlanes, vec3_t* normals, float* dists,
-	int maxPoints, vec3_t pointBuffer,
+                        const int numPlanes, vec3_t* normals, float* dists,
+                        const int maxPoints, vec3_t pointBuffer,
 	int maxFragments, markFragment_t* fragmentBuffer,
 	int* returnedPoints, int* returnedFragments,
 	vec3_t mins, vec3_t maxs) {
@@ -252,7 +252,7 @@ R_MarkFragments
 =================
 */
 int R_MarkFragments(int numPoints, const vec3_t* points, const vec3_t projection,
-	int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer) {
+                    const int maxPoints, vec3_t pointBuffer, const int maxFragments, markFragment_t* fragmentBuffer) {
 	int				numsurfaces;
 	int				i, j, k;
 	surfaceType_t* surfaces[64];

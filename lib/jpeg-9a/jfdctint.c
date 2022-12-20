@@ -151,7 +151,7 @@ Sorry, this code only copes with 8x8 DCT blocks. /* deliberate syntax err */
 	*/
 
 	GLOBAL(void)
-	jpeg_fdct_islow(DCTELEM * data, JSAMPARRAY sample_data, JDIMENSION start_col)
+	jpeg_fdct_islow(DCTELEM * data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3;
 	INT32 tmp10, tmp11, tmp12, tmp13;
@@ -325,7 +325,7 @@ Sorry, this code only copes with 8x8 DCT blocks. /* deliberate syntax err */
  */
 
 GLOBAL(void)
-jpeg_fdct_7x7(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_7x7(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3;
 	INT32 tmp10, tmp11, tmp12;
@@ -458,7 +458,7 @@ jpeg_fdct_7x7(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_6x6(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_6x6(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	INT32 tmp10, tmp11, tmp12;
@@ -569,7 +569,7 @@ jpeg_fdct_6x6(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_5x5(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_5x5(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	INT32 tmp10, tmp11;
@@ -677,7 +677,7 @@ jpeg_fdct_5x5(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_4x4(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_4x4(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1;
 	INT32 tmp10, tmp11;
@@ -769,7 +769,7 @@ jpeg_fdct_4x4(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_3x3(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_3x3(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	int ctr;
@@ -852,7 +852,7 @@ jpeg_fdct_3x3(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_2x2(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_2x2(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	/* Pre-zero output coefficient block. */
 	MEMZERO(data, SIZEOF(DCTELEM) * DCTSIZE2);
@@ -893,7 +893,7 @@ jpeg_fdct_2x2(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_1x1(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_1x1(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	/* Pre-zero output coefficient block. */
 	MEMZERO(data, SIZEOF(DCTELEM) * DCTSIZE2);
@@ -910,7 +910,7 @@ jpeg_fdct_1x1(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_9x9(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_9x9(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3, tmp4;
 	INT32 tmp10, tmp11, tmp12, tmp13;
@@ -1057,7 +1057,7 @@ jpeg_fdct_9x9(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_10x10(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_10x10(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3, tmp4;
 	INT32 tmp10, tmp11, tmp12, tmp13, tmp14;
@@ -1217,7 +1217,7 @@ jpeg_fdct_10x10(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_11x11(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_11x11(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5;
 	INT32 tmp10, tmp11, tmp12, tmp13, tmp14;
@@ -1397,7 +1397,7 @@ jpeg_fdct_11x11(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_12x12(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_12x12(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5;
 	INT32 tmp10, tmp11, tmp12, tmp13, tmp14, tmp15;
@@ -1759,7 +1759,7 @@ jpeg_fdct_13x13(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_14x14(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_14x14(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
 	INT32 tmp10, tmp11, tmp12, tmp13, tmp14, tmp15, tmp16;
@@ -2528,7 +2528,7 @@ jpeg_fdct_16x8(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_14x7(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_14x7(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3;
 	INT32 tmp10, tmp11, tmp12;
@@ -2689,7 +2689,7 @@ jpeg_fdct_14x7(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_12x6(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_12x6(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	INT32 tmp10, tmp11, tmp12;
@@ -2826,7 +2826,7 @@ jpeg_fdct_12x6(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_10x5(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_10x5(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	INT32 tmp10, tmp11;
@@ -2956,7 +2956,7 @@ jpeg_fdct_10x5(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_8x4(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_8x4(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1;
 	INT32 tmp10, tmp11;
@@ -3093,7 +3093,7 @@ jpeg_fdct_8x4(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_6x3(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_6x3(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	int ctr;
@@ -3190,7 +3190,7 @@ jpeg_fdct_6x3(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_4x2(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_4x2(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1;
 	int ctr;
@@ -3270,7 +3270,7 @@ jpeg_fdct_4x2(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_2x1(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_2x1(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	/* Pre-zero output coefficient block. */
 	MEMZERO(data, SIZEOF(DCTELEM) * DCTSIZE2);
@@ -3495,7 +3495,7 @@ jpeg_fdct_8x16(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_7x14(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_7x14(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2, tmp3;
 	INT32 tmp10, tmp11, tmp12;
@@ -3672,7 +3672,7 @@ jpeg_fdct_7x14(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_6x12(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_6x12(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	INT32 tmp10, tmp11, tmp12;
@@ -3818,7 +3818,7 @@ jpeg_fdct_6x12(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_5x10(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_5x10(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	INT32 tmp10, tmp11;
@@ -3961,7 +3961,7 @@ jpeg_fdct_5x10(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_4x8(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_4x8(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1;
 	INT32 tmp10, tmp11;
@@ -4098,7 +4098,7 @@ jpeg_fdct_4x8(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_3x6(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_3x6(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1, tmp2;
 	int ctr;
@@ -4200,7 +4200,7 @@ jpeg_fdct_3x6(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_2x4(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_2x4(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	INT32 tmp0, tmp1;
 	int ctr;
@@ -4276,7 +4276,7 @@ jpeg_fdct_2x4(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
  */
 
 GLOBAL(void)
-jpeg_fdct_1x2(DCTELEM* data, JSAMPARRAY sample_data, JDIMENSION start_col)
+jpeg_fdct_1x2(DCTELEM* data, const JSAMPARRAY sample_data, const JDIMENSION start_col)
 {
 	/* Pre-zero output coefficient block. */
 	MEMZERO(data, SIZEOF(DCTELEM) * DCTSIZE2);

@@ -31,8 +31,8 @@ extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern void NPC_AimAdjust(int change);
 extern qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t mins, vec3_t maxs, int clipmask,
-	vec3_t velocity, qboolean tracePath, int ignoreEntNum, int enemyNum,
-	float minSpeed, float maxSpeed, float idealSpeed, qboolean mustHit);
+                           vec3_t velocity, qboolean tracePath, int ignoreEntNum, int enemyNum,
+                           float minSpeed, float maxSpeed, float idealSpeed, qboolean mustHit);
 extern qboolean in_front(vec3_t spot, vec3_t from, vec3_t from_angles, float thresh_hold = 0.0f);
 extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
 extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* sound_path);
@@ -51,8 +51,8 @@ constexpr auto TURN_ON = 0x00000000;
 constexpr auto TURN_OFF = 0x00000100;
 constexpr auto GALAK_SHIELD_HEALTH = 250;
 
-static vec3_t shieldMins = { -60, -60, -24 };
-static vec3_t shieldMaxs = { 60, 60, 80 };
+static vec3_t shieldMins = {-60, -60, -24};
+static vec3_t shieldMaxs = {60, 60, 80};
 
 extern qboolean NPC_CheckPlayerTeamStealth();
 
@@ -126,9 +126,9 @@ static void GM_CreateExplosion(gentity_t* self, const int bolt_id, const qboolea
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			bolt_id,
-			&bolt_matrix, self->currentAngles, self->currentOrigin, level.time,
-			nullptr, self->s.modelScale);
+		                       bolt_id,
+		                       &bolt_matrix, self->currentAngles, self->currentOrigin, level.time,
+		                       nullptr, self->s.modelScale);
 
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
@@ -162,7 +162,7 @@ void GM_Dying(gentity_t* self)
 			int new_bolt;
 			switch (Q_irand(1, 14))
 			{
-				// Find place to generate explosion
+			// Find place to generate explosion
 			case 1:
 				if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "r_hand"))
 				{
@@ -239,7 +239,7 @@ void GM_Dying(gentity_t* self)
 				new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_leg_foot");
 				GM_CreateExplosion(self, new_bolt, qtrue);
 				break;
-			default:;
+			default: ;
 			}
 
 			TIMER_Set(self, "dyingExplosion", Q_irand(300, 1100));
@@ -262,7 +262,8 @@ NPC_GM_Pain
 
 extern void NPC_SetPainEvent(gentity_t* self);
 
-void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, const int hit_loc)
+void NPC_GM_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage,
+                 const int mod, const int hit_loc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
@@ -715,7 +716,7 @@ void NPC_BSGM_Attack()
 			//time to smack
 			//recheck enemyDist and InFront
 			if (enemyDist < MELEE_DIST_SQUARED && in_front(NPC->enemy->currentOrigin, NPC->currentOrigin,
-				NPC->client->ps.viewangles, 0.3f))
+			                                               NPC->client->ps.viewangles, 0.3f))
 			{
 				vec3_t smack_dir;
 				VectorSubtract(NPC->enemy->currentOrigin, NPC->currentOrigin, smack_dir);
@@ -724,7 +725,7 @@ void NPC_BSGM_Attack()
 				//hurt them
 				G_Sound(NPC->enemy, G_SoundIndex("sound/weapons/galak/skewerhit.wav"));
 				G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
-					DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
+				         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
 				if (NPC->client->ps.torsoAnim == BOTH_ATTACK4)
 				{
 					//smackdown
@@ -809,11 +810,11 @@ void NPC_BSGM_Attack()
 				//do the trace and damage
 				trace_t trace;
 				vec3_t end;
-				constexpr vec3_t maxs = { 3, 3, 3 };
-				constexpr vec3_t mins = { -3, -3, -3 };
+				constexpr vec3_t maxs = {3, 3, 3};
+				constexpr vec3_t mins = {-3, -3, -3};
 				VectorMA(NPC->client->renderInfo.muzzlePoint, 1024, NPC->client->renderInfo.muzzleDir, end);
 				gi.trace(&trace, NPC->client->renderInfo.muzzlePoint, mins, maxs, end, NPC->s.number, MASK_SHOT,
-					G2_NOCOLLIDE, 0);
+				         G2_NOCOLLIDE, 0);
 				if (trace.allsolid || trace.startsolid)
 				{
 					//oops, in a wall
@@ -834,7 +835,7 @@ void NPC_BSGM_Attack()
 							//damage it
 							G_SoundAtSpot(trace.endpos, G_SoundIndex("sound/weapons/galak/laserdamage.wav"), qfalse);
 							G_Damage(trace_ent, NPC, NPC, NPC->client->renderInfo.muzzleDir, trace.endpos, 10, 0,
-								MOD_ENERGY);
+							         MOD_ENERGY);
 						}
 					}
 					if (NPCInfo->coverTarg)
@@ -908,7 +909,7 @@ void NPC_BSGM_Attack()
 			}
 		}
 		else if ((enemyDist > MAX_LOB_DIST_SQUARED || NPC->enemy->s.weapon == WP_TURRET && !Q_stricmp(
-			"PAS", NPC->enemy->classname))
+				"PAS", NPC->enemy->classname))
 			&& TIMER_Done(NPC, "noLob")) //448
 		{
 			//enemy more than 448 away and we are ready to try lob fire again
@@ -996,7 +997,7 @@ void NPC_BSGM_Attack()
 				case 7:
 					speech = EV_ESCAPING1 + NPCInfo->enemyCheckDebounceTime - 6;
 					break;
-				default:;
+				default: ;
 				}
 				NPCInfo->enemyCheckDebounceTime++;
 				if (speech != -1)
@@ -1069,10 +1070,10 @@ void NPC_BSGM_Attack()
 	{
 		vec3_t muzzle;
 		vec3_t target;
-		vec3_t velocity = { 0, 0, 0 };
-		vec3_t mins = { -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE }, maxs = {
-				   REPEATER_ALT_SIZE,REPEATER_ALT_SIZE,REPEATER_ALT_SIZE
-		};
+		vec3_t velocity = {0, 0, 0};
+		vec3_t mins = {-REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE}, maxs = {
+			       REPEATER_ALT_SIZE,REPEATER_ALT_SIZE,REPEATER_ALT_SIZE
+		       };
 
 		CalcEntitySpot(NPC, SPOT_WEAPON, muzzle);
 
@@ -1084,8 +1085,8 @@ void NPC_BSGM_Attack()
 
 		//Find the desired angles
 		const qboolean clearshot = WP_LobFire(NPC, muzzle, target, mins, maxs, MASK_SHOT | CONTENTS_LIGHTSABER,
-			velocity, qtrue, NPC->s.number, NPC->enemy->s.number,
-			300, 1100, 1500, qtrue);
+		                                      velocity, qtrue, NPC->s.number, NPC->enemy->s.number,
+		                                      300, 1100, 1500, qtrue);
 		if (VectorCompare(vec3_origin, velocity) || !clearshot && enemyLOS && enemyCS)
 		{
 			//no clear lob shot and no lob shot that will hit something breakable
@@ -1242,7 +1243,7 @@ void NPC_BSGM_Attack()
 			smack_dir[2] += 30;
 			VectorNormalize(smack_dir);
 			G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(5, 10),
-				DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
+			         DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
 			//throw them
 			g_throw(NPC->enemy, smack_dir, 100);
 			NPC->enemy->s.powerups |= 1 << PW_SHOCKED;
@@ -1312,7 +1313,7 @@ void NPC_BSGM_Default()
 			//do a trace and make sure we can turn this back on?
 			trace_t tr;
 			gi.trace(&tr, NPC->currentOrigin, shieldMins, shieldMaxs, NPC->currentOrigin, NPC->s.number, NPC->clipmask,
-				G2_NOCOLLIDE, 0);
+			         G2_NOCOLLIDE, 0);
 			if (!tr.startsolid)
 			{
 				VectorCopy(shieldMins, NPC->mins);

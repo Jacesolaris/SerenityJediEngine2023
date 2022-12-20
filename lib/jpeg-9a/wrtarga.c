@@ -48,7 +48,7 @@ Sorry, this code only copes with 8 - bit JSAMPLEs. /* deliberate syntax err */
 typedef tga_dest_struct* tga_dest_ptr;
 
 LOCAL(void)
-write_header(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo, int num_colors)
+write_header(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo, const int num_colors)
 /* Create and write a Targa header */
 {
 	char targaheader[18];
@@ -94,8 +94,8 @@ write_header(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo, int num_colors)
  */
 
 METHODDEF(void)
-put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_pixel_rows(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+               JDIMENSION rows_supplied)
 	/* used for unquantized full-color output */
 {
 	const tga_dest_ptr dest = (tga_dest_ptr)dinfo;
@@ -112,8 +112,8 @@ put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
 }
 
 METHODDEF(void)
-put_gray_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_gray_rows(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+              JDIMENSION rows_supplied)
 	/* used for grayscale OR quantized color output */
 {
 	const tga_dest_ptr dest = (tga_dest_ptr)dinfo;
@@ -132,8 +132,8 @@ put_gray_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
  */
 
 METHODDEF(void)
-put_demapped_gray(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_demapped_gray(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+                  JDIMENSION rows_supplied)
 {
 	const tga_dest_ptr dest = (tga_dest_ptr)dinfo;
 	const register JSAMPROW color_map0 = cinfo->colormap[0];
@@ -151,7 +151,7 @@ put_demapped_gray(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
  */
 
 METHODDEF(void)
-start_output_tga(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+start_output_tga(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	const tga_dest_ptr dest = (tga_dest_ptr)dinfo;
 
@@ -195,7 +195,7 @@ start_output_tga(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 METHODDEF(void)
-finish_output_tga(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+finish_output_tga(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	/* Make sure we wrote the output file OK */
 	fflush(dinfo->output_file);
@@ -208,7 +208,7 @@ finish_output_tga(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 GLOBAL(djpeg_dest_ptr)
-jinit_write_targa(j_decompress_ptr cinfo)
+jinit_write_targa(const j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
 	const tga_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

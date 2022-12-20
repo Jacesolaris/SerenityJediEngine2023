@@ -49,7 +49,7 @@ void SetGoal(gentity_t* goal, float rating)
 NPC_SetGoal
 */
 
-void NPC_SetGoal(gentity_t* goal, float rating)
+void NPC_SetGoal(gentity_t* goal, const float rating)
 {
 	if (goal == NPCInfo->goalEntity)
 	{

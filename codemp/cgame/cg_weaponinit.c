@@ -103,9 +103,9 @@ CG_RegisterWeapon
 The server says this item is used on this level
 =================
 */
-void CG_RegisterWeapon(int weaponNum)
+void CG_RegisterWeapon(const int weaponNum)
 {
-	gitem_t* item, * ammo;
+	gitem_t * item, *ammo;
 	char path[MAX_QPATH];
 	vec3_t mins, maxs;
 
@@ -121,7 +121,7 @@ void CG_RegisterWeapon(int weaponNum)
 		return;
 	}
 
-	memset(weaponInfo, 0, sizeof * weaponInfo);
+	memset(weaponInfo, 0, sizeof *weaponInfo);
 	weaponInfo->registered = qtrue;
 
 	for (item = bg_itemlist + 1; item->classname; item++)
@@ -278,7 +278,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.effects.concussionImpactEffect = trap->FX_RegisterEffect("concussion/explosion");
 		trap->R_RegisterShader("gfx/effects/blueLine");
 		trap->R_RegisterShader("gfx/misc/whiteline2");
-		//
+	//
 		cgs.effects.destructionProjectile = trap->FX_RegisterEffect("destruction/shot");
 		cgs.effects.destructionHit = trap->FX_RegisterEffect("destruction/explosion");
 
@@ -317,7 +317,7 @@ void CG_RegisterWeapon(int weaponNum)
 
 		cgs.media.bryarFrontFlash = trap->R_RegisterShader("gfx/effects/bryarFrontFlash");
 
-		// Note these are temp shared effects
+	// Note these are temp shared effects
 		trap->FX_RegisterEffect("blaster/wall_impact.efx");
 		trap->FX_RegisterEffect("blaster/flesh_impact.efx");
 
@@ -355,7 +355,7 @@ void CG_RegisterWeapon(int weaponNum)
 
 		cgs.media.bryarFrontFlash = trap->R_RegisterShader("gfx/effects/bryarFrontFlash");
 
-		// Note these are temp shared effects
+	// Note these are temp shared effects
 		trap->FX_RegisterEffect("SBD/deflect.efx");
 		trap->FX_RegisterEffect("blaster/wall_impact.efx");
 		trap->FX_RegisterEffect("blaster/flesh_impact.efx");
@@ -477,7 +477,7 @@ void CG_RegisterWeapon(int weaponNum)
 		trap->S_RegisterSound("sound/weapons/disruptor/zoomstart.wav");
 		trap->S_RegisterSound("sound/weapons/disruptor/zoomend.wav");
 
-		// Disruptor gun zoom interface
+	// Disruptor gun zoom interface
 		cgs.media.disruptorMask = trap->R_RegisterShader("gfx/2d/cropCircle2");
 		cgs.media.disruptorInsert = trap->R_RegisterShader("gfx/2d/cropCircle");
 		cgs.media.disruptorLight = trap->R_RegisterShader("gfx/2d/cropCircleGlow");
@@ -497,7 +497,7 @@ void CG_RegisterWeapon(int weaponNum)
 		weaponInfo->altMissileModel = NULL_HANDLE;
 		weaponInfo->altMissileSound = NULL_SOUND;
 		weaponInfo->altMissileDlight = 0;
-		//		weaponInfo->altMissileDlightColor	= {0,0,0};
+	//		weaponInfo->altMissileDlightColor	= {0,0,0};
 		weaponInfo->altMissileHitSound = NULL_SOUND;
 		weaponInfo->altMissileTrailFunc = FX_BowcasterProjectileThink;
 
@@ -560,7 +560,7 @@ void CG_RegisterWeapon(int weaponNum)
 		weaponInfo->missileModel = trap->R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
 		weaponInfo->missileSound = NULL_SOUND;
 		weaponInfo->missileDlight = 0;
-		//		weaponInfo->missileDlightColor	= {0,0,0};
+	//		weaponInfo->missileDlightColor	= {0,0,0};
 		weaponInfo->missileHitSound = NULL_SOUND;
 		weaponInfo->missileTrailFunc = FX_DEMP2_ProjectileThink;
 
@@ -594,7 +594,7 @@ void CG_RegisterWeapon(int weaponNum)
 		weaponInfo->missileModel = trap->R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
 		weaponInfo->missileSound = NULL_SOUND;
 		weaponInfo->missileDlight = 0;
-		//		weaponInfo->missileDlightColor	= {0,0,0};
+	//		weaponInfo->missileDlightColor	= {0,0,0};
 		weaponInfo->missileHitSound = NULL_SOUND;
 		weaponInfo->missileTrailFunc = FX_FlechetteProjectileThink;
 
@@ -623,7 +623,7 @@ void CG_RegisterWeapon(int weaponNum)
 		weaponInfo->firingSound = NULL_SOUND;
 		weaponInfo->chargeSound = NULL_SOUND;
 		weaponInfo->muzzleEffect = trap->FX_RegisterEffect("rocket/muzzle_flash");
-		//flash2 still looks crappy with the fx bolt stuff. Because the fx bolt stuff doesn't work entirely right.
+	//flash2 still looks crappy with the fx bolt stuff. Because the fx bolt stuff doesn't work entirely right.
 		weaponInfo->missileModel = trap->R_RegisterModel("models/weapons2/merr_sonn/projectile.md3");
 		weaponInfo->missileSound = trap->S_RegisterSound("sound/weapons/rocket/missleloop.wav");
 		weaponInfo->missileDlight = 125;
@@ -716,7 +716,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.effects.tripmineGlowFX = trap->FX_RegisterEffect("tripMine/glowbit.efx");
 
 		trap->FX_RegisterEffect("tripMine/explosion");
-		// NOTENOTE temp stuff
+	// NOTENOTE temp stuff
 		trap->S_RegisterSound("sound/weapons/laser_trap/stick.wav");
 		trap->S_RegisterSound("sound/weapons/laser_trap/warning.wav");
 		break;

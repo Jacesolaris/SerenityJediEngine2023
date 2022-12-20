@@ -47,8 +47,8 @@ public:
 	int WriteMember(FILE*) const; //Writes the member's data, in block format, to FILE *
 	int ReadMember(char**, long*, const CIcarus* icarus); //Reads the member's data, in block format, from FILE *
 
-	void SetID(int id) { m_id = id; } //Set the ID member variable
-	void SetSize(int size) { m_size = size; } //Set the size member variable
+	void SetID(const int id) { m_id = id; } //Set the ID member variable
+	void SetSize(const int size) { m_size = size; } //Set the size member variable
 
 	void GetInfo(int*, int*, void**) const;
 
@@ -62,7 +62,7 @@ public:
 	int GetSize(void) const { return m_size; } //Get size member variable
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);
@@ -92,7 +92,7 @@ public:
 	}
 
 	template <class T>
-	void WriteDataPointer(const T* data, int num, CIcarus* icarus)
+	void WriteDataPointer(const T* data, const int num, CIcarus* icarus)
 	{
 		IGameInterface* game = icarus->GetGame();
 		if (m_data)
@@ -155,14 +155,14 @@ public:
 	int GetNumMembers(void) const { return static_cast<int>(m_members.size()); }
 	//Get the number of member in the block's list
 
-	void SetFlags(unsigned char flags) { m_flags = flags; }
-	void SetFlag(unsigned char flag) { m_flags |= flag; }
+	void SetFlags(const unsigned char flags) { m_flags = flags; }
+	void SetFlag(const unsigned char flag) { m_flags |= flag; }
 
-	int HasFlag(unsigned char flag) const { return m_flags & flag; }
+	int HasFlag(const unsigned char flag) const { return m_flags & flag; }
 	unsigned char GetFlags(void) const { return m_flags; }
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);
@@ -215,7 +215,7 @@ public:
 	int Open(char*, long); //Open a stream for reading / writing
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);

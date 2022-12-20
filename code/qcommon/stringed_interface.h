@@ -31,8 +31,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include <string>
 
 unsigned char* SE_LoadFileData(const char* psFileName, int* piLoadedLength = nullptr);
-void			SE_FreeFileDataAfterLoad(unsigned char* psLoadedFile);
-int				SE_BuildFileList(const char* psStartDir, std::string& strResults);
+void SE_FreeFileDataAfterLoad(unsigned char* psLoadedFile);
+int SE_BuildFileList(const char* psStartDir, std::string& strResults);
 
 #endif	// #ifndef STRINGED_INTERFACE_H
 

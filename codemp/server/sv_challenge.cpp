@@ -64,13 +64,15 @@ Initialize the HMAC context for generating challenges.
 */
 void SV_ChallengeInit()
 {
-	if (challengerInitialized) {
+	if (challengerInitialized)
+	{
 		SV_ChallengeShutdown();
 	}
 
 	// Generate a secret key from the OS RNG
 	byte secretKey[SECRET_KEY_LENGTH];
-	if (!Sys_RandomBytes(secretKey, sizeof secretKey)) {
+	if (!Sys_RandomBytes(secretKey, sizeof secretKey))
+	{
 		Com_Error(ERR_FATAL, "SV_ChallengeInit: Sys_RandomBytes failed");
 	}
 
@@ -92,7 +94,8 @@ Clear the HMAC context used to generate challenges.
 */
 void SV_ChallengeShutdown()
 {
-	if (challengerInitialized) {
+	if (challengerInitialized)
+	{
 		memset(&challenger, 0, sizeof challenger);
 		challengerInitialized = qfalse;
 	}
@@ -141,9 +144,10 @@ SV_CreateChallenge
 Create an unforgeable, temporal challenge for the given client address.
 ====================
 */
-int SV_CreateChallenge(netadr_t from)
+int SV_CreateChallenge(const netadr_t from)
 {
-	if (!challengerInitialized) {
+	if (!challengerInitialized)
+	{
 		Com_Error(ERR_FATAL, "SV_CreateChallenge: The challenge subsystem has not been initialized");
 	}
 
@@ -162,7 +166,8 @@ Verify a challenge received by the client matches the expected challenge.
 */
 qboolean SV_VerifyChallenge(int receivedChallenge, netadr_t from)
 {
-	if (!challengerInitialized) {
+	if (!challengerInitialized)
+	{
 		Com_Error(ERR_FATAL, "SV_VerifyChallenge: The challenge subsystem has not been initialized");
 	}
 

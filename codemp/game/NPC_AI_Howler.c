@@ -223,7 +223,7 @@ static qboolean Howler_Move()
 //replaced with SP version
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 static void Howler_TryDamage(const int damage, const qboolean tongue, const qboolean knockdown)
 {
@@ -337,7 +337,7 @@ static void Howler_Howl(void)
 				{
 					//does no damage on easy, does 1 point every other frame on medium, more often on hard
 					G_Damage(ent, NPCS.NPC, NPCS.NPC, vec3_origin, NPCS.NPC->r.currentOrigin, 1, DAMAGE_NO_KNOCKBACK,
-						MOD_CRUSH);
+					         MOD_CRUSH);
 
 					NPCS.NPC->enemy->client->poisonDamage = 18;
 					NPCS.NPC->enemy->client->poisonTime = level.time + 1000;
@@ -360,7 +360,7 @@ static void Howler_Howl(void)
 					{
 						NPC_SetAnim(ent, SETANIM_LEGS, BOTH_SONICPAIN_START, SETANIM_FLAG_NORMAL);
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SONICPAIN_START,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						ent->client->ps.torsoTimer += 100;
 						ent->client->ps.weaponTime = ent->client->ps.torsoTimer;
 					}
@@ -389,7 +389,7 @@ static void Howler_Howl(void)
 //replaced with SP version
 void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
 
-static void Howler_Attack(float enemy_dist, qboolean howl)
+static void Howler_Attack(const float enemy_dist, const qboolean howl)
 {
 	const int dmg = NPCS.NPCInfo->localState == LSTATE_BERZERK ? 5 : 2;
 
@@ -429,7 +429,7 @@ static void Howler_Attack(float enemy_dist, qboolean howl)
 		}
 
 		NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, attackAnim,
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 		if (NPCS.NPCInfo->localState == LSTATE_BERZERK)
 		{
 			//attack again right away
@@ -468,24 +468,24 @@ static void Howler_Attack(float enemy_dist, qboolean howl)
 		}
 		break;
 	case BOTH_GESTURE1:
-	{
-		if (NPCS.NPC->client->ps.legsTimer > 1800 //more than 36 frames left
-			&& BG_AnimLength(NPCS.NPC->localAnimIndex, NPCS.NPC->client->ps.legsAnim) - NPCS.NPC->client->ps.
-			legsTimer >= 950) //at least 19 frames into anim
 		{
-			Howler_Howl();
-			if (!NPCS.NPC->count)
+			if (NPCS.NPC->client->ps.legsTimer > 1800 //more than 36 frames left
+				&& BG_AnimLength(NPCS.NPC->localAnimIndex, NPCS.NPC->client->ps.legsAnim) - NPCS.NPC->client->ps.
+				legsTimer >= 950) //at least 19 frames into anim
 			{
-				vec3_t boltOrg;
-				G_GetBoltPosition(NPCS.NPC, NPCS.NPC->NPC->genericBolt1, boltOrg, 0);
-				AngleVectors(NPCS.NPC->client->ps.viewangles, fwd, NULL, NULL);
-				G_PlayEffectID(G_EffectIndex("howler/sonic"), boltOrg, fwd);
-				G_SoundOnEnt(NPCS.NPC, CHAN_VOICE, "sound/chars/howler/howl.mp3");
-				NPCS.NPC->count = 1;
+				Howler_Howl();
+				if (!NPCS.NPC->count)
+				{
+					vec3_t boltOrg;
+					G_GetBoltPosition(NPCS.NPC, NPCS.NPC->NPC->genericBolt1, boltOrg, 0);
+					AngleVectors(NPCS.NPC->client->ps.viewangles, fwd, NULL, NULL);
+					G_PlayEffectID(G_EffectIndex("howler/sonic"), boltOrg, fwd);
+					G_SoundOnEnt(NPCS.NPC, CHAN_VOICE, "sound/chars/howler/howl.mp3");
+					NPCS.NPC->count = 1;
+				}
 			}
 		}
-	}
-	break;
+		break;
 	default:
 		//anims seem to get reset after a load, so just stop attacking and it will restart as needed.
 		TIMER_Remove(NPCS.NPC, "attacking");
@@ -546,7 +546,7 @@ static void Howler_Combat(void)
 		}
 
 		if ((advance || NPCS.NPCInfo->localState == LSTATE_WAITING) && TIMER_Done(NPCS.NPC, "attacking"))
-			// waiting monsters can't attack
+		// waiting monsters can't attack
 		{
 			if (TIMER_Done2(NPCS.NPC, "takingPain", qtrue))
 			{
@@ -584,7 +584,7 @@ NPC_Howler_Pain
 -------------------------
 */
 //replaced with SP code
-void NPC_Howler_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Howler_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	if (!self || !self->NPC)
 	{

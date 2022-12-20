@@ -422,8 +422,8 @@ static void G_RoffNotetrackCallback(gentity_t* ent, const char* notetrack)
 					{
 						ent->s.loopSound = 0;
 						sprintf(errMsg,
-							"cgi_S_RegisterSound(%s) failed to return a valid sfxHandle_t for additional argument. Setting 'loopSound' to 0.",
-							addlArg);
+						        "cgi_S_RegisterSound(%s) failed to return a valid sfxHandle_t for additional argument. Setting 'loopSound' to 0.",
+						        addlArg);
 						goto functionend;
 					}
 				}
@@ -497,7 +497,7 @@ static qboolean G_ValidRoff(roff_hdr2_t* header)
 // Deletes all .ROF files from memory
 //-------------------------------------------------------
 
-static void G_FreeRoff(int index)
+static void G_FreeRoff(const int index)
 {
 	if (roffs[index].mNumNoteTracks)
 	{
@@ -581,7 +581,7 @@ static qboolean G_InitRoff(char* file, unsigned char* data)
 			if (roffs[num_roffs].mFrameTime < 50)
 			{
 				Com_Printf(S_COLOR_RED"Error: \"%s\" has an invalid ROFF framerate (%d < 50)\n", file,
-					roffs[num_roffs].mFrameTime);
+				           roffs[num_roffs].mFrameTime);
 			}
 			assert(roffs[num_roffs].mFrameTime >= 50); //HAS to be at least 50 to be reliable
 
@@ -623,7 +623,7 @@ static qboolean G_InitRoff(char* file, unsigned char* data)
 				}
 
 				// ? Get rid of dynamic memory ?
-				roffs[num_roffs].mNoteTrackIndexes = new char* [LittleLong hdr->mNumNotes];
+				roffs[num_roffs].mNoteTrackIndexes = new char*[LittleLong hdr->mNumNotes];
 				ptr = roffs[num_roffs].mNoteTrackIndexes[0] = new char[size];
 				memcpy(roffs[num_roffs].mNoteTrackIndexes[0], start, size);
 
@@ -794,9 +794,9 @@ void G_Roff(gentity_t* ent)
 	if (g_developer->integer)
 	{
 		Com_Printf(S_COLOR_GREEN"ROFF dat: num: %d o:<%.2f %.2f %.2f> a:<%.2f %.2f %.2f>\n",
-			ent->roff_ctr,
-			org[0], org[1], org[2],
-			ang[0], ang[1], ang[2]);
+		           ent->roff_ctr,
+		           org[0], org[1], org[2],
+		           ang[0], ang[1], ang[2]);
 	}
 #endif
 

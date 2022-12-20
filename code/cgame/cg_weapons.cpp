@@ -40,14 +40,14 @@ extern vmCvar_t cg_gunMomentumEnable;
 extern vmCvar_t cg_gunMomentumInterval;
 extern vmCvar_t cg_SpinningBarrels;
 extern void G_StartNextItemEffect(gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
-	int spin_time = 0);
+                                  int spin_time = 0);
 
 extern qboolean PM_ReloadAnim(int anim);
 extern void FX_DEMP2_ProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 extern void G_SoundOnEnt(const gentity_t* ent, soundChannel_t channel, const char* sound_path);
 const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHeight,
-	const char* psText, int iFontHandle, float fScale,
-	const vec4_t v4Color);
+                                const char* psText, int iFontHandle, float fScale,
+                                const vec4_t v4Color);
 
 /*
 ==========================
@@ -131,9 +131,9 @@ CG_RegisterWeapon
 The server says this item is used on this level
 =================
 */
-void CG_RegisterWeapon(int weaponNum)
+void CG_RegisterWeapon(const int weaponNum)
 {
-	gitem_t* item, * ammo;
+	gitem_t *item, *ammo;
 	char path[MAX_QPATH];
 	vec3_t mins, maxs;
 	int i;
@@ -152,7 +152,7 @@ void CG_RegisterWeapon(int weaponNum)
 	}
 
 	// clear out the memory we use
-	memset(weaponInfo, 0, sizeof * weaponInfo);
+	memset(weaponInfo, 0, sizeof *weaponInfo);
 	weaponInfo->registered = qtrue;
 
 	// find the weapon in the item list
@@ -195,7 +195,7 @@ void CG_RegisterWeapon(int weaponNum)
 	if (weaponInfo->weaponModel == 0)
 	{
 		CG_Error("Couldn't find weapon model %s for weapon %s\n", weaponData[weaponNum].weaponMdl,
-			weaponData[weaponNum].classname);
+		         weaponData[weaponNum].classname);
 		return;
 	}
 
@@ -368,7 +368,7 @@ void CG_RegisterWeapon(int weaponNum)
 
 		cgs.effects.yellowlightningwide = theFxScheduler.RegisterEffect("force/yellowlightningwide");
 		cgs.effects.yellowlightning = theFxScheduler.RegisterEffect("force/yellowlightning");
-		//new Jedi Academy force power effects
+	//new Jedi Academy force power effects
 		cgs.effects.forceDrain = theFxScheduler.RegisterEffect("mp/drain");
 		cgs.effects.forceDrainWide = theFxScheduler.RegisterEffect("mp/drainwide");
 		cgs.effects.forceDrained = theFxScheduler.RegisterEffect("mp/drainhit");
@@ -387,7 +387,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.effects.strikeHit = theFxScheduler.RegisterEffect("env/small_fire_blue");
 		cgs.media.strikeSound = cgi_S_RegisterSound("sound/weapons/explosions/explode5.wav");
 
-		//saber sounds
+	//saber sounds
 		cgi_S_RegisterSound("sound/weapons/saber/saberonquick.mp3");
 		cgi_S_RegisterSound("sound/weapons/saber/saberspinoff.mp3");
 		cgi_S_RegisterSound("sound/weapons/saber/saberoffquick.mp3");
@@ -472,7 +472,7 @@ void CG_RegisterWeapon(int weaponNum)
 		}
 		cgi_S_RegisterSound("sound/movers/objects/saber_slam");
 
-		//force sounds
+	//force sounds
 		cgi_S_RegisterSound("sound/weapons/force/heal.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/speed.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/dash.mp3");
@@ -505,7 +505,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgi_S_RegisterSound("sound/weapons/force/grab.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/grip.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/griploop.wav");
-		//new Jedi Academy force sounds
+	//new Jedi Academy force sounds
 		cgi_S_RegisterSound("sound/weapons/force/absorb.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/absorbhit.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/absorbloop.mp3");
@@ -525,7 +525,7 @@ void CG_RegisterWeapon(int weaponNum)
 
 		cgi_S_RegisterSound("sound/weapons/force/fear.mp3");
 		cgi_S_RegisterSound("sound/weapons/force/fearfail.mp3");
-		//force graphics
+	//force graphics
 		cgs.media.playerShieldDamage = cgi_R_RegisterShader("gfx/misc/personalshield");
 		cgs.media.forceShell = cgi_R_RegisterShader("powerups/forceshell");
 		cgs.media.sightShell = cgi_R_RegisterShader("powerups/sightshell");
@@ -534,12 +534,12 @@ void CG_RegisterWeapon(int weaponNum)
 		cgi_R_RegisterShader("gfx/2d/cloaksense");
 		cgi_R_RegisterShader("gfx/2d/firesense");
 		cgi_R_RegisterShader("gfx/2d/stasissense");
-		//force effects - FIXME: only if someone has these powers?
+	//force effects - FIXME: only if someone has these powers?
 		theFxScheduler.RegisterEffect("force/rage2");
 		theFxScheduler.RegisterEffect("force/heal2");
 		theFxScheduler.RegisterEffect("force/drain_hand");
 
-		//saber graphics
+	//saber graphics
 		cgs.media.saberBlurShader = cgi_R_RegisterShader("gfx/effects/sabers/saberBlur");
 		cgs.media.swordTrailShader = cgi_R_RegisterShader("gfx/effects/sabers/swordTrail");
 		cgs.media.yellowDroppedSaberShader = cgi_R_RegisterShader("gfx/effects/yellow_glow");
@@ -579,12 +579,12 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.media.yellowIgniteFlare = cgi_R_RegisterShader("gfx/effects/sabers/yellow_ignite_flare");
 		cgs.media.limeSaberGlowShader = cgi_R_RegisterShader("gfx/effects/sabers/lime_glow");
 		cgs.media.limeSaberCoreShader = cgi_R_RegisterShader("gfx/effects/sabers/lime_line");
-		//TFA Sabers
+	//TFA Sabers
 		cgs.media.rgbTFASaberCoreShader = cgi_R_RegisterShader("gfx/effects/TFASabers/blade_TFA");
 		cgs.media.unstableBlurShader = cgi_R_RegisterShader("gfx/effects/TFASabers/trail_unstable");
 		cgs.media.unstableRedSaberCoreShader = cgi_R_RegisterShader("gfx/effects/sabers/unstable_red_line");
 
-		//Original Trilogy Sabers
+	//Original Trilogy Sabers
 		cgs.media.otSaberCoreShader = cgi_R_RegisterShader("gfx/effects/OTsabers/ot_saberCore");
 		cgs.media.redOTGlowShader = cgi_R_RegisterShader("gfx/effects/OTsabers/ot_redGlow");
 		cgs.media.orangeOTGlowShader = cgi_R_RegisterShader("gfx/effects/OTsabers/ot_orangeGlow");
@@ -593,7 +593,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.media.blueOTGlowShader = cgi_R_RegisterShader("gfx/effects/OTsabers/ot_blueGlow");
 		cgs.media.purpleOTGlowShader = cgi_R_RegisterShader("gfx/effects/OTsabers/ot_purpleGlow");
 
-		//Episode I Sabers
+	//Episode I Sabers
 		cgs.media.ep1SaberCoreShader = cgi_R_RegisterShader("gfx/effects/Ep1Sabers/saber_core");
 		cgs.media.redEp1GlowShader = cgi_R_RegisterShader("gfx/effects/Ep1Sabers/red_glowa");
 		cgs.media.orangeEp1GlowShader = cgi_R_RegisterShader("gfx/effects/Ep1Sabers/orange_glowa");
@@ -601,7 +601,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.media.greenEp1GlowShader = cgi_R_RegisterShader("gfx/effects/Ep1Sabers/green_glowa");
 		cgs.media.blueEp1GlowShader = cgi_R_RegisterShader("gfx/effects/Ep1Sabers/blue_glowa");
 		cgs.media.purpleEp1GlowShader = cgi_R_RegisterShader("gfx/effects/Ep1Sabers/purple_glowa");
-		//Episode II Sabers
+	//Episode II Sabers
 		cgs.media.ep2SaberCoreShader = cgi_R_RegisterShader("gfx/effects/Ep2Sabers/saber_core");
 		cgs.media.whiteIgniteFlare = cgi_R_RegisterShader("gfx/effects/Ep2Sabers/white_ignite_flare");
 		cgs.media.blackIgniteFlare = cgi_R_RegisterShader("gfx/effects/Ep3Sabers/black_ignite_flare");
@@ -611,7 +611,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.media.greenEp2GlowShader = cgi_R_RegisterShader("gfx/effects/Ep2Sabers/green_glowa");
 		cgs.media.blueEp2GlowShader = cgi_R_RegisterShader("gfx/effects/Ep2Sabers/blue_glowa");
 		cgs.media.purpleEp2GlowShader = cgi_R_RegisterShader("gfx/effects/Ep2Sabers/purple_glowa");
-		//Episode III Sabers
+	//Episode III Sabers
 		cgs.media.ep3SaberCoreShader = cgi_R_RegisterShader("gfx/effects/Ep3Sabers/saber_core");
 		cgs.media.whiteIgniteFlare02 = cgi_R_RegisterShader("gfx/effects/Ep3Sabers/white_ignite_flare");
 		cgs.media.blackIgniteFlare02 = cgi_R_RegisterShader("gfx/effects/Ep3Sabers/black_ignite_flare");
@@ -624,20 +624,20 @@ void CG_RegisterWeapon(int weaponNum)
 
 		cgs.media.forceCoronaShader = cgi_R_RegisterShaderNoMip("gfx/hud/force_swirl");
 
-		//new Jedi Academy force graphics
+	//new Jedi Academy force graphics
 		cgs.media.drainShader = cgi_R_RegisterShader("gfx/misc/redLine");
 
-		//for grip slamming into walls
+	//for grip slamming into walls
 		theFxScheduler.RegisterEffect("env/impact_dustonly");
 		cgi_S_RegisterSound("sound/weapons/melee/punch1.mp3");
 		cgi_S_RegisterSound("sound/weapons/melee/punch2.mp3");
 		cgi_S_RegisterSound("sound/weapons/melee/punch3.mp3");
 		cgi_S_RegisterSound("sound/weapons/melee/punch4.mp3");
 
-		//For kicks with saber staff...
+	//For kicks with saber staff...
 		theFxScheduler.RegisterEffect("melee/kick_impact");
 
-		//Kothos beam
+	//Kothos beam
 		cgi_R_RegisterShader("gfx/misc/dr1");
 		break;
 
@@ -650,7 +650,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.effects.briar_pistolWallImpactEffect3 = theFxScheduler.RegisterEffect("briar_pistol/wall_impact3");
 		cgs.effects.briar_pistolFleshImpactEffect = theFxScheduler.RegisterEffect("briar_pistol/flesh_impact");
 		cgs.effects.briar_pistolDroidImpactEffect = theFxScheduler.RegisterEffect("briar_pistol/droid_impact");
-		// Note....these are temp shared effects
+	// Note....these are temp shared effects
 		theFxScheduler.RegisterEffect("briar_pistol/deflectblock");
 		theFxScheduler.RegisterEffect("briar_pistol/deflect");
 		theFxScheduler.RegisterEffect("blaster/smoke_bolton"); // note: this will be called game side
@@ -664,7 +664,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.effects.bryaroldWallImpactEffect3 = theFxScheduler.RegisterEffect("bryar_old/wall_impact3");
 		cgs.effects.bryaroldFleshImpactEffect = theFxScheduler.RegisterEffect("bryar_old/flesh_impact");
 
-		// Note....these are temp shared effects
+	// Note....these are temp shared effects
 		theFxScheduler.RegisterEffect("blaster/deflect");
 		theFxScheduler.RegisterEffect("blaster/smoke_bolton"); // note: this will be called game side
 		break;
@@ -678,7 +678,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgs.effects.bryarWallImpactEffect3 = theFxScheduler.RegisterEffect("bryar/wall_impact3");
 		cgs.effects.bryarFleshImpactEffect = theFxScheduler.RegisterEffect("bryar/flesh_impact");
 
-		// Note....these are temp shared effects
+	// Note....these are temp shared effects
 		theFxScheduler.RegisterEffect("blaster/deflect");
 		theFxScheduler.RegisterEffect("blaster/smoke_bolton"); // note: this will be called game side
 		break;
@@ -709,12 +709,12 @@ void CG_RegisterWeapon(int weaponNum)
 
 		cgi_R_RegisterShaderNoMip("gfx/2d/crop_charge");
 
-		// zoom sounds
+	// zoom sounds
 		cgi_S_RegisterSound("sound/weapons/disruptor/zoomstart.wav");
 		cgi_S_RegisterSound("sound/weapons/disruptor/zoomend.wav");
 		cgs.media.disruptorZoomLoop = cgi_S_RegisterSound("sound/weapons/disruptor/zoomloop.wav");
 
-		// Disruptor gun zoom interface
+	// Disruptor gun zoom interface
 		cgs.media.disruptorMask = cgi_R_RegisterShader("gfx/2d/cropCircle2");
 		cgs.media.disruptorInsert = cgi_R_RegisterShader("gfx/2d/cropCircle");
 		cgs.media.disruptorLight = cgi_R_RegisterShader("gfx/2d/cropCircleGlow");
@@ -768,7 +768,7 @@ void CG_RegisterWeapon(int weaponNum)
 		theFxScheduler.RegisterEffect("atst/side_alt_shot");
 		theFxScheduler.RegisterEffect("atst/side_alt_explosion");
 
-		// For the regular fire
+	// For the regular fire
 		theFxScheduler.RegisterEffect("atst/side_main_shot");
 		theFxScheduler.RegisterEffect("atst/side_main_impact");
 		break;
@@ -798,11 +798,11 @@ void CG_RegisterWeapon(int weaponNum)
 		//Primary
 		theFxScheduler.RegisterEffect("concussion/shot");
 		theFxScheduler.RegisterEffect("concussion/explosion");
-		//Alt
+	//Alt
 		theFxScheduler.RegisterEffect("concussion/alt_miss");
 		theFxScheduler.RegisterEffect("concussion/alt_hit");
 		theFxScheduler.RegisterEffect("concussion/alt_ring");
-		//not used (eventually)?
+	//not used (eventually)?
 		cgi_R_RegisterShader("gfx/effects/blueLine");
 		cgi_R_RegisterShader("gfx/misc/whiteline2");
 		break;
@@ -845,7 +845,7 @@ void CG_RegisterWeapon(int weaponNum)
 		theFxScheduler.RegisterEffect("emplaced/shot");
 		theFxScheduler.RegisterEffect("emplaced/shotNPC");
 		theFxScheduler.RegisterEffect("emplaced/wall_impact");
-		//E-Web, too, can't tell here which one you wanted, so...
+	//E-Web, too, can't tell here which one you wanted, so...
 		theFxScheduler.RegisterEffect("eweb/shot");
 		theFxScheduler.RegisterEffect("eweb/shotNPC");
 		theFxScheduler.RegisterEffect("eweb/wall_impact");
@@ -923,7 +923,7 @@ void CG_RegisterWeapon(int weaponNum)
 		cgi_S_RegisterSound("sound/weapons/melee/punch2.mp3");
 		cgi_S_RegisterSound("sound/weapons/melee/punch3.mp3");
 		cgi_S_RegisterSound("sound/weapons/melee/punch4.mp3");
-		//fire
+	//fire
 		theFxScheduler.RegisterEffect("tusken/shot");
 		theFxScheduler.RegisterEffect("tusken/hit");
 		theFxScheduler.RegisterEffect("tusken/hitwall");
@@ -938,15 +938,15 @@ void CG_RegisterWeapon(int weaponNum)
 		//fire
 		theFxScheduler.RegisterEffect("noghri_stick/shot");
 		theFxScheduler.RegisterEffect("noghri_stick/flesh_impact");
-		//explosion
+	//explosion
 		theFxScheduler.RegisterEffect("noghri_stick/gas_cloud");
-		//cgi_S_RegisterSound("sound/weapons/noghri/smoke.wav");
+	//cgi_S_RegisterSound("sound/weapons/noghri/smoke.wav");
 		break;
 
 	case WP_TIE_FIGHTER:
 		theFxScheduler.RegisterEffect("ships/imp_blastershot");
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -957,7 +957,7 @@ CG_RegisterItemVisuals
 The server says this item is used on this level
 =================
 */
-void CG_RegisterItemVisuals(int itemNum)
+void CG_RegisterItemVisuals(const int itemNum)
 {
 	itemInfo_t* itemInfo = &cg_items[itemNum];
 	if (itemInfo->registered)
@@ -967,7 +967,7 @@ void CG_RegisterItemVisuals(int itemNum)
 
 	const gitem_t* item = &bg_itemlist[itemNum];
 
-	memset(itemInfo, 0, sizeof * itemInfo);
+	memset(itemInfo, 0, sizeof *itemInfo);
 	itemInfo->registered = qtrue;
 
 	itemInfo->models = cgi_R_RegisterModel(item->world_model);
@@ -1000,7 +1000,7 @@ void CG_RegisterItemVisuals(int itemNum)
 		case AMMO_DETPACK:
 			CG_RegisterWeapon(WP_DET_PACK);
 			break;
-		default:;
+		default: ;
 		}
 	}
 
@@ -1055,7 +1055,7 @@ void CG_RegisterItemVisuals(int itemNum)
 			cgi_S_RegisterSound("sound/barrier/barrier_loop.wav");
 			cgi_S_RegisterSound("sound/barrier/barrier_off.mp3");
 			break;
-		default:;
+		default: ;
 		}
 	}
 }
@@ -1083,7 +1083,7 @@ the weapon hand animation has 3 anims,
 */
 extern qboolean ValidAnimFileIndex(int index);
 
-int CG_MapTorsoToWeaponFrame(const clientInfo_t* ci, int frame, int animNum, int weaponNum, int firing)
+int CG_MapTorsoToWeaponFrame(const clientInfo_t* ci, const int frame, const int animNum, int weaponNum, int firing)
 {
 	// we should use the animNum to map a weapon frame instead of relying on the torso frame
 	if (!ValidAnimFileIndex(ci->animFileIndex))
@@ -1171,7 +1171,7 @@ float cg_machinegun_spin_angle(centity_t* cent)
 		cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
 		// just switching between not spinning and spinning, play the appropriate weapon sound
 		cgi_S_StartSound(nullptr, cent->currentState.number, CHAN_WEAPON,
-			cgi_S_RegisterSound("sound/weapons/barrelSpinning/barrelSpinning.wav"));
+		                 cgi_S_RegisterSound("sound/weapons/barrelSpinning/barrelSpinning.wav"));
 	}
 
 	return angle;
@@ -1247,7 +1247,7 @@ void CG_CalculateWeaponPosition(vec3_t origin, vec3_t angles)
 	if (cg_gunMomentumEnable.integer)
 	{
 		// sway viewmodel when changing viewangles
-		static vec3_t previousAngles = { 0, 0, 0 };
+		static vec3_t previousAngles = {0, 0, 0};
 		static int previousTime = 0;
 
 		vec3_t deltaAngles;
@@ -1679,23 +1679,23 @@ void CG_AddViewWeapon(playerState_t* ps)
 		// get clientinfo for animation map
 		const clientInfo_t* ci = &cent->gent->client->clientInfo;
 
-		int torsoAnim = cent->gent->client->ps.torsoAnim; //pe.torso.animationNumber;
-		float currentFrame;
-		int startFrame, endFrame, flags;
-		float animSpeed;
+		int torso_anim = cent->gent->client->ps.torsoAnim; //pe.torso.animationNumber;
+		float current_frame;
+		int start_frame, end_frame, flags;
+		float anim_speed;
 		if (cent->gent->lowerLumbarBone >= 0 && gi.G2API_GetBoneAnimIndex(
-			&cent->gent->ghoul2[cent->gent->playerModel], cent->gent->lowerLumbarBone, cg.time, &currentFrame,
-			&startFrame, &endFrame, &flags, &animSpeed, nullptr))
+			&cent->gent->ghoul2[cent->gent->playerModel], cent->gent->lowerLumbarBone, cg.time, &current_frame,
+			&start_frame, &end_frame, &flags, &anim_speed, nullptr))
 		{
-			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(currentFrame), torsoAnim, cent->currentState.weapon,
-				cent->currentState.eFlags & EF_FIRING);
-			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), torsoAnim, cent->currentState.weapon,
-				cent->currentState.eFlags & EF_FIRING);
-			hand.backlerp = 1.0f - (currentFrame - floor(currentFrame));
+			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(current_frame), torso_anim, cent->currentState.weapon,
+			                                         cent->currentState.eFlags & EF_FIRING);
+			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(current_frame), torso_anim, cent->currentState.weapon,
+			                                      cent->currentState.eFlags & EF_FIRING);
+			hand.backlerp = 1.0f - (current_frame - floor(current_frame));
 			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,
-					cent->pe.torso.frame, hand.oldframe, hand.frame);
+				           cent->pe.torso.frame, hand.oldframe, hand.frame);
 			}
 		}
 		else
@@ -1824,7 +1824,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 	{
 		int shader = 0;
 		float val = 0.0f, scale = 1.0f;
-		vec3_t WHITE = { 1.0f, 1.0f, 1.0f };
+		vec3_t WHITE = {1.0f, 1.0f, 1.0f};
 
 		if (ps->weapon == WP_BRYAR_PISTOL || ps->weapon == WP_BLASTER_PISTOL || ps->weapon == WP_SBD_PISTOL)
 		{
@@ -1863,7 +1863,7 @@ void CG_AddViewWeapon(playerState_t* ps)
 		val += Q_flrand(0.0f, 1.0f) * 0.5f;
 
 		FX_AddSprite(flash.origin, nullptr, nullptr, 3.0f * val * scale, 0.0f, 0.7f, 0.7f, WHITE, WHITE,
-			Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
+		             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
 	}
 
 	// Check if the heavy repeater is finishing up a sustained burst
@@ -1904,15 +1904,15 @@ void CG_AddViewWeapon(playerState_t* ps)
 			if (cent->currentState.eFlags & EF_FIRING)
 			{
 				theFxScheduler.PlayEffect(weaponData[cent->gent->client->ps.weapon].mMuzzleEffect,
-					cent->gent->client->renderInfo.muzzlePoint,
-					cent->gent->client->renderInfo.muzzleDir);
+				                          cent->gent->client->renderInfo.muzzlePoint,
+				                          cent->gent->client->renderInfo.muzzleDir);
 			}
 
 			if (cent->currentState.eFlags & EF_ALT_FIRING)
 			{
 				theFxScheduler.PlayEffect(weaponData[cent->gent->client->ps.weapon].mAltMuzzleEffect,
-					cent->gent->client->renderInfo.muzzlePoint,
-					cent->gent->client->renderInfo.muzzleDir);
+				                          cent->gent->client->renderInfo.muzzlePoint,
+				                          cent->gent->client->renderInfo.muzzleDir);
 			}
 
 			cent->muzzleFlashTimeR = 0;
@@ -2215,14 +2215,14 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 			&startFrame, &endFrame, &flags, &animSpeed, nullptr))
 		{
 			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(currentFrame), torsoAnim, cent->currentState.weapon,
-				cent->currentState.eFlags & EF_FIRING);
+			                                         cent->currentState.eFlags & EF_FIRING);
 			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), torsoAnim, cent->currentState.weapon,
-				cent->currentState.eFlags & EF_FIRING);
+			                                      cent->currentState.eFlags & EF_FIRING);
 			hand.backlerp = 1.0f - (currentFrame - floor(currentFrame));
 			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,
-					cent->pe.torso.frame, hand.oldframe, hand.frame);
+				           cent->pe.torso.frame, hand.oldframe, hand.frame);
 			}
 		}
 		else
@@ -2345,7 +2345,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 	{
 		int shader = 0;
 		float val = 0.0f, scale = 1.0f;
-		vec3_t WHITE = { 1.0f, 1.0f, 1.0f };
+		vec3_t WHITE = {1.0f, 1.0f, 1.0f};
 
 		if (ps->weapon == WP_BRYAR_PISTOL || ps->weapon == WP_BLASTER_PISTOL || ps->weapon == WP_SBD_PISTOL)
 		{
@@ -2384,7 +2384,7 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 		val += Q_flrand(0.0f, 1.0f) * 0.5f;
 
 		FX_AddSprite(flash.origin, nullptr, nullptr, 3.0f * val * scale, 0.0f, 0.7f, 0.7f, WHITE, WHITE,
-			Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
+		             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
 	}
 
 	// Check if the heavy repeater is finishing up a sustained burst
@@ -2423,15 +2423,15 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 		if (cent->currentState.eFlags & EF_FIRING)
 		{
 			theFxScheduler.PlayEffect(weaponData[cent->gent->client->ps.weapon].mMuzzleEffect,
-				cent->gent->client->renderInfo.muzzlePointOld,
-				cent->gent->client->renderInfo.muzzleDirOld);
+			                          cent->gent->client->renderInfo.muzzlePointOld,
+			                          cent->gent->client->renderInfo.muzzleDirOld);
 		}
 
 		if (cent->currentState.eFlags & EF_ALT_FIRING)
 		{
 			theFxScheduler.PlayEffect(weaponData[cent->gent->client->ps.weapon].mAltMuzzleEffect,
-				cent->gent->client->renderInfo.muzzlePointOld,
-				cent->gent->client->renderInfo.muzzleDirOld);
+			                          cent->gent->client->renderInfo.muzzlePointOld,
+			                          cent->gent->client->renderInfo.muzzleDirOld);
 		}
 
 		cent->muzzleFlashTimeL = 0;
@@ -2451,7 +2451,7 @@ WEAPON SELECTION
 CG_WeaponCheck
 ===================
 */
-int CG_WeaponCheck(int weaponIndex)
+int CG_WeaponCheck(const int weaponIndex)
 {
 	if (weaponIndex == WP_SABER || weaponIndex == WP_STUN_BATON)
 	{
@@ -2459,8 +2459,8 @@ int CG_WeaponCheck(int weaponIndex)
 	}
 
 	int value = weaponData[weaponIndex].energyPerShot < weaponData[weaponIndex].altEnergyPerShot
-		? weaponData[weaponIndex].energyPerShot
-		: weaponData[weaponIndex].altEnergyPerShot;
+		            ? weaponData[weaponIndex].energyPerShot
+		            : weaponData[weaponIndex].altEnergyPerShot;
 
 	if (!cg.snap)
 	{
@@ -2529,8 +2529,8 @@ void CG_DrawDataPadWeaponSelect(void)
 	int sideLeftIconCnt, sideRightIconCnt;
 	int iconCnt;
 	vec4_t calc_color;
-	char text[1024] = { 0 };
-	constexpr vec4_t textColor = { .875f, .718f, .121f, 1.0f };
+	char text[1024] = {0};
+	constexpr vec4_t textColor = {.875f, .718f, .121f, 1.0f};
 
 	// showing weapon select clears pickup item display, but not the blend blob
 	cg.itemPickupTime = 0;
@@ -2649,12 +2649,12 @@ void CG_DrawDataPadWeaponSelect(void)
 		if (!CG_WeaponCheck(cg.DataPadWeaponSelect))
 		{
 			CG_DrawPic(x - bigIconSize / 2, y - (bigIconSize - smallIconSize) / 2 + 10, bigIconSize, bigIconSize,
-				weaponInfo->weaponIconNoAmmo);
+			           weaponInfo->weaponIconNoAmmo);
 		}
 		else
 		{
 			CG_DrawPic(x - bigIconSize / 2, y - (bigIconSize - smallIconSize) / 2 + 10, bigIconSize, bigIconSize,
-				weaponInfo->weaponIcon);
+			           weaponInfo->weaponIcon);
 		}
 	}
 
@@ -2713,9 +2713,9 @@ void CG_DrawDataPadWeaponSelect(void)
 	if (text[0])
 	{
 		CG_DisplayBoxedText(70, 50, 500, 300, text,
-			cgs.media.qhFontSmall,
-			0.7f,
-			textColor
+		                    cgs.media.qhFontSmall,
+		                    0.7f,
+		                    textColor
 		);
 	}
 
@@ -2791,7 +2791,7 @@ void SetWeaponSelectTime(void)
 	if (cg.inventorySelectTime + WEAPON_SELECT_TIME > cg.time ||
 		// The Inventory HUD was currently active to just swap it out with Force HUD
 		cg.forcepowerSelectTime + WEAPON_SELECT_TIME > cg.time)
-		// The Force HUD was currently active to just swap it out with Force HUD
+	// The Force HUD was currently active to just swap it out with Force HUD
 	{
 		cg.inventorySelectTime = 0;
 		cg.forcepowerSelectTime = 0;
@@ -2808,7 +2808,7 @@ void SetWeaponSelectTime(void)
 CG_DrawWeaponSelect
 ===================
 */
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
 extern bool G_IsRidingTurboVehicle(const gentity_t* ent);
 
 void CG_DrawWeaponSelect(void)
@@ -2819,7 +2819,7 @@ void CG_DrawWeaponSelect(void)
 	int sideLeftIconCnt, sideRightIconCnt;
 	int sideMax, iconCnt;
 	vec4_t calc_color;
-	constexpr vec4_t textColor = { .875f, .718f, .121f, 1.0f };
+	constexpr vec4_t textColor = {.875f, .718f, .121f, 1.0f};
 	constexpr int yOffset = 0;
 
 	if (cg.weaponSelectTime + WEAPON_SELECT_TIME < cg.time) // Time is up for the HUD to display
@@ -3038,12 +3038,12 @@ void CG_DrawWeaponSelect(void)
 			if (!CG_WeaponCheck(cg.weaponSelect))
 			{
 				CG_DrawPic(x - bigIconSize / 2, y - (bigIconSize - smallIconSize) / 2 + yOffset, bigIconSize,
-					bigIconSize, weaponInfo->weaponIconNoAmmo);
+				           bigIconSize, weaponInfo->weaponIconNoAmmo);
 			}
 			else
 			{
 				CG_DrawPic(x - bigIconSize / 2, y - (bigIconSize - smallIconSize) / 2 + yOffset, bigIconSize,
-					bigIconSize, weaponInfo->weaponIcon);
+				           bigIconSize, weaponInfo->weaponIcon);
 			}
 		}
 		else
@@ -3051,12 +3051,12 @@ void CG_DrawWeaponSelect(void)
 			if (!CG_WeaponCheck(cg.weaponSelect))
 			{
 				CG_DrawPic(x - bigIconSize / 2, y - (bigIconSize - smallIconSize) / 2 + 10 + yOffset, bigIconSize,
-					bigIconSize, weaponInfo->weaponIconNoAmmo);
+				           bigIconSize, weaponInfo->weaponIconNoAmmo);
 			}
 			else
 			{
 				CG_DrawPic(x - bigIconSize / 2, y - (bigIconSize - smallIconSize) / 2 + 10 + yOffset, bigIconSize,
-					bigIconSize, weaponInfo->weaponIcon);
+				           bigIconSize, weaponInfo->weaponIcon);
 			}
 		}
 	}
@@ -3184,7 +3184,7 @@ void CG_DrawWeaponSelect(void)
 				const int w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 1.0f);
 				const int ox = (SCREEN_WIDTH - w) / 2;
 				cgi_R_Font_DrawString(ox, SCREEN_HEIGHT - 24 + yOffset, text, textColor, cgs.media.qhFontSmall, -1,
-					1.0f);
+				                      1.0f);
 			}
 		}
 	}
@@ -3197,7 +3197,7 @@ void CG_DrawWeaponSelect(void)
 CG_WeaponSelectable
 ===============
 */
-qboolean CG_WeaponSelectable(int i, int original, qboolean dpMode)
+qboolean CG_WeaponSelectable(int i, const int original, const qboolean dpMode)
 {
 	if (i > MAX_PLAYER_WEAPONS || !playerUsableWeapons[i])
 	{
@@ -3243,13 +3243,13 @@ qboolean CG_WeaponSelectable(int i, int original, qboolean dpMode)
 	{
 		//weapon uses ammo, see if we have any
 		const int usage_for_weap = weaponData[i].energyPerShot < weaponData[i].altEnergyPerShot
-			? weaponData[i].energyPerShot
-			: weaponData[i].altEnergyPerShot;
+			                           ? weaponData[i].energyPerShot
+			                           : weaponData[i].altEnergyPerShot;
 
 		if (cg.snap->ps.ammo[weaponData[i].ammoIndex] - usage_for_weap < 0)
 		{
 			if (i != WP_DET_PACK)
-				// detpack can be switched to...should possibly check if there are any stuck to a wall somewhere?
+			// detpack can be switched to...should possibly check if there are any stuck to a wall somewhere?
 			{
 				// This weapon doesn't have enough ammo to shoot either the main or the alt-fire
 				return qfalse;
@@ -3281,7 +3281,7 @@ void CG_ToggleATSTWeapon(void)
 
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 
-void CG_PlayerLockedWeaponSpeech(int jumping)
+void CG_PlayerLockedWeaponSpeech(const int jumping)
 {
 	if (!in_camera)
 	{
@@ -3676,7 +3676,7 @@ void CG_ChangeWeapon( int num )
 
   Meant to be called from the normal game, so checks the game-side weapon inventory data
 */
-void CG_ChangeWeapon(int num)
+void CG_ChangeWeapon(const int num)
 {
 	const gentity_t* player = &g_entities[0];
 
@@ -3875,15 +3875,15 @@ void CG_Weapon_f()
 						{
 							//play it on the saber
 							cgi_S_UpdateEntityPosition(cg_entities[0].gent->client->ps.saberEntityNum,
-								g_entities[cg_entities[0].gent->client->ps.saberEntityNum].
-								currentOrigin);
+							                           g_entities[cg_entities[0].gent->client->ps.saberEntityNum].
+							                           currentOrigin);
 							cgi_S_StartSound(nullptr, cg_entities[0].gent->client->ps.saberEntityNum, CHAN_AUTO,
-								cgs.sound_precache[cg_entities[0].gent->client->ps.saber[0].soundOff]);
+							                 cgs.sound_precache[cg_entities[0].gent->client->ps.saber[0].soundOff]);
 						}
 						else
 						{
 							cgi_S_StartSound(nullptr, cg.snap->ps.client_num, CHAN_AUTO,
-								cgs.sound_precache[cg_entities[0].gent->client->ps.saber[0].soundOff]);
+							                 cgs.sound_precache[cg_entities[0].gent->client->ps.saber[0].soundOff]);
 						}
 					}
 					else
@@ -4059,7 +4059,7 @@ Caused by an EV_FIRE_WEAPON event
 */
 extern qboolean PM_WeponRestAnim(int anim);
 
-void CG_FireWeapon(centity_t* cent, qboolean alt_fire)
+void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 {
 	const entityState_t* ent = &cent->currentState;
 
@@ -4117,7 +4117,7 @@ CG_BounceEffect
 Caused by an EV_BOUNCE | EV_BOUNCE_HALF event
 =================
 */
-void CG_BounceEffect(centity_t* cent, int weapon, vec3_t origin, vec3_t normal)
+void CG_BounceEffect(centity_t* cent, const int weapon, vec3_t origin, vec3_t normal)
 {
 	switch (weapon)
 	{
@@ -4154,7 +4154,7 @@ void CG_BounceEffect(centity_t* cent, int weapon, vec3_t origin, vec3_t normal)
 }
 
 //----------------------------------------------------------------------
-void CG_MissileStick(const centity_t* cent, int weapon, vec3_t position)
+void CG_MissileStick(const centity_t* cent, const int weapon, vec3_t position)
 //----------------------------------------------------------------------
 {
 	sfxHandle_t snd = 0;
@@ -4172,7 +4172,7 @@ void CG_MissileStick(const centity_t* cent, int weapon, vec3_t position)
 	case WP_TRIP_MINE:
 		snd = cgs.media.tripMineStickSound;
 		break;
-	default:;
+	default: ;
 	}
 
 	if (snd)
@@ -4189,7 +4189,7 @@ qboolean CG_VehicleWeaponImpact(centity_t* cent)
 	{
 		//missile is from a special vehWeapon
 		CG_PlayEffectID(g_vehWeaponInfo[cent->currentState.otherEntityNum2].iImpactFX, cent->lerpOrigin,
-			cent->gent->pos1);
+		                cent->gent->pos1);
 		return qtrue;
 	}
 	return qfalse;
@@ -4359,7 +4359,7 @@ void cg_missile_hit_wall(const centity_t* cent, const int weapon, vec3_t origin,
 	case WP_NOGHRI_STICK:
 		FX_NoghriShotWeaponHitWall(origin, dir);
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -4456,7 +4456,7 @@ void cg_missile_hit_player(const centity_t* cent, const int weapon, vec3_t origi
 			FX_DEMP2_HitPlayer(other, origin, dir, humanoid);
 		}
 
-		// Do a full body effect here for some more feedback
+	// Do a full body effect here for some more feedback
 		if (other && other->client)
 		{
 			other->s.powerups |= 1 << PW_SHOCKED;
@@ -4539,6 +4539,6 @@ void cg_missile_hit_player(const centity_t* cent, const int weapon, vec3_t origi
 	case WP_NOGHRI_STICK:
 		FX_NoghriShotWeaponHitPlayer(other, origin, dir, humanoid);
 		break;
-	default:;
+	default: ;
 	}
 }

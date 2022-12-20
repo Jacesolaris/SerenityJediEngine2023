@@ -164,7 +164,7 @@ bool hfile::is_open_for_write(void) const
 ////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////
-bool hfile::open(float version, int checksum, bool read) const
+bool hfile::open(const float version, const int checksum, const bool read) const
 {
 	// Make Sure This Is A Valid Handle
 	//----------------------------------
@@ -278,7 +278,7 @@ bool hfile::close() const
 ////////////////////////////////////////////////////////////////////////////////////
 // Searches for the first block with the matching data size, and reads it in.
 ////////////////////////////////////////////////////////////////////////////////////
-bool hfile::load(void* data, int datasize) const
+bool hfile::load(void* data, const int datasize) const
 {
 	// Go Ahead And Open The File For Reading
 	//----------------------------------------
@@ -329,7 +329,7 @@ bool hfile::load(void* data, int datasize) const
 ////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////
-bool hfile::save(const void* data, int datasize) const
+bool hfile::save(const void* data, const int datasize) const
 {
 	// Go Ahead And Open The File For Reading
 	//----------------------------------------

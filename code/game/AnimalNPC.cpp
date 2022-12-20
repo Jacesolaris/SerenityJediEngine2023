@@ -113,9 +113,9 @@ extern void CG_ChangeWeapon(int num);
 
 extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
-	const vec3_t end, int passEntityNum, int contentmask);
+                           const vec3_t end, int passEntityNum, int contentmask);
 
 // Update death sequence.
 static void DeathUpdate(Vehicle_t* pVeh)
@@ -440,9 +440,9 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			}
 		}*/
 
-		/********************************************************************************/
-		/*	END	Here is where make sure the vehicle is properly oriented.	END			*/
-		/********************************************************************************/
+	/********************************************************************************/
+	/*	END	Here is where make sure the vehicle is properly oriented.	END			*/
+	/********************************************************************************/
 }
 
 #ifdef _JK2MP //temp hack til mp speeder controls are sorted -rww
@@ -797,8 +797,8 @@ static void AnimateRiders(Vehicle_t* pVeh)
 			float bodyCurrent = 0.0f;
 			int bodyEnd = 0;
 			if (!!gi.G2API_GetBoneAnimIndex(&pVeh->m_pPilot->ghoul2[pVeh->m_pPilot->playerModel],
-				pVeh->m_pPilot->rootBone, level.time, &bodyCurrent, nullptr, &bodyEnd,
-				nullptr, nullptr, nullptr))
+			                                pVeh->m_pPilot->rootBone, level.time, &bodyCurrent, nullptr, &bodyEnd,
+			                                nullptr, nullptr, nullptr))
 			{
 				if (bodyCurrent <= static_cast<float>(bodyEnd) - 1.5f)
 				{
@@ -1039,7 +1039,7 @@ void G_CreateAnimalNPC(Vehicle_t** pVeh, const char* strAnimalType)
 	memset(*pVeh, 0, sizeof(Vehicle_t));
 	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strAnimalType)];
 #else
-	* pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
+	*pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strAnimalType)];
 #endif
 }

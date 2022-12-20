@@ -64,14 +64,17 @@ extern vec3_t gPainPoint;
 #define AUTOSAVE_TELE		0x00000001 //->spawnflag for autosave map entities that teleport all players when activated
 #define AUTOSAVE_EDITOR		0x00000002 //this autosave point was created with the CoOp editor, used to know if the autosave should be rendered when the CoOp Editor is on.
 
+
 //primarily used by NPCs
 #define	START_TIME_LINK_ENTS		FRAMETIME*1 // time-delay after map start at which all ents have been spawned, so can link them
+
 
 #define	START_TIME_FIND_LINKS		FRAMETIME*2 // time-delay after map start at which you can find linked entities
 #define	START_TIME_MOVERS_SPAWNED	FRAMETIME*2 // time-delay after map start at which all movers should be spawned
 #define	START_TIME_REMOVE_ENTS		FRAMETIME*3 // time-delay after map start to remove temporary ents
 #define	START_TIME_NAV_CALC			FRAMETIME*4 // time-delay after map start to connect waypoints and calc routes
 #define	START_TIME_FIND_WAYPOINT	FRAMETIME*5 // time-delay after map start after which it's okay to try to find your best waypoint
+
 
 // gentity->flags
 #define	FL_GODMODE				0x00000010
@@ -1071,6 +1074,7 @@ struct gclient_s
 		int drainDebounce;
 		int lightningDebounce;
 	} force;
+
 	int hookDebounceTime;
 	qboolean hookhasbeenfired;
 	gentity_t* owner;
@@ -1454,7 +1458,7 @@ void G_ScaleNetHealth(gentity_t* self);
 void g_kill_box(gentity_t* ent);
 gentity_t* G_Find(gentity_t* from, int fieldofs, const char* match);
 int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, qboolean take_damage,
-	gentity_t* ent_list[MAX_GENTITIES]);
+                 gentity_t* ent_list[MAX_GENTITIES]);
 
 void g_throw(gentity_t* targ, const vec3_t new_dir, float push);
 
@@ -1523,14 +1527,14 @@ Ghoul2 Insert End
 //
 qboolean CanDamage(const gentity_t* targ, vec3_t origin);
 void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t dir, vec3_t point, int damage,
-	int dflags, int mod);
+              int dflags, int mod);
 qboolean g_radius_damage(vec3_t origin, gentity_t* attacker, float damage, float radius, const gentity_t* ignore,
-	gentity_t* missile, int mod);
+                         gentity_t* missile, int mod);
 void body_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death);
 void TossClientWeapon(gentity_t* self, vec3_t direction, float speed);
 void TossClientItems(gentity_t* self);
 void ExplodeDeath(gentity_t* self);
-void G_CheckForDismemberment(gentity_t* ent, const gentity_t* enemy, vec3_t point, const int damage);
+void G_CheckForDismemberment(gentity_t* ent, const gentity_t* enemy, vec3_t point, int damage);
 extern int gGAvoidDismember;
 void G_DodgeDrain(const gentity_t* victim, const gentity_t* attacker, int amount);
 
@@ -1561,7 +1565,7 @@ void G_DodgeDrain(const gentity_t* victim, const gentity_t* attacker, int amount
 // g_exphysics.c
 //
 void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboolean autoKill, int* g2Bolts,
-	int numG2Bolts);
+                 int numG2Bolts);
 
 //
 // g_missile.c
@@ -1569,7 +1573,7 @@ void G_RunExPhys(gentity_t* ent, float gravity, float mass, float bounce, qboole
 void g_run_missile(gentity_t* ent);
 
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life,
-	gentity_t* owner, qboolean alt_fire);
+                          gentity_t* owner, qboolean alt_fire);
 void g_bounce_projectile(vec3_t start, vec3_t impact, vec3_t dir, vec3_t endout);
 void g_explode_missile(gentity_t* ent);
 
@@ -1628,12 +1632,12 @@ void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles);
 // g_weapon.c
 //
 void WP_FireTurretMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire, int damage, int velocity, int mod,
-	const gentity_t* ignore);
+                          const gentity_t* ignore);
 void WP_FireGenericBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire, int damage, int velocity,
-	int mod);
+                                  int mod);
 qboolean LogAccuracyHit(const gentity_t* target, const gentity_t* attacker);
 void CalcMuzzlePoint(const gentity_t* ent, const vec3_t inForward, const vec3_t inRight, const vec3_t inUp,
-	vec3_t muzzlePoint);
+                     vec3_t muzzlePoint);
 void SnapVectorTowards(vec3_t v, vec3_t to);
 
 void Weapon_HookThink(gentity_t* ent);
@@ -1766,12 +1770,12 @@ void IT_LoadWeatherParms(void);
 // NPC_senses.cpp
 //
 extern void AddSightEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
-	float addLight); //addLight = 0.0f
+                          float addLight); //addLight = 0.0f
 extern void AddSoundEvent(gentity_t* owner, vec3_t position, float radius, alertEventLevel_e alertLevel,
-	qboolean needLOS, qboolean onGround);
+                          qboolean needLOS, qboolean onGround);
 extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern int G_CheckAlertEvents(gentity_t* self, qboolean checkSight, qboolean checkSound, float maxSeeDist,
-	float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel);
+                              float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel);
 //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
 extern qboolean G_CheckForDanger(const gentity_t* self, int alert_event);
 extern qboolean G_ClearLOS(gentity_t* self, const vec3_t start, const vec3_t end);
@@ -1801,7 +1805,7 @@ gentity_t* G_PreDefSound(vec3_t org, int pdSound);
 qboolean HasSetSaberOnly(void);
 void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 void wp_saber_position_update(gentity_t* self, usercmd_t* ucmd);
-qboolean WP_SaberCanBlockThrownSaber(gentity_t* self, vec3_t point, const qboolean projectile, int attack_str);
+qboolean WP_SaberCanBlockThrownSaber(gentity_t* self, vec3_t point, qboolean projectile, int attack_str);
 void wp_saber_init_blade_data(const gentity_t* ent);
 void WP_InitForcePowers(const gentity_t* ent);
 void WP_SpawnInitForcePowers(gentity_t* ent);
@@ -1881,7 +1885,7 @@ int bot_ai_setup(int restart);
 int bot_ai_shutdown(int restart);
 int BotAILoadMap();
 int bot_ai_setup_client(int client, const struct bot_settings_s* settings);
-int BotAIShutdownClient(const int client);
+int BotAIShutdownClient(int client);
 int bot_ai_start_frame(int time);
 
 #include "g_team.h" // teamplay specific stuff

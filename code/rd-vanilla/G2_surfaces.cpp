@@ -54,7 +54,7 @@ public:
 	{
 		mCurrentTouch++;
 	}
-	void Set(int index, int pos)
+	void Set(const int index, const int pos)
 	{
 		if (index == 10000)
 		{
@@ -64,7 +64,7 @@ public:
 		mOverride[index] = mCurrentTouch;
 		mAt[index] = pos;
 	}
-	int Test(int index) const
+	int Test(const int index) const
 	{
 		assert(index >= 0 && index < 512);
 		if (mOverride[index] != mCurrentTouch)
@@ -78,7 +78,7 @@ public:
 static CQuickOverride QuickOverride;
 
 // find a particular surface in the surface override list
-const surfaceInfo_t* G2_FindOverrideSurface(int surfaceNum, const surfaceInfo_v& surfaceList)
+const surfaceInfo_t* G2_FindOverrideSurface(const int surfaceNum, const surfaceInfo_v& surfaceList)
 {
 	if (surfaceNum < 0)
 	{
@@ -296,7 +296,7 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int model_index, const c
 }
 
 extern int			G2_DecideTraceLod(const CGhoul2Info& ghoul2, int useLod);
-int G2_AddSurface(CGhoul2Info* ghoul2, int surfaceNumber, int polyNumber, float BarycentricI, float BarycentricJ, int lod)
+int G2_AddSurface(CGhoul2Info* ghoul2, const int surfaceNumber, const int polyNumber, const float BarycentricI, const float BarycentricJ, int lod)
 {
 	lod = G2_DecideTraceLod(*ghoul2, lod);
 

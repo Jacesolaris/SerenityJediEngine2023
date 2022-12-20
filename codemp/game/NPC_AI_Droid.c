@@ -223,7 +223,7 @@ void Droid_Spin( void )
 */
 void Droid_Spin(void)
 {
-	vec3_t dir = { 0, 0, 1 };
+	vec3_t dir = {0, 0, 1};
 
 	R2D2_TurnAnims();
 
@@ -286,7 +286,7 @@ void Droid_Spin(void)
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Droid_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Droid_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	const gentity_t* other = attacker;
 	int anim;
@@ -306,7 +306,7 @@ void NPC_Droid_Pain(gentity_t* self, gentity_t* attacker, int damage)
 
 		// Put it in pain
 		if (mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT || Q_flrand(0.0f, 1.0f) < pain_chance)
-			// Spin around in pain? Demp2 always does this
+		// Spin around in pain? Demp2 always does this
 		{
 			// Health is between 0-30 or was hit by a DEMP2 so pop his head
 			if (!self->s.m_iVehicleNum
@@ -379,7 +379,7 @@ void NPC_Droid_Pain(gentity_t* self, gentity_t* attacker, int damage)
 		pain_chance = NPC_GetPainChance(self, damage);
 
 		if (mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT || Q_flrand(0.0f, 1.0f) < pain_chance)
-			// Spin around in pain? Demp2 always does this
+		// Spin around in pain? Demp2 always does this
 		{
 			// Health is between 0-30 or was hit by a DEMP2 so pop his head
 			if (!self->s.m_iVehicleNum

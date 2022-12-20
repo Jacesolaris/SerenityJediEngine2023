@@ -75,7 +75,7 @@ int numaaslinks;
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_PresenceTypeBoundingBox(int presencetype, vec3_t mins, vec3_t maxs)
+void AAS_PresenceTypeBoundingBox(const int presencetype, vec3_t mins, vec3_t maxs)
 {
 	int index;
 	//bounding box size for each presence type
@@ -305,7 +305,7 @@ int AAS_PointReachabilityAreaIndex(vec3_t origin)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaCluster(int areanum)
+int AAS_AreaCluster(const int areanum)
 {
 	if (areanum <= 0 || areanum >= aasworld.numareas)
 	{
@@ -321,7 +321,7 @@ int AAS_AreaCluster(int areanum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaPresenceType(int areanum)
+int AAS_AreaPresenceType(const int areanum)
 {
 	if (!aasworld.loaded) return 0;
 	if (areanum <= 0 || areanum >= aasworld.numareas)
@@ -361,7 +361,7 @@ int AAS_PointPresenceType(vec3_t point)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-float AAS_BoxOriginDistanceFromPlane(vec3_t normal, vec3_t mins, vec3_t maxs, int side)
+float AAS_BoxOriginDistanceFromPlane(vec3_t normal, vec3_t mins, vec3_t maxs, const int side)
 {
 	vec3_t v1, v2;
 	int i;
@@ -401,8 +401,8 @@ float AAS_BoxOriginDistanceFromPlane(vec3_t normal, vec3_t mins, vec3_t maxs, in
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_AreaEntityCollision(int areanum, vec3_t start, vec3_t end,
-	int presencetype, int passent, aas_trace_t* trace)
+qboolean AAS_AreaEntityCollision(const int areanum, vec3_t start, vec3_t end,
+                                 const int presencetype, const int passent, aas_trace_t* trace)
 {
 	vec3_t boxmins, boxmaxs;
 	bsp_trace_t bsptrace;
@@ -442,8 +442,8 @@ qboolean AAS_AreaEntityCollision(int areanum, vec3_t start, vec3_t end,
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, int presencetype,
-	int passent)
+aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, const int presencetype,
+                                const int passent)
 {
 	int side, tmpplanenum;
 	float front, back, frac;
@@ -716,7 +716,7 @@ aas_trace_t AAS_TraceClientBBox(vec3_t start, vec3_t end, int presencetype,
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_TraceAreas(vec3_t start, vec3_t end, int* areas, vec3_t* points, int maxareas)
+int AAS_TraceAreas(vec3_t start, vec3_t end, int* areas, vec3_t* points, const int maxareas)
 {
 	int side, tmpplanenum;
 	float front, back, frac;
@@ -914,7 +914,7 @@ int AAS_TraceAreas(vec3_t start, vec3_t end, int* areas, vec3_t* points, int max
 // Returns:					qtrue if the point is within the face boundaries
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_InsideFace(aas_face_t* face, vec3_t pnormal, vec3_t point, float epsilon)
+qboolean AAS_InsideFace(aas_face_t* face, vec3_t pnormal, vec3_t point, const float epsilon)
 {
 	int firstvertex, edgenum;
 	vec3_t v0;
@@ -966,7 +966,7 @@ qboolean AAS_InsideFace(aas_face_t* face, vec3_t pnormal, vec3_t point, float ep
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_PointInsideFace(int facenum, vec3_t point, float epsilon)
+qboolean AAS_PointInsideFace(const int facenum, vec3_t point, const float epsilon)
 {
 	vec3_t edgevec, pointvec, sepnormal;
 
@@ -1001,7 +1001,7 @@ qboolean AAS_PointInsideFace(int facenum, vec3_t point, float epsilon)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-aas_face_t* AAS_AreaGroundFace(int areanum, vec3_t point)
+aas_face_t* AAS_AreaGroundFace(const int areanum, vec3_t point)
 {
 	const vec3_t up = { 0, 0, 1 };
 	vec3_t normal;
@@ -1032,7 +1032,7 @@ aas_face_t* AAS_AreaGroundFace(int areanum, vec3_t point)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_FacePlane(int facenum, vec3_t normal, float* dist)
+void AAS_FacePlane(const int facenum, vec3_t normal, float* dist)
 {
 	const aas_plane_t* plane = &aasworld.planes[aasworld.faces[facenum].planenum];
 	VectorCopy(plane->normal, normal);
@@ -1196,7 +1196,7 @@ using aas_linkstack_t = struct aas_linkstack_s {
 	int nodenum;		//node found after splitting
 };
 
-aas_link_t* AAS_AASLinkEntity(vec3_t absmins, vec3_t absmaxs, int entnum)
+aas_link_t* AAS_AASLinkEntity(vec3_t absmins, vec3_t absmaxs, const int entnum)
 {
 	aas_linkstack_t linkstack[128];
 	aas_link_t* link;
@@ -1292,7 +1292,7 @@ aas_link_t* AAS_AASLinkEntity(vec3_t absmins, vec3_t absmaxs, int entnum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-aas_link_t* AAS_LinkEntityClientBBox(vec3_t absmins, vec3_t absmaxs, int entnum, int presencetype)
+aas_link_t* AAS_LinkEntityClientBBox(vec3_t absmins, vec3_t absmaxs, const int entnum, const int presencetype)
 {
 	vec3_t mins, maxs;
 	vec3_t newabsmins, newabsmaxs;
@@ -1309,7 +1309,7 @@ aas_link_t* AAS_LinkEntityClientBBox(vec3_t absmins, vec3_t absmaxs, int entnum,
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_BBoxAreas(vec3_t absmins, vec3_t absmaxs, int* areas, int maxareas)
+int AAS_BBoxAreas(vec3_t absmins, vec3_t absmaxs, int* areas, const int maxareas)
 {
 	aas_link_t* linkedareas = AAS_AASLinkEntity(absmins, absmaxs, -1);
 	int num = 0;
@@ -1329,7 +1329,7 @@ int AAS_BBoxAreas(vec3_t absmins, vec3_t absmaxs, int* areas, int maxareas)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaInfo(int areanum, aas_areainfo_t* info)
+int AAS_AreaInfo(const int areanum, aas_areainfo_t* info)
 {
 	if (!info)
 		return 0;
@@ -1354,7 +1354,7 @@ int AAS_AreaInfo(int areanum, aas_areainfo_t* info)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-aas_plane_t* AAS_PlaneFromNum(int planenum)
+aas_plane_t* AAS_PlaneFromNum(const int planenum)
 {
 	if (!aasworld.loaded) return nullptr;
 

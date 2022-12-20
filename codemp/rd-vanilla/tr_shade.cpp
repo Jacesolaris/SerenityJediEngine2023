@@ -47,7 +47,7 @@ R_ArrayElementDiscrete
 This is just for OpenGL conformance testing, it should never be the fastest
 ================
 */
-static void APIENTRY R_ArrayElementDiscrete(GLint index) {
+static void APIENTRY R_ArrayElementDiscrete(const GLint index) {
 	qglColor4ubv(tess.svars.colors[index]);
 	if (glState.currenttmu) {
 		qglMultiTexCoord2fARB(0, tess.svars.texcoords[0][index][0], tess.svars.texcoords[0][index][1]);
@@ -67,7 +67,7 @@ R_DrawStripElements
 */
 static int		c_vertexes;		// for seeing how long our average strips are
 static int		c_begins;
-static void R_DrawStripElements(int numIndexes, const glIndex_t* indexes, void (APIENTRY* element)(GLint)) {
+static void R_DrawStripElements(const int numIndexes, const glIndex_t* indexes, void (APIENTRY* element)(GLint)) {
 	glIndex_t last[3];
 
 	c_begins++;
@@ -167,7 +167,7 @@ instead of using the single glDrawElements call that may be inefficient
 without compiled vertex arrays.
 ==================
 */
-static void R_DrawElements(int numIndexes, const glIndex_t* indexes) {
+static void R_DrawElements(const int numIndexes, const glIndex_t* indexes) {
 	int primitives = r_primitives->integer;
 
 	// default is to use triangles if compiled vertex arrays are present
@@ -340,7 +340,7 @@ because a surface may be forced to perform a RB_End due
 to overflow.
 ==============
 */
-void RB_BeginSurface(shader_t* shader, int fogNum) {
+void RB_BeginSurface(shader_t* shader, const int fogNum) {
 	shader_t* state = shader->remappedShader ? shader->remappedShader : shader;
 
 	tess.numIndexes = 0;
@@ -372,7 +372,7 @@ t0 = most upstream according to spec
 t1 = most downstream according to spec
 ===================
 */
-static void DrawMultitextured(shaderCommands_t* input, int stage) {
+static void DrawMultitextured(shaderCommands_t* input, const int stage) {
 	shaderStage_t* pStage = &tess.xstages[stage];
 
 	GL_State(pStage->stateBits);
@@ -1494,7 +1494,7 @@ static void ComputeTexCoords(shaderStage_t* pStage) {
 	}
 }
 
-void ForceAlpha(unsigned char* dstColors, int TR_ForceEntAlpha)
+void ForceAlpha(unsigned char* dstColors, const int TR_ForceEntAlpha)
 {
 	dstColors += 3;
 

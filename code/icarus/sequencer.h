@@ -83,7 +83,7 @@ public:
 	int Run(char* buffer, long size, CIcarus* icarus);
 	int Callback(CTaskManager* taskManager, CBlock* block, int returnCode, CIcarus* icarus);
 
-	void SetOwnerID(int owner) { m_ownerID = owner; }
+	void SetOwnerID(const int owner) { m_ownerID = owner; }
 
 	int GetOwnerID(void) const { return m_ownerID; }
 
@@ -95,7 +95,7 @@ public:
 	int Load(CIcarus* icarus, IGameInterface* game);
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);
@@ -110,6 +110,7 @@ public:
 
 	// moved to public on 2/12/2 to allow calling during shutdown
 	int Recall(const CIcarus* icarus);
+
 protected:
 	int EvaluateConditional(CBlock* block, CIcarus* icarus) const;
 

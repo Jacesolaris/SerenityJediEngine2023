@@ -96,7 +96,7 @@ void TIMER_Clear2(const gentity_t* ent)
 
 //New C "lookup" func.
 //Returns existing timer in array if
-gtimer_t* TIMER_GetNew(int num, const char* identifier)
+gtimer_t* TIMER_GetNew(const int num, const char* identifier)
 {
 	gtimer_t* p = g_timers[num];
 
@@ -124,7 +124,7 @@ gtimer_t* TIMER_GetNew(int num, const char* identifier)
 }
 
 //don't return the first free if it doesn't already exist, return null.
-gtimer_t* TIMER_GetExisting(int num, const char* identifier)
+gtimer_t* TIMER_GetExisting(const int num, const char* identifier)
 {
 	gtimer_t* p = g_timers[num];
 
@@ -148,7 +148,7 @@ TIMER_Set
 -------------------------
 */
 
-void TIMER_Set(const gentity_t* ent, const char* identifier, int duration)
+void TIMER_Set(const gentity_t* ent, const char* identifier, const int duration)
 {
 	gtimer_t* timer = TIMER_GetNew(ent->s.number, identifier);
 
@@ -206,7 +206,7 @@ timer from the list and put it on the free list
 Doesn't do much error checking, only called below
 -------------------------
 */
-void TIMER_RemoveHelper(int num, gtimer_t* timer)
+void TIMER_RemoveHelper(const int num, gtimer_t* timer)
 {
 	gtimer_t* p = g_timers[num];
 
@@ -241,7 +241,7 @@ timer was never started
 -------------------------
 */
 
-qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, qboolean remove)
+qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, const qboolean remove)
 {
 	gtimer_t* timer = TIMER_GetExisting(ent->s.number, identifier);
 
@@ -303,7 +303,7 @@ TIMER_Start
 -------------------------
 */
 
-qboolean TIMER_Start(const gentity_t* self, const char* identifier, int duration)
+qboolean TIMER_Start(const gentity_t* self, const char* identifier, const int duration)
 {
 	if (TIMER_Done(self, identifier))
 	{

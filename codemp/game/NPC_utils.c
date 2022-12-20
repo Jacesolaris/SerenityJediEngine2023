@@ -146,7 +146,7 @@ void CalcEntitySpot(const gentity_t* ent, const spot_t spot, vec3_t point)
 			AngleVectors(ent->client->ps.viewangles, forward, right, up);
 		}
 		CalcMuzzlePoint((gentity_t*)ent, forward, right, up, point);
-		//NOTE: automatically takes leaning into account!
+	//NOTE: automatically takes leaning into account!
 		break;
 
 	case SPOT_GROUND:
@@ -158,7 +158,7 @@ void CalcEntitySpot(const gentity_t* ent, const spot_t spot, vec3_t point)
 			break;
 		}
 
-		// if it is reasonably close to the ground, give the point underneath of it
+	// if it is reasonably close to the ground, give the point underneath of it
 		VectorCopy(ent->r.currentOrigin, start);
 		start[2] = ent->r.absmin[2];
 		VectorCopy(start, end);
@@ -170,7 +170,7 @@ void CalcEntitySpot(const gentity_t* ent, const spot_t spot, vec3_t point)
 			break;
 		}
 
-		// otherwise just use the origin
+	// otherwise just use the origin
 		VectorCopy(ent->r.currentOrigin, point);
 		break;
 
@@ -191,7 +191,7 @@ Does not include "aim" in it's calculations
 
 FIXME: stop compressing angles into shorts!!!!
 */
-qboolean NPC_UpdateAngles(qboolean do_pitch, qboolean do_yaw)
+qboolean NPC_UpdateAngles(const qboolean do_pitch, const qboolean do_yaw)
 {
 #if 1
 
@@ -476,7 +476,7 @@ qboolean NPC_UpdateFiringAngles ( qboolean doPitch, qboolean doYaw )
 
   Includes aim when determining angles - so they don't always hit...
   */
-qboolean NPC_UpdateFiringAngles(qboolean do_pitch, qboolean do_yaw)
+qboolean NPC_UpdateFiringAngles(const qboolean do_pitch, const qboolean do_yaw)
 {
 #if 0
 
@@ -667,7 +667,7 @@ static void NPC_UpdateShootAngles (vec3_t angles, qboolean doPitch, qboolean doY
 Does update angles on shootAngles
 */
 
-void NPC_UpdateShootAngles(vec3_t angles, qboolean do_pitch, qboolean do_yaw)
+void NPC_UpdateShootAngles(vec3_t angles, const qboolean do_pitch, const qboolean do_yaw)
 {
 	//FIXME: shoot angles either not set right or not used!
 	float error;
@@ -780,7 +780,7 @@ void SetTeamNumbers(void)
 extern stringID_table_t BSTable[];
 extern stringID_table_t BSETTable[];
 
-qboolean G_ActivateBehavior(gentity_t* self, int bset)
+qboolean G_ActivateBehavior(gentity_t* self, const int bset)
 {
 	bState_t bSID = -1;
 
@@ -801,7 +801,7 @@ qboolean G_ActivateBehavior(gentity_t* self, int bset)
 		bSID = (bState_t)GetIDForString(BSTable, bs_name);
 	}
 
-	if (bSID != (bState_t)-1)
+	if (bSID != (bState_t) - 1)
 	{
 		self->NPC->tempBehavior = BS_DEFAULT;
 		self->NPC->behaviorState = bSID;
@@ -924,7 +924,7 @@ void NPC_SetBoneAngles(gentity_t* ent, char* bone, vec3_t angles)
 #define TURN_ON				0x00000000
 #define TURN_OFF			0x00000100
 
-void NPC_SetSurfaceOnOff(gentity_t* ent, const char* surfaceName, int surfaceFlags)
+void NPC_SetSurfaceOnOff(gentity_t* ent, const char* surfaceName, const int surfaceFlags)
 {
 	int i = 0;
 	qboolean foundIt = qfalse;
@@ -1111,7 +1111,7 @@ NPC_PickEnemyExt
 -------------------------
 */
 
-gentity_t* NPC_PickEnemyExt(qboolean check_alerts)
+gentity_t* NPC_PickEnemyExt(const qboolean check_alerts)
 {
 	//If we've asked for the closest enemy
 	const int entID = NPC_FindNearestEnemy(NPCS.NPC);
@@ -1229,7 +1229,7 @@ NPC_FindEnemy
 -------------------------
 */
 
-qboolean NPC_FindEnemy(qboolean check_alerts)
+qboolean NPC_FindEnemy(const qboolean check_alerts)
 {
 	//We're ignoring all enemies for now
 	if (NPCS.NPC->NPC->scriptFlags & SCF_IGNORE_ENEMIES)
@@ -1284,7 +1284,7 @@ NPC_CheckEnemyExt
 -------------------------
 */
 
-qboolean NPC_CheckEnemyExt(qboolean check_alerts)
+qboolean NPC_CheckEnemyExt(const qboolean check_alerts)
 {
 	return NPC_FindEnemy(check_alerts);
 }
@@ -1295,7 +1295,7 @@ NPC_FacePosition
 -------------------------
 */
 
-qboolean NPC_FacePosition(vec3_t position, qboolean do_pitch)
+qboolean NPC_FacePosition(vec3_t position, const qboolean do_pitch)
 {
 	vec3_t muzzle;
 	vec3_t angles;
@@ -1303,7 +1303,7 @@ qboolean NPC_FacePosition(vec3_t position, qboolean do_pitch)
 
 	//Get the positions
 	if (NPCS.NPC->client && (NPCS.NPC->client->NPC_class == CLASS_RANCOR || NPCS.NPC->client->NPC_class == CLASS_WAMPA))
-		// || NPC->client->NPC_class == CLASS_SAND_CREATURE) )
+	// || NPC->client->NPC_class == CLASS_SAND_CREATURE) )
 	{
 		CalcEntitySpot(NPCS.NPC, SPOT_ORIGIN, muzzle);
 		muzzle[2] += NPCS.NPC->r.maxs[2] * 0.75f;
@@ -1364,7 +1364,7 @@ NPC_FaceEntity
 -------------------------
 */
 
-qboolean NPC_FaceEntity(const gentity_t* ent, qboolean do_pitch)
+qboolean NPC_FaceEntity(const gentity_t* ent, const qboolean do_pitch)
 {
 	vec3_t entPos;
 
@@ -1380,7 +1380,7 @@ NPC_FaceEnemy
 -------------------------
 */
 
-qboolean NPC_FaceEnemy(qboolean do_pitch)
+qboolean NPC_FaceEnemy(const qboolean do_pitch)
 {
 	if (NPCS.NPC == NULL)
 		return qfalse;
@@ -1442,7 +1442,7 @@ void NPC_ClearLookTarget(const gentity_t* self)
 NPC_SetLookTarget
 -------------------------
 */
-void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time)
+void NPC_SetLookTarget(const gentity_t* self, const int ent_num, const int clear_time)
 {
 	if (!self->client)
 	{
@@ -1535,7 +1535,7 @@ void G_CheckCharmed(gentity_t* self)
 	}
 }
 
-void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index)
+void G_GetBoltPosition(gentity_t* self, const int bolt_index, vec3_t pos, const int model_index)
 {
 	mdxaBone_t boltMatrix;
 	vec3_t result, angles;
@@ -1561,9 +1561,9 @@ void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_in
 	}
 
 	trap->G2API_GetBoltMatrix(self->ghoul2, model_index,
-		bolt_index,
-		&boltMatrix, angles, self->r.currentOrigin, level.time,
-		NULL, self->modelScale);
+	                          bolt_index,
+	                          &boltMatrix, angles, self->r.currentOrigin, level.time,
+	                          NULL, self->modelScale);
 	if (pos)
 	{
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, result);
@@ -1571,7 +1571,7 @@ void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_in
 	}
 }
 
-float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index)
+float NPC_EntRangeFromBolt(const gentity_t* targ_ent, const int bolt_index)
 {
 	vec3_t org;
 
@@ -1585,12 +1585,12 @@ float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index)
 	return Distance(targ_ent->r.currentOrigin, org);
 }
 
-float NPC_EnemyRangeFromBolt(int bolt_index)
+float NPC_EnemyRangeFromBolt(const int bolt_index)
 {
 	return NPC_EntRangeFromBolt(NPCS.NPC->enemy, bolt_index);
 }
 
-int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg)
+int NPC_GetEntsNearBolt(int* radiusEnts, const float radius, const int bolt_index, vec3_t boltOrg)
 {
 	vec3_t mins, maxs;
 

@@ -346,7 +346,7 @@ void DumpMemory(void)
 #ifdef MEMDEBUG
 void* GetMemoryDebug(unsigned long size, char* label, char* file, int line)
 #else
-void* GetMemory(unsigned long size)
+void* GetMemory(const unsigned long size)
 #endif //MEMDEBUG
 {
 	void* ptr = botimport.GetMemory(size + sizeof(qmax_align_t));
@@ -385,7 +385,7 @@ void* GetClearedMemory(unsigned long size)
 #ifdef MEMDEBUG
 void* GetHunkMemoryDebug(unsigned long size, char* label, char* file, int line)
 #else
-void* GetHunkMemory(unsigned long size)
+void* GetHunkMemory(const unsigned long size)
 #endif //MEMDEBUG
 {
 	void* ptr = botimport.HunkAlloc(size + sizeof(qmax_align_t));

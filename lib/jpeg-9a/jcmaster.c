@@ -218,7 +218,7 @@ jpeg_calc_jpeg_dimensions(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-jpeg_calc_trans_dimensions(j_compress_ptr cinfo)
+jpeg_calc_trans_dimensions(const j_compress_ptr cinfo)
 {
 	if (cinfo->min_DCT_h_scaled_size != cinfo->min_DCT_v_scaled_size)
 		ERREXIT2(cinfo, JERR_BAD_DCTSIZE,
@@ -228,7 +228,7 @@ jpeg_calc_trans_dimensions(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-initial_setup(j_compress_ptr cinfo, boolean transcode_only)
+initial_setup(const j_compress_ptr cinfo, const boolean transcode_only)
 /* Do computations that are needed before master selection phase */
 {
 	int ci;
@@ -498,7 +498,7 @@ validate_script(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-reduce_script(j_compress_ptr cinfo)
+reduce_script(const j_compress_ptr cinfo)
 /* Adapt scan script for use with reduced block size;
  * assume that script has been validated before.
  */
@@ -529,7 +529,7 @@ reduce_script(j_compress_ptr cinfo)
 #endif /* C_MULTISCAN_FILES_SUPPORTED */
 
 LOCAL(void)
-select_scan_parameters(j_compress_ptr cinfo)
+select_scan_parameters(const j_compress_ptr cinfo)
 /* Set up the scan parameters for the current scan */
 {
 	int ci;
@@ -572,7 +572,7 @@ select_scan_parameters(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-per_scan_setup(j_compress_ptr cinfo)
+per_scan_setup(const j_compress_ptr cinfo)
 /* Do computations that are needed before processing a JPEG scan */
 /* cinfo->comps_in_scan and cinfo->cur_comp_info[] are already set */
 {
@@ -661,7 +661,7 @@ per_scan_setup(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-prepare_for_pass(j_compress_ptr cinfo)
+prepare_for_pass(const j_compress_ptr cinfo)
 {
 	const my_master_ptr master = (my_master_ptr)cinfo->master;
 
@@ -749,7 +749,7 @@ prepare_for_pass(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-pass_startup(j_compress_ptr cinfo)
+pass_startup(const j_compress_ptr cinfo)
 {
 	cinfo->master->call_pass_startup = FALSE; /* reset flag so call only once */
 
@@ -762,7 +762,7 @@ pass_startup(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-finish_pass_master(j_compress_ptr cinfo)
+finish_pass_master(const j_compress_ptr cinfo)
 {
 	const my_master_ptr master = (my_master_ptr)cinfo->master;
 
@@ -801,7 +801,7 @@ finish_pass_master(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_c_master_control(j_compress_ptr cinfo, boolean transcode_only)
+jinit_c_master_control(j_compress_ptr cinfo, const boolean transcode_only)
 {
 	const my_master_ptr master = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_comp_master));

@@ -53,7 +53,7 @@ using move_rotate_t = struct move_rotate_s
 };
 
 using roff_hdr2_t = struct roff_hdr2_s
-//-------------------------------
+	//-------------------------------
 {
 	char mHeader[4]; // should match roff_string defined above
 	int mVersion; // version num, supported version defined above
@@ -63,7 +63,7 @@ using roff_hdr2_t = struct roff_hdr2_s
 };
 
 using move_rotate2_t = struct move_rotate2_s
-//-------------------------------
+	//-------------------------------
 {
 	vec3_t origin_delta;
 	vec3_t rotate_delta;

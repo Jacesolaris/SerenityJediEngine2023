@@ -41,7 +41,7 @@ AI_GetGroupSize
 -------------------------
 */
 
-int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, const gentity_t* avoid)
+int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, const gentity_t* avoid)
 {
 	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -84,7 +84,7 @@ int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, const gentity_
 
 //Overload
 
-int AI_GetGroupSize(gentity_t* ent, int radius)
+int AI_GetGroupSize(gentity_t* ent, const int radius)
 {
 	if (ent == nullptr || ent->client == nullptr)
 		return -1;
@@ -102,7 +102,7 @@ void AI_SetClosestBuddy(AIGroupInfo_t* group)
 		for (int j = 0; j < group->numGroup; j++)
 		{
 			const int dist = DistanceSquared(g_entities[group->member[i].number].currentOrigin,
-				g_entities[group->member[j].number].currentOrigin);
+			                                 g_entities[group->member[j].number].currentOrigin);
 			if (dist < bestDist)
 			{
 				bestDist = dist;
@@ -579,7 +579,7 @@ void AI_SetNewGroupCommander(AIGroupInfo_t* group)
 	}
 }
 
-void AI_DeleteGroupMember(AIGroupInfo_t* group, int memberNum)
+void AI_DeleteGroupMember(AIGroupInfo_t* group, const int memberNum)
 {
 	//added additional sanity checks to fix some crashing problems.
 	if (memberNum >= MAX_GROUP_MEMBERS || memberNum >= group->numGroup)
@@ -632,20 +632,22 @@ void AI_DeleteSelfFromGroup(const gentity_t* self)
 extern void ST_AggressionAdjust(const gentity_t* self, int change);
 extern void ST_MarkToCover(const gentity_t* self);
 extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time,
-	int max_time);
+                         int max_time);
 
 void AI_GroupMemberKilled(const gentity_t* self)
 {
 	AIGroupInfo_t* group = self->NPC->group;
 	gentity_t* member;
-	qboolean	noflee = qfalse;
+	qboolean noflee = qfalse;
 
 	if (!group)
-	{//what group?
+	{
+		//what group?
 		return;
 	}
 	if (!self || !self->NPC || self->NPC->rank < RANK_ENSIGN)
-	{//I'm not an officer, let's not really care for now
+	{
+		//I'm not an officer, let's not really care for now
 		return;
 	}
 	//temporarily drop group morale for a few seconds
@@ -659,7 +661,8 @@ void AI_GroupMemberKilled(const gentity_t* self)
 			continue;
 		}
 		if (member->NPC->rank > RANK_ENSIGN)
-		{//officers do not panic
+		{
+			//officers do not panic
 			noflee = qtrue;
 		}
 		else
@@ -670,7 +673,8 @@ void AI_GroupMemberKilled(const gentity_t* self)
 	}
 	//okay, if I'm the group commander, make everyone else flee
 	if (group->commander != self)
-	{//I'm not the commander... hmm, should maybe a couple flee... maybe those near me?
+	{
+		//I'm not the commander... hmm, should maybe a couple flee... maybe those near me?
 		return;
 	}
 	//now see if there is another of sufficient rank to keep them from fleeing
@@ -685,19 +689,25 @@ void AI_GroupMemberKilled(const gentity_t* self)
 				continue;
 			}
 			if (member->NPC->rank < RANK_ENSIGN)
-			{//grunt
-				if (group->enemy && DistanceSquared(member->currentOrigin, group->enemy->currentOrigin) < 65536)//256*256
-				{//those close to enemy run away!
+			{
+				//grunt
+				if (group->enemy && DistanceSquared(member->currentOrigin, group->enemy->currentOrigin) < 65536)
+				//256*256
+				{
+					//those close to enemy run away!
 					ST_StartFlee(member, group->enemy, member->currentOrigin, AEL_DANGER_GREAT, 3000, 5000);
 				}
 				else if (DistanceSquared(member->currentOrigin, self->currentOrigin) < 65536)
-				{//those close to me run away!
+				{
+					//those close to me run away!
 					ST_StartFlee(member, group->enemy, member->currentOrigin, AEL_DANGER_GREAT, 3000, 5000);
 				}
 				else
-				{//else, maybe just a random chance
+				{
+					//else, maybe just a random chance
 					if (Q_irand(0, self->NPC->rank) > member->NPC->rank)
-					{//lower rank they are, higher rank I am, more likely they are to flee
+					{
+						//lower rank they are, higher rank I am, more likely they are to flee
 						ST_StartFlee(member, group->enemy, member->currentOrigin, AEL_DANGER_GREAT, 3000, 5000);
 					}
 					else
@@ -731,7 +741,7 @@ void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group)
 	group->lastClearShotTime = level.time;
 }
 
-void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState)
+void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, const int newSquadState)
 {
 	if (!group)
 	{
@@ -924,7 +934,7 @@ qboolean AI_RefreshGroup(AIGroupInfo_t* group)
 		case WP_ATST_SIDE:
 			group->morale -= 20;
 			break;
-		default:;
+		default: ;
 		}
 	}
 	if (group->moraleDebounce < level.time)
@@ -962,7 +972,7 @@ void AI_UpdateGroups()
 	}
 }
 
-qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, int entNum)
+qboolean AI_GroupContainsEntNum(const AIGroupInfo_t* group, const int entNum)
 {
 	if (!group)
 	{
@@ -1010,7 +1020,7 @@ AI_DistributeAttack
 -------------------------
 */
 
-gentity_t* AI_DistributeAttack(const gentity_t* attacker, gentity_t* enemy, team_t team, int threshold)
+gentity_t* AI_DistributeAttack(const gentity_t* attacker, gentity_t* enemy, const team_t team, const int threshold)
 {
 	//Don't take new targets
 	if (NPC->svFlags & SVF_LOCKEDENEMY)

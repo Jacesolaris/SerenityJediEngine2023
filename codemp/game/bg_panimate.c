@@ -90,7 +90,7 @@ qboolean PM_SaberStanceAnim(const int anim)
 	case BOTH_SABEREADY_STANCE: //ready
 	case BOTH_SABER_REY_STANCE: //rey
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -102,7 +102,7 @@ qboolean PM_RestAnim(const int anim)
 	case BOTH_MEDITATE: // default taunt
 	case BOTH_MEDITATE1: // default taunt
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -115,7 +115,7 @@ qboolean PM_ReloadAnim(const int anim)
 	case BOTH_RELOAD:
 	case BOTH_RELOADFAIL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -129,7 +129,7 @@ qboolean PM_WeponRestAnim(const int anim)
 	case BOTH_STAND3IDLE1:
 	case BOTH_DUELPISTOL_STAND:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -149,7 +149,7 @@ qboolean PM_Saberinstab(const int move)
 	case LS_A_JUMP_T__B_:
 	case LS_A_JUMP_PALP_:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -178,7 +178,7 @@ qboolean PM_CrouchAnim(const int anim)
 	case BOTH_KNEES2: //# Tavion on her knees looking down
 	case BOTH_KNEES2TO1: //# Transition of KNEES2 to KNEES1
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -198,7 +198,7 @@ qboolean PM_CrouchingAnim(const int anim)
 	case BOTH_TURNCROUCH1:
 	case BOTH_CROUCH4:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -248,7 +248,7 @@ qboolean PM_InSpecialJump(const int anim)
 	case BOTH_FLIP_LAND:
 	case BOTH_A7_SOULCAL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	if (PM_InReboundJump(anim))
 	{
@@ -308,7 +308,7 @@ qboolean PM_InWallHoldMove(const int anim)
 	case BOTH_FORCEWALLHOLD_LEFT:
 	case BOTH_FORCEWALLHOLD_RIGHT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -323,7 +323,7 @@ qboolean PM_InLedgeMove(const int anim)
 	case BOTH_LEDGE_RIGHT:
 	case BOTH_LEDGE_MERCPULL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -334,7 +334,7 @@ qboolean PM_InAmputateMove(const int anim)
 	{
 	case BOTH_RIGHTHANDCHOPPEDOFF:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -346,7 +346,7 @@ qboolean In_LedgeIdle(const int anim)
 	case BOTH_LEDGE_GRAB:
 	case BOTH_LEDGE_HOLD:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -360,7 +360,7 @@ qboolean BG_DirectFlippingAnim(const int anim)
 	case BOTH_FLIP_L: //# Flip left
 	case BOTH_FLIP_R: //# Flip right
 		return qtrue;
-	default:;
+	default: ;
 	}
 
 	return qfalse;
@@ -383,7 +383,7 @@ qboolean PM_KnockAwayStaffAndDuels(const int move)
 	case BOTH_K7_S7_TR:
 	case BOTH_K7_S7_T_:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -475,7 +475,7 @@ qboolean PM_SaberInAttack(const int move)
 	case LS_SMACK_R:
 	case LS_SMACK_L:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -508,7 +508,7 @@ qboolean PM_SaberInOverHeadSlash(const saberMoveName_t saber_move)
 	case LS_A_FLIP_STAB:
 	case LS_A_FLIP_SLASH:
 		return qtrue;
-	default:;
+	default: ;
 	}
 
 	return qfalse;
@@ -522,7 +522,7 @@ qboolean PM_SaberInBackAttack(const saberMoveName_t saber_move)
 	case LS_A_BACK_CR:
 	case LS_A_BACKSTAB:
 		return qtrue;
-	default:;
+	default: ;
 	}
 
 	return qfalse;
@@ -551,7 +551,7 @@ qboolean PM_LockedAnim(const int anim)
 	case BOTH_HANG_ATTACK: //#
 	case BOTH_HANG_PAIN: //#
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -563,7 +563,7 @@ qboolean PM_FaceProtectAnim(const int anim)
 	{
 	case BOTH_FACEPROTECT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -622,7 +622,7 @@ qboolean PM_SaberDrawPutawayAnim(const int anim)
 	case BOTH_SABER_BACKHAND_IGNITION:
 	case BOTH_GRIEVOUS_SABERON:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -631,7 +631,7 @@ qboolean PM_InAnimForSaberMove(int anim, const int saber_move)
 {
 	switch (anim)
 	{
-		//special case anims
+	//special case anims
 	case BOTH_A2_STABBACK1:
 	case BOTH_A2_STABBACK1B:
 	case BOTH_ATTACK_BACK:
@@ -720,7 +720,7 @@ qboolean PM_InAnimForSaberMove(int anim, const int saber_move)
 	case BOTH_LK_ST_S_T_SB_1_W:
 	case BOTH_HANG_ATTACK:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	if (PM_SaberDrawPutawayAnim(anim))
 	{
@@ -844,7 +844,7 @@ qboolean PM_SaberInDamageMove(const int move)
 	case LS_SMACK_R:
 	case LS_SMACK_L:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -924,7 +924,7 @@ qboolean PM_SaberDoDamageAnim(const int anim)
 	case BOTH_LK_ST_S_T_SB_1_W:
 	case BOTH_HANG_ATTACK:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -948,7 +948,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_K7_S7_T_:
 	case BOTH_K6_S6_T_:
 	case BOTH_K1_S1_T_:
-		//
+	//
 	case BOTH_B7_TR___:
 	case BOTH_B6_TR___:
 	case BOTH_K1_S1_TR_ALT:
@@ -961,7 +961,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_B7_BL___:
 	case BOTH_B6_BL___:
 	case BOTH_B1_BL___:
-		//
+	//
 	case BOTH_V7_T__S7:
 	case BOTH_V6_T__S6:
 	case BOTH_V1_T__S1:
@@ -977,7 +977,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_V7_BL_S7:
 	case BOTH_V6_BL_S6:
 	case BOTH_V1_BL_S1:
-		//New Bolt block anims
+	//New Bolt block anims
 	case BOTH_BOLT_BLOCK_BACKHAND_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_BACKHAND_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_BACKHAND_MIDDLE_LEFT:
@@ -985,7 +985,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_BOLT_BLOCK_BACKHAND_MIDDLE_TOP:
 	case BOTH_BOLT_BLOCK_BACKHAND_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_BACKHAND_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_DUAL_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_DUAL_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_DUAL_MIDDLE_LEFT:
@@ -993,7 +993,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_BOLT_BLOCK_DUAL_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_DUAL_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_DUAL_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_STAFF_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_STAFF_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_STAFF_MIDDLE_LEFT:
@@ -1001,7 +1001,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_BOLT_BLOCK_STAFF_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_STAFF_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_STAFF_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_MIDDLE_LEFT:
@@ -1009,7 +1009,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_TWO_HAND_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_TWO_HAND_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_TWO_HAND_MIDDLE_LEFT:
@@ -1018,7 +1018,7 @@ qboolean PM_BoltBlockingAnim(const int anim)
 	case BOTH_BOLT_BLOCK_TWO_HAND_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_TWO_HAND_TOP_RIGHT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1027,7 +1027,7 @@ qboolean PM_LetsSmoothTheseAnimsPlease(const int anim)
 {
 	switch (anim)
 	{
-		//New Bolt block anims
+	//New Bolt block anims
 	case BOTH_BOLT_BLOCK_BACKHAND_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_BACKHAND_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_BACKHAND_MIDDLE_LEFT:
@@ -1035,7 +1035,7 @@ qboolean PM_LetsSmoothTheseAnimsPlease(const int anim)
 	case BOTH_BOLT_BLOCK_BACKHAND_MIDDLE_TOP:
 	case BOTH_BOLT_BLOCK_BACKHAND_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_BACKHAND_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_DUAL_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_DUAL_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_DUAL_MIDDLE_LEFT:
@@ -1043,7 +1043,7 @@ qboolean PM_LetsSmoothTheseAnimsPlease(const int anim)
 	case BOTH_BOLT_BLOCK_DUAL_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_DUAL_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_DUAL_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_STAFF_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_STAFF_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_STAFF_MIDDLE_LEFT:
@@ -1051,7 +1051,7 @@ qboolean PM_LetsSmoothTheseAnimsPlease(const int anim)
 	case BOTH_BOLT_BLOCK_STAFF_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_STAFF_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_STAFF_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_MIDDLE_LEFT:
@@ -1059,7 +1059,7 @@ qboolean PM_LetsSmoothTheseAnimsPlease(const int anim)
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_TOP_LEFT:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_SINGLE_HAND_TOP_RIGHT:
-		//
+	//
 	case BOTH_BOLT_BLOCK_TWO_HAND_BOTTOM_LEFT:
 	case BOTH_BOLT_BLOCK_TWO_HAND_BOTTOM_RIGHT:
 	case BOTH_BOLT_BLOCK_TWO_HAND_MIDDLE_LEFT:
@@ -1068,7 +1068,7 @@ qboolean PM_LetsSmoothTheseAnimsPlease(const int anim)
 	case BOTH_BOLT_BLOCK_TWO_HAND_TOP_MIDDLE:
 	case BOTH_BOLT_BLOCK_TWO_HAND_TOP_RIGHT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1088,7 +1088,7 @@ qboolean PM_InKataAnim(const int anim)
 	case BOTH_GRIEVOUS_SPIN:
 	case BOTH_GRIEVOUS_PROTECT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1105,7 +1105,7 @@ qboolean PM_StaggerAnim(const int anim)
 	case BOTH_H1_S1_B_:
 	case BOTH_H1_S1_BR:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1139,7 +1139,7 @@ qboolean PM_SaberInKillMove(const int move)
 	case LS_PULL_ATTACK_SWING:
 	case LS_SPINATTACK_ALORA:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1218,7 +1218,7 @@ qboolean PM_SaberInSpecial(const int move)
 	case LS_SMACK_R:
 	case LS_SMACK_L:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1248,7 +1248,7 @@ qboolean PM_KickMove(const int move)
 	case LS_SMACK_R:
 	case LS_SMACK_L:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1264,7 +1264,7 @@ qboolean PM_SaberInIdle(const int move)
 	case LS_DRAW3:
 	case LS_PUTAWAY:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1289,7 +1289,7 @@ qboolean BG_InExtraDefenseSaberMove(const int move)
 	case LS_JUMPATTACK_DUAL:
 	case LS_GRIEVOUS_LUNGE:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1341,7 +1341,7 @@ qboolean PM_FlippingAnim(const int anim)
 	case BOTH_FLIP_ATTACK7:
 	case BOTH_A7_SOULCAL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1350,7 +1350,7 @@ qboolean PM_SpinningSaberAnim(const int anim)
 {
 	switch (anim)
 	{
-		//level 1 - FIXME: level 1 will have *no* spins
+	//level 1 - FIXME: level 1 will have *no* spins
 	case BOTH_T1_BR_BL:
 	case BOTH_T1__R__L:
 	case BOTH_T1__R_BL:
@@ -1363,28 +1363,28 @@ qboolean PM_SpinningSaberAnim(const int anim)
 	case BOTH_T1_BL_BR:
 	case BOTH_T1_BL__R:
 	case BOTH_T1_BL_TR:
-		//level 2
+	//level 2
 	case BOTH_T2_BR__L:
 	case BOTH_T2_BR_BL:
 	case BOTH_T2__R_BL:
 	case BOTH_T2__L_BR:
 	case BOTH_T2_BL_BR:
 	case BOTH_T2_BL__R:
-		//level 3
+	//level 3
 	case BOTH_T3_BR__L:
 	case BOTH_T3_BR_BL:
 	case BOTH_T3__R_BL:
 	case BOTH_T3__L_BR:
 	case BOTH_T3_BL_BR:
 	case BOTH_T3_BL__R:
-		//level 4
+	//level 4
 	case BOTH_T4_BR__L:
 	case BOTH_T4_BR_BL:
 	case BOTH_T4__R_BL:
 	case BOTH_T4__L_BR:
 	case BOTH_T4_BL_BR:
 	case BOTH_T4_BL__R:
-		//level 5
+	//level 5
 	case BOTH_T5_BR_BL:
 	case BOTH_T5__R__L:
 	case BOTH_T5__R_BL:
@@ -1397,7 +1397,7 @@ qboolean PM_SpinningSaberAnim(const int anim)
 	case BOTH_T5_BL_BR:
 	case BOTH_T5_BL__R:
 	case BOTH_T5_BL_TR:
-		//level 6
+	//level 6
 	case BOTH_T6_BR_TL:
 	case BOTH_T6__R_TL:
 	case BOTH_T6__R__L:
@@ -1420,7 +1420,7 @@ qboolean PM_SpinningSaberAnim(const int anim)
 	case BOTH_T6_BL_BR:
 	case BOTH_T6_BL__R:
 	case BOTH_T6_BL_TR:
-		//level 7
+	//level 7
 	case BOTH_T7_BR_TL:
 	case BOTH_T7_BR__L:
 	case BOTH_T7_BR_BL:
@@ -1438,7 +1438,7 @@ qboolean PM_SpinningSaberAnim(const int anim)
 	case BOTH_T7_T__BR:
 	case BOTH_T7__L_TR:
 	case BOTH_V7_BL_S7:
-		//special
+	//special
 	case BOTH_ATTACK_BACK:
 	case BOTH_CROUCHATTACKBACK1:
 	case BOTH_BUTTERFLY_LEFT:
@@ -1448,7 +1448,7 @@ qboolean PM_SpinningSaberAnim(const int anim)
 	case BOTH_JUMPFLIPSLASHDOWN1:
 	case BOTH_JUMPFLIPSTABDOWN:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1527,7 +1527,7 @@ qboolean pm_saber_in_special_attack(const int anim)
 	case BOTH_SMACK_R:
 	case BOTH_SMACK_L:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1579,7 +1579,7 @@ qboolean PM_SaberInnonblockableAttack(const int anim)
 	case BOTH_A6_FB:
 	case BOTH_A6_LR:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1594,7 +1594,7 @@ qboolean PM_InAirKickingAnim(const int anim)
 	case BOTH_A7_KICK_R_AIR:
 	case BOTH_A7_KICK_L_AIR:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1614,7 +1614,7 @@ qboolean PM_PunchAnim(const int anim)
 	case BOTH_MELEEUP:
 	case BOTH_WOOKIE_SLAP:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -1638,7 +1638,7 @@ qboolean PM_KickingAnim(const int anim)
 	case BOTH_A7_HILT:
 	case BOTH_SMACK_R:
 	case BOTH_SMACK_L:
-		//NOT kicks, but do kick traces anyway
+	//NOT kicks, but do kick traces anyway
 	case BOTH_GETUP_BROLL_B:
 	case BOTH_GETUP_BROLL_F:
 	case BOTH_GETUP_FROLL_B:
@@ -1675,7 +1675,7 @@ int PM_InGrappleMove(const int anim)
 	case BOTH_PLAYER_PA_3:
 	case BOTH_PLAYER_PA_FLY:
 		return 3; //getting the shit beaten out of you
-	default:;
+	default: ;
 	}
 
 	return 0;
@@ -1741,7 +1741,7 @@ qboolean PM_SaberCanInterruptMove(const int move, const int anim)
 		case LS_SMACK_R:
 		case LS_SMACK_L:
 			return qfalse;
-		default:;
+		default: ;
 		}
 
 		if (PM_SaberInAttackPure(move))
@@ -1857,7 +1857,7 @@ qboolean PM_SaberCanInterruptMove(const int move, const int anim)
 	case BOTH_LK_ST_S_T_SB_1_W:
 	case BOTH_HANG_ATTACK:
 		return qfalse;
-	default:;
+	default: ;
 	}
 	return qtrue;
 }
@@ -1882,7 +1882,7 @@ saberMoveName_t pm_broken_parry_for_attack(const int move)
 		return LS_V1__L;
 	case Q_BL:
 		return LS_V1_BL;
-	default:;
+	default: ;
 	}
 	return LS_NONE;
 }
@@ -2044,7 +2044,7 @@ qboolean PM_InRollIgnoreTimer(const playerState_t* ps)
 	case BOTH_GETUP_FROLL_L:
 	case BOTH_GETUP_FROLL_R:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2082,7 +2082,7 @@ qboolean BG_InRoll(const playerState_t* ps, const int anim)
 			return qtrue;
 		}
 		break;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2152,7 +2152,7 @@ qboolean BG_InDeathAnim(const int anim)
 	case BOTH_FALLDEATH1: //# Fall forward off a high cliff and splat death - start
 	case BOTH_FALLDEATH1INAIR: //# Fall forward off a high cliff and splat death - loop
 	case BOTH_FALLDEATH1LAND: //# Fall forward off a high cliff and splat death - hit bottom
-		//# #sep case BOTH_ DEAD POSES # Should be last frame of corresponding previous anims
+	//# #sep case BOTH_ DEAD POSES # Should be last frame of corresponding previous anims
 	case BOTH_DEAD1: //# First Death finished pose
 	case BOTH_DEAD2: //# Second Death finished pose
 	case BOTH_DEAD3: //# Third Death finished pose
@@ -2185,7 +2185,7 @@ qboolean BG_InDeathAnim(const int anim)
 	case BOTH_LYINGDEAD1: //# Killed lying down death finished pose
 	case BOTH_STUMBLEDEAD1: //# Stumble forward death finished pose
 	case BOTH_FALLDEAD1LAND: //# Fall forward and splat death finished pose
-		//# #sep case BOTH_ DEAD TWITCH/FLOP # React to being shot from death poses
+	//# #sep case BOTH_ DEAD TWITCH/FLOP # React to being shot from death poses
 	case BOTH_DEADFLOP1: //# React to being shot from First Death finished pose
 	case BOTH_DEADFLOP2: //# React to being shot from Second Death finished pose
 	case BOTH_DISMEMBER_HEAD1: //#
@@ -2212,7 +2212,7 @@ qboolean PM_InKnockDownOnly(const int anim)
 	case BOTH_SLAPDOWNRIGHT:
 	case BOTH_SLAPDOWNLEFT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2226,7 +2226,7 @@ qboolean BG_InSaberLockOld(const int anim)
 	case BOTH_CWCIRCLELOCK:
 	case BOTH_CCWCIRCLELOCK:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2277,7 +2277,7 @@ qboolean PM_InCartwheel(const int anim)
 	case BOTH_CARTWHEEL_LEFT:
 	case BOTH_CARTWHEEL_RIGHT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2291,7 +2291,7 @@ qboolean PM_InButterfly(const int anim)
 	case BOTH_BUTTERFLY_FL1:
 	case BOTH_BUTTERFLY_FR1:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2328,7 +2328,7 @@ qboolean PM_StandingAnim(const int anim)
 	case BOTH_ATTACK5:
 	case BOTH_ATTACK6:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2371,7 +2371,7 @@ qboolean PM_StandingAtReadyAnim(const int anim)
 	case TORSO_WEAPONIDLE3:
 	case TORSO_WEAPONIDLE4:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2388,10 +2388,10 @@ qboolean BG_InKnockDownOnGround(const playerState_t* ps)
 	case BOTH_SLAPDOWNRIGHT:
 	case BOTH_SLAPDOWNLEFT:
 	case BOTH_RELEASED:
-	{
-		//at end of fall down anim
-		return qtrue;
-	}
+		{
+			//at end of fall down anim
+			return qtrue;
+		}
 	case BOTH_GETUP1:
 	case BOTH_GETUP2:
 	case BOTH_GETUP3:
@@ -2439,7 +2439,7 @@ qboolean BG_InKnockDownOnGround(const playerState_t* ps)
 			return qtrue;
 		}
 		break;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2453,7 +2453,7 @@ qboolean BG_StabDownAnim(const int anim)
 	case BOTH_STABDOWN_STAFF:
 	case BOTH_STABDOWN_DUAL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2477,7 +2477,7 @@ saberMoveName_t PM_SaberBounceForAttack(const int move)
 		return LS_B1__L;
 	case Q_BL:
 		return LS_B1_BL;
-	default:;
+	default: ;
 	}
 	return LS_NONE;
 }
@@ -2529,7 +2529,7 @@ int pm_saber_deflection_for_quad(const int quad)
 		return LS_D1__L;
 	case Q_BL:
 		return LS_D1_BL;
-	default:;
+	default: ;
 	}
 	return LS_NONE;
 }
@@ -2561,7 +2561,7 @@ qboolean PM_SaberInKnockaway(const int move)
 	case LS_K1_TL:
 	case LS_K1_BR:
 	case LS_K1_BL:
-		//
+	//
 	case LS_BLOCK_FULL_RIGHT:
 	case LS_BLOCK_FULL_LEFT:
 	case LS_REFLECT_ATTACK_RIGHT:
@@ -2571,7 +2571,7 @@ qboolean PM_SaberInKnockaway(const int move)
 	case LS_KNOCK_RIGHT:
 	case LS_KNOCK_LEFT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2616,7 +2616,7 @@ qboolean PM_SaberInbackblock(const int move)
 	case BOTH_P6_S1_B1_:
 	case BOTH_P1_S1_B1_:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2650,7 +2650,7 @@ qboolean PM_IsInBlockingAnim(const int move)
 	case BOTH_P7_S1_B_:
 	case BOTH_P7_S1_B1_:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2675,7 +2675,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_H1_S1_BL:
 	case BOTH_H1_S1_B_:
 	case BOTH_H1_S1_BR:
-		//
+	//
 	case BOTH_V1_BR_S1:
 	case BOTH_V1__R_S1:
 	case BOTH_V1_TR_S1:
@@ -2684,7 +2684,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_V1__L_S1:
 	case BOTH_V1_BL_S1:
 	case BOTH_V1_B__S1:
-		//
+	//
 	case BOTH_V6_BR_S6:
 	case BOTH_V6__R_S6:
 	case BOTH_V6_TR_S6:
@@ -2693,7 +2693,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_V6__L_S6:
 	case BOTH_V6_BL_S6:
 	case BOTH_V6_B__S6:
-		//
+	//
 	case BOTH_V7_BR_S7:
 	case BOTH_V7__R_S7:
 	case BOTH_V7_TR_S7:
@@ -2702,7 +2702,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_V7__L_S7:
 	case BOTH_V7_BL_S7:
 	case BOTH_V7_B__S7:
-		//
+	//
 	case BOTH_B1_BL___:
 	case BOTH_B1_BR___:
 	case BOTH_B1_TL___:
@@ -2710,7 +2710,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B1_T____:
 	case BOTH_B1__L___:
 	case BOTH_B1__R___:
-		//
+	//
 	case BOTH_B2_BL___:
 	case BOTH_B2_BR___:
 	case BOTH_B2_TL___:
@@ -2718,7 +2718,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B2_T____:
 	case BOTH_B2__L___:
 	case BOTH_B2__R___:
-		//
+	//
 	case BOTH_B3_BL___:
 	case BOTH_B3_BR___:
 	case BOTH_B3_TL___:
@@ -2726,7 +2726,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B3_T____:
 	case BOTH_B3__L___:
 	case BOTH_B3__R___:
-		//
+	//
 	case BOTH_B4_BL___:
 	case BOTH_B4_BR___:
 	case BOTH_B4_TL___:
@@ -2734,7 +2734,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B4_T____:
 	case BOTH_B4__L___:
 	case BOTH_B4__R___:
-		//
+	//
 	case BOTH_B5_BL___:
 	case BOTH_B5_BR___:
 	case BOTH_B5_TL___:
@@ -2742,7 +2742,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B5_T____:
 	case BOTH_B5__L___:
 	case BOTH_B5__R___:
-		//
+	//
 	case BOTH_B6_BL___:
 	case BOTH_B6_BR___:
 	case BOTH_B6_TL___:
@@ -2750,7 +2750,7 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B6_T____:
 	case BOTH_B6__L___:
 	case BOTH_B6__R___:
-		//
+	//
 	case BOTH_B7_BL___:
 	case BOTH_B7_BR___:
 	case BOTH_B7_TL___:
@@ -2758,29 +2758,29 @@ qboolean PM_SaberInMassiveBounce(const int anim)
 	case BOTH_B7_T____:
 	case BOTH_B7__L___:
 	case BOTH_B7__R___:
-		//
-	case BOTH_K1_S1_T_:	//# knockaway saber top
-	case BOTH_K1_S1_TR_OLD:	//# knockaway saber top right
-	case BOTH_K1_S1_TL_OLD:	//# knockaway saber top left
-	case BOTH_K1_S1_BL:	//# knockaway saber bottom left
-	case BOTH_K1_S1_B_:	//# knockaway saber bottom
-	case BOTH_K1_S1_BR:	//# knockaway saber bottom right
-		//
-	case BOTH_K6_S6_T_:	//# knockaway saber top
-	case BOTH_K6_S6_TR:	//# knockaway saber top right
-	case BOTH_K6_S6_TL:	//# knockaway saber top left
-	case BOTH_K6_S6_BL:	//# knockaway saber bottom left
-	case BOTH_K6_S6_B_:	//# knockaway saber bottom
-	case BOTH_K6_S6_BR:	//# knockaway saber bottom right
-		//
-	case BOTH_K7_S7_T_:	//# knockaway saber top
-	case BOTH_K7_S7_TR:	//# knockaway saber top right
-	case BOTH_K7_S7_TL:	//# knockaway saber top left
-	case BOTH_K7_S7_BL:	//# knockaway saber bottom left
-	case BOTH_K7_S7_B_:	//# knockaway saber bottom
-	case BOTH_K7_S7_BR:	//# knockaway saber bottom right
+	//
+	case BOTH_K1_S1_T_: //# knockaway saber top
+	case BOTH_K1_S1_TR_OLD: //# knockaway saber top right
+	case BOTH_K1_S1_TL_OLD: //# knockaway saber top left
+	case BOTH_K1_S1_BL: //# knockaway saber bottom left
+	case BOTH_K1_S1_B_: //# knockaway saber bottom
+	case BOTH_K1_S1_BR: //# knockaway saber bottom right
+	//
+	case BOTH_K6_S6_T_: //# knockaway saber top
+	case BOTH_K6_S6_TR: //# knockaway saber top right
+	case BOTH_K6_S6_TL: //# knockaway saber top left
+	case BOTH_K6_S6_BL: //# knockaway saber bottom left
+	case BOTH_K6_S6_B_: //# knockaway saber bottom
+	case BOTH_K6_S6_BR: //# knockaway saber bottom right
+	//
+	case BOTH_K7_S7_T_: //# knockaway saber top
+	case BOTH_K7_S7_TR: //# knockaway saber top right
+	case BOTH_K7_S7_TL: //# knockaway saber top left
+	case BOTH_K7_S7_BL: //# knockaway saber bottom left
+	case BOTH_K7_S7_B_: //# knockaway saber bottom
+	case BOTH_K7_S7_BR: //# knockaway saber bottom right
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2801,7 +2801,7 @@ int SabBeh_AnimateMassiveDualSlowBounce(const int anim)
 		return BOTH_H6_S6_BL;
 	case BOTH_H1_S1_B_:
 		return BOTH_H6_S6_B_;
-	default:;
+	default: ;
 	}
 	return anim;
 }
@@ -2822,7 +2822,7 @@ int SabBeh_AnimateMassiveStaffSlowBounce(const int anim)
 		return BOTH_H7_S7_BL;
 	case BOTH_H1_S1_B_:
 		return BOTH_H7_S7_B_;
-	default:;
+	default: ;
 	}
 	return anim;
 }
@@ -2839,7 +2839,7 @@ qboolean PM_SaberInBashedAnim(const int anim)
 	case BOTH_PAIN12:
 	case BOTH_PAIN15:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2897,7 +2897,7 @@ qboolean PM_InForceGetUp(const playerState_t* ps)
 			return qtrue;
 		}
 		break;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3098,7 +3098,7 @@ qboolean BG_InFlipBack(const int anim)
 	case BOTH_FLIP_BACK2:
 	case BOTH_BASHED1:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3138,7 +3138,7 @@ qboolean PM_InSlapDown(const playerState_t* ps)
 	case BOTH_FLIP_BACK2:
 	case BOTH_BASHED1:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3227,19 +3227,19 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	{
 	case BOTH_A2_STABBACK1B:
 	case BOTH_A2_STABBACK1:
-	{
-		if (ps->torsoTimer < 450)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 450)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 400)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 400)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_ATTACK_BACK:
 		if (ps->torsoTimer < 500)
 		{
@@ -3270,7 +3270,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	case BOTH_K1_S1_BL: //# knockaway saber bottom left
 	case BOTH_K1_S1_B_: //# knockaway saber bottom
 	case BOTH_K1_S1_BR: //# knockaway saber bottom right
-		//
+	//
 	case BOTH_BLOCKATTACK_LEFT:
 	case BOTH_BLOCKATTACK_RIGHT:
 	case BOTH_K1_S1_TR_ALT:
@@ -3281,67 +3281,67 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 	case BOTH_K1_S1_TL_PB:
 		return FORCE_LEVEL_3;
 	case BOTH_LUNGE2_B__T_:
-	{
-		if (ps->torsoTimer < 400)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 400)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 150)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 150)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_FORCELEAP_PALP:
 	case BOTH_FORCELEAP2_T__B_:
-	{
-		if (ps->torsoTimer < 400)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 400)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 550)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 550)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_VS_ATR_S:
 	case BOTH_VS_ATL_S:
 	case BOTH_VT_ATR_S:
 	case BOTH_VT_ATL_S:
 		return FORCE_LEVEL_3; //???
 	case BOTH_JUMPFLIPSLASHDOWN1:
-	{
-		if (ps->torsoTimer <= 900)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer <= 900)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 550)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 550)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_JUMPFLIPSTABDOWN:
-	{
-		if (ps->torsoTimer <= 1200)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer <= 1200)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed <= 250)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed <= 250)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_JUMPATTACK6:
 	case BOTH_GRIEVOUS_LUNGE:
 		if (ps->torsoTimer >= 1450
@@ -3354,19 +3354,19 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		}
 		return FORCE_LEVEL_0;
 	case BOTH_JUMPATTACK7:
-	{
-		if (ps->torsoTimer <= 1200)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer <= 1200)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_SPINATTACK6:
 	case BOTH_SPINATTACKGRIEVOUS:
 		if (anim_time_elapsed <= 200)
@@ -3376,19 +3376,19 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		}
 		return FORCE_LEVEL_3;
 	case BOTH_SPINATTACK7:
-	{
-		if (ps->torsoTimer <= 500)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer <= 500)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 500)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 500)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_FORCELONGLEAP_ATTACK:
 		if (anim_time_elapsed <= 200)
 		{
@@ -3420,105 +3420,105 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		break;
 	case BOTH_A6_SABERPROTECT:
 	case BOTH_GRIEVOUS_PROTECT:
-	{
-		if (ps->torsoTimer < 650)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 650)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 250)
+			{
+				//start of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 250)
-		{
-			//start of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A7_SOULCAL:
-	{
-		if (ps->torsoTimer < 650)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 650)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 600)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 600)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_YODA_SPECIAL:
 	case BOTH_A1_SPECIAL:
-	{
-		if (ps->torsoTimer < 600)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 600)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A2_SPECIAL:
 	case BOTH_GRIEVOUS_SPIN:
-	{
-		if (ps->torsoTimer < 300)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 300)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A3_SPECIAL:
-	{
-		if (ps->torsoTimer < 700)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 700)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A4_SPECIAL:
-	{
-		if (ps->torsoTimer < 700)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 700)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A5_SPECIAL:
-	{
-		if (ps->torsoTimer < 700)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 700)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_FLIP_ATTACK7:
 		return FORCE_LEVEL_3;
 	case BOTH_PULL_IMPALE_STAB:
@@ -3529,80 +3529,80 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		}
 		return FORCE_LEVEL_3;
 	case BOTH_PULL_IMPALE_SWING:
-	{
-		if (ps->torsoTimer < 500) //750 )
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 500) //750 )
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 650) //600 )
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 650) //600 )
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_ALORA_SPIN_SLASH_MD2:
-	{
-		if (ps->torsoTimer < 900)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 900)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 250)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 250)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_ALORA_SPIN_SLASH:
-	{
-		if (ps->torsoTimer < 900)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 900)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 250)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 250)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A6_FB:
-	{
-		if (ps->torsoTimer < 250)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 250)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 250)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 250)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A6_LR:
-	{
-		if (ps->torsoTimer < 250)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 250)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 250)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 250)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
+		return FORCE_LEVEL_3;
 	case BOTH_A7_HILT:
 	case BOTH_SMACK_R:
 	case BOTH_SMACK_L:
 		return FORCE_LEVEL_0;
-		//===SABERLOCK SUPERBREAKS START===========================================================================
+	//===SABERLOCK SUPERBREAKS START===========================================================================
 	case BOTH_LK_S_DL_T_SB_1_W:
 		if (ps->torsoTimer < 700)
 		{
@@ -3619,34 +3619,34 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		return FORCE_LEVEL_5;
 	case BOTH_LK_S_DL_S_SB_1_W:
 	case BOTH_LK_S_S_S_SB_1_W:
-	{
-		if (ps->torsoTimer < 700)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 700)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 400)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 400)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_5;
+		return FORCE_LEVEL_5;
 	case BOTH_LK_S_ST_T_SB_1_W:
 	case BOTH_LK_S_S_T_SB_1_W:
-	{
-		if (ps->torsoTimer < 150)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 150)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 400)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 400)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_5;
+		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_DL_T_SB_1_W:
 		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_DL_S_SB_1_W:
@@ -3658,47 +3658,47 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		}
 		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_ST_T_SB_1_W:
-	{
-		if (ps->torsoTimer < 950)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 950)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 650)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 650)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_5;
+		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_S_S_SB_1_W:
-	{
-		if (ps->torsoTimer < 900)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 900)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 450)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 450)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_5;
+		return FORCE_LEVEL_5;
 	case BOTH_LK_DL_S_T_SB_1_W:
-	{
-		if (ps->torsoTimer < 250)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 250)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 150)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 150)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_5;
+		return FORCE_LEVEL_5;
 	case BOTH_LK_ST_DL_S_SB_1_W:
 		return FORCE_LEVEL_5;
 	case BOTH_LK_ST_DL_T_SB_1_W:
@@ -3706,50 +3706,50 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		return FORCE_LEVEL_0;
 	case BOTH_LK_ST_ST_S_SB_1_W:
 	case BOTH_LK_ST_S_S_SB_1_W:
-	{
-		if (ps->torsoTimer < 800)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (ps->torsoTimer < 800)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 350)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (anim_time_elapsed < 350)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_5;
+		return FORCE_LEVEL_5;
 	case BOTH_LK_ST_ST_T_SB_1_W:
 	case BOTH_LK_ST_S_T_SB_1_W:
 		return FORCE_LEVEL_5;
-		//===SABERLOCK SUPERBREAKS START===========================================================================
+	//===SABERLOCK SUPERBREAKS START===========================================================================
 	case BOTH_HANG_ATTACK:
 		//FIXME: break up
-	{
-		//FIxME: break up
-		if (ps->torsoTimer < 1000)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			//FIxME: break up
+			if (ps->torsoTimer < 1000)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (anim_time_elapsed < 250)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
+			//sweet spot
+			return FORCE_LEVEL_5;
 		}
-		if (anim_time_elapsed < 250)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-		//sweet spot
-		return FORCE_LEVEL_5;
-	}
 	case BOTH_ROLL_STAB:
-	{
-		if (anim_time_elapsed > 400)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (anim_time_elapsed > 400)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			return FORCE_LEVEL_3;
 		}
-		return FORCE_LEVEL_3;
-	}
-	default:;
+	default: ;
 	}
 	return FORCE_LEVEL_0;
 }
@@ -3777,7 +3777,7 @@ qboolean PM_PainAnim(const int anim)
 	case BOTH_PAIN17: //#
 	case BOTH_PAIN18: //#
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3795,7 +3795,7 @@ qboolean PM_DodgeHoldAnim(const int anim)
 	case BOTH_CROUCHDODGE:
 	case BOTH_DODGE_B:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3837,7 +3837,7 @@ qboolean PM_BlockHoldAnim(const int anim)
 	case BOTH_BLOCK_HOLD_L_STAFF:
 	case BOTH_BLOCK_HOLD_R_STAFF:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3871,7 +3871,7 @@ qboolean PM_BlockHoldDualAnim(const int anim)
 	case BOTH_BLOCK_HOLD_L_DUAL:
 	case BOTH_BLOCK_HOLD_R_DUAL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3895,7 +3895,7 @@ qboolean PM_BlockHoldStaffAnim(const int anim)
 	case BOTH_BLOCK_HOLD_L_STAFF:
 	case BOTH_BLOCK_HOLD_R_STAFF:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3924,7 +3924,7 @@ qboolean PM_MeleeblockHoldAnim(const int anim)
 	case MELEE_STANCE_HOLD_B:
 	case MELEE_STANCE_HOLD_T:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -3963,7 +3963,7 @@ qboolean PM_ForceJumpingAnim(const int anim)
 	case BOTH_FORCEINAIRRIGHT1: //# In air loop (from jump right)
 	case BOTH_FORCELANDRIGHT1: //# Landing right(from in air loop)
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4011,7 +4011,7 @@ qboolean PM_LandingAnim(const int anim)
 	case BOTH_FORCELANDRIGHT1: //# Landing right(from in air loop)
 	case BOTH_FORCELONGLEAP_LAND: //# Landing right(from in air loop)
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4060,7 +4060,7 @@ qboolean PM_ForceAnim(const int anim)
 	case BOTH_FORCE_PROTECT:
 	case BOTH_FORCE_PROTECT_FAST:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4134,7 +4134,7 @@ qboolean PM_InOnGroundAnim(const int anim)
 	case BOTH_GETUP_FROLL_L:
 	case BOTH_GETUP_FROLL_R:
 		return qtrue;
-	default:;
+	default: ;
 	}
 
 	return qfalse;
@@ -4224,7 +4224,7 @@ qboolean PM_InOnGroundAnims(const playerState_t* ps)
 			return qtrue;
 		}
 		break;
-	default:;
+	default: ;
 	}
 
 	return qfalse;
@@ -4245,7 +4245,7 @@ qboolean PM_InRollComplete(const playerState_t* ps, const int anim)
 			return qtrue;
 		}
 		break;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4284,7 +4284,7 @@ qboolean PM_SuperBreakLoseAnim(const int anim)
 	case BOTH_LK_ST_S_S_SB_1_L: //super break I lost
 	case BOTH_LK_ST_S_T_SB_1_L: //super break I lost
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4312,7 +4312,7 @@ qboolean PM_SuperBreakWinAnim(const int anim)
 	case BOTH_LK_ST_S_S_SB_1_W: //super break I won
 	case BOTH_LK_ST_S_T_SB_1_W: //super break I won
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4362,7 +4362,7 @@ qboolean PM_SaberLockBreakAnim(const int anim)
 	case BOTH_LK_ST_S_T_B_1_L: //normal break I lost
 	case BOTH_LK_ST_S_T_B_1_W: //normal break I won
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return PM_SuperBreakLoseAnim(anim) || PM_SuperBreakWinAnim(anim);
 }
@@ -4380,7 +4380,7 @@ qboolean BG_KnockDownAnim(const int anim)
 	case BOTH_SLAPDOWNRIGHT:
 	case BOTH_SLAPDOWNLEFT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4398,12 +4398,12 @@ qboolean PM_KnockDownAnimExtended(const int anim)
 	case BOTH_KNOCKDOWN5:
 	case BOTH_SLAPDOWNRIGHT:
 	case BOTH_SLAPDOWNLEFT:
-		//special anims:
+	//special anims:
 	case BOTH_RELEASED:
 	case BOTH_LK_DL_ST_T_SB_1_L:
 	case BOTH_PLAYER_PA_3_FLY:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4452,7 +4452,7 @@ qboolean PM_DeathCinAnim(const int anim)
 	case BOTH_FALLDEATH1: //# Fall forward off a high cliff and splat death - start
 	case BOTH_FALLDEATH1INAIR: //# Fall forward off a high cliff and splat death - loop
 	case BOTH_FALLDEATH1LAND: //# Fall forward off a high cliff and splat death - hit bottom
-		//# #sep case BOTH_ DEAD POSES # Should be last frame of corresponding previous anims
+	//# #sep case BOTH_ DEAD POSES # Should be last frame of corresponding previous anims
 	case BOTH_DEAD1: //# First Death finished pose
 	case BOTH_DEAD2: //# Second Death finished pose
 	case BOTH_DEAD3: //# Third Death finished pose
@@ -4485,7 +4485,7 @@ qboolean PM_DeathCinAnim(const int anim)
 	case BOTH_LYINGDEAD1: //# Killed lying down death finished pose
 	case BOTH_STUMBLEDEAD1: //# Stumble forward death finished pose
 	case BOTH_FALLDEAD1LAND: //# Fall forward and splat death finished pose
-		//# #sep case BOTH_ DEAD TWITCH/FLOP # React to being shot from death poses
+	//# #sep case BOTH_ DEAD TWITCH/FLOP # React to being shot from death poses
 	case BOTH_DEADFLOP1: //# React to being shot from First Death finished pose
 	case BOTH_DEADFLOP2: //# React to being shot from Second Death finished pose
 	case BOTH_DISMEMBER_HEAD1: //#
@@ -4495,7 +4495,7 @@ qboolean PM_DeathCinAnim(const int anim)
 	case BOTH_DISMEMBER_RARM: //#
 	case BOTH_DISMEMBER_LARM: //#
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4522,7 +4522,7 @@ qboolean BG_FullBodyTauntAnim(const int anim)
 	case BOTH_VICTORY_STAFF:
 	case BOTH_SHOWOFF_OBI:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4533,7 +4533,7 @@ qboolean BG_FullBodyEmoteAnim(const int anim)
 	{
 	case PLAYER_SURRENDER_START:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4544,7 +4544,7 @@ qboolean BG_FullBodyRespectAnim(const int anim)
 	{
 	case BOTH_BOW:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4556,7 +4556,7 @@ qboolean BG_FullBodyCowerstartAnim(const int anim)
 	case BOTH_COWER1:
 	case BOTH_COWER1_START:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4567,7 +4567,7 @@ qboolean BG_FullBodyCowerAnim(const int anim)
 	{
 	case BOTH_COWER1:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4599,12 +4599,12 @@ qboolean BG_IsAlreadyinTauntAnim(const int anim)
 	case TORSO_HANDSIGNAL1:
 	case BOTH_VADERTAUNT:
 	case BOTH_COWER1:
-		//
+	//
 	case BOTH_RELOADFAIL:
 	case BOTH_RELOAD:
 	case BOTH_RECHARGE:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4619,16 +4619,16 @@ qboolean PM_Bobaspecialanim(const int anim)
 	case TORSO_HANDSIGNAL3:
 	case TORSO_HANDSIGNAL2:
 	case TORSO_HANDSIGNAL1:
-		//
+	//
 	case BOTH_RELOADFAIL:
 	case BOTH_RELOAD:
 	case BOTH_RECHARGE:
-		//
+	//
 	case BOTH_FLAMETHROWER:
 	case BOTH_PULL_IMPALE_STAB:
 	case BOTH_FORCELIGHTNING_HOLD:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4640,7 +4640,7 @@ qboolean BG_AnimRequiresResponce(const int anim)
 	case BOTH_GESTURE1:
 	case BOTH_ENGAGETAUNT:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -4778,6 +4778,8 @@ void BG_AnimsetFree()
 
 #ifdef _CGAME //none of this is actually needed server side. Could just be moved to cgame code but it's here since it used to tie in a lot with the anim loading stuff.
 
+
+
 stringID_table_t animEventTypeTable[MAX_ANIM_EVENTS + 1] =
 {
 	ENUM2STRING(AEV_SOUND), //# animID AEV_SOUND framenum soundpath randomlow randomhi chance to play
@@ -4832,7 +4834,7 @@ int CheckAnimFrameForEventType(const animevent_t* anim_events, const int key_fra
 }
 
 void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, const animation_t* animations,
-	const char** text_p)
+                            const char** text_p)
 {
 	const char* token;
 	int num, n, lowest_val, highest_val, cur_anim_event, last_anim_event = 0;
@@ -4858,7 +4860,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 		if (last_anim_event >= MAX_ANIM_EVENTS)
 		{
 			Com_Error(ERR_DROP, "ParseAnimationEvtBlock: number events in animEvent file %s > MAX_ANIM_EVENTS(%i)",
-				aeb_filename, MAX_ANIM_EVENTS);
+			          aeb_filename, MAX_ANIM_EVENTS);
 			return;
 		}
 		// Get base frame of sequence
@@ -4969,7 +4971,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 					highest_val = lowest_val + (MAX_RANDOM_ANIM_SOUNDS - 1);
 				}
 				for (n = lowest_val, num = AED_SOUNDINDEX_START; n <= highest_val && num <= AED_SOUNDINDEX_END; n++, num
-					++)
+				     ++)
 				{
 					if (string_data[0] == '*' && n == lowest_val)
 					{
@@ -4983,7 +4985,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 						strcpy(anim_events[cur_anim_event].stringData, string_data);
 					}
 					else if (string_data[0] != '*')
-						//else
+					//else
 					{
 						anim_events[cur_anim_event].eventData[num] = trap->S_RegisterSound(va(string_data, n));
 					}
@@ -5046,7 +5048,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 		{
 			//we don't use this anim
 			Com_Printf(S_COLOR_YELLOW"WARNING: %s mpanimevents.cfg: anim %s not used by this model\n", aeb_filename,
-				token);
+			           token);
 			//skip this entry
 			SkipRestOfLine(text_p);
 			continue;
@@ -5054,7 +5056,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 
 		token = COM_Parse(text_p);
 		const animEventType_t event_type = GetIDForString(animEventTypeTable, token);
-		if (event_type == AEV_NONE || event_type == (animEventType_t)-1)
+		if (event_type == AEV_NONE || event_type == (animEventType_t) - 1)
 		{
 			//Unrecognized ANIM EVENT TYPE, or we're skipping this line, keep going till you get a good one
 			//Com_Printf(S_COLOR_YELLOW"WARNING: Unknown token %s in animEvent file %s\n", token, aeb_filename );
@@ -5106,7 +5108,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 			else
 				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
 
-			//fall through to normal sound
+		//fall through to normal sound
 		case AEV_SOUND: //# animID AEV_SOUND framenum soundpath randomlow randomhi chance to play
 			//get sound string
 			token = COM_Parse(text_p);
@@ -5115,7 +5117,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			strcpy(string_data, token);
-			//get lowest value
+		//get lowest value
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5123,7 +5125,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			lowest_val = atoi(token);
-			//get highest value
+		//get highest value
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5131,10 +5133,10 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			highest_val = atoi(token);
-			//Now precache all the sounds
-			//NOTE: If we can be assured sequential handles, we can store sound indices
-			//		instead of strings, unfortunately, if these sounds were previously
-			//		registered, we cannot be guaranteed sequential indices.  Thus an array
+		//Now precache all the sounds
+		//NOTE: If we can be assured sequential handles, we can store sound indices
+		//		instead of strings, unfortunately, if these sounds were previously
+		//		registered, we cannot be guaranteed sequential indices.  Thus an array
 			if (lowest_val && highest_val)
 			{
 				//assert(highestVal - lowestVal < MAX_RANDOM_ANIM_SOUNDS);
@@ -5143,7 +5145,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 					highest_val = lowest_val + (MAX_RANDOM_ANIM_SOUNDS - 1);
 				}
 				for (n = lowest_val, num = AED_SOUNDINDEX_START; n <= highest_val && num <= AED_SOUNDINDEX_END; n++, num
-					++)
+				     ++)
 				{
 					if (string_data[0] == '*')
 					{
@@ -5177,7 +5179,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 #endif
 				anim_events[cur_anim_event].eventData[AED_SOUND_NUMRANDOMSNDS] = 0;
 			}
-			//get probability
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5186,15 +5188,16 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 			}
 			anim_events[cur_anim_event].eventData[AED_SOUND_PROBABILITY] = atoi(token);
 
-			//last part - cheat and check and see if it's a special overridable saber sound we know of...
+		//last part - cheat and check and see if it's a special overridable saber sound we know of...
 			if (!Q_stricmpn("sound/weapons/saber/saberhup", string_data, 28))
 			{
 				//a saber swing
 				anim_events[cur_anim_event].eventType = AEV_SABER_SWING;
 				anim_events[cur_anim_event].eventData[AED_SABER_SWING_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				anim_events[cur_anim_event].eventData[AED_SABER_SWING_PROBABILITY] = anim_events[cur_anim_event].eventData[
-					AED_SOUND_PROBABILITY];
+				anim_events[cur_anim_event].eventData[AED_SABER_SWING_PROBABILITY] = anim_events[cur_anim_event].
+					eventData[
+						AED_SOUND_PROBABILITY];
 				if (lowest_val < 4)
 				{
 					//fast swing
@@ -5217,8 +5220,9 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				anim_events[cur_anim_event].eventType = AEV_SABER_SPIN;
 				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_PROBABILITY] = anim_events[cur_anim_event].eventData[
-					AED_SOUND_PROBABILITY];
+				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_PROBABILITY] = anim_events[cur_anim_event].
+					eventData[
+						AED_SOUND_PROBABILITY];
 				if (string_data[29] == 'o')
 				{
 					//saberspinoff
@@ -5259,7 +5263,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_FOOTSTEP_TYPE] = GetIDForString(footstepTypeTable, token);
-			//get probability
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5276,7 +5280,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_EFFECTINDEX] = trap->FX_RegisterEffect(token);
-			//get bolt index
+		//get bolt index
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5292,9 +5296,9 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				}
 				strcpy(anim_events[cur_anim_event].stringData, token);
 			}
-			//NOTE: this string will later be used to add a bolt and store the index, as below:
-			//animEvent->eventData[AED_BOLTINDEX] = trap->G2API_AddBolt( &cent->gent->ghoul2[cent->gent->playerModel], animEvent->stringData );
-			//get probability
+		//NOTE: this string will later be used to add a bolt and store the index, as below:
+		//animEvent->eventData[AED_BOLTINDEX] = trap->G2API_AddBolt( &cent->gent->ghoul2[cent->gent->playerModel], animEvent->stringData );
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5312,7 +5316,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_FIRE_ALT] = atoi(token);
-			//get probability
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5330,7 +5334,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_MOVE_FWD] = atoi(token);
-			//get right push
+		//get right push
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5338,7 +5342,7 @@ void ParseAnimationEvtBlock(const char* aeb_filename, animevent_t* anim_events, 
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_MOVE_RT] = atoi(token);
-			//get upwards push
+		//get upwards push
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -5406,8 +5410,8 @@ int bg_parse_animation_evt_file(const char* as_filename, const int anim_file_ind
 		}
 	}
 
-	animevent_t* legs_anim_events = bgAllEvents[forced_index].legsAnimEvents;
-	animevent_t* torso_anim_events = bgAllEvents[forced_index].torsoAnimEvents;
+	animevent_t * legs_anim_events = bgAllEvents[forced_index].legsAnimEvents;
+	animevent_t * torso_anim_events = bgAllEvents[forced_index].torsoAnimEvents;
 	const animation_t* animations = bgAllAnims[anim_file_index].anims;
 
 	if (bg_animParseIncluding <= 0)
@@ -6010,7 +6014,7 @@ void PM_SetTorsoAnimTimer(const int time)
 }
 
 void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level, const int weapon, const int anim,
-	float* anim_speed, const int fatigued)
+                               float* anim_speed, const int fatigued)
 {
 	char buf[128];
 
@@ -6067,7 +6071,8 @@ void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level,
 			*anim_speed *= fatiguedanimscale;
 		}
 		else if (fatigued & 1 << FLAG_SLOWBOUNCE)
-		{//slow animation for slow bounces
+		{
+			//slow animation for slow bounces
 			if (PM_BounceAnim(anim))
 			{
 				*anim_speed *= 0.6f;
@@ -6078,14 +6083,17 @@ void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level,
 			}
 		}
 		else if (fatigued & 1 << FLAG_OLDSLOWBOUNCE)
-		{//getting parried slows down your reaction
+		{
+			//getting parried slows down your reaction
 			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
-			{//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
+			{
+				//only apply to bounce and returns since this flag is technically turned off immediately after the animation is set.
 				*anim_speed *= 0.6f;
 			}
 		}
 		else if (fatigued & 1 << FLAG_PARRIED)
-		{//getting parried slows down your reaction
+		{
+			//getting parried slows down your reaction
 			if (PM_BounceAnim(anim) || PM_SaberReturnAnim(anim))
 			{
 				*anim_speed *= 0.90f;
@@ -6099,7 +6107,8 @@ void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level,
 			}
 		}
 		else if (fatigued & 1 << FLAG_MBLOCKBOUNCE)
-		{//slow animation for all bounces
+		{
+			//slow animation for all bounces
 			if (PM_SaberInMassiveBounce(anim))
 			{
 				*anim_speed *= 0.5f;
@@ -6108,9 +6117,11 @@ void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level,
 		else
 		{
 			if (saber_anim_level == SS_DUAL)
-			{//slow down broken parries
+			{
+				//slow down broken parries
 				if (anim >= BOTH_H6_S6_T_ && anim <= BOTH_H6_S6_BR)
-				{//dual broken parries are 1/3 the frames of the single broken parries
+				{
+					//dual broken parries are 1/3 the frames of the single broken parries
 					*anim_speed *= 0.6f;
 				}
 				else
@@ -6122,7 +6133,8 @@ void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level,
 			else if (saber_anim_level == SS_STAFF)
 			{
 				if (anim >= BOTH_H7_S7_T_ && anim <= BOTH_H7_S7_BR)
-				{//doubles are 1/2 the frames of single broken parries
+				{
+					//doubles are 1/2 the frames of single broken parries
 					*anim_speed *= 0.8f;
 				}
 				else
@@ -6172,7 +6184,8 @@ PM_SetAnimFinal
 qboolean PM_RunningAnim(int anim);
 qboolean PM_WalkingAnim(int anim);
 
-void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int set_anim_parts, const int anim, const int set_anim_flags)
+void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int set_anim_parts, const int anim,
+                     const int set_anim_flags)
 {
 	float edit_anim_speed = 1;
 
@@ -6342,7 +6355,8 @@ int PM_PickAnim(const int anim_index, const int min_anim, const int max_anim)
 //of a pmove too so I have ported it to true BGishness.
 //Please do not reference pm in this function or any functions that it calls,
 //or I will cry. -rww
-void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim, const int set_anim_flags)
+void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim,
+                const int set_anim_flags)
 {
 	if (!animations)
 	{
@@ -6419,7 +6433,7 @@ float bg_get_torso_anim_point(const playerState_t* ps, const int anim_index)
 
 	//Be sure to scale by the proper anim speed just as if we were going to play the animation
 	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->torsoAnim, &anim_speed_factor,
-		ps->userInt3);
+	                          ps->userInt3);
 
 	if (anim_speed_factor > 0)
 	{
@@ -6455,7 +6469,7 @@ float BG_GetLegsAnimPoint(const playerState_t* ps, const int anim_index)
 
 	//Be sure to scale by the proper anim speed just as if we were going to play the animation
 	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->legsAnim, &anim_speed_factor,
-		ps->userInt3);
+	                          ps->userInt3);
 
 	if (anim_speed_factor > 0)
 	{
@@ -6494,7 +6508,7 @@ qboolean BG_HopAnim(const int anim)
 	case BOTH_HOP_F:
 	case BOTH_HOP_B:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -6523,7 +6537,7 @@ qboolean BG_SprintAnim(const int anim)
 	case BOTH_SPRINT:
 	case BOTH_SPRINT_MP:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -6535,7 +6549,7 @@ qboolean BG_SprintSaberAnim(const int anim)
 	case BOTH_SPRINT_SABER:
 	case BOTH_SPRINT_SABER_MP:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -6545,7 +6559,7 @@ qboolean manual_saberreadyanim(const int anim)
 	//check for saber block animation
 	switch (anim)
 	{
-		//special case anims
+	//special case anims
 	case BOTH_STAND1: //not really a saberstance anim, actually... "saber off" stance
 	case BOTH_STAND2: //single-saber, medium style
 	case BOTH_SABERFAST_STANCE: //single-saber, fast style
@@ -6567,7 +6581,7 @@ qboolean manual_saberreadyanim(const int anim)
 	case BOTH_SABEREADY_STANCE: //ready
 	case BOTH_SABER_REY_STANCE: //rey
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }

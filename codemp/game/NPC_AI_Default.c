@@ -42,7 +42,7 @@ void NPC_LostEnemyDecideChase(void)
 			//FIXME: Should we only do this if there's no other enemies or we've got LOCKED_ENEMY on?
 			NPC_BSSearchStart(NPCS.NPC->enemy->lastWaypoint, BS_SEARCH);
 		}
-		//If he's not our goalEntity, we're running somewhere else, so lose him
+	//If he's not our goalEntity, we're running somewhere else, so lose him
 		break;
 	default:
 		break;
@@ -64,7 +64,7 @@ void NPC_StandIdle(void)
 	}
 }
 
-qboolean NPC_StandTrackAndShoot(const gentity_t* npc, qboolean can_duck)
+qboolean NPC_StandTrackAndShoot(const gentity_t* npc, const qboolean can_duck)
 {
 	qboolean attack_ok = qfalse;
 	qboolean duck_ok = qfalse;
@@ -165,8 +165,8 @@ void NPC_BSStandGuard(void)
 			if (NPCS.NPC->client->enemyTeam)
 			{
 				gentity_t* newenemy = NPC_PickEnemy(NPCS.NPC, NPCS.NPC->client->enemyTeam,
-					NPCS.NPC->cantHitEnemyCounter < 10,
-					NPCS.NPC->client->enemyTeam == NPCTEAM_PLAYER, qtrue);
+				                                    NPCS.NPC->cantHitEnemyCounter < 10,
+				                                    NPCS.NPC->client->enemyTeam == NPCTEAM_PLAYER, qtrue);
 				//only checks for vis if couldn't hit last enemy
 				if (newenemy)
 				{
@@ -421,7 +421,7 @@ void NPC_BSFace(void)
 	}
 }
 
-void NPC_BSPointShoot(qboolean shoot)
+void NPC_BSPointShoot(const qboolean shoot)
 {
 	//FIXME: doesn't check for clear shot...
 	vec3_t muzzle, dir, angles, org;
@@ -501,7 +501,7 @@ void NPC_BSPointShoot(qboolean shoot)
 		const float yawMiss = tan(DEG2RAD(AngleDelta(NPCS.NPC->client->ps.viewangles[YAW], NPCS.NPCInfo->desiredYaw))) *
 			dist;
 		const float pitchMiss = tan(
-			DEG2RAD(AngleDelta(NPCS.NPC->client->ps.viewangles[PITCH], NPCS.NPCInfo->desiredPitch))) *
+				DEG2RAD(AngleDelta(NPCS.NPC->client->ps.viewangles[PITCH], NPCS.NPCInfo->desiredPitch))) *
 			dist;
 
 		if (yawMissAllow >= yawMiss && pitchMissAllow > pitchMiss)

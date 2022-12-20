@@ -29,12 +29,12 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "FxScheduler.h"
 
 extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChannel_t channel, const char* sound_name,
-	int custom_sound_set);
+                                      int custom_sound_set);
 extern void fx_kothos_beam(vec3_t start, vec3_t end);
 extern void CG_GibPlayerHeadshot(vec3_t player_origin);
 extern void CG_GibPlayer(vec3_t player_origin);
 extern float ShortestLineSegBewteen2LineSegs(vec3_t start1, vec3_t end1, vec3_t start2, vec3_t end2, vec3_t close_pnt1,
-	vec3_t close_pnt2);
+                                             vec3_t close_pnt2);
 extern void CG_StrikeBolt(const centity_t* cent, vec3_t origin);
 
 //==========================================================================
@@ -50,7 +50,7 @@ qboolean CG_IsFemale(const char* infostring)
 const char* CG_PlaceString(int rank)
 {
 	static char str[64];
-	char* s, * t;
+	char *s, *t;
 
 	if (rank & RANK_TIED_FLAG)
 	{
@@ -227,6 +227,7 @@ UseItem
 */
 extern void CG_ToggleBinoculars();
 extern void CG_ToggleLAGoggles();
+
 void UseItem(const int item_num)
 {
 	const centity_t* cent = &cg_entities[cg.snap->ps.client_num];
@@ -251,7 +252,7 @@ void UseItem(const int item_num)
 			cent->gent->client->ps.inventory[INV_SECURITY_KEY]--;
 		}
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -373,9 +374,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	switch (event)
 	{
-		//
-		// movement generated events
-		//
+	//
+	// movement generated events
+	//
 	case EV_FOOTSTEP:
 		DEBUGNAME("EV_FOOTSTEP");
 		if (cg_footsteps.integer)
@@ -429,11 +430,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			cg.landChange = -8;
 			cg.landTime = cg.time;
 		}
-		//FIXME: maybe kick up some dust?
+	//FIXME: maybe kick up some dust?
 		break;
 	case EV_FALL_MEDIUM:
 		DEBUGNAME("EV_FALL_MEDIUM");
-		// use normal pain sound -
+	// use normal pain sound -
 		if (g_entities[es->number].health <= 0)
 		{
 			//dead
@@ -456,7 +457,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			cg.landChange = -16;
 			cg.landTime = cg.time;
 		}
-		//FIXME: maybe kick up some dust?
+	//FIXME: maybe kick up some dust?
 		break;
 	case EV_FALL_FAR:
 		DEBUGNAME("EV_FALL_FAR");
@@ -469,7 +470,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			cg.landChange = -24;
 			cg.landTime = cg.time;
 		}
-		//FIXME: maybe kick up some dust?
+	//FIXME: maybe kick up some dust?
 		break;
 
 	case EV_STEP_4:
@@ -625,7 +626,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_CALLOUT_BEHIND:
 		DEBUGNAME("EV_CALLOUT_BEHIND");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*confuse%i.wav", event - EV_CONFUSE1 + 1),
-			CS_CALLOUT);
+		                      CS_CALLOUT);
 		break;
 
 	case EV_CALLOUT_NEAR:
@@ -636,7 +637,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_CALLOUT_FAR:
 		DEBUGNAME("EV_CALLOUT_FAR");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*escaping%i.wav", event - EV_ESCAPING1 + 1),
-			CS_CALLOUT);
+		                      CS_CALLOUT);
 		break;
 
 	case EV_CALLOUT_VC_REQ_ASSIST:
@@ -677,12 +678,12 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		}
 		break;
 
-		//
-		// weapon events
-		//
+	//
+	// weapon events
+	//
 	case EV_NOAMMO:
 		DEBUGNAME("EV_NOAMMO");
-		//cgi_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
+	//cgi_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
 		if (es->number == cg.snap->ps.client_num)
 		{
 			CG_OutOfAmmoChange();
@@ -702,12 +703,12 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			}
 		}
 
-		// FIXME: if it happens that you don't want the saber to play the switch sounds, feel free to modify this bit.
+	// FIXME: if it happens that you don't want the saber to play the switch sounds, feel free to modify this bit.
 		if (weaponData[cg.weaponSelect].selectSnd[0])
 		{
 			// custom select sound
 			cgi_S_StartSound(nullptr, es->number, CHAN_AUTO,
-				cgi_S_RegisterSound(weaponData[cg.weaponSelect].selectSnd));
+			                 cgi_S_RegisterSound(weaponData[cg.weaponSelect].selectSnd));
 		}
 		else
 		{
@@ -769,28 +770,28 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		if (Q_irand(0, 1))
 		{
 			fx_kothos_beam(cg_entities[cent->currentState.otherEntityNum].gent->client->renderInfo.handRPoint,
-				cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
+			               cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
 		}
 		else
 		{
 			fx_kothos_beam(cg_entities[cent->currentState.otherEntityNum].gent->client->renderInfo.handLPoint,
-				cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
+			               cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
 		}
 		break;
-		//=================================================================
+	//=================================================================
 
-		//
-		// other events
-		//
+	//
+	// other events
+	//
 	case EV_REPLICATOR:
 		DEBUGNAME("EV_REPLICATOR");
-		//		FX_Replicator( cent, position );
+	//		FX_Replicator( cent, position );
 		break;
 
 	case EV_LIGHTNING_STRIKE:
 		DEBUGNAME("EV_LIGHTNING_STRIKE");
 		FX_LightningStrike(cg_entities[cent->currentState.otherEntityNum].gent->client->renderInfo.handLPoint,
-			cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
+		                   cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
 		break;
 
 	case EV_LIGHTNING_BOLT:
@@ -804,74 +805,74 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		break;
 
 	case EV_DISINTEGRATION:
-	{
-		DEBUGNAME("EV_DISINTEGRATION");
-		qboolean make_not_solid;
-		const int disint_pw = es->eventParm;
-		int disint_effect;
-		int disint_length;
-		qhandle_t disint_sound1;
-		qhandle_t disint_sound2;
-
-		switch (disint_pw)
 		{
-		case PW_DISRUPTION: // sniper rifle
-			disint_effect = EF_DISINTEGRATION; //ef_
-			disint_sound1 = cgs.media.disintegrateSound; //with scream
-			disint_sound2 = cgs.media.disintegrate2Sound; //no scream
-			disint_length = 2000;
-			make_not_solid = qtrue;
-			break;
-		default:
-			return;
-		}
+			DEBUGNAME("EV_DISINTEGRATION");
+			qboolean make_not_solid;
+			const int disint_pw = es->eventParm;
+			int disint_effect;
+			int disint_length;
+			qhandle_t disint_sound1;
+			qhandle_t disint_sound2;
 
-		if (cent->gent->owner)
-		{
-			cent->gent->owner->fx_time = cg.time;
-			if (cent->gent->owner->client)
+			switch (disint_pw)
 			{
-				if (disint_sound1 && disint_sound2)
-				{
-					//play an extra sound
-					// listed all the non-humanoids, because there's a lot more humanoids
-					const class_t npc_class = cent->gent->owner->client->NPC_class;
+			case PW_DISRUPTION: // sniper rifle
+				disint_effect = EF_DISINTEGRATION; //ef_
+				disint_sound1 = cgs.media.disintegrateSound; //with scream
+				disint_sound2 = cgs.media.disintegrate2Sound; //no scream
+				disint_length = 2000;
+				make_not_solid = qtrue;
+				break;
+			default:
+				return;
+			}
 
-					if (npc_class != CLASS_ATST && npc_class != CLASS_GONK &&
-						npc_class != CLASS_INTERROGATOR && npc_class != CLASS_MARK1 &&
-						npc_class != CLASS_MARK2 && npc_class != CLASS_MOUSE &&
-						npc_class != CLASS_PROBE && npc_class != CLASS_PROTOCOL &&
-						npc_class != CLASS_R2D2 && npc_class != CLASS_R5D2 &&
-						npc_class != CLASS_SEEKER && npc_class != CLASS_SENTRY &&
-						npc_class != CLASS_SBD && npc_class != CLASS_BATTLEDROID &&
-						npc_class != CLASS_DROIDEKA && npc_class != CLASS_OBJECT &&
-						npc_class != CLASS_ASSASSIN_DROID && npc_class != CLASS_SABER_DROID)
+			if (cent->gent->owner)
+			{
+				cent->gent->owner->fx_time = cg.time;
+				if (cent->gent->owner->client)
+				{
+					if (disint_sound1 && disint_sound2)
 					{
-						//Only the humanoids scream
-						cgi_S_StartSound(nullptr, cent->gent->owner->s.number, CHAN_VOICE, disint_sound1);
+						//play an extra sound
+						// listed all the non-humanoids, because there's a lot more humanoids
+						const class_t npc_class = cent->gent->owner->client->NPC_class;
+
+						if (npc_class != CLASS_ATST && npc_class != CLASS_GONK &&
+							npc_class != CLASS_INTERROGATOR && npc_class != CLASS_MARK1 &&
+							npc_class != CLASS_MARK2 && npc_class != CLASS_MOUSE &&
+							npc_class != CLASS_PROBE && npc_class != CLASS_PROTOCOL &&
+							npc_class != CLASS_R2D2 && npc_class != CLASS_R5D2 &&
+							npc_class != CLASS_SEEKER && npc_class != CLASS_SENTRY &&
+							npc_class != CLASS_SBD && npc_class != CLASS_BATTLEDROID &&
+							npc_class != CLASS_DROIDEKA && npc_class != CLASS_OBJECT &&
+							npc_class != CLASS_ASSASSIN_DROID && npc_class != CLASS_SABER_DROID)
+						{
+							//Only the humanoids scream
+							cgi_S_StartSound(nullptr, cent->gent->owner->s.number, CHAN_VOICE, disint_sound1);
+						}
+						else
+						{
+							cgi_S_StartSound(nullptr, cent->gent->s.number, CHAN_AUTO, disint_sound2);
+						}
 					}
-					else
+					cent->gent->owner->s.powerups |= 1 << disint_pw;
+					cent->gent->owner->client->ps.powerups[disint_pw] = cg.time + disint_length;
+
+					// Things that are being disintegrated should probably not be solid...
+					if (make_not_solid && cent->gent->owner->client->playerTeam != TEAM_NEUTRAL)
 					{
-						cgi_S_StartSound(nullptr, cent->gent->s.number, CHAN_AUTO, disint_sound2);
+						cent->gent->contents = CONTENTS_NONE;
 					}
 				}
-				cent->gent->owner->s.powerups |= 1 << disint_pw;
-				cent->gent->owner->client->ps.powerups[disint_pw] = cg.time + disint_length;
-
-				// Things that are being disintegrated should probably not be solid...
-				if (make_not_solid && cent->gent->owner->client->playerTeam != TEAM_NEUTRAL)
+				else
 				{
-					cent->gent->contents = CONTENTS_NONE;
+					cent->gent->owner->s.eFlags = disint_effect;
+					cent->gent->owner->delay = cg.time + disint_length;
 				}
 			}
-			else
-			{
-				cent->gent->owner->s.eFlags = disint_effect;
-				cent->gent->owner->delay = cg.time + disint_length;
-			}
 		}
-	}
-	break;
+		break;
 
 	// This does not necessarily have to be from a grenade...
 	case EV_GRENADE_BOUNCE:
@@ -879,9 +880,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		CG_BounceEffect(cent, es->weapon, position, cent->gent->pos1);
 		break;
 
-		//
-		// missile impacts
-		//
+	//
+	// missile impacts
+	//
 
 	case EV_MISSILE_STICK:
 		DEBUGNAME("EV_MISSILE_STICK");
@@ -984,7 +985,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*death%i.wav", event - EV_DEATH1 + 1), CS_BASIC);
 		break;
 
-		// Called by the FxRunner entity...usually for Environmental FX Events
+	// Called by the FxRunner entity...usually for Environmental FX Events
 	case EV_PLAY_EFFECT:
 		DEBUGNAME("EV_PLAY_EFFECT");
 		{
@@ -998,7 +999,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			{
 				const bool is_relative = !!es->weapon;
 				theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, es->boltInfo, -1, portal_ent, es->loopSound,
-					is_relative); //loopSound 0 = not looping, 1 for infinite, else duration
+				                          is_relative); //loopSound 0 = not looping, 1 for infinite, else duration
 			}
 			else
 			{
@@ -1017,10 +1018,10 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 				}
 			}
 		}
-		// Ghoul2 Insert End
+	// Ghoul2 Insert End
 		break;
 
-		// play an effect bolted onto a muzzle
+	// play an effect bolted onto a muzzle
 	case EV_PLAY_MUZZLE_EFFECT:
 		DEBUGNAME("EV_PLAY_MUZZLE_EFFECT");
 		s = CG_ConfigString(CS_EFFECTS + es->eventParm);
@@ -1082,7 +1083,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_VICTORY3:
 		DEBUGNAME("EV_VICTORYx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*victory%i.wav", event - EV_VICTORY1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 
 	case EV_CONFUSE1: //Say when confused
@@ -1090,7 +1091,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_CONFUSE3:
 		DEBUGNAME("EV_CONFUSEDx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*confuse%i.wav", event - EV_CONFUSE1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 
 	case EV_PUSHED1: //Say when pushed
@@ -1117,7 +1118,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, "*ffturn.wav", CS_COMBAT);
 		break;
 
-		//extra sounds for ST
+	//extra sounds for ST
 	case EV_CHASE1:
 	case EV_CHASE2:
 	case EV_CHASE3:
@@ -1139,7 +1140,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_DETECTED5:
 		DEBUGNAME("EV_DETECTEDx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*detected%i.wav", event - EV_DETECTED1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_GIVEUP1:
 	case EV_GIVEUP2:
@@ -1161,14 +1162,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_OUTFLANK2:
 		DEBUGNAME("EV_OUTFLANKx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*outflank%i.wav", event - EV_OUTFLANK1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_ESCAPING1:
 	case EV_ESCAPING2:
 	case EV_ESCAPING3:
 		DEBUGNAME("EV_ESCAPINGx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*escaping%i.wav", event - EV_ESCAPING1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_SIGHT1:
 	case EV_SIGHT2:
@@ -1189,9 +1190,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_SUSPICIOUS5:
 		DEBUGNAME("EV_SUSPICIOUSx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*suspicious%i.wav", event - EV_SUSPICIOUS1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
-		//extra sounds for Jedi
+	//extra sounds for Jedi
 	case EV_COMBAT1:
 	case EV_COMBAT2:
 	case EV_COMBAT3:
@@ -1203,7 +1204,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_JDETECTED3:
 		DEBUGNAME("EV_JDETECTEDx");
 		CG_TryPlayCustomSound(nullptr, es->number, CHAN_VOICE, va("*jdetected%i.wav", event - EV_JDETECTED1 + 1),
-			CS_JEDI);
+		                      CS_JEDI);
 		break;
 	case EV_TAUNT1:
 	case EV_TAUNT2:

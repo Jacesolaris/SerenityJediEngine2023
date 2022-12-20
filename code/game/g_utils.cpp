@@ -208,7 +208,8 @@ void G_PlayEffect(const int fx_id, const vec3_t origin, const vec3_t axis[3])
 // Effect playing utilities	- bolt an effect to a ghoul2 models bolton point
 //-----------------------------
 void G_PlayEffect(const int fx_id, const int model_index, const int bolt_index, const int ent_num, const vec3_t origin,
-	const int i_loop_time, const qboolean is_relative) //iLoopTime 0 = not looping, 1 for infinite, else duration
+                  const int i_loop_time, const qboolean is_relative)
+//iLoopTime 0 = not looping, 1 for infinite, else duration
 {
 	gentity_t* tent = G_TempEntity(origin, EV_PLAY_EFFECT);
 	tent->s.eventParm = fx_id;
@@ -223,14 +224,14 @@ void G_PlayEffect(const int fx_id, const int model_index, const int bolt_index, 
 //-----------------------------
 void G_PlayEffect(const char* name, const vec3_t origin)
 {
-	constexpr vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = {0, 0, 1};
 
 	G_PlayEffect(G_EffectIndex(name), origin, up);
 }
 
 void G_PlayEffect(const int fx_id, const vec3_t origin)
 {
-	constexpr vec3_t up = { 0, 0, 1 };
+	constexpr vec3_t up = {0, 0, 1};
 
 	G_PlayEffect(fx_id, origin, up);
 }
@@ -265,7 +266,7 @@ void G_StopEffect(const char* name, const int model_index, const int bolt_index,
 extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
 #include "../cgame/cg_media.h"	//access to cgs
 extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChannel_t channel, const char* sound_name,
-	int custom_sound_set);
+                                      int custom_sound_set);
 extern cvar_t* g_timescale;
 //NOTE: Do NOT Try to use this before the cgame DLL is valid, it will NOT work!
 void G_SoundOnEnt(const gentity_t* ent, const soundChannel_t channel, const char* sound_path)
@@ -326,31 +327,31 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_ANGER2:
 	case EV_ANGER3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*anger%i.wav", event - EV_ANGER1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 	case EV_VICTORY1: //Say when killed an enemy
 	case EV_VICTORY2:
 	case EV_VICTORY3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*victory%i.wav", event - EV_VICTORY1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 	case EV_CONFUSE1: //Say when confused
 	case EV_CONFUSE2:
 	case EV_CONFUSE3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*confuse%i.wav", event - EV_CONFUSE1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 	case EV_PUSHED1: //Say when pushed
 	case EV_PUSHED2:
 	case EV_PUSHED3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*pushed%i.wav", event - EV_PUSHED1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 	case EV_CHOKE1: //Say when choking
 	case EV_CHOKE2:
 	case EV_CHOKE3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*choke%i.wav", event - EV_CHOKE1 + 1),
-			CS_COMBAT);
+		                      CS_COMBAT);
 		break;
 	case EV_FFWARN: //Warn ally to stop shooting you
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, "*ffwarn.wav", CS_COMBAT);
@@ -358,12 +359,12 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_FFTURN: //Turn on ally after being shot by them
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, "*ffturn.wav", CS_COMBAT);
 		break;
-		//extra sounds for ST
+	//extra sounds for ST
 	case EV_CHASE1:
 	case EV_CHASE2:
 	case EV_CHASE3:
 		if (!CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*chase%i.wav", event - EV_CHASE1 + 1),
-			CS_EXTRA))
+		                           CS_EXTRA))
 		{
 			CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*anger%i.wav", Q_irand(1, 3)), CS_COMBAT);
 		}
@@ -381,14 +382,14 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_DETECTED4:
 	case EV_DETECTED5:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*detected%i.wav", event - EV_DETECTED1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_GIVEUP1:
 	case EV_GIVEUP2:
 	case EV_GIVEUP3:
 	case EV_GIVEUP4:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*giveup%i.wav", event - EV_GIVEUP1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_LOOK1:
 	case EV_LOOK2:
@@ -400,13 +401,13 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_OUTFLANK1:
 	case EV_OUTFLANK2:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*outflank%i.wav", event - EV_OUTFLANK1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_ESCAPING1:
 	case EV_ESCAPING2:
 	case EV_ESCAPING3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*escaping%i.wav", event - EV_ESCAPING1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
 	case EV_SIGHT1:
 	case EV_SIGHT2:
@@ -424,20 +425,20 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_SUSPICIOUS4:
 	case EV_SUSPICIOUS5:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*suspicious%i.wav", event - EV_SUSPICIOUS1 + 1),
-			CS_EXTRA);
+		                      CS_EXTRA);
 		break;
-		//extra sounds for Jedi
+	//extra sounds for Jedi
 	case EV_COMBAT1:
 	case EV_COMBAT2:
 	case EV_COMBAT3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*combat%i.wav", event - EV_COMBAT1 + 1),
-			CS_JEDI);
+		                      CS_JEDI);
 		break;
 	case EV_JDETECTED1:
 	case EV_JDETECTED2:
 	case EV_JDETECTED3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*jdetected%i.wav", event - EV_JDETECTED1 + 1),
-			CS_JEDI);
+		                      CS_JEDI);
 		break;
 	case EV_TAUNT1:
 	case EV_TAUNT2:
@@ -448,7 +449,7 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_JCHASE2:
 	case EV_JCHASE3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*jchase%i.wav", event - EV_JCHASE1 + 1),
-			CS_JEDI);
+		                      CS_JEDI);
 		break;
 	case EV_JLOST1:
 	case EV_JLOST2:
@@ -459,7 +460,7 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_DEFLECT2:
 	case EV_DEFLECT3:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, va("*deflect%i.wav", event - EV_DEFLECT1 + 1),
-			CS_JEDI);
+		                      CS_JEDI);
 		break;
 	case EV_GLOAT1:
 	case EV_GLOAT2:
@@ -469,7 +470,7 @@ void G_SpeechEvent(const gentity_t* self, const int event)
 	case EV_PUSHFAIL:
 		CG_TryPlayCustomSound(nullptr, self->s.number, CHAN_VOICE, "*pushfail.wav", CS_JEDI);
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -524,7 +525,7 @@ G_RadiusList - given an origin and a radius, return all entities that are in use
 ============
 */
 int G_RadiusList(vec3_t origin, float radius, const gentity_t* ignore, const qboolean take_damage,
-	gentity_t* ent_list[MAX_GENTITIES])
+                 gentity_t* ent_list[MAX_GENTITIES])
 {
 	gentity_t* entity_list[MAX_GENTITIES];
 	vec3_t mins, maxs;
@@ -718,10 +719,10 @@ instead of an orientation.
 */
 void G_SetMovedir(vec3_t angles, vec3_t movedir)
 {
-	static vec3_t VEC_UP = { 0, -1, 0 };
-	static vec3_t MOVEDIR_UP = { 0, 0, 1 };
-	static vec3_t VEC_DOWN = { 0, -2, 0 };
-	static vec3_t MOVEDIR_DOWN = { 0, 0, -1 };
+	static vec3_t VEC_UP = {0, -1, 0};
+	static vec3_t MOVEDIR_UP = {0, 0, 1};
+	static vec3_t VEC_DOWN = {0, -2, 0};
+	static vec3_t MOVEDIR_DOWN = {0, 0, -1};
 
 	if (VectorCompare(angles, VEC_UP))
 	{
@@ -839,7 +840,7 @@ gentity_t* find_remove_able_gent()
 		if (e->NPC
 			&& e->health <= 0
 			&& e->NPC->timeOfDeath + 1000 < level.time)
-			//NPC has been dead long enough for all the death related code to run.
+		//NPC has been dead long enough for all the death related code to run.
 		{
 			//found one
 			return e;
@@ -1096,7 +1097,7 @@ void G_FreeEntity(gentity_t* ed)
 	// Free any associated timers
 	TIMER_Clear(ed->s.number);
 
-	memset(ed, 0, sizeof * ed);
+	memset(ed, 0, sizeof *ed);
 	ed->s.number = ENTITYNUM_NONE;
 	ed->classname = "freed";
 	ed->freetime = level.time;
@@ -1194,7 +1195,7 @@ void g_kill_box(gentity_t* ent)
 
 		// nail it
 		G_Damage(hit, ent, ent, nullptr, nullptr,
-			100000, DAMAGE_NO_PROTECTION, MOD_UNKNOWN);
+		         100000, DAMAGE_NO_PROTECTION, MOD_UNKNOWN);
 	}
 }
 
@@ -1360,7 +1361,7 @@ qboolean G_CheckInSolidTeleport(const vec3_t& teleport_pos, const gentity_t* sel
 	mins[2] = 0;
 
 	gi.trace(&trace, teleport_pos, mins, self->maxs, end, self->s.number, self->clipmask, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 	if (trace.allsolid || trace.startsolid)
 	{
 		return qtrue;
@@ -1380,7 +1381,7 @@ qboolean G_CheckInSolid(gentity_t* self, const qboolean fix)
 	mins[2] = 0;
 
 	gi.trace(&trace, self->currentOrigin, mins, self->maxs, end, self->s.number, self->clipmask,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 	if (trace.allsolid || trace.startsolid)
 	{
 		return qtrue;
@@ -1569,8 +1570,8 @@ static void DebugTraceForNPC(const gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
-		static_cast<EG2_Collision>(0), 0);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
+	         static_cast<EG2_Collision>(0), 0);
 
 	if (trace.fraction < 0.99f)
 	{
@@ -1668,7 +1669,7 @@ static qboolean G_IsTriggerUsable(const gentity_t* self, const gentity_t* other)
 				Q_stricmp(self->target, "run_gran_drop") == 0 ||
 				Q_stricmp(self->target, "speaker") == 0 ||
 				Q_stricmp(self->target, "locked") == 0
-				)))
+			)))
 	{
 		return qfalse;
 	}
@@ -1688,7 +1689,7 @@ static qboolean CanUseInfrontOfPartOfLevel(const gentity_t* ent) //originally fr
 {
 	gentity_t* touch[MAX_GENTITIES];
 	vec3_t mins, maxs;
-	constexpr vec3_t range = { 40, 40, 52 };
+	constexpr vec3_t range = {40, 40, 52};
 
 	if (!ent->client)
 	{
@@ -1798,8 +1799,8 @@ qboolean CanUseInfrontOf(const gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
-		G2_NOCOLLIDE, 10);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
+	         G2_NOCOLLIDE, 10);
 
 	if (trace.fraction == 1.0f || trace.entityNum >= ENTITYNUM_WORLD)
 	{
@@ -1919,8 +1920,8 @@ void TryUse(gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
-		G2_NOCOLLIDE, 10);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
+	         G2_NOCOLLIDE, 10);
 
 	if (trace.fraction == 1.0f || trace.entityNum >= ENTITYNUM_WORLD)
 	{
@@ -1967,7 +1968,7 @@ tryJetPack:
 		|| ent->client->NPC_class == CLASS_ROCKETTROOPER)
 	{
 		if ((ent->client->jetPackOn || ent->client->ps.groundEntityNum == ENTITYNUM_NONE) && ent->client->ps.jetpackFuel
-		> 10)
+			> 10)
 		{
 			ItemUse_Jetpack(ent);
 		}
@@ -2029,7 +2030,7 @@ qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t max
 }
 
 qboolean G_BoxInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs, const vec3_t bounds_mins,
-	const vec3_t bounds_maxs)
+                       const vec3_t bounds_maxs)
 {
 	vec3_t box_mins;
 	vec3_t box_maxs;
@@ -2088,7 +2089,7 @@ void G_DebugLine(vec3_t a, vec3_t b, const int duration, const int color)
 	CG_TestLine(a, b, duration, color, 1);
 }
 
-qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask)
+qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, const int ignore, const int clipmask)
 {
 	trace_t tr;
 	vec3_t start, end;
@@ -2158,9 +2159,9 @@ void removeBoltSurface(gentity_t* ent)
 }
 
 void G_SetBoltSurfaceRemoval(const int entNum, const int model_index, const int bolt_index, const int surfaceIndex,
-	float duration)
+                             const float duration)
 {
-	constexpr vec3_t snapped = { 0, 0, 0 };
+	constexpr vec3_t snapped = {0, 0, 0};
 
 	gentity_t* e = G_Spawn();
 

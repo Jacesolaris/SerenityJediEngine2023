@@ -45,9 +45,9 @@ CTask::CTask(void)
 CTask::~CTask(void)
 = default;
 
-CTask* CTask::Create(int GUID, CBlock* block)
+CTask* CTask::Create(const int GUID, CBlock* block)
 {
-	CTask* task = new CTask;
+	auto task = new CTask;
 
 	//TODO: Emit warning
 	assert(task);
@@ -100,7 +100,7 @@ SetGUID
 -------------------------
 */
 
-void CTaskGroup::SetGUID(int GUID)
+void CTaskGroup::SetGUID(const int GUID)
 {
 	m_GUID = GUID;
 }
@@ -137,7 +137,7 @@ MarkTaskComplete
 -------------------------
 */
 
-bool CTaskGroup::MarkTaskComplete(int id)
+bool CTaskGroup::MarkTaskComplete(const int id)
 {
 	if (m_completedTasks.find(id) != m_completedTasks.end())
 	{
@@ -181,7 +181,7 @@ Init
 -------------------------
 */
 
-int	CTaskManager::Init(CSequencer* owner)
+int CTaskManager::Init(CSequencer* owner)
 {
 	//TODO: Emit warning
 	if (owner == nullptr)
@@ -206,7 +206,7 @@ Free
 int CTaskManager::Free(void)
 {
 	//Clear out all pending tasks
-	for (tasks_l::iterator ti = m_tasks.begin(); ti != m_tasks.end(); ++ti)
+	for (auto ti = m_tasks.begin(); ti != m_tasks.end(); ++ti)
 	{
 		(*ti)->Free();
 	}
@@ -214,9 +214,9 @@ int CTaskManager::Free(void)
 	m_tasks.clear();
 
 	//Clear out all taskGroups
-	for (taskGroup_v::iterator gi = m_taskGroups.begin(); gi != m_taskGroups.end(); ++gi)
+	for (auto gi = m_taskGroups.begin(); gi != m_taskGroups.end(); ++gi)
 	{
-		delete* gi;
+		delete*gi;
 	}
 
 	m_taskGroups.clear();
@@ -249,7 +249,7 @@ CTaskGroup* CTaskManager::AddTaskGroup(const char* name)
 {
 	CTaskGroup* group;
 
-	const taskGroupName_m::iterator tgni = m_taskGroupNameMap.find(name);
+	const auto tgni = m_taskGroupNameMap.find(name);
 
 	if (tgni != m_taskGroupNameMap.end())
 	{
@@ -291,7 +291,7 @@ GetTaskGroup
 
 CTaskGroup* CTaskManager::GetTaskGroup(const char* name)
 {
-	const taskGroupName_m::iterator tgi = m_taskGroupNameMap.find(name);
+	const auto tgi = m_taskGroupNameMap.find(name);
 
 	if (tgi == m_taskGroupNameMap.end())
 	{
@@ -302,9 +302,9 @@ CTaskGroup* CTaskManager::GetTaskGroup(const char* name)
 	return (*tgi).second;
 }
 
-CTaskGroup* CTaskManager::GetTaskGroup(int id)
+CTaskGroup* CTaskManager::GetTaskGroup(const int id)
 {
-	const taskGroupID_m::iterator tgi = m_taskGroupIDMap.find(id);
+	const auto tgi = m_taskGroupIDMap.find(id);
 
 	if (tgi == m_taskGroupIDMap.end())
 	{
@@ -329,7 +329,7 @@ int CTaskManager::Update(void)
 	{
 		return TASK_FAILED;
 	}
-	m_count = 0;	//Needed for runaway init
+	m_count = 0; //Needed for runaway init
 	m_resident = true;
 
 	const int returnVal = Go();
@@ -349,13 +349,14 @@ qboolean CTaskManager::IsRunning(void) const
 {
 	return static_cast<qboolean>(m_tasks.empty() == false);
 }
+
 /*
 -------------------------
 Check
 -------------------------
 */
 
-inline bool CTaskManager::Check(int targetID, const CBlock* block, int memberNum)
+inline bool CTaskManager::Check(const int targetID, const CBlock* block, const int memberNum)
 {
 	if (block->GetMember(memberNum)->GetID() == targetID)
 		return true;
@@ -369,7 +370,7 @@ GetFloat
 -------------------------
 */
 
-int CTaskManager::GetFloat(int entID, CBlock* block, int& memberNum, float& value) const
+int CTaskManager::GetFloat(const int entID, CBlock* block, int& memberNum, float& value) const
 {
 	//See if this is a get() command replacement
 	if (Check(ID_GET, block, memberNum))
@@ -407,7 +408,8 @@ int CTaskManager::GetFloat(int entID, CBlock* block, int& memberNum, float& valu
 	//Look for a tag() inline call
 	if (Check(ID_TAG, block, memberNum))
 	{
-		m_owner->GetInterface()->I_DPrintf(WL_WARNING, "Invalid use of \"tag\" inline.  Not a valid replacement for type FLOAT\n");
+		m_owner->GetInterface()->I_DPrintf(
+			WL_WARNING, "Invalid use of \"tag\" inline.  Not a valid replacement for type FLOAT\n");
 		return false;
 	}
 
@@ -437,9 +439,9 @@ GetVector
 -------------------------
 */
 
-int CTaskManager::GetVector(int entID, CBlock* block, int& memberNum, vector_t& value)
+int CTaskManager::GetVector(const int entID, CBlock* block, int& memberNum, vector_t& value)
 {
-	int		type, i;
+	int type, i;
 
 	//See if this is a get() command replacement
 	if (Check(ID_GET, block, memberNum))
@@ -470,7 +472,8 @@ int CTaskManager::GetVector(int entID, CBlock* block, int& memberNum, vector_t& 
 
 		for (i = 0; i < 3; i++)
 		{
-			value[i] = m_owner->GetInterface()->I_Random(min, max);	//FIXME: Just truncating it for now.. should be fine though
+			value[i] = m_owner->GetInterface()->I_Random(min, max);
+			//FIXME: Just truncating it for now.. should be fine though
 		}
 
 		return true;
@@ -480,7 +483,7 @@ int CTaskManager::GetVector(int entID, CBlock* block, int& memberNum, vector_t& 
 	if (Check(ID_TAG, block, memberNum))
 	{
 		char* tagName;
-		float	tagLookup;
+		float tagLookup;
 
 		memberNum++;
 		ICARUS_VALIDATE(Get(entID, block, memberNum, &tagName));
@@ -522,9 +525,9 @@ Get
 -------------------------
 */
 
-int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value)
+int CTaskManager::Get(const int entID, CBlock* block, int& memberNum, char** value)
 {
-	static	char	tempBuffer[128];	//FIXME: EEEK!
+	static char tempBuffer[128]; //FIXME: EEEK!
 	char* tagName;
 
 	//Look for a get() inline call
@@ -535,7 +538,7 @@ int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value)
 
 		//get( TYPE, NAME )
 		const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-		char* name = static_cast<char*>(block->GetMemberData(memberNum++));
+		auto name = static_cast<char*>(block->GetMemberData(memberNum++));
 
 		//Format the return properly
 		//FIXME: This is probably doing double formatting in certain cases...
@@ -552,36 +555,36 @@ int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value)
 			return true;
 
 		case TK_FLOAT:
-		{
-			float	temp;
-
-			if (m_owner->GetInterface()->I_GetFloat(entID, type, name, &temp) == false)
 			{
-				m_owner->GetInterface()->I_DPrintf(WL_ERROR, "Get() parameter \"%s\" could not be found!\n", name);
-				return false;
+				float temp;
+
+				if (m_owner->GetInterface()->I_GetFloat(entID, type, name, &temp) == false)
+				{
+					m_owner->GetInterface()->I_DPrintf(WL_ERROR, "Get() parameter \"%s\" could not be found!\n", name);
+					return false;
+				}
+
+				Com_sprintf(tempBuffer, sizeof tempBuffer, "%f", temp);
+				*value = static_cast<char*>(tempBuffer);
 			}
 
-			Com_sprintf(tempBuffer, sizeof tempBuffer, "%f", temp);
-			*value = static_cast<char*>(tempBuffer);
-		}
-
-		return true;
+			return true;
 
 		case TK_VECTOR:
-		{
-			vector_t	vval;
-
-			if (m_owner->GetInterface()->I_GetVector(entID, type, name, vval) == false)
 			{
-				m_owner->GetInterface()->I_DPrintf(WL_ERROR, "Get() parameter \"%s\" could not be found!\n", name);
-				return false;
+				vector_t vval;
+
+				if (m_owner->GetInterface()->I_GetVector(entID, type, name, vval) == false)
+				{
+					m_owner->GetInterface()->I_DPrintf(WL_ERROR, "Get() parameter \"%s\" could not be found!\n", name);
+					return false;
+				}
+
+				Com_sprintf(tempBuffer, sizeof tempBuffer, "%f %f %f", vval[0], vval[1], vval[2]);
+				*value = static_cast<char*>(tempBuffer);
 			}
 
-			Com_sprintf(tempBuffer, sizeof tempBuffer, "%f %f %f", vval[0], vval[1], vval[2]);
-			*value = static_cast<char*>(tempBuffer);
-		}
-
-		return true;
+			return true;
 
 		default:
 			m_owner->GetInterface()->I_DPrintf(WL_ERROR, "Get() call tried to return an unknown type!\n");
@@ -649,7 +652,7 @@ int CTaskManager::Get(int entID, CBlock* block, int& memberNum, char** value)
 	}
 	if (bm->GetID() == TK_VECTOR)
 	{
-		vector_t	vval;
+		vector_t vval;
 
 		memberNum++;
 
@@ -684,7 +687,7 @@ Go
 -------------------------
 */
 
-int	CTaskManager::Go(void)
+int CTaskManager::Go(void)
 {
 	//Check for run away scripts
 	if (m_count++ > RUNAWAY_LIMIT)
@@ -719,7 +722,7 @@ int	CTaskManager::Go(void)
 
 			Wait(task, completed);
 
-			//Push it to consider it again on the next frame if not complete
+		//Push it to consider it again on the next frame if not complete
 			if (completed == false)
 			{
 				PushTask(task, PUSH_BACK);
@@ -734,7 +737,7 @@ int	CTaskManager::Go(void)
 
 			WaitSignal(task, completed);
 
-			//Push it to consider it again on the next frame if not complete
+		//Push it to consider it again on the next frame if not complete
 			if (completed == false)
 			{
 				PushTask(task, PUSH_BACK);
@@ -745,55 +748,55 @@ int	CTaskManager::Go(void)
 
 			break;
 
-		case ID_PRINT:	//print( STRING )
+		case ID_PRINT: //print( STRING )
 			Print(task);
 			break;
 
-		case ID_SOUND:	//sound( name )
+		case ID_SOUND: //sound( name )
 			Sound(task);
 			break;
 
-		case ID_MOVE:	//move ( ORIGIN, ANGLES, DURATION )
+		case ID_MOVE: //move ( ORIGIN, ANGLES, DURATION )
 			Move(task);
 			break;
 
-		case ID_ROTATE:	//rotate( ANGLES, DURATION )
+		case ID_ROTATE: //rotate( ANGLES, DURATION )
 			Rotate(task);
 			break;
 
-		case ID_KILL:	//kill( NAME )
+		case ID_KILL: //kill( NAME )
 			Kill(task);
 			break;
 
-		case ID_REMOVE:	//remove( NAME )
+		case ID_REMOVE: //remove( NAME )
 			Remove(task);
 			break;
 
-		case ID_CAMERA:	//camera( ? )
+		case ID_CAMERA: //camera( ? )
 			Camera(task);
 			break;
 
-		case ID_SET:	//set( NAME, ? )
+		case ID_SET: //set( NAME, ? )
 			Set(task);
 			break;
 
-		case ID_USE:	//use( NAME )
+		case ID_USE: //use( NAME )
 			Use(task);
 			break;
 
-		case ID_DECLARE://declare( TYPE, NAME )
+		case ID_DECLARE: //declare( TYPE, NAME )
 			DeclareVariable(task);
 			break;
 
-		case ID_FREE:	//free( NAME )
+		case ID_FREE: //free( NAME )
 			FreeVariable(task);
 			break;
 
-		case ID_SIGNAL:	//signal( NAME )
+		case ID_SIGNAL: //signal( NAME )
 			Signal(task);
 			break;
 
-		case ID_PLAY:	//play ( NAME )
+		case ID_PLAY: //play ( NAME )
 			Play(task);
 			break;
 
@@ -822,7 +825,7 @@ SetCommand
 -------------------------
 */
 
-int	CTaskManager::SetCommand(CBlock* command, int type)
+int CTaskManager::SetCommand(CBlock* command, const int type)
 {
 	CTask* task = CTask::Create(m_GUID++, command);
 
@@ -851,7 +854,7 @@ MarkTask
 -------------------------
 */
 
-int CTaskManager::MarkTask(int id, int operation)
+int CTaskManager::MarkTask(const int id, const int operation)
 {
 	CTaskGroup* group = GetTaskGroup(id);
 
@@ -893,10 +896,10 @@ Completed
 -------------------------
 */
 
-int CTaskManager::Completed(int id)
+int CTaskManager::Completed(const int id)
 {
 	//Mark the task as completed
-	for (taskGroup_v::iterator tgi = m_taskGroups.begin(); tgi != m_taskGroups.end(); ++tgi)
+	for (auto tgi = m_taskGroups.begin(); tgi != m_taskGroups.end(); ++tgi)
 	{
 		//If this returns true, then the task was marked properly
 		if ((*tgi)->MarkTaskComplete(id))
@@ -912,7 +915,7 @@ CallbackCommand
 -------------------------
 */
 
-int	CTaskManager::CallbackCommand(CTask* task, int returnCode)
+int CTaskManager::CallbackCommand(CTask* task, const int returnCode)
 {
 	if (m_owner->Callback(this, task->GetBlock(), returnCode) == SEQ_OK)
 		return Go();
@@ -952,7 +955,7 @@ PushTask
 -------------------------
 */
 
-int	CTaskManager::PushTask(CTask* task, int flag)
+int CTaskManager::PushTask(CTask* task, const int flag)
 {
 	assert(flag == PUSH_FRONT || flag == PUSH_BACK);
 
@@ -979,7 +982,7 @@ PopTask
 -------------------------
 */
 
-CTask* CTaskManager::PopTask(int flag)
+CTask* CTaskManager::PopTask(const int flag)
 {
 	CTask* task;
 
@@ -1039,8 +1042,8 @@ int CTaskManager::Wait(CTask* task, bool& completed)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	float			dwtime;
-	int				memberNum = 0;
+	float dwtime;
+	int memberNum = 0;
 
 	completed = false;
 
@@ -1054,7 +1057,8 @@ int CTaskManager::Wait(CTask* task, bool& completed)
 		if (task->GetTimeStamp() == m_owner->GetInterface()->I_GetTime())
 		{
 			//Print out the debug info
-			m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d wait(\"%s\"); [%d]", m_ownerID, sVal, task->GetTimeStamp());
+			m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d wait(\"%s\"); [%d]", m_ownerID, sVal,
+			                                   task->GetTimeStamp());
 		}
 
 		const CTaskGroup* group = GetTaskGroup(sVal);
@@ -1068,13 +1072,15 @@ int CTaskManager::Wait(CTask* task, bool& completed)
 
 		completed = group->Complete();
 	}
-	else	//Otherwise it's a time completion wait
+	else //Otherwise it's a time completion wait
 	{
 		if (Check(ID_RANDOM, block, memberNum))
-		{//get it random only the first time
+		{
+			//get it random only the first time
 			dwtime = *static_cast<float*>(block->GetMemberData(memberNum++));
 			if (dwtime == Q3_INFINITE)
-			{//we have not evaluated this random yet
+			{
+				//we have not evaluated this random yet
 				const float min = *static_cast<float*>(block->GetMemberData(memberNum++));
 				const float max = *static_cast<float*>(block->GetMemberData(memberNum++));
 
@@ -1092,7 +1098,8 @@ int CTaskManager::Wait(CTask* task, bool& completed)
 		if (task->GetTimeStamp() == m_owner->GetInterface()->I_GetTime())
 		{
 			//Print out the debug info
-			m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d wait( %d ); [%d]", m_ownerID, static_cast<int>(dwtime), task->GetTimeStamp());
+			m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d wait( %d ); [%d]", m_ownerID, static_cast<int>(dwtime),
+			                                   task->GetTimeStamp());
 		}
 
 		if (task->GetTimeStamp() + dwtime < m_owner->GetInterface()->I_GetTime())
@@ -1100,7 +1107,8 @@ int CTaskManager::Wait(CTask* task, bool& completed)
 			completed = true;
 			memberNum = 0;
 			if (Check(ID_RANDOM, block, memberNum))
-			{//set the data back to 0 so it will be re-randomized next time
+			{
+				//set the data back to 0 so it will be re-randomized next time
 				dwtime = Q3_INFINITE;
 				bm->SetData(&dwtime, sizeof dwtime);
 			}
@@ -1120,7 +1128,7 @@ int CTaskManager::WaitSignal(CTask* task, bool& completed)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	completed = false;
 
@@ -1129,7 +1137,8 @@ int CTaskManager::WaitSignal(CTask* task, bool& completed)
 	if (task->GetTimeStamp() == m_owner->GetInterface()->I_GetTime())
 	{
 		//Print out the debug info
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d waitsignal(\"%s\"); [%d]", m_ownerID, sVal, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d waitsignal(\"%s\"); [%d]", m_ownerID, sVal,
+		                                   task->GetTimeStamp());
 	}
 
 	if (m_owner->GetOwner()->CheckSignal(sVal))
@@ -1151,7 +1160,7 @@ int CTaskManager::Print(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
@@ -1173,13 +1182,14 @@ Sound
 int CTaskManager::Sound(CTask* task)
 {
 	CBlock* block = task->GetBlock();
-	char* sVal, * sVal2;
-	int		memberNum = 0;
+	char *sVal, *sVal2;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal2));
 
-	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, R"(%4d sound("%s", "%s"); [%d])", m_ownerID, sVal, sVal2, task->GetTimeStamp());
+	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, R"(%4d sound("%s", "%s"); [%d])", m_ownerID, sVal, sVal2,
+	                                   task->GetTimeStamp());
 
 	//Only instantly complete if the user has requested it
 	if (m_owner->GetInterface()->I_PlaySound(task->GetGUID(), m_ownerID, sVal2, sVal))
@@ -1196,11 +1206,11 @@ Rotate
 
 int CTaskManager::Rotate(CTask* task)
 {
-	vector_t	vector;
+	vector_t vector;
 	CBlock* block = task->GetBlock();
 	char* tagName;
 	float duration;
-	int			memberNum = 0;
+	int memberNum = 0;
 
 	//Check for a tag reference
 	if (Check(ID_TAG, block, memberNum))
@@ -1228,7 +1238,8 @@ int CTaskManager::Rotate(CTask* task)
 	//Find the duration
 	ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, duration));
 
-	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d rotate( <%f,%f,%f>, %d); [%d]", m_ownerID, vector[0], vector[1], vector[2], static_cast<int>(duration), task->GetTimeStamp());
+	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d rotate( <%f,%f,%f>, %d); [%d]", m_ownerID, vector[0], vector[1],
+	                                   vector[2], static_cast<int>(duration), task->GetTimeStamp());
 	m_owner->GetInterface()->I_Lerp2Angles(task->GetGUID(), m_ownerID, vector, duration);
 
 	return TASK_OK;
@@ -1244,7 +1255,7 @@ int CTaskManager::Remove(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
@@ -1266,10 +1277,10 @@ int CTaskManager::Camera(CTask* task)
 {
 	const interface_export_t* ie = m_owner->GetInterface();
 	CBlock* block = task->GetBlock();
-	vector_t	vector, vector2;
-	float		type, fVal, fVal2, fVal3;
+	vector_t vector, vector2;
+	float type, fVal, fVal2, fVal3;
 	char* sVal;
-	int			memberNum = 0;
+	int memberNum = 0;
 
 	//Get the camera function type
 	ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, type));
@@ -1283,7 +1294,9 @@ int CTaskManager::Camera(CTask* task)
 
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( PAN, <%f %f %f>, <%f %f %f>, %f); [%d]", m_ownerID, vector[0], vector[1], vector[2], vector2[0], vector2[1], vector2[2], fVal, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( PAN, <%f %f %f>, <%f %f %f>, %f); [%d]", m_ownerID,
+		                                   vector[0], vector[1], vector[2], vector2[0], vector2[1], vector2[2], fVal,
+		                                   task->GetTimeStamp());
 		ie->I_CameraPan(vector, vector2, fVal);
 		break;
 
@@ -1292,7 +1305,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal2));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( ZOOM, %f, %f); [%d]", m_ownerID, fVal, fVal2, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( ZOOM, %f, %f); [%d]", m_ownerID, fVal, fVal2,
+		                                   task->GetTimeStamp());
 		ie->I_CameraZoom(fVal, fVal2);
 		break;
 
@@ -1301,7 +1315,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetVector(m_ownerID, block, memberNum, vector));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( MOVE, <%f %f %f>, %f); [%d]", m_ownerID, vector[0], vector[1], vector[2], fVal, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( MOVE, <%f %f %f>, %f); [%d]", m_ownerID, vector[0],
+		                                   vector[1], vector[2], fVal, task->GetTimeStamp());
 		ie->I_CameraMove(vector, fVal);
 		break;
 
@@ -1310,7 +1325,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal2));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( ROLL, %f, %f); [%d]", m_ownerID, fVal, fVal2, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( ROLL, %f, %f); [%d]", m_ownerID, fVal, fVal2,
+		                                   task->GetTimeStamp());
 		ie->I_CameraRoll(fVal, fVal2);
 
 		break;
@@ -1321,7 +1337,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal2));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( FOLLOW, \"%s\", %f, %f); [%d]", m_ownerID, sVal, fVal, fVal2, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( FOLLOW, \"%s\", %f, %f); [%d]", m_ownerID, sVal, fVal,
+		                                   fVal2, task->GetTimeStamp());
 		ie->I_CameraFollow(static_cast<const char*>(sVal), fVal, fVal2);
 
 		break;
@@ -1332,7 +1349,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal2));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( TRACK, \"%s\", %f, %f); [%d]", m_ownerID, sVal, fVal, fVal2, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( TRACK, \"%s\", %f, %f); [%d]", m_ownerID, sVal, fVal,
+		                                   fVal2, task->GetTimeStamp());
 		ie->I_CameraTrack(static_cast<const char*>(sVal), fVal, fVal2);
 		break;
 
@@ -1341,7 +1359,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal2));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( DISTANCE, %f, %f); [%d]", m_ownerID, fVal, fVal2, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( DISTANCE, %f, %f); [%d]", m_ownerID, fVal, fVal2,
+		                                   task->GetTimeStamp());
 		ie->I_CameraDistance(fVal, fVal2);
 		break;
 
@@ -1355,14 +1374,17 @@ int CTaskManager::Camera(CTask* task)
 
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal3));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( FADE, <%f %f %f>, %f, <%f %f %f>, %f, %f); [%d]", m_ownerID, vector[0], vector[1], vector[2], fVal, vector2[0], vector2[1], vector2[2], fVal2, fVal3, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( FADE, <%f %f %f>, %f, <%f %f %f>, %f, %f); [%d]",
+		                                   m_ownerID, vector[0], vector[1], vector[2], fVal, vector2[0], vector2[1],
+		                                   vector2[2], fVal2, fVal3, task->GetTimeStamp());
 		ie->I_CameraFade(vector[0], vector[1], vector[2], fVal, vector2[0], vector2[1], vector2[2], fVal2, fVal3);
 		break;
 
 	case TYPE_PATH:
 		ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( PATH, \"%s\"); [%d]", m_ownerID, sVal, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( PATH, \"%s\"); [%d]", m_ownerID, sVal,
+		                                   task->GetTimeStamp());
 		ie->I_CameraPath(sVal);
 		break;
 
@@ -1380,7 +1402,8 @@ int CTaskManager::Camera(CTask* task)
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal2));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( SHAKE, %f, %f ); [%d]", m_ownerID, fVal, fVal2, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d camera( SHAKE, %f, %f ); [%d]", m_ownerID, fVal, fVal2,
+		                                   task->GetTimeStamp());
 		ie->I_CameraShake(fVal, static_cast<int>(fVal2));
 		break;
 	}
@@ -1398,10 +1421,10 @@ Move
 
 int CTaskManager::Move(CTask* task)
 {
-	vector_t	vector, vector2;
+	vector_t vector, vector2;
 	CBlock* block = task->GetBlock();
-	float		duration;
-	int			memberNum = 0;
+	float duration;
+	int memberNum = 0;
 
 	//Get the goal position
 	ICARUS_VALIDATE(GetVector(m_ownerID, block, memberNum, vector));
@@ -1411,7 +1434,8 @@ int CTaskManager::Move(CTask* task)
 	{
 		ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, duration));
 
-		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d move( <%f %f %f>, %f ); [%d]", m_ownerID, vector[0], vector[1], vector[2], duration, task->GetTimeStamp());
+		m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d move( <%f %f %f>, %f ); [%d]", m_ownerID, vector[0],
+		                                   vector[1], vector[2], duration, task->GetTimeStamp());
 		m_owner->GetInterface()->I_Lerp2Pos(task->GetGUID(), m_ownerID, vector, nullptr, duration);
 
 		return TASK_OK;
@@ -1420,7 +1444,9 @@ int CTaskManager::Move(CTask* task)
 	//Get the duration and make the call
 	ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, duration));
 
-	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d move( <%f %f %f>, <%f %f %f>, %f ); [%d]", m_ownerID, vector[0], vector[1], vector[2], vector2[0], vector2[1], vector2[2], duration, task->GetTimeStamp());
+	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d move( <%f %f %f>, <%f %f %f>, %f ); [%d]", m_ownerID, vector[0],
+	                                   vector[1], vector[2], vector2[0], vector2[1], vector2[2], duration,
+	                                   task->GetTimeStamp());
 	m_owner->GetInterface()->I_Lerp2Pos(task->GetGUID(), m_ownerID, vector, vector2, duration);
 
 	return TASK_OK;
@@ -1436,7 +1462,7 @@ int CTaskManager::Kill(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
@@ -1457,13 +1483,14 @@ Set
 int CTaskManager::Set(CTask* task)
 {
 	CBlock* block = task->GetBlock();
-	char* sVal, * sVal2;
-	int				memberNum = 0;
+	char *sVal, *sVal2;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal2));
 
-	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, R"(%4d set( "%s", "%s" ); [%d])", m_ownerID, sVal, sVal2, task->GetTimeStamp());
+	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, R"(%4d set( "%s", "%s" ); [%d])", m_ownerID, sVal, sVal2,
+	                                   task->GetTimeStamp());
 	m_owner->GetInterface()->I_Set(task->GetGUID(), m_ownerID, sVal, sVal2);
 
 	return TASK_OK;
@@ -1479,7 +1506,7 @@ int CTaskManager::Use(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
@@ -1501,13 +1528,14 @@ int CTaskManager::DeclareVariable(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
-	float	fVal;
+	int memberNum = 0;
+	float fVal;
 
 	ICARUS_VALIDATE(GetFloat(m_ownerID, block, memberNum, fVal));
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
-	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d declare( %d, \"%s\" ); [%d]", m_ownerID, static_cast<int>(fVal), sVal, task->GetTimeStamp());
+	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, "%4d declare( %d, \"%s\" ); [%d]", m_ownerID, static_cast<int>(fVal),
+	                                   sVal, task->GetTimeStamp());
 	m_owner->GetInterface()->I_DeclareVariable(static_cast<int>(fVal), sVal);
 
 	Completed(task->GetGUID());
@@ -1525,7 +1553,7 @@ int CTaskManager::FreeVariable(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
@@ -1547,7 +1575,7 @@ int CTaskManager::Signal(CTask* task)
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
-	int		memberNum = 0;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 
@@ -1568,14 +1596,16 @@ Play
 int CTaskManager::Play(CTask* task)
 {
 	CBlock* block = task->GetBlock();
-	char* sVal, * sVal2;
-	int		memberNum = 0;
+	char *sVal, *sVal2;
+	int memberNum = 0;
 
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal));
 	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal2));
 
-	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, R"(%4d play( "%s", "%s" ); [%d])", m_ownerID, sVal, sVal2, task->GetTimeStamp());
-	m_owner->GetInterface()->I_Play(task->GetGUID(), m_ownerID, static_cast<const char*>(sVal), static_cast<const char*>(sVal2));
+	m_owner->GetInterface()->I_DPrintf(WL_DEBUG, R"(%4d play( "%s", "%s" ); [%d])", m_ownerID, sVal, sVal2,
+	                                   task->GetTimeStamp());
+	m_owner->GetInterface()->I_Play(task->GetGUID(), m_ownerID, static_cast<const char*>(sVal),
+	                                static_cast<const char*>(sVal2));
 
 	return TASK_OK;
 }
@@ -1590,8 +1620,8 @@ SaveCommand
 
 int CTaskManager::SaveCommand(CBlock* block) const
 {
-	unsigned char	flags;
-	int				numMembers, bID, size;
+	unsigned char flags;
+	int numMembers, bID, size;
 
 	//Save out the block ID
 	bID = block->GetBlockID();

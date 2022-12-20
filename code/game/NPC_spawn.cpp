@@ -74,7 +74,7 @@ painFunc_t NPC_PainFunc(const gentity_t* ent)
 	{
 		switch (ent->client->NPC_class)
 		{
-			// troopers get special pain
+		// troopers get special pain
 		case CLASS_SABOTEUR:
 		case CLASS_STORMTROOPER:
 		case CLASS_CLONETROOPER:
@@ -112,7 +112,7 @@ painFunc_t NPC_PainFunc(const gentity_t* ent)
 			func = painF_NPC_SandCreature_Pain;
 			break;
 
-			// all other droids, did I miss any?
+		// all other droids, did I miss any?
 		case CLASS_GONK:
 		case CLASS_R2D2:
 		case CLASS_R5D2:
@@ -145,7 +145,7 @@ painFunc_t NPC_PainFunc(const gentity_t* ent)
 		case CLASS_DROIDEKA:
 			func = painF_NPC_DROIDEKA_Pain;
 			break;
-			// everyone else gets the normal pain func
+		// everyone else gets the normal pain func
 		default:
 			func = painF_NPC_Pain;
 			break;
@@ -533,103 +533,103 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	switch (ent->client->playerTeam)
 	{
 	case TEAM_PLAYER:
-	{
-		if (ent->client->NPC_class == CLASS_SEEKER)
 		{
-			ent->NPC->defaultBehavior = BS_DEFAULT;
-			ent->client->ps.gravity = 0;
-			ent->svFlags |= SVF_CUSTOM_GRAVITY;
-			ent->client->moveType = MT_FLYSWIM;
-			ent->count = 30; // SEEKER shot ammo count
-			return;
-		}
-		if (ent->client->NPC_class == CLASS_JEDI
-			|| ent->client->NPC_class == CLASS_KYLE
-			|| ent->client->NPC_class == CLASS_LUKE
-			|| ent->client->NPC_class == CLASS_YODA)
-		{
-			//good jedi
-			ent->client->enemyTeam = TEAM_ENEMY;
-			if (ent->spawnflags & JSF_AMBUSH)
+			if (ent->client->NPC_class == CLASS_SEEKER)
 			{
-				//ambusher
-				ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
-				ent->client->noclip = true; //hang
+				ent->NPC->defaultBehavior = BS_DEFAULT;
+				ent->client->ps.gravity = 0;
+				ent->svFlags |= SVF_CUSTOM_GRAVITY;
+				ent->client->moveType = MT_FLYSWIM;
+				ent->count = 30; // SEEKER shot ammo count
+				return;
 			}
-			if (ent->client->ps.weapon != WP_SABER)
+			if (ent->client->NPC_class == CLASS_JEDI
+				|| ent->client->NPC_class == CLASS_KYLE
+				|| ent->client->NPC_class == CLASS_LUKE
+				|| ent->client->NPC_class == CLASS_YODA)
 			{
-				g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
-					0);
-			}
-		}
-		else
-		{
-			if (ent->client->ps.weapon != WP_NONE
-				&& ent->client->ps.weapon != WP_SABER //sabers done above
-				&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
-				//they do this themselves
-			{
-				g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
-					0);
-				wp_saber_add_holstered_g2_saber_models(ent);
-			}
-			switch (ent->client->ps.weapon)
-			{
-			case WP_BRYAR_PISTOL: //FIXME: new weapon: imp blaster pistol
-			case WP_SBD_PISTOL:
-			case WP_BLASTER_PISTOL:
-			case WP_DISRUPTOR:
-			case WP_BOWCASTER:
-			case WP_REPEATER:
-			case WP_DEMP2:
-			case WP_FLECHETTE:
-			case WP_ROCKET_LAUNCHER:
-			case WP_CONCUSSION:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-			default:
-				break;
-			case WP_THERMAL:
-			case WP_BLASTER:
-				ST_ClearTimers(ent);
-				if (ent->NPC->rank >= RANK_LT || ent->client->ps.weapon == WP_THERMAL)
+				//good jedi
+				ent->client->enemyTeam = TEAM_ENEMY;
+				if (ent->spawnflags & JSF_AMBUSH)
 				{
-					//officers, grenade-throwers use alt-fire
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					//ambusher
+					ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
+					ent->client->noclip = true; //hang
 				}
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				break;
+				if (ent->client->ps.weapon != WP_SABER)
+				{
+					g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
+					                                  0);
+				}
 			}
-			if (ent->client->NPC_class == CLASS_DROIDEKA)
+			else
 			{
-				//starts with armor
-				NPC_DROIDEKA_Init(ent);
-			}
-			if (!Q_stricmp("galak_mech", ent->NPC_type))
-			{
-				//starts with armor
-				NPC_GalakMech_Init(ent);
+				if (ent->client->ps.weapon != WP_NONE
+					&& ent->client->ps.weapon != WP_SABER //sabers done above
+					&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
+				//they do this themselves
+				{
+					g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
+					                                  0);
+					wp_saber_add_holstered_g2_saber_models(ent);
+				}
+				switch (ent->client->ps.weapon)
+				{
+				case WP_BRYAR_PISTOL: //FIXME: new weapon: imp blaster pistol
+				case WP_SBD_PISTOL:
+				case WP_BLASTER_PISTOL:
+				case WP_DISRUPTOR:
+				case WP_BOWCASTER:
+				case WP_REPEATER:
+				case WP_DEMP2:
+				case WP_FLECHETTE:
+				case WP_ROCKET_LAUNCHER:
+				case WP_CONCUSSION:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+				default:
+					break;
+				case WP_THERMAL:
+				case WP_BLASTER:
+					ST_ClearTimers(ent);
+					if (ent->NPC->rank >= RANK_LT || ent->client->ps.weapon == WP_THERMAL)
+					{
+						//officers, grenade-throwers use alt-fire
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					break;
+				}
+				if (ent->client->NPC_class == CLASS_DROIDEKA)
+				{
+					//starts with armor
+					NPC_DROIDEKA_Init(ent);
+				}
+				if (!Q_stricmp("galak_mech", ent->NPC_type))
+				{
+					//starts with armor
+					NPC_GalakMech_Init(ent);
+				}
 			}
 		}
-	}
-	if (ent->client->NPC_class == CLASS_PLAYER || ent->client->NPC_class == CLASS_VEHICLE || ent->spawnflags &
-		SFB_CINEMATIC)
-	{
-		ent->NPC->defaultBehavior = BS_CINEMATIC;
-	}
-	else
-	{
-		if (g_noAutoFollow->integer)
+		if (ent->client->NPC_class == CLASS_PLAYER || ent->client->NPC_class == CLASS_VEHICLE || ent->spawnflags &
+			SFB_CINEMATIC)
 		{
-			ent->NPC->defaultBehavior = BS_STAND_GUARD;
-			ent->client->leader = nullptr;
+			ent->NPC->defaultBehavior = BS_CINEMATIC;
 		}
 		else
 		{
-			ent->NPC->defaultBehavior = BS_FOLLOW_LEADER;
-			ent->client->leader = &g_entities[0]; //player
+			if (g_noAutoFollow->integer)
+			{
+				ent->NPC->defaultBehavior = BS_STAND_GUARD;
+				ent->client->leader = nullptr;
+			}
+			else
+			{
+				ent->NPC->defaultBehavior = BS_FOLLOW_LEADER;
+				ent->client->leader = &g_entities[0]; //player
+			}
 		}
-	}
-	break;
+		break;
 
 	case TEAM_NEUTRAL:
 
@@ -656,188 +656,188 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 		break;
 
 	case TEAM_ENEMY:
-	{
-		ent->NPC->defaultBehavior = BS_DEFAULT;
-
-		if (ent->client->NPC_class == CLASS_SHADOWTROOPER && Q_stricmpn("shadowtrooper", ent->NPC_type, 13) == 0)
-		{
-			if (!PM_SaberInAttack(ent->client->ps.saberMove))
-			{
-				Jedi_Cloak(ent);
-			}
-		}
-		if (ent->client->NPC_class == CLASS_TAVION ||
-			ent->client->NPC_class == CLASS_ALORA ||
-			ent->client->NPC_class == CLASS_SBD ||
-			ent->client->NPC_class == CLASS_REBORN && ent->client->ps.weapon == WP_SABER ||
-			ent->client->NPC_class == CLASS_DESANN ||
-			ent->client->NPC_class == CLASS_SITHLORD ||
-			ent->client->NPC_class == CLASS_VADER ||
-			ent->client->NPC_class == CLASS_SHADOWTROOPER)
-		{
-			ent->client->enemyTeam = TEAM_PLAYER;
-
-			if (ent->spawnflags & JSF_AMBUSH)
-			{
-				//ambusher
-				ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
-				ent->client->noclip = true; //hang
-			}
-			if (ent->client->ps.weapon != WP_SABER)
-			{
-				g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
-					0);
-			}
-		}
-		else if (ent->client->NPC_class == CLASS_PROBE ||
-			ent->client->NPC_class == CLASS_REMOTE ||
-			ent->client->NPC_class == CLASS_GLIDER ||
-			ent->client->NPC_class == CLASS_INTERROGATOR ||
-			ent->client->NPC_class == CLASS_SENTRY)
 		{
 			ent->NPC->defaultBehavior = BS_DEFAULT;
-			ent->client->ps.gravity = 0;
-			ent->svFlags |= SVF_CUSTOM_GRAVITY;
-			ent->client->moveType = MT_FLYSWIM;
-		}
-		else
-		{
-			if (ent->client->ps.weapon != WP_NONE
-				&& ent->client->ps.weapon != WP_SABER //sabers done above
-				&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
-				//they do this themselves
+
+			if (ent->client->NPC_class == CLASS_SHADOWTROOPER && Q_stricmpn("shadowtrooper", ent->NPC_type, 13) == 0)
 			{
-				g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
-					0);
-				wp_saber_add_holstered_g2_saber_models(ent);
+				if (!PM_SaberInAttack(ent->client->ps.saberMove))
+				{
+					Jedi_Cloak(ent);
+				}
 			}
-			switch (ent->client->ps.weapon)
+			if (ent->client->NPC_class == CLASS_TAVION ||
+				ent->client->NPC_class == CLASS_ALORA ||
+				ent->client->NPC_class == CLASS_SBD ||
+				ent->client->NPC_class == CLASS_REBORN && ent->client->ps.weapon == WP_SABER ||
+				ent->client->NPC_class == CLASS_DESANN ||
+				ent->client->NPC_class == CLASS_SITHLORD ||
+				ent->client->NPC_class == CLASS_VADER ||
+				ent->client->NPC_class == CLASS_SHADOWTROOPER)
 			{
-			case WP_BRYAR_PISTOL:
-				break;
-			case WP_SBD_PISTOL:
-			case WP_JAWA:
-				break;
-			case WP_BLASTER_PISTOL:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				if (ent->client->NPC_class == CLASS_REBORN
-					&& ent->NPC->rank >= RANK_LT_COMM
+				ent->client->enemyTeam = TEAM_PLAYER;
+
+				if (ent->spawnflags & JSF_AMBUSH)
+				{
+					//ambusher
+					ent->NPC->scriptFlags |= SCF_IGNORE_ALERTS;
+					ent->client->noclip = true; //hang
+				}
+				if (ent->client->ps.weapon != WP_SABER)
+				{
+					g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
+					                                  0);
+				}
+			}
+			else if (ent->client->NPC_class == CLASS_PROBE ||
+				ent->client->NPC_class == CLASS_REMOTE ||
+				ent->client->NPC_class == CLASS_GLIDER ||
+				ent->client->NPC_class == CLASS_INTERROGATOR ||
+				ent->client->NPC_class == CLASS_SENTRY)
+			{
+				ent->NPC->defaultBehavior = BS_DEFAULT;
+				ent->client->ps.gravity = 0;
+				ent->svFlags |= SVF_CUSTOM_GRAVITY;
+				ent->client->moveType = MT_FLYSWIM;
+			}
+			else
+			{
+				if (ent->client->ps.weapon != WP_NONE
+					&& ent->client->ps.weapon != WP_SABER //sabers done above
 					&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
+				//they do this themselves
+				{
+					g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl, ent->handRBolt,
+					                                  0);
+					wp_saber_add_holstered_g2_saber_models(ent);
+				}
+				switch (ent->client->ps.weapon)
+				{
+				case WP_BRYAR_PISTOL:
+					break;
+				case WP_SBD_PISTOL:
+				case WP_JAWA:
+					break;
+				case WP_BLASTER_PISTOL:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (ent->client->NPC_class == CLASS_REBORN
+						&& ent->NPC->rank >= RANK_LT_COMM
+						&& (!(ent->NPC->aiFlags & NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))
 					//they do this themselves
-				{
-					//dual blaster pistols, so add the left-hand one, too
-					g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl,
-						ent->handLBolt, 1);
+					{
+						//dual blaster pistols, so add the left-hand one, too
+						g_create_g2_attached_weapon_model(ent, weaponData[ent->client->ps.weapon].weaponMdl,
+						                                  ent->handLBolt, 1);
+					}
+					if (!Q_stricmp("Imperial", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("StormPilot", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_DISRUPTOR:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (!Q_stricmp("saboteursniper", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_BOWCASTER:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (!Q_stricmp("human_merc_bow", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_REPEATER:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (!Q_stricmp("human_merc_rep", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("StormTrooper_red", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_DEMP2:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					break;
+				case WP_FLECHETTE:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (!Q_stricmp("stofficeralt", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("human_merc_flc", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("StormTrooper_blue", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_ROCKET_LAUNCHER:
+					break;
+				case WP_CONCUSSION:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (!Q_stricmp("human_merc_cnc", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
+				case WP_THERMAL:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					break;
+				case WP_MELEE:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					break;
+				case WP_NOGHRI_STICK:
+					break;
+				default:
+				case WP_BLASTER:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					ST_ClearTimers(ent);
+					if (ent->NPC->rank >= RANK_COMMANDER)
+					{
+						//commanders use alt-fire
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (ent->client->NPC_class == CLASS_IMPERIAL)
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (ent->client->NPC_class == CLASS_RODIAN)
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("human_merc", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("rodian2", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					break;
 				}
-				if (!Q_stricmp("Imperial", ent->NPC_type))
+				if (ent->client->NPC_class == CLASS_DROIDEKA)
 				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					//starts with armor
+					NPC_DROIDEKA_Init(ent);
 				}
-				if (!Q_stricmp("StormPilot", ent->NPC_type))
+				if (!Q_stricmp("galak_mech", ent->NPC_type))
 				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					//starts with armor
+					NPC_GalakMech_Init(ent);
 				}
-				break;
-			case WP_DISRUPTOR:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				if (!Q_stricmp("saboteursniper", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			case WP_BOWCASTER:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				if (!Q_stricmp("human_merc_bow", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			case WP_REPEATER:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				if (!Q_stricmp("human_merc_rep", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (!Q_stricmp("StormTrooper_red", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			case WP_DEMP2:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				break;
-			case WP_FLECHETTE:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				if (!Q_stricmp("stofficeralt", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (!Q_stricmp("human_merc_flc", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (!Q_stricmp("StormTrooper_blue", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			case WP_ROCKET_LAUNCHER:
-				break;
-			case WP_CONCUSSION:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				if (!Q_stricmp("human_merc_cnc", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			case WP_THERMAL:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				break;
-			case WP_MELEE:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				break;
-			case WP_NOGHRI_STICK:
-				break;
-			default:
-			case WP_BLASTER:
-				NPCInfo->scriptFlags |= SCF_PILOT;
-				ST_ClearTimers(ent);
-				if (ent->NPC->rank >= RANK_COMMANDER)
-				{
-					//commanders use alt-fire
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (ent->client->NPC_class == CLASS_IMPERIAL)
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (ent->client->NPC_class == CLASS_RODIAN)
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (!Q_stricmp("human_merc", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				if (!Q_stricmp("rodian2", ent->NPC_type))
-				{
-					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
-				}
-				break;
-			}
-			if (ent->client->NPC_class == CLASS_DROIDEKA)
-			{
-				//starts with armor
-				NPC_DROIDEKA_Init(ent);
-			}
-			if (!Q_stricmp("galak_mech", ent->NPC_type))
-			{
-				//starts with armor
-				NPC_GalakMech_Init(ent);
 			}
 		}
-	}
-	break;
+		break;
 
 	default:
 		ent->NPC->defaultBehavior = BS_DEFAULT;
@@ -853,7 +853,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	}
 
 	if (ent->client->NPC_class == CLASS_ATST || ent->client->NPC_class == CLASS_MARK1)
-		// chris/steve/kevin requested that the mark1 be shielded also
+	// chris/steve/kevin requested that the mark1 be shielded also
 	{
 		ent->flags |= FL_SHIELDED | FL_NO_KNOCKBACK;
 	}
@@ -892,7 +892,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	{
 		ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->weaponModel[0]], "*flash");
 		G_PlayEffect(G_EffectIndex("scepter/sword.efx"), ent->weaponModel[0], ent->genericBolt1, ent->s.number,
-			ent->currentOrigin, qtrue, qtrue);
+		             ent->currentOrigin, qtrue, qtrue);
 		//how many times can she recharge?
 		ent->count = g_spskill->integer * 2;
 		//To make sure she can do it at least once
@@ -917,12 +917,12 @@ NPC_WeaponsForTeam
 -------------------------
 */
 
-int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type)
+int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_type)
 {
 	//*** not sure how to handle this, should I pass in class instead of team and go from there? - dmv
 	switch (team)
 	{
-		// no longer exists
+	// no longer exists
 
 	case TEAM_ENEMY:
 		if (Q_stricmp("tavion", NPC_type) == 0 ||
@@ -930,9 +930,9 @@ int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type)
 			Q_stricmp("desann", NPC_type) == 0 ||
 			Q_stricmpn("shadowtrooper", NPC_type, 13) == 0)
 			return 1 << WP_SABER;
-		//NOTENOTE: Falls through if not a knife user
+	//NOTENOTE: Falls through if not a knife user
 
-		//FIXME: default weapon in npc config?
+	//FIXME: default weapon in npc config?
 		if (Q_stricmpn("stofficer", NPC_type, 9) == 0)
 		{
 			return 1 << WP_TUSKEN_RIFLE;
@@ -1060,7 +1060,7 @@ int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type)
 		{
 			return 1 << WP_MELEE;
 		}
-		//Stormtroopers, etc.
+	//Stormtroopers, etc.
 		return 1 << WP_BLASTER;
 
 	case TEAM_PLAYER:
@@ -1090,7 +1090,7 @@ int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* NPC_type)
 			return WP_NONE;
 		}
 
-		//rebel
+	//rebel
 		return 1 << WP_BLASTER;
 
 	case TEAM_NEUTRAL:
@@ -1219,8 +1219,8 @@ void NPC_Begin(gentity_t* ent)
 			{
 				//remove yourself
 				Quake3Game()->DebugPrint(IGameInterface::WL_ERROR,
-					"NPC %s could not spawn, firing target3 (%s) and removing self\n",
-					ent->targetname, ent->target3);
+				                         "NPC %s could not spawn, firing target3 (%s) and removing self\n",
+				                         ent->targetname, ent->target3);
 				//Fire off our target3
 				G_UseTargets2(ent, ent, ent->target3);
 
@@ -1231,9 +1231,9 @@ void NPC_Begin(gentity_t* ent)
 			else
 			{
 				Quake3Game()->DebugPrint(IGameInterface::WL_ERROR,
-					"NPC %s at (%5.0f %5.0f %5.0f) couldn't spawn, waiting %4.2f secs to try again\n",
-					ent->targetname, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
-					ent->wait / 1000.0f);
+				                         "NPC %s at (%5.0f %5.0f %5.0f) couldn't spawn, waiting %4.2f secs to try again\n",
+				                         ent->targetname, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
+				                         ent->wait / 1000.0f);
 				ent->e_ThinkFunc = thinkF_NPC_Begin;
 				ent->nextthink = level.time + ent->wait; //try again in half a second
 			}
@@ -1308,7 +1308,7 @@ void NPC_Begin(gentity_t* ent)
 		case 2:
 			ent->NPC->stats.aim = Q_irand(3, 4);
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (ent->client->NPC_class == CLASS_STORMTROOPER
@@ -1343,7 +1343,7 @@ void NPC_Begin(gentity_t* ent)
 				ent->NPC->stats.aim -= Q_irand(0, 2);
 			}
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (ent->client->NPC_class == CLASS_REBORN
@@ -1357,7 +1357,7 @@ void NPC_Begin(gentity_t* ent)
 		case 2:
 			ent->NPC->stats.yawSpeed *= 1.5f;
 			break;
-		default:;
+		default: ;
 		}
 	}
 
@@ -1563,7 +1563,7 @@ void NPC_DefaultScriptFlags(const gentity_t* ent)
 
 constexpr auto MAX_SAFESPAWN_ENTS = 4;
 
-bool NPC_SafeSpawn(const gentity_t* ent, float safeRadius)
+bool NPC_SafeSpawn(const gentity_t* ent, const float safeRadius)
 {
 	gentity_t* radiusEnts[MAX_SAFESPAWN_ENTS];
 	vec3_t safeMins, safeMaxs;
@@ -1614,7 +1614,7 @@ NPC_Spawn_Go
 -------------------------
 */
 
-gentity_t* NPC_Spawn_Do(gentity_t* ent, qboolean fullSpawnNow)
+gentity_t* NPC_Spawn_Do(gentity_t* ent, const qboolean fullSpawnNow)
 {
 	vec3_t saveOrg;
 
@@ -1636,7 +1636,7 @@ gentity_t* NPC_Spawn_Do(gentity_t* ent, qboolean fullSpawnNow)
 		VectorCopy(ent->currentOrigin, bottom);
 		bottom[2] = MIN_WORLD_COORD;
 		gi.trace(&tr, ent->currentOrigin, ent->mins, ent->maxs, bottom, ent->s.number, MASK_NPCSOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (!tr.allsolid && !tr.startsolid && tr.fraction < 1.0)
 		{
 			G_SetOrigin(ent, tr.endpos);
@@ -2808,7 +2808,7 @@ void SP_NPC_Jedi(gentity_t* self)
 			case 2:
 				self->NPC_type = "jedimaster3";
 				break;
-			default:;
+			default: ;
 			}
 		}
 		else if (self->spawnflags & 1)
@@ -2827,7 +2827,7 @@ void SP_NPC_Jedi(gentity_t* self)
 			case 3:
 				self->NPC_type = "jeditrainer4";
 				break;
-			default:;
+			default: ;
 			}
 		}
 		else
@@ -2846,7 +2846,7 @@ void SP_NPC_Jedi(gentity_t* self)
 			case 3:
 				self->NPC_type = "Jedi3";
 				break;
-			default:;
+			default: ;
 			}
 		}
 	}
@@ -3103,7 +3103,7 @@ void SP_NPC_Rebel(gentity_t* self)
 		case 3:
 			self->NPC_type = "Rebel3";
 			break;
-		default:;
+		default: ;
 		}
 	}
 
@@ -3757,7 +3757,7 @@ void SP_NPC_Weequay(gentity_t* self)
 			case 4:
 				self->NPC_type = "RebornWeequay";
 				break;
-			default:;
+			default: ;
 			}
 		}
 		else
@@ -3776,7 +3776,7 @@ void SP_NPC_Weequay(gentity_t* self)
 			case 3:
 				self->NPC_type = "Weequay4";
 				break;
-			default:;
+			default: ;
 			}
 		}
 	}
@@ -4506,7 +4506,7 @@ void SP_NPC_Cultist(gentity_t* self)
 			case 2: //all
 				self->spawnflags |= 4;
 				break;
-			default:;
+			default: ;
 			}
 			if (Q_irand(0, 1))
 			{
@@ -5288,7 +5288,7 @@ static void NPC_Spawn_f(void)
 	VectorNormalize(forward);
 	VectorMA(g_entities[0].currentOrigin, 128, forward, end);
 	gi.trace(&trace, g_entities[0].currentOrigin, nullptr, nullptr, end, 0, MASK_SOLID, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 	VectorCopy(trace.endpos, end);
 	end[2] -= 24;
 	gi.trace(&trace, trace.endpos, nullptr, nullptr, end, 0, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
@@ -5468,7 +5468,7 @@ void NPC_Kill_f(void)
 				{
 					//A spawner, remove it
 					gi.Printf(S_COLOR_GREEN"Removing NPC spawner %s with NPC named %s\n", player->NPC_type,
-						player->NPC_targetname);
+					          player->NPC_targetname);
 					G_FreeEntity(player);
 				}
 			}

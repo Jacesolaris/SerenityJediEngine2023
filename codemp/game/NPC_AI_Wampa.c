@@ -102,7 +102,7 @@ qboolean Wampa_CheckRoar(gentity_t* self)
 	{
 		self->wait = level.time + Q_irand(5000, 20000);
 		NPC_SetAnim(self, SETANIM_BOTH, Q_irand(BOTH_GESTURE1, BOTH_GESTURE2),
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		TIMER_Set(self, "rageTime", self->client->ps.legsTimer);
 		G_Sound(self, CHAN_VOICE, G_SoundIndex(va("sound/chars/howler/howl.mp3")));
 		return qtrue;
@@ -147,7 +147,7 @@ void Wampa_Patrol(void)
 Wampa_Move
 -------------------------
 */
-void Wampa_Move(qboolean visible)
+void Wampa_Move(const qboolean visible)
 {
 	if (NPCS.NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -201,11 +201,11 @@ void Wampa_Move(qboolean visible)
 
 //---------------------------------------------------------
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
-extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, const int limb_type);
+                        qboolean break_saber_lock);
+extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, int limb_type);
 extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
 
-void Wampa_Slash(int bolt_index, qboolean backhand)
+void Wampa_Slash(const int bolt_index, const qboolean backhand)
 {
 	int radiusEntNums[128];
 	const float radius = 88;
@@ -239,7 +239,7 @@ void Wampa_Slash(int bolt_index, qboolean backhand)
 		{
 			//smack
 			G_Damage(radiusEnt, NPCS.NPC, NPCS.NPC, vec3_origin, radiusEnt->r.currentOrigin, damage,
-				backhand ? DAMAGE_NO_ARMOR : DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+			         backhand ? DAMAGE_NO_ARMOR : DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 			if (backhand)
 			{
 				//actually push the enemy
@@ -279,7 +279,7 @@ void Wampa_Slash(int bolt_index, qboolean backhand)
 					else if (hit_loc == G2_MODELPART_WAIST)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATHBACKWARD2,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hit_loc);
 				}
@@ -301,7 +301,7 @@ void Wampa_Slash(int bolt_index, qboolean backhand)
 }
 
 //------------------------------
-void Wampa_Attack(float distance, qboolean doCharge)
+void Wampa_Attack(const float distance, const qboolean doCharge)
 {
 	if (!TIMER_Exists(NPCS.NPC, "attacking"))
 	{
@@ -345,7 +345,7 @@ void Wampa_Attack(float distance, qboolean doCharge)
 		{
 		case BOTH_ATTACK1:
 			Wampa_Slash(NPCS.NPC->client->renderInfo.handRBolt, qfalse);
-			//do second hit
+		//do second hit
 			TIMER_Set(NPCS.NPC, "attack_dmg2", 100);
 			break;
 		case BOTH_ATTACK2:
@@ -426,7 +426,7 @@ void Wampa_Combat(void)
 		if (NPCS.NPC->enemy->health > 0 //enemy still alive
 			&& fabs(distance - 350) <= 80 //enemy anywhere from 270 to 430 away
 			&& InFOV3(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, yawOnlyAngles, 20, 20))
-			//enemy generally in front
+		//enemy generally in front
 		{
 			//10% chance of doing charge anim
 			if (!Q_irand(0, 9))
@@ -439,7 +439,7 @@ void Wampa_Combat(void)
 	}
 
 	if ((advance || NPCS.NPCInfo->localState == LSTATE_WAITING) && TIMER_Done(NPCS.NPC, "attacking"))
-		// waiting monsters can't attack
+	// waiting monsters can't attack
 	{
 		if (TIMER_Done2(NPCS.NPC, "takingPain", qtrue))
 		{
@@ -473,7 +473,7 @@ void Wampa_Combat(void)
 NPC_Wampa_Pain
 -------------------------
 */
-void NPC_Wampa_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Wampa_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	qboolean hitByWampa = qfalse;
 	if (attacker && attacker->client && attacker->client->NPC_class == CLASS_WAMPA)

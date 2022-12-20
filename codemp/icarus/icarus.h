@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // ICARUS Public Header File
 extern void* ICARUS_Malloc(int iSize);
-extern void  ICARUS_Free(void* pMem);
+extern void ICARUS_Free(void* pMem);
 
 #include "game/g_public.h"
 #define STL_ITERATE( a, b )		for ( a = b.begin(); a != b.end(); ++a )

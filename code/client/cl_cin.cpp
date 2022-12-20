@@ -235,8 +235,9 @@ static long RllDecodeMonoToMono(unsigned char *from,short *to,unsigned int size,
 //
 // Returns:		Number of samples placed in output buffer
 //-----------------------------------------------------------------------------
-static long RllDecodeMonoToStereo(const unsigned char* from, short* to, unsigned int size, char signedOutput,
-	unsigned short flag)
+static long RllDecodeMonoToStereo(const unsigned char* from, short* to, const unsigned int size,
+                                  const char signedOutput,
+                                  const unsigned short flag)
 {
 	int prev;
 
@@ -267,8 +268,8 @@ static long RllDecodeMonoToStereo(const unsigned char* from, short* to, unsigned
 //
 // Returns:		Number of samples placed in output buffer
 //-----------------------------------------------------------------------------
-static long RllDecodeStereoToStereo(unsigned char* from, short* to, unsigned int size, char signedOutput,
-	unsigned short flag)
+static long RllDecodeStereoToStereo(unsigned char* from, short* to, const unsigned int size, const char signedOutput,
+                                    const unsigned short flag)
 {
 	unsigned char* zz = from;
 	int prevL, prevR;
@@ -339,7 +340,7 @@ static long RllDecodeStereoToMono(unsigned char *from,short *to,unsigned int siz
 *
 ******************************************************************************/
 
-static void move8_32(byte* src, byte* dst, int spl)
+static void move8_32(byte* src, byte* dst, const int spl)
 {
 	for (int i = 0; i < 8; ++i)
 	{
@@ -357,7 +358,7 @@ static void move8_32(byte* src, byte* dst, int spl)
 *
 ******************************************************************************/
 
-static void move4_32(byte* src, byte* dst, int spl)
+static void move4_32(byte* src, byte* dst, const int spl)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -375,7 +376,7 @@ static void move4_32(byte* src, byte* dst, int spl)
 *
 ******************************************************************************/
 
-static void blit8_32(byte* src, byte* dst, int spl)
+static void blit8_32(byte* src, byte* dst, const int spl)
 {
 	for (int i = 0; i < 8; ++i)
 	{
@@ -392,7 +393,7 @@ static void blit8_32(byte* src, byte* dst, int spl)
 * Description:
 *
 ******************************************************************************/
-static void blit4_32(byte* src, byte* dst, int spl)
+static void blit4_32(byte* src, byte* dst, const int spl)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -410,7 +411,7 @@ static void blit4_32(byte* src, byte* dst, int spl)
 *
 ******************************************************************************/
 
-static void blit2_32(const byte* src, byte* dst, int spl)
+static void blit2_32(const byte* src, byte* dst, const int spl)
 {
 	memcpy(dst, src, 8);
 	memcpy(dst + spl, src + 8, 8);
@@ -477,7 +478,7 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 
 				switch (code)
 				{
-					// code in top two bits of code
+				// code in top two bits of code
 				case 0x8000: // 4x4 vq code
 					blit4_32(reinterpret_cast<byte*>(&vq4[(*data) * 32]), status[index], spl);
 					data++;
@@ -496,7 +497,7 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 					move4_32(status[index] + cin.mcomp[(*data)], status[index], spl);
 					data++;
 					break;
-				default:;
+				default: ;
 				}
 				index++;
 			}
@@ -509,9 +510,10 @@ static void blitVQQuad32fs(byte** status, unsigned char* data)
 		case 0x0000:
 			index += 5;
 			break;
-		default:;
+		default: ;
 		}
-	} while (status[index] != nullptr);
+	}
+	while (status[index] != nullptr);
 }
 
 /******************************************************************************
@@ -584,7 +586,7 @@ static void ROQ_GenYUVTables(void)
 *
 ******************************************************************************/
 
-static unsigned short yuv_to_rgb(long y, long u, long v)
+static unsigned short yuv_to_rgb(const long y, const long u, const long v)
 {
 	const long YY = ROQ_YY_tab[y];
 
@@ -616,7 +618,7 @@ static unsigned short yuv_to_rgb(long y, long u, long v)
 *
 ******************************************************************************/
 
-static unsigned int yuv_to_rgb24(long y, long u, long v)
+static unsigned int yuv_to_rgb24(const long y, const long u, const long v)
 {
 	const long YY = ROQ_YY_tab[y];
 
@@ -651,9 +653,9 @@ static unsigned int yuv_to_rgb24(long y, long u, long v)
 static void decodeCodeBook(byte* input, unsigned short roq_flags)
 {
 	long i, j, two, four;
-	unsigned short* aptr, * bptr, * cptr, * dptr;
+	unsigned short *aptr, *bptr, *cptr, *dptr;
 	long y0, y2, cr, cb;
-	byte* bbptr, * baptr, * bcptr, * bdptr;
+	byte *bbptr, *baptr, *bcptr, *bdptr;
 	union
 	{
 		unsigned int* i;
@@ -975,7 +977,7 @@ static void decodeCodeBook(byte* input, unsigned short roq_flags)
 *
 ******************************************************************************/
 
-static void recurseQuad(long startX, long startY, long quadSize, long xOff, long yOff)
+static void recurseQuad(const long startX, const long startY, long quadSize, const long xOff, const long yOff)
 {
 	long lowy;
 
@@ -995,8 +997,8 @@ static void recurseQuad(long startX, long startY, long quadSize, long xOff, long
 		byte* scroff = cin.linbuf + (useY + ((cinTable[currentHandle].CIN_HEIGHT - bigy) >> 1) + yOff) * (cinTable[
 			currentHandle].samplesPerLine) + (((startX + xOff)) * cinTable[currentHandle].samplesPerPixel);
 
-			cin.qStatus[0][cinTable[currentHandle].onQuad] = scroff;
-			cin.qStatus[1][cinTable[currentHandle].onQuad++] = scroff + offset;
+		cin.qStatus[0][cinTable[currentHandle].onQuad] = scroff;
+		cin.qStatus[1][cinTable[currentHandle].onQuad++] = scroff + offset;
 	}
 
 	if (quadSize != MINSIZE)
@@ -1017,7 +1019,7 @@ static void recurseQuad(long startX, long startY, long quadSize, long xOff, long
 *
 ******************************************************************************/
 
-static void setupQuad(long xOff, long yOff)
+static void setupQuad(const long xOff, const long yOff)
 {
 	if (xOff == cin.oldXOff && yOff == cin.oldYOff && cinTable[currentHandle].ysize == static_cast<unsigned>(cin.
 		oldysize) && cinTable[currentHandle].xsize == static_cast<unsigned>(cin.oldxsize))
@@ -1114,7 +1116,7 @@ static void readQuadInfo(const byte* qData)
 *
 ******************************************************************************/
 
-static void RoQPrepMcomp(long xoff, long yoff)
+static void RoQPrepMcomp(const long xoff, const long yoff)
 {
 	long i = cinTable[currentHandle].samplesPerLine;
 	long j = cinTable[currentHandle].samplesPerPixel;
@@ -1251,7 +1253,7 @@ redump:
 		{
 			// first frame
 			Com_Memcpy(cin.linbuf + cinTable[currentHandle].screenDelta, cin.linbuf,
-				cinTable[currentHandle].samplesPerLine * cinTable[currentHandle].ysize);
+			           cinTable[currentHandle].samplesPerLine * cinTable[currentHandle].ysize);
 		}
 		cinTable[currentHandle].numQuads++;
 		cinTable[currentHandle].dirty = qtrue;
@@ -1263,7 +1265,7 @@ redump:
 		if (!cinTable[currentHandle].silent)
 		{
 			ssize = RllDecodeMonoToStereo(framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0,
-				static_cast<unsigned short>(cinTable[currentHandle].roq_flags));
+			                              static_cast<unsigned short>(cinTable[currentHandle].roq_flags));
 			S_RawSamples(ssize, 22050, 2, 1, reinterpret_cast<byte*>(sbuf), s_volume->value, qtrue);
 		}
 		break;
@@ -1276,7 +1278,7 @@ redump:
 				s_rawend = s_soundtime;
 			}
 			ssize = RllDecodeStereoToStereo(framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0,
-				static_cast<unsigned short>(cinTable[currentHandle].roq_flags));
+			                                static_cast<unsigned short>(cinTable[currentHandle].roq_flags));
 			S_RawSamples(ssize, 22050, 2, 2, reinterpret_cast<byte*>(sbuf), s_volume->value, qtrue);
 		}
 		break;
@@ -1345,7 +1347,8 @@ redump:
 	}
 	if (cinTable[currentHandle].inMemory && (cinTable[currentHandle].status != FMV_EOF))
 	{
-		cinTable[currentHandle].inMemory = static_cast<qboolean>(static_cast<int>(cinTable[currentHandle].inMemory) - 1);
+		cinTable[currentHandle].inMemory = static_cast<qboolean>(static_cast<int>(cinTable[currentHandle].inMemory) -
+			1);
 		framedata += 8;
 		goto redump;
 	}
@@ -1461,7 +1464,7 @@ CIN_StopCinematic
 ==================
 */
 
-e_status CIN_StopCinematic(int handle)
+e_status CIN_StopCinematic(const int handle)
 {
 	if (handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF) return FMV_EOF;
 	currentHandle = handle;
@@ -1505,7 +1508,7 @@ Fetch and decompress the pending frame
 ==================
 */
 
-e_status CIN_RunCinematic(int handle)
+e_status CIN_RunCinematic(const int handle)
 {
 	if (handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF) return FMV_EOF;
 
@@ -1589,7 +1592,8 @@ CL_PlayCinematic
 
 ==================
 */
-int CIN_PlayCinematic(const char* arg, int x, int y, int w, int h, int systemBits, const char* psAudioFile /* = NULL */)
+int CIN_PlayCinematic(const char* arg, const int x, const int y, const int w, const int h, const int systemBits,
+                      const char* psAudioFile /* = NULL */)
 {
 	char name[MAX_OSPATH];
 
@@ -1625,7 +1629,7 @@ int CIN_PlayCinematic(const char* arg, int x, int y, int w, int h, int systemBit
 
 	cinTable[currentHandle].ROQSize = 0;
 	cinTable[currentHandle].ROQSize = FS_FOpenFileRead(cinTable[currentHandle].fileName, &cinTable[currentHandle].iFile,
-		qtrue);
+	                                                   qtrue);
 
 	if (cinTable[currentHandle].ROQSize <= 0)
 	{
@@ -1673,7 +1677,8 @@ int CIN_PlayCinematic(const char* arg, int x, int y, int w, int h, int systemBit
 
 	FS_Read(cin.file, 16, cinTable[currentHandle].iFile);
 
-	const unsigned short RoQID = static_cast<unsigned short>(cin.file[0]) + static_cast<unsigned short>(cin.file[1]) * 256;
+	const unsigned short RoQID = static_cast<unsigned short>(cin.file[0]) + static_cast<unsigned short>(cin.file[1]) *
+		256;
 	if (RoQID == 0x1084)
 	{
 		RoQ_init();
@@ -1700,7 +1705,7 @@ int CIN_PlayCinematic(const char* arg, int x, int y, int w, int h, int systemBit
 	return -1;
 }
 
-void CIN_SetExtents(int handle, int x, int y, int w, int h)
+void CIN_SetExtents(const int handle, const int x, const int y, const int w, const int h)
 {
 	if (handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF) return;
 	cinTable[handle].xpos = x;
@@ -1710,7 +1715,7 @@ void CIN_SetExtents(int handle, int x, int y, int w, int h)
 	cinTable[handle].dirty = qtrue;
 }
 
-void CIN_SetLooping(int handle, qboolean loop)
+void CIN_SetLooping(const int handle, const qboolean loop)
 {
 	if (handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF) return;
 	cinTable[handle].looping = loop;
@@ -1812,7 +1817,7 @@ CIN_ResampleCinematic
 Resample cinematic to 256x256 and store in buf2
 ==================
 */
-void CIN_ResampleCinematic(int handle, int* buf2)
+void CIN_ResampleCinematic(const int handle, int* buf2)
 {
 	int ix, iy;
 
@@ -1879,7 +1884,7 @@ CIN_DrawCinematic
 
 ==================
 */
-void CIN_DrawCinematic(int handle)
+void CIN_DrawCinematic(const int handle)
 {
 	if (handle < 0 || handle >= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF) return;
 
@@ -1919,8 +1924,8 @@ extern qboolean s_soundStarted, s_soundMuted;
 //
 // ... and if the app isn't ready yet (which should only apply for the intro video), then I use these...
 //
-static char sPendingCinematic_Arg[256] = { 0 };
-static char sPendingCinematic_s[256] = { 0 };
+static char sPendingCinematic_Arg[256] = {0};
+static char sPendingCinematic_s[256] = {0};
 static qboolean gbPendingCinematic = qfalse;
 //
 // This stuff is for EF1-type ingame cinematics...
@@ -1937,7 +1942,7 @@ static qboolean CIN_HardwareReadyToPlayVideos(void)
 	if (com_fullyInitialized && cls.rendererStarted &&
 		cls.soundStarted &&
 		cls.soundRegistered
-		)
+	)
 	{
 		return qtrue;
 	}
@@ -1945,7 +1950,7 @@ static qboolean CIN_HardwareReadyToPlayVideos(void)
 	return qfalse;
 }
 
-static void PlayCinematic(const char* arg, const char* s, qboolean qbInGame)
+static void PlayCinematic(const char* arg, const char* s, const qboolean qbInGame)
 {
 	qboolean bFailed = qfalse;
 
@@ -2106,7 +2111,8 @@ static void PlayCinematic(const char* arg, const char* s, qboolean qbInGame)
 			do
 			{
 				SCR_RunCinematic();
-			} while (cinTable[currentHandle].buf == nullptr && cinTable[currentHandle].status == FMV_PLAY);
+			}
+			while (cinTable[currentHandle].buf == nullptr && cinTable[currentHandle].status == FMV_PLAY);
 			// wait for first frame (load codebook and sound)
 
 			if (qbInGame)
@@ -2164,7 +2170,7 @@ qboolean CL_CheckPendingCinematic(void)
 CL_CompleteCinematic
 ==================
 */
-void CL_CompleteCinematic(char* args, int argNum)
+void CL_CompleteCinematic(char* args, const int argNum)
 {
 	if (argNum == 2)
 		Field_CompleteFilename("video", "roq", qtrue, qfalse);
@@ -2235,14 +2241,14 @@ void SCR_RunCinematic(void)
 	}
 }
 
-void SCR_StopCinematic(qboolean bAllowRefusal /* = qfalse */)
+void SCR_StopCinematic(const qboolean bAllowRefusal /* = qfalse */)
 {
 	if (bAllowRefusal)
 	{
 		if ((CL_handle >= 0 && CL_handle < MAX_VIDEO_HANDLES)
 			&&
 			cls.realtime < CL_iPlaybackStartTime + 1200 // 1.2 seconds have to have elapsed
-			)
+		)
 		{
 			return;
 		}
@@ -2304,7 +2310,7 @@ void SCR_StopCinematic(qboolean bAllowRefusal /* = qfalse */)
 	}
 }
 
-void CIN_UploadCinematic(int handle)
+void CIN_UploadCinematic(const int handle)
 {
 	if (handle >= 0 && handle < MAX_VIDEO_HANDLES)
 	{
@@ -2347,7 +2353,7 @@ void CIN_UploadCinematic(int handle)
 		{
 			// Upload video at normal resolution
 			re.UploadCinematic(cinTable[handle].drawX, cinTable[handle].drawY,
-				cinTable[handle].buf, handle, cinTable[handle].dirty);
+			                   cinTable[handle].buf, handle, cinTable[handle].dirty);
 			cinTable[handle].dirty = qfalse;
 		}
 

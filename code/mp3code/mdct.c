@@ -43,13 +43,13 @@ inplace ok.
 #include <math.h>
 
 /*------ 18 point xform -------*/
-float mdct18w[18];		// effectively constant
-float mdct18w2[9];		//  "  "
-float coef[9][4];		//  "  "
+float mdct18w[18]; // effectively constant
+float mdct18w2[9]; //  "  "
+float coef[9][4]; //  "  "
 
-float mdct6_3v[6];		//  "  "
-float mdct6_3v2[3];		//  "  "
-float coef87;			//  "  "
+float mdct6_3v[6]; //  "  "
+float mdct6_3v2[3]; //  "  "
+float coef87; //  "  "
 
 typedef struct
 {
@@ -60,21 +60,23 @@ typedef struct
 IMDCT_INIT_BLOCK;
 
 static const IMDCT_INIT_BLOCK imdct_info_18 =
-{ mdct18w, mdct18w2, coef };
+	{mdct18w, mdct18w2, coef};
 static const IMDCT_INIT_BLOCK imdct_info_6 =
-{ mdct6_3v, mdct6_3v2, &coef87 };
+	{mdct6_3v, mdct6_3v2, &coef87};
 
 /*====================================================================*/
 const IMDCT_INIT_BLOCK* imdct_init_addr_18()
 {
 	return &imdct_info_18;
 }
+
 const IMDCT_INIT_BLOCK* imdct_init_addr_6()
 {
 	return &imdct_info_6;
 }
+
 /*--------------------------------------------------------------------*/
-void imdct18(float f[18])	/* 18 point */
+void imdct18(float f[18]) /* 18 point */
 {
 	int p;
 	float a[9], b[9];
@@ -84,15 +86,15 @@ void imdct18(float f[18])	/* 18 point */
 	{
 		g1 = mdct18w[p] * f[p];
 		g2 = mdct18w[17 - p] * f[17 - p];
-		const float ap = g1 + g2;		// a[p]
+		const float ap = g1 + g2; // a[p]
 
-		const float bp = mdct18w2[p] * (g1 - g2);	// b[p]
+		const float bp = mdct18w2[p] * (g1 - g2); // b[p]
 
 		g1 = mdct18w[8 - p] * f[8 - p];
 		g2 = mdct18w[9 + p] * f[9 + p];
-		const float a8p = g1 + g2;		// a[8-p]
+		const float a8p = g1 + g2; // a[8-p]
 
-		const float b8p = mdct18w2[8 - p] * (g1 - g2);	// b[8-p]
+		const float b8p = mdct18w2[8 - p] * (g1 - g2); // b[8-p]
 
 		a[p] = ap + a8p;
 		a[5 + p] = ap - a8p;
@@ -160,9 +162,10 @@ void imdct18(float f[18])	/* 18 point */
 	f[16] = f[16] - f[15];
 	f[17] = f[17] - f[16];
 }
+
 /*--------------------------------------------------------------------*/
 /* does 3, 6 pt dct.  changes order from f[i][window] c[window][i] */
-void imdct6_3(float f[])	/* 6 point */
+void imdct6_3(float f[]) /* 6 point */
 {
 	int w;
 	float buf[18];
@@ -210,4 +213,5 @@ void imdct6_3(float f[])	/* 6 point */
 		c += 6;
 	}
 }
+
 /*--------------------------------------------------------------------*/

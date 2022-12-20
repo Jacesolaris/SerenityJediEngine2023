@@ -40,7 +40,7 @@ namespace Q
 	}
 
 	gsl::cstring_view substr(const gsl::cstring_view& lhs, const std::string::size_type pos,
-		const std::string::size_type count)
+	                         const std::string::size_type count)
 	{
 		if (pos > lhs.size())
 		{
@@ -48,7 +48,7 @@ namespace Q
 		}
 		const auto start = lhs.begin() + pos;
 		const auto end = count == std::string::npos ? lhs.end() : std::min(start + count, lhs.end());
-		gsl::cstring_view result{ start, end };
+		gsl::cstring_view result{start, end};
 		return result;
 	}
 

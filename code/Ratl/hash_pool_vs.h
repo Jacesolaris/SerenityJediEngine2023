@@ -52,18 +52,18 @@ namespace ratl
 	// The Hash Pool
 	////////////////////////////////////////////////////////////////////////////////////////
 	template <int SIZE, int SIZE_HANDLES>
-	class	hash_pool
+	class hash_pool
 	{
-		int		mHandles[SIZE_HANDLES];					// each handle holds the start index of it's data
+		int mHandles[SIZE_HANDLES]; // each handle holds the start index of it's data
 
-		int		mDataAlloc;								// where the next chunck of data will go
-		char	mData[SIZE];
+		int mDataAlloc; // where the next chunck of data will go
+		char mData[SIZE];
 
 #ifdef _DEBUG
-		int		mFinds;									// counts how many total finds have run
-		int		mCurrentCollisions;						// counts how many collisions on the last find
-		int		mTotalCollisions;						// counts the total number of collisions
-		int		mTotalAllocs;
+		int mFinds; // counts how many total finds have run
+		int mCurrentCollisions; // counts how many collisions on the last find
+		int mTotalCollisions; // counts the total number of collisions
+		int mTotalAllocs;
 #endif
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -73,43 +73,43 @@ namespace ratl
 		// If it failes, it returns false, and the handle passed in points to the next
 		// free slot.
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		find_existing(int& handle, const void* data, int datasize)
+		bool find_existing(int& handle, const void* data, const int datasize)
 		{
 #ifdef _DEBUG
 			mFinds++;
 			mCurrentCollisions = 0;
 #endif
 
-			while (mHandles[handle])					// So long as a handle exists there
+			while (mHandles[handle]) // So long as a handle exists there
 			{
 				if (mem::eql(static_cast<void*>(&mData[mHandles[handle]]), data, datasize))
 				{
-					return true;						// found
+					return true; // found
 				}
-				handle = handle + 1 & SIZE_HANDLES - 1;		// incriment the handle
+				handle = handle + 1 & SIZE_HANDLES - 1; // incriment the handle
 
 #ifdef _DEBUG
 				mCurrentCollisions++;
 				mTotalCollisions++;
 
 				//assert(mCurrentCollisions < 16);		// If We Had 16+ Collisions, Hash May Be Inefficient.
-														// Evaluate SIZE and SIZEHANDLES
+				// Evaluate SIZE and SIZEHANDLES
 #endif
 			}
-			return false;								// failed to find
+			return false; // failed to find
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// A simple hash function for the range of [0, SIZE_HANDLES]
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			hash(const void* data, int datasize)
+		static int hash(const void* data, const int datasize)
 		{
-			int	 h = 0;
+			int h = 0;
 			for (int i = 0; i < datasize; i++)
 			{
-				h += static_cast<const char*>(data)[i] * (i + 119);		// 119.  Prime Number?
+				h += static_cast<const char*>(data)[i] * (i + 119); // 119.  Prime Number?
 			}
-			h &= SIZE_HANDLES - 1;						// zero out bits beyoned SIZE_HANDLES
+			h &= SIZE_HANDLES - 1; // zero out bits beyoned SIZE_HANDLES
 			return h;
 		}
 
@@ -122,7 +122,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Number Of Bytes Allocated
 		////////////////////////////////////////////////////////////////////////////////////
-		int			size()	 const
+		int size() const
 		{
 			return mDataAlloc;
 		}
@@ -130,7 +130,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If This Memory Pool Is Empty
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		empty()	 const
+		bool empty() const
 		{
 			return mDataAlloc == 1;
 		}
@@ -138,7 +138,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If This Memory Pool Has Enough Space Left For (minimum) Bytes
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full(int minimum)	 const
+		bool full(const int minimum) const
 		{
 			return SIZE - mDataAlloc < minimum;
 		}
@@ -146,7 +146,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear - Removes all allocation information - Note!  DOES NOT CLEAR MEMORY
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mData[0] = 0;
 			mDataAlloc = 1;
@@ -170,22 +170,22 @@ namespace ratl
 		//
 		// In both cases, it gives you a handle to look up the data later.
 		////////////////////////////////////////////////////////////////////////////////////
-		int			get_handle(const void* data, int datasize)
+		int get_handle(const void* data, const int datasize)
 		{
-			int	handle = hash(data, datasize);				// Initialize Our Handle By Hash Fcn
+			int handle = hash(data, datasize); // Initialize Our Handle By Hash Fcn
 			if (!find_existing(handle, data, datasize))
 			{
-				assert(mDataAlloc + datasize < SIZE);			// Is There Enough Memory?
+				assert(mDataAlloc + datasize < SIZE); // Is There Enough Memory?
 
 #ifdef _DEBUG
 				mTotalAllocs++;
 #endif
 
-				mem::cpy(static_cast<void*>(&mData[mDataAlloc]), data, datasize);// Copy Data To Memory
-				mHandles[handle] = mDataAlloc;				// Mark Memory In Hash Tbl
-				mDataAlloc += datasize;						// Adjust Next Alloc Location
+				mem::cpy(static_cast<void*>(&mData[mDataAlloc]), data, datasize); // Copy Data To Memory
+				mHandles[handle] = mDataAlloc; // Mark Memory In Hash Tbl
+				mDataAlloc += datasize; // Adjust Next Alloc Location
 			}
-			return handle;									// Return The Hash Tbl handleess
+			return handle; // Return The Hash Tbl handleess
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -199,10 +199,10 @@ namespace ratl
 		}
 
 #ifdef _DEBUG
-		float		average_collisions() const { return static_cast<float>(mTotalCollisions) / static_cast<float>(mFinds); }
-		int			total_allocs() const { return mTotalAllocs; }
-		int			total_finds() const { return mFinds; }
-		int			total_collisions() const { return mTotalCollisions; }
+		float average_collisions() const { return static_cast<float>(mTotalCollisions) / static_cast<float>(mFinds); }
+		int total_allocs() const { return mTotalAllocs; }
+		int total_finds() const { return mFinds; }
+		int total_collisions() const { return mTotalCollisions; }
 #endif
 	};
 }

@@ -40,7 +40,7 @@ typedef my_decomp_master* my_master_ptr;
  */
 
 LOCAL(boolean)
-use_merged_upsample(j_decompress_ptr cinfo)
+use_merged_upsample(const j_decompress_ptr cinfo)
 {
 #ifdef UPSAMPLE_MERGING_SUPPORTED
 	/* Merging is the equivalent of plain box-filter upsampling */
@@ -83,7 +83,7 @@ use_merged_upsample(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_calc_output_dimensions(j_decompress_ptr cinfo)
+jpeg_calc_output_dimensions(const j_decompress_ptr cinfo)
 /* Do computations that are needed before master selection phase.
  * This function is used for full decompression.
  */
@@ -225,7 +225,7 @@ jpeg_calc_output_dimensions(j_decompress_ptr cinfo)
  */
 
 LOCAL(void)
-prepare_range_limit_table(j_decompress_ptr cinfo)
+prepare_range_limit_table(const j_decompress_ptr cinfo)
 /* Allocate and fill in the sample_range_limit table */
 {
 	int i;
@@ -477,7 +477,7 @@ prepare_for_output_pass(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-finish_output_pass(j_decompress_ptr cinfo)
+finish_output_pass(const j_decompress_ptr cinfo)
 {
 	const my_master_ptr master = (my_master_ptr)cinfo->master;
 
@@ -493,7 +493,7 @@ finish_output_pass(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_new_colormap(j_decompress_ptr cinfo)
+jpeg_new_colormap(const j_decompress_ptr cinfo)
 {
 	const my_master_ptr master = (my_master_ptr)cinfo->master;
 
@@ -521,7 +521,7 @@ jpeg_new_colormap(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_master_decompress(j_decompress_ptr cinfo)
+jinit_master_decompress(const j_decompress_ptr cinfo)
 {
 	const my_master_ptr master = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_decomp_master));

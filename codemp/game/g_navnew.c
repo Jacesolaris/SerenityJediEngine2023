@@ -34,7 +34,7 @@ void G_DrawNode(vec3_t origin, int type);
 void G_DrawCombatPoint(vec3_t origin, int type);
 void TAG_ShowTags(int flags);
 
-qboolean NAV_CheckNodeFailedForEnt(const gentity_t* ent, int nodeNum)
+qboolean NAV_CheckNodeFailedForEnt(const gentity_t* ent, const int nodeNum)
 {
 	//FIXME: must be a better way to do this
 	for (int j = 0; j < MAX_FAILED_NODES; j++)
@@ -77,7 +77,8 @@ void NPC_SetBlocked(const gentity_t* self, const gentity_t* blocker)
 NAVNEW_ClearPathBetweenPoints
 -------------------------
 */
-int NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, int ignore, int clipmask)
+int NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, const int ignore,
+                                  const int clipmask)
 {
 	trace_t trace;
 
@@ -103,7 +104,7 @@ int NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t 
 NAVNEW_PushBlocker
 -------------------------
 */
-void NAVNEW_PushBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t right, qboolean setBlockedInfo)
+void NAVNEW_PushBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t right, const qboolean setBlockedInfo)
 {
 	//try pushing blocker to one side
 	trace_t tr;
@@ -135,7 +136,7 @@ void NAVNEW_PushBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t 
 
 	VectorMA(blocker->r.currentOrigin, -moveamt, right, end);
 	trap->Trace(&tr, blocker->r.currentOrigin, mins, blocker->r.maxs, end, blocker->s.number,
-		blocker->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+	            blocker->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 	if (!tr.startsolid && !tr.allsolid)
 	{
 		leftSucc = tr.fraction;
@@ -156,7 +157,7 @@ void NAVNEW_PushBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t 
 		float rightSucc;
 		VectorMA(blocker->r.currentOrigin, moveamt, right, end);
 		trap->Trace(&tr, blocker->r.currentOrigin, mins, blocker->r.maxs, end, blocker->s.number,
-			blocker->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+		            blocker->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 		if (!tr.startsolid && !tr.allsolid)
 		{
 			rightSucc = tr.fraction;
@@ -255,8 +256,9 @@ qboolean NAVNEW_DanceWithBlocker(gentity_t* self, const gentity_t* blocker, vec3
 NAVNEW_SidestepBlocker
 -------------------------
 */
-qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t blocked_dir, float blocked_dist,
-	vec3_t movedir, vec3_t right)
+qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker, vec3_t blocked_dir,
+                                const float blocked_dist,
+                                vec3_t movedir, vec3_t right)
 {
 	//trace to sides of blocker and see if either is clear
 	trace_t tr;
@@ -298,7 +300,7 @@ qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker,
 		AngleVectors(avoidAngles, movedir, NULL, NULL);
 		VectorMA(self->r.currentOrigin, blocked_dist, movedir, block_pos);
 		trap->Trace(&tr, self->r.currentOrigin, mins, self->r.maxs, block_pos, self->s.number,
-			self->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+		            self->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 		return tr.fraction == 1.0 && !tr.allsolid && !tr.startsolid;
 	}
 
@@ -309,7 +311,7 @@ qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker,
 	VectorMA(self->r.currentOrigin, blocked_dist, avoidRight_dir, block_pos);
 
 	trap->Trace(&tr, self->r.currentOrigin, mins, self->r.maxs, block_pos, self->s.number,
-		self->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+	            self->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 
 	if (!tr.allsolid && !tr.startsolid)
 	{
@@ -337,7 +339,7 @@ qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker,
 	VectorMA(self->r.currentOrigin, blocked_dist, avoidLeft_dir, block_pos);
 
 	trap->Trace(&tr, self->r.currentOrigin, mins, self->r.maxs, block_pos, self->s.number,
-		self->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+	            self->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 
 	if (!tr.allsolid && !tr.startsolid)
 	{
@@ -390,8 +392,9 @@ qboolean NAVNEW_SidestepBlocker(const gentity_t* self, const gentity_t* blocker,
 NAVNEW_Bypass
 -------------------------
 */
-qboolean NAVNEW_Bypass(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir, float blocked_dist, vec3_t movedir,
-	qboolean setBlockedInfo)
+qboolean NAVNEW_Bypass(gentity_t* self, gentity_t* blocker, vec3_t blocked_dir, const float blocked_dist,
+                       vec3_t movedir,
+                       const qboolean setBlockedInfo)
 {
 	vec3_t moveangles, right;
 
@@ -445,7 +448,7 @@ NAVNEW_ResolveEntityCollision
 extern void CalcTeamDoorCenter(const gentity_t* ent, vec3_t center);
 
 qboolean NAVNEW_ResolveEntityCollision(gentity_t* self, gentity_t* blocker, vec3_t movedir, vec3_t pathDir,
-	qboolean setBlockedInfo)
+                                       const qboolean setBlockedInfo)
 {
 	vec3_t blocked_dir;
 
@@ -487,8 +490,8 @@ qboolean NAVNEW_ResolveEntityCollision(gentity_t* self, gentity_t* blocker, vec3
 NAVNEW_AvoidCollision
 -------------------------
 */
-qboolean NAVNEW_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info, qboolean setBlockedInfo,
-	int blockedMovesLimit)
+qboolean NAVNEW_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info, const qboolean setBlockedInfo,
+                               const int blockedMovesLimit)
 {
 	vec3_t movedir;
 	vec3_t movepos;
@@ -564,8 +567,9 @@ qboolean NAVNEW_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info
 	return qtrue;
 }
 
-qboolean NAVNEW_TestNodeConnectionBlocked(int wp1, int wp2, const gentity_t* ignoreEnt, int goalEntNum, qboolean checkWorld,
-	qboolean checkEnts)
+qboolean NAVNEW_TestNodeConnectionBlocked(const int wp1, const int wp2, const gentity_t* ignoreEnt,
+                                          const int goalEntNum, const qboolean checkWorld,
+                                          const qboolean checkEnts)
 {
 	//see if the direct path between 2 nodes is blocked by architecture or an ent
 	vec3_t pos1, pos2, mins, maxs;
@@ -660,8 +664,8 @@ int NAVNEW_MoveToGoal(gentity_t* self, navInfo_t* info)
 	}
 	//FIXME!!!!: this is making them wiggle back and forth between waypoints
 	else if ((bestNode = trap->Nav_GetBestPathBetweenEnts((sharedEntity_t*)self, (sharedEntity_t*)self->NPC->goalEntity,
-		NF_CLEAR_PATH)) == NODE_NONE)
-		//!NAVNEW_GetWaypoints( self, qtrue ) )
+	                                                      NF_CLEAR_PATH)) == NODE_NONE)
+	//!NAVNEW_GetWaypoints( self, qtrue ) )
 	{
 		//one of us didn't have a valid waypoint!
 		if (self->waypoint == NODE_NONE)
@@ -787,7 +791,7 @@ int NAVNEW_MoveToGoal(gentity_t* self, navInfo_t* info)
 			//If we got set to blocked, clear it
 			NPC_ClearBlocked(self);
 			//Take the dir
-			memcpy(info, &tempInfo, sizeof * info);
+			memcpy(info, &tempInfo, sizeof *info);
 			if (self->s.weapon == WP_SABER)
 			{
 				//jedi
@@ -835,7 +839,7 @@ int NAVNEW_MoveToGoal(gentity_t* self, navInfo_t* info)
 					if (d_patched.integer && //use patch-style navigation
 						(!trap->Nav_NodesAreNeighbors(self->waypoint, bestNode)
 							|| NAVNEW_TestNodeConnectionBlocked(self->waypoint, bestNode, self,
-								self->NPC->goalEntity->s.number, qfalse, qtrue)))
+							                                    self->NPC->goalEntity->s.number, qfalse, qtrue)))
 					{
 						//the direct path between these 2 nodes is blocked by an ent
 						trap->Nav_AddFailedEdge(self->s.number, self->waypoint, bestNode);
@@ -921,7 +925,7 @@ failed:
 extern qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist);
 extern qboolean FlyingCreature(const gentity_t* ent);
 //defualt for float distScale = 1.0f
-qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale)
+qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, const float distScale)
 {
 	//use your current ps's moveDir or construct one from your current ucmd and then
 	//check to make sure we can move in that direction.

@@ -112,7 +112,7 @@ void AAS_SetInitialized(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ContinueInit(float time)
+void AAS_ContinueInit(const float time)
 {
 	//if no AAS file loaded
 	if (!aasworld.loaded) return;
@@ -150,7 +150,7 @@ void AAS_ContinueInit(float time)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_StartFrame(float time)
+int AAS_StartFrame(const float time)
 {
 	aasworld.time = time;
 	//unlink all entities that were not updated last frame

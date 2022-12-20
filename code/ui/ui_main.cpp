@@ -121,9 +121,9 @@ static void UI_GiveWeapon(int weaponIndex);
 static void UI_EquipWeapon(int weaponIndex);
 static void UI_LoadMissionSelectMenu(const char* cvarName);
 static void UI_AddWeaponSelection(int weaponIndex, int ammoIndex, int ammoAmount, const char* iconItemName,
-	const char* litIconItemName, const char* hexBackground, const char* soundfile);
+                                  const char* litIconItemName, const char* hexBackground, const char* soundfile);
 static void UI_AddThrowWeaponSelection(int weaponIndex, int ammoIndex, int ammoAmount, const char* iconItemName,
-	const char* litIconItemName, const char* hexBackground, const char* soundfile);
+                                       const char* litIconItemName, const char* hexBackground, const char* soundfile);
 static void UI_RemoveWeaponSelection(int weaponIndex);
 static void UI_RemoveThrowWeaponSelection(void);
 static void UI_HighLightWeaponSelection(int selectionslot);
@@ -160,8 +160,8 @@ static void UI_ResetCharacterListBoxes(void);
 
 void UI_LoadMenus(const char* menuFile, qboolean reset);
 static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw,
-	int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader,
-	int textStyle, int iFontIndex);
+                         int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader,
+                         int textStyle, int iFontIndex);
 static qboolean UI_OwnerDrawVisible(int flags);
 int UI_OwnerDrawWidth(int ownerDraw, float scale);
 static void UI_Update(const char* name);
@@ -350,7 +350,7 @@ static datpadmovedata_t datapadMoveData[MD_MOVE_TITLE_MAX][MAX_MOVES] =
 	}
 };
 
-static int gamecodetoui[] = { 4, 2, 3, 0, 5, 1, 6 };
+static int gamecodetoui[] = {4, 2, 3, 0, 5, 1, 6};
 
 uiInfo_t uiInfo;
 
@@ -368,7 +368,7 @@ static int UI_GetScreenshotFormatForString(const char* str)
 	return -1;
 }
 
-static const char* UI_GetScreenshotFormatString(int format)
+static const char* UI_GetScreenshotFormatString(const int format)
 {
 	switch (format)
 	{
@@ -571,12 +571,12 @@ constexpr auto NOWEAPON = -1;
 static constexpr size_t cvarTableSize = std::size(cvarTable);
 
 void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, int iMaxPixelWidth, int style,
-	int iFontIndex);
+                int iFontIndex);
 int Key_GetCatcher(void);
 
 constexpr auto UI_FPS_FRAMES = 4;
 
-void _UI_Refresh(int realtime)
+void _UI_Refresh(const int realtime)
 {
 	static int index;
 	static int previousTimes[UI_FPS_FRAMES];
@@ -691,7 +691,7 @@ This must be the very first function compiled into the .qvm file
 ================
 */
 extern "C" Q_EXPORT intptr_t QDECL vmMain(int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5,
-	int arg6, int arg7, int arg8, int arg9, int arg10, int arg11)
+                                          int arg6, int arg7, int arg8, int arg9, int arg10, int arg11)
 {
 	return 0;
 }
@@ -719,8 +719,9 @@ Text_Paint
 */
 // iMaxPixelWidth is 0 here for no limit (but gets converted to -1), else max printable pixel width relative to start pos
 //
-void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, int iMaxPixelWidth, int style,
-	int iFontIndex)
+void Text_Paint(const float x, const float y, const float scale, vec4_t color, const char* text,
+                const int iMaxPixelWidth, const int style,
+                int iFontIndex)
 {
 	if (iFontIndex == 0)
 	{
@@ -731,8 +732,8 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, i
 	int iStyleOR = 0;
 	switch (style)
 	{
-		//	case  ITEM_TEXTSTYLE_NORMAL:			iStyleOR = 0;break;					// JK2 normal text
-		//	case  ITEM_TEXTSTYLE_BLINK:				iStyleOR = STYLE_BLINK;break;		// JK2 fast blinking
+	//	case  ITEM_TEXTSTYLE_NORMAL:			iStyleOR = 0;break;					// JK2 normal text
+	//	case  ITEM_TEXTSTYLE_BLINK:				iStyleOR = STYLE_BLINK;break;		// JK2 fast blinking
 	case ITEM_TEXTSTYLE_PULSE: iStyleOR = STYLE_BLINK;
 		break; // JK2 slow pulsing
 	case ITEM_TEXTSTYLE_SHADOWED: iStyleOR = STYLE_DROPSHADOW;
@@ -743,16 +744,16 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, i
 		break; // JK2 drop shadow ( need a color for this )
 	case ITEM_TEXTSTYLE_SHADOWEDMORE: iStyleOR = STYLE_DROPSHADOW;
 		break; // JK2 drop shadow ( need a color for this )
-	default:;
+	default: ;
 	}
 
 	ui.R_Font_DrawString(x, // int ox
-		y, // int oy
-		text, // const char *text
-		color, // paletteRGBA_c c
-		iStyleOR | iFontIndex, // const int iFontHandle
-		!iMaxPixelWidth ? -1 : iMaxPixelWidth, // iMaxPixelWidth (-1 = none)
-		scale // const float scale = 1.0f
+	                     y, // int oy
+	                     text, // const char *text
+	                     color, // paletteRGBA_c c
+	                     iStyleOR | iFontIndex, // const int iFontHandle
+	                     !iMaxPixelWidth ? -1 : iMaxPixelWidth, // iMaxPixelWidth (-1 = none)
+	                     scale // const float scale = 1.0f
 	);
 }
 
@@ -762,8 +763,9 @@ Text_PaintWithCursor
 ================
 */
 // iMaxPixelWidth is 0 here for no-limit
-void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char* text, int cursorPos, char cursor,
-	int iMaxPixelWidth, int style, int iFontIndex)
+void Text_PaintWithCursor(const float x, const float y, const float scale, vec4_t color, const char* text,
+                          const int cursorPos, const char cursor,
+                          const int iMaxPixelWidth, const int style, const int iFontIndex)
 {
 	Text_Paint(x, y, scale, color, text, iMaxPixelWidth, style, iFontIndex);
 
@@ -782,10 +784,10 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 	const int iNextXpos = ui.R_Font_StrLenPixels(sTemp, iFontIndex, scale);
 
 	Text_Paint(x + iNextXpos, y, scale, color, va("%c", cursor), iMaxPixelWidth, style | ITEM_TEXTSTYLE_BLINK,
-		iFontIndex);
+	           iFontIndex);
 }
 
-const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* handle)
+const char* UI_FeederItemText(const float feederID, const int index, const int column, qhandle_t* handle)
 {
 	*handle = -1;
 
@@ -826,9 +828,9 @@ const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* 
 		if (index >= 0 && index < uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHeadCount)
 		{
 			*handle = ui.R_RegisterShaderNoMip(va("models/players/%s/icon_%s.jpg",
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHead[index].
-				name));
+			                                      uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
+			                                      uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHead[index].
+			                                      name));
 			return uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHead[index].name;
 		}
 	}
@@ -837,9 +839,9 @@ const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* 
 		if (index >= 0 && index < uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorsoCount)
 		{
 			*handle = ui.R_RegisterShaderNoMip(va("models/players/%s/icon_%s.jpg",
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorso[index].
-				name));
+			                                      uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
+			                                      uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorso[index].
+			                                      name));
 			return uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorso[index].name;
 		}
 	}
@@ -848,8 +850,8 @@ const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* 
 		if (index >= 0 && index < uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLegCount)
 		{
 			*handle = ui.R_RegisterShaderNoMip(va("models/players/%s/icon_%s.jpg",
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLeg[index].name));
+			                                      uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
+			                                      uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLeg[index].name));
 			return uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLeg[index].name;
 		}
 	}
@@ -876,7 +878,7 @@ const char* UI_FeederItemText(float feederID, int index, int column, qhandle_t* 
 	return "";
 }
 
-qhandle_t UI_FeederItemImage(float feederID, int index)
+qhandle_t UI_FeederItemImage(const float feederID, const int index)
 {
 	if (feederID == FEEDER_PLAYER_SKIN_HEAD)
 	{
@@ -884,8 +886,8 @@ qhandle_t UI_FeederItemImage(float feederID, int index)
 		{
 			//return uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHeadIcons[index];
 			return ui.R_RegisterShaderNoMip(va("models/players/%s/icon_%s.jpg",
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHead[index].name));
+			                                   uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
+			                                   uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinHead[index].name));
 		}
 	}
 	else if (feederID == FEEDER_PLAYER_SKIN_TORSO)
@@ -894,8 +896,8 @@ qhandle_t UI_FeederItemImage(float feederID, int index)
 		{
 			//return uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorsoIcons[index];
 			return ui.R_RegisterShaderNoMip(va("models/players/%s/icon_%s.jpg",
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorso[index].name));
+			                                   uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
+			                                   uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinTorso[index].name));
 		}
 	}
 	else if (feederID == FEEDER_PLAYER_SKIN_LEGS)
@@ -904,8 +906,8 @@ qhandle_t UI_FeederItemImage(float feederID, int index)
 		{
 			//return uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLegIcons[index];
 			return ui.R_RegisterShaderNoMip(va("models/players/%s/icon_%s.jpg",
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
-				uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLeg[index].name));
+			                                   uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].Name,
+			                                   uiInfo.playerSpecies[uiInfo.playerSpeciesIndex].SkinLeg[index].name));
 		}
 	}
 	else if (feederID == FEEDER_COLORCHOICES)
@@ -1008,7 +1010,7 @@ UI_RunMenuScript
 */
 static qboolean UI_RunMenuScript(const char** args)
 {
-	const char* name, * name2, * mapName, * menuName, * warningMenuName;
+	const char *name, *name2, *mapName, *menuName, *warningMenuName;
 
 	if (String_Parse(args, &name))
 	{
@@ -1044,7 +1046,7 @@ static qboolean UI_RunMenuScript(const char** args)
 			{
 				Menus_CloseAll();
 				ui.Cmd_ExecuteText(EXEC_APPEND,
-					va("load %s\n", s_savedata[s_savegame.currentLine].currentSaveFileName));
+				                   va("load %s\n", s_savedata[s_savegame.currentLine].currentSaveFileName));
 			}
 			// after loading a game, the list box (and it's highlight) get's reset back to 0, but currentLine sticks around, so set it to 0 here
 			s_savegame.currentLine = 0;
@@ -1432,10 +1434,10 @@ static qboolean UI_RunMenuScript(const char** args)
 						uiInfo.moveAnimTime = 0;
 						DC->g2hilev_SetAnim(&item->ghoul2[0], "model_root", modelPtr->g2anim, qtrue);
 						Com_sprintf(skin, sizeof skin, "models/players/%s/|%s|%s|%s",
-							Cvar_VariableString("g_char_model"),
-							Cvar_VariableString("g_char_skin_head"),
-							Cvar_VariableString("g_char_skin_torso"),
-							Cvar_VariableString("g_char_skin_legs")
+						            Cvar_VariableString("g_char_model"),
+						            Cvar_VariableString("g_char_skin_head"),
+						            Cvar_VariableString("g_char_skin_torso"),
+						            Cvar_VariableString("g_char_skin_legs")
 						);
 
 						ItemParse_model_g2skin_go(item, skin);
@@ -1650,7 +1652,7 @@ static qboolean UI_RunMenuScript(const char** args)
 			String_Parse(args, &soundfile);
 
 			UI_AddWeaponSelection(atoi(weaponIndex), atoi(ammoIndex), atoi(ammoAmount), itemName, litItemName,
-				backgroundName, soundfile);
+			                      backgroundName, soundfile);
 		}
 		else if (Q_stricmp(name, "addthrowweaponselection") == 0)
 		{
@@ -1700,7 +1702,7 @@ static qboolean UI_RunMenuScript(const char** args)
 			String_Parse(args, &soundfile);
 
 			UI_AddThrowWeaponSelection(atoi(weaponIndex), atoi(ammoIndex), atoi(ammoAmount), itemName, litItemName,
-				backgroundName, soundfile);
+			                           backgroundName, soundfile);
 		}
 		else if (Q_stricmp(name, "removeweaponselection") == 0)
 		{
@@ -1751,7 +1753,7 @@ static qboolean UI_RunMenuScript(const char** args)
 		}
 		else if (Q_stricmp(name, "giveinventory") == 0)
 		{
-			const char* inventoryIndex, * amount;
+			const char *inventoryIndex, *amount;
 			String_Parse(args, &inventoryIndex);
 			String_Parse(args, &amount);
 			UI_GiveInventory(atoi(inventoryIndex), atoi(amount));
@@ -2038,7 +2040,7 @@ static void UI_HandleLoadSelection()
 UI_FeederCount
 =================
 */
-static int UI_FeederCount(float feederID)
+static int UI_FeederCount(const float feederID)
 {
 	if (feederID == FEEDER_SAVEGAMES)
 	{
@@ -2108,7 +2110,7 @@ static int UI_FeederCount(float feederID)
 UI_FeederSelection
 =================
 */
-static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
+static void UI_FeederSelection(const float feederID, const int index, itemDef_t* item)
 {
 	if (feederID == FEEDER_SAVEGAMES)
 	{
@@ -2131,8 +2133,9 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 					{
 						char skin[MAX_QPATH];
 						ItemParse_model_g2anim_go(item_def_s, datapadMoveData[uiInfo.movesTitleIndex][index].anim);
-						uiInfo.moveAnimTime = DC->g2hilev_SetAnim(&item_def_s->ghoul2[0], "model_root", modelPtr->g2anim,
-							qtrue);
+						uiInfo.moveAnimTime = DC->g2hilev_SetAnim(&item_def_s->ghoul2[0], "model_root",
+						                                          modelPtr->g2anim,
+						                                          qtrue);
 
 						uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 
@@ -2180,10 +2183,10 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 						}
 
 						Com_sprintf(skin, sizeof skin, "models/players/%s/|%s|%s|%s",
-							Cvar_VariableString("g_char_model"),
-							Cvar_VariableString("g_char_skin_head"),
-							Cvar_VariableString("g_char_skin_torso"),
-							Cvar_VariableString("g_char_skin_legs")
+						            Cvar_VariableString("g_char_model"),
+						            Cvar_VariableString("g_char_skin_head"),
+						            Cvar_VariableString("g_char_skin_torso"),
+						            Cvar_VariableString("g_char_skin_legs")
 						);
 
 						ItemParse_model_g2skin_go(item_def_s, skin);
@@ -2207,7 +2210,8 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 				if (modelPtr)
 				{
 					ItemParse_model_g2anim_go(item_def_s, uiInfo.movesBaseAnim);
-					uiInfo.moveAnimTime = DC->g2hilev_SetAnim(&item_def_s->ghoul2[0], "model_root", modelPtr->g2anim, qtrue);
+					uiInfo.moveAnimTime = DC->g2hilev_SetAnim(&item_def_s->ghoul2[0], "model_root", modelPtr->g2anim,
+					                                          qtrue);
 				}
 			}
 		}
@@ -2274,7 +2278,7 @@ static void UI_FeederSelection(float feederID, int index, itemDef_t* item)
 void Key_KeynumToStringBuf(int keynum, char* buf, int buflen);
 void Key_GetBindingBuf(int keynum, char* buf, int buflen);
 
-static qboolean UI_Crosshair_HandleKey(int flags, float* special, int key)
+static qboolean UI_Crosshair_HandleKey(int flags, float* special, const int key)
 {
 	if (key == A_MOUSE1 || key == A_MOUSE2 || key == A_ENTER || key == A_KP_ENTER)
 	{
@@ -2301,7 +2305,7 @@ static qboolean UI_Crosshair_HandleKey(int flags, float* special, int key)
 	return qfalse;
 }
 
-static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float* special, int key)
+static qboolean UI_OwnerDrawHandleKey(const int ownerDraw, const int flags, float* special, const int key)
 {
 	switch (ownerDraw)
 	{
@@ -2468,12 +2472,12 @@ qboolean UI_ParseAnimFileSet(const char* animCFG, int* animFileIndex)
 			Com_Printf("animfile[%d]: %s\n", i, ui_knownAnimFileSets[i].filename);
 		}
 		Com_Error(ERR_FATAL, "UI_ParseAnimFileSet: %d == MAX_ANIM_FILES == %d", ui_numKnownAnimFileSets,
-			MAX_ANIM_FILES);
+		          MAX_ANIM_FILES);
 	}
 
 	//Okay, time to parse in a new one
 	Q_strncpyz(ui_knownAnimFileSets[ui_numKnownAnimFileSets].filename, strippedName,
-		sizeof ui_knownAnimFileSets[ui_numKnownAnimFileSets].filename);
+	           sizeof ui_knownAnimFileSets[ui_numKnownAnimFileSets].filename);
 
 	// Load and parse animations.cfg file
 	Com_sprintf(afilename, sizeof afilename, "%s/animation.cfg", strippedName);
@@ -2489,7 +2493,7 @@ qboolean UI_ParseAnimFileSet(const char* animCFG, int* animFileIndex)
 	return qtrue;
 }
 
-int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, int animNum, const qboolean freeze)
+int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, const int animNum, const qboolean freeze)
 {
 	int animIndex;
 
@@ -2604,7 +2608,7 @@ bIsImageFile
 builds path and scans for valid image extentions
 =================
 */
-static qboolean IsImageFile(const char* dirptr, const char* skinname, qboolean building)
+static qboolean IsImageFile(const char* dirptr, const char* skinname, const qboolean building)
 {
 	char fpath[MAX_QPATH];
 	int f;
@@ -2659,7 +2663,7 @@ void UI_FreeAllSpecies(void)
 PlayerModel_BuildList
 =================
 */
-static void UI_BuildPlayerModel_List(qboolean inGameLoad)
+static void UI_BuildPlayerModel_List(const qboolean inGameLoad)
 {
 	static constexpr size_t DIR_LIST_SIZE = 16384;
 
@@ -2668,12 +2672,12 @@ static void UI_BuildPlayerModel_List(qboolean inGameLoad)
 	int dirlen;
 	const int building = Cvar_VariableIntegerValue("com_buildscript");
 
-	char* dirlist = static_cast<char*>(malloc(DIR_LIST_SIZE));
+	auto dirlist = static_cast<char*>(malloc(DIR_LIST_SIZE));
 	if (!dirlist)
 	{
 		Com_Printf(S_COLOR_YELLOW "WARNING: Failed to allocate %u bytes of memory for player model "
-			"directory list. Using stack allocated buffer of %u bytes instead.",
-			DIR_LIST_SIZE, sizeof stackDirList);
+		           "directory list. Using stack allocated buffer of %u bytes instead.",
+		           DIR_LIST_SIZE, sizeof stackDirList);
 
 		dirlist = stackDirList;
 		dirListSize = sizeof stackDirList;
@@ -2892,7 +2896,7 @@ void UI_Shutdown(void)
 UI_Init
 =================
 */
-void _UI_Init(qboolean inGameLoad)
+void _UI_Init(const qboolean inGameLoad)
 {
 	// Get the list of possible languages
 #ifndef JK2_MODE
@@ -3111,7 +3115,7 @@ UI_ParseMenu
 */
 void UI_ParseMenu(const char* menuFile)
 {
-	char* buffer, * holdBuffer;
+	char *buffer, *holdBuffer;
 	//	pc_token_t token;
 
 	//Com_DPrintf("Parsing menu file: %s\n", menuFile);
@@ -3212,7 +3216,7 @@ UI_LoadMenus
 	Load all menus based on the files listed in the data file in menuFile (default "ui/menus.txt")
 =================
 */
-void UI_LoadMenus(const char* menuFile, qboolean reset)
+void UI_LoadMenus(const char* menuFile, const qboolean reset)
 {
 	char* buffer;
 	const char* holdBuffer;
@@ -3229,7 +3233,7 @@ void UI_LoadMenus(const char* menuFile, qboolean reset)
 		if (len < 1)
 		{
 			Com_Error(ERR_FATAL, "%s",
-				va("default menu file not found: ui/menus.txt, unable to continue!\n", menuFile));
+			          va("default menu file not found: ui/menus.txt, unable to continue!\n", menuFile));
 		}
 	}
 
@@ -3784,7 +3788,8 @@ qboolean Asset_Parse(char** buffer)
 							PC_ParseWarning("Can't locate precache sound");
 						}
 					}
-				} while (soundFile[0]);
+				}
+				while (soundFile[0]);
 			}
 		}
 	}
@@ -3828,7 +3833,7 @@ static void UI_Update(const char* name)
 		case 32:
 			Cvar_SetValue("ui_r_depthbits", 24);
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (Q_stricmp(name, "ui_r_lodbias") == 0)
@@ -3845,7 +3850,7 @@ static void UI_Update(const char* name)
 		case 2:
 			Cvar_SetValue("ui_r_subdivisions", 20);
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (Q_stricmp(name, "ui_r_glCustom") == 0)
@@ -3914,7 +3919,7 @@ static void UI_Update(const char* name)
 			Cvar_SetValue("ui_cg_shadows", 0);
 			Cvar_Set("ui_r_texturemode", "GL_LINEAR_MIPMAP_NEAREST");
 			break;
-		default:;
+		default: ;
 		}
 	}
 	else if (Q_stricmp(name, "ui_mousePitch") == 0)
@@ -3973,7 +3978,7 @@ void AssetCache(void)
 _UI_DrawSides
 =================
 */
-void _UI_DrawSides(float x, float y, float w, float h, float size)
+void _UI_DrawSides(const float x, const float y, const float w, const float h, float size)
 {
 	size *= uiInfo.uiDC.xscale;
 	trap_R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
@@ -3985,7 +3990,7 @@ void _UI_DrawSides(float x, float y, float w, float h, float size)
 _UI_DrawTopBottom
 =================
 */
-void _UI_DrawTopBottom(float x, float y, float w, float h, float size)
+void _UI_DrawTopBottom(const float x, const float y, const float w, const float h, float size)
 {
 	size *= uiInfo.uiDC.yscale;
 	trap_R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
@@ -3999,7 +4004,8 @@ UI_DrawRect
 Coordinates are 640*480 virtual values
 =================
 */
-void _UI_DrawRect(float x, float y, float width, float height, float size, const float* color)
+void _UI_DrawRect(const float x, const float y, const float width, const float height, const float size,
+                  const float* color)
 {
 	trap_R_SetColor(color);
 
@@ -4043,7 +4049,7 @@ static void UI_DrawEffects(const rectDef_t* rect, float scale, vec4_t color)
 {
 	UI_DrawHandlePic(rect->x, rect->y - 14, 128, 8, 0/*uiInfo.uiDC.Assets.fxBasePic*/);
 	UI_DrawHandlePic(rect->x + uiInfo.effectsColor * 16 + 8, rect->y - 16, 16, 12,
-		0/*uiInfo.uiDC.Assets.fxPic[uiInfo.effectsColor]*/);
+	                 0/*uiInfo.uiDC.Assets.fxPic[uiInfo.effectsColor]*/);
 }
 
 /*
@@ -4051,7 +4057,7 @@ static void UI_DrawEffects(const rectDef_t* rect, float scale, vec4_t color)
 UI_Version
 =================
 */
-static void UI_Version(const rectDef_t* rect, float scale, vec4_t color, int iFontIndex)
+static void UI_Version(const rectDef_t* rect, const float scale, vec4_t color, const int iFontIndex)
 {
 	const int width = DC->textWidth(Q3_VERSION, scale, 0);
 
@@ -4084,7 +4090,8 @@ static void UI_DrawKeyBindStatus(rectDef_t* rect, float scale, vec4_t color, int
 UI_DrawKeyBindStatus
 =================
 */
-static void UI_DrawGLInfo(const rectDef_t* rect, float scale, vec4_t color, int textStyle, int iFontIndex)
+static void UI_DrawGLInfo(const rectDef_t* rect, const float scale, vec4_t color, const int textStyle,
+                          const int iFontIndex)
 {
 	constexpr auto MAX_LINES = 64;
 	char buff[4096];
@@ -4094,17 +4101,17 @@ static void UI_DrawGLInfo(const rectDef_t* rect, float scale, vec4_t color, int 
 
 	int y = rect->y;
 	Text_Paint(rect->x, y, scale, color, va("GL_VENDOR: %s", uiInfo.uiDC.glconfig.vendor_string), rect->w, textStyle,
-		iFontIndex);
+	           iFontIndex);
 	y += 15;
 	Text_Paint(rect->x, y, scale, color,
-		va("GL_VERSION: %s: %s", uiInfo.uiDC.glconfig.version_string, uiInfo.uiDC.glconfig.renderer_string),
-		rect->w, textStyle, iFontIndex);
+	           va("GL_VERSION: %s: %s", uiInfo.uiDC.glconfig.version_string, uiInfo.uiDC.glconfig.renderer_string),
+	           rect->w, textStyle, iFontIndex);
 	y += 15;
 	Text_Paint(rect->x, y, scale, color, "GL_PIXELFORMAT:", rect->w, textStyle, iFontIndex);
 	y += 15;
 	Text_Paint(rect->x, y, scale, color,
-		va("Color(%d-bits) Z(%d-bits) stencil(%d-bits)", uiInfo.uiDC.glconfig.colorBits,
-			uiInfo.uiDC.glconfig.depthBits, uiInfo.uiDC.glconfig.stencilBits), rect->w, textStyle, iFontIndex);
+	           va("Color(%d-bits) Z(%d-bits) stencil(%d-bits)", uiInfo.uiDC.glconfig.colorBits,
+	              uiInfo.uiDC.glconfig.depthBits, uiInfo.uiDC.glconfig.stencilBits), rect->w, textStyle, iFontIndex);
 	y += 15;
 	// build null terminated extension strings
 	Q_strncpyz(buff, uiInfo.uiDC.glconfig.extensions_string, sizeof buff);
@@ -4149,9 +4156,11 @@ static void UI_DrawCrosshair(const rectDef_t* rect, float scale, vec4_t color)
 UI_OwnerDraw
 =================
 */
-static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw,
-	int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader,
-	int textStyle, int iFontIndex)
+static void UI_OwnerDraw(float x, float y, float w, float h, const float text_x, const float text_y,
+                         const int ownerDraw,
+                         int ownerDrawFlags, int align, float special, const float scale, vec4_t color,
+                         qhandle_t shader,
+                         const int textStyle, const int iFontIndex)
 {
 	rectDef_t rect;
 
@@ -4201,22 +4210,22 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		}
 		else
 #endif
-			if (levelshot)
-			{
-				ui.R_DrawStretchPic(x, y, w, h, 0, 0, 1, 1, levelshot);
-			}
-			else
-			{
-				UI_DrawHandlePic(x, y, w, h, uis.menuBackShader);
-			}
+		if (levelshot)
+		{
+			ui.R_DrawStretchPic(x, y, w, h, 0, 0, 1, 1, levelshot);
+		}
+		else
+		{
+			UI_DrawHandlePic(x, y, w, h, uis.menuBackShader);
+		}
 
 		ui.R_Font_DrawString(x, // int ox
-			y + h, // int oy
-			s_savedata[s_savegame.currentLine].currentSaveFileMap, // const char *text
-			color, // paletteRGBA_c c
-			iFontIndex, // const int iFontHandle
-			w, //-1,		// iMaxPixelWidth (-1 = none)
-			scale // const float scale = 1.0f
+		                     y + h, // int oy
+		                     s_savedata[s_savegame.currentLine].currentSaveFileMap, // const char *text
+		                     color, // paletteRGBA_c c
+		                     iFontIndex, // const int iFontHandle
+		                     w, //-1,		// iMaxPixelWidth (-1 = none)
+		                     scale // const float scale = 1.0f
 		);
 		break;
 	case UI_PREVIEWCINEMATIC:
@@ -4270,7 +4279,7 @@ static qboolean UI_OwnerDrawVisible(int flags)
 Text_Width
 =================
 */
-int Text_Width(const char* text, float scale, int iFontIndex)
+int Text_Width(const char* text, const float scale, int iFontIndex)
 {
 	// temp code until Bob retro-fits all menus to have font specifiers...
 	//
@@ -4286,7 +4295,7 @@ int Text_Width(const char* text, float scale, int iFontIndex)
 UI_OwnerDrawWidth
 =================
 */
-int UI_OwnerDrawWidth(int ownerDraw, float scale)
+int UI_OwnerDrawWidth(const int ownerDraw, const float scale)
 {
 	//	int i, h, value;
 	//	const char *text;
@@ -4309,10 +4318,10 @@ int UI_OwnerDrawWidth(int ownerDraw, float scale)
 		}
 		break;
 
-		// FIXME BOB
-		//	case UI_SERVERREFRESHDATE:
-		//		s = UI_Cvar_VariableString(va("ui_lastServerRefresh_%i", ui_netSource.integer));
-		//		break;
+	// FIXME BOB
+	//	case UI_SERVERREFRESHDATE:
+	//		s = UI_Cvar_VariableString(va("ui_lastServerRefresh_%i", ui_netSource.integer));
+	//		break;
 	default:
 		break;
 	}
@@ -4329,7 +4338,7 @@ int UI_OwnerDrawWidth(int ownerDraw, float scale)
 Text_Height
 =================
 */
-int Text_Height(const char* text, float scale, int iFontIndex)
+int Text_Height(const char* text, const float scale, int iFontIndex)
 {
 	// temp until Bob retro-fits all menu files with font specifiers...
 	//
@@ -4346,7 +4355,7 @@ UI_MouseEvent
 =================
 */
 //JLFMOUSE  CALLED EACH FRAME IN UI
-void _UI_MouseEvent(int dx, int dy)
+void _UI_MouseEvent(const int dx, const int dy)
 {
 	// update mouse screen position
 	uiInfo.uiDC.cursorx += dx;
@@ -4382,7 +4391,7 @@ void _UI_MouseEvent(int dx, int dy)
 UI_KeyEvent
 =================
 */
-void _UI_KeyEvent(int key, qboolean down)
+void _UI_KeyEvent(const int key, const qboolean down)
 {
 	/*	extern qboolean SwallowBadNumLockedKPKey( int iKey );
 		if (SwallowBadNumLockedKPKey(key)){
@@ -4901,7 +4910,7 @@ char* UI_GetCurrentLevelshot(void)
 
 			while (true)
 			{
-				char screenShot[128] = { 0 };
+				char screenShot[128] = {0};
 
 				strcpy(screenShot, va("menu/art/unknownmap%i", SCREENSHOT_TOTAL));
 
@@ -5117,8 +5126,8 @@ static void UI_UpdateSaberCvars(void)
 	{
 		char rgb_color[8];
 		Com_sprintf(rgb_color, 8, "x%02x%02x%02x", Cvar_VariableIntegerValue("ui_rgb_saber_red"),
-			Cvar_VariableIntegerValue("ui_rgb_saber_green"),
-			Cvar_VariableIntegerValue("ui_rgb_saber_blue"));
+		            Cvar_VariableIntegerValue("ui_rgb_saber_green"),
+		            Cvar_VariableIntegerValue("ui_rgb_saber_blue"));
 		Cvar_Set("g_saber_color", rgb_color);
 	}
 
@@ -5126,8 +5135,8 @@ static void UI_UpdateSaberCvars(void)
 	{
 		char rgb_color[8];
 		Com_sprintf(rgb_color, 8, "x%02x%02x%02x", Cvar_VariableIntegerValue("ui_rgb_saber2_red"),
-			Cvar_VariableIntegerValue("ui_rgb_saber2_green"),
-			Cvar_VariableIntegerValue("ui_rgb_saber2_blue"));
+		            Cvar_VariableIntegerValue("ui_rgb_saber2_green"),
+		            Cvar_VariableIntegerValue("ui_rgb_saber2_blue"));
 		Cvar_Set("g_saber2_color", rgb_color);
 	}
 }
@@ -5366,7 +5375,7 @@ static void UI_InitAllocForcePowers(const char* forceName)
 }
 
 // Flip flop between being able to see the text showing the Force Point has or hasn't been allocated (Used by Force Power Allocation screen)
-static void UI_SetPowerTitleText(qboolean showAllocated)
+static void UI_SetPowerTitleText(const qboolean showAllocated)
 {
 	itemDef_t* item;
 
@@ -5443,7 +5452,7 @@ static void UI_ForcePowerWeaponsButton(qboolean activeFlag)
 void UI_SetItemColor(itemDef_t* item, const char* itemname, const char* name, vec4_t color);
 
 static void UI_SetHexPicLevel(const menuDef_t* menu, const int forcePowerI, const int powerLevel,
-	const qboolean goldFlag)
+                              const qboolean goldFlag)
 {
 	char itemName[128];
 
@@ -5458,7 +5467,7 @@ static void UI_SetHexPicLevel(const menuDef_t* menu, const int forcePowerI, cons
 		if (goldFlag)
 		{
 			Com_sprintf(itemGraphic, sizeof itemGraphic, "gfx/menus/hex_pattern_%d_gold",
-				powerLevel >= 4 ? 3 : powerLevel);
+			            powerLevel >= 4 ? 3 : powerLevel);
 		}
 		else
 		{
@@ -5600,12 +5609,12 @@ static void UI_DemoSetForceLevels(void)
 		//i am carrying over from a previous level, so get the increased power! (non-core only)
 		uiInfo.forcePowerLevel[FP_HEAL] = Q_max(pState->forcePowerLevel[FP_HEAL], uiInfo.forcePowerLevel[FP_HEAL]);
 		uiInfo.forcePowerLevel[FP_TELEPATHY] = Q_max(pState->forcePowerLevel[FP_TELEPATHY],
-			uiInfo.forcePowerLevel[FP_TELEPATHY]);
+		                                             uiInfo.forcePowerLevel[FP_TELEPATHY]);
 		uiInfo.forcePowerLevel[FP_GRIP] = Q_max(pState->forcePowerLevel[FP_GRIP], uiInfo.forcePowerLevel[FP_GRIP]);
 		uiInfo.forcePowerLevel[FP_LIGHTNING] = Q_max(pState->forcePowerLevel[FP_LIGHTNING],
-			uiInfo.forcePowerLevel[FP_LIGHTNING]);
+		                                             uiInfo.forcePowerLevel[FP_LIGHTNING]);
 		uiInfo.forcePowerLevel[FP_PROTECT] = Q_max(pState->forcePowerLevel[FP_PROTECT],
-			uiInfo.forcePowerLevel[FP_PROTECT]);
+		                                           uiInfo.forcePowerLevel[FP_PROTECT]);
 
 		uiInfo.forcePowerLevel[FP_ABSORB] =
 			Q_max(pState->forcePowerLevel[FP_ABSORB], uiInfo.forcePowerLevel[FP_ABSORB]);
@@ -5614,21 +5623,21 @@ static void UI_DemoSetForceLevels(void)
 		uiInfo.forcePowerLevel[FP_STASIS] =
 			Q_max(pState->forcePowerLevel[FP_STASIS], uiInfo.forcePowerLevel[FP_STASIS]);
 		uiInfo.forcePowerLevel[FP_DESTRUCTION] = Q_max(pState->forcePowerLevel[FP_DESTRUCTION],
-			uiInfo.forcePowerLevel[FP_DESTRUCTION]);
+		                                               uiInfo.forcePowerLevel[FP_DESTRUCTION]);
 		uiInfo.forcePowerLevel[FP_INSANITY] = Q_max(pState->forcePowerLevel[FP_INSANITY],
-			uiInfo.forcePowerLevel[FP_INSANITY]);
+		                                            uiInfo.forcePowerLevel[FP_INSANITY]);
 
 		uiInfo.forcePowerLevel[FP_GRASP] = Q_max(pState->forcePowerLevel[FP_GRASP], uiInfo.forcePowerLevel[FP_GRASP]);
 		uiInfo.forcePowerLevel[FP_REPULSE] = Q_max(pState->forcePowerLevel[FP_REPULSE],
-			uiInfo.forcePowerLevel[FP_REPULSE]);
+		                                           uiInfo.forcePowerLevel[FP_REPULSE]);
 		uiInfo.forcePowerLevel[FP_LIGHTNING_STRIKE] = Q_max(pState->forcePowerLevel[FP_FEAR],
-			uiInfo.forcePowerLevel[FP_LIGHTNING_STRIKE]);
+		                                                    uiInfo.forcePowerLevel[FP_LIGHTNING_STRIKE]);
 		uiInfo.forcePowerLevel[FP_FEAR] = Q_max(pState->forcePowerLevel[FP_FEAR], uiInfo.forcePowerLevel[FP_FEAR]);
 		uiInfo.forcePowerLevel[FP_DEADLYSIGHT] = Q_max(pState->forcePowerLevel[FP_DEADLYSIGHT],
-			uiInfo.forcePowerLevel[FP_DEADLYSIGHT]);
+		                                               uiInfo.forcePowerLevel[FP_DEADLYSIGHT]);
 		uiInfo.forcePowerLevel[FP_BLAST] = Q_max(pState->forcePowerLevel[FP_BLAST], uiInfo.forcePowerLevel[FP_BLAST]);
 		uiInfo.forcePowerLevel[FP_BLINDING] = Q_max(pState->forcePowerLevel[FP_BLINDING],
-			uiInfo.forcePowerLevel[FP_BLINDING]);
+		                                            uiInfo.forcePowerLevel[FP_BLINDING]);
 	}
 }
 #endif // !JK2_MODE
@@ -5680,7 +5689,7 @@ static void UI_ShutdownForceHelp(void)
 {
 	char itemName[128];
 	itemDef_t* item;
-	vec4_t color = { 0.65f, 0.65f, 0.65f, 1.0f };
+	vec4_t color = {0.65f, 0.65f, 0.65f, 1.0f};
 
 	menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -5763,7 +5772,7 @@ static void UI_ShutdownForceHelp(void)
 	{
 		char itemhexName[128];
 		char itemiconName[128];
-		vec4_t color2 = { 1.0f, 1.0f, 1.0f, 1.0f };
+		vec4_t color2 = {1.0f, 1.0f, 1.0f, 1.0f};
 
 		Com_sprintf(itemhexName, sizeof itemhexName, "%s_hexpic", powerEnums[uiInfo.forcePowerUpdated].title);
 		Com_sprintf(itemiconName, sizeof itemiconName, "%s_iconpic", powerEnums[uiInfo.forcePowerUpdated].title);
@@ -5783,7 +5792,7 @@ static void UI_ShutdownForceHelp(void)
 static void UI_DecrementCurrentForcePower(void)
 {
 	itemDef_t* item;
-	vec4_t color = { 0.65f, 0.65f, 0.65f, 1.0f };
+	vec4_t color = {0.65f, 0.65f, 0.65f, 1.0f};
 
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -5940,7 +5949,7 @@ static void UI_AffectForcePowerLevel(const char* forceName)
 	if (uiInfo.forcePowerUpdated > FP_UPDATED_NONE)
 	{
 		itemDef_t* item;
-		vec4_t color = { 0.25f, 0.25f, 0.25f, 1.0f };
+		vec4_t color = {0.25f, 0.25f, 0.25f, 1.0f};
 
 		// Make it so none of the other buttons can be clicked
 		for (short i = 0; i < MAX_POWER_ENUMS; i++)
@@ -6235,7 +6244,7 @@ static void UI_GiveInventory(const int itemIndex, const int amount)
 }
 
 //. Find weapons allocation screen BEGIN button and make active/inactive
-static void UI_WeaponAllocBeginButton(qboolean activeFlag)
+static void UI_WeaponAllocBeginButton(const qboolean activeFlag)
 {
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -6407,8 +6416,8 @@ static void UI_LoadMissionSelectMenu(const char* cvarName)
 
 // Update the player weapons with the chosen weapon
 static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, const int ammoAmount,
-	const char* iconItemName, const char* litIconItemName, const char* hexBackground,
-	const char* soundfile)
+                                  const char* iconItemName, const char* litIconItemName, const char* hexBackground,
+                                  const char* soundfile)
 {
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -6420,7 +6429,7 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 	const itemDef_s* iconItem = Menu_FindItemByName(menu, iconItemName);
 	const itemDef_s* litIconItem = Menu_FindItemByName(menu, litIconItemName);
 
-	const char* chosenItemName, * chosenButtonName;
+	const char *chosenItemName, *chosenButtonName;
 
 	// has this weapon already been chosen?
 	if (weaponIndex == uiInfo.selectedWeapon1)
@@ -6533,7 +6542,7 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 // Update the player weapons with the chosen weapon
 static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 {
-	const char* chosenItemName, * chosenButtonName, * background;
+	const char *chosenItemName, *chosenButtonName, *background;
 	int ammoIndex, weaponIndex;
 
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
@@ -6707,8 +6716,8 @@ static void UI_HighLightWeaponSelection(const int selectionslot)
 
 // Update the player throwable weapons (okay it's a bad description) with the chosen weapon
 static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoIndex, const int ammoAmount,
-	const char* iconItemName, const char* litIconItemName, const char* hexBackground,
-	const char* soundfile)
+                                       const char* iconItemName, const char* litIconItemName, const char* hexBackground,
+                                       const char* soundfile)
 {
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -6732,8 +6741,8 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 		return;
 	}
 
-	const char* chosenItemName = "chosenthrowweapon_icon";
-	const char* chosenButtonName = "chosenthrowweapon_button";
+	auto chosenItemName = "chosenthrowweapon_icon";
+	auto chosenButtonName = "chosenthrowweapon_button";
 	uiInfo.selectedThrowWeapon = weaponIndex;
 	uiInfo.selectedThrowWeaponAmmoIndex = ammoIndex;
 	uiInfo.weaponThrowButton = uiInfo.runScriptItem;
@@ -6819,8 +6828,8 @@ static void UI_RemoveThrowWeaponSelection(void)
 		return;
 	}
 
-	const char* chosenItemName = "chosenthrowweapon_icon";
-	const char* chosenButtonName = "chosenthrowweapon_button";
+	auto chosenItemName = "chosenthrowweapon_icon";
+	auto chosenButtonName = "chosenthrowweapon_button";
 	const char* background = uiInfo.selectedThrowWeaponItemName;
 
 	// Reset background of upper icon
@@ -6978,16 +6987,16 @@ static void UI_UpdateCharacterSkin(void)
 	}
 
 	Com_sprintf(skin, sizeof skin, "models/players/%s/|%s|%s|%s",
-		Cvar_VariableString("ui_char_model"),
-		Cvar_VariableString("ui_char_skin_head"),
-		Cvar_VariableString("ui_char_skin_torso"),
-		Cvar_VariableString("ui_char_skin_legs")
+	            Cvar_VariableString("ui_char_model"),
+	            Cvar_VariableString("ui_char_skin_head"),
+	            Cvar_VariableString("ui_char_skin_torso"),
+	            Cvar_VariableString("ui_char_skin_legs")
 	);
 
 	ItemParse_model_g2skin_go(item, skin);
 }
 
-static void UI_UpdateCharacter(qboolean changedModel)
+static void UI_UpdateCharacter(const qboolean changedModel)
 {
 	char modelPath[MAX_QPATH];
 
@@ -7033,7 +7042,7 @@ void UI_UpdateSaberType(void)
 	}
 }
 
-static void UI_UpdateSaberHilt(qboolean secondSaber)
+static void UI_UpdateSaberHilt(const qboolean secondSaber)
 {
 	char model[MAX_QPATH];
 	char modelPath[MAX_QPATH];
@@ -7182,7 +7191,7 @@ UI_AdjustSaveGameListBox
 */
 // Yeah I could get fired for this... in a world of good and bad, this is bad
 // I wish we passed in the menu item to RunScript(), oh well...
-void UI_AdjustSaveGameListBox(int currentLine)
+void UI_AdjustSaveGameListBox(const int currentLine)
 {
 	// could be in either the ingame or shell load menu (I know, I know it's bad)
 	const menuDef_t* menu = Menus_FindByName("loadgameMenu");
@@ -7238,7 +7247,7 @@ void ReadSaveDirectory(void)
 		else
 		{
 			fileCnt = ui.FS_GetFileList("Account/Saved-Missions-JediAcademyplus", ".sav", s_savegame.listBuf,
-				LISTBUFSIZE); //academy version
+			                            LISTBUFSIZE); //academy version
 		}
 	}
 	else if (ui_com_outcast.integer == 1)
@@ -7251,7 +7260,7 @@ void ReadSaveDirectory(void)
 		else
 		{
 			fileCnt = ui.FS_GetFileList("Account/Saved-Missions-JediOutcastplus", ".sav", s_savegame.listBuf,
-				LISTBUFSIZE); //outcast version
+			                            LISTBUFSIZE); //outcast version
 		}
 	}
 	else if (ui_com_outcast.integer == 2)
@@ -7308,7 +7317,7 @@ void ReadSaveDirectory(void)
 		else
 		{
 			fileCnt = ui.FS_GetFileList("Account/Saved-Missions-JediAcademyplus", ".sav", s_savegame.listBuf,
-				LISTBUFSIZE); //academy version
+			                            LISTBUFSIZE); //academy version
 		}
 	}
 
@@ -7331,7 +7340,7 @@ void ReadSaveDirectory(void)
 			{
 				// Is this a valid file??? & Get comment of file
 				result = ui.SG_GetSaveGameComment(holdChar, s_savedata[s_savegame.saveFileCnt].currentSaveFileComments,
-					s_savedata[s_savegame.saveFileCnt].currentSaveFileMap);
+				                                  s_savedata[s_savegame.saveFileCnt].currentSaveFileMap);
 				if (result != 0) // ignore Bad save game
 				{
 					s_savedata[s_savegame.saveFileCnt].currentSaveFileName = holdChar;

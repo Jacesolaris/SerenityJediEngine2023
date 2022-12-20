@@ -197,7 +197,7 @@ void R_RemapShader(const char* shaderName, const char* newShaderName, const char
 ParseVector
 ===============
 */
-qboolean ParseVector(const char** text, int count, float* v) {
+qboolean ParseVector(const char** text, const int count, float* v) {
 	// FIXME: spaces are currently required after parens, should change parseext...
 	const char* token = COM_ParseExt(text, qfalse);
 	if (strcmp(token, "(") != 0) {
@@ -2474,7 +2474,7 @@ sortedIndex.
 ==============
 */
 extern bool gServerSkinHack;
-static void FixRenderCommandList(int newShader) {
+static void FixRenderCommandList(const int newShader) {
 	if (!gServerSkinHack) {
 		const renderCommandList_t* cmdList = &backEndData->commands;
 
@@ -3295,7 +3295,7 @@ most world construction surfaces.
 
 ===============
 */
-shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, qboolean mipRawImage)
+shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, const qboolean mipRawImage)
 {
 	char		strippedName[MAX_QPATH];
 	char		fileName[MAX_QPATH];
@@ -3653,7 +3653,7 @@ qhandle_t RE_RegisterShaderNoMip(const char* name) {
 }
 
 //added for ui -rww
-const char* RE_ShaderNameFromIndex(int index)
+const char* RE_ShaderNameFromIndex(const int index)
 {
 	assert(index >= 0 && index < tr.numShaders&& tr.shaders[index]);
 	return tr.shaders[index]->name;
@@ -3667,7 +3667,7 @@ When a handle is passed in by another module, this range checks
 it and returns a valid (possibly default) shader_t to be used internally.
 ====================
 */
-shader_t* R_GetShaderByHandle(qhandle_t hShader) {
+shader_t* R_GetShaderByHandle(const qhandle_t hShader) {
 	if (hShader < 0) {
 		ri->Printf(PRINT_ALL, S_COLOR_YELLOW  "R_GetShaderByHandle: out of range hShader '%d'\n", hShader);
 		return tr.defaultShader;
@@ -4073,7 +4073,7 @@ static void CreateExternalShaders(void) {
 R_InitShaders
 ==================
 */
-void R_InitShaders(qboolean server)
+void R_InitShaders(const qboolean server)
 {
 	//ri->Printf( PRINT_ALL, "Initializing Shaders\n" );
 

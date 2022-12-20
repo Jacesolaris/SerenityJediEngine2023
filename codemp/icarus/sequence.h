@@ -32,12 +32,11 @@ class ICARUS_Instance;
 
 class CSequence
 {
-	using sequence_l = std::list < CSequence* >;
-	using sequenceID_m = std::map	< int, CSequence*>;
-	using block_l = std::list < CBlock* >;
+	using sequence_l = std::list<CSequence*>;
+	using sequenceID_m = std::map<int, CSequence*>;
+	using block_l = std::list<CBlock*>;
 
 public:
-
 	//Constructors / Destructors
 	CSequence(void);
 	~CSequence(void);
@@ -51,7 +50,7 @@ public:
 	void RemoveChild(CSequence*);
 
 	void SetParent(CSequence*);
-	CSequence* GetParent(void)	const { return m_parent; }
+	CSequence* GetParent(void) const { return m_parent; }
 
 	//Block manipulation
 	CBlock* PopCommand(int);
@@ -60,23 +59,23 @@ public:
 	//Flag utilties
 	void SetFlag(int);
 	void RemoveFlag(int, bool = false);
-	int  HasFlag(int) const;
-	int	 GetFlags(void)		const { return m_flags; }
-	void SetFlags(int flags) { m_flags = flags; }
+	int HasFlag(int) const;
+	int GetFlags(void) const { return m_flags; }
+	void SetFlags(const int flags) { m_flags = flags; }
 
 	//Various encapsulation utilities
-	int GetIterations(void)		const { return m_iterations; }
-	void SetIterations(int it) { m_iterations = it; }
+	int GetIterations(void) const { return m_iterations; }
+	void SetIterations(const int it) { m_iterations = it; }
 
-	int GetID(void)		const { return m_id; }
-	void SetID(int id) { m_id = id; }
+	int GetID(void) const { return m_id; }
+	void SetID(const int id) { m_id = id; }
 
-	CSequence* GetReturn(void)	const { return m_return; }
+	CSequence* GetReturn(void) const { return m_return; }
 
 	void SetReturn(CSequence* sequence);
 
-	int GetNumCommands(void)	const { return m_numCommands; }
-	int GetNumChildren(void)	const { return static_cast<int>(m_children.size()); }
+	int GetNumCommands(void) const { return m_numCommands; }
+	int GetNumChildren(void) const { return static_cast<int>(m_children.size()); }
 
 	CSequence* GetChildByIndex(int id);
 	bool HasChild(CSequence* sequence);
@@ -86,31 +85,33 @@ public:
 	static int Save(void);
 	static int Load(void);
 
-	void* operator new(size_t size)
-	{	// Allocate the memory.
+	void* operator new(const size_t size)
+	{
+		// Allocate the memory.
 		return Z_Malloc(size, TAG_ICARUS3, qtrue);
 	}
+
 	// Overloaded delete operator.
 	void operator delete(void* pRawData)
-	{	// Free the Memory.
+	{
+		// Free the Memory.
 		Z_Free(pRawData);
 	}
 
 protected:
-
 	int SaveCommand(const CBlock* block) const;
 
 	ICARUS_Instance* m_owner;
 
 	//Organization information
-	sequence_l				m_children;
+	sequence_l m_children;
 	CSequence* m_parent;
 	CSequence* m_return;
 
 	//Data information
-	block_l					m_commands;
-	int						m_flags;
-	int						m_iterations;
-	int						m_id;
-	int						m_numCommands;
+	block_l m_commands;
+	int m_flags;
+	int m_iterations;
+	int m_id;
+	int m_numCommands;
 };

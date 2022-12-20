@@ -29,8 +29,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 class timing_c
 {
 private:
-	uint64_t	start;
-	uint64_t	end;
+	uint64_t start;
+	uint64_t end;
 
 public:
 	timing_c(void)
@@ -48,7 +48,7 @@ public:
 
 	int End()
 	{
-		int64_t	time;
+		int64_t time;
 
 #ifdef _WIN32
 		end = __rdtsc();
@@ -64,4 +64,5 @@ public:
 		return static_cast<int>(time);
 	}
 };
+
 // end

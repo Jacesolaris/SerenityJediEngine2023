@@ -41,7 +41,7 @@ static void skipWhitespace(gsl::cstring_view& text, const bool allowLineBreaks)
 	{
 		++whitespaceEnd;
 	}
-	text = { whitespaceEnd, text.end() };
+	text = {whitespaceEnd, text.end()};
 }
 
 static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allowLineBreaks)
@@ -53,10 +53,10 @@ static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allowL
 		auto commentEnd = std::find(text.begin() + 2, text.end(), '\n');
 		if (commentEnd == text.end())
 		{
-			text = { text.end(), text.end() };
+			text = {text.end(), text.end()};
 			return;
 		}
-		text = { commentEnd, text.end() };
+		text = {commentEnd, text.end()};
 		skipWhitespaceAndComments(text, allowLineBreaks);
 		return;
 	}
@@ -64,14 +64,14 @@ static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allowL
 	// skip multi line comments
 	if (text.size() >= 2 && text[0] == '/' && text[1] == '*')
 	{
-		static const std::array<char, 2> endStr{ '*', '/' };
+		static const std::array<char, 2> endStr{'*', '/'};
 		auto commentEnd = std::search(text.begin(), text.end(), endStr.begin(), endStr.end());
 		if (commentEnd == text.end())
 		{
-			text = { text.end(), text.end() };
+			text = {text.end(), text.end()};
 			return;
 		}
-		text = { commentEnd + endStr.size(), text.end() };
+		text = {commentEnd + endStr.size(), text.end()};
 		skipWhitespace(text, allowLineBreaks);
 	}
 }
@@ -95,7 +95,7 @@ A token can be:
 - EOL- or comment-delimited (if readToEOL == true); i.e. reads to end of line or the first // or /*
 @param text adjusted to start beyond the read token
 */
-static gsl::cstring_view GetToken(gsl::cstring_view& text, bool allowLineBreaks, bool readToEOL = false)
+static gsl::cstring_view GetToken(gsl::cstring_view& text, const bool allowLineBreaks, const bool readToEOL = false)
 {
 	skipWhitespaceAndComments(text, allowLineBreaks);
 	// EOF
@@ -110,12 +110,12 @@ static gsl::cstring_view GetToken(gsl::cstring_view& text, bool allowLineBreaks,
 		auto tokenEnd = std::find(text.begin() + 1, text.end(), '"');
 		if (tokenEnd == text.end())
 		{
-			gsl::cstring_view token = { text.begin() + 1, text.end() };
-			text = { text.end(), text.end() };
+			gsl::cstring_view token = {text.begin() + 1, text.end()};
+			text = {text.end(), text.end()};
 			return token;
 		}
-		gsl::cstring_view token = { text.begin() + 1, tokenEnd };
-		text = { tokenEnd + 1, text.end() };
+		gsl::cstring_view token = {text.begin() + 1, tokenEnd};
+		text = {tokenEnd + 1, text.end()};
 		return token;
 	}
 	if (readToEOL)
@@ -136,18 +136,18 @@ static gsl::cstring_view GetToken(gsl::cstring_view& text, bool allowLineBreaks,
 				)
 			);
 		}
-		const gsl::cstring_view token{ text.begin(), tokenEnd };
-		text = { tokenEnd, text.end() };
+		const gsl::cstring_view token{text.begin(), tokenEnd};
+		text = {tokenEnd, text.end()};
 		return removeTrailingWhitespace(token);
 	}
 	// consume until first whitespace (if allowLineBreaks == false, that may be text.begin(); in that case token is empty.)
 	auto tokenEnd = std::find_if(text.begin(), text.end(), std::isspace);
-	gsl::cstring_view token{ text.begin(), tokenEnd };
-	text = { tokenEnd, text.end() };
+	gsl::cstring_view token{text.begin(), tokenEnd};
+	text = {tokenEnd, text.end()};
 	return token;
 }
 
-CGPProperty::CGPProperty(gsl::cstring_view initKey, gsl::cstring_view initValue)
+CGPProperty::CGPProperty(const gsl::cstring_view initKey, const gsl::cstring_view initValue)
 	: mKey(initKey)
 {
 	if (!initValue.empty())
@@ -156,7 +156,7 @@ CGPProperty::CGPProperty(gsl::cstring_view initKey, gsl::cstring_view initValue)
 	}
 }
 
-void CGPProperty::AddValue(gsl::cstring_view newValue)
+void CGPProperty::AddValue(const gsl::cstring_view newValue)
 {
 	mValues.push_back(newValue);
 }
@@ -232,7 +232,7 @@ bool CGPGroup::Parse(gsl::cstring_view& data, const bool topLevel)
 	}
 }
 
-bool CGenericParser2::Parse(gsl::czstring filename)
+bool CGenericParser2::Parse(const gsl::czstring filename)
 {
 	Clear();
 	mFileContent = FS::ReadFile(filename);

@@ -28,21 +28,21 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 using pscript_t = struct pscript_s
 {
 	char* buffer;
-	long	length;
+	long length;
 };
 
-using entlist_t = std::map < std::string, int >;
-using bufferlist_t = std::map < std::string, pscript_t* >;
+using entlist_t = std::map<std::string, int>;
+using bufferlist_t = std::map<std::string, pscript_t*>;
 
 //ICARUS includes
-extern	interface_export_t	interface_export;
+extern interface_export_t interface_export;
 
-extern	void Interface_Init(interface_export_t* pe);
-extern	int ICARUS_RunScript(sharedEntity_t* ent, const char* name);
-extern	bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate = qfalse);
+extern void Interface_Init(interface_export_t* pe);
+extern int ICARUS_RunScript(sharedEntity_t* ent, const char* name);
+extern bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate = qfalse);
 extern ICARUS_Instance* iICARUS;
-extern bufferlist_t		ICARUS_BufferList;
-extern entlist_t		ICARUS_EntList;
+extern bufferlist_t ICARUS_BufferList;
+extern entlist_t ICARUS_EntList;
 
 //
 //	g_ICARUS.cpp
@@ -55,4 +55,4 @@ void ICARUS_AssociateEnt(sharedEntity_t* ent);
 void ICARUS_Shutdown(void);
 void Svcmd_ICARUS_f(void);
 
-extern int		ICARUS_entFilter;
+extern int ICARUS_entFilter;

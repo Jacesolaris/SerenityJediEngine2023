@@ -38,7 +38,7 @@ we need it...
 
 extern cvar_t* g_AIsurrender;
 extern qboolean showBBoxes;
-static vec3_t NPCDEBUG_BLUE = { 0.0, 0.0, 1.0 };
+static vec3_t NPCDEBUG_BLUE = {0.0, 0.0, 1.0};
 extern void CG_Cube(vec3_t mins, vec3_t maxs, vec3_t color, float alpha);
 extern void NPC_CheckGetNewWeapon(void);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
@@ -105,16 +105,17 @@ void NPC_BSAdvanceFight()
 					trace_t tr;
 					//are we gonna hit him if we shoot at his center?
 					gi.trace(&tr, muzzle, nullptr, nullptr, enemy_org, NPC->s.number, MASK_SHOT,
-						static_cast<EG2_Collision>(0), 0);
+					         static_cast<EG2_Collision>(0), 0);
 					const gentity_t* trace_ent = &g_entities[tr.entityNum];
 					if (trace_ent != NPC->enemy &&
-						(!trace_ent || !trace_ent->client || !NPC->client->enemyTeam || NPC->client->enemyTeam != trace_ent
+						(!trace_ent || !trace_ent->client || !NPC->client->enemyTeam || NPC->client->enemyTeam !=
+							trace_ent
 							->client->playerTeam))
 					{
 						//no, so shoot for the head
 						attack_scale *= 0.75;
 						gi.trace(&tr, muzzle, nullptr, nullptr, enemy_head, NPC->s.number, MASK_SHOT,
-							static_cast<EG2_Collision>(0), 0);
+						         static_cast<EG2_Collision>(0), 0);
 						trace_ent = &g_entities[tr.entityNum];
 					}
 
@@ -414,8 +415,8 @@ void NPC_BSFollowLeader_UpdateEnemy()
 	if (!NPC->enemy)
 	{
 		//no enemy, find one
-		NPC_CheckEnemy(static_cast<qboolean>(NPCInfo->confusionTime < level.time&& NPCInfo->insanityTime < level.time),
-			qfalse); //don't find new enemy if this is tempbehav
+		NPC_CheckEnemy(static_cast<qboolean>(NPCInfo->confusionTime < level.time && NPCInfo->insanityTime < level.time),
+		               qfalse); //don't find new enemy if this is tempbehav
 		if (NPC->enemy)
 		{
 			//just found one
@@ -478,7 +479,7 @@ void NPC_BSFollowLeader_UpdateEnemy()
 		else if (NPC->client->ps.weapon && NPCInfo->enemyCheckDebounceTime < level.time)
 		{
 			NPC_CheckEnemy(
-				static_cast<qboolean>(NPCInfo->confusionTime < level.time&& NPCInfo->insanityTime < level.time ||
+				static_cast<qboolean>(NPCInfo->confusionTime < level.time && NPCInfo->insanityTime < level.time ||
 					NPCInfo->
 					tempBehavior != BS_FOLLOW_LEADER), qfalse); //don't find new enemy if this is tempbehav
 		}
@@ -524,9 +525,9 @@ bool NPC_BSFollowLeader_AttackEnemy()
 			//shoot
 			NPC_AimAdjust(2);
 			if (NPC_GetHFOVPercentage(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles,
-				NPCInfo->stats.hfov) > 0.6f
+			                          NPCInfo->stats.hfov) > 0.6f
 				&& NPC_GetHFOVPercentage(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles,
-					NPCInfo->stats.vfov) > 0.5f)
+				                         NPCInfo->stats.vfov) > 0.5f)
 			{
 				//actually withing our front cone
 				WeaponThink(qtrue);
@@ -713,7 +714,7 @@ void NPC_BSJump()
 			return;
 		}
 
-		//Create a parabola
+	//Create a parabola
 
 		if (NPC->currentOrigin[2] > NPCInfo->goalEntity->currentOrigin[2])
 		{
@@ -731,26 +732,26 @@ void NPC_BSJump()
 			VectorCopy(NPCInfo->goalEntity->currentOrigin, p2);
 		}
 
-		//z = xy*xy
+	//z = xy*xy
 		VectorSubtract(p2, p1, dir);
 		dir[2] = 0;
 
-		//Get xy and z diffs
+	//Get xy and z diffs
 		xy = VectorNormalize(dir);
 		z = p1[2] - p2[2];
 
 		apexHeight = APEX_HEIGHT / 2;
 
-		//FIXME: length of xy will change curve of parabola, need to account for this
-		//somewhere... PARA_WIDTH
+	//FIXME: length of xy will change curve of parabola, need to account for this
+	//somewhere... PARA_WIDTH
 
 		z = sqrt(apexHeight + z) - sqrt(apexHeight);
 
 		assert(z >= 0);
 
-		//		gi.Printf("apex is %4.2f percent from p1: ", (xy-z)*0.5/xy*100.0f);
+	//		gi.Printf("apex is %4.2f percent from p1: ", (xy-z)*0.5/xy*100.0f);
 
-		// Don't need to set apex xy if NPC is jumping directly up.
+	// Don't need to set apex xy if NPC is jumping directly up.
 		if (xy > 0.0f)
 		{
 			xy -= z;
@@ -764,7 +765,7 @@ void NPC_BSJump()
 
 		VectorCopy(apex, NPC->pos1);
 
-		//Now we have the apex, aim for it
+	//Now we have the apex, aim for it
 		height = apex[2] - NPC->currentOrigin[2];
 		time = sqrt(height / (.5 * NPC->client->ps.gravity));
 		if (!time)
@@ -773,7 +774,7 @@ void NPC_BSJump()
 			return;
 		}
 
-		// set s.origin2 to the push velocity
+	// set s.origin2 to the push velocity
 		VectorSubtract(apex, NPC->currentOrigin, NPC->client->ps.velocity);
 		NPC->client->ps.velocity[2] = 0;
 		dist = VectorNormalize(NPC->client->ps.velocity);
@@ -783,10 +784,10 @@ void NPC_BSJump()
 
 		NPC->client->ps.velocity[2] = time * NPC->client->ps.gravity;
 
-		//		gi.Printf( "%s jumping %s, gravity at %4.0f percent\n", NPC->targetname, vtos(NPC->client->ps.velocity), NPC->client->ps.gravity/8.0f );
+	//		gi.Printf( "%s jumping %s, gravity at %4.0f percent\n", NPC->targetname, vtos(NPC->client->ps.velocity), NPC->client->ps.gravity/8.0f );
 
 		NPCInfo->jumpState = JS_JUMPING;
-		//FIXME: jumpsound?
+	//FIXME: jumpsound?
 		break;
 	case JS_JUMPING:
 
@@ -817,28 +818,28 @@ void NPC_BSJump()
 		}
 		break;
 	case JS_LANDING:
-	{
-		if (NPC->client->ps.legsAnimTimer > 0)
 		{
-			//Still playing landing anim
-			return;
-		}
-		NPCInfo->jumpState = JS_WAITING;
+			if (NPC->client->ps.legsAnimTimer > 0)
+			{
+				//Still playing landing anim
+				return;
+			}
+			NPCInfo->jumpState = JS_WAITING;
 
-		NPCInfo->goalEntity = UpdateGoal();
-		// If he made it to his goal or his task is no longer pending.
-		if (!NPCInfo->goalEntity || !Q3_TaskIDPending(NPC, TID_MOVE_NAV))
-		{
-			NPC_ClearGoal();
-			NPCInfo->goalTime = level.time;
-			NPCInfo->aiFlags &= ~NPCAI_MOVING;
-			ucmd.forwardmove = 0;
-			NPC->flags &= ~FL_NO_KNOCKBACK;
-			//Return that the goal was reached
-			Q3_TaskIDComplete(NPC, TID_MOVE_NAV);
+			NPCInfo->goalEntity = UpdateGoal();
+			// If he made it to his goal or his task is no longer pending.
+			if (!NPCInfo->goalEntity || !Q3_TaskIDPending(NPC, TID_MOVE_NAV))
+			{
+				NPC_ClearGoal();
+				NPCInfo->goalTime = level.time;
+				NPCInfo->aiFlags &= ~NPCAI_MOVING;
+				ucmd.forwardmove = 0;
+				NPC->flags &= ~FL_NO_KNOCKBACK;
+				//Return that the goal was reached
+				Q3_TaskIDComplete(NPC, TID_MOVE_NAV);
+			}
 		}
-	}
-	break;
+		break;
 	case JS_WAITING:
 	default:
 		NPCInfo->jumpState = JS_FACING;
@@ -1043,7 +1044,7 @@ void NPC_BSNoClip()
 	if (UpdateGoal())
 	{
 		vec3_t dir, forward, right, angles;
-		constexpr vec3_t up = { 0, 0, 1 };
+		constexpr vec3_t up = {0, 0, 1};
 
 		VectorSubtract(NPCInfo->goalEntity->currentOrigin, NPC->currentOrigin, dir);
 
@@ -1159,7 +1160,7 @@ void NPC_BSWander()
 			{
 				NPCInfo->investigateDebounceTime = level.time + Q_irand(2000, 10000);
 				NPC_SetAnim(NPC, SETANIM_BOTH, Q_irand(0, 1) == 0 ? BOTH_GUARD_LOOKAROUND1 : BOTH_GUARD_IDLE1,
-					SETANIM_FLAG_NORMAL);
+				            SETANIM_FLAG_NORMAL);
 			}
 		}
 
@@ -1516,7 +1517,7 @@ qboolean NPC_CheckSurrender(void)
 extern int NPC_CheckMultipleEnemies(const gentity_t* closestTo, int enemyTeam, qboolean checkVis);
 extern void WP_MeleeTime(gentity_t* meleer);
 
-qboolean NPC_CheckSubmit(qboolean noEscape = qfalse)
+qboolean NPC_CheckSubmit(const qboolean noEscape = qfalse)
 {
 	if (!g_AIsurrender->integer
 		&& NPC->client->NPC_class != CLASS_UGNAUGHT
@@ -1679,14 +1680,14 @@ qboolean NPC_BSFlee(void)
 		TIMER_Done(NPC, "panic") && // Panic causes him to run for a bit, don't pickup weapons
 		TIMER_Done(NPC, "CheckForWeaponToPickup") &&
 		G_CanPickUpWeapons(NPC) //Allowed To Pick Up Dropped Weapons
-		)
+	)
 	{
 		gentity_t* foundWeap = NPC_SearchForWeapons();
 
 		// Ok, There Is A Weapon!  Try Going To It!
 		//------------------------------------------
 		if (foundWeap && NAV::SafePathExists(NPC->currentOrigin, foundWeap->currentOrigin, NPC->enemy->currentOrigin,
-			150.0f))
+		                                     150.0f))
 		{
 			NAV::ClearPath(NPC); // Remove Any Old Path
 
@@ -1799,7 +1800,7 @@ qboolean NPC_BSFlee(void)
 		{
 			//done panicking, time to realize we're dogmeat, if we haven't been able to flee for a few seconds
 			if (level.time - NPC->lastMoveTime > 3000 && level.time - NPCInfo->surrenderTime > 3000)
-				//and haven't just finished surrendering
+			//and haven't just finished surrendering
 			{
 				NPC_FaceEnemy();
 				NPC_Surrender();
@@ -1849,7 +1850,8 @@ qboolean NPC_BSFlee(void)
 	return qfalse;
 }
 
-void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin, int fleeTimeMax)
+void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
+                   const int fleeTimeMax)
 {
 	if (Q3_TaskIDPending(NPC, TID_MOVE_NAV))
 	{
@@ -1882,14 +1884,14 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fl
 	{
 		//IF either great danger OR I have no weapon OR I'm alone and low on health, THEN try to find a combat point out of PVS
 		cp = NPC_FindCombatPoint(NPC->currentOrigin, dangerPoint, NPC->currentOrigin,
-			CP_COVER | CP_AVOID | CP_HAS_ROUTE | CP_NO_PVS, 128);
+		                         CP_COVER | CP_AVOID | CP_HAS_ROUTE | CP_NO_PVS, 128);
 	}
 	//FIXME: still happens too often...
 	if (cp == -1)
 	{
 		//okay give up on the no PVS thing
 		cp = NPC_FindCombatPoint(NPC->currentOrigin, dangerPoint, NPC->currentOrigin,
-			CP_COVER | CP_AVOID | CP_HAS_ROUTE, 128);
+		                         CP_COVER | CP_AVOID | CP_HAS_ROUTE, 128);
 		if (cp == -1)
 		{
 			//okay give up on the avoid
@@ -1944,8 +1946,8 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fl
 	G_AddVoiceEvent(NPC, Q_irand(EV_COVER1, EV_COVER5), 5000 + Q_irand(0, 10000));
 }
 
-void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin,
-	int fleeTimeMax)
+void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
+                 const int fleeTimeMax)
 {
 	if (!self->NPC)
 	{

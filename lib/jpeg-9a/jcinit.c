@@ -27,7 +27,7 @@
   */
 
 GLOBAL(void)
-jinit_compress_master(j_compress_ptr cinfo)
+jinit_compress_master(const j_compress_ptr cinfo)
 {
 	/* For now, precision must match compiled-in value... */
 	if (cinfo->data_precision != BITS_IN_JSAMPLE)

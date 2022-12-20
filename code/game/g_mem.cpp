@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 static int allocPoint;
 static cvar_t* g_debugalloc;
 
-void* G_Alloc(int size)
+void* G_Alloc(const int size)
 {
 	if (g_debugalloc->integer)
 	{

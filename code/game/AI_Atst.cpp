@@ -64,9 +64,9 @@ static void ATST_PlayEffect(gentity_t* self, const int boltID, const char* fx)
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			boltID,
-			&boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
-			nullptr, self->s.modelScale);
+		                       boltID,
+		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       nullptr, self->s.modelScale);
 
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
@@ -83,7 +83,7 @@ Called by NPC's and player in an ATST
 -------------------------
 */
 
-void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc)
+void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, const int hit_loc)
 {
 	int newBolt;
 
@@ -133,8 +133,9 @@ void g_atst_check_pain(gentity_t* self, gentity_t* other, const vec3_t point, in
 NPC_ATST_Pain
 -------------------------
 */
-void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hit_loc)
+void NPC_ATST_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                   const int mod,
+                   const int hit_loc)
 {
 	g_atst_check_pain(self, other, point, damage, mod, hit_loc);
 	NPC_Pain(self, inflictor, other, point, damage, mod);
@@ -163,7 +164,7 @@ void ATST_Hunt(qboolean visible, qboolean advance)
 ATST_Ranged
 -------------------------
 */
-void ATST_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
+void ATST_Ranged(const qboolean visible, const qboolean advance, const qboolean altAttack)
 {
 	if (TIMER_Done(NPC, "atkDelay") && visible) // Attack?
 	{
@@ -230,11 +231,11 @@ void ATST_Attack(void)
 
 		NPC_ChangeWeapon(WP_ATST_SIDE);
 
-		// See if the side weapons are there
+	// See if the side weapons are there
 		blasterTest = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "head_light_blaster_cann");
 		chargerTest = gi.G2API_GetSurfaceRenderStatus(&NPC->ghoul2[NPC->playerModel], "head_concussion_charger");
 
-		// It has both side weapons
+	// It has both side weapons
 		if (!(blasterTest & TURN_OFF) && !(chargerTest & TURN_OFF))
 		{
 			const int weapon = Q_irand(0, 1); // 0 is blaster, 1 is charger (ALT SIDE)

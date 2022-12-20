@@ -332,7 +332,7 @@ public:
 				mMinCol = static_cast<int>((mMins[mTrack->mWAxis] - mTrack->mMins[mTrack->mWAxis]) / mTrack->
 					mGridCellSize);
 				mMaxCol = static_cast<int>((mMaxs[mTrack->mWAxis] - mTrack->mMins[mTrack->mWAxis] - mTrack->
-					mGridCellSize / 2.0f) / mTrack->
+						mGridCellSize / 2.0f) / mTrack->
 					mGridCellSize);
 
 				//if (mTrack->mNegative)
@@ -631,7 +631,7 @@ void Rail_Update()
 						(playerToMoverDistance < WOOSH_SUPPORT_RANGE || //  And Close Enough for Support
 							playerToMoverDistance < WOOSH_TUNNEL_RANGE && mover.mRows > 10)
 						//   Or Close Enough For Tunnel
-						)
+					)
 					{
 						mover.mSoundPlayed = true;
 						int wooshSound;
@@ -894,7 +894,7 @@ void CRailTrack::Update()
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CRailTrack::RandomizeTestCols(int startCol, int stopCol)
+void CRailTrack::RandomizeTestCols(const int startCol, const int stopCol)
 {
 	const int numCols = stopCol - startCol;
 
@@ -912,7 +912,7 @@ void CRailTrack::RandomizeTestCols(int startCol, int stopCol)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CRailTrack::TestMoverInCells(const CRailMover* mover, int atCol)
+bool CRailTrack::TestMoverInCells(const CRailMover* mover, const int atCol)
 {
 	//for (int moverRow=0; (moverRow<mover->mRows); moverRow++)
 	//{
@@ -930,7 +930,7 @@ bool CRailTrack::TestMoverInCells(const CRailMover* mover, int atCol)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CRailTrack::InsertMoverInCells(CRailMover* mover, int atCol)
+void CRailTrack::InsertMoverInCells(CRailMover* mover, const int atCol)
 {
 	for (int moverCol = 0; moverCol < mover->mCols; moverCol++)
 	{

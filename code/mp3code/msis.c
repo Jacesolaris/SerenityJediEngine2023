@@ -52,7 +52,7 @@ is_process does ms or stereo in "forbidded sf regions"
 typedef float ARRAY2[2];
 typedef float ARRAY8_2[8][2];
 
-float csa[8][2];		/* antialias */		// effectively constant
+float csa[8][2]; /* antialias */ // effectively constant
 
 /* pMP3Stream->nBand[0] = long, pMP3Stream->nBand[1] = short */
 ////@@@@extern int pMP3Stream->nBand[2][22];
@@ -61,19 +61,20 @@ float csa[8][2];		/* antialias */		// effectively constant
 /* intensity stereo */
 /* if ms mode quant pre-scales all values by 1.0/sqrt(2.0) ms_mode in table
    compensates   */
-static float lr[2][8][2];	/* [ms_mode 0/1][sf][left/right]  */	// effectively constant
+static float lr[2][8][2]; /* [ms_mode 0/1][sf][left/right]  */ // effectively constant
 
 /* intensity stereo MPEG2 */
 /* lr2[intensity_scale][ms_mode][sflen_offset+sf][left/right] */
 typedef float ARRAY2_64_2[2][64][2];
 typedef float ARRAY64_2[64][2];
-static float lr2[2][2][64][2];		// effectively constant
+static float lr2[2][2][64][2]; // effectively constant
 
 /*===============================================================*/
 ARRAY2* alias_init_addr()
 {
 	return csa;
 }
+
 /*-----------------------------------------------------------*/
 ARRAY8_2* msis_init_addr()
 {
@@ -101,13 +102,15 @@ ARRAY8_2* msis_init_addr()
 
 	return lr;
 }
+
 /*-------------------------------------------------------------*/
 ARRAY2_64_2* msis_init_addr_MPEG2()
 {
 	return lr2;
 }
+
 /*===============================================================*/
-void antialias(float x[], int n)
+void antialias(float x[], const int n)
 {
 	for (int k = 0; k < n; k++)
 	{
@@ -121,8 +124,9 @@ void antialias(float x[], int n)
 		x += 18;
 	}
 }
+
 /*===============================================================*/
-void ms_process(float x[][1152], int n)		/* sum-difference stereo */
+void ms_process(float x[][1152], const int n) /* sum-difference stereo */
 {
 	/*-- note: sqrt(2) done scaling by dequant ---*/
 	for (int i = 0; i < n; i++)
@@ -133,20 +137,21 @@ void ms_process(float x[][1152], int n)		/* sum-difference stereo */
 		x[1][i] = xr;
 	}
 }
+
 /*===============================================================*/
-void is_process_MPEG1(float x[][1152],	/* intensity stereo */
-	SCALEFACT* sf,
-	CB_INFO cb_info[2],	/* [ch] */
-	int nsamp, int ms_mode)
+void is_process_MPEG1(float x[][1152], /* intensity stereo */
+                      SCALEFACT* sf,
+                      CB_INFO cb_info[2], /* [ch] */
+                      const int nsamp, const int ms_mode)
 {
 	int j, n, cb;
 	int isf;
 	float fls[3], frs[3];
 
-	int cb0 = cb_info[1].cbmax;	/* start at end of right */
+	int cb0 = cb_info[1].cbmax; /* start at end of right */
 	int i = pMP3Stream->sfBandIndex[cb_info[1].cbtype][cb0];
 	cb0++;
-	int m = nsamp - i;		/* process to len of left */
+	int m = nsamp - i; /* process to len of left */
 
 	if (cb_info[1].cbtype)
 		goto short_blocks;
@@ -196,12 +201,13 @@ short_blocks:
 exit:
 	return;
 }
+
 /*===============================================================*/
-void is_process_MPEG2(float x[][1152],	/* intensity stereo */
-	SCALEFACT* sf,
-	CB_INFO cb_info[2],	/* [ch] */
-	IS_SF_INFO* is_sf_info,
-	int nsamp, int ms_mode)
+void is_process_MPEG2(float x[][1152], /* intensity stereo */
+                      SCALEFACT* sf,
+                      CB_INFO cb_info[2], /* [ch] */
+                      IS_SF_INFO* is_sf_info,
+                      const int nsamp, const int ms_mode)
 {
 	int i, j, k, n, cb;
 	float fl, fr;
@@ -218,9 +224,9 @@ void is_process_MPEG2(float x[][1152],	/* intensity stereo */
 
 	/*------------------------*/
 	/* long_blocks: */
-	cb0 = cb_info[1].cbmax;	/* start at end of right */
+	cb0 = cb_info[1].cbmax; /* start at end of right */
 	i = pMP3Stream->sfBandIndex[0][cb0];
-	int m = nsamp - i;		/* process to len of left */
+	int m = nsamp - i; /* process to len of left */
 	/* gen sf info */
 	for (k = r = 0; r < 3; r++)
 	{
@@ -255,9 +261,9 @@ short_blocks:
 
 	for (int w = 0; w < 3; w++)
 	{
-		cb0 = cb_info[1].cbmax_s[w];	/* start at end of right */
+		cb0 = cb_info[1].cbmax_s[w]; /* start at end of right */
 		i = pMP3Stream->sfBandIndex[1][cb0] + w;
-		const int cb1 = cb_info[0].cbmax_s[w];	/* process to end of left */
+		const int cb1 = cb_info[0].cbmax_s[w]; /* process to end of left */
 
 		for (cb = cb0 + 1; cb <= cb1; cb++)
 		{
@@ -277,4 +283,5 @@ short_blocks:
 exit:
 	return;
 }
+
 /*===============================================================*/

@@ -816,7 +816,7 @@ Return value must be freed with Hunk_FreeTempMemory()
 ==================
 */
 
-byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* padlen)
+byte* RB_ReadPixels(const int x, const int y, const int width, const int height, size_t* offset, int* padlen)
 {
 	GLint packAlign;
 
@@ -842,7 +842,7 @@ byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* pa
 R_TakeScreenshot
 ==================
 */
-void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshot(const int x, const int y, const int width, const int height, char* fileName) {
 	byte* destptr;
 
 	int padlen;
@@ -899,7 +899,7 @@ void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotPNG
 ==================
 */
-void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotPNG(const int x, const int y, const int width, const int height, char* fileName) {
 	size_t offset = 0;
 	int padlen = 0;
 
@@ -913,7 +913,7 @@ void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotJPEG
 ==================
 */
-void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotJPEG(const int x, const int y, const int width, const int height, char* fileName) {
 	size_t offset = 0;
 	int padlen;
 
@@ -933,7 +933,7 @@ void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
 R_ScreenshotFilename
 ==================
 */
-void R_ScreenshotFilename(char* buf, int bufSize, const char* ext) {
+void R_ScreenshotFilename(char* buf, const int bufSize, const char* ext) {
 	time_t rawtime;
 	char timeStr[32] = { 0 }; // should really only reach ~19 chars
 
@@ -1786,7 +1786,7 @@ RE_Shutdown
 ===============
 */
 extern void R_ShutdownWorldEffects(void);
-void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
+void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting) {
 	for (const auto& command : commands)
 		ri.Cmd_RemoveCommand(command.cmd);
 
@@ -1860,7 +1860,7 @@ void	RE_EndRegistration(void) {
 	R_IssuePendingRenderCommands();
 }
 
-void RE_GetLightStyle(int style, color4ub_t color)
+void RE_GetLightStyle(const int style, color4ub_t color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
@@ -1872,7 +1872,7 @@ void RE_GetLightStyle(int style, color4ub_t color)
 	baDest->i = baSource->i;
 }
 
-void RE_SetLightStyle(int style, int color)
+void RE_SetLightStyle(const int style, const int color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
@@ -1920,7 +1920,7 @@ qboolean* get_tr_distortionNegate(void)
 }
 
 float g_oldRangedFog = 0.0f;
-void RE_SetRangedFog(float dist)
+void RE_SetRangedFog(const float dist)
 {
 	if (tr.rangedFog <= 0.0f)
 	{
@@ -1979,7 +1979,7 @@ unsigned int AnyLanguage_ReadCharFromString_JK2(char** text, qboolean* pbIsTrail
 }
 #endif
 
-extern "C" Q_EXPORT refexport_t * QDECL GetRefAPI(int apiVersion, refimport_t * refimp) {
+extern "C" Q_EXPORT refexport_t * QDECL GetRefAPI(const int apiVersion, refimport_t * refimp) {
 	static refexport_t	re;
 
 	ri = *refimp;

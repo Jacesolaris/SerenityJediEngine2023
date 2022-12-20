@@ -23,13 +23,13 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "game/g_public.h"
 #include "Q3_Registers.h"
 
-extern	void	Q3_DebugPrint(int level, const char* format, ...);
+extern void Q3_DebugPrint(int level, const char* format, ...);
 
-varString_m		varStrings;
-varFloat_m		varFloats;
-varString_m		varVectors;	//Work around for vector types
+varString_m varStrings;
+varFloat_m varFloats;
+varString_m varVectors; //Work around for vector types
 
-int				numVariables = 0;
+int numVariables = 0;
 
 /*
 -------------------------
@@ -40,19 +40,19 @@ Q3_VariableDeclared
 int Q3_VariableDeclared(const char* name)
 {
 	//Check the strings
-	const varString_m::iterator	vsi = varStrings.find(name);
+	const auto vsi = varStrings.find(name);
 
 	if (vsi != varStrings.end())
 		return VTYPE_STRING;
 
 	//Check the floats
-	const varFloat_m::iterator	vfi = varFloats.find(name);
+	const auto vfi = varFloats.find(name);
 
 	if (vfi != varFloats.end())
 		return VTYPE_FLOAT;
 
 	//Check the vectors
-	const varString_m::iterator	vvi = varVectors.find(name);
+	const auto vvi = varVectors.find(name);
 
 	if (vvi != varVectors.end())
 		return VTYPE_VECTOR;
@@ -66,7 +66,7 @@ Q3_DeclareVariable
 -------------------------
 */
 
-void Q3_DeclareVariable(int type, const char* name)
+void Q3_DeclareVariable(const int type, const char* name)
 {
 	//Cannot declare the same variable twice
 	if (Q3_VariableDeclared(name) != VTYPE_NONE)
@@ -109,7 +109,7 @@ Q3_FreeVariable
 void Q3_FreeVariable(const char* name)
 {
 	//Check the strings
-	const varString_m::iterator	vsi = varStrings.find(name);
+	const auto vsi = varStrings.find(name);
 
 	if (vsi != varStrings.end())
 	{
@@ -119,7 +119,7 @@ void Q3_FreeVariable(const char* name)
 	}
 
 	//Check the floats
-	const varFloat_m::iterator	vfi = varFloats.find(name);
+	const auto vfi = varFloats.find(name);
 
 	if (vfi != varFloats.end())
 	{
@@ -129,7 +129,7 @@ void Q3_FreeVariable(const char* name)
 	}
 
 	//Check the strings
-	const varString_m::iterator	vvi = varVectors.find(name);
+	const auto vvi = varVectors.find(name);
 
 	if (vvi != varVectors.end())
 	{
@@ -147,7 +147,7 @@ Q3_GetFloatVariable
 int Q3_GetFloatVariable(const char* name, float* value)
 {
 	//Check the floats
-	const varFloat_m::iterator	vfi = varFloats.find(name);
+	const auto vfi = varFloats.find(name);
 
 	if (vfi != varFloats.end())
 	{
@@ -167,7 +167,7 @@ Q3_GetStringVariable
 int Q3_GetStringVariable(const char* name, const char** value)
 {
 	//Check the strings
-	const varString_m::iterator	vsi = varStrings.find(name);
+	const auto vsi = varStrings.find(name);
 
 	if (vsi != varStrings.end())
 	{
@@ -187,7 +187,7 @@ Q3_GetVectorVariable
 int Q3_GetVectorVariable(const char* name, vec3_t value)
 {
 	//Check the strings
-	const varString_m::iterator	vvi = varVectors.find(name);
+	const auto vvi = varVectors.find(name);
 
 	if (vvi != varVectors.end())
 	{
@@ -224,10 +224,10 @@ Q3_SetVariable_Float
 -------------------------
 */
 
-int Q3_SetFloatVariable(const char* name, float value)
+int Q3_SetFloatVariable(const char* name, const float value)
 {
 	//Check the floats
-	const varFloat_m::iterator	vfi = varFloats.find(name);
+	const auto vfi = varFloats.find(name);
 
 	if (vfi == varFloats.end())
 		return VTYPE_FLOAT;
@@ -246,7 +246,7 @@ Q3_SetVariable_String
 int Q3_SetStringVariable(const char* name, const char* value)
 {
 	//Check the strings
-	const varString_m::iterator	vsi = varStrings.find(name);
+	const auto vsi = varStrings.find(name);
 
 	if (vsi == varStrings.end())
 		return false;
@@ -265,7 +265,7 @@ Q3_SetVariable_Vector
 int Q3_SetVectorVariable(const char* name, const char* value)
 {
 	//Check the strings
-	const varString_m::iterator	vvi = varVectors.find(name);
+	const auto vvi = varVectors.find(name);
 
 	if (vvi == varVectors.end())
 		return false;

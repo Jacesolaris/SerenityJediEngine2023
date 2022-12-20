@@ -65,8 +65,8 @@ JPP((j_decompress_ptr cinfo, bmp_dest_ptr dest,
  */
 
 METHODDEF(void)
-put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_pixel_rows(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+               JDIMENSION rows_supplied)
 	/* This version is for writing 24-bit pixels */
 {
 	const bmp_dest_ptr dest = (bmp_dest_ptr)dinfo;
@@ -96,8 +96,8 @@ put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
 }
 
 METHODDEF(void)
-put_gray_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_gray_rows(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+              JDIMENSION rows_supplied)
 	/* This version is for grayscale OR quantized color output */
 {
 	const bmp_dest_ptr dest = (bmp_dest_ptr)dinfo;
@@ -141,7 +141,7 @@ start_output_bmp(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 LOCAL(void)
-write_bmp_header(j_decompress_ptr cinfo, bmp_dest_ptr dest)
+write_bmp_header(const j_decompress_ptr cinfo, const bmp_dest_ptr dest)
 /* Write a Windows-style BMP file header, including colormap if needed */
 {
 	char bmpfileheader[14];
@@ -214,7 +214,7 @@ write_bmp_header(j_decompress_ptr cinfo, bmp_dest_ptr dest)
 }
 
 LOCAL(void)
-write_os2_header(j_decompress_ptr cinfo, bmp_dest_ptr dest)
+write_os2_header(const j_decompress_ptr cinfo, const bmp_dest_ptr dest)
 /* Write an OS2-style BMP file header, including colormap if needed */
 {
 	char bmpfileheader[14];
@@ -276,8 +276,8 @@ write_os2_header(j_decompress_ptr cinfo, bmp_dest_ptr dest)
  */
 
 LOCAL(void)
-write_colormap(j_decompress_ptr cinfo, bmp_dest_ptr dest,
-	int map_colors, int map_entry_size)
+write_colormap(const j_decompress_ptr cinfo, const bmp_dest_ptr dest,
+               const int map_colors, const int map_entry_size)
 {
 	const JSAMPARRAY colormap = cinfo->colormap;
 	const int num_colors = cinfo->actual_number_of_colors;
@@ -329,7 +329,7 @@ write_colormap(j_decompress_ptr cinfo, bmp_dest_ptr dest,
 }
 
 METHODDEF(void)
-finish_output_bmp(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+finish_output_bmp(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	const bmp_dest_ptr dest = (bmp_dest_ptr)dinfo;
 	register FILE* outfile = dest->pub.output_file;
@@ -370,7 +370,7 @@ finish_output_bmp(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 GLOBAL(djpeg_dest_ptr)
-jinit_write_bmp(j_decompress_ptr cinfo, boolean is_os2)
+jinit_write_bmp(const j_decompress_ptr cinfo, const boolean is_os2)
 {
 	/* Create module interface object, fill in method pointers */
 	const bmp_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

@@ -68,7 +68,7 @@ int mParticlesRendered;
 // Handy Functions
 ////////////////////////////////////////////////////////////////////////////////////////
 // Returns a float min <= x < max (exclusive; will get max - 0.00001; but never max)
-inline float WE_flrand(float min, float max)
+inline float WE_flrand(const float min, const float max)
 {
 	return rand() * (max - min) / RAND_MAX + min;
 }
@@ -97,7 +97,7 @@ inline float FloatRand(void)
 	return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
-inline void SnapFloatToGrid(float& f, int GridSize)
+inline void SnapFloatToGrid(float& f, const int GridSize)
 {
 	f = static_cast<int>(f);
 
@@ -126,7 +126,7 @@ inline void SnapFloatToGrid(float& f, int GridSize)
 	assert(static_cast<int>(f) % GridSize == 0);
 }
 
-inline void SnapVectorToGrid(CVec3& Vec, int GridSize)
+inline void SnapVectorToGrid(CVec3& Vec, const int GridSize)
 {
 	SnapFloatToGrid(Vec[0], GridSize);
 	SnapFloatToGrid(Vec[1], GridSize);
@@ -409,7 +409,7 @@ private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// CellOutside - Test to see if a given cell is outside
 		////////////////////////////////////////////////////////////////////////////////////
-		bool CellOutside(int x, int y, int z, int bit) const
+		bool CellOutside(const int x, const int y, const int z, const int bit) const
 		{
 			if (x < 0 || x >= mWidth || (y < 0 || y >= mHeight) || (z < 0 || z >= mDepth) || (bit < 0 || bit >= 32))
 			{
@@ -440,7 +440,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Contents Outside
 	////////////////////////////////////////////////////////////////////////////////////
-	bool ContentsOutside(int contents) const
+	bool ContentsOutside(const int contents) const
 	{
 		if (contents & CONTENTS_WATER || contents & CONTENTS_SOLID)
 		{
@@ -632,7 +632,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// PointOutside - Test to see if a given bounded plane is outside
 	////////////////////////////////////////////////////////////////////////////////////
-	bool PointOutside(const CVec3& pos, float width, float height)
+	bool PointOutside(const CVec3& pos, const float width, const float height)
 	{
 		for (int zone = 0; zone < mWeatherZones.size(); zone++)
 		{
@@ -769,7 +769,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Initialize - Create Image, Particles, And Setup All Values
 	////////////////////////////////////////////////////////////////////////////////////
-	void Initialize(int count, const char* texturePath, int VertexCount = 4)
+	void Initialize(const int count, const char* texturePath, const int VertexCount = 4)
 	{
 		Reset();
 		assert(mParticleCount == 0 && mParticles == nullptr);
@@ -1369,7 +1369,7 @@ void R_SetWeatherEffect_f(void)
 WE_ParseVector
 ===============
 */
-qboolean WE_ParseVector(const char** text, int count, float* v)
+qboolean WE_ParseVector(const char** text, const int count, float* v)
 {
 	// FIXME: spaces are currently required after parens, should change parseext...
 	const char* token = COM_ParseExt(text, qfalse);

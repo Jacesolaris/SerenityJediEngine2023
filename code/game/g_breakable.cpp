@@ -33,7 +33,7 @@ extern void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t 
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 
 extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int model_index, int frame,
-	trType_t trType, int effectID);
+                                 trType_t trType, int effectID);
 
 extern qboolean player_locked;
 
@@ -73,7 +73,7 @@ static void CacheChunkEffects(const material_t material)
 		break;
 	case MAT_ROPE:
 		G_EffectIndex("chunks/ropebreak");
-		//		G_SoundIndex(); // FIXME: give it a sound
+	//		G_SoundIndex(); // FIXME: give it a sound
 		break;
 	default:
 		break;
@@ -185,7 +185,7 @@ void funcBBrushDieGo(gentity_t* ent)
 }
 
 void funcBBrushDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                   int hit_loc)
 {
 	self->takedamage = qfalse; //stop chain reaction runaway loops
 
@@ -218,8 +218,9 @@ void funcBBrushUse(gentity_t* self, gentity_t* other, gentity_t* activator)
 	}
 }
 
-void funcBBrushPain(gentity_t* self, gentity_t* inflictor, const gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hit_loc)
+void funcBBrushPain(gentity_t* self, gentity_t* inflictor, const gentity_t* attacker, const vec3_t point, int damage,
+                    int mod,
+                    int hit_loc)
 {
 	if (self->painDebounceTime > level.time)
 	{
@@ -476,7 +477,7 @@ void SP_func_breakable(gentity_t* self)
 }
 
 void misc_model_breakable_pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hit_loc)
+                               int mod, int hit_loc)
 {
 	if (self->health > 0)
 	{
@@ -491,8 +492,9 @@ void misc_model_breakable_pain(gentity_t* self, gentity_t* inflictor, gentity_t*
 	}
 }
 
-void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-	int dFlags, int hit_loc)
+void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage,
+                              int meansOfDeath,
+                              int dFlags, int hit_loc)
 {
 	float size = 0;
 	vec3_t dir, up, dis;
@@ -543,7 +545,8 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 	VectorAdd(self->absmax, self->absmin, dis);
 	VectorScale(dis, 0.5f, dis);
 
-	CG_Chunks(self->s.number, dis, self->absmin, self->absmax, 300, numChunks, self->material, self->s.modelindex3, scale);
+	CG_Chunks(self->s.number, dis, self->absmin, self->absmax, 300, numChunks, self->material, self->s.modelindex3,
+	          scale);
 
 	self->e_PainFunc = painF_NULL;
 	self->e_DieFunc = dieF_NULL;
@@ -778,7 +781,7 @@ void misc_model_breakable_init(gentity_t* ent)
 	if (!ent->model)
 	{
 		G_Error("no model set on %s at (%.1f %.1f %.1f)\n", ent->classname, ent->s.origin[0], ent->s.origin[1],
-			ent->s.origin[2]);
+		        ent->s.origin[2]);
 	}
 	//Main model
 	ent->s.modelindex = ent->sound2to1 = G_ModelIndex(ent->model);
@@ -887,7 +890,7 @@ void TieFighterThink(gentity_t* self)
 						else
 						{
 							G_SoundOnEnt(bolt, CHAN_VOICE,
-								va("sound/weapons/tie_fighter/tie_fire%d.wav", Q_irand(2, 3)));
+							             va("sound/weapons/tie_fighter/tie_fire%d.wav", Q_irand(2, 3)));
 						}
 						self->attackDebounceTime = level.time + Q_irand(300, 2000);
 					}
@@ -981,7 +984,7 @@ void TouchTieBomb(gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	// Stop the effect.
 	G_StopEffect(G_EffectIndex("ships/tiebomber_bomb_falling"), self->playerModel,
-		gi.G2API_AddBolt(&self->ghoul2[0], "model_root"), self->s.number);
+	             gi.G2API_AddBolt(&self->ghoul2[0], "model_root"), self->s.number);
 
 	self->e_ThinkFunc = thinkF_G_FreeEntity;
 	self->nextthink = level.time + FRAMETIME;
@@ -1035,8 +1038,8 @@ void TieBomberThink(gentity_t* self)
 
 		// Start the effect.
 		G_PlayEffect(G_EffectIndex("ships/tiebomber_bomb_falling"), bomb->playerModel,
-			gi.G2API_AddBolt(&bomb->ghoul2[0], "model_root"), bomb->s.number, bomb->currentOrigin, 1000,
-			qtrue);
+		             gi.G2API_AddBolt(&bomb->ghoul2[0], "model_root"), bomb->s.number, bomb->currentOrigin, 1000,
+		             qtrue);
 
 		// Set the tie bomb to have a touch function, so when it hits the ground (or whatever), there's a nice 'boom'.
 		bomb->e_TouchFunc = touchF_TouchTieBomb;
@@ -1045,7 +1048,7 @@ void TieBomberThink(gentity_t* self)
 	}
 }
 
-void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
+void misc_model_breakable_gravity_init(gentity_t* ent, const qboolean dropToFloor)
 {
 	//G_SoundIndex( "sound/movers/objects/objectHurt.wav" );
 	G_EffectIndex("melee/kick_impact");
@@ -1079,7 +1082,7 @@ void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
 		VectorCopy(ent->currentOrigin, bottom);
 		bottom[2] = MIN_WORLD_COORD;
 		gi.trace(&tr, top, ent->mins, ent->maxs, bottom, ent->s.number, MASK_NPCSOLID, static_cast<EG2_Collision>(0),
-			0);
+		         0);
 		if (!tr.allsolid && !tr.startsolid && tr.fraction < 1.0)
 		{
 			G_SetOrigin(ent, tr.endpos);
@@ -1457,7 +1460,7 @@ extern cgs_t cgs;
 
 //-----------------------------------------------------
 void funcGlassDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                  int hit_loc)
 {
 	vec3_t verts[4], normal;
 

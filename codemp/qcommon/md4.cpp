@@ -30,17 +30,18 @@
 #include "q_shared.h"
 #include "qcommon.h"
 
-typedef struct mdfour_s {
+using mdfour_ctx = struct mdfour_s
+{
 	uint32_t A, B, C, D;
 	uint32_t totalN;
-} mdfour_ctx;
+};
 
 /* NOTE: This code makes no attempt to be fast!
 
    It assumes that an int is at least 32 bits long
 */
 
-static  mdfour_ctx* m;
+static mdfour_ctx* m;
 
 #define F(X,Y,Z) (((X)&(Y)) | ((~(X))&(Z)))
 #define G(X,Y,Z) (((X)&(Y)) | ((X)&(Z)) | ((Y)&(Z)))
@@ -60,55 +61,88 @@ static void mdfour64(uint32_t* M)
 	for (j = 0; j < 16; j++)
 		X[j] = M[j];
 
-	uint32_t A = m->A; uint32_t B = m->B; uint32_t C = m->C; uint32_t D = m->D;
+	uint32_t A = m->A;
+	uint32_t B = m->B;
+	uint32_t C = m->C;
+	uint32_t D = m->D;
 	const uint32_t AA = A;
 	const uint32_t BB = B;
 	const uint32_t CC = C;
 	const uint32_t DD = D;
 
-	ROUND1(A, B, C, D, 0, 3);  ROUND1(D, A, B, C, 1, 7);
-	ROUND1(C, D, A, B, 2, 11);  ROUND1(B, C, D, A, 3, 19);
-	ROUND1(A, B, C, D, 4, 3);  ROUND1(D, A, B, C, 5, 7);
-	ROUND1(C, D, A, B, 6, 11);  ROUND1(B, C, D, A, 7, 19);
-	ROUND1(A, B, C, D, 8, 3);  ROUND1(D, A, B, C, 9, 7);
-	ROUND1(C, D, A, B, 10, 11);  ROUND1(B, C, D, A, 11, 19);
-	ROUND1(A, B, C, D, 12, 3);  ROUND1(D, A, B, C, 13, 7);
-	ROUND1(C, D, A, B, 14, 11);  ROUND1(B, C, D, A, 15, 19);
+	ROUND1(A, B, C, D, 0, 3);
+	ROUND1(D, A, B, C, 1, 7);
+	ROUND1(C, D, A, B, 2, 11);
+	ROUND1(B, C, D, A, 3, 19);
+	ROUND1(A, B, C, D, 4, 3);
+	ROUND1(D, A, B, C, 5, 7);
+	ROUND1(C, D, A, B, 6, 11);
+	ROUND1(B, C, D, A, 7, 19);
+	ROUND1(A, B, C, D, 8, 3);
+	ROUND1(D, A, B, C, 9, 7);
+	ROUND1(C, D, A, B, 10, 11);
+	ROUND1(B, C, D, A, 11, 19);
+	ROUND1(A, B, C, D, 12, 3);
+	ROUND1(D, A, B, C, 13, 7);
+	ROUND1(C, D, A, B, 14, 11);
+	ROUND1(B, C, D, A, 15, 19);
 
-	ROUND2(A, B, C, D, 0, 3);  ROUND2(D, A, B, C, 4, 5);
-	ROUND2(C, D, A, B, 8, 9);  ROUND2(B, C, D, A, 12, 13);
-	ROUND2(A, B, C, D, 1, 3);  ROUND2(D, A, B, C, 5, 5);
-	ROUND2(C, D, A, B, 9, 9);  ROUND2(B, C, D, A, 13, 13);
-	ROUND2(A, B, C, D, 2, 3);  ROUND2(D, A, B, C, 6, 5);
-	ROUND2(C, D, A, B, 10, 9);  ROUND2(B, C, D, A, 14, 13);
-	ROUND2(A, B, C, D, 3, 3);  ROUND2(D, A, B, C, 7, 5);
-	ROUND2(C, D, A, B, 11, 9);  ROUND2(B, C, D, A, 15, 13);
+	ROUND2(A, B, C, D, 0, 3);
+	ROUND2(D, A, B, C, 4, 5);
+	ROUND2(C, D, A, B, 8, 9);
+	ROUND2(B, C, D, A, 12, 13);
+	ROUND2(A, B, C, D, 1, 3);
+	ROUND2(D, A, B, C, 5, 5);
+	ROUND2(C, D, A, B, 9, 9);
+	ROUND2(B, C, D, A, 13, 13);
+	ROUND2(A, B, C, D, 2, 3);
+	ROUND2(D, A, B, C, 6, 5);
+	ROUND2(C, D, A, B, 10, 9);
+	ROUND2(B, C, D, A, 14, 13);
+	ROUND2(A, B, C, D, 3, 3);
+	ROUND2(D, A, B, C, 7, 5);
+	ROUND2(C, D, A, B, 11, 9);
+	ROUND2(B, C, D, A, 15, 13);
 
-	ROUND3(A, B, C, D, 0, 3);  ROUND3(D, A, B, C, 8, 9);
-	ROUND3(C, D, A, B, 4, 11);  ROUND3(B, C, D, A, 12, 15);
-	ROUND3(A, B, C, D, 2, 3);  ROUND3(D, A, B, C, 10, 9);
-	ROUND3(C, D, A, B, 6, 11);  ROUND3(B, C, D, A, 14, 15);
-	ROUND3(A, B, C, D, 1, 3);  ROUND3(D, A, B, C, 9, 9);
-	ROUND3(C, D, A, B, 5, 11);  ROUND3(B, C, D, A, 13, 15);
-	ROUND3(A, B, C, D, 3, 3);  ROUND3(D, A, B, C, 11, 9);
-	ROUND3(C, D, A, B, 7, 11);  ROUND3(B, C, D, A, 15, 15);
+	ROUND3(A, B, C, D, 0, 3);
+	ROUND3(D, A, B, C, 8, 9);
+	ROUND3(C, D, A, B, 4, 11);
+	ROUND3(B, C, D, A, 12, 15);
+	ROUND3(A, B, C, D, 2, 3);
+	ROUND3(D, A, B, C, 10, 9);
+	ROUND3(C, D, A, B, 6, 11);
+	ROUND3(B, C, D, A, 14, 15);
+	ROUND3(A, B, C, D, 1, 3);
+	ROUND3(D, A, B, C, 9, 9);
+	ROUND3(C, D, A, B, 5, 11);
+	ROUND3(B, C, D, A, 13, 15);
+	ROUND3(A, B, C, D, 3, 3);
+	ROUND3(D, A, B, C, 11, 9);
+	ROUND3(C, D, A, B, 7, 11);
+	ROUND3(B, C, D, A, 15, 15);
 
-	A += AA; B += BB; C += CC; D += DD;
+	A += AA;
+	B += BB;
+	C += CC;
+	D += DD;
 
 	for (j = 0; j < 16; j++)
 		X[j] = 0;
 
-	m->A = A; m->B = B; m->C = C; m->D = D;
+	m->A = A;
+	m->B = B;
+	m->C = C;
+	m->D = D;
 }
 
 static void copy64(uint32_t* M, byte* in)
 {
 	for (int i = 0; i < 16; i++)
 		M[i] = in[i * 4 + 3] << 24 | in[i * 4 + 2] << 16 |
-		in[i * 4 + 1] << 8 | in[i * 4 + 0] << 0;
+			in[i * 4 + 1] << 8 | in[i * 4 + 0] << 0;
 }
 
-static void copy4(byte* out, uint32_t x)
+static void copy4(byte* out, const uint32_t x)
 {
 	out[0] = x & 0xFF;
 	out[1] = x >> 8 & 0xFF;
@@ -125,7 +159,7 @@ void mdfour_begin(mdfour_ctx* md)
 	md->totalN = 0;
 }
 
-static void mdfour_tail(byte* in, int n)
+static void mdfour_tail(byte* in, const int n)
 {
 	byte buf[128];
 	uint32_t M[16];
@@ -135,15 +169,18 @@ static void mdfour_tail(byte* in, int n)
 	const uint32_t b = m->totalN * 8;
 
 	Com_Memset(buf, 0, 128);
-	if (n) Com_Memcpy(buf, in, n);
+	if (n)
+		Com_Memcpy(buf, in, n);
 	buf[n] = 0x80;
 
-	if (n <= 55) {
+	if (n <= 55)
+	{
 		copy4(buf + 56, b);
 		copy64(M, buf);
 		mdfour64(M);
 	}
-	else {
+	else
+	{
 		copy4(buf + 120, b);
 		copy64(M, buf);
 		mdfour64(M);
@@ -158,7 +195,8 @@ static void mdfour_update(mdfour_ctx* md, byte* in, int n)
 
 	if (n == 0) mdfour_tail(in, n);
 
-	while (n >= 64) {
+	while (n >= 64)
+	{
 		uint32_t M[16];
 		copy64(M, in);
 		mdfour64(M);
@@ -180,7 +218,7 @@ static void mdfour_result(mdfour_ctx* md, byte* out)
 	copy4(out + 12, m->D);
 }
 
-static void mdfour(byte* out, byte* in, int n)
+static void mdfour(byte* out, byte* in, const int n)
 {
 	mdfour_ctx md;
 	mdfour_begin(&md);
@@ -190,9 +228,9 @@ static void mdfour(byte* out, byte* in, int n)
 
 //===================================================================
 
-uint32_t Com_BlockChecksum(const void* buffer, int length)
+uint32_t Com_BlockChecksum(const void* buffer, const int length)
 {
-	int				digest[4];
+	int digest[4];
 
 	mdfour((byte*)digest, (byte*)buffer, length);
 

@@ -84,7 +84,7 @@ void SP_trigger_autosave(gentity_t* self)
 
 extern void SP_info_player_start(gentity_t* ent);
 
-void Create_Autosave(vec3_t origin, int size, qboolean teleportPlayers)
+void Create_Autosave(vec3_t origin, int size, const qboolean teleportPlayers)
 {
 	//create a new SP_trigger_autosave.
 	gentity_t* newAutosave = G_Spawn();
@@ -208,7 +208,6 @@ void Save_Autosaves(void)
 	if (!f)
 	{
 		Com_Printf("^5Couldn't create autosave file.\n");
-		return;
 	}
 }
 

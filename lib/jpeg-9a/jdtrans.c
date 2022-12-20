@@ -41,7 +41,7 @@ LOCAL(void) transdecode_master_selection JPP((j_decompress_ptr cinfo));
  */
 
 GLOBAL(jvirt_barray_ptr*)
-jpeg_read_coefficients(j_decompress_ptr cinfo)
+jpeg_read_coefficients(const j_decompress_ptr cinfo)
 {
 	if (cinfo->global_state == DSTATE_READY) {
 		/* First call: initialize active modules */
@@ -91,7 +91,7 @@ jpeg_read_coefficients(j_decompress_ptr cinfo)
  */
 
 LOCAL(void)
-transdecode_master_selection(j_decompress_ptr cinfo)
+transdecode_master_selection(const j_decompress_ptr cinfo)
 {
 	/* This is effectively a buffered-image operation. */
 	cinfo->buffered_image = TRUE;

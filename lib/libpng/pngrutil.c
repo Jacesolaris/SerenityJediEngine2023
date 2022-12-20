@@ -18,7 +18,7 @@
 #ifdef PNG_READ_SUPPORTED
 
 png_uint_32 PNGAPI
-png_get_uint_31(png_const_structrp png_ptr, png_const_bytep buf)
+png_get_uint_31(const png_const_structrp png_ptr, const png_const_bytep buf)
 {
 	const png_uint_32 uval = png_get_uint_32(buf);
 
@@ -37,7 +37,7 @@ png_get_uint_31(png_const_structrp png_ptr, png_const_bytep buf)
 #define PNG_FIXED_ERROR (-1)
 
 static png_fixed_point /* PRIVATE */
-png_get_fixed_point(png_structrp png_ptr, png_const_bytep buf)
+png_get_fixed_point(const png_structrp png_ptr, const png_const_bytep buf)
 {
 	const png_uint_32 uval = png_get_uint_32(buf);
 
@@ -64,7 +64,7 @@ png_get_fixed_point(png_structrp png_ptr, png_const_bytep buf)
 
  /* Grab an unsigned 32-bit integer from a buffer in big-endian format. */
 png_uint_32(PNGAPI
-	png_get_uint_32)(png_const_bytep buf)
+	png_get_uint_32)(const png_const_bytep buf)
 {
 	const png_uint_32 uval =
 		((png_uint_32)(*(buf)) << 24) +
@@ -81,7 +81,7 @@ png_uint_32(PNGAPI
  * the following code does a two's complement to native conversion.
  */
 png_int_32(PNGAPI
-	png_get_int_32)(png_const_bytep buf)
+	png_get_int_32)(const png_const_bytep buf)
 {
 	png_uint_32 uval = png_get_uint_32(buf);
 	if ((uval & 0x80000000) == 0) /* non-negative */
@@ -93,7 +93,7 @@ png_int_32(PNGAPI
 
 /* Grab an unsigned 16-bit integer from a buffer in big-endian format. */
 png_uint_16(PNGAPI
-	png_get_uint_16)(png_const_bytep buf)
+	png_get_uint_16)(const png_const_bytep buf)
 {
 	/* ANSI-C requires an int value to accomodate at least 16 bits so this
 	 * works and allows the compiler not to worry about possible narrowing
@@ -111,7 +111,7 @@ png_uint_16(PNGAPI
 
 /* Read and check the PNG file signature */
 void /* PRIVATE */
-png_read_sig(png_structrp png_ptr, png_inforp info_ptr)
+png_read_sig(const png_structrp png_ptr, const png_inforp info_ptr)
 {
 	/* Exit if the user application does not expect a signature. */
 	if (png_ptr->sig_bytes >= 8)
@@ -143,7 +143,7 @@ png_read_sig(png_structrp png_ptr, png_inforp info_ptr)
  * Put the type name into png_ptr->chunk_name, and return the length.
  */
 png_uint_32 /* PRIVATE */
-png_read_chunk_header(png_structrp png_ptr)
+png_read_chunk_header(const png_structrp png_ptr)
 {
 	png_byte buf[8];
 	png_uint_32 length;
@@ -180,7 +180,7 @@ png_read_chunk_header(png_structrp png_ptr)
 
 /* Read data, and (optionally) run it through the CRC. */
 void /* PRIVATE */
-png_crc_read(png_structrp png_ptr, png_bytep buf, png_uint_32 length)
+png_crc_read(const png_structrp png_ptr, const png_bytep buf, const png_uint_32 length)
 {
 	if (png_ptr == NULL)
 		return;
@@ -195,7 +195,7 @@ png_crc_read(png_structrp png_ptr, png_bytep buf, png_uint_32 length)
  * Returns '1' if there was a CRC error, '0' otherwise.
  */
 int /* PRIVATE */
-png_crc_finish(png_structrp png_ptr, png_uint_32 skip)
+png_crc_finish(const png_structrp png_ptr, png_uint_32 skip)
 {
 	/* The size of the local buffer for inflate is a good guess as to a
 	 * reasonable size to use for buffering reads from the application.
@@ -234,7 +234,7 @@ png_crc_finish(png_structrp png_ptr, png_uint_32 skip)
  * the data it has read thus far.
  */
 int /* PRIVATE */
-png_crc_error(png_structrp png_ptr)
+png_crc_error(const png_structrp png_ptr)
 {
 	png_byte crc_bytes[4];
 	png_uint_32 crc;
@@ -279,7 +279,7 @@ png_crc_error(png_structrp png_ptr)
  * 'silent').
  */
 static png_bytep
-png_read_buffer(png_structrp png_ptr, png_alloc_size_t new_size, int warn)
+png_read_buffer(const png_structrp png_ptr, const png_alloc_size_t new_size, const int warn)
 {
 	png_bytep buffer = png_ptr->read_buffer;
 
@@ -322,7 +322,7 @@ png_read_buffer(png_structrp png_ptr, png_alloc_size_t new_size, int warn)
  * chunk apparently owns the stream.  Prior to release it does a png_error.
  */
 static int
-png_inflate_claim(png_structrp png_ptr, png_uint_32 owner)
+png_inflate_claim(png_structrp png_ptr, const png_uint_32 owner)
 {
 	if (png_ptr->zowner != 0)
 	{
@@ -429,9 +429,11 @@ png_inflate_claim(png_structrp png_ptr, png_uint_32 owner)
  * available output is (output+output_size).
  */
 static int
-png_inflate(png_structrp png_ptr, png_uint_32 owner, int finish,
-	/* INPUT: */ png_const_bytep input, png_uint_32p input_size_ptr,
-	/* OUTPUT: */ png_bytep output, png_alloc_size_t* output_size_ptr)
+png_inflate(const png_structrp png_ptr, const png_uint_32 owner, const int finish,
+            /* INPUT: */
+            const png_const_bytep input, const png_uint_32p input_size_ptr,
+            /* OUTPUT: */
+            const png_bytep output, png_alloc_size_t* output_size_ptr)
 {
 	if (png_ptr->zowner == owner) /* Else not claimed */
 	{
@@ -549,10 +551,10 @@ png_inflate(png_structrp png_ptr, png_uint_32 owner, int finish,
  * trailing part (the malloc area passed in is freed).
  */
 static int
-png_decompress_chunk(png_structrp png_ptr,
-	png_uint_32 chunklength, png_uint_32 prefix_size,
-	png_alloc_size_t* newlength /* must be initialized to the maximum! */,
-	int terminate /*add a '\0' to the end of the uncompressed data*/)
+png_decompress_chunk(const png_structrp png_ptr,
+                     const png_uint_32 chunklength, const png_uint_32 prefix_size,
+                     png_alloc_size_t* newlength /* must be initialized to the maximum! */,
+                     const int terminate /*add a '\0' to the end of the uncompressed data*/)
 {
 	/* TODO: implement different limits for different types of chunk.
 	 *
@@ -707,9 +709,9 @@ png_decompress_chunk(png_structrp png_ptr,
  * reading from the current chunk as required.
  */
 static int
-png_inflate_read(png_structrp png_ptr, png_bytep read_buffer, uInt read_size,
-	png_uint_32p chunk_bytes, png_bytep next_out, png_alloc_size_t* out_size,
-	int finish)
+png_inflate_read(const png_structrp png_ptr, const png_bytep read_buffer, uInt read_size,
+                 const png_uint_32p chunk_bytes, const png_bytep next_out, png_alloc_size_t* out_size,
+                 const int finish)
 {
 	if (png_ptr->zowner == png_ptr->chunk_name)
 	{
@@ -767,7 +769,7 @@ png_inflate_read(png_structrp png_ptr, png_bytep read_buffer, uInt read_size,
 /* Read and check the IDHR chunk */
 
 void /* PRIVATE */
-png_handle_IHDR(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_IHDR(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte buf[13];
 
@@ -838,7 +840,7 @@ png_handle_IHDR(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 /* Read and check the palette */
 void /* PRIVATE */
-png_handle_PLTE(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_PLTE(png_structrp png_ptr, const png_inforp info_ptr, png_uint_32 length)
 {
 	png_color palette[PNG_MAX_PALETTE_LENGTH];
 	int num, i;
@@ -1011,7 +1013,7 @@ png_handle_PLTE(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 }
 
 void /* PRIVATE */
-png_handle_IEND(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_IEND(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_debug(1, "in png_handle_IEND");
 
@@ -1031,7 +1033,7 @@ png_handle_IEND(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_gAMA_SUPPORTED
 void /* PRIVATE */
-png_handle_gAMA(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_gAMA(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte buf[4];
 
@@ -1067,7 +1069,7 @@ png_handle_gAMA(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_sBIT_SUPPORTED
 void /* PRIVATE */
-png_handle_sBIT(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_sBIT(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	unsigned int truelen;
 	png_byte sample_depth;
@@ -1146,7 +1148,7 @@ png_handle_sBIT(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_cHRM_SUPPORTED
 void /* PRIVATE */
-png_handle_cHRM(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_cHRM(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte buf[32];
 	png_xy xy;
@@ -1217,7 +1219,7 @@ png_handle_cHRM(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_sRGB_SUPPORTED
 void /* PRIVATE */
-png_handle_sRGB(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_sRGB(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte intent;
 
@@ -1266,7 +1268,7 @@ png_handle_sRGB(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_iCCP_SUPPORTED
 void /* PRIVATE */
-png_handle_iCCP(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_iCCP(const png_structrp png_ptr, const png_inforp info_ptr, png_uint_32 length)
 /* Note: this does not properly handle profiles that are > 64K under DOS */
 {
 	png_const_charp errmsg = NULL; /* error message output, or no error */
@@ -1537,7 +1539,7 @@ png_handle_iCCP(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_sPLT_SUPPORTED
 void /* PRIVATE */
-png_handle_sPLT(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_sPLT(png_structrp png_ptr, const png_inforp info_ptr, png_uint_32 length)
 /* Note: this does not properly handle chunks that are > 64K under DOS */
 {
 	png_bytep entry_start, buffer;
@@ -1711,7 +1713,7 @@ png_handle_sPLT(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_tRNS_SUPPORTED
 void /* PRIVATE */
-png_handle_tRNS(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_tRNS(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte readbuf[PNG_MAX_PALETTE_LENGTH];
 
@@ -1812,7 +1814,7 @@ png_handle_tRNS(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_bKGD_SUPPORTED
 void /* PRIVATE */
-png_handle_bKGD(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_bKGD(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	unsigned int truelen;
 	png_byte buf[6];
@@ -1910,7 +1912,7 @@ png_handle_bKGD(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_hIST_SUPPORTED
 void /* PRIVATE */
-png_handle_hIST(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_hIST(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_uint_16 readbuf[PNG_MAX_PALETTE_LENGTH];
 
@@ -1958,7 +1960,7 @@ png_handle_hIST(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_pHYs_SUPPORTED
 void /* PRIVATE */
-png_handle_pHYs(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_pHYs(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte buf[9];
 
@@ -2000,7 +2002,7 @@ png_handle_pHYs(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_oFFs_SUPPORTED
 void /* PRIVATE */
-png_handle_oFFs(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_oFFs(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte buf[9];
 
@@ -2043,7 +2045,7 @@ png_handle_oFFs(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 #ifdef PNG_READ_pCAL_SUPPORTED
 /* Read the pCAL chunk (described in the PNG Extensions document) */
 void /* PRIVATE */
-png_handle_pCAL(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_pCAL(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_bytep buf;
 
@@ -2165,7 +2167,7 @@ png_handle_pCAL(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 #ifdef PNG_READ_sCAL_SUPPORTED
 /* Read the sCAL chunk */
 void /* PRIVATE */
-png_handle_sCAL(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_sCAL(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_size_t i;
 	int state;
@@ -2255,7 +2257,7 @@ png_handle_sCAL(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 
 #ifdef PNG_READ_tIME_SUPPORTED
 void /* PRIVATE */
-png_handle_tIME(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_tIME(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_byte buf[7];
 	png_time mod_time;
@@ -2300,7 +2302,7 @@ png_handle_tIME(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 #ifdef PNG_READ_tEXt_SUPPORTED
 /* Note: this does not properly handle chunks that are > 64K under DOS */
 void /* PRIVATE */
-png_handle_tEXt(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_tEXt(png_structrp png_ptr, const png_inforp info_ptr, png_uint_32 length)
 {
 	png_text  text_info;
 	png_bytep buffer;
@@ -2381,7 +2383,7 @@ png_handle_tEXt(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 #ifdef PNG_READ_zTXt_SUPPORTED
 /* Note: this does not correctly handle chunks that are > 64K under DOS */
 void /* PRIVATE */
-png_handle_zTXt(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_zTXt(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_const_charp errmsg = NULL;
 	png_bytep       buffer;
@@ -2490,7 +2492,7 @@ png_handle_zTXt(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 #ifdef PNG_READ_iTXt_SUPPORTED
 /* Note: this does not correctly handle chunks that are > 64K under DOS */
 void /* PRIVATE */
-png_handle_iTXt(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
+png_handle_iTXt(const png_structrp png_ptr, const png_inforp info_ptr, const png_uint_32 length)
 {
 	png_const_charp errmsg = NULL;
 	png_bytep buffer;
@@ -2639,7 +2641,7 @@ png_handle_iTXt(png_structrp png_ptr, png_inforp info_ptr, png_uint_32 length)
 #ifdef PNG_READ_UNKNOWN_CHUNKS_SUPPORTED
 /* Utility function for png_handle_unknown; set up png_ptr::unknown_chunk */
 static int
-png_cache_unknown_chunk(png_structrp png_ptr, png_uint_32 length)
+png_cache_unknown_chunk(const png_structrp png_ptr, const png_uint_32 length)
 {
 	png_alloc_size_t limit = PNG_SIZE_MAX;
 
@@ -2905,7 +2907,7 @@ png_handle_unknown(png_structrp png_ptr, png_inforp info_ptr,
   */
 
 void /* PRIVATE */
-png_check_chunk_name(png_structrp png_ptr, png_uint_32 chunk_name)
+png_check_chunk_name(const png_structrp png_ptr, png_uint_32 chunk_name)
 {
 	png_debug(1, "in png_check_chunk_name");
 
@@ -2928,7 +2930,7 @@ png_check_chunk_name(png_structrp png_ptr, png_uint_32 chunk_name)
  * 'display' is false only those pixels present in the pass are filled in.
  */
 void /* PRIVATE */
-png_combine_row(png_const_structrp png_ptr, png_bytep dp, int display)
+png_combine_row(const png_const_structrp png_ptr, png_bytep dp, const int display)
 {
 	unsigned int pixel_depth = png_ptr->transformed_pixel_depth;
 	png_const_bytep sp = png_ptr->row_buf + 1;
@@ -3645,8 +3647,8 @@ png_do_read_interlace(png_row_infop row_info, png_bytep row, int pass,
 #endif /* READ_INTERLACING */
 
 static void
-png_read_filter_row_sub(png_row_infop row_info, png_bytep row,
-	png_const_bytep prev_row)
+png_read_filter_row_sub(const png_row_infop row_info, const png_bytep row,
+                        const png_const_bytep prev_row)
 {
 	const png_size_t istop = row_info->rowbytes;
 	const unsigned int bpp = (row_info->pixel_depth + 7) >> 3;
@@ -3662,8 +3664,8 @@ png_read_filter_row_sub(png_row_infop row_info, png_bytep row,
 }
 
 static void
-png_read_filter_row_up(png_row_infop row_info, png_bytep row,
-	png_const_bytep prev_row)
+png_read_filter_row_up(const png_row_infop row_info, const png_bytep row,
+                       const png_const_bytep prev_row)
 {
 	const png_size_t istop = row_info->rowbytes;
 	png_bytep rp = row;
@@ -3677,8 +3679,8 @@ png_read_filter_row_up(png_row_infop row_info, png_bytep row,
 }
 
 static void
-png_read_filter_row_avg(png_row_infop row_info, png_bytep row,
-	png_const_bytep prev_row)
+png_read_filter_row_avg(const png_row_infop row_info, const png_bytep row,
+                        const png_const_bytep prev_row)
 {
 	png_size_t i;
 	png_bytep rp = row;
@@ -3704,8 +3706,8 @@ png_read_filter_row_avg(png_row_infop row_info, png_bytep row,
 }
 
 static void
-png_read_filter_row_paeth_1byte_pixel(png_row_infop row_info, png_bytep row,
-	png_const_bytep prev_row)
+png_read_filter_row_paeth_1byte_pixel(const png_row_infop row_info, png_bytep row,
+                                      png_const_bytep prev_row)
 {
 	const png_bytep rp_end = row + row_info->rowbytes;
 
@@ -3751,8 +3753,8 @@ png_read_filter_row_paeth_1byte_pixel(png_row_infop row_info, png_bytep row,
 }
 
 static void
-png_read_filter_row_paeth_multibyte_pixel(png_row_infop row_info, png_bytep row,
-	png_const_bytep prev_row)
+png_read_filter_row_paeth_multibyte_pixel(const png_row_infop row_info, png_bytep row,
+                                          png_const_bytep prev_row)
 {
 	const int bpp = (row_info->pixel_depth + 7) >> 3;
 	png_bytep rp_end = row + bpp;
@@ -3836,8 +3838,8 @@ png_init_filter_functions(png_structrp pp)
 }
 
 void /* PRIVATE */
-png_read_filter_row(png_structrp pp, png_row_infop row_info, png_bytep row,
-	png_const_bytep prev_row, int filter)
+png_read_filter_row(const png_structrp pp, const png_row_infop row_info, const png_bytep row,
+                    const png_const_bytep prev_row, const int filter)
 {
 	/* OPTIMIZATION: DO NOT MODIFY THIS FUNCTION, instead #define
 	 * PNG_FILTER_OPTIMIZATIONS to a function that overrides the generic
@@ -3854,8 +3856,8 @@ png_read_filter_row(png_structrp pp, png_row_infop row_info, png_bytep row,
 
 #ifdef PNG_SEQUENTIAL_READ_SUPPORTED
 void /* PRIVATE */
-png_read_IDAT_data(png_structrp png_ptr, png_bytep output,
-	png_alloc_size_t avail_out)
+png_read_IDAT_data(const png_structrp png_ptr, const png_bytep output,
+                   png_alloc_size_t avail_out)
 {
 	/* Loop reading IDATs and decompressing the result into output[avail_out] */
 	png_ptr->zstream.next_out = output;
@@ -3977,7 +3979,7 @@ png_read_IDAT_data(png_structrp png_ptr, png_bytep output,
 }
 
 void /* PRIVATE */
-png_read_finish_IDAT(png_structrp png_ptr)
+png_read_finish_IDAT(const png_structrp png_ptr)
 {
 	/* We don't need any more data and the stream should have ended, however the
 	 * LZ end code may actually not have been processed.  In this case we must
@@ -4025,7 +4027,7 @@ png_read_finish_IDAT(png_structrp png_ptr)
 }
 
 void /* PRIVATE */
-png_read_finish_row(png_structrp png_ptr)
+png_read_finish_row(const png_structrp png_ptr)
 {
 	/* Arrays to facilitate easy interlacing - use pass (0 - 6) as index */
 

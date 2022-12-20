@@ -116,7 +116,7 @@ void MineMonster_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-void MineMonster_TryDamage(const gentity_t* enemy, int damage)
+void MineMonster_TryDamage(const gentity_t* enemy, const int damage)
 {
 	vec3_t end, dir;
 	trace_t tr;
@@ -131,7 +131,7 @@ void MineMonster_TryDamage(const gentity_t* enemy, int damage)
 
 	// Should probably trace from the mouth, but, ah well.
 	trap->Trace(&tr, NPCS.NPC->r.currentOrigin, vec3_origin, vec3_origin, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0,
-		0);
+	            0);
 
 	if (tr.entityNum >= 0 && tr.entityNum < ENTITYNUM_NONE)
 	{
@@ -235,7 +235,7 @@ void MineMonster_Combat(void)
 	const qboolean advance = distance > MIN_DISTANCE_SQR ? qtrue : qfalse;
 
 	if ((advance || NPCS.NPCInfo->localState == LSTATE_WAITING) && TIMER_Done(NPCS.NPC, "attacking"))
-		// waiting monsters can't attack
+	// waiting monsters can't attack
 	{
 		if (TIMER_Done2(NPCS.NPC, "takingPain", qtrue))
 		{
@@ -257,7 +257,7 @@ void MineMonster_Combat(void)
 NPC_MineMonster_Pain
 -------------------------
 */
-void NPC_MineMonster_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_MineMonster_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	G_AddEvent(self, EV_PAIN, floor((float)self->health / self->client->pers.maxHealth * 100.0f));
 

@@ -69,8 +69,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 //namespace ravl
 //{
-template <class T> T	Min(const T& a, const T& b) { return a < b ? a : b; }
-template <class T> T	Max(const T& a, const T& b) { return b < a ? a : b; }
+template <class T>
+T Min(const T& a, const T& b) { return a < b ? a : b; }
+
+template <class T>
+T Max(const T& a, const T& b) { return b < a ? a : b; }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Defines
@@ -85,7 +88,7 @@ template <class T> T	Max(const T& a, const T& b) { return b < a ? a : b; }
 ////////////////////////////////////////////////////////////////////////////////////////
 // Enums And Typedefs
 ////////////////////////////////////////////////////////////////////////////////////////
-enum	ESide
+enum ESide
 {
 	Side_None = 0,
 	Side_Left = 1,
@@ -107,26 +110,80 @@ public:
 #ifndef _DEBUG
 	CVec4() {}
 #else
-	CVec4() { v[0] = v[1] = v[2] = v[3] = RAVL_VEC_UDF; }		// DEBUG INITIALIZATION
+	CVec4() { v[0] = v[1] = v[2] = v[3] = RAVL_VEC_UDF; } // DEBUG INITIALIZATION
 #endif
-	CVec4(const float val) { v[0] = val;		v[1] = val;		v[2] = val;		v[3] = val; }
-	CVec4(const float x, const float y, const float z, const float r) { v[0] = x;		v[1] = y;			v[2] = z;			v[3] = r; }
-	CVec4(const CVec4& t) { v[0] = t.v[0];	v[1] = t.v[1];	v[2] = t.v[2];	v[3] = t.v[3]; }
-	CVec4(const float* t) { v[0] = t[0];		v[1] = t[1];		v[2] = t[2];		v[3] = t[3]; }
+	CVec4(const float val)
+	{
+		v[0] = val;
+		v[1] = val;
+		v[2] = val;
+		v[3] = val;
+	}
+
+	CVec4(const float x, const float y, const float z, const float r)
+	{
+		v[0] = x;
+		v[1] = y;
+		v[2] = z;
+		v[3] = r;
+	}
+
+	CVec4(const CVec4& t)
+	{
+		v[0] = t.v[0];
+		v[1] = t.v[1];
+		v[2] = t.v[2];
+		v[3] = t.v[3];
+	}
+
+	CVec4(const float* t)
+	{
+		v[0] = t[0];
+		v[1] = t[1];
+		v[2] = t[2];
+		v[3] = t[3];
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Initializers
 	////////////////////////////////////////////////////////////////////////////////////
-	void Set(const float t) { v[0] = t;		v[1] = t;			v[2] = t;			v[3] = t; }
-	void Set(const float* t) { v[0] = t[0];		v[1] = t[1];		v[2] = t[2];		v[3] = t[3]; }
-	void Set(const float x, const float y, const float z, const float r) { v[0] = x;		v[1] = y;			v[2] = z;			v[3] = r; }
-	void Clear() { v[0] = 0;		v[1] = 0;			v[2] = 0;			v[3] = 0; }
+	void Set(const float t)
+	{
+		v[0] = t;
+		v[1] = t;
+		v[2] = t;
+		v[3] = t;
+	}
+
+	void Set(const float* t)
+	{
+		v[0] = t[0];
+		v[1] = t[1];
+		v[2] = t[2];
+		v[3] = t[3];
+	}
+
+	void Set(const float x, const float y, const float z, const float r)
+	{
+		v[0] = x;
+		v[1] = y;
+		v[2] = z;
+		v[3] = r;
+	}
+
+	void Clear()
+	{
+		v[0] = 0;
+		v[1] = 0;
+		v[2] = 0;
+		v[3] = 0;
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Member Accessors
 	////////////////////////////////////////////////////////////////////////////////////
-	const float& operator[](int i) const { return v[i]; }
-	float& operator[](int i) { return v[i]; }
+	const float& operator[](const int i) const { return v[i]; }
+	float& operator[](const int i) { return v[i]; }
 	float& pitch() { return v[0]; }
 	float& yaw() { return v[1]; }
 	float& roll() { return v[2]; }
@@ -135,58 +192,156 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Equality / Inequality Operators
 	////////////////////////////////////////////////////////////////////////////////////
-	bool operator!  () const { return	!(v[0] && v[1] && v[2] && v[3]); }
-	bool operator== (const CVec4& t) const { return	 v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2] && v[3] == t.v[3]; }
-	bool operator!= (const CVec4& t) const { return !(v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2] && v[3] == t.v[3]); }
-	bool operator<  (const CVec4& t) const { return	 v[0] < t.v[0] && v[1] < t.v[1] && v[2] < t.v[2] && v[3] < t.v[3]; }
-	bool operator>  (const CVec4& t) const { return	 v[0] > t.v[0] && v[1] > t.v[1] && v[2] > t.v[2] && v[3] > t.v[3]; }
-	bool operator<= (const CVec4& t) const { return	 v[0] <= t.v[0] && v[1] <= t.v[1] && v[2] <= t.v[2] && v[3] <= t.v[3]; }
-	bool operator>= (const CVec4& t) const { return	 v[0] >= t.v[0] && v[1] >= t.v[1] && v[2] >= t.v[2] && v[3] >= t.v[3]; }
+	bool operator!() const { return !(v[0] && v[1] && v[2] && v[3]); }
+
+	bool operator==(const CVec4& t) const
+	{
+		return v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2] && v[3] == t.v[3];
+	}
+
+	bool operator!=(const CVec4& t) const
+	{
+		return !(v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2] && v[3] == t.v[3]);
+	}
+
+	bool operator<(const CVec4& t) const { return v[0] < t.v[0] && v[1] < t.v[1] && v[2] < t.v[2] && v[3] < t.v[3]; }
+	bool operator>(const CVec4& t) const { return v[0] > t.v[0] && v[1] > t.v[1] && v[2] > t.v[2] && v[3] > t.v[3]; }
+
+	bool operator<=(const CVec4& t) const
+	{
+		return v[0] <= t.v[0] && v[1] <= t.v[1] && v[2] <= t.v[2] && v[3] <= t.v[3];
+	}
+
+	bool operator>=(const CVec4& t) const
+	{
+		return v[0] >= t.v[0] && v[1] >= t.v[1] && v[2] >= t.v[2] && v[3] >= t.v[3];
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Basic Arithimitic Operators
 	////////////////////////////////////////////////////////////////////////////////////
-	const CVec4& operator=  (const float d) { v[0] = d;		v[1] = d;			v[2] = d;			v[3] = d;		 return *this; }
-	const CVec4& operator=  (const CVec4& t) { v[0] = t.v[0];	v[1] = t.v[1];	v[2] = t.v[2];	v[3] = t.v[3]; return *this; }
+	const CVec4& operator=(const float d)
+	{
+		v[0] = d;
+		v[1] = d;
+		v[2] = d;
+		v[3] = d;
+		return *this;
+	}
 
-	const CVec4& operator+= (const float d) { v[0] += d;		v[1] += d;		v[2] += d;		v[3] += d;	 return *this; }
-	const CVec4& operator+= (const CVec4& t) { v[0] += t.v[0];	v[1] += t.v[1];	v[2] += t.v[2];	v[3] += t.v[3]; return *this; }
+	const CVec4& operator=(const CVec4& t)
+	{
+		v[0] = t.v[0];
+		v[1] = t.v[1];
+		v[2] = t.v[2];
+		v[3] = t.v[3];
+		return *this;
+	}
 
-	const CVec4& operator-= (const float d) { v[0] -= d;		v[1] -= d;		v[2] -= d; 		v[3] -= d;	 return *this; }
-	const CVec4& operator-= (const CVec4& t) { v[0] -= t.v[0];	v[1] -= t.v[1];	v[2] -= t.v[2];	v[3] -= t.v[3]; return *this; }
+	const CVec4& operator+=(const float d)
+	{
+		v[0] += d;
+		v[1] += d;
+		v[2] += d;
+		v[3] += d;
+		return *this;
+	}
 
-	const CVec4& operator*= (const float d) { v[0] *= d;		v[1] *= d;		v[2] *= d;		v[3] *= d;	 return *this; }
-	const CVec4& operator*= (const CVec4& t) { v[0] *= t.v[0];	v[1] *= t.v[1];	v[2] *= t.v[2];	v[3] *= t.v[3]; return *this; }
+	const CVec4& operator+=(const CVec4& t)
+	{
+		v[0] += t.v[0];
+		v[1] += t.v[1];
+		v[2] += t.v[2];
+		v[3] += t.v[3];
+		return *this;
+	}
 
-	const CVec4& operator/= (const float d) { v[0] /= d;		v[1] /= d;		v[2] /= d;		v[3] /= d;	 return *this; }
-	const CVec4& operator/= (const CVec4& t) { v[0] /= t.v[0];	v[1] /= t.v[1];	v[2] /= t.v[2];	v[3] /= t.v[3]; return *this; }
+	const CVec4& operator-=(const float d)
+	{
+		v[0] -= d;
+		v[1] -= d;
+		v[2] -= d;
+		v[3] -= d;
+		return *this;
+	}
 
-	CVec4 operator+ (const CVec4& t) const { return CVec4(v[0] + t.v[0], v[1] + t.v[1], v[2] + t.v[2], v[3] + t.v[3]); }
-	CVec4 operator- (const CVec4& t) const { return CVec4(v[0] - t.v[0], v[1] - t.v[1], v[2] - t.v[2], v[3] - t.v[3]); }
-	CVec4 operator* (const CVec4& t) const { return CVec4(v[0] * t.v[0], v[1] * t.v[1], v[2] * t.v[2], v[3] * t.v[3]); }
-	CVec4 operator/ (const CVec4& t) const { return CVec4(v[0] / t.v[0], v[1] / t.v[1], v[2] / t.v[2], v[3] / t.v[3]); }
+	const CVec4& operator-=(const CVec4& t)
+	{
+		v[0] -= t.v[0];
+		v[1] -= t.v[1];
+		v[2] -= t.v[2];
+		v[3] -= t.v[3];
+		return *this;
+	}
+
+	const CVec4& operator*=(const float d)
+	{
+		v[0] *= d;
+		v[1] *= d;
+		v[2] *= d;
+		v[3] *= d;
+		return *this;
+	}
+
+	const CVec4& operator*=(const CVec4& t)
+	{
+		v[0] *= t.v[0];
+		v[1] *= t.v[1];
+		v[2] *= t.v[2];
+		v[3] *= t.v[3];
+		return *this;
+	}
+
+	const CVec4& operator/=(const float d)
+	{
+		v[0] /= d;
+		v[1] /= d;
+		v[2] /= d;
+		v[3] /= d;
+		return *this;
+	}
+
+	const CVec4& operator/=(const CVec4& t)
+	{
+		v[0] /= t.v[0];
+		v[1] /= t.v[1];
+		v[2] /= t.v[2];
+		v[3] /= t.v[3];
+		return *this;
+	}
+
+	CVec4 operator+(const CVec4& t) const { return CVec4(v[0] + t.v[0], v[1] + t.v[1], v[2] + t.v[2], v[3] + t.v[3]); }
+	CVec4 operator-(const CVec4& t) const { return CVec4(v[0] - t.v[0], v[1] - t.v[1], v[2] - t.v[2], v[3] - t.v[3]); }
+	CVec4 operator*(const CVec4& t) const { return CVec4(v[0] * t.v[0], v[1] * t.v[1], v[2] * t.v[2], v[3] * t.v[3]); }
+	CVec4 operator/(const CVec4& t) const { return CVec4(v[0] / t.v[0], v[1] / t.v[1], v[2] / t.v[2], v[3] / t.v[3]); }
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Length And Distance Calculations
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Len() const;
-	float	Len2() const { return v[0] * v[0] + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]; }
+	float Len() const;
+	float Len2() const { return v[0] * v[0] + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]; }
 
-	float	Dist(const CVec4& t) const;
-	float	Dist2(const CVec4& t) const { return (t.v[0] - v[0]) * (t.v[0] - v[0]) + (t.v[1] - v[1]) * (t.v[1] - v[1]) + (t.v[2] - v[2]) * (t.v[2] - v[2]) + (t.v[3] - v[3]) * (t.v[3] - v[3]); }
+	float Dist(const CVec4& t) const;
+
+	float Dist2(const CVec4& t) const
+	{
+		return (t.v[0] - v[0]) * (t.v[0] - v[0]) + (t.v[1] - v[1]) * (t.v[1] - v[1]) + (t.v[2] - v[2]) * (t.v[2] - v[2])
+			+ (t.v[3] - v[3]) * (t.v[3] - v[3]);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Normalization
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Norm();
-	float	SafeNorm();
-	void	AngleNorm();
+	float Norm();
+	float SafeNorm();
+	void AngleNorm();
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Dot, Cross & Perpendicular Vector
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Dot(const CVec4& t) const { return v[0] * t.v[0] + v[1] * t.v[1] + v[2] * t.v[2] + v[3] * t.v[3]; }
-	void	Cross(const CVec4& t)
+	float Dot(const CVec4& t) const { return v[0] * t.v[0] + v[1] * t.v[1] + v[2] * t.v[2] + v[3] * t.v[3]; }
+
+	void Cross(const CVec4& t)
 	{
 		const CVec4 temp(*this);
 		v[0] = temp.v[1] * t.v[2] - temp.v[2] * t.v[1];
@@ -194,42 +349,47 @@ public:
 		v[2] = temp.v[0] * t.v[1] - temp.v[1] * t.v[0];
 		v[3] = 0;
 	}
-	void	Perp();
+
+	void Perp();
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Truncation & Element Analysis
 	////////////////////////////////////////////////////////////////////////////////////
-	void	Min(const CVec4& t)
+	void Min(const CVec4& t)
 	{
-		if (t.v[0] < v[0])			v[0] = t.v[0];
-		if (t.v[1] < v[1])			v[1] = t.v[1];
-		if (t.v[2] < v[2])			v[2] = t.v[2];
-		if (t.v[3] < v[3])			v[3] = t.v[3];
+		if (t.v[0] < v[0]) v[0] = t.v[0];
+		if (t.v[1] < v[1]) v[1] = t.v[1];
+		if (t.v[2] < v[2]) v[2] = t.v[2];
+		if (t.v[3] < v[3]) v[3] = t.v[3];
 	}
-	void	Max(const CVec4& t)
+
+	void Max(const CVec4& t)
 	{
-		if (t.v[0] > v[0])			v[0] = t.v[0];
-		if (t.v[1] > v[1])			v[1] = t.v[1];
-		if (t.v[2] > v[2])			v[2] = t.v[2];
-		if (t.v[3] > v[3])			v[3] = t.v[3];
+		if (t.v[0] > v[0]) v[0] = t.v[0];
+		if (t.v[1] > v[1]) v[1] = t.v[1];
+		if (t.v[2] > v[2]) v[2] = t.v[2];
+		if (t.v[3] > v[3]) v[3] = t.v[3];
 	}
-	float	MaxElement() const
+
+	float MaxElement() const
 	{
 		return v[MaxElementIndex()];
 	}
-	int		MaxElementIndex() const;
+
+	int MaxElementIndex() const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Interpolation
 	////////////////////////////////////////////////////////////////////////////////////
-	void	Interp(const CVec4& v1, const CVec4& v2, const float t)
+	void Interp(const CVec4& v1, const CVec4& v2, const float t)
 	{
 		*this = v1;
 		*this -= v2;
 		*this *= t;
 		*this += v2;
 	}
-	void	ScaleAdd(const CVec4& t, const float scale)
+
+	void ScaleAdd(const CVec4& t, const float scale)
 	{
 		v[0] += scale * t.v[0];
 		v[1] += scale * t.v[1];
@@ -240,22 +400,22 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Conversion Angle To Vector (Angle In Degrees)
 	////////////////////////////////////////////////////////////////////////////////////
-	void	VecToAng();
-	void	AngToVec();
-	void	AngToVec(CVec4& Right, CVec4& Up);
+	void VecToAng();
+	void AngToVec();
+	void AngToVec(CVec4& Right, CVec4& Up);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Conversion Angle To Vector (Angle In Radians)
 	////////////////////////////////////////////////////////////////////////////////////
-	void	VecToAngRad();
-	void	AngToVecRad();
-	void	AngToVecRad(CVec4& Right, CVec4& Up);
+	void VecToAngRad();
+	void AngToVecRad();
+	void AngToVecRad(CVec4& Right, CVec4& Up);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Conversion Between Radians And Degrees
 	////////////////////////////////////////////////////////////////////////////////////
-	void	ToRadians();
-	void	ToDegrees();
+	void ToRadians();
+	void ToDegrees();
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Project
@@ -278,11 +438,11 @@ public:
 	//     /___---  /                                 /
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Project(const CVec4& U)
+	float Project(const CVec4& U)
 	{
-		const float	Scale = Dot(U) / U.Len2();	// Find the scale of this vector on U
-		*this = U;								// Copy U onto this vector
-		*this *= Scale;							// Use the previously calculated scale to get the right length.
+		const float Scale = Dot(U) / U.Len2(); // Find the scale of this vector on U
+		*this = U; // Copy U onto this vector
+		*this *= Scale; // Use the previously calculated scale to get the right length.
 		return Scale;
 	}
 
@@ -307,10 +467,10 @@ public:
 	// (Start)
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	ProjectToLine(const CVec4& Start, const CVec4& Stop)
+	float ProjectToLine(const CVec4& Start, const CVec4& Stop)
 	{
 		*this -= Start;
-		const float	Scale = Project(Stop - Start);
+		const float Scale = Project(Stop - Start);
 		*this += Start;
 		return Scale;
 	}
@@ -320,7 +480,7 @@ public:
 	//
 	// Same As Project To Line, Except It Will Clamp To Start And Stop
 	////////////////////////////////////////////////////////////////////////////////////
-	float	ProjectToLineSeg(const CVec4& Start, const CVec4& Stop)
+	float ProjectToLineSeg(const CVec4& Start, const CVec4& Stop)
 	{
 		const float Scale = ProjectToLine(Start, Stop);
 		if (Scale < 0.0f)
@@ -339,9 +499,9 @@ public:
 	//
 	// Uses project to line and than calculates distance to the new point
 	////////////////////////////////////////////////////////////////////////////////////
-	float	DistToLine(const CVec4& Start, const CVec4& Stop) const
+	float DistToLine(const CVec4& Start, const CVec4& Stop) const
 	{
-		CVec4	P(*this);
+		CVec4 P(*this);
 		P.ProjectToLineSeg(Start, Stop);
 
 		return Dist(P);
@@ -352,9 +512,9 @@ public:
 	//
 	// Uses project to line and than calculates distance to the new point
 	////////////////////////////////////////////////////////////////////////////////////
-	float	DistToLine2(const CVec4& Start, const CVec4& Stop) const
+	float DistToLine2(const CVec4& Start, const CVec4& Stop) const
 	{
-		CVec4	P(*this);
+		CVec4 P(*this);
 		P.ProjectToLineSeg(Start, Stop);
 
 		return Dist2(P);
@@ -363,8 +523,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Translation & Rotation (2D)
 	////////////////////////////////////////////////////////////////////////////////////
-	void	RotatePoint(const CVec4& Angle, const CVec4& Origin);
-	void	Reposition(const CVec4& Translation, float RotationDegrees = 0.0);
+	void RotatePoint(const CVec4& Angle, const CVec4& Origin);
+	void Reposition(const CVec4& Translation, float RotationDegrees = 0.0);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Area Of The Parallel Pipid (2D)
@@ -386,7 +546,7 @@ public:
 	//  (this)---/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	AreaParallelPipid(const CVec4& A, const CVec4& B) const
+	float AreaParallelPipid(const CVec4& A, const CVec4& B) const
 	{
 		return A.v[0] * B.v[1] - A.v[1] * B.v[0] +
 			(B.v[0] * v[1] - v[0] * B.v[1]) +
@@ -406,7 +566,7 @@ public:
 	//  (this)---/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	AreaTriange(const CVec4& A, const CVec4& B) const
+	float AreaTriange(const CVec4& A, const CVec4& B) const
 	{
 		return AreaParallelPipid(A, B) * 0.5f;
 	}
@@ -425,7 +585,7 @@ public:
 	//  (Start)/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	ESide	LRTest(const CVec4& Start, const CVec4& End, float Tolerance = 0.0) const
+	ESide LRTest(const CVec4& Start, const CVec4& End, const float Tolerance = 0.0) const
 	{
 		const float Area = AreaParallelPipid(Start, End);
 		if (Area > Tolerance)
@@ -453,7 +613,7 @@ public:
 	//       \_______/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool	PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const;
+	bool PtInCircle(const CVec4& A, const CVec4& B, const CVec4& C) const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Point In Standard Circle  (True/False)
@@ -468,7 +628,7 @@ public:
 	//       \_______/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool	PtInCircle(const CVec4& Circle, float Radius) const;
+	bool PtInCircle(const CVec4& Circle, float Radius) const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Line Intersects Circle  (True/False)
@@ -490,21 +650,21 @@ public:
 	// (Start)
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool	LineInCircle(const CVec4& Start, const CVec4& Stop, float Radius);
-	bool	LineInCircle(const CVec4& Start, const CVec4& Stop, float Radius, CVec4& PointOnLine);
+	bool LineInCircle(const CVec4& Start, const CVec4& Stop, float Radius);
+	bool LineInCircle(const CVec4& Start, const CVec4& Stop, float Radius, CVec4& PointOnLine);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// String Operations
 	////////////////////////////////////////////////////////////////////////////////////
-	void	FromStr(const char* s);
-	void	ToStr(char* s) const;
+	void FromStr(const char* s);
+	void ToStr(char* s) const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Debug Routines
 	////////////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-	bool	IsFinite();
-	bool	IsInitialized();
+	bool IsFinite();
+	bool IsInitialized();
 #endif
 
 	////////////////////////////////////////////////////////////////////////////////////
@@ -533,30 +693,76 @@ public:
 #ifndef _DEBUG
 	CVec3() = default;
 #else
-	CVec3() { v[0] = v[1] = v[2] = RAVL_VEC_UDF; }		// DEBUG INITIALIZATION
+	CVec3() { v[0] = v[1] = v[2] = RAVL_VEC_UDF; } // DEBUG INITIALIZATION
 #endif
-	CVec3(const float val) { v[0] = val;		v[1] = val;		v[2] = val; }
-	CVec3(const float x, const float y, const float z) { v[0] = x;		v[1] = y;			v[2] = z; }
-	CVec3(const CVec3& t) { v[0] = t.v[0];	v[1] = t.v[1];	v[2] = t.v[2]; }
-	CVec3(const float* t) { v[0] = t[0];		v[1] = t[1];		v[2] = t[2]; }
+	CVec3(const float val)
+	{
+		v[0] = val;
+		v[1] = val;
+		v[2] = val;
+	}
 
-	float	x()		const { return v[0]; }
-	float	y()		const { return v[1]; }
-	float	z()		const { return v[2]; }
+	CVec3(const float x, const float y, const float z)
+	{
+		v[0] = x;
+		v[1] = y;
+		v[2] = z;
+	}
+
+	CVec3(const CVec3& t)
+	{
+		v[0] = t.v[0];
+		v[1] = t.v[1];
+		v[2] = t.v[2];
+	}
+
+	CVec3(const float* t)
+	{
+		v[0] = t[0];
+		v[1] = t[1];
+		v[2] = t[2];
+	}
+
+	float x() const { return v[0]; }
+	float y() const { return v[1]; }
+	float z() const { return v[2]; }
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Initializers
 	////////////////////////////////////////////////////////////////////////////////////
-	void Set(const float t) { v[0] = t;		v[1] = t;			v[2] = t; }
-	void Set(const float* t) { v[0] = t[0];		v[1] = t[1];		v[2] = t[2]; }
-	void Set(const float x, const float y, const float z) { v[0] = x;		v[1] = y;			v[2] = z; }
-	void Clear() { v[0] = 0;		v[1] = 0;			v[2] = 0; }
+	void Set(const float t)
+	{
+		v[0] = t;
+		v[1] = t;
+		v[2] = t;
+	}
+
+	void Set(const float* t)
+	{
+		v[0] = t[0];
+		v[1] = t[1];
+		v[2] = t[2];
+	}
+
+	void Set(const float x, const float y, const float z)
+	{
+		v[0] = x;
+		v[1] = y;
+		v[2] = z;
+	}
+
+	void Clear()
+	{
+		v[0] = 0;
+		v[1] = 0;
+		v[2] = 0;
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Member Accessors
 	////////////////////////////////////////////////////////////////////////////////////
-	const float& operator[](int i) const { return v[i]; }
-	float& operator[](int i) { return v[i]; }
+	const float& operator[](const int i) const { return v[i]; }
+	float& operator[](const int i) { return v[i]; }
 	float& pitch() { return v[0]; }
 	float& yaw() { return v[1]; }
 	float& roll() { return v[2]; }
@@ -564,99 +770,175 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Equality / Inequality Operators
 	////////////////////////////////////////////////////////////////////////////////////
-	bool operator!  () const { return	!(v[0] && v[1] && v[2]); }
-	bool operator== (const CVec3& t) const { return	 v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2]; }
-	bool operator!= (const CVec3& t) const { return !(v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2]); }
-	bool operator<  (const CVec3& t) const { return	 v[0] < t.v[0] && v[1] < t.v[1] && v[2] < t.v[2]; }
-	bool operator>  (const CVec3& t) const { return	 v[0] > t.v[0] && v[1] > t.v[1] && v[2] > t.v[2]; }
-	bool operator<= (const CVec3& t) const { return	 v[0] <= t.v[0] && v[1] <= t.v[1] && v[2] <= t.v[2]; }
-	bool operator>= (const CVec3& t) const { return	 v[0] >= t.v[0] && v[1] >= t.v[1] && v[2] >= t.v[2]; }
+	bool operator!() const { return !(v[0] && v[1] && v[2]); }
+	bool operator==(const CVec3& t) const { return v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2]; }
+	bool operator!=(const CVec3& t) const { return !(v[0] == t.v[0] && v[1] == t.v[1] && v[2] == t.v[2]); }
+	bool operator<(const CVec3& t) const { return v[0] < t.v[0] && v[1] < t.v[1] && v[2] < t.v[2]; }
+	bool operator>(const CVec3& t) const { return v[0] > t.v[0] && v[1] > t.v[1] && v[2] > t.v[2]; }
+	bool operator<=(const CVec3& t) const { return v[0] <= t.v[0] && v[1] <= t.v[1] && v[2] <= t.v[2]; }
+	bool operator>=(const CVec3& t) const { return v[0] >= t.v[0] && v[1] >= t.v[1] && v[2] >= t.v[2]; }
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Basic Arithimitic Operators
 	////////////////////////////////////////////////////////////////////////////////////
-	const CVec3& operator=  (const float d) { v[0] = d;		v[1] = d;			v[2] = d;		 return *this; }
-	const CVec3& operator=  (const CVec3& t) { v[0] = t.v[0];	v[1] = t.v[1];	v[2] = t.v[2]; return *this; }
+	const CVec3& operator=(const float d)
+	{
+		v[0] = d;
+		v[1] = d;
+		v[2] = d;
+		return *this;
+	}
 
-	const CVec3& operator+= (const float d) { v[0] += d;		v[1] += d;		v[2] += d;	 return *this; }
-	const CVec3& operator+= (const CVec3& t) { v[0] += t.v[0];	v[1] += t.v[1];	v[2] += t.v[2]; return *this; }
+	const CVec3& operator=(const CVec3& t)
+	{
+		v[0] = t.v[0];
+		v[1] = t.v[1];
+		v[2] = t.v[2];
+		return *this;
+	}
 
-	const CVec3& operator-= (const float d) { v[0] -= d;		v[1] -= d;		v[2] -= d; 	 return *this; }
-	const CVec3& operator-= (const CVec3& t) { v[0] -= t.v[0];	v[1] -= t.v[1];	v[2] -= t.v[2]; return *this; }
+	const CVec3& operator+=(const float d)
+	{
+		v[0] += d;
+		v[1] += d;
+		v[2] += d;
+		return *this;
+	}
 
-	const CVec3& operator*= (const float d) { v[0] *= d;		v[1] *= d;		v[2] *= d;	 return *this; }
-	const CVec3& operator*= (const CVec3& t) { v[0] *= t.v[0];	v[1] *= t.v[1];	v[2] *= t.v[2]; return *this; }
+	const CVec3& operator+=(const CVec3& t)
+	{
+		v[0] += t.v[0];
+		v[1] += t.v[1];
+		v[2] += t.v[2];
+		return *this;
+	}
 
-	const CVec3& operator/= (const float d) { v[0] /= d;		v[1] /= d;		v[2] /= d;	 return *this; }
-	const CVec3& operator/= (const CVec3& t) { v[0] /= t.v[0];	v[1] /= t.v[1];	v[2] /= t.v[2]; return *this; }
+	const CVec3& operator-=(const float d)
+	{
+		v[0] -= d;
+		v[1] -= d;
+		v[2] -= d;
+		return *this;
+	}
 
-	CVec3 operator+ (const CVec3& t) const { return CVec3(v[0] + t.v[0], v[1] + t.v[1], v[2] + t.v[2]); }
-	CVec3 operator- (const CVec3& t) const { return CVec3(v[0] - t.v[0], v[1] - t.v[1], v[2] - t.v[2]); }
-	CVec3 operator* (const CVec3& t) const { return CVec3(v[0] * t.v[0], v[1] * t.v[1], v[2] * t.v[2]); }
-	CVec3 operator/ (const CVec3& t) const { return CVec3(v[0] / t.v[0], v[1] / t.v[1], v[2] / t.v[2]); }
+	const CVec3& operator-=(const CVec3& t)
+	{
+		v[0] -= t.v[0];
+		v[1] -= t.v[1];
+		v[2] -= t.v[2];
+		return *this;
+	}
+
+	const CVec3& operator*=(const float d)
+	{
+		v[0] *= d;
+		v[1] *= d;
+		v[2] *= d;
+		return *this;
+	}
+
+	const CVec3& operator*=(const CVec3& t)
+	{
+		v[0] *= t.v[0];
+		v[1] *= t.v[1];
+		v[2] *= t.v[2];
+		return *this;
+	}
+
+	const CVec3& operator/=(const float d)
+	{
+		v[0] /= d;
+		v[1] /= d;
+		v[2] /= d;
+		return *this;
+	}
+
+	const CVec3& operator/=(const CVec3& t)
+	{
+		v[0] /= t.v[0];
+		v[1] /= t.v[1];
+		v[2] /= t.v[2];
+		return *this;
+	}
+
+	CVec3 operator+(const CVec3& t) const { return CVec3(v[0] + t.v[0], v[1] + t.v[1], v[2] + t.v[2]); }
+	CVec3 operator-(const CVec3& t) const { return CVec3(v[0] - t.v[0], v[1] - t.v[1], v[2] - t.v[2]); }
+	CVec3 operator*(const CVec3& t) const { return CVec3(v[0] * t.v[0], v[1] * t.v[1], v[2] * t.v[2]); }
+	CVec3 operator/(const CVec3& t) const { return CVec3(v[0] / t.v[0], v[1] / t.v[1], v[2] / t.v[2]); }
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Length And Distance Calculations
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Len() const;
-	float	Len2() const { return v[0] * v[0] + v[1] * v[1] + v[2] * v[2]; }
+	float Len() const;
+	float Len2() const { return v[0] * v[0] + v[1] * v[1] + v[2] * v[2]; }
 
-	float	Dist(const CVec3& t) const;
-	float	Dist2(const CVec3& t) const { return (t.v[0] - v[0]) * (t.v[0] - v[0]) + (t.v[1] - v[1]) * (t.v[1] - v[1]) + (t.v[2] - v[2]) * (t.v[2] - v[2]); }
+	float Dist(const CVec3& t) const;
+
+	float Dist2(const CVec3& t) const
+	{
+		return (t.v[0] - v[0]) * (t.v[0] - v[0]) + (t.v[1] - v[1]) * (t.v[1] - v[1]) + (t.v[2] - v[2]) * (t.v[2] - v[
+			2]);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Normalization
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Norm();
-	float	SafeNorm();
-	void	AngleNorm();
-	float	Truncate(float maxlen);
+	float Norm();
+	float SafeNorm();
+	void AngleNorm();
+	float Truncate(float maxlen);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Dot, Cross & Perpendicular Vector
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Dot(const CVec3& t) const { return v[0] * t.v[0] + v[1] * t.v[1] + v[2] * t.v[2]; }
-	void	Cross(const CVec3& t)
+	float Dot(const CVec3& t) const { return v[0] * t.v[0] + v[1] * t.v[1] + v[2] * t.v[2]; }
+
+	void Cross(const CVec3& t)
 	{
 		const CVec3 temp(*this);
 		v[0] = temp.v[1] * t.v[2] - temp.v[2] * t.v[1];
 		v[1] = temp.v[2] * t.v[0] - temp.v[0] * t.v[2];
 		v[2] = temp.v[0] * t.v[1] - temp.v[1] * t.v[0];
 	}
-	void	Perp();
+
+	void Perp();
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Truncation & Element Analysis
 	////////////////////////////////////////////////////////////////////////////////////
-	void	Min(const CVec3& t)
+	void Min(const CVec3& t)
 	{
-		if (t.v[0] < v[0])			v[0] = t.v[0];
-		if (t.v[1] < v[1])			v[1] = t.v[1];
-		if (t.v[2] < v[2])			v[2] = t.v[2];
+		if (t.v[0] < v[0]) v[0] = t.v[0];
+		if (t.v[1] < v[1]) v[1] = t.v[1];
+		if (t.v[2] < v[2]) v[2] = t.v[2];
 	}
-	void	Max(const CVec3& t)
+
+	void Max(const CVec3& t)
 	{
-		if (t.v[0] > v[0])			v[0] = t.v[0];
-		if (t.v[1] > v[1])			v[1] = t.v[1];
-		if (t.v[2] > v[2])			v[2] = t.v[2];
+		if (t.v[0] > v[0]) v[0] = t.v[0];
+		if (t.v[1] > v[1]) v[1] = t.v[1];
+		if (t.v[2] > v[2]) v[2] = t.v[2];
 	}
-	float	MaxElement() const
+
+	float MaxElement() const
 	{
 		return v[MaxElementIndex()];
 	}
-	int		MaxElementIndex() const;
+
+	int MaxElementIndex() const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Interpolation
 	////////////////////////////////////////////////////////////////////////////////////
-	void	Interp(const CVec3& v1, const CVec3& v2, const float t)
+	void Interp(const CVec3& v1, const CVec3& v2, const float t)
 	{
 		*this = v1;
 		*this -= v2;
 		*this *= t;
 		*this += v2;
 	}
-	void	ScaleAdd(const CVec3& t, const float scale)
+
+	void ScaleAdd(const CVec3& t, const float scale)
 	{
 		v[0] += scale * t.v[0];
 		v[1] += scale * t.v[1];
@@ -666,22 +948,22 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Conversion Angle To Vector (Angle In Degrees)
 	////////////////////////////////////////////////////////////////////////////////////
-	void	VecToAng();
-	void	AngToVec();
-	void	AngToVec(CVec3& Right, CVec3& Up);
+	void VecToAng();
+	void AngToVec();
+	void AngToVec(CVec3& Right, CVec3& Up);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Conversion Angle To Vector (Angle In Radians)
 	////////////////////////////////////////////////////////////////////////////////////
-	void	VecToAngRad();
-	void	AngToVecRad();
-	void	AngToVecRad(CVec3& Right, CVec3& Up);
+	void VecToAngRad();
+	void AngToVecRad();
+	void AngToVecRad(CVec3& Right, CVec3& Up);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Conversion Between Radians And Degrees
 	////////////////////////////////////////////////////////////////////////////////////
-	void	ToRadians();
-	void	ToDegrees();
+	void ToRadians();
+	void ToDegrees();
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Project
@@ -704,11 +986,11 @@ public:
 	//     /___---  /                                 /
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	Project(const CVec3& U)
+	float Project(const CVec3& U)
 	{
-		const float	Scale = Dot(U) / U.Len2();	// Find the scale of this vector on U
-		*this = U;								// Copy U onto this vector
-		*this *= Scale;							// Use the previously calculated scale to get the right length.
+		const float Scale = Dot(U) / U.Len2(); // Find the scale of this vector on U
+		*this = U; // Copy U onto this vector
+		*this *= Scale; // Use the previously calculated scale to get the right length.
 		return Scale;
 	}
 
@@ -733,10 +1015,10 @@ public:
 	// (Start)
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	ProjectToLine(const CVec3& Start, const CVec3& Stop)
+	float ProjectToLine(const CVec3& Start, const CVec3& Stop)
 	{
 		*this -= Start;
-		const float	Scale = Project(Stop - Start);
+		const float Scale = Project(Stop - Start);
 		*this += Start;
 		return Scale;
 	}
@@ -746,7 +1028,7 @@ public:
 	//
 	// Same As Project To Line, Except It Will Clamp To Start And Stop
 	////////////////////////////////////////////////////////////////////////////////////
-	float	ProjectToLineSeg(const CVec3& Start, const CVec3& Stop)
+	float ProjectToLineSeg(const CVec3& Start, const CVec3& Stop)
 	{
 		const float Scale = ProjectToLine(Start, Stop);
 		if (Scale < 0.0f)
@@ -765,9 +1047,9 @@ public:
 	//
 	// Uses project to line and than calculates distance to the new point
 	////////////////////////////////////////////////////////////////////////////////////
-	float	DistToLine(const CVec3& Start, const CVec3& Stop) const
+	float DistToLine(const CVec3& Start, const CVec3& Stop) const
 	{
-		CVec3	P(*this);
+		CVec3 P(*this);
 		P.ProjectToLineSeg(Start, Stop);
 
 		return Dist(P);
@@ -778,9 +1060,9 @@ public:
 	//
 	// Uses project to line and than calculates distance to the new point
 	////////////////////////////////////////////////////////////////////////////////////
-	float	DistToLine2(const CVec3& Start, const CVec3& Stop) const
+	float DistToLine2(const CVec3& Start, const CVec3& Stop) const
 	{
-		CVec3	P(*this);
+		CVec3 P(*this);
 		P.ProjectToLineSeg(Start, Stop);
 
 		return Dist2(P);
@@ -789,8 +1071,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Translation & Rotation (2D)
 	////////////////////////////////////////////////////////////////////////////////////
-	void	RotatePoint(const CVec3& Angle, const CVec3& Origin);
-	void	Reposition(const CVec3& Translation, float RotationDegrees = 0.0);
+	void RotatePoint(const CVec3& Angle, const CVec3& Origin);
+	void Reposition(const CVec3& Translation, float RotationDegrees = 0.0);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Area Of The Parallel Pipid (2D)
@@ -812,7 +1094,7 @@ public:
 	//  (this)---/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	AreaParallelPipid(const CVec3& A, const CVec3& B) const
+	float AreaParallelPipid(const CVec3& A, const CVec3& B) const
 	{
 		return A.v[0] * B.v[1] - A.v[1] * B.v[0] +
 			(B.v[0] * v[1] - v[0] * B.v[1]) +
@@ -832,7 +1114,7 @@ public:
 	//  (this)---/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	float	AreaTriange(const CVec3& A, const CVec3& B) const
+	float AreaTriange(const CVec3& A, const CVec3& B) const
 	{
 		return AreaParallelPipid(A, B) * 0.5f;
 	}
@@ -851,7 +1133,7 @@ public:
 	//  (Start)/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	ESide	LRTest(const CVec3& Start, const CVec3& End, float Tolerance = 0.0) const
+	ESide LRTest(const CVec3& Start, const CVec3& End, const float Tolerance = 0.0) const
 	{
 		const float Area = AreaParallelPipid(Start, End);
 		if (Area > Tolerance)
@@ -879,7 +1161,7 @@ public:
 	//       \_______/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool	PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const;
+	bool PtInCircle(const CVec3& A, const CVec3& B, const CVec3& C) const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Point In Standard Circle  (True/False)
@@ -894,7 +1176,7 @@ public:
 	//       \_______/
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool	PtInCircle(const CVec3& Circle, float Radius) const;
+	bool PtInCircle(const CVec3& Circle, float Radius) const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Line Intersects Circle  (True/False)
@@ -916,21 +1198,21 @@ public:
 	// (Start)
 	//
 	////////////////////////////////////////////////////////////////////////////////////
-	bool	LineInCircle(const CVec3& Start, const CVec3& Stop, float Radius);
-	bool	LineInCircle(const CVec3& Start, const CVec3& Stop, float Radius, CVec3& PointOnLine);
+	bool LineInCircle(const CVec3& Start, const CVec3& Stop, float Radius);
+	bool LineInCircle(const CVec3& Start, const CVec3& Stop, float Radius, CVec3& PointOnLine);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// String Operations
 	////////////////////////////////////////////////////////////////////////////////////
-	void	FromStr(const char* s);
-	void	ToStr(char* s) const;
+	void FromStr(const char* s);
+	void ToStr(char* s) const;
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// Debug Routines
 	////////////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-	bool	IsFinite();
-	bool	IsInitialized();
+	bool IsFinite();
+	bool IsInitialized();
 #endif
 
 	////////////////////////////////////////////////////////////////////////////////////

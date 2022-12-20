@@ -2,7 +2,7 @@
 #include "b_local.h"
 
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 extern void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
 extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int modelIndix);
 extern void Rancor_DropVictim(gentity_t* self); //wahoo - :p
@@ -43,7 +43,7 @@ void NPC_SandCreature_Pain(gentity_t* self, gentity_t* attacker, int damage)
 	{
 		vec3_t shakePos;
 		NPC_SetAnim(self, SETANIM_LEGS, Q_irand(BOTH_ATTACK1, BOTH_ATTACK2),
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 		G_AddEvent(self, EV_PAIN, Q_irand(0, 100));
 		TIMER_Set(self, "pain", self->client->ps.legsTimer + Q_irand(500, 2000));
 		//wahoo fix for el camera shake effect
@@ -64,7 +64,7 @@ void NPC_SandCreature_Pain(gentity_t* self, gentity_t* attacker, int damage)
 
 void SandCreature_MoveEffect(void)
 {
-	vec3_t up = { 0, 0, 1 };
+	vec3_t up = {0, 0, 1};
 	vec3_t shakePos;
 	vec3_t org;
 	org[0] = NPCS.NPC->r.currentOrigin[0];
@@ -101,13 +101,13 @@ void SandCreature_MoveEffect(void)
 		trace_t trace;
 		//make him solid here so he can be hit/gets blocked on stuff. Check clear first.
 		trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, NPCS.NPC->r.currentOrigin,
-			NPCS.NPC->s.number, MASK_NPCSOLID, qfalse, 0, 0);
+		            NPCS.NPC->s.number, MASK_NPCSOLID, qfalse, 0, 0);
 		if (!trace.allsolid && !trace.startsolid)
 		{
 			NPCS.NPC->clipmask = MASK_NPCSOLID; //turn solid for a little bit
 			NPCS.NPC->r.contents = CONTENTS_BODY;
 			NPC_SetAnim(NPCS.NPC, SETANIM_LEGS, BOTH_WALK2,
-				SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+			            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 			TIMER_Set(NPCS.NPC, "breaching", NPCS.NPC->client->ps.legsTimer);
 			TIMER_Set(NPCS.NPC, "breachDebounce", NPCS.NPC->client->ps.legsTimer + Q_irand(0, 10000));
 		}
@@ -142,14 +142,14 @@ qboolean SandCreature_CheckAhead(vec3_t end)
 	}
 
 	trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, end, NPCS.NPC->s.number,
-		clipmask, qfalse, 0, 0);
+	            clipmask, qfalse, 0, 0);
 
 	if (trace.startsolid && trace.contents & CONTENTS_BOTCLIP)
 	{
 		//started inside do not enter, so ignore them
 		clipmask &= ~CONTENTS_BOTCLIP;
 		trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, end, NPCS.NPC->s.number,
-			clipmask, qfalse, 0, 0);
+		            clipmask, qfalse, 0, 0);
 	}
 	//Do a simple check
 	if (trace.allsolid == qfalse && trace.startsolid == qfalse && trace.fraction == 1.0f)
@@ -229,19 +229,19 @@ qboolean SandCreature_Move(void)
 	//often erroneously returns false ???  something wrong with NAV...?
 }
 
-void SandCreature_Attack(qboolean miss)
+void SandCreature_Attack(const qboolean miss)
 {
 	vec3_t shakePos;
 
 	if (!NPCS.NPC->enemy->client)
 	{
 		NPC_SetAnim(NPCS.NPC, SETANIM_LEGS, BOTH_ATTACK1,
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 	}
 	else
 	{
 		NPC_SetAnim(NPCS.NPC, SETANIM_LEGS, Q_irand(BOTH_ATTACK1, BOTH_ATTACK2),
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 	}
 	//don't do anything else while in this anim
 	TIMER_Set(NPCS.NPC, "attacking", NPCS.NPC->client->ps.legsTimer);
@@ -296,7 +296,7 @@ void SandCreature_Attack(qboolean miss)
 								vec3_t vAng;
 								vectoangles(dir2Enemy, vAng);
 								VectorSet(vAng, AngleNormalize180(vAng[PITCH]) * -1,
-									NPCS.NPC->enemy->client->ps.viewangles[YAW], 0);
+								          NPCS.NPC->enemy->client->ps.viewangles[YAW], 0);
 								SetClientViewAngle(NPCS.NPC->enemy, vAng);
 							}
 						}
@@ -322,9 +322,9 @@ void SandCreature_Attack(qboolean miss)
 			{
 				G_AddEvent(NPCS.NPC->activator, Q_irand(EV_DEATH1, EV_DEATH3), 0);
 				NPC_SetAnim(NPCS.NPC->activator, SETANIM_LEGS, BOTH_SWIM_IDLE1,
-					SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				NPC_SetAnim(NPCS.NPC->activator, SETANIM_TORSO, BOTH_FALLDEATH1,
-					SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				TossClientItems(NPCS.NPC);
 
 				if (NPCS.NPC->activator->NPC)
@@ -358,7 +358,7 @@ float SandCreature_EntScore(const gentity_t* ent)
 	return moveSpeed - dist;
 }
 
-void SandCreature_SeekEnt(gentity_t* bestEnt, float score)
+void SandCreature_SeekEnt(gentity_t* bestEnt, const float score)
 {
 	NPCS.NPCInfo->enemyLastSeenTime = level.time;
 	VectorCopy(bestEnt->r.currentOrigin, NPCS.NPCInfo->enemyLastSeenLocation);
@@ -456,7 +456,7 @@ void SandCreature_CheckMovingEnts(void)
 	}
 }
 
-void SandCreature_SeekAlert(int alert_event)
+void SandCreature_SeekAlert(const int alert_event)
 {
 	const alertEvent_t* alert = &level.alertEvents[alert_event];
 
@@ -479,7 +479,7 @@ void SandCreature_CheckAlerts(void)
 	}
 }
 
-float SandCreature_DistSqToGoal(qboolean goalIsEnemy)
+float SandCreature_DistSqToGoal(const qboolean goalIsEnemy)
 {
 	float goalDistSq;
 	if (!NPCS.NPCInfo->goalEntity || goalIsEnemy)
@@ -747,7 +747,7 @@ void NPC_BSSandCreature_Default(void)
 		|| NPCS.NPC->client->ps.legsAnim == BOTH_ATTACK2)
 	{
 		//FIXME: get start and end frame numbers for this effect for each of these anims
-		vec3_t up = { 0, 0, 1 };
+		vec3_t up = {0, 0, 1};
 		vec3_t org;
 		VectorCopy(NPCS.NPC->r.currentOrigin, org);
 		org[2] -= 40;
@@ -775,7 +775,7 @@ void NPC_BSSandCreature_Default(void)
 		{
 			//kill and remove the guy we ate
 			G_Damage(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC, NULL, NPCS.NPC->activator->s.origin,
-				NPCS.NPC->activator->health * 2, DAMAGE_NO_PROTECTION | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+			         NPCS.NPC->activator->health * 2, DAMAGE_NO_PROTECTION | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 			if (NPCS.NPC->activator->client)
 			{
 				//racc - picked up an NPC or client, make them non-visible and then drop them.

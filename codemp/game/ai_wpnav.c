@@ -42,7 +42,7 @@ int nodenum; //so we can connect broken trails
 
 int gLevelFlags = 0;
 
-char* GetFlagStr(int flags)
+char* GetFlagStr(const int flags)
 {
 	char* flagstr = B_TempAlloc(128);
 	int i = 0;
@@ -255,7 +255,7 @@ fend:
 	return flagstr;
 }
 
-void G_TestLine(vec3_t start, vec3_t end, int color, int time)
+void G_TestLine(vec3_t start, vec3_t end, const int color, const int time)
 {
 	gentity_t* te = G_TempEntity(start, EV_TESTLINE);
 	VectorCopy(start, te->s.origin);
@@ -265,7 +265,7 @@ void G_TestLine(vec3_t start, vec3_t end, int color, int time)
 	te->r.svFlags |= SVF_BROADCAST;
 }
 
-void G_BlockLine(vec3_t start, vec3_t end, int color, int time)
+void G_BlockLine(vec3_t start, vec3_t end, const int color, const int time)
 {
 	gentity_t* te = G_TempEntity(start, EV_BLOCKLINE);
 	VectorCopy(start, te->s.origin);
@@ -386,9 +386,9 @@ checkprint:
 		char* flagstr = GetFlagStr(gWPArray[bestindex]->flags);
 		gLastPrintedIndex = bestindex;
 		trap->Print(S_COLOR_YELLOW "Waypoint %i\nFlags - %i (%s) (w%f)\nOrigin - (%i %i %i)\n",
-			gWPArray[bestindex]->index, gWPArray[bestindex]->flags, flagstr, gWPArray[bestindex]->weight,
-			(int)gWPArray[bestindex]->origin[0], (int)gWPArray[bestindex]->origin[1],
-			(int)gWPArray[bestindex]->origin[2]);
+		            gWPArray[bestindex]->index, gWPArray[bestindex]->flags, flagstr, gWPArray[bestindex]->weight,
+		            (int)gWPArray[bestindex]->origin[0], (int)gWPArray[bestindex]->origin[1],
+		            (int)gWPArray[bestindex]->origin[2]);
 		//GetFlagStr allocates 128 bytes for this, if it's changed then obviously this must be as well
 		B_TempFree(128); //flagstr
 
@@ -402,7 +402,7 @@ checkprint:
 	}
 }
 
-void TransferWPData(int from, int to)
+void TransferWPData(const int from, const int to)
 {
 	if (!gWPArray[to])
 	{
@@ -424,7 +424,7 @@ void TransferWPData(int from, int to)
 	VectorCopy(gWPArray[from]->origin, gWPArray[to]->origin);
 }
 
-void CreateNewWP(vec3_t origin, int flags)
+void CreateNewWP(vec3_t origin, const int flags)
 {
 	if (gWPNum >= MAX_WPARRAY_SIZE)
 	{
@@ -524,7 +524,7 @@ void RemoveWP(void)
 	//B_Free((wpobject_t *)gWPArray[gWPNum]);
 	if (gWPArray[gWPNum])
 	{
-		memset(gWPArray[gWPNum], 0, sizeof * gWPArray[gWPNum]);
+		memset(gWPArray[gWPNum], 0, sizeof *gWPArray[gWPNum]);
 	}
 
 	//gWPArray[gWPNum] = NULL;
@@ -583,7 +583,7 @@ void RemoveWP_InTrail(const int afterindex)
 			//B_Free(gWPArray[i]);
 
 			//Keep reusing the memory
-			memset(gWPArray[i], 0, sizeof * gWPArray[i]);
+			memset(gWPArray[i], 0, sizeof *gWPArray[i]);
 
 			//gWPArray[i] = NULL;
 			gWPArray[i]->inuse = 0;
@@ -595,7 +595,7 @@ void RemoveWP_InTrail(const int afterindex)
 			//B_Free(gWPArray[i]);
 
 			//Keep reusing the memory
-			memset(gWPArray[i], 0, sizeof * gWPArray[i]);
+			memset(gWPArray[i], 0, sizeof *gWPArray[i]);
 
 			//gWPArray[i] = NULL;
 			gWPArray[i]->inuse = 0;
@@ -606,7 +606,7 @@ void RemoveWP_InTrail(const int afterindex)
 	gWPNum--;
 }
 
-int CreateNewWP_InTrail(vec3_t origin, int flags, const int afterindex)
+int CreateNewWP_InTrail(vec3_t origin, const int flags, const int afterindex)
 {
 	int foundindex = 0;
 	int foundanindex = 0;
@@ -680,7 +680,7 @@ int CreateNewWP_InTrail(vec3_t origin, int flags, const int afterindex)
 	return 1;
 }
 
-int CreateNewWP_InsertUnder(vec3_t origin, int flags, const int afterindex)
+int CreateNewWP_InsertUnder(vec3_t origin, const int flags, const int afterindex)
 {
 	int foundindex = 0;
 	int foundanindex = 0;
@@ -793,7 +793,7 @@ void TeleportToWP(const gentity_t* pl, const int afterindex)
 	VectorCopy(gWPArray[foundindex]->origin, pl->client->ps.origin);
 }
 
-void WPFlagsModify(const int wpnum, int flags)
+void WPFlagsModify(const int wpnum, const int flags)
 {
 	if (wpnum < 0 || wpnum >= gWPNum || !gWPArray[wpnum] || !gWPArray[wpnum]->inuse)
 	{
@@ -804,7 +804,7 @@ void WPFlagsModify(const int wpnum, int flags)
 	gWPArray[wpnum]->flags = flags;
 }
 
-static int NotWithinRange(int base, int extent)
+static int NotWithinRange(const int base, const int extent)
 {
 	if (extent > base && base + 5 >= extent)
 	{
@@ -1403,9 +1403,9 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 	{
 		VectorSubtract(validspotpos, nodetable[i].origin, a);
 		if (!nodetable[nodetable[i].neighbornum].inuse || !CanGetToVectorTravel(
-			validspotpos, /*nodetable[nodetable[i].neighbornum].origin*/nodetable[i].origin, mins, maxs) ||
+				validspotpos, /*nodetable[nodetable[i].neighbornum].origin*/nodetable[i].origin, mins, maxs) ||
 			VectorLength(a) > maxDistFactor || !CanGetToVectorTravel(validspotpos, gWPArray[endindex]->origin, mins,
-				maxs)
+			                                                         maxs)
 			&& CanGetToVectorTravel(nodetable[i].origin, gWPArray[endindex]->origin, mins, maxs))
 		{
 			nodetable[i].flags |= WPFLAG_CALCULATED;
@@ -1439,7 +1439,7 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 	return 1;
 }
 
-int OpposingEnds(int start, int end)
+int OpposingEnds(const int start, const int end)
 {
 	if (!gWPArray[start] || !gWPArray[start]->inuse || !gWPArray[end] || !gWPArray[end]->inuse)
 	{
@@ -1455,7 +1455,7 @@ int OpposingEnds(int start, int end)
 	return 0;
 }
 
-int DoorBlockingSection(int start, int end)
+int DoorBlockingSection(const int start, const int end)
 {
 	//if a door blocks the trail, we'll just have to assume the points on each side are in visibility when it's open
 	trace_t tr;
@@ -1466,7 +1466,7 @@ int DoorBlockingSection(int start, int end)
 	}
 
 	trap->Trace(&tr, gWPArray[start]->origin, NULL, NULL, gWPArray[end]->origin, ENTITYNUM_NONE, MASK_SOLID, qfalse, 0,
-		0);
+	            0);
 
 	if (tr.fraction == 1)
 	{
@@ -1488,7 +1488,7 @@ int DoorBlockingSection(int start, int end)
 	const int start_trace_index = tr.entityNum;
 
 	trap->Trace(&tr, gWPArray[end]->origin, NULL, NULL, gWPArray[start]->origin, ENTITYNUM_NONE, MASK_SOLID, qfalse, 0,
-		0);
+	            0);
 
 	if (tr.fraction == 1)
 	{
@@ -1503,7 +1503,7 @@ int DoorBlockingSection(int start, int end)
 	return 0;
 }
 
-int RepairPaths(qboolean behindTheScenes)
+int RepairPaths(const qboolean behindTheScenes)
 {
 	//	int ctRet;
 	float maxDistFactor = 400;
@@ -1562,7 +1562,7 @@ int RepairPaths(qboolean behindTheScenes)
 	return 1;
 }
 
-int OrgVisibleCurve(vec3_t org1, vec3_t mins, vec3_t maxs, vec3_t org2, int ignore)
+int OrgVisibleCurve(vec3_t org1, vec3_t mins, vec3_t maxs, vec3_t org2, const int ignore)
 {
 	trace_t tr;
 	vec3_t evenorg1;
@@ -1585,12 +1585,12 @@ int OrgVisibleCurve(vec3_t org1, vec3_t mins, vec3_t maxs, vec3_t org2, int igno
 	return 0;
 }
 
-int CanForceJumpTo(const int baseindex, const int testingindex, float distance)
+int CanForceJumpTo(const int baseindex, const int testingindex, const float distance)
 {
 	float heightdif;
 	vec3_t xy_base, xy_test, v, mins, maxs;
-	wpobject_t* wpBase = gWPArray[baseindex];
-	wpobject_t* wpTest = gWPArray[testingindex];
+	wpobject_t * wpBase = gWPArray[baseindex];
+	wpobject_t * wpTest = gWPArray[testingindex];
 
 	mins[0] = -15;
 	mins[1] = -15;
@@ -1852,7 +1852,7 @@ float botGlobalNavWeaponWeights[WP_NUM_WEAPONS] =
 	0 //WP_EMPLACED_GUN,
 };
 
-int GetNearestVisibleWPToItem(vec3_t org, int ignore)
+int GetNearestVisibleWPToItem(vec3_t org, const int ignore)
 {
 	vec3_t mins, maxs;
 
@@ -2007,32 +2007,32 @@ void CalculateJumpRoutes(void)
 					nheightdif = gWPArray[i]->origin[2] - gWPArray[i - 1]->origin[2];
 				}
 
-					if (gWPArray[i + 1] && gWPArray[i + 1]->inuse && gWPArray[i + 1]->origin[2] + 16 < gWPArray[i]->origin[
-						2])
+				if (gWPArray[i + 1] && gWPArray[i + 1]->inuse && gWPArray[i + 1]->origin[2] + 16 < gWPArray[i]->origin[
+					2])
+				{
+					pheightdif = gWPArray[i]->origin[2] - gWPArray[i + 1]->origin[2];
+				}
+
+				if (nheightdif > pheightdif)
+				{
+					pheightdif = nheightdif;
+				}
+
+				if (pheightdif)
+				{
+					if (pheightdif > 500)
 					{
-						pheightdif = gWPArray[i]->origin[2] - gWPArray[i + 1]->origin[2];
+						gWPArray[i]->forceJumpTo = 999; //FORCE_LEVEL_3; //FJSR
 					}
-
-						if (nheightdif > pheightdif)
-						{
-							pheightdif = nheightdif;
-						}
-
-						if (pheightdif)
-						{
-							if (pheightdif > 500)
-							{
-								gWPArray[i]->forceJumpTo = 999; //FORCE_LEVEL_3; //FJSR
-							}
-							else if (pheightdif > 256)
-							{
-								gWPArray[i]->forceJumpTo = 999; //FORCE_LEVEL_2; //FJSR
-							}
-							else if (pheightdif > 128)
-							{
-								gWPArray[i]->forceJumpTo = 999; //FORCE_LEVEL_1; //FJSR
-							}
-						}
+					else if (pheightdif > 256)
+					{
+						gWPArray[i]->forceJumpTo = 999; //FORCE_LEVEL_2; //FJSR
+					}
+					else if (pheightdif > 128)
+					{
+						gWPArray[i]->forceJumpTo = 999; //FORCE_LEVEL_1; //FJSR
+					}
+				}
 			}
 		}
 
@@ -2335,7 +2335,7 @@ void FlagObjects(void)
 			if (tlen < bestdist)
 			{
 				trap->Trace(&tr, flag_red->s.pos.trBase, mins, maxs, gWPArray[i]->origin, flag_red->s.number,
-					MASK_SOLID, qfalse, 0, 0);
+				            MASK_SOLID, qfalse, 0, 0);
 
 				if (tr.fraction == 1 || tr.entityNum == flag_red->s.number)
 				{
@@ -2372,7 +2372,7 @@ void FlagObjects(void)
 			if (tlen < bestdist)
 			{
 				trap->Trace(&tr, flag_blue->s.pos.trBase, mins, maxs, gWPArray[i]->origin, flag_blue->s.number,
-					MASK_SOLID, qfalse, 0, 0);
+				            MASK_SOLID, qfalse, 0, 0);
 
 				if (tr.fraction == 1 || tr.entityNum == flag_blue->s.number)
 				{
@@ -2432,7 +2432,7 @@ int SavePathData(const char* filename)
 	char* storeString = B_TempAlloc(4096);
 
 	Com_sprintf(fileString, WPARRAY_BUFFER_SIZE, "%i %i %f (%f %f %f) { ", gWPArray[i]->index, gWPArray[i]->flags,
-		gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
+	            gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
 
 	int n = 0;
 
@@ -2441,7 +2441,7 @@ int SavePathData(const char* filename)
 		if (gWPArray[i]->neighbors[n].forceJumpTo)
 		{
 			Com_sprintf(storeString, 4096, "%s%i-%i ", storeString, gWPArray[i]->neighbors[n].num,
-				gWPArray[i]->neighbors[n].forceJumpTo);
+			            gWPArray[i]->neighbors[n].forceJumpTo);
 		}
 		else
 		{
@@ -2470,7 +2470,7 @@ int SavePathData(const char* filename)
 	{
 		//sprintf(fileString, "%s%i %i %f (%f %f %f) { ", fileString, gWPArray[i]->index, gWPArray[i]->flags, gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
 		Com_sprintf(storeString, 4096, "%i %i %f (%f %f %f) { ", gWPArray[i]->index, gWPArray[i]->flags,
-			gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
+		            gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
 
 		n = 0;
 
@@ -2479,7 +2479,7 @@ int SavePathData(const char* filename)
 			if (gWPArray[i]->neighbors[n].forceJumpTo)
 			{
 				Com_sprintf(storeString, 4096, "%s%i-%i ", storeString, gWPArray[i]->neighbors[n].num,
-					gWPArray[i]->neighbors[n].forceJumpTo);
+				            gWPArray[i]->neighbors[n].forceJumpTo);
 			}
 			else
 			{
@@ -2583,7 +2583,7 @@ void G_NodeClearFlags(void)
 	}
 }
 
-int G_NodeMatchingXY(float x, float y)
+int G_NodeMatchingXY(const float x, const float y)
 {
 	//just get the first unflagged node with the matching x,y coordinates.
 	int i = 0;
@@ -2603,7 +2603,7 @@ int G_NodeMatchingXY(float x, float y)
 	return -1;
 }
 
-int G_NodeMatchingXY_BA(int x, int y, int final)
+int G_NodeMatchingXY_BA(const int x, const int y, const int final)
 {
 	//return the node with the lowest weight that matches the specified x,y coordinates.
 	int i = 0;
@@ -2631,7 +2631,8 @@ int G_NodeMatchingXY_BA(int x, int y, int final)
 	return bestindex;
 }
 
-int G_RecursiveConnection(int start, int end, int weight, qboolean traceCheck, float baseHeight)
+int G_RecursiveConnection(const int start, const int end, const int weight, const qboolean traceCheck,
+                          const float baseHeight)
 {
 	int indexDirections[4]; //0 == down, 1 == up, 2 == left, 3 == right
 	int recursiveIndex = -1;
@@ -2686,7 +2687,7 @@ int G_RecursiveConnection(int start, int end, int weight, qboolean traceCheck, f
 		{
 			//if we care about trace visibility between nodes, perform the check and mark as not valid if the trace isn't clear.
 			trap->Trace(&tr, nodetable[start].origin, NULL, NULL, nodetable[indexDirections[i]].origin, ENTITYNUM_NONE,
-				CONTENTS_SOLID, qfalse, 0, 0);
+			            CONTENTS_SOLID, qfalse, 0, 0);
 
 			if (tr.fraction != 1)
 			{
@@ -3000,7 +3001,7 @@ void CreateAsciiNodeTableRepresentation(int start, int end)
 }
 #endif
 
-qboolean G_BackwardAttachment(int start, int finalDestination, int insertAfter)
+qboolean G_BackwardAttachment(const int start, const int finalDestination, const int insertAfter)
 {
 	//After creating a node path between 2 points, this function links the 2 points with actual waypoint data.
 	int indexDirections[4]; //0 == down, 1 == up, 2 == left, 3 == right
@@ -3134,7 +3135,7 @@ void G_RMGPathing(void)
 			VectorCopy(nodetable[nodenum].origin, downVec);
 			downVec[2] -= 3000;
 			trap->Trace(&tr, nodetable[nodenum].origin, trMins, trMaxs, downVec, ENTITYNUM_NONE, MASK_SOLID, qfalse, 0,
-				0);
+			            0);
 
 			if ((tr.entityNum >= ENTITYNUM_WORLD || g_entities[tr.entityNum].s.eType == ET_TERRAIN) && tr.endpos[2] <
 				terrain->r.absmin[2] + 750)

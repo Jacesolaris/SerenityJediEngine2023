@@ -35,7 +35,7 @@ NAV_HitNavGoal
 -------------------------
 */
 
-qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying)
+qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, const int radius, const qboolean flying)
 {
 	vec3_t dmins, dmaxs, pmins, pmaxs;
 
@@ -93,14 +93,14 @@ qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t& trace, int c
 	VectorSet(mins, self->mins[0], self->mins[1], self->mins[2] + STEPSIZE);
 
 	gi.trace(&trace, self->currentOrigin, mins, self->maxs, end, self->s.number, clipmask,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 
 	if (trace.startsolid && trace.contents & CONTENTS_BOTCLIP)
 	{
 		//started inside do not enter, so ignore them
 		clipmask &= ~CONTENTS_BOTCLIP;
 		gi.trace(&trace, self->currentOrigin, mins, self->maxs, end, self->s.number, clipmask,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 	}
 	//Do a simple check
 	if (trace.allsolid == qfalse && trace.startsolid == qfalse && trace.fraction == 1.0f)
@@ -126,7 +126,7 @@ qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t& trace, int c
 		if VALIDSTRING(blocker->classname)
 		{
 			if (G_EntIsUnlockedDoor(blocker->s.number))
-				//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
+			//if ( Q_stricmp( blocker->classname, "func_door" ) == 0 )
 			{
 				//We're too close, try and avoid the door (most likely stuck on a lip)
 				if (DistanceSquared(self->currentOrigin, trace.endpos) < MIN_DOOR_BLOCK_DIST_SQR)
@@ -177,7 +177,7 @@ qboolean NPC_ClearPathToGoal(gentity_t* goal)
 	{
 		//Okay, didn't get all the way there, let's see if we got close enough:
 		if (NAV_HitNavGoal(trace.endpos, NPC->mins, NPC->maxs, goal->currentOrigin, NPCInfo->goalRadius,
-			FlyingCreature(NPC)))
+		                   FlyingCreature(NPC)))
 		{
 			//VectorSubtract(goal->currentOrigin, NPC->currentOrigin, dir);
 			return qtrue;
@@ -187,7 +187,7 @@ qboolean NPC_ClearPathToGoal(gentity_t* goal)
 	return qfalse;
 }
 
-qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
+qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, const float dist)
 {
 	vec3_t mins, end;
 	trace_t trace;
@@ -198,7 +198,7 @@ qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
 	VectorSet(mins, self->mins[0], self->mins[1], self->mins[2] + STEPSIZE);
 
 	gi.trace(&trace, self->currentOrigin, mins, self->maxs, end, self->s.number, CONTENTS_BOTCLIP,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 
 	//Do a simple check
 	if (trace.allsolid == qfalse && trace.startsolid == qfalse && trace.fraction == 1.0f)
@@ -209,7 +209,7 @@ qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
 	return qfalse;
 }
 
-qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float distScale = 1.0f)
+qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, const float distScale = 1.0f)
 {
 	vec3_t moveDir;
 
@@ -234,7 +234,7 @@ qboolean NAV_MoveDirSafe(const gentity_t* self, const usercmd_t* cmd, float dist
 			return qtrue;
 		}
 		vec3_t fwd, right;
-		const vec3_t fwdAngs = { 0, self->currentAngles[YAW], 0 };
+		const vec3_t fwdAngs = {0, self->currentAngles[YAW], 0};
 		AngleVectors(fwdAngs, fwd, right, nullptr);
 		VectorScale(fwd, cmd->forwardmove, fwd);
 		VectorScale(right, cmd->rightmove, right);

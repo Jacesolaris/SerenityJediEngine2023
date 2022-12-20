@@ -33,7 +33,7 @@ CG_BubbleTrail
 Bullets shot underwater
 ==================
 */
-void CG_BubbleTrail(vec3_t start, vec3_t end, float spacing)
+void CG_BubbleTrail(vec3_t start, vec3_t end, const float spacing)
 {
 	vec3_t move;
 	vec3_t vec;
@@ -95,13 +95,13 @@ Adds a smoke puff or blood trail localEntity.
 =====================
 */
 localEntity_t* CG_SmokePuff(const vec3_t p, const vec3_t vel,
-	float radius,
-	float r, float g, float b, float a,
-	float duration,
-	int startTime,
-	int fadeInTime,
-	int leFlags,
-	qhandle_t hShader)
+                            const float radius,
+                            const float r, const float g, const float b, const float a,
+                            const float duration,
+                            const int startTime,
+                            const int fadeInTime,
+                            const int leFlags,
+                            const qhandle_t hShader)
 {
 	static int seed = 0x92;
 	//	int fadeInTime = startTime + duration / 2;
@@ -151,7 +151,7 @@ localEntity_t* CG_SmokePuff(const vec3_t p, const vec3_t vel,
 	return le;
 }
 
-int CGDEBUG_SaberColor(int saberColor)
+int CGDEBUG_SaberColor(const int saberColor)
 {
 	switch (saberColor)
 	{
@@ -174,7 +174,7 @@ int CGDEBUG_SaberColor(int saberColor)
 	}
 }
 
-void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius)
+void CG_TestLine(vec3_t start, vec3_t end, const int time, unsigned int color, const int radius)
 {
 	localEntity_t* le = CG_AllocLocalEntity();
 	le->leType = LE_LINE;
@@ -213,7 +213,7 @@ void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int rad
 	//re->renderfx |= RF_DEPTHHACK;
 }
 
-void CG_BlockLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius)
+void CG_BlockLine(vec3_t start, vec3_t end, const int time, unsigned int color, const int radius)
 {
 	localEntity_t* le = CG_AllocLocalEntity();
 	le->leType = LE_LINE;
@@ -252,7 +252,7 @@ void CG_BlockLine(vec3_t start, vec3_t end, int time, unsigned int color, int ra
 
 void CG_StunStartpoint(vec3_t start_pos)
 {
-	refEntity_t model = { 0 };
+	refEntity_t model = {0};
 
 	model.reType = RT_SABER_GLOW;
 	VectorCopy(start_pos, model.lightingOrigin);
@@ -266,7 +266,7 @@ void CG_StunStartpoint(vec3_t start_pos)
 
 void CG_GrappleStartpoint(vec3_t start_pos)
 {
-	refEntity_t model = { 0 };
+	refEntity_t model = {0};
 
 	model.reType = RT_SABER_GLOW;
 	VectorCopy(start_pos, model.lightingOrigin);
@@ -278,7 +278,7 @@ void CG_GrappleStartpoint(vec3_t start_pos)
 	trap->R_AddRefEntityToScene(&model);
 }
 
-void CG_GrappleLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius)
+void CG_GrappleLine(vec3_t start, vec3_t end, const int time, unsigned int color, const int radius)
 {
 	localEntity_t* le = CG_AllocLocalEntity();
 	le->leType = LE_LINE;
@@ -325,7 +325,7 @@ void CG_GrappleLine(vec3_t start, vec3_t end, int time, unsigned int color, int 
 //	random offset table set up up front.
 
 static float offX[20][20],
-offZ[20][20];
+             offZ[20][20];
 
 #define	FX_ALPHA_NONLINEAR	0x00000004
 #define FX_APPLY_PHYSICS	0x02000000
@@ -751,7 +751,7 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const mater
 {
 	int ct = 13;
 	vec3_t org, mid;
-	const char* effect = NULL, * effect2 = NULL;
+	const char *effect = NULL, *effect2 = NULL;
 	int e_id2 = 0;
 
 	VectorAdd(mins, maxs, mid);
@@ -860,7 +860,8 @@ Fun chunk spewer
 */
 
 void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
-               const float speed, const int num_chunks, const material_t chunk_type, const int custom_chunk, float base_scale)
+               const float speed, const int num_chunks, const material_t chunk_type, const int custom_chunk,
+               float base_scale)
 {
 	int chunk_model = 0;
 	leBounceSoundType_t bounce = LEBS_NONE;
@@ -886,7 +887,7 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 		return;
 	case MAT_ELECTRICAL: // (sparks)
 		trap->S_StartSound(NULL, owner, CHAN_BODY,
-			trap->S_RegisterSound(va("sound/ambience/spark%d.wav", Q_irand(1, 6))));
+		                   trap->S_RegisterSound(va("sound/ambience/spark%d.wav", Q_irand(1, 6))));
 		return;
 	case MAT_DRK_STONE:
 	case MAT_LT_STONE:
@@ -899,7 +900,7 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 		break;
 	case MAT_GLASS_METAL:
 		trap->S_StartSound(NULL, owner, CHAN_BODY, cgs.media.glassChunkSound);
-		// FIXME: should probably have a custom sound
+	// FIXME: should probably have a custom sound
 		bounce = LEBS_METAL;
 		break;
 	case MAT_CRATE1:
@@ -1019,7 +1020,7 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 
 			// Angular Velocity
 			VectorSet(le->angles.trBase, Q_flrand(0.0f, 1.0f) * 360, Q_flrand(0.0f, 1.0f) * 360,
-				Q_flrand(0.0f, 1.0f) * 360);
+			          Q_flrand(0.0f, 1.0f) * 360);
 
 			le->angles.trDelta[0] = Q_flrand(-1.0f, 1.0f);
 			le->angles.trDelta[1] = Q_flrand(-1.0f, 1.0f);
@@ -1104,7 +1105,7 @@ CG_MakeExplosion
 ====================
 */
 localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
-                                const qhandle_t h_model, int numFrames, const qhandle_t shader,
+                                const qhandle_t h_model, const int numFrames, const qhandle_t shader,
                                 const int msec, const qboolean isSprite, const float scale, const int flags)
 {
 	vec3_t new_origin;

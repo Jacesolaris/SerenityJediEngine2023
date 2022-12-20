@@ -57,7 +57,7 @@ void R2D2_PartsMove(void)
 		if (NPC->genericBone1)
 		{
 			gi.G2API_SetBoneAnglesIndex(&NPC->ghoul2[NPC->playerModel], NPC->genericBone1, NPC->pos1,
-				BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+			                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 		}
 		TIMER_Set(NPC, "eyeDelay", Q_irand(100, 1000));
 	}
@@ -215,7 +215,7 @@ void Droid_Spin( void )
 */
 void Droid_Spin(void)
 {
-	constexpr vec3_t dir = { 0, 0, 1 };
+	constexpr vec3_t dir = {0, 0, 1};
 
 	R2D2_TurnAnims();
 
@@ -277,8 +277,9 @@ void Droid_Spin(void)
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hit_loc)
+void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                    const int mod,
+                    int hit_loc)
 {
 	int anim;
 	float pain_chance;
@@ -295,7 +296,7 @@ void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 
 		// Put it in pain
 		if (mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT || Q_flrand(0.0f, 1.0f) < pain_chance)
-			// Spin around in pain? Demp2 always does this
+		// Spin around in pain? Demp2 always does this
 		{
 			// Health is between 0-30 or was hit by a DEMP2 so pop his head
 			if (self->health < 30 || mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT)
@@ -360,7 +361,7 @@ void NPC_Droid_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 		pain_chance = NPC_GetPainChance(self, damage);
 
 		if (mod == MOD_DEMP2 || mod == MOD_DEMP2_ALT || Q_flrand(0.0f, 1.0f) < pain_chance)
-			// Spin around in pain? Demp2 always does this
+		// Spin around in pain? Demp2 always does this
 		{
 			anim = self->client->ps.legsAnim;
 

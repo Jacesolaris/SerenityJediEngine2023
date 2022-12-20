@@ -9,9 +9,10 @@
 extern void G_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
 extern void G_Chunks(int owner, vec3_t origin, const vec3_t normal, const vec3_t mins, const vec3_t maxs,
-	float speed, int numChunks, material_t chunkType, int customChunk, float baseScale);
+                     float speed, int numChunks, material_t chunkType, int customChunk, float baseScale);
 
-void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage,
+                              int meansOfDeath)
 {
 	float size = 0;
 	vec3_t dir, up, dis;
@@ -120,7 +121,7 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 			{
 				//TEMP HACK for Tie Fighters- they're HUGE
 				G_PlayEffect(G_EffectIndex("explosions/fighter_explosion2"), self->r.currentOrigin,
-					self->r.currentAngles);
+				             self->r.currentAngles);
 				G_Sound(self, CHAN_AUTO, G_SoundIndex("sound/weapons/tie_fighter/TIEexplode.wav"));
 				self->s.loopSound = 0;
 			}
@@ -318,7 +319,7 @@ void health_shutdown(gentity_t* self)
 }
 
 //add amount number of health to given player
-qboolean ITM_AddHealth(gentity_t* ent, int amount)
+qboolean ITM_AddHealth(gentity_t* ent, const int amount)
 {
 	if (ent->health == ent->client->ps.stats[STAT_MAX_HEALTH])
 	{
@@ -334,7 +335,7 @@ qboolean ITM_AddHealth(gentity_t* ent, int amount)
 	return qtrue;
 }
 
-qboolean ITM_AddArmor(const gentity_t* ent, int amount)
+qboolean ITM_AddArmor(const gentity_t* ent, const int amount)
 {
 	if (ent->client->ps.stats[STAT_ARMOR] == ent->client->ps.stats[STAT_MAX_HEALTH])
 	{
@@ -509,7 +510,7 @@ void ammo_shutdown(gentity_t* self)
 	}
 }
 
-qboolean Add_Ammo2(const gentity_t* ent, const int ammotype, int amount)
+qboolean Add_Ammo2(const gentity_t* ent, const int ammotype, const int amount)
 {
 	if (ent->client->ps.ammo[ammotype] == ammoData[ammotype].max)
 	{
@@ -625,7 +626,7 @@ void misc_model_breakable_init(gentity_t* ent)
 	if (!ent->model)
 	{
 		trap->Error(ERR_DROP, "no model set on %s at (%.1f %.1f %.1f)\n", ent->classname, ent->s.origin[0],
-			ent->s.origin[1], ent->s.origin[2]);
+		            ent->s.origin[1], ent->s.origin[2]);
 	}
 	//Main model
 	ent->s.modelindex = ent->sound2to1 = G_ModelIndex(ent->model);
@@ -739,7 +740,7 @@ void TieFighterThink(gentity_t* self)
 						else
 						{
 							G_SoundOnEnt(bolt, CHAN_VOICE,
-								va("sound/weapons/tie_fighter/tie_fire%d.wav", Q_irand(2, 3)));
+							             va("sound/weapons/tie_fighter/tie_fire%d.wav", Q_irand(2, 3)));
 						}
 						self->attackDebounceTime = level.time + Q_irand(300, 2000);
 					}
@@ -772,7 +773,7 @@ void TieFighterThink(gentity_t* self)
 	}
 }
 
-void misc_model_breakable_gravity_init(gentity_t* ent, qboolean dropToFloor)
+void misc_model_breakable_gravity_init(gentity_t* ent, const qboolean dropToFloor)
 {
 	trace_t tr;
 

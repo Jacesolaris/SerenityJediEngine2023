@@ -265,7 +265,6 @@ void CG_PainEvent(centity_t* cent, int health);
 
 void CG_CheckLocalSounds(const playerState_t* ps, const playerState_t* ops)
 {
-
 	// hit changes
 	if (ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS])
 	{

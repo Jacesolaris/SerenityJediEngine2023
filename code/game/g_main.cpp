@@ -95,7 +95,7 @@ void ClearInUse(const gentity_t* ent)
 	g_entityInUseBits[entNum / 32] &= ~(static_cast<unsigned>(1) << (entNum & 0x1f));
 }
 
-qboolean PInUse(unsigned int entNum)
+qboolean PInUse(const unsigned int entNum)
 {
 	assert(entNum >= 0);
 	assert(entNum < MAX_GENTITIES);
@@ -416,7 +416,7 @@ static void G_DynamicMusicUpdate(void)
 
 		qboolean lo_scalced = clear_los = qfalse;
 		if (ent->enemy == player && (!ent->NPC || ent->NPC->confusionTime < level.time && ent->NPC->insanityTime <
-			level.time) || ent->client && ent->client->ps.weaponTime || !ent->client && ent->attackDebounceTime >
+				level.time) || ent->client && ent->client->ps.weaponTime || !ent->client && ent->attackDebounceTime >
 			level.time)
 		{
 			//mad
@@ -603,7 +603,7 @@ static void G_DynamicMusicUpdate(void)
 	}
 }
 
-void G_ConnectNavs(const char* mapname, int checkSum)
+void G_ConnectNavs(const char* mapname, const int checkSum)
 {
 	NAV::LoadFromEntitiesAndSaveToFile(mapname, checkSum);
 	CP_FindCombatPointWaypoints();
@@ -909,8 +909,8 @@ qboolean g_qb_load_transition = qfalse;
 void G_LoadExtraEntitiesFile(void);
 
 void init_game(const char* mapname, const char* spawntarget, const int check_sum, const char* entities,
-	const int level_time, const int random_seed, const int global_time,
-	const SavedGameJustLoaded_e e_saved_game_just_loaded, const qboolean qb_load_transition)
+               const int level_time, const int random_seed, const int global_time,
+               const SavedGameJustLoaded_e e_saved_game_just_loaded, const qboolean qb_load_transition)
 {
 	//rww - default this to 0, we will auto-set it to 1 if we run into a terrain ent
 	gi.cvar_set("RMG", "0");
@@ -1092,7 +1092,7 @@ Ghoul2 Insert End
 
 //===================================================================
 
-static void G_Cvar_Create(const char* var_name, const char* var_value, int flags)
+static void G_Cvar_Create(const char* var_name, const char* var_value, const int flags)
 {
 	gi.cvar(var_name, var_value, flags);
 }
@@ -1121,7 +1121,7 @@ and global variables
 */
 extern int PM_ValidateAnimRange(int startFrame, int endFrame, float animSpeed);
 
-extern "C" Q_EXPORT game_export_t * QDECL GetGameAPI(const game_import_t * import)
+extern "C" Q_EXPORT game_export_t* QDECL GetGameAPI(const game_import_t* import)
 {
 	gameinfo_import_t gameinfo_import;
 
@@ -1181,7 +1181,7 @@ Com_Error
 -------------------------
 */
 
-void Com_Error(int level, const char* error, ...)
+void Com_Error(const int level, const char* error, ...)
 {
 	va_list argptr;
 	char text[1024];
@@ -1360,8 +1360,8 @@ static void G_Animate(gentity_t* self)
 
 				// I guess query ghoul2 to find out what the current frame is and see if we are done.
 				gi.G2API_GetBoneAnimIndex(&self->ghoul2[self->playerModel], self->rootBone,
-					cg.time ? cg.time : level.time, &frame, &junk, &junk, &junk, &junk2,
-					nullptr);
+				                          cg.time ? cg.time : level.time, &frame, &junk, &junk, &junk, &junk2,
+				                          nullptr);
 
 				// It NEVER seems to get to what you'd think the last frame would be, so I'm doing this to try and catch when the animation has stopped
 				if (frame + 1 >= self->endFrame)
@@ -1396,7 +1396,7 @@ static void G_Animate(gentity_t* self)
 		self->s.frame = self->endFrame;
 
 		gi.G2API_SetBoneAnimIndex(&self->ghoul2[self->playerModel], self->rootBone,
-			self->startFrame, self->endFrame, BONE_ANIM_OVERRIDE_FREEZE, 1.0f, cg.time, -1, -1);
+		                          self->startFrame, self->endFrame, BONE_ANIM_OVERRIDE_FREEZE, 1.0f, cg.time, -1, -1);
 		return;
 	}
 
@@ -1514,12 +1514,12 @@ class c_game_rag_doll_update_params final : public CRagDollUpdateParams
 	}
 
 	void Collision() override
-		// we had a collision, please stop animating and (sometime soon) call SetRagDoll RP_DEATH_COLLISION
+	// we had a collision, please stop animating and (sometime soon) call SetRagDoll RP_DEATH_COLLISION
 	{
 	}
 
 #ifdef _DEBUG
-	void DebugLine(vec3_t p1, vec3_t p2, int color, bool bbox) override
+	void DebugLine(vec3_t p1, vec3_t p2, const int color, const bool bbox) override
 	{
 		if (!bbox)
 		{
@@ -1527,6 +1527,7 @@ class c_game_rag_doll_update_params final : public CRagDollUpdateParams
 		}
 	}
 #endif
+
 public:
 	vec3_t effectorTotal;
 	qboolean hasEffectorData;
@@ -1587,13 +1588,13 @@ static int G_RagAnimForPositioning(gentity_t* ent)
 	vec3_t dir;
 	mdxaBone_t matrix;
 	assert(ent->client);
-	const vec3_t G2Angles = { 0, ent->client->ps.viewangles[YAW], 0 };
+	const vec3_t G2Angles = {0, ent->client->ps.viewangles[YAW], 0};
 
 	assert(ent->ghoul2.size() > 0);
 	assert(ent->crotchBolt > -1);
 
 	gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, ent->crotchBolt, &matrix, G2Angles, ent->client->ps.origin,
-		cg.time ? cg.time : level.time, nullptr, ent->s.modelScale);
+	                       cg.time ? cg.time : level.time, nullptr, ent->s.modelScale);
 	gi.G2API_GiveMeVectorFromMatrix(matrix, NEGATIVE_Z, dir);
 
 	if (dir[2] > 0.1f)
@@ -1660,7 +1661,7 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 		ent->playerModel < 0 ||
 		!ent->ghoul2.size() ||
 		!G_RagWantsHumanoidsOnly(&ent->ghoul2[ent->playerModel])
-		)
+	)
 	{
 		return qfalse;
 	}
@@ -1743,8 +1744,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 			//Do the head first, because the hands reference it anyway.
 			gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, boltChecks[2], &boltMatrix, tAng,
-				ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
-				ent->s.modelScale);
+			                       ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
+			                       ent->s.modelScale);
 			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, boltPoints[2]);
 
 			while (i < 5)
@@ -1755,8 +1756,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 				{
 					//when doing hands, trace to the head instead of origin
 					gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, boltChecks[i], &boltMatrix, tAng,
-						ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
-						ent->s.modelScale);
+					                       ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
+					                       ent->s.modelScale);
 					gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, boltPoints[i]);
 					VectorCopy(boltPoints[i], trStart);
 					VectorCopy(boltPoints[2], trEnd);
@@ -1767,8 +1768,8 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 					{
 						//2 is the head, which already has the bolt point.
 						gi.G2API_GetBoltMatrix(ent->ghoul2, ent->playerModel, boltChecks[i], &boltMatrix, tAng,
-							ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
-							ent->s.modelScale);
+						                       ent->client->ps.origin, cg.time ? cg.time : level.time, nullptr,
+						                       ent->s.modelScale);
 						gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, boltPoints[i]);
 					}
 					VectorCopy(boltPoints[i], trStart);
@@ -1777,7 +1778,7 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 
 				//Now that we have all that sorted out, trace between the two points we desire.
 				gi.trace(&tr, trStart, nullptr, nullptr, trEnd, ent->s.number, MASK_SOLID,
-					static_cast<EG2_Collision>(0), 0);
+				         static_cast<EG2_Collision>(0), 0);
 
 				if (tr.fraction != 1.0 || tr.startsolid || tr.allsolid)
 				{
@@ -1833,29 +1834,29 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 			float animSpeed;
 
 			if (gi.G2API_GetBoneAnim(&ent->ghoul2[0], "model_root", cg.time ? cg.time : level.time, &currentFrame,
-				&startFrame, &endFrame, &flags, &animSpeed, nullptr))
+			                         &startFrame, &endFrame, &flags, &animSpeed, nullptr))
 			{
 				//lock the anim on the current frame.
 				constexpr int blend_time = 500;
 
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "lower_lumbar", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blend_time);
+				                     cg.time ? cg.time : level.time, currentFrame, blend_time);
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "model_root", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blend_time);
+				                     cg.time ? cg.time : level.time, currentFrame, blend_time);
 				gi.G2API_SetBoneAnim(&ent->ghoul2[0], "Motion", currentFrame, currentFrame + 1, flags, animSpeed,
-					cg.time ? cg.time : level.time, currentFrame, blend_time);
+				                     cg.time ? cg.time : level.time, currentFrame, blend_time);
 			}
 		}
 #endif
 
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "upper_lumbar", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "lower_lumbar", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "thoracic", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 		gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "cervical", vec3_origin, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
+		                       POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 100, cg.time ? cg.time : level.time);
 
 		VectorCopy(G2Angles, tParms.angles);
 		VectorCopy(usedOrg, tParms.position);
@@ -2066,7 +2067,7 @@ constexpr auto ENHANCED_REFUEL_RATE = 75; //seems fair;
 constexpr auto BARRIER_DEFUEL_RATE = 100; //approx. 50 seconds of idle use from a fully charged fuel amt;
 constexpr auto BARRIER_REFUEL_RATE = 200; //seems fair;
 
-void G_RunFrame(int levelTime)
+void G_RunFrame(const int levelTime)
 {
 	gentity_t* ent;
 	int ents_inuse = 0; // someone's gonna be pissed I put this here...

@@ -182,7 +182,7 @@ void QDECL SourceWarning(source_t* source, char* str, ...)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-void PC_PushIndent(source_t* source, int type, int skip)
+void PC_PushIndent(source_t* source, const int type, const int skip)
 {
 	indent_t* indent = static_cast<indent_t*>(GetMemory(sizeof(indent_t)));
 	indent->type = type;
@@ -355,7 +355,7 @@ int PC_UnreadSourceToken(source_t* source, token_t* token)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PC_ReadDefineParms(source_t* source, define_t* define, token_t** parms, int maxparms)
+int PC_ReadDefineParms(source_t* source, define_t* define, token_t** parms, const int maxparms)
 {
 	token_t token;
 	int done, numparms, indent;
@@ -1531,7 +1531,7 @@ void PC_AddGlobalDefinesToSource(source_t* source)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PC_Directive_if_def(source_t* source, int type)
+int PC_Directive_if_def(source_t* source, const int type)
 {
 	token_t token;
 	define_t* d;
@@ -1641,7 +1641,7 @@ using value_t = struct value_s
 	value_s* prev, * next;
 };
 
-int PC_OperatorPriority(int op)
+int PC_OperatorPriority(const int op)
 {
 	switch (op)
 	{
@@ -2841,7 +2841,7 @@ int PC_ExpectTokenString(source_t* source, char* string)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PC_ExpectTokenType(source_t* source, int type, int subtype, token_t* token)
+int PC_ExpectTokenType(source_t* source, const int type, const int subtype, token_t* token)
 {
 	char str[MAX_TOKEN];
 
@@ -2928,7 +2928,7 @@ int PC_CheckTokenString(source_t* source, char* string)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PC_CheckTokenType(source_t* source, int type, int subtype, token_t* token)
+int PC_CheckTokenType(source_t* source, const int type, const int subtype, token_t* token)
 {
 	token_t tok;
 
@@ -3055,7 +3055,7 @@ source_t* LoadSourceFile(const char* filename)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-source_t* LoadSourceMemory(char* ptr, int length, char* name)
+source_t* LoadSourceMemory(char* ptr, const int length, char* name)
 {
 	PC_InitTokenHeap();
 
@@ -3182,7 +3182,7 @@ int PC_LoadSourceHandle(const char* filename)
 // Returns:				-
 // Changes Globals:		-
 //============================================================================
-int PC_FreeSourceHandle(int handle)
+int PC_FreeSourceHandle(const int handle)
 {
 	if (handle < 1 || handle >= MAX_SOURCEFILES)
 		return qfalse;
@@ -3220,7 +3220,7 @@ int PC_LoadGlobalDefines(const char* filename)
 // Returns:				-
 // Changes Globals:		-
 //============================================================================
-int PC_ReadTokenHandle(int handle, pc_token_t* pc_token)
+int PC_ReadTokenHandle(const int handle, pc_token_t* pc_token)
 {
 	token_t token;
 
@@ -3246,7 +3246,7 @@ int PC_ReadTokenHandle(int handle, pc_token_t* pc_token)
 // Returns:				-
 // Changes Globals:		-
 //============================================================================
-int PC_SourceFileAndLine(int handle, char* filename, int* line)
+int PC_SourceFileAndLine(const int handle, char* filename, int* line)
 {
 	if (handle < 1 || handle >= MAX_SOURCEFILES)
 		return qfalse;

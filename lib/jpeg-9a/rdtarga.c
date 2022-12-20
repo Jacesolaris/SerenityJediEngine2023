@@ -79,7 +79,7 @@ static const UINT8 c5to8bits[32] = {
 };
 
 LOCAL(int)
-read_byte(tga_source_ptr sinfo)
+read_byte(const tga_source_ptr sinfo)
 /* Read next byte from Targa file */
 {
 	register FILE* infile = sinfo->pub.input_file;
@@ -91,7 +91,7 @@ read_byte(tga_source_ptr sinfo)
 }
 
 LOCAL(void)
-read_colormap(tga_source_ptr sinfo, int cmaplen, int mapentrysize)
+read_colormap(const tga_source_ptr sinfo, const int cmaplen, const int mapentrysize)
 /* Read the colormap from a Targa file */
 {
 	/* Presently only handles 24-bit BGR format */
@@ -110,7 +110,7 @@ read_colormap(tga_source_ptr sinfo, int cmaplen, int mapentrysize)
  */
 
 METHODDEF(void)
-read_non_rle_pixel(tga_source_ptr sinfo)
+read_non_rle_pixel(const tga_source_ptr sinfo)
 /* Read one Targa pixel from the input file; no RLE expansion */
 {
 	register FILE* infile = sinfo->pub.input_file;
@@ -121,7 +121,7 @@ read_non_rle_pixel(tga_source_ptr sinfo)
 }
 
 METHODDEF(void)
-read_rle_pixel(tga_source_ptr sinfo)
+read_rle_pixel(const tga_source_ptr sinfo)
 /* Read one Targa pixel from the input file, expanding RLE data as needed */
 {
 	register FILE* infile = sinfo->pub.input_file;
@@ -158,7 +158,7 @@ read_rle_pixel(tga_source_ptr sinfo)
  */
 
 METHODDEF(JDIMENSION)
-get_8bit_gray_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_8bit_gray_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 8-bit grayscale pixels */
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
@@ -172,7 +172,7 @@ get_8bit_gray_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 }
 
 METHODDEF(JDIMENSION)
-get_8bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_8bit_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 8-bit colormap indexes */
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
@@ -190,7 +190,7 @@ get_8bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 }
 
 METHODDEF(JDIMENSION)
-get_16bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_16bit_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 16-bit pixels */
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
@@ -215,7 +215,7 @@ get_16bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 }
 
 METHODDEF(JDIMENSION)
-get_24bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_24bit_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 24-bit pixels */
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
@@ -246,7 +246,7 @@ get_24bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
   */
 
 METHODDEF(JDIMENSION)
-get_memory_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_memory_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
 
@@ -271,7 +271,7 @@ get_memory_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
  */
 
 METHODDEF(JDIMENSION)
-preload_image(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+preload_image(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
 	const cd_progress_ptr progress = (cd_progress_ptr)cinfo->progress;
@@ -302,7 +302,7 @@ preload_image(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
  */
 
 METHODDEF(void)
-start_input_tga(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+start_input_tga(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 {
 	const tga_source_ptr source = (tga_source_ptr)sinfo;
 	U_CHAR targaheader[18];
@@ -451,7 +451,7 @@ finish_input_tga(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
  */
 
 GLOBAL(cjpeg_source_ptr)
-jinit_read_targa(j_compress_ptr cinfo)
+jinit_read_targa(const j_compress_ptr cinfo)
 {
 	/* Create module interface object */
 	const tga_source_ptr source = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

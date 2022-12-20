@@ -74,7 +74,7 @@ void MD5Init(MD5Context* ctx)
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-static void MD5Transform(uint32_t buf[4], uint32_t const in[16])
+static void MD5Transform(uint32_t buf[4], const uint32_t in[16])
 {
 	uint32_t a, b, c, d;
 
@@ -161,24 +161,26 @@ static void MD5Transform(uint32_t buf[4], uint32_t const in[16])
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void MD5Update(MD5Context* ctx, unsigned char const* buf, unsigned len)
+void MD5Update(MD5Context* ctx, const unsigned char* buf, unsigned len)
 {
 	/* Update bitcount */
 
 	uint32_t t = ctx->bits[0];
 	if ((ctx->bits[0] = t + (len << 3)) < t)
-		ctx->bits[1]++;		/* Carry from low to high */
+		ctx->bits[1]++; /* Carry from low to high */
 	ctx->bits[1] += len >> 29;
 
-	t = t >> 3 & 0x3f;	/* Bytes already in shsInfo->data */
+	t = t >> 3 & 0x3f; /* Bytes already in shsInfo->data */
 
 	/* Handle any leading odd-sized chunks */
 
-	if (t) {
+	if (t)
+	{
 		unsigned char* p = static_cast<unsigned char*>(ctx->in) + t;
 
 		t = 64 - t;
-		if (len < t) {
+		if (len < t)
+		{
 			memcpy(p, buf, len);
 			return;
 		}
@@ -190,7 +192,8 @@ void MD5Update(MD5Context* ctx, unsigned char const* buf, unsigned len)
 	}
 	/* Process data in 64-byte chunks */
 
-	while (len >= 64) {
+	while (len >= 64)
+	{
 		memcpy(ctx->in, buf, 64);
 		byteReverse(ctx->in, 16);
 		MD5Transform(ctx->buf, (uint32_t*)ctx->in);
@@ -221,7 +224,8 @@ void MD5Final(MD5Context* ctx, unsigned char* digest)
 	count = 64 - 1 - count;
 
 	/* Pad out to 56 mod 64 */
-	if (count < 8) {
+	if (count < 8)
+	{
 		/* Two lots of padding:  Pad the first block to 64 bytes */
 		memset(p, 0, count);
 		byteReverse(ctx->in, 16);
@@ -230,7 +234,8 @@ void MD5Final(MD5Context* ctx, unsigned char* digest)
 		/* Now fill the next block with 56 bytes */
 		memset(ctx->in, 0, 56);
 	}
-	else {
+	else
+	{
 		/* Pad block to 56 bytes */
 		memset(p, 0, count - 8);
 	}
@@ -245,13 +250,13 @@ void MD5Final(MD5Context* ctx, unsigned char* digest)
 
 	if (digest != nullptr)
 		memcpy(digest, ctx->buf, 16);
-	memset(ctx, 0, sizeof * ctx);	/* In case it's sensitive */
+	memset(ctx, 0, sizeof *ctx); /* In case it's sensitive */
 }
 
-char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len)
+char* Com_MD5File(const char* fn, int length, const char* prefix, const int prefix_len)
 {
-	static char final[33] = { "" };
-	unsigned char digest[16] = { "" };
+	static char final[33] = {""};
+	unsigned char digest[16] = {""};
 	fileHandle_t f;
 	MD5_CTX md5;
 	int total = 0;
@@ -260,14 +265,17 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
 
 	const int filelen = FS_SV_FOpenFileRead(fn, &f);
 
-	if (!f) {
+	if (!f)
+	{
 		return final;
 	}
-	if (filelen < 1) {
+	if (filelen < 1)
+	{
 		FS_FCloseFile(f);
 		return final;
 	}
-	if (filelen < length || !length) {
+	if (filelen < length || !length)
+	{
 		length = filelen;
 	}
 
@@ -276,7 +284,8 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
 	if (prefix_len && *prefix)
 		MD5Update(&md5, (unsigned char*)prefix, prefix_len);
 
-	for (;;) {
+	for (;;)
+	{
 		byte buffer[2048];
 		int r = FS_Read(buffer, sizeof buffer, f);
 		if (r < 1)
@@ -291,7 +300,8 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
 	FS_FCloseFile(f);
 	MD5Final(&md5, digest);
 	final[0] = '\0';
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 16; i++)
+	{
 		Q_strcat(final, sizeof final, va("%02X", digest[i]));
 	}
 	return final;
@@ -302,9 +312,10 @@ char* Com_MD5File(const char* fn, int length, const char* prefix, int prefix_len
  * This code (originally for OpenJK) is also released into the public domain.
  */
 
-void HMAC_MD5_Init(hmacMD5Context_t* ctx, unsigned char const* key, unsigned int keylen)
+void HMAC_MD5_Init(hmacMD5Context_t* ctx, const unsigned char* key, unsigned int keylen)
 {
-	if (keylen > MD5_BLOCK_SIZE) {
+	if (keylen > MD5_BLOCK_SIZE)
+	{
 		unsigned char shortenedKey[MD5_DIGEST_SIZE];
 		MD5Init(&ctx->md5Context);
 		MD5Update(&ctx->md5Context, key, keylen);
@@ -313,7 +324,8 @@ void HMAC_MD5_Init(hmacMD5Context_t* ctx, unsigned char const* key, unsigned int
 		keylen = MD5_DIGEST_SIZE;
 	}
 
-	for (unsigned int i = 0; i < keylen; i++) {
+	for (unsigned int i = 0; i < keylen; i++)
+	{
 		ctx->iKeyPad[i] = 0x36 ^ key[i];
 		ctx->oKeyPad[i] = 0x5C ^ key[i];
 	}
@@ -324,7 +336,7 @@ void HMAC_MD5_Init(hmacMD5Context_t* ctx, unsigned char const* key, unsigned int
 	MD5Update(&ctx->md5Context, ctx->iKeyPad, sizeof ctx->iKeyPad);
 }
 
-void HMAC_MD5_Update(hmacMD5Context_t* ctx, unsigned char const* buf, unsigned int len)
+void HMAC_MD5_Update(hmacMD5Context_t* ctx, const unsigned char* buf, const unsigned int len)
 {
 	MD5Update(&ctx->md5Context, buf, len);
 }

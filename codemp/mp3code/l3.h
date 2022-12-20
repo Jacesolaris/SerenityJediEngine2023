@@ -49,14 +49,14 @@ ____________________________________________________________________________*/
 typedef union
 {
 	int ptr;
+
 	struct
 	{
 		unsigned char signbits;
 		unsigned char x;
 		unsigned char y;
-		unsigned char purgebits;	// 0 = esc
-	}
-	b;
+		unsigned char purgebits; // 0 = esc
+	} b;
 }
 HUFF_ELEMENT;
 
@@ -84,7 +84,7 @@ typedef struct
 	int bits;
 	unsigned char* bs_ptr;
 	unsigned char* bs_ptr0;
-	unsigned char* bs_ptr_end;	// optional for overrun test
+	unsigned char* bs_ptr_end; // optional for overrun test
 }
 BITDAT;
 
@@ -107,16 +107,17 @@ typedef struct
 	int count1table_select;
 }
 GR;
+
 typedef struct
 {
 	int mode;
 	int mode_ext;
 	/*---------------*/
-	int main_data_begin;		/* beginning, not end, my spec wrong */
+	int main_data_begin; /* beginning, not end, my spec wrong */
 	int private_bits;
 	/*---------------*/
-	int scfsi[2];		/* 4 bit flags [ch] */
-	GR gr[2][2];			/* [gran][ch] */
+	int scfsi[2]; /* 4 bit flags [ch] */
+	GR gr[2][2]; /* [gran][ch] */
 }
 SIDE_INFO;
 
@@ -126,20 +127,20 @@ SIDE_INFO;
 // plus extra for implicit sf=0 above highest cb
 typedef struct
 {
-	int l[23];			/* [cb] */
-	int s[3][13];		/* [window][cb] */
+	int l[23]; /* [cb] */
+	int s[3][13]; /* [window][cb] */
 }
 SCALEFACT;
 
 /*-----------------------------------------------------------*/
 typedef struct
 {
-	int cbtype;			/* long=0 short=1 */
-	int cbmax;			/* max crit band */
+	int cbtype; /* long=0 short=1 */
+	int cbmax; /* max crit band */
 	//   int lb_type;			/* long block type 0 1 3 */
-	int cbs0;			/* short band start index 0 3 12 (12=no shorts */
-	int ncbl;			/* number long cb's 0 8 21 */
-	int cbmax_s[3];		/* cbmax by individual short blocks */
+	int cbs0; /* short band start index 0 3 12 (12=no shorts */
+	int ncbl; /* number long cb's 0 8 21 */
+	int cbmax_s[3]; /* cbmax by individual short blocks */
 }
 CB_INFO;
 

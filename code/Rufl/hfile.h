@@ -65,8 +65,8 @@ public:
 	bool is_open_for_read(void) const;
 	bool is_open_for_write(void) const;
 
-	bool open_read(float version = 1.0f, int checksum = 0) const { return open(version, checksum, true); }
-	bool open_write(float version = 1.0f, int checksum = 0) const { return open(version, checksum, false); }
+	bool open_read(const float version = 1.0f, const int checksum = 0) const { return open(version, checksum, true); }
+	bool open_write(const float version = 1.0f, const int checksum = 0) const { return open(version, checksum, false); }
 
 	bool close() const;
 

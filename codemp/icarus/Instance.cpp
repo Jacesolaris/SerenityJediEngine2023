@@ -72,7 +72,7 @@ Create
 
 ICARUS_Instance* ICARUS_Instance::Create(interface_export_t* ie)
 {
-	ICARUS_Instance* instance = new ICARUS_Instance;
+	auto instance = new ICARUS_Instance;
 	instance->m_interface = ie;
 	Com_OPrintf("ICARUS Instance successfully created\n");
 	return instance;
@@ -86,12 +86,12 @@ Free
 
 int ICARUS_Instance::Free(void)
 {
-	sequencer_l::iterator	sri;
+	sequencer_l::iterator sri;
 
 	//Delete any residual sequencers
 	STL_ITERATE(sri, m_sequencers)
 	{
-		delete* sri;
+		delete*sri;
 
 #ifdef _DEBUG
 
@@ -106,12 +106,12 @@ int ICARUS_Instance::Free(void)
 	memset(gTaskManagers, 0, sizeof gTaskManagers);
 	m_signals.clear();
 
-	sequence_l::iterator	si;
+	sequence_l::iterator si;
 
 	//Delete any residual sequences
 	STL_ITERATE(si, m_sequences)
 	{
-		delete* si;
+		delete*si;
 
 #ifdef _DEBUG
 
@@ -166,7 +166,7 @@ GetSequencer
 -------------------------
 */
 
-CSequencer* ICARUS_Instance::GetSequencer(int ownerID)
+CSequencer* ICARUS_Instance::GetSequencer(const int ownerID)
 {
 	CSequencer* sequencer = CSequencer::Create();
 	CTaskManager* taskManager = CTaskManager::Create();
@@ -248,9 +248,9 @@ GetSequence
 -------------------------
 */
 
-CSequence* ICARUS_Instance::GetSequence(int id)
+CSequence* ICARUS_Instance::GetSequence(const int id)
 {
-	sequence_l::iterator	si;
+	sequence_l::iterator si;
 	STL_ITERATE(si, m_sequences)
 	{
 		if ((*si)->GetID() == id)
@@ -285,7 +285,7 @@ AllocateSequences
 -------------------------
 */
 
-int ICARUS_Instance::AllocateSequences(int numSequences, int* idTable)
+int ICARUS_Instance::AllocateSequences(const int numSequences, int* idTable)
 {
 	CSequence* sequence;
 
@@ -315,15 +315,15 @@ SaveSequenceIDTable
 int ICARUS_Instance::SaveSequenceIDTable(void)
 {
 	//Save out the number of sequences to follow
-	const int		numSequences = m_sequences.size();
+	const int numSequences = m_sequences.size();
 	m_interface->I_WriteSaveData(INT_ID('#', 'S', 'E', 'Q'), &numSequences, sizeof numSequences);
 
 	//Sequences are saved first, by ID and information
-	sequence_l::iterator	sqi;
+	sequence_l::iterator sqi;
 
 	//First pass, save all sequences ID for reconstruction
-	int* idTable = new int[numSequences];
-	int	itr = 0;
+	auto idTable = new int[numSequences];
+	int itr = 0;
 
 	if (idTable == nullptr)
 		return false;
@@ -352,7 +352,7 @@ int ICARUS_Instance::SaveSequences(void)
 	SaveSequenceIDTable();
 
 	//Save all the information in order
-	sequence_l::iterator	sqi;
+	sequence_l::iterator sqi;
 	STL_ITERATE(sqi, m_sequences)
 	{
 		(*sqi)->Save();
@@ -370,11 +370,11 @@ SaveSequencers
 int ICARUS_Instance::SaveSequencers(void)
 {
 	//Save out the number of sequences to follow
-	const int		numSequencers = m_sequencers.size();
+	const int numSequencers = m_sequencers.size();
 	m_interface->I_WriteSaveData(INT_ID('#', 'S', 'Q', 'R'), &numSequencers, sizeof numSequencers);
 
 	//The sequencers are then saved
-	sequencer_l::iterator	si;
+	sequencer_l::iterator si;
 	STL_ITERATE(si, m_sequencers)
 	{
 		(*si)->Save();
@@ -391,11 +391,11 @@ SaveSignals
 
 int ICARUS_Instance::SaveSignals(void)
 {
-	const int	numSignals = m_signals.size();
+	const int numSignals = m_signals.size();
 
 	m_interface->I_WriteSaveData(INT_ID('I', 'S', 'I', 'G'), &numSignals, sizeof numSignals);
 
-	signal_m::iterator	si;
+	signal_m::iterator si;
 	STL_ITERATE(si, m_signals)
 	{
 		//m_interface->I_WriteSaveData( 'ISIG', &numSignals, sizeof( numSignals ) );
@@ -425,7 +425,7 @@ Save
 int ICARUS_Instance::Save(void)
 {
 	//Save out a ICARUS save block header with the ICARUS version
-	constexpr double	version = ICARUS_VERSION;
+	constexpr double version = ICARUS_VERSION;
 	m_interface->I_WriteSaveData(INT_ID('I', 'C', 'A', 'R'), &version, sizeof version);
 
 	//Save out the signals
@@ -459,8 +459,8 @@ int ICARUS_Instance::LoadSignals(void)
 
 	for (int i = 0; i < numSignals; i++)
 	{
-		char	buffer[1024];
-		int		length;
+		char buffer[1024];
+		int length;
 
 		//Get the size of the string
 		m_interface->I_ReadSaveData(INT_ID('S', 'I', 'G', '#'), &length, sizeof length);
@@ -506,12 +506,12 @@ LoadSequence
 int ICARUS_Instance::LoadSequences(void)
 {
 	CSequence* sequence;
-	int			numSequences;
+	int numSequences;
 
 	//Get the number of sequences to read in
 	m_interface->I_ReadSaveData(INT_ID('#', 'S', 'E', 'Q'), &numSequences, sizeof numSequences);
 
-	int* idTable = new int[numSequences];
+	auto idTable = new int[numSequences];
 
 	if (idTable == nullptr)
 		return false;
@@ -550,7 +550,7 @@ LoadSequencers
 int ICARUS_Instance::LoadSequencers(void)
 {
 	CSequencer* sequencer;
-	int			numSequencers;
+	int numSequencers;
 
 	//Get the number of sequencers to load
 	m_interface->I_ReadSaveData(INT_ID('#', 'S', 'Q', 'R'), &numSequencers, sizeof numSequencers);
@@ -581,7 +581,7 @@ int ICARUS_Instance::Load(void)
 	Free();
 
 	//Check to make sure we're at the ICARUS save block
-	double	version;
+	double version;
 	m_interface->I_ReadSaveData(INT_ID('I', 'C', 'A', 'R'), &version, sizeof version);
 
 	//Versions must match!
@@ -636,7 +636,7 @@ CheckSignal
 
 bool ICARUS_Instance::CheckSignal(const char* identifier)
 {
-	const signal_m::iterator smi = m_signals.find(identifier);
+	const auto smi = m_signals.find(identifier);
 
 	if (smi == m_signals.end())
 		return false;

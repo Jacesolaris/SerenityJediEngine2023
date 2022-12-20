@@ -23,10 +23,10 @@ constexpr auto OL_S = 0.5f;
 constexpr auto OL_Y = 30;
 constexpr auto OL_H = 6;
 
-static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* title)
+static void WorkshopDrawEntityInformation(gentity_t* ent, const int x, const char* title)
 {
 	int add = OL_H;
-	constexpr vec4_t textcolor = { 0.4f, 0.4f, 0.8f, 1.0f };
+	constexpr vec4_t textcolor = {0.4f, 0.4f, 0.8f, 1.0f};
 
 	cgi_R_Font_DrawString(x, OL_Y, title, textcolor, cgs.media.qhFontSmall, -1, OL_S);
 
@@ -34,24 +34,24 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 	add += OL_H;
 
 	cgi_R_Font_DrawString(x, OL_Y + add, va("health: %i/%i", ent->health, ent->max_health), textcolor,
-		cgs.media.qhFontSmall, -1, OL_S);
+	                      cgs.media.qhFontSmall, -1, OL_S);
 	add += OL_H;
 
 	if (ent->script_targetname)
 	{
 		cgi_R_Font_DrawString(x, OL_Y + add, va("script_targetname: %s", ent->script_targetname), textcolor,
-			cgs.media.qhFontSmall, -1, OL_S);
+		                      cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 	}
 
 	if (ent->NPC->goalEntity)
 	{
 		cgi_R_Font_DrawString(x, OL_Y + add, va("goalEnt = %i", ent->NPC->goalEntity->s.number), textcolor,
-			cgs.media.qhFontSmall, -1, OL_S);
+		                      cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 	}
 	cgi_R_Font_DrawString(x, OL_Y + add, va("bs = %s", BSTable[ent->NPC->behaviorState].name), textcolor,
-		cgs.media.qhFontSmall, -1, OL_S);
+	                      cgs.media.qhFontSmall, -1, OL_S);
 	add += OL_H;
 	if (ent->NPC->combatMove)
 	{
@@ -60,22 +60,22 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 	}
 
 	cgi_R_Font_DrawString(x, OL_Y + add, va("class = %s", NPCClassTable[ent->client->NPC_class].name), textcolor,
-		cgs.media.qhFontSmall, -1, OL_S);
+	                      cgs.media.qhFontSmall, -1, OL_S);
 	add += OL_H;
 	cgi_R_Font_DrawString(x, OL_Y + add, va("rank = %s (%i)", RankTable[ent->NPC->rank].name, ent->NPC->rank),
-		textcolor, cgs.media.qhFontSmall, -1, OL_S);
+	                      textcolor, cgs.media.qhFontSmall, -1, OL_S);
 	add += OL_H;
 
 	if (ent->NPC->scriptFlags)
 	{
 		cgi_R_Font_DrawString(x, OL_Y + add, va("scriptFlags: %i", ent->NPC->scriptFlags), textcolor,
-			cgs.media.qhFontSmall, -1, OL_S);
+		                      cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 	}
 	if (ent->NPC->aiFlags)
 	{
 		cgi_R_Font_DrawString(x, OL_Y + add, va("aiFlags: %i", ent->NPC->aiFlags), textcolor, cgs.media.qhFontSmall, -1,
-			OL_S);
+		                      OL_S);
 		add += OL_H;
 	}
 
@@ -104,11 +104,11 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 	}
 
 	cgi_R_Font_DrawString(x, OL_Y + add, va("playerTeam: %s", teamTable[ent->client->playerTeam].name), textcolor,
-		cgs.media.qhFontSmall, -1, OL_S);
+	                      cgs.media.qhFontSmall, -1, OL_S);
 	add += OL_H;
 
 	cgi_R_Font_DrawString(x, OL_Y + add, va("enemyTeam: %s", teamTable[ent->client->enemyTeam].name), textcolor,
-		cgs.media.qhFontSmall, -1, OL_S);
+	                      cgs.media.qhFontSmall, -1, OL_S);
 	add += OL_H;
 
 	cgi_R_Font_DrawString(x, OL_Y + add, "-- assigned scripts --", textcolor, cgs.media.qhFontSmall, -1, OL_S);
@@ -119,7 +119,7 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 		if (ent->behaviorSet[i])
 		{
 			cgi_R_Font_DrawString(x, OL_Y + add, va("%s: %s", BSETTable[i].name, ent->behaviorSet[i]), textcolor,
-				cgs.media.qhFontSmall, -1, OL_S);
+			                      cgs.media.qhFontSmall, -1, OL_S);
 			add += OL_H;
 		}
 	}
@@ -133,7 +133,7 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 			if (ent->parms->parm[i][0])
 			{
 				cgi_R_Font_DrawString(x, OL_Y + add, va("parm%i : %s", i + 1, ent->parms->parm[i]), textcolor,
-					cgs.media.qhFontSmall, -1, OL_S);
+				                      cgs.media.qhFontSmall, -1, OL_S);
 				add += OL_H;
 			}
 		}
@@ -144,19 +144,19 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 		cgi_R_Font_DrawString(x, OL_Y + add, "-- squad data --", textcolor, cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 		cgi_R_Font_DrawString(x, OL_Y + add, va("morale: %i", ent->NPC->group->morale), textcolor,
-			cgs.media.qhFontSmall, -1, OL_S);
+		                      cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 		cgi_R_Font_DrawString(x, OL_Y + add, va("morale debounce: %i", ent->NPC->group->moraleDebounce), textcolor,
-			cgs.media.qhFontSmall, -1, OL_S);
+		                      cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 		cgi_R_Font_DrawString(x, OL_Y + add,
-			va("last seen enemy: %i milliseconds", level.time - ent->NPC->group->lastSeenEnemyTime),
-			textcolor, cgs.media.qhFontSmall, -1, OL_S);
+		                      va("last seen enemy: %i milliseconds", level.time - ent->NPC->group->lastSeenEnemyTime),
+		                      textcolor, cgs.media.qhFontSmall, -1, OL_S);
 		add += OL_H;
 		if (ent->NPC->group->commander)
 		{
 			cgi_R_Font_DrawString(x, OL_Y + add, va("commander: %i", ent->NPC->group->commander->s.number), textcolor,
-				cgs.media.qhFontSmall, -1, OL_S);
+			                      cgs.media.qhFontSmall, -1, OL_S);
 			add += OL_H;
 		}
 
@@ -168,10 +168,10 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 			const int memberNum = memberAI->number;
 			const gentity_t* member = &g_entities[memberNum];
 			const char* memberText = va("* entity %i, closestBuddy: %i, class: %s, rank: %s (%i), health: %i/%i",
-				memberNum, memberAI->closestBuddy,
-				NPCClassTable[member->client->NPC_class].name,
-				RankTable[member->NPC->rank].name, member->NPC->rank, member->health,
-				member->max_health);
+			                            memberNum, memberAI->closestBuddy,
+			                            NPCClassTable[member->client->NPC_class].name,
+			                            RankTable[member->NPC->rank].name, member->NPC->rank, member->health,
+			                            member->max_health);
 			cgi_R_Font_DrawString(x, OL_Y + add, memberText, textcolor, cgs.media.qhFontSmall, -1, OL_S);
 			add += OL_H;
 		}
@@ -185,7 +185,7 @@ static void WorkshopDrawEntityInformation(gentity_t* ent, int x, const char* tit
 		if (timer.second >= 0)
 		{
 			cgi_R_Font_DrawString(x, OL_Y + add, va("%s : %i", timer.first.c_str(), timer.second), textcolor,
-				cgs.media.qhFontSmall, -1, OL_S);
+			                      cgs.media.qhFontSmall, -1, OL_S);
 			add += OL_H;
 		}
 	}
@@ -223,7 +223,7 @@ void WorkshopDrawClientsideInformation()
 //
 //	Draws a box around the bounding box of the entity
 //
-void WorkshopDrawEntBox(gentity_t* ent, int colorOverride = -1)
+void WorkshopDrawEntBox(gentity_t* ent, const int colorOverride = -1)
 {
 	unsigned color = 0x666666; // G_SoundOnEnt(ent, "satan.mp3");
 	if (colorOverride == -1 && selectedAI == ent->s.number)
@@ -253,7 +253,7 @@ void WorkshopDrawEntBox(gentity_t* ent, int colorOverride = -1)
 	}
 
 	// This is going to look like a mess and I can't really comment on this, but I drew this out manually and it works.
-	vec3_t vertices[BOX_VERTICES] = { 0 };
+	vec3_t vertices[BOX_VERTICES] = {0};
 	for (auto& vertice : vertices)
 	{
 		VectorCopy(ent->currentOrigin, vertice);
@@ -376,7 +376,7 @@ void WorkshopSelect_f(gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
 	if (trace.fraction == 1.0f || trace.entityNum < 1)
 	{
 		return;
@@ -590,8 +590,8 @@ void Workshop_Set_GoalEntity_f(gentity_t* ent)
 		if (g_entities[selectedAI].NPC->lastGoalEntity != nullptr)
 		{
 			gi.Printf("New goal entity: %i (last goal entity was %i)\n",
-				g_entities[selectedAI].NPC->goalEntity->s.number,
-				g_entities[selectedAI].NPC->lastGoalEntity->s.number);
+			          g_entities[selectedAI].NPC->goalEntity->s.number,
+			          g_entities[selectedAI].NPC->lastGoalEntity->s.number);
 		}
 		else
 		{
@@ -609,7 +609,7 @@ void Workshop_Set_GoalEntity_f(gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
 	if (trace.fraction == 1.0f || trace.entityNum < 1 || trace.entityNum == ENTITYNUM_NONE || trace.entityNum ==
 		ENTITYNUM_WORLD)
 	{
@@ -624,7 +624,7 @@ void Workshop_Set_GoalEntity_f(gentity_t* ent)
 	if (selected->NPC->lastGoalEntity != nullptr)
 	{
 		gi.Printf("New goal entity: %i (last goal entity was %i)\n", selected->NPC->goalEntity->s.number,
-			selected->NPC->lastGoalEntity->s.number);
+		          selected->NPC->lastGoalEntity->s.number);
 	}
 	else
 	{
@@ -650,7 +650,7 @@ void Workshop_Set_Enemy_f(gentity_t* ent)
 		if (g_entities[selectedAI].lastEnemy != nullptr)
 		{
 			gi.Printf("New enemy: %i (last enemy was %i)\n", g_entities[selectedAI].enemy->s.number,
-				g_entities[selectedAI].lastEnemy->s.number);
+			          g_entities[selectedAI].lastEnemy->s.number);
 		}
 		else
 		{
@@ -668,7 +668,7 @@ void Workshop_Set_Enemy_f(gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
 	if (trace.fraction == 1.0f || trace.entityNum < 1 || trace.entityNum == ENTITYNUM_NONE || trace.entityNum ==
 		ENTITYNUM_WORLD)
 	{
@@ -729,7 +729,7 @@ extern stringID_table_t WPTable[];
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
-	int weapon_num);
+                                              int weapon_num);
 extern void wp_saber_add_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 extern void wp_saber_add_holstered_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 
@@ -870,7 +870,7 @@ void Workshop_Set_Leader_f(gentity_t* ent)
 
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
-		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
+	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
 	if (trace.fraction == 1.0f || trace.entityNum < 1 || trace.entityNum == ENTITYNUM_NONE || trace.entityNum ==
 		ENTITYNUM_WORLD)
 	{
@@ -1023,7 +1023,7 @@ void Workshop_Set_Animation_f(gentity_t* ent)
 	if (gi.argc() != 4)
 	{
 		gi.Printf("usage: %s <animation name> <\"lower\", \"upper\" or \"both\"> <hold time, milliseconds>\n",
-			gi.argv(0));
+		          gi.argv(0));
 		return;
 	}
 

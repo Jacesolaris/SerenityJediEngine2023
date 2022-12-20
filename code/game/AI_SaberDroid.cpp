@@ -193,70 +193,70 @@ int SaberDroid_PowerLevelForSaberAnim(const gentity_t* self)
 	switch (self->client->ps.legsAnim)
 	{
 	case BOTH_A2_TR_BL:
-	{
-		if (self->client->ps.torsoAnimTimer <= 200)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (self->client->ps.torsoAnimTimer <= 200)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (PM_AnimLength(self->client->clientInfo.animFileIndex,
+			                  static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
+				200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (PM_AnimLength(self->client->clientInfo.animFileIndex,
-			static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
-			200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_2;
+		return FORCE_LEVEL_2;
 	case BOTH_A1_BL_TR:
-	{
-		if (self->client->ps.torsoAnimTimer <= 300)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (self->client->ps.torsoAnimTimer <= 300)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (PM_AnimLength(self->client->clientInfo.animFileIndex,
+			                  static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
+				200)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (PM_AnimLength(self->client->clientInfo.animFileIndex,
-			static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
-			200)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_1;
+		return FORCE_LEVEL_1;
 	case BOTH_A1__L__R:
-	{
-		if (self->client->ps.torsoAnimTimer <= 250)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (self->client->ps.torsoAnimTimer <= 250)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (PM_AnimLength(self->client->clientInfo.animFileIndex,
+			                  static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
+				150)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (PM_AnimLength(self->client->clientInfo.animFileIndex,
-			static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
-			150)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_1;
+		return FORCE_LEVEL_1;
 	case BOTH_A3__L__R:
-	{
-		if (self->client->ps.torsoAnimTimer <= 200)
 		{
-			//end of anim
-			return FORCE_LEVEL_0;
+			if (self->client->ps.torsoAnimTimer <= 200)
+			{
+				//end of anim
+				return FORCE_LEVEL_0;
+			}
+			if (PM_AnimLength(self->client->clientInfo.animFileIndex,
+			                  static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
+				300)
+			{
+				//beginning of anim
+				return FORCE_LEVEL_0;
+			}
 		}
-		if (PM_AnimLength(self->client->clientInfo.animFileIndex,
-			static_cast<animNumber_t>(self->client->ps.legsAnim)) - self->client->ps.torsoAnimTimer <
-			300)
-		{
-			//beginning of anim
-			return FORCE_LEVEL_0;
-		}
-	}
-	return FORCE_LEVEL_3;
-	default:;
+		return FORCE_LEVEL_3;
+	default: ;
 	}
 	return FORCE_LEVEL_0;
 }
@@ -350,7 +350,7 @@ void NPC_BSSaberDroid_Attack(void)
 		enemyLOS = qtrue;
 
 		if (enemyDist <= 4096 && InFOV(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles, 90,
-			45)) //within 64 & infront
+		                               45)) //within 64 & infront
 		{
 			VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
 			enemyCS = qtrue;
@@ -442,8 +442,8 @@ void NPC_BSSaberDroid_Attack(void)
 				else
 				{
 					TIMER_Set(NPC, "attackDelay",
-						NPC->client->ps.weaponTime + Q_irand(0, 1000) + Q_irand(0, (3 - g_spskill->integer) * 2) *
-						500);
+					          NPC->client->ps.weaponTime + Q_irand(0, 1000) + Q_irand(0, (3 - g_spskill->integer) * 2) *
+					          500);
 				}
 			}
 		}

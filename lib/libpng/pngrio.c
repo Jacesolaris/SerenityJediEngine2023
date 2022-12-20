@@ -28,7 +28,7 @@
   * to read more then 64K on a 16 bit machine.
   */
 void /* PRIVATE */
-png_read_data(png_structrp png_ptr, png_bytep data, png_size_t length)
+png_read_data(const png_structrp png_ptr, const png_bytep data, const png_size_t length)
 {
 	png_debug1(4, "reading %d bytes", (int)length);
 
@@ -46,7 +46,7 @@ png_read_data(png_structrp png_ptr, png_bytep data, png_size_t length)
  * than changing the library.
  */
 void PNGCBAPI
-png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+png_default_read_data(const png_structp png_ptr, const png_bytep data, const png_size_t length)
 {
 	if (png_ptr == NULL)
 		return;
@@ -81,7 +81,7 @@ png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
  *                be used.
  */
 void PNGAPI
-png_set_read_fn(png_structrp png_ptr, png_voidp io_ptr,
+png_set_read_fn(png_structrp png_ptr, const png_voidp io_ptr,
 	png_rw_ptr read_data_fn)
 {
 	if (png_ptr == NULL)

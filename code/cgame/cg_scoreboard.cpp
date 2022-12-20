@@ -167,7 +167,7 @@ CG_MissionCompletion
 */
 void CG_MissionCompletion(void)
 {
-	char text[1024] = { 0 };
+	char text[1024] = {0};
 	constexpr int pad = 18;
 
 	/*cgi_SP_GetStringTextString("SP_INGAME_MISSIONCOMPLETION", text, sizeof(text));
@@ -181,18 +181,18 @@ void CG_MissionCompletion(void)
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_SP_GetStringTextString("SP_INGAME_SECRETAREAS_OF", text, sizeof text);
 	cgi_R_Font_DrawString(x + w, y, va("%d %s %d",
-		cg_entities[0].gent->client->sess.missionStats.secretsFound,
-		text,
-		cg_entities[0].gent->client->sess.missionStats.totalSecrets
-	),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                                   cg_entities[0].gent->client->sess.missionStats.secretsFound,
+	                                   text,
+	                                   cg_entities[0].gent->client->sess.missionStats.totalSecrets
+	                      ),
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_ENEMIESKILLED", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.enemiesKilled),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	y += pad;
@@ -224,23 +224,23 @@ void CG_MissionCompletion(void)
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.shotsFired),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_HITS", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.hits), colorTable[CT_WHITE],
-		cgs.media.qhFontSmall, -1, 0.8f);
+	                      cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_ACCURACY", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	const float percent = cg_entities[0].gent->client->sess.missionStats.shotsFired
-		? 100.0f * static_cast<float>(cg_entities[0].gent->client->sess.missionStats.hits) /
-		cg_entities[0].gent->client->sess.missionStats.shotsFired
-		: 0;
+		                      ? 100.0f * static_cast<float>(cg_entities[0].gent->client->sess.missionStats.hits) /
+		                      cg_entities[0].gent->client->sess.missionStats.shotsFired
+		                      : 0;
 	cgi_R_Font_DrawString(x + w, y, va("%.2f%%", percent), colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	if (cg_entities[0].gent->client->sess.missionStats.weaponUsed[WP_SABER] <= 0)
@@ -257,49 +257,49 @@ void CG_MissionCompletion(void)
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_HEAL]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_SPEED", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_SPEED]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_PULL", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_PULL]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_PUSH", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_PUSH]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_MINDTRICK", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_TELEPATHY]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_GRIP", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_GRIP]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_LIGHTNING", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.forceUsed[FP_LIGHTNING]),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	//second column, LIGHT SABER
 	y = 180;
@@ -312,42 +312,42 @@ void CG_MissionCompletion(void)
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.saberThrownCnt),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_BLOCKS", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.saberBlocksCnt),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_LEGATTACKS", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.legAttacksCnt),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_ARMATTACKS", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.armAttacksCnt),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_BODYATTACKS", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.torsoAttacksCnt),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 
 	y += pad;
 	cgi_SP_GetStringTextString("SP_INGAME_OTHERATTACKS", text, sizeof text);
 	w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontSmall, 0.8f);
 	cgi_R_Font_DrawString(x, y, text, colorTable[CT_LTGOLD1], cgs.media.qhFontSmall, -1, 0.8f);
 	cgi_R_Font_DrawString(x + w, y, va("%d", cg_entities[0].gent->client->sess.missionStats.otherAttacksCnt),
-		colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
+	                      colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 0.8f);
 }
 
 /*

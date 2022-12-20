@@ -32,14 +32,14 @@
 
 #include "tri_coll_test.h"
 
- /* if USE_EPSILON_TEST is true then we do a check:
-		  if |dv|<EPSILON then dv=0.0;
-	else no check is done (which is less robust)
- */
+/* if USE_EPSILON_TEST is true then we do a check:
+		 if |dv|<EPSILON then dv=0.0;
+   else no check is done (which is less robust)
+*/
 #define USE_EPSILON_TEST 1
 #define EPSILON 0.000001
 
- /* some macros */
+/* some macros */
 #define CROSS(dest,v1,v2)                      \
               dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
               dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
@@ -159,7 +159,7 @@
 }
 
 qboolean coplanar_tri_tri(vec3_t N, vec3_t V0, vec3_t V1, vec3_t V2,
-	vec3_t U0, vec3_t U1, vec3_t U2)
+                          vec3_t U0, vec3_t U1, vec3_t U2)
 {
 	vec3_t A;
 	short i0, i1;
@@ -208,7 +208,7 @@ qboolean coplanar_tri_tri(vec3_t N, vec3_t V0, vec3_t V1, vec3_t V2,
 }
 
 qboolean tri_tri_intersect(vec3_t V0, vec3_t V1, vec3_t V2,
-	vec3_t U0, vec3_t U1, vec3_t U2)
+                           vec3_t U0, vec3_t U1, vec3_t U2)
 {
 	vec3_t E1, E2;
 	vec3_t N1, N2;
@@ -337,7 +337,7 @@ float LineSegmentDistance(vec3_t a, vec3_t b, vec3_t c, vec3_t d)
 extern qboolean G_FindClosestPointOnLineSegment(const vec3_t start, const vec3_t end, const vec3_t from, vec3_t result);
 
 float ShortestLineSegBewteen2LineSegs(vec3_t start1, vec3_t end1, vec3_t start2, vec3_t end2, vec3_t close_pnt1,
-	vec3_t close_pnt2)
+                                      vec3_t close_pnt2)
 {
 	float current_dist;
 	vec3_t new_pnt;

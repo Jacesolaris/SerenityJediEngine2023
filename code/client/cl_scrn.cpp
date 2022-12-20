@@ -31,7 +31,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern console_t con;
 
-qboolean	scr_initialized;		// ready to draw
+qboolean scr_initialized; // ready to draw
 
 cvar_t* cl_timegraph;
 cvar_t* cl_debuggraph;
@@ -46,7 +46,8 @@ SCR_DrawNamedPic
 Coordinates are 640*480 virtual values
 =================
 */
-void SCR_DrawNamedPic(float x, float y, float width, float height, const char* picname) {
+void SCR_DrawNamedPic(const float x, const float y, const float width, const float height, const char* picname)
+{
 	assert(width != 0);
 
 	const qhandle_t hShader = re.RegisterShader(picname);
@@ -60,7 +61,8 @@ SCR_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void SCR_FillRect(float x, float y, float width, float height, const float* color) {
+void SCR_FillRect(const float x, const float y, const float width, const float height, const float* color)
+{
 	re.SetColor(color);
 
 	re.DrawStretchPic(x, y, width, height, 0, 0, 0, 0, cls.whiteShader);
@@ -76,7 +78,8 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader) {
+void SCR_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
+{
 	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
 
@@ -84,14 +87,17 @@ void SCR_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
 ** SCR_DrawBigChar
 ** big chars are drawn at 640*480 virtual screen size
 */
-void SCR_DrawBigChar(int x, int y, int ch) {
+void SCR_DrawBigChar(const int x, const int y, int ch)
+{
 	ch &= 255;
 
-	if (ch == ' ') {
+	if (ch == ' ')
+	{
 		return;
 	}
 
-	if (y < -BIGCHAR_HEIGHT) {
+	if (y < -BIGCHAR_HEIGHT)
+	{
 		return;
 	}
 
@@ -109,23 +115,26 @@ void SCR_DrawBigChar(int x, int y, int ch) {
 	constexpr float size2 = 0.0625;
 
 	re.DrawStretchPic(ax, ay, aw, ah,
-		fcol, frow,
-		fcol + size, frow + size2,
-		cls.charSetShader);
+	                  fcol, frow,
+	                  fcol + size, frow + size2,
+	                  cls.charSetShader);
 }
 
 /*
 ** SCR_DrawSmallChar
 ** small chars are drawn at native screen resolution
 */
-void SCR_DrawSmallChar(int x, int y, int ch) {
+void SCR_DrawSmallChar(const int x, const int y, int ch)
+{
 	ch &= 255;
 
-	if (ch == ' ') {
+	if (ch == ' ')
+	{
 		return;
 	}
 
-	if (y < -SMALLCHAR_HEIGHT) {
+	if (y < -SMALLCHAR_HEIGHT)
+	{
 		return;
 	}
 
@@ -148,10 +157,10 @@ void SCR_DrawSmallChar(int x, int y, int ch) {
 	constexpr float size2 = 0.0625;
 
 	re.DrawStretchPic(x * con.xadjust, y * con.yadjust,
-		SMALLCHAR_WIDTH * con.xadjust, SMALLCHAR_HEIGHT * con.yadjust,
-		fcol, frow,
-		fcol + size, frow + size2,
-		cls.charSetShader);
+	                  SMALLCHAR_WIDTH * con.xadjust, SMALLCHAR_HEIGHT * con.yadjust,
+	                  fcol, frow,
+	                  fcol + size, frow + size2,
+	                  cls.charSetShader);
 }
 
 /*
@@ -164,8 +173,10 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean noColorEscape) {
-	vec4_t		color;
+void SCR_DrawBigStringExt(const int x, const int y, const char* string, const float* setColor,
+                          const qboolean forceColor, const qboolean noColorEscape)
+{
+	vec4_t color;
 
 	// draw the drop shadow
 	color[0] = color[1] = color[2] = 0;
@@ -173,8 +184,10 @@ void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColo
 	re.SetColor(color);
 	const char* s = string;
 	int xx = x;
-	while (*s) {
-		if (!noColorEscape && Q_IsColorString(s)) {
+	while (*s)
+	{
+		if (!noColorEscape && Q_IsColorString(s))
+		{
 			s += 2;
 			continue;
 		}
@@ -187,14 +200,18 @@ void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColo
 	s = string;
 	xx = x;
 	re.SetColor(setColor);
-	while (*s) {
-		if (Q_IsColorString(s)) {
-			if (!forceColor) {
+	while (*s)
+	{
+		if (Q_IsColorString(s))
+		{
+			if (!forceColor)
+			{
 				memcpy(color, g_color_table[ColorIndex(*(s + 1))], sizeof color);
 				color[3] = setColor[3];
 				re.SetColor(color);
 			}
-			if (!noColorEscape) {
+			if (!noColorEscape)
+			{
 				s += 2;
 				continue;
 			}
@@ -206,15 +223,17 @@ void SCR_DrawBigStringExt(int x, int y, const char* string, const float* setColo
 	re.SetColor(nullptr);
 }
 
-void SCR_DrawBigString(int x, int y, const char* s, float alpha, qboolean noColorEscape) {
-	float	color[4];
+void SCR_DrawBigString(const int x, const int y, const char* s, const float alpha, const qboolean noColorEscape)
+{
+	float color[4];
 
 	color[0] = color[1] = color[2] = 1.0;
 	color[3] = alpha;
 	SCR_DrawBigStringExt(x, y, s, color, qfalse, noColorEscape);
 }
 
-void SCR_DrawBigStringColor(int x, int y, const char* s, vec4_t color, qboolean noColorEscape) {
+void SCR_DrawBigStringColor(const int x, const int y, const char* s, vec4_t color, const qboolean noColorEscape)
+{
 	SCR_DrawBigStringExt(x, y, s, color, qtrue, noColorEscape);
 }
 
@@ -226,22 +245,28 @@ Draws a multi-colored string with a drop shadow, optionally forcing
 to a fixed color.
 ==================
 */
-void SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor,
-	qboolean noColorEscape) {
-	vec4_t		color;
+void SCR_DrawSmallStringExt(const int x, const int y, const char* string, const float* setColor,
+                            const qboolean forceColor,
+                            const qboolean noColorEscape)
+{
+	vec4_t color;
 
 	// draw the colored text
 	const char* s = string;
 	int xx = x;
 	re.SetColor(setColor);
-	while (*s) {
-		if (Q_IsColorString(s)) {
-			if (!forceColor) {
+	while (*s)
+	{
+		if (Q_IsColorString(s))
+		{
+			if (!forceColor)
+			{
 				memcpy(color, g_color_table[ColorIndex(*(s + 1))], sizeof color);
 				color[3] = setColor[3];
 				re.SetColor(color);
 			}
-			if (!noColorEscape) {
+			if (!noColorEscape)
+			{
 				s += 2;
 				continue;
 			}
@@ -256,15 +281,19 @@ void SCR_DrawSmallStringExt(int x, int y, const char* string, const float* setCo
 /*
 ** SCR_Strlen -- skips color escape codes
 */
-static int SCR_Strlen(const char* str) {
+static int SCR_Strlen(const char* str)
+{
 	const char* s = str;
 	int count = 0;
 
-	while (*s) {
-		if (Q_IsColorString(s)) {
+	while (*s)
+	{
+		if (Q_IsColorString(s))
+		{
 			s += 2;
 		}
-		else {
+		else
+		{
 			count++;
 			s++;
 		}
@@ -276,7 +305,8 @@ static int SCR_Strlen(const char* str) {
 /*
 ** SCR_GetBigStringWidth
 */
-int	SCR_GetBigStringWidth(const char* str) {
+int SCR_GetBigStringWidth(const char* str)
+{
 	return SCR_Strlen(str) * BIGCHAR_WIDTH;
 }
 
@@ -291,19 +321,19 @@ DEBUG GRAPH
 */
 using graphsamp_t = struct
 {
-	float	value;
-	int		color;
+	float value;
+	int color;
 };
 
-static	int			current;
-static	graphsamp_t	values[1024];
+static int current;
+static graphsamp_t values[1024];
 
 /*
 ==============
 SCR_DebugGraph
 ==============
 */
-void SCR_DebugGraph(float value, int color)
+void SCR_DebugGraph(const float value, const int color)
 {
 	values[current & 1023].value = value;
 	values[current & 1023].color = color;
@@ -325,7 +355,7 @@ void SCR_DrawDebugGraph(void)
 	const int y = cls.glconfig.vidHeight;
 	re.SetColor(g_color_table[0]);
 	re.DrawStretchPic(x, y - cl_graphheight->integer,
-		w, cl_graphheight->integer, 0, 0, 0, 0, 0);
+	                  w, cl_graphheight->integer, 0, 0, 0, 0, 0);
 	re.SetColor(nullptr);
 
 	for (int a = 0; a < w; a++)
@@ -340,6 +370,7 @@ void SCR_DrawDebugGraph(void)
 		re.DrawStretchPic(x + w - 1 - a, y - h, 1, h, 0, 0, 0, 0, 0);
 	}
 }
+
 //=============================================================================
 
 /*
@@ -347,7 +378,8 @@ void SCR_DrawDebugGraph(void)
 SCR_Init
 ==================
 */
-void SCR_Init(void) {
+void SCR_Init(void)
+{
 	cl_timegraph = Cvar_Get("timegraph", "0", CVAR_CHEAT);
 	cl_debuggraph = Cvar_Get("debuggraph", "0", CVAR_CHEAT);
 	cl_graphheight = Cvar_Get("graphheight", "32", CVAR_CHEAT);
@@ -374,15 +406,18 @@ SCR_DrawScreenField
 This will be called twice if rendering in stereo mode
 ==================
 */
-void SCR_DrawScreenField(stereoFrame_t stereoFrame) {
+void SCR_DrawScreenField(const stereoFrame_t stereoFrame)
+{
 	re.BeginFrame(stereoFrame);
 
 	const qboolean uiFullscreen = _UI_IsFullscreen();
 
 	// if the menu is going to cover the entire screen, we
 	// don't need to render anything under it
-	if (!uiFullscreen) {
-		switch (cls.state) {
+	if (!uiFullscreen)
+	{
+		switch (cls.state)
+		{
 		default:
 			Com_Error(ERR_FATAL, "SCR_DrawScreenField: bad cls.state");
 		case CA_CINEMATIC:
@@ -445,7 +480,8 @@ void SCR_DrawScreenField(stereoFrame_t stereoFrame) {
 	Con_DrawConsole();
 
 	// debug graph can be drawn on top of anything
-	if (cl_debuggraph->integer || cl_timegraph->integer) {
+	if (cl_debuggraph->integer || cl_timegraph->integer)
+	{
 		SCR_DrawDebugGraph();
 	}
 }
@@ -458,17 +494,20 @@ This is called every frame, and can also be called explicitly to flush
 text to the screen.
 ==================
 */
-void SCR_UpdateScreen(void) {
-	static int	recursive;
+void SCR_UpdateScreen(void)
+{
+	static int recursive;
 
-	if (!scr_initialized) {
-		return;				// not initialized yet
+	if (!scr_initialized)
+	{
+		return; // not initialized yet
 	}
 
 	// load the ref / ui / cgame if needed
 	CL_StartHunkUsers();
 
-	if (++recursive > 2) {
+	if (++recursive > 2)
+	{
 		Com_Error(ERR_FATAL, "SCR_UpdateScreen: recursively called");
 	}
 	recursive = qtrue;
@@ -478,18 +517,22 @@ void SCR_UpdateScreen(void) {
 	if (cls.uiStarted)
 	{
 		// if running in stereo, we need to draw the frame twice
-		if (cls.glconfig.stereoEnabled) {
+		if (cls.glconfig.stereoEnabled)
+		{
 			SCR_DrawScreenField(STEREO_LEFT);
 			SCR_DrawScreenField(STEREO_RIGHT);
 		}
-		else {
+		else
+		{
 			SCR_DrawScreenField(STEREO_CENTER);
 		}
 
-		if (com_speeds->integer) {
+		if (com_speeds->integer)
+		{
 			re.EndFrame(&time_frontend, &time_backend);
 		}
-		else {
+		else
+		{
 			re.EndFrame(nullptr, nullptr);
 		}
 	}
@@ -500,8 +543,9 @@ void SCR_UpdateScreen(void) {
 // this stuff is only used by the savegame (SG) code for screenshots...
 //
 
-static byte	bScreenData[SG_SCR_WIDTH * SG_SCR_HEIGHT * 4];
+static byte bScreenData[SG_SCR_WIDTH * SG_SCR_HEIGHT * 4];
 static qboolean screenDataValid = qfalse;
+
 void SCR_UnprecacheScreenshot()
 {
 	screenDataValid = qfalse;
@@ -511,8 +555,8 @@ void SCR_PrecacheScreenshot()
 {
 	// No screenshots unless connected to single player local server...
 	//
-//	char *psInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SERVERINFO ];
-//	int iMaxClients = atoi(Info_ValueForKey( psInfo, "sv_maxclients" ));
+	//	char *psInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SERVERINFO ];
+	//	int iMaxClients = atoi(Info_ValueForKey( psInfo, "sv_maxclients" ));
 
 	// (no need to check single-player status in voyager, this code base is all singleplayer)
 	if (cls.state != CA_ACTIVE)
@@ -524,9 +568,9 @@ void SCR_PrecacheScreenshot()
 	{
 		// in-game...
 		//
-//		SCR_UnprecacheScreenshot();
-//		pbScreenData = (byte *)Z_Malloc(SG_SCR_WIDTH * SG_SCR_HEIGHT * 4);
-		S_ClearSoundBuffer();	// clear DMA etc because the following glReadPixels() call can take ages
+		//		SCR_UnprecacheScreenshot();
+		//		pbScreenData = (byte *)Z_Malloc(SG_SCR_WIDTH * SG_SCR_HEIGHT * 4);
+		S_ClearSoundBuffer(); // clear DMA etc because the following glReadPixels() call can take ages
 		re.GetScreenShot((byte*)&bScreenData, SG_SCR_WIDTH, SG_SCR_HEIGHT);
 		screenDataValid = qtrue;
 	}
@@ -534,10 +578,12 @@ void SCR_PrecacheScreenshot()
 
 byte* SCR_GetScreenshot(qboolean* qValid)
 {
-	if (!screenDataValid) {
+	if (!screenDataValid)
+	{
 		SCR_PrecacheScreenshot();
 	}
-	if (qValid) {
+	if (qValid)
+	{
 		*qValid = screenDataValid;
 	}
 	return (byte*)&bScreenData;
@@ -545,7 +591,7 @@ byte* SCR_GetScreenshot(qboolean* qValid)
 
 // called from save-game code to set the lo-res loading screen to be the one from the save file...
 //
-void SCR_SetScreenshot(const byte* pbData, int w, int h)
+void SCR_SetScreenshot(const byte* pbData, const int w, const int h)
 {
 	if (w == SG_SCR_WIDTH && h == SG_SCR_HEIGHT)
 	{

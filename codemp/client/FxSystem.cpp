@@ -58,8 +58,8 @@ void SFxHelper::ReInit(refdef_t* pRefdef)
 //------------------------------------------------------
 void SFxHelper::Print(const char* msg, ...)
 {
-	va_list		argptr;
-	char		text[1024];
+	va_list argptr;
+	char text[1024];
 
 	va_start(argptr, msg);
 	Q_vsnprintf(text, sizeof text, msg, argptr);
@@ -93,14 +93,14 @@ void SFxHelper::AdjustTime(int frametime)
 				mTime += mFrameTime;
 				mRealTime = mFrameTime * 0.001f;*/
 
-				//		mHalfRealTimeSq = mRealTime * mRealTime * 0.5f;
+		//		mHalfRealTimeSq = mRealTime * mRealTime * 0.5f;
 	}
 }
 
 //------------------------------------------------------
-void SFxHelper::CameraShake(vec3_t origin, float intensity, int radius, int time)
+void SFxHelper::CameraShake(vec3_t origin, const float intensity, const int radius, const int time)
 {
-	TCGCameraShake* data = reinterpret_cast<TCGCameraShake*>(cl.mSharedMemory);
+	auto data = reinterpret_cast<TCGCameraShake*>(cl.mSharedMemory);
 
 	VectorCopy(origin, data->mOrigin);
 	data->mIntensity = intensity;
@@ -111,22 +111,25 @@ void SFxHelper::CameraShake(vec3_t origin, float intensity, int radius, int time
 }
 
 //------------------------------------------------------
-qboolean SFxHelper::GetOriginAxisFromBolt(CGhoul2Info_v* pGhoul2, int mEntNum, int modelNum, int boltNum, vec3_t /*out*/origin, vec3_t /*out*/axis[3])
+qboolean SFxHelper::GetOriginAxisFromBolt(CGhoul2Info_v* pGhoul2, const int mEntNum, const int modelNum,
+                                          const int boltNum, vec3_t /*out*/origin, vec3_t /*out*/axis[3])
 {
-	mdxaBone_t 		boltMatrix;
-	TCGGetBoltData* data = reinterpret_cast<TCGGetBoltData*>(cl.mSharedMemory);
+	mdxaBone_t boltMatrix;
+	auto data = reinterpret_cast<TCGGetBoltData*>(cl.mSharedMemory);
 	data->mEntityNum = mEntNum;
-	CGVM_GetLerpData();//this func will zero out pitch and roll for players, and ride able vehicles
+	CGVM_GetLerpData(); //this func will zero out pitch and roll for players, and ride able vehicles
 
 	//Fixme: optimize these VM calls away by storing
 
 	// go away and get me the bolt position for this frame please
 	const qboolean doesBoltExist = re->G2API_GetBoltMatrix(*pGhoul2, modelNum, boltNum,
-		&boltMatrix, data->mAngles, data->mOrigin, theFxHelper.mOldTime,
-		nullptr, data->mScale);
+	                                                       &boltMatrix, data->mAngles, data->mOrigin,
+	                                                       theFxHelper.mOldTime,
+	                                                       nullptr, data->mScale);
 
 	if (doesBoltExist)
-	{	// set up the axis and origin we need for the actual effect spawning
+	{
+		// set up the axis and origin we need for the actual effect spawning
 		origin[0] = boltMatrix.matrix[0][3];
 		origin[1] = boltMatrix.matrix[1][3];
 		origin[2] = boltMatrix.matrix[2][3];

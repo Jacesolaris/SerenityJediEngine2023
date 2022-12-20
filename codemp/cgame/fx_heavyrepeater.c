@@ -59,7 +59,7 @@ FX_RepeaterHitPlayer
 ------------------------
 */
 
-void FX_RepeaterHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_RepeaterHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -88,7 +88,8 @@ static void CG_DistortionOrb(centity_t* cent)
 	VectorSubtract(ent.origin, cg.refdef.vieworg, ent.axis[0]);
 	const float vLen = VectorLength(ent.axis[0]);
 	if (VectorNormalize(ent.axis[0]) <= 0.1f)
-	{	// Entity is right on vieworg.  quit.
+	{
+		// Entity is right on vieworg.  quit.
 		return;
 	}
 
@@ -177,7 +178,7 @@ FX_RepeaterAltHitPlayer
 ------------------------
 */
 
-void FX_RepeaterAltHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_RepeaterAltHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{

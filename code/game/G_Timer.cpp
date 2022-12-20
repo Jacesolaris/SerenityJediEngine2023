@@ -38,7 +38,7 @@ gtimer_t g_timerPool[MAX_GTIMERS];
 gtimer_t* g_timers[MAX_GENTITIES];
 gtimer_t* g_timerFreeList;
 
-static int TIMER_GetCount(int num)
+static int TIMER_GetCount(const int num)
 {
 	const gtimer_t* p = g_timers[num];
 	int count = 0;
@@ -62,7 +62,7 @@ timer from the list and put it on the free list
 Doesn't do much error checking, only called below
 -------------------------
 */
-static void TIMER_RemoveHelper(int num, gtimer_t* timer)
+static void TIMER_RemoveHelper(const int num, gtimer_t* timer)
 {
 	gtimer_t* p = g_timers[num];
 
@@ -115,7 +115,7 @@ TIMER_Clear
 -------------------------
 */
 
-void TIMER_Clear(int idx)
+void TIMER_Clear(const int idx)
 {
 	// rudimentary safety checks, might be other things to check?
 	if (idx >= 0 && idx < MAX_GENTITIES)
@@ -264,7 +264,7 @@ void TIMER_Load(void)
 	}
 }
 
-static gtimer_t* TIMER_GetNew(int num, const char* identifier)
+static gtimer_t* TIMER_GetNew(const int num, const char* identifier)
 {
 	assert(num < ENTITYNUM_MAX_NORMAL); //don't want timers on NONE or the WORLD
 	gtimer_t* p = g_timers[num];
@@ -296,7 +296,7 @@ static gtimer_t* TIMER_GetNew(int num, const char* identifier)
 	return p;
 }
 
-gtimer_t* TIMER_GetExisting(int num, const char* identifier)
+gtimer_t* TIMER_GetExisting(const int num, const char* identifier)
 {
 	gtimer_t* p = g_timers[num];
 
@@ -320,7 +320,7 @@ TIMER_Set
 -------------------------
 */
 
-void TIMER_Set(const gentity_t* ent, const char* identifier, int duration)
+void TIMER_Set(const gentity_t* ent, const char* identifier, const int duration)
 {
 	assert(ent->inuse);
 	gtimer_t* timer = TIMER_GetNew(ent->s.number, identifier);
@@ -378,7 +378,7 @@ timer was never started
 -------------------------
 */
 
-qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, qboolean remove)
+qboolean TIMER_Done2(const gentity_t* ent, const char* identifier, const qboolean remove)
 {
 	gtimer_t* timer = TIMER_GetExisting(ent->s.number, identifier);
 
@@ -433,7 +433,7 @@ TIMER_Start
 -------------------------
 */
 
-qboolean TIMER_Start(const gentity_t* self, const char* identifier, int duration)
+qboolean TIMER_Start(const gentity_t* self, const char* identifier, const int duration)
 {
 	if (TIMER_Done(self, identifier))
 	{

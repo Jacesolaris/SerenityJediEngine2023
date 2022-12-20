@@ -149,7 +149,7 @@ void G_LogWeaponInit(void)
 #endif //LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponPickup(int client, int weaponid)
+void QDECL G_LogWeaponPickup(const int client, const int weaponid)
 {
 #ifdef LOGGING_WEAPONS
 	if (client >= MAX_CLIENTS)
@@ -160,7 +160,7 @@ void QDECL G_LogWeaponPickup(int client, int weaponid)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponFire(int client, int weaponid)
+void QDECL G_LogWeaponFire(const int client, const int weaponid)
 {
 #ifdef LOGGING_WEAPONS
 
@@ -178,7 +178,7 @@ void QDECL G_LogWeaponFire(int client, int weaponid)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponDamage(int client, int mod, int amount)
+void QDECL G_LogWeaponDamage(const int client, const int mod, const int amount)
 {
 #ifdef LOGGING_WEAPONS
 	if (client >= MAX_CLIENTS)
@@ -188,7 +188,7 @@ void QDECL G_LogWeaponDamage(int client, int mod, int amount)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponKill(int client, int mod)
+void QDECL G_LogWeaponKill(const int client, const int mod)
 {
 #ifdef LOGGING_WEAPONS
 	if (client >= MAX_CLIENTS)
@@ -198,7 +198,7 @@ void QDECL G_LogWeaponKill(int client, int mod)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponFrag(int attacker, int deadguy)
+void QDECL G_LogWeaponFrag(const int attacker, const int deadguy)
 {
 #ifdef LOGGING_WEAPONS
 	if (attacker >= MAX_CLIENTS || deadguy >= MAX_CLIENTS)
@@ -208,7 +208,7 @@ void QDECL G_LogWeaponFrag(int attacker, int deadguy)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponDeath(int client, int weaponid)
+void QDECL G_LogWeaponDeath(const int client, const int weaponid)
 {
 #ifdef LOGGING_WEAPONS
 	if (client >= MAX_CLIENTS)
@@ -218,7 +218,7 @@ void QDECL G_LogWeaponDeath(int client, int weaponid)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponPowerup(int client, int powerupid)
+void QDECL G_LogWeaponPowerup(const int client, const int powerupid)
 {
 #ifdef LOGGING_WEAPONS
 	if (client >= MAX_CLIENTS)
@@ -228,7 +228,7 @@ void QDECL G_LogWeaponPowerup(int client, int powerupid)
 #endif //_LOGGING_WEAPONS
 }
 
-void QDECL G_LogWeaponItem(int client, int itemid)
+void QDECL G_LogWeaponItem(const int client, const int itemid)
 {
 #ifdef LOGGING_WEAPONS
 	if (client >= MAX_CLIENTS)
@@ -276,7 +276,7 @@ void G_LogWeaponOutput(void)
 	int percharacter[WP_NUM_WEAPONS];
 	char info[1024];
 	char mapname[128];
-	char* nameptr, * unknownname = "<Unknown>";
+	char *nameptr, *unknownname = "<Unknown>";
 
 	if (!g_statLog.integer)
 	{
@@ -330,7 +330,7 @@ void G_LogWeaponOutput(void)
 	for (j = 0; j < WP_NUM_WEAPONS; j++)
 	{
 		G_LogPrintf("%15s:  Pickups: %4d,  Time:  %5d,  Deaths: %5d\n",
-			weaponNameFromIndex[j], totalpickups[j], totaltime[j] / 1000, totaldeaths[j]);
+		            weaponNameFromIndex[j], totalpickups[j], totaltime[j] / 1000, totaldeaths[j]);
 	}
 
 	G_LogPrintf("\n****Combat Data by Weapon:\n");
@@ -345,14 +345,14 @@ void G_LogWeaponOutput(void)
 			pershot = 0;
 		}
 		G_LogPrintf("%15s:  Damage: %6d,  Kills: %5d,  Dmg per Shot: %f\n",
-			weaponNameFromIndex[j], totaldamage[j], totalkills[j], pershot);
+		            weaponNameFromIndex[j], totaldamage[j], totalkills[j], pershot);
 	}
 
 	G_LogPrintf("\n****Combat Data By Damage Type:\n");
 	for (j = 0; j < MOD_MAX; j++)
 	{
 		G_LogPrintf("%25s:  Damage: %6d,  Kills: %5d\n",
-			modNames[j], totaldamageMOD[j], totalkillsMOD[j]);
+		            modNames[j], totaldamageMOD[j], totalkillsMOD[j]);
 	}
 
 	G_LogPrintf("\n");
@@ -950,7 +950,7 @@ qboolean CalculateLogistics(const gentity_t* ent, int* stuffUsed)
 {
 #ifdef LOGGING_WEAPONS
 	int j, nBestPlayer = -1, nMostStuffUsed = 0,
-		nMostDifferent = 0;
+	    nMostDifferent = 0;
 
 	for (int i = 0; i < sv_maxclients.integer; i++)
 	{
@@ -1661,7 +1661,7 @@ int GetFavoriteWeaponForClient(int nClient)
 #endif
 
 // kef -- if a client leaves the game, clear out all counters he may have set
-void QDECL G_ClearClientLog(int client)
+void QDECL G_ClearClientLog(const int client)
 {
 	int i;
 

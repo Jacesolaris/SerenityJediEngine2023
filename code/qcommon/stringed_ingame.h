@@ -34,6 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	iSE_MAX_FILENAME_LENGTH	MAX_QPATH
 #define sSE_STRINGS_DIR			"strings"
 #define sSE_DEBUGSTR_PREFIX		"["		// any string you want prefixing onto the debug versions of strings (to spot hardwired english etc)
+
 #define sSE_DEBUGSTR_SUFFIX		"]"		// ""
 
 extern cvar_t* se_language;
@@ -56,14 +57,14 @@ extern cvar_t* se_language;
 
 // available API calls...
 //
-void	SE_Init(void);
-void	SE_ShutDown(void);
-void	SE_CheckForLanguageUpdates(void);
-int		SE_GetNumLanguages(void);
-const char* SE_GetLanguageName(int iLangIndex);	// eg "german"
-const char* SE_GetLanguageDir(int iLangIndex);	// eg "strings/german"
+void SE_Init(void);
+void SE_ShutDown(void);
+void SE_CheckForLanguageUpdates(void);
+int SE_GetNumLanguages(void);
+const char* SE_GetLanguageName(int iLangIndex); // eg "german"
+const char* SE_GetLanguageDir(int iLangIndex); // eg "strings/german"
 const char* SE_LoadLanguage(const char* psLanguage, SE_BOOL bLoadDebug = SE_TRUE);
-void	SE_NewLanguage(void);
+void SE_NewLanguage(void);
 //
 // for convenience, two ways of getting at the same data...
 //
@@ -72,14 +73,14 @@ const char* SE_GetString(const char* psPackageAndStringReference);
 //
 // ditto...
 //
-int		SE_GetFlags(const char* psPackageReference, const char* psStringReference);
-int		SE_GetFlags(const char* psPackageAndStringReference);
+int SE_GetFlags(const char* psPackageReference, const char* psStringReference);
+int SE_GetFlags(const char* psPackageAndStringReference);
 //
 // general flag functions... (SEP_GetFlagMask() return should be used with SEP_GetFlags() return)
 //
-int		SE_GetNumFlags(void);
+int SE_GetNumFlags(void);
 const char* SE_GetFlagName(int iFlagIndex);
-int		SE_GetFlagMask(const char* psFlagName);
+int SE_GetFlagMask(const char* psFlagName);
 
 // note that so far the only place in the game that needs to know these is the font system so it can know how to
 //	interpret char codes, for this reason I'm only exposing these simple bool queries...

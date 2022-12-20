@@ -62,7 +62,7 @@ void npc_conversation_animation()
 	}
 }
 
-static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
+static qboolean NPC_Jump(vec3_t dest, const int goalEntNum)
 {
 	//FIXME: if land on enemy, knock him down & jump off again
 	float bestImpactDist = Q3_INFINITE; //fireSpeed,
@@ -123,7 +123,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 				BG_EvaluateTrajectory(&tr, level.time + elapsedTime, testPos);
 				//FUCK IT, always check for do not enter...
 				trap->Trace(&trace, lastPos, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, testPos, NPCS.NPC->s.number,
-					NPCS.NPC->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+				            NPCS.NPC->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 
 				if (trace.allsolid || trace.startsolid)
 				{
@@ -154,7 +154,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 						break;
 					}
 					if (trace.plane.normal[2] > 0.7 && DistanceSquared(trace.endpos, dest) < 4096)
-						//hit within 64 of desired location, should be okay
+					//hit within 64 of desired location, should be okay
 					{
 						//close enough!
 						break;
@@ -183,7 +183,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 						VectorCopy(trace.endpos, bottom);
 						bottom[2] -= 128;
 						trap->Trace(&trace, trace.endpos, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, bottom,
-							NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
+						            NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
 						if (trace.fraction >= 1.0f || !NPC_CheckFallPositionOK(NPCS.NPC, trace.endpos))
 						{
 							//would fall too far
@@ -268,7 +268,7 @@ qboolean NPC_CanTryJump()
 
 qboolean NPC_TryJump(void);
 
-qboolean NPC_TryJump3(const vec3_t pos, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump3(const vec3_t pos, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -283,7 +283,7 @@ qboolean NPC_TryJump3(const vec3_t pos, float max_xy_dist, float max_z_diff)
 			VectorCopy(pos, groundTest);
 			groundTest[2] += NPCS.NPC->r.mins[2] * 3;
 			trap->Trace(&mJumpTrace, NPCS.NPCInfo->jumpDest, vec3_origin, vec3_origin,
-				groundTest, NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
+			            groundTest, NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
 			if (mJumpTrace.fraction >= 1.0f)
 			{
 				return qfalse; //no ground = no jump
@@ -291,15 +291,15 @@ qboolean NPC_TryJump3(const vec3_t pos, float max_xy_dist, float max_z_diff)
 		}
 		NPCS.NPCInfo->jumpTarget = 0;
 		NPCS.NPCInfo->jumpMaxXYDist = max_xy_dist
-			? max_xy_dist
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? 1200
-			: 750;
+			                              ? max_xy_dist
+			                              : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                              ? 1200
+			                              : 750;
 		NPCS.NPCInfo->jumpMazZDist = max_z_diff
-			? max_z_diff
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? -1000
-			: -450;
+			                             ? max_z_diff
+			                             : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                             ? -1000
+			                             : -450;
 		NPCS.NPCInfo->jumpTime = 0;
 		NPCS.NPCInfo->jumpBackupTime = 0;
 		return NPC_TryJump();
@@ -307,7 +307,7 @@ qboolean NPC_TryJump3(const vec3_t pos, float max_xy_dist, float max_z_diff)
 	return qfalse;
 }
 
-qboolean NPC_TryJump2(gentity_t* goal, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump2(gentity_t* goal, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -322,15 +322,15 @@ qboolean NPC_TryJump2(gentity_t* goal, float max_xy_dist, float max_z_diff)
 		VectorCopy(goal->r.currentOrigin, NPCS.NPCInfo->jumpDest);
 		NPCS.NPCInfo->jumpTarget = goal;
 		NPCS.NPCInfo->jumpMaxXYDist = max_xy_dist
-			? max_xy_dist
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? 1200
-			: 750;
+			                              ? max_xy_dist
+			                              : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                              ? 1200
+			                              : 750;
 		NPCS.NPCInfo->jumpMazZDist = max_z_diff
-			? max_z_diff
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? -1000
-			: -400;
+			                             ? max_z_diff
+			                             : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                             ? -1000
+			                             : -400;
 		NPCS.NPCInfo->jumpTime = 0;
 		NPCS.NPCInfo->jumpBackupTime = 0;
 		return NPC_TryJump();
@@ -366,7 +366,7 @@ qboolean NPC_TryJump(void)
 		vec3_t actorProjectedTowardTarget;
 		VectorMA(NPCS.NPC->r.currentOrigin, NPC_JUMP_PREP_BACKUP_DIST, targetDirection, actorProjectedTowardTarget);
 		trap->Trace(&mJumpTrace, NPCS.NPC->r.currentOrigin, vec3_origin, vec3_origin, actorProjectedTowardTarget,
-			NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
+		            NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
 		if (mJumpTrace.fraction < 1.0f ||
 			mJumpTrace.allsolid ||
 			mJumpTrace.startsolid)
@@ -447,15 +447,15 @@ qboolean NPC_TryJump(void)
 					NPCS.NPCInfo->jumpDest[0] = startPos[0] + minSafeRadius;
 					NPCS.NPCInfo->jumpDest[1] = startPos[1] -= minSafeRadius;
 					break;
-				default:;
+				default: ;
 				}
 
 				floorPos[0] = NPCS.NPCInfo->jumpDest[0];
 				floorPos[1] = NPCS.NPCInfo->jumpDest[1];
 
 				trap->Trace(&mJumpTrace, NPCS.NPCInfo->jumpDest, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, floorPos,
-					NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number,
-					NPCS.NPC->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+				            NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number,
+				            NPCS.NPC->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 				if (mJumpTrace.fraction < 1.0f &&
 					!mJumpTrace.allsolid &&
 					!mJumpTrace.startsolid)
@@ -483,7 +483,7 @@ qboolean NPC_TryJump(void)
 	// Now, Actually Try The Jump To The Dest Target
 	//-----------------------------------------------
 	if (NPC_Jump(NPCS.NPCInfo->jumpDest,
-		NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number))
+	             NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number))
 	{
 		// We Made IT!
 		//-------------
@@ -504,7 +504,7 @@ qboolean NPC_TryJump(void)
 	return qfalse;
 }
 
-qboolean NPC_TryJump_Pos(const vec3_t pos, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump_Pos(const vec3_t pos, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -519,7 +519,7 @@ qboolean NPC_TryJump_Pos(const vec3_t pos, float max_xy_dist, float max_z_diff)
 			VectorCopy(pos, groundTest);
 			groundTest[2] += NPCS.NPC->r.mins[2] * 3;
 			trap->Trace(&mJumpTrace, NPCS.NPCInfo->jumpDest, vec3_origin, vec3_origin, groundTest, NPCS.NPC->s.number,
-				NPCS.NPC->clipmask, qfalse, 0, 0);
+			            NPCS.NPC->clipmask, qfalse, 0, 0);
 			if (mJumpTrace.fraction >= 1.0f)
 			{
 				return qfalse; //no ground = no jump
@@ -527,15 +527,15 @@ qboolean NPC_TryJump_Pos(const vec3_t pos, float max_xy_dist, float max_z_diff)
 		}
 		NPCS.NPCInfo->jumpTarget = 0;
 		NPCS.NPCInfo->jumpMaxXYDist = max_xy_dist
-			? max_xy_dist
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? 1200
-			: 750;
+			                              ? max_xy_dist
+			                              : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                              ? 1200
+			                              : 750;
 		NPCS.NPCInfo->jumpMazZDist = max_z_diff
-			? max_z_diff
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? -1000
-			: -450;
+			                             ? max_z_diff
+			                             : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                             ? -1000
+			                             : -450;
 		NPCS.NPCInfo->jumpTime = 0;
 		NPCS.NPCInfo->jumpBackupTime = 0;
 		return NPC_TryJump_Final();
@@ -543,7 +543,7 @@ qboolean NPC_TryJump_Pos(const vec3_t pos, float max_xy_dist, float max_z_diff)
 	return qfalse;
 }
 
-qboolean NPC_TryJump_Gent(gentity_t* goal, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump_Gent(gentity_t* goal, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -558,15 +558,15 @@ qboolean NPC_TryJump_Gent(gentity_t* goal, float max_xy_dist, float max_z_diff)
 		VectorCopy(goal->r.currentOrigin, NPCS.NPCInfo->jumpDest);
 		NPCS.NPCInfo->jumpTarget = goal;
 		NPCS.NPCInfo->jumpMaxXYDist = max_xy_dist
-			? max_xy_dist
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? 1200
-			: 750;
+			                              ? max_xy_dist
+			                              : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                              ? 1200
+			                              : 750;
 		NPCS.NPCInfo->jumpMazZDist = max_z_diff
-			? max_z_diff
-			: NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
-			? -1000
-			: -400;
+			                             ? max_z_diff
+			                             : NPCS.NPC->client->NPC_class == CLASS_ROCKETTROOPER
+			                             ? -1000
+			                             : -400;
 		NPCS.NPCInfo->jumpTime = 0;
 		NPCS.NPCInfo->jumpBackupTime = 0;
 		return NPC_TryJump_Final();
@@ -684,7 +684,7 @@ qboolean NPC_TryJump_Final()
 		vec3_t actorProjectedTowardTarget;
 		VectorMA(NPCS.NPC->r.currentOrigin, NPC_JUMP_PREP_BACKUP_DIST, targetDirection, actorProjectedTowardTarget);
 		trap->Trace(&mJumpTrace, NPCS.NPC->r.currentOrigin, vec3_origin, vec3_origin, actorProjectedTowardTarget,
-			NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
+		            NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
 		if (mJumpTrace.fraction < 1.0f ||
 			mJumpTrace.allsolid ||
 			mJumpTrace.startsolid)
@@ -764,15 +764,15 @@ qboolean NPC_TryJump_Final()
 					NPCS.NPCInfo->jumpDest[0] = startPos[0] + minSafeRadius;
 					NPCS.NPCInfo->jumpDest[1] = startPos[1] -= minSafeRadius;
 					break;
-				default:;
+				default: ;
 				}
 
 				floorPos[0] = NPCS.NPCInfo->jumpDest[0];
 				floorPos[1] = NPCS.NPCInfo->jumpDest[1];
 
 				trap->Trace(&mJumpTrace, NPCS.NPCInfo->jumpDest, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, floorPos,
-					NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number,
-					NPCS.NPC->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
+				            NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number,
+				            NPCS.NPC->clipmask | CONTENTS_BOTCLIP, qfalse, 0, 0);
 				if (mJumpTrace.fraction < 1.0f &&
 					!mJumpTrace.allsolid &&
 					!mJumpTrace.startsolid)
@@ -800,7 +800,7 @@ qboolean NPC_TryJump_Final()
 	// Now, Actually Try The Jump To The Dest Target
 	//-----------------------------------------------
 	if (NPC_Jump(NPCS.NPCInfo->jumpDest,
-		NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number))
+	             NPCS.NPCInfo->jumpTarget ? NPCS.NPCInfo->jumpTarget->s.number : NPCS.NPC->s.number))
 	{
 		// We Made IT!
 		//-------------
@@ -862,7 +862,7 @@ qboolean NPC_ClearPathToGoal(gentity_t* goal)
 	{
 		//Okay, didn't get all the way there, let's see if we got close enough:
 		if (NAV_HitNavGoal(trace.endpos, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, goal->r.currentOrigin,
-			NPCS.NPCInfo->goalRadius, FlyingCreature(NPCS.NPC)))
+		                   NPCS.NPCInfo->goalRadius, FlyingCreature(NPCS.NPC)))
 		{
 			//VectorSubtract(goal->r.currentOrigin, NPC->r.currentOrigin, dir);
 			return qtrue;
@@ -872,7 +872,7 @@ qboolean NPC_ClearPathToGoal(gentity_t* goal)
 	return qfalse;
 }
 
-qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, float dist)
+qboolean NAV_DirSafe(const gentity_t* self, vec3_t dir, const float dist)
 {
 	//check to see if this NPC can move in the given direction and distance.
 	vec3_t mins, end;
@@ -1070,9 +1070,9 @@ NPC_GetMoveDirectionAltRoute
 */
 extern int NAVNEW_MoveToGoal(gentity_t* self, navInfo_t* info);
 extern qboolean NAVNEW_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info, qboolean setBlockedInfo,
-	int blockedMovesLimit);
+                                      int blockedMovesLimit);
 
-qboolean NPC_GetMoveDirectionAltRoute(vec3_t out, float* distance, qboolean tryStraight)
+qboolean NPC_GetMoveDirectionAltRoute(vec3_t out, float* distance, const qboolean tryStraight)
 {
 	vec3_t angles;
 
@@ -1405,7 +1405,7 @@ NPC_MoveToGoal
 #if	AI_TIMERS
 extern int navTime;
 #endif//	AI_TIMERS
-qboolean NPC_MoveToGoal(qboolean tryStraight)
+qboolean NPC_MoveToGoal(const qboolean tryStraight)
 {
 	float distance;
 	vec3_t dir;

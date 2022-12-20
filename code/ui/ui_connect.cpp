@@ -33,8 +33,8 @@ CONNECTION SCREEN
 ===============================================================================
 */
 
-char		connectionDialogString[1024];
-char		connectionMessageString[1024];
+char connectionDialogString[1024];
+char connectionMessageString[1024];
 
 #ifdef JK2_MODE
 /*
@@ -55,7 +55,8 @@ UI_DrawConnect
 ========================
 */
 
-void UI_DrawConnect(const char* servername, const char* updateInfoString) {
+void UI_DrawConnect(const char* servername, const char* updateInfoString)
+{
 #if 0
 	// if connecting to a local host, don't draw anything before the
 	// gamestate message.  This allows cinematics to start seamlessly
@@ -88,7 +89,8 @@ UI_UpdateConnectionString
 
 ========================
 */
-void UI_UpdateConnectionString(const char* string) {
+void UI_UpdateConnectionString(const char* string)
+{
 	Q_strncpyz(connectionDialogString, string, sizeof connectionDialogString);
 	UI_UpdateScreen();
 }
@@ -99,12 +101,14 @@ UI_UpdateConnectionMessageString
 
 ========================
 */
-void UI_UpdateConnectionMessageString(const char* string) {
+void UI_UpdateConnectionMessageString(const char* string)
+{
 	Q_strncpyz(connectionMessageString, string, sizeof connectionMessageString);
 
 	// strip \n
 	char* s = strstr(connectionMessageString, "\n");
-	if (s) {
+	if (s)
+	{
 		*s = 0;
 	}
 	UI_UpdateScreen();
@@ -115,7 +119,7 @@ void UI_UpdateConnectionMessageString(const char* string) {
 UI_KeyConnect
 ===================
 */
-void UI_KeyConnect(int key)
+void UI_KeyConnect(const int key)
 {
 	if (key == A_ESCAPE)
 	{

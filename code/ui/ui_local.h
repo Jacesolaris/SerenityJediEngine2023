@@ -39,25 +39,26 @@ constexpr auto MAX_DEFERRED_SCRIPT = 1024;
 // ui_qmenu.c
 //
 
-using uifield_t = struct {
-	int		cursor;
-	int		scroll;
-	int		widthInChars;
-	char	buffer[MAX_EDIT_LINE];
-	int		maxchars;
-	int		style;
-	int		textEnum;		// Label
-	int		textcolor;		// Normal color
-	int		textcolor2;		// Highlight color
+using uifield_t = struct
+{
+	int cursor;
+	int scroll;
+	int widthInChars;
+	char buffer[MAX_EDIT_LINE];
+	int maxchars;
+	int style;
+	int textEnum; // Label
+	int textcolor; // Normal color
+	int textcolor2; // Highlight color
 };
 
-extern void		Menu_Cache(void);
+extern void Menu_Cache(void);
 
 //
 // ui_field.c
 //
-extern void	Field_Clear(field_t* edit);
-extern void	Field_CharEvent(field_t* edit, int ch);
+extern void Field_Clear(field_t* edit);
+extern void Field_CharEvent(field_t* edit, int ch);
 extern void Field_Draw(field_t* edit, int x, int y, int width, qboolean showCursor, qboolean noColorEscape);
 
 //
@@ -68,10 +69,10 @@ extern void UI_MainplusjkaMenu(void);
 extern void UI_MainplusjkoMenu(void);
 extern void UI_MainplusbothMenu(void);
 extern void UI_InGameMenu(const char* holoFlag);
-extern void UI_InGameMenu1(const char* holoFlag);//outcast version
-extern void UI_InGameMenu2(const char* holoFlag);//mod version
-extern void UI_InGameMenu3(const char* holoFlag);//yavIV version
-extern void UI_InGameMenu4(const char* holoFlag);//eoc version
+extern void UI_InGameMenu1(const char* holoFlag); //outcast version
+extern void UI_InGameMenu2(const char* holoFlag); //mod version
+extern void UI_InGameMenu3(const char* holoFlag); //yavIV version
+extern void UI_InGameMenu4(const char* holoFlag); //eoc version
 extern void AssetCache(void);
 extern void UI_DataPadMenu(void);
 
@@ -89,37 +90,39 @@ extern void UI_UpdateConnectionMessageString(const char* string);
 constexpr auto UI_FADEOUT = 0;
 constexpr auto UI_FADEIN = 1;
 
-using uiStatic_t = struct {
-	int					frametime;
-	int					realtime;
-	int					cursorx;
-	int					cursory;
+using uiStatic_t = struct
+{
+	int frametime;
+	int realtime;
+	int cursorx;
+	int cursory;
 
-	glconfig_t			glconfig;
-	qboolean			debugMode;
-	qhandle_t			whiteShader;
-	qhandle_t			menuBackShader;
-	qhandle_t			cursor;
-	float				scalex;
-	float				scaley;
+	glconfig_t glconfig;
+	qboolean debugMode;
+	qhandle_t whiteShader;
+	qhandle_t menuBackShader;
+	qhandle_t cursor;
+	float scalex;
+	float scaley;
 	//float				bias;
-	qboolean			firstdraw;
+	qboolean firstdraw;
 };
 
-extern void			UI_FillRect(float x, float y, float width, float height, const float* color);
-extern void			UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader);
-extern void			UI_UpdateScreen(void);
-extern int			UI_RegisterFont(const char* fontName);
-extern void			UI_SetColor(const float* rgba);
+extern void UI_FillRect(float x, float y, float width, float height, const float* color);
+extern void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader);
+extern void UI_UpdateScreen(void);
+extern int UI_RegisterFont(const char* fontName);
+extern void UI_SetColor(const float* rgba);
 extern char* UI_Cvar_VariableString(const char* var_name);
 
-extern uiStatic_t	uis;
-extern uiimport_t	ui;
+extern uiStatic_t uis;
+extern uiimport_t ui;
 
 constexpr auto MAX_MOVIES = 2048;
 constexpr auto MAX_MODS = 128;
 
-using modInfo_t = struct {
+using modInfo_t = struct
+{
 	const char* modName;
 	const char* modDescr;
 };
@@ -127,32 +130,36 @@ using modInfo_t = struct {
 constexpr auto SKIN_LENGTH = 16;
 constexpr auto ACTION_BUFFER_SIZE = 128;
 
-using skinName_t = struct {
+using skinName_t = struct
+{
 	char name[SKIN_LENGTH];
 };
 
-using playerColor_t = struct {
+using playerColor_t = struct
+{
 	char shader[MAX_QPATH];
 	char actionText[ACTION_BUFFER_SIZE];
 };
 
-using playerSpeciesInfo_t = struct {
-	char		Name[64];
-	int			SkinHeadCount;
-	int			SkinHeadMax;
+using playerSpeciesInfo_t = struct
+{
+	char Name[64];
+	int SkinHeadCount;
+	int SkinHeadMax;
 	skinName_t* SkinHead;
-	int			SkinTorsoCount;
-	int			SkinTorsoMax;
+	int SkinTorsoCount;
+	int SkinTorsoMax;
 	skinName_t* SkinTorso;
-	int			SkinLegCount;
-	int			SkinLegMax;
+	int SkinLegCount;
+	int SkinLegMax;
 	skinName_t* SkinLeg;
-	int			ColorMax;
-	int			ColorCount;
+	int ColorMax;
+	int ColorCount;
 	playerColor_t* Color;
 };
 
-using uiInfo_t = struct {
+using uiInfo_t = struct
+{
 	displayContextDef_t uiDC;
 
 	int effectsColor;
@@ -162,29 +169,29 @@ using uiInfo_t = struct {
 	int modIndex;
 	int modCount;
 
-	int					playerSpeciesMax;
-	int					playerSpeciesCount;
+	int playerSpeciesMax;
+	int playerSpeciesCount;
 	playerSpeciesInfo_t* playerSpecies;
-	int					playerSpeciesIndex;
+	int playerSpeciesIndex;
 
-	char		deferredScript[MAX_DEFERRED_SCRIPT];
+	char deferredScript[MAX_DEFERRED_SCRIPT];
 	itemDef_t* deferredScriptItem;
 
 	itemDef_t* runScriptItem;
 
 	qboolean inGameLoad;
 	// Used by Force Power allocation screen
-	short	forcePowerUpdated;					// Enum of which power had the point allocated
+	short forcePowerUpdated; // Enum of which power had the point allocated
 	// Used by Weapon allocation screen
-	short	selectedWeapon1;					// 1st weapon chosen
-	char 	selectedWeapon1ItemName[64];		// Item name of weapon chosen
-	int		selectedWeapon1AmmoIndex;			// Holds index to ammo
-	short	selectedWeapon2;					// 2nd weapon chosen
-	char 	selectedWeapon2ItemName[64];		// Item name of weapon chosen
-	int		selectedWeapon2AmmoIndex;			// Holds index to ammo
-	short	selectedThrowWeapon;				// throwable weapon chosen
-	char 	selectedThrowWeaponItemName[64];	// Item name of weapon chosen
-	int		selectedThrowWeaponAmmoIndex;		// Holds index to ammo
+	short selectedWeapon1; // 1st weapon chosen
+	char selectedWeapon1ItemName[64]; // Item name of weapon chosen
+	int selectedWeapon1AmmoIndex; // Holds index to ammo
+	short selectedWeapon2; // 2nd weapon chosen
+	char selectedWeapon2ItemName[64]; // Item name of weapon chosen
+	int selectedWeapon2AmmoIndex; // Holds index to ammo
+	short selectedThrowWeapon; // throwable weapon chosen
+	char selectedThrowWeaponItemName[64]; // Item name of weapon chosen
+	int selectedThrowWeaponAmmoIndex; // Holds index to ammo
 
 	itemDef_t* weapon1ItemButton;
 	qhandle_t litWeapon1Icon;
@@ -196,13 +203,13 @@ using uiInfo_t = struct {
 	itemDef_t* weaponThrowButton;
 	qhandle_t litThrowableIcon;
 	qhandle_t unlitThrowableIcon;
-	short		movesTitleIndex;
+	short movesTitleIndex;
 	const char* movesBaseAnim;
-	int			moveAnimTime;
-	int			languageCount;
-	int			languageCountIndex;
+	int moveAnimTime;
+	int languageCount;
+	int languageCountIndex;
 
-	int			forcePowerLevel[NUM_FORCE_POWERS];
+	int forcePowerLevel[NUM_FORCE_POWERS];
 };
 
 extern uiInfo_t uiInfo;
@@ -221,26 +228,28 @@ extern char GoToMenu[];
 //
 // ui_syscalls.c
 //
-int				trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits, const char* psAudioFile /* = NULL */);
-int				trap_CIN_StopCinematic(int handle);
-void			trap_Cvar_Set(const char* var_name, const char* value);
-float			trap_Cvar_VariableValue(const char* var_name);
-void			trap_GetGlconfig(glconfig_t* glconfig);
-void			trap_Key_ClearStates(void);
-int				trap_Key_GetCatcher(void);
-qboolean		trap_Key_GetOverstrikeMode(void);
-void			trap_Key_SetBinding(int keynum, const char* binding);
-void			trap_Key_SetCatcher(int catcher);
-void			trap_Key_SetOverstrikeMode(qboolean state);
-void			trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader);
-void			trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs);
-void			trap_R_SetColor(const float* rgba);
-void			trap_R_ClearScene(void);
-void			trap_R_AddRefEntityToScene(const refEntity_t* re);
-void			trap_R_RenderScene(const refdef_t* fd);
-void			trap_S_StopSounds(void);
-sfxHandle_t		trap_S_RegisterSound(const char* sample, qboolean compressed);
-void			trap_S_StartLocalSound(sfxHandle_t sfx, int channelNum);
+int trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits,
+                           const char* psAudioFile /* = NULL */);
+int trap_CIN_StopCinematic(int handle);
+void trap_Cvar_Set(const char* var_name, const char* value);
+float trap_Cvar_VariableValue(const char* var_name);
+void trap_GetGlconfig(glconfig_t* glconfig);
+void trap_Key_ClearStates(void);
+int trap_Key_GetCatcher(void);
+qboolean trap_Key_GetOverstrikeMode(void);
+void trap_Key_SetBinding(int keynum, const char* binding);
+void trap_Key_SetCatcher(int catcher);
+void trap_Key_SetOverstrikeMode(qboolean state);
+void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2,
+                           qhandle_t hShader);
+void trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs);
+void trap_R_SetColor(const float* rgba);
+void trap_R_ClearScene(void);
+void trap_R_AddRefEntityToScene(const refEntity_t* re);
+void trap_R_RenderScene(const refdef_t* fd);
+void trap_S_StopSounds(void);
+sfxHandle_t trap_S_RegisterSound(const char* sample, qboolean compressed);
+void trap_S_StartLocalSound(sfxHandle_t sfx, int channelNum);
 
 void _UI_Refresh(int realtime);
 

@@ -98,7 +98,7 @@ static constexpr int s_numVidModes = ARRAY_LEN(r_vidModes);
 
 constexpr auto R_MODE_FALLBACK = 4; // 640x480;
 
-qboolean R_GetModeInfo(int* width, int* height, int mode)
+qboolean R_GetModeInfo(int* width, int* height, const int mode)
 {
 	if (mode < -1)
 	{
@@ -230,14 +230,14 @@ GLimp_DetectAvailableModes
 static bool GLimp_DetectAvailableModes(void)
 {
 	int i, j;
-	char buf[MAX_STRING_CHARS] = { 0 };
+	char buf[MAX_STRING_CHARS] = {0};
 	int numModes = 0;
 
 	const int display = SDL_GetWindowDisplayIndex(screen);
 	if (display < 0)
 	{
 		Com_Printf(S_COLOR_YELLOW "WARNING: Couldn't get window display index, no resolutions detected: %s\n",
-			SDL_GetError());
+		           SDL_GetError());
 		return false;
 	}
 
@@ -246,7 +246,7 @@ static bool GLimp_DetectAvailableModes(void)
 	if (SDL_GetWindowDisplayMode(screen, &windowMode) < 0)
 	{
 		Com_Printf(S_COLOR_YELLOW "WARNING: Couldn't get window display mode, no resolutions detected (%s).\n",
-			SDL_GetError());
+		           SDL_GetError());
 		return false;
 	}
 
@@ -321,8 +321,8 @@ GLimp_SetMode
 ===============
 */
 static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDesc, const char* windowTitle,
-	const int mode,
-	const qboolean fullscreen, const qboolean noborder)
+                             const int mode,
+                             const qboolean fullscreen, const qboolean noborder)
 {
 	int depthBits;
 	Uint32 flags = SDL_WINDOW_SHOWN;
@@ -475,7 +475,7 @@ static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDes
 						stencilBits = 16;
 					else if (stencilBits == 16)
 						stencilBits = 8;
-				default:;
+				default: ;
 				}
 			}
 
@@ -574,7 +574,7 @@ static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDes
 			SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, !r_allowSoftwareGL->integer);
 
 			if ((screen = SDL_CreateWindow(windowTitle, x, y,
-				glConfig->vidWidth, glConfig->vidHeight, flags)) == nullptr)
+			                               glConfig->vidWidth, glConfig->vidHeight, flags)) == nullptr)
 			{
 				Com_DPrintf("SDL_CreateWindow failed: %s\n", SDL_GetError());
 				continue;
@@ -626,7 +626,7 @@ static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDes
 			glConfig->stencilBits = testStencilBits;
 
 			Com_Printf("Using %d color bits, %d depth, %d stencil display.\n",
-				glConfig->colorBits, glConfig->depthBits, glConfig->stencilBits);
+			           glConfig->colorBits, glConfig->depthBits, glConfig->stencilBits);
 			break;
 		}
 
@@ -640,7 +640,7 @@ static rserr_t GLimp_SetMode(glconfig_t* glConfig, const windowDesc_t* windowDes
 	{
 		// Just create a regular window
 		if ((screen = SDL_CreateWindow(windowTitle, x, y,
-			glConfig->vidWidth, glConfig->vidHeight, flags)) == nullptr)
+		                               glConfig->vidWidth, glConfig->vidHeight, flags)) == nullptr)
 		{
 			Com_DPrintf("SDL_CreateWindow failed: %s\n", SDL_GetError());
 		}
@@ -675,7 +675,7 @@ GLimp_StartDriverAndSetMode
 ===============
 */
 static qboolean GLimp_StartDriverAndSetMode(glconfig_t* glConfig, const windowDesc_t* windowDesc, const int mode,
-	qboolean fullscreen, const qboolean noborder)
+                                            qboolean fullscreen, const qboolean noborder)
 {
 	if (!SDL_WasInit(SDL_INIT_VIDEO))
 	{
@@ -759,8 +759,8 @@ window_t WIN_Init(const windowDesc_t* windowDesc, glconfig_t* glConfig)
 
 	// Create the window and set up the context
 	if (!GLimp_StartDriverAndSetMode(glConfig, windowDesc, r_mode->integer,
-		static_cast<qboolean>(r_fullscreen->integer),
-		static_cast<qboolean>(r_noborder->integer)))
+	                                 static_cast<qboolean>(r_fullscreen->integer),
+	                                 static_cast<qboolean>(r_noborder->integer)))
 	{
 		if (r_mode->integer != R_MODE_FALLBACK)
 		{

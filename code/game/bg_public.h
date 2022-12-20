@@ -79,123 +79,547 @@ constexpr auto JUMP_VELOCITY = 225; // 270;
 
 #define DEFAULT_BACKHANDSABER_MODEL		"models/weapons2/saber_B/saber_B.glm"
 
-constexpr auto FATIGUEDTHRESHHOLD = .1;
+constexpr auto FATIGUEDTHRESHHOLD
 
-constexpr auto FATIGUE_JUMP = 1;
-constexpr auto FATIGUE_SABERBLOCK = 1;
-constexpr auto FATIGUE_BOLTBLOCK = 1;
-constexpr auto FATIGUE_MELEE = 2;
-constexpr auto FATIGUE_SABERATTACK = 1;
-constexpr auto FATIGUE_BLOCKED = 1;
-constexpr auto FATIGUE_SABERTRANS = 1;
-constexpr auto FATIGUE_BACKBLOCK = 2;
-constexpr auto FATIGUE_DUALSABERTRANS = 2;
-constexpr auto FATIGUE_BACKFLIP = 3;
-constexpr auto FATIGUE_KICKHIT = 10;
+
+=
+.1;
+
+constexpr auto FATIGUE_JUMP
+
+
+=
+1;
+constexpr auto FATIGUE_SABERBLOCK
+
+
+=
+1;
+constexpr auto FATIGUE_BOLTBLOCK
+
+
+=
+1;
+constexpr auto FATIGUE_MELEE
+
+
+=
+2;
+constexpr auto FATIGUE_SABERATTACK
+
+
+=
+1;
+constexpr auto FATIGUE_BLOCKED
+
+
+=
+1;
+constexpr auto FATIGUE_SABERTRANS
+
+
+=
+1;
+constexpr auto FATIGUE_BACKBLOCK
+
+
+=
+2;
+constexpr auto FATIGUE_DUALSABERTRANS
+
+
+=
+2;
+constexpr auto FATIGUE_BACKFLIP
+
+
+=
+3;
+constexpr auto FATIGUE_KICKHIT
+
+
+=
+10;
 #define FATIGUE_CARTWHEEL		-FATIGUE_JUMP + 3
 #define FATIGUE_CARTWHEEL_ATARU -FATIGUE_JUMP + 1
-constexpr auto FATIGUE_GROUNDATTACK = 3;
+constexpr auto FATIGUE_GROUNDATTACK
+
+
+=
+3;
 #define FATIGUE_JUMPATTACK		-FATIGUE_JUMP + 4
-constexpr auto FATIGUE_AUTOSABERDEFENSE = 2;
-constexpr auto FATIGUE_SPECIALMOVE = 2;
-constexpr auto FATIGUE_AUTOBOLTBLOCK = 2;
-constexpr auto FATIGUE_ATTACKFAKE = 2;
-constexpr auto FATIGUE_DODGE = 45;
-constexpr auto FATIGUE_DODGEING = 40;
-constexpr auto FATIGUE_DODGEINGBOT = 70;
-constexpr auto FATIGUE_AUTOSABERBOLTBLOCK = 1;
-constexpr auto FATIGUE_BLOCKPOINTDRAIN = 5;
-constexpr auto FATIGUE_BP_ABSORB = 2;
+constexpr auto FATIGUE_AUTOSABERDEFENSE
 
-constexpr auto FLAG_FATIGUED = 1;
-constexpr auto FLAG_DODGEROLL = 2;
-constexpr auto FLAG_ATTACKFAKE = 3;
-constexpr auto FLAG_SLOWBOUNCE = 4;
-constexpr auto FLAG_OLDSLOWBOUNCE = 5;
-constexpr auto FLAG_LOCKWINNER = 6;
-constexpr auto FLAG_FLAMETHROWER = 7;
-constexpr auto FLAG_PARRIED = 8;
-constexpr auto FLAG_PREBLOCK = 9;
-constexpr auto FLAG_BLOCKED = 10;
-constexpr auto FLAG_BLOCKING = 11;
-constexpr auto FLAG_BLOCKDRAINED = 12;
-constexpr auto FLAG_FROZEN = 13;
-constexpr auto FLAG_BLOCKEDBOUNCE = 14;
-constexpr auto FLAG_WRISTBLASTER = 15;
-constexpr auto FLAG_TIMEDBLOCK = 16;
-constexpr auto FLAG_NPCBLOCKING = 17;
-constexpr auto FLAG_DASHING = 18;
-constexpr auto FLAG_ATTACKFATIGUE = 19;
-constexpr auto FLAG_MBLOCKBOUNCE = 20;
 
-constexpr auto DODGE_BOLTBLOCK = 2; //standard DP cost to block a missile bolt;
-constexpr auto DODGE_BOWCASTERBLOCK = 5;
-constexpr auto DODGE_TUSKENBLOCK = 4;
-constexpr auto DODGE_REPEATERBLOCK = 2;
+=
+2;
+constexpr auto FATIGUE_SPECIALMOVE
+
+
+=
+2;
+constexpr auto FATIGUE_AUTOBOLTBLOCK
+
+
+=
+2;
+constexpr auto FATIGUE_ATTACKFAKE
+
+
+=
+2;
+constexpr auto FATIGUE_DODGE
+
+
+=
+45;
+constexpr auto FATIGUE_DODGEING
+
+
+=
+40;
+constexpr auto FATIGUE_DODGEINGBOT
+
+
+=
+70;
+constexpr auto FATIGUE_AUTOSABERBOLTBLOCK
+
+
+=
+1;
+constexpr auto FATIGUE_BLOCKPOINTDRAIN
+
+
+=
+5;
+constexpr auto FATIGUE_BP_ABSORB
+
+
+=
+2;
+
+constexpr auto FLAG_FATIGUED
+
+
+=
+1;
+constexpr auto FLAG_DODGEROLL
+
+
+=
+2;
+constexpr auto FLAG_ATTACKFAKE
+
+
+=
+3;
+constexpr auto FLAG_SLOWBOUNCE
+
+
+=
+4;
+constexpr auto FLAG_OLDSLOWBOUNCE
+
+
+=
+5;
+constexpr auto FLAG_LOCKWINNER
+
+
+=
+6;
+constexpr auto FLAG_FLAMETHROWER
+
+
+=
+7;
+constexpr auto FLAG_PARRIED
+
+
+=
+8;
+constexpr auto FLAG_PREBLOCK
+
+
+=
+9;
+constexpr auto FLAG_BLOCKED
+
+
+=
+10;
+constexpr auto FLAG_BLOCKING
+
+
+=
+11;
+constexpr auto FLAG_BLOCKDRAINED
+
+
+=
+12;
+constexpr auto FLAG_FROZEN
+
+
+=
+13;
+constexpr auto FLAG_BLOCKEDBOUNCE
+
+
+=
+14;
+constexpr auto FLAG_WRISTBLASTER
+
+
+=
+15;
+constexpr auto FLAG_TIMEDBLOCK
+
+
+=
+16;
+constexpr auto FLAG_NPCBLOCKING
+
+
+=
+17;
+constexpr auto FLAG_DASHING
+
+
+=
+18;
+constexpr auto FLAG_ATTACKFATIGUE
+
+
+=
+19;
+constexpr auto FLAG_MBLOCKBOUNCE
+
+
+=
+20;
+
+constexpr auto DODGE_BOLTBLOCK
+
+
+=
+2; //standard DP cost to block a missile bolt;
+constexpr auto DODGE_BOWCASTERBLOCK
+
+
+=
+5;
+constexpr auto DODGE_TUSKENBLOCK
+
+
+=
+4;
+constexpr auto DODGE_REPEATERBLOCK
+
+
+=
+2;
 //the cost of blocking repeater shots is lower since the repeater shoots much faster.;
 
-constexpr auto BLASTERMISHAPLEVEL_MAX = 30;
-constexpr auto BLASTERMISHAPLEVEL_TWENTYNINE = 29;
-constexpr auto BLASTERMISHAPLEVEL_TWENTYEIGHT = 28;
-constexpr auto BLASTERMISHAPLEVEL_OVERLOAD = 27;
-constexpr auto BLASTERMISHAPLEVEL_TWENTYSIX = 26;
-constexpr auto BLASTERMISHAPLEVEL_FULL = 25;
-constexpr auto BLASTERMISHAPLEVEL_HEAVYER = 20;
-constexpr auto BLASTERMISHAPLEVEL_HALF = 15;
-constexpr auto BLASTERMISHAPLEVEL_HEAVY = 10;
-constexpr auto BLASTERMISHAPLEVEL_MEDIUM = 7;
-constexpr auto BLASTERMISHAPLEVEL_LIGHT = 5;
-constexpr auto BLASTERMISHAPLEVEL_RUNINACCURACY = 3;
-constexpr auto BLASTERMISHAPLEVEL_TWO = 2;
-constexpr auto BLASTERMISHAPLEVEL_WALKINACCURACY = 1.5;
-constexpr auto BLASTERMISHAPLEVEL_STANDINACCURACY = 1.1;
-constexpr auto BLASTERMISHAPLEVEL_MININACCURACY = 1;
-constexpr auto BLASTERMISHAPLEVEL_MIN = 1;
-constexpr auto BLASTERMISHAPLEVEL_NONE = 0;
+constexpr auto BLASTERMISHAPLEVEL_MAX
 
-constexpr auto MISHAPLEVEL_OVERLOAD = 16;
-constexpr auto MISHAPLEVEL_MAX = 15;
-constexpr auto MISHAPLEVEL_FULL = 14;
-constexpr auto MISHAPLEVEL_THIRTEEN = 13;
-constexpr auto MISHAPLEVEL_HUDFLASH = 12;
-constexpr auto MISHAPLEVEL_ELEVEN = 11;
-constexpr auto MISHAPLEVEL_TEN = 10;
-constexpr auto MISHAPLEVEL_NINE = 9;
-constexpr auto MISHAPLEVEL_HEAVY = 8;
-constexpr auto MISHAPLEVEL_SEVEN = 7;
-constexpr auto MISHAPLEVEL_SIX = 6;
-constexpr auto MISHAPLEVEL_LIGHT = 5;
-constexpr auto MISHAPLEVEL_PAIN = 5;
-constexpr auto MISHAPLEVEL_FOUR = 4;
-constexpr auto MISHAPLEVEL_SNIPER = 3;
-constexpr auto MISHAPLEVEL_MAXINACCURACY = 5.0f;
-constexpr auto MISHAPLEVEL_RUNINACCURACY = 2;
-constexpr auto MISHAPLEVEL_WALKINACCURACY = 1.5f;
-constexpr auto MISHAPLEVEL_STANDINACCURACY = 1.1;
-constexpr auto MISHAPLEVEL_MININACCURACY = 1;
-constexpr auto MISHAPLEVEL_MIN = 1;
-constexpr auto MISHAPLEVEL_NONE = 0;
 
-constexpr auto BLOCK_POINTS_MAX = 100;
-constexpr auto BLOCKPOINTS_FULL = 90;
-constexpr auto BLOCKPOINTS_MISSILE = 75;
-constexpr auto BLOCKPOINTS_KNOCKAWAY = 65;
-constexpr auto BLOCKPOINTS_HALF = 50;
-constexpr auto BLOCKPOINTS_FOURTY = 40;
-constexpr auto BLOCKPOINTS_THIRTY = 30;
-constexpr auto BLOCKPOINTS_TWENTYFIVE = 25;
-constexpr auto BLOCKPOINTS_FATIGUE = 20;
-constexpr auto BLOCKPOINTS_FIFTEEN = 15;
-constexpr auto BLOCKPOINTS_TWELVE = 12;
-constexpr auto BLOCKPOINTS_TEN = 10;
-constexpr auto BLOCKPOINTS_WARNING = 7;
-constexpr auto BLOCKPOINTS_FIVE = 5;
-constexpr auto BLOCKPOINTS_DANGER = 4;
-constexpr auto BLOCKPOINTS_THREE = 3;
-constexpr auto BLOCKPOINTS_FAIL = 2;
-constexpr auto BLOCK_POINTS_MIN = 1;
+=
+30;
+constexpr auto BLASTERMISHAPLEVEL_TWENTYNINE
 
-constexpr auto DEFAULT_BLOCK_TIME_MAX_MILLISECONDS = 300;
+
+=
+29;
+constexpr auto BLASTERMISHAPLEVEL_TWENTYEIGHT
+
+
+=
+28;
+constexpr auto BLASTERMISHAPLEVEL_OVERLOAD
+
+
+=
+27;
+constexpr auto BLASTERMISHAPLEVEL_TWENTYSIX
+
+
+=
+26;
+constexpr auto BLASTERMISHAPLEVEL_FULL
+
+
+=
+25;
+constexpr auto BLASTERMISHAPLEVEL_HEAVYER
+
+
+=
+20;
+constexpr auto BLASTERMISHAPLEVEL_HALF
+
+
+=
+15;
+constexpr auto BLASTERMISHAPLEVEL_HEAVY
+
+
+=
+10;
+constexpr auto BLASTERMISHAPLEVEL_MEDIUM
+
+
+=
+7;
+constexpr auto BLASTERMISHAPLEVEL_LIGHT
+
+
+=
+5;
+constexpr auto BLASTERMISHAPLEVEL_RUNINACCURACY
+
+
+=
+3;
+constexpr auto BLASTERMISHAPLEVEL_TWO
+
+
+=
+2;
+constexpr auto BLASTERMISHAPLEVEL_WALKINACCURACY
+
+
+=
+1.5;
+constexpr auto BLASTERMISHAPLEVEL_STANDINACCURACY
+
+
+=
+1.1;
+constexpr auto BLASTERMISHAPLEVEL_MININACCURACY
+
+
+=
+1;
+constexpr auto BLASTERMISHAPLEVEL_MIN
+
+
+=
+1;
+constexpr auto BLASTERMISHAPLEVEL_NONE
+
+
+=
+0;
+
+constexpr auto MISHAPLEVEL_OVERLOAD
+
+
+=
+16;
+constexpr auto MISHAPLEVEL_MAX
+
+
+=
+15;
+constexpr auto MISHAPLEVEL_FULL
+
+
+=
+14;
+constexpr auto MISHAPLEVEL_THIRTEEN
+
+
+=
+13;
+constexpr auto MISHAPLEVEL_HUDFLASH
+
+
+=
+12;
+constexpr auto MISHAPLEVEL_ELEVEN
+
+
+=
+11;
+constexpr auto MISHAPLEVEL_TEN
+
+
+=
+10;
+constexpr auto MISHAPLEVEL_NINE
+
+
+=
+9;
+constexpr auto MISHAPLEVEL_HEAVY
+
+
+=
+8;
+constexpr auto MISHAPLEVEL_SEVEN
+
+
+=
+7;
+constexpr auto MISHAPLEVEL_SIX
+
+
+=
+6;
+constexpr auto MISHAPLEVEL_LIGHT
+
+
+=
+5;
+constexpr auto MISHAPLEVEL_PAIN
+
+
+=
+5;
+constexpr auto MISHAPLEVEL_FOUR
+
+
+=
+4;
+constexpr auto MISHAPLEVEL_SNIPER
+
+
+=
+3;
+constexpr auto MISHAPLEVEL_MAXINACCURACY
+
+
+=
+5.0f;
+constexpr auto MISHAPLEVEL_RUNINACCURACY
+
+
+=
+2;
+constexpr auto MISHAPLEVEL_WALKINACCURACY
+
+
+=
+1.5f;
+constexpr auto MISHAPLEVEL_STANDINACCURACY
+
+
+=
+1.1;
+constexpr auto MISHAPLEVEL_MININACCURACY
+
+
+=
+1;
+constexpr auto MISHAPLEVEL_MIN
+
+
+=
+1;
+constexpr auto MISHAPLEVEL_NONE
+
+
+=
+0;
+
+constexpr auto BLOCK_POINTS_MAX
+
+
+=
+100;
+constexpr auto BLOCKPOINTS_FULL
+
+
+=
+90;
+constexpr auto BLOCKPOINTS_MISSILE
+
+
+=
+75;
+constexpr auto BLOCKPOINTS_KNOCKAWAY
+
+
+=
+65;
+constexpr auto BLOCKPOINTS_HALF
+
+
+=
+50;
+constexpr auto BLOCKPOINTS_FOURTY
+
+
+=
+40;
+constexpr auto BLOCKPOINTS_THIRTY
+
+
+=
+30;
+constexpr auto BLOCKPOINTS_TWENTYFIVE
+
+
+=
+25;
+constexpr auto BLOCKPOINTS_FATIGUE
+
+
+=
+20;
+constexpr auto BLOCKPOINTS_FIFTEEN
+
+
+=
+15;
+constexpr auto BLOCKPOINTS_TWELVE
+
+
+=
+12;
+constexpr auto BLOCKPOINTS_TEN
+
+
+=
+10;
+constexpr auto BLOCKPOINTS_WARNING
+
+
+=
+7;
+constexpr auto BLOCKPOINTS_FIVE
+
+
+=
+5;
+constexpr auto BLOCKPOINTS_DANGER
+
+
+=
+4;
+constexpr auto BLOCKPOINTS_THREE
+
+
+=
+3;
+constexpr auto BLOCKPOINTS_FAIL
+
+
+=
+2;
+constexpr auto BLOCK_POINTS_MIN
+
+
+=
+1;
+
+constexpr auto DEFAULT_BLOCK_TIME_MAX_MILLISECONDS
+
+
+=
+300;
 
 #define BRYAR_PISTOL_ALT_DPDAMAGE			DODGE_BOLTBLOCK			//minimum DP damage of bryar secondary
 #define BRYAR_PISTOL_ALT_DPMAXDAMAGE		DODGE_BOLTBLOCK*1.5		//maximum DP damage of bryar secondary
@@ -314,17 +738,17 @@ using pmove_t = struct
 	// callbacks to test the world
 	// these will be different functions during game and cgame
 	void (*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-		int passEntityNum, int contentMask, EG2_Collision eG2TraceType, int useLod);
+	              int passEntityNum, int contentMask, EG2_Collision eG2TraceType, int useLod);
 	int (*pointcontents)(const vec3_t point, int passEntityNum);
 };
 
 // if a full pmove isn't done on the client, you can just update the angles
-void PM_UpdateViewAngles(int saberAnimLevel, playerState_t* ps, usercmd_t* cmd, gentity_t* gent);
+void PM_UpdateViewAngles(int saber_anim_level, playerState_t* ps, usercmd_t* cmd, gentity_t* gent);
 void Pmove(pmove_t* pmove);
 
 constexpr auto SETANIM_TORSO = 1;
 constexpr auto SETANIM_LEGS = 2;
-constexpr auto SETANIM_BOTH = SETANIM_TORSO | SETANIM_LEGS;//3
+constexpr auto SETANIM_BOTH = SETANIM_TORSO | SETANIM_LEGS; //3
 
 constexpr auto SETANIM_FLAG_NORMAL = 0; //Only set if timer is 0;
 constexpr auto SETANIM_FLAG_OVERRIDE = 1; //Override previous;
@@ -333,13 +757,13 @@ constexpr auto SETANIM_FLAG_RESTART = 4; //Allow restarting the anim if playing 
 constexpr auto SETANIM_FLAG_HOLDLESS = 8; //Set the new timer;
 constexpr auto SETANIM_FLAG_PACE = 16; //acts like a SETANIM_FLAG_RESTART but only restarts if the animation is over.;
 //Switch to this animation and keep repeating this animation while updating its timers
-constexpr auto	SETANIM_AFLAG_PACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
-constexpr auto	AFLAG_LEDGE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE;
+constexpr auto SETANIM_AFLAG_PACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
+constexpr auto AFLAG_LEDGE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE;
 constexpr auto SETANIM_BLEND_DEFAULT = 100;
 
 void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime = SETANIM_BLEND_DEFAULT);
 void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, int type, int anim, int priority, int* torsoAnimTimer,
-	int* legsAnimTimer, gentity_t* gent, int blendTime = SETANIM_BLEND_DEFAULT);
+                     int* legsAnimTimer, gentity_t* gent, int blendTime = SETANIM_BLEND_DEFAULT);
 
 //===================================================================================
 
@@ -1073,9 +1497,9 @@ void EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result);
 void EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result);
 
 void AddEventToPlayerstate(int newEvent, int eventParm, playerState_t* ps);
-int CurrentPlayerstateEvent(playerState_t* ps);
+int CurrentPlayerstateEvent(playerState_t * ps);
 
-void PlayerStateToEntityState(playerState_t* ps, entityState_t* s);
+void PlayerStateToEntityState(playerState_t * ps, entityState_t * s);
 
 qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int atTime);
 

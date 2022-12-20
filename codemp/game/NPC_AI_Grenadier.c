@@ -106,7 +106,7 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_Grenadier_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Grenadier_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 
@@ -173,14 +173,14 @@ static qboolean Grenadier_Move(void)
 				cpFlags |= CP_NEAREST;
 			}
 			int cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-				NPCS.NPC->r.currentOrigin,
-				cpFlags, 32, -1);
+			                             NPCS.NPC->r.currentOrigin,
+			                             cpFlags, 32, -1);
 			if (cp == -1 && !(NPCS.NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 			{
 				//okay, try one by the enemy
 				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-					NPCS.NPC->enemy->r.currentOrigin, CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL,
-					32, -1);
+				                         NPCS.NPC->enemy->r.currentOrigin, CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL,
+				                         32, -1);
 			}
 			//NOTE: there may be a perfectly valid one, just not one within CP_COLLECT_RADIUS of either me or him...
 			if (cp != -1)
@@ -326,7 +326,7 @@ static void Grenadier_CheckMoveState(void)
 	{
 		//Did we make it?
 		if (NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs,
-			NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
+		                   NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
 			NPCS.NPCInfo->squadState == SQUAD_SCOUT && enemyLOS3 && enemyDist3 <= 10000)
 		{
 			//	int	newSquadState = SQUAD_STAND_AND_SHOOT;
@@ -336,7 +336,7 @@ static void Grenadier_CheckMoveState(void)
 			case SQUAD_RETREAT: //was running away
 				TIMER_Set(NPCS.NPC, "duck", (NPCS.NPC->client->pers.maxHealth - NPCS.NPC->health) * 100);
 				TIMER_Set(NPCS.NPC, "hideTime", Q_irand(3000, 7000));
-				//	newSquadState = SQUAD_COVER;
+			//	newSquadState = SQUAD_COVER;
 				break;
 			case SQUAD_TRANSITION: //was heading for a combat point
 				TIMER_Set(NPCS.NPC, "hideTime", Q_irand(2000, 4000));
@@ -401,7 +401,7 @@ static void Grenadier_CheckFireState(void)
 	}
 }
 
-qboolean Grenadier_EvaluateShot(int hit)
+qboolean Grenadier_EvaluateShot(const int hit)
 {
 	if (!NPCS.NPC->enemy)
 	{
@@ -504,7 +504,7 @@ void NPC_BSGrenadier_Attack(void)
 			//grenadier
 			trace_t trace;
 			trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->r.mins, NPCS.NPC->enemy->r.maxs,
-				NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->s.number, NPCS.NPC->enemy->clipmask, qfalse, 0, 0);
+			            NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->s.number, NPCS.NPC->enemy->clipmask, qfalse, 0, 0);
 			if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPCS.NPC->enemy->s.
 				number))
 			{
@@ -540,14 +540,14 @@ void NPC_BSGrenadier_Attack(void)
 		if (NPCS.NPC->client->ps.weapon == WP_MELEE)
 		{
 			if (enemyDist3 <= 4096 && InFOV3(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-				NPCS.NPC->client->ps.viewangles, 90, 45)) //within 64 & infront
+			                                 NPCS.NPC->client->ps.viewangles, 90, 45)) //within 64 & infront
 			{
 				VectorCopy(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPCInfo->enemyLastSeenLocation);
 				enemyCS3 = qtrue;
 			}
 		}
 		else if (InFOV3(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-			45, 90))
+		                45, 90))
 		{
 			//in front of me
 			//can we shoot our target?
@@ -559,7 +559,7 @@ void NPC_BSGrenadier_Attack(void)
 			{
 				VectorCopy(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPCInfo->enemyLastSeenLocation);
 				const float enemyHorzDist = DistanceHorizontalSquared(NPCS.NPC->enemy->r.currentOrigin,
-					NPCS.NPC->r.currentOrigin);
+				                                                      NPCS.NPC->r.currentOrigin);
 				if (enemyHorzDist < 1048576)
 				{
 					//within 1024

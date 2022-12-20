@@ -183,7 +183,7 @@ void ImperialProbe_Strafe()
 	VectorMA(NPC->currentOrigin, HUNTER_STRAFE_DIS * dir, right, end);
 
 	gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 
 	// Close enough
 	if (tr.fraction > 0.9f)
@@ -260,9 +260,9 @@ void ImperialProbe_FireBlaster()
 
 	//FIXME: use {0, NPC->client->ps.legsYaw, 0}
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		NPC->genericBolt1,
-		&bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       NPC->genericBolt1,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
@@ -408,7 +408,8 @@ void ImperialProbe_AttackDecision()
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage, const int mod, int hit_loc)
+void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage,
+                    const int mod, int hit_loc)
 {
 	VectorCopy(self->NPC->lastPathAngles, self->s.angles);
 
@@ -419,7 +420,7 @@ void NPC_Probe_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, 
 
 		VectorSet(end_pos, self->currentOrigin[0], self->currentOrigin[1], self->currentOrigin[2] - 128);
 		gi.trace(&trace, self->currentOrigin, nullptr, nullptr, end_pos, self->s.number, MASK_SOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		if (trace.fraction == 1.0f || mod == MOD_DEMP2) // demp2 always does this
 		{
@@ -543,7 +544,7 @@ void ImperialProbe_Wait()
 
 		VectorSet(end_pos, NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->currentOrigin[2] - 32);
 		gi.trace(&trace, NPC->currentOrigin, nullptr, nullptr, end_pos, NPC->s.number, MASK_SOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		if (trace.fraction != 1.0f)
 		{

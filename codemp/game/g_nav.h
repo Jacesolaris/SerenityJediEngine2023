@@ -32,6 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	MAX_COLL_AVOID_DIST					128
 #define	NAVGOAL_USE_RADIUS					16384	//Used to force the waypoint_navgoals with a manually set radius to actually do a DistanceSquared check, not just bounds overlap
 
+
 #define	MIN_STOP_DIST 64
 #define	MIN_BLOCKED_SPEECH_TIME	4000
 #define	MIN_DOOR_BLOCK_DIST			16

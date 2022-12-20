@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean NPC_CheckSurrender(void);
 extern void NPC_BehaviorSet_Default(int bState);
 
-void NPC_BSCivilian_Default(int bState)
+void NPC_BSCivilian_Default(const int bState)
 {
 	if (NPC->enemy
 		&& NPC->s.weapon == WP_NONE

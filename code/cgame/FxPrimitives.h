@@ -158,7 +158,7 @@ public:
 		return true;
 	}
 
-	void SetSTScale(float s, float t)
+	void SetSTScale(const float s, const float t)
 	{
 		mRefEnt.shaderTexCoord[0] = s;
 		mRefEnt.shaderTexCoord[1] = t;
@@ -176,9 +176,9 @@ public:
 		else { VectorClear(mMax); }
 	}
 
-	void SetFlags(int flags) { mFlags = flags; }
-	void AddFlags(int flags) { mFlags |= flags; }
-	void ClearFlags(int flags) { mFlags &= ~flags; }
+	void SetFlags(const int flags) { mFlags = flags; }
+	void AddFlags(const int flags) { mFlags |= flags; }
+	void ClearFlags(const int flags) { mFlags &= ~flags; }
 
 	void SetOrigin1(const vec3_t org)
 	{
@@ -186,15 +186,15 @@ public:
 		else { VectorClear(mOrigin1); }
 	}
 
-	void SetTimeStart(int time)
+	void SetTimeStart(const int time)
 	{
 		mTimeStart = time;
 		if (mFlags & FX_SET_SHADER_TIME) { mRefEnt.shaderTime = cg.time * 0.001f; }
 	}
 
-	void SetTimeEnd(int time) { mTimeEnd = time; }
-	void SetImpactFxID(int id) { mImpactFxID = id; }
-	void SetDeathFxID(int id) { mDeathFxID = id; }
+	void SetTimeEnd(const int time) { mTimeEnd = time; }
+	void SetImpactFxID(const int id) { mImpactFxID = id; }
+	void SetDeathFxID(const int id) { mDeathFxID = id; }
 };
 
 //---------------------------------------------------
@@ -262,7 +262,7 @@ protected:
 	virtual void Draw()
 	{
 		theFxHelper.AddLightToScene(mOrigin1, mRefEnt.radius,
-			mRefEnt.lightingOrigin[0], mRefEnt.lightingOrigin[1], mRefEnt.lightingOrigin[2]);
+		                            mRefEnt.lightingOrigin[0], mRefEnt.lightingOrigin[1], mRefEnt.lightingOrigin[2]);
 	}
 
 public:
@@ -276,9 +276,9 @@ public:
 
 	bool Update() override;
 
-	void SetSizeStart(float sz) { mSizeStart = sz; }
-	void SetSizeEnd(float sz) { mSizeEnd = sz; }
-	void SetSizeParm(float parm) { mSizeParm = parm; }
+	void SetSizeStart(const float sz) { mSizeStart = sz; }
+	void SetSizeEnd(const float sz) { mSizeEnd = sz; }
+	void SetSizeParm(const float parm) { mSizeParm = parm; }
 
 	void SetRGBStart(vec3_t rgb)
 	{
@@ -292,7 +292,7 @@ public:
 		else { VectorClear(mRGBEnd); }
 	}
 
-	void SetRGBParm(float parm) { mRGBParm = parm; }
+	void SetRGBParm(const float parm) { mRGBParm = parm; }
 };
 
 //------------------------------
@@ -312,7 +312,7 @@ public:
 
 	bool Update() override;
 
-	void SetShader(qhandle_t sh)
+	void SetShader(const qhandle_t sh)
 	{
 		assert(sh);
 		mRefEnt.customShader = sh;
@@ -363,13 +363,13 @@ protected:
 
 public:
 	CParticle() : mOrgOffset{}, mVel{}, mAccel{}, mGravity(0), mSizeStart(0), mSizeEnd(0), mSizeParm(0), mRGBStart{},
-		mRGBEnd{},
-		mRGBParm(0),
-		mAlphaStart(0),
-		mAlphaEnd(0),
-		mAlphaParm(0),
-		mRotationDelta(0),
-		mElasticity(0)
+	              mRGBEnd{},
+	              mRGBParm(0),
+	              mAlphaStart(0),
+	              mAlphaEnd(0),
+	              mAlphaParm(0),
+	              mRotationDelta(0),
+	              mElasticity(0)
 	{
 		mRefEnt.reType = RT_SPRITE;
 		mClientID = -1;
@@ -384,7 +384,7 @@ public:
 	void Die() override;
 	bool Update() override;
 
-	void SetShader(qhandle_t sh) { mRefEnt.customShader = sh; }
+	void SetShader(const qhandle_t sh) { mRefEnt.customShader = sh; }
 
 	void SetOrgOffset(const vec3_t o)
 	{
@@ -404,11 +404,11 @@ public:
 		else { VectorClear(mAccel); }
 	}
 
-	void SetGravity(float grav) { mGravity = grav; }
+	void SetGravity(const float grav) { mGravity = grav; }
 
-	void SetSizeStart(float sz) { mSizeStart = sz; }
-	void SetSizeEnd(float sz) { mSizeEnd = sz; }
-	void SetSizeParm(float parm) { mSizeParm = parm; }
+	void SetSizeStart(const float sz) { mSizeStart = sz; }
+	void SetSizeEnd(const float sz) { mSizeEnd = sz; }
+	void SetSizeParm(const float parm) { mSizeParm = parm; }
 
 	void SetRGBStart(const vec3_t rgb)
 	{
@@ -422,17 +422,17 @@ public:
 		else { VectorClear(mRGBEnd); }
 	}
 
-	void SetRGBParm(float parm) { mRGBParm = parm; }
+	void SetRGBParm(const float parm) { mRGBParm = parm; }
 
-	void SetAlphaStart(float al) { mAlphaStart = al; }
-	void SetAlphaEnd(float al) { mAlphaEnd = al; }
-	void SetAlphaParm(float parm) { mAlphaParm = parm; }
+	void SetAlphaStart(const float al) { mAlphaStart = al; }
+	void SetAlphaEnd(const float al) { mAlphaEnd = al; }
+	void SetAlphaParm(const float parm) { mAlphaParm = parm; }
 
-	void SetRotation(float rot) { mRefEnt.rotation = rot; }
-	void SetRotationDelta(float rot) { mRotationDelta = rot; }
-	void SetElasticity(float el) { mElasticity = el; }
+	void SetRotation(const float rot) { mRefEnt.rotation = rot; }
+	void SetRotationDelta(const float rot) { mRotationDelta = rot; }
+	void SetElasticity(const float el) { mElasticity = el; }
 
-	void SetClient(int clientID, int modelNum = -1, int boltNum = -1)
+	void SetClient(const int clientID, const int modelNum = -1, const int boltNum = -1)
 	{
 		mClientID = clientID;
 		mModelNum = modelNum;
@@ -529,7 +529,7 @@ public:
 
 	void Initialize();
 
-	void SetChaos(float chaos) { mChaos = chaos; }
+	void SetChaos(const float chaos) { mChaos = chaos; }
 };
 
 // Oriented quad
@@ -583,9 +583,9 @@ public:
 
 	bool Update() override;
 
-	void SetLengthStart(float len) { mLengthStart = len; }
-	void SetLengthEnd(float len) { mLengthEnd = len; }
-	void SetLengthParm(float len) { mLengthParm = len; }
+	void SetLengthStart(const float len) { mLengthStart = len; }
+	void SetLengthEnd(const float len) { mLengthEnd = len; }
+	void SetLengthParm(const float len) { mLengthParm = len; }
 };
 
 //------------------------------
@@ -609,9 +609,9 @@ public:
 
 	bool Update() override;
 
-	void SetSize2Start(float sz) { mSize2Start = sz; }
-	void SetSize2End(float sz) { mSize2End = sz; }
-	void SetSize2Parm(float parm) { mSize2Parm = parm; }
+	void SetSize2Start(const float sz) { mSize2Start = sz; }
+	void SetSize2End(const float sz) { mSize2End = sz; }
+	void SetSize2Parm(const float parm) { mSize2Parm = parm; }
 
 	void SetNormal(const vec3_t norm) { VectorCopy(norm, mRefEnt.axis[0]); }
 };
@@ -641,8 +641,8 @@ protected:
 
 public:
 	CEmitter() : mOldOrigin{}, mLastOrigin{}, mOldVelocity{}, mOldTime(0), mAngles{}, mAngleDelta{}, mEmitterFxID(0),
-		mDensity(0),
-		mVariance(0)
+	             mDensity(0),
+	             mVariance(0)
 	{
 		// There may or may not be a model, but if there isn't one,
 		//	we just won't bother adding the refEnt in our Draw func
@@ -655,7 +655,7 @@ public:
 
 	bool Update() override;
 
-	void SetModel(qhandle_t model) { mRefEnt.hModel = model; }
+	void SetModel(const qhandle_t model) { mRefEnt.hModel = model; }
 
 	void SetAngles(const vec3_t ang)
 	{
@@ -669,10 +669,10 @@ public:
 		else { VectorClear(mAngleDelta); }
 	}
 
-	void SetEmitterFxID(int id) { mEmitterFxID = id; }
-	void SetDensity(float density) { mDensity = density; }
-	void SetVariance(float var) { mVariance = var; }
-	void SetOldTime(int time) { mOldTime = time; }
+	void SetEmitterFxID(const int id) { mEmitterFxID = id; }
+	void SetDensity(const float density) { mDensity = density; }
+	void SetVariance(const float var) { mVariance = var; }
+	void SetOldTime(const int time) { mOldTime = time; }
 
 	void SetLastOrg(const vec3_t org)
 	{
@@ -724,7 +724,7 @@ public:
 	void CalcRotateMatrix();
 	void Rotate();
 
-	void SetNumVerts(int c) { mCount = c; }
+	void SetNumVerts(const int c) { mCount = c; }
 
 	void SetRot(vec3_t r)
 	{
@@ -732,7 +732,7 @@ public:
 		else { VectorClear(mRotDelta); }
 	}
 
-	void SetMotionTimeStamp(int t) { mTimeStamp = theFxHelper.mTime + t; }
+	void SetMotionTimeStamp(const int t) { mTimeStamp = theFxHelper.mTime + t; }
 	int GetMotionTimeStamp() const { return mTimeStamp; }
 };
 

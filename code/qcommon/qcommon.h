@@ -48,14 +48,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 // msg.c
 //
-using msg_t = struct {
-	qboolean	allowoverflow;	// if false, do a Com_Error
-	qboolean	overflowed;		// set to true if the buffer size failed (with allowoverflow set)
+using msg_t = struct
+{
+	qboolean allowoverflow; // if false, do a Com_Error
+	qboolean overflowed; // set to true if the buffer size failed (with allowoverflow set)
 	byte* data;
-	int		maxsize;
-	int		cursize;
-	int		readcount;
-	int		bit;				// for bitwise reads and writes
+	int maxsize;
+	int cursize;
+	int readcount;
+	int bit; // for bitwise reads and writes
 };
 
 void MSG_Init(msg_t* buf, byte* data, int length);
@@ -66,7 +67,7 @@ void MSG_WriteData(msg_t* buf, const void* data, int length);
 struct usercmd_s;
 struct entityState_s;
 
-template<typename TSaberInfo>
+template <typename TSaberInfo>
 class PlayerStateBase;
 
 using playerState_t = PlayerStateBase<saberInfo_t>;
@@ -78,27 +79,27 @@ void MSG_WriteShort(msg_t* sb, int c);
 void MSG_WriteLong(msg_t* sb, int c);
 void MSG_WriteString(msg_t* sb, const char* s);
 
-void	MSG_BeginReading(msg_t* sb);
+void MSG_BeginReading(msg_t* sb);
 
-int		MSG_ReadBits(msg_t* msg, int bits);
+int MSG_ReadBits(msg_t* msg, int bits);
 
-int		MSG_ReadByte(msg_t* sb);
-int		MSG_ReadShort(msg_t* sb);
-int		MSG_ReadLong(msg_t* sb);
+int MSG_ReadByte(msg_t* sb);
+int MSG_ReadShort(msg_t* sb);
+int MSG_ReadLong(msg_t* sb);
 char* MSG_ReadString(msg_t* sb);
 char* MSG_ReadStringLine(msg_t* sb);
-void	MSG_ReadData(msg_t* sb, void* buffer, int size);
+void MSG_ReadData(msg_t* sb, void* buffer, int size);
 
-void MSG_WriteDeltaUsercmd(msg_t* msg, usercmd_t* from, usercmd_t* to);
-void MSG_ReadDeltaUsercmd(msg_t* msg, usercmd_t* from, usercmd_t* to);
+void MSG_WriteDeltaUsercmd(msg_t * msg, usercmd_t * from, usercmd_t * to);
+void MSG_ReadDeltaUsercmd(msg_t * msg, usercmd_t * from, usercmd_t * to);
 
 void MSG_WriteDeltaEntity(msg_t* msg, entityState_s* from, entityState_s* to, qboolean force);
 void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to, int number);
-void MSG_ReadEntity(msg_t* msg, entityState_t* to);
+void MSG_ReadEntity(msg_t * msg, entityState_t * to);
 void MSG_WriteEntity(msg_t* msg, entityState_s* to, int removeNum);
 
-void MSG_WriteDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to);
-void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to);
+void MSG_WriteDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t * to);
+void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t * to);
 
 /*
 ==============================================================
@@ -108,67 +109,74 @@ NET
 ==============================================================
 */
 
-constexpr auto PACKET_BACKUP = 32;	// number of old messages that must be kept on client and;
+constexpr auto PACKET_BACKUP = 32; // number of old messages that must be kept on client and;
 // server for delta comrpession and ping estimation
 #define	PACKET_MASK		(PACKET_BACKUP-1)
 
-constexpr auto MAX_PACKET_USERCMDS = 256;		// max number of usercmd_t in a packet;
+constexpr auto MAX_PACKET_USERCMDS = 256; // max number of usercmd_t in a packet;
 
 constexpr auto PORT_ANY = -1;
 
-constexpr auto MAX_RELIABLE_COMMANDS = 256;			// max string commands buffered for restransmit;
+constexpr auto MAX_RELIABLE_COMMANDS = 256; // max string commands buffered for restransmit;
 
-using netsrc_t = enum {
+using netsrc_t = enum
+{
 	NS_CLIENT,
 	NS_SERVER
 };
 
 // For compatibility with shared code
-static inline void NET_Init(void) {}
-static inline void NET_Shutdown(void) {}
+static inline void NET_Init(void)
+{
+}
 
-void		NET_SendPacket(netsrc_t sock, int length, const void* data, netadr_t to);
-void		NET_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, const char* format, ...);
+static inline void NET_Shutdown(void)
+{
+}
 
-qboolean	NET_CompareAdr(netadr_t a, netadr_t b);
-qboolean	NET_CompareBaseAdr(netadr_t a, netadr_t b);
-qboolean	NET_IsLocalAddress(netadr_t adr);
+void NET_SendPacket(netsrc_t sock, int length, const void* data, netadr_t to);
+void NET_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, const char* format, ...);
+
+qboolean NET_CompareAdr(netadr_t a, netadr_t b);
+qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b);
+qboolean NET_IsLocalAddress(netadr_t adr);
 const char* NET_AdrToString(netadr_t a);
-qboolean	NET_StringToAdr(const char* s, netadr_t* a);
-qboolean	NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message);
+qboolean NET_StringToAdr(const char* s, netadr_t* a);
+qboolean NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message);
 
-void		Sys_SendPacket(int length, const void* data, netadr_t to);
+void Sys_SendPacket(int length, const void* data, netadr_t to);
 //Does NOT parse port numbers, only base addresses.
-qboolean	Sys_StringToAdr(const char* s, netadr_t* a);
-qboolean	Sys_IsLANAddress(netadr_t adr);
-void		Sys_ShowIP(void);
+qboolean Sys_StringToAdr(const char* s, netadr_t* a);
+qboolean Sys_IsLANAddress(netadr_t adr);
+void Sys_ShowIP(void);
 
 #define	MAX_MSGLEN				(1*17408)		// max length of a message, which may
 //#define	MAX_MSGLEN				(3*16384)		// max length of a message, which may
-											// be fragmented into multiple packets
+// be fragmented into multiple packets
 
 /*
 Netchan handles packet fragmentation and out of order / duplicate suppression
 */
 
-using netchan_t = struct {
-	netsrc_t	sock;
+using netchan_t = struct
+{
+	netsrc_t sock;
 
-	int			dropped;			// between last packet and previous
+	int dropped; // between last packet and previous
 
-	netadr_t	remoteAddress;
-	int			qport;				// qport value to write when transmitting
+	netadr_t remoteAddress;
+	int qport; // qport value to write when transmitting
 
 	// sequencing variables
-	int			incomingSequence;
-	int			incomingAcknowledged;
+	int incomingSequence;
+	int incomingAcknowledged;
 
-	int			outgoingSequence;
+	int outgoingSequence;
 
 	// incoming fragment assembly buffer
-	int			fragmentSequence;
-	int			fragmentLength;
-	byte		fragmentBuffer[MAX_MSGLEN];
+	int fragmentSequence;
+	int fragmentLength;
+	byte fragmentBuffer[MAX_MSGLEN];
 };
 
 void Netchan_Init(int qport);
@@ -193,25 +201,32 @@ constexpr auto PORT_SERVER = 27960;
 //
 // server to client
 //
-enum svc_ops_e {
+enum svc_ops_e
+{
 	svc_bad,
 	svc_nop,
 	svc_gamestate,
-	svc_configstring,			// [short] [string] only in gamestate messages
-	svc_baseline,				// only in gamestate messages
-	svc_serverCommand,			// [string] to be executed by client game module
-	svc_download,				// [short] size [size bytes]
+	svc_configstring,
+	// [short] [string] only in gamestate messages
+	svc_baseline,
+	// only in gamestate messages
+	svc_serverCommand,
+	// [string] to be executed by client game module
+	svc_download,
+	// [short] size [size bytes]
 	svc_snapshot
 };
 
 //
 // client to server
 //
-enum clc_ops_e {
+enum clc_ops_e
+{
 	clc_bad,
 	clc_nop,
-	clc_move,				// [[usercmd_t]
-	clc_clientCommand		// [string] message
+	clc_move,
+	// [[usercmd_t]
+	clc_clientCommand // [string] message
 };
 
 /*
@@ -222,7 +237,8 @@ VIRTUAL MACHINE
 ==============================================================
 */
 
-using vmSlots_t = enum vmSlots_e {
+using vmSlots_t = enum vmSlots_e
+{
 	VM_GAME = 0,
 	VM_CGAME,
 	VM_UI,
@@ -230,12 +246,14 @@ using vmSlots_t = enum vmSlots_e {
 };
 
 #define	VMA(x) ((void*)args[x])
-inline float _vmf(intptr_t x)
+
+inline float _vmf(const intptr_t x)
 {
 	byteAlias_t fi;
 	fi.i = x;
 	return fi.f;
 }
+
 #define	VMF(x)	_vmf(args[x])
 
 /*
@@ -280,43 +298,43 @@ then searches for a command or variable that matches the first token.
 
 */
 
-using xcommand_t = void (*) (void);
+using xcommand_t = void (*)(void);
 using callbackFunc_t = void (*)(const char* s);
 
-void	Cmd_Init(void);
+void Cmd_Init(void);
 
-void	Cmd_AddCommand(const char* cmd_name, xcommand_t function);
+void Cmd_AddCommand(const char* cmd_name, xcommand_t function);
 // called by the init functions of other parts of the program to
 // register commands and functions to call for them.
 // The cmd_name is referenced later, so it should not be in temp memory
 // if function is NULL, the command will be forwarded to the server
 // as a clc_clientCommand instead of executed locally
 
-void	Cmd_RemoveCommand(const char* cmd_name);
+void Cmd_RemoveCommand(const char* cmd_name);
 using completionFunc_t = void (*)(char* args, int argNum);
 
-void	Cmd_CommandCompletion(callbackFunc_t callback);
+void Cmd_CommandCompletion(callbackFunc_t callback);
 // callback with each valid string
 void Cmd_SetCommandCompletionFunc(const char* command, completionFunc_t complete);
 void Cmd_CompleteArgument(const char* command, char* args, int argNum);
 void Cmd_CompleteCfgName(char* args, int argNum);
 
-int		Cmd_Argc(void);
+int Cmd_Argc(void);
 char* Cmd_Argv(int arg);
-void	Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
+void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 char* Cmd_Args(void);
 char* Cmd_ArgsFrom(int arg);
-void	Cmd_ArgsBuffer(char* buffer, int bufferLength);
+void Cmd_ArgsBuffer(char* buffer, int bufferLength);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are allways safe.
 
-void	Cmd_TokenizeString(const char* text);
-void	Cmd_TokenizeStringIgnoreQuotes(const char* text_in);
+void Cmd_TokenizeString(const char* text);
+void Cmd_TokenizeStringIgnoreQuotes(const char* text_in);
 // Takes a null terminated string.  Does not need to be /n terminated.
 // breaks the string up into arg tokens.
 
-void	Cmd_ExecuteString(const char* text);
+void Cmd_ExecuteString(const char* text);
 // Parses a single line of text into arguments and tries to execute it
 // as if it was typed at the console
 
@@ -353,39 +371,39 @@ cvar_t* Cvar_Get(const char* var_name, const char* value, int flags);
 // that allows variables to be unarchived without needing bitflags
 // if value is "", the value will not override a previously set value.
 
-void	Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue, int flags);
+void Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue, int flags);
 // basically a slightly modified Cvar_Get for the interpreted modules
 
-void	Cvar_Update(vmCvar_t* vmCvar);
+void Cvar_Update(vmCvar_t * vmCvar);
 // updates an interpreted modules' version of a cvar
 
-void 	Cvar_Set(const char* var_name, const char* value);
+void Cvar_Set(const char* var_name, const char* value);
 // will create the variable with no flags if it doesn't exist
 
 cvar_t* Cvar_Set2(const char* var_name, const char* value, qboolean force);
 // same as Cvar_Set, but allows more control over setting of cvar
 
-void	Cvar_SetValue(const char* var_name, float value);
+void Cvar_SetValue(const char* var_name, float value);
 // expands value to a string and calls Cvar_Set
 
-float	Cvar_VariableValue(const char* var_name);
-int		Cvar_VariableIntegerValue(const char* var_name);
+float Cvar_VariableValue(const char* var_name);
+int Cvar_VariableIntegerValue(const char* var_name);
 // returns 0 if not defined or non numeric
 
 char* Cvar_VariableString(const char* var_name);
-void	Cvar_VariableStringBuffer(const char* var_name, char* buffer, int bufsize);
+void Cvar_VariableStringBuffer(const char* var_name, char* buffer, int bufsize);
 // returns an empty string if not defined
 
-int	Cvar_Flags(const char* var_name);
+int Cvar_Flags(const char* var_name);
 // returns CVAR_NONEXISTENT if cvar doesn't exist or the flags of that particular CVAR.
 
-void	Cvar_CommandCompletion(callbackFunc_t callback);
+void Cvar_CommandCompletion(callbackFunc_t callback);
 // callback with each valid string
 
-void 	Cvar_Reset(const char* var_name);
-void 	Cvar_ForceReset(const char* var_name);
+void Cvar_Reset(const char* var_name);
+void Cvar_ForceReset(const char* var_name);
 
-void	Cvar_SetCheatState(void);
+void Cvar_SetCheatState(void);
 // reset all testing vars to a safe value
 
 qboolean Cvar_Command(void);
@@ -393,24 +411,24 @@ qboolean Cvar_Command(void);
 // command.  Returns true if the command was a variable reference that
 // was handled. (print or change)
 
-void 	Cvar_WriteVariables(fileHandle_t f);
+void Cvar_WriteVariables(fileHandle_t f);
 // writes lines containing "set variable value" for all variables
 // with the archive flag set to true.
 
-void	Cvar_Init(void);
+void Cvar_Init(void);
 
 char* Cvar_InfoString(int bit);
 // returns an info string containing all the cvars that have the given bit set
 // in their flags ( CVAR_USERINFO, CVAR_SERVERINFO, CVAR_SYSTEMINFO, etc )
-void	Cvar_InfoStringBuffer(int bit, char* buff, int buffsize);
+void Cvar_InfoStringBuffer(int bit, char* buff, int buffsize);
 void Cvar_CheckRange(cvar_t* cv, float minVal, float maxVal, qboolean shouldBeIntegral);
 
-void	Cvar_Restart(qboolean unsetVM);
-void	Cvar_Restart_f(void);
+void Cvar_Restart(qboolean unsetVM);
+void Cvar_Restart_f(void);
 
 void Cvar_CompleteCvarName(char* args, int argNum);
 
-extern	int			cvar_modifiedFlags;
+extern int cvar_modifiedFlags;
 // whenever a cvar is modifed, its flags will be OR'd into this, so
 // a single check can determine if any CVAR_USERINFO, CVAR_SERVERINFO,
 // etc, variables have been modified since the last check.  The bit
@@ -431,8 +449,8 @@ constexpr auto MAX_FILE_HANDLES = 64;
 
 qboolean FS_Initialized();
 
-void	FS_InitFilesystem(void);
-void	FS_Shutdown(void);
+void FS_InitFilesystem(void);
+void FS_Shutdown(void);
 
 qboolean FS_ConditionalRestart(void);
 
@@ -441,7 +459,7 @@ char** FS_ListFiles(const char* directory, const char* extension, int* numfiles)
 // if extension is "/", only subdirectories will be returned
 // the returned files will not include any directories or /
 
-void	FS_FreeFileList(char** filelist);
+void FS_FreeFileList(char** filelist);
 //rwwRMG - changed to fileList to not conflict with list type
 
 void FS_Remove(const char* osPath);
@@ -454,19 +472,19 @@ qboolean FS_FileExists(const char* file);
 
 char* FS_BuildOSPath(const char* base, const char* game, const char* qpath);
 
-int	FS_GetFileList(const char* path, const char* extension, char* listbuf, int bufsize);
-int		FS_GetModList(char* listbuf, int bufsize);
+int FS_GetFileList(const char* path, const char* extension, char* listbuf, int bufsize);
+int FS_GetModList(char* listbuf, int bufsize);
 
 // will properly create any needed paths and deal with seperater character issues
 fileHandle_t FS_FOpenFileWrite(const char* qpath, qboolean safe = qtrue);
 
-fileHandle_t FS_FOpenFileAppend(const char* filename);	// this was present already, but no public proto
+fileHandle_t FS_FOpenFileAppend(const char* filename); // this was present already, but no public proto
 
-int		FS_filelength(fileHandle_t f);
+int FS_filelength(fileHandle_t f);
 fileHandle_t FS_SV_FOpenFileWrite(const char* filename);
-int		FS_SV_FOpenFileRead(const char* filename, fileHandle_t* fp);
-void	FS_SV_Rename(const char* from, const char* to, qboolean safe);
-long		FS_FOpenFileRead(const char* qpath, fileHandle_t* file, qboolean uniqueFILE);
+int FS_SV_FOpenFileRead(const char* filename, fileHandle_t* fp);
+void FS_SV_Rename(const char* from, const char* to, qboolean safe);
+long FS_FOpenFileRead(const char* qpath, fileHandle_t* file, qboolean uniqueFILE);
 // if uniqueFILE is true, then a new FILE will be fopened even if the file
 // is found in an already open pak file.  If uniqueFILE is false, you must call
 // FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
@@ -474,21 +492,22 @@ long		FS_FOpenFileRead(const char* qpath, fileHandle_t* file, qboolean uniqueFIL
 // file IO goes through FS_ReadFile, which Does The Right Thing already.
 
 // returns 1 if a file is in the PAK file, otherwise -1
-int	FS_FileIsInPAK(const char* filename);
+int FS_FileIsInPAK(const char* filename);
+
 static inline int FS_FileIsInPAK(const char* filename, int* checksum)
 {
 	return FS_FileIsInPAK(filename);
 }
 
-int	FS_Write(const void* buffer, int len, fileHandle_t f);
+int FS_Write(const void* buffer, int len, fileHandle_t f);
 
-int	FS_Read(void* buffer, int len, fileHandle_t f);
+int FS_Read(void* buffer, int len, fileHandle_t f);
 // properly handles partial reads and reads from other dlls
 
-void	FS_FCloseFile(fileHandle_t f);
+void FS_FCloseFile(fileHandle_t f);
 // note: you can't just fclose from another DLL, due to MS libc issues
 
-long		FS_ReadFile(const char* qpath, void** buffer);
+long FS_ReadFile(const char* qpath, void** buffer);
 // returns the length of the file
 // a null buffer will just return the file length without loading
 // as a quick check for existance. -1 length == not present
@@ -496,42 +515,43 @@ long		FS_ReadFile(const char* qpath, void** buffer);
 // the buffer should be considered read-only, because it may be cached
 // for other uses.
 
-void	FS_ForceFlush(fileHandle_t f);
+void FS_ForceFlush(fileHandle_t f);
 // forces flush on files we're writing to.
 
-void	FS_FreeFile(void* buffer);
+void FS_FreeFile(void* buffer);
 // frees the memory returned by FS_ReadFile
 
-void	FS_WriteFile(const char* qpath, const void* buffer, int size);
+void FS_WriteFile(const char* qpath, const void* buffer, int size);
 // writes a complete file, creating any subdirectories needed
 
-int		FS_filelength(fileHandle_t f);
+int FS_filelength(fileHandle_t f);
 // doesn't work for files that are opened from a pack file
 
-int		FS_FTell(fileHandle_t f);
+int FS_FTell(fileHandle_t f);
 // where are we?
 
-void	FS_Flush(fileHandle_t f);
+void FS_Flush(fileHandle_t f);
 
-void	FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, callbackFunc_t callback, qboolean allowNonPureFilesOnDisk);
+void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, callbackFunc_t callback,
+                           qboolean allowNonPureFilesOnDisk);
 
 const char* FS_GetCurrentGameDir(bool emptybase = false);
 
-void 	QDECL FS_Printf(fileHandle_t f, const char* fmt, ...);
+void QDECL FS_Printf(fileHandle_t f, const char* fmt, ...);
 // like fprintf
 
-int		FS_FOpenFileByMode(const char* qpath, fileHandle_t* f, fsMode_t mode);
+int FS_FOpenFileByMode(const char* qpath, fileHandle_t* f, fsMode_t mode);
 // opens a file for reading, writing, or appending depending on the value of mode
 
-int		FS_Seek(fileHandle_t f, long offset, int origin);
+int FS_Seek(fileHandle_t f, long offset, int origin);
 // seek on a file
 
 qboolean FS_FilenameCompare(const char* s1, const char* s2);
 
 // These 2 are generally only used by the save games, filenames are local (eg "saves/blah.sav")
 //
-void		FS_DeleteUserGenFile(const char* filename);
-qboolean	FS_MoveUserGenFile(const char* filename_src, const char* filename_dst);
+void FS_DeleteUserGenFile(const char* filename);
+qboolean FS_MoveUserGenFile(const char* filename_src, const char* filename_dst);
 
 qboolean FS_CheckDirTraversal(const char* checkdir);
 void FS_Rename(const char* from, const char* to);
@@ -550,11 +570,12 @@ constexpr auto CONSOLE_PROMPT_CHAR = ']';
 constexpr auto MAX_EDIT_LINE = 256;
 constexpr auto COMMAND_HISTORY = 32;
 
-using field_t = struct {
-	int		cursor;
-	int		scroll;
-	int		widthInChars;
-	char	buffer[MAX_EDIT_LINE];
+using field_t = struct
+{
+	int cursor;
+	int scroll;
+	int widthInChars;
+	char buffer[MAX_EDIT_LINE];
 };
 
 void Field_Clear(field_t* edit);
@@ -575,64 +596,64 @@ MISC
 #define RoundDown(N, M) ((N) - (((unsigned int)(N)) % ((unsigned int)(M))))
 
 char* CopyString(const char* in);
-void		Info_Print(const char* s);
+void Info_Print(const char* s);
 
-void		Com_BeginRedirect(char* buffer, int buffersize, void (*flush)(char*));
-void		Com_EndRedirect(void);
-void 		QDECL Com_Printf(const char* fmt, ...);
-void 		QDECL Com_DPrintf(const char* fmt, ...);
-void 		NORETURN QDECL Com_Error(int code, const char* fmt, ...);
-void 		NORETURN Com_Quit_f(void);
-int			Com_EventLoop(void);
-int			Com_Milliseconds(void);	// will be journaled properly
-uint32_t	Com_BlockChecksum(const void* buffer, int length);
-int			Com_Filter(const char* filter, const char* name, int casesensitive);
-int			Com_FilterPath(const char* filter, const char* name, int casesensitive);
-qboolean	Com_SafeMode(void);
-void		Com_RunAndTimeServerPacket(netadr_t* evFrom, msg_t* buf);
+void Com_BeginRedirect(char* buffer, int buffersize, void (*flush)(char*));
+void Com_EndRedirect(void);
+void QDECL Com_Printf(const char* fmt, ...);
+void QDECL Com_DPrintf(const char* fmt, ...);
+void NORETURN QDECL Com_Error(int code, const char* fmt, ...);
+void NORETURN Com_Quit_f(void);
+int Com_EventLoop(void);
+int Com_Milliseconds(void); // will be journaled properly
+uint32_t Com_BlockChecksum(const void* buffer, int length);
+int Com_Filter(const char* filter, const char* name, int casesensitive);
+int Com_FilterPath(const char* filter, const char* name, int casesensitive);
+qboolean Com_SafeMode(void);
+void Com_RunAndTimeServerPacket(netadr_t* evFrom, msg_t* buf);
 
-void		Com_StartupVariable(const char* match);
+void Com_StartupVariable(const char* match);
 // checks for and removes command line "+set var arg" constructs
 // if match is NULL, all set commands will be executed, otherwise
 // only a set with the exact name.  Only used during startup.
 
-extern	cvar_t* com_developer;
-extern	cvar_t* com_speeds;
-extern	cvar_t* com_timescale;
-extern	cvar_t* com_sv_running;
-extern	cvar_t* com_cl_running;
-extern	cvar_t* com_version;
-extern	cvar_t* com_outcast;
-extern	cvar_t* com_homepath;
-extern  cvar_t* g_newgameplusJKA;
-extern  cvar_t* g_newgameplusJKO;
+extern cvar_t* com_developer;
+extern cvar_t* com_speeds;
+extern cvar_t* com_timescale;
+extern cvar_t* com_sv_running;
+extern cvar_t* com_cl_running;
+extern cvar_t* com_version;
+extern cvar_t* com_outcast;
+extern cvar_t* com_homepath;
+extern cvar_t* g_newgameplusJKA;
+extern cvar_t* g_newgameplusJKO;
 #ifndef _WIN32
 extern	cvar_t* com_ansiColor;
 #endif
 
-extern	cvar_t* com_affinity;
-extern	cvar_t* com_busyWait;
+extern cvar_t* com_affinity;
+extern cvar_t* com_busyWait;
 
 // both client and server must agree to pause
-extern	cvar_t* cl_paused;
-extern	cvar_t* sv_paused;
+extern cvar_t* cl_paused;
+extern cvar_t* sv_paused;
 
 // com_speeds times
-extern	int		time_game;
-extern	int		time_frontend;
-extern	int		time_backend;		// renderer backend time
+extern int time_game;
+extern int time_frontend;
+extern int time_backend; // renderer backend time
 
-extern	int		timeInTrace;
-extern	int		timeInPVSCheck;
-extern	int		numTraces;
+extern int timeInTrace;
+extern int timeInPVSCheck;
+extern int numTraces;
 
-extern	int		com_frameTime;
+extern int com_frameTime;
 
-extern	qboolean	com_errorEntered;
+extern qboolean com_errorEntered;
 
-extern	fileHandle_t	com_journalFile;
-extern	fileHandle_t	com_journalDataFile;
-extern	cvar_t* g_Weather;
+extern fileHandle_t com_journalFile;
+extern fileHandle_t com_journalDataFile;
+extern cvar_t* g_Weather;
 
 /*
 
@@ -652,13 +673,13 @@ temp file loading
 --- high memory ---
 
 */
-int  Z_Validate(void);			// also used to insure all of these are paged in
-int   Z_MemSize(memtag_t eTag);
-void  Z_TagFree(memtag_t eTag);
-int   Z_Free(void* ptr);	//returns bytes freed
-int	  Z_Size(void* pvAddress);
-void  Z_MorphMallocTag(void* pvAddress, memtag_t eDesiredTag);
-qboolean Z_IsFromZone(const void* pvAddress, memtag_t eTag);	//returns size if true
+int Z_Validate(void); // also used to insure all of these are paged in
+int Z_MemSize(memtag_t eTag);
+void Z_TagFree(memtag_t eTag);
+int Z_Free(void* ptr); //returns bytes freed
+int Z_Size(void* pvAddress);
+void Z_MorphMallocTag(void* pvAddress, memtag_t eDesiredTag);
+qboolean Z_IsFromZone(const void* pvAddress, memtag_t eTag); //returns size if true
 
 #ifdef DEBUG_ZONE_ALLOCS
 
@@ -671,8 +692,9 @@ void  Z_Label(const void* pvAddress, const char* pslabel);
 
 #else
 
-void* Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit = qfalse, int iAlign = 4);	// return memory NOT zero-filled by default
-void* S_Malloc(int iSize);									// NOT 0 filled memory only for small allocations
+void* Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit = qfalse, int iAlign = 4);
+// return memory NOT zero-filled by default
+void* S_Malloc(int iSize); // NOT 0 filled memory only for small allocations
 #define Z_Label(_ptr, _label)
 
 #endif
@@ -735,7 +757,7 @@ void CL_MapLoading(void);
 // will be cleared, so the client must shutdown cgame, ui, and
 // the renderer
 
-void	CL_ForwardCommandToServer(void);
+void CL_ForwardCommandToServer(void);
 // adds the current command line as a clc_clientCommand to the client message.
 // things like godmode, noclip, etc, are commands directed to the server,
 // so when they are typed in at the console, they will need to be forwarded.
@@ -754,7 +776,7 @@ void Key_WriteBindings(fileHandle_t f);
 void S_ClearSoundBuffer(void);
 // call before filesystem access
 
-void SCR_DebugGraph(float value, int color);	// FIXME: move logging to common?
+void SCR_DebugGraph(float value, int color); // FIXME: move logging to common?
 
 //
 // server interface
@@ -777,7 +799,7 @@ byte* SCR_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, i
 void	SCR_TempRawImage_CleanUp();
 #endif
 
-inline int Round(float value)
+inline int Round(const float value)
 {
 	return static_cast<int>(floorf(value + 0.5f));
 }

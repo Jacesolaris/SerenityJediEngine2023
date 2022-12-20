@@ -64,7 +64,7 @@ void AddSpawnField(const char* field, const char* value)
 	numSpawnVars++;
 }
 
-qboolean G_SpawnField(unsigned int uiField, char** ppKey, char** ppValue)
+qboolean G_SpawnField(const unsigned int uiField, char** ppKey, char** ppValue)
 {
 	if (static_cast<int>(uiField) >= numSpawnVars)
 		return qfalse;
@@ -132,7 +132,7 @@ qboolean G_SpawnVector4(const char* key, const char* defaultString, float* out)
 	return present;
 }
 
-qboolean G_SpawnFlag(const char* key, int flag, int* out)
+qboolean G_SpawnFlag(const char* key, const int flag, int* out)
 {
 	//find that key
 	for (int i = 0; i < numSpawnVars; i++)
@@ -1037,37 +1037,37 @@ void G_ParseField(const char* key, const char* value, gentity_t* ent)
 				*reinterpret_cast<char**>(b + f->ofs) = G_NewString(value);
 				break;
 			case F_VECTOR:
-			{
-				vec3_t vec;
-				const int i_fields_read = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-				assert(i_fields_read == 3);
-				if (i_fields_read != 3)
 				{
-					gi.Printf(
-						S_COLOR_YELLOW"G_ParseField: VEC3 sscanf() failed to read 3 floats ('angle' key bug?)\n");
-					delayedShutDown = level.time + 100;
+					vec3_t vec;
+					const int i_fields_read = sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+					assert(i_fields_read == 3);
+					if (i_fields_read != 3)
+					{
+						gi.Printf(
+							S_COLOR_YELLOW"G_ParseField: VEC3 sscanf() failed to read 3 floats ('angle' key bug?)\n");
+						delayedShutDown = level.time + 100;
+					}
+					reinterpret_cast<float*>(b + f->ofs)[0] = vec[0];
+					reinterpret_cast<float*>(b + f->ofs)[1] = vec[1];
+					reinterpret_cast<float*>(b + f->ofs)[2] = vec[2];
+					break;
 				}
-				reinterpret_cast<float*>(b + f->ofs)[0] = vec[0];
-				reinterpret_cast<float*>(b + f->ofs)[1] = vec[1];
-				reinterpret_cast<float*>(b + f->ofs)[2] = vec[2];
-				break;
-			}
 			case F_VECTOR4:
-			{
-				vec4_t vec4;
-				const int i_fields_read = sscanf(value, "%f %f %f %f", &vec4[0], &vec4[1], &vec4[2], &vec4[3]);
-				assert(i_fields_read == 4);
-				if (i_fields_read != 4)
 				{
-					gi.Printf(S_COLOR_YELLOW"G_ParseField: VEC4 sscanf() failed to read 4 floats\n");
-					delayedShutDown = level.time + 100;
+					vec4_t vec4;
+					const int i_fields_read = sscanf(value, "%f %f %f %f", &vec4[0], &vec4[1], &vec4[2], &vec4[3]);
+					assert(i_fields_read == 4);
+					if (i_fields_read != 4)
+					{
+						gi.Printf(S_COLOR_YELLOW"G_ParseField: VEC4 sscanf() failed to read 4 floats\n");
+						delayedShutDown = level.time + 100;
+					}
+					reinterpret_cast<float*>(b + f->ofs)[0] = vec4[0];
+					reinterpret_cast<float*>(b + f->ofs)[1] = vec4[1];
+					reinterpret_cast<float*>(b + f->ofs)[2] = vec4[2];
+					reinterpret_cast<float*>(b + f->ofs)[3] = vec4[3];
+					break;
 				}
-				reinterpret_cast<float*>(b + f->ofs)[0] = vec4[0];
-				reinterpret_cast<float*>(b + f->ofs)[1] = vec4[1];
-				reinterpret_cast<float*>(b + f->ofs)[2] = vec4[2];
-				reinterpret_cast<float*>(b + f->ofs)[3] = vec4[3];
-				break;
-			}
 			case F_INT:
 				*reinterpret_cast<int*>(b + f->ofs) = atoi(value);
 				break;
@@ -1099,22 +1099,22 @@ void G_ParseField(const char* key, const char* value, gentity_t* ent)
 				Q3_SetParm(ent->s.number, f->type - F_PARM1, value);
 				break;
 			case F_FLAG:
-			{
-				//try to find the proper flag for that key:
-				const int flag = GetIDForString(flagTable, key);
+				{
+					//try to find the proper flag for that key:
+					const int flag = GetIDForString(flagTable, key);
 
-				if (flag > 0)
-				{
-					G_SpawnFlag(key, flag, (int*)(b + f->ofs));
-				}
-				else
-				{
+					if (flag > 0)
+					{
+						G_SpawnFlag(key, flag, (int*)(b + f->ofs));
+					}
+					else
+					{
 #ifndef FINAL_BUILD
 					gi.Printf(S_COLOR_YELLOW"WARNING: G_ParseField: can't find flag for key %s\n", key);
 #endif
+					}
 				}
-			}
-			break;
+				break;
 			default:
 			case F_IGNORE:
 				break;
@@ -1643,7 +1643,7 @@ void SP_worldspawn(void)
 		if (lengthRed != lengthGreen || lengthGreen != lengthBlue)
 		{
 			Com_Error(ERR_DROP, "Style %d has inconsistent lengths: R %d, G %d, B %d",
-				i, lengthRed, lengthGreen, lengthBlue);
+			          i, lengthRed, lengthGreen, lengthBlue);
 		}
 	}
 

@@ -32,11 +32,12 @@ VIRTUAL MACHINE
 
 ==============================================================
 */
-intptr_t	VM_Call(int callnum, ...)
+intptr_t VM_Call(int callnum, ...)
 {
-	intptr_t args[10] = { 0 };
+	intptr_t args[10] = {0};
 
-	if (cgvm.entryPoint) {
+	if (cgvm.entryPoint)
+	{
 		va_list ap;
 		va_start(ap, callnum);
 		for (int& arg : args)
@@ -44,7 +45,7 @@ intptr_t	VM_Call(int callnum, ...)
 		va_end(ap);
 
 		return cgvm.entryPoint(callnum, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
-			args[8], args[9]);
+		                       args[8], args[9]);
 	}
 	return -1;
 }
@@ -66,7 +67,8 @@ intptr_t	VM_Call(int callnum, ...)
 //	thrown away.
 extern intptr_t CL_CgameSystemCalls(intptr_t* args);
 
-intptr_t VM_DllSyscall(intptr_t arg, ...) {
+intptr_t VM_DllSyscall(intptr_t arg, ...)
+{
 #if !id386 || defined __clang__ || defined MACOS_X
 	// rcg010206 - see commentary above
 	intptr_t args[16];

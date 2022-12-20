@@ -63,7 +63,7 @@ JPP((j_compress_ptr cinfo, JSAMPARRAY input_buf,
  */
 
 METHODDEF(void)
-start_pass_main(j_compress_ptr cinfo, J_BUF_MODE pass_mode)
+start_pass_main(j_compress_ptr cinfo, const J_BUF_MODE pass_mode)
 {
 	my_main_ptr mainp = (my_main_ptr)cinfo->main;
 
@@ -106,9 +106,9 @@ start_pass_main(j_compress_ptr cinfo, J_BUF_MODE pass_mode)
  */
 
 METHODDEF(void)
-process_data_simple_main(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JDIMENSION* in_row_ctr,
-	JDIMENSION in_rows_avail)
+process_data_simple_main(const j_compress_ptr cinfo,
+                         const JSAMPARRAY input_buf, JDIMENSION* in_row_ctr,
+                         const JDIMENSION in_rows_avail)
 {
 	const my_main_ptr mainp = (my_main_ptr)cinfo->main;
 
@@ -238,7 +238,7 @@ process_data_buffer_main(j_compress_ptr cinfo,
  */
 
 GLOBAL(void)
-jinit_c_main_controller(j_compress_ptr cinfo, boolean need_full_buffer)
+jinit_c_main_controller(j_compress_ptr cinfo, const boolean need_full_buffer)
 {
 	int ci;
 	jpeg_component_info* compptr;

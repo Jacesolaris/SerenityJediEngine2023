@@ -22,14 +22,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "cg_local.h"
 
-typedef struct clightstyle_s {
-	int				length;
-	color4ub_t		value;
-	color4ub_t		map[MAX_QPATH];
+typedef struct clightstyle_s
+{
+	int length;
+	color4ub_t value;
+	color4ub_t map[MAX_QPATH];
 } clightstyle_t;
 
-static	clightstyle_t	cl_lightstyle[MAX_LIGHT_STYLES];
-static	int				lastofs;
+static clightstyle_t cl_lightstyle[MAX_LIGHT_STYLES];
+static int lastofs;
 
 /*
 ================
@@ -60,20 +61,24 @@ void CG_RunLightStyles(void)
 	//		return;
 	lastofs = ofs;
 
-	for (i = 0, ls = cl_lightstyle; i < MAX_LIGHT_STYLES; i++, ls++) {
+	for (i = 0, ls = cl_lightstyle; i < MAX_LIGHT_STYLES; i++, ls++)
+	{
 		const byteAlias_t* ba = (byteAlias_t*)&ls->value;
 
 		ls->value[3] = 255;
-		if (!ls->length) {
+		if (!ls->length)
+		{
 			ls->value[0] = ls->value[1] = ls->value[2] = 255;
 		}
-		else if (ls->length == 1) {
+		else if (ls->length == 1)
+		{
 			ls->value[0] = ls->map[0][0];
 			ls->value[1] = ls->map[0][1];
 			ls->value[2] = ls->map[0][2];
 			//	ls->value[3] = ls->map[0][3];
 		}
-		else {
+		else
+		{
 			ls->value[0] = ls->map[ofs % ls->length][0];
 			ls->value[1] = ls->map[ofs % ls->length][1];
 			ls->value[2] = ls->map[ofs % ls->length][2];
@@ -84,7 +89,7 @@ void CG_RunLightStyles(void)
 	}
 }
 
-void CG_SetLightstyle(int i)
+void CG_SetLightstyle(const int i)
 {
 	const char* s = CG_ConfigString(i + CS_LIGHT_STYLES);
 	const int j = strlen(s);

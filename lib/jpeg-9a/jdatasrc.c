@@ -40,7 +40,7 @@ typedef my_source_mgr* my_src_ptr;
  */
 
 METHODDEF(void)
-init_source(j_decompress_ptr cinfo)
+init_source(const j_decompress_ptr cinfo)
 {
 	const my_src_ptr src = (my_src_ptr)cinfo->src;
 
@@ -91,7 +91,7 @@ init_mem_source(j_decompress_ptr cinfo)
  */
 
 METHODDEF(boolean)
-fill_input_buffer(j_decompress_ptr cinfo)
+fill_input_buffer(const j_decompress_ptr cinfo)
 {
 	const my_src_ptr src = (my_src_ptr)cinfo->src;
 
@@ -115,7 +115,7 @@ fill_input_buffer(j_decompress_ptr cinfo)
 }
 
 METHODDEF(boolean)
-fill_mem_input_buffer(j_decompress_ptr cinfo)
+fill_mem_input_buffer(const j_decompress_ptr cinfo)
 {
 	static const JOCTET mybuffer[4] = {
 	  (JOCTET)0xFF, (JOCTET)JPEG_EOI, 0, 0
@@ -148,7 +148,7 @@ fill_mem_input_buffer(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-skip_input_data(j_decompress_ptr cinfo, long num_bytes)
+skip_input_data(const j_decompress_ptr cinfo, long num_bytes)
 {
 	struct jpeg_source_mgr* src = cinfo->src;
 
@@ -199,7 +199,7 @@ term_source(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_stdio_src(j_decompress_ptr cinfo, FILE* infile)
+jpeg_stdio_src(const j_decompress_ptr cinfo, FILE* infile)
 {
 	my_src_ptr src;
 
@@ -237,8 +237,8 @@ jpeg_stdio_src(j_decompress_ptr cinfo, FILE* infile)
  */
 
 GLOBAL(void)
-jpeg_mem_src(j_decompress_ptr cinfo,
-	unsigned char* inbuffer, unsigned long insize)
+jpeg_mem_src(const j_decompress_ptr cinfo,
+             unsigned char* inbuffer, const unsigned long insize)
 {
 	if (inbuffer == NULL || insize == 0)	/* Treat empty input as fatal error */
 		ERREXIT(cinfo, JERR_INPUT_EMPTY);

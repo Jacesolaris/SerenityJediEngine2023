@@ -149,8 +149,8 @@ void Rancor_Move(qboolean visible)
 
 //---------------------------------------------------------
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
-extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, const int limb_type);
+                        qboolean break_saber_lock);
+extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, int limb_type);
 extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
 extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
 
@@ -213,7 +213,7 @@ void Rancor_DropVictim(gentity_t* self)
 	self->count = 0; //drop him
 }
 
-void Rancor_Swing(qboolean tryGrab)
+void Rancor_Swing(const qboolean tryGrab)
 {
 	int radiusEntNums[128];
 	const float radius = 88;
@@ -314,7 +314,7 @@ void Rancor_Swing(qboolean tryGrab)
 					&& radiusEnt->client->NPC_class != CLASS_ATST)
 				{
 					G_Damage(radiusEnt, NPCS.NPC, NPCS.NPC, vec3_origin, radiusEnt->r.currentOrigin, Q_irand(25, 40),
-						DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					g_throw(radiusEnt, pushDir, 250);
 					if (radiusEnt->health > 0)
 					{
@@ -373,7 +373,7 @@ void Rancor_Smash(void)
 			{
 				//close enough to do damage, too
 				G_Damage(radiusEnt, NPCS.NPC, NPCS.NPC, vec3_origin, radiusEnt->r.currentOrigin, Q_irand(10, 25),
-					DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+				         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 			}
 			if (radiusEnt->health > 0
 				&& radiusEnt->client
@@ -430,7 +430,7 @@ void Rancor_Bite(void)
 		if (DistanceSquared(radiusEnt->r.currentOrigin, boltOrg) <= radiusSquared)
 		{
 			G_Damage(radiusEnt, NPCS.NPC, NPCS.NPC, vec3_origin, radiusEnt->r.currentOrigin, Q_irand(15, 30),
-				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 			if (radiusEnt->health <= 0 && radiusEnt->client)
 			{
 				//killed them, chance of dismembering
@@ -445,7 +445,7 @@ void Rancor_Bite(void)
 					else if (hit_loc == G2_MODELPART_WAIST)
 					{
 						NPC_SetAnim(radiusEnt, SETANIM_BOTH, BOTH_DEATHBACKWARD2,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					G_Dismember(radiusEnt, NPCS.NPC, radiusEnt->r.currentOrigin, hit_loc);
 				}
@@ -458,7 +458,7 @@ void Rancor_Bite(void)
 //------------------------------
 extern void TossClientItems(gentity_t* self);
 
-void Rancor_Attack(float distance, qboolean doCharge)
+void Rancor_Attack(const float distance, const qboolean doCharge)
 {
 	if (!TIMER_Exists(NPCS.NPC, "attacking"))
 	{
@@ -484,7 +484,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 				{
 					G_AddEvent(NPCS.NPC->activator, Q_irand(EV_DEATH1, EV_DEATH3), 0);
 					NPC_SetAnim(NPCS.NPC->activator, SETANIM_TORSO, BOTH_FALLDEATH1,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					if (NPCS.NPC->activator->NPC)
 					{
 						//no more thinking for you
@@ -534,7 +534,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 			Rancor_Smash();
 			G_GetBoltPosition(NPCS.NPC, NPCS.NPC->client->renderInfo.handLBolt, shakePos, 0);
 			G_ScreenShake(shakePos, NULL, 4.0f, 1000, qfalse);
-			//CGCam_Shake( 1.0f*playerDist/128.0f, 1000 );
+		//CGCam_Shake( 1.0f*playerDist/128.0f, 1000 );
 			break;
 		case BOTH_MELEE2:
 			Rancor_Bite();
@@ -544,7 +544,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 			if (NPCS.NPC->count == 1 && NPCS.NPC->activator)
 			{
 				G_Damage(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC, vec3_origin, NPCS.NPC->activator->r.currentOrigin,
-					Q_irand(25, 40), DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+				         Q_irand(25, 40), DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 				if (NPCS.NPC->activator->health <= 0)
 				{
 					//killed him
@@ -555,7 +555,7 @@ void Rancor_Attack(float distance, qboolean doCharge)
 					NPCS.NPC->activator->client->ps.forceHandExtend = HANDEXTEND_NONE;
 					NPCS.NPC->activator->client->ps.forceHandExtendTime = 0;
 					NPC_SetAnim(NPCS.NPC->activator, SETANIM_BOTH, BOTH_SWIM_IDLE1,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				G_Sound(NPCS.NPC->activator, CHAN_AUTO, G_SoundIndex("sound/chars/rancor/chomp.wav"));
 			}
@@ -571,20 +571,21 @@ void Rancor_Attack(float distance, qboolean doCharge)
 				if (NPCS.NPC->activator->client)
 				{
 					//NPC->activator->client->dismembered = qfalse;
-					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_WAIST);
+					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin,
+					            G2_MODELPART_WAIST);
 					//G_DoDismemberment( NPC->activator, NPC->enemy->r.currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue );
 				}
 				//KILL
 				G_Damage(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC, vec3_origin, NPCS.NPC->activator->r.currentOrigin,
-					NPCS.NPC->enemy->health + 10,
-					DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-					MOD_MELEE); //, HL_NONE );//
+				         NPCS.NPC->enemy->health + 10,
+				         DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
+				         MOD_MELEE); //, HL_NONE );//
 				if (NPCS.NPC->activator->client)
 				{
 					NPCS.NPC->activator->client->ps.forceHandExtend = HANDEXTEND_NONE;
 					NPCS.NPC->activator->client->ps.forceHandExtendTime = 0;
 					NPC_SetAnim(NPCS.NPC->activator, SETANIM_BOTH, BOTH_SWIM_IDLE1,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				TIMER_Set(NPCS.NPC, "attack_dmg2", 1350);
 				G_Sound(NPCS.NPC->activator, CHAN_AUTO, G_SoundIndex("sound/chars/rancor/swipehit.wav"));
@@ -617,17 +618,18 @@ void Rancor_Attack(float distance, qboolean doCharge)
 				{
 					//cut in half
 					//NPC->activator->client->dismembered = qfalse;
-					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin, G2_MODELPART_WAIST);
+					G_Dismember(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC->activator->r.currentOrigin,
+					            G2_MODELPART_WAIST);
 					//G_DoDismemberment( NPC->activator, NPC->enemy->r.currentOrigin, MOD_SABER, 1000, HL_WAIST, qtrue );
 					//KILL
 					G_Damage(NPCS.NPC->activator, NPCS.NPC, NPCS.NPC, vec3_origin, NPCS.NPC->activator->r.currentOrigin,
-						NPCS.NPC->enemy->health + 10,
-						DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-						MOD_MELEE); //, HL_NONE );
+					         NPCS.NPC->enemy->health + 10,
+					         DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
+					         MOD_MELEE); //, HL_NONE );
 					NPCS.NPC->activator->client->ps.forceHandExtend = HANDEXTEND_NONE;
 					NPCS.NPC->activator->client->ps.forceHandExtendTime = 0;
 					NPC_SetAnim(NPCS.NPC->activator, SETANIM_BOTH, BOTH_SWIM_IDLE1,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					G_AddEvent(NPCS.NPC->activator, EV_JUMP, NPCS.NPC->activator->health);
 				}
 				if (NPCS.NPC->activator->client)
@@ -728,7 +730,7 @@ void Rancor_Combat(void)
 		}
 
 		if (advance /*|| NPCInfo->localState == LSTATE_WAITING*/ && TIMER_Done(NPCS.NPC, "attacking"))
-			// waiting monsters can't attack
+		// waiting monsters can't attack
 		{
 			if (TIMER_Done2(NPCS.NPC, "takingPain", qtrue))
 			{
@@ -751,7 +753,7 @@ void Rancor_Combat(void)
 NPC_Rancor_Pain
 -------------------------
 */
-void NPC_Rancor_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Rancor_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	qboolean hitByRancor = qfalse;
 
@@ -835,7 +837,7 @@ void NPC_Rancor_Pain(gentity_t* self, gentity_t* attacker, int damage)
 							NPC_SetAnim(self, SETANIM_BOTH, BOTH_PAIN1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						TIMER_Set(self, "takingPain",
-							self->client->ps.legsTimer + Q_irand(0, 500 * (2 - g_npcspskill.integer)));
+						          self->client->ps.legsTimer + Q_irand(0, 500 * (2 - g_npcspskill.integer)));
 
 						if (self->NPC)
 						{
@@ -857,12 +859,12 @@ void Rancor_CheckDropVictim(void)
 	VectorSet(mins, NPCS.NPC->activator->r.mins[0] - 1, NPCS.NPC->activator->r.mins[1] - 1, 0);
 	VectorSet(maxs, NPCS.NPC->activator->r.maxs[0] + 1, NPCS.NPC->activator->r.maxs[1] + 1, 1);
 	VectorSet(start, NPCS.NPC->activator->r.currentOrigin[0], NPCS.NPC->activator->r.currentOrigin[1],
-		NPCS.NPC->activator->r.absmin[2]);
+	          NPCS.NPC->activator->r.absmin[2]);
 	VectorSet(end, NPCS.NPC->activator->r.currentOrigin[0], NPCS.NPC->activator->r.currentOrigin[1],
-		NPCS.NPC->activator->r.absmax[2] - 1);
+	          NPCS.NPC->activator->r.absmax[2] - 1);
 
 	trap->Trace(&trace, start, mins, maxs, end, NPCS.NPC->activator->s.number, NPCS.NPC->activator->clipmask, qfalse, 0,
-		0);
+	            0);
 	if (!trace.allsolid && !trace.startsolid && trace.fraction >= 1.0f)
 	{
 		Rancor_DropVictim(NPCS.NPC);

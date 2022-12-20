@@ -56,7 +56,7 @@ void G_BounceObject(gentity_t* ent, const trace_t* trace)
 		// check for stop
 		if ((trace->plane.normal[2] > 0.7 && g_gravity->value > 0 || trace->plane.normal[2] < -0.7 && g_gravity->value <
 			0) && (ent->s.pos.trDelta[2] < 40 && g_gravity->value > 0 || ent->s.pos.trDelta[2] > -40 && g_gravity->value
-				< 0)) //this can happen even on very slightly sloped walls, so changed it from > 0 to > 0.7
+			< 0)) //this can happen even on very slightly sloped walls, so changed it from > 0 to > 0.7
 		{
 			//G_SetOrigin( ent, trace->endpos );
 			//ent->nextthink = level.time + 500;
@@ -122,7 +122,7 @@ void G_RunObject(gentity_t* ent)
 	// trace a line from the previous position to the current position,
 	// ignoring interactions with the missile owner
 	gi.trace(&tr, ent->currentOrigin, ent->mins, ent->maxs, origin,
-		ent->owner ? ent->owner->s.number : ent->s.number, ent->clipmask, static_cast<EG2_Collision>(0), 0);
+	         ent->owner ? ent->owner->s.number : ent->s.number, ent->clipmask, static_cast<EG2_Collision>(0), 0);
 
 	if (!tr.startsolid && !tr.allsolid && tr.fraction)
 	{
@@ -130,7 +130,7 @@ void G_RunObject(gentity_t* ent)
 		gi.linkentity(ent);
 	}
 	else
-		//if ( tr.startsolid )
+	//if ( tr.startsolid )
 	{
 		tr.fraction = 0;
 	}
@@ -286,7 +286,7 @@ void G_StopObjectMoving(gentity_t* object)
 	*/
 }
 
-void G_StartObjectMoving(gentity_t* object, vec3_t dir, float speed, trType_t trType)
+void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const trType_t trType)
 {
 	VectorNormalize(dir);
 
@@ -316,8 +316,9 @@ void G_StartObjectMoving(gentity_t* object, vec3_t dir, float speed, trType_t tr
 	}
 }
 
-gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int model_index, int frame, trType_t trType,
-	int effectID = 0)
+gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const int model_index, const int frame,
+                          const trType_t trType,
+                          const int effectID = 0)
 {
 	gentity_t* object = G_Spawn();
 

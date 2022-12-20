@@ -90,7 +90,7 @@ namespace ratl
 			return *this;
 		}
 
-		void		set_size(int xSize, int ySize)
+		void set_size(const int xSize, const int ySize)
 		{
 			if (xSize < XSIZE_MAX)
 			{
@@ -102,13 +102,13 @@ namespace ratl
 			}
 		}
 
-		void		snap_scale()
+		void snap_scale()
 		{
 			mScale[0] = static_cast<float>(static_cast<int>(mScale[0]));
 			mScale[1] = static_cast<float>(static_cast<int>(mScale[1]));
 		}
 
-		void		get_size(int& xSize, int& ySize) const
+		void get_size(int& xSize, int& ySize) const
 		{
 			xSize = mSize[0];
 			ySize = mSize[1];
@@ -117,7 +117,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mSize[0] = XSIZE_MAX;
 			mSize[1] = YSIZE_MAX;
@@ -133,7 +133,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Initialize The Entire Grid To A Value
 		////////////////////////////////////////////////////////////////////////////////////
-		void		init(const T& val)
+		void init(const T& val)
 		{
 			for (int i = 0; i < XSIZE_MAX * YSIZE_MAX; i++)
 			{
@@ -144,7 +144,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Copy The Bounds Of Another Grid
 		////////////////////////////////////////////////////////////////////////////////////
-		void		copy_bounds(const grid2_vs& other)
+		void copy_bounds(const grid2_vs& other)
 		{
 			for (int i = 0; i < 2; i++)
 			{
@@ -182,7 +182,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Convert The Scaled Coordinates To A Grid Coordinate
 		////////////////////////////////////////////////////////////////////////////////////
-		void		get_cell_coords(float x, float y, int& xint, int& yint) const
+		void get_cell_coords(float x, float y, int& xint, int& yint) const
 		{
 			assert(mScale[0] != 0.0f && mScale[1] != 0.0f);
 			truncate_position_to_bounds(x, y);
@@ -198,9 +198,9 @@ namespace ratl
 		//
 		// NOTE:  This MUST be at least a 2 dimensional point
 		////////////////////////////////////////////////////////////////////////////////////
-		void		expand_bounds(float xReal, float yReal)
+		void expand_bounds(const float xReal, const float yReal)
 		{
-			const float	point[2] = { xReal, yReal };
+			const float point[2] = {xReal, yReal};
 			for (int i = 0; i < 2; i++)
 			{
 				if (point[i] < mMins[i] || mMins[i] == RANGE_NULL)
@@ -221,7 +221,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void		truncate_position_to_bounds(float& xReal, float& yReal) const
+		void truncate_position_to_bounds(float& xReal, float& yReal) const
 		{
 			if (xReal < mMins[0])
 			{
@@ -244,25 +244,28 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void		get_cell_position(int x, int y, float& xReal, float& yReal) const
+		void get_cell_position(const int x, const int y, float& xReal, float& yReal) const
 		{
 			//	assert(mScale[0]!=0.0f && mScale[1]!=0.0f);
 			xReal = x * mScale[0] + mMins[0] + mScale[0] * 0.5f;
 			yReal = y * mScale[1] + mMins[1] + mScale[1] * 0.5f;
 		}
-		void		get_cell_upperleft(int x, int y, float& xReal, float& yReal) const
+
+		void get_cell_upperleft(const int x, const int y, float& xReal, float& yReal) const
 		{
 			//	assert(mScale[0]!=0.0f && mScale[1]!=0.0f);
 			xReal = x * mScale[0] + mMins[0];
 			yReal = y * mScale[1] + mMins[1];
 		}
-		void		get_cell_lowerright(int x, int y, float& xReal, float& yReal) const
+
+		void get_cell_lowerright(const int x, const int y, float& xReal, float& yReal) const
 		{
 			//	assert(mScale[0]!=0.0f && mScale[1]!=0.0f);
 			xReal = x * mScale[0] + mMins[0] + mScale[0];
 			yReal = y * mScale[1] + mMins[1] + mScale[1];
 		}
-		void		scale_by_largest_axis(float& dist) const
+
+		void scale_by_largest_axis(float& dist) const
 		{
 			assert(mScale[0] != 0.0f && mScale[1] != 0.0f);
 			if (mScale[0] > mScale[1])
@@ -279,12 +282,12 @@ namespace ratl
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
 	private:
-		array_vs<T, XSIZE_MAX* YSIZE_MAX>	mData;
+		array_vs<T, XSIZE_MAX * YSIZE_MAX> mData;
 
-		int							mSize[2];
-		float						mMins[2];
-		float						mMaxs[2];
-		float						mScale[2];
+		int mSize[2];
+		float mMins[2];
+		float mMaxs[2];
+		float mScale[2];
 
 	public:
 		////////////////////////////////////////////////////////////////////////////////////
@@ -302,58 +305,66 @@ namespace ratl
 		class iterator
 		{
 		public:
-
 			// Constructors
 			//--------------
-			iterator() {}
-			iterator(grid2_vs* p, int t) : mLoc(t), mOwner(p) {}
+			iterator()
+			{
+			}
+
+			iterator(grid2_vs* p, const int t) : mLoc(t), mOwner(p)
+			{
+			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const iterator& t) { mOwner = t.mOwner;	mLoc = t.mLoc; }
+			void operator=(const iterator& t)
+			{
+				mOwner = t.mOwner;
+				mLoc = t.mLoc;
+			}
 
 			// Equality & Inequality Operators
 			//---------------------------------
-			bool		operator!=(const iterator& t) { return mLoc != t.mLoc; }
-			bool		operator==(const iterator& t) { return mLoc == t.mLoc; }
+			bool operator!=(const iterator& t) { return mLoc != t.mLoc; }
+			bool operator==(const iterator& t) { return mLoc == t.mLoc; }
 
 			// Dereference Operator
 			//----------------------
-			T& operator* () { return mOwner->rawGet(mLoc); }
+			T& operator*() { return mOwner->rawGet(mLoc); }
 
 			// Inc Operator
 			//--------------
-			void		operator++(int) { mLoc++; }
+			void operator++(int) { mLoc++; }
 
 			// Row & Col Offsets
 			//-------------------
-			void		offsetRows(int num) { mLoc += YSIZE_MAX * num; }
-			void		offsetCols(int num) { mLoc += num; }
+			void offsetRows(const int num) { mLoc += YSIZE_MAX * num; }
+			void offsetCols(const int num) { mLoc += num; }
 
 			// Return True If On Frist Column Of A Row
 			//-----------------------------------------
-			bool		onColZero() const
+			bool onColZero() const
 			{
 				return mLoc % XSIZE_MAX == 0;
 			}
 
 			// Evaluate The XY Position Of This Iterator
 			//-------------------------------------------
-			void		position(int& X, int& Y) const
+			void position(int& X, int& Y) const
 			{
 				Y = mLoc / XSIZE_MAX;
 				X = mLoc - Y * XSIZE_MAX;
 			}
 
 		private:
-			int					mLoc;
+			int mLoc;
 			grid2_vs* mOwner;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin(int x = 0, int y = 0)
+		iterator begin(const int x = 0, const int y = 0)
 		{
 			assert(x >= 0 && y >= 0 && x < mSize[0] && y < mSize[1]);
 
@@ -363,7 +374,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin (scaled position, use mins and maxs to calc real position)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin(float xReal, float yReal)
+		iterator begin(float xReal, float yReal)
 		{
 			assert(mScale[0] != 0.0f && mScale[1] != 0.0f);
 			truncate_position_to_bounds(xReal, yReal);
@@ -377,7 +388,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator End
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	end()
+		iterator end()
 		{
 			return iterator(this, XSIZE_MAX * YSIZE_MAX);
 		}
@@ -388,16 +399,17 @@ namespace ratl
 		class riterator
 		{
 		public:
-
 			// Constructors
 			//--------------
 			riterator()
-			{}
-			riterator(grid2_vs* p, int Range, int SX, int SY) :
+			{
+			}
+
+			riterator(grid2_vs* p, const int Range, const int SX, const int SY) :
 				mOwner(p)
 			{
-				const int		Start[2] = { SX, SY };
-				const int		Bounds[2] = { XSIZE_MAX - 1, YSIZE_MAX - 1 };
+				const int Start[2] = {SX, SY};
+				const int Bounds[2] = {XSIZE_MAX - 1, YSIZE_MAX - 1};
 
 				for (int i = 0; i < 2; i++)
 				{
@@ -419,7 +431,7 @@ namespace ratl
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const riterator& t)
+			void operator=(const riterator& t)
 			{
 				mOwner = t.mOwner;
 				for (int i = 0; i < 2; i++)
@@ -432,25 +444,26 @@ namespace ratl
 
 			// Equality & Inequality Operators
 			//---------------------------------
-			bool		operator!=(const riterator& t)
+			bool operator!=(const riterator& t)
 			{
 				return mLoc[0] != t.mLoc[0] || mLoc[1] != t.mLoc[1];
 			}
-			bool		operator==(const riterator& t)
+
+			bool operator==(const riterator& t)
 			{
 				return mLoc[0] == t.mLoc[0] && mLoc[1] == t.mLoc[1];
 			}
 
 			// Dereference Operator
 			//----------------------
-			T& operator* ()
+			T& operator*()
 			{
 				return mOwner->get(mLoc[0], mLoc[1]);
 			}
 
 			// Inc Operator
 			//--------------
-			void		operator++(int)
+			void operator++(int)
 			{
 				if (mLoc[1] <= mMaxs[1])
 				{
@@ -463,37 +476,37 @@ namespace ratl
 				}
 			}
 
-			bool		at_end() const
+			bool at_end() const
 			{
 				return mLoc[1] > mMaxs[1];
 			}
 
 			// Return True If On Frist Column Of A Row
 			//-----------------------------------------
-			bool		onColZero() const
+			bool onColZero() const
 			{
 				return mLoc[0] == mMins[0];
 			}
 
 			// Evaluate The XY Position Of This Iterator
 			//-------------------------------------------
-			void		position(int& X, int& Y) const
+			void position(int& X, int& Y) const
 			{
 				Y = mLoc[1];
 				X = mLoc[0];
 			}
 
 		private:
-			int						mMins[2];
-			int						mMaxs[2];
-			int						mLoc[2];
+			int mMins[2];
+			int mMaxs[2];
+			int mLoc[2];
 			grid2_vs* mOwner;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Ranged Iterator Begin (x and y are the center of the range)
 		////////////////////////////////////////////////////////////////////////////////////
-		riterator	rangeBegin(int range, int x, int y)
+		riterator rangeBegin(int range, int x, int y)
 		{
 			assert(x >= 0 && y >= 0 && x < XSIZE_MAX&& y < YSIZE_MAX);
 			return riterator(this, range, x, y);
@@ -502,9 +515,9 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		riterator	rangeBegin(int range, float xReal, float yReal)
+		riterator rangeBegin(int range, float xReal, float yReal)
 		{
-			const float	position[2] = { xReal, yReal };
+			const float position[2] = {xReal, yReal};
 			assert(mScale[0] != 0.0f && mScale[1] != 0.0f);
 			truncate_position_to_bounds(xReal, yReal);
 			int x = (position[0] - mMins[0]) / mScale[0];

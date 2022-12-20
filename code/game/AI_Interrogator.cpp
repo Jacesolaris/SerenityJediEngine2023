@@ -53,7 +53,7 @@ Interrogator_die
 -------------------------
 */
 void Interrogator_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                      int hit_loc)
 {
 	self->client->ps.velocity[2] = -100;
 
@@ -89,7 +89,7 @@ void Interrogator_PartsMove(void)
 		}
 
 		gi.G2API_SetBoneAnglesIndex(&NPC->ghoul2[NPC->playerModel], NPC->genericBone1, NPC->pos1, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+		                            POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 		TIMER_Set(NPC, "syringeDelay", Q_irand(100, 1000));
 	}
 
@@ -119,14 +119,14 @@ void Interrogator_PartsMove(void)
 
 		NPC->pos2[0] = AngleNormalize360(NPC->pos2[0]);
 		gi.G2API_SetBoneAnglesIndex(&NPC->ghoul2[NPC->playerModel], NPC->genericBone2, NPC->pos2, BONE_ANGLES_POSTMULT,
-			POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+		                            POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 	}
 
 	// Claw
 	NPC->pos3[1] += Q_irand(10, 30);
 	NPC->pos3[1] = AngleNormalize360(NPC->pos3[1]);
 	gi.G2API_SetBoneAnglesIndex(&NPC->ghoul2[NPC->playerModel], NPC->genericBone3, NPC->pos3, BONE_ANGLES_POSTMULT,
-		POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
+	                            POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 }
 
 constexpr auto VELOCITY_DECAY = 0.85f;
@@ -249,7 +249,7 @@ void Interrogator_Strafe(void)
 	VectorMA(NPC->currentOrigin, HUNTER_STRAFE_DIS * dir, right, end);
 
 	gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 
 	// Close enough
 	if (tr.fraction > 0.9f)
@@ -286,7 +286,7 @@ Interrogator_Hunt
 constexpr auto HUNTER_FORWARD_BASE_SPEED = 10;
 constexpr auto HUNTER_FORWARD_MULTIPLIER = 2;
 
-void Interrogator_Hunt(qboolean visible, qboolean advance)
+void Interrogator_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -337,7 +337,7 @@ constexpr auto MIN_DISTANCE = 64;
 Interrogator_Melee
 -------------------------
 */
-void Interrogator_Melee(qboolean visible, qboolean advance)
+void Interrogator_Melee(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{

@@ -57,8 +57,8 @@ int s[14];} sfBandTable[3] =
 /*--------------------------------*/
 static const int pretab[2][22] =
 {
-   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 0},
 };
 
 ////@@@@extern int nBand[2][22];	/* long = nBand[0][i], short = nBand[1][i] */
@@ -66,24 +66,24 @@ static const int pretab[2][22] =
 /* 8 bit plus 2 lookup x = pow(2.0, 0.25*(global_gain-210)) */
 /* two extra slots to do 1/sqrt(2) scaling for ms */
 /* 4 extra slots to do 1/2 scaling for cvt to mono */
-static float look_global[256 + 2 + 4];		// effectively constant
+static float look_global[256 + 2 + 4]; // effectively constant
 
 /*-------- scaling lookup
 x = pow(2.0, -0.5*(1+scalefact_scale)*scalefac + preemp)
 look_scale[scalefact_scale][preemp][scalefac]
 -----------------------*/
-static float look_scale[2][4][32];			// effectively constant
+static float look_scale[2][4][32]; // effectively constant
 typedef float LS[4][32];
 
 /*--- iSample**(4/3) lookup, -32<=i<=31 ---*/
 #define ISMAX 32
-static float look_pow[2 * ISMAX];			// effectively constant
+static float look_pow[2 * ISMAX]; // effectively constant
 
 /*-- pow(2.0, -0.25*8.0*subblock_gain) --*/
-static float look_subblock[8];				// effectively constant
+static float look_subblock[8]; // effectively constant
 
 /*-- reorder buffer ---*/
-static float re_buf[192][3];				// used by dequant() below, but only during func (as workspace)
+static float re_buf[192][3]; // used by dequant() below, but only during func (as workspace)
 typedef float ARRAY3[3];
 
 /*=============================================================*/
@@ -91,27 +91,31 @@ float* quant_init_global_addr()
 {
 	return look_global;
 }
+
 /*-------------------------------------------------------------*/
 LS* quant_init_scale_addr()
 {
 	return look_scale;
 }
+
 /*-------------------------------------------------------------*/
 float* quant_init_pow_addr()
 {
 	return look_pow;
 }
+
 /*-------------------------------------------------------------*/
 float* quant_init_subblock_addr()
 {
 	return look_subblock;
 }
+
 /*=============================================================*/
 
 void dequant(SAMPLE Sample[], int* nsamp,
-	SCALEFACT* sf,
-	GR* gr,
-	CB_INFO* cb_info, int ncbl_mixed)
+             SCALEFACT* sf,
+             GR* gr,
+             CB_INFO* cb_info, const int ncbl_mixed)
 {
 	int j;
 	int cb, n, w;
@@ -123,8 +127,8 @@ void dequant(SAMPLE Sample[], int* nsamp,
 
 	const int nbands = *nsamp;
 
-	int ncbl = 22;			/* long block cb end */
-	int cbs0 = 12;			/* short block cb start */
+	int ncbl = 22; /* long block cb end */
+	int cbs0 = 12; /* short block cb start */
 	/* ncbl_mixed = 8 or 6  mpeg1 or 2 */
 	if (gr->block_type == 2)
 	{
@@ -137,11 +141,11 @@ void dequant(SAMPLE Sample[], int* nsamp,
 		}
 	}
 	/* fill in cb_info -- */
-	   /* This doesn't seem used anywhere...
-	   cb_info->lb_type = gr->block_type;
-	   if (gr->block_type == 2)
-		  cb_info->lb_type;
-	   */
+	/* This doesn't seem used anywhere...
+	cb_info->lb_type = gr->block_type;
+	if (gr->block_type == 2)
+	   cb_info->lb_type;
+	*/
 	cb_info->cbs0 = cbs0;
 	cb_info->ncbl = ncbl;
 
@@ -179,7 +183,7 @@ void dequant(SAMPLE Sample[], int* nsamp,
 	}
 
 	cb_info->cbmax = cbmax[0];
-	cb_info->cbtype = 0;		// type = long
+	cb_info->cbtype = 0; // type = long
 
 	if (cbs0 >= 12)
 		return;
@@ -187,7 +191,7 @@ void dequant(SAMPLE Sample[], int* nsamp,
 	block type = 2  short blocks
 	----------------------------*/
 	cbmax[2] = cbmax[1] = cbmax[0] = cbs0;
-	const int i0 = i;			/* save for reorder */
+	const int i0 = i; /* save for reorder */
 	ARRAY3* buf = re_buf;
 	for (w = 0; w < 3; w++)
 		xsb[w] = x0 * look_subblock[gr->subblock_gain[w]];
@@ -225,7 +229,7 @@ void dequant(SAMPLE Sample[], int* nsamp,
 
 	memmove(&Sample[i0].x, &re_buf[0][0], sizeof(float) * (i - i0));
 
-	*nsamp = i;			/* update nsamp */
+	*nsamp = i; /* update nsamp */
 	cb_info->cbmax_s[0] = cbmax[0];
 	cb_info->cbmax_s[1] = cbmax[1];
 	cb_info->cbmax_s[2] = cbmax[2];
@@ -235,7 +239,7 @@ void dequant(SAMPLE Sample[], int* nsamp,
 		cbmax[0] = cbmax[2];
 
 	cb_info->cbmax = cbmax[0];
-	cb_info->cbtype = 1;		/* type = short */
+	cb_info->cbtype = 1; /* type = short */
 }
 
 /*-------------------------------------------------------------*/

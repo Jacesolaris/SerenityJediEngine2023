@@ -36,9 +36,9 @@ extern int BG_AnimLength(int index, animNumber_t anim);
 
 extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+                        qboolean breakSaberLock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
-	const vec3_t end, int passEntityNum, int contentmask);
+                           const vec3_t end, int passEntityNum, int contentmask);
 
 // Update death sequence.
 static void DeathUpdate(Vehicle_t* pVeh)
@@ -82,7 +82,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	float fWalkSpeedMax;
 	int curTime;
 	const bgEntity_t* parent = pVeh->m_pParentEntity;
-	playerState_t* parentPS = parent->playerState;
+	playerState_t * parentPS = parent->playerState;
 
 #ifdef _GAME
 	curTime = level.time;
@@ -298,9 +298,9 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 			}
 		}*/
 
-		/********************************************************************************/
-		/*	END	Here is where make sure the vehicle is properly oriented.	END			*/
-		/********************************************************************************/
+	/********************************************************************************/
+	/*	END	Here is where make sure the vehicle is properly oriented.	END			*/
+	/********************************************************************************/
 }
 
 void AnimalProcessOri(const Vehicle_t* pVeh)

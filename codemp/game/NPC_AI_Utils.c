@@ -41,7 +41,7 @@ AI_GetGroupSize
 -------------------------
 */
 
-int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, gentity_t* avoid)
+int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, gentity_t* avoid)
 {
 	int radiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -86,7 +86,7 @@ int AI_GetGroupSize(vec3_t origin, int radius, team_t playerTeam, gentity_t* avo
 
 //Overload
 
-int AI_GetGroupSize2(gentity_t* ent, int radius)
+int AI_GetGroupSize2(gentity_t* ent, const int radius)
 {
 	if (ent == NULL || ent->client == NULL)
 		return -1;
@@ -136,7 +136,7 @@ void AI_SetClosestBuddy(AIGroupInfo_t* group)
 		for (int j = 0; j < group->numGroup; j++)
 		{
 			const int dist = DistanceSquared(g_entities[group->member[i].number].r.currentOrigin,
-				g_entities[group->member[j].number].r.currentOrigin);
+			                                 g_entities[group->member[j].number].r.currentOrigin);
 			if (dist < bestDist)
 			{
 				bestDist = dist;
@@ -605,7 +605,7 @@ void AI_SetNewGroupCommander(AIGroupInfo_t* group)
 	}
 }
 
-void AI_DeleteGroupMember(AIGroupInfo_t* group, int memberNum)
+void AI_DeleteGroupMember(AIGroupInfo_t* group, const int memberNum)
 {
 	//added additional sanity checks to fix some crashing problems.
 	if (memberNum >= MAX_GROUP_MEMBERS || memberNum >= group->numGroup)
@@ -658,7 +658,7 @@ void AI_DeleteSelfFromGroup(const gentity_t* self)
 extern void ST_AggressionAdjust(const gentity_t* self, int change);
 extern void ST_MarkToCover(const gentity_t* self);
 extern void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time,
-	int max_time);
+                         int max_time);
 
 void AI_GroupMemberKilled(const gentity_t* self)
 {
@@ -768,7 +768,7 @@ void AI_GroupUpdateClearShotTime(AIGroupInfo_t* group)
 	group->lastClearShotTime = level.time;
 }
 
-void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, int newSquadState)
+void AI_GroupUpdateSquadstates(AIGroupInfo_t* group, const gentity_t* member, const int newSquadState)
 {
 	if (!group)
 	{
@@ -989,13 +989,13 @@ qboolean AI_RefreshGroup(AIGroupInfo_t* group)
 		case WP_EMPLACED_GUN:
 			group->morale -= 8;
 			break;
-		default:;
-			//		case WP_ATST_MAIN:
-			//			group->morale -= 8;
-			//			break;
-			//		case WP_ATST_SIDE:
-			//			group->morale -= 20;
-			//			break;
+		default: ;
+		//		case WP_ATST_MAIN:
+		//			group->morale -= 8;
+		//			break;
+		//		case WP_ATST_SIDE:
+		//			group->morale -= 20;
+		//			break;
 		}
 	}
 	if (group->moraleDebounce < level.time)
@@ -1033,7 +1033,7 @@ void AI_UpdateGroups(void)
 	}
 }
 
-qboolean AI_GroupContainsEntNum(AIGroupInfo_t* group, int entNum)
+qboolean AI_GroupContainsEntNum(AIGroupInfo_t* group, const int entNum)
 {
 	if (!group)
 	{
@@ -1080,7 +1080,7 @@ AI_CheckEnemyCollision
 -------------------------
 */
 
-qboolean AI_CheckEnemyCollision(gentity_t* ent, qboolean takeEnemy)
+qboolean AI_CheckEnemyCollision(gentity_t* ent, const qboolean takeEnemy)
 {
 	navInfo_t info;
 
@@ -1115,7 +1115,7 @@ AI_DistributeAttack
 
 #define	MAX_RADIUS_ENTS		128
 
-gentity_t* AI_DistributeAttack(gentity_t* attacker, gentity_t* enemy, team_t team, int threshold)
+gentity_t* AI_DistributeAttack(gentity_t* attacker, gentity_t* enemy, const team_t team, const int threshold)
 {
 	int radiusEnts[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
@@ -1186,7 +1186,7 @@ gentity_t* AI_DistributeAttack(gentity_t* attacker, gentity_t* enemy, team_t tea
 	return NULL;
 }
 
-gentity_t* FindClosestPlayer(vec3_t position, int enemyTeam)
+gentity_t* FindClosestPlayer(vec3_t position, const int enemyTeam)
 {
 	//Return the closest live player to position that is on this team.
 	float bestdist = 9999;
@@ -1225,7 +1225,7 @@ gentity_t* FindClosestPlayer(vec3_t position, int enemyTeam)
 	return closestplayer;
 }
 
-float DistancetoClosestPlayer(vec3_t position, int enemyTeam)
+float DistancetoClosestPlayer(vec3_t position, const int enemyTeam)
 {
 	//returns the distance to the closest human player on this team
 	float bestdist = 9999;
@@ -1262,8 +1262,8 @@ float DistancetoClosestPlayer(vec3_t position, int enemyTeam)
 	return bestdist;
 }
 
-qboolean InPlayersFOV(vec3_t position, int enemyTeam, int hFOV,
-	int vFOV, qboolean CheckClearLOS)
+qboolean InPlayersFOV(vec3_t position, const int enemyTeam, const int hFOV,
+                      const int vFOV, const qboolean CheckClearLOS)
 {
 	//checks to see if this position is the FOV of a player on this team
 	for (int i = 0; i < MAX_CLIENTS; i++)

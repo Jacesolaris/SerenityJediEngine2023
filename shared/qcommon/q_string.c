@@ -11,14 +11,14 @@
 
 #include "q_color.h"
 
-int Q_isprint(int c)
+int Q_isprint(const int c)
 {
 	if (c >= 0x20 && c <= 0x7E)
 		return 1;
 	return 0;
 }
 
-int Q_isprintext(int c)
+int Q_isprintext(const int c)
 {
 	if (c >= 0x20 && c <= 0x7E)
 		return 1;
@@ -27,7 +27,7 @@ int Q_isprintext(int c)
 	return 0;
 }
 
-int Q_isgraph(int c)
+int Q_isgraph(const int c)
 {
 	if (c >= 0x21 && c <= 0x7E)
 		return 1;
@@ -36,21 +36,21 @@ int Q_isgraph(int c)
 	return 0;
 }
 
-int Q_islower(int c)
+int Q_islower(const int c)
 {
 	if (c >= 'a' && c <= 'z')
 		return 1;
 	return 0;
 }
 
-int Q_isupper(int c)
+int Q_isupper(const int c)
 {
 	if (c >= 'A' && c <= 'Z')
 		return 1;
 	return 0;
 }
 
-int Q_isalpha(int c)
+int Q_isalpha(const int c)
 {
 	if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
 		return 1;
@@ -72,12 +72,12 @@ qboolean Q_isanumber(const char* s)
 	return *p == '\0';
 }
 
-qboolean Q_isintegral(float f)
+qboolean Q_isintegral(const float f)
 {
 	return (int)f == f;
 }
 
-char* Q_strrchr(const char* string, int c)
+char* Q_strrchr(const char* string, const int c)
 {
 	const char cc = c;
 	char* sp = 0;
@@ -103,7 +103,7 @@ Q_strncpyz
 Safe strncpy that ensures a trailing zero
 =============
 */
-void Q_strncpyz(char* dest, const char* src, int destsize)
+void Q_strncpyz(char* dest, const char* src, const int destsize)
 {
 	assert(src);
 	assert(dest);
@@ -151,7 +151,8 @@ int Q_stricmpn(const char* s1, const char* s2, int n)
 				return c1 < c2 ? -1 : 1;
 			}
 		}
-	} while (c1);
+	}
+	while (c1);
 
 	return 0; // strings are equal
 }
@@ -179,7 +180,8 @@ int Q_strncmp(const char* s1, const char* s2, int n)
 		{
 			return c1 < c2 ? -1 : 1;
 		}
-	} while (c1);
+	}
+	while (c1);
 
 	return 0; // strings are equal
 }
@@ -207,7 +209,7 @@ char* Q_strupr(char* s1)
 }
 
 // never goes past bounds or leaves without a terminating 0
-void Q_strcat(char* dest, int size, const char* src)
+void Q_strcat(char* dest, const int size, const char* src)
 {
 	const int l1 = strlen(dest);
 	if (l1 >= size)
@@ -249,8 +251,10 @@ const char* Q_stristr(const char* s, const char* find)
 				{
 					sc -= 'a' - 'A';
 				}
-			} while (sc != c);
-		} while (Q_stricmpn(s, find, len) != 0);
+			}
+			while (sc != c);
+		}
+		while (Q_stricmpn(s, find, len) != 0);
 		s--;
 	}
 	return s;
@@ -366,7 +370,7 @@ Q_strstrip( "Bo\nb is h\rairy!!", "\n\r!", NULL );	// "Bob is hairy"
 
 void Q_strstrip(char* string, const char* strip, const char* repl)
 {
-	char* out = string, * p = string, c;
+	char *out = string, *p = string, c;
 	const int replaceLen = repl ? strlen(repl) : 0;
 
 	while ((c = *p++) != '\0')

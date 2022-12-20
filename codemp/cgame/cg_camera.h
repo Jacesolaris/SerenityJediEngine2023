@@ -31,90 +31,90 @@
 typedef struct camera_s
 {
 	//Position / Facing information
-	vec3_t	origin;
-	vec3_t	angles;
+	vec3_t origin;
+	vec3_t angles;
 
-	vec3_t	origin2;
-	vec3_t	angles2;
+	vec3_t origin2;
+	vec3_t angles2;
 
 	//Movement information
-	float	move_duration;
-	float	move_time;
-	int		move_type;	//CMOVE_LINEAR, CMOVE_BEZIER
+	float move_duration;
+	float move_time;
+	int move_type; //CMOVE_LINEAR, CMOVE_BEZIER
 
 	//FOV information
-	float	FOV;
-	float	FOV2;
-	float	FOV_duration;
-	float	FOV_time;
-	float	FOV_vel;
-	float	FOV_acc;
+	float FOV;
+	float FOV2;
+	float FOV_duration;
+	float FOV_time;
+	float FOV_vel;
+	float FOV_acc;
 
 	//Pan information
-	float	pan_time;
-	float	pan_duration;
+	float pan_time;
+	float pan_duration;
 
 	//Following information
 	//an array of entityNums
-	int		cameraGroup[MAX_CAMERA_GROUP_SUBJECTS];
-	float	cameraGroupZOfs;
-	char	cameraGroupTag[MAX_QPATH];
-	vec3_t	subjectPos;
-	float	subjectSpeed;
-	float	followSpeed;
+	int cameraGroup[MAX_CAMERA_GROUP_SUBJECTS];
+	float cameraGroupZOfs;
+	char cameraGroupTag[MAX_QPATH];
+	vec3_t subjectPos;
+	float subjectSpeed;
+	float followSpeed;
 	qboolean followInitLerp;
-	float	distance;
+	float distance;
 	qboolean distanceInitLerp;
 	//int		aimEntNum;//FIXME: remove
 
 	//Tracking information
-	int		trackEntNum;
-	vec3_t	trackToOrg;
-	vec3_t	moveDir;
-	float	speed;
-	float	initSpeed;
-	float	trackInitLerp;
-	int		nextTrackEntUpdateTime;
+	int trackEntNum;
+	vec3_t trackToOrg;
+	vec3_t moveDir;
+	float speed;
+	float initSpeed;
+	float trackInitLerp;
+	int nextTrackEntUpdateTime;
 
 	//Cine-bar information
-	float	bar_alpha;
-	float	bar_alpha_source;
-	float	bar_alpha_dest;
-	float	bar_time;
+	float bar_alpha;
+	float bar_alpha_source;
+	float bar_alpha_dest;
+	float bar_time;
 
-	float	bar_height_source;
-	float	bar_height_dest;
-	float	bar_height;
+	float bar_height_source;
+	float bar_height_dest;
+	float bar_height;
 
-	vec4_t	fade_color;
-	vec4_t	fade_source;
-	vec4_t	fade_dest;
-	float	fade_time;
-	float	fade_duration;
+	vec4_t fade_color;
+	vec4_t fade_source;
+	vec4_t fade_dest;
+	float fade_time;
+	float fade_duration;
 
 	//State information
-	int		info_state;
+	int info_state;
 
 	//Shake information
-	float	shake_intensity;
-	int		shake_duration;
-	int		shake_start;
+	float shake_intensity;
+	int shake_duration;
+	int shake_start;
 
 	//Smooth information
-	float	smooth_intensity;
-	int		smooth_duration;
-	int		smooth_start;
-	vec3_t	smooth_origin;
-	qboolean	smooth_active; // means smooth_origin and angles are valid
+	float smooth_intensity;
+	int smooth_duration;
+	int smooth_start;
+	vec3_t smooth_origin;
+	qboolean smooth_active; // means smooth_origin and angles are valid
 
 	// ROFF information
-	char	sRoff[MAX_QPATH];	// name of a cached roff
-	int		roff_frame;		// current frame in the roff data
-	int		next_roff_time;	// time when it's ok to apply the next roff frame
+	char sRoff[MAX_QPATH]; // name of a cached roff
+	int roff_frame; // current frame in the roff data
+	int next_roff_time; // time when it's ok to apply the next roff frame
 } camera_t;
 
-extern	qboolean		in_camera;
-extern	camera_t	client_camera;
+extern qboolean in_camera;
+extern camera_t client_camera;
 
 void CGCam_Init(void);
 
@@ -141,7 +141,7 @@ void CGCam_UpdateShake(vec3_t origin, vec3_t angles);
 void CGCam_Follow(int cameraGroup[MAX_CAMERA_GROUP_SUBJECTS], float speed, float initLerp);
 void CGCam_Track(int trackNum, float speed, float init_lerp);
 void CGCam_Distance(float distance, float initLerp);
-void CGCam_Roll(float	dest, float duration);
+void CGCam_Roll(float dest, float duration);
 
 void CGCam_StartRoff(const char* roff);
 

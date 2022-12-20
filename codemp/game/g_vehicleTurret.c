@@ -27,16 +27,16 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern void WP_CalcVehMuzzle(gentity_t* ent, int muzzleNum);
 extern gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWeaponInfo_t* vehWeapon,
-	qboolean alt_fire, qboolean isTurretWeap);
+                                       qboolean alt_fire, qboolean isTurretWeap);
 
 extern void G_VehMuzzleFireFX(const gentity_t* ent, gentity_t* broadcaster, int muzzlesFired);
 //-----------------------------------------------------
 void VEH_TurretCheckFire(Vehicle_t* pVeh,
-	gentity_t* parent,
-	//gentity_t *turretEnemy,
-	const turretStats_t* turretStats,
-	const vehWeaponInfo_t* vehWeapon,
-	int turretNum, int curMuzzle)
+                         gentity_t* parent,
+                         //gentity_t *turretEnemy,
+                         const turretStats_t* turretStats,
+                         const vehWeaponInfo_t* vehWeapon,
+                         const int turretNum, const int curMuzzle)
 {
 	// if it's time to fire and we have an enemy, then gun 'em down!  pushDebounce time controls next fire time
 	if (pVeh->m_iMuzzleTag[curMuzzle] == -1)
@@ -65,7 +65,7 @@ void VEH_TurretCheckFire(Vehicle_t* pVeh,
 
 		//FIXME: some variation in fire dir
 		gentity_t* missile = WP_FireVehicleWeapon(parent, pVeh->m_vMuzzlePos[curMuzzle], pVeh->m_vMuzzleDir[curMuzzle],
-			vehWeapon, turretNum != 0, qtrue);
+		                                          vehWeapon, turretNum != 0, qtrue);
 
 		//play the weapon's muzzle effect if we have one
 		G_VehMuzzleFireFX(parent, missile, muzzlesFired);
@@ -74,8 +74,8 @@ void VEH_TurretCheckFire(Vehicle_t* pVeh,
 		pVeh->turretStatus[turretNum].ammo -= vehWeapon->iAmmoPerShot;
 		//toggle to the next muzzle on this turret, if there is one
 		const int nextMuzzle = curMuzzle + 1 == pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[0]
-			? pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[1]
-			: pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[0];
+			                       ? pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[1]
+			                       : pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[0];
 		if (nextMuzzle)
 		{
 			//a valid muzzle to toggle to
@@ -87,8 +87,9 @@ void VEH_TurretCheckFire(Vehicle_t* pVeh,
 	}
 }
 
-void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, int curMuzzle, float fSpeed, gentity_t* turretEnemy, qboolean bAILead,
-	vec3_t desiredAngles)
+void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, const int curMuzzle, const float fSpeed, gentity_t* turretEnemy,
+                             const qboolean bAILead,
+                             vec3_t desiredAngles)
 {
 	vec3_t enemyDir, org;
 	VectorCopy(turretEnemy->r.currentOrigin, org);
@@ -117,12 +118,12 @@ void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, int curMuzzle, float fSpeed, genti
 
 //-----------------------------------------------------
 qboolean VEH_TurretAim(Vehicle_t* pVeh,
-	gentity_t* parent,
-	gentity_t* turretEnemy,
-	const turretStats_t* turretStats,
-	const vehWeaponInfo_t* vehWeapon,
-	int turretNum, int curMuzzle, vec3_t desiredAngles)
-	//-----------------------------------------------------
+                       gentity_t* parent,
+                       gentity_t* turretEnemy,
+                       const turretStats_t* turretStats,
+                       const vehWeaponInfo_t* vehWeapon,
+                       const int turretNum, const int curMuzzle, vec3_t desiredAngles)
+//-----------------------------------------------------
 {
 	vec3_t curAngles, addAngles, newAngles;
 	float aimCorrect = qfalse;
@@ -223,10 +224,10 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 
 //-----------------------------------------------------
 static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
-	gentity_t* parent,
-	const turretStats_t* turretStats,
-	int turretNum, int curMuzzle)
-	//-----------------------------------------------------
+                                      gentity_t* parent,
+                                      const turretStats_t* turretStats,
+                                      const int turretNum, const int curMuzzle)
+//-----------------------------------------------------
 {
 	qboolean found = qfalse;
 	float bestDist = turretStats->fAIRange * turretStats->fAIRange;
@@ -350,7 +351,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 	return found;
 }
 
-void VEH_TurretObeyPassengerControl(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
+void VEH_TurretObeyPassengerControl(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 {
 	const turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
 	const gentity_t* passenger = (gentity_t*)pVeh->m_ppPassengers[turretStats->passengerNum - 1];
@@ -372,7 +373,7 @@ void VEH_TurretObeyPassengerControl(Vehicle_t* pVeh, gentity_t* parent, int turr
 	}
 }
 
-void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum)
+void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 //-----------------------------------------------------
 {
 	qboolean doAim = qfalse;

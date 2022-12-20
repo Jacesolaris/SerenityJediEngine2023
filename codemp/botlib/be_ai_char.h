@@ -36,7 +36,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
- //loads a bot character from a file
+//loads a bot character from a file
 int BotLoadCharacter(char* charfile, float skill);
 //frees a bot character
 void BotFreeCharacter(int character);

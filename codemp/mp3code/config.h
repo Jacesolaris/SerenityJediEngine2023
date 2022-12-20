@@ -61,8 +61,8 @@ typedef double real;
 
 #if UCHAR_MAX == 0xff
 
-typedef unsigned char	uint8;
-typedef signed char		int8;
+typedef unsigned char uint8;
+typedef signed char int8;
 
 #else
 #error This machine has no 8-bit type
@@ -75,8 +75,8 @@ typedef int				int16;
 
 #elif USHRT_MAX == 0xffff
 
-typedef unsigned short	uint16;
-typedef short			int16;
+typedef unsigned short uint16;
+typedef short int16;
 
 #else
 #error This machine has no 16-bit type
@@ -84,8 +84,8 @@ typedef short			int16;
 
 #if UINT_MAX == 0xfffffffful
 
-typedef unsigned int	uint32;
-typedef int				int32;
+typedef unsigned int uint32;
+typedef int int32;
 
 #elif ULONG_MAX == 0xfffffffful
 

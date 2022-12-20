@@ -100,9 +100,9 @@ sysEvent_t Sys_GetEvent(void);
 void Sys_Init(void);
 
 // general development dll loading for virtual machine testing
-using GetGameAPIProc = void* (void*);
+using GetGameAPIProc = void*(void*);
 using VMMainProc = intptr_t QDECL(int, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t,
-	intptr_t, intptr_t, intptr_t, intptr_t);
+                                  intptr_t, intptr_t, intptr_t, intptr_t);
 using SystemCallProc = intptr_t QDECL(intptr_t, ...);
 using GetModuleAPIProc = void* QDECL(int, ...);
 

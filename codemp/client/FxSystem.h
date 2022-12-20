@@ -38,68 +38,70 @@ extern cvar_t* fx_optimizedParticles;
 class SFxHelper
 {
 public:
-	int		mTime;
-	int		mOldTime;
-	int		mFrameTime;
-	bool	mTimeFrozen;
-	float	mRealTime;
+	int mTime;
+	int mOldTime;
+	int mFrameTime;
+	bool mTimeFrozen;
+	float mRealTime;
 	refdef_t* refdef;
 #ifdef _DEBUG
-	int		mMainRefs;
-	int		mMiniRefs;
+	int mMainRefs;
+	int mMiniRefs;
 #endif
 
 public:
 	SFxHelper();
 
-	int	GetTime(void) const { return mTime; }
-	int	GetFrameTime(void) const { return mFrameTime; }
+	int GetTime(void) const { return mTime; }
+	int GetFrameTime(void) const { return mFrameTime; }
 
-	void	ReInit(refdef_t* pRefdef);
-	void	AdjustTime(int time);
+	void ReInit(refdef_t* pRefdef);
+	void AdjustTime(int time);
 
 	// These functions are wrapped and used by the fx system in case it makes things a bit more portable
-	static void	Print(const char* msg, ...);
+	static void Print(const char* msg, ...);
 
 	// File handling
-	static int		OpenFile(const char* path, fileHandle_t* fh, int mode)
+	static int OpenFile(const char* path, fileHandle_t* fh, int mode)
 	{
 		return FS_FOpenFileByMode(path, fh, FS_READ);
 	}
 
-	static int		ReadFile(void* data, int len, fileHandle_t fh)
+	static int ReadFile(void* data, const int len, const fileHandle_t fh)
 	{
 		FS_Read(data, len, fh);
 		return 1;
 	}
 
-	static void	CloseFile(fileHandle_t fh)
+	static void CloseFile(const fileHandle_t fh)
 	{
 		FS_FCloseFile(fh);
 	}
 
 	// Sound
-	static void	PlaySound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int volume, int radius)
+	static void PlaySound(vec3_t origin, int entityNum, int entchannel, const sfxHandle_t sfxHandle, int volume,
+	                      int radius)
 	{
 		//S_StartSound( origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle, volume, radius );
 		S_StartSound(origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle);
 	}
 
-	static void	PlayLocalSound(sfxHandle_t sfxHandle, int entchannel)
+	static void PlayLocalSound(const sfxHandle_t sfxHandle, const int entchannel)
 	{
 		//S_StartSound( origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle, volume, radius );
 		S_StartLocalSound(sfxHandle, entchannel);
 	}
 
-	static int		RegisterSound(const char* sound)
+	static int RegisterSound(const char* sound)
 	{
 		return S_RegisterSound(sound);
 	}
 
 	// Physics/collision
-	static void	Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags)
+	static void Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, const int skipEntNum,
+	                  const int flags)
 	{
-		TCGTrace* td = (TCGTrace*)cl.mSharedMemory;
+		auto td = (TCGTrace*)cl.mSharedMemory;
 
 		if (!min)
 		{
@@ -111,7 +113,7 @@ public:
 			max = vec3_origin;
 		}
 
-		memset(td, 0, sizeof * td);
+		memset(td, 0, sizeof *td);
 		VectorCopy(start, td->mStart);
 		VectorCopy(min, td->mMins);
 		VectorCopy(max, td->mMaxs);
@@ -124,9 +126,10 @@ public:
 		tr = td->mResult;
 	}
 
-	static void	G2Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, int skipEntNum, int flags)
+	static void G2Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, const int skipEntNum,
+	                    const int flags)
 	{
-		TCGTrace* td = (TCGTrace*)cl.mSharedMemory;
+		auto td = (TCGTrace*)cl.mSharedMemory;
 
 		if (!min)
 		{
@@ -138,7 +141,7 @@ public:
 			max = vec3_origin;
 		}
 
-		memset(td, 0, sizeof * td);
+		memset(td, 0, sizeof *td);
 		VectorCopy(start, td->mStart);
 		VectorCopy(min, td->mMins);
 		VectorCopy(max, td->mMaxs);
@@ -151,9 +154,9 @@ public:
 		tr = td->mResult;
 	}
 
-	static void	AddGhoul2Decal(int shader, vec3_t start, vec3_t dir, float size)
+	static void AddGhoul2Decal(const int shader, vec3_t start, vec3_t dir, const float size)
 	{
-		TCGG2Mark* td = (TCGG2Mark*)cl.mSharedMemory;
+		auto td = (TCGG2Mark*)cl.mSharedMemory;
 
 		td->size = size;
 		td->shader = shader;
@@ -163,7 +166,7 @@ public:
 		CGVM_G2Mark();
 	}
 
-	void	AddFxToScene(refEntity_t* ent)
+	void AddFxToScene(refEntity_t* ent)
 	{
 #ifdef _DEBUG
 		mMainRefs++;
@@ -173,7 +176,7 @@ public:
 		re->AddRefEntityToScene(ent);
 	}
 
-	void	AddFxToScene(miniRefEntity_t* ent)
+	void AddFxToScene(miniRefEntity_t* ent)
 	{
 #ifdef _DEBUG
 		mMiniRefs++;
@@ -183,33 +186,36 @@ public:
 		re->AddMiniRefEntityToScene(ent);
 	}
 
-	static void	AddLightToScene(vec3_t org, float radius, float red, float green, float blue)
+	static void AddLightToScene(vec3_t org, const float radius, const float red, const float green, const float blue)
 	{
 		re->AddLightToScene(org, radius, red, green, blue);
 	}
 
-	static int		RegisterShader(const char* shader)
+	static int RegisterShader(const char* shader)
 	{
 		return re->RegisterShader(shader);
 	}
 
-	static int		RegisterModel(const char* model)
+	static int RegisterModel(const char* model)
 	{
 		return re->RegisterModel(model);
 	}
 
-	static void	AddPolyToScene(int shader, int count, polyVert_t* verts)
+	static void AddPolyToScene(const int shader, const int count, polyVert_t* verts)
 	{
 		re->AddPolyToScene(shader, count, verts, 1);
 	}
 
-	static void AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary)
+	static void AddDecalToScene(const qhandle_t shader, const vec3_t origin, const vec3_t dir, const float orientation,
+	                            const float r, const float g, const float b, const float a, const qboolean alphaFade,
+	                            const float radius, const qboolean temporary)
 	{
 		re->AddDecalToScene(shader, origin, dir, orientation, r, g, b, a, alphaFade, radius, temporary);
 	}
 
-	static void	CameraShake(vec3_t origin, float intensity, int radius, int time);
-	static qboolean GetOriginAxisFromBolt(CGhoul2Info_v* pGhoul2, int mEntNum, int modelNum, int boltNum, vec3_t /*out*/origin, vec3_t /*out*/axis[3]);
+	static void CameraShake(vec3_t origin, float intensity, int radius, int time);
+	static qboolean GetOriginAxisFromBolt(CGhoul2Info_v* pGhoul2, int mEntNum, int modelNum, int boltNum,
+	                                      vec3_t /*out*/origin, vec3_t /*out*/axis[3]);
 };
 
-extern SFxHelper	theFxHelper;
+extern SFxHelper theFxHelper;

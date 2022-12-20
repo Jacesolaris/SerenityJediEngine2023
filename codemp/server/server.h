@@ -32,266 +32,285 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //=============================================================================
 
 #define	PERS_SCORE				0		// !!! MUST NOT CHANGE, SERVER AND
-										// GAME BOTH REFERENCE !!!
+// GAME BOTH REFERENCE !!!
 
 #define	MAX_ENT_CLUSTERS	16
 
-typedef struct svEntity_s {
+using svEntity_t = struct svEntity_s
+{
 	struct worldSector_s* worldSector;
 	svEntity_s* nextEntityInWorldSector;
 
-	entityState_t	baseline;		// for delta compression of initial sighting
-	int			numClusters;		// if -1, use headnode instead
-	int			clusternums[MAX_ENT_CLUSTERS];
-	int			lastCluster;		// if all the clusters don't fit in clusternums
-	int			areanum, areanum2;
-	int			snapshotCounter;	// used to prevent double adding from portal views
-} svEntity_t;
+	entityState_t baseline; // for delta compression of initial sighting
+	int numClusters; // if -1, use headnode instead
+	int clusternums[MAX_ENT_CLUSTERS];
+	int lastCluster; // if all the clusters don't fit in clusternums
+	int areanum, areanum2;
+	int snapshotCounter; // used to prevent double adding from portal views
+};
 
-typedef enum {
-	SS_DEAD,			// no map loaded
-	SS_LOADING,			// spawning level entities
-	SS_GAME				// actively running
-} serverState_t;
+using serverState_t = enum
+{
+	SS_DEAD,
+	// no map loaded
+	SS_LOADING,
+	// spawning level entities
+	SS_GAME // actively running
+};
 
-typedef struct server_s {
-	serverState_t	state;
-	qboolean		restarting;			// if true, send configstring changes during SS_LOADING
-	int				serverId;			// changes each server start
-	int				restartedServerId;	// serverId before a map_restart
-	int				checksumFeed;		//
-	int				snapshotCounter;	// incremented for each snapshot built
-	int				timeResidual;		// <= 1000 / sv_frame->value
-	int				nextFrameTime;		// when time > nextFrameTime, process world
+using server_t = struct server_s
+{
+	serverState_t state;
+	qboolean restarting; // if true, send configstring changes during SS_LOADING
+	int serverId; // changes each server start
+	int restartedServerId; // serverId before a map_restart
+	int checksumFeed; //
+	int snapshotCounter; // incremented for each snapshot built
+	int timeResidual; // <= 1000 / sv_frame->value
+	int nextFrameTime; // when time > nextFrameTime, process world
 	char* configstrings[MAX_CONFIGSTRINGS];
-	svEntity_t		svEntities[MAX_GENTITIES];
+	svEntity_t svEntities[MAX_GENTITIES];
 
-	char* entityParsePoint;	// used during game VM init
+	char* entityParsePoint; // used during game VM init
 
 	// the game virtual machine will update these on init and changes
 	sharedEntity_t* gentities;
-	int				gentitySize;
-	int				num_entities;		// current number, <= MAX_GENTITIES
+	int gentitySize;
+	int num_entities; // current number, <= MAX_GENTITIES
 
 	playerState_t* gameClients;
-	int				gameClientSize;		// will be > sizeof(playerState_t) due to game private data
+	int gameClientSize; // will be > sizeof(playerState_t) due to game private data
 
-	int				restartTime;
-	int				time;
+	int restartTime;
+	int time;
 
 	//rwwRMG - added:
-	int				mLocalSubBSPIndex;
-	int				mLocalSubBSPModelOffset;
+	int mLocalSubBSPIndex;
+	int mLocalSubBSPModelOffset;
 	char* mLocalSubBSPEntityParsePoint;
 
 	char* mSharedMemory;
 
-	time_t			realMapTimeStarted;	// time the current map was started
-	qboolean		demosPruned; // whether or not existing demos were cleaned up already
-} server_t;
+	time_t realMapTimeStarted; // time the current map was started
+	qboolean demosPruned; // whether or not existing demos were cleaned up already
+};
 
-typedef struct clientSnapshot_s {
-	int				areabytes;
-	byte			areabits[MAX_MAP_AREA_BYTES];		// portalarea visibility bits
-	playerState_t	ps;
-	playerState_t	vps; //vehicle I'm riding's playerstate (if applicable) -rww
+using clientSnapshot_t = struct clientSnapshot_s
+{
+	int areabytes;
+	byte areabits[MAX_MAP_AREA_BYTES]; // portalarea visibility bits
+	playerState_t ps;
+	playerState_t vps; //vehicle I'm riding's playerstate (if applicable) -rww
 #ifdef _ONEBIT_COMBO
 	int* pDeltaOneBit;
 	int* pDeltaOneBitVeh;
 	int* pDeltaNumBit;
 	int* pDeltaNumBitVeh;
 #endif
-	int				num_entities;
-	int				first_entity;		// into the circular sv_packet_entities[]
+	int num_entities;
+	int first_entity; // into the circular sv_packet_entities[]
 	// the entities MUST be in increasing state number
 	// order, otherwise the delta compression will fail
-	int				messageSent;		// time the message was transmitted
-	int				messageAcked;		// time the message was acked
-	int				messageSize;		// used to rate drop packets
-} clientSnapshot_t;
+	int messageSent; // time the message was transmitted
+	int messageAcked; // time the message was acked
+	int messageSize; // used to rate drop packets
+};
 
-typedef enum {
-	CS_FREE,		// can be reused for a new connection
-	CS_ZOMBIE,		// client has been disconnected, but don't reuse
+using clientState_t = enum
+{
+	CS_FREE,
+	// can be reused for a new connection
+	CS_ZOMBIE,
+	// client has been disconnected, but don't reuse
 	// connection for a couple seconds
-	CS_CONNECTED,	// has been assigned to a client_t, but no gamestate yet
-	CS_PRIMED,		// gamestate has been sent, but client hasn't sent a usercmd
-	CS_ACTIVE		// client is fully in game
-} clientState_t;
+	CS_CONNECTED,
+	// has been assigned to a client_t, but no gamestate yet
+	CS_PRIMED,
+	// gamestate has been sent, but client hasn't sent a usercmd
+	CS_ACTIVE // client is fully in game
+};
 
 // struct to hold demo data for a single demo
-typedef struct {
-	char		demoName[MAX_OSPATH];
-	qboolean	demorecording;
-	qboolean	demowaiting;	// don't record until a non-delta message is sent
-	int			minDeltaFrame;	// the first non-delta frame stored in the demo.  cannot delta against frames older than this
-	fileHandle_t	demofile;
-	qboolean	isBot;
-	int			botReliableAcknowledge; // for bots, need to maintain a separate reliableAcknowledge to record server messages into the demo file
-} demoInfo_t;
+using demoInfo_t = struct
+{
+	char demoName[MAX_OSPATH];
+	qboolean demorecording;
+	qboolean demowaiting; // don't record until a non-delta message is sent
+	int minDeltaFrame; // the first non-delta frame stored in the demo.  cannot delta against frames older than this
+	fileHandle_t demofile;
+	qboolean isBot;
+	int botReliableAcknowledge;
+	// for bots, need to maintain a separate reliableAcknowledge to record server messages into the demo file
+};
 
-typedef struct client_s {
-	clientState_t	state;
-	char			userinfo[MAX_INFO_STRING];		// name, etc
+using client_t = struct client_s
+{
+	clientState_t state;
+	char userinfo[MAX_INFO_STRING]; // name, etc
 
-	qboolean		sentGamedir; //see if he has been sent an svc_setgame
+	qboolean sentGamedir; //see if he has been sent an svc_setgame
 
-	char			reliableCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
-	int				reliableSequence;		// last added reliable message, not necesarily sent or acknowledged yet
-	int				reliableAcknowledge;	// last acknowledged reliable message
-	int				reliableSent;			// last sent reliable message, not necesarily acknowledged yet
-	int				messageAcknowledge;
+	char reliableCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
+	int reliableSequence; // last added reliable message, not necesarily sent or acknowledged yet
+	int reliableAcknowledge; // last acknowledged reliable message
+	int reliableSent; // last sent reliable message, not necesarily acknowledged yet
+	int messageAcknowledge;
 
-	int				gamestateMessageNum;	// netchan->outgoingSequence of gamestate
-	int				challenge;
+	int gamestateMessageNum; // netchan->outgoingSequence of gamestate
+	int challenge;
 
-	usercmd_t		lastUsercmd;
-	int				lastMessageNum;		// for delta compression
-	int				lastClientCommand;	// reliable client message sequence
-	char			lastClientCommandString[MAX_STRING_CHARS];
-	sharedEntity_t* gentity;			// SV_GentityNum(client_num)
-	char			name[MAX_NAME_LENGTH];			// extracted from userinfo, high bits masked
+	usercmd_t lastUsercmd;
+	int lastMessageNum; // for delta compression
+	int lastClientCommand; // reliable client message sequence
+	char lastClientCommandString[MAX_STRING_CHARS];
+	sharedEntity_t* gentity; // SV_GentityNum(client_num)
+	char name[MAX_NAME_LENGTH]; // extracted from userinfo, high bits masked
 
 	// downloading
-	char			downloadName[MAX_QPATH]; // if not empty string, we are downloading
-	fileHandle_t	download;			// file being downloaded
-	int				downloadSize;		// total bytes (can't use EOF because of paks)
-	int				downloadCount;		// bytes sent
-	int				downloadClientBlock;	// last block we sent to the client, awaiting ack
-	int				downloadCurrentBlock;	// current block number
-	int				downloadXmitBlock;	// last block we xmited
-	unsigned char* downloadBlocks[MAX_DOWNLOAD_WINDOW];	// the buffers for the download blocks
-	int				downloadBlockSize[MAX_DOWNLOAD_WINDOW];
-	qboolean		downloadEOF;		// We have sent the EOF block
-	int				downloadSendTime;	// time we last got an ack from the client
+	char downloadName[MAX_QPATH]; // if not empty string, we are downloading
+	fileHandle_t download; // file being downloaded
+	int downloadSize; // total bytes (can't use EOF because of paks)
+	int downloadCount; // bytes sent
+	int downloadClientBlock; // last block we sent to the client, awaiting ack
+	int downloadCurrentBlock; // current block number
+	int downloadXmitBlock; // last block we xmited
+	unsigned char* downloadBlocks[MAX_DOWNLOAD_WINDOW]; // the buffers for the download blocks
+	int downloadBlockSize[MAX_DOWNLOAD_WINDOW];
+	qboolean downloadEOF; // We have sent the EOF block
+	int downloadSendTime; // time we last got an ack from the client
 
-	int				deltaMessage;		// frame last client usercmd message
-	int				nextReliableTime;	// svs.time when another reliable command will be allowed
-	int				lastPacketTime;		// svs.time when packet was last received
-	int				lastConnectTime;	// svs.time when connection started
-	int				nextSnapshotTime;	// send another snapshot when svs.time >= nextSnapshotTime
-	qboolean		rateDelayed;		// true if nextSnapshotTime was set based on rate instead of snapshotMsec
-	int				timeoutCount;		// must timeout a few frames in a row so debugging doesn't break
-	clientSnapshot_t	frames[PACKET_BACKUP];	// updates can be delta'd from here
-	int				ping;
-	int				rate;				// bytes / second
-	int				snapshotMsec;		// requests a snapshot every snapshotMsec unless rate choked
-	int				wishSnaps;			// requested snapshot/sec rate
-	int				pureAuthentic;
-	qboolean		gotCP; // TTimo - additional flag to distinguish between a bad pure checksum, and no cp command at all
-	netchan_t		netchan;
+	int deltaMessage; // frame last client usercmd message
+	int nextReliableTime; // svs.time when another reliable command will be allowed
+	int lastPacketTime; // svs.time when packet was last received
+	int lastConnectTime; // svs.time when connection started
+	int nextSnapshotTime; // send another snapshot when svs.time >= nextSnapshotTime
+	qboolean rateDelayed; // true if nextSnapshotTime was set based on rate instead of snapshotMsec
+	int timeoutCount; // must timeout a few frames in a row so debugging doesn't break
+	clientSnapshot_t frames[PACKET_BACKUP]; // updates can be delta'd from here
+	int ping;
+	int rate; // bytes / second
+	int snapshotMsec; // requests a snapshot every snapshotMsec unless rate choked
+	int wishSnaps; // requested snapshot/sec rate
+	int pureAuthentic;
+	qboolean gotCP; // TTimo - additional flag to distinguish between a bad pure checksum, and no cp command at all
+	netchan_t netchan;
 
-	int				lastUserInfoChange; //if > svs.time && count > x, deny change -rww
-	int				lastUserInfoCount; //allow a certain number of changes within a certain time period -rww
+	int lastUserInfoChange; //if > svs.time && count > x, deny change -rww
+	int lastUserInfoCount; //allow a certain number of changes within a certain time period -rww
 
-	int				oldServerTime;
-	qboolean		csUpdated[MAX_CONFIGSTRINGS];
+	int oldServerTime;
+	qboolean csUpdated[MAX_CONFIGSTRINGS];
 
-	demoInfo_t		demo;
-} client_t;
+	demoInfo_t demo;
+};
 
 //=============================================================================
 
 // this structure will be cleared only when the game dll changes
-typedef struct serverStatic_s {
-	qboolean	initialized;				// sv_init has completed
+using serverStatic_t = struct serverStatic_s
+{
+	qboolean initialized; // sv_init has completed
 
-	int			time;						// will be strictly increasing across level changes
-	time_t		startTime;					// time since epoch the executable was started
+	int time; // will be strictly increasing across level changes
+	time_t startTime; // time since epoch the executable was started
 
-	int			snapFlagServerBit;			// ^= SNAPFLAG_SERVERCOUNT every SV_SpawnServer()
+	int snapFlagServerBit; // ^= SNAPFLAG_SERVERCOUNT every SV_SpawnServer()
 
-	client_t* clients;					// [sv_maxclients->integer];
-	int			numSnapshotEntities;		// sv_maxclients->integer*PACKET_BACKUP*MAX_SNAPSHOT_ENTITIES
-	int			nextSnapshotEntities;		// next snapshotEntities to use
-	entityState_t* snapshotEntities;		// [numSnapshotEntities]
-	int			nextHeartbeatTime;
-	netadr_t	redirectAddress;			// for rcon return messages
+	client_t* clients; // [sv_maxclients->integer];
+	int numSnapshotEntities; // sv_maxclients->integer*PACKET_BACKUP*MAX_SNAPSHOT_ENTITIES
+	int nextSnapshotEntities; // next snapshotEntities to use
+	entityState_t* snapshotEntities; // [numSnapshotEntities]
+	int nextHeartbeatTime;
+	netadr_t redirectAddress; // for rcon return messages
 
-	netadr_t	authorizeAddress;			// for rcon return messages
+	netadr_t authorizeAddress; // for rcon return messages
 
-	qboolean	gameStarted;				// gvm is loaded
-} serverStatic_t;
+	qboolean gameStarted; // gvm is loaded
+};
 
 #define SERVER_MAXBANS	1024
 // Structure for managing bans
-typedef struct serverBan_s {
+using serverBan_t = struct serverBan_s
+{
 	netadr_t ip;
 	// For a CIDR-Notation type suffix
 	int subnet;
 
 	qboolean isexception;
-} serverBan_t;
+};
 
 //=============================================================================
 
-extern	serverStatic_t	svs;				// persistant server info across maps
-extern	server_t		sv;					// cleared each map
+extern serverStatic_t svs; // persistant server info across maps
+extern server_t sv; // cleared each map
 
 //FIXME: dedi server probably can't have this..
-extern	refexport_t* re;					// interface to refresh .dll
+extern refexport_t* re; // interface to refresh .dll
 
-extern	cvar_t* sv_snapsMin;
-extern	cvar_t* sv_snapsMax;
-extern	cvar_t* sv_snapsPolicy;
-extern	cvar_t* sv_fps;
-extern	cvar_t* sv_timeout;
-extern	cvar_t* sv_zombietime;
-extern	cvar_t* sv_rconPassword;
-extern	cvar_t* sv_privatePassword;
-extern	cvar_t* sv_allowDownload;
-extern	cvar_t* sv_maxclients;
-extern	cvar_t* sv_privateClients;
-extern	cvar_t* sv_hostname;
-extern	cvar_t* sv_master[MAX_MASTER_SERVERS];
-extern	cvar_t* sv_reconnectlimit;
-extern	cvar_t* sv_showghoultraces;
-extern	cvar_t* sv_showloss;
-extern	cvar_t* sv_padPackets;
-extern	cvar_t* sv_killserver;
-extern	cvar_t* sv_mapname;
-extern	cvar_t* sv_mapChecksum;
-extern	cvar_t* sv_serverid;
-extern	cvar_t* sv_ratePolicy;
-extern	cvar_t* sv_clientRate;
-extern	cvar_t* sv_minRate;
-extern	cvar_t* sv_maxRate;
-extern	cvar_t* sv_minPing;
-extern	cvar_t* sv_maxPing;
-extern	cvar_t* sv_gametype;
-extern	cvar_t* sv_pure;
-extern	cvar_t* sv_floodProtect;
-extern	cvar_t* sv_lanForceRate;
-extern	cvar_t* sv_needpass;
-extern	cvar_t* sv_filterCommands;
-extern	cvar_t* sv_autoDemo;
-extern	cvar_t* sv_autoDemoBots;
-extern	cvar_t* sv_autoDemoMaxMaps;
-extern	cvar_t* sv_legacyFixes;
-extern	cvar_t* sv_banFile;
+extern cvar_t* sv_snapsMin;
+extern cvar_t* sv_snapsMax;
+extern cvar_t* sv_snapsPolicy;
+extern cvar_t* sv_fps;
+extern cvar_t* sv_timeout;
+extern cvar_t* sv_zombietime;
+extern cvar_t* sv_rconPassword;
+extern cvar_t* sv_privatePassword;
+extern cvar_t* sv_allowDownload;
+extern cvar_t* sv_maxclients;
+extern cvar_t* sv_privateClients;
+extern cvar_t* sv_hostname;
+extern cvar_t* sv_master[MAX_MASTER_SERVERS];
+extern cvar_t* sv_reconnectlimit;
+extern cvar_t* sv_showghoultraces;
+extern cvar_t* sv_showloss;
+extern cvar_t* sv_padPackets;
+extern cvar_t* sv_killserver;
+extern cvar_t* sv_mapname;
+extern cvar_t* sv_mapChecksum;
+extern cvar_t* sv_serverid;
+extern cvar_t* sv_ratePolicy;
+extern cvar_t* sv_clientRate;
+extern cvar_t* sv_minRate;
+extern cvar_t* sv_maxRate;
+extern cvar_t* sv_minPing;
+extern cvar_t* sv_maxPing;
+extern cvar_t* sv_gametype;
+extern cvar_t* sv_pure;
+extern cvar_t* sv_floodProtect;
+extern cvar_t* sv_lanForceRate;
+extern cvar_t* sv_needpass;
+extern cvar_t* sv_filterCommands;
+extern cvar_t* sv_autoDemo;
+extern cvar_t* sv_autoDemoBots;
+extern cvar_t* sv_autoDemoMaxMaps;
+extern cvar_t* sv_legacyFixes;
+extern cvar_t* sv_banFile;
 
-extern	serverBan_t serverBans[SERVER_MAXBANS];
-extern	int serverBansCount;
+extern serverBan_t serverBans[SERVER_MAXBANS];
+extern int serverBansCount;
 
 //===========================================================
 
 //
 // sv_main.c
 //
-typedef struct leakyBucket_s leakyBucket_t;
-struct leakyBucket_s {
-	netadrtype_t	type;
+using leakyBucket_t = struct leakyBucket_s;
 
-	union {
-		byte	_4[4];
+struct leakyBucket_s
+{
+	netadrtype_t type;
+
+	union
+	{
+		byte _4[4];
 	} ipv;
 
-	int					lastTime;
-	signed char			burst;
+	int lastTime;
+	signed char burst;
 
-	long				hash;
+	long hash;
 
-	leakyBucket_t* prev, * next;
+	leakyBucket_t *prev, *next;
 };
 
 extern leakyBucket_t outboundLeakyBucket;
@@ -370,25 +389,25 @@ void SV_SendClientSnapshot(client_t* client);
 //
 // sv_game.c
 //
-int	SV_NumForGentity(sharedEntity_t* ent);
+int SV_NumForGentity(sharedEntity_t* ent);
 sharedEntity_t* SV_GentityNum(int num);
 playerState_t* SV_Gameclient_num(int num);
 svEntity_t* SV_SvEntityForGentity(sharedEntity_t* gEnt);
 sharedEntity_t* SV_GEntityForSvEntity(svEntity_t* svEnt);
-void		SV_InitGameProgs(void);
-void		SV_ShutdownGameProgs(void);
-qboolean	SV_inPVS(const vec3_t p1, const vec3_t p2);
+void SV_InitGameProgs(void);
+void SV_ShutdownGameProgs(void);
+qboolean SV_inPVS(const vec3_t p1, const vec3_t p2);
 
 //
 // sv_bot.c
 //
-void		SV_BotFrame(int time);
-int			SV_BotAllocateClient(void);
-void		SV_BotFreeClient(int client_num);
+void SV_BotFrame(int time);
+int SV_BotAllocateClient(void);
+void SV_BotFreeClient(int client_num);
 
-void		SV_BotInitCvars(void);
-int			SV_BotGetSnapshotEntity(int client, int ent);
-int			SV_BotGetConsoleMessage(int client, char* buf, int size);
+void SV_BotInitCvars(void);
+int SV_BotGetSnapshotEntity(int client, int ent);
+int SV_BotGetConsoleMessage(int client, char* buf, int size);
 
 void* Bot_GetMemoryGame(int size);
 void Bot_FreeMemoryGame(void* ptr);
@@ -430,7 +449,8 @@ int SV_AreaEntities(const vec3_t mins, const vec3_t maxs, int* entity_list, int 
 int SV_PointContents(const vec3_t p, int passEntityNum);
 // returns the CONTENTS_* value from the world and all entities at the given point.
 
-void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod);
+void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
+              int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod);
 // mins and maxs are relative
 
 // if the entire move stays in a solid volume, trace.allsolid will be set,
@@ -441,12 +461,13 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 
 // passEntityNum is explicitly excluded from clipping checks (normally ENTITYNUM_NONE)
 
-void SV_ClipToEntity(trace_t* trace, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int entityNum, int contentmask, int capsule);
+void SV_ClipToEntity(trace_t* trace, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
+                     int entityNum, int contentmask, int capsule);
 // clip to a specific entity
 
 //
 // sv_net_chan.c
 //
-void SV_Netchan_Transmit(client_t* client, msg_t* msg);	//int length, const byte *data );
+void SV_Netchan_Transmit(client_t* client, msg_t* msg); //int length, const byte *data );
 void SV_Netchan_TransmitNextFragment(netchan_t* chan);
 qboolean SV_Netchan_Process(client_t* client, msg_t* msg);

@@ -62,7 +62,7 @@ typedef struct _bmp_source_struct {
 } bmp_source_struct;
 
 LOCAL(int)
-read_byte(bmp_source_ptr sinfo)
+read_byte(const bmp_source_ptr sinfo)
 /* Read next byte from BMP file */
 {
 	register FILE* infile = sinfo->pub.input_file;
@@ -74,7 +74,7 @@ read_byte(bmp_source_ptr sinfo)
 }
 
 LOCAL(void)
-read_colormap(bmp_source_ptr sinfo, int cmaplen, int mapentrysize)
+read_colormap(const bmp_source_ptr sinfo, const int cmaplen, const int mapentrysize)
 /* Read the colormap from a BMP file */
 {
 	int i;
@@ -111,7 +111,7 @@ read_colormap(bmp_source_ptr sinfo, int cmaplen, int mapentrysize)
  */
 
 METHODDEF(JDIMENSION)
-get_8bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_8bit_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 8-bit colormap indexes */
 {
 	const bmp_source_ptr source = (bmp_source_ptr)sinfo;
@@ -137,7 +137,7 @@ get_8bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 }
 
 METHODDEF(JDIMENSION)
-get_24bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_24bit_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 24-bit pixels */
 {
 	const bmp_source_ptr source = (bmp_source_ptr)sinfo;
@@ -164,7 +164,7 @@ get_24bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
 }
 
 METHODDEF(JDIMENSION)
-get_32bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+get_32bit_row(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 /* This version is for reading 32-bit pixels */
 {
 	const bmp_source_ptr source = (bmp_source_ptr)sinfo;
@@ -197,7 +197,7 @@ get_32bit_row(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
  */
 
 METHODDEF(JDIMENSION)
-preload_image(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+preload_image(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 {
 	const bmp_source_ptr source = (bmp_source_ptr)sinfo;
 	register FILE* infile = source->pub.input_file;
@@ -250,7 +250,7 @@ preload_image(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
  */
 
 METHODDEF(void)
-start_input_bmp(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
+start_input_bmp(const j_compress_ptr cinfo, const cjpeg_source_ptr sinfo)
 {
 	const bmp_source_ptr source = (bmp_source_ptr)sinfo;
 	U_CHAR bmpfileheader[14];
@@ -433,7 +433,7 @@ finish_input_bmp(j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
  */
 
 GLOBAL(cjpeg_source_ptr)
-jinit_read_bmp(j_compress_ptr cinfo)
+jinit_read_bmp(const j_compress_ptr cinfo)
 {
 	/* Create module interface object */
 	const bmp_source_ptr source = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

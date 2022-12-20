@@ -110,7 +110,7 @@ void AAS_RoutingInfo(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-static QINLINE int AAS_ClusterAreaNum(int cluster, int areanum)
+static QINLINE int AAS_ClusterAreaNum(const int cluster, const int areanum)
 {
 	const int areacluster = aasworld.areasettings[areanum].cluster;
 	if (areacluster > 0) return aasworld.areasettings[areanum].clusterareanum;
@@ -183,7 +183,7 @@ static QINLINE int AAS_TravelFlagForType_inline(int traveltype)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_TravelFlagForType(int traveltype)
+int AAS_TravelFlagForType(const int traveltype)
 {
 	return AAS_TravelFlagForType_inline(traveltype);
 } //end of the function AAS_TravelFlagForType_inline
@@ -241,7 +241,7 @@ void AAS_FreeRoutingCache(aas_routingcache_t* cache)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_RemoveRoutingCacheInCluster(int clusternum)
+void AAS_RemoveRoutingCacheInCluster(const int clusternum)
 {
 	aas_routingcache_t* nextcache;
 
@@ -264,7 +264,7 @@ void AAS_RemoveRoutingCacheInCluster(int clusternum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_RemoveRoutingCacheUsingArea(int areanum)
+void AAS_RemoveRoutingCacheUsingArea(const int areanum)
 {
 	aas_routingcache_t* nextcache;
 
@@ -298,7 +298,7 @@ void AAS_RemoveRoutingCacheUsingArea(int areanum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_EnableRoutingArea(int areanum, int enable)
+int AAS_EnableRoutingArea(const int areanum, const int enable)
 {
 	if (areanum <= 0 || areanum >= aasworld.numareas)
 	{
@@ -340,7 +340,7 @@ static QINLINE float AAS_RoutingTime(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_GetAreaContentsTravelFlags(int areanum)
+int AAS_GetAreaContentsTravelFlags(const int areanum)
 {
 	const int contents = aasworld.areasettings[areanum].contents;
 	int tfl = 0;
@@ -368,7 +368,7 @@ int AAS_GetAreaContentsTravelFlags(int areanum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-static QINLINE int AAS_AreaContentsTravelFlags_inline(int areanum)
+static QINLINE int AAS_AreaContentsTravelFlags_inline(const int areanum)
 {
 	return aasworld.areacontentstravelflags[areanum];
 } //end of the function AAS_AreaContentsTravelFlags
@@ -378,7 +378,7 @@ static QINLINE int AAS_AreaContentsTravelFlags_inline(int areanum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaContentsTravelFlags(int areanum)
+int AAS_AreaContentsTravelFlags(const int areanum)
 {
 	return aasworld.areacontentstravelflags[areanum];
 } //end of the function AAS_AreaContentsTravelFlags
@@ -457,7 +457,7 @@ void AAS_CreateReversedReachability(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-unsigned short int AAS_AreaTravelTime(int areanum, vec3_t start, vec3_t end)
+unsigned short int AAS_AreaTravelTime(const int areanum, vec3_t start, vec3_t end)
 {
 	vec3_t dir;
 
@@ -550,7 +550,7 @@ void AAS_CalculateAreaTravelTimes(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_PortalMaxTravelTime(int portalnum)
+int AAS_PortalMaxTravelTime(const int portalnum)
 {
 	int n;
 	aas_reversedlink_t* revlink;
@@ -712,7 +712,7 @@ int AAS_FreeOldestCache(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-aas_routingcache_t* AAS_AllocRoutingCache(int numtraveltimes)
+aas_routingcache_t* AAS_AllocRoutingCache(const int numtraveltimes)
 {
 	//
 	const int size = sizeof(aas_routingcache_t)
@@ -998,7 +998,7 @@ void AAS_WriteRouteCache(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-aas_routingcache_t* AAS_ReadCache(fileHandle_t fp)
+aas_routingcache_t* AAS_ReadCache(const fileHandle_t fp)
 {
 	int size;
 
@@ -1361,7 +1361,7 @@ void AAS_UpdateAreaRoutingCache(aas_routingcache_t* areacache)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-aas_routingcache_t* AAS_GetAreaRoutingCache(int clusternum, int areanum, int travelflags)
+aas_routingcache_t* AAS_GetAreaRoutingCache(const int clusternum, const int areanum, const int travelflags)
 {
 	aas_routingcache_t* cache;
 
@@ -1504,7 +1504,7 @@ void AAS_UpdatePortalRoutingCache(aas_routingcache_t* portalcache)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-aas_routingcache_t* AAS_GetPortalRoutingCache(int clusternum, int areanum, int travelflags)
+aas_routingcache_t* AAS_GetPortalRoutingCache(const int clusternum, const int areanum, const int travelflags)
 {
 	aas_routingcache_t* cache;
 
@@ -1546,7 +1546,7 @@ aas_routingcache_t* AAS_GetPortalRoutingCache(int clusternum, int areanum, int t
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaRouteToGoalArea(int areanum, vec3_t origin, int goalareanum, int travelflags, int* traveltime, int* reachnum)
+int AAS_AreaRouteToGoalArea(const int areanum, vec3_t origin, const int goalareanum, int travelflags, int* traveltime, int* reachnum)
 {
 	int clusterareanum;
 	aas_portal_t* portal;
@@ -1727,7 +1727,7 @@ int AAS_AreaRouteToGoalArea(int areanum, vec3_t origin, int goalareanum, int tra
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaTravelTimeToGoalArea(int areanum, vec3_t origin, int goalareanum, int travelflags)
+int AAS_AreaTravelTimeToGoalArea(const int areanum, vec3_t origin, const int goalareanum, const int travelflags)
 {
 	int traveltime, reachnum = 0;
 
@@ -1743,7 +1743,7 @@ int AAS_AreaTravelTimeToGoalArea(int areanum, vec3_t origin, int goalareanum, in
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AreaReachabilityToGoalArea(int areanum, vec3_t origin, int goalareanum, int travelflags)
+int AAS_AreaReachabilityToGoalArea(const int areanum, vec3_t origin, const int goalareanum, const int travelflags)
 {
 	int traveltime, reachnum = 0;
 
@@ -1760,9 +1760,9 @@ int AAS_AreaReachabilityToGoalArea(int areanum, vec3_t origin, int goalareanum, 
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_PredictRoute(aas_predictroute_s* route, int areanum, vec3_t origin,
-	int goalareanum, int travelflags, int maxareas, int maxtime,
-	int stopevent, int stopcontents, int stoptfl, int stopareanum)
+int AAS_PredictRoute(aas_predictroute_s* route, const int areanum, vec3_t origin,
+                     const int goalareanum, const int travelflags, const int maxareas, const int maxtime,
+                     const int stopevent, const int stopcontents, const int stoptfl, const int stopareanum)
 {
 	int testareanum;
 	vec3_t curorigin;
@@ -1877,7 +1877,7 @@ int AAS_BridgeWalkable(int areanum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ReachabilityFromNum(int num, aas_reachability_s* reach)
+void AAS_ReachabilityFromNum(const int num, aas_reachability_s* reach)
 {
 	if (!aasworld.initialized)
 	{
@@ -1897,7 +1897,7 @@ void AAS_ReachabilityFromNum(int num, aas_reachability_s* reach)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_NextAreaReachability(int areanum, int reachnum)
+int AAS_NextAreaReachability(const int areanum, int reachnum)
 {
 	if (!aasworld.initialized) return 0;
 
@@ -1930,7 +1930,7 @@ int AAS_NextAreaReachability(int areanum, int reachnum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_NextModelReachability(int num, int modelnum)
+int AAS_NextModelReachability(int num, const int modelnum)
 {
 	if (num <= 0) num = 1;
 	else if (num >= aasworld.reachabilitysize) return 0;
@@ -1955,7 +1955,7 @@ int AAS_NextModelReachability(int num, int modelnum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_RandomGoalArea(int areanum, int travelflags, int* goalareanum, vec3_t goalorigin)
+int AAS_RandomGoalArea(const int areanum, const int travelflags, int* goalareanum, vec3_t goalorigin)
 {
 	vec3_t start, end;
 
@@ -2032,7 +2032,7 @@ float DistancePointToLine(vec3_t v1, vec3_t v2, vec3_t point)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_NearestHideArea(int srcnum, vec3_t origin, int areanum, int enemynum, vec3_t enemyorigin, int enemyareanum, int travelflags)
+int AAS_NearestHideArea(int srcnum, vec3_t origin, const int areanum, int enemynum, vec3_t enemyorigin, const int enemyareanum, const int travelflags)
 {
 	int j;
 	static unsigned short int* hidetraveltimes;

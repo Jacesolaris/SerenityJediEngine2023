@@ -143,7 +143,7 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireRepeater(gentity_t* ent, qboolean alt_fire)
+void WP_FireRepeater(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t angs;
@@ -182,7 +182,7 @@ void WP_FireRepeater(gentity_t* ent, qboolean alt_fire)
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
 				angs[YAW] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);

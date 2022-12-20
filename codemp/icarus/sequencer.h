@@ -44,6 +44,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define	BF_ELSE			0x00000001	//Block has an else id	//FIXME: This was a sloppy fix for a problem that arose from conditionals
 
+
+
 #define S_FAILED(a) (a!=SEQ_OK)
 
 //const int MAX_ERROR_LENGTH	= 256;
@@ -60,8 +62,10 @@ using bstream_t = struct bstream_s
 
 enum
 {
-	SEQ_OK,				//Command was successfully added
-	SEQ_FAILED,			//An error occured while trying to insert the command
+	SEQ_OK,
+	//Command was successfully added
+	SEQ_FAILED,
+	//An error occured while trying to insert the command
 };
 
 // Sequencer
@@ -79,11 +83,10 @@ class ICARUS_Instance;
 class CSequencer
 {
 	//	typedef	map < int, CSequence * >			sequenceID_m;
-	using sequence_l = std::list < CSequence* >;
-	using taskSequence_m = std::map < CTaskGroup*, CSequence* >;
+	using sequence_l = std::list<CSequence*>;
+	using taskSequence_m = std::map<CTaskGroup*, CSequence*>;
 
 public:
-
 	CSequencer();
 	~CSequencer();
 
@@ -96,32 +99,35 @@ public:
 
 	ICARUS_Instance* GetOwner(void) const { return m_owner; }
 
-	void SetOwnerID(int owner) { m_ownerID = owner; }
+	void SetOwnerID(const int owner) { m_ownerID = owner; }
 
-	int	GetOwnerID(void)						const { return m_ownerID; }
-	interface_export_t* GetInterface(void)	const { return m_ie; }
-	CTaskManager* GetTaskManager(void)		const { return m_taskManager; }
+	int GetOwnerID(void) const { return m_ownerID; }
+	interface_export_t* GetInterface(void) const { return m_ie; }
+	CTaskManager* GetTaskManager(void) const { return m_taskManager; }
 
-	void SetTaskManager(CTaskManager* tm) { if (tm)	m_taskManager = tm; }
+	void SetTaskManager(CTaskManager* tm) { if (tm) m_taskManager = tm; }
 
 	static int Save(void);
 	static int Load(void);
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
-	{	// Allocate the memory.
+	void* operator new(const size_t size)
+	{
+		// Allocate the memory.
 		return Z_Malloc(size, TAG_ICARUS2, qtrue);
 	}
+
 	// Overloaded delete operator.
 	void operator delete(void* pRawData)
-	{	// Free the Memory.
+	{
+		// Free the Memory.
 		Z_Free(pRawData);
 	}
 
 	// moved to public on 2/12/2 to allow calling during shutdown
 	int Recall(void);
-protected:
 
+protected:
 	int EvaluateConditional(CBlock* block) const;
 
 	int Route(CSequence* sequence, bstream_t* bstream);
@@ -173,24 +179,25 @@ protected:
 	//Member variables
 
 	ICARUS_Instance* m_owner;
-	int					m_ownerID;
+	int m_ownerID;
 
 	CTaskManager* m_taskManager;
-	interface_export_t* m_ie;				//This is unique to the sequencer so that client side and server side sequencers could both
+	interface_export_t* m_ie;
+	//This is unique to the sequencer so that client side and server side sequencers could both
 	//operate under different interfaces (for client side scripting)
 
-	int					m_numCommands;		//Total number of commands for the sequencer (including all child sequences)
+	int m_numCommands; //Total number of commands for the sequencer (including all child sequences)
 
 	//	sequenceID_m		m_sequenceMap;
-	sequence_l			m_sequences;
-	taskSequence_m		m_taskSequences;
+	sequence_l m_sequences;
+	taskSequence_m m_taskSequences;
 
 	CSequence* m_curSequence;
 	CTaskGroup* m_curGroup;
 
 	bstream_t* m_curStream;
 
-	int					m_elseValid;
+	int m_elseValid;
 	CBlock* m_elseOwner;
-	std::vector<bstream_t*>  m_streamsCreated;
+	std::vector<bstream_t*> m_streamsCreated;
 };

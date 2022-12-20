@@ -137,15 +137,15 @@ void FX_BryarsbdHitWall(vec3_t origin, vec3_t normal)
 FX_BryarHitPlayer
 -------------------------
 */
-void FX_BryarHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BryarHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
 		if (hit && hit->client && hit->ghoul2.size())
 		{
 			CG_AddGhoul2Mark(cgs.media.bdecal_bodyburn1, flrand(3.5, 4.0), origin, normal, hit->s.number,
-				hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
-				Q_irand(10000, 13000));
+			                 hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
+			                 Q_irand(10000, 13000));
 		}
 		theFxScheduler.PlayEffect(cgs.effects.bryarFleshImpactEffect, origin, normal);
 	}
@@ -155,15 +155,15 @@ void FX_BryarHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean hu
 	}
 }
 
-void FX_BryarsbdHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BryarsbdHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
 		if (hit && hit->client && hit->ghoul2.size())
 		{
 			CG_AddGhoul2Mark(cgs.media.bdecal_bodyburn1, flrand(3.5, 4.0), origin, normal, hit->s.number,
-				hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
-				Q_irand(10000, 13000));
+			                 hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
+			                 Q_irand(10000, 13000));
 		}
 		theFxScheduler.PlayEffect(cgs.effects.briar_pistolFleshImpactEffect, origin, normal);
 	}
@@ -261,7 +261,7 @@ void FX_briar_pistolAltProjectileThink(centity_t* cent, const weaponInfo_s* weap
 FX_BryarAltHitWall
 -------------------------
 */
-void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, int power)
+void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, const int power)
 {
 	switch (power)
 	{
@@ -281,7 +281,7 @@ void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, int power)
 	}
 }
 
-void FX_BryarsbdAltHitWall(vec3_t origin, vec3_t normal, int power)
+void FX_BryarsbdAltHitWall(vec3_t origin, vec3_t normal, const int power)
 {
 	switch (power)
 	{
@@ -306,15 +306,15 @@ void FX_BryarsbdAltHitWall(vec3_t origin, vec3_t normal, int power)
 FX_BryarAltHitPlayer
 -------------------------
 */
-void FX_BryarAltHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BryarAltHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
 		if (hit && hit->client && hit->ghoul2.size())
 		{
 			CG_AddGhoul2Mark(cgs.media.bdecal_bodyburn1, flrand(3.5, 4.0), origin, normal, hit->s.number,
-				hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
-				Q_irand(10000, 13000));
+			                 hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
+			                 Q_irand(10000, 13000));
 		}
 		theFxScheduler.PlayEffect(cgs.effects.bryarFleshImpactEffect, origin, normal);
 	}
@@ -324,15 +324,15 @@ void FX_BryarAltHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean
 	}
 }
 
-void FX_BryarsbdAltHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BryarsbdAltHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
 		if (hit && hit->client && hit->ghoul2.size())
 		{
 			CG_AddGhoul2Mark(cgs.media.bdecal_bodyburn1, flrand(3.5, 4.0), origin, normal, hit->s.number,
-				hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
-				Q_irand(10000, 13000));
+			                 hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
+			                 Q_irand(10000, 13000));
 		}
 		theFxScheduler.PlayEffect(cgs.effects.briar_pistolFleshImpactEffect, origin, normal);
 	}

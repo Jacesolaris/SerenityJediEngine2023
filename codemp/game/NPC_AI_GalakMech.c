@@ -28,8 +28,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void NPC_AimAdjust(int change);
 extern qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t mins, vec3_t maxs, int clipmask,
-	vec3_t velocity, qboolean tracePath, int ignoreEntNum, int enemyNum,
-	float minSpeed, float maxSpeed, float idealSpeed, qboolean mustHit);
+                           vec3_t velocity, qboolean tracePath, int ignoreEntNum, int enemyNum,
+                           float minSpeed, float maxSpeed, float idealSpeed, qboolean mustHit);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
 
 extern qboolean PM_CrouchAnim(int anim);
@@ -43,8 +43,8 @@ extern qboolean PM_CrouchAnim(int anim);
 #define TURN_OFF			0x00000100
 #define GALAK_SHIELD_HEALTH	250
 
-static vec3_t shieldMins = { -60, -60, -24 };
-static vec3_t shieldMaxs = { 60, 60, 80 };
+static vec3_t shieldMins = {-60, -60, -24};
+static vec3_t shieldMaxs = {60, 60, 80};
 
 extern qboolean NPC_CheckPlayerTeamStealth(void);
 
@@ -111,7 +111,7 @@ void NPC_GalakMech_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void GM_CreateExplosion(gentity_t* self, const int bolt_id, qboolean doSmall) //doSmall = qfalse
+static void GM_CreateExplosion(gentity_t* self, const int bolt_id, const qboolean doSmall) //doSmall = qfalse
 {
 	if (bolt_id >= 0)
 	{
@@ -119,7 +119,7 @@ static void GM_CreateExplosion(gentity_t* self, const int bolt_id, qboolean doSm
 		vec3_t org, dir;
 
 		trap->G2API_GetBoltMatrix(self->ghoul2, 0, bolt_id, &boltMatrix, self->r.currentAngles, self->r.currentOrigin,
-			level.time, NULL, self->modelScale);
+		                          level.time, NULL, self->modelScale);
 
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);
 		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, dir);
@@ -154,7 +154,7 @@ void GM_Dying(gentity_t* self)
 			int newBolt;
 			switch (Q_irand(1, 14))
 			{
-				// Find place to generate explosion
+			// Find place to generate explosion
 			case 1:
 				if (!trap->G2API_GetSurfaceRenderStatus(self->ghoul2, 0, "r_hand"))
 				{
@@ -231,7 +231,7 @@ void GM_Dying(gentity_t* self)
 				newBolt = trap->G2API_AddBolt(self->ghoul2, 0, "*r_leg_foot");
 				GM_CreateExplosion(self, newBolt, qtrue);
 				break;
-			default:;
+			default: ;
 			}
 
 			TIMER_Set(self, "dyingExplosion", Q_irand(300, 1100));
@@ -254,7 +254,7 @@ NPC_GM_Pain
 
 extern void NPC_SetPainEvent(gentity_t* self);
 
-void NPC_GM_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_GM_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	vec3_t point;
 	const gentity_t* inflictor = attacker;
@@ -445,7 +445,7 @@ static void GM_CheckMoveState(void)
 	{
 		//Did we make it?
 		if (NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs,
-			NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, qfalse) ||
+		                   NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, qfalse) ||
 			!trap->ICARUS_TaskIDPending((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV) && enemyLOS4 && enemyDist4 <= 10000)
 		{
 			//either hit our navgoal or our navgoal was not a crucial (scripted) one (maybe a combat point) and we're scouting and found our enemy
@@ -498,7 +498,7 @@ static void GM_CheckFireState(void)
 					AngleVectors(NPCS.NPC->client->ps.viewangles, forward, NULL, NULL);
 					VectorMA(muzzle, 8192, forward, end);
 					trap->Trace(&tr, muzzle, vec3_origin, vec3_origin, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0,
-						0);
+					            0);
 					VectorCopy(tr.endpos, impactPos4);
 				}
 
@@ -624,7 +624,7 @@ void NPC_BSGM_Attack(void)
 			if (NPCS.NPC->client->ps.torsoTimer <= 500)
 			{
 				NPC_SetAnim(NPCS.NPC, SETANIM_TORSO, BOTH_TRIUMPHANT1STARTGESTURE,
-					SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+				            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				NPCS.NPC->client->ps.legsTimer += 500;
 				NPCS.NPC->client->ps.torsoTimer += 500;
 			}
@@ -694,7 +694,7 @@ void NPC_BSGM_Attack(void)
 			//time to smack
 			//recheck enemyDist4 and InFront
 			if (enemyDist4 < MELEE_DIST_SQUARED && in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-				NPCS.NPC->client->ps.viewangles, 0.3f))
+			                                                NPCS.NPC->client->ps.viewangles, 0.3f))
 			{
 				vec3_t smack_dir;
 				VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
@@ -703,7 +703,7 @@ void NPC_BSGM_Attack(void)
 				//hurt them
 				G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/galak/skewerhit.wav"));
 				G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
-					(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
+				         (g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_CRUSH);
 				if (NPCS.NPC->client->ps.torsoAnim == BOTH_ATTACK4)
 				{
 					//smackdown
@@ -726,7 +726,7 @@ void NPC_BSGM_Attack(void)
 					g_throw(NPCS.NPC->enemy, smack_dir, 100);
 					//make them backflip
 					NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+					            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				//done with the damage
 				NPCS.NPCInfo->blockedDebounceTime = 1;
@@ -789,11 +789,11 @@ void NPC_BSGM_Attack(void)
 				//do the trace and damage
 				trace_t trace;
 				vec3_t end;
-				const vec3_t maxs = { 3, 3, 3 };
-				const vec3_t mins = { -3, -3, -3 };
+				const vec3_t maxs = {3, 3, 3};
+				const vec3_t mins = {-3, -3, -3};
 				VectorMA(NPCS.NPC->client->renderInfo.muzzlePoint, 1024, NPCS.NPC->client->renderInfo.muzzleDir, end);
 				trap->Trace(&trace, NPCS.NPC->client->renderInfo.muzzlePoint, mins, maxs, end, NPCS.NPC->s.number,
-					MASK_SHOT, qfalse, 0, 0);
+				            MASK_SHOT, qfalse, 0, 0);
 				if (trace.allsolid || trace.startsolid)
 				{
 					//oops, in a wall
@@ -814,7 +814,7 @@ void NPC_BSGM_Attack(void)
 							//damage it
 							G_SoundAtLoc(trace.endpos, CHAN_AUTO, G_SoundIndex("sound/weapons/galak/laserdamage.wav"));
 							G_Damage(traceEnt, NPCS.NPC, NPCS.NPC, NPCS.NPC->client->renderInfo.muzzleDir, trace.endpos,
-								10, 0, MOD_UNKNOWN);
+							         10, 0, MOD_UNKNOWN);
 						}
 					}
 					if (NPCS.NPCInfo->coverTarg)
@@ -835,7 +835,7 @@ void NPC_BSGM_Attack(void)
 		if (!NPCS.NPC->client->ps.powerups[PW_GALAK_SHIELD]
 			&& enemyDist4 < MELEE_DIST_SQUARED
 			&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				0.3f)
+			            0.3f)
 			&& NPCS.NPC->enemy->localAnimIndex <= 1) //within 80 and in front
 		{
 			//our shield is down, and enemy within 80, if very close, use melee attack to slap away
@@ -865,7 +865,7 @@ void NPC_BSGM_Attack(void)
 		else if (!NPCS.NPC->lockCount && NPCS.NPC->locationDamage[HL_GENERIC1] > GENERATOR_HEALTH
 			&& TIMER_Done(NPCS.NPC, "attackDelay")
 			&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				0.3f)
+			            0.3f)
 			&& (!Q_irand(0, 10 * (2 - g_npcspskill.integer)) && enemyDist4 > MIN_LOB_DIST_SQUARED && enemyDist4 <
 				MAX_LOB_DIST_SQUARED
 				|| !TIMER_Done(NPCS.NPC, "noLob") && !TIMER_Done(NPCS.NPC, "noRapid"))
@@ -890,7 +890,7 @@ void NPC_BSGM_Attack(void)
 			}
 		}
 		else if ((enemyDist4 > MAX_LOB_DIST_SQUARED || NPCS.NPC->enemy->s.weapon == WP_TURRET && !Q_stricmp(
-			"PAS", NPCS.NPC->enemy->classname))
+				"PAS", NPCS.NPC->enemy->classname))
 			&& TIMER_Done(NPCS.NPC, "noLob")) //448
 		{
 			//enemy more than 448 away and we are ready to try lob fire again
@@ -1051,10 +1051,10 @@ void NPC_BSGM_Attack(void)
 	{
 		vec3_t muzzle;
 		vec3_t target;
-		vec3_t velocity = { 0, 0, 0 };
-		vec3_t mins = { -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE }, maxs = {
-				   REPEATER_ALT_SIZE,REPEATER_ALT_SIZE,REPEATER_ALT_SIZE
-		};
+		vec3_t velocity = {0, 0, 0};
+		vec3_t mins = {-REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE, -REPEATER_ALT_SIZE}, maxs = {
+			       REPEATER_ALT_SIZE,REPEATER_ALT_SIZE,REPEATER_ALT_SIZE
+		       };
 
 		CalcEntitySpot(NPCS.NPC, SPOT_WEAPON, muzzle);
 
@@ -1066,8 +1066,8 @@ void NPC_BSGM_Attack(void)
 
 		//Find the desired angles
 		const qboolean clearshot = WP_LobFire(NPCS.NPC, muzzle, target, mins, maxs, MASK_SHOT | CONTENTS_LIGHTSABER,
-			velocity, qtrue, NPCS.NPC->s.number, NPCS.NPC->enemy->s.number,
-			300, 1100, 1500, qtrue);
+		                                      velocity, qtrue, NPCS.NPC->s.number, NPCS.NPC->enemy->s.number,
+		                                      300, 1100, 1500, qtrue);
 		if (VectorCompare(vec3_origin, velocity) || !clearshot && enemyLOS4 && enemyCS4)
 		{
 			//no clear lob shot and no lob shot that will hit something breakable
@@ -1193,19 +1193,19 @@ void NPC_BSGM_Attack(void)
 	{
 		//crush turrets
 		if (G_BoundsOverlap(NPCS.NPC->r.absmin, NPCS.NPC->r.absmax, NPCS.NPC->enemy->r.absmin,
-			NPCS.NPC->enemy->r.absmax))
+		                    NPCS.NPC->enemy->r.absmax))
 		{
 			//have to do this test because placed turrets are not solid to NPCs (so they don't obstruct navigation)
 			if (NPCS.NPC->client->ps.powerups[PW_GALAK_SHIELD] > 0)
 			{
 				NPCS.NPC->client->ps.powerups[PW_BATTLESUIT] = level.time + ARMOR_EFFECT_TIME;
 				G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, NULL, NPCS.NPC->r.currentOrigin, 100, DAMAGE_NO_KNOCKBACK,
-					MOD_UNKNOWN);
+				         MOD_UNKNOWN);
 			}
 			else
 			{
 				G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, NULL, NPCS.NPC->r.currentOrigin, 100, DAMAGE_NO_KNOCKBACK,
-					MOD_CRUSH);
+				         MOD_CRUSH);
 			}
 		}
 	}
@@ -1229,7 +1229,7 @@ void NPC_BSGM_Attack(void)
 			smack_dir[2] += 30;
 			VectorNormalize(smack_dir);
 			G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
-				(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_UNKNOWN);
+			         (g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_UNKNOWN);
 			//throw them
 			g_throw(NPCS.NPC->enemy, smack_dir, 100);
 			if (NPCS.NPC->enemy->client)
@@ -1298,7 +1298,7 @@ void NPC_BSGM_Default(void)
 			//do a trace and make sure we can turn this back on?
 			trace_t tr;
 			trap->Trace(&tr, NPCS.NPC->r.currentOrigin, shieldMins, shieldMaxs, NPCS.NPC->r.currentOrigin,
-				NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
+			            NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
 			if (!tr.startsolid)
 			{
 				VectorCopy(shieldMins, NPCS.NPC->r.mins);

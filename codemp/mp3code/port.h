@@ -42,7 +42,7 @@ ____________________________________________________________________________*/
 /*-- no pcm conversion to wave required
  if short = 16 bits and little endian ---*/
 
- /* mods 1/9/97 LITTLE_SHORT16 detect */
+/* mods 1/9/97 LITTLE_SHORT16 detect */
 
 #ifndef LITTLE_SHORT16
 #ifdef __MSDOS__

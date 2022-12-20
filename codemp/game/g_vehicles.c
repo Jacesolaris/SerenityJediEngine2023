@@ -27,10 +27,12 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern gentity_t* NPC_Spawn_Do(gentity_t* ent);
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
-extern void G_DamageFromKiller(gentity_t* p_ent, const gentity_t* p_veh_ent, gentity_t* attacker, vec3_t org, int damage,
-	int dflags, int mod);
+extern void G_DamageFromKiller(gentity_t* p_ent, const gentity_t* p_veh_ent, gentity_t* attacker, vec3_t org,
+                               int damage,
+                               int dflags, int mod);
 
-extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim, int set_anim_flags);
+extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim,
+                       int set_anim_flags);
 extern void BG_SetLegsAnimTimer(playerState_t* ps, int time);
 extern void BG_SetTorsoAnimTimer(playerState_t* ps, int time);
 void G_VehUpdateShields(const gentity_t* targ);
@@ -40,7 +42,7 @@ extern void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, int turretNum);
 
 extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, Vehicle_t* pVeh);
 
-void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend)
+void Vehicle_SetAnim(gentity_t* ent, const int setAnimParts, const int anim, const int setAnimFlags, int iBlend)
 {
 	assert(ent->client);
 	BG_SetAnim(&ent->client->ps, bgAllAnims[ent->localAnimIndex].anims, setAnimParts, anim, setAnimFlags);
@@ -48,7 +50,7 @@ void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlag
 }
 
 void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end,
-	int passEntityNum, int contentmask)
+                    const int passEntityNum, const int contentmask)
 {
 	trap->Trace(results, start, tMins, tMaxs, end, passEntityNum, contentmask, qfalse, 0, 0);
 }
@@ -135,8 +137,8 @@ void G_AttachToVehicle(gentity_t* pEnt, usercmd_t** ucmd)
 
 	// Get the driver tag.
 	trap->G2API_GetBoltMatrix(vehEnt->ghoul2, 0, crotchBolt, &boltMatrix,
-		vehEnt->m_pVehicle->m_vOrientation, vehEnt->r.currentOrigin,
-		level.time, NULL, vehEnt->modelScale);
+	                          vehEnt->m_pVehicle->m_vOrientation, vehEnt->r.currentOrigin,
+	                          level.time, NULL, vehEnt->modelScale);
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, ent->client->ps.origin);
 	G_SetOrigin(ent, ent->client->ps.origin);
 	trap->LinkEntity((sharedEntity_t*)ent);
@@ -478,7 +480,7 @@ qboolean Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 qboolean VEH_TryEject(const Vehicle_t* pVeh,
                       const gentity_t* parent,
                       gentity_t* ent,
-                      int ejectDir,
+                      const int ejectDir,
                       vec3_t vExitPos)
 {
 	vec3_t vEntMins, vEntMaxs, vVehLeaveDir, vVehAngles;
@@ -489,33 +491,33 @@ qboolean VEH_TryEject(const Vehicle_t* pVeh,
 	VectorSet(vVehAngles, 0, parent->r.currentAngles[YAW], 0);
 	switch (ejectDir)
 	{
-		// Left.
+	// Left.
 	case VEH_EJECT_LEFT:
 		AngleVectors(vVehAngles, NULL, vVehLeaveDir, NULL);
 		vVehLeaveDir[0] = -vVehLeaveDir[0];
 		vVehLeaveDir[1] = -vVehLeaveDir[1];
 		vVehLeaveDir[2] = -vVehLeaveDir[2];
 		break;
-		// Right.
+	// Right.
 	case VEH_EJECT_RIGHT:
 		AngleVectors(vVehAngles, NULL, vVehLeaveDir, NULL);
 		break;
-		// Front.
+	// Front.
 	case VEH_EJECT_FRONT:
 		AngleVectors(vVehAngles, vVehLeaveDir, NULL, NULL);
 		break;
-		// Rear.
+	// Rear.
 	case VEH_EJECT_REAR:
 		AngleVectors(vVehAngles, vVehLeaveDir, NULL, NULL);
 		vVehLeaveDir[0] = -vVehLeaveDir[0];
 		vVehLeaveDir[1] = -vVehLeaveDir[1];
 		vVehLeaveDir[2] = -vVehLeaveDir[2];
 		break;
-		// Top.
+	// Top.
 	case VEH_EJECT_TOP:
 		AngleVectors(vVehAngles, NULL, NULL, vVehLeaveDir);
 		break;
-		// Bottom?.
+	// Bottom?.
 	case VEH_EJECT_BOTTOM:
 		break;
 	default: ;
@@ -580,7 +582,7 @@ qboolean VEH_TryEject(const Vehicle_t* pVeh,
 	return qtrue;
 }
 
-void G_EjectDroidUnit(Vehicle_t* pVeh, qboolean kill)
+void G_EjectDroidUnit(Vehicle_t* pVeh, const qboolean kill)
 {
 	pVeh->m_pDroidUnit->s.m_iVehicleNum = ENTITYNUM_NONE;
 	pVeh->m_pDroidUnit->s.owner = ENTITYNUM_NONE;
@@ -608,7 +610,7 @@ void G_EjectDroidUnit(Vehicle_t* pVeh, qboolean kill)
 }
 
 // Eject the pilot from the vehicle.
-qboolean Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
+qboolean Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, const qboolean forceEject)
 {
 	gentity_t* parent;
 	vec3_t vExitPos;
@@ -930,7 +932,7 @@ qboolean EjectAll(Vehicle_t* pVeh)
 }
 
 // Start a delay until the vehicle explodes.
-static void StartDeathDelay(Vehicle_t* pVeh, int iDelayTimeOverride)
+static void StartDeathDelay(Vehicle_t* pVeh, const int iDelayTimeOverride)
 {
 	gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
 
@@ -967,8 +969,8 @@ static void DeathUpdate(Vehicle_t* pVeh)
 				{
 					//FIXME: does this give proper credit to the enemy who shot you down?
 					G_Damage((gentity_t*)pVeh->m_pPilot, (gentity_t*)pVeh->m_pParentEntity,
-						(gentity_t*)pVeh->m_pParentEntity,
-						NULL, pVeh->m_pParentEntity->playerState->origin, 999, DAMAGE_NO_PROTECTION, MOD_SUICIDE);
+					         (gentity_t*)pVeh->m_pParentEntity,
+					         NULL, pVeh->m_pParentEntity->playerState->origin, 999, DAMAGE_NO_PROTECTION, MOD_SUICIDE);
 				}
 				if (pVeh->m_iNumPassengers)
 				{
@@ -978,9 +980,9 @@ static void DeathUpdate(Vehicle_t* pVeh)
 						{
 							//FIXME: does this give proper credit to the enemy who shot you down?
 							G_Damage((gentity_t*)pVeh->m_ppPassengers[i], (gentity_t*)pVeh->m_pParentEntity,
-								(gentity_t*)pVeh->m_pParentEntity,
-								NULL, pVeh->m_pParentEntity->playerState->origin, 999, DAMAGE_NO_PROTECTION,
-								MOD_SUICIDE);
+							         (gentity_t*)pVeh->m_pParentEntity,
+							         NULL, pVeh->m_pParentEntity->playerState->origin, 999, DAMAGE_NO_PROTECTION,
+							         MOD_SUICIDE);
 						}
 					}
 				}
@@ -1003,7 +1005,7 @@ static void DeathUpdate(Vehicle_t* pVeh)
 				VectorCopy(parent->r.currentOrigin, bottom);
 				bottom[2] -= 80;
 				G_VehicleTrace(&trace, parent->r.currentOrigin, vec3_origin, vec3_origin, bottom, parent->s.number,
-					CONTENTS_SOLID);
+				               CONTENTS_SOLID);
 				if (trace.fraction < 1.0f)
 				{
 					VectorCopy(trace.endpos, bottom);
@@ -1025,7 +1027,7 @@ static void DeathUpdate(Vehicle_t* pVeh)
 				bottom[2] += parent->r.mins[2] - 32;
 				G_VehicleTrace(&trace, parent->r.currentOrigin, lMins, lMaxs, bottom, parent->s.number, CONTENTS_SOLID);
 				g_radius_damage(trace.endpos, NULL, pVeh->m_pVehicleInfo->explosionDamage,
-					pVeh->m_pVehicleInfo->explosionRadius, NULL, NULL, MOD_SUICIDE);
+				                pVeh->m_pVehicleInfo->explosionRadius, NULL, NULL, MOD_SUICIDE);
 				//FIXME: extern damage and radius or base on fuel
 			}
 
@@ -1142,7 +1144,7 @@ qboolean Initialize(Vehicle_t* pVeh)
 
 		pVeh->m_ulFlags |= VEH_GEARSOPEN;
 		BG_SetAnim(pVeh->m_pParentEntity->playerState, bgAllAnims[pVeh->m_pParentEntity->localAnimIndex].anims,
-			SETANIM_BOTH, BOTH_VS_IDLE, iFlags);
+		           SETANIM_BOTH, BOTH_VS_IDLE, iFlags);
 	}
 
 	return qtrue;
@@ -1163,7 +1165,7 @@ static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 	int halfMaxSpeed;
 	qboolean linkHeld = qfalse;
 
-	playerState_t* parentPS = pVeh->m_pParentEntity->playerState;
+	playerState_t * parentPS = pVeh->m_pParentEntity->playerState;
 
 #ifdef _GAME
 	curTime = level.time;
@@ -1179,7 +1181,7 @@ static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 			&& pVeh->m_pVehicleInfo->weapon[i].ammoRechargeMS //its ammo is rechargable
 			&& pVeh->weaponStatus[i].ammo < pVeh->m_pVehicleInfo->weapon[i].ammoMax //its ammo is below max
 			&& pUmcd->serverTime - pVeh->weaponStatus[i].lastAmmoInc >= pVeh->m_pVehicleInfo->weapon[i].ammoRechargeMS)
-			//enough time has passed
+		//enough time has passed
 		{
 			//add 1 to the ammo
 			pVeh->weaponStatus[i].lastAmmoInc = pUmcd->serverTime;
@@ -1197,7 +1199,7 @@ static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 			&& pVeh->m_pVehicleInfo->turret[i].iAmmoRechargeMS //its ammo is rechargable
 			&& pVeh->turretStatus[i].ammo < pVeh->m_pVehicleInfo->turret[i].iAmmoMax //its ammo is below max
 			&& pUmcd->serverTime - pVeh->turretStatus[i].lastAmmoInc >= pVeh->m_pVehicleInfo->turret[i].iAmmoRechargeMS)
-			//enough time has passed
+		//enough time has passed
 		{
 			//add 1 to the ammo
 			pVeh->turretStatus[i].lastAmmoInc = pUmcd->serverTime;
@@ -1321,7 +1323,7 @@ static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 			{
 				//no longer in the game?
 				G_Damage(parent, parent, parent, NULL, parent->client->ps.origin, 99999, DAMAGE_NO_PROTECTION,
-					MOD_SUICIDE);
+				         MOD_SUICIDE);
 			}
 			else
 			{
@@ -1337,7 +1339,7 @@ static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUmcd)
 				{
 					//dying time
 					G_Damage(parent, parent, parent, NULL, parent->client->ps.origin, 99999, DAMAGE_NO_PROTECTION,
-						MOD_SUICIDE);
+					         MOD_SUICIDE);
 				}
 			}
 		}
@@ -1539,7 +1541,7 @@ maintainSelfDuringBoarding:
 			break;
 		case 4: shiftSound = pVeh->m_pVehicleInfo->soundShift4;
 			break;
-		default:;
+		default: ;
 		}
 		if (shiftSound)
 		{
@@ -1570,8 +1572,8 @@ maintainSelfDuringBoarding:
 			const float dmg = (float)parent->client->ps.stats[STAT_MAX_HEALTH] * pVeh->m_fTimeModifier / 180.0f;
 			//FIXME: aside from bypassing shields, maybe set m_iShields to 0, too... ?
 			G_DamageFromKiller(parent, parent, parent, parent->client->ps.origin, dmg,
-				DAMAGE_NO_SELF_PROTECTION | DAMAGE_NO_HIT_LOC | DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR,
-				MOD_SUICIDE);
+			                   DAMAGE_NO_SELF_PROTECTION | DAMAGE_NO_HIT_LOC | DAMAGE_NO_PROTECTION | DAMAGE_NO_ARMOR,
+			                   MOD_SUICIDE);
 		}
 
 		//make sure playerstate value stays in sync
@@ -1755,7 +1757,7 @@ static qboolean UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, const usercmd_t
 				{
 					VectorScale(parent->client->ps.velocity, 0.25f, rider->client->ps.velocity);
 					Vehicle_SetAnim(rider, SETANIM_BOTH, Anim,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, 300);
+					                SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, 300);
 					rider->client->ps.weaponTime = rider->client->ps.torsoTimer - 200;
 					//just to make sure it's cleared when roll is done
 					G_AddEvent(rider, EV_ROLL, 0);
@@ -1819,8 +1821,8 @@ static void AttachRiders(const Vehicle_t* pVeh)
 
 			// Get the driver tag.
 			trap->G2API_GetBoltMatrix(parent->ghoul2, 0, crotchBolt, &boltMatrix,
-				yawOnlyAngles, parent->client->ps.origin,
-				level.time, NULL, parent->modelScale);
+			                          yawOnlyAngles, parent->client->ps.origin,
+			                          level.time, NULL, parent->modelScale);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, pilot->client->ps.origin);
 
 			G_SetOrigin(pilot, pilot->client->ps.origin);
@@ -1849,8 +1851,8 @@ static void AttachRiders(const Vehicle_t* pVeh)
 
 			// Get the droid tag.
 			trap->G2API_GetBoltMatrix(parent->ghoul2, 0, pVeh->m_iDroidUnitTag, &boltMatrix,
-				yaw_only_angles, parent->r.currentOrigin,
-				level.time, NULL, parent->modelScale);
+			                          yaw_only_angles, parent->r.currentOrigin,
+			                          level.time, NULL, parent->modelScale);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, droid->client->ps.origin);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, fwd);
 			vectoangles(fwd, droid->client->ps.viewangles);
@@ -1955,7 +1957,7 @@ void G_VehicleDamageBoxSizing(const Vehicle_t* pVeh)
 
 	//and now, let's trace and see if our new mins/maxs are safe..
 	trap->Trace(&trace, parent->client->ps.origin, back, nose, parent->client->ps.origin, parent->s.number,
-		parent->clipmask, qfalse, 0, 0);
+	            parent->clipmask, qfalse, 0, 0);
 	if (!trace.allsolid && !trace.startsolid && trace.fraction == 1.0f)
 	{
 		//all clear!
@@ -1992,7 +1994,7 @@ int G_FlyVehicleImpactDir(const gentity_t* veh, const trace_t* trace)
 	//do a trace to determine if the nose is clear
 	VectorMA(veh->client->ps.origin, 256.0f, fwd, fPos);
 	trap->Trace(&localTrace, veh->client->ps.origin, testMins, testMaxs, fPos, veh->s.number, veh->clipmask, qfalse, 0,
-		0);
+	            0);
 	if (!localTrace.startsolid && !localTrace.allsolid && localTrace.fraction == 1.0f)
 	{
 		//otherwise I guess it's not clear..
@@ -2094,7 +2096,7 @@ int G_ShipSurfaceForSurfName(const char* surfaceName)
 	return -1;
 }
 
-void G_SetVehDamageFlags(gentity_t* veh, int shipSurf, int damageLevel)
+void G_SetVehDamageFlags(gentity_t* veh, const int shipSurf, const int damageLevel)
 {
 	int dmgFlag;
 	switch (damageLevel)
@@ -2104,12 +2106,12 @@ void G_SetVehDamageFlags(gentity_t* veh, int shipSurf, int damageLevel)
 		//add heavy
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_HEAVY + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs |= 1 << dmgFlag;
-		//add light
+	//add light
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_LIGHT + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs |= 1 << dmgFlag;
-		//copy down
+	//copy down
 		veh->s.brokenLimbs = veh->client->ps.brokenLimbs;
-		//check droid
+	//check droid
 		if (shipSurf == SHIPSURF_BACK)
 		{
 			//destroy the droid if we have one
@@ -2133,12 +2135,12 @@ void G_SetVehDamageFlags(gentity_t* veh, int shipSurf, int damageLevel)
 	case 2: //heavy only
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_HEAVY + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs |= 1 << dmgFlag;
-		//remove light
+	//remove light
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_LIGHT + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs &= ~(1 << dmgFlag);
-		//copy down
+	//copy down
 		veh->s.brokenLimbs = veh->client->ps.brokenLimbs;
-		//check droid
+	//check droid
 		if (shipSurf == SHIPSURF_BACK)
 		{
 			//make the droid vulnerable if we have one
@@ -2160,10 +2162,10 @@ void G_SetVehDamageFlags(gentity_t* veh, int shipSurf, int damageLevel)
 		//add light
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_LIGHT + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs |= 1 << dmgFlag;
-		//remove heavy (shouldn't have to do this, but...
+	//remove heavy (shouldn't have to do this, but...
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_HEAVY + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs &= ~(1 << dmgFlag);
-		//copy down
+	//copy down
 		veh->s.brokenLimbs = veh->client->ps.brokenLimbs;
 		break;
 	case 0: //no damage
@@ -2171,16 +2173,16 @@ void G_SetVehDamageFlags(gentity_t* veh, int shipSurf, int damageLevel)
 		//remove heavy
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_HEAVY + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs &= ~(1 << dmgFlag);
-		//remove light
+	//remove light
 		dmgFlag = SHIPSURF_DAMAGE_FRONT_LIGHT + (shipSurf - SHIPSURF_FRONT);
 		veh->client->ps.brokenLimbs &= ~(1 << dmgFlag);
-		//copy down
+	//copy down
 		veh->s.brokenLimbs = veh->client->ps.brokenLimbs;
 		break;
 	}
 }
 
-void G_VehicleSetDamageLocFlags(gentity_t* veh, int impactDir, int deathPoint)
+void G_VehicleSetDamageLocFlags(gentity_t* veh, const int impactDir, int deathPoint)
 {
 	if (!veh->client)
 	{
@@ -2241,7 +2243,7 @@ void G_VehicleSetDamageLocFlags(gentity_t* veh, int impactDir, int deathPoint)
 	}
 }
 
-qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface)
+qboolean G_FlyVehicleDestroySurface(gentity_t* veh, const int surface)
 {
 	char* surfName[4]; //up to 4 surfs at once
 	int numSurfs = 0;
@@ -2266,7 +2268,7 @@ qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface)
 		surfName[0] = "r_wing2";
 		surfName[1] = "l_wing2";
 
-		//get rid of the landing gear
+	//get rid of the landing gear
 		surfName[2] = "r_gear";
 		surfName[3] = "l_gear";
 
@@ -2278,7 +2280,7 @@ qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface)
 		surfName[0] = "r_wing1";
 		surfName[1] = "r_wing2";
 
-		//get rid of the landing gear
+	//get rid of the landing gear
 		surfName[2] = "r_gear";
 
 		smashedBits = SHIPSURF_BROKEN_B | SHIPSURF_BROKEN_E | SHIPSURF_BROKEN_F;
@@ -2289,7 +2291,7 @@ qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface)
 		surfName[0] = "l_wing1";
 		surfName[1] = "l_wing2";
 
-		//get rid of the landing gear
+	//get rid of the landing gear
 		surfName[2] = "l_gear";
 
 		smashedBits = SHIPSURF_BROKEN_A | SHIPSURF_BROKEN_C | SHIPSURF_BROKEN_D;
@@ -2334,7 +2336,7 @@ qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface)
 	return qtrue;
 }
 
-void G_FlyVehicleSurfaceDestruction(gentity_t* veh, trace_t* trace, int magnitude, qboolean force)
+void G_FlyVehicleSurfaceDestruction(gentity_t* veh, trace_t* trace, const int magnitude, const qboolean force)
 {
 	int deathPoint = -1;
 	qboolean alreadyRebroken = qfalse;

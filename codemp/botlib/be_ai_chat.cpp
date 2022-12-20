@@ -220,7 +220,7 @@ bot_replychat_t* replychats = nullptr;
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-bot_chatstate_t* BotChatStateFromHandle(int handle)
+bot_chatstate_t* BotChatStateFromHandle(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -294,7 +294,7 @@ void FreeConsoleMessage(bot_consolemessage_t* message)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotRemoveConsoleMessage(int chatstate, int handle)
+void BotRemoveConsoleMessage(const int chatstate, const int handle)
 {
 	bot_consolemessage_t* nextm;
 
@@ -323,7 +323,7 @@ void BotRemoveConsoleMessage(int chatstate, int handle)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotQueueConsoleMessage(int chatstate, int type, char* message)
+void BotQueueConsoleMessage(const int chatstate, const int type, char* message)
 {
 	bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
@@ -361,7 +361,7 @@ void BotQueueConsoleMessage(int chatstate, int type, char* message)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotNextConsoleMessage(int chatstate, bot_consolemessage_t* cm)
+int BotNextConsoleMessage(const int chatstate, bot_consolemessage_t* cm)
 {
 	bot_consolemessage_t* firstmsg;
 
@@ -393,7 +393,7 @@ int BotNextConsoleMessage(int chatstate, bot_consolemessage_t* cm)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotNumConsoleMessages(int chatstate)
+int BotNumConsoleMessages(const int chatstate)
 {
 	const bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return 0;
@@ -405,7 +405,7 @@ int BotNumConsoleMessages(int chatstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int IsWhiteSpace(char c)
+int IsWhiteSpace(const char c)
 {
 	if (c >= 'a' && c <= 'z'
 		|| c >= 'A' && c <= 'Z'
@@ -466,7 +466,7 @@ void UnifyWhiteSpaces(char* string)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int StringContains(char* str1, char* str2, int casesensitive)
+int StringContains(char* str1, char* str2, const int casesensitive)
 {
 	int j;
 
@@ -497,7 +497,7 @@ int StringContains(char* str1, char* str2, int casesensitive)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-char* StringContainsWord(char* str1, char* str2, int casesensitive)
+char* StringContainsWord(char* str1, char* str2, const int casesensitive)
 {
 	int j;
 
@@ -755,7 +755,7 @@ bot_synonymlist_t* BotLoadSynonyms(char* filename)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotReplaceSynonyms(char* string, unsigned long int context)
+void BotReplaceSynonyms(char* string, const unsigned long int context)
 {
 	for (const bot_synonymlist_t* syn = synonyms; syn; syn = syn->next)
 	{
@@ -772,7 +772,7 @@ void BotReplaceSynonyms(char* string, unsigned long int context)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotReplaceWeightedSynonyms(char* string, unsigned long int context)
+void BotReplaceWeightedSynonyms(char* string, const unsigned long int context)
 {
 	bot_synonym_t* replacement;
 
@@ -803,7 +803,7 @@ void BotReplaceWeightedSynonyms(char* string, unsigned long int context)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotReplaceReplySynonyms(char* string, unsigned long int context)
+void BotReplaceReplySynonyms(char* string, const unsigned long int context)
 {
 	bot_synonym_t* synonym;
 
@@ -1407,7 +1407,7 @@ int StringsMatch(bot_matchpiece_t* pieces, bot_match_t* match)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotFindMatch(char* str, bot_match_t* match, unsigned long int context)
+int BotFindMatch(char* str, bot_match_t* match, const unsigned long int context)
 {
 	strncpy(match->string, str, MAX_MESSAGE_SIZE);
 	//remove any trailing enters
@@ -1438,7 +1438,7 @@ int BotFindMatch(char* str, bot_match_t* match, unsigned long int context)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotMatchVariable(bot_match_t* match, int variable, char* buf, int size)
+void BotMatchVariable(bot_match_t* match, const int variable, char* buf, int size)
 {
 	if (variable < 0 || variable >= MAX_MATCHVARIABLES)
 	{
@@ -2136,7 +2136,7 @@ bot_chat_t* BotLoadInitialChat(char* chatfile, char* chatname)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotFreeChatFile(int chatstate)
+void BotFreeChatFile(const int chatstate)
 {
 	bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
@@ -2149,7 +2149,7 @@ void BotFreeChatFile(int chatstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotLoadChatFile(int chatstate, char* chatfile, char* chatname)
+int BotLoadChatFile(const int chatstate, char* chatfile, char* chatname)
 {
 	int avail = 0;
 
@@ -2206,8 +2206,8 @@ int BotLoadChatFile(int chatstate, char* chatfile, char* chatname)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotExpandChatMessage(char* outmessage, char* message, unsigned long mcontext,
-	bot_match_t* match, unsigned long vcontext, int reply)
+int BotExpandChatMessage(char* outmessage, char* message, const unsigned long mcontext,
+	bot_match_t* match, const unsigned long vcontext, const int reply)
 {
 	int i;
 	char* ptr;
@@ -2327,8 +2327,8 @@ int BotExpandChatMessage(char* outmessage, char* message, unsigned long mcontext
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotConstructChatMessage(bot_chatstate_t* chatstate, char* message, unsigned long mcontext,
-	bot_match_t* match, unsigned long vcontext, int reply)
+void BotConstructChatMessage(bot_chatstate_t* chatstate, char* message, const unsigned long mcontext,
+	bot_match_t* match, const unsigned long vcontext, const int reply)
 {
 	int i;
 	char srcmessage[MAX_MESSAGE_SIZE];
@@ -2409,7 +2409,7 @@ char* BotChooseInitialChatMessage(bot_chatstate_t* cs, char* type)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotNumInitialChats(int chatstate, char* type)
+int BotNumInitialChats(const int chatstate, char* type)
 {
 	const bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return 0;
@@ -2433,7 +2433,7 @@ int BotNumInitialChats(int chatstate, char* type)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotInitialChat(int chatstate, char* type, int mcontext, char* var0, char* var1, char* var2, char* var3, char* var4, char* var5, char* var6, char* var7)
+void BotInitialChat(const int chatstate, char* type, const int mcontext, char* var0, char* var1, char* var2, char* var3, char* var4, char* var5, char* var6, char* var7)
 {
 	bot_match_t match;
 
@@ -2549,7 +2549,7 @@ void BotPrintReplyChatKeys(bot_replychat_t* replychat)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotReplyChat(int chatstate, char* message, int mcontext, int vcontext, char* var0, char* var1, char* var2, char* var3, char* var4, char* var5, char* var6, char* var7)
+int BotReplyChat(const int chatstate, char* message, const int mcontext, const int vcontext, char* var0, char* var1, char* var2, char* var3, char* var4, char* var5, char* var6, char* var7)
 {
 	bot_chatmessage_t* m;
 	bot_match_t match, bestmatch;
@@ -2702,7 +2702,7 @@ int BotReplyChat(int chatstate, char* message, int mcontext, int vcontext, char*
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotChatLength(int chatstate)
+int BotChatLength(const int chatstate)
 {
 	const bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return 0;
@@ -2714,7 +2714,7 @@ int BotChatLength(int chatstate)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotEnterChat(int chatstate, int clientto, int sendto)
+void BotEnterChat(const int chatstate, const int clientto, const int sendto)
 {
 	bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
@@ -2748,7 +2748,7 @@ void BotEnterChat(int chatstate, int clientto, int sendto)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotGetChatMessage(int chatstate, char* buf, int size)
+void BotGetChatMessage(const int chatstate, char* buf, const int size)
 {
 	bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
@@ -2765,7 +2765,7 @@ void BotGetChatMessage(int chatstate, char* buf, int size)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotSetChatGender(int chatstate, int gender)
+void BotSetChatGender(const int chatstate, const int gender)
 {
 	bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
@@ -2782,7 +2782,7 @@ void BotSetChatGender(int chatstate, int gender)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotSetChatName(int chatstate, char* name, int client)
+void BotSetChatName(const int chatstate, char* name, const int client)
 {
 	bot_chatstate_t* cs = BotChatStateFromHandle(chatstate);
 	if (!cs) return;
@@ -2831,7 +2831,7 @@ int BotAllocChatState(void)
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-void BotFreeChatState(int handle)
+void BotFreeChatState(const int handle)
 {
 	bot_consolemessage_t m;
 

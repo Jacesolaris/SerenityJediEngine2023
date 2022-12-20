@@ -257,7 +257,7 @@ void NPC_BSWait(void)
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-qboolean NPC_CheckInvestigate(int alertEventNum)
+qboolean NPC_CheckInvestigate(const int alertEventNum)
 {
 	gentity_t* owner = level.alertEvents[alertEventNum].owner;
 	const int invAdd = level.alertEvents[alertEventNum].level;
@@ -384,7 +384,7 @@ qboolean NPC_BSFollowLeader_UpdateLeader(void)
 			//team to follow.  Otherwise just wait, we don't want to lose
 			//our leader.
 			gentity_t* ClosestPlayer = FindClosestPlayer(NPCS.NPC->client->leader->r.currentOrigin,
-				NPCS.NPC->client->playerTeam);
+			                                             NPCS.NPC->client->playerTeam);
 			if (ClosestPlayer)
 			{
 				NPCS.NPC->client->leader = ClosestPlayer;
@@ -496,7 +496,7 @@ void NPC_BSFollowLeader_UpdateEnemy(void)
 		{
 			//we have a weapon and we need to check for an enemy.
 			NPC_CheckEnemy(NPCS.NPCInfo->confusionTime < level.time || NPCS.NPCInfo->tempBehavior != BS_FOLLOW_LEADER,
-				qfalse, qtrue); //don't find new enemy if this is tempbehav
+			               qfalse, qtrue); //don't find new enemy if this is tempbehav
 		}
 	}
 }
@@ -541,9 +541,9 @@ qboolean NPC_BSFollowLeader_AttackEnemy(void)
 			//shoot
 			NPC_AimAdjust(2);
 			if (NPC_GetHFOVPercentage(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-				NPCS.NPC->client->ps.viewangles, NPCS.NPCInfo->stats.hfov) > 0.6f
+			                          NPCS.NPC->client->ps.viewangles, NPCS.NPCInfo->stats.hfov) > 0.6f
 				&& NPC_GetHFOVPercentage(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-					NPCS.NPC->client->ps.viewangles, NPCS.NPCInfo->stats.vfov) > 0.5f)
+				                         NPCS.NPC->client->ps.viewangles, NPCS.NPCInfo->stats.vfov) > 0.5f)
 			{
 				//actually withing our front cone
 				WeaponThink(qtrue);
@@ -739,7 +739,7 @@ void NPC_BSJump(void)
 			return;
 		}
 
-		//Create a parabola
+	//Create a parabola
 
 		if (NPCS.NPC->r.currentOrigin[2] > NPCS.NPCInfo->goalEntity->r.currentOrigin[2])
 		{
@@ -757,11 +757,11 @@ void NPC_BSJump(void)
 			VectorCopy(NPCS.NPCInfo->goalEntity->r.currentOrigin, p2);
 		}
 
-		//z = xy*xy
+	//z = xy*xy
 		VectorSubtract(p2, p1, dir);
 		dir[2] = 0;
 
-		//Get xy and z diffs
+	//Get xy and z diffs
 		xy = VectorNormalize(dir);
 		z = p1[2] - p2[2];
 
@@ -771,7 +771,7 @@ void NPC_BSJump(void)
 
 		assert(z >= 0);
 
-		// Don't need to set apex xy if NPC is jumping directly up.
+	// Don't need to set apex xy if NPC is jumping directly up.
 		if (xy > 0.0f)
 		{
 			xy -= z;
@@ -785,7 +785,7 @@ void NPC_BSJump(void)
 
 		VectorCopy(apex, NPCS.NPC->pos1);
 
-		//Now we have the apex, aim for it
+	//Now we have the apex, aim for it
 		height = apex[2] - NPCS.NPC->r.currentOrigin[2];
 		time = sqrt(height / (.5 * NPCS.NPC->client->ps.gravity));
 		if (!time)
@@ -793,7 +793,7 @@ void NPC_BSJump(void)
 			return;
 		}
 
-		// set s.origin2 to the push velocity
+	// set s.origin2 to the push velocity
 		VectorSubtract(apex, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.velocity);
 		NPCS.NPC->client->ps.velocity[2] = 0;
 		dist = VectorNormalize(NPCS.NPC->client->ps.velocity);
@@ -832,27 +832,27 @@ void NPC_BSJump(void)
 		}
 		break;
 	case JS_LANDING:
-	{
-		if (NPCS.NPC->client->ps.legsTimer > 0)
 		{
-			//Still playing landing anim
-			return;
+			if (NPCS.NPC->client->ps.legsTimer > 0)
+			{
+				//Still playing landing anim
+				return;
+			}
+			NPCS.NPCInfo->jumpState = JS_WAITING;
+			NPCS.NPCInfo->goalEntity = UpdateGoal();
+			// If he made it to his goal or his task is no longer pending.
+			if (!NPCS.NPCInfo->goalEntity || !trap->ICARUS_TaskIDPending((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV))
+			{
+				NPC_ClearGoal();
+				NPCS.NPCInfo->goalTime = level.time;
+				NPCS.NPCInfo->aiFlags &= ~NPCAI_MOVING;
+				NPCS.ucmd.forwardmove = 0;
+				NPCS.NPC->flags &= ~FL_NO_KNOCKBACK;
+				//Return that the goal was reached
+				trap->ICARUS_TaskIDComplete((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV);
+			}
 		}
-		NPCS.NPCInfo->jumpState = JS_WAITING;
-		NPCS.NPCInfo->goalEntity = UpdateGoal();
-		// If he made it to his goal or his task is no longer pending.
-		if (!NPCS.NPCInfo->goalEntity || !trap->ICARUS_TaskIDPending((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV))
-		{
-			NPC_ClearGoal();
-			NPCS.NPCInfo->goalTime = level.time;
-			NPCS.NPCInfo->aiFlags &= ~NPCAI_MOVING;
-			NPCS.ucmd.forwardmove = 0;
-			NPCS.NPC->flags &= ~FL_NO_KNOCKBACK;
-			//Return that the goal was reached
-			trap->ICARUS_TaskIDComplete((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV);
-		}
-	}
-	break;
+		break;
 	case JS_WAITING:
 	default:
 		NPCS.NPCInfo->jumpState = JS_FACING;
@@ -1051,7 +1051,7 @@ NPC_BSSearchStart
 -------------------------
 */
 
-void NPC_BSSearchStart(int homeWp, bState_t bState)
+void NPC_BSSearchStart(const int homeWp, const bState_t bState)
 {
 	NPCS.NPCInfo->homeWp = homeWp;
 	NPCS.NPCInfo->tempBehavior = bState;
@@ -1073,7 +1073,7 @@ void NPC_BSNoClip(void)
 {
 	if (UpdateGoal())
 	{
-		vec3_t dir, forward, right, angles, up = { 0, 0, 1 };
+		vec3_t dir, forward, right, angles, up = {0, 0, 1};
 
 		VectorSubtract(NPCS.NPCInfo->goalEntity->r.currentOrigin, NPCS.NPC->r.currentOrigin, dir);
 
@@ -1657,7 +1657,8 @@ void NPC_BSFlee(void)
 	NPC_CheckGetNewWeapon();
 }
 
-void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin, int fleeTimeMax)
+void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
+                   const int fleeTimeMax)
 {
 	int cp = -1;
 
@@ -1689,24 +1690,24 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fl
 	{
 		//IF either great danger OR I have no weapon OR I'm alone and low on health, THEN try to find a combat point out of PVS
 		cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
-			CP_COVER | CP_AVOID | CP_HAS_ROUTE | CP_NO_PVS, 128, -1);
+		                         CP_COVER | CP_AVOID | CP_HAS_ROUTE | CP_NO_PVS, 128, -1);
 	}
 	//FIXME: still happens too often...
 	if (cp == -1)
 	{
 		//okay give up on the no PVS thing
 		cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
-			CP_COVER | CP_AVOID | CP_HAS_ROUTE, 128, -1);
+		                         CP_COVER | CP_AVOID | CP_HAS_ROUTE, 128, -1);
 		if (cp == -1)
 		{
 			//okay give up on the avoid
 			cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
-				CP_COVER | CP_HAS_ROUTE, 128, -1);
+			                         CP_COVER | CP_HAS_ROUTE, 128, -1);
 			if (cp == -1)
 			{
 				//okay give up on the cover
 				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
-					CP_HAS_ROUTE, 128, -1);
+				                         CP_HAS_ROUTE, 128, -1);
 			}
 		}
 	}
@@ -1737,8 +1738,8 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fl
 	TIMER_Set(NPCS.NPC, "duck", 0);
 }
 
-void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin,
-	int fleeTimeMax)
+void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
+                 const int fleeTimeMax)
 {
 	if (!self->NPC)
 	{

@@ -32,7 +32,8 @@ CG_DrawRect
 Coordinates are 640*480 virtual values
 =================
 */
-void CG_DrawRect(float x, float y, float width, float height, float size, const float* color)
+void CG_DrawRect(const float x, const float y, const float width, const float height, const float size,
+                 const float* color)
 {
 	trap->R_SetColor(color);
 
@@ -47,7 +48,7 @@ void CG_DrawRect(float x, float y, float width, float height, float size, const 
 CG_GetColorForHealth
 =================
 */
-void CG_GetColorForHealth(int health, int armor, vec4_t hcolor)
+void CG_GetColorForHealth(int health, const int armor, vec4_t hcolor)
 {
 	// calculate the total points of damage that can
 	// be sustained at the current health / armor level
@@ -102,14 +103,14 @@ CG_DrawSides
 Coords are virtual 640x480
 ================
 */
-void CG_DrawSides(float x, float y, float w, float h, float size)
+void CG_DrawSides(const float x, const float y, const float w, const float h, float size)
 {
 	size *= cgs.screenXScale;
 	trap->R_DrawStretchPic(x, y, size, h, 0, 0, 0, 0, cgs.media.whiteShader);
 	trap->R_DrawStretchPic(x + w - size, y, size, h, 0, 0, 0, 0, cgs.media.whiteShader);
 }
 
-void CG_DrawTopBottom(float x, float y, float w, float h, float size)
+void CG_DrawTopBottom(const float x, const float y, const float w, const float h, float size)
 {
 	size *= cgs.screenYScale;
 	trap->R_DrawStretchPic(x, y, w, size, 0, 0, 0, 0, cgs.media.whiteShader);
@@ -122,7 +123,7 @@ CGC_FillRect2
 real coords
 -------------------------
 */
-void CG_FillRect2(float x, float y, float width, float height, const float* color)
+void CG_FillRect2(const float x, const float y, const float width, const float height, const float* color)
 {
 	trap->R_SetColor(color);
 	trap->R_DrawStretchPic(x, y, width, height, 0, 0, 0, 0, cgs.media.whiteShader);
@@ -136,7 +137,7 @@ CG_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void CG_FillRect(float x, float y, float width, float height, const float* color)
+void CG_FillRect(const float x, const float y, const float width, const float height, const float* color)
 {
 	trap->R_SetColor(color);
 	trap->R_DrawStretchPic(x, y, width, height, 0, 0, 0, 0, cgs.media.whiteShader);
@@ -151,7 +152,7 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader)
+void CG_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
 {
 	trap->R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
@@ -165,7 +166,8 @@ A width of 0 will draw with the original image width
 rotates around the upper right corner of the passed in point
 =================
 */
-void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t hShader)
+void CG_DrawRotatePic(const float x, const float y, const float width, const float height, const float angle,
+                      const qhandle_t hShader)
 {
 	trap->R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, hShader);
 }
@@ -179,7 +181,8 @@ A width of 0 will draw with the original image width
 Actually rotates around the center point of the passed in coordinates
 =================
 */
-void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t hShader)
+void CG_DrawRotatePic2(const float x, const float y, const float width, const float height, const float angle,
+                       const qhandle_t hShader)
 {
 	trap->R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, hShader);
 }
@@ -191,7 +194,7 @@ CG_DrawChar
 Coordinates and size in 640*480 virtual screen size
 ===============
 */
-void CG_DrawChar(int x, int y, int width, int height, int ch)
+void CG_DrawChar(const int x, const int y, const int width, const int height, int ch)
 {
 	ch &= 255;
 
@@ -228,8 +231,9 @@ Coordinates are at 640 by 480 virtual resolution
 */
 #include "ui/menudef.h"	// for "ITEM_TEXTSTYLE_SHADOWED"
 
-void CG_DrawStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean shadow,
-	int charWidth, int charHeight, int maxChars)
+void CG_DrawStringExt(const int x, const int y, const char* string, const float* setColor, const qboolean forceColor,
+                      const qboolean shadow,
+                      const int charWidth, const int charHeight, int maxChars)
 {
 	if (trap->R_Language_IsAsian())
 	{
@@ -238,12 +242,12 @@ void CG_DrawStringExt(int x, int y, const char* string, const float* setColor, q
 		vec4_t color;
 		memcpy(color, setColor, sizeof color); // de-const it
 		CG_Text_Paint(x, y, 1.0f, // float scale,
-			color, // vec4_t color,
-			string, // const char *text,
-			0.0f, // float adjust,
-			0, // int limit,
-			shadow ? ITEM_TEXTSTYLE_SHADOWED : 0, // int style,
-			FONT_MEDIUM // iMenuFont
+		              color, // vec4_t color,
+		              string, // const char *text,
+		              0.0f, // float adjust,
+		              0, // int limit,
+		              shadow ? ITEM_TEXTSTYLE_SHADOWED : 0, // int style,
+		              FONT_MEDIUM // iMenuFont
 		);
 	}
 	else
@@ -298,7 +302,7 @@ void CG_DrawStringExt(int x, int y, const char* string, const float* setColor, q
 	}
 }
 
-void CG_DrawBigString(int x, int y, const char* s, float alpha)
+void CG_DrawBigString(const int x, const int y, const char* s, const float alpha)
 {
 	float color[4];
 
@@ -307,12 +311,12 @@ void CG_DrawBigString(int x, int y, const char* s, float alpha)
 	CG_DrawStringExt(x, y, s, color, qfalse, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0);
 }
 
-void CG_DrawBigStringColor(int x, int y, const char* s, vec4_t color)
+void CG_DrawBigStringColor(const int x, const int y, const char* s, vec4_t color)
 {
 	CG_DrawStringExt(x, y, s, color, qtrue, qtrue, BIGCHAR_WIDTH, BIGCHAR_HEIGHT, 0);
 }
 
-void CG_DrawSmallString(int x, int y, const char* s, float alpha)
+void CG_DrawSmallString(const int x, const int y, const char* s, const float alpha)
 {
 	float color[4];
 
@@ -321,7 +325,7 @@ void CG_DrawSmallString(int x, int y, const char* s, float alpha)
 	CG_DrawStringExt(x, y, s, color, qfalse, qfalse, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0);
 }
 
-void CG_DrawSmallStringColor(int x, int y, const char* s, vec4_t color)
+void CG_DrawSmallStringColor(const int x, const int y, const char* s, vec4_t color)
 {
 	CG_DrawStringExt(x, y, s, color, qtrue, qfalse, MINUTE_WIDTH, MINUTE_HEIGHT, 0);
 }
@@ -362,7 +366,7 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-static void CG_TileClearBox(int x, int y, int w, int h, qhandle_t hShader)
+static void CG_TileClearBox(const int x, const int y, const int w, const int h, const qhandle_t hShader)
 {
 	const float s1 = x / 64.0;
 	const float t1 = y / 64.0;
@@ -522,7 +526,8 @@ Take x,y positions as if 640 x 480 and scales them to the proper resolution
 
 ==============
 */
-void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill)
+void CG_DrawNumField(int x, const int y, int width, int value, const int charWidth, const int charHeight,
+                     const int style, const qboolean zeroFill)
 {
 	char num[16];
 	int frame;
@@ -557,7 +562,7 @@ void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int char
 		value = value > 9999 ? 9999 : value;
 		value = value < -999 ? -999 : value;
 		break;
-	default:;
+	default: ;
 	}
 
 	Com_sprintf(num, sizeof num, "%i", value);
@@ -636,7 +641,7 @@ void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int char
 
 #include "ui/ui_shared.h"	// for some text style junk
 
-void CG_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color)
+void CG_DrawProportionalString(int x, const int y, const char* str, const int style, vec4_t color)
 {
 	// having all these different style defines (1 for UI, one for CG, and now one for the re->font stuff)
 	//	is dumb, but for now...
@@ -648,22 +653,22 @@ void CG_DrawProportionalString(int x, int y, const char* str, int style, vec4_t 
 	{
 	default:
 	case UI_LEFT:
-	{
-		// nada...
-	}
-	break;
+		{
+			// nada...
+		}
+		break;
 
 	case UI_CENTER:
-	{
-		x -= CG_Text_Width(str, 1.0, iMenuFont) / 2;
-	}
-	break;
+		{
+			x -= CG_Text_Width(str, 1.0, iMenuFont) / 2;
+		}
+		break;
 
 	case UI_RIGHT:
-	{
-		x -= CG_Text_Width(str, 1.0, iMenuFont) / 2;
-	}
-	break;
+		{
+			x -= CG_Text_Width(str, 1.0, iMenuFont) / 2;
+		}
+		break;
 	}
 
 	if (style & UI_DROPSHADOW)
@@ -678,7 +683,7 @@ void CG_DrawProportionalString(int x, int y, const char* str, int style, vec4_t 
 	CG_Text_Paint(x, y, 1.0, color, str, 0, 0, iStyle, iMenuFont);
 }
 
-void UI_DrawProportionalString(int x, int y, const char* str, int style, vec4_t color, int font)
+void UI_DrawProportionalString(int x, const int y, const char* str, const int style, vec4_t color, int font)
 {
 	// having all these different style defines (1 for UI, one for CG, and now one for the re->font stuff)
 	//	is dumb, but for now...
@@ -690,22 +695,22 @@ void UI_DrawProportionalString(int x, int y, const char* str, int style, vec4_t 
 	{
 	default:
 	case UI_LEFT:
-	{
-		// nada...
-	}
-	break;
+		{
+			// nada...
+		}
+		break;
 
 	case UI_CENTER:
-	{
-		x -= CG_Text_Width(str, 0.5f, iMenuFont) / 2;
-	}
-	break;
+		{
+			x -= CG_Text_Width(str, 0.5f, iMenuFont) / 2;
+		}
+		break;
 
 	case UI_RIGHT:
-	{
-		x -= CG_Text_Width(str, 0.5f, iMenuFont);
-	}
-	break;
+		{
+			x -= CG_Text_Width(str, 0.5f, iMenuFont);
+		}
+		break;
 	}
 
 	if (style & UI_DROPSHADOW)
@@ -720,7 +725,8 @@ void UI_DrawProportionalString(int x, int y, const char* str, int style, vec4_t 
 	CG_Text_Paint(x, y, 0.5, color, str, 0, 0, iStyle, iMenuFont);
 }
 
-void CG_DrawScaledProportionalString(int x, int y, const char* str, int style, vec4_t color, float scale)
+void CG_DrawScaledProportionalString(int x, const int y, const char* str, const int style, vec4_t color,
+                                     const float scale)
 {
 	// having all these different style defines (1 for UI, one for CG, and now one for the re->font stuff)
 	//	is dumb, but for now...
@@ -731,22 +737,22 @@ void CG_DrawScaledProportionalString(int x, int y, const char* str, int style, v
 	{
 	default:
 	case UI_LEFT:
-	{
-		// nada...
-	}
-	break;
+		{
+			// nada...
+		}
+		break;
 
 	case UI_CENTER:
-	{
-		x -= CG_Text_Width(str, scale, FONT_MEDIUM) / 2;
-	}
-	break;
+		{
+			x -= CG_Text_Width(str, scale, FONT_MEDIUM) / 2;
+		}
+		break;
 
 	case UI_RIGHT:
-	{
-		x -= CG_Text_Width(str, scale, FONT_MEDIUM) / 2;
-	}
-	break;
+		{
+			x -= CG_Text_Width(str, scale, FONT_MEDIUM) / 2;
+		}
+		break;
 	}
 
 	if (style & UI_DROPSHADOW)

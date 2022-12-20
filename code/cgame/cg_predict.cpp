@@ -104,7 +104,7 @@ CG_ClipMoveToEntities
 ====================
 */
 void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	const int skipNumber, const int mask, trace_t* tr)
+                           const int skipNumber, const int mask, trace_t* tr)
 {
 	trace_t trace;
 	clipHandle_t cmodel;
@@ -160,7 +160,7 @@ void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t m
 		}
 
 		cgi_CM_TransformedBoxTrace(&trace, start, end,
-			mins, maxs, cmodel, mask, origin, angles);
+		                           mins, maxs, cmodel, mask, origin, angles);
 
 		if (trace.allsolid || trace.fraction < tr->fraction)
 		{
@@ -183,7 +183,8 @@ void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t m
 CG_Trace
 ================
 */
-void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, const int skip_number, const
+void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
+              const int skip_number, const
               int mask)
 {
 	trace_t t;
@@ -205,7 +206,7 @@ CG_PointContents
 #define USE_SV_PNT_CONTENTS (1)
 
 #if USE_SV_PNT_CONTENTS
-int CG_PointContents(const vec3_t point, int passEntityNum)
+int CG_PointContents(const vec3_t point, const int passEntityNum)
 {
 	return gi.pointcontents(point, passEntityNum);
 }
@@ -262,9 +263,9 @@ void CG_SetClientViewAngles(vec3_t angles, const qboolean override_view_ent)
 }
 
 extern qboolean PM_AdjustAnglesToGripper(gentity_t* gent, usercmd_t* cmd);
-extern qboolean PM_AdjustAnglesForSpinningFlip(gentity_t* ent, usercmd_t* ucmd, qboolean anglesOnly);
+extern qboolean PM_AdjustAnglesForSpinningFlip(gentity_t* ent, usercmd_t* ucmd, qboolean angles_only);
 extern qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd);
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
 
 qboolean CG_CheckModifyUCmd(usercmd_t* cmd, vec3_t viewangles)
 {
@@ -436,7 +437,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		cg_smoothPlayerPos.value > 0.0f &&
 		cg_smoothPlayerPos.value < 1.0f &&
 		!on_plat
-		)
+	)
 	{
 		// 0 = no smoothing, 1 = no movement
 		for (i = 0; i < 3; i++)
@@ -481,7 +482,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		if (cg.validPPS &&
 			cg_smoothPlayerPlat.value > 0.0f &&
 			cg_smoothPlayerPlat.value < 1.0f
-			)
+		)
 		{
 			// 0 = no smoothing, 1 = no movement
 			for (i = 0; i < 3; i++)
@@ -592,7 +593,7 @@ void CG_TouchTriggerPrediction(void)
 		}
 
 		cgi_CM_BoxTrace(&trace, cg.predicted_player_state.origin, cg.predicted_player_state.origin,
-			cg_pmove.mins, cg_pmove.maxs, cmodel, -1);
+		                cg_pmove.mins, cg_pmove.maxs, cmodel, -1);
 
 		if (!trace.startsolid)
 		{

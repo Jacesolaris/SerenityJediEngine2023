@@ -5,7 +5,7 @@
 #include "anims.h"
 
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length);
-extern int PM_AnimLength(const animNumber_t anim);
+extern int PM_AnimLength(animNumber_t anim);
 
 qboolean NPC_CheckPlayerTeamStealth(void);
 
@@ -215,7 +215,7 @@ void NPC_BSSaberDroid_Attack(void)
 		enemyLOS = qtrue;
 
 		if (enemyDist <= 4096 && InFOV3(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-			NPCS.NPC->client->ps.viewangles, 90, 45)) //within 64 & infront
+		                                NPCS.NPC->client->ps.viewangles, 90, 45)) //within 64 & infront
 		{
 			VectorCopy(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPCInfo->enemyLastSeenLocation);
 			enemyCS = qtrue;
@@ -300,8 +300,8 @@ void NPC_BSSaberDroid_Attack(void)
 				else
 				{
 					TIMER_Set(NPCS.NPC, "attackDelay",
-						NPCS.NPC->client->ps.weaponTime + Q_irand(0, 1000) + Q_irand(
-							0, (3 - g_npcspskill.integer) * 2) * 500);
+					          NPCS.NPC->client->ps.weaponTime + Q_irand(0, 1000) + Q_irand(
+						          0, (3 - g_npcspskill.integer) * 2) * 500);
 				}
 			}
 		}

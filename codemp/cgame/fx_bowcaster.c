@@ -59,7 +59,7 @@ FX_BowcasterHitPlayer
 ---------------------------
 */
 
-void FX_BowcasterHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BowcasterHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{

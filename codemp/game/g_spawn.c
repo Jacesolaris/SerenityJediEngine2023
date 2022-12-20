@@ -492,7 +492,7 @@ void SP_item_botroam(gentity_t* ent)
 
 void SP_gametype_item(gentity_t* ent)
 {
-	gitem_t* item = NULL;
+	gitem_t * item = NULL;
 	char* value;
 	int team = -1;
 
@@ -809,7 +809,7 @@ qboolean G_CallSpawn(gentity_t* ent)
 	}
 
 	// check item spawn functions
-	for (gitem_t* item = bg_itemlist + 1; item->classname; item++)
+	for (gitem_t * item = bg_itemlist + 1; item->classname; item++)
 	{
 		if (strcmp(item->classname, ent->classname) == 0)
 		{
@@ -937,7 +937,7 @@ void G_ParseField(const char* key, const char* value, gentity_t* ent)
 		vec3_t vec;
 		float v;
 		// found it
-		byte* b = (byte*)ent;
+		byte * b = (byte*)ent;
 
 		switch (f->type)
 		{
@@ -1503,7 +1503,7 @@ level's entity strings into level.spawnVars[]
 This does not actually spawn an entity.
 ====================
 */
-qboolean G_ParseSpawnVars(qboolean inSubBSP)
+qboolean G_ParseSpawnVars(const qboolean inSubBSP)
 {
 	char com_token[MAX_TOKEN_CHARS];
 
@@ -1927,7 +1927,7 @@ void SP_worldspawn(void)
 		if (lengthRed != lengthGreen || lengthGreen != lengthBlue)
 		{
 			Com_Error(ERR_DROP, "Style %d has inconsistent lengths: R %d, G %d, B %d",
-				i, lengthRed, lengthGreen, lengthBlue);
+			          i, lengthRed, lengthGreen, lengthBlue);
 		}
 	}
 }
@@ -1986,7 +1986,7 @@ G_SpawnEntitiesFromString
 Parses textual entity definitions out of an entstring and spawns gentities.
 ==============
 */
-void G_SpawnEntitiesFromString(qboolean inSubBSP)
+void G_SpawnEntitiesFromString(const qboolean inSubBSP)
 {
 	// allow calls to G_Spawn*()
 	level.spawning = qtrue;

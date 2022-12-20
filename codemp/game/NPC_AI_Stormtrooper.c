@@ -86,7 +86,7 @@ void NPC_Saboteur_Precache(void)
 
 extern void G_SoundOnEnt(gentity_t* ent, int channel, const char* soundPath);
 
-void Saboteur_Decloak(gentity_t* self, int uncloak_time)
+void Saboteur_Decloak(gentity_t* self, const int uncloak_time)
 {
 	//decloak this Saboteur
 	if (self && self->client)
@@ -129,7 +129,7 @@ enum
 	LSTATE_INVESTIGATE,
 };
 
-void ST_AggressionAdjust(const gentity_t* self, int change)
+void ST_AggressionAdjust(const gentity_t* self, const int change)
 {
 	int upper_threshold, lower_threshold;
 
@@ -213,7 +213,7 @@ enum
 	SPEECH_PUSHED
 };
 
-static void ST_Speech(const gentity_t* self, int speech_type, float fail_chance)
+static void ST_Speech(const gentity_t* self, const int speech_type, const float fail_chance)
 {
 	if (Q_flrand(0.0f, 1.0f) < fail_chance)
 	{
@@ -325,7 +325,8 @@ void ST_MarkToCover(const gentity_t* self)
 	}
 }
 
-void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int min_time, int max_time)
+void ST_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, const int danger_level, const int min_time,
+                  const int max_time)
 {
 	if (!self || !self->NPC)
 	{
@@ -344,7 +345,7 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_ST_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_ST_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 
@@ -409,7 +410,7 @@ void NPC_ST_SayMovementSpeech(void)
 	NPCS.NPCInfo->movementSpeechChance = 0.0f;
 }
 
-void NPC_ST_StoreMovementSpeech(int speech, float chance)
+void NPC_ST_StoreMovementSpeech(const int speech, const float chance)
 {
 	NPCS.NPCInfo->movementSpeech = speech;
 	NPCS.NPCInfo->movementSpeechChance = chance;
@@ -667,11 +668,11 @@ qboolean NPC_CheckEnemyStealth(gentity_t* target)
 			return qtrue;
 		}
 		VectorSet(targ_org, target->r.currentOrigin[0], target->r.currentOrigin[1],
-			target->r.currentOrigin[2] + target->r.maxs[2] - 4);
+		          target->r.currentOrigin[2] + target->r.maxs[2] - 4);
 		float hAngle_perc = NPC_GetHFOVPercentage(targ_org, NPCS.NPC->client->renderInfo.eyePoint,
-			NPCS.NPC->client->renderInfo.eyeAngles, NPCS.NPCInfo->stats.hfov);
+		                                          NPCS.NPC->client->renderInfo.eyeAngles, NPCS.NPCInfo->stats.hfov);
 		float vAngle_perc = NPC_GetVFOVPercentage(targ_org, NPCS.NPC->client->renderInfo.eyePoint,
-			NPCS.NPC->client->renderInfo.eyeAngles, NPCS.NPCInfo->stats.vfov);
+		                                          NPCS.NPC->client->renderInfo.eyeAngles, NPCS.NPCInfo->stats.vfov);
 
 		//Scale them vertically some, and horizontally pretty harshly
 		vAngle_perc *= vAngle_perc; //( vAngle_perc * vAngle_perc );
@@ -896,7 +897,7 @@ qboolean NPC_CheckEnemiesInSpotlight(void)
 			//valid ent & client, valid enemy, on the target team
 			//check to see if they're in my FOV
 			if (InFOV3(enemy->r.currentOrigin, NPCS.NPC->client->renderInfo.eyePoint,
-				NPCS.NPC->client->renderInfo.eyeAngles, NPCS.NPCInfo->stats.hfov, NPCS.NPCInfo->stats.vfov))
+			           NPCS.NPC->client->renderInfo.eyeAngles, NPCS.NPCInfo->stats.hfov, NPCS.NPCInfo->stats.vfov))
 			{
 				//in my cone
 				//check to see that they're close enough
@@ -915,15 +916,15 @@ qboolean NPC_CheckEnemiesInSpotlight(void)
 				}
 			}
 			if (InFOV3(enemy->r.currentOrigin, NPCS.NPC->client->renderInfo.eyePoint,
-				NPCS.NPC->client->renderInfo.eyeAngles, 90, NPCS.NPCInfo->stats.vfov * 3))
+			           NPCS.NPC->client->renderInfo.eyeAngles, 90, NPCS.NPCInfo->stats.vfov * 3))
 			{
 				//one to look at if we don't get an enemy
 				if (G_ClearLOS4(NPCS.NPC, enemy))
 				{
 					//clear LOS
 					if (suspect == NULL || DistanceSquared(NPCS.NPC->client->renderInfo.eyePoint,
-						enemy->r.currentOrigin) < DistanceSquared(
-							NPCS.NPC->client->renderInfo.eyePoint, suspect->r.currentOrigin))
+					                                       enemy->r.currentOrigin) < DistanceSquared(
+						NPCS.NPC->client->renderInfo.eyePoint, suspect->r.currentOrigin))
 					{
 						//remember him
 						suspect = enemy;
@@ -968,7 +969,7 @@ NPC_ST_InvestigateEvent
 
 #define	MAX_CHECK_THRESHOLD	1
 
-static qboolean NPC_ST_InvestigateEvent(int eventID, qboolean extraSuspicious)
+static qboolean NPC_ST_InvestigateEvent(const int eventID, const qboolean extraSuspicious)
 {
 	//If they've given themselves away, just take them as an enemy
 	if (NPCS.NPCInfo->confusionTime < level.time)
@@ -1030,7 +1031,7 @@ static qboolean NPC_ST_InvestigateEvent(int eventID, qboolean extraSuspicious)
 	{
 		//make it so they can walk right to this point and look at it rather than having to use combatPoints
 		if (G_ExpandPointToBBox(NPCS.NPCInfo->investigateGoal, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, NPCS.NPC->s.number,
-			NPCS.NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP))
+		                        NPCS.NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP))
 		{
 			//we were able to move the investigateGoal to a point in which our bbox would fit
 			//drop the goal to the ground so we can get at it
@@ -1039,7 +1040,7 @@ static qboolean NPC_ST_InvestigateEvent(int eventID, qboolean extraSuspicious)
 			VectorCopy(NPCS.NPCInfo->investigateGoal, end);
 			end[2] -= 512; //FIXME: not always right?  What if it's even higher, somehow?
 			trap->Trace(&trace, NPCS.NPCInfo->investigateGoal, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, end, ENTITYNUM_NONE,
-				NPCS.NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP, qfalse, 0, 0);
+			            NPCS.NPC->clipmask & ~CONTENTS_BODY | CONTENTS_BOTCLIP, qfalse, 0, 0);
 			if (trace.fraction >= 1.0f)
 			{
 				//too high to even bother
@@ -1055,7 +1056,7 @@ static qboolean NPC_ST_InvestigateEvent(int eventID, qboolean extraSuspicious)
 		else
 		{
 			const int id = NPC_FindCombatPoint(NPCS.NPCInfo->investigateGoal, NPCS.NPCInfo->investigateGoal,
-				NPCS.NPCInfo->investigateGoal, CP_INVESTIGATE | CP_HAS_ROUTE, 0, -1);
+			                                   NPCS.NPCInfo->investigateGoal, CP_INVESTIGATE | CP_HAS_ROUTE, 0, -1);
 
 			if (id != -1)
 			{
@@ -1138,7 +1139,7 @@ ST_OffsetLook
 -------------------------
 */
 
-static void ST_OffsetLook(float offset, vec3_t out)
+static void ST_OffsetLook(const float offset, vec3_t out)
 {
 	vec3_t angles, forward, temp;
 
@@ -1258,7 +1259,7 @@ void NPC_BSST_Investigate(void)
 	{
 		//See if we're there
 		if (NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs,
-			NPCS.NPCInfo->goalEntity->r.currentOrigin, 32, FlyingCreature(NPCS.NPC)) == qfalse)
+		                   NPCS.NPCInfo->goalEntity->r.currentOrigin, 32, FlyingCreature(NPCS.NPC)) == qfalse)
 		{
 			NPCS.ucmd.buttons |= BUTTON_WALKING;
 
@@ -1295,14 +1296,14 @@ void NPC_BSST_Patrol(void)
 	{
 		//using spotlight search mode
 		vec3_t eyeFwd, end;
-		const vec3_t maxs = { 2, 2, 2 };
-		const vec3_t mins = { -2, -2, -2 };
+		const vec3_t maxs = {2, 2, 2};
+		const vec3_t mins = {-2, -2, -2};
 		trace_t trace;
 		AngleVectors(NPCS.NPC->client->renderInfo.eyeAngles, eyeFwd, NULL, NULL);
 		VectorMA(NPCS.NPC->client->renderInfo.eyePoint, NPCS.NPCInfo->stats.visrange, eyeFwd, end);
 		//get server-side trace impact point
 		trap->Trace(&trace, NPCS.NPC->client->renderInfo.eyePoint, mins, maxs, end, NPCS.NPC->s.number,
-			MASK_OPAQUE | CONTENTS_BODY | CONTENTS_CORPSE, qfalse, 0, 0);
+		            MASK_OPAQUE | CONTENTS_BODY | CONTENTS_CORPSE, qfalse, 0, 0);
 		NPCS.NPC->speed = trace.fraction * NPCS.NPCInfo->stats.visrange;
 		if (NPCS.NPCInfo->scriptFlags & SCF_LOOK_FOR_ENEMIES)
 		{
@@ -1576,7 +1577,7 @@ static void ST_CheckMoveState(void)
 	{
 		//Did we make it?
 		if (NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs,
-			NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
+		                   NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
 			enemyLOS && NPCS.NPCInfo->aiFlags & NPCAI_STOP_AT_LOS &&
 			!trap->ICARUS_TaskIDPending((sharedEntity_t*)NPCS.NPC, TID_MOVE_NAV))
 		{
@@ -1709,7 +1710,7 @@ static void ST_CheckFireState(void)
 	{
 		if (level.time - NPCS.NPCInfo->enemyLastSeenTime < 10000 && //we have seem the enemy in the last 10 seconds
 			(!NPCS.NPCInfo->group || level.time - NPCS.NPCInfo->group->lastSeenEnemyTime < 10000))
-			//we are not in a group or the group has seen the enemy in the last 10 seconds
+		//we are not in a group or the group has seen the enemy in the last 10 seconds
 		{
 			if (!Q_irand(0, 10))
 			{
@@ -1728,7 +1729,7 @@ static void ST_CheckFireState(void)
 					AngleVectors(NPCS.NPC->client->ps.viewangles, forward, NULL, NULL);
 					VectorMA(muzzle, 8192, forward, end);
 					trap->Trace(&tr, muzzle, vec3_origin, vec3_origin, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0,
-						0);
+					            0);
 					VectorCopy(tr.endpos, impactPos);
 				}
 
@@ -1904,7 +1905,7 @@ void ST_TransferMoveGoal(const gentity_t* self, const gentity_t* other)
 		if (self->NPC->goalEntity == self->NPC->tempGoal)
 		{
 			NPC_SetMoveGoal(other, self->NPC->tempGoal->r.currentOrigin, self->NPC->goalRadius,
-				self->NPC->tempGoal->flags & FL_NAVGOAL ? qtrue : qfalse, -1, NULL);
+			                self->NPC->tempGoal->flags & FL_NAVGOAL ? qtrue : qfalse, -1, NULL);
 		}
 		else
 		{
@@ -2021,7 +2022,7 @@ int ST_GetCPFlags(void)
 		case 3: //take the one on the other side of the enemy
 			cpFlags = CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
 			break;
-		default:;
+		default: ;
 		}
 	}
 	if (NPCS.NPC && NPCS.NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)
@@ -2236,7 +2237,7 @@ void ST_Commander(void)
 					//not running after a pickup
 					if (TIMER_Done(NPCS.NPC, "hideTime") || DistanceSquared(
 						group->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin) < 65536 && NPC_ClearLOS4(
-							NPCS.NPC->enemy))
+						NPCS.NPC->enemy))
 					{
 						//done hiding or enemy near and can see us
 						//er, start another flee I guess?
@@ -2393,7 +2394,7 @@ void ST_Commander(void)
 						{
 							//1 - 3 seconds have passed since you chose a CP, see if you're there since, for some reason, you've stopped running...
 							if (DistanceSquared(NPCS.NPC->r.currentOrigin,
-								level.combatPoints[NPCS.NPCInfo->combatPoint].origin) > 64 * 64)
+							                    level.combatPoints[NPCS.NPCInfo->combatPoint].origin) > 64 * 64)
 							{
 								//uh, WTF, we're not on our combat point?
 								//er, try again, I guess?
@@ -2694,8 +2695,8 @@ void ST_Commander(void)
 			{
 				//may have had sone set above
 				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-					group->enemy->r.currentOrigin, cpFlags | CP_HAS_ROUTE, avoidDist,
-					NPCS.NPCInfo->lastFailedCombatPoint);
+				                         group->enemy->r.currentOrigin, cpFlags | CP_HAS_ROUTE, avoidDist,
+				                         NPCS.NPCInfo->lastFailedCombatPoint);
 			}
 			while (cp == -1 && cpFlags != CP_ANY)
 			{
@@ -2782,7 +2783,7 @@ void ST_Commander(void)
 				}
 				//now try again
 				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-					group->enemy->r.currentOrigin, cpFlags | CP_HAS_ROUTE, avoidDist, -1);
+				                         group->enemy->r.currentOrigin, cpFlags | CP_HAS_ROUTE, avoidDist, -1);
 			}
 			//see if we got a valid one
 			if (cp != -1)
@@ -2845,7 +2846,7 @@ void ST_Commander(void)
 								VectorNormalize(eDir2Me);
 
 								VectorSubtract(level.combatPoints[NPCS.NPCInfo->combatPoint].origin,
-									group->enemy->r.currentOrigin, eDir2CP);
+								               group->enemy->r.currentOrigin, eDir2CP);
 								VectorNormalize(eDir2CP);
 
 								dot = DotProduct(eDir2Me, eDir2CP);
@@ -2880,7 +2881,7 @@ void ST_Commander(void)
 }
 
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 void Noghri_StickTrace(void)
 {
@@ -2911,9 +2912,9 @@ void Noghri_StickTrace(void)
 			VectorSet(maxs, 2, 2, 2);
 
 			trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 1,
-				bolt_index,
-				&boltMatrix, angles, NPCS.NPC->r.currentOrigin, time,
-				NULL, NPCS.NPC->modelScale);
+			                          bolt_index,
+			                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, time,
+			                          NULL, NPCS.NPC->modelScale);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
 			BG_GiveMeVectorFromMatrix(&boltMatrix, POSITIVE_Y, dir);
 			VectorMA(base, 48, dir, tip);
@@ -2929,9 +2930,9 @@ void Noghri_StickTrace(void)
 					//smack
 					const int dmg = Q_irand(12, 20); //FIXME: base on skill!
 					G_Sound(traceEnt, CHAN_AUTO,
-						G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
+					        G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
 					G_Damage(traceEnt, NPCS.NPC, NPCS.NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK,
-						MOD_MELEE);
+					         MOD_MELEE);
 					if (traceEnt->health > 0 && dmg > 17)
 					{
 						//do pain on enemy
@@ -3116,7 +3117,7 @@ void NPC_BSST_Attack(void)
 				//use primary fire
 				trace_t trace;
 				trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->r.mins, NPCS.NPC->r.maxs,
-					NPCS.NPC->r.currentOrigin, NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
+				            NPCS.NPC->r.currentOrigin, NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
 				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPCS.NPC->s.
 					number))
 				{
@@ -3385,7 +3386,7 @@ void NPC_BSST_Attack(void)
 			move = ST_Move();
 
 			if ((NPCS.NPC->client->NPC_class != CLASS_ROCKETTROOPER ||
-				NPCS.NPC->s.weapon != WP_ROCKET_LAUNCHER || enemyDist < MIN_ROCKET_DIST_SQUARED)
+					NPCS.NPC->s.weapon != WP_ROCKET_LAUNCHER || enemyDist < MIN_ROCKET_DIST_SQUARED)
 				//rockettroopers who use rocket launchers turn around and run if you get too close (closer than 128)
 				&& NPCS.ucmd.forwardmove <= -32)
 			{
@@ -3456,7 +3457,7 @@ void NPC_BSST_Attack(void)
 					&& !NPCS.NPC->client->ps.weaponTime //not firing
 					&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-						NPCS.NPC->client->ps.viewangles, 0.3f))
+					            NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
 					vec3_t smack_dir;
 					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
@@ -3465,7 +3466,7 @@ void NPC_BSST_Attack(void)
 					//hurt them
 					G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/chars/noghri/misc/taunt.mp3"));
 					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
-						(g_npcspskill.integer + 1) * Q_irand(2, 5), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					         (g_npcspskill.integer + 1) * Q_irand(2, 5), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_L)
 					{
 						//smackdown
@@ -3480,13 +3481,13 @@ void NPC_BSST_Attack(void)
 						VectorNormalize(smack_dir);
 						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_R)
 					{
 						g_throw(NPCS.NPC->enemy, smack_dir, 65);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else
 					{
@@ -3495,7 +3496,7 @@ void NPC_BSST_Attack(void)
 						g_throw(NPCS.NPC->enemy, smack_dir, 80);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					//done with the damage
 					NPCS.NPCInfo->blockedDebounceTime = 1;
@@ -3513,7 +3514,7 @@ void NPC_BSST_Attack(void)
 			&& !NPCS.NPC->client->ps.weaponTime //not firing
 			&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 			&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				0.3f)) //within 80 and in front
+			            0.3f)) //within 80 and in front
 		{
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
@@ -3559,7 +3560,7 @@ void NPC_BSST_Attack(void)
 					&& !NPCS.NPC->client->ps.weaponTime //not firing
 					&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-						NPCS.NPC->client->ps.viewangles, 0.3f))
+					            NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
 					vec3_t smack_dir;
 					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
@@ -3568,7 +3569,7 @@ void NPC_BSST_Attack(void)
 					//hurt them
 					G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/chars/%s/misc/taunt0%d.mp3"));
 					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
-						(g_npcspskill.integer + 1) * Q_irand(1, 3), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					         (g_npcspskill.integer + 1) * Q_irand(1, 3), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F)
 					{
 						//smackdown
@@ -3583,13 +3584,13 @@ void NPC_BSST_Attack(void)
 						VectorNormalize(smack_dir);
 						g_throw(NPCS.NPC->enemy, smack_dir, 25);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F2)
 					{
 						g_throw(NPCS.NPC->enemy, smack_dir, 30);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else
 					{
@@ -3598,7 +3599,7 @@ void NPC_BSST_Attack(void)
 						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					//done with the damage
 					NPCS.NPCInfo->blockedDebounceTime = 1;
@@ -3619,7 +3620,7 @@ void NPC_BSST_Attack(void)
 			&& !NPCS.NPC->client->ps.weaponTime //not firing
 			&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 			&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				0.3f)) //within 80 and in front
+			            0.3f)) //within 80 and in front
 		{
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
@@ -3638,7 +3639,7 @@ void NPC_BSST_Attack(void)
 			&& !NPCS.NPC->client->ps.weaponTime //not firing
 			&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 			&& !in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				-0.25f)) //within 80 and generally behind
+			             -0.25f)) //within 80 and generally behind
 		{
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
@@ -3676,7 +3677,7 @@ void NPC_BSST_Attack(void)
 					&& !NPCS.NPC->client->ps.weaponTime //not firing
 					&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-						NPCS.NPC->client->ps.viewangles, 0.3f))
+					            NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
 					vec3_t smack_dir;
 					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
@@ -3684,7 +3685,7 @@ void NPC_BSST_Attack(void)
 					VectorNormalize(smack_dir);
 					//hurt them
 					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
-						(g_npcspskill.integer + 1) * 1, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					         (g_npcspskill.integer + 1) * 1, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_R)
 					{
@@ -3700,19 +3701,19 @@ void NPC_BSST_Attack(void)
 						VectorNormalize(smack_dir);
 						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEE_L)
 					{
 						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_PAIN3,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_MELEEUP)
 					{
 						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_PAIN4,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else
 					{
@@ -3721,7 +3722,7 @@ void NPC_BSST_Attack(void)
 						g_throw(NPCS.NPC->enemy, smack_dir, 10);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_PAIN1,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					//done with the damage
 					NPCS.NPCInfo->blockedDebounceTime = 1;
@@ -3742,7 +3743,7 @@ void NPC_BSST_Attack(void)
 			&& !NPCS.NPC->client->ps.weaponTime //not firing
 			&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 			&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				0.3f)) //within 80 and in front
+			            0.3f)) //within 80 and in front
 		{
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
@@ -3789,7 +3790,7 @@ void NPC_BSST_Attack(void)
 					&& !NPCS.NPC->client->ps.weaponTime //not firing
 					&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 					&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-						NPCS.NPC->client->ps.viewangles, 0.3f))
+					            NPCS.NPC->client->ps.viewangles, 0.3f))
 				{
 					vec3_t smack_dir;
 					VectorSubtract(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
@@ -3798,7 +3799,7 @@ void NPC_BSST_Attack(void)
 					//hurt them
 					G_Sound(NPCS.NPC->enemy, CHAN_AUTO, G_SoundIndex("sound/weapons/melee/kick2.mp3"));
 					G_Damage(NPCS.NPC->enemy, NPCS.NPC, NPCS.NPC, smack_dir, NPCS.NPC->r.currentOrigin,
-						(g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					         (g_npcspskill.integer + 1) * Q_irand(5, 10), DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 					if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F)
 					{
 						//smackdown
@@ -3813,13 +3814,13 @@ void NPC_BSST_Attack(void)
 						VectorNormalize(smack_dir);
 						g_throw(NPCS.NPC->enemy, smack_dir, 50);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, knockAnim,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (NPCS.NPC->client->ps.torsoAnim == BOTH_A7_KICK_F2)
 					{
 						g_throw(NPCS.NPC->enemy, smack_dir, 65);
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN5,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else
 					{
@@ -3828,7 +3829,7 @@ void NPC_BSST_Attack(void)
 						g_throw(NPCS.NPC->enemy, smack_dir, 80);
 						//make them backflip
 						NPC_SetAnim(NPCS.NPC->enemy, SETANIM_BOTH, BOTH_KNOCKDOWN2,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					//done with the damage
 					NPCS.NPCInfo->blockedDebounceTime = 1;
@@ -3850,7 +3851,7 @@ void NPC_BSST_Attack(void)
 			&& !NPCS.NPC->client->ps.weaponTime //not firing
 			&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 			&& in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				0.3f)) //within 80 and in front
+			            0.3f)) //within 80 and in front
 		{
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
@@ -3869,7 +3870,7 @@ void NPC_BSST_Attack(void)
 			&& !NPCS.NPC->client->ps.weaponTime //not firing
 			&& !PM_InKnockDown(&NPCS.NPC->client->ps) //not knocked down
 			&& !in_front(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->r.currentOrigin, NPCS.NPC->client->ps.viewangles,
-				-0.25f)) //within 80 and generally behind
+			             -0.25f)) //within 80 and generally behind
 		{
 			//enemy within 80, if very close, use melee attack to slap away
 			if (TIMER_Done(NPCS.NPC, "attackDelay"))
@@ -4061,7 +4062,7 @@ void NPC_BSST_Default(void)
 			&& (!NPCS.NPC->enemy->enemy || !NPCS.NPC->enemy->enemy->client
 				|| NPCS.NPC->enemy->enemy->client->NPC_class != CLASS_RANCOR
 				&& NPCS.NPC->enemy->enemy->client->NPC_class != CLASS_WAMPA))
-			//enemy's enemy is not a client or is not a wampa or rancor (which is scarier than me)
+		//enemy's enemy is not a client or is not a wampa or rancor (which is scarier than me)
 		{
 			//they should be scared of ME and no-one else
 			G_SetEnemy(NPCS.NPC->enemy, NPCS.NPC);

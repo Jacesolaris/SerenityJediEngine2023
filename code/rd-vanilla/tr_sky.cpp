@@ -291,7 +291,7 @@ CLOUD VERTEX GENERATION
 **
 ** Parms: s, t range from -1 to 1
 */
-static void MakeSkyVec(float s, float t, int axis, float outSt[2], vec3_t outXYZ)
+static void MakeSkyVec(float s, float t, const int axis, float outSt[2], vec3_t outXYZ)
 {
 	// 1 = s, 2 = t, 3 = 2048
 	static int	st_to_vec[6][3] =
@@ -446,7 +446,7 @@ static void DrawSkyBox(const shader_t* shader)
 	}
 }
 
-static void FillCloudySkySide(const int mins[2], const int maxs[2], qboolean addIndexes)
+static void FillCloudySkySide(const int mins[2], const int maxs[2], const qboolean addIndexes)
 {
 	int s, t;
 	const int vertexStart = tess.numVertexes;
@@ -495,7 +495,7 @@ static void FillCloudySkySide(const int mins[2], const int maxs[2], qboolean add
 	}
 }
 
-static void FillCloudBox(const shader_t* shader, int stage)
+static void FillCloudBox(const shader_t* shader, const int stage)
 {
 	for (int i = 0; i < 6; i++)
 	{
@@ -597,7 +597,7 @@ void R_BuildCloudData(shaderCommands_t* input)
 */
 #define SQR( a ) ((a)*(a))
 
-void R_InitSkyTexCoords(float heightCloud)
+void R_InitSkyTexCoords(const float heightCloud)
 {
 	constexpr float radiusWorld = MAX_WORLD_COORD;
 	vec3_t v;

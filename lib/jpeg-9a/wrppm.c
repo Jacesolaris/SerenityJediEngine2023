@@ -84,7 +84,7 @@ typedef ppm_dest_struct* ppm_dest_ptr;
  */
 
 METHODDEF(void)
-put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
+put_pixel_rows(j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
 	JDIMENSION rows_supplied)
 {
 	const ppm_dest_ptr dest = (ppm_dest_ptr)dinfo;
@@ -98,7 +98,7 @@ put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
  */
 
 METHODDEF(void)
-copy_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
+copy_pixel_rows(j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
 	JDIMENSION rows_supplied)
 {
 	const ppm_dest_ptr dest = (ppm_dest_ptr)dinfo;
@@ -117,8 +117,8 @@ copy_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
  */
 
 METHODDEF(void)
-put_demapped_rgb(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_demapped_rgb(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+                 JDIMENSION rows_supplied)
 {
 	const ppm_dest_ptr dest = (ppm_dest_ptr)dinfo;
 	const register JSAMPROW color_map0 = cinfo->colormap[0];
@@ -137,8 +137,8 @@ put_demapped_rgb(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
 }
 
 METHODDEF(void)
-put_demapped_gray(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_demapped_gray(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+                  JDIMENSION rows_supplied)
 {
 	const ppm_dest_ptr dest = (ppm_dest_ptr)dinfo;
 	const register JSAMPROW color_map = cinfo->colormap[0];
@@ -156,7 +156,7 @@ put_demapped_gray(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
  */
 
 METHODDEF(void)
-start_output_ppm(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+start_output_ppm(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	const ppm_dest_ptr dest = (ppm_dest_ptr)dinfo;
 
@@ -184,7 +184,7 @@ start_output_ppm(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 METHODDEF(void)
-finish_output_ppm(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+finish_output_ppm(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	/* Make sure we wrote the output file OK */
 	fflush(dinfo->output_file);
@@ -197,7 +197,7 @@ finish_output_ppm(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 GLOBAL(djpeg_dest_ptr)
-jinit_write_ppm(j_decompress_ptr cinfo)
+jinit_write_ppm(const j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
 	const ppm_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

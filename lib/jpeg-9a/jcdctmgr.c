@@ -67,10 +67,10 @@ typedef union {
   */
 
 METHODDEF(void)
-forward_DCT(j_compress_ptr cinfo, jpeg_component_info* compptr,
-	JSAMPARRAY sample_data, JBLOCKROW coef_blocks,
-	JDIMENSION start_row, JDIMENSION start_col,
-	JDIMENSION num_blocks)
+forward_DCT(const j_compress_ptr cinfo, jpeg_component_info* compptr,
+            JSAMPARRAY sample_data, const JBLOCKROW coef_blocks,
+            const JDIMENSION start_row, JDIMENSION start_col,
+            const JDIMENSION num_blocks)
 	/* This version is used for integer DCT implementations. */
 {
 	/* This routine is heavily used, so it's worth coding it tightly. */
@@ -128,10 +128,10 @@ forward_DCT(j_compress_ptr cinfo, jpeg_component_info* compptr,
 #ifdef DCT_FLOAT_SUPPORTED
 
 METHODDEF(void)
-forward_DCT_float(j_compress_ptr cinfo, jpeg_component_info* compptr,
-	JSAMPARRAY sample_data, JBLOCKROW coef_blocks,
-	JDIMENSION start_row, JDIMENSION start_col,
-	JDIMENSION num_blocks)
+forward_DCT_float(const j_compress_ptr cinfo, jpeg_component_info* compptr,
+                  JSAMPARRAY sample_data, const JBLOCKROW coef_blocks,
+                  const JDIMENSION start_row, JDIMENSION start_col,
+                  const JDIMENSION num_blocks)
 	/* This version is used for floating-point DCT implementations. */
 {
 	/* This routine is heavily used, so it's worth coding it tightly. */
@@ -177,7 +177,7 @@ forward_DCT_float(j_compress_ptr cinfo, jpeg_component_info* compptr,
  */
 
 METHODDEF(void)
-start_pass_fdctmgr(j_compress_ptr cinfo)
+start_pass_fdctmgr(const j_compress_ptr cinfo)
 {
 	const my_fdct_ptr fdct = (my_fdct_ptr)cinfo->fdct;
 	int ci, i;
@@ -443,7 +443,7 @@ start_pass_fdctmgr(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_forward_dct(j_compress_ptr cinfo)
+jinit_forward_dct(const j_compress_ptr cinfo)
 {
 	int ci;
 	jpeg_component_info* compptr;

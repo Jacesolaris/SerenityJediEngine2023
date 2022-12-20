@@ -54,7 +54,7 @@ void TurretPain(gentity_t* self, gentity_t* attacker, int damage)
 }
 
 //------------------------------------------------------------------------------------------------------------
-void TurretBasePain(const gentity_t* self, gentity_t* attacker, int damage)
+void TurretBasePain(const gentity_t* self, gentity_t* attacker, const int damage)
 //------------------------------------------------------------------------------------------------------------
 {
 	if (self->target_ent)
@@ -73,7 +73,7 @@ void TurretBasePain(const gentity_t* self, gentity_t* attacker, int damage)
 void auto_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
 //------------------------------------------------------------------------------------------------------------
 {
-	vec3_t forward = { 0, 0, 1 }, pos;
+	vec3_t forward = {0, 0, 1}, pos;
 
 	// Turn off the thinking of the base & use it's targets
 	g_entities[self->r.ownerNum].think = NULL;
@@ -95,12 +95,12 @@ void auto_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker,
 	if (self->splashDamage > 0 && self->splashRadius > 0)
 	{
 		g_radius_damage(self->r.currentOrigin,
-			attacker,
-			self->splashDamage,
-			self->splashRadius,
-			attacker,
-			NULL,
-			MOD_UNKNOWN);
+		                attacker,
+		                self->splashDamage,
+		                self->splashRadius,
+		                attacker,
+		                NULL,
+		                MOD_UNKNOWN);
 	}
 
 	self->s.weapon = 0; // crosshair code uses this to mark crosshair red
@@ -130,7 +130,8 @@ void auto_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker,
 }
 
 //------------------------------------------------------------------------------------------------------------
-void bottom_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
+void bottom_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const int damage,
+                const int meansOfDeath)
 //------------------------------------------------------------------------------------------------------------
 {
 	if (self->target_ent && self->target_ent->health > 0)
@@ -424,7 +425,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 	qboolean found = qfalse;
 	float bestDist = self->radius * self->radius;
 	vec3_t org, org2;
-	gentity_t* entity_list[MAX_GENTITIES], * bestTarget = NULL;
+	gentity_t *entity_list[MAX_GENTITIES], *bestTarget = NULL;
 	trace_t tr;
 	const gentity_t* top = &g_entities[self->r.ownerNum];
 	if (!top)
@@ -503,7 +504,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 			if (enemyDist < bestDist // all things equal, keep current
 				|| !Q_stricmp("atst_vehicle", target->NPC_type) && bestTarget &&
 				Q_stricmp("atst_vehicle", bestTarget->NPC_type))
-				//target AT-STs over non-AT-STs... FIXME: must be a better, easier way to tell this, no?
+			//target AT-STs over non-AT-STs... FIXME: must be a better, easier way to tell this, no?
 			{
 				if (self->attackDebounceTime < level.time)
 				{

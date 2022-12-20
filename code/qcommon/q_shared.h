@@ -1022,13 +1022,13 @@ using bladeInfo_t = struct
 	vec3_t muzzleDirOld;
 	saberTrail_t trail;
 
-	void ActivateTrail(float duration)
+	void ActivateTrail(const float duration)
 	{
 		trail.inAction = qtrue;
 		trail.duration = duration;
 	};
 
-	void DeactivateTrail(float duration)
+	void DeactivateTrail(const float duration)
 	{
 		trail.inAction = qfalse;
 		trail.duration = duration;
@@ -1312,7 +1312,7 @@ using saberInfo_t = struct
 	//	[in]		int iBlade		Which Blade to activate.
 	//	[in]		bool bActive	Whether to activate it (default true), or deactivate it (false).
 	//	[return]	void
-	void BladeActivate(int iBlade, qboolean bActive = qtrue)
+	void BladeActivate(const int iBlade, const qboolean bActive = qtrue)
 	{
 		// Validate blade ID/Index.
 		if (iBlade < 0 || iBlade >= numBlades)
@@ -1363,7 +1363,7 @@ using saberInfo_t = struct
 		return qfalse;
 	}
 
-	void SetLength(float length)
+	void SetLength(const float length)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1398,7 +1398,7 @@ using saberInfo_t = struct
 		return len1;
 	};
 
-	void ActivateTrail(float duration)
+	void ActivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1406,7 +1406,7 @@ using saberInfo_t = struct
 		}
 	};
 
-	void DeactivateTrail(float duration)
+	void DeactivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1650,7 +1650,7 @@ public:
 	//	[in]		int iBlade		Which Blade to activate.
 	//	[in]		bool bActive	Whether to activate it (default true), or deactivate it (false).
 	//	[return]	void
-	void BladeActivate(int iBlade, qboolean bActive = qtrue)
+	void BladeActivate(const int iBlade, const qboolean bActive = qtrue)
 	{
 		// Validate blade ID/Index.
 		if (iBlade < 0 || iBlade >= numBlades)
@@ -1671,7 +1671,7 @@ public:
 		return qfalse;
 	}
 
-	void SetLength(float length)
+	void SetLength(const float length)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1706,7 +1706,7 @@ public:
 		return len1;
 	};
 
-	void ActivateTrail(float duration)
+	void ActivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -1714,7 +1714,7 @@ public:
 		}
 	};
 
-	void DeactivateTrail(float duration)
+	void DeactivateTrail(const float duration)
 	{
 		for (int i = 0; i < numBlades; i++)
 		{
@@ -2064,21 +2064,21 @@ public:
 	short saberBlocked;
 	short leanStopDebounceTime;
 
-	int PlayerEffectFlags;        // PlayerEffectFlags
+	int PlayerEffectFlags; // PlayerEffectFlags
 
-	int ManualBlockingFlags;      //Blockingflag on OK
+	int ManualBlockingFlags; //Blockingflag on OK
 
-	int Manual_m_blockingTime;      //m_blocking on
-	int ManualBlockingTime;       //Blocking 1
-	int ManualblockStartTime;     //Blocking 2
+	int Manual_m_blockingTime; //m_blocking on
+	int ManualBlockingTime; //Blocking 1
+	int ManualblockStartTime; //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
-	int BoltblockStartTime;       //Blocking 4
+	int BoltblockStartTime; //Blocking 4
 
-	int MeleeblockStartTime;      //Melee Blocking 1
-	int MeleeblockLastStartTime;  //Melee Blocking 2
+	int MeleeblockStartTime; //Melee Blocking 1
+	int MeleeblockLastStartTime; //Melee Blocking 2
 
-	int DodgeStartTime;           //Dodgeing 1
-	int DodgeLastStartTime;       //Dodgeing 2
+	int DodgeStartTime; //Dodgeing 1
+	int DodgeLastStartTime; //Dodgeing 2
 
 	int damageTime;
 
@@ -2433,21 +2433,21 @@ public:
 		saved_game.write<float>(hyperSpaceAngles);
 		saved_game.write<int32_t>(forceSpeedRecoveryTime);
 
-		saved_game.write<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.write<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
+		saved_game.write<int32_t>(ManualBlockingFlags); //Blockingflag on OK
 
-		saved_game.write<int32_t>(Manual_m_blockingTime);      //m_blocking on
-		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.write<int32_t>(Manual_m_blockingTime); //m_blocking on
+		saved_game.write<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.write<int32_t>(BoltblockStartTime);       //Blocking 4
+		saved_game.write<int32_t>(BoltblockStartTime); //Blocking 4
 
-		saved_game.write<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
-		saved_game.write<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
+		saved_game.write<int32_t>(MeleeblockStartTime); //Melee Blocking 1
+		saved_game.write<int32_t>(MeleeblockLastStartTime); //Melee Blocking 1
 
-		saved_game.write<int32_t>(DodgeStartTime);           //Dodgeing 1
-		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodgeing 2
+		saved_game.write<int32_t>(DodgeStartTime); //Dodgeing 1
+		saved_game.write<int32_t>(DodgeLastStartTime); //Dodgeing 2
 
 		saved_game.write<int32_t>(damageTime);
 
@@ -2686,21 +2686,21 @@ public:
 		saved_game.read<float>(hyperSpaceAngles);
 		saved_game.read<int32_t>(forceSpeedRecoveryTime);
 
-		saved_game.read<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.read<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
+		saved_game.read<int32_t>(ManualBlockingFlags); //Blockingflag on OK
 
-		saved_game.read<int32_t>(Manual_m_blockingTime);      //m_blocking on
-		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.read<int32_t>(Manual_m_blockingTime); //m_blocking on
+		saved_game.read<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.read<int32_t>(BoltblockStartTime);       //Blocking 4
+		saved_game.read<int32_t>(BoltblockStartTime); //Blocking 4
 
-		saved_game.read<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
-		saved_game.read<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
+		saved_game.read<int32_t>(MeleeblockStartTime); //Melee Blocking 1
+		saved_game.read<int32_t>(MeleeblockLastStartTime); //Melee Blocking 1
 
-		saved_game.read<int32_t>(DodgeStartTime);           //Dodgeing 1
-		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodgeing 2
+		saved_game.read<int32_t>(DodgeStartTime); //Dodgeing 1
+		saved_game.read<int32_t>(DodgeLastStartTime); //Dodgeing 2
 
 		saved_game.read<int32_t>(damageTime);
 
@@ -2960,7 +2960,7 @@ using entityState_t = struct entityState_s
 	int client_num; // 0 to (MAX_CLIENTS - 1), for players and corpses
 	int frame;
 
-	int		NPC_class; //we need to see what it is on the client for a few effects.
+	int NPC_class; //we need to see what it is on the client for a few effects.
 
 	int solid; // for client side prediction, gi.linkentity sets this properly
 
@@ -3026,21 +3026,21 @@ using entityState_t = struct entityState_s
 
 	float speed;
 
-	int PlayerEffectFlags;        // PlayerEffectFlags
+	int PlayerEffectFlags; // PlayerEffectFlags
 
-	int ManualBlockingFlags;      //Blockingflag on OK
+	int ManualBlockingFlags; //Blockingflag on OK
 
-	int Manual_m_blockingTime;      //m_blocking on
-	int ManualBlockingTime;       //Blocking 1
-	int ManualblockStartTime;     //Blocking 2
+	int Manual_m_blockingTime; //m_blocking on
+	int ManualBlockingTime; //Blocking 1
+	int ManualblockStartTime; //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
-	int BoltblockStartTime;       //Blocking 4
+	int BoltblockStartTime; //Blocking 4
 
-	int MeleeblockStartTime;      //Melee Blocking 1
-	int MeleeblockLastStartTime;  //Melee Blocking 2
+	int MeleeblockStartTime; //Melee Blocking 1
+	int MeleeblockLastStartTime; //Melee Blocking 2
 
-	int DodgeStartTime;           //Dodgeing 1
-	int DodgeLastStartTime;       //Dodgeing 2
+	int DodgeStartTime; //Dodgeing 1
+	int DodgeLastStartTime; //Dodgeing 2
 
 	int cloakFuel;
 	int stasisTime;
@@ -3138,21 +3138,21 @@ using entityState_t = struct entityState_s
 
 		saved_game.write<int32_t>(speed);
 
-		saved_game.write<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.write<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.write<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
+		saved_game.write<int32_t>(ManualBlockingFlags); //Blockingflag on OK
 
-		saved_game.write<int32_t>(Manual_m_blockingTime);      //m_blocking on
-		saved_game.write<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.write<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.write<int32_t>(Manual_m_blockingTime); //m_blocking on
+		saved_game.write<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.write<int32_t>(BoltblockStartTime);       //Blocking 4
+		saved_game.write<int32_t>(BoltblockStartTime); //Blocking 4
 
-		saved_game.write<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
-		saved_game.write<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
+		saved_game.write<int32_t>(MeleeblockStartTime); //Melee Blocking 1
+		saved_game.write<int32_t>(MeleeblockLastStartTime); //Melee Blocking 1
 
-		saved_game.write<int32_t>(DodgeStartTime);           //Dodgeing 1
-		saved_game.write<int32_t>(DodgeLastStartTime);       //Dodgeing 2
+		saved_game.write<int32_t>(DodgeStartTime); //Dodgeing 1
+		saved_game.write<int32_t>(DodgeLastStartTime); //Dodgeing 2
 
 		saved_game.write<int32_t>(forceSpeedRecoveryTime);
 		saved_game.write<int32_t>(genericenemyindex);
@@ -3255,21 +3255,21 @@ using entityState_t = struct entityState_s
 
 		saved_game.read<int32_t>(speed);
 
-		saved_game.read<int32_t>(PlayerEffectFlags);        // PlayerEffectFlags
+		saved_game.read<int32_t>(PlayerEffectFlags); // PlayerEffectFlags
 
-		saved_game.read<int32_t>(ManualBlockingFlags);      //Blockingflag on OK
+		saved_game.read<int32_t>(ManualBlockingFlags); //Blockingflag on OK
 
-		saved_game.read<int32_t>(Manual_m_blockingTime);      //m_blocking on
-		saved_game.read<int32_t>(ManualBlockingTime);       //Blocking 1
-		saved_game.read<int32_t>(ManualblockStartTime);     //Blocking 2
+		saved_game.read<int32_t>(Manual_m_blockingTime); //m_blocking on
+		saved_game.read<int32_t>(ManualBlockingTime); //Blocking 1
+		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
-		saved_game.read<int32_t>(BoltblockStartTime);       //Blocking 4
+		saved_game.read<int32_t>(BoltblockStartTime); //Blocking 4
 
-		saved_game.read<int32_t>(MeleeblockStartTime);      //Melee Blocking 1
-		saved_game.read<int32_t>(MeleeblockLastStartTime);  //Melee Blocking 1
+		saved_game.read<int32_t>(MeleeblockStartTime); //Melee Blocking 1
+		saved_game.read<int32_t>(MeleeblockLastStartTime); //Melee Blocking 1
 
-		saved_game.read<int32_t>(DodgeStartTime);           //Dodgeing 1
-		saved_game.read<int32_t>(DodgeLastStartTime);       //Dodgeing 2
+		saved_game.read<int32_t>(DodgeStartTime); //Dodgeing 1
+		saved_game.read<int32_t>(DodgeLastStartTime); //Dodgeing 2
 
 		saved_game.read<int32_t>(forceSpeedRecoveryTime);
 		saved_game.read<int32_t>(genericenemyindex);
@@ -3597,6 +3597,6 @@ void Q_RemoveFromBitflags(uint32_t* bits, int index, uint32_t bitsPerByte);
 using cmpFunc_t = int(*)(const void* a, const void* b);
 
 void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
-	size_t size, cmpFunc_t cmp);
+                     size_t size, cmpFunc_t cmp);
 
 #endif	// __Q_SHARED_H

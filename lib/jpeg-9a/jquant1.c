@@ -178,7 +178,7 @@ typedef my_cquantizer* my_cquantize_ptr;
  */
 
 LOCAL(int)
-select_ncolors(j_decompress_ptr cinfo, int Ncolors[])
+select_ncolors(const j_decompress_ptr cinfo, int Ncolors[])
 /* Determine allocation of desired colors to components, */
 /* and fill in Ncolors[] array to indicate choice. */
 /* Return value is total number of colors (product of Ncolors[] values). */
@@ -236,7 +236,7 @@ select_ncolors(j_decompress_ptr cinfo, int Ncolors[])
 }
 
 LOCAL(int)
-output_value(j_decompress_ptr cinfo, int ci, int j, int maxj)
+output_value(j_decompress_ptr cinfo, int ci, const int j, const int maxj)
 /* Return j'th output value, where j will range from 0 to maxj */
 /* The output values must fall in 0..MAXJSAMPLE in increasing order */
 {
@@ -249,7 +249,7 @@ output_value(j_decompress_ptr cinfo, int ci, int j, int maxj)
 }
 
 LOCAL(int)
-largest_input_value(j_decompress_ptr cinfo, int ci, int j, int maxj)
+largest_input_value(j_decompress_ptr cinfo, int ci, const int j, const int maxj)
 /* Return largest input value that should map to j'th output value */
 /* Must have largest(j=0) >= 0, and largest(j=maxj) >= MAXJSAMPLE */
 {
@@ -262,7 +262,7 @@ largest_input_value(j_decompress_ptr cinfo, int ci, int j, int maxj)
  */
 
 LOCAL(void)
-create_colormap(j_decompress_ptr cinfo)
+create_colormap(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 
@@ -318,7 +318,7 @@ create_colormap(j_decompress_ptr cinfo)
  */
 
 LOCAL(void)
-create_colorindex(j_decompress_ptr cinfo)
+create_colorindex(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 	int j, pad;
@@ -380,7 +380,7 @@ create_colorindex(j_decompress_ptr cinfo)
  */
 
 LOCAL(ODITHER_MATRIX_PTR)
-make_odither_array(j_decompress_ptr cinfo, int ncolors)
+make_odither_array(const j_decompress_ptr cinfo, const int ncolors)
 {
 	const ODITHER_MATRIX_PTR odither = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(ODITHER_MATRIX));
@@ -410,7 +410,7 @@ make_odither_array(j_decompress_ptr cinfo, int ncolors)
  */
 
 LOCAL(void)
-create_odither_tables(j_decompress_ptr cinfo)
+create_odither_tables(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 
@@ -434,8 +434,8 @@ create_odither_tables(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-color_quantize(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-	JSAMPARRAY output_buf, int num_rows)
+color_quantize(const j_decompress_ptr cinfo, const JSAMPARRAY input_buf,
+               const JSAMPARRAY output_buf, const int num_rows)
 	/* General case, no dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -457,8 +457,8 @@ color_quantize(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 }
 
 METHODDEF(void)
-color_quantize3(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-	JSAMPARRAY output_buf, int num_rows)
+color_quantize3(const j_decompress_ptr cinfo, const JSAMPARRAY input_buf,
+                const JSAMPARRAY output_buf, const int num_rows)
 	/* Fast path for out_color_components==3, no dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -480,8 +480,8 @@ color_quantize3(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 }
 
 METHODDEF(void)
-quantize_ord_dither(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-	JSAMPARRAY output_buf, int num_rows)
+quantize_ord_dither(const j_decompress_ptr cinfo, const JSAMPARRAY input_buf,
+                    const JSAMPARRAY output_buf, const int num_rows)
 	/* General case, with ordered dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -521,8 +521,8 @@ quantize_ord_dither(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 }
 
 METHODDEF(void)
-quantize3_ord_dither(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-	JSAMPARRAY output_buf, int num_rows)
+quantize3_ord_dither(const j_decompress_ptr cinfo, const JSAMPARRAY input_buf,
+                     const JSAMPARRAY output_buf, const int num_rows)
 	/* Fast path for out_color_components==3, with ordered dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -556,8 +556,8 @@ quantize3_ord_dither(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 }
 
 METHODDEF(void)
-quantize_fs_dither(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-	JSAMPARRAY output_buf, int num_rows)
+quantize_fs_dither(const j_decompress_ptr cinfo, const JSAMPARRAY input_buf,
+                   const JSAMPARRAY output_buf, const int num_rows)
 	/* General case, with Floyd-Steinberg dithering */
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
@@ -656,7 +656,7 @@ quantize_fs_dither(j_decompress_ptr cinfo, JSAMPARRAY input_buf,
  */
 
 LOCAL(void)
-alloc_fs_workspace(j_decompress_ptr cinfo)
+alloc_fs_workspace(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 
@@ -672,7 +672,7 @@ alloc_fs_workspace(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_pass_1_quant(j_decompress_ptr cinfo, boolean is_pre_scan)
+start_pass_1_quant(const j_decompress_ptr cinfo, boolean is_pre_scan)
 {
 	const my_cquantize_ptr cquantize = (my_cquantize_ptr)cinfo->cquantize;
 	size_t arraysize;
@@ -739,7 +739,7 @@ finish_pass_1_quant(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-new_color_map_1_quant(j_decompress_ptr cinfo)
+new_color_map_1_quant(const j_decompress_ptr cinfo)
 {
 	ERREXIT(cinfo, JERR_MODE_CHANGE);
 }
@@ -749,7 +749,7 @@ new_color_map_1_quant(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_1pass_quantizer(j_decompress_ptr cinfo)
+jinit_1pass_quantizer(const j_decompress_ptr cinfo)
 {
 	const my_cquantize_ptr cquantize = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_cquantizer));

@@ -60,7 +60,7 @@ FX_DEMP2_HitPlayer
 ---------------------------
 */
 
-void FX_DEMP2_HitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_DEMP2_HitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -79,27 +79,27 @@ FX_DEMP2_AltBeam
 */
 void FX_DEMP2_AltBeam(vec3_t start, vec3_t end, vec3_t normal, vec3_t targ1, vec3_t targ2)
 {
-	static vec3_t WHITE = { 1.0f,1.0f,1.0f };
-	static vec3_t BRIGHT = { 0.75f,0.5f,1.0f };
+	static vec3_t WHITE = {1.0f, 1.0f, 1.0f};
+	static vec3_t BRIGHT = {0.75f, 0.5f, 1.0f};
 
 	// Let's at least give it something...
 	//"concussion/beam"
 	trap->FX_AddLine(start, end, 0.3f, 15.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		175, trap->R_RegisterShader("gfx/misc/lightningFlash"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 WHITE, WHITE, 0.0f,
+	                 175, trap->R_RegisterShader("gfx/misc/lightningFlash"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
 	// add some beef
 	trap->FX_AddLine(start, end, 0.3f, 11.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		BRIGHT, BRIGHT, 0.0f,
-		150, trap->R_RegisterShader("gfx/misc/electric2"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 BRIGHT, BRIGHT, 0.0f,
+	                 150, trap->R_RegisterShader("gfx/misc/electric2"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 //---------------------------------------------
-void FX_DEMP2_AltDetonate(vec3_t org, float size)
+void FX_DEMP2_AltDetonate(vec3_t org, const float size)
 {
 	localEntity_t* ex = CG_AllocLocalEntity();
 	ex->leType = LE_FADE_SCALE_MODEL;
@@ -108,7 +108,7 @@ void FX_DEMP2_AltDetonate(vec3_t org, float size)
 	ex->refEntity.renderfx |= RF_VOLUMETRIC;
 
 	ex->startTime = cg.time;
-	ex->endTime = ex->startTime + 800;//1600;
+	ex->endTime = ex->startTime + 800; //1600;
 
 	ex->radius = size;
 	ex->refEntity.customShader = cgs.media.demp2ShellShader;

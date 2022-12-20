@@ -35,7 +35,11 @@ constexpr auto CMD_BACKUP = 128;
 
 constexpr auto MAX_ENTITIES_IN_SNAPSHOT = 1024;
 
-constexpr auto SNAPFLAG_RATE_DELAYED = 1; // the server withheld a packet to save bandwidth;
+constexpr auto SNAPFLAG_RATE_DELAYED
+
+
+=
+1; // the server withheld a packet to save bandwidth;
 constexpr auto SNAPFLAG_DROPPED_COMMANDS = 2; // the server lost some cmds coming from the client;
 
 // snapshots are a view of the server at a given time

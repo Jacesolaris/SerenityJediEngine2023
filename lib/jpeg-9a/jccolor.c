@@ -93,7 +93,7 @@ typedef my_color_converter* my_cconvert_ptr;
    */
 
 METHODDEF(void)
-rgb_ycc_start(j_compress_ptr cinfo)
+rgb_ycc_start(const j_compress_ptr cinfo)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	INT32* rgb_ycc_tab;
@@ -135,9 +135,9 @@ rgb_ycc_start(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-rgb_ycc_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+rgb_ycc_convert(const j_compress_ptr cinfo,
+                JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+                JDIMENSION output_row, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const register INT32* ctab = cconvert->rgb_ycc_tab;
@@ -185,9 +185,9 @@ rgb_ycc_convert(j_compress_ptr cinfo,
  */
 
 METHODDEF(void)
-rgb_gray_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+rgb_gray_convert(const j_compress_ptr cinfo,
+                 JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+                 JDIMENSION output_row, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const register INT32* ctab = cconvert->rgb_ycc_tab;
@@ -218,9 +218,9 @@ rgb_gray_convert(j_compress_ptr cinfo,
  */
 
 METHODDEF(void)
-cmyk_ycck_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+cmyk_ycck_convert(const j_compress_ptr cinfo,
+                  JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+                  JDIMENSION output_row, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const register INT32* ctab = cconvert->rgb_ycc_tab;
@@ -271,9 +271,9 @@ cmyk_ycck_convert(j_compress_ptr cinfo,
  */
 
 METHODDEF(void)
-rgb_rgb1_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+rgb_rgb1_convert(const j_compress_ptr cinfo,
+                 JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+                 JDIMENSION output_row, int num_rows)
 {
 	const JDIMENSION num_cols = cinfo->image_width;
 
@@ -305,9 +305,9 @@ rgb_rgb1_convert(j_compress_ptr cinfo,
  */
 
 METHODDEF(void)
-grayscale_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+grayscale_convert(const j_compress_ptr cinfo,
+                  JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+                  JDIMENSION output_row, int num_rows)
 {
 	const int instride = cinfo->input_components;
 	const JDIMENSION num_cols = cinfo->image_width;
@@ -329,9 +329,9 @@ grayscale_convert(j_compress_ptr cinfo,
  */
 
 METHODDEF(void)
-rgb_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+rgb_convert(const j_compress_ptr cinfo,
+            JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+            JDIMENSION output_row, int num_rows)
 {
 	const JDIMENSION num_cols = cinfo->image_width;
 
@@ -358,9 +358,9 @@ rgb_convert(j_compress_ptr cinfo,
  */
 
 METHODDEF(void)
-null_convert(j_compress_ptr cinfo,
-	JSAMPARRAY input_buf, JSAMPIMAGE output_buf,
-	JDIMENSION output_row, int num_rows)
+null_convert(const j_compress_ptr cinfo,
+             JSAMPARRAY input_buf, const JSAMPIMAGE output_buf,
+             JDIMENSION output_row, int num_rows)
 {
 	const register int nc = cinfo->num_components;
 	const JDIMENSION num_cols = cinfo->image_width;
@@ -395,7 +395,7 @@ null_method(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_color_converter(j_compress_ptr cinfo)
+jinit_color_converter(const j_compress_ptr cinfo)
 {
 	const my_cconvert_ptr cconvert = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_color_converter));

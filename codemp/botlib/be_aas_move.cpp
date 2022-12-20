@@ -182,7 +182,7 @@ int AAS_AgainstLadder(vec3_t origin)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_OnGround(vec3_t origin, int presencetype, int passent)
+int AAS_OnGround(vec3_t origin, const int presencetype, const int passent)
 {
 	vec3_t end, up = { 0, 0, 1 };
 
@@ -285,7 +285,7 @@ void AAS_JumpReachRunStart(aas_reachability_t* reach, vec3_t runstart)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-float AAS_WeaponJumpZVelocity(vec3_t origin, float radiusdamage)
+float AAS_WeaponJumpZVelocity(vec3_t origin, const float radiusdamage)
 {
 	vec3_t kvel, v, start, end, forward, right, viewangles, dir;
 	const vec3_t rocketoffset = { 8, 8, -8 };
@@ -357,7 +357,7 @@ float AAS_BFGJumpZVelocity(vec3_t origin)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_Accelerate(vec3_t velocity, float frametime, vec3_t wishdir, float wishspeed, float accel)
+void AAS_Accelerate(vec3_t velocity, const float frametime, vec3_t wishdir, const float wishspeed, const float accel)
 {
 	const float currentspeed = DotProduct(velocity, wishdir);
 	const float addspeed = wishspeed - currentspeed;
@@ -380,8 +380,8 @@ void AAS_Accelerate(vec3_t velocity, float frametime, vec3_t wishdir, float wish
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ApplyFriction(vec3_t vel, float friction, float stopspeed,
-	float frametime)
+void AAS_ApplyFriction(vec3_t vel, const float friction, const float stopspeed,
+                       const float frametime)
 {
 	//horizontal speed
 	const float speed = sqrt(vel[0] * vel[0] + vel[1] * vel[1]);
@@ -401,7 +401,7 @@ void AAS_ApplyFriction(vec3_t vel, float friction, float stopspeed,
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_ClipToBBox(aas_trace_t* trace, vec3_t start, vec3_t end, int presencetype, vec3_t mins, vec3_t maxs)
+int AAS_ClipToBBox(aas_trace_t* trace, vec3_t start, vec3_t end, const int presencetype, vec3_t mins, vec3_t maxs)
 {
 	int i;
 	float planedist;
@@ -971,12 +971,12 @@ int AAS_ClientMovementPrediction(aas_clientmove_s* move,
 // Changes Globals:		-
 //===========================================================================
 int AAS_PredictClientMovement(aas_clientmove_s* move,
-	int entnum, vec3_t origin,
-	int presencetype, int onground,
+                              const int entnum, vec3_t origin,
+                              const int presencetype, const int onground,
 	vec3_t velocity, vec3_t cmdmove,
-	int cmdframes,
-	int maxframes, float frametime,
-	int stopevent, int stopareanum, int visualize)
+                              const int cmdframes,
+                              const int maxframes, const float frametime,
+                              const int stopevent, const int stopareanum, const int visualize)
 {
 	vec3_t mins, maxs;
 	return AAS_ClientMovementPrediction(move, entnum, origin, presencetype, onground,
@@ -991,12 +991,12 @@ int AAS_PredictClientMovement(aas_clientmove_s* move,
 // Changes Globals:		-
 //===========================================================================
 int AAS_ClientMovementHitBBox(aas_clientmove_s* move,
-	int entnum, vec3_t origin,
-	int presencetype, int onground,
+                              const int entnum, vec3_t origin,
+                              const int presencetype, const int onground,
 	vec3_t velocity, vec3_t cmdmove,
-	int cmdframes,
-	int maxframes, float frametime,
-	vec3_t mins, vec3_t maxs, int visualize)
+                              const int cmdframes,
+                              const int maxframes, const float frametime,
+	vec3_t mins, vec3_t maxs, const int visualize)
 {
 	return AAS_ClientMovementPrediction(move, entnum, origin, presencetype, onground,
 		velocity, cmdmove, cmdframes, maxframes,
@@ -1009,7 +1009,7 @@ int AAS_ClientMovementHitBBox(aas_clientmove_s* move,
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_TestMovementPrediction(int entnum, vec3_t origin, vec3_t dir)
+void AAS_TestMovementPrediction(const int entnum, vec3_t origin, vec3_t dir)
 {
 	vec3_t velocity, cmdmove;
 	aas_clientmove_t move;
@@ -1038,7 +1038,7 @@ void AAS_TestMovementPrediction(int entnum, vec3_t origin, vec3_t dir)
 // Returns:				qfalse if too high or too far from start to end
 // Changes Globals:		-
 //===========================================================================
-int AAS_HorizontalVelocityForJump(float zvel, vec3_t start, vec3_t end, float* velocity)
+int AAS_HorizontalVelocityForJump(const float zvel, vec3_t start, vec3_t end, float* velocity)
 {
 	vec3_t dir;
 

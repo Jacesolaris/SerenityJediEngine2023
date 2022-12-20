@@ -32,13 +32,13 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "server/sv_gameapi.h"
 
 ICARUS_Instance* iICARUS;
-bufferlist_t		ICARUS_BufferList;
-entlist_t			ICARUS_EntList;
+bufferlist_t ICARUS_BufferList;
+entlist_t ICARUS_EntList;
 
 extern uint32_t Com_BlockChecksum(const void* buffer, int length);
-extern	void	Q3_DebugPrint(int level, const char* format, ...);
+extern void Q3_DebugPrint(int level, const char* format, ...);
 
-int			ICARUS_entFilter = -1;
+int ICARUS_entFilter = -1;
 
 /*
 =============
@@ -53,7 +53,7 @@ int ICARUS_GetScript(const char* name, char** buf)
 	//Make sure the caller is valid
 
 	//Attempt to retrieve a precached script
-	bufferlist_t::iterator ei = ICARUS_BufferList.find(name);
+	auto ei = ICARUS_BufferList.find(name);
 
 	//Not found, check the disk
 	if (ei == ICARUS_BufferList.end())
@@ -143,7 +143,8 @@ int ICARUS_RunScript(sharedEntity_t* ent, const char* name)
 
 	if (ICARUS_entFilter == -1 || ICARUS_entFilter == ent->s.number)
 	{
-		Q3_DebugPrint(WL_VERBOSE, "%d Script %s executed by %s %s\n", svs.time, const_cast<char*>(name), ent->classname, ent->targetname);
+		Q3_DebugPrint(WL_VERBOSE, "%d Script %s executed by %s %s\n", svs.time, const_cast<char*>(name), ent->classname,
+		              ent->targetname);
 	}
 
 	return true;
@@ -199,7 +200,7 @@ void ICARUS_Shutdown(void)
 	}
 
 	//Clear out all precached scripts
-	for (bufferlist_t::iterator ei = ICARUS_BufferList.begin(); ei != ICARUS_BufferList.end(); ++ei)
+	for (auto ei = ICARUS_BufferList.begin(); ei != ICARUS_BufferList.end(); ++ei)
 	{
 		//gi.Free( (*ei).second->buffer );
 		ICARUS_Free((*ei).second->buffer);
@@ -248,12 +249,12 @@ void ICARUS_FreeEnt(sharedEntity_t* ent)
 	//Remove them from the ICARUSE_EntList list so that when their g_entity index is reused, ICARUS doesn't try to affect the new (incorrect) ent.
 	if VALIDSTRING(ent->script_targetname)
 	{
-		char	temp[1024];
+		char temp[1024];
 
 		strncpy(temp, ent->script_targetname, 1023);
 		temp[1023] = 0;
 
-		const entlist_t::iterator it = ICARUS_EntList.find(Q_strupr(temp));
+		const auto it = ICARUS_EntList.find(Q_strupr(temp));
 
 		if (it != ICARUS_EntList.end())
 		{
@@ -316,7 +317,7 @@ Associate the entity's id and name so that it can be referenced later
 
 void ICARUS_AssociateEnt(sharedEntity_t* ent)
 {
-	char	temp[1024];
+	char temp[1024];
 
 	if (VALIDSTRING(ent->script_targetname) == false)
 		return;
@@ -338,12 +339,12 @@ Loads and caches a script
 bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /* = false */)
 {
 	pscript_t* pscript;
-	char		newname[MAX_FILENAME_LENGTH];
-	char* buffer = nullptr;	// lose compiler warning about uninitialised vars
-	long		length;
+	char newname[MAX_FILENAME_LENGTH];
+	char* buffer = nullptr; // lose compiler warning about uninitialised vars
+	long length;
 
 	//Make sure this isn't already cached
-	const bufferlist_t::iterator ei = ICARUS_BufferList.find(name);
+	const auto ei = ICARUS_BufferList.find(name);
 
 	// note special return condition here, if doing interrogate and we already have this file then we MUST return
 	//	false (which stops the interrogator proceeding), this not only saves some time, but stops a potential
@@ -394,7 +395,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 
 	pscript = new pscript_t;
 
-	pscript->buffer = static_cast<char*>(ICARUS_Malloc(length));//gi.Malloc(length, TAG_ICARUS, qfalse);
+	pscript->buffer = static_cast<char*>(ICARUS_Malloc(length)); //gi.Malloc(length, TAG_ICARUS, qfalse);
 	memcpy(pscript->buffer, buffer, length);
 	pscript->length = length;
 
@@ -407,7 +408,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 
 void ICARUS_SoundPrecache(const char* filename)
 {
-	T_G_ICARUS_SOUNDINDEX* sharedMem = reinterpret_cast<T_G_ICARUS_SOUNDINDEX*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_SOUNDINDEX*>(sv.mSharedMemory);
 
 	strcpy(sharedMem->filename, filename);
 
@@ -416,7 +417,7 @@ void ICARUS_SoundPrecache(const char* filename)
 
 int ICARUS_GetIDForString(const char* string)
 {
-	T_G_ICARUS_GETSETIDFORSTRING* sharedMem = reinterpret_cast<T_G_ICARUS_GETSETIDFORSTRING*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETSETIDFORSTRING*>(sv.mSharedMemory);
 
 	strcpy(sharedMem->string, string);
 
@@ -433,9 +434,9 @@ ICARUS_InterrogateScript
 //
 void ICARUS_InterrogateScript(const char* filename)
 {
-	CBlockStream	stream;
+	CBlockStream stream;
 	CBlockMember* blockMember;
-	CBlock			block;
+	CBlock block;
 
 	if (!Q_stricmp(filename, "NULL") || !Q_stricmp(filename, "default"))
 		return;
@@ -444,7 +445,8 @@ void ICARUS_InterrogateScript(const char* filename)
 	//
 	// ensure "mpscripts" (Q3_SCRIPT_DIR), which will be missing if this was called recursively...
 	//
-	char sFilename[MAX_FILENAME_LENGTH];	// should really be MAX_QPATH (and 64 bytes instead of 1024), but this fits the rest of the code
+	char sFilename[MAX_FILENAME_LENGTH];
+	// should really be MAX_QPATH (and 64 bytes instead of 1024), but this fits the rest of the code
 
 	if (!Q_stricmpn(filename, Q3_SCRIPT_DIR, strlen(Q3_SCRIPT_DIR)))
 	{
@@ -458,11 +460,11 @@ void ICARUS_InterrogateScript(const char* filename)
 	//////////////////////////////////
 
 	//Attempt to register this script
-	if (ICARUS_RegisterScript(sFilename, qtrue) == false)	// true = bCalledDuringInterrogate
+	if (ICARUS_RegisterScript(sFilename, qtrue) == false) // true = bCalledDuringInterrogate
 		return;
 
 	char* buf;
-	long	len;
+	long len;
 
 	//Attempt to retrieve the new script data
 	if ((len = ICARUS_GetScript(sFilename, &buf)) == 0)
@@ -473,7 +475,7 @@ void ICARUS_InterrogateScript(const char* filename)
 		return;
 
 	const char* sVal1;
-	char		temp[1024];
+	char temp[1024];
 
 	//Now iterate through all blocks of the script, searching for keywords
 	while (stream.BlockAvailable())
@@ -485,21 +487,21 @@ void ICARUS_InterrogateScript(const char* filename)
 		//Determine what type of block this is
 		switch (block.GetBlockID())
 		{
-		case ID_CAMERA:	// to cache ROFF files
-		{
-			const float f = *static_cast<float*>(block.GetMemberData(0));
-
-			if (f == TYPE_PATH)
+		case ID_CAMERA: // to cache ROFF files
 			{
-				sVal1 = static_cast<const char*>(block.GetMemberData(1));
+				const float f = *static_cast<float*>(block.GetMemberData(0));
 
-				//we can do this I guess since the roff is loaded on the server.
-				theROFFSystem.Cache(sVal1, qfalse);
+				if (f == TYPE_PATH)
+				{
+					sVal1 = static_cast<const char*>(block.GetMemberData(1));
+
+					//we can do this I guess since the roff is loaded on the server.
+					theROFFSystem.Cache(sVal1, qfalse);
+				}
 			}
-		}
-		break;
+			break;
 
-		case ID_PLAY:	// to cache ROFF files
+		case ID_PLAY: // to cache ROFF files
 
 			sVal1 = static_cast<const char*>(block.GetMemberData(0));
 
@@ -512,7 +514,7 @@ void ICARUS_InterrogateScript(const char* filename)
 			}
 			break;
 
-			//Run commands
+		//Run commands
 		case ID_RUN:
 
 			sVal1 = static_cast<const char*>(block.GetMemberData(0));
@@ -524,20 +526,20 @@ void ICARUS_InterrogateScript(const char* filename)
 
 		case ID_SOUND:
 			//We can't just call over to S_RegisterSound or whatever because this is on the server.
-			sVal1 = static_cast<const char*>(block.GetMemberData(1));	//0 is channel, 1 is filename
+			sVal1 = static_cast<const char*>(block.GetMemberData(1)); //0 is channel, 1 is filename
 			ICARUS_SoundPrecache(sVal1);
 			break;
 
 		case ID_SET:
 			blockMember = block.GetMember(0);
 
-			//NOTENOTE: This will not catch special case get() inlines! (There's not really a good way to do that)
+		//NOTENOTE: This will not catch special case get() inlines! (There's not really a good way to do that)
 
-			//Make sure we're testing against strings
+		//Make sure we're testing against strings
 			if (blockMember->GetID() == TK_STRING)
 			{
 				sVal1 = static_cast<const char*>(block.GetMemberData(0));
-				const char* sVal2 = static_cast<const char*>(block.GetMemberData(1));
+				auto sVal2 = static_cast<const char*>(block.GetMemberData(1));
 
 				//Get the id for this set identifier
 				const int setID = ICARUS_GetIDForString(sVal1);
@@ -564,10 +566,10 @@ void ICARUS_InterrogateScript(const char* filename)
 					//Recursively obtain all embedded scripts
 					ICARUS_InterrogateScript(sVal2);
 					break;
-				case SET_LOOPSOUND:		//like ID_SOUND, but set's looping
+				case SET_LOOPSOUND: //like ID_SOUND, but set's looping
 					ICARUS_SoundPrecache(sVal2);
 					break;
-				case SET_VIDEO_PLAY:	//in game cinematic
+				case SET_VIDEO_PLAY: //in game cinematic
 					//do nothing for MP.
 					break;
 				case SET_ADDRHANDBOLT_MODEL:
@@ -594,17 +596,18 @@ void ICARUS_InterrogateScript(const char* filename)
 
 stringID_table_t BSTable[] =
 {
-	ENUM2STRING(BS_DEFAULT),//# default behavior for that NPC
-	ENUM2STRING(BS_ADVANCE_FIGHT),//# Advance to captureGoal and shoot enemies if you can
-	ENUM2STRING(BS_SLEEP),//# Play awake script when startled by sound
-	ENUM2STRING(BS_FOLLOW_LEADER),//# Follow your leader and shoot any enemies you come across
-	ENUM2STRING(BS_JUMP),//# Face navgoal and jump to it.
-	ENUM2STRING(BS_SEARCH),//# Using current waypoint as a base), search the immediate branches of waypoints for enemies
-	ENUM2STRING(BS_WANDER),//# Wander down random waypoint paths
-	ENUM2STRING(BS_NOCLIP),//# Moves through walls), etc.
-	ENUM2STRING(BS_REMOVE),//# Waits for player to leave PVS then removes itself
-	ENUM2STRING(BS_CINEMATIC),//# Does nothing but face it's angles and move to a goal if it has one
-	ENUM2STRING(BS_FLEE),//# Run toward the nav goal, avoiding danger
+	ENUM2STRING(BS_DEFAULT), //# default behavior for that NPC
+	ENUM2STRING(BS_ADVANCE_FIGHT), //# Advance to captureGoal and shoot enemies if you can
+	ENUM2STRING(BS_SLEEP), //# Play awake script when startled by sound
+	ENUM2STRING(BS_FOLLOW_LEADER), //# Follow your leader and shoot any enemies you come across
+	ENUM2STRING(BS_JUMP), //# Face navgoal and jump to it.
+	ENUM2STRING(BS_SEARCH),
+	//# Using current waypoint as a base), search the immediate branches of waypoints for enemies
+	ENUM2STRING(BS_WANDER), //# Wander down random waypoint paths
+	ENUM2STRING(BS_NOCLIP), //# Moves through walls), etc.
+	ENUM2STRING(BS_REMOVE), //# Waits for player to leave PVS then removes itself
+	ENUM2STRING(BS_CINEMATIC), //# Does nothing but face it's angles and move to a goal if it has one
+	ENUM2STRING(BS_FLEE), //# Run toward the nav goal, avoiding danger
 	//the rest are internal only
 	// ... but we should list them anyway, otherwise workshop behavior will screw up
 	ENUM2STRING(BS_WAIT),
@@ -612,8 +615,8 @@ stringID_table_t BSTable[] =
 	ENUM2STRING(BS_PATROL),
 	ENUM2STRING(BS_INVESTIGATE),
 	ENUM2STRING(BS_HUNT_AND_KILL),
-	ENUM2STRING(BS_FOLLOW_OVERRIDE),//# Follow your leader and shoot any enemies you come across
-	{ "",				-1 }
+	ENUM2STRING(BS_FOLLOW_OVERRIDE), //# Follow your leader and shoot any enemies you come across
+	{"", -1}
 };
 
 /*
@@ -652,6 +655,7 @@ Allocates a sequencer and task manager only if an entity is a potential script u
 */
 
 void Q3_TaskIDClear(int* taskID);
+
 void ICARUS_InitEnt(sharedEntity_t* ent)
 {
 	//Make sure this is a fresh ent
@@ -685,7 +689,7 @@ ICARUS_LinkEntity
 -------------------------
 */
 
-int ICARUS_LinkEntity(int entID, CSequencer* sequencer, CTaskManager* taskManager)
+int ICARUS_LinkEntity(const int entID, CSequencer* sequencer, CTaskManager* taskManager)
 {
 	sharedEntity_t* ent = SV_GentityNum(entID);
 

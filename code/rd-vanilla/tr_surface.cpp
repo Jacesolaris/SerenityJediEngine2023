@@ -48,7 +48,7 @@ use the shader system.
 RB_CheckOverflow
 ==============
 */
-void RB_CheckOverflow(int verts, int indexes) {
+void RB_CheckOverflow(const int verts, const int indexes) {
 	if (tess.numVertexes + verts < SHADER_MAX_VERTEXES
 		&& tess.numIndexes + indexes < SHADER_MAX_INDEXES) {
 		return;
@@ -71,7 +71,7 @@ void RB_CheckOverflow(int verts, int indexes) {
 RB_AddQuadStampExt
 ==============
 */
-void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2) {
+void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, const float s1, const float t1, const float s2, const float t2) {
 	vec3_t		normal;
 
 	RB_CHECKOVERFLOW(4, 6);
@@ -244,7 +244,7 @@ RB_SurfaceLine
 //		startRGB, endRGB
 //
 
-static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, float spanWidth)
+static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, const float spanWidth)
 {
 	RB_CHECKOVERFLOW(4, 6);
 
@@ -298,7 +298,7 @@ static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, float 
 	tess.indexes[tess.numIndexes++] = vbase + 3;
 }
 
-static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, float spanWidth, float spanWidth2, const float tcStart, const float tcEnd)
+static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, const float spanWidth, const float spanWidth2, const float tcStart, const float tcEnd)
 {
 	RB_CHECKOVERFLOW(4, 6);
 
@@ -651,7 +651,7 @@ static void CreateShape()
 }
 
 //----------------------------------------------------------------------------
-static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, float sradius, float eradius, int count, float startPerc, float endPerc)
+static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradius, const float eradius, const int count, const float startPerc, const float endPerc)
 //----------------------------------------------------------------------------
 {
 	vec3_t	point1, point2, fwd;
@@ -696,7 +696,7 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, float sradius, fl
 }
 
 //----------------------------------------------------------------------------
-static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, float radius)
+static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius)
 //----------------------------------------------------------------------------
 {
 	vec3_t fwd, old;
@@ -835,7 +835,7 @@ static void RB_SurfaceElectricity()
 
 //================================================================================
 
-static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, float len, float spanWidth)
+static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, const float len, const float spanWidth)
 {
 	const float		t = len / 256.0f;
 
@@ -1169,7 +1169,7 @@ static void RB_SurfaceBeam(void)
 //------------------
 // DoSprite
 //------------------
-static void DoSprite(vec3_t origin, float radius, float rotation)
+static void DoSprite(vec3_t origin, const float radius, const float rotation)
 {
 	vec3_t	left, up;
 
@@ -1217,7 +1217,7 @@ static void RB_SurfaceSaberGlow()
 /*
 ** LerpMeshVertexes
 */
-static void LerpMeshVertexes(md3Surface_t* surf, float backlerp)
+static void LerpMeshVertexes(md3Surface_t* surf, const float backlerp)
 {
 	int		vertNum;
 	unsigned lat, lng;
@@ -1412,7 +1412,7 @@ void RB_SurfaceFace(srfSurfaceFace_t* surf) {
 	tess.numVertexes += surf->numPoints;
 }
 
-static float LodErrorForVolume(vec3_t local, float radius) {
+static float LodErrorForVolume(vec3_t local, const float radius) {
 	vec3_t		world;
 
 	// never let it go negative

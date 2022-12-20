@@ -225,7 +225,7 @@ G_ProcessIPBans
 */
 void G_ProcessIPBans(void)
 {
-	char* s, str[MAX_CVAR_VALUE_STRING] = { 0 };
+	char *s, str[MAX_CVAR_VALUE_STRING] = {0};
 
 	Q_strncpyz(str, g_banIPs.string, sizeof str);
 
@@ -569,7 +569,7 @@ char* ConcatArgs(int start);
 void Svcmd_Say_f(void)
 {
 	// don't let text be too long for malicious reasons
-	char text[MAX_SAY_TEXT] = { 0 };
+	char text[MAX_SAY_TEXT] = {0};
 
 	if (trap->Argc() < 2)
 		return;
@@ -625,7 +625,7 @@ ConsoleCommand
 */
 qboolean ConsoleCommand(void)
 {
-	char cmd[MAX_TOKEN_CHARS] = { 0 };
+	char cmd[MAX_TOKEN_CHARS] = {0};
 
 	trap->Argv(0, cmd, sizeof cmd);
 

@@ -33,14 +33,18 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define CTF_CARRIER_DANGER_PROTECT_BONUS	5	// bonus for fraggin someone who has recently hurt your flag carrier
 #define CTF_CARRIER_PROTECT_BONUS			2	// bonus for fraggin someone while either you or your target are near your flag carrier
 
+
 #define CTF_FLAG_DEFENSE_BONUS				10	// bonus for fraggin someone while either you or your target are near your flag
 #define CTF_RETURN_FLAG_ASSIST_BONUS		10	// awarded for returning a flag that causes a capture to happen almost immediately
+
 
 #define CTF_FRAG_CARRIER_ASSIST_BONUS		10	// award for fragging a flag carrier if a capture happens almost immediately
 
 #define CTF_TARGET_PROTECT_RADIUS			1000	// the radius around an object being defended where a target will be worth extra frags
 
+
 #define CTF_ATTACKER_PROTECT_RADIUS			1000	// the radius around an object being defended where an attacker will get extra frags when making kills
+
 
 #define CTF_CARRIER_DANGER_PROTECT_TIMEOUT	8000
 #define CTF_FRAG_CARRIER_ASSIST_TIMEOUT		10000
@@ -68,7 +72,7 @@ void Team_FreeEntity(const gentity_t* ent);
 gentity_t* SelectCTFSpawnPoint(team_t team, int teamstate, vec3_t origin, vec3_t angles, qboolean isbot);
 gentity_t* SelectSPSpawnPoint(vec3_t origin, vec3_t angles);
 gentity_t* SelectSiegeSpawnPoint(int siegeClass, team_t team, int teamstate, vec3_t origin, vec3_t angles,
-	qboolean isbot);
+                                 qboolean isbot);
 locationData_t* Team_GetLocation(const gentity_t* ent);
 qboolean Team_GetLocationMsg(const gentity_t* ent, char* loc, int loclen);
 void TeamplayInfoMessage(const gentity_t* ent);

@@ -56,7 +56,8 @@ static vm_t* vmTable[MAX_VM];
 cvar_t* vm_legacy;
 #endif
 
-void VM_Init(void) {
+void VM_Init(void)
+{
 #ifdef _DEBUG
 	vm_legacy = Cvar_Get("vm_legacy", "0", 0);
 #endif
@@ -79,7 +80,8 @@ void VM_Init(void) {
 //	works on. Rather than add the performance hit for those platforms, the original code is still in use there.
 // For speed, we just grab 15 arguments, and don't worry about exactly how many the syscall actually needs; the extra is
 //	thrown away.
-intptr_t QDECL VM_DllSyscall(intptr_t arg, ...) {
+intptr_t QDECL VM_DllSyscall(intptr_t arg, ...)
+{
 #if !id386 || defined __clang__ || defined MACOS_X
 	// rcg010206 - see commentary above
 	intptr_t args[16];
@@ -100,7 +102,8 @@ intptr_t QDECL VM_DllSyscall(intptr_t arg, ...) {
 
 // Reload the data, but leave everything else in place
 // This allows a server to do a map_restart without changing memory allocation
-vm_t* VM_Restart(vm_t* vm) {
+vm_t* VM_Restart(vm_t* vm)
+{
 	const vm_t saved = *vm;
 
 	VM_Free(vm);
@@ -110,10 +113,12 @@ vm_t* VM_Restart(vm_t* vm) {
 	return VM_Create(saved.slot);
 }
 
-vm_t* VM_CreateLegacy(vmSlots_t vmSlot, intptr_t(*systemCalls)(intptr_t*)) {
+vm_t* VM_CreateLegacy(const vmSlots_t vmSlot, intptr_t (*systemCalls)(intptr_t*))
+{
 	vm_t* vm = nullptr;
 
-	if (!systemCalls) {
+	if (!systemCalls)
+	{
 		Com_Error(ERR_FATAL, "VM_CreateLegacy: bad parms");
 	}
 
@@ -122,7 +127,7 @@ vm_t* VM_CreateLegacy(vmSlots_t vmSlot, intptr_t(*systemCalls)(intptr_t*)) {
 		return vmTable[vmSlot];
 
 	// find a free vm
-	vmTable[vmSlot] = static_cast<vm_t*>(Z_Malloc(sizeof * vm, TAG_VM, qtrue));
+	vmTable[vmSlot] = static_cast<vm_t*>(Z_Malloc(sizeof *vm, TAG_VM, qtrue));
 	vm = vmTable[vmSlot];
 
 	// initialise it
@@ -136,7 +141,8 @@ vm_t* VM_CreateLegacy(vmSlots_t vmSlot, intptr_t(*systemCalls)(intptr_t*)) {
 	vm->dllHandle = Sys_LoadLegacyGameDll(vm->name, &vm->legacy.main, VM_DllSyscall);
 
 	Com_Printf("VM_CreateLegacy: %s" ARCH_STRING DLL_EXT, vm->name);
-	if (vm->dllHandle) {
+	if (vm->dllHandle)
+	{
 		if (com_developer->integer)
 			Com_Printf(" succeeded [0x%" PRIxPTR "]\n", (uintptr_t)vm->dllHandle);
 		else
@@ -149,7 +155,8 @@ vm_t* VM_CreateLegacy(vmSlots_t vmSlot, intptr_t(*systemCalls)(intptr_t*)) {
 	return nullptr;
 }
 
-vm_t* VM_Create(vmSlots_t vmSlot) {
+vm_t* VM_Create(const vmSlots_t vmSlot)
+{
 	vm_t* vm = nullptr;
 
 #ifdef _DEBUG
@@ -162,7 +169,7 @@ vm_t* VM_Create(vmSlots_t vmSlot) {
 		return vmTable[vmSlot];
 
 	// find a free vm
-	vmTable[vmSlot] = static_cast<vm_t*>(Z_Malloc(sizeof * vm, TAG_VM, qtrue));
+	vmTable[vmSlot] = static_cast<vm_t*>(Z_Malloc(sizeof *vm, TAG_VM, qtrue));
 	vm = vmTable[vmSlot];
 
 	// initialise it
@@ -175,9 +182,11 @@ vm_t* VM_Create(vmSlots_t vmSlot) {
 	vm->dllHandle = Sys_LoadGameDll(vm->name, &vm->GetModuleAPI);
 
 	Com_Printf("VM_Create: %s" ARCH_STRING DLL_EXT, vm->name);
-	if (vm->dllHandle) {
+	if (vm->dllHandle)
+	{
 		if (com_developer->integer)
-			Com_Printf(" succeeded [0x%" PRIxPTR "+0x%" PRIxPTR "]\n", vm->dllHandle, (intptr_t)vm->GetModuleAPI - (intptr_t)vm->dllHandle);
+			Com_Printf(" succeeded [0x%" PRIxPTR "+0x%" PRIxPTR "]\n", vm->dllHandle,
+			           (intptr_t)vm->GetModuleAPI - (intptr_t)vm->dllHandle);
 		else
 			Com_Printf(" succeeded\n");
 		return vm;
@@ -188,7 +197,8 @@ vm_t* VM_Create(vmSlots_t vmSlot) {
 	return nullptr;
 }
 
-void VM_Free(vm_t* vm) {
+void VM_Free(vm_t* vm)
+{
 	if (!vm)
 		return;
 
@@ -198,29 +208,33 @@ void VM_Free(vm_t* vm) {
 	if (vm->dllHandle)
 		Sys_UnloadDll(vm->dllHandle);
 
-	memset(vm, 0, sizeof * vm);
+	memset(vm, 0, sizeof *vm);
 
 	Z_Free(vm);
 
 	currentVM = nullptr;
 }
 
-void VM_Clear(void) {
+void VM_Clear(void)
+{
 	for (auto& i : vmTable)
 		VM_Free(i);
 
 	currentVM = nullptr;
 }
 
-void VM_Shifted_Alloc(void** ptr, int size) {
-	if (!currentVM) {
+void VM_Shifted_Alloc(void** ptr, const int size)
+{
+	if (!currentVM)
+	{
 		assert(0);
 		*ptr = nullptr;
 		return;
 	}
 
 	void* mem = Z_Malloc(size + 1, TAG_VM_ALLOCATED, qfalse);
-	if (!mem) {
+	if (!mem)
+	{
 		assert(0);
 		*ptr = nullptr;
 		return;
@@ -231,14 +245,17 @@ void VM_Shifted_Alloc(void** ptr, int size) {
 	*ptr = mem;
 }
 
-void VM_Shifted_Free(void** ptr) {
-	if (!currentVM) {
+void VM_Shifted_Free(void** ptr)
+{
+	if (!currentVM)
+	{
 		assert(0);
 		return;
 	}
 
 	void* mem = *ptr;
-	if (!mem) {
+	if (!mem)
+	{
 		assert(0);
 		return;
 	}
@@ -247,7 +264,8 @@ void VM_Shifted_Free(void** ptr) {
 	*ptr = nullptr;
 }
 
-void* VM_ArgPtr(intptr_t intValue) {
+void* VM_ArgPtr(const intptr_t intValue)
+{
 	if (!intValue)
 		return nullptr;
 
@@ -258,7 +276,8 @@ void* VM_ArgPtr(intptr_t intValue) {
 	return (void*)intValue;
 }
 
-void* VM_ExplicitArgPtr(vm_t* vm, intptr_t intValue) {
+void* VM_ExplicitArgPtr(vm_t* vm, const intptr_t intValue)
+{
 	if (!intValue)
 		return nullptr;
 
@@ -269,19 +288,25 @@ void* VM_ExplicitArgPtr(vm_t* vm, intptr_t intValue) {
 	return (void*)intValue;
 }
 
-float _vmf(intptr_t x) {
+float _vmf(const intptr_t x)
+{
 	byteAlias_t fi;
 	fi.i = x;
 	return fi.f;
 }
 
-intptr_t QDECL VM_Call(vm_t* vm, int callnum, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11) {
-	if (!vm || !vm->name[0]) {
+intptr_t QDECL VM_Call(vm_t* vm, const int callnum, const intptr_t arg0, const intptr_t arg1, const intptr_t arg2,
+                       const intptr_t arg3, const intptr_t arg4, const intptr_t arg5, const intptr_t arg6,
+                       const intptr_t arg7, const intptr_t arg8, const intptr_t arg9, const intptr_t arg10,
+                       const intptr_t arg11)
+{
+	if (!vm || !vm->name[0])
+	{
 		Com_Error(ERR_FATAL, "VM_Call with NULL vm");
 	}
 
 	VMSwap v(vm);
 
 	return vm->legacy.main(callnum, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8,
-		arg9, arg10, arg11);
+	                       arg9, arg10, arg11);
 }

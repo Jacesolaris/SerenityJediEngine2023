@@ -132,8 +132,9 @@ void RT_FireDecide()
 			{
 				//can we shoot our target?
 				if ((NPC->client->ps.weapon == WP_ROCKET_LAUNCHER
-					|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE)
-					|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemy_dist <
+						|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE)
+						|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemy_dist
+					<
 					MIN_ROCKET_DIST_SQUARED) //128*128
 				{
 					enemyCS = qfalse; //not true, but should stop us from firing
@@ -223,7 +224,7 @@ void RT_FireDecide()
 							AngleVectors(NPC->client->ps.viewangles, forward, nullptr, nullptr);
 							VectorMA(muzzle, 8192, forward, end);
 							gi.trace(&tr, muzzle, vec3_origin, vec3_origin, end, NPC->s.number, MASK_SHOT,
-								static_cast<EG2_Collision>(0), 0);
+							         static_cast<EG2_Collision>(0), 0);
 							VectorCopy(tr.endpos, impact_pos);
 						}
 
@@ -409,12 +410,12 @@ void RT_FlyStart(gentity_t* self)
 		if (self->genericBolt1 != -1)
 		{
 			G_PlayEffect(G_EffectIndex("rockettrooper/flameNEW"), self->playerModel, self->genericBolt1, self->s.number,
-				self->currentOrigin, qtrue, qtrue);
+			             self->currentOrigin, qtrue, qtrue);
 		}
 		if (self->genericBolt2 != -1)
 		{
 			G_PlayEffect(G_EffectIndex("rockettrooper/flameNEW"), self->playerModel, self->genericBolt2, self->s.number,
-				self->currentOrigin, qtrue, qtrue);
+			             self->currentOrigin, qtrue, qtrue);
 		}
 
 		//take-off sound
@@ -456,17 +457,17 @@ void RT_FlyStop(gentity_t* self)
 	}
 }
 
-void RT_JetPackEffect(int duration)
+void RT_JetPackEffect(const int duration)
 {
 	if (NPC->genericBolt1 != -1)
 	{
 		G_PlayEffect(G_EffectIndex("rockettrooper/flameNEW"), NPC->playerModel, NPC->genericBolt1, NPC->s.number,
-			NPC->currentOrigin, duration, qtrue);
+		             NPC->currentOrigin, duration, qtrue);
 	}
 	if (NPC->genericBolt2 != -1)
 	{
 		G_PlayEffect(G_EffectIndex("rockettrooper/flameNEW"), NPC->playerModel, NPC->genericBolt2, NPC->s.number,
-			NPC->currentOrigin, duration, qtrue);
+		             NPC->currentOrigin, duration, qtrue);
 	}
 
 	//take-off sound
@@ -677,7 +678,7 @@ void RT_Flying_Strafe(void)
 		VectorMA(NPC->currentOrigin, RT_FLYING_STRAFE_DIS * side, right, end);
 
 		gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		// Close enough
 		if (tr.fraction > 0.9f)
@@ -719,7 +720,7 @@ void RT_Flying_Strafe(void)
 		VectorMA(end, Q_flrand(-1.0f, 1.0f) * 25, dir, end);
 
 		gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		// Close enough
 		if (tr.fraction > 0.9f)
@@ -761,7 +762,7 @@ void RT_Flying_Strafe(void)
 	}
 }
 
-void RT_Flying_Hunt(qboolean visible, qboolean advance)
+void RT_Flying_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -846,7 +847,7 @@ void RT_Flying_Hunt(qboolean visible, qboolean advance)
 	}
 }
 
-void RT_Flying_Ranged(qboolean visible, qboolean advance)
+void RT_Flying_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 	{

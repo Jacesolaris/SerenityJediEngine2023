@@ -52,7 +52,7 @@ namespace ratl
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Vector Class
 	////////////////////////////////////////////////////////////////////////////////////////
-	template<class T>
+	template <class T>
 	class heap_base : public ratl_base
 	{
 	public:
@@ -66,13 +66,13 @@ namespace ratl
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
 	private:
-		array_base<TStorageTraits>	mData;					// The Memory
-		int							mPush;					// Address Of Next Add Location
+		array_base<TStorageTraits> mData; // The Memory
+		int mPush; // Address Of Next Add Location
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Returns The Location Of Node (i)'s Parent Node (The Parent Node Of Zero Is Zero)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			parent(int i)
+		static int parent(const int i)
 		{
 			return (i - 1) / 2;
 		}
@@ -80,7 +80,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Returns The Location Of Node (i)'s Left Child (The Child Of A Leaf Is The Leaf)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			left(int i)
+		static int left(const int i)
 		{
 			return 2 * i + 1;
 		}
@@ -88,7 +88,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Returns The Location Of Node (i)'s Right Child (The Child Of A Leaf Is The Leaf)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			right(int i)
+		static int right(const int i)
 		{
 			return 2 * i + 2;
 		}
@@ -96,7 +96,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Returns The Location Of Largest Child Of Node (i)
 		////////////////////////////////////////////////////////////////////////////////////
-		int			largest_child(int i) const
+		int largest_child(const int i) const
 		{
 			if (left(i) < mPush)
 			{
@@ -104,15 +104,15 @@ namespace ratl
 				{
 					return mData[right(i)] < mData[left(i)] ? left(i) : right(i);
 				}
-				return left(i);	// Node i only has a left child, so by default it is the biggest
+				return left(i); // Node i only has a left child, so by default it is the biggest
 			}
-			return i;		// Node i is a leaf, so just return it
+			return i; // Node i is a leaf, so just return it
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Swaps Two Element Locations
 		////////////////////////////////////////////////////////////////////////////////////
-		void		swap(int a, int b)
+		void swap(int a, int b)
 		{
 			if (a == b)
 			{
@@ -125,7 +125,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Swaps The Data Up The Heap Until It Reaches A Valid Location
 		////////////////////////////////////////////////////////////////////////////////////
-		void		reheapify_upward(int Pos)
+		void reheapify_upward(int Pos)
 		{
 			while (Pos && mData[parent(Pos)] < mData[Pos])
 			{
@@ -137,7 +137,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Swaps The Data Down The Heap Until It Reaches A Valid Location
 		////////////////////////////////////////////////////////////////////////////////////
-		void		reheapify_downward(int Pos)
+		void reheapify_downward(int Pos)
 		{
 			int largestChild = largest_child(Pos);
 			while (largestChild != Pos && mData[Pos] < mData[largestChild])
@@ -151,7 +151,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Validate Will Run Through The Heap And Make Sure The Top Element Is Smallest
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		valid()
+		bool valid()
 		{
 			for (int i = 1; i < mPush; i++)
 			{
@@ -162,6 +162,7 @@ namespace ratl
 			}
 			return true;
 		}
+
 	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
@@ -173,7 +174,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get The Size (The Difference Between The Push And Pop "Pointers")
 		////////////////////////////////////////////////////////////////////////////////////
-		int				size() const
+		int size() const
 		{
 			return mPush;
 		}
@@ -181,7 +182,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If The Size Is Zero
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			empty() const
+		bool empty() const
 		{
 			return !size();
 		}
@@ -189,7 +190,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If The Size Is Full
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			full() const
+		bool full() const
 		{
 			return size() == CAPACITY;
 		}
@@ -197,7 +198,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Empty Out The Entire Heap
 		////////////////////////////////////////////////////////////////////////////////////
-		void			clear()
+		void clear()
 		{
 			mPush = 0;
 			mData.clear();
@@ -208,14 +209,14 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		const TTValue& top() const
 		{
-			assert(mPush > 0);		// Don't Try To Look At This If There Is Nothing In Here
+			assert(mPush > 0); // Don't Try To Look At This If There Is Nothing In Here
 			return mData[0];
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Add A Value To The Queue
 		////////////////////////////////////////////////////////////////////////////////////
-		void			push(const TTValue& nValue)
+		void push(const TTValue& nValue)
 		{
 			assert(size() < CAPACITY);
 
@@ -258,7 +259,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Add A Value To The Queue, after filling an alloced slot
 		////////////////////////////////////////////////////////////////////////////////////
-		void			push_alloced()
+		void push_alloced()
 		{
 			assert(size() < CAPACITY);
 			// Fix Possible Heap Inconsistancies
@@ -272,7 +273,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Remove A Value From The Queue
 		////////////////////////////////////////////////////////////////////////////////////
-		void			pop()
+		void pop()
 		{
 			assert(size() > 0);
 
@@ -289,35 +290,45 @@ namespace ratl
 			assert(valid());
 		}
 	};
-	template<class T, int ARG_CAPACITY>
-	class heap_vs : public heap_base<storage::value_semantics<T, ARG_CAPACITY> >
+
+	template <class T, int ARG_CAPACITY>
+	class heap_vs : public heap_base<storage::value_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		heap_vs() {}
+
+		heap_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class heap_os : public heap_base<storage::object_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class heap_os : public heap_base<storage::object_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		heap_os() {}
+
+		heap_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class heap_is : public heap_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class heap_is : public heap_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		heap_is() {}
+
+		heap_is()
+		{
+		}
 	};
 }
 #endif

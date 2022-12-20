@@ -69,7 +69,7 @@ void R_InitDecals(void) {
 	RE_ClearDecals();
 }
 
-void RE_FreeDecal(int type, int index) {
+void RE_FreeDecal(const int type, const int index) {
 	if (!re_decalPolys[type][index].time)
 		return;
 
@@ -94,7 +94,7 @@ RE_AllocDecal
 Will allways succeed, even if it requires freeing an old active mark
 ===================
 */
-decalPoly_t* RE_AllocDecal(int type) {
+decalPoly_t* RE_AllocDecal(const int type) {
 	// See if the cvar changed
 	if (re_decalPolyTotal[type] > r_markcount->integer)
 		RE_ClearDecals();

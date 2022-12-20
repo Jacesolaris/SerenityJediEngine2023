@@ -34,8 +34,10 @@ SV_Netchan_Encode
 
 ==============
 */
-static void SV_Netchan_Encode(client_t* client, msg_t* msg) {
-	if (msg->cursize < SV_ENCODE_START) {
+static void SV_Netchan_Encode(client_t* client, msg_t* msg)
+{
+	if (msg->cursize < SV_ENCODE_START)
+	{
 		return;
 	}
 
@@ -47,7 +49,8 @@ static void SV_Netchan_Encode(client_t* client, msg_t* msg) {
 	msg->readcount = 0;
 	msg->oob = qfalse;
 
-	/*reliableAcknowledge =*/ MSG_ReadLong(msg);
+	/*reliableAcknowledge =*/
+	MSG_ReadLong(msg);
 
 	msg->oob = soob;
 	msg->bit = sbit;
@@ -57,16 +60,18 @@ static void SV_Netchan_Encode(client_t* client, msg_t* msg) {
 	long index = 0;
 	// xor the client challenge with the netchan sequence number
 	byte key = client->challenge ^ client->netchan.outgoingSequence;
-	for (long i = SV_ENCODE_START; i < msg->cursize; i++) {
+	for (long i = SV_ENCODE_START; i < msg->cursize; i++)
+	{
 		// modify the key with the last received and with this message acknowledged client command
 		if (!string[index])
 			index = 0;
-		if (/*string[index] > 127 ||*/	// eurofix: remove this so we can chat in european languages...	-ste
+		if (/*string[index] > 127 ||*/ // eurofix: remove this so we can chat in european languages...	-ste
 			string[index] == '%')
 		{
 			key ^= '.' << (i & 1);
 		}
-		else {
+		else
+		{
 			key ^= string[index] << (i & 1);
 		}
 		index++;
@@ -86,7 +91,8 @@ SV_Netchan_Decode
 
 ==============
 */
-static void SV_Netchan_Decode(client_t* client, msg_t* msg) {
+static void SV_Netchan_Decode(client_t* client, msg_t* msg)
+{
 	const int srdc = msg->readcount;
 	const int sbit = msg->bit;
 	const qboolean soob = msg->oob;
@@ -105,16 +111,18 @@ static void SV_Netchan_Decode(client_t* client, msg_t* msg) {
 	int index = 0;
 	//
 	byte key = client->challenge ^ serverId ^ messageAcknowledge;
-	for (int i = msg->readcount + SV_DECODE_START; i < msg->cursize; i++) {
+	for (int i = msg->readcount + SV_DECODE_START; i < msg->cursize; i++)
+	{
 		// modify the key with the last sent and acknowledged server command
 		if (!string[index])
 			index = 0;
-		if (/*string[index] > 127 || */	// eurofix: remove this so we can chat in european languages...	-ste
+		if (/*string[index] > 127 || */ // eurofix: remove this so we can chat in european languages...	-ste
 			string[index] == '%')
 		{
 			key ^= '.' << (i & 1);
 		}
-		else {
+		else
+		{
 			key ^= string[index] << (i & 1);
 		}
 		index++;
@@ -129,7 +137,8 @@ static void SV_Netchan_Decode(client_t* client, msg_t* msg) {
 SV_Netchan_TransmitNextFragment
 =================
 */
-void SV_Netchan_TransmitNextFragment(netchan_t* chan) {
+void SV_Netchan_TransmitNextFragment(netchan_t* chan)
+{
 	Netchan_TransmitNextFragment(chan);
 }
 
@@ -139,7 +148,9 @@ SV_Netchan_Transmit
 ================
 */
 
-void SV_Netchan_Transmit(client_t* client, msg_t* msg) {	//int length, const byte *data ) {
+void SV_Netchan_Transmit(client_t* client, msg_t* msg)
+{
+	//int length, const byte *data ) {
 	//	int i;
 	MSG_WriteByte(msg, svc_EOF);
 	//	for(i=SV_ENCODE_START;i<msg->cursize;i++) {
@@ -155,7 +166,8 @@ void SV_Netchan_Transmit(client_t* client, msg_t* msg) {	//int length, const byt
 Netchan_SV_Process
 =================
 */
-qboolean SV_Netchan_Process(client_t* client, msg_t* msg) {
+qboolean SV_Netchan_Process(client_t* client, msg_t* msg)
+{
 	//	int i;
 	const int ret = Netchan_Process(&client->netchan, msg);
 	if (!ret)

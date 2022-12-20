@@ -85,7 +85,7 @@ void AAS_ClearShownPolygons(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ShowPolygon(int color, int numpoints, vec3_t* points)
+void AAS_ShowPolygon(const int color, const int numpoints, vec3_t* points)
 {
 	for (int i = 0; i < MAX_DEBUGPOLYGONS; i++)
 	{
@@ -122,7 +122,7 @@ void AAS_ClearShownDebugLines(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_DebugLine(vec3_t start, vec3_t end, int color)
+void AAS_DebugLine(vec3_t start, vec3_t end, const int color)
 {
 	for (int line = 0; line < MAX_DEBUGLINES; line++)
 	{
@@ -146,7 +146,7 @@ void AAS_DebugLine(vec3_t start, vec3_t end, int color)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_PermanentLine(vec3_t start, vec3_t end, int color)
+void AAS_PermanentLine(vec3_t start, vec3_t end, const int color)
 {
 	const int line = botimport.DebugLineCreate();
 	botimport.DebugLineShow(line, start, end, color);
@@ -157,7 +157,7 @@ void AAS_PermanentLine(vec3_t start, vec3_t end, int color)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void AAS_DrawPermanentCross(vec3_t origin, float size, int color)
+void AAS_DrawPermanentCross(vec3_t origin, const float size, const int color)
 {
 	vec3_t start, end;
 
@@ -178,7 +178,7 @@ void AAS_DrawPermanentCross(vec3_t origin, float size, int color)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_DrawPlaneCross(vec3_t point, vec3_t normal, float dist, int type, int color)
+void AAS_DrawPlaneCross(vec3_t point, vec3_t normal, const float dist, const int type, const int color)
 {
 	int j, line, lines[2];
 	vec3_t start1, end1, start2, end2;
@@ -294,7 +294,7 @@ void AAS_ShowBoundingBox(vec3_t origin, vec3_t mins, vec3_t maxs)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ShowFace(int facenum)
+void AAS_ShowFace(const int facenum)
 {
 	int edgenum;
 	aas_edge_t* edge;
@@ -339,7 +339,7 @@ void AAS_ShowFace(int facenum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ShowFacePolygon(int facenum, int color, int flip)
+void AAS_ShowFacePolygon(const int facenum, const int color, const int flip)
 {
 	int i, edgenum;
 	vec3_t points[128];
@@ -383,7 +383,7 @@ void AAS_ShowFacePolygon(int facenum, int color, int flip)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ShowArea(int areanum, int groundfacesonly)
+void AAS_ShowArea(const int areanum, const int groundfacesonly)
 {
 	int areaedges[MAX_DEBUGLINES];
 	int n, color = 0, line;
@@ -471,7 +471,7 @@ void AAS_ShowArea(int areanum, int groundfacesonly)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ShowAreaPolygons(int areanum, int color, int groundfacesonly)
+void AAS_ShowAreaPolygons(const int areanum, const int color, const int groundfacesonly)
 {
 	//
 	if (areanum < 0 || areanum >= aasworld.numareas)
@@ -506,7 +506,7 @@ void AAS_ShowAreaPolygons(int areanum, int color, int groundfacesonly)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_DrawCross(vec3_t origin, float size, int color)
+void AAS_DrawCross(vec3_t origin, const float size, const int color)
 {
 	vec3_t start, end;
 
@@ -559,7 +559,7 @@ void AAS_PrintTravelType(int traveltype)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_DrawArrow(vec3_t start, vec3_t end, int linecolor, int arrowcolor)
+void AAS_DrawArrow(vec3_t start, vec3_t end, const int linecolor, const int arrowcolor)
 {
 	vec3_t dir, cross, p1, p2;
 	constexpr vec3_t up = { 0, 0, 1 };
@@ -664,7 +664,7 @@ void AAS_ShowReachability(aas_reachability_t* reach)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_ShowReachableAreas(int areanum)
+void AAS_ShowReachableAreas(const int areanum)
 {
 	static aas_reachability_t reach;
 	static int index, lastareanum;
@@ -692,7 +692,7 @@ void AAS_ShowReachableAreas(int areanum)
 	AAS_ShowReachability(&reach);
 } //end of the function ShowReachableAreas
 
-void AAS_FloodAreas_r(int areanum, int cluster, int* done)
+void AAS_FloodAreas_r(const int areanum, const int cluster, int* done)
 {
 	int nextareanum, i;
 

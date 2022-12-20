@@ -145,28 +145,28 @@ qboolean bg_can_item_be_grabbed(const entityState_t* ent, const playerState_t* p
 	{
 	case IT_WEAPON:
 		// See if we already have this weapon.
-	{
-		// See if we already have this weapon.
-		if (!(ps->stats[STAT_WEAPONS] & 1 << item->giTag))
 		{
-			// Don't have this weapon yet, so pick it up.
-			return qtrue;
+			// See if we already have this weapon.
+			if (!(ps->stats[STAT_WEAPONS] & 1 << item->giTag))
+			{
+				// Don't have this weapon yet, so pick it up.
+				return qtrue;
+			}
+			if (item->giTag == WP_SABER)
+			{
+				//always pick up a saber, might be a new one?
+				return qtrue;
+			}
 		}
-		if (item->giTag == WP_SABER)
-		{
-			//always pick up a saber, might be a new one?
-			return qtrue;
-		}
-	}
 
 	// Make sure that we aren't already full on ammo for this weapon
-	if (ps->ammo[weaponData[item->giTag].ammoIndex] >= ammoData[weaponData[item->giTag].ammoIndex].max)
-	{
-		// full, so don't grab the item
-		return qfalse;
-	}
+		if (ps->ammo[weaponData[item->giTag].ammoIndex] >= ammoData[weaponData[item->giTag].ammoIndex].max)
+		{
+			// full, so don't grab the item
+			return qfalse;
+		}
 
-	return qtrue; // could use more of this type of ammo, so grab the item
+		return qtrue; // could use more of this type of ammo, so grab the item
 
 	case IT_AMMO:
 
@@ -193,7 +193,7 @@ qboolean bg_can_item_be_grabbed(const entityState_t* ent, const playerState_t* p
 					return qtrue;
 				}
 				break;
-			default:;
+			default: ;
 			}
 
 			if (ps->ammo[item->giTag] >= ammoData[item->giTag].max) // checkme
@@ -225,7 +225,7 @@ qboolean bg_can_item_be_grabbed(const entityState_t* ent, const playerState_t* p
 			//ragers can't use health
 			return qfalse;
 		}
-		// don't pick up if already at max
+	// don't pick up if already at max
 		if (ps->stats[STAT_HEALTH] >= ps->stats[STAT_MAX_HEALTH])
 		{
 			return qfalse;
@@ -295,7 +295,7 @@ void EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
 		{
 			atTime = tr->trTime + tr->trDuration;
 		}
-		//old totally linear
+	//old totally linear
 		deltaTime = (atTime - tr->trTime) * 0.001F; // milliseconds to seconds
 		if (deltaTime < 0)
 		{
@@ -309,7 +309,7 @@ void EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
 		{
 			atTime = tr->trTime + tr->trDuration;
 		}
-		//new slow-down at end
+	//new slow-down at end
 		if (atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0)
 		{
 			deltaTime = 0;
@@ -339,7 +339,7 @@ EvaluateTrajectoryDelta
 Returns current speed at given time
 ================
 */
-void EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result)
+void EvaluateTrajectoryDelta(const trajectory_t* tr, const int atTime, vec3_t result)
 {
 	float deltaTime;
 	float phase;
@@ -458,72 +458,73 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 	// NOTE: Although we store this stuff locally on a vehicle, who's to say we
 	// can't bring back these variables and fill them at the appropriate time? -Aurelio
 	// We need to bring these in from the vehicle NPC.
-	if (g_entities[ps->client_num].client && g_entities[ps->client_num].client->NPC_class == CLASS_VEHICLE && g_entities[
-		ps->client_num].NPC)
+	if (g_entities[ps->client_num].client && g_entities[ps->client_num].client->NPC_class == CLASS_VEHICLE && g_entities
+		[
+			ps->client_num].NPC)
 	{
 		const Vehicle_t* pVeh = g_entities[ps->client_num].m_pVehicle;
 		s->vehicleArmor = pVeh->m_iArmor;
 		VectorCopy(pVeh->m_vOrientation, s->vehicleAngles);
 	}
 
-		s->vehicleModel = ps->vehicleModel;
+	s->vehicleModel = ps->vehicleModel;
 
-		s->weapon = ps->weapon;
-		s->groundEntityNum = ps->groundEntityNum;
-		s->ManualBlockingFlags = ps->ManualBlockingFlags; //Blockingflag on OK
-		s->ManualBlockingTime = ps->ManualBlockingTime; //Blocking time 1 on
-		s->ManualblockStartTime = ps->ManualblockStartTime; //Blocking 2
-		s->ManualblockLastStartTime = ps->ManualblockLastStartTime; //Blocking 3
-		s->Manual_m_blockingTime = ps->Manual_m_blockingTime;
+	s->weapon = ps->weapon;
+	s->groundEntityNum = ps->groundEntityNum;
+	s->ManualBlockingFlags = ps->ManualBlockingFlags; //Blockingflag on OK
+	s->ManualBlockingTime = ps->ManualBlockingTime; //Blocking time 1 on
+	s->ManualblockStartTime = ps->ManualblockStartTime; //Blocking 2
+	s->ManualblockLastStartTime = ps->ManualblockLastStartTime; //Blocking 3
+	s->Manual_m_blockingTime = ps->Manual_m_blockingTime;
 
-		s->BoltblockStartTime = ps->BoltblockStartTime; //Blocking 2
+	s->BoltblockStartTime = ps->BoltblockStartTime; //Blocking 2
 
-		s->respectingtime = ps->respectingtime;
-		s->respectingstartTime = ps->respectingstartTime;
-		s->respectinglaststartTime = ps->respectinglaststartTime;
+	s->respectingtime = ps->respectingtime;
+	s->respectingstartTime = ps->respectingstartTime;
+	s->respectinglaststartTime = ps->respectinglaststartTime;
 
-		s->gesturingtime = ps->gesturingtime;
-		s->gesturingstartTime = ps->gesturingstartTime;
-		s->gesturinglaststartTime = ps->gesturinglaststartTime;
+	s->gesturingtime = ps->gesturingtime;
+	s->gesturingstartTime = ps->gesturingstartTime;
+	s->gesturinglaststartTime = ps->gesturinglaststartTime;
 
-		s->surrendertimeplayer = ps->surrendertimeplayer;
-		s->surrenderstartTime = ps->surrenderstartTime;
-		s->surrenderlaststartTime = ps->surrenderlaststartTime;
+	s->surrendertimeplayer = ps->surrendertimeplayer;
+	s->surrenderstartTime = ps->surrenderstartTime;
+	s->surrenderlaststartTime = ps->surrenderlaststartTime;
 
-		s->dashtimeplayer = ps->dashtimeplayer;
-		s->dashstartTime = ps->dashstartTime;
-		s->dashlaststartTime = ps->dashlaststartTime;
+	s->dashtimeplayer = ps->dashtimeplayer;
+	s->dashstartTime = ps->dashstartTime;
+	s->dashlaststartTime = ps->dashlaststartTime;
 
-		s->kickstartTime = ps->kickstartTime;
-		s->kicklaststartTime = ps->kicklaststartTime;
+	s->kickstartTime = ps->kickstartTime;
+	s->kicklaststartTime = ps->kicklaststartTime;
 
-		s->grappletimeplayer = ps->grappletimeplayer;
-		s->grapplestartTime = ps->grapplestartTime;
-		s->grapplelaststartTime = ps->grapplelaststartTime;
+	s->grappletimeplayer = ps->grappletimeplayer;
+	s->grapplestartTime = ps->grapplestartTime;
+	s->grapplelaststartTime = ps->grapplelaststartTime;
 
-		s->communicatingflags = ps->communicatingflags;
+	s->communicatingflags = ps->communicatingflags;
 
-		s->PlayerEffectFlags = ps->PlayerEffectFlags;
-		s->genericenemyindex = ps->genericenemyindex;
+	s->PlayerEffectFlags = ps->PlayerEffectFlags;
+	s->genericenemyindex = ps->genericenemyindex;
 
-		s->MeleeblockStartTime = ps->MeleeblockStartTime; //Blocking 2
-		s->MeleeblockLastStartTime = ps->MeleeblockLastStartTime; //Blocking 3
+	s->MeleeblockStartTime = ps->MeleeblockStartTime; //Blocking 2
+	s->MeleeblockLastStartTime = ps->MeleeblockLastStartTime; //Blocking 3
 
-		s->DodgeStartTime = ps->DodgeStartTime; //Blocking 2
-		s->DodgeLastStartTime = ps->DodgeLastStartTime; //Blocking 3
+	s->DodgeStartTime = ps->DodgeStartTime; //Blocking 2
+	s->DodgeLastStartTime = ps->DodgeLastStartTime; //Blocking 3
 
-		s->userInt3 = ps->userInt3;
+	s->userInt3 = ps->userInt3;
 
-		s->speed = ps->speed;
+	s->speed = ps->speed;
 
-		s->powerups = 0;
-		for (int i = 0; i < MAX_POWERUPS; i++)
+	s->powerups = 0;
+	for (int i = 0; i < MAX_POWERUPS; i++)
+	{
+		if (ps->powerups[i])
 		{
-			if (ps->powerups[i])
-			{
-				s->powerups |= 1 << i;
-			}
+			s->powerups |= 1 << i;
 		}
+	}
 #if 0
 		if (ps->externalEvent) {
 			s->event = ps->externalEvent;
@@ -569,9 +570,9 @@ BG_PlayerTouchesItem
 Items can be picked up without actually touching their physical bounds
 ============
 */
-qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int atTime)
+qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, const int atTime)
 {
-	vec3_t origin = { 0.0f };
+	vec3_t origin = {0.0f};
 
 	EvaluateTrajectory(&item->pos, atTime, origin);
 

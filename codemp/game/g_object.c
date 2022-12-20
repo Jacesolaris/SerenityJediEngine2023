@@ -57,7 +57,7 @@ void G_BounceObject(gentity_t* ent, const trace_t* trace)
 		// check for stop
 		if ((trace->plane.normal[2] > 0.7 && g_gravity.value > 0 || trace->plane.normal[2] < -0.7 && g_gravity.value <
 			0) && (ent->s.pos.trDelta[2] < 40 && g_gravity.value > 0 || ent->s.pos.trDelta[2] > -40 && g_gravity.value <
-				0)) //this can happen even on very slightly sloped walls, so changed it from > 0 to > 0.7
+			0)) //this can happen even on very slightly sloped walls, so changed it from > 0 to > 0.7
 		{
 			//G_SetOrigin( ent, trace->endpos );
 			//ent->nextthink = level.time + 500;
@@ -124,7 +124,7 @@ void G_RunObject(gentity_t* ent)
 	// trace a line from the previous position to the current position,
 	// ignoring interactions with the missile owner
 	trap->Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin,
-		ent->parent ? ent->parent->s.number : ent->s.number, ent->clipmask, qfalse, 0, 0);
+	            ent->parent ? ent->parent->s.number : ent->s.number, ent->clipmask, qfalse, 0, 0);
 
 	if (!tr.startsolid && !tr.allsolid && tr.fraction)
 	{
@@ -132,7 +132,7 @@ void G_RunObject(gentity_t* ent)
 		trap->LinkEntity((sharedEntity_t*)ent);
 	}
 	else
-		//if ( tr.startsolid )
+	//if ( tr.startsolid )
 	{
 		tr.fraction = 0;
 	}
@@ -257,7 +257,7 @@ void G_StopObjectMoving(gentity_t* object)
 	VectorClear(object->s.pos.trDelta);
 }
 
-void G_StartObjectMoving(gentity_t* object, vec3_t dir, float speed, trType_t trType)
+void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const trType_t trType)
 {
 	VectorNormalize(dir);
 

@@ -169,7 +169,7 @@ qboolean RE_RegisterModels_GetDiskFile(const char* psModelFileName, void** ppvBu
 
 // if return == true, no further action needed by the caller...
 //
-void* RE_RegisterModels_Malloc(int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, memtag_t eTag)
+void* RE_RegisterModels_Malloc(const int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, const memtag_t eTag)
 {
 	char sModelName[MAX_QPATH];
 
@@ -244,7 +244,7 @@ extern cvar_t* r_modelpoolmegs;
 // return qtrue if at least one cached model was freed (which tells z_malloc()-fail recovery code to try again)
 //
 extern qboolean gbInsideRegisterModel;
-qboolean RE_RegisterModels_LevelLoadEnd(qboolean bDeleteEverythingNotUsedThisLevel /* = qfalse */)
+qboolean RE_RegisterModels_LevelLoadEnd(const qboolean bDeleteEverythingNotUsedThisLevel /* = qfalse */)
 {
 	qboolean bAtLeastoneModelFreed = qfalse;
 
@@ -356,7 +356,7 @@ static qboolean gbAllowScreenDissolve = qtrue;
 // param "bAllowScreenDissolve" is just a convenient way of getting hold of a bool which can be checked by the code that
 //	issues the InitDissolve command later in RE_RegisterMedia_LevelLoadEnd()
 //
-void RE_RegisterMedia_LevelLoadBegin(const char* psMapName, ForceReload_e eForceReload, qboolean bAllowScreenDissolve)
+void RE_RegisterMedia_LevelLoadBegin(const char* psMapName, const ForceReload_e eForceReload, const qboolean bAllowScreenDissolve)
 {
 	gbAllowScreenDissolve = bAllowScreenDissolve;
 
@@ -431,7 +431,7 @@ void RE_RegisterMedia_LevelLoadEnd(void)
 /*
 ** R_GetModelByHandle
 */
-model_t* R_GetModelByHandle(qhandle_t index) {
+model_t* R_GetModelByHandle(const qhandle_t index) {
 	// out of range gets the defualt model
 	if (index < 1 || index >= tr.numModels) {
 		return tr.models[0];
@@ -1094,8 +1094,8 @@ static md3Tag_t* R_GetTag(md3Header_t* mod, int frame, const char* tagName) {
 R_LerpTag
 ================
 */
-void	R_LerpTag(orientation_t* tag, qhandle_t handle, int startFrame, int endFrame,
-	float frac, const char* tagName) {
+void	R_LerpTag(orientation_t* tag, const qhandle_t handle, const int startFrame, const int endFrame,
+                  const float frac, const char* tagName) {
 	md3Tag_t* start, * finish;
 
 	const model_t* model = R_GetModelByHandle(handle);
@@ -1136,7 +1136,7 @@ void	R_LerpTag(orientation_t* tag, qhandle_t handle, int startFrame, int endFram
 R_ModelBounds
 ====================
 */
-void R_ModelBounds(qhandle_t handle, vec3_t mins, vec3_t maxs) {
+void R_ModelBounds(const qhandle_t handle, vec3_t mins, vec3_t maxs) {
 	const model_t* model = R_GetModelByHandle(handle);
 
 	if (model->bmodel) {

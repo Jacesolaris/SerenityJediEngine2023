@@ -37,7 +37,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 static char team1[512];
 static char team2[512];
 
-siegePers_t g_siegePersistant = { qfalse, 0, 0 };
+siegePers_t g_siegePersistant = {qfalse, 0, 0};
 
 int imperial_goals_required = 0;
 int imperial_goals_completed = 0;
@@ -794,7 +794,7 @@ void G_ValidateSiegeClassForTeam(const gentity_t* ent, const int team)
 			//ok, let's find it in the global class array
 			ent->client->siegeClass = BG_SiegeFindClassIndexByName(stm->classes[new_class_index]->name);
 			Q_strncpyz(ent->client->sess.siegeClass, stm->classes[new_class_index]->name,
-				sizeof ent->client->sess.siegeClass);
+			           sizeof ent->client->sess.siegeClass);
 		}
 	}
 }
@@ -1511,7 +1511,7 @@ void SiegeItemThink(gentity_t* ent)
 				//in a wall or something
 				trace_t tr;
 				trap->Trace(&tr, carrier->client->ps.origin, ent->r.mins, ent->r.maxs, carrier->client->ps.origin,
-					ent->s.number, ent->clipmask, qfalse, 0, 0);
+				            ent->s.number, ent->clipmask, qfalse, 0, 0);
 
 				if (tr.startsolid)
 				{
@@ -1520,7 +1520,7 @@ void SiegeItemThink(gentity_t* ent)
 					VectorCopy(carrier->client->ps.origin, TracePoint);
 					TracePoint[2] += 30;
 					trap->Trace(&tr, TracePoint, ent->r.mins, ent->r.maxs, TracePoint, ent->s.number, ent->clipmask,
-						qfalse, 0, 0);
+					            qfalse, 0, 0);
 
 					if (tr.startsolid)
 					{
@@ -1531,7 +1531,7 @@ void SiegeItemThink(gentity_t* ent)
 						AngleVectors(carrier->client->ps.viewangles, fwd, NULL, NULL);
 						VectorMA(TracePoint, -30, fwd, TracePoint);
 						trap->Trace(&tr, TracePoint, ent->r.mins, ent->r.maxs, TracePoint, ent->s.number, ent->clipmask,
-							qfalse, 0, 0);
+						            qfalse, 0, 0);
 
 						if (tr.startsolid)
 						{
@@ -1741,14 +1741,15 @@ void SiegeItemUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
 			vec3_t trace_point;
 			VectorCopy(targ->r.currentOrigin, trace_point);
 			trap->Trace(&tr, targ->r.currentOrigin, ent->r.mins, ent->r.maxs, targ->r.currentOrigin, targ->s.number,
-				ent->clipmask, qfalse, 0, 0);
+			            ent->clipmask, qfalse, 0, 0);
 
 			if (tr.startsolid)
 			{
 				//bad spawning area, try again with the trace up a bit.
 				trace_point[2] += 30;
-				trap->Trace(&tr, trace_point, ent->r.mins, ent->r.maxs, trace_point, ent->s.number, ent->clipmask, qfalse,
-					0, 0);
+				trap->Trace(&tr, trace_point, ent->r.mins, ent->r.maxs, trace_point, ent->s.number, ent->clipmask,
+				            qfalse,
+				            0, 0);
 
 				if (tr.startsolid)
 				{
@@ -1766,7 +1767,7 @@ void SiegeItemUse(gentity_t* ent, gentity_t* other, gentity_t* activator)
 					}
 					VectorMA(trace_point, -30, fwd, trace_point);
 					trap->Trace(&tr, trace_point, ent->r.mins, ent->r.maxs, trace_point, ent->s.number, ent->clipmask,
-						qfalse, 0, 0);
+					            qfalse, 0, 0);
 
 					if (tr.startsolid)
 					{
@@ -2041,8 +2042,8 @@ void G_SiegeClientExData(const gentity_t* msg_targ)
 
 			//append the stats
 			Com_sprintf(scratch, sizeof scratch, "%i|%i|%i|%i", ent->s.number, ent->client->ps.stats[STAT_HEALTH],
-				ent->client->ps.stats[STAT_MAX_HEALTH],
-				ent->client->ps.ammo[weaponData[ent->client->ps.weapon].ammoIndex]);
+			            ent->client->ps.stats[STAT_MAX_HEALTH],
+			            ent->client->ps.ammo[weaponData[ent->client->ps.weapon].ammoIndex]);
 			Q_strcat(str, sizeof str, scratch);
 			count++;
 		}

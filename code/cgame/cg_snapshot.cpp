@@ -154,7 +154,7 @@ void CG_TransitionSnapshot(void)
 	for (i = 0; i < cg.snap->numEntities; i++)
 	{
 		if (true)
-			//cg.snap->entities[ i ].number != 0 ) // I guess the player adds his/her events elsewhere, so doing this also gives us double events for the player!
+		//cg.snap->entities[ i ].number != 0 ) // I guess the player adds his/her events elsewhere, so doing this also gives us double events for the player!
 		{
 			cent = &cg_entities[cg.snap->entities[i].number];
 			CG_TransitionEntity(cent);
@@ -409,7 +409,8 @@ void CG_ProcessSnapshots(void)
 
 		// we have passed the transition from nextFrame to frame
 		CG_TransitionSnapshot();
-	} while (true);
+	}
+	while (true);
 
 	if (cg.snap->serverTime > cg.time)
 	{

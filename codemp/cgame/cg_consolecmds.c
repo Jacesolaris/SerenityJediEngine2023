@@ -83,8 +83,8 @@ Debugging command to print the current position
 static void CG_Viewpos_f(void)
 {
 	trap->Print("%s (%i %i %i) : %i %i %i\n", cgs.mapname, (int)cg.refdef.vieworg[0],
-		(int)cg.refdef.vieworg[1], (int)cg.refdef.vieworg[2], (int)cg.refdef.viewangles[PITCH],
-		(int)cg.refdef.viewangles[YAW], (int)cg.refdef.viewangles[ROLL]);
+	            (int)cg.refdef.vieworg[1], (int)cg.refdef.vieworg[2], (int)cg.refdef.viewangles[PITCH],
+	            (int)cg.refdef.viewangles[YAW], (int)cg.refdef.viewangles[ROLL]);
 }
 
 /*
@@ -148,23 +148,23 @@ void CG_ClientList_f(void)
 		{
 		case TEAM_FREE:
 			Com_Printf("%2d " S_COLOR_YELLOW "F   " S_COLOR_WHITE "%s" S_COLOR_WHITE "%s\n", i, ci->name,
-				ci->botSkill != -1 ? " (bot)" : "");
+			           ci->botSkill != -1 ? " (bot)" : "");
 			break;
 
 		case TEAM_RED:
 			Com_Printf("%2d " S_COLOR_RED "R   " S_COLOR_WHITE "%s" S_COLOR_WHITE "%s\n", i,
-				ci->name, ci->botSkill != -1 ? " (bot)" : "");
+			           ci->name, ci->botSkill != -1 ? " (bot)" : "");
 			break;
 
 		case TEAM_BLUE:
 			Com_Printf("%2d " S_COLOR_BLUE "B   " S_COLOR_WHITE "%s" S_COLOR_WHITE "%s\n", i,
-				ci->name, ci->botSkill != -1 ? " (bot)" : "");
+			           ci->name, ci->botSkill != -1 ? " (bot)" : "");
 			break;
 
 		default:
 		case TEAM_SPECTATOR:
 			Com_Printf("%2d " S_COLOR_YELLOW "S   " S_COLOR_WHITE "%s" S_COLOR_WHITE "%s\n", i, ci->name,
-				ci->botSkill != -1 ? " (bot)" : "");
+			           ci->botSkill != -1 ? " (bot)" : "");
 			break;
 		}
 
@@ -360,7 +360,7 @@ Cmd_Argc() / Cmd_Argv()
 qboolean CG_ConsoleCommand(void)
 {
 	const consoleCommand_t* command = (consoleCommand_t*)Q_LinearSearch(CG_Argv(0), commands, num_commands,
-		sizeof commands[0], cmdcmp);
+	                                                                    sizeof commands[0], cmdcmp);
 
 	if (!command || !command->func)
 		return qfalse;

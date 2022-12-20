@@ -737,7 +737,7 @@ static void GLimp_InitExtensions(void)
 }
 
 // Truncates the GL extensions string by only allowing up to 'maxExtensions' extensions in the string.
-static const char* TruncateGLExtensionsString(const char* extensionsString, int maxExtensions)
+static const char* TruncateGLExtensionsString(const char* extensionsString, const int maxExtensions)
 {
 	const char* p = extensionsString;
 	const char* q;
@@ -892,7 +892,7 @@ Return value must be freed with Hunk_FreeTempMemory()
 ==================
 */
 
-byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* padlen)
+byte* RB_ReadPixels(const int x, const int y, const int width, const int height, size_t* offset, int* padlen)
 {
 	GLint packAlign;
 
@@ -918,7 +918,7 @@ byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* pa
 R_TakeScreenshot
 ==================
 */
-void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshot(const int x, const int y, const int width, const int height, char* fileName) {
 	byte* destptr;
 
 	int padlen;
@@ -975,7 +975,7 @@ void R_TakeScreenshot(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotPNG
 ==================
 */
-void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotPNG(const int x, const int y, const int width, const int height, char* fileName) {
 	size_t offset = 0;
 	int padlen = 0;
 
@@ -989,7 +989,7 @@ void R_TakeScreenshotPNG(int x, int y, int width, int height, char* fileName) {
 R_TakeScreenshotJPEG
 ==================
 */
-void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
+void R_TakeScreenshotJPEG(const int x, const int y, const int width, const int height, char* fileName) {
 	size_t offset = 0;
 	int padlen;
 
@@ -1009,7 +1009,7 @@ void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* fileName) {
 R_ScreenshotFilename
 ==================
 */
-void R_ScreenshotFilename(char* buf, int bufSize, const char* ext) {
+void R_ScreenshotFilename(char* buf, const int bufSize, const char* ext) {
 	time_t rawtime;
 	char timeStr[32] = { 0 }; // should really only reach ~19 chars
 
@@ -1789,7 +1789,7 @@ void R_Init(void) {
 RE_Shutdown
 ===============
 */
-void RE_Shutdown(qboolean destroyWindow, qboolean restarting) {
+void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting) {
 	//	ri->Printf( PRINT_ALL, "RE_Shutdown( %i )\n", destroyWindow );
 
 	for (const auto& command : commands)
@@ -1877,7 +1877,7 @@ void RE_EndRegistration(void) {
 	}
 }
 
-void RE_GetLightStyle(int style, color4ub_t color)
+void RE_GetLightStyle(const int style, color4ub_t color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
@@ -1889,7 +1889,7 @@ void RE_GetLightStyle(int style, color4ub_t color)
 	baDest->i = baSource->i;
 }
 
-void RE_SetLightStyle(int style, int color)
+void RE_SetLightStyle(const int style, const int color)
 {
 	if (style >= MAX_LIGHT_STYLES)
 	{
@@ -1902,18 +1902,18 @@ void RE_SetLightStyle(int style, int color)
 	}
 }
 
-static void SetRangedFog(float range) { tr.rangedFog = range; }
+static void SetRangedFog(const float range) { tr.rangedFog = range; }
 
 extern qboolean gG2_GBMNoReconstruct;
 extern qboolean gG2_GBMUseSPMethod;
-static void G2API_BoltMatrixReconstruction(qboolean reconstruct) { gG2_GBMNoReconstruct = static_cast<qboolean>(!reconstruct); }
-static void G2API_BoltMatrixSPMethod(qboolean spMethod) { gG2_GBMUseSPMethod = spMethod; }
+static void G2API_BoltMatrixReconstruction(const qboolean reconstruct) { gG2_GBMNoReconstruct = static_cast<qboolean>(!reconstruct); }
+static void G2API_BoltMatrixSPMethod(const qboolean spMethod) { gG2_GBMUseSPMethod = spMethod; }
 
 extern float tr_distortionAlpha; //opaque
 extern float tr_distortionStretch; //no stretch override
 extern qboolean tr_distortionPrePost; //capture before postrender phase?
 extern qboolean tr_distortionNegate; //negative blend mode
-static void SetRefractionProperties(float distortionAlpha, float distortionStretch, qboolean distortionPrePost, qboolean distortionNegate) {
+static void SetRefractionProperties(const float distortionAlpha, const float distortionStretch, const qboolean distortionPrePost, const qboolean distortionNegate) {
 	tr_distortionAlpha = distortionAlpha;
 	tr_distortionStretch = distortionStretch;
 	tr_distortionPrePost = distortionPrePost;
@@ -1940,7 +1940,7 @@ GetRefAPI
 @@@@@@@@@@@@@@@@@@@@@
 */
 extern "C" {
-	Q_EXPORT refexport_t* QDECL GetRefAPI(int apiVersion, refimport_t* rimp) {
+	Q_EXPORT refexport_t* QDECL GetRefAPI(const int apiVersion, refimport_t* rimp) {
 		static refexport_t re;
 
 		assert(rimp);

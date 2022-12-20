@@ -58,7 +58,7 @@ typedef struct move_rotate_s
 } move_rotate_t;
 
 typedef struct roff_hdr2_s
-//-------------------------------
+	//-------------------------------
 {
 	char mHeader[4]; // should match roff_string defined above
 	int mVersion; // version num, supported version defined above
@@ -68,7 +68,7 @@ typedef struct roff_hdr2_s
 } roff_hdr2_t;
 
 typedef struct move_rotate2_s
-//-------------------------------
+	//-------------------------------
 {
 	vec3_t origin_delta;
 	vec3_t rotate_delta;

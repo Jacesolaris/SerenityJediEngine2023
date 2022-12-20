@@ -119,7 +119,7 @@ struct ThaiCodes_t
 
 	// convert a supplied 1,2 or 3-byte multiplied-up integer into a valid 0..n index, else -1...
 	//
-	int GetValidIndex(int iCode)
+	int GetValidIndex(const int iCode)
 	{
 		const std::map <int, int>::iterator it = m_mapValidCodes.find(iCode);
 		if (it != m_mapValidCodes.end())
@@ -130,7 +130,7 @@ struct ThaiCodes_t
 		return -1;
 	}
 
-	int GetWidth(int iGlyphIndex) const
+	int GetWidth(const int iGlyphIndex) const
 	{
 		if (iGlyphIndex < static_cast<int>(m_viGlyphWidths.size()))
 		{
@@ -257,7 +257,7 @@ public:
 
 // round float to one decimal place...
 //
-float RoundTenth(float fValue)
+float RoundTenth(const float fValue)
 {
 	return floorf(fValue * 10.0f + 0.5f) / 10.0f;
 }
@@ -280,7 +280,7 @@ int g_iNonScaledCharRange;	// this is used with auto-scaling of asian fonts, any
 
 extern qboolean Language_IsKorean(void);
 
-static inline qboolean Korean_ValidKSC5601Hangul(byte _iHi, byte _iLo)
+static inline qboolean Korean_ValidKSC5601Hangul(const byte _iHi, const byte _iLo)
 {
 	return static_cast<qboolean>(_iHi >= KSC5601_HANGUL_HIBYTE_START &&
 		_iHi <= KSC5601_HANGUL_HIBYTE_STOP &&
@@ -288,7 +288,7 @@ static inline qboolean Korean_ValidKSC5601Hangul(byte _iHi, byte _iLo)
 		_iLo < KSC5601_HANGUL_LOBYTE_HIBOUND);
 }
 
-static inline qboolean Korean_ValidKSC5601Hangul(unsigned int uiCode)
+static inline qboolean Korean_ValidKSC5601Hangul(const unsigned int uiCode)
 {
 	return Korean_ValidKSC5601Hangul(uiCode >> 8, uiCode & 0xFF);
 }
@@ -333,7 +333,7 @@ static int Korean_InitFields(int& iGlyphTPs, const char*& psLang)
 
 extern qboolean Language_IsTaiwanese(void);
 
-static qboolean Taiwanese_ValidBig5Code(unsigned int uiCode)
+static qboolean Taiwanese_ValidBig5Code(const unsigned int uiCode)
 {
 	const byte _iHi = uiCode >> 8 & 0xFF;
 	if (_iHi >= BIG5_HIBYTE_START0 && _iHi <= BIG5_HIBYTE_STOP0
@@ -355,7 +355,7 @@ static qboolean Taiwanese_ValidBig5Code(unsigned int uiCode)
 
 // only call this when Taiwanese_ValidBig5Code() has already returned true...
 //
-static qboolean Taiwanese_IsTrailingPunctuation(unsigned int uiCode)
+static qboolean Taiwanese_IsTrailingPunctuation(const unsigned int uiCode)
 {
 	// so far I'm just counting the first 21 chars, those seem to be all the basic punctuation...
 	//
@@ -414,7 +414,7 @@ static int Taiwanese_InitFields(int& iGlyphTPs, const char*& psLang)
 
 extern qboolean Language_IsJapanese(void);
 
-static qboolean Japanese_ValidShiftJISCode(byte _iHi, byte _iLo)
+static qboolean Japanese_ValidShiftJISCode(const byte _iHi, const byte _iLo)
 {
 	if (_iHi >= SHIFTJIS_HIBYTE_START0 && _iHi <= SHIFTJIS_HIBYTE_STOP0
 		|| _iHi >= SHIFTJIS_HIBYTE_START1 && _iHi <= SHIFTJIS_HIBYTE_STOP1
@@ -431,14 +431,14 @@ static qboolean Japanese_ValidShiftJISCode(byte _iHi, byte _iLo)
 	return qfalse;
 }
 
-static inline qboolean Japanese_ValidShiftJISCode(unsigned int uiCode)
+static inline qboolean Japanese_ValidShiftJISCode(const unsigned int uiCode)
 {
 	return Japanese_ValidShiftJISCode(uiCode >> 8, uiCode & 0xFF);
 }
 
 // only call this when Japanese_ValidShiftJISCode() has already returned true...
 //
-static qboolean Japanese_IsTrailingPunctuation(unsigned int uiCode)
+static qboolean Japanese_IsTrailingPunctuation(const unsigned int uiCode)
 {
 	// so far I'm just counting the first 18 chars, those seem to be all the basic punctuation...
 	//
@@ -497,7 +497,7 @@ static int Japanese_InitFields(int& iGlyphTPs, const char*& psLang)
 
 extern qboolean Language_IsChinese(void);
 
-static inline qboolean Chinese_ValidGBCode(byte _iHi, byte _iLo)
+static inline qboolean Chinese_ValidGBCode(const byte _iHi, const byte _iLo)
 {
 	return static_cast<qboolean>(_iHi >= GB_HIBYTE_START &&
 		_iHi <= GB_HIBYTE_STOP &&
@@ -505,7 +505,7 @@ static inline qboolean Chinese_ValidGBCode(byte _iHi, byte _iLo)
 		_iLo < GB_LOBYTE_HIBOUND);
 }
 
-static inline qboolean Chinese_ValidGBCode(unsigned int uiCode)
+static inline qboolean Chinese_ValidGBCode(const unsigned int uiCode)
 {
 	return Chinese_ValidGBCode(uiCode >> 8, uiCode & 0xFF);
 }
@@ -513,7 +513,7 @@ static inline qboolean Chinese_ValidGBCode(unsigned int uiCode)
 #ifndef JK2_MODE
 // only call this when Chinese_ValidGBCode() has already returned true...
 //
-static qboolean Chinese_IsTrailingPunctuation(unsigned int uiCode)
+static qboolean Chinese_IsTrailingPunctuation(const unsigned int uiCode)
 {
 	// so far I'm just counting the first 13 chars, those seem to be all the basic punctuation...
 	//
@@ -627,7 +627,7 @@ static int Thai_ValidTISCode(const byte* psString, int& iThaiBytes)
 //	we tell the translators to put an underscore ('_') between each word even though in Thai they're
 //	all jammed together at final output onscreen...
 //
-static inline qboolean Thai_IsTrailingPunctuation(unsigned int uiCode)
+static inline qboolean Thai_IsTrailingPunctuation(const unsigned int uiCode)
 {
 	return static_cast<qboolean>(uiCode == '_');
 }
@@ -636,7 +636,7 @@ static inline qboolean Thai_IsTrailingPunctuation(unsigned int uiCode)
 //
 // (invalid codes will return 0)
 //
-static int Thai_CollapseTISCode(unsigned int uiCode)
+static int Thai_CollapseTISCode(const unsigned int uiCode)
 {
 	if (uiCode >= TIS_GLYPHS_START)	// so western letters drop through as invalid
 	{
@@ -1335,7 +1335,7 @@ const glyphInfo_t* CFontInfo::GetLetter(const unsigned int uiLetter, int* piShad
 	return pGlyph;
 }
 
-int CFontInfo::GetCollapsedAsianCode(ulong uiLetter) const
+int CFontInfo::GetCollapsedAsianCode(const ulong uiLetter) const
 {
 	int iCollapsedAsianCode = 0;
 
@@ -1355,13 +1355,13 @@ int CFontInfo::GetCollapsedAsianCode(ulong uiLetter) const
 	return iCollapsedAsianCode;
 }
 
-int CFontInfo::GetLetterWidth(unsigned int uiLetter)
+int CFontInfo::GetLetterWidth(const unsigned int uiLetter)
 {
 	const glyphInfo_t* pGlyph = GetLetter(uiLetter);
 	return pGlyph->width ? pGlyph->width : mGlyphs[static_cast<unsigned>('.')].width;
 }
 
-int CFontInfo::GetLetterHorizAdvance(unsigned int uiLetter)
+int CFontInfo::GetLetterHorizAdvance(const unsigned int uiLetter)
 {
 	const glyphInfo_t* pGlyph = GetLetter(uiLetter);
 	return pGlyph->horizAdvance ? pGlyph->horizAdvance : mGlyphs[static_cast<unsigned>('.')].horizAdvance;
@@ -1369,7 +1369,7 @@ int CFontInfo::GetLetterHorizAdvance(unsigned int uiLetter)
 
 // ensure any GetFont calls that need SBCS overriding (such as when playing in Russian) have the appropriate stuff done...
 //
-static CFontInfo* GetFont_SBCSOverride(CFontInfo* pFont, Language_e eLanguageSBCS, const char* psLanguageNameSBCS)
+static CFontInfo* GetFont_SBCSOverride(CFontInfo* pFont, const Language_e eLanguageSBCS, const char* psLanguageNameSBCS)
 {
 	if (!pFont->m_bIsFakeAlienLanguage)
 	{
@@ -1415,7 +1415,7 @@ static CFontInfo* GetFont_SBCSOverride(CFontInfo* pFont, Language_e eLanguageSBC
 	return nullptr;
 }
 
-CFontInfo* GetFont(int index)
+CFontInfo* GetFont(const int index)
 {
 	CFontInfo* pFont = GetFont_Actual(index);
 

@@ -108,7 +108,7 @@ void MineMonster_Move(qboolean visible)
 }
 
 //---------------------------------------------------------
-void MineMonster_TryDamage(const gentity_t* enemy, int damage)
+void MineMonster_TryDamage(const gentity_t* enemy, const int damage)
 {
 	vec3_t end, dir;
 	trace_t tr;
@@ -123,7 +123,7 @@ void MineMonster_TryDamage(const gentity_t* enemy, int damage)
 
 	// Should probably trace from the mouth, but, ah well.
 	gi.trace(&tr, NPC->currentOrigin, vec3_origin, vec3_origin, end, NPC->s.number, MASK_SHOT,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 
 	if (tr.entityNum >= 0 && tr.entityNum < ENTITYNUM_NONE)
 	{
@@ -226,7 +226,7 @@ void MineMonster_Combat(void)
 	const auto advance = distance > MIN_DISTANCE_SQR ? qtrue : qfalse;
 
 	if ((advance || NPCInfo->localState == LSTATE_WAITING) && TIMER_Done(NPC, "attacking"))
-		// waiting monsters can't attack
+	// waiting monsters can't attack
 	{
 		if (TIMER_Done2(NPC, "takingPain", qtrue))
 		{
@@ -248,8 +248,8 @@ void MineMonster_Combat(void)
 NPC_MineMonster_Pain
 -------------------------
 */
-void NPC_MineMonster_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hit_loc)
+void NPC_MineMonster_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                          int mod, int hit_loc)
 {
 	G_AddEvent(self, EV_PAIN, floor(static_cast<float>(self->health) / self->max_health * 100.0f));
 

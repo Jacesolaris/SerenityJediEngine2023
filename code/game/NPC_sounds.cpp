@@ -71,7 +71,7 @@ void G_AddVoiceEvent(const gentity_t* self, const int event, const int speak_deb
 
 	if (self->NPC->scriptFlags & SCF_NO_COMBAT_TALK && (event >= EV_ANGER1 && event <= EV_VICTORY3 || event >= EV_CHASE1
 		&& event <= EV_SUSPICIOUS5))
-		//(event < EV_FF_1A || event > EV_FF_3C) && (event < EV_RESPOND1 || event > EV_MISSION3) )
+	//(event < EV_FF_1A || event > EV_FF_3C) && (event < EV_RESPOND1 || event > EV_MISSION3) )
 	{
 		return;
 	}
@@ -97,13 +97,13 @@ void NPC_PlayConfusionSound(gentity_t* self)
 		if (self->enemy || //was mad
 			!TIMER_Done(self, "enemyLastVisible") || //saw something suspicious
 			self->client->renderInfo.lookTarget == 0 //was looking at player
-			)
+		)
 		{
 			self->NPC->blockedSpeechDebounceTime = 0; //make sure we say this
 			G_AddVoiceEvent(self, Q_irand(EV_CONFUSE2, EV_CONFUSE3), 2000);
 		}
 		else if (self->NPC && self->NPC->investigateDebounceTime + self->NPC->pauseTime > level.time)
-			//was checking something out
+		//was checking something out
 		{
 			self->NPC->blockedSpeechDebounceTime = 0; //make sure we say this
 			G_AddVoiceEvent(self, Q_irand(EV_CONFUSE1, EV_CONFUSE3), 2000);

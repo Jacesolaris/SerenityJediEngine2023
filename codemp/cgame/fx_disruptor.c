@@ -30,15 +30,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 FX_DisruptorMainShot
 ---------------------------
 */
-static vec3_t WHITE = { 1.0f, 1.0f, 1.0f };
+static vec3_t WHITE = {1.0f, 1.0f, 1.0f};
 
 void FX_DisruptorMainShot(vec3_t start, vec3_t end)
 {
 	trap->FX_AddLine(start, end, 0.1f, 6.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		300, trap->R_RegisterShader("gfx/effects/redLine"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 WHITE, WHITE, 0.0f,
+	                 300, trap->R_RegisterShader("gfx/effects/redLine"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 /*
@@ -46,24 +46,24 @@ void FX_DisruptorMainShot(vec3_t start, vec3_t end)
 FX_DisruptorAltShot
 ---------------------------
 */
-void FX_DisruptorAltShot(vec3_t start, vec3_t end, qboolean fullCharge)
+void FX_DisruptorAltShot(vec3_t start, vec3_t end, const qboolean fullCharge)
 {
 	trap->FX_AddLine(start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		300, trap->R_RegisterShader("gfx/effects/redLine"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 WHITE, WHITE, 0.0f,
+	                 300, trap->R_RegisterShader("gfx/effects/redLine"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
 	if (fullCharge)
 	{
-		vec3_t YELLER = { 0.8f, 0.7f, 0.0f };
+		vec3_t YELLER = {0.8f, 0.7f, 0.0f};
 
 		// add some beef
 		trap->FX_AddLine(start, end, 0.1f, 7.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			YELLER, YELLER, 0.0f,
-			300, trap->R_RegisterShader("gfx/misc/whiteline2"),
-			FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+		                 1.0f, 0.0f, 0.0f,
+		                 YELLER, YELLER, 0.0f,
+		                 300, trap->R_RegisterShader("gfx/misc/whiteline2"),
+		                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 	}
 }
 
@@ -162,18 +162,18 @@ FX_KothosBeam
 void fx_kothos_beam(vec3_t start, vec3_t end)
 {
 	trap->FX_AddLine(start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		175, trap->R_RegisterShader("gfx/misc/dr1"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 WHITE, WHITE, 0.0f,
+	                 175, trap->R_RegisterShader("gfx/misc/dr1"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
-	vec3_t YELLER = { 0.8f, 0.7f, 0.0f };
+	vec3_t YELLER = {0.8f, 0.7f, 0.0f};
 
 	// add some beef
 
 	trap->FX_AddLine(start, end, 0.1f, 7.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		YELLER, YELLER, 0.0f,
-		150, trap->R_RegisterShader("gfx/misc/whiteline2"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 YELLER, YELLER, 0.0f,
+	                 150, trap->R_RegisterShader("gfx/misc/whiteline2"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }

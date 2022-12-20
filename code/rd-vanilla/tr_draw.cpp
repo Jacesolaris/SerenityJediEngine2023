@@ -37,7 +37,7 @@ Used for cinematics.
 */
 
 // param 'bDirty' should be true 99% of the time
-void RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* data, int iClient, qboolean bDirty)
+void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols, int rows, const byte* data, const int iClient, const qboolean bDirty)
 {
 	if (!tr.registered) {
 		return;
@@ -137,7 +137,7 @@ void RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* d
 	qglEnd();
 }
 
-void RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboolean dirty) {
+void RE_UploadCinematic(const int cols, const int rows, const byte* data, const int client, const qboolean dirty) {
 	GL_Bind(tr.scratchImage[client]);
 
 	// if the scratchImage isn't in the format we want, specify it as a new texture
@@ -161,7 +161,7 @@ void RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboole
 }
 
 extern byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* padlen);
-void RE_GetScreenShot(byte* buffer, int w, int h)
+void RE_GetScreenShot(byte* buffer, const int w, const int h)
 {
 	size_t offset = 0;
 	int padlen;
@@ -202,7 +202,7 @@ void RE_GetScreenShot(byte* buffer, int w, int h)
 // this is just a chunk of code from RE_TempRawImage_ReadFromFile() below, subroutinised so I can call it
 //	from the screen dissolve code as well...
 //
-static byte* RE_ReSample(byte* pbLoadedPic, int iLoadedWidth, int iLoadedHeight,
+static byte* RE_ReSample(byte* pbLoadedPic, const int iLoadedWidth, const int iLoadedHeight,
 	byte* pbReSampleBuffer, int* piWidth, int* piHeight
 )
 {
@@ -292,7 +292,7 @@ static byte* RE_ReSample(byte* pbLoadedPic, int iLoadedWidth, int iLoadedHeight,
 //
 byte* pbLoadedPic = nullptr;
 
-byte* RE_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pbReSampleBuffer, qboolean qbVertFlip)
+byte* RE_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pbReSampleBuffer, const qboolean qbVertFlip)
 {
 	RE_TempRawImage_CleanUp();	// jic
 
@@ -395,9 +395,9 @@ constexpr auto fDISSOLVE_SECONDS = 0.75f;
 
 // leave the UV stuff in for now as comments in case I ever need to do some sneaky stuff, but for now...
 //
-static void RE_Blit(float fX0, float fY0, float fX1, float fY1, float fX2, float fY2, float fX3, float fY3,
-	//float fU0, float fV0, float fU1, float fV1, float fU2, float fV2, float fU3, float fV3,
-	image_t* pImage, int iGLState
+static void RE_Blit(const float fX0, const float fY0, const float fX1, const float fY1, const float fX2, const float fY2, const float fX3, const float fY3,
+                    //float fU0, float fV0, float fU1, float fV1, float fU2, float fV2, float fU3, float fV3,
+                    image_t* pImage, const int iGLState
 )
 {
 	//
@@ -740,7 +740,7 @@ qboolean RE_ProcessDissolve(void)
 
 // return = qtrue(success) else fail, for those interested...
 //
-qboolean RE_InitDissolve(qboolean bForceCircularExtroWipe)
+qboolean RE_InitDissolve(const qboolean bForceCircularExtroWipe)
 {
 	R_IssuePendingRenderCommands();
 

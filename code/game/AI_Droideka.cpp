@@ -17,8 +17,8 @@ constexpr auto SHIELD_EFFECT_TIME = 500;
 constexpr auto GENERATOR_HEALTH = 10;
 constexpr auto TURN_ON = 0x00000000;
 constexpr auto TURN_OFF = 0x00000100;
-static vec3_t shieldMins = { -20, -20, -24 };
-static vec3_t shieldMaxs = { 20, 20, 40 };
+static vec3_t shieldMins = {-20, -20, -24};
+static vec3_t shieldMaxs = {20, 20, 40};
 extern void NPC_SetPainEvent(gentity_t* self);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
@@ -61,14 +61,14 @@ void NPC_DROIDEKA_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void DROIDEKA_CreateExplosion(gentity_t* self, const int boltID, qboolean doSmall = qfalse)
+static void DROIDEKA_CreateExplosion(gentity_t* self, const int boltID, const qboolean doSmall = qfalse)
 {
 	if (boltID >= 0)
 	{
 		mdxaBone_t boltMatrix;
 		vec3_t org, dir;
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, boltID, &boltMatrix, self->currentAngles,
-			self->currentOrigin, level.time, nullptr, self->s.modelScale);
+		                       self->currentOrigin, level.time, nullptr, self->s.modelScale);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
 
@@ -101,7 +101,7 @@ void DROIDEKA_Dying(gentity_t* self)
 			int newBolt;
 			switch (Q_irand(1, 14))
 			{
-				// Find place to generate explosion
+			// Find place to generate explosion
 			case 1:
 				if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "r_hand"))
 				{
@@ -178,7 +178,7 @@ void DROIDEKA_Dying(gentity_t* self)
 				newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], "*r_leg_foot");
 				DROIDEKA_CreateExplosion(self, newBolt, qtrue);
 				break;
-			default:;
+			default: ;
 			}
 
 			TIMER_Set(self, "dyingExplosion", Q_irand(300, 1100));
@@ -200,7 +200,8 @@ G_DROIDEKACheckPain
 Called by NPC's and player in an DROIDEKA
 -------------------------
 */
-void g_droideka_check_pain(const gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc)
+void g_droideka_check_pain(const gentity_t* self, gentity_t* other, const vec3_t point, int damage, int mod,
+                           int hit_loc)
 {
 	if (rand() & 1)
 	{
@@ -217,8 +218,8 @@ void g_droideka_check_pain(const gentity_t* self, gentity_t* other, const vec3_t
 NPC_DROIDEKA_Pain
 -------------------------
 */
-void NPC_DROIDEKA_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hit_loc)
+void NPC_DROIDEKA_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, const int damage,
+                       const int mod, const int hit_loc)
 {
 	if (self->client->ps.powerups[PW_GALAK_SHIELD] == 0)
 	{
@@ -372,7 +373,7 @@ void DROIDEKA_Hunt(qboolean visible, qboolean advance)
 DROIDEKA_Ranged
 -------------------------
 */
-void DROIDEKA_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
+void DROIDEKA_Ranged(const qboolean visible, const qboolean advance, qboolean altAttack)
 {
 	if (TIMER_Done(NPC, "atkDelay") && visible) // Attack?
 	{
@@ -445,7 +446,7 @@ void droideka_attack()
 			smack_dir[2] += 30;
 			VectorNormalize(smack_dir);
 			G_Damage(NPC->enemy, NPC, NPC, smack_dir, NPC->currentOrigin, (g_spskill->integer + 1) * Q_irand(2, 5),
-				DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
+			         DAMAGE_NO_KNOCKBACK, MOD_ELECTROCUTE);
 			g_throw(NPC->enemy, smack_dir, 50);
 			NPC->enemy->s.powerups |= 1 << PW_SHOCKED;
 			if (NPC->enemy->client)
@@ -521,7 +522,7 @@ void NPC_BSDROIDEKA_Default(void)
 			//do a trace and make sure we can turn this back on?
 			trace_t tr;
 			gi.trace(&tr, NPC->currentOrigin, shieldMins, shieldMaxs, NPC->currentOrigin, NPC->s.number, NPC->clipmask,
-				G2_NOCOLLIDE, 0);
+			         G2_NOCOLLIDE, 0);
 			if (!tr.startsolid)
 			{
 				VectorCopy(shieldMins, NPC->mins);

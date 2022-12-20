@@ -34,7 +34,7 @@ JPP((j_compress_ptr cinfo, jvirt_barray_ptr* coef_arrays));
  */
 
 GLOBAL(void)
-jpeg_write_coefficients(j_compress_ptr cinfo, jvirt_barray_ptr* coef_arrays)
+jpeg_write_coefficients(const j_compress_ptr cinfo, jvirt_barray_ptr* coef_arrays)
 {
 	if (cinfo->global_state != CSTATE_START)
 		ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
@@ -58,8 +58,8 @@ jpeg_write_coefficients(j_compress_ptr cinfo, jvirt_barray_ptr* coef_arrays)
  */
 
 GLOBAL(void)
-jpeg_copy_critical_parameters(j_decompress_ptr srcinfo,
-	j_compress_ptr dstinfo)
+jpeg_copy_critical_parameters(const j_decompress_ptr srcinfo,
+                              const j_compress_ptr dstinfo)
 {
 	jpeg_component_info* incomp, * outcomp;
 	int tblno, ci;
@@ -157,8 +157,8 @@ jpeg_copy_critical_parameters(j_decompress_ptr srcinfo,
  */
 
 LOCAL(void)
-transencode_master_selection(j_compress_ptr cinfo,
-	jvirt_barray_ptr* coef_arrays)
+transencode_master_selection(const j_compress_ptr cinfo,
+                             jvirt_barray_ptr* coef_arrays)
 {
 	/* Initialize master control (includes parameter checking/processing) */
 	jinit_c_master_control(cinfo, TRUE /* transcode only */);
@@ -213,7 +213,7 @@ typedef struct {
 typedef my_coef_controller* my_coef_ptr;
 
 LOCAL(void)
-start_iMCU_row(j_compress_ptr cinfo)
+start_iMCU_row(const j_compress_ptr cinfo)
 /* Reset within-iMCU-row counters for a new row */
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
@@ -241,7 +241,7 @@ start_iMCU_row(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_pass_coef(j_compress_ptr cinfo, J_BUF_MODE pass_mode)
+start_pass_coef(const j_compress_ptr cinfo, const J_BUF_MODE pass_mode)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 
@@ -263,7 +263,7 @@ start_pass_coef(j_compress_ptr cinfo, J_BUF_MODE pass_mode)
  */
 
 METHODDEF(boolean)
-compress_output(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
+compress_output(const j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	const JDIMENSION last_MCU_col = cinfo->MCUs_per_row - 1;
@@ -346,8 +346,8 @@ compress_output(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
  */
 
 LOCAL(void)
-transencode_coef_controller(j_compress_ptr cinfo,
-	jvirt_barray_ptr* coef_arrays)
+transencode_coef_controller(const j_compress_ptr cinfo,
+                            jvirt_barray_ptr* coef_arrays)
 {
 	const my_coef_ptr coef = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_coef_controller));

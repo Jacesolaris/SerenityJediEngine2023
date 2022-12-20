@@ -27,12 +27,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // Cvar callbacks
 //
 
-static void CG_SVRunningChange(void) {
+static void CG_SVRunningChange(void)
+{
 	cgs.localServer = sv_running.integer;
 }
 
-static void CG_ForceModelChange(void) {
-	for (int i = 0; i < MAX_CLIENTS; i++) {
+static void CG_ForceModelChange(void)
+{
+	for (int i = 0; i < MAX_CLIENTS; i++)
+	{
 		const char* clientInfo = CG_ConfigString(CS_PLAYERS + i);
 
 		if (!VALIDSTRING(clientInfo))
@@ -56,12 +59,13 @@ static void CG_TeamOverlayChange(void)
 // Cvar table
 //
 
-typedef struct cvarTable_s {
+typedef struct cvarTable_s
+{
 	vmCvar_t* vmCvar;
 	char* cvarName;
 	char* defaultString;
-	void		(*update)(void);
-	uint32_t	cvarFlags;
+	void (*update)(void);
+	uint32_t cvarFlags;
 } cvarTable_t;
 
 #define XCVAR_DECL
@@ -69,33 +73,39 @@ typedef struct cvarTable_s {
 #undef XCVAR_DECL
 
 static const cvarTable_t cvarTable[] = {
-	#define XCVAR_LIST
-		#include "cg_xcvar.h"
-	#undef XCVAR_LIST
+#define XCVAR_LIST
+#include "cg_xcvar.h"
+#undef XCVAR_LIST
 };
 
 static const size_t cvarTableSize = ARRAY_LEN(cvarTable);
 
-void CG_RegisterCvars(void) {
+void CG_RegisterCvars(void)
+{
 	size_t i;
 	const cvarTable_t* cv;
 
-	for (i = 0, cv = cvarTable; i < cvarTableSize; i++, cv++) {
+	for (i = 0, cv = cvarTable; i < cvarTableSize; i++, cv++)
+	{
 		trap->Cvar_Register(cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags);
 		if (cv->update)
 			cv->update();
 	}
 }
 
-void CG_UpdateCvars(void) {
+void CG_UpdateCvars(void)
+{
 	size_t i;
 	const cvarTable_t* cv;
 
-	for (i = 0, cv = cvarTable; i < cvarTableSize; i++, cv++) {
-		if (cv->vmCvar) {
+	for (i = 0, cv = cvarTable; i < cvarTableSize; i++, cv++)
+	{
+		if (cv->vmCvar)
+		{
 			const int modCount = cv->vmCvar->modificationCount;
 			trap->Cvar_Update(cv->vmCvar);
-			if (cv->vmCvar->modificationCount != modCount) {
+			if (cv->vmCvar->modificationCount != modCount)
+			{
 				if (cv->update)
 					cv->update();
 			}

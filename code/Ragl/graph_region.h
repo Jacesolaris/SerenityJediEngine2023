@@ -51,7 +51,8 @@ namespace ragl
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Graph Region Class
 	////////////////////////////////////////////////////////////////////////////////////////
-	template <class TNODE, int MAXNODES, class TEDGE, int MAXEDGES, int NUM_EDGES_PER_NODE, int MAXREGIONS, int MAXREGIONEDGES>
+	template <class TNODE, int MAXNODES, class TEDGE, int MAXEDGES, int NUM_EDGES_PER_NODE, int MAXREGIONS, int
+	          MAXREGIONEDGES>
 	class graph_region : public ratl::ratl_base
 	{
 	public:
@@ -68,11 +69,12 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Some Public Type Defines
 		////////////////////////////////////////////////////////////////////////////////////
-		using TGraph = ragl::graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, NUM_EDGES_PER_NODE>;
+		using TGraph = graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, NUM_EDGES_PER_NODE>;
 		using TRegions = ratl::vector_vs<int, MAXNODES>;
-		using TRegionEdge = ratl::vector_vs<short, MAXREGIONS>;	// List Of All Edges Which Connect RegionA<->RegionB
-		using TEdges = ratl::pool_vs<TRegionEdge, MAXREGIONEDGES>;			// Pool Of All RegionEdges
-		using TLinks = ratl::grid2_vs<short, MAXREGIONS, MAXREGIONS>;			// Graph Of Links From Region To Region, Each Points To A RegionEdge
+		using TRegionEdge = ratl::vector_vs<short, MAXREGIONS>; // List Of All Edges Which Connect RegionA<->RegionB
+		using TEdges = ratl::pool_vs<TRegionEdge, MAXREGIONEDGES>; // Pool Of All RegionEdges
+		using TLinks = ratl::grid2_vs<short, MAXREGIONS, MAXREGIONS>;
+		// Graph Of Links From Region To Region, Each Points To A RegionEdge
 		using TClosed = ratl::bits_vs<MAXREGIONS>;
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +84,7 @@ namespace ragl
 		{
 			clear();
 		}
+
 		~graph_region()
 		{
 		}
@@ -89,7 +92,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear Out All Temp Data So We Can Recalculate Regions
 		////////////////////////////////////////////////////////////////////////////////////
-		void	clear()
+		void clear()
 		{
 			mRegions.resize(0, static_cast<int>(NULL_REGION));
 			mRegions.resize(MAXNODES, static_cast<int>(NULL_REGION));
@@ -111,7 +114,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Regions Have Been Created
 		////////////////////////////////////////////////////////////////////////////////////
-		int		size() const
+		int size() const
 		{
 			return mRegionCount;
 		}
@@ -119,7 +122,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get The Region For A Given Node
 		////////////////////////////////////////////////////////////////////////////////////
-		int		get_node_region(int Node)
+		int get_node_region(int Node)
 		{
 			return mRegions[mGraph.node_index(Node)];
 		}
@@ -133,10 +136,10 @@ namespace ragl
 		// In order to use this function, you must have an EdgeQuery class (use the default
 		// above, or derive your own for more specialized behavior).
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	has_valid_edge(int NodeA, int NodeB, const typename TGraph::user& user)
+		bool has_valid_edge(int NodeA, int NodeB, const typename TGraph::user& user)
 		{
-			const int	RegionA = mRegions[NodeA];
-			const int	RegionB = mRegions[NodeB];
+			const int RegionA = mRegions[NodeA];
+			const int RegionB = mRegions[NodeB];
 
 			if (RegionA == RegionB)
 			{
@@ -153,11 +156,12 @@ namespace ragl
 		//
 		// Allows a user to pre-allocate a special region for a group of points
 		////////////////////////////////////////////////////////////////////////////////////
-		int		reserve()
+		int reserve()
 		{
 			assert(mRegionCount < MAXREGIONS - 1);
 			if (mRegionCount >= MAXREGIONS - 1)
-			{//stop adding points, we're full, you MUST increase MAXREGIONS for this to work
+			{
+				//stop adding points, we're full, you MUST increase MAXREGIONS for this to work
 				return NULL_REGION;
 			}
 			mReservedRegionCount++;
@@ -170,7 +174,7 @@ namespace ragl
 		//
 		// Allows a user to pre-allocate a special region for a group of points
 		////////////////////////////////////////////////////////////////////////////////////
-		void	assign_region(int NodeIndex, int RegionIndex)
+		void assign_region(int NodeIndex, int RegionIndex)
 		{
 			mRegions[NodeIndex] = RegionIndex;
 		}
@@ -183,7 +187,7 @@ namespace ragl
 		// for valid edges.
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	find_regions(const typename TGraph::user& user)
+		bool find_regions(const typename TGraph::user& user)
 		{
 			for (typename TGraph::TNodes::iterator i = mGraph.nodes_begin(); i != mGraph.nodes_end(); ++i)
 			{
@@ -192,14 +196,15 @@ namespace ragl
 				{
 					assert(mRegionCount < MAXREGIONS - 1);
 					if (mRegionCount >= MAXREGIONS - 1)
-					{//stop adding points, we're full, you MUST increase MAXREGIONS for this to work
+					{
+						//stop adding points, we're full, you MUST increase MAXREGIONS for this to work
 						return false;
 					}
-					mRegionCount++;				// Allocate The New Region
-					assign(CurNodeIndex, user);		// Assign All Points To It
+					mRegionCount++; // Allocate The New Region
+					assign(CurNodeIndex, user); // Assign All Points To It
 				}
 			}
-			mRegionCount++;		// Size is actually 1 greater than the number of regions
+			mRegionCount++; // Size is actually 1 greater than the number of regions
 			return true;
 		}
 
@@ -209,9 +214,9 @@ namespace ragl
 		// Once called, this class will have reference data for how to get from one region
 		// to another.
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	find_region_edges()
+		bool find_region_edges()
 		{
-			bool	Success = true;
+			bool Success = true;
 
 			for (int indexA = 0; indexA < MAXNODES; indexA++)
 			{
@@ -221,7 +226,8 @@ namespace ragl
 					for (int indexB = 0; indexB < MAXNODES; indexB++)
 					{
 						int RegionB = mRegions[indexB];
-						const bool ReservedRegionLink = RegionA <= mReservedRegionCount || RegionB <= mReservedRegionCount;
+						const bool ReservedRegionLink = RegionA <= mReservedRegionCount || RegionB <=
+							mReservedRegionCount;
 						if (RegionB != NULL_REGION && RegionB != RegionA && mGraph.get_edge_across(indexA, indexB))
 						{
 							int RegionLink = mLinks.get(RegionA, RegionB);
@@ -232,7 +238,8 @@ namespace ragl
 							{
 								if (ReservedRegionLink)
 								{
-									mLinks.get(RegionA, RegionB) = -2;		// Special Flag For Reserved Regions - they have no edges
+									mLinks.get(RegionA, RegionB) = -2;
+									// Special Flag For Reserved Regions - they have no edges
 									mLinks.get(RegionB, RegionA) = -2;
 								}
 								else
@@ -274,7 +281,7 @@ namespace ragl
 		// It will visit all neighbors for each node which have not already been visited
 		// and assigned to a region.  Neighbors must always be valid.
 		////////////////////////////////////////////////////////////////////////////////////
-		void	assign(int Node, const typename TGraph::user& user)
+		void assign(int Node, const typename TGraph::user& user)
 		{
 			mRegions[Node] = mRegionCount;
 			for (int i = 0; i < MAXNODES; i++)
@@ -295,7 +302,7 @@ namespace ragl
 		//
 		// Visited regions are makred on the "closed" bit field.
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	has_valid_region_edge(int CurRegion, int TargetRegion, const typename TGraph::user& user)
+		bool has_valid_region_edge(int CurRegion, const int TargetRegion, const typename TGraph::user& user)
 		{
 			// Mark The Cur Region As Visited, So We Don't Try To Return To It
 			//-----------------------------------------------------------------
@@ -321,7 +328,7 @@ namespace ragl
 						//------------------------------------------------------------------
 						if (has_valid_region_edge(NextRegion, TargetRegion, user))
 						{
-							return true;		// HEY!  Somehow, Going To Next Region Got Us To The Target Region!
+							return true; // HEY!  Somehow, Going To Next Region Got Us To The Target Region!
 						}
 					}
 					else
@@ -332,16 +339,16 @@ namespace ragl
 						for (int j = 0; j < mEdges[CurRegionEdge].size(); j++)
 						{
 							if (user.is_valid(
-								mGraph.get_edge(mEdges[CurRegionEdge][j]),
-								NextRegion == TargetRegion ? -1 : 0
-							)
+									mGraph.get_edge(mEdges[CurRegionEdge][j]),
+									NextRegion == TargetRegion ? -1 : 0
 								)
+							)
 							{
 								// Great, So We Have Found A Valid Neighboring Region, Search There
 								//------------------------------------------------------------------
 								if (has_valid_region_edge(NextRegion, TargetRegion, user))
 								{
-									return true;		// HEY!  Somehow, Going To Next Region Got Us To The Target Region!
+									return true; // HEY!  Somehow, Going To Next Region Got Us To The Target Region!
 								}
 
 								// Ok, The Target Region Turned Out To Be A Dead End, We Can Stop Trying To Get There
@@ -364,13 +371,13 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		TGraph& mGraph;
 
-		TRegions		mRegions;
-		int				mRegionCount;
-		int				mReservedRegionCount;
+		TRegions mRegions;
+		int mRegionCount;
+		int mReservedRegionCount;
 
-		TLinks			mLinks;
-		TEdges			mEdges;
-		TClosed			mClosed;
+		TLinks mLinks;
+		TEdges mEdges;
+		TClosed mClosed;
 
 	public:
 #if !defined(FINAL_BUILD)

@@ -229,12 +229,12 @@ namespace ojk
 
 		template <typename TSrc, typename TDst, int TCount>
 		bool try_read(
-			TDst(&dst_values)[TCount],
+			TDst (&dst_values)[TCount],
 			Array1dTag);
 
 		template <typename TSrc, typename TDst, int TCount1, int TCount2>
 		bool try_read(
-			TDst(&dst_values)[TCount1][TCount2],
+			TDst (&dst_values)[TCount1][TCount2],
 			Array2dTag);
 
 		template <typename TSrc, typename TDst>
@@ -278,12 +278,12 @@ namespace ojk
 
 		template <typename TDst, typename TSrc, int TCount>
 		void write(
-			const TSrc(&src_values)[TCount],
+			const TSrc (&src_values)[TCount],
 			Array1dTag);
 
 		template <typename TDst, typename TSrc, int TCount1, int TCount2>
 		void write(
-			const TSrc(&src_values)[TCount1][TCount2],
+			const TSrc (&src_values)[TCount1][TCount2],
 			Array2dTag);
 
 		template <typename TDst, typename TSrc>

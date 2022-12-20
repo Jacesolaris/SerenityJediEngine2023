@@ -51,7 +51,7 @@ static qboolean NPC_TryJump();
 
 qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position);
 
-static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
+static qboolean NPC_Jump(vec3_t dest, const int goalEntNum)
 {
 	//FIXME: if land on enemy, knock him down & jump off again
 	float bestImpactDist = Q3_INFINITE; //fireSpeed,
@@ -117,7 +117,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 				EvaluateTrajectory(&tr, level.time + elapsedTime, testPos);
 				//FUCK IT, always check for do not enter...
 				gi.trace(&trace, lastPos, NPC->mins, NPC->maxs, testPos, NPC->s.number,
-					NPC->clipmask | CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
+				         NPC->clipmask | CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
 
 				if (trace.allsolid || trace.startsolid)
 				{
@@ -148,7 +148,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 						break;
 					}
 					if (trace.plane.normal[2] > 0.7 && DistanceSquared(trace.endpos, dest) < 4096)
-						//hit within 64 of desired location, should be okay
+					//hit within 64 of desired location, should be okay
 					{
 						//close enough!
 						break;
@@ -177,7 +177,7 @@ static qboolean NPC_Jump(vec3_t dest, int goalEntNum)
 						VectorCopy(trace.endpos, bottom);
 						bottom[2] -= 128;
 						gi.trace(&trace, trace.endpos, NPC->mins, NPC->maxs, bottom, NPC->s.number, NPC->clipmask,
-							static_cast<EG2_Collision>(0), 0);
+						         static_cast<EG2_Collision>(0), 0);
 						if (trace.fraction >= 1.0f || !NPC_CheckFallPositionOK(NPC, trace.endpos))
 						{
 							//would fall too far
@@ -255,14 +255,14 @@ qboolean NPC_CanTryJump()
 		PM_InKnockDown(&NPC->client->ps) || // Don't Jump If In Knockdown
 		PM_InRoll(&NPC->client->ps) || // ... Or Roll
 		NPC->client->ps.groundEntityNum == ENTITYNUM_NONE // ... Or In The Air
-		)
+	)
 	{
 		return qfalse;
 	}
 	return qtrue;
 }
 
-qboolean NPC_TryJump(const vec3_t& pos, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump(const vec3_t& pos, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -277,7 +277,7 @@ qboolean NPC_TryJump(const vec3_t& pos, float max_xy_dist, float max_z_diff)
 			VectorCopy(pos, groundTest);
 			groundTest[2] += NPC->mins[2] * 3;
 			gi.trace(&mJumpTrace, NPCInfo->jumpDest, vec3_origin, vec3_origin, groundTest, NPC->s.number, NPC->clipmask,
-				static_cast<EG2_Collision>(0), 0);
+			         static_cast<EG2_Collision>(0), 0);
 			if (mJumpTrace.fraction >= 1.0f)
 			{
 				return qfalse; //no ground = no jump
@@ -293,7 +293,7 @@ qboolean NPC_TryJump(const vec3_t& pos, float max_xy_dist, float max_z_diff)
 	return qfalse;
 }
 
-qboolean NPC_TryJump(gentity_t* goal, float max_xy_dist, float max_z_diff)
+qboolean NPC_TryJump(gentity_t* goal, const float max_xy_dist, const float max_z_diff)
 {
 	if (NPC_CanTryJump())
 	{
@@ -394,7 +394,7 @@ qboolean NPC_TryJump()
 		vec3_t actorProjectedTowardTarget;
 		VectorMA(NPC->currentOrigin, NPC_JUMP_PREP_BACKUP_DIST, targetDirection, actorProjectedTowardTarget);
 		gi.trace(&mJumpTrace, NPC->currentOrigin, vec3_origin, vec3_origin, actorProjectedTowardTarget, NPC->s.number,
-			NPC->clipmask, static_cast<EG2_Collision>(0), 0);
+		         NPC->clipmask, static_cast<EG2_Collision>(0), 0);
 		if (mJumpTrace.fraction < 1.0f ||
 			mJumpTrace.allsolid ||
 			mJumpTrace.startsolid)
@@ -473,15 +473,15 @@ qboolean NPC_TryJump()
 					NPCInfo->jumpDest[0] = startPos[0] + minSafeRadius;
 					NPCInfo->jumpDest[1] = startPos[1] -= minSafeRadius;
 					break;
-				default:;
+				default: ;
 				}
 
 				floorPos[0] = NPCInfo->jumpDest[0];
 				floorPos[1] = NPCInfo->jumpDest[1];
 
 				gi.trace(&mJumpTrace, NPCInfo->jumpDest, NPC->mins, NPC->maxs, floorPos,
-					NPCInfo->jumpTarget ? NPCInfo->jumpTarget->s.number : NPC->s.number,
-					NPC->clipmask | CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
+				         NPCInfo->jumpTarget ? NPCInfo->jumpTarget->s.number : NPC->s.number,
+				         NPC->clipmask | CONTENTS_BOTCLIP, static_cast<EG2_Collision>(0), 0);
 				if (mJumpTrace.fraction < 1.0f &&
 					!mJumpTrace.allsolid &&
 					!mJumpTrace.startsolid)

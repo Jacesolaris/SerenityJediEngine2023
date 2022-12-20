@@ -34,7 +34,7 @@ extern void G_InitPlayerFromCvars(gentity_t* ent);
 extern void Q3_SetViewEntity(int entID, const char* name);
 extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName);
 extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
@@ -196,7 +196,7 @@ static void Svcmd_Saber_f()
 {
 	const char* saber = gi.argv(1);
 	const char* saber2 = gi.argv(2);
-	char name[MAX_CVAR_VALUE_STRING] = { 0 };
+	char name[MAX_CVAR_VALUE_STRING] = {0};
 
 	if (gi.argc() < 2)
 	{
@@ -349,7 +349,7 @@ SetForceCmd SetForceTable[NUM_FORCE_POWERS] = {
 	{"forceBlinding", "setForceBlinding", FORCE_LEVEL_3},
 };
 
-static void Svcmd_ForceSetLevel_f(int forcePower)
+static void Svcmd_ForceSetLevel_f(const int forcePower)
 {
 	if (!g_entities[0].client)
 	{
@@ -359,9 +359,9 @@ static void Svcmd_ForceSetLevel_f(int forcePower)
 	if (!VALIDSTRING(newVal))
 	{
 		gi.Printf("Current %s level is %d\n", SetForceTable[forcePower].desc,
-			g_entities[0].client->ps.forcePowerLevel[forcePower]);
+		          g_entities[0].client->ps.forcePowerLevel[forcePower]);
 		gi.Printf("Usage:  %s <level> (0 - %i)\n", SetForceTable[forcePower].cmdname,
-			SetForceTable[forcePower].maxlevel);
+		          SetForceTable[forcePower].maxlevel);
 		return;
 	}
 	const int val = atoi(newVal);
@@ -389,7 +389,8 @@ extern qboolean PM_SaberInTransition(int move);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
 extern qboolean PM_ControlledByPlayer(void);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend = SETANIM_BLEND_DEFAULT);
+extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags,
+                        int iBlend = SETANIM_BLEND_DEFAULT);
 
 void Svcmd_SaberAttackCycle_f(void)
 {
@@ -1491,7 +1492,7 @@ static void Svcmd_PlayerModel_f(void)
 				"USAGE: playerModel <NPC Name>\n       playerModel <g2model> <skinhead> <skintorso> <skinlower>\n       playerModel player (builds player from customized menu settings)"
 				S_COLOR_WHITE "\n");
 			gi.Printf("playerModel = %s ", va("%s %s %s %s\n", g_char_model->string, g_char_skin_head->string,
-				g_char_skin_torso->string, g_char_skin_legs->string));
+			                                  g_char_skin_torso->string, g_char_skin_legs->string));
 		}
 		else if (gi.argc() == 2)
 		{
@@ -1517,7 +1518,7 @@ static void Svcmd_PlayerModel_f(void)
 				"USAGE: playerModel <NPC Name>\n       playerModel <g2model> <skinhead> <skintorso> <skinlower>\n       playerModel player (builds player from customized menu settings)"
 				S_COLOR_WHITE "\n");
 			gi.Printf("playerModel = %s ", va("%s %s %s %s\n", g_char_model->string, g_char_skin_head->string,
-				g_char_skin_torso->string, g_char_skin_legs->string));
+			                                  g_char_skin_torso->string, g_char_skin_legs->string));
 		}
 		else if (gi.argc() == 2)
 		{
@@ -1541,7 +1542,7 @@ static void Svcmd_PlayerModel_f(void)
 				"USAGE: playerModel <NPC Name>\n       playerModel <g2model> <skinhead> <skintorso> <skinlower>\n       playerModel player (builds player from customized menu settings)"
 				S_COLOR_WHITE "\n");
 			gi.Printf("playerModel = %s ", va("%s %s %s %s\n", g_char_model->string, g_char_skin_head->string,
-				g_char_skin_torso->string, g_char_skin_legs->string));
+			                                  g_char_skin_torso->string, g_char_skin_legs->string));
 		}
 		else if (gi.argc() == 2)
 		{
@@ -1573,7 +1574,7 @@ static void Svcmd_PlayerTint_f(void)
 	{
 		gi.Printf(S_COLOR_RED "USAGE: playerTint <red 0 - 255> <green 0 - 255> <blue 0 - 255>\n");
 		gi.Printf("playerTint = %s\n", va("%d %d %d", g_char_color_red->integer, g_char_color_green->integer,
-			g_char_color_blue->integer));
+		                                  g_char_color_blue->integer));
 	}
 }
 
@@ -1604,7 +1605,7 @@ static void Svcmd_Secrets_f(void)
 	else if (pl->client->sess.missionStats.secretsFound == pl->client->sess.missionStats.totalSecrets)
 	{
 		gi.Printf("You've found all " S_COLOR_GREEN "%i" S_COLOR_WHITE " secrets on this map!\n",
-			pl->client->sess.missionStats.secretsFound);
+		          pl->client->sess.missionStats.secretsFound);
 	}
 	else
 	{

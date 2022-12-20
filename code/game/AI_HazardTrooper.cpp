@@ -86,7 +86,7 @@ enum
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
-static void HT_Speech(const gentity_t* self, int speechType, float failChance)
+static void HT_Speech(const gentity_t* self, const int speechType, const float failChance)
 {
 	if (Q_flrand(0.0f, 1.0f) < failChance)
 	{
@@ -197,7 +197,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Initialize - Clear out all data, all actors, reset all variables
 	////////////////////////////////////////////////////////////////////////////////////
-	void Initialize(int TroopHandle = 0)
+	void Initialize(const int TroopHandle = 0)
 	{
 		mActors.clear();
 		mTarget = nullptr;
@@ -231,7 +231,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// MakeActorLeader - Move A Given Index To A Leader Position
 	////////////////////////////////////////////////////////////////////////////////////
-	void MakeActorLeader(int index)
+	void MakeActorLeader(const int index)
 	{
 		if (index != 0)
 		{
@@ -334,7 +334,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// RegisterTarget - Records That the target is seen, when and where
 	////////////////////////////////////////////////////////////////////////////////////
-	void RegisterTarget(gentity_t* target, int index, bool visable)
+	void RegisterTarget(gentity_t* target, const int index, const bool visable)
 	{
 		if (!mTarget)
 		{
@@ -423,7 +423,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// Scan For Enemies
 	////////////////////////////////////////////////////////////////////////////////////
-	void ScanForTarget(int scannerIndex)
+	void ScanForTarget(const int scannerIndex)
 	{
 		int targetIndex = 0;
 		int targetStop = ENTITYNUM_WORLD;
@@ -574,7 +574,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	// LeaderIssueAndUpdateOrders - Tell Everyone Where To Go
 	////////////////////////////////////////////////////////////////////////////////////
-	void LeaderIssueAndUpdateOrders(ETroopState NextState)
+	void LeaderIssueAndUpdateOrders(const ETroopState NextState)
 	{
 		int actorIndex;
 		const int actorCount = mActors.size();
@@ -589,11 +589,11 @@ private:
 			{
 				int closestActorIndex = orderIndex;
 				float closestActorDistance = DistanceSquared(mOrders[orderIndex].mPosition.v,
-					mActors[orderIndex]->currentOrigin);
+				                                             mActors[orderIndex]->currentOrigin);
 				for (actorIndex = orderIndex + 1; actorIndex < actorCount; actorIndex++)
 				{
 					const float currentDistance = DistanceSquared(mOrders[orderIndex].mPosition.v,
-						mActors[actorIndex]->currentOrigin);
+					                                              mActors[actorIndex]->currentOrigin);
 					if (currentDistance < closestActorDistance)
 					{
 						closestActorDistance = currentDistance;
@@ -625,56 +625,56 @@ private:
 				switch (NextState)
 				{
 				case TS_ADVANCE_REGROUP:
-				{
-					break;
-				}
+					{
+						break;
+					}
 				case TS_ADVANCE_SEARCH:
-				{
-					HT_Speech(leader, SPEECH_LOOK, 0);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_LOOK, 0);
+						break;
+					}
 				case TS_ADVANCE_COVER:
-				{
-					HT_Speech(leader, SPEECH_COVER, 0);
-					NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL4,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_COVER, 0);
+						NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL4,
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
+						break;
+					}
 				case TS_ADVANCE_FORMATION:
-				{
-					HT_Speech(leader, SPEECH_ESCAPING, 0);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_ESCAPING, 0);
+						break;
+					}
 
 				case TS_ATTACK_LINE:
-				{
-					HT_Speech(leader, SPEECH_CHASE, 0);
-					NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL1,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_CHASE, 0);
+						NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL1,
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
+						break;
+					}
 				case TS_ATTACK_FLANK:
-				{
-					HT_Speech(leader, SPEECH_OUTFLANK, 0);
-					NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL3,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_OUTFLANK, 0);
+						NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL3,
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
+						break;
+					}
 				case TS_ATTACK_SURROUND:
-				{
-					HT_Speech(leader, SPEECH_GIVEUP, 0);
-					NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL2,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_GIVEUP, 0);
+						NPC_SetAnim(leader, SETANIM_TORSO, TORSO_HANDSIGNAL2,
+						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS);
+						break;
+					}
 				case TS_ATTACK_COVER:
-				{
-					HT_Speech(leader, SPEECH_COVER, 0);
-					break;
-				}
+					{
+						HT_Speech(leader, SPEECH_COVER, 0);
+						break;
+					}
 				default:
-				{
-				}
+					{
+					}
 				}
 			}
 		}
@@ -720,14 +720,14 @@ private:
 			mOrders[0].mPosition = mFormHead;
 
 			gi.trace(&trace,
-				mActors[0]->currentOrigin,
-				mActors[0]->mins,
-				mActors[0]->maxs,
-				mOrders[0].mPosition.v,
-				mActors[0]->s.number,
-				mActors[0]->clipmask,
-				static_cast<EG2_Collision>(0),
-				0
+			         mActors[0]->currentOrigin,
+			         mActors[0]->mins,
+			         mActors[0]->maxs,
+			         mOrders[0].mPosition.v,
+			         mActors[0]->s.number,
+			         mActors[0]->clipmask,
+			         static_cast<EG2_Collision>(0),
+			         0
 			);
 
 			if (trace.fraction < 1.0f)
@@ -852,14 +852,14 @@ private:
 				OrderUp[2] += 10.0f;
 
 				gi.trace(&trace,
-					Order.mPosition.v,
-					mActors[actorIndex]->mins,
-					mActors[actorIndex]->maxs,
-					OrderUp.v,
-					mActors[actorIndex]->s.number,
-					CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP,
-					static_cast<EG2_Collision>(0),
-					0);
+				         Order.mPosition.v,
+				         mActors[actorIndex]->mins,
+				         mActors[actorIndex]->maxs,
+				         OrderUp.v,
+				         mActors[actorIndex]->s.number,
+				         CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP,
+				         static_cast<EG2_Collision>(0),
+				         0);
 
 				if (trace.startsolid || trace.allsolid)
 				{
@@ -1116,14 +1116,14 @@ void Trooper_UpdateTroop(gentity_t* actor)
 					// Only Join A Troop If You Can See The Leader
 					//---------------------------------------------
 					gi.trace(&trace,
-						actor->currentOrigin,
-						actor->mins,
-						actor->maxs,
-						iTroop->TroopLeader()->currentOrigin,
-						actor->s.number,
-						CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP,
-						static_cast<EG2_Collision>(0),
-						0);
+					         actor->currentOrigin,
+					         actor->mins,
+					         actor->maxs,
+					         iTroop->TroopLeader()->currentOrigin,
+					         actor->s.number,
+					         CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP,
+					         static_cast<EG2_Collision>(0),
+					         0);
 
 					if (!trace.allsolid &&
 						!trace.startsolid &&
@@ -1243,7 +1243,7 @@ void Trooper_KneelDown(gentity_t* actor)
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Trooper_StandUp(gentity_t* actor, bool always = false)
+void Trooper_StandUp(gentity_t* actor, const bool always = false)
 {
 	assert(actor && actor->NPC);
 	if (Trooper_Kneeling(actor) && (always || level.time > actor->NPC->kneelTime))
@@ -1258,7 +1258,7 @@ void Trooper_StandUp(gentity_t* actor, bool always = false)
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 int Trooper_CanHitTarget(gentity_t* actor, const gentity_t* target, c_troop& troop, float& MuzzleToTargetDistance,
-	CVec3& MuzzleToTarget)
+                         CVec3& MuzzleToTarget)
 {
 	trace_t tr;
 	CVec3 MuzzlePoint(actor->currentOrigin);
@@ -1278,7 +1278,7 @@ int Trooper_CanHitTarget(gentity_t* actor, const gentity_t* target, c_troop& tro
 		// Clear Line Of Sight To Target?
 		//--------------------------------
 		gi.trace(&tr, MuzzlePoint.v, nullptr, nullptr, troop.TargetVisablePosition().v, actor->s.number, MASK_SHOT,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (tr.startsolid || tr.allsolid)
 		{
 			return ENTITYNUM_NONE;
@@ -1469,7 +1469,7 @@ NPC_BehaviorSet_Trooper
 -------------------------
 */
 ////////////////////////////////////////////////////////////////////////////////////////
-void NPC_BehaviorSet_Trooper(int bState)
+void NPC_BehaviorSet_Trooper(const int bState)
 {
 	Trooper_UpdateTroop(NPC);
 	switch (bState)

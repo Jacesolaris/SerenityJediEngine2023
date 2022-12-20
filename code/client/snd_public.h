@@ -42,9 +42,10 @@ float S_GetSampleLengthInMilliSeconds(sfxHandle_t sfxHandle);
 
 // cinematics and voice-over-network will send raw samples
 // 1.0 volume will be direct output of source samples
-void S_RawSamples(int samples, int rate, int width, int channels, const byte* data, float volume, qboolean bFirstOrOnlyUpdateThisFrame);
+void S_RawSamples(int samples, int rate, int width, int channels, const byte* data, float volume,
+                  qboolean bFirstOrOnlyUpdateThisFrame);
 // stop all sounds
-void S_StopSounds(void);	// from snd_dma.cpp
+void S_StopSounds(void); // from snd_dma.cpp
 // stop all sounds and the background track
 void S_StopAllSounds(void);
 
@@ -53,7 +54,8 @@ void S_MP3_CalcVols_f(void);
 
 // all continuous looping sounds must be added before calling S_Update
 void S_ClearLoopingSounds(void);
-void S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx, soundChannel_t chan = CHAN_AUTO);
+void S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx,
+                       soundChannel_t chan = CHAN_AUTO);
 
 // recompute the reletive volumes for all running sounds
 // relative to the given entityNum / orientation
@@ -71,7 +73,7 @@ void S_BeginRegistration(void);
 // RegisterSound will allways return a valid sample, even if it
 // has to create a placeholder.  This prevents continuous filesystem
 // checks for missing files
-sfxHandle_t	S_RegisterSound(const char* sample);
+sfxHandle_t S_RegisterSound(const char* sample);
 
 void S_FreeAllSFXMem(void);
 

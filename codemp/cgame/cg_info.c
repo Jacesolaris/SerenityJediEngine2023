@@ -54,7 +54,7 @@ void CG_LoadingString(const char* s)
 CG_LoadingItem
 ===================
 */
-void CG_LoadingItem(int itemNum)
+void CG_LoadingItem(const int itemNum)
 {
 	char upperKey[1024];
 
@@ -75,7 +75,7 @@ void CG_LoadingItem(int itemNum)
 CG_LoadingClient
 ===================
 */
-void CG_LoadingClient(int client_num)
+void CG_LoadingClient(const int client_num)
 {
 	char personality[MAX_QPATH];
 
@@ -100,7 +100,7 @@ int SCREENSHOT_TOTAL = -1;
 
 int SCREENSHOT_CHOICE = 0;
 int SCREENSHOT_NEXT_UPDATE_TIME = 0;
-char SCREENSHOT_CURRENT[64] = { 0 };
+char SCREENSHOT_CURRENT[64] = {0};
 
 char* cg_GetCurrentLevelshot1(const char* s)
 {
@@ -124,7 +124,7 @@ char* cg_GetCurrentLevelshot1(const char* s)
 
 			while (1)
 			{
-				char screenShot[128] = { 0 };
+				char screenShot[128] = {0};
 
 				strcpy(screenShot, va("menu/art/unknownmap_mp%i", SCREENSHOT_TOTAL));
 
@@ -172,7 +172,7 @@ char* cg_GetCurrentLevelshot2(const char* s)
 
 			while (1)
 			{
-				char screenShot[128] = { 0 };
+				char screenShot[128] = {0};
 
 				strcpy(screenShot, va("menu/art/unknownmap_mp%i", SCREENSHOT_TOTAL));
 
@@ -292,7 +292,7 @@ void CG_DrawInformation(void)
 	if (s[0] == '1')
 	{
 		CG_DrawProportionalString(320, y, CG_GetStringEdString("MP_INGAME", "CHEATSAREENABLED"),
-			UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+		                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 		y += iPropHeight;
 	}
 
@@ -309,7 +309,7 @@ void CG_DrawInformation(void)
 			if (value)
 			{
 				CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "TIMELIMIT"), value),
-					UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+				                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 				y += iPropHeight;
 			}
 		}
@@ -320,7 +320,7 @@ void CG_DrawInformation(void)
 			if (value)
 			{
 				CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "FRAGLIMIT"), value),
-					UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+				                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 				y += iPropHeight;
 			}
 
@@ -330,7 +330,7 @@ void CG_DrawInformation(void)
 				if (value)
 				{
 					CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "WINLIMIT"), value),
-						UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+					                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 					y += iPropHeight;
 				}
 			}
@@ -343,7 +343,7 @@ void CG_DrawInformation(void)
 		if (value)
 		{
 			CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "CAPTURELIMIT"), value),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 	}
@@ -354,7 +354,7 @@ void CG_DrawInformation(void)
 		if (value)
 		{
 			CG_DrawProportionalString(320, y, CG_GetStringEdString("MP_INGAME", "FORCEBASEDTEAMS"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 	}
@@ -389,24 +389,25 @@ void CG_DrawInformation(void)
 		if (valueNOFP == FORCE_ALLOFF)
 		{
 			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 		else if (valueNOFP == FORCE_JUMPONLY)
 		{
-			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")), UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 		else if (valueNOFP == FORCE_NEUTRALSONLY)
 		{
 			CG_DrawProportionalString(320, y, "Neutral Force Powers Only", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
-				colorWhite);
+			                          colorWhite);
 			y += iPropHeight;
 		}
 		else if (valueNOFP)
 		{
 			CG_DrawProportionalString(320, y, "Custom Force Setup", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
-				colorWhite);
+			                          colorWhite);
 			y += iPropHeight;
 		}
 
@@ -421,7 +422,7 @@ void CG_DrawInformation(void)
 		if (cgs.gametype != GT_JEDIMASTER && value == WP_SABERSONLY)
 		{
 			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "SABERONLYSET")),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			y += iPropHeight;
 		}
 		else if (value == WP_MELEEONLY)
@@ -432,7 +433,7 @@ void CG_DrawInformation(void)
 		else if (value == WP_MELEESABERS)
 		{
 			CG_DrawProportionalString(320, y, "Sabers & Melee Only", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
-				colorWhite);
+			                          colorWhite);
 			y += iPropHeight;
 		}
 		else if (value == WP_NOEXPLOS)
@@ -443,7 +444,7 @@ void CG_DrawInformation(void)
 		else if (value)
 		{
 			CG_DrawProportionalString(320, y, "Custom Weapon Setup", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
-				colorWhite);
+			                          colorWhite);
 			y += iPropHeight;
 		}
 	}
@@ -502,67 +503,67 @@ void LoadTips(void)
 		{
 		case 0:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP2"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 1:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP3"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 2:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP4"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 3:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP5"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 4:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP6"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 5:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP7"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 6:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP8"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 7:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP9"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 8:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP10"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 9:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP11"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 10:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP12"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 11:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP13"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 12:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP14"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 13:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP15"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		case 14:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP1"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		default:
 			CG_DrawProportionalString(320, 410, CG_GetStringEdString("LOADTIPS-MP", "TIP1"),
-				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			break;
 		}
 		SCREENTIP_NEXT_UPDATE_TIME = time + 2500;

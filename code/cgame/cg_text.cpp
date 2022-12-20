@@ -49,9 +49,9 @@ extern vec4_t textcolor_scroll;
 float gfAdvanceHack = 0.0f; // MUST default to this
 int giLinesOutput; // hack-city after release, only used by one function
 //
-const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHeight,
-	const char* psText, int iFontHandle, float fScale,
-	const vec4_t v4Color)
+const char* CG_DisplayBoxedText(const int iBoxX, const int iBoxY, const int iBoxWidth, const int iBoxHeight,
+                                const char* psText, const int iFontHandle, const float fScale,
+                                const vec4_t v4Color)
 {
 	giLinesOutput = 0;
 	cgi_R_SetColor(v4Color);
@@ -59,7 +59,8 @@ const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHei
 	// Setup a reasonable vertical spacing (taiwanese & japanese need 1.5 fontheight, so use that for all)...
 	//
 	const int iFontHeight = cgi_R_Font_HeightPixels(iFontHandle, fScale);
-	const int iFontHeightAdvance = static_cast<int>((gfAdvanceHack == 0.0f ? 1.5f : gfAdvanceHack) * static_cast<float>(iFontHeight));
+	const int iFontHeightAdvance = static_cast<int>((gfAdvanceHack == 0.0f ? 1.5f : gfAdvanceHack) * static_cast<float>(
+		iFontHeight));
 	int iYpos = iBoxY; // start print pos
 
 	// this could probably be simplified now, but it was converted from something else I didn't originally write,
@@ -184,7 +185,7 @@ void CG_CaptionTextStop(void)
 //
 // returns 0 if failed, else strlen...
 //
-static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psDest, int iSizeofDest)
+static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psDest, const int iSizeofDest)
 {
 	if (psReference[0] == '#')
 	{
@@ -212,9 +213,9 @@ static int cg_SP_GetStringTextStringWithRetry(const char* psReference, char* psD
 //	the "filename" part of which should be the same as the StripEd reference we're looking for in the current
 //	level's string package...
 //
-void CG_CaptionText(const char* str, int sound)
+void CG_CaptionText(const char* str, const int sound)
 {
-	char text[8192] = { 0 };
+	char text[8192] = {0};
 
 	const float fFontScale = cgi_Language_IsAsian() ? 0.8f : 1.0f;
 
@@ -244,8 +245,9 @@ void CG_CaptionText(const char* str, int sound)
 		return;
 	}
 
-	const int fontHeight = static_cast<int>((cgi_Language_IsAsian() ? 1.4f : 1.0f) * static_cast<float>(cgi_R_Font_HeightPixels(
-		cgs.media.qhFontMedium, fFontScale))); // taiwanese & japanese need 1.5 fontheight spacing
+	const int fontHeight = static_cast<int>((cgi_Language_IsAsian() ? 1.4f : 1.0f) * static_cast<float>(
+		cgi_R_Font_HeightPixels(
+			cgs.media.qhFontMedium, fFontScale))); // taiwanese & japanese need 1.5 fontheight spacing
 
 	cg.captionTextTime = cg.time;
 	if (in_camera)
@@ -255,7 +257,8 @@ void CG_CaptionText(const char* str, int sound)
 	else
 	{
 		//get above the hud
-		cg.captionTextY = static_cast<int>(0.88f * (static_cast<float>(SCREEN_HEIGHT) - static_cast<float>(fontHeight) * 1.5f));
+		cg.captionTextY = static_cast<int>(0.88f * (static_cast<float>(SCREEN_HEIGHT) - static_cast<float>(fontHeight) *
+			1.5f));
 		// do NOT move this, it has to fit in between the weapon HUD and the datapad update.
 	}
 	cg.captionTextCurrentLine = 0;
@@ -426,8 +429,9 @@ void CG_DrawCaptionText(void)
 
 	// Set Y of the first line (varies if only printing one line of text)
 	// (this all works, please don't mess with it)
-	const int fontHeight = static_cast<int>((cgi_Language_IsAsian() ? 1.4f : 1.0f) * static_cast<float>(cgi_R_Font_HeightPixels(
-		cgs.media.qhFontMedium, fFontScale)));
+	const int fontHeight = static_cast<int>((cgi_Language_IsAsian() ? 1.4f : 1.0f) * static_cast<float>(
+		cgi_R_Font_HeightPixels(
+			cgs.media.qhFontMedium, fFontScale)));
 	const bool bPrinting2Lines = !!cg.captionText[cg.captionTextCurrentLine + 1][0];
 	int y = cg.captionTextY - static_cast<float>(fontHeight) * (bPrinting2Lines ? 1 : 0.5f);
 	// captionTextY was a centered Y pos, not a top one
@@ -461,7 +465,7 @@ CG_ScrollText - split text up into seperate lines
 */
 int giScrollTextPixelWidth = SCREEN_WIDTH;
 
-void CG_ScrollText(const char* str, int iPixelWidth)
+void CG_ScrollText(const char* str, const int iPixelWidth)
 {
 	giScrollTextPixelWidth = iPixelWidth;
 
@@ -587,7 +591,8 @@ void CG_ScrollText(const char* str, int iPixelWidth)
 constexpr auto SCROLL_LPM = 1 / 50.0; // 1 line per 50 ms;
 void CG_DrawScrollText(void)
 {
-	const int fontHeight = static_cast<int>(1.5f * static_cast<float>(cgi_R_Font_HeightPixels(cgs.media.qhFontMedium, 1.0f)));
+	const int fontHeight = static_cast<int>(1.5f * static_cast<float>(cgi_R_Font_HeightPixels(
+		cgs.media.qhFontMedium, 1.0f)));
 	// taiwanese & japanese need 1.5 fontheight spacing
 
 	if (!cg.scrollTextTime)
@@ -650,7 +655,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void CG_CenterPrint(const char* str, int y)
+void CG_CenterPrint(const char* str, const int y)
 {
 	// Find text to match the str given
 	if (*str == '@')

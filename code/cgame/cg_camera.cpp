@@ -138,7 +138,7 @@ void CGCam_Enable()
 		{
 			//deactivate any active force powers
 			g_entities[0].client->ps.forcePowerDuration[i] = 0;
-			extern void WP_ForcePowerStop(gentity_t * self, forcePowers_t forcePower);
+			extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t forcePower);
 			if (g_entities[0].client->ps.forcePowerDuration[i] || g_entities[0].client->ps.forcePowersActive & 1 <<
 				i)
 			{
@@ -206,7 +206,7 @@ CGCam_Move
 -------------------------
 */
 
-void CGCam_Move(vec3_t dest, float duration)
+void CGCam_Move(vec3_t dest, const float duration)
 {
 	if (client_camera.info_state & CAMERA_ROFFING)
 	{
@@ -249,7 +249,7 @@ CGCam_Pan
 -------------------------
 */
 
-void CGCam_Pan(vec3_t dest, vec3_t panDirection, float duration)
+void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 {
 	float delta2;
 
@@ -338,7 +338,7 @@ CGCam_SetRoll
 -------------------------
 */
 
-void CGCam_SetRoll(float roll)
+void CGCam_SetRoll(const float roll)
 {
 	client_camera.angles[2] = roll;
 }
@@ -349,7 +349,7 @@ CGCam_Roll
 -------------------------
 */
 
-void CGCam_Roll(float dest, float duration)
+void CGCam_Roll(const float dest, const float duration)
 {
 	if (!duration)
 	{
@@ -373,7 +373,7 @@ CGCam_SetFOV
 -------------------------
 */
 
-void CGCam_SetFOV(float FOV)
+void CGCam_SetFOV(const float FOV)
 {
 	client_camera.FOV = FOV;
 }
@@ -399,7 +399,7 @@ void CGCam_Zoom(const float FOV, const float duration)
 	client_camera.FOV_duration = duration;
 }
 
-void CGCam_Zoom2(float FOV, float FOV2, float duration)
+void CGCam_Zoom2(const float FOV, const float FOV2, const float duration)
 {
 	if (!duration)
 	{
@@ -415,7 +415,7 @@ void CGCam_Zoom2(float FOV, float FOV2, float duration)
 	client_camera.FOV_duration = duration;
 }
 
-void CGCam_ZoomAccel(float initialFOV, float fovVelocity, float fovAccel, float duration)
+void CGCam_ZoomAccel(const float initialFOV, const float fovVelocity, const float fovAccel, const float duration)
 {
 	if (!duration)
 	{
@@ -452,7 +452,7 @@ CGCam_Fade
 -------------------------
 */
 
-void CGCam_Fade(vec4_t source, vec4_t dest, float duration)
+void CGCam_Fade(vec4_t source, vec4_t dest, const float duration)
 {
 	if (!duration)
 	{
@@ -494,7 +494,7 @@ CGCam_Follow
 -------------------------
 */
 
-void CGCam_Follow(const char* cameraGroup, float speed, float initLerp)
+void CGCam_Follow(const char* cameraGroup, const float speed, const float initLerp)
 {
 	//Clear any previous
 	CGCam_FollowDisable();
@@ -547,7 +547,7 @@ void CGCam_Follow(const char* cameraGroup, float speed, float initLerp)
 CGCam_Track
 -------------------------
 */
-void CGCam_Track(const char* trackName, float speed, float initLerp)
+void CGCam_Track(const char* trackName, const float speed, const float initLerp)
 {
 	CGCam_TrackDisable();
 
@@ -619,7 +619,7 @@ CGCam_Distance
 -------------------------
 */
 
-void CGCam_Distance(float distance, float initLerp)
+void CGCam_Distance(const float distance, const float initLerp)
 {
 	client_camera.distance = distance;
 
@@ -671,15 +671,15 @@ void CGCam_FollowUpdate(void)
 			if (from->client && client_camera.cameraGroupTag[0] && fromCent->gent->ghoul2.size())
 			{
 				const int newBolt = gi.G2API_AddBolt(&fromCent->gent->ghoul2[from->playerModel],
-					client_camera.cameraGroupTag);
+				                                     client_camera.cameraGroupTag);
 				if (newBolt != -1)
 				{
 					mdxaBone_t boltMatrix;
-					const vec3_t fromAngles = { 0, from->client->ps.legsYaw, 0 };
+					const vec3_t fromAngles = {0, from->client->ps.legsYaw, 0};
 
 					gi.G2API_GetBoltMatrix(fromCent->gent->ghoul2, from->playerModel, newBolt, &boltMatrix, fromAngles,
-						fromCent->lerpOrigin, cg.time, cgs.model_draw,
-						fromCent->currentState.modelScale);
+					                       fromCent->lerpOrigin, cg.time, cgs.model_draw,
+					                       fromCent->currentState.modelScale);
 					gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, focus[num_subjects]);
 
 					focused = qtrue;
@@ -688,7 +688,7 @@ void CGCam_FollowUpdate(void)
 			if (!focused)
 			{
 				if (from->s.pos.trType != TR_STATIONARY)
-					//				if ( from->s.pos.trType == TR_INTERPOLATE )
+				//				if ( from->s.pos.trType == TR_INTERPOLATE )
 				{
 					//use interpolated origin?
 					if (!VectorCompare(vec3_origin, fromCent->lerpOrigin))
@@ -1117,7 +1117,7 @@ void CGCam_Update(void)
 			if (cg_roffdebug.integer)
 			{
 				Com_Printf("%d: fovaccel from %2.1f using vel = %2.4f, acc = %2.4f (current fov calc = %5.6f)\n",
-					cg.time, initialPosVal, velVal, accVal, actualFOV_X);
+				           cg.time, initialPosVal, velVal, accVal, actualFOV_X);
 			}
 
 			if (actualFOV_X < sanity_min)
@@ -1309,7 +1309,7 @@ void CGCam_DrawWideScreen(void)
 
 			CG_FillRect(cg.refdef.x, cg.refdef.y, 1280, client_camera.bar_height, modulate);
 			CG_FillRect(cg.refdef.x, cg.refdef.y + 480 - client_camera.bar_height, 1280, client_camera.bar_height,
-				modulate);
+			            modulate);
 		}
 	}
 
@@ -1337,7 +1337,7 @@ CGCam_Shake
 -------------------------
 */
 
-void CGCam_Shake(float intensity, int duration)
+void CGCam_Shake(float intensity, const int duration)
 {
 	if (intensity > MAX_SHAKE_INTENSITY)
 		intensity = MAX_SHAKE_INTENSITY;
@@ -1347,7 +1347,7 @@ void CGCam_Shake(float intensity, int duration)
 	client_camera.shake_start = cg.time;
 }
 
-void CGCam_BlockShakeSP(float intensity, int duration)
+void CGCam_BlockShakeSP(float intensity, const int duration)
 {
 	if (intensity > MAX_BLOCKSHAKE_INTENSITY)
 	{
@@ -1408,7 +1408,7 @@ void CGCam_UpdateShake(vec3_t origin, vec3_t angles)
 	VectorAdd(angles, moveDir, angles);
 }
 
-void CGCam_Smooth(float intensity, int duration)
+void CGCam_Smooth(const float intensity, const int duration)
 {
 	client_camera.smooth_active = false; // means smooth_origin and angles are valid
 	if (intensity > 1.0f || intensity == 0.0f || duration < 1)
@@ -1582,7 +1582,7 @@ void CGCam_NotetrackProcessFovZoom(const char* addlArg)
 		if (cg_roffdebug.integer)
 		{
 			Com_Printf("notetrack: 'fovzoom %2.2f %2.2f %5.1f' on frame %d\n", begin_fov, end_fov, fov_time,
-				client_camera.roff_frame);
+			           client_camera.roff_frame);
 		}
 		CGCam_Zoom2(begin_fov, end_fov, fov_time);
 	}
@@ -1683,7 +1683,7 @@ void CGCam_NotetrackProcessFovAccel(const char* addlArg)
 			if (cg_roffdebug.integer)
 			{
 				Com_Printf("notetrack: 'fovaccel %2.2f %3.5f %3.5f %d' on frame %d\n", begin_fov, fov_delta, fov_delta2,
-					fov_time, client_camera.roff_frame);
+				           fov_time, client_camera.roff_frame);
 			}
 			CGCam_ZoomAccel(begin_fov, fov_delta, fov_delta2, fov_time);
 		}
@@ -1909,9 +1909,9 @@ static void CGCam_Roff(void)
 		if (cg_developer.integer)
 		{
 			Com_Printf(S_COLOR_GREEN"CamROFF: frame: %d o:<%.2f %.2f %.2f> a:<%.2f %.2f %.2f>\n",
-				client_camera.roff_frame,
-				org[0], org[1], org[2],
-				ang[0], ang[1], ang[2]);
+			           client_camera.roff_frame,
+			           org[0], org[1], org[2],
+			           ang[0], ang[1], ang[2]);
 		}
 
 		if (client_camera.roff_frame)
@@ -1951,7 +1951,7 @@ static void CGCam_Roff(void)
 
 void CMD_CGCam_Disable()
 {
-	vec4_t fade = { 0, 0, 0, 0 };
+	vec4_t fade = {0, 0, 0, 0};
 
 	CGCam_Disable();
 	CGCam_SetFade(fade);

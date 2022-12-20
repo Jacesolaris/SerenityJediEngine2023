@@ -29,7 +29,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 CL_ShutdownUI
 ====================
 */
-void CL_ShutdownUI(void) {
+void CL_ShutdownUI(void)
+{
 	Key_SetCatcher(Key_GetCatcher() & ~KEYCATCH_UI);
 
 	if (!cls.uiStarted)
@@ -46,7 +47,8 @@ CL_InitUI
 ====================
 */
 
-void CL_InitUI(void) {
+void CL_InitUI(void)
+{
 	// load the dll
 	CL_BindUI();
 
@@ -64,7 +66,8 @@ UI_GameCommand
 See if the current console command is claimed by the ui
 ====================
 */
-qboolean UI_GameCommand(void) {
+qboolean UI_GameCommand(void)
+{
 	if (!cls.uiStarted)
 		return qfalse;
 

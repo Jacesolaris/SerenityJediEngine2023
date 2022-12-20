@@ -17,6 +17,7 @@ namespace FS
 		friend FileBuffer ReadFile(gsl::czstring);
 		// called by ReadFile()
 		FileBuffer(void* buffer, long size) NOEXCEPT;
+
 	public:
 		FileBuffer() NOEXCEPT = default;
 		~FileBuffer() NOEXCEPT;
@@ -50,7 +51,7 @@ namespace FS
 
 		gsl::cstring_view view() const NOEXCEPT
 		{
-			return { begin(), end() };
+			return {begin(), end()};
 		}
 
 	private:
@@ -69,6 +70,7 @@ namespace FS
 		friend FileList ListFiles(const char*, const char*);
 		// called by ListFiles()
 		FileList(char** files, int numFiles) NOEXCEPT;
+
 	public:
 		FileList() NOEXCEPT = default;
 		~FileList() NOEXCEPT;
@@ -83,10 +85,12 @@ namespace FS
 		{
 			return _begin;
 		}
+
 		const char* const* end() const NOEXCEPT
 		{
 			return _end;
 		}
+
 		std::size_t size() const NOEXCEPT
 		{
 			return static_cast<std::size_t>(_end - begin());

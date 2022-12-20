@@ -43,8 +43,8 @@ Called on game shutdown
 */
 void G_WriteClientSessionData(const gclient_t* client)
 {
-	char s[MAX_CVAR_VALUE_STRING] = { 0 },
-		siegeClass[64] = { 0 }, IP[NET_ADDRSTRMAXLEN] = { 0 };
+	char s[MAX_CVAR_VALUE_STRING] = {0},
+	     siegeClass[64] = {0}, IP[NET_ADDRSTRMAXLEN] = {0};
 	int i;
 
 	// for the strings, replace ' ' with 1
@@ -95,27 +95,27 @@ Called on a reconnect
 */
 void G_ReadSessionData(gclient_t* client)
 {
-	char s[MAX_CVAR_VALUE_STRING] = { 0 };
+	char s[MAX_CVAR_VALUE_STRING] = {0};
 	int i, tempSessionTeam = 0, tempSpectatorState, tempTeamLeader;
 
 	const char* var = va("session%i", client - level.clients);
 	trap->Cvar_VariableStringBuffer(var, s, sizeof s);
 
 	sscanf(s, "%i %i %i %i %i %i %i %i %i %i %i %i %s %s",
-		&tempSessionTeam, //&client->sess.sessionTeam,
-		&client->sess.spectatorNum,
-		&tempSpectatorState, //&client->sess.spectatorState,
-		&client->sess.spectatorClient,
-		&client->sess.wins,
-		&client->sess.losses,
-		&tempTeamLeader, //&client->sess.teamLeader,
-		&client->sess.setForce,
-		&client->sess.saberLevel,
-		&client->sess.selectedFP,
-		&client->sess.duelTeam,
-		&client->sess.siegeDesiredTeam,
-		client->sess.siegeClass,
-		client->sess.IP
+	       &tempSessionTeam, //&client->sess.sessionTeam,
+	       &client->sess.spectatorNum,
+	       &tempSpectatorState, //&client->sess.spectatorState,
+	       &client->sess.spectatorClient,
+	       &client->sess.wins,
+	       &client->sess.losses,
+	       &tempTeamLeader, //&client->sess.teamLeader,
+	       &client->sess.setForce,
+	       &client->sess.saberLevel,
+	       &client->sess.selectedFP,
+	       &client->sess.duelTeam,
+	       &client->sess.siegeDesiredTeam,
+	       client->sess.siegeClass,
+	       client->sess.IP
 	);
 
 	client->sess.sessionTeam = (team_t)tempSessionTeam;
@@ -147,7 +147,7 @@ G_InitSessionData
 Called on a first-time connect
 ================
 */
-void G_InitSessionData(gclient_t* client, const char* userinfo, qboolean isBot)
+void G_InitSessionData(gclient_t* client, const char* userinfo, const qboolean isBot)
 {
 	const char* value;
 
@@ -229,23 +229,23 @@ void G_InitSessionData(gclient_t* client, const char* userinfo, qboolean isBot)
 				break;
 			case GT_POWERDUEL:
 				//sess->duelTeam = DUELTEAM_LONE; //default
-			{
-				int loners = 0;
-				int doubles = 0;
-
-				G_PowerDuelCount(&loners, &doubles, qtrue);
-
-				if (!doubles || loners > doubles / 2)
 				{
-					sess->duelTeam = DUELTEAM_DOUBLE;
+					int loners = 0;
+					int doubles = 0;
+
+					G_PowerDuelCount(&loners, &doubles, qtrue);
+
+					if (!doubles || loners > doubles / 2)
+					{
+						sess->duelTeam = DUELTEAM_DOUBLE;
+					}
+					else
+					{
+						sess->duelTeam = DUELTEAM_LONE;
+					}
 				}
-				else
-				{
-					sess->duelTeam = DUELTEAM_LONE;
-				}
-			}
-			sess->sessionTeam = TEAM_SPECTATOR;
-			break;
+				sess->sessionTeam = TEAM_SPECTATOR;
+				break;
 			}
 		}
 	}

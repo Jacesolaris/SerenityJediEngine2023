@@ -145,8 +145,8 @@ output_pass_setup(j_decompress_ptr cinfo)
  */
 
 GLOBAL(JDIMENSION)
-jpeg_read_scanlines(j_decompress_ptr cinfo, JSAMPARRAY scanlines,
-	JDIMENSION max_lines)
+jpeg_read_scanlines(const j_decompress_ptr cinfo, const JSAMPARRAY scanlines,
+                    const JDIMENSION max_lines)
 {
 	JDIMENSION row_ctr;
 
@@ -177,8 +177,8 @@ jpeg_read_scanlines(j_decompress_ptr cinfo, JSAMPARRAY scanlines,
  */
 
 GLOBAL(JDIMENSION)
-jpeg_read_raw_data(j_decompress_ptr cinfo, JSAMPIMAGE data,
-	JDIMENSION max_lines)
+jpeg_read_raw_data(const j_decompress_ptr cinfo, const JSAMPIMAGE data,
+                   const JDIMENSION max_lines)
 {
 	if (cinfo->global_state != DSTATE_RAW_OK)
 		ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
@@ -217,7 +217,7 @@ jpeg_read_raw_data(j_decompress_ptr cinfo, JSAMPIMAGE data,
  */
 
 GLOBAL(boolean)
-jpeg_start_output(j_decompress_ptr cinfo, int scan_number)
+jpeg_start_output(const j_decompress_ptr cinfo, int scan_number)
 {
 	if (cinfo->global_state != DSTATE_BUFIMAGE &&
 		cinfo->global_state != DSTATE_PRESCAN)
@@ -241,7 +241,7 @@ jpeg_start_output(j_decompress_ptr cinfo, int scan_number)
  */
 
 GLOBAL(boolean)
-jpeg_finish_output(j_decompress_ptr cinfo)
+jpeg_finish_output(const j_decompress_ptr cinfo)
 {
 	if ((cinfo->global_state == DSTATE_SCANNING ||
 		cinfo->global_state == DSTATE_RAW_OK) && cinfo->buffered_image) {

@@ -107,7 +107,8 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_Grenadier_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, vec3_t point, int damage, int mod)
+void NPC_Grenadier_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, vec3_t point, const int damage,
+                        const int mod)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 
@@ -181,7 +182,7 @@ static qboolean Grenadier_Move(void)
 			{
 				//okay, try one by the enemy
 				cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->enemy->currentOrigin,
-					CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL, 32);
+				                         CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL, 32);
 			}
 			//NOTE: there may be a perfectly valid one, just not one within CP_COLLECT_RADIUS of either me or him...
 			if (cp != -1)
@@ -360,7 +361,7 @@ static void Grenadier_CheckMoveState(void)
 			case SQUAD_RETREAT: //was running away
 				TIMER_Set(NPC, "duck", (NPC->max_health - NPC->health) * 100);
 				TIMER_Set(NPC, "hideTime", Q_irand(3000, 7000));
-				//newSquadState = SQUAD_COVER;
+			//newSquadState = SQUAD_COVER;
 				break;
 			case SQUAD_TRANSITION: //was heading for a combat point
 				TIMER_Set(NPC, "hideTime", Q_irand(2000, 4000));
@@ -425,7 +426,7 @@ static void Grenadier_CheckFireState(void)
 	}
 }
 
-qboolean Grenadier_EvaluateShot(int hit)
+qboolean Grenadier_EvaluateShot(const int hit)
 {
 	if (!NPC->enemy)
 	{
@@ -523,7 +524,7 @@ void NPC_BSGrenadier_Attack(void)
 			//grenadier
 			trace_t trace;
 			gi.trace(&trace, NPC->currentOrigin, NPC->enemy->mins, NPC->enemy->maxs, NPC->enemy->currentOrigin,
-				NPC->s.number, NPC->enemy->clipmask, static_cast<EG2_Collision>(0), 0);
+			         NPC->s.number, NPC->enemy->clipmask, static_cast<EG2_Collision>(0), 0);
 			if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPC->enemy->s.
 				number))
 			{
@@ -559,7 +560,7 @@ void NPC_BSGrenadier_Attack(void)
 		if (NPC->client->ps.weapon == WP_MELEE)
 		{
 			if (enemyDist <= 4096 && InFOV(NPC->enemy->currentOrigin, NPC->currentOrigin, NPC->client->ps.viewangles,
-				90, 45)) //within 64 & infront
+			                               90, 45)) //within 64 & infront
 			{
 				VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
 				enemyCS = qtrue;

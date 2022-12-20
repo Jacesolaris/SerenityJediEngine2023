@@ -33,7 +33,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern gentity_t* G_FindDoorTrigger(const gentity_t* door);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern void SetMiscModelDefaults(gentity_t* ent, useFunc_t use_func, const char* material, int solid_mask, int animFlag,
-	qboolean take_damage, qboolean damage_model);
+                                 qboolean take_damage, qboolean damage_model);
 
 constexpr auto MAX_AMMO_GIVE = 4;
 
@@ -210,6 +210,7 @@ TELEPORTERS
 */
 
 extern void g_kill_box(gentity_t* ent);
+
 void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles)
 {
 	if (player->NPC && player->NPC->aiFlags & NPCAI_FORM_TELE_NAV)
@@ -246,7 +247,7 @@ void TeleportPlayer(gentity_t* player, vec3_t origin, vec3_t angles)
 	gi.linkentity(player);
 }
 
-void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, qboolean snapAngle)
+void TeleportMover(gentity_t* mover, vec3_t origin, vec3_t diffAngles, const qboolean snapAngle)
 {
 	//FIXME: need an effect
 	vec3_t newAngle;
@@ -694,7 +695,7 @@ void G_PortalifyEntities(gentity_t* ent)
 			trace_t tr;
 
 			gi.trace(&tr, ent->s.origin, vec3_origin, vec3_origin, scan->currentOrigin, ent->s.number, CONTENTS_SOLID,
-				G2_NOCOLLIDE, 0);
+			         G2_NOCOLLIDE, 0);
 
 			if (tr.fraction == 1.0 || tr.entityNum == scan->s.number && tr.entityNum != ENTITYNUM_NONE && tr.entityNum
 				!= ENTITYNUM_WORLD)
@@ -731,7 +732,7 @@ void SP_misc_skyportal(gentity_t* ent)
 	isfog += G_SpawnInt("fogfar", "300", &fogf);
 
 	gi.SetConfigstring(CS_SKYBOXORG, va("%.2f %.2f %.2f %i %.2f %.2f %.2f %i %i", ent->s.origin[0], ent->s.origin[1],
-		ent->s.origin[2], isfog, fogv[0], fogv[1], fogv[2], fogn, fogf));
+	                                    ent->s.origin[2], isfog, fogv[0], fogv[1], fogv[2], fogn, fogf));
 
 	ent->e_ThinkFunc = thinkF_G_PortalifyEntities;
 	ent->nextthink = level.time + 1050; //give it some time first so that all other entities are spawned.
@@ -741,7 +742,8 @@ extern qboolean G_ClearViewEntity(gentity_t* ent);
 extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
 extern void SP_fx_runner(gentity_t* ent);
 
-void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hit_loc)
+void camera_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+                int hit_loc)
 {
 	if (player && player->client && player->client->ps.viewEntity == self->s.number)
 	{
@@ -883,7 +885,7 @@ void camera_aim(gentity_t* self)
 			VectorCopy(angles, self->currentAngles);
 
 			if (DistanceSquared(self->currentAngles, self->lastAngles) > 0.01f)
-				// if it moved at all, start a loop sound? not exactly the "bestest" solution
+			// if it moved at all, start a loop sound? not exactly the "bestest" solution
 			{
 				self->s.loopSound = G_SoundIndex("sound/movers/objects/cameramove_lp2");
 			}
@@ -1200,7 +1202,7 @@ void misc_dlight_think(gentity_t* ent)
 }
 
 void station_pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hit_loc)
+                  int hit_loc)
 {
 	self->s.modelindex = self->s.modelindex2;
 	gi.linkentity(self);
@@ -1570,7 +1572,7 @@ void mega_ammo_think(gentity_t* self)
 	//		chuck up the last model.
 
 	if (!Q_stricmp(self->model, "models/mapobjects/forge/power_up_boss.md3"))
-		// Because the normal forge_ammo model can use this too
+	// Because the normal forge_ammo model can use this too
 	{
 		if (self->s.frame > 16 && self->s.modelindex != self->s.modelindex2)
 			self->s.modelindex = self->s.modelindex2;
@@ -1731,7 +1733,7 @@ void misc_replicator_item_spawn(gentity_t* self, gentity_t* other, gentity_t* ac
 	case 6: //max
 		self->s.modelindex = self->pushDebounceTime;
 		break;
-	default:;
+	default: ;
 	}
 	self->s.eFlags &= ~EF_NODRAW;
 	self->e_ThinkFunc = thinkF_misc_replicator_item_finish_spawn;
@@ -1851,7 +1853,7 @@ void SP_misc_trip_mine(gentity_t* self)
 	VectorMA(self->s.origin, 128, forward, end);
 
 	gi.trace(&trace, self->s.origin, vec3_origin, vec3_origin, end, self->s.number, MASK_SHOT,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 
 	if (trace.allsolid || trace.startsolid)
 	{
@@ -1886,7 +1888,7 @@ void SP_misc_trip_mine(gentity_t* self)
 	}
 
 	if (self->spawnflags & 2)
-		// broadcast...should only be used in very rare cases.  could fix networking, perhaps, but james suggested this because it's easier
+	// broadcast...should only be used in very rare cases.  could fix networking, perhaps, but james suggested this because it's easier
 	{
 		self->svFlags |= SVF_BROADCAST;
 	}
@@ -1911,7 +1913,7 @@ NOTE: place these half-way in the door to make it flush with the door's surface.
 "health"	default is 10
 */
 void maglock_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                 int hit_loc)
 {
 	//unlock our door if we're the last lock pointed at the door
 	if (self->activator)
@@ -2649,8 +2651,8 @@ void welder_think(gentity_t* self)
 		//	G_PlayEffect( "blueWeldSparks", self->playerModel, newBolt, self->s.number);
 		// The welder gets rotated around a lot, and since the origin is offset by 352 I have to make this super expensive call to position the hurt...
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, newBolt,
-			&boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
-			nullptr, self->s.modelScale);
+		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       nullptr, self->s.modelScale);
 
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
 		VectorSubtract(self->currentOrigin, org, dir);
@@ -2702,7 +2704,7 @@ void SP_misc_model_welder(gentity_t* ent)
 
 	ent->s.modelindex = G_ModelIndex("models/map_objects/cairn/welder.glm");
 	ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, "models/map_objects/cairn/welder.glm", ent->s.modelindex,
-		NULL_HANDLE, NULL_HANDLE, 0, 0);
+	                                            NULL_HANDLE, NULL_HANDLE, 0, 0);
 	ent->s.radius = 400.0f; // the origin of the welder is offset by approximately 352, so we need the big radius
 
 	ent->e_ThinkFunc = thinkF_welder_think;
@@ -2725,13 +2727,13 @@ void jabba_cam_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	{
 		self->spawnflags &= ~1;
 		gi.G2API_SetBoneAnimIndex(&self->ghoul2[self->playerModel], self->rootBone, 15, 0, BONE_ANIM_OVERRIDE_FREEZE,
-			-1.5f, cg.time ? cg.time : level.time, -1, 0);
+		                          -1.5f, cg.time ? cg.time : level.time, -1, 0);
 	}
 	else
 	{
 		self->spawnflags |= 1;
 		gi.G2API_SetBoneAnimIndex(&self->ghoul2[self->playerModel], self->rootBone, 0, 15, BONE_ANIM_OVERRIDE_FREEZE,
-			1.5f, cg.time ? cg.time : level.time, -1, 0);
+		                          1.5f, cg.time ? cg.time : level.time, -1, 0);
 	}
 }
 
@@ -2757,7 +2759,7 @@ void SP_misc_model_jabba_cam(gentity_t* ent)
 
 	ent->s.modelindex = G_ModelIndex("models/map_objects/nar_shaddar/jabacam/jabacam.glm");
 	ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, "models/map_objects/nar_shaddar/jabacam/jabacam.glm",
-		ent->s.modelindex, NULL_HANDLE, NULL_HANDLE, 0, 0);
+	                                            ent->s.modelindex, NULL_HANDLE, NULL_HANDLE, 0, 0);
 	ent->s.radius = 150.0f; //......
 	VectorSet(ent->s.modelScale, 1.0f, 1.0f, 1.0f);
 
@@ -2771,7 +2773,7 @@ void SP_misc_model_jabba_cam(gentity_t* ent)
 	if (ent->spawnflags & 1)
 	{
 		gi.G2API_SetBoneAnimIndex(&ent->ghoul2[ent->playerModel], ent->rootBone, 0, 15, BONE_ANIM_OVERRIDE_FREEZE, 0.6f,
-			cg.time, -1, -1);
+		                          cg.time, -1, -1);
 	}
 
 	gi.linkentity(ent);
@@ -2855,7 +2857,7 @@ void gas_random_jet(gentity_t* self)
 
 //------------------------------------------------------------
 void GasBurst(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage, int mod,
-	int hit_loc)
+              int hit_loc)
 {
 	vec3_t pt;
 
@@ -2912,7 +2914,7 @@ void SP_misc_gas_tank(gentity_t* ent)
 
 //------------------------------------------------------------
 void CrystalCratePain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const vec3_t point, int damage,
-	int mod, int hit_loc)
+                      int mod, int hit_loc)
 {
 	vec3_t pt;
 
@@ -2979,7 +2981,7 @@ Drivable ATST, when used by player, they become the ATST.  When the player hits 
 
 "target" - what to use when it dies
 */
-void misc_atst_setanim(gentity_t* self, int bone, int anim)
+void misc_atst_setanim(gentity_t* self, const int bone, const int anim)
 {
 	if (bone < 0 || anim < 0)
 	{
@@ -3002,18 +3004,18 @@ void misc_atst_setanim(gentity_t* self, int bone, int anim)
 	if (firstFrame != -1 && lastFrame != -1 && animSpeed != 0)
 	{
 		if (!gi.G2API_SetBoneAnimIndex(&self->ghoul2[self->playerModel], bone, firstFrame,
-			lastFrame, BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, animSpeed,
-			cg.time ? cg.time : level.time, -1, 150))
+		                               lastFrame, BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, animSpeed,
+		                               cg.time ? cg.time : level.time, -1, 150))
 		{
 			gi.G2API_SetBoneAnimIndex(&self->ghoul2[self->playerModel], bone, firstFrame,
-				lastFrame, BONE_ANIM_OVERRIDE_FREEZE, animSpeed,
-				cg.time ? cg.time : level.time, -1, 150);
+			                          lastFrame, BONE_ANIM_OVERRIDE_FREEZE, animSpeed,
+			                          cg.time ? cg.time : level.time, -1, 150);
 		}
 	}
 }
 
 void misc_atst_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                   int hit_loc)
 {
 	//ATST was destroyed while you weren't in it
 	//can't be used anymore
@@ -3156,7 +3158,7 @@ void SP_misc_atst_drivable(gentity_t* ent)
 
 	ent->s.modelindex = G_ModelIndex("models/players/atst/model.glm");
 	ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, "models/players/atst/model.glm", ent->s.modelindex,
-		NULL_HANDLE, NULL_HANDLE, 0, 0);
+	                                            NULL_HANDLE, NULL_HANDLE, 0, 0);
 	ent->rootBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "model_root", qtrue);
 	ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 	//FIXME: need to somehow set the anim/frame to the equivalent of BOTH_STAND1...  use to be that BOTH_STAND1 was the first frame of the glm, but not anymore
@@ -3221,8 +3223,8 @@ void SP_misc_weather_zone(gentity_t* ent)
 
 	char temp[256];
 	sprintf(temp, "zone ( %f %f %f ) ( %f %f %f )",
-		ent->mins[0], ent->mins[1], ent->mins[2],
-		ent->maxs[0], ent->maxs[1], ent->maxs[2]);
+	        ent->mins[0], ent->mins[1], ent->mins[2],
+	        ent->maxs[0], ent->maxs[1], ent->maxs[2]);
 
 	G_FindConfigstringIndex(temp, CS_WORLD_FX, MAX_WORLD_FX, qtrue);
 

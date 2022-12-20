@@ -33,8 +33,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "cgame/cg_local.h"
 #endif
 
-void BG_AttachToRancor(void* ghoul2, float rancYaw, vec3_t rancOrigin, int time, qhandle_t* modelList,
-	vec3_t modelScale, qboolean inMouth, vec3_t out_origin, vec3_t out_angles, matrix3_t out_axis)
+void BG_AttachToRancor(void* ghoul2, const float rancYaw, vec3_t rancOrigin, int time, qhandle_t* modelList,
+                       vec3_t modelScale, const qboolean inMouth, vec3_t out_origin, vec3_t out_angles,
+                       matrix3_t out_axis)
 {
 	mdxaBone_t boltMatrix;
 	int bolt_index;
@@ -117,14 +118,14 @@ void BG_AttachToRancor(void* ghoul2, float rancYaw, vec3_t rancOrigin, int time,
 }
 
 void BG_AttachToSandCreature(void* ghoul2,
-	float rancYaw,
-	vec3_t rancOrigin,
-	int time,
-	qhandle_t* modelList,
-	vec3_t modelScale,
-	vec3_t out_origin,
-	vec3_t out_angles,
-	vec3_t out_axis[3])
+                             const float rancYaw,
+                             vec3_t rancOrigin,
+                             const int time,
+                             qhandle_t* modelList,
+                             vec3_t modelScale,
+                             vec3_t out_origin,
+                             vec3_t out_angles,
+                             vec3_t out_axis[3])
 {
 	mdxaBone_t boltMatrix;
 	vec3_t rancAngles;
@@ -134,8 +135,8 @@ void BG_AttachToSandCreature(void* ghoul2,
 
 	VectorSet(rancAngles, 0, rancYaw, 0);
 	trap->G2API_GetBoltMatrix(ghoul2, 0, bolt_index,
-		&boltMatrix, rancAngles, rancOrigin, time,
-		modelList, modelScale);
+	                          &boltMatrix, rancAngles, rancOrigin, time,
+	                          modelList, modelScale);
 	// Storing ent position, bolt position, and bolt axis
 	if (out_origin)
 	{
@@ -171,7 +172,8 @@ void BG_AttachToSandCreature(void* ghoul2,
 
 #define	MAX_VARIANTS 8
 
-qboolean BG_GetRootSurfNameWithVariant(void* ghoul2, const char* rootSurfName, char* returnSurfName, int returnSize)
+qboolean BG_GetRootSurfNameWithVariant(void* ghoul2, const char* rootSurfName, char* returnSurfName,
+                                       const int returnSize)
 {
 #if defined(_GAME)
 	if (!ghoul2 || !trap->G2API_GetSurfaceRenderStatus(ghoul2, 0, rootSurfName))

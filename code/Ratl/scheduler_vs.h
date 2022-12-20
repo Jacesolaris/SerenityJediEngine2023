@@ -68,6 +68,7 @@ namespace ratl
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = T::CAPACITY;
+
 	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Timed Event Class
@@ -79,25 +80,31 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		struct timed_event
 		{
-			float	mTime;
-			int		mEvent;
+			float mTime;
+			int mEvent;
 
-			timed_event() {}
-			timed_event(float time, int event) : mTime(time), mEvent(event) {}
-			bool	operator<  (const timed_event& t) const
+			timed_event()
 			{
-				return	mTime > t.mTime;
+			}
+
+			timed_event(const float time, const int event) : mTime(time), mEvent(event)
+			{
+			}
+
+			bool operator<(const timed_event& t) const
+			{
+				return mTime > t.mTime;
 			}
 		};
 
-		pool_base<TStorageTraits>			mEvents;
-		heap_vs<timed_event, CAPACITY>		mHeap;
+		pool_base<TStorageTraits> mEvents;
+		heap_vs<timed_event, CAPACITY> mHeap;
 
 	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Objects Are In This List
 		////////////////////////////////////////////////////////////////////////////////////
-		int			size() const
+		int size() const
 		{
 			// warning during a fire call, there will be one extra event
 			return mEvents.size();
@@ -106,7 +113,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Are There Any Objects In This List?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		empty() const
+		bool empty() const
 		{
 			return !size();
 		}
@@ -114,7 +121,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Is This List Filled?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full() const
+		bool full() const
 		{
 			return mEvents.full();
 		}
@@ -122,7 +129,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear All Elements
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mEvents.clear();
 			mHeap.clear();
@@ -131,9 +138,9 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Add An Event
 		////////////////////////////////////////////////////////////////////////////////////
-		void		add(float time, const TTValue& e)
+		void add(float time, const TTValue& e)
 		{
-			int	nLoc = mEvents.alloc(e);
+			int nLoc = mEvents.alloc(e);
 			mHeap.push(timed_event(time, nLoc));
 		}
 
@@ -142,7 +149,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		TTValue& add(float time)
 		{
-			int	nLoc = mEvents.alloc();
+			int nLoc = mEvents.alloc();
 			mHeap.push(timed_event(time, nLoc));
 			return mEvents[nLoc];
 		}
@@ -157,12 +164,12 @@ namespace ratl
 			return ret;
 		}
 
-		template<class TCALLBACKPARAMS>
-		void		update(float time, TCALLBACKPARAMS& Params)
+		template <class TCALLBACKPARAMS>
+		void update(float time, TCALLBACKPARAMS& Params)
 		{
 			while (!mHeap.empty())
 			{
-				timed_event	Next = mHeap.top();
+				timed_event Next = mHeap.top();
 				if (Next.mTime >= time)
 				{
 					break;
@@ -177,7 +184,7 @@ namespace ratl
 		{
 			while (!mHeap.empty())
 			{
-				timed_event	Next = mHeap.top();
+				timed_event Next = mHeap.top();
 				if (Next.mTime >= time)
 				{
 					break;
@@ -189,35 +196,44 @@ namespace ratl
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class scheduler_vs : public scheduler_base<storage::value_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class scheduler_vs : public scheduler_base<storage::value_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		scheduler_vs() {}
+
+		scheduler_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class scheduler_os : public scheduler_base<storage::object_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class scheduler_os : public scheduler_base<storage::object_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		scheduler_os() {}
+
+		scheduler_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class scheduler_is : public scheduler_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class scheduler_is : public scheduler_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		scheduler_is() {}
+
+		scheduler_is()
+		{
+		}
 	};
 }
 #endif

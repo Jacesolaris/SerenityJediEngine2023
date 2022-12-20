@@ -54,7 +54,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
  // Returns:				-
  // Changes Globals:		-
  //===========================================================================
-int GeneticSelection(int numranks, float* rankings)
+int GeneticSelection(const int numranks, float* rankings)
 {
 	int i;
 
@@ -91,7 +91,7 @@ int GeneticSelection(int numranks, float* rankings)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int GeneticParentsAndChildSelection(int numranks, float* ranks, int* parent1, int* parent2, int* child)
+int GeneticParentsAndChildSelection(const int numranks, float* ranks, int* parent1, int* parent2, int* child)
 {
 	float rankings[256], max;
 	int i;

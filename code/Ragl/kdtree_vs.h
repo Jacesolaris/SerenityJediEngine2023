@@ -65,8 +65,9 @@ namespace ragl
 		enum
 		{
 			CAPACITY = SIZE,
-			NULL_NODE = SIZE + 2,		// Invalid Node ID
-			TARG_NODE = SIZE + 3		// Used To Mark Nodes Add Location
+			NULL_NODE = SIZE + 2,
+			// Invalid Node ID
+			TARG_NODE = SIZE + 3 // Used To Mark Nodes Add Location
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +80,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Objects Are In This Tree
 		////////////////////////////////////////////////////////////////////////////////////
-		int			size() const
+		int size() const
 		{
 			return mPool.size();
 		}
@@ -87,7 +88,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Are There Any Objects In This Tree?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		empty() const
+		bool empty() const
 		{
 			return mRoot == NULL_NODE;
 		}
@@ -95,7 +96,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Is This List Filled?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool		full() const
+		bool full() const
 		{
 			return mPool.full();
 		}
@@ -103,7 +104,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear All Elements
 		////////////////////////////////////////////////////////////////////////////////////
-		void		clear()
+		void clear()
 		{
 			mRoot = NULL_NODE;
 			mPool.clear();
@@ -112,7 +113,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Add A New Element To The Tree
 		////////////////////////////////////////////////////////////////////////////////////
-		void		add(const T& data)
+		void add(const T& data)
 		{
 			// CREATE: New
 			//--------------------------------------------
@@ -156,11 +157,11 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Does (data) Exist In The Tree?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool	find(const T& data)
+		bool find(const T& data)
 		{
 			assert(mRoot != NULL_NODE); // If You Hit This Assert, You Are Asking For Data On An Empty Tree
 
-			int		node = find_index(data, mRoot, 0, true, true);
+			int node = find_index(data, mRoot, 0, true, true);
 
 			// Exact Find, Or Found Root?
 			//----------------------------
@@ -174,21 +175,23 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		class		range_query
+		class range_query
 		{
 		public:
-			range_query() {}
+			range_query()
+			{
+			}
 
 		public:
-			ratl::vector_vs<T, SIZE>		mReported;
-			T								mMins;
-			T								mMaxs;
+			ratl::vector_vs<T, SIZE> mReported;
+			T mMins;
+			T mMaxs;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void		find(range_query& query)
+		void find(range_query& query)
 		{
 			if (mRoot != NULL_NODE)
 			{
@@ -204,27 +207,27 @@ namespace ragl
 		class node
 		{
 		public:
-			int		mParent;
-			int		mLeft;
-			int		mRight;
+			int mParent;
+			int mLeft;
+			int mRight;
 
-			T		mData;
+			T mData;
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		class		range_bounds
+		class range_bounds
 		{
 		public:
-			int		mMins[DIMENSION];
-			int		mMaxs[DIMENSION];
+			int mMins[DIMENSION];
+			int mMaxs[DIMENSION];
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// This Private Function Of The Class Does A Standard Binary Tree Search
 		////////////////////////////////////////////////////////////////////////////////////
-		int			find_index(const T& data, int curNode, int curDimension, bool returnClosest, bool markTarget)
+		int find_index(const T& data, int curNode, int curDimension, const bool returnClosest, const bool markTarget)
 		{
 			// Did We Just Go Off The End Of The Tree Or Find The Data We Were Looking For?
 			//------------------------------------------------------------------------------
@@ -235,7 +238,7 @@ namespace ragl
 
 			// Calculate The Next Dimension For Searching
 			//--------------------------------------------
-			int	nextDimension = curDimension + 1;
+			int nextDimension = curDimension + 1;
 			if (nextDimension >= DIMENSION)
 			{
 				nextDimension = 0;
@@ -243,8 +246,8 @@ namespace ragl
 
 			// Search Recursively Down The Tree Either Left (For Data > Current Node), Or Right
 			//---------------------------------------------------------------------------------
-			int		findRecursive;
-			const bool	goLeft = data[curDimension] < mPool[curNode].mData[curDimension];
+			int findRecursive;
+			const bool goLeft = data[curDimension] < mPool[curNode].mData[curDimension];
 			if (goLeft)
 			{
 				findRecursive = find_index(data, mPool[curNode].mLeft, nextDimension, returnClosest, markTarget);
@@ -292,9 +295,9 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This function just sets up the range bounds and starts the recursive tree search
 		////////////////////////////////////////////////////////////////////////////////////
-		void		tree_search(range_query& query)
+		void tree_search(range_query& query)
 		{
-			range_bounds	bounds;
+			range_bounds bounds;
 			for (int i = 0; i < DIMENSION; i++)
 			{
 				bounds.mMins[i] = 0;
@@ -306,7 +309,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void		tree_search(range_query& query, int curNode, int curDimension, range_bounds bounds)
+		void tree_search(range_query& query, int curNode, int curDimension, range_bounds bounds)
 		{
 			assert(curNode < SIZE);
 
@@ -326,7 +329,7 @@ namespace ragl
 
 			// Calculate The Next Dimension For Searching
 			//--------------------------------------------
-			int	nextDimension = curDimension + 1;
+			int nextDimension = curDimension + 1;
 			if (nextDimension >= DIMENSION)
 			{
 				nextDimension = 0;
@@ -334,7 +337,7 @@ namespace ragl
 
 			// Test To See If Our Subtree Is In Range
 			//----------------------------------------
-			const ESide	Side = tree_search_bounds_in_range(query, bounds);
+			const ESide Side = tree_search_bounds_in_range(query, bounds);
 
 			// If The Bounds Are Contained Entirely Within The Query Range, We Report The Sub Tree
 			//-------------------------------------------------------------------------------------
@@ -351,20 +354,22 @@ namespace ragl
 				//---------------------
 				if (mPool[curNode].mLeft != NULL_NODE)
 				{
-					int	OldMaxs = bounds.mMaxs[curDimension];
-					if (!bounds.mMins[curDimension] || mPool[curNode].mData[curDimension] < mPool[bounds.mMins[curDimension]].mData[curDimension])
+					int OldMaxs = bounds.mMaxs[curDimension];
+					if (!bounds.mMins[curDimension] || mPool[curNode].mData[curDimension] < mPool[bounds.mMins[
+						curDimension]].mData[curDimension])
 					{
 						bounds.mMins[curDimension] = curNode;
 					}
 					tree_search(query, mPool[curNode].mLeft, nextDimension, bounds);
-					bounds.mMaxs[curDimension] = OldMaxs;	// Restore Old Maxs For The Right Child Search
+					bounds.mMaxs[curDimension] = OldMaxs; // Restore Old Maxs For The Right Child Search
 				}
 
 				// Test The Right Child
 				//----------------------
 				if (mPool[curNode].mRight != NULL_NODE)
 				{
-					if (!bounds.mMaxs[curDimension] || mPool[bounds.mMaxs[curDimension]].mData[curDimension] < mPool[curNode].mData[curDimension])
+					if (!bounds.mMaxs[curDimension] || mPool[bounds.mMaxs[curDimension]].mData[curDimension] < mPool[
+						curNode].mData[curDimension])
 					{
 						bounds.mMaxs[curDimension] = curNode;
 					}
@@ -376,7 +381,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// This Function Returns True If The Node Is Within The Query Range
 		////////////////////////////////////////////////////////////////////////////////////
-		static bool		tree_search_node_in_range(range_query& query, node& n)
+		static bool tree_search_node_in_range(range_query& query, node& n)
 		{
 			for (int dim = 0; dim < DIMENSION; dim++)
 			{
@@ -391,9 +396,9 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		ESide		tree_search_bounds_in_range(range_query& query, range_bounds& bounds)
+		ESide tree_search_bounds_in_range(range_query& query, range_bounds& bounds)
 		{
-			ESide	S = Side_AllIn;
+			ESide S = Side_AllIn;
 			for (int dim = 0; dim < DIMENSION; dim++)
 			{
 				// If Any Of Our Dimensions Are Undefined Right Now, Always Return INTERSECT
@@ -425,7 +430,7 @@ namespace ragl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Add The Cur Node And All Children Of The Cur Node
 		////////////////////////////////////////////////////////////////////////////////////
-		void		tree_search_report_sub_tree(range_query& query, int curNode)
+		void tree_search_report_sub_tree(range_query& query, int curNode)
 		{
 			assert(curNode < SIZE);
 
@@ -445,8 +450,8 @@ namespace ragl
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
 	private:
-		ratl::handle_pool_vs<node, SIZE>	mPool;				// The Allocation Data Pool
-		int									mRoot;				// The Beginning Of The Tree
+		ratl::handle_pool_vs<node, SIZE> mPool; // The Allocation Data Pool
+		int mRoot; // The Beginning Of The Tree
 	};
 }
 #endif

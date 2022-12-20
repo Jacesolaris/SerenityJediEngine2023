@@ -74,7 +74,7 @@ void FX_BlasterWeaponHitWall(vec3_t origin, vec3_t normal)
 FX_BlasterWeaponHitPlayer
 -------------------------
 */
-void FX_BlasterWeaponHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BlasterWeaponHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -85,6 +85,7 @@ void FX_BlasterWeaponHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
 		trap->FX_PlayEffectID(cgs.effects.blasterDroidImpactEffect, origin, normal, -1, -1, qfalse);
 	}
 }
+
 /////////////// eweb
 
 /*
@@ -137,7 +138,7 @@ void FX_EwebWeaponHitWall(vec3_t origin, vec3_t normal)
 FX_ewebWeaponHitPlayer
 -------------------------
 */
-void FX_EwebWeaponHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_EwebWeaponHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{

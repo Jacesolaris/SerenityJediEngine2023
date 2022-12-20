@@ -25,7 +25,7 @@
   */
 
 GLOBAL(void)
-jpeg_abort(j_common_ptr cinfo)
+jpeg_abort(const j_common_ptr cinfo)
 {
 	/* Do nothing if called on a not-initialized or destroyed JPEG object. */
 	if (cinfo->mem == NULL)
@@ -63,7 +63,7 @@ jpeg_abort(j_common_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_destroy(j_common_ptr cinfo)
+jpeg_destroy(const j_common_ptr cinfo)
 {
 	/* We need only tell the memory manager to release everything. */
 	/* NB: mem pointer is NULL if memory mgr failed to initialize. */
@@ -79,7 +79,7 @@ jpeg_destroy(j_common_ptr cinfo)
  */
 
 GLOBAL(JQUANT_TBL*)
-jpeg_alloc_quant_table(j_common_ptr cinfo)
+jpeg_alloc_quant_table(const j_common_ptr cinfo)
 {
 	JQUANT_TBL* tbl = (*cinfo->mem->alloc_small)(cinfo, JPOOL_PERMANENT, SIZEOF(JQUANT_TBL));
 	tbl->sent_table = FALSE;	/* make sure this is false in any new table */
@@ -87,7 +87,7 @@ jpeg_alloc_quant_table(j_common_ptr cinfo)
 }
 
 GLOBAL(JHUFF_TBL*)
-jpeg_alloc_huff_table(j_common_ptr cinfo)
+jpeg_alloc_huff_table(const j_common_ptr cinfo)
 {
 	JHUFF_TBL* tbl = (*cinfo->mem->alloc_small)(cinfo, JPOOL_PERMANENT, SIZEOF(JHUFF_TBL));
 	tbl->sent_table = FALSE;	/* make sure this is false in any new table */

@@ -26,13 +26,13 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "qcommon/qcommon.h"
 
 #define MAX_TOKEN_SIZE	1024
-static char	token[MAX_TOKEN_SIZE];
+static char token[MAX_TOKEN_SIZE];
 
-static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = false)
+static char* GetToken(char** text, const bool allowLineBreaks, const bool readUntilEOL = false)
 {
 	char* pointer = *text;
-	int		length = 0;
-	int		c = 0;
+	int length = 0;
+	int c = 0;
 
 	token[0] = 0;
 	if (!pointer)
@@ -92,13 +92,15 @@ static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = fal
 			}
 		}
 		else
-		{	// found the start of a token
+		{
+			// found the start of a token
 			break;
 		}
 	}
 
 	if (c == '\"')
-	{	// handle a string
+	{
+		// handle a string
 		pointer++;
 		while (true)
 		{
@@ -155,12 +157,14 @@ static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = fal
 	}
 
 	if (token[0] == '\"')
-	{	// remove start quote
+	{
+		// remove start quote
 		length--;
 		memmove(token, token + 1, length);
 
 		if (length && token[length - 1] == '\"')
-		{	// remove end quote
+		{
+			// remove end quote
 			length--;
 		}
 	}
@@ -175,7 +179,7 @@ static char* GetToken(char** text, bool allowLineBreaks, bool readUntilEOL = fal
 	return token;
 }
 
-CTextPool::CTextPool(int initSize) :
+CTextPool::CTextPool(const int initSize) :
 	mNext(nullptr),
 	mSize(initSize),
 	mUsed(0)
@@ -189,12 +193,13 @@ CTextPool::~CTextPool(void)
 	Z_Free(mPool);
 }
 
-char* CTextPool::AllocText(char* text, bool addNULL, CTextPool** poolPtr)
+char* CTextPool::AllocText(char* text, const bool addNULL, CTextPool** poolPtr)
 {
-	const int	length = strlen(text) + (addNULL ? 1 : 0);
+	const int length = strlen(text) + (addNULL ? 1 : 0);
 
 	if (mUsed + length + 1 > mSize)
-	{	// extra 1 to put a null on the end
+	{
+		// extra 1 to put a null on the end
 		if (poolPtr)
 		{
 			(*poolPtr)->SetNext(new CTextPool(mSize));
@@ -280,7 +285,7 @@ CGPValue* CGPValue::Duplicate(CTextPool** textPool) const
 		name = (char*)mName;
 	}
 
-	CGPValue* newValue = new CGPValue(name);
+	auto newValue = new CGPValue(name);
 	const CGPObject* iterator = mList;
 	while (iterator)
 	{
@@ -345,11 +350,13 @@ bool CGPValue::Parse(char** dataPtr, CTextPool** textPool)
 		char* token = GetToken(dataPtr, true, true);
 
 		if (!token[0])
-		{	// end of data - error!
+		{
+			// end of data - error!
 			return false;
 		}
 		if (Q_stricmp(token, "]") == 0)
-		{	// ending brace for this list
+		{
+			// ending brace for this list
 			break;
 		}
 
@@ -360,9 +367,9 @@ bool CGPValue::Parse(char** dataPtr, CTextPool** textPool)
 	return true;
 }
 
-bool CGPValue::Write(CTextPool** textPool, int depth) const
+bool CGPValue::Write(CTextPool** textPool, const int depth) const
 {
-	int				i;
+	int i;
 
 	if (!mList)
 	{
@@ -441,7 +448,8 @@ int CGPGroup::GetNumSubGroups(void) const
 	{
 		count++;
 		group = group->GetNext();
-	} while (group);
+	}
+	while (group);
 
 	return count;
 }
@@ -454,7 +462,8 @@ int CGPGroup::GetNumPairs(void) const
 	{
 		count++;
 		pair = pair->GetNext();
-	} while (pair);
+	}
+	while (pair);
 
 	return count;
 }
@@ -494,7 +503,7 @@ CGPGroup* CGPGroup::Duplicate(CTextPool** textPool, CGPGroup* initParent) const
 		name = (char*)mName;
 	}
 
-	CGPGroup* newGroup = new CGPGroup(name);
+	auto newGroup = new CGPGroup(name);
 
 	const CGPGroup* subSub = mSubGroups;
 	while (subSub)
@@ -518,7 +527,7 @@ CGPGroup* CGPGroup::Duplicate(CTextPool** textPool, CGPGroup* initParent) const
 }
 
 void CGPGroup::SortObject(CGPObject* object, CGPObject** unsortedList, CGPObject** sortedList,
-	CGPObject** lastObject)
+                          CGPObject** lastObject)
 {
 	if (!*unsortedList)
 	{
@@ -571,7 +580,7 @@ CGPValue* CGPGroup::AddPair(const char* name, const char* value, CTextPool** tex
 		}
 	}
 
-	CGPValue* newPair = new CGPValue(name, value);
+	auto newPair = new CGPValue(name, value);
 
 	AddPair(newPair);
 
@@ -581,7 +590,7 @@ CGPValue* CGPGroup::AddPair(const char* name, const char* value, CTextPool** tex
 void CGPGroup::AddPair(CGPValue* NewPair)
 {
 	SortObject(NewPair, (CGPObject**)&mPairs, (CGPObject**)&mInOrderPairs,
-		(CGPObject**)&mCurrentPair);
+	           (CGPObject**)&mCurrentPair);
 }
 
 CGPGroup* CGPGroup::AddGroup(const char* name, CTextPool** textPool)
@@ -591,7 +600,7 @@ CGPGroup* CGPGroup::AddGroup(const char* name, CTextPool** textPool)
 		name = (*textPool)->AllocText((char*)name, true, textPool);
 	}
 
-	CGPGroup* newGroup = new CGPGroup(name, this);
+	auto newGroup = new CGPGroup(name, this);
 
 	AddGroup(newGroup);
 
@@ -601,7 +610,7 @@ CGPGroup* CGPGroup::AddGroup(const char* name, CTextPool** textPool)
 void CGPGroup::AddGroup(CGPGroup* NewGroup)
 {
 	SortObject(NewGroup, (CGPObject**)&mSubGroups, (CGPObject**)&mInOrderSubGroups,
-		(CGPObject**)&mCurrentSubGroup);
+	           (CGPObject**)&mCurrentSubGroup);
 }
 
 CGPGroup* CGPGroup::FindSubGroup(const char* name) const
@@ -635,7 +644,8 @@ bool CGPGroup::Parse(char** dataPtr, CTextPool** textPool)
 			break;
 		}
 		if (Q_stricmp(token, "}") == 0)
-		{	// ending brace for this group
+		{
+			// ending brace for this group
 			break;
 		}
 
@@ -644,7 +654,8 @@ bool CGPGroup::Parse(char** dataPtr, CTextPool** textPool)
 		// read ahead to see what we are doing
 		token = GetToken(dataPtr, true, true);
 		if (Q_stricmp(token, "{") == 0)
-		{	// new sub group
+		{
+			// new sub group
 			CGPGroup* newSubGroup = AddGroup(lastToken, textPool);
 			newSubGroup->SetWriteable(mWriteable);
 			if (!newSubGroup->Parse(dataPtr, textPool))
@@ -662,7 +673,8 @@ bool CGPGroup::Parse(char** dataPtr, CTextPool** textPool)
 			}
 		}
 		else
-		{	// new pair
+		{
+			// new pair
 			AddPair(lastToken, token, textPool);
 		}
 	}
@@ -670,9 +682,9 @@ bool CGPGroup::Parse(char** dataPtr, CTextPool** textPool)
 	return true;
 }
 
-bool CGPGroup::Write(CTextPool** textPool, int depth) const
+bool CGPGroup::Write(CTextPool** textPool, const int depth) const
 {
-	int				i;
+	int i;
 	const CGPValue* mPair = mPairs;
 	const CGPGroup* mSubGroup = mSubGroups;
 
@@ -731,7 +743,7 @@ bool CGPGroup::Write(CTextPool** textPool, int depth) const
  ************************************************************************************************/
 CGPValue* CGPGroup::FindPair(const char* key) const
 {
-	size_t			length;
+	size_t length;
 	const char* next;
 
 	const char* pos = key;
@@ -790,7 +802,7 @@ CGenericParser2::~CGenericParser2(void)
 	Clean();
 }
 
-bool CGenericParser2::Parse(char** dataPtr, bool cleanFirst, bool writeable)
+bool CGenericParser2::Parse(char** dataPtr, const bool cleanFirst, const bool writeable)
 {
 	CTextPool* topPool;
 
@@ -829,9 +841,9 @@ bool CGenericParser2::Write(CTextPool* textPool) const
 // C++ users should just use the objects as normally and not call these routines below
 //
 // CGenericParser2 (void *) routines
-TGenericParser2 GP_Parse(char** dataPtr, bool cleanFirst, bool writeable)
+TGenericParser2 GP_Parse(char** dataPtr, const bool cleanFirst, const bool writeable)
 {
-	CGenericParser2* parse = new CGenericParser2;
+	auto parse = new CGenericParser2;
 	if (parse->Parse(dataPtr, cleanFirst, writeable))
 	{
 		return parse;
@@ -841,7 +853,7 @@ TGenericParser2 GP_Parse(char** dataPtr, bool cleanFirst, bool writeable)
 	return nullptr;
 }
 
-void GP_Clean(TGenericParser2 GP2)
+void GP_Clean(const TGenericParser2 GP2)
 {
 	if (!GP2)
 	{
@@ -862,7 +874,7 @@ void GP_Delete(TGenericParser2* GP2)
 	*GP2 = nullptr;
 }
 
-TGPGroup GP_GetBaseParseGroup(TGenericParser2 GP2)
+TGPGroup GP_GetBaseParseGroup(const TGenericParser2 GP2)
 {
 	if (!GP2)
 	{
@@ -873,7 +885,7 @@ TGPGroup GP_GetBaseParseGroup(TGenericParser2 GP2)
 }
 
 // CGPGroup (void *) routines
-const char* GPG_GetName(TGPGroup GPG)
+const char* GPG_GetName(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -883,7 +895,7 @@ const char* GPG_GetName(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetName();
 }
 
-bool GPG_GetName(TGPGroup GPG, char* Value)
+bool GPG_GetName(const TGPGroup GPG, char* Value)
 {
 	if (!GPG)
 	{
@@ -895,7 +907,7 @@ bool GPG_GetName(TGPGroup GPG, char* Value)
 	return true;
 }
 
-TGPGroup GPG_GetNext(TGPGroup GPG)
+TGPGroup GPG_GetNext(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -905,7 +917,7 @@ TGPGroup GPG_GetNext(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetNext();
 }
 
-TGPGroup GPG_GetInOrderNext(TGPGroup GPG)
+TGPGroup GPG_GetInOrderNext(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -915,7 +927,7 @@ TGPGroup GPG_GetInOrderNext(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetInOrderNext();
 }
 
-TGPGroup GPG_GetInOrderPrevious(TGPGroup GPG)
+TGPGroup GPG_GetInOrderPrevious(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -925,7 +937,7 @@ TGPGroup GPG_GetInOrderPrevious(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetInOrderPrevious();
 }
 
-TGPGroup GPG_GetPairs(TGPGroup GPG)
+TGPGroup GPG_GetPairs(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -935,7 +947,7 @@ TGPGroup GPG_GetPairs(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetPairs();
 }
 
-TGPGroup GPG_GetInOrderPairs(TGPGroup GPG)
+TGPGroup GPG_GetInOrderPairs(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -945,7 +957,7 @@ TGPGroup GPG_GetInOrderPairs(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetInOrderPairs();
 }
 
-TGPGroup GPG_GetSubGroups(TGPGroup GPG)
+TGPGroup GPG_GetSubGroups(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -955,7 +967,7 @@ TGPGroup GPG_GetSubGroups(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetSubGroups();
 }
 
-TGPGroup GPG_GetInOrderSubGroups(TGPGroup GPG)
+TGPGroup GPG_GetInOrderSubGroups(const TGPGroup GPG)
 {
 	if (!GPG)
 	{
@@ -965,7 +977,7 @@ TGPGroup GPG_GetInOrderSubGroups(TGPGroup GPG)
 	return static_cast<CGPGroup*>(GPG)->GetInOrderSubGroups();
 }
 
-TGPGroup GPG_FindSubGroup(TGPGroup GPG, const char* name)
+TGPGroup GPG_FindSubGroup(const TGPGroup GPG, const char* name)
 {
 	if (!GPG)
 	{
@@ -975,7 +987,7 @@ TGPGroup GPG_FindSubGroup(TGPGroup GPG, const char* name)
 	return static_cast<CGPGroup*>(GPG)->FindSubGroup(name);
 }
 
-TGPValue GPG_FindPair(TGPGroup GPG, const char* key)
+TGPValue GPG_FindPair(const TGPGroup GPG, const char* key)
 {
 	if (!GPG)
 	{
@@ -985,7 +997,7 @@ TGPValue GPG_FindPair(TGPGroup GPG, const char* key)
 	return static_cast<CGPGroup*>(GPG)->FindPair(key);
 }
 
-const char* GPG_FindPairValue(TGPGroup GPG, const char* key, const char* defaultVal)
+const char* GPG_FindPairValue(const TGPGroup GPG, const char* key, const char* defaultVal)
 {
 	if (!GPG)
 	{
@@ -995,7 +1007,7 @@ const char* GPG_FindPairValue(TGPGroup GPG, const char* key, const char* default
 	return static_cast<CGPGroup*>(GPG)->FindPairValue(key, defaultVal);
 }
 
-bool GPG_FindPairValue(TGPGroup GPG, const char* key, const char* defaultVal, char* Value)
+bool GPG_FindPairValue(const TGPGroup GPG, const char* key, const char* defaultVal, char* Value)
 {
 	strcpy(Value, GPG_FindPairValue(GPG, key, defaultVal));
 
@@ -1003,7 +1015,7 @@ bool GPG_FindPairValue(TGPGroup GPG, const char* key, const char* defaultVal, ch
 }
 
 // CGPValue (void *) routines
-const char* GPV_GetName(TGPValue GPV)
+const char* GPV_GetName(const TGPValue GPV)
 {
 	if (!GPV)
 	{
@@ -1013,7 +1025,7 @@ const char* GPV_GetName(TGPValue GPV)
 	return static_cast<CGPValue*>(GPV)->GetName();
 }
 
-bool GPV_GetName(TGPValue GPV, char* Value)
+bool GPV_GetName(const TGPValue GPV, char* Value)
 {
 	if (!GPV)
 	{
@@ -1025,7 +1037,7 @@ bool GPV_GetName(TGPValue GPV, char* Value)
 	return true;
 }
 
-TGPValue GPV_GetNext(TGPValue GPV)
+TGPValue GPV_GetNext(const TGPValue GPV)
 {
 	if (!GPV)
 	{
@@ -1035,7 +1047,7 @@ TGPValue GPV_GetNext(TGPValue GPV)
 	return static_cast<CGPValue*>(GPV)->GetNext();
 }
 
-TGPValue GPV_GetInOrderNext(TGPValue GPV)
+TGPValue GPV_GetInOrderNext(const TGPValue GPV)
 {
 	if (!GPV)
 	{
@@ -1045,7 +1057,7 @@ TGPValue GPV_GetInOrderNext(TGPValue GPV)
 	return static_cast<CGPValue*>(GPV)->GetInOrderNext();
 }
 
-TGPValue GPV_GetInOrderPrevious(TGPValue GPV)
+TGPValue GPV_GetInOrderPrevious(const TGPValue GPV)
 {
 	if (!GPV)
 	{
@@ -1055,7 +1067,7 @@ TGPValue GPV_GetInOrderPrevious(TGPValue GPV)
 	return static_cast<CGPValue*>(GPV)->GetInOrderPrevious();
 }
 
-bool GPV_IsList(TGPValue GPV)
+bool GPV_IsList(const TGPValue GPV)
 {
 	if (!GPV)
 	{
@@ -1065,7 +1077,7 @@ bool GPV_IsList(TGPValue GPV)
 	return static_cast<CGPValue*>(GPV)->IsList();
 }
 
-const char* GPV_GetTopValue(TGPValue GPV)
+const char* GPV_GetTopValue(const TGPValue GPV)
 {
 	if (!GPV)
 	{
@@ -1075,7 +1087,7 @@ const char* GPV_GetTopValue(TGPValue GPV)
 	return static_cast<CGPValue*>(GPV)->GetTopValue();
 }
 
-bool GPV_GetTopValue(TGPValue GPV, char* Value)
+bool GPV_GetTopValue(const TGPValue GPV, char* Value)
 {
 	if (!GPV)
 	{
@@ -1088,7 +1100,7 @@ bool GPV_GetTopValue(TGPValue GPV, char* Value)
 	return true;
 }
 
-TGPValue GPV_GetList(TGPValue GPV)
+TGPValue GPV_GetList(const TGPValue GPV)
 {
 	if (!GPV)
 	{

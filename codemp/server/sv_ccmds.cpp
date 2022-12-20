@@ -43,7 +43,7 @@ const char* SV_GetStringEdString(char* refSection, char* refName)
 	//a stringed reference with @@@ and send the refname to the client, and when it goes
 	//to print it will get scanned for the stringed reference indication and dealt with
 	//properly.
-	static char text[1024] = { 0 };
+	static char text[1024] = {0};
 	Com_sprintf(text, sizeof text, "@@@%s", refName);
 	return text;
 }
@@ -177,7 +177,7 @@ Restart the server on a different map
 static void SV_Map_f(void)
 {
 	qboolean kill_bots, cheat;
-	char expanded[MAX_QPATH] = { 0 }, mapname[MAX_QPATH] = { 0 };
+	char expanded[MAX_QPATH] = {0}, mapname[MAX_QPATH] = {0};
 
 	char* map = Cmd_Argv(1);
 	if (!map)
@@ -745,7 +745,7 @@ static void SV_WriteBans(void)
 			const serverBan_t* curban = &serverBans[index];
 
 			Com_sprintf(writebuf, sizeof writebuf, "%d %s %d\n",
-				curban->isexception, NET_AdrToString(curban->ip), curban->subnet);
+			            curban->isexception, NET_AdrToString(curban->ip), curban->subnet);
 			FS_Write(writebuf, strlen(writebuf), writeto);
 		}
 
@@ -761,13 +761,13 @@ Remove a ban or an exception from the list.
 ==================
 */
 
-static qboolean SV_DelBanEntryFromList(int index)
+static qboolean SV_DelBanEntryFromList(const int index)
 {
 	if (index == serverBansCount - 1)
 		serverBansCount--;
 	else if (index < static_cast<int>(std::size(serverBans)) - 1)
 	{
-		memmove(serverBans + index, serverBans + index + 1, (serverBansCount - index - 1) * sizeof * serverBans);
+		memmove(serverBans + index, serverBans + index + 1, (serverBansCount - index - 1) * sizeof *serverBans);
 		serverBansCount--;
 	}
 	else
@@ -824,7 +824,7 @@ Ban a user from being able to play on this server based on his ip address.
 ==================
 */
 
-static void SV_AddBanToList(qboolean isexception)
+static void SV_AddBanToList(const qboolean isexception)
 {
 	netadr_t ip;
 	int index, mask;
@@ -912,8 +912,8 @@ static void SV_AddBanToList(qboolean isexception)
 				Q_strncpyz(addy2, NET_AdrToString(ip), sizeof addy2);
 
 				Com_Printf("Error: %s %s/%d supersedes %s %s/%d\n", curban->isexception ? "Exception" : "Ban",
-					NET_AdrToString(curban->ip), curban->subnet,
-					isexception ? "exception" : "ban", addy2, mask);
+				           NET_AdrToString(curban->ip), curban->subnet,
+				           isexception ? "exception" : "ban", addy2, mask);
 				return;
 			}
 		}
@@ -924,8 +924,8 @@ static void SV_AddBanToList(qboolean isexception)
 				Q_strncpyz(addy2, NET_AdrToString(curban->ip), sizeof addy2);
 
 				Com_Printf("Error: %s %s/%d supersedes already existing %s %s/%d\n", isexception ? "Exception" : "Ban",
-					NET_AdrToString(ip), mask,
-					curban->isexception ? "exception" : "ban", addy2, curban->subnet);
+				           NET_AdrToString(ip), mask,
+				           curban->isexception ? "exception" : "ban", addy2, curban->subnet);
 				return;
 			}
 		}
@@ -953,7 +953,7 @@ static void SV_AddBanToList(qboolean isexception)
 	SV_WriteBans();
 
 	Com_Printf("Added %s: %s/%d\n", isexception ? "ban exception" : "ban",
-		NET_AdrToString(ip), mask);
+	           NET_AdrToString(ip), mask);
 }
 
 /*
@@ -964,7 +964,7 @@ Remove a ban or an exception from the list.
 ==================
 */
 
-static void SV_DelBanFromList(qboolean isexception)
+static void SV_DelBanFromList(const qboolean isexception)
 {
 	int index, mask;
 	netadr_t ip;
@@ -1003,8 +1003,8 @@ static void SV_DelBanFromList(qboolean isexception)
 				NET_CompareBaseAdrMask(curban->ip, ip, mask))
 			{
 				Com_Printf("Deleting %s %s/%d\n",
-					isexception ? "exception" : "ban",
-					NET_AdrToString(curban->ip), curban->subnet);
+				           isexception ? "exception" : "ban",
+				           NET_AdrToString(curban->ip), curban->subnet);
 
 				SV_DelBanEntryFromList(index);
 			}
@@ -1032,8 +1032,8 @@ static void SV_DelBanFromList(qboolean isexception)
 				if (count == todel)
 				{
 					Com_Printf("Deleting %s %s/%d\n",
-						isexception ? "exception" : "ban",
-						NET_AdrToString(serverBans[index].ip), serverBans[index].subnet);
+					           isexception ? "exception" : "ban",
+					           NET_AdrToString(serverBans[index].ip), serverBans[index].subnet);
 
 					SV_DelBanEntryFromList(index);
 
@@ -1075,7 +1075,7 @@ static void SV_ListBans_f(void)
 			count++;
 
 			Com_Printf("Ban #%d: %s/%d\n", count,
-				NET_AdrToString(ban->ip), ban->subnet);
+			           NET_AdrToString(ban->ip), ban->subnet);
 		}
 	}
 	// List all exceptions
@@ -1087,7 +1087,7 @@ static void SV_ListBans_f(void)
 			count++;
 
 			Com_Printf("Except #%d: %s/%d\n", count,
-				NET_AdrToString(ban->ip), ban->subnet);
+			           NET_AdrToString(ban->ip), ban->subnet);
 		}
 	}
 }
@@ -1139,8 +1139,8 @@ static void SV_ExceptDel_f(void)
 
 static const char* SV_CalcUptime(void)
 {
-	static char buf[MAX_STRING_CHARS / 4] = { '\0' };
-	char tmp[64] = { '\0' };
+	static char buf[MAX_STRING_CHARS / 4] = {'\0'};
+	char tmp[64] = {'\0'};
 	time_t currTime;
 
 	time(&currTime);
@@ -1230,7 +1230,7 @@ static void SV_Status_f()
 		"public dedicated",
 	};
 
-	char hostname[MAX_HOSTNAMELENGTH] = { 0 };
+	char hostname[MAX_HOSTNAMELENGTH] = {0};
 
 	Q_strncpyz(hostname, sv_hostname->string, sizeof hostname);
 	Q_StripColor(hostname);
@@ -1239,10 +1239,10 @@ static void SV_Status_f()
 	Com_Printf("version : %s %i\n", VERSION_STRING_DOTTED, PROTOCOL_VERSION);
 	Com_Printf("game    : %s\n", FS_GetCurrentGameDir());
 	Com_Printf("udp/ip  : %s:%i os(%s) type(%s)\n", Cvar_VariableString("net_ip"),
-		Cvar_VariableIntegerValue("net_port"), STATUS_OS, ded_table[com_dedicated->integer]);
+	           Cvar_VariableIntegerValue("net_port"), STATUS_OS, ded_table[com_dedicated->integer]);
 	Com_Printf("map     : %s gametype(%i)\n", sv_mapname->string, sv_gametype->integer);
 	Com_Printf("players : %i humans, %i bots (%i max)\n", humans, bots,
-		sv_maxclients->integer - sv_privateClients->integer);
+	           sv_maxclients->integer - sv_privateClients->integer);
 	Com_Printf("uptime  : %s\n", SV_CalcUptime());
 
 	Com_Printf("cl score ping name            address                                 rate \n");
@@ -1269,23 +1269,23 @@ static void SV_Status_f()
 		if (!avoidTruncation)
 		{
 			Com_Printf("%2i %5i %s %-15.15s ^7%39s %5i\n",
-				i,
-				ps->persistant[PERS_SCORE],
-				state,
-				cl->name,
-				s,
-				cl->rate
+			           i,
+			           ps->persistant[PERS_SCORE],
+			           state,
+			           cl->name,
+			           s,
+			           cl->rate
 			);
 		}
 		else
 		{
 			Com_Printf("%2i %5i %s %s ^7%39s %5i\n",
-				i,
-				ps->persistant[PERS_SCORE],
-				state,
-				cl->name,
-				s,
-				cl->rate
+			           i,
+			           ps->persistant[PERS_SCORE],
+			           state,
+			           cl->name,
+			           s,
+			           cl->rate
 			);
 		}
 	}
@@ -1302,7 +1302,7 @@ SV_ConSay_f
 */
 static void SV_ConSay_f(void)
 {
-	char text[MAX_SAY_TEXT] = { 0 };
+	char text[MAX_SAY_TEXT] = {0};
 
 	if (!com_dedicated->integer)
 	{
@@ -1337,7 +1337,7 @@ SV_ConTell_f
 */
 static void SV_ConTell_f(void)
 {
-	char text[MAX_SAY_TEXT] = { 0 };
+	char text[MAX_SAY_TEXT] = {0};
 
 	if (!com_dedicated->integer)
 	{
@@ -1630,7 +1630,7 @@ static void SV_KillServer_f(void)
 	SV_Shutdown("killserver");
 }
 
-void SV_WriteDemoMessage(client_t* cl, msg_t* msg, int headerBytes)
+void SV_WriteDemoMessage(client_t* cl, msg_t* msg, const int headerBytes)
 {
 	int swlen;
 
@@ -1725,10 +1725,10 @@ void SV_StopRecord_f(void)
 SV_DemoFilename
 ==================
 */
-void SV_DemoFilename(char* buf, int bufSize)
+void SV_DemoFilename(char* buf, const int bufSize)
 {
 	time_t rawtime;
-	char timeStr[32] = { 0 }; // should really only reach ~19 chars
+	char timeStr[32] = {0}; // should really only reach ~19 chars
 
 	time(&rawtime);
 	strftime(timeStr, sizeof timeStr, "%Y-%m-%d_%H-%M-%S", localtime(&rawtime)); // or gmtime
@@ -1803,7 +1803,7 @@ void SV_AutoRecordDemo(client_t* cl)
 	char demoName[MAX_OSPATH];
 	char demoFolderName[MAX_OSPATH];
 	char demoFileName[MAX_OSPATH];
-	char* demoNames[] = { demoFolderName, demoFileName };
+	char* demoNames[] = {demoFolderName, demoFileName};
 	char date[MAX_OSPATH];
 	char folderDate[MAX_OSPATH];
 	char folderTreeDate[MAX_OSPATH];
@@ -1818,7 +1818,7 @@ void SV_AutoRecordDemo(client_t* cl)
 	Q_strncpyz(demoPlayerName, cl->name, sizeof demoPlayerName);
 	Q_CleanStr(demoPlayerName);
 	Com_sprintf(demoFileName, sizeof demoFileName, "%d %s %s %s",
-		cl - svs.clients, demoPlayerName, Cvar_VariableString("mapname"), date);
+	            cl - svs.clients, demoPlayerName, Cvar_VariableString("mapname"), date);
 	Com_sprintf(demoFolderName, sizeof demoFolderName, "%s %s", Cvar_VariableString("mapname"), folderDate);
 	// sanitize filename
 	for (char** start = demoNames; start - demoNames < static_cast<ptrdiff_t>(std::size(demoNames)); start++)
@@ -1844,8 +1844,8 @@ static time_t SV_ExtractTimeFromDemoFolder(char* folder)
 	tm timeinfo;
 	timeinfo.tm_isdst = 0;
 	const int numMatched = sscanf(folder + (strlen(folder) - timeLen), "%4d-%2d-%2d_%2d-%2d-%2d",
-		&timeinfo.tm_year, &timeinfo.tm_mon, &timeinfo.tm_mday, &timeinfo.tm_hour,
-		&timeinfo.tm_min, &timeinfo.tm_sec);
+	                              &timeinfo.tm_year, &timeinfo.tm_mon, &timeinfo.tm_mday, &timeinfo.tm_hour,
+	                              &timeinfo.tm_min, &timeinfo.tm_sec);
 	if (numMatched < 6)
 	{
 		// parsing failed
@@ -1877,7 +1877,7 @@ static int QDECL SV_DemoFolderTimeComparator(const void* arg1, const void* arg2)
 }
 
 // returns number of folders found.  pass NULL result pointer for just a count.
-static int SV_FindLeafFolders(const char* baseFolder, char* result, int maxResults, int maxFolderLength)
+static int SV_FindLeafFolders(const char* baseFolder, char* result, const int maxResults, const int maxFolderLength)
 {
 	const auto fileList = static_cast<char*>(Z_Malloc(MAX_OSPATH * maxResults, TAG_FILESYS));
 	// too big for stack since this is recursive
@@ -1943,7 +1943,7 @@ void SV_BeginAutoRecordDemos()
 		{
 			char autorecordDirList[500 * MAX_OSPATH];
 			const int autorecordDirListCount = SV_FindLeafFolders("demos/autorecord", autorecordDirList, 500,
-				MAX_OSPATH);
+			                                                      MAX_OSPATH);
 
 			qsort(autorecordDirList, autorecordDirListCount, MAX_OSPATH, SV_DemoFolderTimeComparator);
 			for (int i = sv_autoDemoMaxMaps->integer; i < autorecordDirListCount; i++)
@@ -2083,7 +2083,7 @@ static void SV_Record_f(void)
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteMapName(char* args, int argNum)
+static void SV_CompleteMapName(char* args, const int argNum)
 {
 	if (argNum == 2)
 		Field_CompleteFilename("maps", "bsp", qtrue, qfalse);

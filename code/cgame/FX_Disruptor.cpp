@@ -32,15 +32,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 FX_DisruptorMainShot
 ---------------------------
 */
-static vec3_t WHITE = { 1.0f, 1.0f, 1.0f };
+static vec3_t WHITE = {1.0f, 1.0f, 1.0f};
 
 void FX_DisruptorMainShot(vec3_t start, vec3_t end)
 {
 	FX_AddLine(-1, start, end, 0.1f, 4.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		300, cgi_R_RegisterShader("gfx/effects/redLine"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           WHITE, WHITE, 0.0f,
+	           300, cgi_R_RegisterShader("gfx/effects/redLine"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 /*
@@ -48,24 +48,24 @@ void FX_DisruptorMainShot(vec3_t start, vec3_t end)
 FX_DisruptorAltShot
 ---------------------------
 */
-void FX_DisruptorAltShot(vec3_t start, vec3_t end, qboolean fullCharge)
+void FX_DisruptorAltShot(vec3_t start, vec3_t end, const qboolean fullCharge)
 {
 	FX_AddLine(-1, start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		300, cgi_R_RegisterShader("gfx/effects/redLine"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           WHITE, WHITE, 0.0f,
+	           300, cgi_R_RegisterShader("gfx/effects/redLine"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
 	if (fullCharge)
 	{
-		vec3_t YELLER = { 0.8f, 0.7f, 0.0f };
+		vec3_t YELLER = {0.8f, 0.7f, 0.0f};
 
 		// add some beef
 		FX_AddLine(-1, start, end, 0.1f, 7.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			YELLER, YELLER, 0.0f,
-			300, cgi_R_RegisterShader("gfx/misc/whiteline2"),
-			0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+		           1.0f, 0.0f, 0.0f,
+		           YELLER, YELLER, 0.0f,
+		           300, cgi_R_RegisterShader("gfx/misc/whiteline2"),
+		           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 	}
 }
 
@@ -88,7 +88,7 @@ void FX_DisruptorAltMiss(vec3_t origin, vec3_t normal)
 	pos[2] += 28;
 
 	FX_AddBezier(origin, pos, c1, vec3_origin, c2, vec3_origin, 6.0f, 6.0f, 0.0f, 0.0f, 0.2f, 0.5f, WHITE, WHITE, 0.0f,
-		4000, cgi_R_RegisterShader("gfx/effects/smokeTrail"), FX_ALPHA_WAVE);
+	             4000, cgi_R_RegisterShader("gfx/effects/smokeTrail"), FX_ALPHA_WAVE);
 
 	theFxScheduler.PlayEffect("disruptor/alt_miss", origin, normal);
 }
@@ -101,49 +101,49 @@ FX_KothosBeam
 void fx_kothos_beam(vec3_t start, vec3_t end)
 {
 	FX_AddLine(-1, start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		175, cgi_R_RegisterShader("gfx/misc/dr1"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           WHITE, WHITE, 0.0f,
+	           175, cgi_R_RegisterShader("gfx/misc/dr1"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
-	vec3_t YELLER = { 0.8f, 0.7f, 0.0f };
+	vec3_t YELLER = {0.8f, 0.7f, 0.0f};
 
 	// add some beef
 	FX_AddLine(-1, start, end, 0.1f, 7.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		YELLER, YELLER, 0.0f,
-		150, cgi_R_RegisterShader("gfx/misc/whiteline2"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           YELLER, YELLER, 0.0f,
+	           150, cgi_R_RegisterShader("gfx/misc/whiteline2"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 void FX_YellowLightningStrike(vec3_t start, vec3_t end)
 {
-	vec3_t YELLER = { 0.8f, 0.7f, 0.0f };
+	vec3_t YELLER = {0.8f, 0.7f, 0.0f};
 
 	// add some beef
 	FX_AddLine(-1, start, end, 0.1f, 7.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		YELLER, YELLER, 0.0f,
-		750, cgi_R_RegisterShader("gfx/effects/yellowline"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           YELLER, YELLER, 0.0f,
+	           750, cgi_R_RegisterShader("gfx/effects/yellowline"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 void FX_LightningStrike(vec3_t start, vec3_t end)
 {
 	FX_AddLine(-1, start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		175, cgi_R_RegisterShader("gfx/effects/yellowline"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           WHITE, WHITE, 0.0f,
+	           175, cgi_R_RegisterShader("gfx/effects/yellowline"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
-	vec3_t YELLER = { 0.8f, 0.7f, 0.0f };
+	vec3_t YELLER = {0.8f, 0.7f, 0.0f};
 
 	// add some beef
 	FX_AddLine(-1, start, end, 0.1f, 7.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		YELLER, YELLER, 0.0f,
-		150, cgi_R_RegisterShader("gfx/effects/yellowline"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           YELLER, YELLER, 0.0f,
+	           150, cgi_R_RegisterShader("gfx/effects/yellowline"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
 	//G_PlayEffect("env/yellow_lightning", start, end);
 }
@@ -156,8 +156,8 @@ FX_Strike_Beam
 void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 {
 	vec3_t dir, chaos,
-		c1, c2,
-		v1, v2;
+	       c1, c2,
+	       v1, v2;
 
 	VectorSubtract(end, start, dir);
 	float len = VectorNormalize(dir);
@@ -172,15 +172,15 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	float s3 = sin(cg.time * 0.011f);
 
 	VectorSet(chaos, len * 0.01f * s1,
-		len * 0.02f * s2,
-		len * 0.04f * (s1 + s2 + s3));
+	          len * 0.02f * s2,
+	          len * 0.04f * (s1 + s2 + s3));
 
 	VectorAdd(c1, chaos, c1);
 	VectorScale(chaos, 4.0f, v1);
 
 	VectorSet(chaos, -len * 0.02f * s3,
-		len * 0.01f * (s1 * s2),
-		-len * 0.02f * (s1 + s2 * s3));
+	          len * 0.01f * (s1 * s2),
+	          -len * 0.02f * (s1 + s2 * s3));
 
 	VectorAdd(c2, chaos, c2);
 	VectorScale(chaos, 2.0f, v2);
@@ -188,18 +188,18 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	VectorSet(chaos, 1.0f, 1.0f, 1.0f);
 
 	FX_AddBezier(start, targ1,
-		c1, v1, c2, v2,
-		5.0f + s1 * 2, 8.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c1, v1, c2, v2,
+	             5.0f + s1 * 2, 8.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	FX_AddBezier(start, targ1,
-		c2, v2, c1, v1,
-		3.0f + s3, 3.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c2, v2, c1, v1,
+	             3.0f + s3, 3.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	s1 = sin(cg.time * 0.0005f) + Q_flrand(-1.0f, 1.0f) * 0.1f;
 	s2 = sin(cg.time * 0.0025f);
@@ -207,15 +207,15 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	s3 = sin(cg.time * 0.01f) + Q_flrand(-1.0f, 1.0f) * 0.1f;
 
 	VectorSet(chaos, len * 0.08f * s2,
-		len * 0.04f * cc2, //s1 * -s3,
-		len * 0.06f * s3);
+	          len * 0.04f * cc2, //s1 * -s3,
+	          len * 0.06f * s3);
 
 	VectorAdd(c1, chaos, c1);
 	VectorScale(chaos, 4.0f, v1);
 
 	VectorSet(chaos, len * 0.02f * s1 * s3,
-		len * 0.04f * s2,
-		len * 0.03f * s1 * s2);
+	          len * 0.04f * s2,
+	          len * 0.03f * s1 * s2);
 
 	VectorAdd(c2, chaos, c2);
 	VectorScale(chaos, 3.0f, v2);
@@ -223,34 +223,34 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	VectorSet(chaos, 1.0f, 1.0f, 1.0f);
 
 	FX_AddBezier(start, targ1,
-		c1, v1, c2, v2,
-		4.0f + s3, 8.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c1, v1, c2, v2,
+	             4.0f + s3, 8.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	FX_AddBezier(start, targ1,
-		c2, v1, c1, v2,
-		5.0f + s1 * 2, 8.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c2, v1, c1, v2,
+	             5.0f + s1 * 2, 8.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	VectorMA(start, 14.0f, dir, c1);
 
 	FX_AddSprite(c1, nullptr, nullptr, 12.0f + Q_flrand(-1.0f, 1.0f) * 4, 0.0f, 1.0f, 1.0f, Q_flrand(0.0f, 1.0f) * 360,
-		0.0f, 1.0f,
-		cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	             0.0f, 1.0f,
+	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
 	FX_AddSprite(c1, nullptr, nullptr, 6.0f + Q_flrand(-1.0f, 1.0f) * 2, 0.0f, 1.0f, 1.0f, Q_flrand(0.0f, 1.0f) * 360,
-		0.0f, 1.0f,
-		cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	             0.0f, 1.0f,
+	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
 
 	FX_AddSprite(targ1, nullptr, nullptr, 4.0f + Q_flrand(-1.0f, 1.0f), 0.0f, 1.0f, 0.0f, chaos, chaos,
-		Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-		cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
+	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
 	FX_AddSprite(targ1, nullptr, nullptr, 8.0f + Q_flrand(-1.0f, 1.0f) * 2, 0.0f, 1.0f, 0.0f, chaos, chaos,
-		Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-		cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
+	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
 
 	//--------------------------------------------
 
@@ -267,15 +267,15 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	s3 = sin(cg.time * 0.011f);
 
 	VectorSet(chaos, len * 0.01f * s1,
-		len * 0.02f * s2,
-		len * 0.04f * (s1 + s2 + s3));
+	          len * 0.02f * s2,
+	          len * 0.04f * (s1 + s2 + s3));
 
 	VectorAdd(c1, chaos, c1);
 	VectorScale(chaos, 4.0f, v1);
 
 	VectorSet(chaos, -len * 0.02f * s3,
-		len * 0.01f * (s1 * s2),
-		-len * 0.02f * (s1 + s2 * s3));
+	          len * 0.01f * (s1 * s2),
+	          -len * 0.02f * (s1 + s2 * s3));
 
 	VectorAdd(c2, chaos, c2);
 	VectorScale(chaos, 2.0f, v2);
@@ -283,18 +283,18 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	VectorSet(chaos, 1.0f, 1.0f, 1.0f);
 
 	FX_AddBezier(targ1, targ2,
-		c1, v1, c2, v2,
-		5.0f + s1 * 2, 8.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c1, v1, c2, v2,
+	             5.0f + s1 * 2, 8.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	FX_AddBezier(targ1, targ2,
-		c2, v2, c1, v1,
-		3.0f + s3, 3.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c2, v2, c1, v1,
+	             3.0f + s3, 3.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	s1 = sin(cg.time * 0.0005f) + Q_flrand(-1.0f, 1.0f) * 0.1f;
 	s2 = sin(cg.time * 0.0025f);
@@ -302,15 +302,15 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	s3 = sin(cg.time * 0.01f) + Q_flrand(-1.0f, 1.0f) * 0.1f;
 
 	VectorSet(chaos, len * 0.08f * s2,
-		len * 0.04f * cc2, //s1 * -s3,
-		len * 0.06f * s3);
+	          len * 0.04f * cc2, //s1 * -s3,
+	          len * 0.06f * s3);
 
 	VectorAdd(c1, chaos, c1);
 	VectorScale(chaos, 4.0f, v1);
 
 	VectorSet(chaos, len * 0.02f * s1 * s3,
-		len * 0.04f * s2,
-		len * 0.03f * s1 * s2);
+	          len * 0.04f * s2,
+	          len * 0.03f * s1 * s2);
 
 	VectorAdd(c2, chaos, c2);
 	VectorScale(chaos, 3.0f, v2);
@@ -318,23 +318,23 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	VectorSet(chaos, 1.0f, 1.0f, 1.0f);
 
 	FX_AddBezier(targ1, targ2,
-		c1, v1, c2, v2,
-		4.0f + s3, 8.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c1, v1, c2, v2,
+	             4.0f + s3, 8.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	FX_AddBezier(targ1, targ2,
-		c2, v1, c1, v2,
-		5.0f + s1 * 2, 8.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		chaos, chaos, 0.0f,
-		1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
+	             c2, v1, c1, v2,
+	             5.0f + s1 * 2, 8.0f, 0.0f,
+	             1.0f, 0.0f, 0.0f,
+	             chaos, chaos, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
 	FX_AddSprite(targ2, nullptr, nullptr, 4.0f + Q_flrand(-1.0f, 1.0f), 0.0f, 1.0f, 0.0f, chaos, chaos,
-		Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-		cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
+	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
 	FX_AddSprite(targ2, nullptr, nullptr, 8.0f + Q_flrand(-1.0f, 1.0f) * 2, 0.0f, 1.0f, 0.0f, chaos, chaos,
-		Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-		cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
+	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
 }

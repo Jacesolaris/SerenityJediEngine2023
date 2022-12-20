@@ -31,7 +31,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //---------------------
 
 extern qboolean WP_DoingForcedAnimationForForcePowers(const gentity_t* self);
-extern int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
+extern int wp_saber_must_block(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point,
+                               int r_saber_num, int r_blade_num);
 extern qboolean WP_SaberBlockBolt(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern void g_missile_reflect_effect(const gentity_t* ent, vec3_t dir);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
@@ -83,7 +84,8 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 		if (traceEnt)
 		{
 			//players can block or dodge disruptor shots.
-			if (wp_saber_must_block(traceEnt, ent, qfalse, tr.endpos, -1, -1) && !WP_DoingForcedAnimationForForcePowers(traceEnt))
+			if (wp_saber_must_block(traceEnt, ent, qfalse, tr.endpos, -1, -1) && !
+				WP_DoingForcedAnimationForForcePowers(traceEnt))
 			{
 				//saber can be used to block the shot.
 
@@ -141,7 +143,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 			else
 			{
 				G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_DEATH_KNOCKBACK, MOD_DISRUPTOR,
-					hit_loc);
+				         hit_loc);
 			}
 		}
 		else
@@ -308,11 +310,11 @@ void WP_DisruptorAltFire(gentity_t* ent)
 					{
 						//hehe
 						G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, 10, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-							fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hit_loc);
+						         fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hit_loc);
 						break;
 					}
 					G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC,
-						fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hit_loc);
+					         fullCharge ? MOD_SNIPER : MOD_DISRUPTOR, hit_loc);
 					if (traceEnt->s.eType == ET_MOVER)
 					{
 						//stop the traces on any mover
@@ -364,7 +366,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireDisruptor(gentity_t* ent, qboolean alt_fire)
+void WP_FireDisruptor(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	if (alt_fire)

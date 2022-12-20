@@ -36,7 +36,7 @@ static int cg_numTriggerEntities;
 static centity_t* cg_triggerEntities[MAX_ENTITIES_IN_SNAPSHOT];
 
 //is this client piloting this veh?
-static QINLINE qboolean CG_Piloting(int vehNum)
+static QINLINE qboolean CG_Piloting(const int vehNum)
 {
 	if (!vehNum)
 	{
@@ -67,7 +67,7 @@ void CG_BuildSolidList(void)
 {
 	int i;
 	centity_t* cent;
-	snapshot_t* snap;
+	snapshot_t * snap;
 
 	cg_numSolidEntities = 0;
 	cg_numTriggerEntities = 0;
@@ -109,8 +109,8 @@ void CG_BuildSolidList(void)
 	//changed..
 	if (cg_numSolidEntities < MAX_ENTITIES_IN_SNAPSHOT)
 	{
-		const vec3_t playerMins = { -15, -15, DEFAULT_MINS_2 };
-		const vec3_t playerMaxs = { 15, 15, DEFAULT_MAXS_2 };
+		const vec3_t playerMins = {-15, -15, DEFAULT_MINS_2};
+		const vec3_t playerMaxs = {15, 15, DEFAULT_MAXS_2};
 
 		int i1 = playerMaxs[0];
 		if (i1 < 1)
@@ -237,13 +237,20 @@ CG_ClipMoveToEntities
 
 ====================
 */
-extern void bg_vehicle_adjust_b_box_for_orientation(const Vehicle_t* veh, vec3_t origin, vec3_t mins, vec3_t maxs, int client_num, int tracemask, void (*local_trace)(trace_t* results, const vec3_t start, const vec3_t minimum_mins, const vec3_t maximum_maxs, const vec3_t end, int pass_entity_num, int content_mask)); // bg_pmove.c
+extern void bg_vehicle_adjust_b_box_for_orientation(const Vehicle_t* veh, vec3_t origin, vec3_t mins, vec3_t maxs,
+                                                    int client_num, int tracemask,
+                                                    void (*local_trace)(trace_t* results, const vec3_t start,
+                                                                        const vec3_t minimum_mins,
+                                                                        const vec3_t maximum_maxs, const vec3_t end,
+                                                                        int pass_entity_num,
+                                                                        int content_mask)); // bg_pmove.c
 
-static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int skipNumber, int mask, trace_t* tr, qboolean g2Check)
+static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
+                                  int skipNumber, int mask, trace_t* tr, qboolean g2Check)
 {
 	int i, x, zd, zu;
 	trace_t trace, oldTrace;
-	entityState_t* ent;
+	entityState_t * ent;
 	clipHandle_t cmodel;
 	vec3_t bmins, bmaxs;
 	centity_t* cent;
@@ -301,7 +308,7 @@ static void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const v
 				float* old = cent->m_pVehicle->m_vOrientation;
 				cent->m_pVehicle->m_vOrientation = &cent->lerpAngles[0];
 				bg_vehicle_adjust_b_box_for_orientation(cent->m_pVehicle, cent->lerpOrigin, bmins, bmaxs,
-					cent->currentState.number, MASK_PLAYERSOLID, NULL);
+				                                        cent->currentState.number, MASK_PLAYERSOLID, NULL);
 				cent->m_pVehicle->m_vOrientation = old;
 			}
 
@@ -479,7 +486,7 @@ void CG_G2Trace(trace_t* result, const vec3_t start, const vec3_t mins, const ve
 CG_PointContents
 ================
 */
-int CG_PointContents(const vec3_t point, int passEntityNum)
+int CG_PointContents(const vec3_t point, const int passEntityNum)
 {
 	int contents = trap->CM_PointContents(point, 0);
 
@@ -520,9 +527,9 @@ Generates cg.predictedPlayerState by interpolating between
 cg.snap->ps and cg.nextFrame->ps
 ========================
 */
-static void CG_InterpolatePlayerState(qboolean grabAngles)
+static void CG_InterpolatePlayerState(const qboolean grabAngles)
 {
-	playerState_t* out = &cg.predictedPlayerState;
+	playerState_t * out = &cg.predictedPlayerState;
 	const snapshot_t* prev = cg.snap;
 	const snapshot_t* next = cg.nextSnap;
 
@@ -572,9 +579,9 @@ static void CG_InterpolatePlayerState(qboolean grabAngles)
 	}
 }
 
-static void CG_InterpolateVehiclePlayerState(qboolean grabAngles)
+static void CG_InterpolateVehiclePlayerState(const qboolean grabAngles)
 {
-	playerState_t* out = &cg.predictedVehicleState;
+	playerState_t * out = &cg.predictedVehicleState;
 	const snapshot_t* prev = cg.snap;
 	const snapshot_t* next = cg.nextSnap;
 
@@ -802,7 +809,7 @@ static void CG_TouchTriggerPrediction(void)
 		}
 
 		trap->CM_Trace(&trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin, cg_pmove.mins,
-			cg_pmove.maxs, cmodel, -1, 0);
+		               cg_pmove.maxs, cmodel, -1, 0);
 
 		if (!trace.startsolid)
 		{
@@ -1247,8 +1254,8 @@ void CG_PredictPlayerState(void)
 				vec3_t delta;
 				vec3_t adjusted;
 				CG_AdjustPositionForMover(cg.predictedVehicleState.origin,
-					cg.predictedVehicleState.groundEntityNum, cg.physicsTime, cg.oldTime,
-					adjusted);
+				                          cg.predictedVehicleState.groundEntityNum, cg.physicsTime, cg.oldTime,
+				                          adjusted);
 
 				if (cg_showVehMiss.integer)
 				{
@@ -1293,14 +1300,14 @@ void CG_PredictPlayerState(void)
 					{
 						trap->Print("VEH orient prediction error\n");
 						trap->Print("VEH pitch prediction miss: %f\n",
-							AngleSubtract(oldVehicleState.vehOrientation[0],
-								cg.predictedVehicleState.vehOrientation[0]));
+						            AngleSubtract(oldVehicleState.vehOrientation[0],
+						                          cg.predictedVehicleState.vehOrientation[0]));
 						trap->Print("VEH yaw prediction miss: %f\n",
-							AngleSubtract(oldVehicleState.vehOrientation[1],
-								cg.predictedVehicleState.vehOrientation[1]));
+						            AngleSubtract(oldVehicleState.vehOrientation[1],
+						                          cg.predictedVehicleState.vehOrientation[1]));
 						trap->Print("VEH roll prediction miss: %f\n",
-							AngleSubtract(oldVehicleState.vehOrientation[2],
-								cg.predictedVehicleState.vehOrientation[2]));
+						            AngleSubtract(oldVehicleState.vehOrientation[2],
+						                          cg.predictedVehicleState.vehOrientation[2]));
 					}
 				}
 			}
@@ -1323,8 +1330,8 @@ void CG_PredictPlayerState(void)
 				vec3_t delta;
 				vec3_t adjusted;
 				CG_AdjustPositionForMover(cg.predictedPlayerState.origin,
-					cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime,
-					adjusted);
+				                          cg.predictedPlayerState.groundEntityNum, cg.physicsTime, cg.oldTime,
+				                          adjusted);
 
 				if (cg_showMiss.integer)
 				{
@@ -1509,7 +1516,7 @@ void CG_PredictPlayerState(void)
 				*/
 				if (cg_showVehBounds.integer)
 				{
-					vec3_t NPCDEBUG_RED = { 1.0, 0.0, 0.0 };
+					vec3_t NPCDEBUG_RED = {1.0, 0.0, 0.0};
 					vec3_t absmin, absmax;
 					VectorAdd(cg_vehPmove.ps->origin, cg_vehPmove.mins, absmin);
 					VectorAdd(cg_vehPmove.ps->origin, cg_vehPmove.maxs, absmax);
@@ -1544,15 +1551,15 @@ void CG_PredictPlayerState(void)
 	if (CG_Piloting(cg.predictedPlayerState.m_iVehicleNum))
 	{
 		CG_AdjustPositionForMover(cg.predictedVehicleState.origin,
-			cg.predictedVehicleState.groundEntityNum,
-			cg.physicsTime, cg.time, cg.predictedVehicleState.origin);
+		                          cg.predictedVehicleState.groundEntityNum,
+		                          cg.physicsTime, cg.time, cg.predictedVehicleState.origin);
 	}
 	else
 	{
 		// adjust for the movement of the groundentity
 		CG_AdjustPositionForMover(cg.predictedPlayerState.origin,
-			cg.predictedPlayerState.groundEntityNum,
-			cg.physicsTime, cg.time, cg.predictedPlayerState.origin);
+		                          cg.predictedPlayerState.groundEntityNum,
+		                          cg.physicsTime, cg.time, cg.predictedPlayerState.origin);
 	}
 
 	if (cg_showMiss.integer)

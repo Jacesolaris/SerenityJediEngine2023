@@ -249,7 +249,7 @@ void NPC_BSAnimal_Default(void)
 					else
 					{
 						STEER::Seek(NPC, leader->followPos, fabsf(followDist) / 2.0f/*slowing distance*/, 1.0f/*wight*/,
-							leader->resultspeed);
+						            leader->resultspeed);
 					}
 				}
 
@@ -335,8 +335,8 @@ void NPC_BSAnimal_Default(void)
 						{
 							NPCInfo->investigateDebounceTime = level.time + Q_irand(2000, 6000);
 							NPC_SetAnim(NPC, SETANIM_BOTH,
-								Q_irand(0, 1) == 0 ? BOTH_GUARD_LOOKAROUND1 : BOTH_GUARD_IDLE1,
-								SETANIM_FLAG_NORMAL);
+							            Q_irand(0, 1) == 0 ? BOTH_GUARD_LOOKAROUND1 : BOTH_GUARD_IDLE1,
+							            SETANIM_FLAG_NORMAL);
 						}
 					}
 

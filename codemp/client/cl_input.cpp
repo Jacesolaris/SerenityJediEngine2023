@@ -547,7 +547,7 @@ constexpr auto AUTOMAP_KEY_DEFAULTVIEW = 7;
 
 static autoMapInput_t g_clAutoMapInput;
 //intercept certain keys during automap mode
-static void CL_AutoMapKey(int autoMapKey, qboolean up)
+static void CL_AutoMapKey(const int autoMapKey, const qboolean up)
 {
 	const auto data = (autoMapInput_t*)cl.mSharedMemory;
 
@@ -988,7 +988,7 @@ void CL_KeyMove(usercmd_t* cmd)
 CL_MouseEvent
 =================
 */
-void CL_MouseEvent(int dx, int dy, int time)
+void CL_MouseEvent(const int dx, const int dy, int time)
 {
 	if (g_clAutoMapMode && cls.cgameStarted)
 	{
@@ -1025,7 +1025,7 @@ CL_JoystickEvent
 Joystick values stay set until changed
 =================
 */
-void CL_JoystickEvent(int axis, int value, int time)
+void CL_JoystickEvent(const int axis, const int value, int time)
 {
 	if (axis < 0 || axis >= MAX_JOYSTICK_AXIS)
 	{
@@ -1339,8 +1339,8 @@ void CL_CmdButtons(usercmd_t* cmd)
 CL_FinishMove
 ==============
 */
-vec3_t cl_sendAngles = { 0 };
-vec3_t cl_lastViewAngles = { 0 };
+vec3_t cl_sendAngles = {0};
+vec3_t cl_lastViewAngles = {0};
 
 void CL_FinishMove(usercmd_t* cmd)
 {

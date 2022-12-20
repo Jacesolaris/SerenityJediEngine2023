@@ -34,7 +34,7 @@ unsigned int timeGetTime(void);
 #include "../sv_gameapi.h"
 
 //Global navigator
-CNavigator		navigator;
+CNavigator navigator;
 //this was in the game before. But now it's all handled in the engine, and we make navigator. calls
 //via traps.
 
@@ -52,8 +52,8 @@ void NAV_Free()
 	navigator.Free();
 }
 
-static vec3_t	wpMaxs = { 16,  16, 32 };
-static vec3_t	wpMins = { -16, -16, -24 + STEPSIZE };//WTF:  was 16??!!!
+static vec3_t wpMaxs = {16, 16, 32};
+static vec3_t wpMins = {-16, -16, -24 + STEPSIZE}; //WTF:  was 16??!!!
 
 static byte CHECKED_NO = 0;
 static byte CHECKED_FAILED = 1;
@@ -82,7 +82,7 @@ CEdge
 -------------------------
 */
 
-CEdge::CEdge(int first, int second, int cost)
+CEdge::CEdge(const int first, const int second, const int cost)
 {
 	m_first = first;
 	m_second = second;
@@ -119,9 +119,9 @@ Create
 -------------------------
 */
 
-CNode* CNode::Create(vec3_t position, int flags, int radius, int ID)
+CNode* CNode::Create(vec3_t position, const int flags, const int radius, const int ID)
 {
-	CNode* node = new CNode;
+	auto node = new CNode;
 
 	VectorCopy(position, node->m_position);
 
@@ -149,16 +149,18 @@ AddEdge
 -------------------------
 */
 
-void CNode::AddEdge(int ID, int cost, int flags)
+void CNode::AddEdge(const int ID, const int cost, const int flags)
 {
 	if (m_numEdges)
-	{//already have at least 1
+	{
+		//already have at least 1
 		//see if it exists already
-		edge_v::iterator	ei;
+		edge_v::iterator ei;
 		STL_ITERATE(ei, m_edges)
 		{
 			if ((*ei).ID == ID)
-			{//found it
+			{
+				//found it
 				(*ei).cost = cost;
 				(*ei).flags = flags;
 				return;
@@ -166,7 +168,7 @@ void CNode::AddEdge(int ID, int cost, int flags)
 		}
 	}
 
-	edge_t	edge;
+	edge_t edge;
 
 	edge.ID = ID;
 	edge.cost = cost;
@@ -176,7 +178,7 @@ void CNode::AddEdge(int ID, int cost, int flags)
 
 	m_numEdges++;
 
-	assert(m_numEdges < 9);//8 is the max
+	assert(m_numEdges < 9); //8 is the max
 }
 
 /*
@@ -185,11 +187,11 @@ GetEdge
 -------------------------
 */
 
-int CNode::GetEdgeNumToNode(int ID)
+int CNode::GetEdgeNumToNode(const int ID)
 {
 	int count = 0;
 
-	edge_v::iterator	ei;
+	edge_v::iterator ei;
 	STL_ITERATE(ei, m_edges)
 	{
 		if ((*ei).ID == ID)
@@ -208,7 +210,7 @@ AddRank
 -------------------------
 */
 
-void CNode::AddRank(int ID, int rank) const
+void CNode::AddRank(const int ID, const int rank) const
 {
 	assert(m_ranks);
 
@@ -222,7 +224,8 @@ Draw
 */
 
 void CNode::Draw(qboolean showRadius)
-{ //rwwFIXMEFIXME: ...
+{
+	//rwwFIXMEFIXME: ...
 	/*
 	CG_DrawNode( m_position, NODE_NORMAL );
 	if( showRadius )
@@ -238,14 +241,14 @@ GetEdge
 -------------------------
 */
 
-int CNode::GetEdge(int edgeNum)
+int CNode::GetEdge(const int edgeNum)
 {
 	if (edgeNum > m_numEdges)
 		return -1;
 
 	int count = 0;
 
-	edge_v::iterator	ei;
+	edge_v::iterator ei;
 	STL_ITERATE(ei, m_edges)
 	{
 		if (count == edgeNum)
@@ -265,14 +268,14 @@ GetEdgeCost
 -------------------------
 */
 
-int CNode::GetEdgeCost(int edgeNum)
+int CNode::GetEdgeCost(const int edgeNum)
 {
 	if (edgeNum > m_numEdges)
 		return Q3_INFINITE; // return -1;
 
 	int count = 0;
 
-	edge_v::iterator	ei;
+	edge_v::iterator ei;
 	STL_ITERATE(ei, m_edges)
 	{
 		if (count == edgeNum)
@@ -292,14 +295,14 @@ GetEdgeFlags
 -------------------------
 */
 
-byte CNode::GetEdgeFlags(int edgeNum)
+byte CNode::GetEdgeFlags(const int edgeNum)
 {
 	if (edgeNum > m_numEdges)
 		return 0;
 
 	int count = 0;
 
-	edge_v::iterator	ei;
+	edge_v::iterator ei;
 	STL_ITERATE(ei, m_edges)
 	{
 		if (count == edgeNum)
@@ -319,14 +322,14 @@ SetEdgeFlags
 -------------------------
 */
 
-void CNode::SetEdgeFlags(int edgeNum, int newFlags)
+void CNode::SetEdgeFlags(const int edgeNum, const int newFlags)
 {
 	if (edgeNum > m_numEdges)
 		return;
 
 	int count = 0;
 
-	edge_v::iterator	ei;
+	edge_v::iterator ei;
 	STL_ITERATE(ei, m_edges)
 	{
 		if (count == edgeNum)
@@ -338,13 +341,14 @@ void CNode::SetEdgeFlags(int edgeNum, int newFlags)
 		count++;
 	}
 }
+
 /*
 -------------------------
 InitRanks
 -------------------------
 */
 
-void CNode::InitRanks(int size)
+void CNode::InitRanks(const int size)
 {
 	//Clear it if it's already allocated
 	if (m_ranks != nullptr)
@@ -364,7 +368,7 @@ GetRank
 -------------------------
 */
 
-int CNode::GetRank(int ID) const
+int CNode::GetRank(const int ID) const
 {
 	assert(m_ranks);
 
@@ -377,7 +381,7 @@ Save
 -------------------------
 */
 
-int	CNode::Save(int numNodes, fileHandle_t file)
+int CNode::Save(const int numNodes, const fileHandle_t file)
 {
 	//Write out the header
 	constexpr auto header = NODE_HEADER_ID;
@@ -395,7 +399,7 @@ int	CNode::Save(int numNodes, fileHandle_t file)
 	//Write out the edge information
 	FS_Write(&m_numEdges, sizeof m_numEdges, file);
 
-	edge_v::iterator	ei;
+	edge_v::iterator ei;
 	STL_ITERATE(ei, m_edges)
 	{
 		FS_Write(&*ei, sizeof(edge_t), file);
@@ -418,7 +422,7 @@ Load
 -------------------------
 */
 
-int CNode::Load(int numNodes, fileHandle_t file)
+int CNode::Load(int numNodes, const fileHandle_t file)
 {
 	unsigned int header;
 	FS_Read(&header, sizeof header, file);
@@ -441,7 +445,7 @@ int CNode::Load(int numNodes, fileHandle_t file)
 
 	for (i = 0; i < m_numEdges; i++)
 	{
-		edge_t	edge;
+		edge_t edge;
 
 		FS_Read(&edge, sizeof(edge_t), file);
 
@@ -449,7 +453,7 @@ int CNode::Load(int numNodes, fileHandle_t file)
 	}
 
 	//Read the node ranks
-	int	numRanks;
+	int numRanks;
 
 	FS_Read(&numRanks, sizeof numRanks, file);
 
@@ -489,9 +493,9 @@ FlagAllNodes
 -------------------------
 */
 
-void CNavigator::FlagAllNodes(int newFlag)
+void CNavigator::FlagAllNodes(const int newFlag)
 {
-	node_v::iterator	ni;
+	node_v::iterator ni;
 
 	STL_ITERATE(ni, m_nodes)
 	{
@@ -505,7 +509,7 @@ GetChar
 -------------------------
 */
 
-char CNavigator::GetChar(fileHandle_t file)
+char CNavigator::GetChar(const fileHandle_t file)
 {
 	char value;
 
@@ -520,7 +524,7 @@ GetInt
 -------------------------
 */
 
-int	CNavigator::GetInt(fileHandle_t file)
+int CNavigator::GetInt(const fileHandle_t file)
 {
 	int value;
 
@@ -535,7 +539,7 @@ GetFloat
 -------------------------
 */
 
-float CNavigator::GetFloat(fileHandle_t file)
+float CNavigator::GetFloat(const fileHandle_t file)
 {
 	float value;
 
@@ -550,7 +554,7 @@ GetLong
 -------------------------
 */
 
-long CNavigator::GetLong(fileHandle_t file)
+long CNavigator::GetLong(const fileHandle_t file)
 {
 	int value;
 
@@ -583,11 +587,11 @@ Free
 
 void CNavigator::Free(void)
 {
-	node_v::iterator	ni;
+	node_v::iterator ni;
 
 	STL_ITERATE(ni, m_nodes)
 	{
-		delete* ni;
+		delete*ni;
 	}
 
 	m_nodes.clear();
@@ -600,9 +604,9 @@ Load
 -------------------------
 */
 
-bool CNavigator::Load(const char* filename, int checksum)
+bool CNavigator::Load(const char* filename, const int checksum)
 {
-	fileHandle_t	file;
+	fileHandle_t file;
 
 	// Free previous map just in case. SerenityJediEngine2023-jampgame doesn't do this by default...
 	Free();
@@ -665,9 +669,9 @@ Save
 -------------------------
 */
 
-bool CNavigator::Save(const char* filename, int checksum)
+bool CNavigator::Save(const char* filename, const int checksum)
 {
-	fileHandle_t	file;
+	fileHandle_t file;
 
 	//Attempt to load the file
 	FS_FOpenFileByMode(va("maps/%s.nav", filename), &file, FS_WRITE);
@@ -683,13 +687,13 @@ bool CNavigator::Save(const char* filename, int checksum)
 	//Write out the checksum
 	FS_Write(&checksum, sizeof checksum, file);
 
-	const int	numNodes = m_nodes.size();
+	const int numNodes = m_nodes.size();
 
 	//Write out the number of nodes to follow
 	FS_Write(&numNodes, sizeof numNodes, file);
 
 	//Write out all the nodes
-	node_v::iterator	ni;
+	node_v::iterator ni;
 
 	STL_ITERATE(ni, m_nodes)
 	{
@@ -710,7 +714,7 @@ AddRawPoint
 -------------------------
 */
 
-int CNavigator::AddRawPoint(vec3_t point, int flags, int radius)
+int CNavigator::AddRawPoint(vec3_t point, const int flags, const int radius)
 {
 	CNode* node = CNode::Create(point, flags, radius, m_nodes.size());
 
@@ -733,11 +737,11 @@ GetEdgeCost
 -------------------------
 */
 
-int	CNavigator::GetEdgeCost(CNode* first, CNode* second)
+int CNavigator::GetEdgeCost(CNode* first, CNode* second)
 {
-	trace_t	trace;
-	vec3_t	start, end;
-	vec3_t	mins, maxs;
+	trace_t trace;
+	vec3_t start, end;
+	vec3_t mins, maxs;
 
 	//Setup the player size
 	VectorSet(mins, -8, -8, -8);
@@ -756,10 +760,11 @@ int	CNavigator::GetEdgeCost(CNode* first, CNode* second)
 	return Distance(start, end);
 }
 
-void CNavigator::SetEdgeCost(int ID1, int ID2, int cost) const
+void CNavigator::SetEdgeCost(const int ID1, const int ID2, int cost) const
 {
 	if (ID1 == -1 || ID2 == -1)
-	{//not valid nodes, must have come from the ClearAllFailedEdges initization-type calls
+	{
+		//not valid nodes, must have come from the ClearAllFailedEdges initization-type calls
 		return;
 	}
 
@@ -767,9 +772,10 @@ void CNavigator::SetEdgeCost(int ID1, int ID2, int cost) const
 	CNode* node2 = m_nodes[ID2];
 
 	if (cost == -1)
-	{//they want us to calc it
+	{
+		//they want us to calc it
 		//FIXME: can we just remember this instead of recalcing every time?
-		vec3_t	pos1, pos2;
+		vec3_t pos1, pos2;
 
 		node1->GetPosition(pos1);
 		node2->GetPosition(pos2);
@@ -787,7 +793,7 @@ AddNodeEdges
 -------------------------
 */
 
-void CNavigator::AddNodeEdges(CNode* node, int addDist, edge_l& edgeList, bool* checkedNodes) const
+void CNavigator::AddNodeEdges(CNode* node, const int addDist, edge_l& edgeList, bool* checkedNodes) const
 {
 	//Add all edge
 	for (int i = 0; i < node->GetNumEdges(); i++)
@@ -815,12 +821,12 @@ CalculatePath
 
 void CNavigator::CalculatePath(CNode* node) const
 {
-	int	curRank = 0;
+	int curRank = 0;
 
-	CPriorityQueue* pathList = new CPriorityQueue();
+	auto pathList = new CPriorityQueue();
 
 	//Init the completion table
-	byte* checked = new byte[m_nodes.size()];
+	auto checked = new byte[m_nodes.size()];
 	memset(checked, 0, m_nodes.size());
 
 	//Mark this node as checked
@@ -859,7 +865,7 @@ void CNavigator::CalculatePath(CNode* node) const
 			if (checked[addNode->GetID()])
 				continue;
 
-			const int	newDist = (*test).m_cost + testNode->GetEdgeCost(i);
+			const int newDist = (*test).m_cost + testNode->GetEdgeCost(i);
 			pathList->Push(new CEdge(addNode->GetID(), (*test).m_second, newDist));
 
 			checked[addNode->GetID()] = true;
@@ -878,7 +884,7 @@ void CNavigator::CalculatePath(CNode* node) const
 CalculatePaths
 -------------------------
 */
-void CNavigator::CalculatePaths(qboolean recalc)
+void CNavigator::CalculatePaths(const qboolean recalc)
 {
 #if _HARD_CONNECT
 #else
@@ -895,7 +901,7 @@ void CNavigator::CalculatePaths(qboolean recalc)
 		CalculatePath(node);
 	}
 
-	if (!recalc)	//Mike says doesn't need to happen on recalc
+	if (!recalc) //Mike says doesn't need to happen on recalc
 	{
 		GVM_NAV_FindCombatPointWaypoints();
 	}
@@ -911,9 +917,9 @@ ShowNodes
 
 void CNavigator::ShowNodes(void)
 {
-	node_v::iterator	ni;
+	node_v::iterator ni;
 
-	float	dist;
+	float dist;
 
 	STL_ITERATE(ni, m_nodes)
 	{
@@ -941,13 +947,13 @@ ShowEdges
 -------------------------
 */
 
-using drawMap_m = std::map < int, bool >;
+using drawMap_m = std::map<int, bool>;
 
 void CNavigator::ShowEdges(void)
 {
-	node_v::iterator	ni;
+	node_v::iterator ni;
 
-	drawMap_m* drawMap = new drawMap_m[m_nodes.size()];
+	auto drawMap = new drawMap_m[m_nodes.size()];
 
 	STL_ITERATE(ni, m_nodes)
 	{
@@ -1008,7 +1014,7 @@ void CNavigator::ShowEdges(void)
 	delete[] drawMap;
 }
 
-int CNavigator::GetNodeRadius(int nodeID) const
+int CNavigator::GetNodeRadius(const int nodeID) const
 {
 	if (m_nodes.size() == 0)
 		return 0;
@@ -1017,8 +1023,8 @@ int CNavigator::GetNodeRadius(int nodeID) const
 
 void CNavigator::CheckBlockedEdges(void)
 {
-	trace_t	trace;
-	node_v::iterator	ni;
+	trace_t trace;
+	node_v::iterator ni;
 
 	//Go through all edges and test the ones that were blocked
 	STL_ITERATE(ni, m_nodes)
@@ -1041,21 +1047,27 @@ void CNavigator::CheckBlockedEdges(void)
 				end->GetPosition(p2);
 
 				//FIXME: can't we just store the trace.entityNum from the HardConnect trace?  So we don't have to do another trace here...
-				SV_Trace(&trace, p1, wpMins, wpMaxs, p2, ENTITYNUM_NONE, MASK_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 10);
+				SV_Trace(&trace, p1, wpMins, wpMaxs, p2, ENTITYNUM_NONE,
+				         MASK_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 10);
 
-				if (trace.entityNum < ENTITYNUM_WORLD && (trace.fraction < 1.0f || trace.startsolid == qtrue || trace.allsolid == qtrue))
-				{//could be assumed, since failed before
+				if (trace.entityNum < ENTITYNUM_WORLD && (trace.fraction < 1.0f || trace.startsolid == qtrue || trace.
+					allsolid == qtrue))
+				{
+					//could be assumed, since failed before
 					if (GVM_NAV_EntIsDoor(trace.entityNum))
-					{//door
+					{
+						//door
 						if (!GVM_NAV_EntIsUnlockedDoor(trace.entityNum))
-						{//locked door
+						{
+							//locked door
 							failed = qtrue;
 						}
 					}
 					else
 					{
 						if (GVM_NAV_EntIsBreakable(trace.entityNum))
-						{//do same for breakable brushes/models/glass?
+						{
+							//do same for breakable brushes/models/glass?
 							failed = qtrue;
 						}
 						else if (GVM_NAV_EntIsRemovableUsable(trace.entityNum))
@@ -1063,10 +1075,12 @@ void CNavigator::CheckBlockedEdges(void)
 							failed = qtrue;
 						}
 						else if (trace.allsolid || trace.startsolid)
-						{//FIXME: the entitynum would be none here, so how do we know if this is stuck inside an ent or the world?
+						{
+							//FIXME: the entitynum would be none here, so how do we know if this is stuck inside an ent or the world?
 						}
 						else
-						{//FIXME: what about func_plats and scripted movers?
+						{
+							//FIXME: what about func_plats and scripted movers?
 						}
 					}
 				}
@@ -1089,21 +1103,22 @@ HardConnect
 -------------------------
 */
 
-void CNavigator::HardConnect(int first, int second) const
+void CNavigator::HardConnect(const int first, const int second) const
 {
 	CNode* start = m_nodes[first];
 	CNode* end = m_nodes[second];
 
-	vec3_t	p1, p2;
+	vec3_t p1, p2;
 
 	start->GetPosition(p1);
 	end->GetPosition(p2);
 
-	trace_t	trace;
+	trace_t trace;
 
-	int		flags = EFLAG_NONE;
+	int flags = EFLAG_NONE;
 
-	SV_Trace(&trace, p1, wpMins, wpMaxs, p2, ENTITYNUM_NONE, MASK_SOLID | CONTENTS_BOTCLIP | CONTENTS_MONSTERCLIP, qfalse, 0, 10);
+	SV_Trace(&trace, p1, wpMins, wpMaxs, p2, ENTITYNUM_NONE, MASK_SOLID | CONTENTS_BOTCLIP | CONTENTS_MONSTERCLIP,
+	         qfalse, 0, 10);
 
 	const int cost = Distance(p1, p2);
 
@@ -1124,9 +1139,10 @@ TestNodePath
 -------------------------
 */
 
-int CNavigator::TestNodePath(sharedEntity_t* ent, int okToHitEntNum, vec3_t position, qboolean includeEnts)
-{ //rwwFIXMEFIXME: Share clipmask?
-	int clipmask = MASK_SOLID;//ent->clipmask;
+int CNavigator::TestNodePath(sharedEntity_t* ent, const int okToHitEntNum, vec3_t position, const qboolean includeEnts)
+{
+	//rwwFIXMEFIXME: Share clipmask?
+	int clipmask = MASK_SOLID; //ent->clipmask;
 
 	if (!includeEnts)
 	{
@@ -1156,7 +1172,7 @@ TestBestFirst
 -------------------------
 */
 
-int	CNavigator::TestBestFirst(sharedEntity_t* ent, int lastID, int flags) const
+int CNavigator::TestBestFirst(sharedEntity_t* ent, const int lastID, int flags) const
 {
 	//Must be a valid one to begin with
 	if (lastID == NODE_NONE)
@@ -1166,9 +1182,9 @@ int	CNavigator::TestBestFirst(sharedEntity_t* ent, int lastID, int flags) const
 		return NODE_NONE;
 
 	//Get the info
-	vec3_t	nodePos;
+	vec3_t nodePos;
 	CNode* node = m_nodes[lastID];
-	const int		numEdges = node->GetNumEdges();
+	const int numEdges = node->GetNumEdges();
 
 	node->GetPosition(nodePos);
 
@@ -1195,7 +1211,8 @@ int	CNavigator::TestBestFirst(sharedEntity_t* ent, int lastID, int flags) const
 		if (dist < bestDist)
 		{
 			//See if this node is valid
-			if (CheckedNode(testNode->GetID(), ent->s.number) == CHECKED_PASSED || TestNodePath(ent, ENTITYNUM_NONE, nodePos, qtrue))
+			if (CheckedNode(testNode->GetID(), ent->s.number) == CHECKED_PASSED || TestNodePath(
+				ent, ENTITYNUM_NONE, nodePos, qtrue))
 			{
 				bestDist = dist;
 				bestNode = testNode->GetID();
@@ -1221,10 +1238,10 @@ CollectNearestNodes
 #define NODE_COLLECT_RADIUS	512		//Default radius to search for nodes in
 #define NODE_COLLECT_RADIUS_SQR		( NODE_COLLECT_RADIUS * NODE_COLLECT_RADIUS )
 
-int CNavigator::CollectNearestNodes(vec3_t origin, int radius, int maxCollect, nodeChain_l& nodeChain)
+int CNavigator::CollectNearestNodes(vec3_t origin, const int radius, const int maxCollect, nodeChain_l& nodeChain)
 {
-	node_v::iterator	ni;
-	int					collected = 0;
+	node_v::iterator ni;
+	int collected = 0;
 
 	//Get a distance rating for each node in the system
 	STL_ITERATE(ni, m_nodes)
@@ -1239,8 +1256,8 @@ int CNavigator::CollectNearestNodes(vec3_t origin, int radius, int maxCollect, n
 		if (dist > static_cast<float>(radius * radius))
 			continue;
 
-		nodeList_t				nChain;
-		nodeChain_l::iterator	nci;
+		nodeList_t nChain;
+		nodeChain_l::iterator nci;
 
 		//Always add the first node
 		if (nodeChain.size() == 0)
@@ -1290,7 +1307,7 @@ int CNavigator::CollectNearestNodes(vec3_t origin, int radius, int maxCollect, n
 	return collected;
 }
 
-int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal, int flags)
+int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal, const int flags)
 {
 	//Must have nodes
 	if (m_nodes.size() == 0)
@@ -1298,19 +1315,19 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 
 #define	MAX_Z_DELTA	18
 
-	nodeChain_l				nodeChain;
-	nodeChain_l::iterator	nci;
-	nodeChain_l				nodeChain2;
-	nodeChain_l::iterator	nci2;
+	nodeChain_l nodeChain;
+	nodeChain_l::iterator nci;
+	nodeChain_l nodeChain2;
+	nodeChain_l::iterator nci2;
 
 	//Collect all nodes within a certain radius
 	CollectNearestNodes(ent->r.currentOrigin, NODE_COLLECT_RADIUS, NODE_COLLECT_MAX, nodeChain);
 	CollectNearestNodes(goal->r.currentOrigin, NODE_COLLECT_RADIUS, NODE_COLLECT_MAX, nodeChain2);
 
-	int					radius;
+	int radius;
 	int pathCost, bestCost = Q3_INFINITE;
-	int					nextNode = NODE_NONE, bestNode = NODE_NONE;
-	int					nodeFlags;
+	int nextNode = NODE_NONE, bestNode = NODE_NONE;
+	int nodeFlags;
 	//	bool				recalc = false;
 
 	ent->waypoint = NODE_NONE;
@@ -1326,14 +1343,17 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 		node->GetPosition(position);
 
 		if (CheckedNode(nodeNum, ent->s.number) == CHECKED_FAILED)
-		{//already checked this node against ent and it failed
+		{
+			//already checked this node against ent and it failed
 			continue;
 		}
 		if (CheckedNode(nodeNum, ent->s.number) == CHECKED_PASSED)
-		{//already checked this node against ent and it passed
+		{
+			//already checked this node against ent and it passed
 		}
 		else
-		{//haven't checked this node against ent yet
+		{
+			//haven't checked this node against ent yet
 			if (NodeFailed(ent, nodeNum))
 			{
 				SetCheckedNode(nodeNum, ent->s.number, CHECKED_FAILED);
@@ -1343,15 +1363,18 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 			radius = node->GetRadius();
 
 			//If we're not within the known clear radius of this node OR out of Z height range...
-			if (static_cast<int>((*nci).distance) >= radius * radius || fabs(position[2] - ent->r.currentOrigin[2]) >= MAX_Z_DELTA)
+			if (static_cast<int>((*nci).distance) >= radius * radius || fabs(position[2] - ent->r.currentOrigin[2]) >=
+				MAX_Z_DELTA)
 			{
 				//We're not *within* this node, so check clear path, etc.
 
 				//FIXME: any way to call G_FindClosestPointOnLineSegment and see if I can at least get to the waypoint's path
-				if (flags & NF_CLEAR_PATH)//|| flags & NF_CLEAR_LOS )
-				{//need a clear path or LOS
+				if (flags & NF_CLEAR_PATH) //|| flags & NF_CLEAR_LOS )
+				{
+					//need a clear path or LOS
 					if (!SV_inPVS(ent->r.currentOrigin, position))
-					{//not even potentially clear
+					{
+						//not even potentially clear
 						SetCheckedNode(nodeNum, ent->s.number, CHECKED_FAILED);
 						continue;
 					}
@@ -1366,7 +1389,7 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 						continue;
 					}
 				}
-			}//otherwise, inside the node so it must be clear (?)
+			} //otherwise, inside the node so it must be clear (?)
 			SetCheckedNode(nodeNum, ent->s.number, CHECKED_PASSED);
 		}
 
@@ -1418,14 +1441,17 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 
 			//okay, this is the shortest path we've found yet, check clear path, etc.
 			if (CheckedNode(nodeNum2, goal->s.number) == CHECKED_FAILED)
-			{//already checked this node against goal and it failed
+			{
+				//already checked this node against goal and it failed
 				continue;
 			}
 			if (CheckedNode(nodeNum2, goal->s.number) == CHECKED_PASSED)
-			{//already checked this node against goal and it passed
+			{
+				//already checked this node against goal and it passed
 			}
 			else
-			{//haven't checked this node against goal yet
+			{
+				//haven't checked this node against goal yet
 				if (NodeFailed(goal, nodeNum2))
 				{
 					SetCheckedNode(nodeNum2, goal->s.number, CHECKED_FAILED);
@@ -1434,14 +1460,17 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 				radius = node2->GetRadius();
 
 				//If we're not within the known clear radius of this node OR out of Z height range...
-				if (static_cast<int>((*nci2).distance) >= radius * radius || fabs(position2[2] - goal->r.currentOrigin[2]) >= MAX_Z_DELTA)
+				if (static_cast<int>((*nci2).distance) >= radius * radius || fabs(
+					position2[2] - goal->r.currentOrigin[2]) >= MAX_Z_DELTA)
 				{
 					//We're not *within* this node, so check clear path, etc.
 
-					if (flags & NF_CLEAR_PATH)//|| flags & NF_CLEAR_LOS )
-					{//need a clear path or LOS
+					if (flags & NF_CLEAR_PATH) //|| flags & NF_CLEAR_LOS )
+					{
+						//need a clear path or LOS
 						if (!SV_inPVS(goal->r.currentOrigin, position2))
-						{//not even potentially clear
+						{
+							//not even potentially clear
 							SetCheckedNode(nodeNum2, goal->s.number, CHECKED_FAILED);
 							continue;
 						}
@@ -1449,13 +1478,13 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 					//Do we need a clear path?
 					if (flags & NF_CLEAR_PATH)
 					{
-						if (TestNodePath(goal, ent->s.number, position2, qfalse) == false)//qtrue?
+						if (TestNodePath(goal, ent->s.number, position2, qfalse) == false) //qtrue?
 						{
 							SetCheckedNode(nodeNum2, goal->s.number, CHECKED_FAILED);
 							continue;
 						}
 					}
-				}//otherwise, inside the node so it must be clear (?)
+				} //otherwise, inside the node so it must be clear (?)
 				SetCheckedNode(nodeNum2, goal->s.number, CHECKED_PASSED);
 			}
 
@@ -1467,9 +1496,11 @@ int CNavigator::GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal
 	}
 
 	if (!d_altRoutes->integer)
-	{//bestNode would not have been set by GetBestNodeAltRoute above, so get it here
+	{
+		//bestNode would not have been set by GetBestNodeAltRoute above, so get it here
 		if (ent->waypoint != NODE_NONE && goal->waypoint != NODE_NONE)
-		{//have 2 valid waypoints which means a valid path
+		{
+			//have 2 valid waypoints which means a valid path
 			bestNode = GetBestNodeAltRoute(ent->waypoint, goal->waypoint, &bestCost, NODE_NONE);
 		}
 	}
@@ -1482,9 +1513,9 @@ GetNearestWaypoint
 -------------------------
 */
 
-int CNavigator::GetNearestNode(sharedEntity_t* ent, int lastID, int flags, int targetID)
+int CNavigator::GetNearestNode(sharedEntity_t* ent, const int lastID, const int flags, const int targetID)
 {
-	int	bestNode = NODE_NONE;
+	int bestNode = NODE_NONE;
 	//Must have nodes
 	if (m_nodes.size() == 0)
 		return NODE_NONE;
@@ -1496,16 +1527,16 @@ int CNavigator::GetNearestNode(sharedEntity_t* ent, int lastID, int flags, int t
 
 		if (bestNode != NODE_NONE)
 			return bestNode;
-	}//else can't rely on testing last, we want best to targetID
+	} //else can't rely on testing last, we want best to targetID
 
-/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
 
 #define	MAX_Z_DELTA	18
 
-/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
 
-	nodeChain_l				nodeChain;
-	nodeChain_l::iterator	nci;
+	nodeChain_l nodeChain;
+	nodeChain_l::iterator nci;
 
 	//Collect all nodes within a certain radius
 	CollectNearestNodes(ent->r.currentOrigin, NODE_COLLECT_RADIUS, NODE_COLLECT_MAX, nodeChain);
@@ -1549,7 +1580,7 @@ int CNavigator::GetNearestNode(sharedEntity_t* ent, int lastID, int flags, int t
 		//Do we need a clear path?
 		if (flags & NF_CLEAR_PATH)
 		{
-			if (TestNodePath(ent, ENTITYNUM_NONE, position, qfalse) == false)//qtrue?
+			if (TestNodePath(ent, ENTITYNUM_NONE, position, qfalse) == false) //qtrue?
 			{
 				SetCheckedNode((*nci).nodeID, ent->s.number, CHECKED_FAILED);
 				continue;
@@ -1580,7 +1611,8 @@ int CNavigator::GetNearestNode(sharedEntity_t* ent, int lastID, int flags, int t
 			}
 		}
 		else
-		{//first one we find is fine
+		{
+			//first one we find is fine
 			bestNode = (*nci).nodeID;
 			break;
 		}
@@ -1596,7 +1628,7 @@ ShowPath
 -------------------------
 */
 
-void CNavigator::ShowPath(int start, int end) const
+void CNavigator::ShowPath(const int start, const int end) const
 {
 	//Validate the start position
 	if (start < 0 || start >= static_cast<int>(m_nodes.size()))
@@ -1611,7 +1643,7 @@ void CNavigator::ShowPath(int start, int end) const
 
 	const CNode* moveNode = startNode;
 
-	int		runAway = 0;
+	int runAway = 0;
 
 	//Draw out our path
 	while (moveNode != endNode)
@@ -1650,19 +1682,20 @@ void CNavigator::ShowPath(int start, int end) const
 }
 
 static std::map<int, byte> CheckedNodes;
+
 void CNavigator::ClearCheckedNodes(void)
 {
 	CheckedNodes.clear();
 }
 
-byte CNavigator::CheckedNode(int wayPoint, int ent)
+byte CNavigator::CheckedNode(const int wayPoint, const int ent)
 {
 	if (wayPoint < 0 || wayPoint >= MAX_STORED_WAYPOINTS)
 	{
 		return CHECKED_NO;
 	}
 	assert(ent >= 0 && ent < MAX_GENTITIES);
-	const std::map<int, byte>::iterator f = CheckedNodes.find(wayPoint * MAX_GENTITIES + ent);
+	const auto f = CheckedNodes.find(wayPoint * MAX_GENTITIES + ent);
 	if (f != CheckedNodes.end())
 	{
 		return (*f).second;
@@ -1670,7 +1703,7 @@ byte CNavigator::CheckedNode(int wayPoint, int ent)
 	return CHECKED_NO;
 }
 
-void CNavigator::SetCheckedNode(int wayPoint, int ent, byte value)
+void CNavigator::SetCheckedNode(const int wayPoint, const int ent, const byte value)
 {
 	if (wayPoint < 0 || wayPoint >= MAX_STORED_WAYPOINTS)
 	{
@@ -1702,14 +1735,18 @@ void CNavigator::CheckFailedNodes(sharedEntity_t* ent) const
 				failed++;
 				//-1 because 0 is a valid node but also the default, so we add one when we add one
 				m_nodes[ent->failedWaypoints[j] - 1]->GetPosition(nodePos);
-				if (!GVM_NAV_ClearPathToPoint(ent->s.number, ent->r.mins, ent->r.maxs, nodePos, CONTENTS_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, ENTITYNUM_NONE))
-				{//no path clear of architecture, so clear this since we can't check against entities
+				if (!GVM_NAV_ClearPathToPoint(ent->s.number, ent->r.mins, ent->r.maxs, nodePos,
+				                              CONTENTS_SOLID | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, ENTITYNUM_NONE))
+				{
+					//no path clear of architecture, so clear this since we can't check against entities
 					ent->failedWaypoints[j] = 0;
 					failed--;
 				}
 				//have clear architectural path, now check against ents only
-				else if (GVM_NAV_ClearPathToPoint(ent->s.number, ent->r.mins, ent->r.maxs, nodePos, CONTENTS_BODY, ENTITYNUM_NONE))
-				{//clear of ents, too, so all clear, clear this one out
+				else if (GVM_NAV_ClearPathToPoint(ent->s.number, ent->r.mins, ent->r.maxs, nodePos, CONTENTS_BODY,
+				                                  ENTITYNUM_NONE))
+				{
+					//clear of ents, too, so all clear, clear this one out
 					ent->failedWaypoints[j] = 0;
 					failed--;
 				}
@@ -1726,14 +1763,15 @@ void CNavigator::CheckFailedNodes(sharedEntity_t* ent) const
 	}
 }
 
-void CNavigator::AddFailedNode(sharedEntity_t* ent, int nodeID)
+void CNavigator::AddFailedNode(sharedEntity_t* ent, const int nodeID)
 {
 	int j;
 	for (j = 0; j < MAX_FAILED_NODES; j++)
 	{
 		if (ent->failedWaypoints[j] == 0)
 		{
-			ent->failedWaypoints[j] = nodeID + 1;//+1 because 0 is the default value and that's a valid node, so we take the +1 out when we check the node above
+			ent->failedWaypoints[j] = nodeID + 1;
+			//+1 because 0 is the default value and that's a valid node, so we take the +1 out when we check the node above
 			if (!ent->failedWaypointCheckTime)
 			{
 				ent->failedWaypointCheckTime = svs.time + CHECK_FAILED_EDGE_INTITIAL;
@@ -1741,12 +1779,14 @@ void CNavigator::AddFailedNode(sharedEntity_t* ent, int nodeID)
 			return;
 		}
 		if (ent->failedWaypoints[j] == nodeID + 1)
-		{//already have this one marked as failed
+		{
+			//already have this one marked as failed
 			return;
 		}
 	}
-	if (j == MAX_FAILED_NODES)//check not needed, but...
-	{//ran out of failed nodes, get rid of first one, shift rest up
+	if (j == MAX_FAILED_NODES) //check not needed, but...
+	{
+		//ran out of failed nodes, get rid of first one, shift rest up
 		for (j = 0; j < MAX_FAILED_NODES - 1; j++)
 		{
 			ent->failedWaypoints[j] = ent->failedWaypoints[j + 1];
@@ -1759,7 +1799,7 @@ void CNavigator::AddFailedNode(sharedEntity_t* ent, int nodeID)
 	}
 }
 
-qboolean CNavigator::NodeFailed(sharedEntity_t* ent, int nodeID)
+qboolean CNavigator::NodeFailed(sharedEntity_t* ent, const int nodeID)
 {
 	for (const int failedWaypoint : ent->failedWaypoints)
 	{
@@ -1771,8 +1811,9 @@ qboolean CNavigator::NodeFailed(sharedEntity_t* ent, int nodeID)
 	return qfalse;
 }
 
-qboolean CNavigator::NodesAreNeighbors(int startID, int endID) const
-{//See if these 2 are neighbors
+qboolean CNavigator::NodesAreNeighbors(const int startID, const int endID) const
+{
+	//See if these 2 are neighbors
 	if (startID == endID)
 	{
 		return qfalse;
@@ -1833,7 +1874,7 @@ void CNavigator::ClearAllFailedEdges(void)
 	}
 }
 
-int CNavigator::EdgeFailed(int startID, int endID)
+int CNavigator::EdgeFailed(const int startID, const int endID)
 {
 	std::pair<EdgeMultimapIt, EdgeMultimapIt> findValue = m_edgeLookupMap.equal_range(startID);
 	while (findValue.first != findValue.second)
@@ -1881,16 +1922,18 @@ int CNavigator::EdgeFailed(int startID, int endID)
 
 void CNavigator::AddFailedEdge(int entID, int startID, int endID)
 {
-	int	j;//, nextID;
+	int j; //, nextID;
 
 	//Must have nodes
 	if (m_nodes.size() == 0)
 		return;
 
 	if (d_patched->integer)
-	{//use patch-style navigation
+	{
+		//use patch-style navigation
 		if (startID == endID)
-		{//not an edge!
+		{
+			//not an edge!
 			return;
 		}
 	}
@@ -2023,12 +2066,14 @@ qboolean CNavigator::CheckFailedEdge(failedEdge_t* failedEdge) const
 	{
 		if (failedEdge->startID != WAYPOINT_NONE)
 		{
-			vec3_t		start, end, mins, maxs;
-			int			ignore, clipmask;
-			const sharedEntity_t* ent = SV_GentityNum(failedEdge->entID); //(failedEdge->entID<ENTITYNUM_WORLD)?&g_entities[failedEdge->entID]:NULL;
-			int			hitEntNum;
+			vec3_t start, end, mins, maxs;
+			int ignore, clipmask;
+			const sharedEntity_t* ent = SV_GentityNum(failedEdge->entID);
+			//(failedEdge->entID<ENTITYNUM_WORLD)?&g_entities[failedEdge->entID]:NULL;
+			int hitEntNum;
 
-			if (!ent || /*!ent->inuse || !ent->client || ent->health <= 0*/ ent->s.eType != ET_PLAYER && ent->s.eType != ET_NPC ||
+			if (!ent || /*!ent->inuse || !ent->client || ent->health <= 0*/ ent->s.eType != ET_PLAYER && ent->s.eType !=
+				ET_NPC ||
 				ent->s.eFlags & EF_DEAD)
 			{
 				VectorSet(mins, -15, -15, DEFAULT_MINS_2 + STEPSIZE);
@@ -2042,11 +2087,12 @@ qboolean CNavigator::CheckFailedEdge(failedEdge_t* failedEdge) const
 				mins[2] += STEPSIZE;
 				VectorCopy(ent->r.maxs, maxs);
 				ignore = failedEdge->entID;
-				clipmask = MASK_SOLID;//ent->clipmask; //rwwFIXMEFIXME: share clipmask?
+				clipmask = MASK_SOLID; //ent->clipmask; //rwwFIXMEFIXME: share clipmask?
 			}
 
 			if (maxs[2] < mins[2])
-			{//don't invert bounding box
+			{
+				//don't invert bounding box
 				maxs[2] = mins[2];
 			}
 
@@ -2057,7 +2103,7 @@ qboolean CNavigator::CheckFailedEdge(failedEdge_t* failedEdge) const
 #if 0
 			hitEntNum = NAVNEW_ClearPathBetweenPoints(start, end, mins, maxs, ignore, clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP);//NOTE: should we really always include monsterclip (physically blocks NPCs) and botclip (do not enter)?
 #else
-			trace_t	trace;
+			trace_t trace;
 
 			//Test if they're even conceivably close to one another
 			if (!SV_inPVS(start, end))
@@ -2065,7 +2111,9 @@ qboolean CNavigator::CheckFailedEdge(failedEdge_t* failedEdge) const
 				return qfalse;
 			}
 
-			SV_Trace(&trace, start, mins, maxs, end, ignore, clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse, 0, 10);//NOTE: should we really always include monsterclip (physically blocks NPCs) and botclip (do not enter)?
+			SV_Trace(&trace, start, mins, maxs, end, ignore, clipmask | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, qfalse,
+			         0, 10);
+			//NOTE: should we really always include monsterclip (physically blocks NPCs) and botclip (do not enter)?
 
 			if (trace.startsolid == qtrue || trace.allsolid == qtrue)
 			{
@@ -2079,7 +2127,8 @@ qboolean CNavigator::CheckFailedEdge(failedEdge_t* failedEdge) const
 				hitEntNum = ENTITYNUM_NONE;
 			}
 			else if (hitEntNum == failedEdge->entID)
-			{//don't hit the person who initially marked the edge failed
+			{
+				//don't hit the person who initially marked the edge failed
 				hitEntNum = ENTITYNUM_NONE;
 			}
 			if (hitEntNum == ENTITYNUM_NONE)
@@ -2097,7 +2146,7 @@ qboolean CNavigator::CheckFailedEdge(failedEdge_t* failedEdge) const
 
 void CNavigator::CheckAllFailedEdges(void)
 {
-	qboolean		clearedAny = qfalse;
+	qboolean clearedAny = qfalse;
 
 	//Must have nodes
 	if (m_nodes.size() == 0)
@@ -2110,7 +2159,8 @@ void CNavigator::CheckAllFailedEdges(void)
 		clearedAny = CheckFailedEdge(failedEdge) ? qtrue : clearedAny;
 	}
 	if (clearedAny)
-	{//need to recalc the paths
+	{
+		//need to recalc the paths
 		if (pathsCalculated)
 		{
 			//reconnect the nodes and mark every node's flag NF_RECALC
@@ -2120,10 +2170,10 @@ void CNavigator::CheckAllFailedEdges(void)
 	}
 }
 
-qboolean CNavigator::RouteBlocked(int startID, int testEdgeID, int endID, int rejectRank)
+qboolean CNavigator::RouteBlocked(const int startID, const int testEdgeID, const int endID, const int rejectRank)
 {
 	int bestNextID = NODE_NONE;
-	int		bestRank = rejectRank;
+	int bestRank = rejectRank;
 
 	if (EdgeFailed(startID, testEdgeID) != -1)
 	{
@@ -2131,7 +2181,8 @@ qboolean CNavigator::RouteBlocked(int startID, int testEdgeID, int endID, int re
 	}
 
 	if (testEdgeID == endID)
-	{//Neighbors, checked out, all clear
+	{
+		//Neighbors, checked out, all clear
 		return qfalse;
 	}
 
@@ -2150,12 +2201,14 @@ qboolean CNavigator::RouteBlocked(int startID, int testEdgeID, int endID, int re
 			const int edgeID = next->GetEdge(i);
 
 			if (edgeID == lastID)
-			{//Don't backtrack
+			{
+				//Don't backtrack
 				continue;
 			}
 
 			if (edgeID == startID)
-			{//Don't loop around
+			{
+				//Don't loop around
 				continue;
 			}
 
@@ -2166,7 +2219,8 @@ qboolean CNavigator::RouteBlocked(int startID, int testEdgeID, int endID, int re
 			}
 
 			if (edgeID == endID)
-			{//We got there all clear!
+			{
+				//We got there all clear!
 				return qfalse;
 			}
 
@@ -2174,7 +2228,8 @@ qboolean CNavigator::RouteBlocked(int startID, int testEdgeID, int endID, int re
 			const int testRank = end->GetRank(edgeID);
 
 			if (testRank < 0)
-			{//No route this way
+			{
+				//No route this way
 				continue;
 			}
 
@@ -2203,7 +2258,7 @@ GetBestNodeAltRoute
 -------------------------
 */
 
-int CNavigator::GetBestNodeAltRoute(int startID, int endID, int* pathCost, int rejectID)
+int CNavigator::GetBestNodeAltRoute(const int startID, const int endID, int* pathCost, const int rejectID)
 {
 	//Must have nodes
 	if (m_nodes.size() == 0)
@@ -2229,10 +2284,10 @@ int CNavigator::GetBestNodeAltRoute(int startID, int endID, int* pathCost, int r
 
 	CNode* start = m_nodes[startID];
 
-	int		bestNode = -1;
-	int		bestRank = Q3_INFINITE;
+	int bestNode = -1;
+	int bestRank = Q3_INFINITE;
 	int rejectRank = Q3_INFINITE;
-	int		bestCost = Q3_INFINITE;
+	int bestCost = Q3_INFINITE;
 
 	*pathCost = 0;
 
@@ -2243,7 +2298,7 @@ int CNavigator::GetBestNodeAltRoute(int startID, int endID, int* pathCost, int r
 		{
 			if (start->GetEdge(i) == rejectID)
 			{
-				rejectRank = GetPathCost(startID, endID);//end->GetRank( start->GetEdge(i) );
+				rejectRank = GetPathCost(startID, endID); //end->GetRank( start->GetEdge(i) );
 				break;
 			}
 		}
@@ -2251,9 +2306,9 @@ int CNavigator::GetBestNodeAltRoute(int startID, int endID, int* pathCost, int r
 
 	for (int i = 0; i < start->GetNumEdges(); i++)
 	{
-		const int	edgeID = start->GetEdge(i);
+		const int edgeID = start->GetEdge(i);
 
-		const int testRank = GetPathCost(edgeID, endID);//end->GetRank( edgeID );
+		const int testRank = GetPathCost(edgeID, endID); //end->GetRank( edgeID );
 
 		//Make sure it's not worse than our reject rank
 		if (testRank >= rejectRank)
@@ -2296,6 +2351,7 @@ int CNavigator::GetBestNodeAltRoute(int startID, int endID, int* pathCost, int r
 
 	return bestNode;
 }
+
 /*
 -------------------------
 GetBestNodeAltRoute
@@ -2303,18 +2359,19 @@ overloaded so you don't have to pass a pathCost int pointer in
 -------------------------
 */
 
-int CNavigator::GetBestNodeAltRoute(int startID, int endID, int rejectID)
+int CNavigator::GetBestNodeAltRoute(const int startID, const int endID, const int rejectID)
 {
-	int	junk;
+	int junk;
 	return GetBestNodeAltRoute(startID, endID, &junk, rejectID);
 }
+
 /*
 -------------------------
 GetBestNode
 -------------------------
 */
 
-int CNavigator::GetBestNode(int startID, int endID, int rejectID) const
+int CNavigator::GetBestNode(const int startID, const int endID, const int rejectID) const
 {
 	//Validate the start position
 	if (startID < 0 || startID >= static_cast<int>(m_nodes.size()))
@@ -2330,8 +2387,8 @@ int CNavigator::GetBestNode(int startID, int endID, int rejectID) const
 	CNode* start = m_nodes[startID];
 	const CNode* end = m_nodes[endID];
 
-	int		bestNode = -1;
-	int		bestRank = Q3_INFINITE;
+	int bestNode = -1;
+	int bestRank = Q3_INFINITE;
 	int rejectRank = 0;
 
 	if (rejectID != WAYPOINT_NONE)
@@ -2348,7 +2405,7 @@ int CNavigator::GetBestNode(int startID, int endID, int rejectID) const
 
 	for (int i = 0; i < start->GetNumEdges(); i++)
 	{
-		const int	edgeID = start->GetEdge(i);
+		const int edgeID = start->GetEdge(i);
 
 		//Found one
 		if (edgeID == endID)
@@ -2381,7 +2438,7 @@ GetNodePosition
 -------------------------
 */
 
-int CNavigator::GetNodePosition(int nodeID, vec3_t out) const
+int CNavigator::GetNodePosition(const int nodeID, vec3_t out) const
 {
 	//Validate the number
 	if (nodeID < 0 || nodeID >= static_cast<int>(m_nodes.size()))
@@ -2400,7 +2457,7 @@ GetNodeNumEdges
 -------------------------
 */
 
-int CNavigator::GetNodeNumEdges(int nodeID) const
+int CNavigator::GetNodeNumEdges(const int nodeID) const
 {
 	if (nodeID < 0 || nodeID >= static_cast<int>(m_nodes.size()))
 		return -1;
@@ -2418,7 +2475,7 @@ GetNodeEdge
 -------------------------
 */
 
-int CNavigator::GetNodeEdge(int nodeID, int edge) const
+int CNavigator::GetNodeEdge(const int nodeID, const int edge) const
 {
 	if (nodeID < 0 || nodeID >= static_cast<int>(m_nodes.size()))
 		return -1;
@@ -2436,7 +2493,7 @@ Connected
 -------------------------
 */
 
-bool CNavigator::Connected(int startID, int endID) const
+bool CNavigator::Connected(const int startID, const int endID) const
 {
 	//Validate the start position
 	if (startID < 0 || startID >= static_cast<int>(m_nodes.size()))
@@ -2454,7 +2511,7 @@ bool CNavigator::Connected(int startID, int endID) const
 
 	for (int i = 0; i < start->GetNumEdges(); i++)
 	{
-		const int	edgeID = start->GetEdge(i);
+		const int edgeID = start->GetEdge(i);
 
 		//Found one
 		if (edgeID == endID)
@@ -2473,7 +2530,7 @@ GetPathCost
 -------------------------
 */
 
-unsigned int CNavigator::GetPathCost(int startID, int endID) const
+unsigned int CNavigator::GetPathCost(const int startID, const int endID) const
 {
 	//Validate the start position
 	if (startID < 0 || startID >= static_cast<int>(m_nodes.size()))
@@ -2486,7 +2543,8 @@ unsigned int CNavigator::GetPathCost(int startID, int endID) const
 	CNode* startNode = m_nodes[startID];
 
 	if (!startNode->GetNumEdges())
-	{//WTF?  Solitary waypoint!  Bad designer!
+	{
+		//WTF?  Solitary waypoint!  Bad designer!
 		return Q3_INFINITE; // return 0;
 	}
 
@@ -2494,9 +2552,9 @@ unsigned int CNavigator::GetPathCost(int startID, int endID) const
 
 	CNode* moveNode = startNode;
 
-	int		pathCost = 0;
+	int pathCost = 0;
 
-	int		dontScrewUp = 0;
+	int dontScrewUp = 0;
 
 	//Draw out our path
 	while (moveNode != endNode)
@@ -2507,7 +2565,7 @@ unsigned int CNavigator::GetPathCost(int startID, int endID) const
 
 		for (int i = 0; i < moveNode->GetNumEdges(); i++)
 		{
-			const int	edgeID = moveNode->GetEdge(i);
+			const int edgeID = moveNode->GetEdge(i);
 
 			//Done
 			if (edgeID == endID)
@@ -2539,7 +2597,8 @@ unsigned int CNavigator::GetPathCost(int startID, int endID) const
 		dontScrewUp++;
 
 		if (dontScrewUp > 40000)
-		{ //ok, I think something probably screwed up.
+		{
+			//ok, I think something probably screwed up.
 			break;
 		}
 	}
@@ -2553,7 +2612,7 @@ GetEdgeCost
 -------------------------
 */
 
-unsigned int CNavigator::GetEdgeCost(int startID, int endID) const
+unsigned int CNavigator::GetEdgeCost(const int startID, const int endID) const
 {
 	//Validate the start position
 	if (startID < 0 || startID >= static_cast<int>(m_nodes.size()))
@@ -2575,7 +2634,7 @@ GetProjectedNode
 -------------------------
 */
 
-int CNavigator::GetProjectedNode(vec3_t origin, int nodeID) const
+int CNavigator::GetProjectedNode(vec3_t origin, const int nodeID) const
 {
 	//Validate the start position
 	if (nodeID < 0 || nodeID >= static_cast<int>(m_nodes.size()))
@@ -2583,10 +2642,10 @@ int CNavigator::GetProjectedNode(vec3_t origin, int nodeID) const
 
 	CNode* node = m_nodes[nodeID];
 
-	float	bestDot = 0.0f;
-	int		bestNode = NODE_NONE;
+	float bestDot = 0.0f;
+	int bestNode = NODE_NONE;
 
-	vec3_t	targetDir, basePos;
+	vec3_t targetDir, basePos;
 
 	//Setup our target direction
 	node->GetPosition(basePos);
@@ -2603,7 +2662,7 @@ int CNavigator::GetProjectedNode(vec3_t origin, int nodeID) const
 		tempNode->GetPosition(tempPos);
 
 		VectorSubtract(tempPos, basePos, tempDir);
-		VectorNormalize(tempDir);	//FIXME: Retain the length here if you want it
+		VectorNormalize(tempDir); //FIXME: Retain the length here if you want it
 
 		const float dot = DotProduct(targetDir, tempDir);
 
@@ -2628,7 +2687,8 @@ int CNavigator::GetProjectedNode(vec3_t origin, int nodeID) const
 class NodeTotalGreater
 {
 public:
-	bool operator()(CEdge* first, CEdge* second) const {
+	bool operator()(CEdge* first, CEdge* second) const
+	{
 		return first->m_cost > second->m_cost;
 	}
 };
@@ -2647,7 +2707,7 @@ CPriorityQueue::~CPriorityQueue()
 //////////////////////////////////////////////////////////////////
 // Standard Iterative Search
 //////////////////////////////////////////////////////////////////
-CEdge* CPriorityQueue::Find(int npNum) const
+CEdge* CPriorityQueue::Find(const int npNum) const
 {
 	for (const auto& HeapIter : mHeap)
 	{
@@ -2696,11 +2756,12 @@ void CPriorityQueue::Push(CEdge* theEdge)
 //////////////////////////////////////////////////////////////////
 void CPriorityQueue::Update(CEdge* edge)
 {
-	for (std::vector<CEdge*>::iterator i = mHeap.begin(); i != mHeap.end(); ++i)
+	for (auto i = mHeap.begin(); i != mHeap.end(); ++i)
 	{
 		if ((*i)->m_first == edge->m_first)
-		{  //Found node - resort from this position in the mHeap
-		   //(its total value was changed before this function was called)
+		{
+			//Found node - resort from this position in the mHeap
+			//(its total value was changed before this function was called)
 			std::push_heap(mHeap.begin(), i + 1, NodeTotalGreater());
 			return;
 		}

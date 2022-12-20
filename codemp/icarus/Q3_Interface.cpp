@@ -49,7 +49,7 @@ extern qboolean COM_ParseString(char** data, char** s);
 
 //=======================================================================
 
-interface_export_t	interface_export;
+interface_export_t interface_export;
 
 /*
 ============
@@ -60,10 +60,11 @@ Q3_ReadScript
   Argument		: void **buf
 ============
 */
-extern int ICARUS_GetScript(const char* name, char** buf);	//g_icarus.cpp
+extern int ICARUS_GetScript(const char* name, char** buf); //g_icarus.cpp
 static int Q3_ReadScript(const char* name, void** buf)
 {
-	return ICARUS_GetScript(va("%s/%s", Q3_SCRIPT_DIR, name), reinterpret_cast<char**>(buf));	//get a (hopefully) cached file
+	return ICARUS_GetScript(va("%s/%s", Q3_SCRIPT_DIR, name), reinterpret_cast<char**>(buf));
+	//get a (hopefully) cached file
 }
 
 /*
@@ -77,8 +78,8 @@ Q3_CenterPrint
 */
 static void Q3_CenterPrint(const char* format, ...)
 {
-	va_list		argptr;
-	char		text[1024];
+	va_list argptr;
+	char text[1024];
 
 	va_start(argptr, format);
 	Q_vsnprintf(text, sizeof text, format, argptr);
@@ -87,7 +88,7 @@ static void Q3_CenterPrint(const char* format, ...)
 	// FIXME: added '!' so you can print something that's hasn't been precached, '@' searches only for precache text
 	// this is just a TEMPORARY placeholder until objectives are in!!!  -- dmv 11/26/01
 
-	if (text[0] == '@' || text[0] == '!')	// It's a key
+	if (text[0] == '@' || text[0] == '!') // It's a key
 	{
 		if (text[0] == '!')
 		{
@@ -98,7 +99,7 @@ static void Q3_CenterPrint(const char* format, ...)
 		SV_SendServerCommand(nullptr, "cp \"%s\"", text);
 	}
 
-	Q3_DebugPrint(WL_VERBOSE, "%s\n", text); 	// Just a developers note
+	Q3_DebugPrint(WL_VERBOSE, "%s\n", text); // Just a developers note
 }
 
 /*
@@ -119,7 +120,7 @@ void Q3_TaskIDClear(int* taskID)
 qboolean Q3_TaskIDPending( sharedEntity_t *ent, taskID_t taskType )
 -------------------------
 */
-qboolean Q3_TaskIDPending(const sharedEntity_t* ent, taskID_t taskType)
+qboolean Q3_TaskIDPending(const sharedEntity_t* ent, const taskID_t taskType)
 {
 	if (!gSequencers[ent->s.number] || !gTaskManagers[ent->s.number])
 	{
@@ -131,7 +132,7 @@ qboolean Q3_TaskIDPending(const sharedEntity_t* ent, taskID_t taskType)
 		return qfalse;
 	}
 
-	if (ent->taskID[taskType] >= 0)//-1 is none
+	if (ent->taskID[taskType] >= 0) //-1 is none
 	{
 		return qtrue;
 	}
@@ -144,7 +145,7 @@ qboolean Q3_TaskIDPending(const sharedEntity_t* ent, taskID_t taskType)
 void Q3_TaskIDComplete( sharedEntity_t *ent, taskID_t taskType )
 -------------------------
 */
-void Q3_TaskIDComplete(sharedEntity_t* ent, taskID_t taskType)
+void Q3_TaskIDComplete(sharedEntity_t* ent, const taskID_t taskType)
 {
 	if (taskType < TID_CHAN_VOICE || taskType >= NUM_TIDS)
 	{
@@ -152,11 +153,12 @@ void Q3_TaskIDComplete(sharedEntity_t* ent, taskID_t taskType)
 	}
 
 	if (gTaskManagers[ent->s.number] && Q3_TaskIDPending(ent, taskType))
-	{//Complete it
+	{
+		//Complete it
 		gTaskManagers[ent->s.number]->Completed(ent->taskID[taskType]);
 
 		//See if any other tasks have the name number and clear them so we don't complete more than once
-		const int	clearTask = ent->taskID[taskType];
+		const int clearTask = ent->taskID[taskType];
 		for (int& tid : ent->taskID)
 		{
 			if (tid == clearTask)
@@ -177,7 +179,7 @@ void Q3_SetTaskID( sharedEntity_t *ent, taskID_t taskType, int taskID )
 -------------------------
 */
 
-void Q3_TaskIDSet(sharedEntity_t* ent, taskID_t taskType, int taskID)
+void Q3_TaskIDSet(sharedEntity_t* ent, const taskID_t taskType, const int taskID)
 {
 	if (taskType < TID_CHAN_VOICE || taskType >= NUM_TIDS)
 	{
@@ -201,10 +203,11 @@ Q3_CheckStringCounterIncrement
 static float Q3_CheckStringCounterIncrement(const char* string)
 {
 	char* numString;
-	float	val = 0.0f;
+	float val = 0.0f;
 
 	if (string[0] == '+')
-	{//We want to increment whatever the value is by whatever follows the +
+	{
+		//We want to increment whatever the value is by whatever follows the +
 		if (string[1])
 		{
 			numString = const_cast<char*>(&string[1]);
@@ -212,7 +215,8 @@ static float Q3_CheckStringCounterIncrement(const char* string)
 		}
 	}
 	else if (string[0] == '-')
-	{//we want to decrement
+	{
+		//we want to decrement
 		if (string[1])
 		{
 			numString = const_cast<char*>(&string[1]);
@@ -232,7 +236,7 @@ Returns the sequencer of the entity by the given name
 */
 static sharedEntity_t* Q3_GetEntityByName(const char* name)
 {
-	char					temp[1024];
+	char temp[1024];
 
 	if (name == nullptr || name[0] == '\0')
 		return nullptr;
@@ -240,7 +244,7 @@ static sharedEntity_t* Q3_GetEntityByName(const char* name)
 	strncpy(temp, name, sizeof temp);
 	temp[sizeof temp - 1] = 0;
 
-	const entlist_t::iterator ei = ICARUS_EntList.find(Q_strupr(temp));
+	const auto ei = ICARUS_EntList.find(Q_strupr(temp));
 
 	if (ei == ICARUS_EntList.end())
 		return nullptr;
@@ -249,9 +253,9 @@ static sharedEntity_t* Q3_GetEntityByName(const char* name)
 
 	return ent;
 	// this now returns the ent instead of the sequencer -- dmv 06/27/01
-//	if (ent == NULL)
-//		return NULL;
-//	return gSequencers[ent->s.number];
+	//	if (ent == NULL)
+	//		return NULL;
+	//	return gSequencers[ent->s.number];
 }
 
 /*
@@ -273,9 +277,9 @@ Q3_PlaySound
 Plays a sound from an entity
 =============
 */
-static int Q3_PlaySound(int taskID, int entID, const char* name, const char* channel)
+static int Q3_PlaySound(const int taskID, const int entID, const char* name, const char* channel)
 {
-	T_G_ICARUS_PLAYSOUND* sharedMem = reinterpret_cast<T_G_ICARUS_PLAYSOUND*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_PLAYSOUND*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -298,8 +302,8 @@ Q3_SetVar
 */
 void Q3_SetVar(int taskID, int entID, const char* type_name, const char* data)
 {
-	const int	vret = Q3_VariableDeclared(type_name);
-	float	float_data;
+	const int vret = Q3_VariableDeclared(type_name);
+	float float_data;
 
 	if (vret != VTYPE_NONE)
 	{
@@ -327,7 +331,7 @@ void Q3_SetVar(int taskID, int entID, const char* type_name, const char* data)
 		case VTYPE_VECTOR:
 			Q3_SetVectorVariable(type_name, data);
 			break;
-		default:;
+		default: ;
 		}
 
 		return;
@@ -347,9 +351,9 @@ Q3_Set
   Argument		: const char *data
 ============
 */
-static void Q3_Set(int taskID, int entID, const char* type_name, const char* data)
+static void Q3_Set(const int taskID, const int entID, const char* type_name, const char* data)
 {
-	T_G_ICARUS_SET* sharedMem = reinterpret_cast<T_G_ICARUS_SET*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_SET*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -374,12 +378,12 @@ Q3_Evaluate
   Argument		: int operatorType
 ============
 */
-static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, int operatorType)
+static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, const int operatorType)
 {
-	float	f1 = 0, f2 = 0;
-	vec3_t	v1, v2;
-	const char* c1 = nullptr, * c2 = nullptr;
-	int		i1 = 0, i2 = 0;
+	float f1 = 0, f2 = 0;
+	vec3_t v1, v2;
+	const char *c1 = nullptr, *c2 = nullptr;
+	int i1 = 0, i2 = 0;
 
 	//Always demote to int on float to integer comparisons
 	if (p1Type == TK_FLOAT && p2Type == TK_INT || p1Type == TK_INT && p2Type == TK_FLOAT)
@@ -430,9 +434,9 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 
 	switch (operatorType)
 	{
-		//
-		//	EQUAL TO
-		//
+	//
+	//	EQUAL TO
+	//
 
 	case TK_EQUALS:
 
@@ -449,16 +453,17 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 
 		case TK_STRING:
 		case TK_IDENTIFIER:
-			return !Q_stricmp(c1, c2);	//NOTENOTE: The script uses proper string comparison logic (ex. ( a == a ) == true )
+			return !Q_stricmp(c1, c2);
+		//NOTENOTE: The script uses proper string comparison logic (ex. ( a == a ) == true )
 
 		default:
 			Q3_DebugPrint(WL_ERROR, "Q3_Evaluate unknown type used!\n");
 			return false;
 		}
 
-		//
-			//	GREATER THAN
-			//
+	//
+	//	GREATER THAN
+	//
 
 	case TK_GREATER_THAN:
 
@@ -484,9 +489,9 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 			return false;
 		}
 
-		//
-			//	LESS THAN
-			//
+	//
+	//	LESS THAN
+	//
 
 	case TK_LESS_THAN:
 
@@ -512,11 +517,11 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 			return false;
 		}
 
-		//
-			//	NOT
-			//
+	//
+	//	NOT
+	//
 
-	case TK_NOT:	//NOTENOTE: Implied "NOT EQUAL TO"
+	case TK_NOT: //NOTENOTE: Implied "NOT EQUAL TO"
 
 		switch (p1Type)
 		{
@@ -551,7 +556,8 @@ static int Q3_Evaluate(int p1Type, const char* p1, int p2Type, const char* p2, i
 Q3_CameraFade
 -------------------------
 */
-static void Q3_CameraFade(float sr, float sg, float sb, float sa, float dr, float dg, float db, float da, float duration)
+static void Q3_CameraFade(float sr, float sg, float sb, float sa, float dr, float dg, float db, float da,
+                          float duration)
 {
 	Q3_DebugPrint(WL_WARNING, "Q3_CameraFade: NOT SUPPORTED IN MP\n");
 }
@@ -571,15 +577,15 @@ static void Q3_CameraPath(const char* name)
 Q3_DebugPrint
 -------------------------
 */
-void Q3_DebugPrint(int level, const char* format, ...)
+void Q3_DebugPrint(const int level, const char* format, ...)
 {
 	//Don't print messages they don't want to see
 	//if ( g_ICARUSDebug->integer < level )
 	if (!com_developer || !com_developer->integer)
 		return;
 
-	va_list		argptr;
-	char		text[1024];
+	va_list argptr;
+	char text[1024];
 
 	va_start(argptr, format);
 	Q_vsnprintf(text, sizeof text, format, argptr);
@@ -597,23 +603,23 @@ void Q3_DebugPrint(int level, const char* format, ...)
 		break;
 
 	case WL_DEBUG:
-	{
-		int		entNum;
+		{
+			int entNum;
 
-		sscanf(text, "%d", &entNum);
+			sscanf(text, "%d", &entNum);
 
-		if (ICARUS_entFilter >= 0 && ICARUS_entFilter != entNum)
-			return;
+			if (ICARUS_entFilter >= 0 && ICARUS_entFilter != entNum)
+				return;
 
-		char* buffer = text;
-		buffer += 5;
+			char* buffer = text;
+			buffer += 5;
 
-		if (entNum < 0 || entNum >= MAX_GENTITIES)
-			entNum = 0;
+			if (entNum < 0 || entNum >= MAX_GENTITIES)
+				entNum = 0;
 
-		Com_Printf(S_COLOR_BLUE"DEBUG: %s(%d): %s\n", SV_GentityNum(entNum)->script_targetname, entNum, buffer);
-		break;
-	}
+			Com_Printf(S_COLOR_BLUE"DEBUG: %s(%d): %s\n", SV_GentityNum(entNum)->script_targetname, entNum, buffer);
+			break;
+		}
 	default:
 	case WL_VERBOSE:
 		Com_Printf(S_COLOR_GREEN"INFO: %s", text);
@@ -683,7 +689,7 @@ void CGCam_Distance(float distance, float initLerp)
 	CGCam_Anything();
 }
 
-void CGCam_Roll(float	dest, float duration)
+void CGCam_Roll(float dest, float duration)
 {
 	CGCam_Anything();
 }
@@ -695,9 +701,9 @@ static unsigned int Q3_GetTimeScale(void)
 	return com_timescale->value;
 }
 
-static void Q3_Lerp2Pos(int taskID, int entID, vec3_t origin, vec3_t angles, float duration)
+static void Q3_Lerp2Pos(const int taskID, const int entID, vec3_t origin, vec3_t angles, const float duration)
 {
-	T_G_ICARUS_LERP2POS* sharedMem = reinterpret_cast<T_G_ICARUS_LERP2POS*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2POS*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -725,9 +731,9 @@ static void Q3_Lerp2Pos(int taskID, int entID, vec3_t origin, vec3_t angles, flo
 	}
 }
 
-static void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
+static void Q3_Lerp2Origin(const int taskID, const int entID, vec3_t origin, const float duration)
 {
-	T_G_ICARUS_LERP2ORIGIN* sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ORIGIN*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ORIGIN*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -738,9 +744,9 @@ static void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
 	VectorCopy(sharedMem->origin, origin);
 }
 
-static void Q3_Lerp2Angles(int taskID, int entID, vec3_t angles, float duration)
+static void Q3_Lerp2Angles(const int taskID, const int entID, vec3_t angles, const float duration)
 {
-	T_G_ICARUS_LERP2ANGLES* sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ANGLES*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ANGLES*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -751,9 +757,9 @@ static void Q3_Lerp2Angles(int taskID, int entID, vec3_t angles, float duration)
 	VectorCopy(sharedMem->angles, angles);
 }
 
-static int	Q3_GetTag(int entID, const char* name, int lookup, vec3_t info)
+static int Q3_GetTag(const int entID, const char* name, const int lookup, vec3_t info)
 {
-	T_G_ICARUS_GETTAG* sharedMem = reinterpret_cast<T_G_ICARUS_GETTAG*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETTAG*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->name, name);
@@ -765,9 +771,9 @@ static int	Q3_GetTag(int entID, const char* name, int lookup, vec3_t info)
 	return r;
 }
 
-static void Q3_Lerp2Start(int entID, int taskID, float duration)
+static void Q3_Lerp2Start(const int entID, const int taskID, const float duration)
 {
-	T_G_ICARUS_LERP2START* sharedMem = reinterpret_cast<T_G_ICARUS_LERP2START*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2START*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -776,9 +782,9 @@ static void Q3_Lerp2Start(int entID, int taskID, float duration)
 	GVM_ICARUS_Lerp2Start();
 }
 
-static void Q3_Lerp2End(int entID, int taskID, float duration)
+static void Q3_Lerp2End(const int entID, const int taskID, const float duration)
 {
-	T_G_ICARUS_LERP2END* sharedMem = reinterpret_cast<T_G_ICARUS_LERP2END*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2END*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -787,9 +793,9 @@ static void Q3_Lerp2End(int entID, int taskID, float duration)
 	GVM_ICARUS_Lerp2End();
 }
 
-static void Q3_Use(int entID, const char* target)
+static void Q3_Use(const int entID, const char* target)
 {
-	T_G_ICARUS_USE* sharedMem = reinterpret_cast<T_G_ICARUS_USE*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_USE*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->target, target);
@@ -797,9 +803,9 @@ static void Q3_Use(int entID, const char* target)
 	GVM_ICARUS_Use();
 }
 
-static void Q3_Kill(int entID, const char* name)
+static void Q3_Kill(const int entID, const char* name)
 {
-	T_G_ICARUS_KILL* sharedMem = reinterpret_cast<T_G_ICARUS_KILL*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_KILL*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->name, name);
@@ -807,9 +813,9 @@ static void Q3_Kill(int entID, const char* name)
 	GVM_ICARUS_Kill();
 }
 
-static void Q3_Remove(int entID, const char* name)
+static void Q3_Remove(const int entID, const char* name)
 {
-	T_G_ICARUS_REMOVE* sharedMem = reinterpret_cast<T_G_ICARUS_REMOVE*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_REMOVE*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->name, name);
@@ -817,9 +823,9 @@ static void Q3_Remove(int entID, const char* name)
 	GVM_ICARUS_Remove();
 }
 
-static void Q3_Play(int taskID, int entID, const char* type, const char* name)
+static void Q3_Play(const int taskID, const int entID, const char* type, const char* name)
 {
-	T_G_ICARUS_PLAY* sharedMem = reinterpret_cast<T_G_ICARUS_PLAY*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_PLAY*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -829,23 +835,23 @@ static void Q3_Play(int taskID, int entID, const char* type, const char* name)
 	GVM_ICARUS_Play();
 }
 
-static int Q3_GetFloat(int entID, int type, const char* name, float* value)
+static int Q3_GetFloat(const int entID, const int type, const char* name, float* value)
 {
-	T_G_ICARUS_GETFLOAT* sharedMem = reinterpret_cast<T_G_ICARUS_GETFLOAT*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETFLOAT*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	sharedMem->type = type;
 	strcpy(sharedMem->name, name);
-	sharedMem->value = 0;//*value;
+	sharedMem->value = 0; //*value;
 
 	const int r = GVM_ICARUS_GetFloat();
 	*value = sharedMem->value;
 	return r;
 }
 
-static int Q3_GetVector(int entID, int type, const char* name, vec3_t value)
+static int Q3_GetVector(const int entID, const int type, const char* name, vec3_t value)
 {
-	T_G_ICARUS_GETVECTOR* sharedMem = reinterpret_cast<T_G_ICARUS_GETVECTOR*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETVECTOR*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	sharedMem->type = type;
@@ -857,9 +863,9 @@ static int Q3_GetVector(int entID, int type, const char* name, vec3_t value)
 	return r;
 }
 
-static int Q3_GetString(int entID, int type, const char* name, char** value)
+static int Q3_GetString(const int entID, const int type, const char* name, char** value)
 {
-	T_G_ICARUS_GETSTRING* sharedMem = reinterpret_cast<T_G_ICARUS_GETSTRING*>(sv.mSharedMemory);
+	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETSTRING*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	sharedMem->type = type;

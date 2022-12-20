@@ -402,7 +402,7 @@ void WP_SaberFreeStrings(saberInfo_t& saber)
 	}
 }
 
-qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num)
+qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, const int blade_num)
 {
 	if (saber
 		&& saber->bladeStyle2Start > 0
@@ -412,7 +412,7 @@ qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_nu
 	return qfalse;
 }
 
-qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num)
+qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, const int blade_num)
 {
 	//use first blade style for this blade
 	if (!WP_SaberBladeUseSecondBladeStyle(saber, blade_num) && saber->saberFlags2 & SFL2_TRANSITION_DAMAGE)
@@ -493,7 +493,7 @@ qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel)
 	return qfalse;
 }
 
-qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, int saberAnimLevel)
+qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, const int saberAnimLevel)
 {
 	if (ent && ent->client)
 	{
@@ -585,7 +585,7 @@ qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber)
 	return qtrue;
 }
 
-void wp_saber_set_defaults(saberInfo_t* saber, qboolean setColors = qtrue)
+void wp_saber_set_defaults(saberInfo_t* saber, const qboolean setColors = qtrue)
 {
 	//Set defaults so that, if it fails, there's at least something there
 	saber->name = DEFAULT_SABER;
@@ -835,7 +835,7 @@ static void Saber_ParseNumBlades(saberInfo_t* saber, const char** p)
 	if (n < 1 || n > MAX_BLADES)
 	{
 		Com_Error(ERR_DROP, "WP_SaberParseParms: saber %s has illegal number of blades (%d) max: %d", saber->name, n,
-			MAX_BLADES);
+		          MAX_BLADES);
 	}
 	saber->numBlades = n;
 }
@@ -2685,7 +2685,7 @@ static void WP_SaberSetupKeywordHash(void)
 	hashSetup = qtrue;
 }
 
-qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber, qboolean setColors)
+qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber, const qboolean setColors)
 {
 	const char* token;
 	const char* p;
@@ -2777,7 +2777,7 @@ qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber, qboolean 
 	return qtrue;
 }
 
-void WP_RemoveSaber(gentity_t* ent, int saber_num)
+void WP_RemoveSaber(gentity_t* ent, const int saber_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -2814,7 +2814,7 @@ void WP_RemoveSaber(gentity_t* ent, int saber_num)
 	}
 }
 
-void WP_RemoveSecondSaber(gentity_t* ent, int saber_num)
+void WP_RemoveSecondSaber(gentity_t* ent, const int saber_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -2851,7 +2851,7 @@ void WP_RemoveSecondSaber(gentity_t* ent, int saber_num)
 	}
 }
 
-void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName)
+void WP_SetSaber(gentity_t* ent, const int saber_num, const char* saberName)
 {
 	if (!ent || !ent->client)
 	{
@@ -2917,7 +2917,7 @@ void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName)
 	}
 }
 
-void WP_SaberSetColor(const gentity_t* ent, int saber_num, int blade_num, const char* colorName)
+void WP_SaberSetColor(const gentity_t* ent, const int saber_num, const int blade_num, const char* colorName)
 {
 	if (!ent || !ent->client)
 	{
@@ -2928,7 +2928,7 @@ void WP_SaberSetColor(const gentity_t* ent, int saber_num, int blade_num, const 
 
 extern void wp_set_saber_ent_model_skin(const gentity_t* ent, gentity_t* saberent);
 
-qboolean WP_BreakSaber(gentity_t* ent, const char* surfName, saberType_t saberType)
+qboolean WP_BreakSaber(gentity_t* ent, const char* surfName, const saberType_t saberType)
 {
 	//Make sure there *is* one specified and not using dualSabers
 	if (ent == nullptr || ent->client == nullptr)
@@ -3062,7 +3062,7 @@ void WP_SaberLoadParms()
 
 	//now load in the .sab definitions
 	const int fileCnt = gi.FS_GetFileList("ext_data/sabers", ".sab", saberExtensionListBuf,
-		sizeof saberExtensionListBuf);
+	                                      sizeof saberExtensionListBuf);
 
 	char* holdChar = saberExtensionListBuf;
 	for (int i = 0; i < fileCnt; i++, holdChar += saberExtFNLen + 1)
@@ -3089,7 +3089,7 @@ void WP_SaberLoadParms()
 			if (totallen + len >= MAX_SABER_DATA_SIZE)
 			{
 				G_Error("WP_SaberLoadParms: ran out of space before reading %s\n(you must make the .sab files smaller)",
-					holdChar);
+				        holdChar);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -3115,7 +3115,7 @@ void WP_SaberLoadParms2()
 
 	//now load in the .sab definitions
 	const int fileCnt = gi.FS_GetFileList("ext_data/sabers", ".sab", saberExtensionListBuf,
-		sizeof saberExtensionListBuf);
+	                                      sizeof saberExtensionListBuf);
 
 	char* holdChar = saberExtensionListBuf;
 	for (int i = 0; i < fileCnt; i++, holdChar += saberExtFNLen + 1)

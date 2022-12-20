@@ -55,27 +55,25 @@ enum
 class CTask
 {
 public:
-
 	CTask();
 	~CTask();
 
 	static CTask* Create(int GUID, CBlock* block);
 
-	void	Free(void) const;
+	void Free(void) const;
 
-	unsigned int	GetTimeStamp(void)	const { return m_timeStamp; }
-	CBlock* GetBlock(void)		const { return m_block; }
-	int		GetGUID(void)			const { return m_id; }
-	int		GetID(void)			const { return m_block->GetBlockID(); }
+	unsigned int GetTimeStamp(void) const { return m_timeStamp; }
+	CBlock* GetBlock(void) const { return m_block; }
+	int GetGUID(void) const { return m_id; }
+	int GetID(void) const { return m_block->GetBlockID(); }
 
-	void	SetTimeStamp(unsigned int	timeStamp) { m_timeStamp = timeStamp; }
-	void	SetBlock(CBlock* block) { m_block = block; }
-	void	SetGUID(int id) { m_id = id; }
+	void SetTimeStamp(const unsigned int timeStamp) { m_timeStamp = timeStamp; }
+	void SetBlock(CBlock* block) { m_block = block; }
+	void SetGUID(const int id) { m_id = id; }
 
 protected:
-
-	int		m_id;
-	unsigned int	m_timeStamp;
+	int m_id;
+	unsigned int m_timeStamp;
 	CBlock* m_block;
 };
 
@@ -84,8 +82,7 @@ protected:
 class CTaskGroup
 {
 public:
-
-	using taskCallback_m = std::map < int, bool >;
+	using taskCallback_m = std::map<int, bool>;
 
 	CTaskGroup(void);
 	~CTaskGroup(void);
@@ -97,35 +94,34 @@ public:
 	void SetGUID(int GUID);
 	void SetParent(CTaskGroup* group) { m_parent = group; }
 
-	bool Complete(void)		const { return m_numCompleted == static_cast<int>(m_completedTasks.size()); }
+	bool Complete(void) const { return m_numCompleted == static_cast<int>(m_completedTasks.size()); }
 
 	bool MarkTaskComplete(int id);
 
-	CTaskGroup* GetParent(void)	const { return m_parent; }
-	int	GetGUID(void)				const { return m_GUID; }
+	CTaskGroup* GetParent(void) const { return m_parent; }
+	int GetGUID(void) const { return m_GUID; }
 
 	//protected:
 
-	taskCallback_m	m_completedTasks;
+	taskCallback_m m_completedTasks;
 
 	CTaskGroup* m_parent;
 
-	int		m_numCompleted;
-	int		m_GUID;
+	int m_numCompleted;
+	int m_GUID;
 };
 
 // CTaskManager
 
 class CTaskManager
 {
-	using taskID_m = std::map < int, CTask* >;
-	using taskGroupName_m = std::map < std::string, CTaskGroup* >;
-	using taskGroupID_m = std::map < int, CTaskGroup* >;
-	using taskGroup_v = std::vector < CTaskGroup* >;
-	using tasks_l = std::list < CTask*>;
+	using taskID_m = std::map<int, CTask*>;
+	using taskGroupName_m = std::map<std::string, CTaskGroup*>;
+	using taskGroupID_m = std::map<int, CTaskGroup*>;
+	using taskGroup_v = std::vector<CTaskGroup*>;
+	using tasks_l = std::list<CTask*>;
 
 public:
-
 	CTaskManager();
 	~CTaskManager();
 
@@ -134,11 +130,11 @@ public:
 	CBlock* GetCurrentTask(void);
 
 	int Init(CSequencer* owner);
-	int	Free(void);
+	int Free(void);
 
-	static int	Flush(void);
+	static int Flush(void);
 
-	int	SetCommand(CBlock* block, int type);
+	int SetCommand(CBlock* block, int type);
 	int Completed(int id);
 
 	int Update(void);
@@ -155,8 +151,7 @@ public:
 	static void Load(void);
 
 protected:
-
-	int	Go(void);	//Heartbeat function called once per game frame
+	int Go(void); //Heartbeat function called once per game frame
 	int CallbackCommand(CTask* task, int returnCode);
 
 	static inline bool Check(int targetID, const CBlock* block, int memberNum);
@@ -165,7 +160,7 @@ protected:
 	int GetFloat(int entID, CBlock* block, int& memberNum, float& value) const;
 	int Get(int entID, CBlock* block, int& memberNum, char** value);
 
-	int	PushTask(CTask* task, int flag);
+	int PushTask(CTask* task, int flag);
 	CTask* PopTask(int flag);
 
 	// Task functions
@@ -186,25 +181,25 @@ protected:
 	int Wait(CTask* task, bool& completed);
 	int WaitSignal(CTask* task, bool& completed);
 
-	int	SaveCommand(CBlock* block) const;
+	int SaveCommand(CBlock* block) const;
 
 	// Variables
 
 	CSequencer* m_owner;
-	int						m_ownerID;
+	int m_ownerID;
 
 	CTaskGroup* m_curGroup;
 
-	taskGroup_v				m_taskGroups;
-	tasks_l					m_tasks;
+	taskGroup_v m_taskGroups;
+	tasks_l m_tasks;
 
-	int						m_GUID;
-	int						m_count;
+	int m_GUID;
+	int m_count;
 
-	taskGroupName_m			m_taskGroupNameMap;
-	taskGroupID_m			m_taskGroupIDMap;
+	taskGroupName_m m_taskGroupNameMap;
+	taskGroupID_m m_taskGroupIDMap;
 
-	bool					m_resident;
+	bool m_resident;
 
 	//CTask	*m_waitTask;		//Global pointer to the current task that is waiting for callback completion
 };

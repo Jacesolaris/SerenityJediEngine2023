@@ -62,7 +62,7 @@ void touchLaserTrap(gentity_t* ent, gentity_t* other, const trace_t* trace)
 
 	if (ent->count == TRIPWIRE_STYLE)
 	{
-		constexpr vec3_t mins = { -4, -4, -4 }, maxs = { 4, 4, 4 }; //FIXME: global these
+		constexpr vec3_t mins = {-4, -4, -4}, maxs = {4, 4, 4}; //FIXME: global these
 		trace_t tr;
 		VectorMA(ent->currentOrigin, 32, ent->movedir, ent->s.origin2);
 		gi.trace(&tr, ent->s.origin2, mins, maxs, ent->currentOrigin, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 0);
@@ -133,8 +133,8 @@ void laserTrapThink(gentity_t* ent)
 //---------------------------------------------------------
 {
 	vec3_t end;
-	constexpr vec3_t maxs = { 4, 4, 4 };
-	constexpr vec3_t mins = { -4, -4, -4 };
+	constexpr vec3_t maxs = {4, 4, 4};
+	constexpr vec3_t mins = {-4, -4, -4};
 	trace_t tr;
 
 	// turn on the beam effect
@@ -213,8 +213,8 @@ void CreateLaserTrap(gentity_t* laserTrap, vec3_t start, gentity_t* owner)
 	laserTrap->s.radius = 60;
 	VectorSet(laserTrap->s.modelScale, 1.0f, 1.0f, 1.0f);
 	gi.G2API_InitGhoul2Model(laserTrap->ghoul2, weaponData[WP_TRIP_MINE].missileMdl,
-		G_ModelIndex(weaponData[WP_TRIP_MINE].missileMdl),
-		NULL_HANDLE, NULL_HANDLE, 0, 0);
+	                         G_ModelIndex(weaponData[WP_TRIP_MINE].missileMdl),
+	                         NULL_HANDLE, NULL_HANDLE, 0, 0);
 }
 
 //---------------------------------------------------------
@@ -223,7 +223,7 @@ static void WP_RemoveOldTraps(const gentity_t* ent)
 {
 	gentity_t* found = nullptr;
 	int trapcount = 0;
-	int foundLaserTraps[MAX_GENTITIES] = { ENTITYNUM_NONE };
+	int foundLaserTraps[MAX_GENTITIES] = {ENTITYNUM_NONE};
 
 	// see how many there are now
 	while ((found = G_Find(found, FOFS(classname), "tripmine")) != nullptr)
@@ -275,7 +275,7 @@ static void WP_RemoveOldTraps(const gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_PlaceLaserTrap(gentity_t* ent, qboolean alt_fire)
+void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	// limit to 10 placed at any one time

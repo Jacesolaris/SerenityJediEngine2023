@@ -27,30 +27,30 @@
 #define CHAT_TEAM					1
 #define CHAT_TELL					2
 
- //a console message
-typedef struct bot_consolemessage_s
+//a console message
+using bot_consolemessage_t = struct bot_consolemessage_s
 {
 	int handle;
-	float time;									//message time
-	int type;									//message type
-	char message[MAX_MESSAGE_SIZE];				//message
-	bot_consolemessage_s* prev, * next;	//prev and next in list
-} bot_consolemessage_t;
+	float time; //message time
+	int type; //message type
+	char message[MAX_MESSAGE_SIZE]; //message
+	bot_consolemessage_s *prev, *next; //prev and next in list
+};
 
 //match variable
-typedef struct bot_matchvariable_s
+using bot_matchvariable_t = struct bot_matchvariable_s
 {
 	char offset;
 	int length;
-} bot_matchvariable_t;
+};
 //returned to AI when a match is found
-typedef struct bot_match_s
+using bot_match_t = struct bot_match_s
 {
 	char string[MAX_MESSAGE_SIZE];
 	int type;
 	int subtype;
 	bot_matchvariable_t variables[MAX_MATCHVARIABLES];
-} bot_match_t;
+};
 
 //setup the chat AI
 int BotSetupChatAI(void);
@@ -69,11 +69,13 @@ int BotNextConsoleMessage(int chatstate, bot_consolemessage_t* cm);
 //returns the number of console messages currently stored in the state
 int BotNumConsoleMessages(int chatstate);
 //selects a chat message of the given type
-void BotInitialChat(int chatstate, char* type, int mcontext, char* var0, char* var1, char* var2, char* var3, char* var4, char* var5, char* var6, char* var7);
+void BotInitialChat(int chatstate, char* type, int mcontext, char* var0, char* var1, char* var2, char* var3, char* var4,
+                    char* var5, char* var6, char* var7);
 //returns the number of initial chat messages of the given type
 int BotNumInitialChats(int chatstate, char* type);
 //find and select a reply for the given message
-int BotReplyChat(int chatstate, char* message, int mcontext, int vcontext, char* var0, char* var1, char* var2, char* var3, char* var4, char* var5, char* var6, char* var7);
+int BotReplyChat(int chatstate, char* message, int mcontext, int vcontext, char* var0, char* var1, char* var2,
+                 char* var3, char* var4, char* var5, char* var6, char* var7);
 //returns the length of the currently selected chat message
 int BotChatLength(int chatstate);
 //enters the selected chat message

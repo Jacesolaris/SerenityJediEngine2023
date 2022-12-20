@@ -51,7 +51,7 @@ namespace ratl
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The String Class
 	////////////////////////////////////////////////////////////////////////////////////////
-	template<int ARG_CAPACITY>
+	template <int ARG_CAPACITY>
 	class string_vs : public ratl_base
 	{
 	public:
@@ -59,12 +59,13 @@ namespace ratl
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = ARG_CAPACITY;
+
 	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-		char	mData[CAPACITY + 4];
+		char mData[CAPACITY + 4];
 #else
 		char	mData[CAPACITY];
 #endif
@@ -80,7 +81,6 @@ namespace ratl
 		}
 
 	public:
-
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		////////////////////////////////////////////////////////////////////////////////////
@@ -105,8 +105,8 @@ namespace ratl
 		string_vs(const string_vs<CAPACITY>& o)
 		{
 			assert(str::len(o.mData) < CAPACITY);
-			str::ncpy(mData, o.mData, CAPACITY);		// Safe String Copy
-			mData[CAPACITY - 1] = 0;					// Make Sure We Have A Null Terminated Str
+			str::ncpy(mData, o.mData, CAPACITY); // Safe String Copy
+			mData[CAPACITY - 1] = 0; // Make Sure We Have A Null Terminated Str
 			FillTerminator();
 		}
 
@@ -116,8 +116,8 @@ namespace ratl
 		string_vs(const char* s)
 		{
 			assert(str::len(s) < CAPACITY);
-			str::ncpy(mData, s, CAPACITY);		// Safe String Copy
-			mData[CAPACITY - 1] = 0;					// Make Sure We Have A Null Terminated Str
+			str::ncpy(mData, s, CAPACITY); // Safe String Copy
+			mData[CAPACITY - 1] = 0; // Make Sure We Have A Null Terminated Str
 			FillTerminator();
 		}
 
@@ -127,8 +127,8 @@ namespace ratl
 		string_vs& operator=(const char* s)
 		{
 			assert(str::len(s) < CAPACITY);
-			str::ncpy(mData, s, CAPACITY);			// Safe String Copy
-			mData[CAPACITY - 1] = 0;					// Make Sure We Have A Null Terminated Str
+			str::ncpy(mData, s, CAPACITY); // Safe String Copy
+			mData[CAPACITY - 1] = 0; // Make Sure We Have A Null Terminated Str
 			FillTerminator();
 			return *this;
 		}
@@ -152,7 +152,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Access To Raw Array
 		////////////////////////////////////////////////////////////////////////////////////
-		operator const char* ()
+		operator const char*()
 		{
 			return mData;
 		}
@@ -168,7 +168,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Characters Can This Hold
 		////////////////////////////////////////////////////////////////////////////////////
-		static int				capacity()
+		static int capacity()
 		{
 			return CAPACITY;
 		}
@@ -176,7 +176,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Length
 		////////////////////////////////////////////////////////////////////////////////////
-		int				length() const
+		int length() const
 		{
 			assert(str::len(mData) < CAPACITY - 1);
 			return str::len(mData);
@@ -185,7 +185,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Character Bracket Operator
 		////////////////////////////////////////////////////////////////////////////////////
-		char			operator[](int index)
+		char operator[](int index)
 		{
 			assert(index < CAPACITY);
 			return mData[index];
@@ -194,7 +194,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Equality Operator
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator==(const string_vs& o) const
+		bool operator==(const string_vs& o) const
 		{
 			if (!stricmp(mData, o.mData))
 			{
@@ -206,7 +206,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// InEquality Operator
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator!=(const string_vs& o) const
+		bool operator!=(const string_vs& o) const
 		{
 			if (str::icmp(mData, o.mData) != 0)
 			{
@@ -218,7 +218,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Compare Less Than
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator<(const string_vs& o) const
+		bool operator<(const string_vs& o) const
 		{
 			if (str::icmp(mData, o.mData) < 0)
 			{
@@ -230,7 +230,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Compare Greater Than
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			operator>(const string_vs& o) const
+		bool operator>(const string_vs& o) const
 		{
 			if (str::icmp(mData, o.mData) > 0)
 			{
@@ -242,9 +242,9 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void			operator+=(const string_vs& o)
+		void operator+=(const string_vs& o)
 		{
-			if (str::len(mData) + o.length() < CAPACITY)		// Only If It Is Safe
+			if (str::len(mData) + o.length() < CAPACITY) // Only If It Is Safe
 			{
 				str::cat(mData, o.c_str());
 			}
@@ -257,9 +257,9 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void			operator+=(const char* s)
+		void operator+=(const char* s)
 		{
-			if (str::len(mData) + str::len(s) < CAPACITY)		// Only If It Is Safe
+			if (str::len(mData) + str::len(s) < CAPACITY) // Only If It Is Safe
 			{
 				str::cat(mData, s);
 			}
@@ -301,19 +301,21 @@ namespace ratl
 			// Constructors
 			//--------------
 			tokenizer() : mLoc(nullptr)
-			{}
+			{
+			}
+
 			tokenizer(const char* t, const char* gap)
 			{
-				strncpy(mGap, gap, TOKEN_GAP_LEN);		// Safe String Copy
-				mGap[TOKEN_GAP_LEN - 1] = 0;				// Make Sure We Have A Null Terminated Str
+				strncpy(mGap, gap, TOKEN_GAP_LEN); // Safe String Copy
+				mGap[TOKEN_GAP_LEN - 1] = 0; // Make Sure We Have A Null Terminated Str
 
-				char* temp = (char*)t;
+				auto temp = (char*)t;
 				mLoc = str::tok(temp, mGap);
 			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const tokenizer& t)
+			void operator=(const tokenizer& t)
 			{
 				mLoc = t.mLoc;
 				str::cpy(mGap, t.mGap);
@@ -321,8 +323,8 @@ namespace ratl
 
 			// Equality Operators
 			//--------------------
-			bool		operator==(const tokenizer& t) { return mLoc == t.mLoc; }
-			bool		operator!=(const tokenizer& t) { return !operator==(t); }
+			bool operator==(const tokenizer& t) { return mLoc == t.mLoc; }
+			bool operator!=(const tokenizer& t) { return !operator==(t); }
 
 			// DeReference Operator
 			//----------------------
@@ -334,7 +336,7 @@ namespace ratl
 
 			// Inc & Dec Operators
 			//--------------------
-			void		operator++(int)
+			void operator++(int)
 			{
 				assert(mLoc && mGap[0]);
 				mLoc = str::tok(nullptr, mGap);
@@ -344,13 +346,13 @@ namespace ratl
 			//------
 		private:
 			char* mLoc;
-			char					mGap[TOKEN_GAP_LEN];
+			char mGap[TOKEN_GAP_LEN];
 		};
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get An Iterator To The First Token Seperated By Gap
 		////////////////////////////////////////////////////////////////////////////////////
-		tokenizer	begin(const char* gap)
+		tokenizer begin(const char* gap)
 		{
 			return tokenizer(mData, gap);
 		}
@@ -358,7 +360,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// The Invalid Iterator, Use As A Stop Condition In Your For Loops
 		////////////////////////////////////////////////////////////////////////////////////
-		tokenizer	end()
+		tokenizer end()
 		{
 			return tokenizer();
 		}

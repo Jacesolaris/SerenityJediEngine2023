@@ -51,25 +51,25 @@ void G_WriteClientSessionData(const gclient_t* client)
 
 	// We're saving only one objective
 	const char* s2 = va("%i %i", client->sess.mission_objectives[LIGHTSIDE_OBJ].display,
-		client->sess.mission_objectives[LIGHTSIDE_OBJ].status);
+	                    client->sess.mission_objectives[LIGHTSIDE_OBJ].status);
 
 	var = va("sessionobj%i", client - level.clients);
 	gi.cvar_set(var, s2);
 
 	// Throw all mission stats in to a string
 	s2 = va("%i %i %i %i %i %i %i %i %i %i %i %i",
-		client->sess.missionStats.secretsFound,
-		client->sess.missionStats.totalSecrets,
-		client->sess.missionStats.shotsFired,
-		client->sess.missionStats.hits,
-		client->sess.missionStats.enemiesSpawned,
-		client->sess.missionStats.enemiesKilled,
-		client->sess.missionStats.saberThrownCnt,
-		client->sess.missionStats.saberBlocksCnt,
-		client->sess.missionStats.legAttacksCnt,
-		client->sess.missionStats.armAttacksCnt,
-		client->sess.missionStats.torsoAttacksCnt,
-		client->sess.missionStats.otherAttacksCnt
+	        client->sess.missionStats.secretsFound,
+	        client->sess.missionStats.totalSecrets,
+	        client->sess.missionStats.shotsFired,
+	        client->sess.missionStats.hits,
+	        client->sess.missionStats.enemiesSpawned,
+	        client->sess.missionStats.enemiesKilled,
+	        client->sess.missionStats.saberThrownCnt,
+	        client->sess.missionStats.saberBlocksCnt,
+	        client->sess.missionStats.legAttacksCnt,
+	        client->sess.missionStats.armAttacksCnt,
+	        client->sess.missionStats.torsoAttacksCnt,
+	        client->sess.missionStats.otherAttacksCnt
 	);
 
 	var = va("missionstats%i", client - level.clients);
@@ -125,25 +125,25 @@ void G_ReadSessionData(gclient_t* client)
 
 	// Now load the LIGHTSIDE objective. That's the only cross level objective.
 	sscanf(var, "%i %i",
-		&lightsideDisplay,
-		&client->sess.mission_objectives[LIGHTSIDE_OBJ].status);
+	       &lightsideDisplay,
+	       &client->sess.mission_objectives[LIGHTSIDE_OBJ].status);
 	client->sess.mission_objectives[LIGHTSIDE_OBJ].display = lightsideDisplay ? qtrue : qfalse;
 
 	var = va("missionstats%i", client - level.clients);
 	gi.Cvar_VariableStringBuffer(var, s, sizeof s);
 	sscanf(s, "%i %i %i %i %i %i %i %i %i %i %i %i",
-		&client->sess.missionStats.secretsFound,
-		&client->sess.missionStats.totalSecrets,
-		&client->sess.missionStats.shotsFired,
-		&client->sess.missionStats.hits,
-		&client->sess.missionStats.enemiesSpawned,
-		&client->sess.missionStats.enemiesKilled,
-		&client->sess.missionStats.saberThrownCnt,
-		&client->sess.missionStats.saberBlocksCnt,
-		&client->sess.missionStats.legAttacksCnt,
-		&client->sess.missionStats.armAttacksCnt,
-		&client->sess.missionStats.torsoAttacksCnt,
-		&client->sess.missionStats.otherAttacksCnt);
+	       &client->sess.missionStats.secretsFound,
+	       &client->sess.missionStats.totalSecrets,
+	       &client->sess.missionStats.shotsFired,
+	       &client->sess.missionStats.hits,
+	       &client->sess.missionStats.enemiesSpawned,
+	       &client->sess.missionStats.enemiesKilled,
+	       &client->sess.missionStats.saberThrownCnt,
+	       &client->sess.missionStats.saberBlocksCnt,
+	       &client->sess.missionStats.legAttacksCnt,
+	       &client->sess.missionStats.armAttacksCnt,
+	       &client->sess.missionStats.torsoAttacksCnt,
+	       &client->sess.missionStats.otherAttacksCnt);
 
 	var = va("sessionpowers%i", client - level.clients);
 	gi.Cvar_VariableStringBuffer(var, s, sizeof s);

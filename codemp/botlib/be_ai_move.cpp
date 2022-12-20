@@ -146,7 +146,7 @@ int BotAllocMoveState(void)
 // Returns:				-
 // Changes Globals:		-
 //========================================================================
-void BotFreeMoveState(int handle)
+void BotFreeMoveState(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -167,7 +167,7 @@ void BotFreeMoveState(int handle)
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-bot_movestate_t* BotMoveStateFromHandle(int handle)
+bot_movestate_t* BotMoveStateFromHandle(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -187,7 +187,7 @@ bot_movestate_t* BotMoveStateFromHandle(int handle)
 // Returns:				-
 // Changes Globals:		-
 //========================================================================
-void BotInitMoveState(int handle, bot_initmove_t* initmove)
+void BotInitMoveState(const int handle, bot_initmove_t* initmove)
 {
 	bot_movestate_t* ms = BotMoveStateFromHandle(handle);
 	if (!ms) return;
@@ -217,7 +217,7 @@ void BotInitMoveState(int handle, bot_initmove_t* initmove)
 // Returns:				-
 // Changes Globals:		-
 //========================================================================
-float AngleDiff(float ang1, float ang2)
+float AngleDiff(const float ang1, const float ang2)
 {
 	float diff = ang1 - ang2;
 	if (ang1 > ang2)
@@ -295,7 +295,7 @@ int BotFuzzyPointReachabilityArea(vec3_t origin)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotReachabilityArea(vec3_t origin, int client)
+int BotReachabilityArea(vec3_t origin, const int client)
 {
 	aas_reachability_t reach;
 	vec3_t org, end, mins, maxs, up = { 0, 0, 1 };
@@ -433,7 +433,7 @@ int BotReachabilityArea(vec3_t origin, int testground)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotOnMover(vec3_t origin, int entnum, aas_reachability_t* reach)
+int BotOnMover(vec3_t origin, const int entnum, aas_reachability_t* reach)
 {
 	vec3_t mins, maxs, modelorigin, org, end;
 	vec3_t angles = { 0, 0, 0 };
@@ -556,7 +556,7 @@ int BotOnTopOfEntity(bot_movestate_t* ms)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotValidTravel(vec3_t origin, aas_reachability_t* reach, int travelflags)
+int BotValidTravel(vec3_t origin, aas_reachability_t* reach, const int travelflags)
 {
 	//if the reachability uses an unwanted travel type
 	if (AAS_TravelFlagForType(reach->traveltype) & ~travelflags) return qfalse;
@@ -570,7 +570,7 @@ int BotValidTravel(vec3_t origin, aas_reachability_t* reach, int travelflags)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotAddToAvoidReach(bot_movestate_t* ms, int number, float avoidtime)
+void BotAddToAvoidReach(bot_movestate_t* ms, const int number, const float avoidtime)
 {
 	int i;
 
@@ -640,7 +640,7 @@ float VectorDistanceSquared(vec3_t p1, vec3_t p2)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotAvoidSpots(vec3_t origin, aas_reachability_t* reach, bot_avoidspot_t* avoidspots, int numavoidspots)
+int BotAvoidSpots(vec3_t origin, aas_reachability_t* reach, bot_avoidspot_t* avoidspots, const int numavoidspots)
 {
 	int checkbetween;
 
@@ -705,7 +705,7 @@ int BotAvoidSpots(vec3_t origin, aas_reachability_t* reach, bot_avoidspot_t* avo
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotAddAvoidSpot(int movestate, vec3_t origin, float radius, int type)
+void BotAddAvoidSpot(const int movestate, vec3_t origin, const float radius, const int type)
 {
 	bot_movestate_t* ms = BotMoveStateFromHandle(movestate);
 	if (!ms) return;
@@ -728,11 +728,11 @@ void BotAddAvoidSpot(int movestate, vec3_t origin, float radius, int type)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotGetReachabilityToGoal(vec3_t origin, int areanum,
-	int lastgoalareanum, int lastareanum,
+int BotGetReachabilityToGoal(vec3_t origin, const int areanum,
+                             const int lastgoalareanum, const int lastareanum,
 	int* avoidreach, float* avoidreachtimes, int* avoidreachtries,
 	bot_goal_t* goal, int travelflags,
-	bot_avoidspot_s* avoidspots, int numavoidspots, int* flags)
+	bot_avoidspot_s* avoidspots, const int numavoidspots, int* flags)
 {
 	int i, t;
 	aas_reachability_t reach;
@@ -805,7 +805,7 @@ int BotGetReachabilityToGoal(vec3_t origin, int areanum,
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotAddToTarget(vec3_t start, vec3_t end, float maxdist, float* dist, vec3_t target)
+int BotAddToTarget(vec3_t start, vec3_t end, const float maxdist, float* dist, vec3_t target)
 {
 	vec3_t dir;
 
@@ -823,7 +823,7 @@ int BotAddToTarget(vec3_t start, vec3_t end, float maxdist, float* dist, vec3_t 
 	//end else
 } //end of the function BotAddToTarget
 
-int BotMovementViewTarget(int movestate, bot_goal_t* goal, int travelflags, float lookahead, vec3_t target)
+int BotMovementViewTarget(const int movestate, bot_goal_t* goal, const int travelflags, const float lookahead, vec3_t target)
 {
 	aas_reachability_t reach;
 	vec3_t end;
@@ -875,7 +875,7 @@ int BotMovementViewTarget(int movestate, bot_goal_t* goal, int travelflags, floa
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotVisible(int ent, vec3_t eye, vec3_t target)
+int BotVisible(const int ent, vec3_t eye, vec3_t target)
 {
 	const bsp_trace_t trace = AAS_Trace(eye, nullptr, nullptr, target, ent, CONTENTS_SOLID | CONTENTS_PLAYERCLIP);
 	if (trace.fraction >= 1) return qtrue;
@@ -887,7 +887,7 @@ int BotVisible(int ent, vec3_t eye, vec3_t target)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotPredictVisiblePosition(vec3_t origin, int areanum, bot_goal_t* goal, int travelflags, vec3_t target)
+int BotPredictVisiblePosition(vec3_t origin, int areanum, bot_goal_t* goal, const int travelflags, vec3_t target)
 {
 	aas_reachability_t reach;
 	int avoidreach[MAX_AVOIDREACH];
@@ -973,7 +973,7 @@ void MoverBottomCenter(aas_reachability_t* reach, vec3_t bottomcenter)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-float BotGapDistance(vec3_t origin, vec3_t hordir, int entnum)
+float BotGapDistance(vec3_t origin, vec3_t hordir, const int entnum)
 {
 	float startz;
 	vec3_t start, end;
@@ -1022,7 +1022,7 @@ float BotGapDistance(vec3_t origin, vec3_t hordir, int entnum)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotCheckBarrierJump(bot_movestate_t* ms, vec3_t dir, float speed)
+int BotCheckBarrierJump(bot_movestate_t* ms, vec3_t dir, const float speed)
 {
 	vec3_t start, hordir, end;
 
@@ -1071,7 +1071,7 @@ int BotCheckBarrierJump(bot_movestate_t* ms, vec3_t dir, float speed)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotSwimInDirection(bot_movestate_t* ms, vec3_t dir, float speed, int type)
+int BotSwimInDirection(bot_movestate_t* ms, vec3_t dir, const float speed, int type)
 {
 	vec3_t normdir;
 
@@ -1086,7 +1086,7 @@ int BotSwimInDirection(bot_movestate_t* ms, vec3_t dir, float speed, int type)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotWalkInDirection(bot_movestate_t* ms, vec3_t dir, float speed, int type)
+int BotWalkInDirection(bot_movestate_t* ms, vec3_t dir, const float speed, int type)
 {
 	vec3_t hordir, cmdmove, velocity, tmpdir, origin;
 	int presencetype, maxframes, cmdframes, stopevent;
@@ -1200,7 +1200,7 @@ int BotWalkInDirection(bot_movestate_t* ms, vec3_t dir, float speed, int type)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotMoveInDirection(int movestate, vec3_t dir, float speed, int type)
+int BotMoveInDirection(const int movestate, vec3_t dir, const float speed, const int type)
 {
 	bot_movestate_t* ms = BotMoveStateFromHandle(movestate);
 	if (!ms) return qfalse;
@@ -1243,7 +1243,7 @@ int Intersection(vec2_t p1, vec2_t p2, vec2_t p3, vec2_t p4, vec2_t out)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotCheckBlocked(bot_movestate_t* ms, vec3_t dir, int checkbottom, bot_moveresult_t* result)
+void BotCheckBlocked(bot_movestate_t* ms, vec3_t dir, const int checkbottom, bot_moveresult_t* result)
 {
 	vec3_t mins, maxs, end, up = { 0, 0, 1 };
 
@@ -2951,7 +2951,7 @@ bot_moveresult_t BotMoveInGoalArea(bot_movestate_t* ms, bot_goal_t* goal)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotMoveToGoal(bot_moveresult_t* result, int movestate, bot_goal_t* goal, int travelflags)
+void BotMoveToGoal(bot_moveresult_t* result, const int movestate, bot_goal_t* goal, const int travelflags)
 {
 	int reachnum, resultflags;
 	aas_reachability_t reach, lastreach;
@@ -3408,7 +3408,7 @@ void BotMoveToGoal(bot_moveresult_t* result, int movestate, bot_goal_t* goal, in
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotResetAvoidReach(int movestate)
+void BotResetAvoidReach(const int movestate)
 {
 	bot_movestate_t* ms = BotMoveStateFromHandle(movestate);
 	if (!ms) return;
@@ -3422,7 +3422,7 @@ void BotResetAvoidReach(int movestate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotResetLastAvoidReach(int movestate)
+void BotResetLastAvoidReach(const int movestate)
 {
 	bot_movestate_t* ms = BotMoveStateFromHandle(movestate);
 	if (!ms) return;
@@ -3448,7 +3448,7 @@ void BotResetLastAvoidReach(int movestate)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void BotResetMoveState(int movestate)
+void BotResetMoveState(const int movestate)
 {
 	bot_movestate_t* ms = BotMoveStateFromHandle(movestate);
 	if (!ms) return;

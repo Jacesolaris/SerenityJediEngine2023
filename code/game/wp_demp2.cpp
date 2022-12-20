@@ -150,7 +150,7 @@ void DEMP2_AltRadiusDamage(gentity_t* ent)
 		dir[2] += 12;
 
 		G_Damage(gent, ent, ent->owner, dir, ent->currentOrigin, weaponData[WP_DEMP2].altDamage, DAMAGE_DEATH_KNOCKBACK,
-			ent->splashMethodOfDeath);
+		         ent->splashMethodOfDeath);
 		if (gent->takedamage && gent->client)
 		{
 			gent->s.powerups |= 1 << PW_SHOCKED;
@@ -249,7 +249,7 @@ static void WP_DEMP2_AltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireDEMP2(gentity_t* ent, qboolean alt_fire)
+void WP_FireDEMP2(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	if (alt_fire)

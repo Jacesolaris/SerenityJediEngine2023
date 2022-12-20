@@ -200,7 +200,7 @@ void UI_SetActiveMenu(const char* menuname, const char* menuID)
 UI_Argv
 =================
 */
-static char* UI_Argv(int arg)
+static char* UI_Argv(const int arg)
 {
 	static char buffer[MAX_STRING_CHARS];
 
@@ -327,7 +327,7 @@ qboolean UI_ConsoleCommand(void)
 UI_Init
 =================
 */
-void UI_Init(int apiVersion, const uiimport_t* uiimport, qboolean inGameLoad)
+void UI_Init(const int apiVersion, const uiimport_t* uiimport, const qboolean inGameLoad)
 {
 	ui = *uiimport;
 
@@ -395,7 +395,7 @@ void UI_Init(int apiVersion, const uiimport_t* uiimport, qboolean inGameLoad)
 UI_DrawNamedPic
 =================
 */
-void UI_DrawNamedPic(float x, float y, float width, float height, const char* picname)
+void UI_DrawNamedPic(const float x, const float y, const float width, const float height, const char* picname)
 {
 	const qhandle_t hShader = ui.R_RegisterShaderNoMip(picname);
 	ui.R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
@@ -406,7 +406,7 @@ void UI_DrawNamedPic(float x, float y, float width, float height, const char* pi
 UI_DrawHandlePic
 =================
 */
-void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader)
+void UI_DrawHandlePic(const float x, const float y, float w, float h, const qhandle_t hShader)
 {
 	float s0;
 	float s1;
@@ -449,7 +449,7 @@ UI_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void UI_FillRect(float x, float y, float width, float height, const float* color)
+void UI_FillRect(const float x, const float y, const float width, const float height, const float* color)
 {
 	ui.R_SetColor(color);
 

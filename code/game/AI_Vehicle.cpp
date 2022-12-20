@@ -57,7 +57,7 @@ constexpr auto MIN_STAY_VIEWABLE_TIME = 20000;
 ////////////////////////////////////////////////////////////////////////////////////////
 // Externs
 ////////////////////////////////////////////////////////////////////////////////////////
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
 extern void G_SoundAtSpot(vec3_t org, int sound_index, qboolean broadcast);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
@@ -98,7 +98,7 @@ void Pilot_Update(void)
 			g_entities[i].NPC &&
 			g_entities[i].NPC->greetEnt &&
 			g_entities[i].NPC->greetEnt->owner == &g_entities[i]
-			)
+		)
 		{
 			mActivePilotCount++;
 		}
@@ -140,12 +140,12 @@ void Pilot_Update(void)
 			VectorMA(projectedPosition, Q_flrand(-200.0f, 200.0f), projectedRight, projectedPosition);
 
 			gi.trace(&mPilotViewTrace,
-				player->currentOrigin,
-				nullptr,
-				nullptr,
-				projectedPosition,
-				player->s.number,
-				MASK_SHOT, static_cast<EG2_Collision>(0), 0);
+			         player->currentOrigin,
+			         nullptr,
+			         nullptr,
+			         projectedPosition,
+			         player->s.number,
+			         MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
 			if (mPilotViewTrace.allsolid == qfalse &&
 				mPilotViewTrace.startsolid == qfalse &&
@@ -347,13 +347,13 @@ void Pilot_Update_Enemy()
 		{
 			mPilotViewTraceCount++;
 			gi.trace(&mPilotViewTrace,
-				NPC->currentOrigin,
-				nullptr,
-				nullptr,
-				NPC->enemy->currentOrigin,
-				NPC->s.number,
-				MASK_SHOT,
-				static_cast<EG2_Collision>(0), 0);
+			         NPC->currentOrigin,
+			         nullptr,
+			         nullptr,
+			         NPC->enemy->currentOrigin,
+			         NPC->s.number,
+			         MASK_SHOT,
+			         static_cast<EG2_Collision>(0), 0);
 
 			if (mPilotViewTrace.allsolid == qfalse &&
 				mPilotViewTrace.startsolid == qfalse &&
@@ -431,8 +431,8 @@ void Pilot_Steer_Vehicle()
 	Vehicle_t* ActorVeh = NPCInfo->greetEnt->m_pVehicle;
 	const bool ActorInTurbo = ActorVeh->m_iTurboTime > level.time;
 	const float ActorSpeed = ActorVeh
-		? VectorLength(ActorVeh->m_pParentEntity->client->ps.velocity)
-		: NPC->client->ps.speed;
+		                         ? VectorLength(ActorVeh->m_pParentEntity->client->ps.velocity)
+		                         : NPC->client->ps.speed;
 
 	// If my vehicle is spinning out of control, just hold on, we're going to die!!!!!
 	//---------------------------------------------------------------------------------
@@ -463,8 +463,8 @@ void Pilot_Steer_Vehicle()
 	CVec3 EnemyAngles(NPC->enemy->currentAngles);
 	EnemyAngles[2] = 0;
 	const Vehicle_t* EnemyVeh = NPC->enemy->s.m_iVehicleNum
-		? g_entities[NPC->enemy->s.m_iVehicleNum].m_pVehicle
-		: nullptr;
+		                            ? g_entities[NPC->enemy->s.m_iVehicleNum].m_pVehicle
+		                            : nullptr;
 	const bool EnemyInTurbo = EnemyVeh && EnemyVeh->m_iTurboTime > level.time;
 	const float EnemySpeed = EnemyVeh ? EnemyVeh->m_pParentEntity->client->ps.speed : NPC->enemy->resultspeed;
 	const bool EnemySlideBreak = EnemyVeh && (EnemyVeh->m_ulFlags & VEH_SLIDEBREAKING || EnemyVeh->m_ulFlags &

@@ -353,7 +353,7 @@ start_pass(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_inverse_dct(j_decompress_ptr cinfo)
+jinit_inverse_dct(const j_decompress_ptr cinfo)
 {
 	int ci;
 	jpeg_component_info* compptr;

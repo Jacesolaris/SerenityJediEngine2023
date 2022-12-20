@@ -36,14 +36,14 @@ static int s_noise_perm[NOISE_SIZE];
 
 #define LERP( a, b, w ) ( a * ( 1.0f - w ) + b * w )
 
-static float GetNoiseValue(int x, int y, int z, int t)
+static float GetNoiseValue(const int x, const int y, const int z, const int t)
 {
 	const int index = INDEX(x, (int)y, z, t);
 
 	return s_noise_table[index];
 }
 
-float GetNoiseTime(int t)
+float GetNoiseTime(const int t)
 {
 	const int index = VAL(t);
 
@@ -61,7 +61,7 @@ void R_NoiseInit(void)
 	}
 }
 
-float R_NoiseGet4f(float x, float y, float z, float t)
+float R_NoiseGet4f(const float x, const float y, const float z, const float t)
 {
 	float front[4];
 	float back[4];

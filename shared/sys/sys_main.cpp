@@ -32,8 +32,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "sys_public.h"
 #include "con_local.h"
 
-static char binaryPath[MAX_OSPATH] = { 0 };
-static char installPath[MAX_OSPATH] = { 0 };
+static char binaryPath[MAX_OSPATH] = {0};
+static char installPath[MAX_OSPATH] = {0};
 
 cvar_t* com_minimized;
 cvar_t* com_unfocused;
@@ -109,7 +109,7 @@ char* Sys_GetClipboardData(void)
 	char* cbText = SDL_GetClipboardText();
 	const size_t len = strlen(cbText) + 1;
 
-	char* buf = static_cast<char*>(Z_Malloc(len, TAG_CLIPBOARD));
+	auto buf = static_cast<char*>(Z_Malloc(len, TAG_CLIPBOARD));
 	Q_strncpyz(buf, cbText, len);
 
 	SDL_free(cbText);
@@ -170,7 +170,7 @@ void Sys_Init(void)
 	com_maxfpsMinimized = Cvar_Get("com_maxfpsMinimized", "50", CVAR_ARCHIVE);
 }
 
-static void NORETURN Sys_Exit(int ex)
+static void NORETURN Sys_Exit(const int ex)
 {
 	IN_Shutdown();
 #ifndef DEDICATED
@@ -199,8 +199,8 @@ static void Sys_ErrorDialog(const char* error)
 	time(&rawtime);
 	strftime(timeStr, sizeof timeStr, "%Y-%m-%d_%H-%M-%S", localtime(&rawtime)); // or gmtime
 	Com_sprintf(crashLogPath, sizeof crashLogPath,
-		"%s%ccrashlog-%s.txt",
-		Sys_DefaultHomePath(), PATH_SEP, timeStr);
+	            "%s%ccrashlog-%s.txt",
+	            Sys_DefaultHomePath(), PATH_SEP, timeStr);
 
 	Sys_Mkdir(Sys_DefaultHomePath());
 
@@ -223,7 +223,7 @@ static void Sys_ErrorDialog(const char* error)
 		fflush(stderr);
 
 		const char* errorMessage = va("%s\nCould not write the crash log file, but we printed it to stderr.\n"
-			"Try running the game using a command line interface.", error);
+		                              "Try running the game using a command line interface.", error);
 		if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", errorMessage, nullptr) < 0)
 		{
 			// We really have hit rock bottom here :(
@@ -300,7 +300,7 @@ First try to load library name from system library path,
 from executable path, then fs_basepath.
 =================
 */
-void* Sys_LoadDll(const char* name, qboolean useSystemLib)
+void* Sys_LoadDll(const char* name, const qboolean useSystemLib)
 {
 	void* dllhandle;
 
@@ -383,7 +383,7 @@ enum SearchPathFlag
 };
 
 static void* Sys_LoadDllFromPaths(const char* filename, const char* gamedir, const char** searchPaths,
-	size_t numPaths, uint32_t searchFlags, const char* callerName)
+                                  const size_t numPaths, const uint32_t searchFlags, const char* callerName)
 {
 	char* fn;
 	void* libHandle;
@@ -523,7 +523,7 @@ void* Sys_LoadLegacyGameDll(const char* name, VMMainProc** vmMain, SystemCallPro
 				constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
-					SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
+				                                 SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
 				if (!libHandle)
 					return nullptr;
 			}
@@ -584,8 +584,8 @@ void* Sys_LoadSPGameDll(const char* name, GetGameAPIProc** GetGameAPI)
 		constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 		libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
-			SEARCH_PATH_BASE | SEARCH_PATH_MOD | SEARCH_PATH_OPENJK | SEARCH_PATH_ROOT,
-			__FUNCTION__);
+		                                 SEARCH_PATH_BASE | SEARCH_PATH_MOD | SEARCH_PATH_OPENJK | SEARCH_PATH_ROOT,
+		                                 __FUNCTION__);
 		if (!libHandle)
 			return nullptr;
 	}
@@ -659,7 +659,7 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 				constexpr size_t numPaths = ARRAY_LEN(searchPaths);
 
 				libHandle = Sys_LoadDllFromPaths(filename, gamedir, searchPaths, numPaths,
-					SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
+				                                 SEARCH_PATH_BASE | SEARCH_PATH_MOD, __FUNCTION__);
 				if (!libHandle)
 					return nullptr;
 			}
@@ -682,14 +682,14 @@ void* Sys_LoadGameDll(const char* name, GetModuleAPIProc** moduleAPI)
 Sys_SigHandler
 =================
 */
-void Sys_SigHandler(int signal)
+void Sys_SigHandler(const int signal)
 {
 	static qboolean signalcaught = qfalse;
 
 	if (signalcaught)
 	{
 		fprintf(stderr, "DOUBLE SIGNAL FAULT: Received signal %d, exiting...\n",
-			signal);
+		        signal);
 	}
 	else
 	{
@@ -746,7 +746,7 @@ char* Sys_StripAppBundle(char* dir)
 
 int main(int argc, char* argv[])
 {
-	char commandLine[MAX_STRING_CHARS] = { 0 };
+	char commandLine[MAX_STRING_CHARS] = {0};
 
 	Sys_PlatformInit();
 	CON_Init();

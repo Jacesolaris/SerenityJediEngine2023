@@ -11,8 +11,8 @@
 extern "C" {
 #endif // __cplusplus
 
-	//#define CLSID_EAXMANAGER CLSID_EAX20_Manager
-	//#define IID_IEaxManager IID_EAX20_Manager
+//#define CLSID_EAXMANAGER CLSID_EAX20_Manager
+//#define IID_IEaxManager IID_EAX20_Manager
 #define EM_MAX_NAME 32
 
 #define EMFLAG_IDDEFAULT (-1)
@@ -21,96 +21,102 @@ extern "C" {
 #define EMFLAG_LOADFROMMEMORY 2
 #define EMFLAG_NODIFFRACTION 4
 
-	typedef struct _EMPOINT {
-		float fX;
-		float fY;
-		float fZ;
-	} EMPOINT;
-	typedef EMPOINT FAR* LPEMPOINT;
+using EMPOINT = struct _EMPOINT
+{
+	float fX;
+	float fY;
+	float fZ;
+};
+using LPEMPOINT = EMPOINT*;
 
-	typedef struct _LISTENERATTRIBUTES {
-		float fDistanceFactor;
-		float fRolloffFactor;
-		float fDopplerFactor;
-	} LISTENERATTRIBUTES;
-	typedef LISTENERATTRIBUTES FAR* LPLISTENERATTRIBUTES;
+using LISTENERATTRIBUTES = struct _LISTENERATTRIBUTES
+{
+	float fDistanceFactor;
+	float fRolloffFactor;
+	float fDopplerFactor;
+};
+using LPLISTENERATTRIBUTES = LISTENERATTRIBUTES*;
 
-	typedef struct _SOURCEATTRIBUTES {
-		EAXSOURCEPROPERTIES eaxAttributes;
-		unsigned long       ulInsideConeAngle;
-		unsigned long       ulOutsideConeAngle;
-		long                lConeOutsideVolume;
-		float               fConeXdir;
-		float               fConeYdir;
-		float               fConeZdir;
-		float               fMinDistance;
-		float               fMaxDistance;
-		long                lDupCount;
-		long                lPriority;
-	} SOURCEATTRIBUTES;
-	typedef SOURCEATTRIBUTES FAR* LPSOURCEATTRIBUTES;
+using SOURCEATTRIBUTES = struct _SOURCEATTRIBUTES
+{
+	EAXSOURCEPROPERTIES eaxAttributes;
+	unsigned long ulInsideConeAngle;
+	unsigned long ulOutsideConeAngle;
+	long lConeOutsideVolume;
+	float fConeXdir;
+	float fConeYdir;
+	float fConeZdir;
+	float fMinDistance;
+	float fMaxDistance;
+	long lDupCount;
+	long lPriority;
+};
+using LPSOURCEATTRIBUTES = SOURCEATTRIBUTES*;
 
-	typedef struct _MATERIALATTRIBUTES {
-		long  lLevel;
-		float fLFRatio;
-		float fRoomRatio;
-		DWORD dwFlags;
-	} MATERIALATTRIBUTES;
-	typedef MATERIALATTRIBUTES FAR* LPMATERIALATTRIBUTES;
+using MATERIALATTRIBUTES = struct _MATERIALATTRIBUTES
+{
+	long lLevel;
+	float fLFRatio;
+	float fRoomRatio;
+	DWORD dwFlags;
+};
+using LPMATERIALATTRIBUTES = MATERIALATTRIBUTES*;
 
 #define EMMATERIAL_OBSTRUCTS 1
 #define EMMATERIAL_OCCLUDES 3
 
-	typedef struct _DIFFRACTIONBOX {
-		long    lSubspaceID;
-		EMPOINT empMin;
-		EMPOINT empMax;
-	} DIFFRACTIONBOX;
-	typedef DIFFRACTIONBOX FAR* LPDIFFRACTIONBOX;
+using DIFFRACTIONBOX = struct _DIFFRACTIONBOX
+{
+	long lSubspaceID;
+	EMPOINT empMin;
+	EMPOINT empMax;
+};
+using LPDIFFRACTIONBOX = DIFFRACTIONBOX*;
 
-	// {7CE4D6E6-562F-11d3-8812-005004062F83}
-	DEFINE_GUID(CLSID_EAXMANAGER, 0x60b721a1, 0xf7c8, 0x11d2, 0xa0, 0x2e, 0x0, 0x50, 0x4, 0x6, 0x18, 0xb8);
+// {7CE4D6E6-562F-11d3-8812-005004062F83}
+DEFINE_GUID(CLSID_EAXMANAGER, 0x60b721a1, 0xf7c8, 0x11d2, 0xa0, 0x2e, 0x0, 0x50, 0x4, 0x6, 0x18, 0xb8);
 
 #ifdef __cplusplus
-	struct IEaxManager;
+struct IEaxManager;
 #endif // __cplusplus
 
-	typedef IEaxManager* LPEAXMANAGER;
+using LPEAXMANAGER = IEaxManager*;
 
-	// {7CE4D6E8-562F-11d3-8812-005004062F83}
-	DEFINE_GUID(IID_IEaxManager, 0x60b721a2, 0xf7c8, 0x11d2, 0xa0, 0x2e, 0x0, 0x50, 0x4, 0x6, 0x18, 0xb8);
+// {7CE4D6E8-562F-11d3-8812-005004062F83}
+DEFINE_GUID(IID_IEaxManager, 0x60b721a2, 0xf7c8, 0x11d2, 0xa0, 0x2e, 0x0, 0x50, 0x4, 0x6, 0x18, 0xb8);
 
 #undef INTERFACE
 #define INTERFACE IEaxManager
 
-	extern HRESULT __stdcall EaxManagerCreate(LPEAXMANAGER*);
-	typedef HRESULT(__stdcall* LPEAXMANAGERCREATE)(LPEAXMANAGER*);
+extern HRESULT __stdcall EaxManagerCreate(LPEAXMANAGER*);
+using LPEAXMANAGERCREATE = HRESULT(__stdcall*)(LPEAXMANAGER*);
 
-	DECLARE_INTERFACE_(IEaxManager, IUnknown)
-	{
-		// IUnknown methods
-		STDMETHOD(QueryInterface)       (THIS_ REFIID, LPVOID*) PURE;
-		STDMETHOD_(ULONG, AddRef)        (THIS) PURE;
-		STDMETHOD_(ULONG, Release)       (THIS) PURE;
+DECLARE_INTERFACE_(IEaxManager, IUnknown)
+{
+	// IUnknown methods
+	STDMETHOD(QueryInterface)(THIS_ REFIID, LPVOID*) override PURE;
+	STDMETHOD_(ULONG, AddRef)(THIS) override PURE;
+	STDMETHOD_(ULONG, Release)(THIS) override PURE;
 
-		STDMETHOD(GetDataSetSize) (THIS_ unsigned long*, DWORD) PURE;
-		STDMETHOD(LoadDataSet) (THIS_ char*, DWORD) PURE;
-		STDMETHOD(FreeDataSet) (THIS_ DWORD) PURE;
-		STDMETHOD(GetListenerAttributes) (THIS_ LPLISTENERATTRIBUTES) PURE;
-		STDMETHOD(GetSourceID) (THIS_ char*, long*) PURE;
-		STDMETHOD(GetSourceAttributes) (THIS_ long, LPSOURCEATTRIBUTES) PURE;
-		STDMETHOD(GetSourceNumInstances) (THIS_ long, long*) PURE;
-		STDMETHOD(GetSourceInstancePos) (THIS_ long, long, LPEMPOINT) PURE;
-		STDMETHOD(GetEnvironmentID) (THIS_ char*, long*) PURE;
-		STDMETHOD(GetEnvironmentAttributes) (THIS_ long, LPEAXREVERBPROPERTIES) PURE;
-		STDMETHOD(GetMaterialID) (THIS_ char*, long*) PURE;
-		STDMETHOD(GetMaterialAttributes) (THIS_ long, LPMATERIALATTRIBUTES) PURE;
-		STDMETHOD(GetGeometrySetID) (THIS_ char*, long*) PURE;
-		STDMETHOD(GetListenerDynamicAttributes) (THIS_ long, LPEMPOINT, long*, DWORD) PURE;
-		STDMETHOD(GetSourceDynamicAttributes) (THIS_ long, LPEMPOINT, long*, float*, long*, float*, float*, LPEMPOINT, DWORD) PURE;
-		// STDMETHOD(GetSubSpaceID) (THIS_ long, LPEMPOINT, long *) PURE;
-		STDMETHOD(GetEnvironmentName) (THIS_ long, char* szString, long lStrlen) PURE;
-	};
+	STDMETHOD(GetDataSetSize)(THIS_ unsigned long*, DWORD) PURE;
+	STDMETHOD(LoadDataSet)(THIS_ char*, DWORD) PURE;
+	STDMETHOD(FreeDataSet)(THIS_ DWORD) PURE;
+	STDMETHOD(GetListenerAttributes)(THIS_ LPLISTENERATTRIBUTES) PURE;
+	STDMETHOD(GetSourceID)(THIS_ char*, long*) PURE;
+	STDMETHOD(GetSourceAttributes)(THIS_ long, LPSOURCEATTRIBUTES) PURE;
+	STDMETHOD(GetSourceNumInstances)(THIS_ long, long*) PURE;
+	STDMETHOD(GetSourceInstancePos)(THIS_ long, long, LPEMPOINT) PURE;
+	STDMETHOD(GetEnvironmentID)(THIS_ char*, long*) PURE;
+	STDMETHOD(GetEnvironmentAttributes)(THIS_ long, LPEAXREVERBPROPERTIES) PURE;
+	STDMETHOD(GetMaterialID)(THIS_ char*, long*) PURE;
+	STDMETHOD(GetMaterialAttributes)(THIS_ long, LPMATERIALATTRIBUTES) PURE;
+	STDMETHOD(GetGeometrySetID)(THIS_ char*, long*) PURE;
+	STDMETHOD(GetListenerDynamicAttributes)(THIS_ long, LPEMPOINT, long*, DWORD) PURE;
+	STDMETHOD(GetSourceDynamicAttributes)(THIS_ long, LPEMPOINT, long*, float*, long*, float*, float*, LPEMPOINT, DWORD)
+	PURE;
+	// STDMETHOD(GetSubSpaceID) (THIS_ long, LPEMPOINT, long *) PURE;
+	STDMETHOD(GetEnvironmentName)(THIS_ long, char* szString, long lStrlen) PURE;
+};
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IEaxManager_QueryInterface(p,a,b)                           (p)->lpVtbl->QueryInterface(p,a,b)
@@ -152,7 +158,7 @@ extern "C" {
 #define IEaxManager_GetGeometrySetID(p,a,b)                         (p)->GetGeometrySetID(a,b)
 #define IEaxManager_GetListenerDynamicAttributes(p,a,b,c,d)         (p)->GetListenerDynamicAttributes(a,b,c,d)
 #define IEaxManager_GetSourceDynamicAttributes(p,a,b,c,d,e,f,g,h,i) (p)->GetSourceDynamicAttributes(a,b,c,d,e,f,g,h,i)
-	//#define IEaxManager_GetSubSpaceID(p,a,b,c)							(p)->GetSubSpaceID(a,b,c)
+//#define IEaxManager_GetSubSpaceID(p,a,b,c)							(p)->GetSubSpaceID(a,b,c)
 #define IEaxManager_GetEnvironmentName(p,a,b,c)						(p)->GetEnvironmentName(a,b,c)
 #endif
 

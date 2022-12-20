@@ -76,7 +76,7 @@ JPP((j_decompress_ptr cinfo, JSAMPIMAGE output_buf));
 #endif
 
 LOCAL(void)
-start_iMCU_row(j_decompress_ptr cinfo)
+start_iMCU_row(const j_decompress_ptr cinfo)
 /* Reset within-iMCU-row counters for a new row (input side) */
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
@@ -104,7 +104,7 @@ start_iMCU_row(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_input_pass(j_decompress_ptr cinfo)
+start_input_pass(const j_decompress_ptr cinfo)
 {
 	cinfo->input_iMCU_row = 0;
 	start_iMCU_row(cinfo);
@@ -115,7 +115,7 @@ start_input_pass(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_output_pass(j_decompress_ptr cinfo)
+start_output_pass(const j_decompress_ptr cinfo)
 {
 #ifdef BLOCK_SMOOTHING_SUPPORTED
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
@@ -142,7 +142,7 @@ start_output_pass(j_decompress_ptr cinfo)
  */
 
 METHODDEF(int)
-decompress_onepass(j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
+decompress_onepass(const j_decompress_ptr cinfo, const JSAMPIMAGE output_buf)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	const JDIMENSION last_MCU_col = cinfo->MCUs_per_row - 1;
@@ -233,7 +233,7 @@ dummy_consume_data(j_decompress_ptr cinfo)
  */
 
 METHODDEF(int)
-consume_data(j_decompress_ptr cinfo)
+consume_data(const j_decompress_ptr cinfo)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	int ci;
@@ -300,7 +300,7 @@ consume_data(j_decompress_ptr cinfo)
  */
 
 METHODDEF(int)
-decompress_data(j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
+decompress_data(const j_decompress_ptr cinfo, const JSAMPIMAGE output_buf)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	const JDIMENSION last_iMCU_row = cinfo->total_iMCU_rows - 1;
@@ -383,7 +383,7 @@ decompress_data(j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
  */
 
 LOCAL(boolean)
-smoothing_ok(j_decompress_ptr cinfo)
+smoothing_ok(const j_decompress_ptr cinfo)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	boolean smoothing_useful = FALSE;
@@ -657,7 +657,7 @@ decompress_smooth_data(j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
  */
 
 GLOBAL(void)
-jinit_d_coef_controller(j_decompress_ptr cinfo, boolean need_full_buffer)
+jinit_d_coef_controller(j_decompress_ptr cinfo, const boolean need_full_buffer)
 {
 	const my_coef_ptr coef = (my_coef_ptr)
 		(*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

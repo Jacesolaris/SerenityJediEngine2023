@@ -47,7 +47,7 @@ int			c_gridVerts;
 
 //===============================================================================
 
-static void HSVtoRGB(float h, float s, float v, float rgb[3])
+static void HSVtoRGB(float h, const float s, const float v, float rgb[3])
 {
 	h *= 5;
 
@@ -336,7 +336,7 @@ static shader_t* ShaderForShaderNum(int shaderNum, const int* lightmapNum, const
 ParseFace
 ===============
 */
-static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, byte*& pFaceDataBuffer, world_t& worldData, int index)
+static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, byte*& pFaceDataBuffer, world_t& worldData, const int index)
 {
 	int			i, j, k;
 	int			lightmapNum[MAXLIGHTMAPS];
@@ -418,7 +418,7 @@ static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* i
 ParseMesh
 ===============
 */
-static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_t& worldData, int index) {
+static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_t& worldData, const int index) {
 	int				i, j, k;
 	drawVert_t points[MAX_PATCH_SIZE * MAX_PATCH_SIZE];
 	int				lightmapNum[MAXLIGHTMAPS]{};
@@ -500,7 +500,7 @@ static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_
 ParseTriSurf
 ===============
 */
-static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, int index) {
+static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, const int index) {
 	int				i, j, k;
 
 	// get fog volume
@@ -575,7 +575,7 @@ static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int
 ParseFlare
 ===============
 */
-static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, int index)
+static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, const int index)
 {
 	constexpr int		lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_BY_VERTEX };
 
@@ -609,7 +609,7 @@ static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* 
 R_LoadSurfaces
 ===============
 */
-static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, world_t& worldData, int index) {
+static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, world_t& worldData, const int index) {
 	int			i;
 
 	int numFaces = 0;
@@ -694,7 +694,7 @@ static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, worl
 R_LoadSubmodels
 =================
 */
-static	void R_LoadSubmodels(lump_t* l, world_t& worldData, int index) {
+static	void R_LoadSubmodels(lump_t* l, world_t& worldData, const int index) {
 	bmodel_t* out;
 
 	dmodel_t* in = (dmodel_t*)(fileBase + l->fileofs);
@@ -914,7 +914,7 @@ R_LoadFogs
 
 =================
 */
-static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_t& worldData, int index) {
+static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_t& worldData, const int index) {
 	fog_t* out;
 	int			sideNum;
 	int			planeNum;
@@ -1224,7 +1224,7 @@ RE_LoadWorldMap
 Called directly from cgame
 =================
 */
-void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, int index) {
+void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, const int index) {
 	byte* buffer = nullptr;
 	qboolean	loadedSubBSP = qfalse;
 

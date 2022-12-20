@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // this line must stay at top so the whole PCH thing works...
 
 qboolean in_camera = qfalse;
-camera_t client_camera = { 0 };
+camera_t client_camera = {0};
 #define Vector6Copy(a,b)		((b)[0]=(a)[0],(b)[1]=(a)[1],(b)[2]=(a)[2],(b)[3]=(a)[3])
 
 void CGCam_FollowDisable(void);
@@ -167,7 +167,7 @@ CGCam_Move
 -------------------------
 */
 
-void CGCam_Move(vec3_t dest, float duration)
+void CGCam_Move(vec3_t dest, const float duration)
 {
 	if (client_camera.info_state & CAMERA_ROFFING)
 	{
@@ -210,7 +210,7 @@ CGCam_Pan
 -------------------------
 */
 
-void CGCam_Pan(vec3_t dest, vec3_t panDirection, float duration)
+void CGCam_Pan(vec3_t dest, vec3_t panDirection, const float duration)
 {
 	float delta2;
 
@@ -298,7 +298,7 @@ CGCam_SetRoll
 -------------------------
 */
 
-void CGCam_SetRoll(float roll)
+void CGCam_SetRoll(const float roll)
 {
 	client_camera.angles[2] = roll;
 }
@@ -309,7 +309,7 @@ CGCam_Roll
 -------------------------
 */
 
-void CGCam_Roll(float dest, float duration)
+void CGCam_Roll(const float dest, const float duration)
 {
 	if (!duration)
 	{
@@ -333,7 +333,7 @@ CGCam_SetFOV
 -------------------------
 */
 
-void CGCam_SetFOV(float FOV)
+void CGCam_SetFOV(const float FOV)
 {
 	client_camera.FOV = FOV;
 }
@@ -344,7 +344,7 @@ CGCam_Zoom
 -------------------------
 */
 
-void CGCam_Zoom(float FOV, float duration)
+void CGCam_Zoom(const float FOV, const float duration)
 {
 	if (!duration)
 	{
@@ -359,7 +359,7 @@ void CGCam_Zoom(float FOV, float duration)
 	client_camera.FOV_duration = duration;
 }
 
-void CGCam_Zoom2(float FOV, float FOV2, float duration)
+void CGCam_Zoom2(const float FOV, const float FOV2, const float duration)
 {
 	if (!duration)
 	{
@@ -375,7 +375,7 @@ void CGCam_Zoom2(float FOV, float FOV2, float duration)
 	client_camera.FOV_duration = duration;
 }
 
-void CGCam_ZoomAccel(float initialFOV, float fovVelocity, float fovAccel, float duration)
+void CGCam_ZoomAccel(const float initialFOV, const float fovVelocity, const float fovAccel, const float duration)
 {
 	if (!duration)
 	{
@@ -412,7 +412,7 @@ CGCam_Fade
 -------------------------
 */
 
-void CGCam_Fade(vec4_t source, vec4_t dest, float duration)
+void CGCam_Fade(vec4_t source, vec4_t dest, const float duration)
 {
 	if (!duration)
 	{
@@ -458,7 +458,7 @@ CGCam_Follow
 -------------------------
 */
 
-void CGCam_Follow(int cameraGroup[MAX_CAMERA_GROUP_SUBJECTS], float speed, float initLerp)
+void CGCam_Follow(int cameraGroup[MAX_CAMERA_GROUP_SUBJECTS], const float speed, const float initLerp)
 {
 	//Clear any previous
 	CGCam_FollowDisable();
@@ -526,7 +526,7 @@ CGCam_Track
 */
 //void CGCam_Track( char *trackName, float speed, float duration )
 //void CGCam_Track( const char *trackName, float speed, float initLerp )
-void CGCam_Track(int trackNum, float speed, const float init_lerp)
+void CGCam_Track(const int trackNum, const float speed, const float init_lerp)
 {
 	//gentity_t	*trackEnt = NULL;
 	const centity_t* trackEnt = &cg_entities[trackNum];
@@ -613,7 +613,7 @@ CGCam_Distance
 -------------------------
 */
 
-void CGCam_Distance(float distance, float initLerp)
+void CGCam_Distance(const float distance, const float initLerp)
 {
 	client_camera.distance = distance;
 
@@ -651,8 +651,8 @@ void CGCam_FollowUpdate(void)
 		qboolean focused = qfalse;
 
 		if ((fromCent->currentState.eType == ET_PLAYER
-			|| fromCent->currentState.eType == ET_NPC
-			|| fromCent->currentState.number < MAX_CLIENTS)
+				|| fromCent->currentState.eType == ET_NPC
+				|| fromCent->currentState.number < MAX_CLIENTS)
 			&& client_camera.cameraGroupTag && client_camera.cameraGroupTag[0])
 		{
 			const int newBolt = trap->G2API_AddBolt(&fromCent->ghoul2, 0, client_camera.cameraGroupTag);
@@ -661,7 +661,7 @@ void CGCam_FollowUpdate(void)
 				mdxaBone_t boltMatrix;
 
 				trap->G2API_GetBoltMatrix(&fromCent->ghoul2, 0, newBolt, &boltMatrix, fromCent->turAngles,
-					fromCent->lerpOrigin, cg.time, cgs.game_models, fromCent->modelScale);
+				                          fromCent->lerpOrigin, cg.time, cgs.game_models, fromCent->modelScale);
 				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, focus[num_subjects]);
 
 				focused = qtrue;
@@ -728,93 +728,93 @@ void CGCam_FollowUpdate(void)
 				continue;
 			}
 			*/
-			/*
-			if ( num_subjects >= MAX_CAMERA_GROUP_SUBJECTS )
-			{
-				gi.Printf(S_COLOR_RED"ERROR: Too many subjects in shot composition %s", client_camera.cameraGroup);
-				break;
-			}
+	/*
+	if ( num_subjects >= MAX_CAMERA_GROUP_SUBJECTS )
+	{
+		gi.Printf(S_COLOR_RED"ERROR: Too many subjects in shot composition %s", client_camera.cameraGroup);
+		break;
+	}
 
-			fromCent = &cg_entities[from->s.number];
-			if ( !fromCent )
-			{
-				continue;
-			}
+	fromCent = &cg_entities[from->s.number];
+	if ( !fromCent )
+	{
+		continue;
+	}
 
-			focused = qfalse;
-			if ( from->client && client_camera.cameraGroupTag && client_camera.cameraGroupTag[0] && fromCent->gent->ghoul2.size() )
-			{
-				int newBolt = gi.G2API_AddBolt( &fromCent->gent->ghoul2[from->playerModel], client_camera.cameraGroupTag );
-				if ( newBolt != -1 )
-				{
-					mdxaBone_t	boltMatrix;
-					vec3_t	fromAngles = {0,from->client->ps.legsYaw,0};
-
-					gi.G2API_GetBoltMatrix( fromCent->gent->ghoul2, from->playerModel, newBolt, &boltMatrix, fromAngles, fromCent->lerpOrigin, cg.time, cgs.model_draw, fromCent->currentState.modelScale );
-					gi.G2API_GiveMeVectorFromMatrix( boltMatrix, ORIGIN, focus[num_subjects] );
-
-					focused = qtrue;
-				}
-			}
-			if ( !focused )
-			{
-				if ( from->s.pos.trType != TR_STATIONARY )
-		//				if ( from->s.pos.trType == TR_INTERPOLATE )
-				{//use interpolated origin?
-					if ( !VectorCompare( vec3_origin, fromCent->lerpOrigin ) )
-					{//hunh?  Somehow we've never seen this gentity on the client, so there is no lerpOrigin, so cheat over to the game and use the currentOrigin
-						VectorCopy( from->currentOrigin, focus[num_subjects] );
-					}
-					else
-					{
-						VectorCopy( fromCent->lerpOrigin, focus[num_subjects] );
-					}
-				}
-				else
-				{
-					VectorCopy(from->currentOrigin, focus[num_subjects]);
-				}
-				//FIXME: make a list here of their s.numbers instead so we can do other stuff with the list below
-				if ( from->client )
-				{//Track to their eyes - FIXME: maybe go off a tag?
-					//FIXME:
-					//Based on FOV and distance to subject from camera, pick the point that
-					//keeps eyes 3/4 up from bottom of screen... what about bars?
-					focus[num_subjects][2] += from->client->ps.viewheight;
-				}
-			}
-			if ( client_camera.cameraGroupZOfs )
-			{
-				focus[num_subjects][2] += client_camera.cameraGroupZOfs;
-			}
-			num_subjects++;
-		}
-
-		if ( !num_subjects )	// Bad cameragroup
+	focused = qfalse;
+	if ( from->client && client_camera.cameraGroupTag && client_camera.cameraGroupTag[0] && fromCent->gent->ghoul2.size() )
+	{
+		int newBolt = gi.G2API_AddBolt( &fromCent->gent->ghoul2[from->playerModel], client_camera.cameraGroupTag );
+		if ( newBolt != -1 )
 		{
-		#ifndef FINAL_BUILD
-			gi.Printf(S_COLOR_RED"ERROR: Camera Focus unable to locate cameragroup: %s\n", client_camera.cameraGroup);
-		#endif
-			return;
-		}
+			mdxaBone_t	boltMatrix;
+			vec3_t	fromAngles = {0,from->client->ps.legsYaw,0};
 
-		//Now average all points
-		VectorCopy( focus[0], center );
-		for( i = 1; i < num_subjects; i++ )
-		{
-			VectorAdd( focus[i], center, center );
+			gi.G2API_GetBoltMatrix( fromCent->gent->ghoul2, from->playerModel, newBolt, &boltMatrix, fromAngles, fromCent->lerpOrigin, cg.time, cgs.model_draw, fromCent->currentState.modelScale );
+			gi.G2API_GiveMeVectorFromMatrix( boltMatrix, ORIGIN, focus[num_subjects] );
+
+			focused = qtrue;
 		}
-		VectorScale( center, 1.0f/((float)num_subjects), center );
+	}
+	if ( !focused )
+	{
+		if ( from->s.pos.trType != TR_STATIONARY )
+//				if ( from->s.pos.trType == TR_INTERPOLATE )
+		{//use interpolated origin?
+			if ( !VectorCompare( vec3_origin, fromCent->lerpOrigin ) )
+			{//hunh?  Somehow we've never seen this gentity on the client, so there is no lerpOrigin, so cheat over to the game and use the currentOrigin
+				VectorCopy( from->currentOrigin, focus[num_subjects] );
+			}
+			else
+			{
+				VectorCopy( fromCent->lerpOrigin, focus[num_subjects] );
+			}
 		}
 		else
 		{
-		return;
+			VectorCopy(from->currentOrigin, focus[num_subjects]);
 		}
-		*/
+		//FIXME: make a list here of their s.numbers instead so we can do other stuff with the list below
+		if ( from->client )
+		{//Track to their eyes - FIXME: maybe go off a tag?
+			//FIXME:
+			//Based on FOV and distance to subject from camera, pick the point that
+			//keeps eyes 3/4 up from bottom of screen... what about bars?
+			focus[num_subjects][2] += from->client->ps.viewheight;
+		}
+	}
+	if ( client_camera.cameraGroupZOfs )
+	{
+		focus[num_subjects][2] += client_camera.cameraGroupZOfs;
+	}
+	num_subjects++;
+}
 
-		//Need to set a speed to keep a distance from
-		//the subject- fixme: only do this if have a distance
-		//set
+if ( !num_subjects )	// Bad cameragroup
+{
+#ifndef FINAL_BUILD
+	gi.Printf(S_COLOR_RED"ERROR: Camera Focus unable to locate cameragroup: %s\n", client_camera.cameraGroup);
+#endif
+	return;
+}
+
+//Now average all points
+VectorCopy( focus[0], center );
+for( i = 1; i < num_subjects; i++ )
+{
+	VectorAdd( focus[i], center, center );
+}
+VectorScale( center, 1.0f/((float)num_subjects), center );
+}
+else
+{
+return;
+}
+*/
+
+	//Need to set a speed to keep a distance from
+	//the subject- fixme: only do this if have a distance
+	//set
 	VectorSubtract(client_camera.subjectPos, center, vec);
 	client_camera.subjectSpeed = VectorLengthSquared(vec) * 100.0f / cg.frametime;
 
@@ -1343,7 +1343,7 @@ void CGCam_DrawWideScreen(void)
 
 			CG_FillRect(cg.refdef.x, cg.refdef.y, 640, client_camera.bar_height, modulate);
 			CG_FillRect(cg.refdef.x, cg.refdef.y + 480 - client_camera.bar_height, 640, client_camera.bar_height,
-				modulate);
+			            modulate);
 		}
 	}
 
@@ -1428,7 +1428,8 @@ void CGCam_UpdateShake(vec3_t origin, vec3_t angles)
 	}
 
 	//intensity_scale now also takes into account FOV with 90.0 as normal
-	const float intensity_scale = 1.0f - (float)(cg.time - client_camera.shake_start) / (float)client_camera.shake_duration
+	const float intensity_scale = 1.0f - (float)(cg.time - client_camera.shake_start) / (float)client_camera.
+		shake_duration
 		* ((
 			client_camera.FOV + client_camera.FOV2) / 2.0f / 90.0f);
 
@@ -1453,7 +1454,7 @@ void CGCam_UpdateShake(vec3_t origin, vec3_t angles)
 	VectorAdd(angles, moveDir, angles);
 }
 
-void CGCam_Smooth(float intensity, int duration)
+void CGCam_Smooth(const float intensity, const int duration)
 {
 	client_camera.smooth_active = qfalse; // means smooth_origin and angles are valid
 	if (intensity > 1.0f || intensity == 0.0f || duration < 1)
@@ -1993,7 +1994,7 @@ static void CGCam_Roff(void)
 
 void CMD_CGCam_Disable(void)
 {
-	vec4_t fade = { 0, 0, 0, 0 };
+	vec4_t fade = {0, 0, 0, 0};
 
 	CGCam_Disable();
 	CGCam_SetFade(fade);
@@ -2019,7 +2020,7 @@ void CG_CameraParse(void)
 	{
 		vec3_t vector2_data;
 		sscanf(o, "%*s %f %f %f %f %f %f %f", &vector_data[0], &vector_data[1],
-			&vector_data[2], &vector2_data[0], &vector2_data[1], &vector2_data[2], &float_data);
+		       &vector_data[2], &vector2_data[0], &vector2_data[1], &vector2_data[2], &float_data);
 		CGCam_Pan(vector_data, vector2_data, float_data);
 	}
 	else if (strncmp("fade", o, 4) == 0)
@@ -2027,8 +2028,8 @@ void CG_CameraParse(void)
 		vec4_t color2;
 		vec4_t color;
 		sscanf(o, "%*s %f %f %f %f %f %f %f %f %f", &color[0],
-			&color[1], &color[2], &color[3], &color2[0], &color2[1], &color2[2], &color2[3],
-			&float_data);
+		       &color[1], &color[2], &color[3], &color2[0], &color2[1], &color2[2], &color2[3],
+		       &float_data);
 		CGCam_Fade(color, color2, float_data);
 	}
 	else if (strncmp("zoom", o, 4) == 0)
@@ -2049,9 +2050,9 @@ void CG_CameraParse(void)
 	{
 		int CGroup[16];
 		sscanf(o, "%*s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %f %f", &CGroup[0],
-			&CGroup[1], &CGroup[2], &CGroup[3], &CGroup[4], &CGroup[5], &CGroup[6],
-			&CGroup[7], &CGroup[8], &CGroup[9], &CGroup[10], &CGroup[11], &CGroup[12], &CGroup[13],
-			&CGroup[14], &CGroup[15], &float_data, &float2_data);
+		       &CGroup[1], &CGroup[2], &CGroup[3], &CGroup[4], &CGroup[5], &CGroup[6],
+		       &CGroup[7], &CGroup[8], &CGroup[9], &CGroup[10], &CGroup[11], &CGroup[12], &CGroup[13],
+		       &CGroup[14], &CGroup[15], &float_data, &float2_data);
 		CGCam_Follow(CGroup, float_data, float2_data);
 	}
 	else

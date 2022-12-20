@@ -95,7 +95,7 @@ void TAG_Init(void)
 			}
 
 			//Free it
-			delete* rti;
+			delete*rti;
 		}
 
 		//Clear the containers
@@ -175,7 +175,8 @@ TAG_Add
 -------------------------
 */
 
-reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, int radius, int flags)
+reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, const int radius,
+                         const int flags)
 {
 	const auto tag = new reference_tag_t;
 	VALIDATEP(tag);
@@ -190,7 +191,7 @@ reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec
 	{
 		//gi.Error("Nameless ref_tag found at (%i %i %i)", (int)origin[0], (int)origin[1], (int)origin[2]);
 		gi.Printf(S_COLOR_RED"ERROR: Nameless ref_tag found at (%i %i %i)\n", static_cast<int>(origin[0]),
-			static_cast<int>(origin[1]), static_cast<int>(origin[2]));
+		          static_cast<int>(origin[1]), static_cast<int>(origin[2]));
 		delayedShutDown = level.time + 100;
 		delete tag;
 		return nullptr;

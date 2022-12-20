@@ -16,14 +16,14 @@ namespace ojk
 		using Callback = std::function<void()>;
 
 		ScopeGuard(
-			Callback leave_callback) :
+			const Callback leave_callback) :
 			leave_callback_(leave_callback)
 		{
 		}
 
 		ScopeGuard(
-			Callback enter_callback,
-			Callback leave_callback) :
+			const Callback enter_callback,
+			const Callback leave_callback) :
 			ScopeGuard(leave_callback)
 		{
 			enter_callback();

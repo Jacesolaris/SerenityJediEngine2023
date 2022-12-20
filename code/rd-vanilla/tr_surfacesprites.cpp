@@ -328,8 +328,8 @@ qboolean SSUsingFog = qfalse;
 /////////////////////////////////////////////
 // Vertical surface sprites
 
-static void RB_VerticalSurfaceSprite(vec3_t loc, float width, float height, byte light,
-	byte alpha, float wind, float windidle, vec2_t fog, int hangdown, vec2_t skew, bool flattened)
+static void RB_VerticalSurfaceSprite(vec3_t loc, const float width, const float height, const byte light,
+                                     const byte alpha, const float wind, const float windidle, vec2_t fog, const int hangdown, vec2_t skew, const bool flattened)
 {
 	vec3_t loc2, right;
 	float windsway;
@@ -433,9 +433,9 @@ static void RB_VerticalSurfaceSprite(vec3_t loc, float width, float height, byte
 	SQuickSprite.Add(points, color, fog);
 }
 
-static void RB_VerticalSurfaceSpriteWindPoint(vec3_t loc, float width, float height, byte light,
-	byte alpha, float wind, float windidle, vec2_t fog,
-	int hangdown, vec2_t skew, vec2_t winddiff, float windforce, bool flattened)
+static void RB_VerticalSurfaceSpriteWindPoint(vec3_t loc, const float width, const float height, const byte light,
+                                              const byte alpha, const float wind, const float windidle, vec2_t fog,
+                                              const int hangdown, vec2_t skew, vec2_t winddiff, float windforce, const bool flattened)
 {
 	vec3_t loc2, right;
 	float points[16];
@@ -829,7 +829,7 @@ static void RB_DrawVerticalSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 /////////////////////////////////////////////
 // Oriented surface sprites
 
-static void RB_OrientedSurfaceSprite(vec3_t loc, float width, float height, byte light, byte alpha, vec2_t fog, int faceup)
+static void RB_OrientedSurfaceSprite(vec3_t loc, float width, float height, const byte light, const byte alpha, vec2_t fog, const int faceup)
 {
 	float points[16];
 	color4ub_t color;
@@ -1097,7 +1097,7 @@ static void RB_DrawOrientedSurfaceSprites(shaderStage_t* stage, shaderCommands_t
 /////////////////////////////////////////////
 // Effect surface sprites
 
-static void RB_EffectSurfaceSprite(vec3_t loc, float width, float height, byte light, byte alpha, float life, int faceup)
+static void RB_EffectSurfaceSprite(vec3_t loc, float width, float height, const byte light, const byte alpha, float life, const int faceup)
 {
 	float points[16];
 	color4ub_t color;

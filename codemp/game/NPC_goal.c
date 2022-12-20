@@ -49,7 +49,7 @@ void SetGoal(gentity_t* goal, float rating)
 NPC_SetGoal
 */
 
-void NPC_SetGoal(gentity_t* goal, float rating)
+void NPC_SetGoal(gentity_t* goal, const float rating)
 {
 	if (goal == NPCS.NPCInfo->goalEntity)
 	{
@@ -196,26 +196,26 @@ qboolean ReachedGoal(gentity_t* goal)
 			}
 			*/
 
-			/*
-			//If in the same waypoint as tempGoal, we're there, right?
-			if ( goal->waypoint >= 0 && goal->waypoint < num_waypoints )
-			{
-				if ( NPC->waypoint == goal->waypoint )
-				{
-					return qtrue;
-				}
+	/*
+	//If in the same waypoint as tempGoal, we're there, right?
+	if ( goal->waypoint >= 0 && goal->waypoint < num_waypoints )
+	{
+		if ( NPC->waypoint == goal->waypoint )
+		{
+			return qtrue;
+		}
+	}
+	*/
+
+	/*
+			if ( VectorLengthSquared( vec ) < (64*64) )
+			{//Close enough
+				return qtrue;
 			}
-			*/
 
-			/*
-					if ( VectorLengthSquared( vec ) < (64*64) )
-					{//Close enough
-						return qtrue;
-					}
-
-					return qfalse;
-				}
-			*/
+			return qfalse;
+		}
+	*/
 	if (NPCS.NPCInfo->aiFlags & NPCAI_TOUCHED_GOAL)
 	{
 		NPCS.NPCInfo->aiFlags &= ~NPCAI_TOUCHED_GOAL;
@@ -248,7 +248,7 @@ qboolean ReachedGoal(gentity_t* goal)
 		}
 	*/
 	return NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs, goal->r.currentOrigin,
-		NPCS.NPCInfo->goalRadius, FlyingCreature(NPCS.NPC));
+	                      NPCS.NPCInfo->goalRadius, FlyingCreature(NPCS.NPC));
 }
 
 /*

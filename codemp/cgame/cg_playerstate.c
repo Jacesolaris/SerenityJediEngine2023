@@ -105,7 +105,7 @@ void CG_CheckAmmo(void)
 CG_DamageFeedback
 ==============
 */
-void CG_DamageFeedback(int yaw_byte, int pitch_byte, int damage)
+void CG_DamageFeedback(const int yaw_byte, const int pitch_byte, const int damage)
 {
 	float scale;
 
@@ -251,7 +251,7 @@ void CG_CheckPlayerstateEvents(const playerState_t* ps, const playerState_t* ops
 			// or the server told us to play another event instead of a predicted event we already issued
 			// or something the server told us changed our prediction causing a different event
 			|| i > ops->eventSequence - MAX_PS_EVENTS && ps->events[i & MAX_PS_EVENTS - 1] != ops->events[i &
-			MAX_PS_EVENTS - 1])
+				MAX_PS_EVENTS - 1])
 		{
 			const int event = ps->events[i & MAX_PS_EVENTS - 1];
 

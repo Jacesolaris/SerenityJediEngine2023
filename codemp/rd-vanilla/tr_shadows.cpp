@@ -49,7 +49,7 @@ static	int			numEdgeDefs[SHADER_MAX_VERTEXES];
 static	int			facing[SHADER_MAX_INDEXES / 3];
 static	vec3_t		shadowXyz[SHADER_MAX_VERTEXES];
 
-void R_AddEdgeDef(int i1, int i2, int facing) {
+void R_AddEdgeDef(const int i1, const int i2, const int facing) {
 	const int c = numEdgeDefs[i1];
 	if (c == MAX_EDGE_DEFS) {
 		return;		// overflow

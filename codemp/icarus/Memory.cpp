@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // leave these two as standard mallocs for the moment, there's something weird happening in ICARUS...
 //
-void* ICARUS_Malloc(int iSize)
+void* ICARUS_Malloc(const int iSize)
 {
 	//return gi.Malloc(iSize, TAG_ICARUS);
 	//return malloc(iSize);

@@ -27,9 +27,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // this is only used for visualization tools in cm_ debug functions
 
-using winding_t = struct winding_s {
-	int		numpoints;
-	vec3_t	p[4];		// variable sized
+using winding_t = struct winding_s
+{
+	int numpoints;
+	vec3_t p[4]; // variable sized
 };
 
 constexpr auto MAX_POINTS_ON_WINDING = 64;
@@ -51,10 +52,10 @@ constexpr auto MAX_MAP_BOUNDS = 65535;
 winding_t* AllocWinding(int points);
 winding_t* CopyWinding(winding_t* w);
 winding_t* BaseWindingForPlane(vec3_t normal, float dist);
-void	FreeWinding(winding_t* w);
-void	WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs);
+void FreeWinding(winding_t* w);
+void WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs);
 
-void	ChopWindingInPlace(winding_t** w, vec3_t normal, float dist, float epsilon);
+void ChopWindingInPlace(winding_t** w, vec3_t normal, float dist, float epsilon);
 // frees the original if clipped
 
 void pw(winding_t* w);

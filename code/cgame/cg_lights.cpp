@@ -88,7 +88,7 @@ void CG_RunLightStyles(void)
 	}
 }
 
-void CG_SetLightstyle(int i)
+void CG_SetLightstyle(const int i)
 {
 	const char* s = CG_ConfigString(i + CS_LIGHT_STYLES);
 	const int j = strlen(s);

@@ -47,7 +47,7 @@ void NPC_Remote_Precache(void)
 NPC_Remote_Pain
 -------------------------
 */
-void NPC_Remote_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Remote_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	SaveNPCGlobals();
 	SetNPCGlobals(self);
@@ -196,7 +196,7 @@ void Remote_Strafe(void)
 Remote_Hunt
 -------------------------
 */
-void Remote_Hunt(qboolean visible, qboolean advance, qboolean retreat)
+void Remote_Hunt(const qboolean visible, const qboolean advance, const qboolean retreat)
 {
 	vec3_t forward;
 
@@ -272,7 +272,7 @@ void Remote_Fire(void)
 Remote_Ranged
 -------------------------
 */
-void Remote_Ranged(qboolean visible, qboolean advance, qboolean retreat)
+void Remote_Ranged(const qboolean visible, const qboolean advance, const qboolean retreat)
 {
 	if (TIMER_Done(NPCS.NPC, "attackDelay")) // Attack?
 	{

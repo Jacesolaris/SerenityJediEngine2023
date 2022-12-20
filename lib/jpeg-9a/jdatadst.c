@@ -58,7 +58,7 @@ typedef my_mem_destination_mgr* my_mem_dest_ptr;
  */
 
 METHODDEF(void)
-init_destination(j_compress_ptr cinfo)
+init_destination(const j_compress_ptr cinfo)
 {
 	const my_dest_ptr dest = (my_dest_ptr)cinfo->dest;
 
@@ -101,7 +101,7 @@ init_mem_destination(j_compress_ptr cinfo)
  */
 
 METHODDEF(boolean)
-empty_output_buffer(j_compress_ptr cinfo)
+empty_output_buffer(const j_compress_ptr cinfo)
 {
 	const my_dest_ptr dest = (my_dest_ptr)cinfo->dest;
 
@@ -116,7 +116,7 @@ empty_output_buffer(j_compress_ptr cinfo)
 }
 
 METHODDEF(boolean)
-empty_mem_output_buffer(j_compress_ptr cinfo)
+empty_mem_output_buffer(const j_compress_ptr cinfo)
 {
 	const my_mem_dest_ptr dest = (my_mem_dest_ptr)cinfo->dest;
 
@@ -153,7 +153,7 @@ empty_mem_output_buffer(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-term_destination(j_compress_ptr cinfo)
+term_destination(const j_compress_ptr cinfo)
 {
 	const my_dest_ptr dest = (my_dest_ptr)cinfo->dest;
 	const size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
@@ -170,7 +170,7 @@ term_destination(j_compress_ptr cinfo)
 }
 
 METHODDEF(void)
-term_mem_destination(j_compress_ptr cinfo)
+term_mem_destination(const j_compress_ptr cinfo)
 {
 	const my_mem_dest_ptr dest = (my_mem_dest_ptr)cinfo->dest;
 
@@ -185,7 +185,7 @@ term_mem_destination(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_stdio_dest(j_compress_ptr cinfo, FILE* outfile)
+jpeg_stdio_dest(const j_compress_ptr cinfo, FILE* outfile)
 {
 	/* The destination object is made permanent so that multiple JPEG images
 	 * can be written to the same file without re-executing jpeg_stdio_dest.
@@ -221,8 +221,8 @@ jpeg_stdio_dest(j_compress_ptr cinfo, FILE* outfile)
  */
 
 GLOBAL(void)
-jpeg_mem_dest(j_compress_ptr cinfo,
-	unsigned char** outbuffer, unsigned long* outsize)
+jpeg_mem_dest(const j_compress_ptr cinfo,
+              unsigned char** outbuffer, unsigned long* outsize)
 {
 	if (outbuffer == NULL || outsize == NULL)	/* sanity check */
 		ERREXIT(cinfo, JERR_BUFFER_SIZE);

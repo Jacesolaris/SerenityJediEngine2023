@@ -60,14 +60,16 @@ CEdge
 class CEdge
 {
 public:
+	CEdge(void) : m_first(-1), m_second(-1), m_cost(-1)
+	{
+	}
 
-	CEdge(void) : m_first(-1), m_second(-1), m_cost(-1) {}
 	CEdge(int first, int second, int cost);
 	~CEdge(void);
 
-	int		m_first;
-	int		m_second;
-	int		m_cost;
+	int m_first;
+	int m_second;
+	int m_cost;
 };
 
 /*
@@ -80,15 +82,14 @@ class CNode
 {
 	using edge_t = struct edge_s
 	{
-		int		ID;
-		int		cost;
-		byte	flags;
+		int ID;
+		int cost;
+		byte flags;
 	};
 
-	using edge_v = std::vector< edge_t >;
+	using edge_v = std::vector<edge_t>;
 
 public:
-
 	CNode(void);
 	~CNode(void);
 
@@ -100,38 +101,37 @@ public:
 
 	static void Draw(qboolean radius);
 
-	int	GetID(void)					const { return m_ID; }
-	void GetPosition(vec3_t position)	const { if (position)	VectorCopy(m_position, position); }
+	int GetID(void) const { return m_ID; }
+	void GetPosition(vec3_t position) const { if (position) VectorCopy(m_position, position); }
 
-	int GetNumEdges(void)				const { return m_numEdges; }
-	int	GetEdgeNumToNode(int ID);
+	int GetNumEdges(void) const { return m_numEdges; }
+	int GetEdgeNumToNode(int ID);
 	int GetEdge(int edgeNum);
 	int GetEdgeCost(int edgeNum);
 	byte GetEdgeFlags(int edgeNum);
 	void SetEdgeFlags(int edgeNum, int newFlags);
-	int	GetRadius(void)				const { return m_radius; }
+	int GetRadius(void) const { return m_radius; }
 
 	void InitRanks(int size);
 	int GetRank(int ID) const;
 
-	int	GetFlags(void)				const { return m_flags; }
-	void AddFlag(int newFlag) { m_flags |= newFlag; }
-	void RemoveFlag(int oldFlag) { m_flags &= ~oldFlag; }
+	int GetFlags(void) const { return m_flags; }
+	void AddFlag(const int newFlag) { m_flags |= newFlag; }
+	void RemoveFlag(const int oldFlag) { m_flags &= ~oldFlag; }
 
-	int	Save(int numNodes, fileHandle_t file);
+	int Save(int numNodes, fileHandle_t file);
 	int Load(int numNodes, fileHandle_t file);
 
 protected:
+	vec3_t m_position;
+	int m_flags;
+	int m_radius;
+	int m_ID;
 
-	vec3_t			m_position;
-	int				m_flags;
-	int				m_radius;
-	int				m_ID;
-
-	edge_v	m_edges;
+	edge_v m_edges;
 
 	int* m_ranks;
-	int		m_numEdges;
+	int m_numEdges;
 };
 
 /*
@@ -140,25 +140,25 @@ CNavigator
 -------------------------
 */
 #define MAX_FAILED_EDGES	32
+
 class CNavigator
 {
-	using node_v = std::vector < CNode* >;
-	using edge_l = std::list < CEdge >;
+	using node_v = std::vector<CNode*>;
+	using edge_l = std::list<CEdge>;
 
 #if __NEWCOLLECT
 
 	struct nodeList_t
 	{
-		int				nodeID;
-		unsigned int	distance;
+		int nodeID;
+		unsigned int distance;
 	};
 
-	using nodeChain_l = std::list < nodeList_t >;
+	using nodeChain_l = std::list<nodeList_t>;
 
 #endif	//__NEWCOLLECT
 
 public:
-
 	CNavigator(void);
 	~CNavigator(void);
 
@@ -168,7 +168,7 @@ public:
 	bool Load(const char* filename, int checksum);
 	bool Save(const char* filename, int checksum);
 
-	int  AddRawPoint(vec3_t point, int flags, int radius);
+	int AddRawPoint(vec3_t point, int flags, int radius);
 	void CalculatePaths(qboolean recalc = qfalse);
 
 #if _HARD_CONNECT
@@ -190,7 +190,7 @@ public:
 	int GetNodeEdge(int nodeID, int edge) const;
 	float GetNodeLeadDistance(int nodeID);
 
-	int GetNumNodes(void)		const { return static_cast<int>(m_nodes.size()); }
+	int GetNumNodes(void) const { return static_cast<int>(m_nodes.size()); }
 
 	bool Connected(int startID, int endID) const;
 
@@ -213,7 +213,7 @@ public:
 	int GetBestNodeAltRoute(int startID, int endID, int* pathCost, int rejectID = NODE_NONE);
 	int GetBestNodeAltRoute(int startID, int endID, int rejectID = NODE_NONE);
 	int GetBestPathBetweenEnts(sharedEntity_t* ent, sharedEntity_t* goal, int flags);
-	int	GetNodeRadius(int nodeID) const;
+	int GetNodeRadius(int nodeID) const;
 	void CheckBlockedEdges(void);
 	static void ClearCheckedNodes(void);
 	static byte CheckedNode(int wayPoint, int ent);
@@ -225,34 +225,34 @@ public:
 	//MCG Added END
 
 protected:
-	static int		TestNodePath(sharedEntity_t* ent, int okToHitEntNum, vec3_t position, qboolean includeEnts);
-	static int		TestNodeLOS(sharedEntity_t* ent, vec3_t position);
-	int		TestBestFirst(sharedEntity_t* ent, int lastID, int flags) const;
+	static int TestNodePath(sharedEntity_t* ent, int okToHitEntNum, vec3_t position, qboolean includeEnts);
+	static int TestNodeLOS(sharedEntity_t* ent, vec3_t position);
+	int TestBestFirst(sharedEntity_t* ent, int lastID, int flags) const;
 
 #if __NEWCOLLECT
-	int		CollectNearestNodes(vec3_t origin, int radius, int maxCollect, nodeChain_l& nodeChain);
+	int CollectNearestNodes(vec3_t origin, int radius, int maxCollect, nodeChain_l& nodeChain);
 #else
 	int		CollectNearestNodes(vec3_t origin, int radius, int maxCollect, int* nodeChain);
 #endif	//__NEWCOLLECT
 
-	static char	GetChar(fileHandle_t file);
-	static int		GetInt(fileHandle_t file);
-	static float	GetFloat(fileHandle_t file);
-	static long	GetLong(fileHandle_t file);
+	static char GetChar(fileHandle_t file);
+	static int GetInt(fileHandle_t file);
+	static float GetFloat(fileHandle_t file);
+	static long GetLong(fileHandle_t file);
 
-	void	SetEdgeCost(int ID1, int ID2, int cost) const;
-	static int		GetEdgeCost(CNode* first, CNode* second);
-	void	AddNodeEdges(CNode* node, int addDist, edge_l& edgeList, bool* checkedNodes) const;
+	void SetEdgeCost(int ID1, int ID2, int cost) const;
+	static int GetEdgeCost(CNode* first, CNode* second);
+	void AddNodeEdges(CNode* node, int addDist, edge_l& edgeList, bool* checkedNodes) const;
 
-	void	CalculatePath(CNode* node) const;
+	void CalculatePath(CNode* node) const;
 
 	//rww - made failedEdges private as it doesn't seem to need to be public.
 	//And I'd rather shoot myself than have to devise a way of setting/accessing this
 	//array via trap calls.
-	failedEdge_t	failedEdges[MAX_FAILED_EDGES];
+	failedEdge_t failedEdges[MAX_FAILED_EDGES];
 
-	node_v			m_nodes;
-	EdgeMultimap	m_edgeLookupMap;
+	node_v m_nodes;
+	EdgeMultimap m_edgeLookupMap;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -271,14 +271,14 @@ public:
 public:
 	CEdge* Pop();
 	CEdge* Find(int npNum) const;
-	void	Push(CEdge* theEdge);
-	void	Update(CEdge* edge);
-	bool	Empty() const;
+	void Push(CEdge* theEdge);
+	void Update(CEdge* edge);
+	bool Empty() const;
 
 	// DATA
 	//--------------------------------------------------------------
 private:
-	std::vector<CEdge*>	mHeap;
+	std::vector<CEdge*> mHeap;
 };
 
 extern CNavigator navigator;

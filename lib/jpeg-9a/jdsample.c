@@ -65,7 +65,7 @@ typedef my_upsampler* my_upsample_ptr;
  */
 
 METHODDEF(void)
-start_pass_upsample(j_decompress_ptr cinfo)
+start_pass_upsample(const j_decompress_ptr cinfo)
 {
 	const my_upsample_ptr upsample = (my_upsample_ptr)cinfo->upsample;
 
@@ -84,11 +84,11 @@ start_pass_upsample(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-sep_upsample(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION* in_row_group_ctr,
-	JDIMENSION in_row_groups_avail,
-	JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
-	JDIMENSION out_rows_avail)
+sep_upsample(const j_decompress_ptr cinfo,
+             const JSAMPIMAGE input_buf, JDIMENSION* in_row_group_ctr,
+             JDIMENSION in_row_groups_avail,
+             const JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
+             JDIMENSION out_rows_avail)
 {
 	const my_upsample_ptr upsample = (my_upsample_ptr)cinfo->upsample;
 	int ci;
@@ -150,7 +150,7 @@ sep_upsample(j_decompress_ptr cinfo,
 
 METHODDEF(void)
 fullsize_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
-	JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
+                  const JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
 {
 	*output_data_ptr = input_data;
 }
@@ -179,8 +179,8 @@ noop_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
  */
 
 METHODDEF(void)
-int_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
-	JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
+int_upsample(const j_decompress_ptr cinfo, jpeg_component_info* compptr,
+             const JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
 {
 	const my_upsample_ptr upsample = (my_upsample_ptr)cinfo->upsample;
 	const JSAMPARRAY output_data = *output_data_ptr;
@@ -217,8 +217,8 @@ int_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
  */
 
 METHODDEF(void)
-h2v1_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
-	JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
+h2v1_upsample(const j_decompress_ptr cinfo, jpeg_component_info* compptr,
+              const JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
 {
 	const JSAMPARRAY output_data = *output_data_ptr;
 
@@ -240,8 +240,8 @@ h2v1_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
  */
 
 METHODDEF(void)
-h2v2_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
-	JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
+h2v2_upsample(const j_decompress_ptr cinfo, jpeg_component_info* compptr,
+              const JSAMPARRAY input_data, JSAMPARRAY* output_data_ptr)
 {
 	const JSAMPARRAY output_data = *output_data_ptr;
 	int outrow;
@@ -268,7 +268,7 @@ h2v2_upsample(j_decompress_ptr cinfo, jpeg_component_info* compptr,
  */
 
 GLOBAL(void)
-jinit_upsampler(j_decompress_ptr cinfo)
+jinit_upsampler(const j_decompress_ptr cinfo)
 {
 	int ci;
 	jpeg_component_info* compptr;

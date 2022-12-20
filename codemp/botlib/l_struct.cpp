@@ -341,7 +341,7 @@ int WriteIndent(FILE* fp, int indent)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int WriteFloat(FILE* fp, float value)
+int WriteFloat(FILE* fp, const float value)
 {
 	char buf[128];
 

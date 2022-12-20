@@ -41,6 +41,7 @@ class sstring
 	};
 
 	SStorage mStorage;
+
 public:
 	/* don't figure we need this
 		template<int oMaxSize>
@@ -68,7 +69,7 @@ public:
 		if (v.size() + 1 > sizeof mStorage.data)
 		{
 			Com_Error(ERR_FATAL, "String dest buffer too small (%d) to hold string of length %d", sizeof mStorage.data,
-				v.size());
+			          v.size());
 		}
 		std::copy(v.begin(), v.end(), mStorage.data);
 		mStorage.data[v.size()] = '\0';

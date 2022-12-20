@@ -111,7 +111,7 @@ extern void NPC_BSSearchStart(int homeWp, bState_t bState);
 extern void NPC_BSWander(void);
 extern void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin, int fleeTimeMax);
 extern void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin,
-	int fleeTimeMax);
+                        int fleeTimeMax);
 
 //NPC_combat
 extern void NPC_ChangeWeapon(int newWeapon);
@@ -121,7 +121,7 @@ extern qboolean HaveWeapon(int weapon);
 extern qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter);
 extern void NPC_CheckPossibleEnemy(gentity_t* other, visibility_t vis);
 extern gentity_t* NPC_PickEnemy(const gentity_t* closestTo, int enemyTeam, qboolean checkVis, qboolean findPlayersFirst,
-	qboolean findClosest);
+                                qboolean findClosest);
 extern gentity_t* NPC_CheckEnemy(qboolean find_new, qboolean too_far_ok, qboolean set_enemy); //setEnemy = qtrue
 extern qboolean NPC_CheckAttack(float scale);
 extern qboolean NPC_CheckDefend(float scale);
@@ -239,14 +239,14 @@ extern qboolean NPC_ClearLOS2(gentity_t* ent, const vec3_t end);
 extern qboolean NPC_ClearShot(const gentity_t* ent);
 
 extern int NPC_FindCombatPoint(const vec3_t position, const vec3_t avoidPosition, vec3_t enemyPosition, int flags,
-	float avoidDist, int ignorePoint); //ignorePoint = -1
+                               float avoidDist, int ignorePoint); //ignorePoint = -1
 
 extern int NPC_FindCombatPointRetry(const vec3_t position,
-	const vec3_t avoidPosition,
-	vec3_t enemyPosition,
-	int* cpFlags,
-	float avoidDist,
-	int ignorePoint);
+                                    const vec3_t avoidPosition,
+                                    vec3_t enemyPosition,
+                                    int* cpFlags,
+                                    float avoidDist,
+                                    int ignorePoint);
 
 extern qboolean NPC_ReserveCombatPoint(int combatPointID);
 extern qboolean NPC_FreeCombatPoint(int combatPointID, qboolean failed); //failed = qfalse
@@ -290,7 +290,7 @@ extern qboolean NPC_FindPlayer(void);
 extern qboolean NPC_CheckCanAttackExt(void);
 
 extern int NPC_CheckAlertEvents(qboolean checkSight, qboolean checkSound, int ignoreAlert, qboolean mustHaveOwner,
-	int minAlertLevel);
+                                int minAlertLevel);
 //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
 extern qboolean NPC_CheckForDanger(int alert_event);
 extern void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, float radius, float sound_dist);
@@ -303,10 +303,10 @@ extern qboolean G_BoundsOverlap(const vec3_t mins1, const vec3_t maxs1, const ve
 extern qboolean NAV_HitNavGoal(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t dest, int radius, qboolean flying);
 
 extern void NPC_SetMoveGoal(const gentity_t* ent, vec3_t point, int radius, qboolean isNavGoal, int combatPoint,
-	gentity_t* target_ent); //isNavGoal = qfalse, combatPoint = -1, targetEnt = NULL
+                            gentity_t* target_ent); //isNavGoal = qfalse, combatPoint = -1, targetEnt = NULL
 
 extern qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_t point, int clipmask,
-	int okToHitEnt);
+                                     int okToHitEnt);
 extern void NPC_ApplyWeaponFireDelay(void);
 
 //NPC_FaceXXX suite

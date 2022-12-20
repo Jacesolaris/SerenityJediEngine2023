@@ -247,7 +247,7 @@ constexpr vidmode_t r_vidModes[] =
 
 static constexpr int s_numVidModes = std::size(r_vidModes);
 
-qboolean R_GetModeInfo(int* width, int* height, int mode)
+qboolean R_GetModeInfo(int* width, int* height, const int mode)
 {
 	if (mode < -1)
 	{
@@ -521,10 +521,10 @@ void R_Init(void)
 	max_polyverts = Q_min(r_maxpolyverts->integer, DEFAULT_MAX_POLYVERTS);
 
 	const auto ptr = static_cast<byte*>(Hunk_Alloc(
-		sizeof * backEndData + sizeof(srfPoly_t) * max_polys + sizeof(polyVert_t) * max_polyverts, h_low));
+		sizeof *backEndData + sizeof(srfPoly_t) * max_polys + sizeof(polyVert_t) * max_polyverts, h_low));
 	backEndData = (backEndData_t*)ptr;
-	backEndData->polys = (srfPoly_t*)((char*)ptr + sizeof * backEndData);
-	backEndData->polyVerts = (polyVert_t*)((char*)ptr + sizeof * backEndData + sizeof(srfPoly_t) * max_polys);
+	backEndData->polys = (srfPoly_t*)((char*)ptr + sizeof *backEndData);
+	backEndData->polyVerts = (polyVert_t*)((char*)ptr + sizeof *backEndData + sizeof(srfPoly_t) * max_polys);
 
 	R_ModelInit();
 
@@ -546,12 +546,12 @@ void RE_Shutdown(qboolean destroyWindow, qboolean restarting)
 	tr.registered = qfalse;
 }
 
-static void G2API_BoltMatrixReconstruction(qboolean reconstruct)
+static void G2API_BoltMatrixReconstruction(const qboolean reconstruct)
 {
 	gG2_GBMNoReconstruct = static_cast<qboolean>(!reconstruct);
 }
 
-static void G2API_BoltMatrixSPMethod(qboolean spMethod) { gG2_GBMUseSPMethod = spMethod; }
+static void G2API_BoltMatrixSPMethod(const qboolean spMethod) { gG2_GBMUseSPMethod = spMethod; }
 
 extern void R_SVModelInit(void); //tr_model.cpp
 extern qboolean gG2_GBMNoReconstruct;
@@ -564,7 +564,7 @@ GetRefAPI
 
 @@@@@@@@@@@@@@@@@@@@@
 */
-refexport_t* GetRefAPI(int apiVersion, refimport_t* rimp)
+refexport_t* GetRefAPI(const int apiVersion, refimport_t* rimp)
 {
 	static refexport_t re;
 

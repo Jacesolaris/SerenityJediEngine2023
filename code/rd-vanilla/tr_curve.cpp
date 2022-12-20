@@ -75,7 +75,7 @@ static void LerpDrawVert(const drawVert_t* a, const drawVert_t* b, drawVert_t* o
 Transpose
 ============
 */
-static void Transpose(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE]) {
+static void Transpose(const int width, const int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE]) {
 	int		i, j;
 	drawVert_t	temp;
 
@@ -120,7 +120,7 @@ MakeMeshNormals
 Handles all the complicated wrapping and degenerate cases
 =================
 */
-static void MakeMeshNormals(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE]) {
+static void MakeMeshNormals(const int width, const int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE]) {
 	int		i, k;
 	vec3_t	delta;
 	qboolean	good[8];
@@ -226,7 +226,7 @@ static void MakeMeshNormals(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE
 InvertCtrl
 ============
 */
-static void InvertCtrl(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE]) {
+static void InvertCtrl(const int width, const int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE]) {
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width / 2; j++) {
 			const drawVert_t temp = ctrl[i][j];
@@ -241,7 +241,7 @@ static void InvertCtrl(int width, int height, drawVert_t ctrl[MAX_GRID_SIZE][MAX
 InvertErrorTable
 =================
 */
-static void InvertErrorTable(float errorTable[2][MAX_GRID_SIZE], int width, int height) {
+static void InvertErrorTable(float errorTable[2][MAX_GRID_SIZE], const int width, const int height) {
 	int		i;
 	float	copy[2][MAX_GRID_SIZE];
 
@@ -262,7 +262,7 @@ PutPointsOnCurve
 ==================
 */
 static void PutPointsOnCurve(drawVert_t	ctrl[MAX_GRID_SIZE][MAX_GRID_SIZE],
-	int width, int height) {
+                             const int width, const int height) {
 	int			i, j;
 	drawVert_t	prev, next;
 

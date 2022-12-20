@@ -66,7 +66,7 @@ JPP((j_compress_ptr cinfo, JSAMPIMAGE input_buf));
 #endif
 
 LOCAL(void)
-start_iMCU_row(j_compress_ptr cinfo)
+start_iMCU_row(const j_compress_ptr cinfo)
 /* Reset within-iMCU-row counters for a new row */
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
@@ -94,7 +94,7 @@ start_iMCU_row(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_pass_coef(j_compress_ptr cinfo, J_BUF_MODE pass_mode)
+start_pass_coef(const j_compress_ptr cinfo, const J_BUF_MODE pass_mode)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 
@@ -136,7 +136,7 @@ start_pass_coef(j_compress_ptr cinfo, J_BUF_MODE pass_mode)
  */
 
 METHODDEF(boolean)
-compress_data(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
+compress_data(const j_compress_ptr cinfo, const JSAMPIMAGE input_buf)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	const JDIMENSION last_MCU_col = cinfo->MCUs_per_row - 1;
@@ -238,7 +238,7 @@ compress_data(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
  */
 
 METHODDEF(boolean)
-compress_first_pass(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
+compress_first_pass(const j_compress_ptr cinfo, const JSAMPIMAGE input_buf)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	const JDIMENSION last_iMCU_row = cinfo->total_iMCU_rows - 1;
@@ -331,7 +331,7 @@ compress_first_pass(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
  */
 
 METHODDEF(boolean)
-compress_output(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
+compress_output(const j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 {
 	const my_coef_ptr coef = (my_coef_ptr)cinfo->coef;
 	int ci;
@@ -391,7 +391,7 @@ compress_output(j_compress_ptr cinfo, JSAMPIMAGE input_buf)
  */
 
 GLOBAL(void)
-jinit_c_coef_controller(j_compress_ptr cinfo, boolean need_full_buffer)
+jinit_c_coef_controller(j_compress_ptr cinfo, const boolean need_full_buffer)
 {
 	const my_coef_ptr coef = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,
 		SIZEOF(my_coef_controller));

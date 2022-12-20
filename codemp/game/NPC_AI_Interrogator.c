@@ -54,7 +54,7 @@ Interrogator_die
 -------------------------
 */
 void Interrogator_die(const gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+                      int hit_loc)
 {
 	self->client->ps.velocity[2] = -100;
 
@@ -284,7 +284,7 @@ Interrogator_Hunt
 #define HUNTER_FORWARD_BASE_SPEED	10
 #define HUNTER_FORWARD_MULTIPLIER	2
 
-void Interrogator_Hunt(qboolean visible, qboolean advance)
+void Interrogator_Hunt(const qboolean visible, const qboolean advance)
 {
 	float distance;
 	vec3_t forward;
@@ -341,7 +341,7 @@ void Interrogator_Hunt(qboolean visible, qboolean advance)
 Interrogator_Melee
 -------------------------
 */
-void Interrogator_Melee(qboolean visible, qboolean advance)
+void Interrogator_Melee(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPCS.NPC, "attackDelay")) // Attack?
 	{

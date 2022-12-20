@@ -87,7 +87,7 @@ bot_character_t* botcharacters[MAX_CLIENTS + 1];
 // Returns:				-
 // Changes Globals:		-
 //========================================================================
-bot_character_t* BotCharacterFromHandle(int handle)
+bot_character_t* BotCharacterFromHandle(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -145,7 +145,7 @@ void BotFreeCharacterStrings(bot_character_t* ch)
 // Returns:				-
 // Changes Globals:		-
 //========================================================================
-void BotFreeCharacter2(int handle)
+void BotFreeCharacter2(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -167,7 +167,7 @@ void BotFreeCharacter2(int handle)
 // Returns:				-
 // Changes Globals:		-
 //========================================================================
-void BotFreeCharacter(int handle)
+void BotFreeCharacter(const int handle)
 {
 	if (!LibVarGetValue("bot_reloadcharacters")) return;
 	BotFreeCharacter2(handle);
@@ -208,7 +208,7 @@ void BotDefaultCharacteristics(bot_character_t* ch, bot_character_t* defaultch)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-bot_character_t* BotLoadCharacterFromFile(char* charfile, int skill)
+bot_character_t* BotLoadCharacterFromFile(char* charfile, const int skill)
 {
 	token_t token;
 
@@ -353,7 +353,7 @@ bot_character_t* BotLoadCharacterFromFile(char* charfile, int skill)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotFindCachedCharacter(char* charfile, float skill)
+int BotFindCachedCharacter(char* charfile, const float skill)
 {
 	for (int handle = 1; handle <= MAX_CLIENTS; handle++)
 	{
@@ -372,7 +372,7 @@ int BotFindCachedCharacter(char* charfile, float skill)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotLoadCachedCharacter(char* charfile, float skill, int reload)
+int BotLoadCachedCharacter(char* charfile, const float skill, const int reload)
 {
 	int handle, cachedhandle, intskill;
 	bot_character_t* ch = nullptr;
@@ -485,7 +485,7 @@ int BotLoadCachedCharacter(char* charfile, float skill, int reload)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotLoadCharacterSkill(char* charfile, float skill)
+int BotLoadCharacterSkill(char* charfile, const float skill)
 {
 	const int defaultch = BotLoadCachedCharacter(DEFAULT_CHARACTER, skill, qfalse);
 	const int ch = BotLoadCachedCharacter(charfile, skill, LibVarGetValue("bot_reloadcharacters"));
@@ -503,7 +503,7 @@ int BotLoadCharacterSkill(char* charfile, float skill)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int BotInterpolateCharacters(int handle1, int handle2, float desiredskill)
+int BotInterpolateCharacters(const int handle1, const int handle2, const float desiredskill)
 {
 	int handle;
 
@@ -602,7 +602,7 @@ int BotLoadCharacter(char* charfile, float skill)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int CheckCharacteristicIndex(int character, int index)
+int CheckCharacteristicIndex(const int character, const int index)
 {
 	const bot_character_t* ch = BotCharacterFromHandle(character);
 	if (!ch) return qfalse;
@@ -624,7 +624,7 @@ int CheckCharacteristicIndex(int character, int index)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-float Characteristic_Float(int character, int index)
+float Characteristic_Float(const int character, const int index)
 {
 	const bot_character_t* ch = BotCharacterFromHandle(character);
 	if (!ch) return 0;
@@ -652,7 +652,7 @@ float Characteristic_Float(int character, int index)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-float Characteristic_BFloat(int character, int index, float min, float max)
+float Characteristic_BFloat(const int character, const int index, const float min, const float max)
 {
 	const bot_character_t* ch = BotCharacterFromHandle(character);
 	if (!ch) return 0;
@@ -672,7 +672,7 @@ float Characteristic_BFloat(int character, int index, float min, float max)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int Characteristic_Integer(int character, int index)
+int Characteristic_Integer(const int character, const int index)
 {
 	const bot_character_t* ch = BotCharacterFromHandle(character);
 	if (!ch) return 0;
@@ -699,7 +699,7 @@ int Characteristic_Integer(int character, int index)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int Characteristic_BInteger(int character, int index, int min, int max)
+int Characteristic_BInteger(const int character, const int index, const int min, const int max)
 {
 	const bot_character_t* ch = BotCharacterFromHandle(character);
 	if (!ch) return 0;
@@ -719,7 +719,7 @@ int Characteristic_BInteger(int character, int index, int min, int max)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void Characteristic_String(int character, int index, char* buf, int size)
+void Characteristic_String(const int character, const int index, char* buf, const int size)
 {
 	const bot_character_t* ch = BotCharacterFromHandle(character);
 	if (!ch) return;

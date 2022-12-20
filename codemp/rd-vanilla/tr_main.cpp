@@ -117,7 +117,7 @@ int R_CullLocalBox(const vec3_t bounds[2])
 /*
 ** R_CullLocalPointAndRadius
 */
-int R_CullLocalPointAndRadius(const vec3_t pt, float radius)
+int R_CullLocalPointAndRadius(const vec3_t pt, const float radius)
 {
 	vec3_t transformed;
 
@@ -129,7 +129,7 @@ int R_CullLocalPointAndRadius(const vec3_t pt, float radius)
 /*
 ** R_CullPointAndRadius
 */
-int R_CullPointAndRadius(const vec3_t pt, float radius)
+int R_CullPointAndRadius(const vec3_t pt, const float radius)
 {
 	qboolean mightBeClipped = qfalse;
 
@@ -679,7 +679,7 @@ be moving and rotating.
 Returns qtrue if it should be mirrored
 =================
 */
-qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, int entityNum,
+qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, const int entityNum,
 	orientation_t* surface, orientation_t* camera,
 	vec3_t pvsOrigin, qboolean* mirror)
 {
@@ -808,7 +808,7 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, int entityNum,
 	return qfalse;
 }
 
-static qboolean IsMirror(const drawSurf_t* drawSurf, int entityNum)
+static qboolean IsMirror(const drawSurf_t* drawSurf, const int entityNum)
 {
 	cplane_t originalPlane, plane;
 
@@ -1078,7 +1078,7 @@ DRAWSURF SORTING
 R_Radix
 ===============
 */
-static QINLINE void R_Radix(int byte, int size, drawSurf_t* source, drawSurf_t* dest)
+static QINLINE void R_Radix(const int byte, const int size, drawSurf_t* source, drawSurf_t* dest)
 {
 	int count[256] = { 0 };
 	int index[256];
@@ -1130,7 +1130,7 @@ R_AddDrawSurf
 =================
 */
 void R_AddDrawSurf(surfaceType_t* surface, shader_t* shader,
-	int fogIndex, int dlightMap)
+	int fogIndex, const int dlightMap)
 {
 	if (tr.refdef.rdflags & RDF_NOFOG)
 	{
@@ -1159,8 +1159,8 @@ void R_AddDrawSurf(surfaceType_t* surface, shader_t* shader,
 R_DecomposeSort
 =================
 */
-void R_DecomposeSort(unsigned sort, int* entityNum, shader_t** shader,
-	int* fogNum, int* dlightMap)
+void R_DecomposeSort(const unsigned sort, int* entityNum, shader_t** shader,
+                     int* fogNum, int* dlightMap)
 {
 	*fogNum = sort >> QSORT_FOGNUM_SHIFT & 31;
 	*shader = tr.sortedShaders[sort >> QSORT_SHADERNUM_SHIFT & MAX_SHADERS - 1];
@@ -1386,7 +1386,7 @@ void R_GenerateDrawSurfs(void)
 R_DebugPolygon
 ================
 */
-void R_DebugPolygon(int color, int numPoints, float* points)
+void R_DebugPolygon(const int color, const int numPoints, float* points)
 {
 	int i;
 

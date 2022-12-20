@@ -60,7 +60,7 @@ extern bgEntity_t* pm_entVeh;
 #ifdef _GAME
 extern qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS);
 extern void G_DamageFromKiller(gentity_t* pEnt, gentity_t* pVehEnt, gentity_t* attacker, vec3_t org, int damage,
-	int dflags, int mod);
+                               int dflags, int mod);
 #endif
 
 #define MAX_IMPACT_TURN_ANGLE 45.0f
@@ -78,7 +78,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 		pSelfVeh && pSelfVeh->m_pPilot &&
 		hitEnt && hitEnt->s.eType == ET_MISSILE && hitEnt->inuse &&
 		hitEnt->r.ownerNum == pSelfVeh->m_pPilot->s.number
-		)
+	)
 	{
 		return;
 	}
@@ -92,7 +92,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			//hit another vehicle, explode!
 			//Give credit to whoever got me into this death spiral state
 			G_DamageFromKiller((gentity_t*)pEnt, (gentity_t*)pSelfVeh->m_pParentEntity, hitEnt, pm->ps->origin, 999999,
-				DAMAGE_NO_ARMOR, MOD_COLLISION);
+			                   DAMAGE_NO_ARMOR, MOD_COLLISION);
 			return;
 		}
 		if (!VectorCompare(trace->plane.normal, vec3_origin)
@@ -107,7 +107,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			{
 				// Just DIE now
 				G_DamageFromKiller((gentity_t*)pEnt, (gentity_t*)pSelfVeh->m_pParentEntity, hitEnt, pm->ps->origin,
-					999999, DAMAGE_NO_ARMOR, MOD_FALLING);
+				                   999999, DAMAGE_NO_ARMOR, MOD_FALLING);
 				return;
 			}
 		}
@@ -221,7 +221,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				if (turnFromImpact)
 				{
 					//bounce off impact surf and turn away
-					vec3_t pushDir = { 0 }, turnAwayAngles, turnDelta;
+					vec3_t pushDir = {0}, turnAwayAngles, turnDelta;
 					vec3_t moveDir;
 					//bounce
 					if (!turnHitEnt)
@@ -463,8 +463,8 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				if (!noDamage)
 				{
 					G_Damage((gentity_t*)pEnt, hitEnt, killer != NULL ? killer : hitEnt, NULL, pm->ps->origin,
-						magnitude * 5, DAMAGE_NO_ARMOR,
-						hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
+					         magnitude * 5, DAMAGE_NO_ARMOR,
+					         hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
 				}
 
 				if (pSelfVeh->m_pVehicleInfo->surfDestruction)
@@ -541,7 +541,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				if (!noDamage)
 				{
 					G_Damage(hitEnt, attackEnt, attackEnt, NULL, pm->ps->origin, finalD, 0,
-						hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
+					         hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
 				}
 			}
 #else	//this is gonna result in "double effects" for the client doing the prediction.
@@ -562,9 +562,9 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 	}
 }
 
-qboolean PM_GroundSlideOkay(float zNormal)
+qboolean PM_GroundSlideOkay(const float z_normal)
 {
-	if (zNormal > 0)
+	if (z_normal > 0)
 	{
 		if (pm->ps->velocity[2] > 0)
 		{
@@ -668,7 +668,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 			{
 				// slide along the ground plane
 				PM_ClipVelocity(pm->ps->velocity, pml.groundTrace.plane.normal,
-					pm->ps->velocity, OVERCLIP);
+				                pm->ps->velocity, OVERCLIP);
 			}
 		}
 	}

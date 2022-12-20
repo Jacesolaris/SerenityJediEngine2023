@@ -93,10 +93,10 @@ void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to, int
 void MSG_WriteDeltaPlayerstate(msg_t* msg, struct playerState_s* from, struct playerState_s* to, int* bitComboDelta, int* bitNumDelta, qboolean isVehiclePS = qfalse);
 #else
 void MSG_WriteDeltaPlayerstate(msg_t* msg, playerState_s* from, playerState_s* to,
-	qboolean isVehiclePS = qfalse);
+                               qboolean isVehiclePS = qfalse);
 #endif
 void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_s* from, playerState_s* to,
-	qboolean isVehiclePS = qfalse);
+                              qboolean isVehiclePS = qfalse);
 
 #ifndef FINAL_BUILD
 void MSG_ReportChangeVectors_f(void);
@@ -223,6 +223,8 @@ PROTOCOL
 #define	PORT_SERVER			29070	//...+9 more for multiple servers
 #define	NUM_SERVER_PORTS	4		// broadcast scan this many ports after PORT_SERVER so a single machine can run multiple servers
 
+
+
 // the svc_strings[] array in cl_parse.c should mirror this
 //
 // server to client
@@ -292,7 +294,7 @@ using vm_t = struct vm_s
 	struct
 	{
 		VMMainProc* main; // module vmMain
-		intptr_t(QDECL* syscall)(intptr_t* parms); // engine syscall handler
+		intptr_t (QDECL* syscall)(intptr_t* parms); // engine syscall handler
 	} legacy;
 };
 
@@ -303,6 +305,7 @@ class VMSwap
 private:
 	VMSwap();
 	vm_t* oldVM;
+
 public:
 	VMSwap(vm_t* newVM) : oldVM(currentVM) { currentVM = newVM; };
 	~VMSwap() { if (oldVM) currentVM = oldVM; };
@@ -333,14 +336,14 @@ using sharedTraps_t = enum
 };
 
 void VM_Init(void);
-vm_t* VM_CreateLegacy(vmSlots_t vmSlot, intptr_t(*systemCalls)(intptr_t*));
+vm_t* VM_CreateLegacy(vmSlots_t vmSlot, intptr_t (*systemCalls)(intptr_t*));
 vm_t* VM_Create(vmSlots_t vmSlot);
 void VM_Free(vm_t* vm);
 void VM_Clear(void);
 vm_t* VM_Restart(vm_t* vm);
 intptr_t QDECL VM_Call(vm_t* vm, int callNum, intptr_t arg0 = 0, intptr_t arg1 = 0, intptr_t arg2 = 0,
-	intptr_t arg3 = 0, intptr_t arg4 = 0, intptr_t arg5 = 0, intptr_t arg6 = 0, intptr_t arg7 = 0,
-	intptr_t arg8 = 0, intptr_t arg9 = 0, intptr_t arg10 = 0, intptr_t arg11 = 0);
+                       intptr_t arg3 = 0, intptr_t arg4 = 0, intptr_t arg5 = 0, intptr_t arg6 = 0, intptr_t arg7 = 0,
+                       intptr_t arg8 = 0, intptr_t arg9 = 0, intptr_t arg10 = 0, intptr_t arg11 = 0);
 void VM_Shifted_Alloc(void** ptr, int size);
 void VM_Shifted_Free(void** ptr);
 void* VM_ArgPtr(intptr_t intValue);
@@ -671,7 +674,7 @@ int FS_FTell(fileHandle_t f);
 void FS_Flush(fileHandle_t f);
 
 void FS_FilenameCompletion(const char* dir, const char* ext, qboolean stripExt, callbackFunc_t callback,
-	qboolean allowNonPureFilesOnDisk);
+                           qboolean allowNonPureFilesOnDisk);
 
 const char* FS_GetCurrentGameDir(bool emptybase = false);
 
@@ -1012,8 +1015,8 @@ qboolean UI_GameCommand(void);
 
 using node_t = struct nodetype
 {
-	nodetype* left, * right, * parent; /* tree structure */
-	nodetype* next, * prev; /* doubly-linked list */
+	nodetype *left, *right, *parent; /* tree structure */
+	nodetype *next, *prev; /* doubly-linked list */
 	nodetype** head; /* highest ranked node in block */
 	int weight;
 	int symbol;
@@ -1060,7 +1063,7 @@ extern huffman_t clientHuffTables;
 #define	CL_ENCODE_START		12
 #define CL_DECODE_START		4
 
-inline int Round(float value)
+inline int Round(const float value)
 {
 	return static_cast<int>(floorf(value + 0.5f));
 }

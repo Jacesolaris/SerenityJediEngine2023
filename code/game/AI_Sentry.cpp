@@ -97,8 +97,9 @@ void sentry_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 NPC_Sentry_Pain
 -------------------------
 */
-void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hit_loc)
+void NPC_Sentry_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                     const int mod,
+                     int hit_loc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 
@@ -183,9 +184,9 @@ void Sentry_Fire(void)
 	}
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		bolt,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       bolt,
+	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle);
 
@@ -365,7 +366,7 @@ void Sentry_Strafe(void)
 	VectorMA(NPC->currentOrigin, SENTRY_STRAFE_DIS * dir, right, end);
 
 	gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 
 	// Close enough
 	if (tr.fraction > 0.9f)
@@ -392,7 +393,7 @@ void Sentry_Strafe(void)
 Sentry_Hunt
 -------------------------
 */
-void Sentry_Hunt(qboolean visible, qboolean advance)
+void Sentry_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -434,7 +435,7 @@ void Sentry_Hunt(qboolean visible, qboolean advance)
 Sentry_RangedAttack
 -------------------------
 */
-void Sentry_RangedAttack(qboolean visible, qboolean advance)
+void Sentry_RangedAttack(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay") && NPC->attackDebounceTime < level.time && visible) // Attack?
 	{

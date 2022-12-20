@@ -38,7 +38,8 @@ output= qualified names to three skins if return is true, undefined if false
 ===============
 */
 bool RE_SplitSkins(const char* INname, char* skinhead, char* skintorso, char* skinlower)
-{	//INname= "models/players/jedi_tf/|head01_skin1|torso01|lower01";
+{
+	//INname= "models/players/jedi_tf/|head01_skin1|torso01|lower01";
 	if (strchr(INname, '|'))
 	{
 		char name[MAX_QPATH];
@@ -86,41 +87,47 @@ bool RE_SplitSkins(const char* INname, char* skinhead, char* skintorso, char* sk
 }
 
 // given a name, go get the skin we want and return
-qhandle_t RE_RegisterIndividualSkin(const char* name, qhandle_t hSkin)
+qhandle_t RE_RegisterIndividualSkin(const char* name, const qhandle_t hSkin)
 {
-	char* text, * text_p;
-	char			surfName[MAX_QPATH];
+	char *text, *text_p;
+	char surfName[MAX_QPATH];
 
 	// load and parse the skin file
 	ri->FS_ReadFile(name, (void**)&text);
-	if (!text) {
+	if (!text)
+	{
 #ifndef FINAL_BUILD
 		Com_Printf("WARNING: RE_RegisterSkin( '%s' ) failed to load!\n", name);
 #endif
 		return 0;
 	}
 
-	assert(tr.skins[hSkin]);	//should already be setup, but might be an 3part append
+	assert(tr.skins[hSkin]); //should already be setup, but might be an 3part append
 
 	skin_t* skin = tr.skins[hSkin];
 
 	text_p = text;
-	while (text_p && *text_p) {
+	while (text_p && *text_p)
+	{
 		// get surface name
 		const char* token = CommaParse(&text_p);
 		Q_strncpyz(surfName, token, sizeof surfName);
 
-		if (!token[0]) {
+		if (!token[0])
+		{
 			break;
 		}
 		// lowercase the surface name so skin compares are faster
 		Q_strlwr(surfName);
 
-		if (*text_p == ',') {
+		if (*text_p == ',')
+		{
 			text_p++;
 		}
 
-		if (strncmp(token, "tag_", 4) == 0) {	//these aren't in there, but just in case you load an id style one...
+		if (strncmp(token, "tag_", 4) == 0)
+		{
+			//these aren't in there, but just in case you load an id style one...
 			continue;
 		}
 
@@ -131,9 +138,9 @@ qhandle_t RE_RegisterIndividualSkin(const char* name, qhandle_t hSkin)
 		{
 			if (strcmp(token, "*off") == 0)
 			{
-				continue;	//don't need these double offs
+				continue; //don't need these double offs
 			}
-			surfName[strlen(surfName) - 4] = 0;	//remove the "_off"
+			surfName[strlen(surfName) - 4] = 0; //remove the "_off"
 		}
 		if (static_cast<int>(std::size(skin->surfaces)) <= skin->numSurfaces)
 		{
@@ -141,53 +148,61 @@ qhandle_t RE_RegisterIndividualSkin(const char* name, qhandle_t hSkin)
 			Com_Printf("WARNING: RE_RegisterSkin( '%s' ) more than %u surfaces!\n", name, std::size(skin->surfaces));
 			break;
 		}
-		skinSurface_t* surf = static_cast<skinSurface_t*>(Hunk_Alloc(sizeof * skin->surfaces[0], h_low));
+		auto surf = static_cast<skinSurface_t*>(Hunk_Alloc(sizeof *skin->surfaces[0], h_low));
 		skin->surfaces[skin->numSurfaces] = (_skinSurface_t*)surf;
 
 		Q_strncpyz(surf->name, surfName, sizeof surf->name);
 
-		if (gServerSkinHack)	surf->shader = R_FindServerShader(token, lightmapsNone, stylesDefault, qtrue);
-		else					surf->shader = R_FindShader(token, lightmapsNone, stylesDefault, qtrue);
+		if (gServerSkinHack) surf->shader = R_FindServerShader(token, lightmapsNone, stylesDefault, qtrue);
+		else surf->shader = R_FindShader(token, lightmapsNone, stylesDefault, qtrue);
 		skin->numSurfaces++;
 	}
 
 	ri->FS_FreeFile(text);
 
 	// never let a skin have 0 shaders
-	if (skin->numSurfaces == 0) {
-		return 0;		// use default skin
+	if (skin->numSurfaces == 0)
+	{
+		return 0; // use default skin
 	}
 
 	return hSkin;
 }
 
-qhandle_t RE_RegisterSkin(const char* name) {
-	qhandle_t	hSkin;
+qhandle_t RE_RegisterSkin(const char* name)
+{
+	qhandle_t hSkin;
 	skin_t* skin;
 
-	if (!name || !name[0]) {
+	if (!name || !name[0])
+	{
 		Com_Printf("Empty name passed to RE_RegisterSkin\n");
 		return 0;
 	}
 
-	if (strlen(name) >= MAX_QPATH) {
+	if (strlen(name) >= MAX_QPATH)
+	{
 		Com_Printf("Skin name exceeds MAX_QPATH\n");
 		return 0;
 	}
 
 	// see if the skin is already loaded
-	for (hSkin = 1; hSkin < tr.numSkins; hSkin++) {
+	for (hSkin = 1; hSkin < tr.numSkins; hSkin++)
+	{
 		skin = tr.skins[hSkin];
-		if (!Q_stricmp(skin->name, name)) {
-			if (skin->numSurfaces == 0) {
-				return 0;		// default skin
+		if (!Q_stricmp(skin->name, name))
+		{
+			if (skin->numSurfaces == 0)
+			{
+				return 0; // default skin
 			}
 			return hSkin;
 		}
 	}
 
 	// allocate a new skin
-	if (tr.numSkins == MAX_SKINS) {
+	if (tr.numSkins == MAX_SKINS)
+	{
 		Com_Printf("WARNING: RE_RegisterSkin( '%s' ) MAX_SKINS hit\n", name);
 		return 0;
 	}
@@ -201,7 +216,8 @@ qhandle_t RE_RegisterSkin(const char* name) {
 	R_IssuePendingRenderCommands();
 
 	// If not a .skin file, load as a single shader
-	if (strcmp(name + strlen(name) - 5, ".skin") != 0) {
+	if (strcmp(name + strlen(name) - 5, ".skin") != 0)
+	{
 		/*		skin->numSurfaces = 1;
 				skin->surfaces[0] = (skinSurface_t *)Hunk_Alloc( sizeof(skin->surfaces[0]), h_low );
 				skin->surfaces[0]->shader = R_FindShader( name, lightmapsNone, stylesDefault, qtrue );
@@ -209,11 +225,12 @@ qhandle_t RE_RegisterSkin(const char* name) {
 		*/
 	}
 
-	char skinhead[MAX_QPATH] = { 0 };
-	char skintorso[MAX_QPATH] = { 0 };
-	char skinlower[MAX_QPATH] = { 0 };
+	char skinhead[MAX_QPATH] = {0};
+	char skintorso[MAX_QPATH] = {0};
+	char skinlower[MAX_QPATH] = {0};
 	if (RE_SplitSkins(name, (char*)&skinhead, (char*)&skintorso, (char*)&skinlower))
-	{//three part
+	{
+		//three part
 		hSkin = RE_RegisterIndividualSkin(skinhead, hSkin);
 		if (hSkin)
 		{
@@ -225,7 +242,8 @@ qhandle_t RE_RegisterSkin(const char* name) {
 		}
 	}
 	else
-	{//single skin
+	{
+		//single skin
 		hSkin = RE_RegisterIndividualSkin(name, hSkin);
 	}
 	return hSkin;
@@ -239,24 +257,29 @@ This is unfortunate, but the skin files aren't
 compatible with our normal parsing rules.
 ==================
 */
-static char* CommaParse(char** data_p) {
+static char* CommaParse(char** data_p)
+{
 	int c = 0;
-	static	char	com_token[MAX_TOKEN_CHARS];
+	static char com_token[MAX_TOKEN_CHARS];
 
 	char* data = *data_p;
 	int len = 0;
 	com_token[0] = 0;
 
 	// make sure incoming data is valid
-	if (!data) {
+	if (!data)
+	{
 		*data_p = nullptr;
 		return com_token;
 	}
 
-	while (true) {
+	while (true)
+	{
 		// skip whitespace
-		while ((c = *(const unsigned char* /*eurofix*/)data) <= ' ') {
-			if (!c) {
+		while ((c = *(const unsigned char* /*eurofix*/)data) <= ' ')
+		{
+			if (!c)
+			{
 				break;
 			}
 			data++;
@@ -288,7 +311,8 @@ static char* CommaParse(char** data_p) {
 		}
 	}
 
-	if (c == 0) {
+	if (c == 0)
+	{
 		return "";
 	}
 
@@ -323,7 +347,8 @@ static char* CommaParse(char** data_p) {
 		}
 		data++;
 		c = *data;
-	} while (c > 32 && c != ',');
+	}
+	while (c > 32 && c != ',');
 
 	com_token[len] = 0;
 
@@ -338,11 +363,13 @@ RE_RegisterServerSkin
 Mangled version of the above function to load .skin files on the server.
 ===============
 */
-qhandle_t RE_RegisterServerSkin(const char* name) {
+qhandle_t RE_RegisterServerSkin(const char* name)
+{
 	if (ri->Cvar_VariableIntegerValue("cl_running") &&
 		ri->Com_TheHunkMarkHasBeenMade() &&
 		ShaderHashTableExists())
-	{ //If the client is running then we can go straight into the normal registerskin func
+	{
+		//If the client is running then we can go straight into the normal registerskin func
 		return RE_RegisterSkin(name);
 	}
 
@@ -358,7 +385,8 @@ qhandle_t RE_RegisterServerSkin(const char* name) {
 R_InitSkins
 ===============
 */
-void	R_InitSkins(void) {
+void R_InitSkins(void)
+{
 	tr.numSkins = 1;
 
 	// make the default skin have all default shaders
@@ -374,8 +402,10 @@ void	R_InitSkins(void) {
 R_GetSkinByHandle
 ===============
 */
-skin_t* R_GetSkinByHandle(qhandle_t hSkin) {
-	if (hSkin < 1 || hSkin >= tr.numSkins) {
+skin_t* R_GetSkinByHandle(const qhandle_t hSkin)
+{
+	if (hSkin < 1 || hSkin >= tr.numSkins)
+	{
 		return tr.skins[0];
 	}
 	return tr.skins[hSkin];

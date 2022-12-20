@@ -103,7 +103,7 @@ markPoly_t* CG_AllocMark(void)
 	markPoly_t* le = cg_freeMarkPolys;
 	cg_freeMarkPolys = cg_freeMarkPolys->nextMark;
 
-	memset(le, 0, sizeof * le);
+	memset(le, 0, sizeof *le);
 
 	// link into the active list
 	le->nextMark = cg_activeMarkPolys.nextMark;
@@ -127,14 +127,16 @@ passed to the renderer.
 constexpr auto MAX_MARK_FRAGMENTS = 128;
 constexpr auto MAX_MARK_POINTS = 384;
 
-void CG_ImpactMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir, float orientation, float red,
-	float green, float blue, float alpha, qboolean alphaFade, float radius, qboolean temporary)
+void CG_ImpactMark(const qhandle_t markShader, const vec3_t origin, const vec3_t dir, const float orientation,
+                   const float red,
+                   const float green, const float blue, const float alpha, const qboolean alphaFade, const float radius,
+                   const qboolean temporary)
 {
 	vec3_t axis[3];
 	vec3_t originalPoints[4];
 	byte colors[4];
 	int i, j;
-	markFragment_t markFragments[MAX_MARK_FRAGMENTS], * mf;
+	markFragment_t markFragments[MAX_MARK_FRAGMENTS], *mf;
 	vec3_t markPoints[MAX_MARK_POINTS];
 	vec3_t projection;
 
@@ -168,8 +170,8 @@ void CG_ImpactMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir, 
 	// get the fragments
 	VectorScale(dir, -20, projection);
 	const int numFragments = cgi_CM_MarkFragments(4, originalPoints,
-		projection, MAX_MARK_POINTS, markPoints[0],
-		MAX_MARK_FRAGMENTS, markFragments);
+	                                              projection, MAX_MARK_POINTS, markPoints[0],
+	                                              MAX_MARK_FRAGMENTS, markFragments);
 
 	colors[0] = red * 255;
 	colors[1] = green * 255;

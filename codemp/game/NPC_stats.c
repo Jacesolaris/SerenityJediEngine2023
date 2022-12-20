@@ -3514,7 +3514,7 @@ void NPC_LoadParms(void)
 
 	//now load in the extra .npc extensions
 	const int fileCnt = trap->FS_GetFileList("ext_data/mpnpcs", ".npc", npcExtensionListBuf,
-		sizeof npcExtensionListBuf);
+	                                         sizeof npcExtensionListBuf);
 
 	char* holdChar = npcExtensionListBuf;
 	for (int i = 0; i < fileCnt; i++, holdChar += npcExtFNLen + 1)

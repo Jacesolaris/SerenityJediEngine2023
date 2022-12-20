@@ -182,7 +182,7 @@ qboolean RE_RegisterModels_GetDiskFile(const char* psModelFileName, void** ppvBu
 //
 // don't use ri->xxx functions in case running on dedicated
 //
-void* RE_RegisterModels_Malloc(int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, memtag_t eTag)
+void* RE_RegisterModels_Malloc(const int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, const memtag_t eTag)
 {
 	char sModelName[MAX_QPATH];
 
@@ -255,7 +255,7 @@ void* RE_RegisterModels_Malloc(int iSize, void* pvDiskBufferIfJustLoaded, const 
 
 // Unfortunately the dedicated server also hates shader loading. So we need an alternate of this func.
 //
-void* RE_RegisterServerModels_Malloc(int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, memtag_t eTag)
+void* RE_RegisterServerModels_Malloc(const int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, const memtag_t eTag)
 {
 	char sModelName[MAX_QPATH];
 
@@ -339,7 +339,7 @@ extern cvar_t* r_modelpoolmegs;
 // return qtrue if at least one cached model was freed (which tells z_malloc()-fail recoveryt code to try again)
 //
 extern qboolean gbInsideRegisterModel;
-qboolean RE_RegisterModels_LevelLoadEnd(qboolean bDeleteEverythingNotUsedThisLevel /* = qfalse */)
+qboolean RE_RegisterModels_LevelLoadEnd(const qboolean bDeleteEverythingNotUsedThisLevel /* = qfalse */)
 {
 	qboolean bAtLeastoneModelFreed = qfalse;
 
@@ -501,7 +501,7 @@ static void RE_RegisterModels_DeleteAll(void)
 // do not use ri->xxx functions in here, the renderer may not be running (ie. if on a dedicated server)...
 //
 static int giRegisterMedia_CurrentLevel = 0;
-void RE_RegisterMedia_LevelLoadBegin(const char* psMapName, ForceReload_e eForceReload)
+void RE_RegisterMedia_LevelLoadBegin(const char* psMapName, const ForceReload_e eForceReload)
 {
 	// for development purposes we may want to ditch certain media just before loading a map...
 	//
@@ -565,7 +565,7 @@ void RE_RegisterMedia_LevelLoadEnd(void)
 /*
 ** R_GetModelByHandle
 */
-model_t* R_GetModelByHandle(qhandle_t index) {
+model_t* R_GetModelByHandle(const qhandle_t index) {
 	// out of range gets the defualt model
 	if (index < 1 || index >= tr.numModels) {
 		return tr.models[0];
@@ -1656,8 +1656,8 @@ static md3Tag_t* R_GetTag(md3Header_t* mod, int frame, const char* tagName) {
 R_LerpTag
 ================
 */
-int R_LerpTag(orientation_t* tag, qhandle_t handle, int startFrame, int endFrame,
-	float frac, const char* tagName) {
+int R_LerpTag(orientation_t* tag, const qhandle_t handle, const int startFrame, const int endFrame,
+              const float frac, const char* tagName) {
 	const model_t* model = R_GetModelByHandle(handle);
 	if (!model->md3[0]) {
 		AxisClear(tag->axis);
@@ -1693,7 +1693,7 @@ int R_LerpTag(orientation_t* tag, qhandle_t handle, int startFrame, int endFrame
 R_ModelBounds
 ====================
 */
-void R_ModelBounds(qhandle_t handle, vec3_t mins, vec3_t maxs) {
+void R_ModelBounds(const qhandle_t handle, vec3_t mins, vec3_t maxs) {
 	const model_t* model = R_GetModelByHandle(handle);
 
 	if (model->bmodel) {

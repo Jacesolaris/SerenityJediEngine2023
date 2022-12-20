@@ -36,7 +36,7 @@ constexpr auto MAX_LINE_BYTES = 2048;
 
 qhandle_t ghFontHandle = 0;
 float gfFontScale = 1.0f;
-vec4_t gv4Color = { 0 };
+vec4_t gv4Color = {0};
 
 struct StringAndSize_t
 {
@@ -137,7 +137,7 @@ static const char* Capitalize(const char* psTest)
 
 // cope with hyphenated names and initials (awkward gits)...
 //
-static bool CountsAsWhiteSpaceForCaps(unsigned /* avoid euro-char sign-extend assert within isspace()*/char c)
+static bool CountsAsWhiteSpaceForCaps(const unsigned /* avoid euro-char sign-extend assert within isspace()*/char c)
 {
 	return !!(isspace(c) || c == '-' || c == '.' || c == '(' || c == ')' || c == '\'');
 }
@@ -299,7 +299,7 @@ void CG_Credits_Init(const char* psStripReference, vec4_t* pv4Color)
 			qboolean bIsTrailingPunctuation;
 			int iAdvanceCount;
 			unsigned int uiLetter = cgi_AnyLanguage_ReadCharFromString(psTextParse, &iAdvanceCount,
-				&bIsTrailingPunctuation);
+			                                                           &bIsTrailingPunctuation);
 			psTextParse += iAdvanceCount;
 
 			// concat onto string so far...
@@ -396,88 +396,88 @@ void CG_Credits_Init(const char* psStripReference, vec4_t* pv4Color)
 			{
 			case eNothing: break;
 			case eLine:
-			{
-				CreditLine_t CreditLine;
-				CreditLine.i_line = iLineNumber++;
-				CreditLine.str_text = sLine;
-
-				CreditData.CreditLines.push_back(CreditLine);
-			}
-			break;
-
-			case eDotEntry:
-			{
-				CreditLine_t CreditLine;
-				CreditLine.i_line = iLineNumber;
-				CreditLine.b_dotted = true;
-
-				std::string strResult(sLine);
-				const char* p;
-				while ((p = GetSubString(strResult)) != nullptr)
 				{
-					if (CreditLine.str_text.IsEmpty())
-					{
-						CreditLine.str_text = p;
-					}
-					else
-					{
-						CreditLine.vstr_text.emplace_back(UpperCaseFirstLettersOnly(p));
-					}
-				}
-
-				if (!CreditLine.str_text.IsEmpty() && CreditLine.vstr_text.size())
-				{
-					// sort entries RHS dotted entries by alpha...
-					//
-					std::sort(CreditLine.vstr_text.begin(), CreditLine.vstr_text.end(), SortBySurname);
+					CreditLine_t CreditLine;
+					CreditLine.i_line = iLineNumber++;
+					CreditLine.str_text = sLine;
 
 					CreditData.CreditLines.push_back(CreditLine);
-					iLineNumber += CreditLine.vstr_text.size();
 				}
-			}
-			break;
+				break;
+
+			case eDotEntry:
+				{
+					CreditLine_t CreditLine;
+					CreditLine.i_line = iLineNumber;
+					CreditLine.b_dotted = true;
+
+					std::string strResult(sLine);
+					const char* p;
+					while ((p = GetSubString(strResult)) != nullptr)
+					{
+						if (CreditLine.str_text.IsEmpty())
+						{
+							CreditLine.str_text = p;
+						}
+						else
+						{
+							CreditLine.vstr_text.emplace_back(UpperCaseFirstLettersOnly(p));
+						}
+					}
+
+					if (!CreditLine.str_text.IsEmpty() && CreditLine.vstr_text.size())
+					{
+						// sort entries RHS dotted entries by alpha...
+						//
+						std::sort(CreditLine.vstr_text.begin(), CreditLine.vstr_text.end(), SortBySurname);
+
+						CreditData.CreditLines.push_back(CreditLine);
+						iLineNumber += CreditLine.vstr_text.size();
+					}
+				}
+				break;
 
 			case eTitle:
-			{
-				iLineNumber++; // leading blank line
+				{
+					iLineNumber++; // leading blank line
 
-				CreditLine_t CreditLine;
-				CreditLine.i_line = iLineNumber++;
-				CreditLine.str_text = Capitalize(sLine);
+					CreditLine_t CreditLine;
+					CreditLine.i_line = iLineNumber++;
+					CreditLine.str_text = Capitalize(sLine);
 
-				CreditData.CreditLines.push_back(CreditLine);
+					CreditData.CreditLines.push_back(CreditLine);
 
-				iLineNumber++; // trailing blank line
-				break;
-			}
+					iLineNumber++; // trailing blank line
+					break;
+				}
 			case eCard:
-			{
-				CreditCard_t CreditCard;
-
-				std::string strResult(sLine);
-				const char* p;
-				while ((p = GetSubString(strResult)) != nullptr)
 				{
-					if (CreditCard.strTitle.IsEmpty())
+					CreditCard_t CreditCard;
+
+					std::string strResult(sLine);
+					const char* p;
+					while ((p = GetSubString(strResult)) != nullptr)
 					{
-						CreditCard.strTitle = Capitalize(p);
+						if (CreditCard.strTitle.IsEmpty())
+						{
+							CreditCard.strTitle = Capitalize(p);
+						}
+						else
+						{
+							CreditCard.vstrText.emplace_back(UpperCaseFirstLettersOnly(p));
+						}
 					}
-					else
+
+					if (!CreditCard.strTitle.IsEmpty())
 					{
-						CreditCard.vstrText.emplace_back(UpperCaseFirstLettersOnly(p));
+						// sort entries by alpha...
+						//
+						std::sort(CreditCard.vstrText.begin(), CreditCard.vstrText.end(), SortBySurname);
+
+						CreditData.CreditCards.push_back(CreditCard);
 					}
 				}
-
-				if (!CreditCard.strTitle.IsEmpty())
-				{
-					// sort entries by alpha...
-					//
-					std::sort(CreditCard.vstrText.begin(), CreditCard.vstrText.end(), SortBySurname);
-
-					CreditData.CreditCards.push_back(CreditCard);
-				}
-			}
-			break;
+				break;
 			default:
 				break;
 			}
@@ -499,7 +499,8 @@ qboolean CG_Credits_Draw()
 {
 	if (CG_Credits_Running())
 	{
-		const int iFontHeight = static_cast<int>(1.5f * static_cast<float>(cgi_R_Font_HeightPixels(ghFontHandle, gfFontScale)));
+		const int iFontHeight = static_cast<int>(1.5f * static_cast<float>(cgi_R_Font_HeightPixels(
+			ghFontHandle, gfFontScale)));
 		// taiwanese & japanese need 1.5 fontheight spacing
 
 		//		cgi_R_SetColor( *gpv4Color );
@@ -599,7 +600,7 @@ qboolean CG_Credits_Draw()
 
 			bool b_erase_occured;
 			for (auto it = CreditData.CreditLines.begin(); it != CreditData.CreditLines.end();
-				b_erase_occured ? it : ++it)
+			     b_erase_occured ? it : ++it)
 			{
 				CreditLine_t& CreditLine = *it;
 				b_erase_occured = false;
@@ -629,16 +630,16 @@ qboolean CG_Credits_Draw()
 					gv4Color[3] = 1.0f;
 
 					cgi_R_Font_DrawString(iXpos, iYpos, CreditLine.str_text.c_str(), gv4Color, ghFontHandle, -1,
-						gfFontScale);
+					                      gfFontScale);
 
 					// now print any dotted members...
 					//
-					for (StringAndSize_t & StringAndSize : CreditLine.vstr_text)
+					for (StringAndSize_t& StringAndSize : CreditLine.vstr_text)
 					{
 						iWidth = StringAndSize.GetPixelLength();
 						iXpos = SCREEN_WIDTH - 4 - iWidth;
 						cgi_R_Font_DrawString(iXpos, iYpos, StringAndSize.c_str(), gv4Color, ghFontHandle, -1,
-							gfFontScale);
+						                      gfFontScale);
 						iYpos += iFontHeight;
 					}
 				}

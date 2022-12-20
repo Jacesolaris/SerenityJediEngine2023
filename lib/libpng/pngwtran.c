@@ -21,7 +21,7 @@
   * should be 1 (this only happens on grayscale and paletted images).
   */
 static void
-png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
+png_do_pack(const png_row_infop row_info, const png_bytep row, const png_uint_32 bit_depth)
 {
 	png_debug(1, "in png_do_pack");
 
@@ -153,8 +153,8 @@ png_do_pack(png_row_infop row_info, png_bytep row, png_uint_32 bit_depth)
  * data to 0 to 15.
  */
 static void
-png_do_shift(png_row_infop row_info, png_bytep row,
-	png_const_color_8p bit_depth)
+png_do_shift(const png_row_infop row_info, const png_bytep row,
+             const png_const_color_8p bit_depth)
 {
 	png_debug(1, "in png_do_shift");
 
@@ -282,7 +282,7 @@ png_do_shift(png_row_infop row_info, png_bytep row,
 
 #ifdef PNG_WRITE_SWAP_ALPHA_SUPPORTED
 static void
-png_do_write_swap_alpha(png_row_infop row_info, png_bytep row)
+png_do_write_swap_alpha(const png_row_infop row_info, const png_bytep row)
 {
 	png_debug(1, "in png_do_write_swap_alpha");
 
@@ -376,7 +376,7 @@ png_do_write_swap_alpha(png_row_infop row_info, png_bytep row)
 
 #ifdef PNG_WRITE_INVERT_ALPHA_SUPPORTED
 static void
-png_do_write_invert_alpha(png_row_infop row_info, png_bytep row)
+png_do_write_invert_alpha(const png_row_infop row_info, const png_bytep row)
 {
 	png_debug(1, "in png_do_write_invert_alpha");
 
@@ -473,7 +473,7 @@ png_do_write_invert_alpha(png_row_infop row_info, png_bytep row)
  * transformations is significant.
  */
 void /* PRIVATE */
-png_do_write_transformations(png_structrp png_ptr, png_row_infop row_info)
+png_do_write_transformations(const png_structrp png_ptr, const png_row_infop row_info)
 {
 	png_debug(1, "in png_do_write_transformations");
 

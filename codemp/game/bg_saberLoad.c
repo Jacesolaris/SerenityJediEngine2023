@@ -436,7 +436,7 @@ saber_colors_t TranslateSaberColor(const char* name)
 	return SABER_BLUE;
 }
 
-const char* SaberColorToString(saber_colors_t color)
+const char* SaberColorToString(const saber_colors_t color)
 {
 	if (color == SABER_RED) return "red";
 	if (color == SABER_ORANGE) return "orange";
@@ -608,7 +608,7 @@ saberType_t TranslateSaberType(const char* name)
 	return SABER_SINGLE;
 }
 
-qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num)
+qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, const int blade_num)
 {
 	if (saber
 		&& saber->bladeStyle2Start > 0
@@ -618,7 +618,7 @@ qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_nu
 	return qfalse;
 }
 
-qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num)
+qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, const int blade_num)
 {
 	//use first blade style for this blade
 	if (!WP_SaberBladeUseSecondBladeStyle(saber, blade_num) && saber->saberFlags2 & SFL2_TRANSITION_DAMAGE)
@@ -631,7 +631,8 @@ qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, int blade_num
 	return qfalse;
 }
 
-qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered, int* saberAnimLevel)
+qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t* saber2, const int saberHolstered,
+                                    int* saberAnimLevel)
 {
 	qboolean styleInvalid = qfalse;
 	qboolean saber1Active, saber2Active;
@@ -661,7 +662,7 @@ qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t
 		saber2Active = qfalse;
 		if (!saber1 || !saber1->model[0])
 			saber1Active = qfalse;
-		//staff
+			//staff
 		else if (saber1->numBlades > 1)
 		{
 			if (saberHolstered > 1)
@@ -725,7 +726,8 @@ qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t
 	return qfalse;
 }
 
-qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered, int saberAnimLevel)
+qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, const int saberHolstered,
+                                    const int saberAnimLevel)
 {
 	qboolean saber1Active, saber2Active;
 	qboolean dualSabers = qfalse;
@@ -1061,7 +1063,7 @@ static void Saber_ParseNumBlades(saberInfo_t* saber, const char** p)
 	if (n < 1 || n > MAX_BLADES)
 	{
 		Com_Error(ERR_DROP, "WP_SaberParseParms: saber %s has illegal number of blades (%d) max: %d", saber->name, n,
-			MAX_BLADES);
+		          MAX_BLADES);
 		return;
 	}
 	saber->numBlades = n;
@@ -2834,7 +2836,7 @@ static void WP_SaberSetupKeywordHash(void)
 
 qboolean WP_SaberParseParms(const char* saberName, saberInfo_t* saber)
 {
-	const char* token, * p;
+	const char *token, *p;
 	char useSaber[SABER_NAME_LENGTH];
 	qboolean triedDefault = qfalse;
 
@@ -2997,7 +2999,7 @@ qboolean WP_SaberParseParm(const char* saberName, const char* parmname, char* sa
 
 qboolean WP_SaberValidForPlayerInMP(const char* saberName)
 {
-	char allowed[8] = { 0 };
+	char allowed[8] = {0};
 	if (!WP_SaberParseParm(saberName, "notInMP", allowed))
 	{
 		//not defined, default is yes
@@ -3012,7 +3014,7 @@ qboolean WP_SaberValidForPlayerInMP(const char* saberName)
 	return atoi(allowed) == 0;
 }
 
-void WP_RemoveSaber(saberInfo_t* sabers, int saber_num)
+void WP_RemoveSaber(saberInfo_t* sabers, const int saber_num)
 {
 	if (!sabers)
 	{
@@ -3038,7 +3040,7 @@ void WP_RemoveSaber(saberInfo_t* sabers, int saber_num)
 	//	}
 }
 
-void WP_SetSaber(int entNum, saberInfo_t* sabers, int saber_num, const char* saberName)
+void WP_SetSaber(const int entNum, saberInfo_t* sabers, const int saber_num, const char* saberName)
 {
 	if (!sabers)
 	{
@@ -3077,7 +3079,7 @@ void WP_SetSaber(int entNum, saberInfo_t* sabers, int saber_num, const char* sab
 	}
 }
 
-void WP_SaberSetColor(saberInfo_t* sabers, int saber_num, int blade_num, const char* colorName)
+void WP_SaberSetColor(saberInfo_t* sabers, const int saber_num, const int blade_num, const char* colorName)
 {
 	if (!sabers)
 	{
@@ -3103,7 +3105,7 @@ void WP_SaberLoadParms()
 
 	//now load in the extra .sab extensions
 	const int fileCnt = trap->FS_GetFileList("ext_data/sabers", ".sab", saberExtensionListBuf,
-		sizeof saberExtensionListBuf);
+	                                         sizeof saberExtensionListBuf);
 
 	char* holdChar = saberExtensionListBuf;
 	for (int i = 0; i < fileCnt; i++, holdChar += saberExtFNLen + 1)
@@ -3122,11 +3124,13 @@ void WP_SaberLoadParms()
 		{
 			trap->FS_Close(f);
 #ifdef UI_BUILD
-			Com_Error(ERR_FATAL, "WP_SaberLoadParms: Saber extensions (*.sab) are too large!\nRan out of space before reading %s", holdChar);
+			Com_Error(ERR_FATAL,
+			          "WP_SaberLoadParms: Saber extensions (*.sab) are too large!\nRan out of space before reading %s",
+			          holdChar);
 #else
 			Com_Error(ERR_DROP,
-				"WP_SaberLoadParms: Saber extensions (*.sab) are too large!\nRan out of space before reading %s",
-				holdChar);
+			          "WP_SaberLoadParms: Saber extensions (*.sab) are too large!\nRan out of space before reading %s",
+			          holdChar);
 #endif
 		}
 
@@ -3151,10 +3155,11 @@ void WP_SaberLoadParms()
 #ifdef UI_BUILD
 qboolean WP_IsSaberTwoHanded(const char* saberName)
 {
-	char	twoHandedString[8] = { 0 };
+	char twoHandedString[8] = {0};
 	WP_SaberParseParm(saberName, "twoHanded", twoHandedString);
 	if (!twoHandedString[0])
-	{//not defined defaults to "no"
+	{
+		//not defined defaults to "no"
 		return qfalse;
 	}
 	const int twoHanded = atoi(twoHandedString);
@@ -3163,7 +3168,7 @@ qboolean WP_IsSaberTwoHanded(const char* saberName)
 
 void WP_SaberGetHiltInfo(const char* singleHilts[MAX_SABER_HILTS], const char* staffHilts[MAX_SABER_HILTS])
 {
-	int	numSingleHilts = 0, numStaffHilts = 0;
+	int numSingleHilts = 0, numStaffHilts = 0;
 	const char* p;
 
 	//go through all the loaded sabers and put the valid ones in the proper list
@@ -3175,7 +3180,8 @@ void WP_SaberGetHiltInfo(const char* singleHilts[MAX_SABER_HILTS], const char* s
 	{
 		const char* token = COM_ParseExt(&p, qtrue);
 		if (token[0] == 0)
-		{//invalid name
+		{
+			//invalid name
 			continue;
 		}
 		const char* saberName = String_Alloc(token);
@@ -3183,7 +3189,8 @@ void WP_SaberGetHiltInfo(const char* singleHilts[MAX_SABER_HILTS], const char* s
 		SkipRestOfLine(&p);
 
 		if (BG_ParseLiteralSilent(&p, "{"))
-		{//nope, not a name, keep looking
+		{
+			//nope, not a name, keep looking
 			continue;
 		}
 
@@ -3196,7 +3203,7 @@ void WP_SaberGetHiltInfo(const char* singleHilts[MAX_SABER_HILTS], const char* s
 
 		if (WP_IsSaberTwoHanded(saberName))
 		{
-			if (numStaffHilts < MAX_SABER_HILTS - 1)//-1 because we have to NULL terminate the list
+			if (numStaffHilts < MAX_SABER_HILTS - 1) //-1 because we have to NULL terminate the list
 			{
 				staffHilts[numStaffHilts++] = saberName;
 			}
@@ -3207,7 +3214,7 @@ void WP_SaberGetHiltInfo(const char* singleHilts[MAX_SABER_HILTS], const char* s
 		}
 		else
 		{
-			if (numSingleHilts < MAX_SABER_HILTS - 1)//-1 because we have to NULL terminate the list
+			if (numSingleHilts < MAX_SABER_HILTS - 1) //-1 because we have to NULL terminate the list
 			{
 				singleHilts[numSingleHilts++] = saberName;
 			}
@@ -3236,13 +3243,13 @@ and BLADE indicates it was under bladeinfo.
 */
 
 //---------------------------------------
-void BG_BLADE_ActivateTrail(bladeInfo_t* blade, float duration)
+void BG_BLADE_ActivateTrail(bladeInfo_t* blade, const float duration)
 {
 	blade->trail.inAction = qtrue;
 	blade->trail.duration = duration;
 }
 
-void BG_BLADE_DeactivateTrail(bladeInfo_t* blade, float duration)
+void BG_BLADE_DeactivateTrail(bladeInfo_t* blade, const float duration)
 {
 	blade->trail.inAction = qfalse;
 	blade->trail.duration = duration;
@@ -3270,7 +3277,7 @@ void BG_SI_Deactivate(saberInfo_t* saber)
 //	[in]		int iBlade		Which Blade to activate.
 //	[in]		bool bActive	Whether to activate it (default true), or deactivate it (false).
 //	[return]	void
-void BG_SI_BladeActivate(saberInfo_t* saber, int iBlade, qboolean bActive)
+void BG_SI_BladeActivate(saberInfo_t* saber, const int iBlade, const qboolean bActive)
 {
 	// Validate blade ID/Index.
 	if (iBlade < 0 || iBlade >= saber->numBlades)
@@ -3291,7 +3298,7 @@ qboolean BG_SI_Active(const saberInfo_t* saber)
 	return qfalse;
 }
 
-void BG_SI_SetLength(saberInfo_t* saber, float length)
+void BG_SI_SetLength(saberInfo_t* saber, const float length)
 {
 	for (int i = 0; i < saber->numBlades; i++)
 	{
@@ -3300,7 +3307,7 @@ void BG_SI_SetLength(saberInfo_t* saber, float length)
 }
 
 //not in sp, added it for my own convenience
-void BG_SI_SetDesiredLength(saberInfo_t* saber, float len, int blade_num)
+void BG_SI_SetDesiredLength(saberInfo_t* saber, const float len, const int blade_num)
 {
 	int startBlade = 0, maxBlades = saber->numBlades;
 
@@ -3317,7 +3324,7 @@ void BG_SI_SetDesiredLength(saberInfo_t* saber, float len, int blade_num)
 }
 
 //also not in sp, added it for my own convenience
-void BG_SI_SetLengthGradual(saberInfo_t* saber, int time)
+void BG_SI_SetLengthGradual(saberInfo_t* saber, const int time)
 {
 	for (int i = 0; i < saber->numBlades; i++)
 	{
@@ -3413,7 +3420,7 @@ float BG_SI_LengthMax(const saberInfo_t* saber)
 	return len1;
 }
 
-void BG_SI_ActivateTrail(saberInfo_t* saber, float duration)
+void BG_SI_ActivateTrail(saberInfo_t* saber, const float duration)
 {
 	for (int i = 0; i < saber->numBlades; i++)
 	{
@@ -3422,7 +3429,7 @@ void BG_SI_ActivateTrail(saberInfo_t* saber, float duration)
 	}
 }
 
-void BG_SI_DeactivateTrail(saberInfo_t* saber, float duration)
+void BG_SI_DeactivateTrail(saberInfo_t* saber, const float duration)
 {
 	for (int i = 0; i < saber->numBlades; i++)
 	{

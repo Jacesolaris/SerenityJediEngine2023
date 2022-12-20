@@ -387,8 +387,8 @@ int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf)
 							{
 								//Syntax error, I guess.
 								Com_Error(ERR_DROP,
-									"Found a closing bracket without an opening bracket while looking for group '%s'",
-									group);
+								          "Found a closing bracket without an opening bracket while looking for group '%s'",
+								          group);
 							}
 
 							if ((buf[i] != '{' || parse_groups > 1) &&
@@ -421,8 +421,8 @@ int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf)
 						return 1; //we got it, so return 1.
 					}
 					Com_Error(ERR_DROP,
-						"Error parsing group in file, unexpected EOF before opening bracket while looking for group '%s'",
-						group);
+					          "Error parsing group in file, unexpected EOF before opening bracket while looking for group '%s'",
+					          group);
 				}
 				else if (!isGroup)
 				{
@@ -452,8 +452,8 @@ int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf)
 						{
 							//Syntax error, I guess.
 							Com_Error(ERR_DROP,
-								"Found a closing bracket without an opening bracket while looking for group '%s'",
-								group);
+							          "Found a closing bracket without an opening bracket while looking for group '%s'",
+							          group);
 						}
 
 						if (buf[i] == '}' && !parse_groups)
@@ -468,8 +468,8 @@ int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf)
 					if (buf[i] != '}')
 					{
 						Com_Error(ERR_DROP,
-							"Found an opening bracket without a matching closing bracket while looking for group '%s'",
-							group);
+						          "Found an opening bracket without a matching closing bracket while looking for group '%s'",
+						          group);
 					}
 
 					i++;
@@ -496,7 +496,7 @@ int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf)
 				{
 					//Syntax error, I guess.
 					Com_Error(ERR_DROP,
-						"Found a closing bracket without an opening bracket while looking for group '%s'", group);
+					          "Found a closing bracket without an opening bracket while looking for group '%s'", group);
 				}
 
 				if (buf[i] == '}' && !parse_groups)
@@ -511,8 +511,8 @@ int BG_SiegeGetValueGroup(const char* buf, char* group, char* outbuf)
 			if (buf[i] != '}')
 			{
 				Com_Error(ERR_DROP,
-					"Found an opening bracket without a matching closing bracket while looking for group '%s'",
-					group);
+				          "Found an opening bracket without a matching closing bracket while looking for group '%s'",
+				          group);
 			}
 		}
 
@@ -590,8 +590,8 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 						if (openB < 0)
 						{
 							Com_Error(ERR_DROP,
-								"Unexpected closing bracket (too many) while parsing to end of group '%s'",
-								checkKey);
+							          "Unexpected closing bracket (too many) while parsing to end of group '%s'",
+							          checkKey);
 						}
 
 						if (buf[i] == '}' && !openB)
@@ -653,14 +653,14 @@ int BG_SiegeGetPairedValue(const char* buf, char* key, char* outbuf)
 										if (parseToQuote)
 										{
 											Com_Error(ERR_DROP,
-												"Unexpected EOF while looking for endquote, error finding paired value for '%s'",
-												key);
+											          "Unexpected EOF while looking for endquote, error finding paired value for '%s'",
+											          key);
 										}
 										else
 										{
 											Com_Error(ERR_DROP,
-												"Unexpected EOF while looking for space or endline, error finding paired value for '%s'",
-												key);
+											          "Unexpected EOF while looking for space or endline, error finding paired value for '%s'",
+											          key);
 										}
 									}
 								}
@@ -1148,7 +1148,8 @@ void BG_SiegeParseClassFile(const char* filename, siegeClassDesc_t* descBuffer)
 		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof(bgSiegeClasses[bgNumSiegeClasses].uiPortrait));
 #elif defined(UI_BUILD) //ui
 		bgSiegeClasses[bgNumSiegeClasses].uiPortraitShader = trap->R_RegisterShaderNoMip(parseBuf);
-		memcpy(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, parseBuf, sizeof bgSiegeClasses[bgNumSiegeClasses].uiPortrait);
+		memcpy(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, parseBuf,
+		       sizeof bgSiegeClasses[bgNumSiegeClasses].uiPortrait);
 #endif
 	}
 	else
@@ -1173,7 +1174,7 @@ void BG_SiegeParseClassFile(const char* filename, siegeClassDesc_t* descBuffer)
 		{
 			//Com_Error( ERR_DROP, "ERROR: could not find class_shader %s for class %s\n", parseBuf, bgSiegeClasses[bgNumSiegeClasses].name );
 			Com_Printf("ERROR: could not find class_shader %s for class %s\n", parseBuf,
-				bgSiegeClasses[bgNumSiegeClasses].name);
+			           bgSiegeClasses[bgNumSiegeClasses].name);
 		}
 		// A very hacky way to determine class . . .
 		else
@@ -1504,7 +1505,7 @@ void BG_SiegeLoadTeams(void)
 //======================================
 //Misc/utility functions
 //======================================
-siegeTeam_t* BG_SiegeFindThemeForTeam(int team)
+siegeTeam_t* BG_SiegeFindThemeForTeam(const int team)
 {
 	if (team == SIEGETEAM_TEAM1)
 	{
@@ -1523,7 +1524,7 @@ siegeTeam_t* BG_SiegeFindThemeForTeam(int team)
 extern qboolean WP_SaberParseParms(const char* saberName, saberInfo_t* saber); //bg_saberLoad.cpp
 extern int BG_ModelCache(const char* modelName, const char* skinName); //bg_misc.c
 
-void BG_PrecacheSabersForSiegeTeam(int team)
+void BG_PrecacheSabersForSiegeTeam(const int team)
 {
 	saberInfo_t saber;
 
@@ -1575,7 +1576,7 @@ void BG_PrecacheSabersForSiegeTeam(int team)
 }
 #endif
 
-qboolean BG_SiegeCheckClassLegality(int team, char* classname)
+qboolean BG_SiegeCheckClassLegality(const int team, char* classname)
 {
 	siegeTeam_t** team_ptr;
 	int i = 0;
@@ -1636,7 +1637,7 @@ siegeTeam_t* BG_SiegeFindTeamForTheme(const char* themeName)
 	return NULL;
 }
 
-void BG_SiegeSetTeamTheme(int team, const char* themeName)
+void BG_SiegeSetTeamTheme(const int team, const char* themeName)
 {
 	siegeTeam_t** team_ptr;
 

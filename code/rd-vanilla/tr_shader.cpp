@@ -234,7 +234,7 @@ void R_RemapShader(const char *shaderName, const char *newShaderName, const char
 ParseVector
 ===============
 */
-qboolean ParseVector(const char** text, int count, float* v) {
+qboolean ParseVector(const char** text, const int count, float* v) {
 	// FIXME: spaces are currently required after parens, should change parseext...
 	const char* token = COM_ParseExt(text, qfalse);
 	if (strcmp(token, "(") != 0) {
@@ -3332,7 +3332,7 @@ and src*dest blending applied with the texture, as apropriate for
 most world construction surfaces.
 ===============
 */
-shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, qboolean mipRawImage) {
+shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, const qboolean mipRawImage) {
 	char		strippedName[MAX_QPATH];
 	const char* shaderText;
 	shader_t* sh;
@@ -3524,7 +3524,7 @@ When a handle is passed in by another module, this range checks
 it and returns a valid (possibly default) shader_t to be used internally.
 ====================
 */
-shader_t* R_GetShaderByHandle(qhandle_t hShader) {
+shader_t* R_GetShaderByHandle(const qhandle_t hShader) {
 	if (hShader < 0) {
 		ri.Printf(PRINT_WARNING, "R_GetShaderByHandle: out of range hShader '%d'\n", hShader);
 		return tr.defaultShader;

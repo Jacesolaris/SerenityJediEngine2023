@@ -67,7 +67,7 @@ extern gentity_t* NPC_Spawn_Do(gentity_t* pEnt, qboolean fullSpawnNow);
 extern qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask);
 
 extern qboolean G_SetG2PlayerModelInfo(gentity_t* pEnt, const char* modelName, const char* customSkin,
-	const char* surfOff, const char* surfOn);
+                                       const char* surfOff, const char* surfOn);
 extern void G_RemovePlayerModel(gentity_t* pEnt);
 extern void G_ChangePlayerModel(gentity_t* pEnt, const char* newModel);
 extern void G_RemoveWeaponModels(gentity_t* pEnt);
@@ -85,7 +85,7 @@ extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAni
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 #endif
 
 #ifdef _JK2MP
@@ -105,7 +105,7 @@ extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 
 extern qboolean BG_UnrestrainedPitchRoll();
 
-void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend)
+void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, const int iBlend)
 {
 #ifdef _JK2MP
 	assert(ent->client);
@@ -117,7 +117,7 @@ void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlag
 }
 
 void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end,
-	int passEntityNum, int contentmask)
+                    int passEntityNum, int contentmask)
 {
 #ifdef _JK2MP
 	trap_Trace(results, start, tMins, tMaxs, end, passEntityNum, contentmask);
@@ -126,9 +126,9 @@ void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, co
 #endif
 }
 
-Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt)
+Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent)
 {
-	const gentity_t* ent = pEnt;
+	const gentity_t* ent = p_ent;
 
 	if (ent && ent->client && ent->client->NPC_class != CLASS_VEHICLE && ent->s.m_iVehicleNum != 0)
 	{
@@ -137,12 +137,12 @@ Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt)
 	return nullptr;
 }
 
-bool G_IsRidingTurboVehicle(const gentity_t* pEnt)
+bool G_IsRidingTurboVehicle(const gentity_t* p_ent)
 {
-	const gentity_t* ent = pEnt;
+	const gentity_t* ent = p_ent;
 
 	if (ent && ent->client && ent->client->NPC_class != CLASS_VEHICLE && ent->s.m_iVehicleNum != 0)
-		//ent->client && ( ent->client->ps.eFlags & EF_IN_VEHICLE ) && ent->owner )
+	//ent->client && ( ent->client->ps.eFlags & EF_IN_VEHICLE ) && ent->owner )
 	{
 		return level.time < g_entities[ent->s.m_iVehicleNum].m_pVehicle->m_iTurboTime;
 	}
@@ -307,14 +307,14 @@ void G_AttachToVehicle(gentity_t* pEnt, usercmd_t** ucmd)
 #else
 	// Get the driver tag.
 	gi.G2API_GetBoltMatrix(vehEnt->ghoul2, vehEnt->playerModel, vehEnt->crotchBolt, &boltMatrix,
-		vehEnt->m_pVehicle->m_vOrientation, vehEnt->currentOrigin,
-		cg.time ? cg.time : level.time, nullptr, vehEnt->s.modelScale);
+	                       vehEnt->m_pVehicle->m_vOrientation, vehEnt->currentOrigin,
+	                       cg.time ? cg.time : level.time, nullptr, vehEnt->s.modelScale);
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, ent->client->ps.origin);
 	gi.linkentity(ent);
 #endif
 }
 
-void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, qboolean bPull)
+void G_KnockOffVehicle(gentity_t* pRider, const gentity_t* self, const qboolean bPull)
 {
 	vec3_t riderAngles, fDir, rDir, dir2Me;
 
@@ -476,7 +476,7 @@ void G_DriveATST(gentity_t* pEnt, gentity_t* atst)
 			G_SetG2PlayerModelInfo(pEnt, "atst", nullptr, nullptr, nullptr);
 			//turn off hatch underside
 			gi.G2API_SetSurfaceOnOff(&pEnt->ghoul2[pEnt->playerModel], "head_hatchcover",
-				0x00000002/*G2SURFACEFLAG_OFF*/);
+			                         0x00000002/*G2SURFACEFLAG_OFF*/);
 			G_Sound(pEnt, G_SoundIndex("sound/chars/atst/atst_hatch_close"));
 		}
 		pEnt->s.radius = 320;
@@ -870,10 +870,10 @@ bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 }
 
 bool VEH_TryEject(const Vehicle_t* pVeh,
-	gentity_t* parent,
-	gentity_t* ent,
-	int ejectDir,
-	vec3_t vExitPos)
+                  gentity_t* parent,
+                  gentity_t* ent,
+                  const int ejectDir,
+                  vec3_t vExitPos)
 {
 	float fEntDiag;
 	vec3_t vEntMins, vEntMaxs, vVehLeaveDir, vVehAngles;
@@ -884,36 +884,36 @@ bool VEH_TryEject(const Vehicle_t* pVeh,
 	VectorSet(vVehAngles, 0, parent->currentAngles[YAW], 0);
 	switch (ejectDir)
 	{
-		// Left.
+	// Left.
 	case VEH_EJECT_LEFT:
 		AngleVectors(vVehAngles, nullptr, vVehLeaveDir, nullptr);
 		vVehLeaveDir[0] = -vVehLeaveDir[0];
 		vVehLeaveDir[1] = -vVehLeaveDir[1];
 		vVehLeaveDir[2] = -vVehLeaveDir[2];
 		break;
-		// Right.
+	// Right.
 	case VEH_EJECT_RIGHT:
 		AngleVectors(vVehAngles, nullptr, vVehLeaveDir, nullptr);
 		break;
-		// Front.
+	// Front.
 	case VEH_EJECT_FRONT:
 		AngleVectors(vVehAngles, vVehLeaveDir, nullptr, nullptr);
 		break;
-		// Rear.
+	// Rear.
 	case VEH_EJECT_REAR:
 		AngleVectors(vVehAngles, vVehLeaveDir, nullptr, nullptr);
 		vVehLeaveDir[0] = -vVehLeaveDir[0];
 		vVehLeaveDir[1] = -vVehLeaveDir[1];
 		vVehLeaveDir[2] = -vVehLeaveDir[2];
 		break;
-		// Top.
+	// Top.
 	case VEH_EJECT_TOP:
 		AngleVectors(vVehAngles, nullptr, nullptr, vVehLeaveDir);
 		break;
-		// Bottom?.
+	// Bottom?.
 	case VEH_EJECT_BOTTOM:
 		break;
-	default:;
+	default: ;
 	}
 	VectorNormalize(vVehLeaveDir);
 	//NOTE: not sure why following line was needed - MCG
@@ -1012,7 +1012,7 @@ void G_EjectDroidUnit(Vehicle_t* pVeh, qboolean kill)
 }
 
 // Eject the pilot from the vehicle.
-bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
+bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, const qboolean forceEject)
 {
 	gentity_t* parent;
 	vec3_t vExitPos;
@@ -1209,10 +1209,10 @@ bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
 	if (!taintedRider)
 	{
 #endif
-		if (pVeh->m_pVehicleInfo->hideRider)
-		{
-			pVeh->m_pVehicleInfo->UnGhost(pVeh, ent);
-		}
+	if (pVeh->m_pVehicleInfo->hideRider)
+	{
+		pVeh->m_pVehicleInfo->UnGhost(pVeh, ent);
+	}
 #ifdef _JK2MP
 	}
 #endif
@@ -1272,7 +1272,7 @@ bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
 			ent->client->ps.velocity[2] += JUMP_VELOCITY;
 		}*/
 
-		// Make sure entity is facing the direction it got off at.
+	// Make sure entity is facing the direction it got off at.
 #ifndef _JK2MP
 	VectorCopy(pVeh->m_vOrientation, vPlayerDir);
 	vPlayerDir[ROLL] = 0;
@@ -1386,7 +1386,7 @@ bool EjectAll(Vehicle_t* pVeh)
 }
 
 // Start a delay until the vehicle explodes.
-static void StartDeathDelay(Vehicle_t* pVeh, int iDelayTimeOverride)
+static void StartDeathDelay(Vehicle_t* pVeh, const int iDelayTimeOverride)
 {
 	auto parent = pVeh->m_pParentEntity;
 
@@ -1413,7 +1413,7 @@ static void StartDeathDelay(Vehicle_t* pVeh, int iDelayTimeOverride)
 		{
 			pVeh->m_ulFlags |= VEH_ARMORGONE;
 			G_PlayEffect(pVeh->m_pVehicleInfo->iArmorGoneFX, parent->playerModel, parent->crotchBolt, parent->s.number,
-				parent->currentOrigin, 1, qtrue);
+			             parent->currentOrigin, 1, qtrue);
 			parent->s.loopSound = G_SoundIndex("sound/vehicles/common/fire_lp.wav");
 		}
 	}
@@ -1479,31 +1479,31 @@ static void DeathUpdate(Vehicle_t* pVeh)
 				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
 				{
 					G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
-						parent->s.number);
+					             parent->s.number);
 				}
 			}
 			if (pVeh->m_pVehicleInfo->iArmorLowFX)
 			{
 				G_StopEffect(pVeh->m_pVehicleInfo->iArmorLowFX, parent->playerModel, parent->crotchBolt,
-					parent->s.number);
+				             parent->s.number);
 			}
 			if (pVeh->m_pVehicleInfo->iArmorGoneFX)
 			{
 				G_StopEffect(pVeh->m_pVehicleInfo->iArmorGoneFX, parent->playerModel, parent->crotchBolt,
-					parent->s.number);
+				             parent->s.number);
 			}
 			//--------------------------------------
 #endif
 			if (pVeh->m_pVehicleInfo->iExplodeFX)
 			{
-				vec3_t fxAng = { 0.0f, -1.0f, 0.0f };
+				vec3_t fxAng = {0.0f, -1.0f, 0.0f};
 				G_PlayEffect(pVeh->m_pVehicleInfo->iExplodeFX, parent->currentOrigin, fxAng);
 
 				//trace down and place mark
 				VectorCopy(parent->currentOrigin, bottom);
 				bottom[2] -= 80;
 				G_VehicleTrace(&trace, parent->currentOrigin, vec3_origin, vec3_origin, bottom, parent->s.number,
-					CONTENTS_SOLID);
+				               CONTENTS_SOLID);
 				if (trace.fraction < 1.0f)
 				{
 					VectorCopy(trace.endpos, bottom);
@@ -1532,7 +1532,7 @@ static void DeathUpdate(Vehicle_t* pVeh)
 				G_RadiusDamage(trace.endpos, nullptr, pVeh->m_pVehicleInfo->explosionDamage, pVeh->m_pVehicleInfo->explosionRadius, nullptr, nullptr, MOD_EXPLOSIVE);//FIXME: extern damage and radius or base on fuel
 #else
 				G_RadiusDamage(trace.endpos, player, pVeh->m_pVehicleInfo->explosionDamage,
-					pVeh->m_pVehicleInfo->explosionRadius, nullptr, MOD_EXPLOSIVE);
+				               pVeh->m_pVehicleInfo->explosionRadius, nullptr, MOD_EXPLOSIVE);
 				//FIXME: extern damage and radius or base on fuel
 #endif
 			}
@@ -1709,8 +1709,9 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 		if (p_veh->m_pVehicleInfo->weapon[i].ID > VEH_WEAPON_BASE //have a weapon in this slot
 			&& p_veh->m_pVehicleInfo->weapon[i].ammoRechargeMS //its ammo is rechargeable
 			&& p_veh->weaponStatus[i].ammo < p_veh->m_pVehicleInfo->weapon[i].ammoMax //its ammo is below max
-			&& p_umcd->serverTime - p_veh->weaponStatus[i].lastAmmoInc >= p_veh->m_pVehicleInfo->weapon[i].ammoRechargeMS)
-			//enough time has passed
+			&& p_umcd->serverTime - p_veh->weaponStatus[i].lastAmmoInc >= p_veh->m_pVehicleInfo->weapon[i].
+			ammoRechargeMS)
+		//enough time has passed
 		{
 			//add 1 to the ammo
 			p_veh->weaponStatus[i].lastAmmoInc = p_umcd->serverTime;
@@ -1727,8 +1728,9 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 		if (p_veh->m_pVehicleInfo->turret[i].iWeapon > VEH_WEAPON_BASE //have a weapon in this slot
 			&& p_veh->m_pVehicleInfo->turret[i].iAmmoRechargeMS //its ammo is rechargeable
 			&& p_veh->turretStatus[i].ammo < p_veh->m_pVehicleInfo->turret[i].iAmmoMax //its ammo is below max
-			&& p_umcd->serverTime - p_veh->turretStatus[i].lastAmmoInc >= p_veh->m_pVehicleInfo->turret[i].iAmmoRechargeMS)
-			//enough time has passed
+			&& p_umcd->serverTime - p_veh->turretStatus[i].lastAmmoInc >= p_veh->m_pVehicleInfo->turret[i].
+			iAmmoRechargeMS)
+		//enough time has passed
 		{
 			//add 1 to the ammo
 			p_veh->turretStatus[i].lastAmmoInc = p_umcd->serverTime;
@@ -1745,7 +1747,8 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 	if (p_veh->m_pVehicleInfo->shieldRechargeMS
 		&& parent_ps->stats[STAT_ARMOR] > 0 //still have some shields left
 		&& parent_ps->stats[STAT_ARMOR] < p_veh->m_pVehicleInfo->shields //its below max
-		&& p_umcd->serverTime - p_veh->lastShieldInc >= p_veh->m_pVehicleInfo->shieldRechargeMS) //enough time has passed
+		&& p_umcd->serverTime - p_veh->lastShieldInc >= p_veh->m_pVehicleInfo->shieldRechargeMS)
+	//enough time has passed
 	{
 		parent_ps->stats[STAT_ARMOR]++;
 		if (parent_ps->stats[STAT_ARMOR] > p_veh->m_pVehicleInfo->shields)
@@ -1795,7 +1798,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 		{
 			//do another check?
 			if (!player || G_ClearLineOfSight(p_veh->m_pParentEntity->currentOrigin, player->currentOrigin,
-				p_veh->m_pParentEntity->s.number, MASK_OPAQUE))
+			                                  p_veh->m_pParentEntity->s.number, MASK_OPAQUE))
 			{
 				p_veh->m_iPilotTime = level.time + p_veh->m_pParentEntity->endFrame;
 			}
@@ -1803,7 +1806,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 		if (p_veh->m_iPilotTime && p_veh->m_iPilotTime < level.time)
 		{
 			G_Damage(parent, player, player, nullptr, parent->client->ps.origin, 99999, DAMAGE_NO_PROTECTION,
-				MOD_SUICIDE);
+			         MOD_SUICIDE);
 		}
 	}
 
@@ -1895,7 +1898,8 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 	//=====================================================================
 	if (p_veh->m_iTurboTime < cur_time &&
 		p_veh->m_iSoundDebounceTimer < cur_time &&
-		(next_speed > prev_speed && next_speed > half_max_speed && prev_speed < half_max_speed || next_speed > half_max_speed && !
+		(next_speed > prev_speed && next_speed > half_max_speed && prev_speed < half_max_speed || next_speed >
+			half_max_speed && !
 			Q_irand(0, 1000)))
 	{
 		int shiftSound = Q_irand(1, 4);
@@ -1909,7 +1913,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* p_umcd)
 			break;
 		case 4: shiftSound = p_veh->m_pVehicleInfo->soundShift4;
 			break;
-		default:;
+		default: ;
 		}
 		if (shiftSound)
 		{
@@ -1978,7 +1982,8 @@ static bool UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
 				if (pVeh->m_pVehicleInfo->Eject(pVeh, pRider, qfalse))
 				{
 					animNumber_t Anim;
-					constexpr int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, i_blend = 300;
+					constexpr int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, i_blend =
+						              300;
 					if (pUmcd->rightmove > 0)
 					{
 						Anim = BOTH_ROLL_R;
@@ -2192,7 +2197,7 @@ static bool UpdateRider(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUmcd)
 	}
 
 	return true;
-	}
+}
 
 #ifdef _JK2MP //we want access to this one clientside, but it's the only
 //generic vehicle function we care about over there
@@ -2202,7 +2207,7 @@ extern void AttachRidersGeneric(Vehicle_t * pVeh);
 #endif
 
 // Attachs all the riders of this vehicle to their appropriate tag (*driver, *pass1, *pass2, whatever...).
-static void AttachRiders(Vehicle_t * pVeh)
+static void AttachRiders(Vehicle_t* pVeh)
 {
 #ifdef _JK2MP
 	int i = 0;
@@ -2311,8 +2316,8 @@ static void AttachRiders(Vehicle_t * pVeh)
 
 		// Get the driver tag.
 		gi.G2API_GetBoltMatrix(parent->ghoul2, parent->playerModel, parent->crotchBolt, &boltMatrix,
-			pVeh->m_vOrientation, parent->currentOrigin,
-			cg.time ? cg.time : level.time, nullptr, parent->s.modelScale);
+		                       pVeh->m_vOrientation, parent->currentOrigin,
+		                       cg.time ? cg.time : level.time, nullptr, parent->s.modelScale);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, pilot->client->ps.origin);
 		G_SetOrigin(pilot, pilot->client->ps.origin);
 		gi.linkentity(pilot);
@@ -2328,8 +2333,8 @@ static void AttachRiders(Vehicle_t * pVeh)
 
 		// Get the driver tag.
 		gi.G2API_GetBoltMatrix(parent->ghoul2, parent->playerModel, parent->crotchBolt, &boltMatrix,
-			pVeh->m_vOrientation, parent->currentOrigin,
-			cg.time ? cg.time : level.time, nullptr, parent->s.modelScale);
+		                       pVeh->m_vOrientation, parent->currentOrigin,
+		                       cg.time ? cg.time : level.time, nullptr, parent->s.modelScale);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, pilot->client->ps.origin);
 		G_SetOrigin(pilot, pilot->client->ps.origin);
 		gi.linkentity(pilot);
@@ -2338,7 +2343,7 @@ static void AttachRiders(Vehicle_t * pVeh)
 }
 
 // Make someone invisible and un-collidable.
-static void Ghost(Vehicle_t * pVeh, bgEntity_t * pEnt)
+static void Ghost(Vehicle_t* pVeh, bgEntity_t* pEnt)
 {
 	if (!pEnt)
 		return;
@@ -2358,7 +2363,7 @@ static void Ghost(Vehicle_t * pVeh, bgEntity_t * pEnt)
 }
 
 // Make someone visible and collidable.
-static void UnGhost(Vehicle_t * pVeh, bgEntity_t * pEnt)
+static void UnGhost(Vehicle_t* pVeh, bgEntity_t* pEnt)
 {
 	if (!pEnt)
 		return;
@@ -2871,19 +2876,19 @@ void G_VehUpdateShields(gentity_t * targ)
 #endif
 
 // Set the parent entity of this Vehicle NPC.
-void SetParent(Vehicle_t * pVeh, bgEntity_t * pParentEntity) { pVeh->m_pParentEntity = pParentEntity; }
+void SetParent(Vehicle_t* pVeh, bgEntity_t* pParentEntity) { pVeh->m_pParentEntity = pParentEntity; }
 
 // Add a pilot to the vehicle.
-void SetPilot(Vehicle_t * pVeh, bgEntity_t * pPilot) { pVeh->m_pPilot = pPilot; }
+void SetPilot(Vehicle_t* pVeh, bgEntity_t* pPilot) { pVeh->m_pPilot = pPilot; }
 
 // Add a passenger to the vehicle (false if we're full).
-bool AddPassenger(Vehicle_t * pVeh) { return false; }
+bool AddPassenger(Vehicle_t* pVeh) { return false; }
 
 // Whether this vehicle is currently inhabited (by anyone) or not.
-bool Inhabited(Vehicle_t * pVeh) { return pVeh->m_pPilot ? true : false; }
+bool Inhabited(Vehicle_t* pVeh) { return pVeh->m_pPilot ? true : false; }
 
 // Setup the shared functions (one's that all vehicles would generally use).
-void G_SetSharedVehicleFunctions(vehicleInfo_t * pVehInfo)
+void G_SetSharedVehicleFunctions(vehicleInfo_t* pVehInfo)
 {
 	//	pVehInfo->AnimateVehicle				=		AnimateVehicle;
 	//	pVehInfo->AnimateRiders					=		AnimateRiders;

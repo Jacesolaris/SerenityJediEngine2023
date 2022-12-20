@@ -338,7 +338,7 @@ typedef struct vehicleInfo_s
 	void (*AnimateRiders)(Vehicle_t* pVeh);
 
 	// Determine whether this entity is able to board this vehicle or not.
-	qboolean(*ValidateBoard)(Vehicle_t* pVeh, bgEntity_t* pEnt);
+	qboolean (*ValidateBoard)(Vehicle_t* pVeh, bgEntity_t* pEnt);
 
 	// Set the parent entity of this Vehicle NPC.
 	void (*SetParent)(Vehicle_t* pVeh, bgEntity_t* pParentEntity);
@@ -347,19 +347,19 @@ typedef struct vehicleInfo_s
 	void (*SetPilot)(Vehicle_t* pVeh, bgEntity_t* pPilot);
 
 	// Add a passenger to the vehicle (false if we're full).
-	qboolean(*AddPassenger)(Vehicle_t* pVeh);
+	qboolean (*AddPassenger)(Vehicle_t* pVeh);
 
 	// Animate the vehicle and it's riders.
 	void (*Animate)(Vehicle_t* pVeh);
 
 	// Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-	qboolean(*Board)(Vehicle_t* pVeh, bgEntity_t* pEnt);
+	qboolean (*Board)(Vehicle_t* pVeh, bgEntity_t* pEnt);
 
 	// Eject an entity from the vehicle.
-	qboolean(*Eject)(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject);
+	qboolean (*Eject)(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject);
 
 	// Eject all the inhabitants of this vehicle.
-	qboolean(*EjectAll)(Vehicle_t* pVeh);
+	qboolean (*EjectAll)(Vehicle_t* pVeh);
 
 	// Start a delay until the vehicle dies.
 	void (*StartDeathDelay)(Vehicle_t* pVeh, int iDelayTime);
@@ -371,15 +371,15 @@ typedef struct vehicleInfo_s
 	void (*RegisterAssets)(Vehicle_t* pVeh);
 
 	// Initialize the vehicle (should be called by Spawn?).
-	qboolean(*Initialize)(Vehicle_t* pVeh);
+	qboolean (*Initialize)(Vehicle_t* pVeh);
 
 	// Like a think or move command, this updates various vehicle properties.
-	qboolean(*Update)(Vehicle_t* pVeh, const usercmd_t* pUcmd);
+	qboolean (*Update)(Vehicle_t* pVeh, const usercmd_t* pUcmd);
 
 	// Update the properties of a Rider (that may reflect what happens to the vehicle).
 	//
 	//	[return]		bool			True if still in vehicle, false if otherwise.
-	qboolean(*UpdateRider)(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUcmd);
+	qboolean (*UpdateRider)(Vehicle_t* pVeh, bgEntity_t* pRider, usercmd_t* pUcmd);
 
 	// ProcessMoveCommands the Vehicle.
 	void (*ProcessMoveCommands)(Vehicle_t* pVeh);
@@ -400,7 +400,7 @@ typedef struct vehicleInfo_s
 	const bgEntity_t* (*GetPilot)(Vehicle_t* pVeh);
 
 	// Whether this vehicle is currently inhabited (by anyone) or not.
-	qboolean(*Inhabited)(Vehicle_t* pVeh);
+	qboolean (*Inhabited)(Vehicle_t* pVeh);
 } vehicleInfo_t;
 
 #define	VFOFS(x) offsetof(vehicleInfo_t, x)

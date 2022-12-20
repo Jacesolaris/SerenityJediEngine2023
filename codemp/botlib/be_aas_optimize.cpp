@@ -90,7 +90,7 @@ int AAS_KeepEdge(aas_edge_t* edge)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_OptimizeEdge(optimized_t* optimized, int edgenum)
+int AAS_OptimizeEdge(optimized_t* optimized, const int edgenum)
 {
 	aas_edge_t* edge = &aasworld.edges[abs(edgenum)];
 	if (!AAS_KeepEdge(edge)) return 0;
@@ -143,7 +143,7 @@ int AAS_KeepFace(aas_face_t* face)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_OptimizeFace(optimized_t* optimized, int facenum)
+int AAS_OptimizeFace(optimized_t* optimized, const int facenum)
 {
 	aas_face_t* face = &aasworld.faces[abs(facenum)];
 	if (!AAS_KeepFace(face)) return 0;
@@ -185,7 +185,7 @@ int AAS_OptimizeFace(optimized_t* optimized, int facenum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_OptimizeArea(optimized_t* optimized, int areanum)
+void AAS_OptimizeArea(optimized_t* optimized, const int areanum)
 {
 	const aas_area_t* area = &aasworld.areas[areanum];
 	aas_area_t* optarea = &optimized->areas[areanum];

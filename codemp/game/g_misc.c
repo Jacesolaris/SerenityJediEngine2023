@@ -332,7 +332,7 @@ typedef struct cgMiscEntData_s
 static cgMiscEntData_t MiscEnts[MAX_MISC_ENTS]; //statically allocated for now.
 static int NumMiscEnts = 0;
 
-void CG_CreateMiscEntFromGent(const gentity_t* ent, const vec3_t scale, float zOff)
+void CG_CreateMiscEntFromGent(const gentity_t* ent, const vec3_t scale, const float zOff)
 {
 	//store the model data
 	if (NumMiscEnts == MAX_MISC_ENTS)
@@ -353,7 +353,7 @@ void CG_CreateMiscEntFromGent(const gentity_t* ent, const vec3_t scale, float zO
 		return;
 	}
 	cgMiscEntData_t* MiscEnt = &MiscEnts[NumMiscEnts++];
-	memset(MiscEnt, 0, sizeof * MiscEnt);
+	memset(MiscEnt, 0, sizeof *MiscEnt);
 
 	strcpy(MiscEnt->model, ent->model);
 	VectorCopy(ent->s.angles, MiscEnt->angles);
@@ -390,7 +390,7 @@ void SP_misc_model_static(gentity_t* ent)
 }
 
 extern void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage,
-	int meansOfDeath);
+                                     int meansOfDeath);
 
 void misc_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 {
@@ -794,7 +794,7 @@ void G_PortalifyEntities(gentity_t* ent)
 			trace_t tr;
 
 			trap->Trace(&tr, ent->s.origin, vec3_origin, vec3_origin, scan->r.currentOrigin, ent->s.number,
-				CONTENTS_SOLID, qfalse, 0, 0);
+			            CONTENTS_SOLID, qfalse, 0, 0);
 
 			if (tr.fraction == 1.0 || tr.entityNum == scan->s.number && tr.entityNum != ENTITYNUM_NONE && tr.entityNum
 				!= ENTITYNUM_WORLD)
@@ -855,8 +855,8 @@ void SP_misc_skyportal(gentity_t* ent)
 	isfog += G_SpawnInt("fogfar", "300", &fogf);
 
 	trap->SetConfigstring(CS_SKYBOXORG, va("%.2f %.2f %.2f %.1f %i %.2f %.2f %.2f %i %i", ent->s.origin[0],
-		ent->s.origin[1], ent->s.origin[2], fov_x, isfog, fogv[0], fogv[1], fogv[2],
-		fogn, fogf));
+	                                       ent->s.origin[1], ent->s.origin[2], fov_x, isfog, fogv[0], fogv[1], fogv[2],
+	                                       fogn, fogf));
 
 	ent->think = G_PortalifyEntities;
 	ent->nextthink = level.time + 1050; //give it some time first so that all other entities are spawned.
@@ -1242,7 +1242,7 @@ void Use_Shooter(gentity_t* ent, gentity_t* other, gentity_t* activator)
 	case WP_BLASTER:
 		WP_FireBlasterMissile(ent, ent->s.origin, dir, qfalse);
 		break;
-	default:;
+	default: ;
 	}
 
 	G_AddEvent(ent, EV_FIRE_WEAPON, 0);
@@ -1255,7 +1255,7 @@ static void InitShooter_Finish(gentity_t* ent)
 	ent->nextthink = 0;
 }
 
-void InitShooter(gentity_t* ent, int weapon)
+void InitShooter(gentity_t* ent, const int weapon)
 {
 	ent->use = Use_Shooter;
 	ent->s.weapon = weapon;
@@ -1449,7 +1449,7 @@ void shield_power_converter_use(gentity_t* self, const gentity_t* other, gentity
 	}
 }
 
-qboolean HasValidWeaponThatUsesAmmo(const gentity_t* ent, int ammotype)
+qboolean HasValidWeaponThatUsesAmmo(const gentity_t* ent, const int ammotype)
 {
 	switch (ammotype)
 	{
@@ -2683,7 +2683,7 @@ void SP_fx_runner(gentity_t* ent)
 	if (!fxFile || !fxFile[0])
 	{
 		Com_Printf(S_COLOR_RED"ERROR: fx_runner %s at %s has no fxFile specified\n", ent->targetname,
-			vtos(ent->s.origin));
+		           vtos(ent->s.origin));
 		G_FreeEntity(ent);
 		return;
 	}
@@ -3366,7 +3366,8 @@ TAG_Add
 -------------------------
 */
 
-reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, int radius, int flags)
+reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, const int radius,
+                         const int flags)
 {
 	//Make sure this tag's name isn't alread in use
 	if (TAG_Find(owner, name))
@@ -3415,7 +3416,7 @@ reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec
 	if (!name || !name[0])
 	{
 		Com_Printf(S_COLOR_RED"ERROR: Nameless ref_tag found at (%i %i %i)\n", (int)origin[0], (int)origin[1],
-			(int)origin[2]);
+		           (int)origin[2]);
 		return NULL;
 	}
 
@@ -3847,7 +3848,7 @@ void SP_misc_trip_mine(gentity_t* ent)
 #define RACK_REPEATER	2
 #define RACK_ROCKET		4
 
-void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fright, float fup)
+void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, const float ffwd, const float fright, const float fup)
 {
 	vec3_t fwd, right;
 	gentity_t* it_ent = G_Spawn();
@@ -3872,7 +3873,7 @@ void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fri
 			case WP_ROCKET_LAUNCHER:
 				it_ent->count = 4;
 				break;
-			default:;
+			default: ;
 			}
 		}
 		else
@@ -3920,7 +3921,7 @@ void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fri
 				case 2:
 					it_ent->count *= 0.5f;
 					break;
-				default:;
+				default: ;
 				}
 			}
 		}
@@ -3991,10 +3992,10 @@ ROCKET - Puts one or more rocket launchers on the rack.
 */
 void SP_misc_model_gun_rack(gentity_t* ent)
 {
-	gitem_t* blaster = NULL, * repeater = NULL, * rocket = NULL;
+	gitem_t * blaster = NULL, *repeater = NULL, *rocket = NULL;
 	int ct = 0;
 	float ofz[3];
-	gitem_t* itemList[3];
+	gitem_t * itemList[3];
 
 	// If BLASTER is checked...or nothing is checked then we'll do blasters
 	if (ent->spawnflags & RACK_BLASTER || !(ent->spawnflags & (RACK_BLASTER | RACK_REPEATER | RACK_ROCKET)))
@@ -4046,7 +4047,7 @@ void SP_misc_model_gun_rack(gentity_t* ent)
 		for (int i = 0; i < ct; i++)
 		{
 			GunRackAddItem(itemList[i], ent->s.origin, ent->s.angles, randoms() * 2, (i - 1) * 9 + randoms() * 2,
-				ofz[i]);
+			               ofz[i]);
 		}
 	}
 
@@ -4071,11 +4072,11 @@ void SP_misc_model_gun_rack(gentity_t* ent)
 // AMMO RACK!!
 void spawn_rack_goods(gentity_t* ent)
 {
-	gitem_t* blaster = NULL, * metal_bolts = NULL, * rockets = NULL, * it = NULL;
-	gitem_t* am_blaster = NULL, * am_metal_bolts = NULL, * am_rockets = NULL, * am_pwr_cell = NULL;
-	gitem_t* health = NULL;
+	gitem_t * blaster = NULL, *metal_bolts = NULL, *rockets = NULL, *it = NULL;
+	gitem_t * am_blaster = NULL, *am_metal_bolts = NULL, *am_rockets = NULL, *am_pwr_cell = NULL;
+	gitem_t * health = NULL;
 	int pos = 0, ct = 0;
-	gitem_t* itemList[4];
+	gitem_t * itemList[4];
 	// allocating 4, but we only use 3.  done so I don't have to validate that the array isn't full before I add another
 
 	trap->UnlinkEntity((sharedEntity_t*)ent);
@@ -4142,7 +4143,7 @@ void spawn_rack_goods(gentity_t* ent)
 	}
 
 	if (!(ent->spawnflags & RACK_NO_FILL) && ct)
-		//double negative..should always have at least one item on there, but just being safe
+	//double negative..should always have at least one item on there, but just being safe
 	{
 		for (; ct < 3; ct++)
 		{
@@ -4462,7 +4463,7 @@ void camera_aim(gentity_t* self)
 			VectorCopy(angles, self->r.currentAngles);
 
 			if (DistanceSquared(self->r.currentAngles, self->pos1) > 0.01f)
-				// if it moved at all, start a loop sound? not exactly the "bestest" solution
+			// if it moved at all, start a loop sound? not exactly the "bestest" solution
 			{
 				self->s.loopSound = G_SoundIndex("sound/movers/objects/cameramove_lp2");
 			}
@@ -4497,7 +4498,7 @@ void camera_aim(gentity_t* self)
 				continue;
 
 			if (InFOV3(player->client->ps.origin, self->r.currentOrigin,
-				self->r.currentAngles, 15, 15))
+			           self->r.currentAngles, 15, 15))
 			{
 				//found a player,
 				G_UseTargets2(self, player, self->target2);
@@ -4891,8 +4892,9 @@ void SP_misc_model_beacon(gentity_t* ent)
 
 extern gentity_t* LaunchItem(gitem_t* item, vec3_t origin, vec3_t velocity);
 
-void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, const int damage,
+                          const int mod, int dFlags,
+                          int hit_loc)
 {
 	vec3_t org, temp;
 
@@ -4912,7 +4914,7 @@ void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t
 	// annoying, but spawn each thing in its own little quadrant so that they don't end up on top of each other
 	if (flags & DROP_MEDPACK)
 	{
-		gitem_t* health = BG_FindItem("item_medpak_instant");
+		gitem_t * health = BG_FindItem("item_medpak_instant");
 
 		if (health)
 		{
@@ -4924,7 +4926,7 @@ void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t
 	}
 	if (flags & DROP_SHIELDS)
 	{
-		gitem_t* shields = BG_FindItem("item_shield_sm_instant");
+		gitem_t * shields = BG_FindItem("item_shield_sm_instant");
 
 		if (shields)
 		{
@@ -4937,7 +4939,7 @@ void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t
 
 	if (flags & DROP_BACTA)
 	{
-		gitem_t* bacta = BG_FindItem("item_bacta");
+		gitem_t * bacta = BG_FindItem("item_bacta");
 
 		if (bacta)
 		{
@@ -4950,7 +4952,7 @@ void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t
 
 	if (flags & DROP_BATTERIES)
 	{
-		gitem_t* batteries = BG_FindItem("item_battery");
+		gitem_t * batteries = BG_FindItem("item_battery");
 
 		if (batteries)
 		{
@@ -4983,7 +4985,7 @@ void SP_misc_model_cargo_small(gentity_t* ent)
 
 	if (ent->spawnflags & DROP_SHIELDS)
 	{
-		gitem_t* shields = BG_FindItem("item_shield_sm_instant");
+		gitem_t * shields = BG_FindItem("item_shield_sm_instant");
 
 		if (shields)
 		{
@@ -4996,7 +4998,7 @@ void SP_misc_model_cargo_small(gentity_t* ent)
 
 	if (ent->spawnflags & DROP_BACTA)
 	{
-		gitem_t* bacta = BG_FindItem("item_bacta");
+		gitem_t * bacta = BG_FindItem("item_bacta");
 
 		if (bacta)
 		{
@@ -5009,7 +5011,7 @@ void SP_misc_model_cargo_small(gentity_t* ent)
 
 	if (ent->spawnflags & DROP_BATTERIES)
 	{
-		gitem_t* batteries = BG_FindItem("item_battery");
+		gitem_t * batteries = BG_FindItem("item_battery");
 
 		if (batteries)
 		{

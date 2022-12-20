@@ -35,7 +35,7 @@ public:
 	boneInfo_v& boneList;
 
 	CConstructBoneList(
-		int				initsurfaceNum,
+		const int				initsurfaceNum,
 		int* initboneUsedList,
 		surfaceInfo_v& initrootSList,
 		model_t* initcurrentModel,
@@ -54,7 +54,7 @@ extern void G2_ConstructUsedBoneList(CConstructBoneList& CBL);
 // Surface List handling routines - so entities can determine what surfaces attached to a model are operational or not.
 
 // find a particular surface in the surface override list
-surfaceInfo_t* G2_FindOverrideSurface(int surfaceNum, surfaceInfo_v& surfaceList)
+surfaceInfo_t* G2_FindOverrideSurface(const int surfaceNum, surfaceInfo_v& surfaceList)
 {
 	// look through entire list
 	for (auto& i : surfaceList)
@@ -198,7 +198,7 @@ qboolean G2_SetSurfaceOnOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const ch
 	return qfalse;
 }
 
-void G2_SetSurfaceOnOffFromSkin(CGhoul2Info* ghlInfo, qhandle_t renderSkin)
+void G2_SetSurfaceOnOffFromSkin(CGhoul2Info* ghlInfo, const qhandle_t renderSkin)
 {
 	const skin_t* skin = R_GetSkinByHandle(renderSkin);
 
@@ -499,7 +499,7 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int model_index, const c
 }
 
 extern int G2_DecideTraceLod(const CGhoul2Info& ghoul2, int useLod);
-int G2_AddSurface(CGhoul2Info* ghoul2, int surfaceNumber, int polyNumber, float BarycentricI, float BarycentricJ, int lod)
+int G2_AddSurface(CGhoul2Info* ghoul2, const int surfaceNumber, const int polyNumber, const float BarycentricI, const float BarycentricJ, int lod)
 {
 	surfaceInfo_t temp_slist_entry;
 

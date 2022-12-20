@@ -29,7 +29,7 @@ namespace Q
 	};
 
 	gsl::cstring_view substr(const gsl::cstring_view& lhs, std::string::size_type pos = 0,
-		std::string::size_type count = std::string::npos);
+	                         std::string::size_type count = std::string::npos);
 
 	int svtoi(const gsl::cstring_view& view);
 	float svtof(const gsl::cstring_view& view);
@@ -38,7 +38,7 @@ namespace Q
 // operator<< overloads
 namespace std
 {
-	inline std::ostream& operator<<(std::ostream& stream, Q::Ordering ordering)
+	inline std::ostream& operator<<(std::ostream& stream, const Q::Ordering ordering)
 	{
 		switch (ordering)
 		{

@@ -40,8 +40,10 @@ const char* svc_strings[256] = {
 	"svc_snapshot"
 };
 
-void SHOWNET(const msg_t* msg, const char* s) {
-	if (cl_shownet->integer >= 2) {
+void SHOWNET(const msg_t* msg, const char* s)
+{
+	if (cl_shownet->integer >= 2)
+	{
 		Com_Printf("%3i:%s\n", msg->readcount - 1, s);
 	}
 }
@@ -72,7 +74,7 @@ void CL_DeltaEntity(msg_t* msg, clSnapshot_t* frame)
 
 	if (state->number == MAX_GENTITIES - 1)
 	{
-		return;		// entity was delta removed
+		return; // entity was delta removed
 	}
 	cl.parseEntitiesNum++;
 	frame->numEntities++;
@@ -84,7 +86,8 @@ CL_ParsePacketEntities
 
 ==================
 */
-void CL_ParsePacketEntities(msg_t* msg, const clSnapshot_t* oldframe, clSnapshot_t* newframe) {
+void CL_ParsePacketEntities(msg_t* msg, const clSnapshot_t* oldframe, clSnapshot_t* newframe)
+{
 	int oldnum;
 
 	newframe->parseEntitiesNum = cl.parseEntitiesNum;
@@ -93,63 +96,78 @@ void CL_ParsePacketEntities(msg_t* msg, const clSnapshot_t* oldframe, clSnapshot
 	// delta from the entities present in oldframe
 	int oldindex = 0;
 	const entityState_t* oldstate;
-	if (!oldframe) {
+	if (!oldframe)
+	{
 		oldnum = 99999;
 	}
-	else {
-		if (oldindex >= oldframe->numEntities) {
+	else
+	{
+		if (oldindex >= oldframe->numEntities)
+		{
 			oldnum = 99999;
 		}
-		else {
+		else
+		{
 			oldstate = &cl.parseEntities[
 				oldframe->parseEntitiesNum + oldindex & MAX_PARSE_ENTITIES - 1];
 			oldnum = oldstate->number;
 		}
 	}
 
-	while (true) {
+	while (true)
+	{
 		// read the entity index number
 		const int newnum = MSG_ReadBits(msg, GENTITYNUM_BITS);
 
-		if (newnum == MAX_GENTITIES - 1) {
+		if (newnum == MAX_GENTITIES - 1)
+		{
 			break;
 		}
 
-		if (msg->readcount > msg->cursize) {
+		if (msg->readcount > msg->cursize)
+		{
 			Com_Error(ERR_DROP, "CL_ParsePacketEntities: end of message");
 		}
 
-		while (oldnum < newnum) {
+		while (oldnum < newnum)
+		{
 			// one or more entities from the old packet are unchanged
-			if (cl_shownet->integer == 3) {
+			if (cl_shownet->integer == 3)
+			{
 				Com_Printf("%3i:  unchanged: %i\n", msg->readcount, oldnum);
 			}
 			CL_DeltaEntity(msg, newframe);
 
 			oldindex++;
 
-			if (oldindex >= oldframe->numEntities) {
+			if (oldindex >= oldframe->numEntities)
+			{
 				oldnum = 99999;
 			}
-			else {
+			else
+			{
 				oldstate = &cl.parseEntities[
 					oldframe->parseEntitiesNum + oldindex & MAX_PARSE_ENTITIES - 1];
 				oldnum = oldstate->number;
 			}
 		}
-		if (oldnum == newnum) {
+		if (oldnum == newnum)
+		{
 			// delta from previous state
-			if (cl_shownet->integer == 3) {
+			if (cl_shownet->integer == 3)
+			{
 				Com_Printf("%3i:  delta: %i\n", msg->readcount, newnum);
 			}
 			CL_DeltaEntity(msg, newframe);
 
 			oldindex++;
 
-			if (oldindex >= oldframe->numEntities) {
+			if (oldindex >= oldframe->numEntities)
+			{
 				oldnum = 99999;
 			}
-			else {
+			else
+			{
 				oldstate = &cl.parseEntities[
 					oldframe->parseEntitiesNum + oldindex & MAX_PARSE_ENTITIES - 1];
 				oldnum = oldstate->number;
@@ -157,9 +175,11 @@ void CL_ParsePacketEntities(msg_t* msg, const clSnapshot_t* oldframe, clSnapshot
 			continue;
 		}
 
-		if (oldnum > newnum) {
+		if (oldnum > newnum)
+		{
 			// delta from baseline
-			if (cl_shownet->integer == 3) {
+			if (cl_shownet->integer == 3)
+			{
 				Com_Printf("%3i:  baseline: %i\n", msg->readcount, newnum);
 			}
 			CL_DeltaEntity(msg, newframe);
@@ -167,19 +187,23 @@ void CL_ParsePacketEntities(msg_t* msg, const clSnapshot_t* oldframe, clSnapshot
 	}
 
 	// any remaining entities in the old frame are copied over
-	while (oldnum != 99999) {
+	while (oldnum != 99999)
+	{
 		// one or more entities from the old packet are unchanged
-		if (cl_shownet->integer == 3) {
+		if (cl_shownet->integer == 3)
+		{
 			Com_Printf("%3i:  unchanged: %i\n", msg->readcount, oldnum);
 		}
 		CL_DeltaEntity(msg, newframe);
 
 		oldindex++;
 
-		if (oldindex >= oldframe->numEntities) {
+		if (oldindex >= oldframe->numEntities)
+		{
 			oldnum = 99999;
 		}
-		else {
+		else
+		{
 			oldstate = &cl.parseEntities[
 				oldframe->parseEntitiesNum + oldindex & MAX_PARSE_ENTITIES - 1];
 			oldnum = oldstate->number;
@@ -196,9 +220,10 @@ cl.frame and saved in cl.frames[].  If the snapshot is invalid
 for any reason, no changes to the state will be made at all.
 ================
 */
-void CL_ParseSnapshot(msg_t* msg) {
+void CL_ParseSnapshot(msg_t* msg)
+{
 	clSnapshot_t* old;
-	clSnapshot_t	newSnap;
+	clSnapshot_t newSnap;
 
 	// get the reliable sequence acknowledge number
 	clc.reliableAcknowledge = MSG_ReadLong(msg);
@@ -217,10 +242,12 @@ void CL_ParseSnapshot(msg_t* msg) {
 
 	newSnap.messageNum = MSG_ReadLong(msg);
 	const int deltaNum = MSG_ReadByte(msg);
-	if (!deltaNum) {
+	if (!deltaNum)
+	{
 		newSnap.deltaNum = -1;
 	}
-	else {
+	else
+	{
 		newSnap.deltaNum = newSnap.messageNum - deltaNum;
 	}
 	newSnap.cmdNum = MSG_ReadLong(msg);
@@ -230,26 +257,32 @@ void CL_ParseSnapshot(msg_t* msg) {
 	// no longer have available, we must suck up the rest of
 	// the frame, but not use it, then ask for a non-compressed
 	// message
-	if (newSnap.deltaNum <= 0) {
-		newSnap.valid = qtrue;		// uncompressed frame
+	if (newSnap.deltaNum <= 0)
+	{
+		newSnap.valid = qtrue; // uncompressed frame
 		old = nullptr;
 	}
-	else {
+	else
+	{
 		old = &cl.frames[newSnap.deltaNum & PACKET_MASK];
-		if (!old->valid) {
+		if (!old->valid)
+		{
 			// should never happen
 			Com_Printf("Delta from invalid frame (not supposed to happen!).\n");
 		}
-		else if (old->messageNum != newSnap.deltaNum) {
+		else if (old->messageNum != newSnap.deltaNum)
+		{
 			// The frame that the server did the delta from
 			// is too old, so we can't reconstruct it properly.
 			Com_Printf("Delta frame too old.\n");
 		}
-		else if (cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES) {
+		else if (cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES)
+		{
 			Com_Printf("Delta parseEntitiesNum too old.\n");
 		}
-		else {
-			newSnap.valid = qtrue;	// valid delta parse
+		else
+		{
+			newSnap.valid = qtrue; // valid delta parse
 		}
 	}
 
@@ -259,10 +292,12 @@ void CL_ParseSnapshot(msg_t* msg) {
 
 	// read playerinfo
 	SHOWNET(msg, "playerstate");
-	if (old) {
+	if (old)
+	{
 		MSG_ReadDeltaPlayerstate(msg, &old->ps, &newSnap.ps);
 	}
-	else {
+	else
+	{
 		MSG_ReadDeltaPlayerstate(msg, nullptr, &newSnap.ps);
 	}
 
@@ -272,7 +307,8 @@ void CL_ParseSnapshot(msg_t* msg) {
 
 	// if not valid, dump the entire thing now that it has
 	// been properly read
-	if (!newSnap.valid) {
+	if (!newSnap.valid)
+	{
 		return;
 	}
 
@@ -280,10 +316,12 @@ void CL_ParseSnapshot(msg_t* msg) {
 	// received and this one
 	int oldMessageNum = cl.frame.messageNum + 1;
 
-	if (cl.frame.messageNum - oldMessageNum >= PACKET_BACKUP) {
+	if (cl.frame.messageNum - oldMessageNum >= PACKET_BACKUP)
+	{
 		oldMessageNum = cl.frame.messageNum - (PACKET_BACKUP - 1);
 	}
-	for (; oldMessageNum < newSnap.messageNum; oldMessageNum++) {
+	for (; oldMessageNum < newSnap.messageNum; oldMessageNum++)
+	{
 		cl.frames[oldMessageNum & PACKET_MASK].valid = qfalse;
 	}
 
@@ -291,9 +329,11 @@ void CL_ParseSnapshot(msg_t* msg) {
 	cl.frame = newSnap;
 
 	// calculate ping time
-	for (int i = 0; i < PACKET_BACKUP; i++) {
+	for (int i = 0; i < PACKET_BACKUP; i++)
+	{
 		const int packetNum = clc.netchan.outgoingSequence - 1 - i & PACKET_MASK;
-		if (cl.frame.cmdNum == cl.packetCmdNumber[packetNum]) {
+		if (cl.frame.cmdNum == cl.packetCmdNumber[packetNum])
+		{
 			cl.frame.ping = cls.realtime - cl.packetTime[packetNum];
 			break;
 		}
@@ -301,9 +341,10 @@ void CL_ParseSnapshot(msg_t* msg) {
 	// save the frame off in the backup array for later delta comparisons
 	cl.frames[cl.frame.messageNum & PACKET_MASK] = cl.frame;
 
-	if (cl_shownet->integer == 3) {
+	if (cl_shownet->integer == 3)
+	{
 		Com_Printf("   frame:%i  delta:%i\n", cl.frame.messageNum,
-			cl.frame.deltaNum);
+		           cl.frame.deltaNum);
 	}
 
 	// actions for valid frames
@@ -323,7 +364,8 @@ new information out of it.  This will happen at every
 gamestate, and possibly during gameplay.
 ==================
 */
-void CL_SystemInfoChanged(void) {
+void CL_SystemInfoChanged(void)
+{
 	const char* systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[CS_SYSTEMINFO];
 	cl.serverId = atoi(Info_ValueForKey(systemInfo, "sv_serverid"));
 
@@ -336,11 +378,13 @@ void CL_SystemInfoChanged(void) {
 
 	// scan through all the variables in the systeminfo and locally set cvars to match
 	s = systemInfo;
-	while (s) {
+	while (s)
+	{
 		char value[MAX_INFO_VALUE];
 		char key[MAX_INFO_KEY];
 		Info_NextPair(&s, key, value);
-		if (!key[0]) {
+		if (!key[0])
+		{
 			break;
 		}
 
@@ -355,7 +399,8 @@ void UI_UpdateConnectionString(const char* string);
 CL_ParseGamestate
 ==================
 */
-void CL_ParseGamestate(msg_t* msg) {
+void CL_ParseGamestate(msg_t* msg)
+{
 	Con_Close();
 
 	UI_UpdateConnectionString("");
@@ -367,23 +412,28 @@ void CL_ParseGamestate(msg_t* msg) {
 	clc.serverCommandSequence = MSG_ReadLong(msg);
 
 	// parse all the configstrings and baselines
-	cl.gameState.dataCount = 1;	// leave a 0 at the beginning for uninitialized configstrings
-	while (true) {
+	cl.gameState.dataCount = 1; // leave a 0 at the beginning for uninitialized configstrings
+	while (true)
+	{
 		const int cmd = MSG_ReadByte(msg);
 
-		if (cmd <= 0) {
+		if (cmd <= 0)
+		{
 			break;
 		}
 
-		if (cmd == svc_configstring) {
+		if (cmd == svc_configstring)
+		{
 			const int i = MSG_ReadShort(msg);
-			if (i < 0 || i >= MAX_CONFIGSTRINGS) {
+			if (i < 0 || i >= MAX_CONFIGSTRINGS)
+			{
 				Com_Error(ERR_DROP, "configstring > MAX_CONFIGSTRINGS");
 			}
 			char* s = MSG_ReadString(msg);
 			const int len = strlen(s);
 
-			if (len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS) {
+			if (len + 1 + cl.gameState.dataCount > MAX_GAMESTATE_CHARS)
+			{
 				Com_Error(ERR_DROP, "MAX_GAMESTATE_CHARS exceeded");
 			}
 
@@ -391,14 +441,17 @@ void CL_ParseGamestate(msg_t* msg) {
 			cl.gameState.stringOffsets[i] = cl.gameState.dataCount;
 			memcpy(cl.gameState.stringData + cl.gameState.dataCount, s, len + 1);
 			cl.gameState.dataCount += len + 1;
-			if (cl_shownet->integer == 3) {
+			if (cl_shownet->integer == 3)
+			{
 				Com_Printf("%3i:  CS# %d %s (%d)\n", msg->readcount, i, s, len);
 			}
 		}
-		else if (cmd == svc_baseline) {
+		else if (cmd == svc_baseline)
+		{
 			assert(0);
 		}
-		else {
+		else
+		{
 			Com_Error(ERR_DROP, "CL_ParseGamestate: bad command byte");
 		}
 	}
@@ -425,8 +478,10 @@ void CL_ParseGamestate(msg_t* msg) {
 
 void CL_FreeServerCommands(void)
 {
-	for (int i = 0; i < MAX_RELIABLE_COMMANDS; i++) {
-		if (clc.serverCommands[i]) {
+	for (int i = 0; i < MAX_RELIABLE_COMMANDS; i++)
+	{
+		if (clc.serverCommands[i])
+		{
 			Z_Free(clc.serverCommands[i]);
 			clc.serverCommands[i] = nullptr;
 		}
@@ -441,18 +496,21 @@ Command strings are just saved off until cgame asks for them
 when it transitions a snapshot
 =====================
 */
-void CL_ParseCommandString(msg_t* msg) {
+void CL_ParseCommandString(msg_t* msg)
+{
 	const int seq = MSG_ReadLong(msg);
 	const char* s = MSG_ReadString(msg);
 
 	// see if we have already executed stored it off
-	if (clc.serverCommandSequence >= seq) {
+	if (clc.serverCommandSequence >= seq)
+	{
 		return;
 	}
 	clc.serverCommandSequence = seq;
 
 	const int index = seq & MAX_RELIABLE_COMMANDS - 1;
-	if (clc.serverCommands[index]) {
+	if (clc.serverCommands[index])
+	{
 		Z_Free(clc.serverCommands[index]);
 	}
 	clc.serverCommands[index] = CopyString(s);
@@ -463,40 +521,50 @@ void CL_ParseCommandString(msg_t* msg) {
 CL_ParseServerMessage
 =====================
 */
-void CL_ParseServerMessage(msg_t* msg) {
-	if (cl_shownet->integer == 1) {
+void CL_ParseServerMessage(msg_t* msg)
+{
+	if (cl_shownet->integer == 1)
+	{
 		Com_Printf("%i ", msg->cursize);
 	}
-	else if (cl_shownet->integer >= 2) {
+	else if (cl_shownet->integer >= 2)
+	{
 		Com_Printf("------------------\n");
 	}
 
 	//
 	// parse the message
 	//
-	while (true) {
-		if (msg->readcount > msg->cursize) {
+	while (true)
+	{
+		if (msg->readcount > msg->cursize)
+		{
 			Com_Error(ERR_DROP, "CL_ParseServerMessage: read past end of server message");
 		}
 
 		const int cmd = MSG_ReadByte(msg);
 
-		if (cmd == -1) {
+		if (cmd == -1)
+		{
 			SHOWNET(msg, "END OF MESSAGE");
 			break;
 		}
 
-		if (cl_shownet->integer >= 2) {
-			if (!svc_strings[cmd]) {
+		if (cl_shownet->integer >= 2)
+		{
+			if (!svc_strings[cmd])
+			{
 				Com_Printf("%3i:BAD CMD %i\n", msg->readcount - 1, cmd);
 			}
-			else {
+			else
+			{
 				SHOWNET(msg, svc_strings[cmd]);
 			}
 		}
 
 		// other commands
-		switch (cmd) {
+		switch (cmd)
+		{
 		default:
 			Com_Error(ERR_DROP, "CL_ParseServerMessage: Illegible server message\n");
 		case svc_nop:

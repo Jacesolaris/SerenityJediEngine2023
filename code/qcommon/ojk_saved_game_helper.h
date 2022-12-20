@@ -49,7 +49,7 @@ namespace ojk
 	}
 
 	inline void SavedGameHelper::skip(
-		int count) const
+		const int count) const
 	{
 		if (!saved_game_->skip(
 			count))
@@ -244,30 +244,30 @@ namespace ojk
 	bool SavedGameHelper::try_read(
 		TDst& dst_value)
 	{
-		using Tag = std::conditional_t <
+		using Tag = std::conditional_t<
 			std::is_same<TDst, bool>::value,
 			BooleanTag,
 			std::conditional_t<
-			std::is_arithmetic<TDst>::value || std::is_enum<TDst>::value,
-			NumericTag,
-			std::conditional_t<
-			std::is_pointer<TDst>::value,
-			PointerTag,
-			std::conditional_t<
-			std::is_class<TDst>::value,
-			ClassTag,
-			std::conditional_t<
-			std::rank<TDst>::value == 1,
-			Array1dTag,
-			std::conditional_t<
-			std::rank<TDst>::value == 2,
-			Array2dTag,
-			void>
+				std::is_arithmetic<TDst>::value || std::is_enum<TDst>::value,
+				NumericTag,
+				std::conditional_t<
+					std::is_pointer<TDst>::value,
+					PointerTag,
+					std::conditional_t<
+						std::is_class<TDst>::value,
+						ClassTag,
+						std::conditional_t<
+							std::rank<TDst>::value == 1,
+							Array1dTag,
+							std::conditional_t<
+								std::rank<TDst>::value == 2,
+								Array2dTag,
+								void>
+						>
+					>
+				>
 			>
-			>
-			>
-			>
-		> ;
+		>;
 
 		static_assert(
 			!std::is_same<Tag, void>::value,
@@ -419,7 +419,7 @@ namespace ojk
 
 	template <typename TSrc, typename TDst, int TCount>
 	bool SavedGameHelper::try_read(
-		TDst(&dst_values)[TCount],
+		TDst (&dst_values)[TCount],
 		Array1dTag)
 	{
 		return try_read<TSrc>(
@@ -429,7 +429,7 @@ namespace ojk
 
 	template <typename TSrc, typename TDst, int TCount1, int TCount2>
 	bool SavedGameHelper::try_read(
-		TDst(&dst_values)[TCount1][TCount2],
+		TDst (&dst_values)[TCount1][TCount2],
 		Array2dTag)
 	{
 		return try_read<TSrc>(
@@ -521,7 +521,7 @@ namespace ojk
 	template <typename TSrc, typename TDst>
 	bool SavedGameHelper::try_read(
 		TDst* dst_values,
-		int dst_count,
+		const int dst_count,
 		InplaceTag)
 	{
 		const int dst_size = dst_count * static_cast<int>(sizeof(TDst));
@@ -542,7 +542,7 @@ namespace ojk
 	template <typename TSrc, typename TDst>
 	bool SavedGameHelper::try_read(
 		TDst* dst_values,
-		int dst_count,
+		const int dst_count,
 		CastTag)
 	{
 		using Tag = std::conditional_t<
@@ -550,12 +550,12 @@ namespace ojk
 			std::is_enum<TDst>::value,
 			NumericTag,
 			std::conditional_t<
-			std::is_pointer<TDst>::value,
-			PointerTag,
-			std::conditional_t<
-			std::is_class<TDst>::value,
-			ClassTag,
-			void>
+				std::is_pointer<TDst>::value,
+				PointerTag,
+				std::conditional_t<
+					std::is_class<TDst>::value,
+					ClassTag,
+					void>
 			>
 		>;
 
@@ -586,20 +586,20 @@ namespace ojk
 			std::is_arithmetic<TSrc>::value || std::is_enum<TSrc>::value,
 			NumericTag,
 			std::conditional_t<
-			std::is_pointer<TSrc>::value,
-			PointerTag,
-			std::conditional_t<
-			std::is_class<TSrc>::value,
-			ClassTag,
-			std::conditional_t<
-			std::rank<TSrc>::value == 1,
-			Array1dTag,
-			std::conditional_t<
-			std::rank<TSrc>::value == 2,
-			Array2dTag,
-			void>
-			>
-			>
+				std::is_pointer<TSrc>::value,
+				PointerTag,
+				std::conditional_t<
+					std::is_class<TSrc>::value,
+					ClassTag,
+					std::conditional_t<
+						std::rank<TSrc>::value == 1,
+						Array1dTag,
+						std::conditional_t<
+							std::rank<TSrc>::value == 2,
+							Array2dTag,
+							void>
+					>
+				>
 			>
 		>;
 
@@ -691,7 +691,7 @@ namespace ojk
 
 	template <typename TDst, typename TSrc, int TCount>
 	void SavedGameHelper::write(
-		const TSrc(&src_values)[TCount],
+		const TSrc (&src_values)[TCount],
 		Array1dTag)
 	{
 		write<TDst>(
@@ -701,7 +701,7 @@ namespace ojk
 
 	template <typename TDst, typename TSrc, int TCount1, int TCount2>
 	void SavedGameHelper::write(
-		const TSrc(&src_values)[TCount1][TCount2],
+		const TSrc (&src_values)[TCount1][TCount2],
 		Array2dTag)
 	{
 		write<TDst>(
@@ -773,7 +773,7 @@ namespace ojk
 	template <typename TDst, typename TSrc>
 	void SavedGameHelper::write(
 		const TSrc* src_values,
-		int src_count,
+		const int src_count,
 		InplaceTag)
 	{
 		const int src_size = src_count * static_cast<int>(sizeof(TSrc));
@@ -789,7 +789,7 @@ namespace ojk
 	template <typename TDst, typename TSrc>
 	void SavedGameHelper::write(
 		const TSrc* src_values,
-		int src_count,
+		const int src_count,
 		CastTag)
 	{
 		using Tag = std::conditional_t<
@@ -797,12 +797,12 @@ namespace ojk
 			std::is_enum<TSrc>::value,
 			NumericTag,
 			std::conditional_t<
-			std::is_pointer<TSrc>::value,
-			PointerTag,
-			std::conditional_t<
-			std::is_class<TSrc>::value,
-			ClassTag,
-			void>
+				std::is_pointer<TSrc>::value,
+				PointerTag,
+				std::conditional_t<
+					std::is_class<TSrc>::value,
+					ClassTag,
+					void>
 			>
 		>;
 

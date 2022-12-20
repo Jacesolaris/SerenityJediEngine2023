@@ -45,7 +45,7 @@ int goreModelIndex;
 static cvar_t* cg_g2MarksAllModels = nullptr;
 
 GoreTextureCoordinates* FindGoreRecord(int tag);
-static inline void DestroyGoreTexCoordinates(int tag)
+static inline void DestroyGoreTexCoordinates(const int tag)
 {
 	GoreTextureCoordinates* gTC = FindGoreRecord(tag);
 	if (!gTC)
@@ -104,7 +104,7 @@ void ResetGoreTag()
 	CurrentTagUpper += GORE_TAG_UPPER;
 }
 
-GoreTextureCoordinates* FindGoreRecord(int tag)
+GoreTextureCoordinates* FindGoreRecord(const int tag)
 {
 	const std::map<int, GoreTextureCoordinates>::iterator i = GoreRecords.find(tag);
 	if (i != GoreRecords.end())
@@ -114,12 +114,12 @@ GoreTextureCoordinates* FindGoreRecord(int tag)
 	return nullptr;
 }
 
-void* G2_GetGoreRecord(int tag)
+void* G2_GetGoreRecord(const int tag)
 {
 	return FindGoreRecord(tag);
 }
 
-void DeleteGoreRecord(int tag)
+void DeleteGoreRecord(const int tag)
 {
 	DestroyGoreTexCoordinates(tag);
 	GoreRecords.erase(tag);
@@ -128,7 +128,7 @@ void DeleteGoreRecord(int tag)
 static int CurrentGoreSet = 1; // this is a UUID for gore sets
 static std::map<int, CGoreSet*> GoreSets; // map from uuid to goreset
 
-CGoreSet* FindGoreSet(int goreSetTag)
+CGoreSet* FindGoreSet(const int goreSetTag)
 {
 	const std::map<int, CGoreSet*>::iterator f = GoreSets.find(goreSetTag);
 	if (f != GoreSets.end())
@@ -146,7 +146,7 @@ CGoreSet* NewGoreSet()
 	return ret;
 }
 
-void DeleteGoreSet(int goreSetTag)
+void DeleteGoreSet(const int goreSetTag)
 {
 	const std::map<int, CGoreSet*>::iterator f = GoreSets.find(goreSetTag);
 	if (f != GoreSets.end())
@@ -205,25 +205,25 @@ public:
 #endif
 
 	CTraceSurface(
-		int					initsurfaceNum,
+		const int					initsurfaceNum,
 		surfaceInfo_v& initrootSList,
 		model_t* initcurrentModel,
-		int					initlod,
+		const int					initlod,
 		vec3_t				initrayStart,
 		vec3_t				initrayEnd,
 		CollisionRecord_t* initcollRecMap,
-		int					initentNum,
-		int					initmodelIndex,
+		const int					initentNum,
+		const int					initmodelIndex,
 		skin_t* initskin,
 		shader_t* initcust_shader,
 		size_t* initTransformedVertsArray,
-		int					inittraceFlags,
+		const int					inittraceFlags,
 #ifdef _G2_GORE
 		float				fRadius,
-		float				initssize,
-		float				inittsize,
-		float				inittheta,
-		int					initgoreShader,
+		const float				initssize,
+		const float				inittsize,
+		const float				inittheta,
+		const int					initgoreShader,
 		CGhoul2Info* initghoul2info,
 		SSkinGoreData* initgore):
 #else
@@ -350,7 +350,7 @@ qboolean G2_GetAnimFileName(const char* fileName, char** filename)
 //
 /////////////////////////////////////////////////////////////////////
 
-int G2_DecideTraceLod(const CGhoul2Info& ghoul2, int useLod)
+int G2_DecideTraceLod(const CGhoul2Info& ghoul2, const int useLod)
 {
 	int returnLod = useLod;
 
@@ -483,8 +483,8 @@ void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, IHeapAll
 	}
 }
 
-void G2_TransformSurfaces(int surfaceNum, surfaceInfo_v& rootSList,
-	CBoneCache* boneCache, const model_t* currentModel, int lod, vec3_t scale, IHeapAllocator* G2VertSpace, size_t* TransformedVertArray, bool secondTimeAround)
+void G2_TransformSurfaces(const int surfaceNum, surfaceInfo_v& rootSList,
+                          CBoneCache* boneCache, const model_t* currentModel, const int lod, vec3_t scale, IHeapAllocator* G2VertSpace, size_t* TransformedVertArray, const bool secondTimeAround)
 {
 	assert(currentModel);
 	assert(currentModel->mdxm);
@@ -524,7 +524,7 @@ void G2_TransformSurfaces(int surfaceNum, surfaceInfo_v& rootSList,
 
 // main calling point for the model transform for collision detection. At this point all of the skeleton has been transformed.
 #ifdef _G2_GORE
-void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, IHeapAllocator* G2VertSpace, int useLod, bool ApplyGore)
+void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, IHeapAllocator* G2VertSpace, int useLod, const bool ApplyGore)
 #else
 void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, IHeapAllocator* G2VertSpace, int useLod)
 #endif
@@ -671,7 +671,7 @@ static void G2_BuildHitPointST(const vec3_t A, const float SA, const float TA,
 // routine that works out given a ray whether or not it hits a poly
 qboolean G2_SegmentTriangleTest(const vec3_t start, const vec3_t end,
 	const vec3_t A, const vec3_t B, const vec3_t C,
-	qboolean backFaces, qboolean frontFaces, vec3_t returnedPoint, vec3_t returnedNormal, float* denom)
+	const qboolean backFaces, const qboolean frontFaces, vec3_t returnedPoint, vec3_t returnedNormal, float* denom)
 {
 	static constexpr float tiny = 1E-10f;
 	vec3_t returnedNormalT;
@@ -1453,7 +1453,7 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 }
 
 #ifdef _G2_GORE
-void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CollisionRecord_t* collRecMap, int entNum, int eG2TraceType, int useLod, float fRadius, float ssize, float tsize, float theta, int shader, SSkinGoreData* gore, qboolean skipIfLODNotMatch)
+void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CollisionRecord_t* collRecMap, int entNum, int eG2TraceType, int useLod, float fRadius, const float ssize, const float tsize, const float theta, const int shader, SSkinGoreData* gore, const qboolean skipIfLODNotMatch)
 #else
 void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CollisionRecord_t* collRecMap, int entNum, int eG2TraceType, int useLod, float fRadius)
 #endif
@@ -1624,7 +1624,7 @@ void G2_GenerateWorldMatrix(const vec3_t angles, const vec3_t origin)
 }
 
 // go away and determine what the pointer for a specific surface definition within the model definition is
-void* G2_FindSurface(void* mod_t, int index, int lod)
+void* G2_FindSurface(void* mod_t, const int index, const int lod)
 {
 	// damn include file dependancies
 	model_t* mod = static_cast<model_t*>(mod_t);
@@ -1822,7 +1822,7 @@ void G2_LoadGhoul2Model(CGhoul2Info_v& ghoul2, const char* buffer)
 	}
 }
 
-void G2_LerpAngles(CGhoul2Info_v& ghoul2, CGhoul2Info_v& nextGhoul2, float interpolation)
+void G2_LerpAngles(CGhoul2Info_v& ghoul2, CGhoul2Info_v& nextGhoul2, const float interpolation)
 {
 	// loop each model
 	for (int i = 0; i < ghoul2.size(); i++)

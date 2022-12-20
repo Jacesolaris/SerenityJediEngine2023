@@ -82,7 +82,7 @@ void GL_Bind(image_t* image) {
 /*
 ** GL_SelectTexture
 */
-void GL_SelectTexture(int unit)
+void GL_SelectTexture(const int unit)
 {
 	if (glState.currenttmu == unit)
 	{
@@ -127,7 +127,7 @@ void GL_SelectTexture(int unit)
 /*
 ** GL_Cull
 */
-void GL_Cull(int cullType) {
+void GL_Cull(const int cullType) {
 	if (glState.faceCulling == cullType) {
 		return;
 	}
@@ -172,7 +172,7 @@ void GL_Cull(int cullType) {
 /*
 ** GL_TexEnv
 */
-void GL_TexEnv(int env)
+void GL_TexEnv(const int env)
 {
 	if (env == glState.texEnv[glState.currenttmu])
 	{
@@ -206,7 +206,7 @@ void GL_TexEnv(int env)
 ** This routine is responsible for setting the most commonly changed state
 ** in Q3.
 */
-void GL_State(uint32_t stateBits)
+void GL_State(const uint32_t stateBits)
 {
 	const uint32_t diff = stateBits ^ glState.glStateBits;
 
@@ -656,7 +656,7 @@ static inline bool R_AverageTessXYZ(vec3_t dest)
 }
 #endif
 
-void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, int numDrawSurfs) {
+void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 	shader_t* shader;
 	int				fogNum;
 	int				entityNum;
@@ -1183,7 +1183,7 @@ Stretches a raw 32 bit power of 2 bitmap image over the given screen rectangle.
 Used for cinematics.
 =============
 */
-void RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* data, int client, qboolean dirty)
+void RE_StretchRaw(const int x, const int y, const int w, const int h, const int cols, const int rows, const byte* data, const int client, const qboolean dirty)
 {
 	int end;
 
@@ -1251,7 +1251,7 @@ void RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* d
 	qglEnd();
 }
 
-void RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboolean dirty) {
+void RE_UploadCinematic(const int cols, const int rows, const byte* data, const int client, const qboolean dirty) {
 	GL_Bind(tr.scratchImage[client]);
 
 	// if the scratchImage isn't in the format we want, specify it as a new texture
@@ -1938,7 +1938,7 @@ void RB_ExecuteRenderCommands(const void* data) {
 GLuint g_uiCurrentPixelShaderType = 0x0;
 
 // Begin using a Pixel Shader.
-void BeginPixelShader(GLuint uiType, GLuint uiID)
+void BeginPixelShader(const GLuint uiType, const GLuint uiID)
 {
 	switch (uiType)
 	{

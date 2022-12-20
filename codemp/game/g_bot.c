@@ -519,7 +519,7 @@ G_AddRandomBot
 void G_AddRandomBot(const int team)
 {
 	int i, n;
-	char* value, * teamstr;
+	char *value, *teamstr;
 	gclient_t* cl;
 
 	int num = 0;
@@ -872,7 +872,7 @@ G_AddBot
 */
 static void G_AddBot(const char* name, const float skill, const char* team, const int delay, const char* altname)
 {
-	char userinfo[MAX_INFO_STRING] = { 0 };
+	char userinfo[MAX_INFO_STRING] = {0};
 
 	// have the server allocate a client slot
 	const int client_num = trap->BotAllocateClient();

@@ -62,7 +62,8 @@ extern float manual_npc_kick_absorbing(const gentity_t* defender);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);
-qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered, int saberAnimLevel);
+qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered,
+                                    int saberAnimLevel);
 extern qboolean PM_SaberInBashedAnim(int anim);
 
 void P_SetTwitchInfo(gclient_t* client)
@@ -358,7 +359,7 @@ void P_WorldEffects(gentity_t* ent)
 				{
 					//if they're still alive..
 					G_Damage(ent, spacetrigger, spacetrigger, NULL, ent->client->ps.origin, Q_irand(20, 40),
-						DAMAGE_NO_ARMOR, MOD_SUICIDE);
+					         DAMAGE_NO_ARMOR, MOD_SUICIDE);
 
 					if (ent->health > 0)
 					{
@@ -401,7 +402,7 @@ void P_WorldEffects(gentity_t* ent)
 //==============================================================
 extern void G_ApplyKnockback(gentity_t* targ, vec3_t new_dir, float knockback);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t velocity)
 {
@@ -439,7 +440,7 @@ void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t veloci
 	}
 }
 
-void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf)
+void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf)
 {
 	float my_mass;
 	vec3_t velocity;
@@ -557,7 +558,7 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf)
 						else
 						{
 							G_Damage(other, self, self, velocity, self->r.currentOrigin, force, DAMAGE_NO_ARMOR,
-								MOD_CRUSH);
+							         MOD_CRUSH);
 						}
 					}
 					else
@@ -611,12 +612,12 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf)
 			}
 			if (magnitude >= 100 + self->health && self->s.number >= MAX_CLIENTS && self->s.weapon != WP_SABER
 				|| self->client->NPC_class == CLASS_VEHICLE || magnitude >= 700)
-				//health here is used to simulate structural integrity
+			//health here is used to simulate structural integrity
 			{
 				if ((self->s.weapon == WP_SABER || self->s.number < MAX_CLIENTS || self->client && (self->client->
-					NPC_class == CLASS_BOBAFETT || self->client->NPC_class == CLASS_MANDO || self->client->NPC_class
-					==
-					CLASS_ROCKETTROOPER)) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE &&
+						NPC_class == CLASS_BOBAFETT || self->client->NPC_class == CLASS_MANDO || self->client->NPC_class
+						==
+						CLASS_ROCKETTROOPER)) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE &&
 					magnitude < 1000)
 				{
 					//players and jedi take less impact damage
@@ -639,14 +640,14 @@ void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf)
 				if (magnitude >= 1)
 				{
 					G_Damage(self, NULL, NULL, NULL, self->r.currentOrigin, magnitude / 2, DAMAGE_NO_ARMOR,
-						MOD_FALLING);
+					         MOD_FALLING);
 				}
 			}
 		}
 	}
 }
 
-void DoImpactPlayer(gentity_t* self, gentity_t* other, qboolean damageSelf) //mp
+void DoImpactPlayer(gentity_t* self, gentity_t* other, const qboolean damageSelf) //mp
 {
 	float my_mass;
 	vec3_t velocity;
@@ -790,7 +791,7 @@ void DoImpactPlayer(gentity_t* self, gentity_t* other, qboolean damageSelf) //mp
 				if (magnitude >= 1)
 				{
 					G_Damage(self, NULL, NULL, NULL, self->r.currentOrigin, magnitude / 2, DAMAGE_NO_ARMOR,
-						MOD_FALLING);
+					         MOD_FALLING);
 				}
 			}
 		}
@@ -875,7 +876,7 @@ ClientImpacts
 void ClientImpacts(gentity_t* ent, const pmove_t* pmove)
 {
 	int j;
-	trace_t trace = { 0 };
+	trace_t trace = {0};
 
 	for (int i = 0; i < pmove->numtouch; i++)
 	{
@@ -919,7 +920,7 @@ void G_TouchTriggers(gentity_t* ent)
 	int touch[MAX_GENTITIES];
 	trace_t trace;
 	vec3_t mins, maxs;
-	static vec3_t range = { 40, 40, 52 };
+	static vec3_t range = {40, 40, 52};
 
 	if (!ent->client)
 	{
@@ -1016,7 +1017,7 @@ void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
 {
 	trace_t trace;
 	vec3_t dir, size;
-	const vec3_t range = { 40, 40, 52 };
+	const vec3_t range = {40, 40, 52};
 
 	// non-moving movers don't hit triggers!
 	if (!VectorLengthSquared(ent->s.pos.trDelta))
@@ -1084,7 +1085,7 @@ void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
 }
 
 static void SV_PMTrace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int passEntityNum, int contentMask)
+                       const int passEntityNum, const int contentMask)
 {
 	trap->Trace(results, start, mins, maxs, end, passEntityNum, contentMask, qfalse, 0, 10);
 }
@@ -1212,7 +1213,8 @@ Actions that happen once a second
 ==================
 */
 extern void WP_SaberFatigueRegenerate(int override_amt);
-void ClientTimerActions(gentity_t* ent, int msec)
+
+void ClientTimerActions(gentity_t* ent, const int msec)
 {
 	gclient_t* client = ent->client;
 	client->timeResidual += msec;
@@ -1357,8 +1359,8 @@ void G_VehicleAttachDroidUnit(gentity_t* vehEnt)
 		vec3_t fwd;
 
 		trap->G2API_GetBoltMatrix(vehEnt->ghoul2, 0, vehEnt->m_pVehicle->m_iDroidUnitTag, &boltMatrix,
-			vehEnt->r.currentAngles, vehEnt->r.currentOrigin, level.time,
-			NULL, vehEnt->modelScale);
+		                          vehEnt->r.currentAngles, vehEnt->r.currentOrigin, level.time,
+		                          NULL, vehEnt->modelScale);
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, droidEnt->r.currentOrigin);
 		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, fwd);
 		vectoangles(fwd, droidEnt->r.currentAngles);
@@ -1383,7 +1385,7 @@ void G_VehicleAttachDroidUnit(gentity_t* vehEnt)
 extern qboolean BG_SabersOff(const playerState_t* ps);
 extern qboolean PM_ReloadAnim(int anim);
 
-void G_CheapWeaponFire(int entNum, int ev)
+void G_CheapWeaponFire(const int entNum, const int ev)
 {
 	gentity_t* ent = &g_entities[entNum];
 
@@ -1432,7 +1434,7 @@ void G_CheapWeaponFire(int entNum, int ev)
 		ent->client->ps.eFlags &= ~EF_INVULNERABLE;
 		ent->client->invulnerableTimer = 0;
 		break;
-	default:;
+	default: ;
 	}
 }
 
@@ -1463,138 +1465,138 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 		switch (event)
 		{
 		case EV_FALL:
-		{
-			const int delta = client->ps.eventParms[i & MAX_PS_EVENTS - 1];
-			qboolean knockDownage = qfalse;
-
-			if (ent->client && ent->client->ps.fallingToDeath)
 			{
-				break;
-			}
+				const int delta = client->ps.eventParms[i & MAX_PS_EVENTS - 1];
+				qboolean knockDownage = qfalse;
 
-			if (ent->s.eType != ET_PLAYER)
-			{
-				break; // not in the player model
-			}
-
-			if (dmflags.integer & DF_NO_FALLING)
-			{
-				break;
-			}
-
-			if (PM_InKnockDownOnly(ent->client->ps.legsAnim))
-			{
-				if (delta <= 14)
+				if (ent->client && ent->client->ps.fallingToDeath)
 				{
 					break;
 				}
-				knockDownage = qtrue;
-			}
-			else
-			{
-				if (delta <= 44)
+
+				if (ent->s.eType != ET_PLAYER)
+				{
+					break; // not in the player model
+				}
+
+				if (dmflags.integer & DF_NO_FALLING)
 				{
 					break;
 				}
-			}
 
-			if (knockDownage)
-			{
-				damage = delta * 1;
-				//you suffer for falling unprepared. A lot. Makes throws and things useful, and more realistic I suppose.
-			}
-			else
-			{
-				if (level.gametype == GT_SIEGE &&
-					delta > 60)
+				if (PM_InKnockDownOnly(ent->client->ps.legsAnim))
 				{
-					//longer falls hurt more
-					damage = delta * 1; //good enough for now, I guess
+					if (delta <= 14)
+					{
+						break;
+					}
+					knockDownage = qtrue;
 				}
 				else
 				{
-					//damage = delta * 0.16; //good enough for now, I guess
-					damage = delta * 1; //good enough for now, I guess
+					if (delta <= 44)
+					{
+						break;
+					}
+				}
+
+				if (knockDownage)
+				{
+					damage = delta * 1;
+					//you suffer for falling unprepared. A lot. Makes throws and things useful, and more realistic I suppose.
+				}
+				else
+				{
+					if (level.gametype == GT_SIEGE &&
+						delta > 60)
+					{
+						//longer falls hurt more
+						damage = delta * 1; //good enough for now, I guess
+					}
+					else
+					{
+						//damage = delta * 0.16; //good enough for now, I guess
+						damage = delta * 1; //good enough for now, I guess
+					}
+				}
+
+				VectorSet(dir, 0, 0, 1);
+
+				ent->pain_debounce_time = level.time + 200; // no normal pain sound
+				G_Damage(ent, NULL, NULL, NULL, NULL, damage, DAMAGE_NO_ARMOR, MOD_FALLING);
+
+				if (ent->health < 1)
+				{
+					G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/player/fallsplat.wav"));
 				}
 			}
-
-			VectorSet(dir, 0, 0, 1);
-
-			ent->pain_debounce_time = level.time + 200; // no normal pain sound
-			G_Damage(ent, NULL, NULL, NULL, NULL, damage, DAMAGE_NO_ARMOR, MOD_FALLING);
-
-			if (ent->health < 1)
-			{
-				G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/player/fallsplat.wav"));
-			}
-		}
-		break;
+			break;
 		case EV_ROLL:
-		{
-			const int delta = client->ps.eventParms[i & MAX_PS_EVENTS - 1];
-			qboolean knockDownage = qfalse;
-
-			if (ent->client && ent->client->ps.fallingToDeath)
 			{
-				break;
-			}
+				const int delta = client->ps.eventParms[i & MAX_PS_EVENTS - 1];
+				qboolean knockDownage = qfalse;
 
-			if (ent->s.eType != ET_PLAYER)
-			{
-				break; // not in the player model
-			}
-
-			if (dmflags.integer & DF_NO_FALLING)
-			{
-				break;
-			}
-
-			if (PM_InKnockDownOnly(ent->client->ps.legsAnim))
-			{
-				if (delta <= 14)
+				if (ent->client && ent->client->ps.fallingToDeath)
 				{
 					break;
 				}
-				knockDownage = qtrue;
-			}
-			else
-			{
-				if (delta <= 44)
+
+				if (ent->s.eType != ET_PLAYER)
+				{
+					break; // not in the player model
+				}
+
+				if (dmflags.integer & DF_NO_FALLING)
 				{
 					break;
 				}
-			}
 
-			if (knockDownage)
-			{
-				damage = delta * 1;
-				//you suffer for falling unprepared. A lot. Makes throws and things useful, and more realistic I suppose.
-			}
-			else
-			{
-				if (level.gametype == GT_SIEGE &&
-					delta > 60)
+				if (PM_InKnockDownOnly(ent->client->ps.legsAnim))
 				{
-					//longer falls hurt more
-					damage = delta * 1; //good enough for now, I guess
+					if (delta <= 14)
+					{
+						break;
+					}
+					knockDownage = qtrue;
 				}
 				else
 				{
-					damage = delta * 0.16; //good enough for now, I guess
+					if (delta <= 44)
+					{
+						break;
+					}
+				}
+
+				if (knockDownage)
+				{
+					damage = delta * 1;
+					//you suffer for falling unprepared. A lot. Makes throws and things useful, and more realistic I suppose.
+				}
+				else
+				{
+					if (level.gametype == GT_SIEGE &&
+						delta > 60)
+					{
+						//longer falls hurt more
+						damage = delta * 1; //good enough for now, I guess
+					}
+					else
+					{
+						damage = delta * 0.16; //good enough for now, I guess
+					}
+				}
+
+				VectorSet(dir, 0, 0, 1);
+
+				ent->pain_debounce_time = level.time + 200; // no normal pain sound
+				G_Damage(ent, NULL, NULL, NULL, NULL, damage, DAMAGE_NO_ARMOR, MOD_FALLING);
+
+				if (ent->health < 1)
+				{
+					G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/player/fallsplat.wav"));
 				}
 			}
-
-			VectorSet(dir, 0, 0, 1);
-
-			ent->pain_debounce_time = level.time + 200; // no normal pain sound
-			G_Damage(ent, NULL, NULL, NULL, NULL, damage, DAMAGE_NO_ARMOR, MOD_FALLING);
-
-			if (ent->health < 1)
-			{
-				G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/player/fallsplat.wav"));
-			}
-		}
-		break;
+			break;
 		case EV_FIRE_WEAPON:
 			if (PM_ReloadAnim(ent->client->ps.torsoAnim))
 			{
@@ -1623,7 +1625,7 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 			ent->client->invulnerableTimer = 0;
 			break;
 
-			//rww - Note that these must be in the same order (ITEM#-wise) as they are in holdable_t
+		//rww - Note that these must be in the same order (ITEM#-wise) as they are in holdable_t
 		case EV_USE_ITEM1: //seeker droid
 			ItemUse_Seeker(ent);
 			break;
@@ -1690,93 +1692,93 @@ void G_ThrownDeathAnimForDeathAnim(gentity_t* hitEnt, vec3_t impactPoint)
 	case BOTH_DEATH21: //grab shoulder, fall forward
 	case BOTH_DEATH3: //knee collapse, twist & fall forward
 	case BOTH_DEATH7: //knee collapse, twist & fall forward
-	{
-		vec3_t dir2Impact, fwdAngles, facing;
-		VectorSubtract(impactPoint, hitEnt->r.currentOrigin, dir2Impact);
-		dir2Impact[2] = 0;
-		VectorNormalize(dir2Impact);
-		VectorSet(fwdAngles, 0, hitEnt->client->ps.viewangles[YAW], 0);
-		AngleVectors(fwdAngles, facing, NULL, NULL);
-		const float dot = DotProduct(facing, dir2Impact); //-1 = hit in front, 0 = hit on side, 1 = hit in back
+		{
+			vec3_t dir2Impact, fwdAngles, facing;
+			VectorSubtract(impactPoint, hitEnt->r.currentOrigin, dir2Impact);
+			dir2Impact[2] = 0;
+			VectorNormalize(dir2Impact);
+			VectorSet(fwdAngles, 0, hitEnt->client->ps.viewangles[YAW], 0);
+			AngleVectors(fwdAngles, facing, NULL, NULL);
+			const float dot = DotProduct(facing, dir2Impact); //-1 = hit in front, 0 = hit on side, 1 = hit in back
 
-		if (dot > 0.5f)
-		{
-			//kicked in chest, fly backward
-			switch (Q_irand(0, 4))
+			if (dot > 0.5f)
 			{
+				//kicked in chest, fly backward
+				switch (Q_irand(0, 4))
+				{
 				//FIXME: don't start at beginning of anim?
-			case 0:
-				anim = BOTH_DEATH1; //thrown backwards
-				break;
-			case 1:
-				anim = BOTH_DEATH2; //fall backwards
-				break;
-			case 2:
-				anim = BOTH_DEATH15; //roll over backwards
-				break;
-			case 3:
-				anim = BOTH_DEATH22; //fast fall back
-				break;
-			case 4:
-				anim = BOTH_DEATH23; //fast fall back
-				break;
-			default:;
+				case 0:
+					anim = BOTH_DEATH1; //thrown backwards
+					break;
+				case 1:
+					anim = BOTH_DEATH2; //fall backwards
+					break;
+				case 2:
+					anim = BOTH_DEATH15; //roll over backwards
+					break;
+				case 3:
+					anim = BOTH_DEATH22; //fast fall back
+					break;
+				case 4:
+					anim = BOTH_DEATH23; //fast fall back
+					break;
+				default: ;
+				}
+			}
+			else if (dot < -0.5f)
+			{
+				//kicked in back, fly forward
+				switch (Q_irand(0, 5))
+				{
+				//FIXME: don't start at beginning of anim?
+				case 0:
+					anim = BOTH_DEATH14;
+					break;
+				case 1:
+					anim = BOTH_DEATH24;
+					break;
+				case 2:
+					anim = BOTH_DEATH25;
+					break;
+				case 3:
+					anim = BOTH_DEATH4; //thrown forwards
+					break;
+				case 4:
+					anim = BOTH_DEATH5; //thrown forwards
+					break;
+				case 5:
+					anim = BOTH_DEATH16; //thrown forwards
+					break;
+				default: ;
+				}
+			}
+			else
+			{
+				//hit on side, spin
+				switch (Q_irand(0, 2))
+				{
+				//FIXME: don't start at beginning of anim?
+				case 0:
+					anim = BOTH_DEATH12;
+					break;
+				case 1:
+					anim = BOTH_DEATH14;
+					break;
+				case 2:
+					anim = BOTH_DEATH15;
+					break;
+				case 3:
+					anim = BOTH_DEATH6;
+					break;
+				case 4:
+					anim = BOTH_DEATH8;
+					break;
+				default: ;
+				}
 			}
 		}
-		else if (dot < -0.5f)
-		{
-			//kicked in back, fly forward
-			switch (Q_irand(0, 5))
-			{
-				//FIXME: don't start at beginning of anim?
-			case 0:
-				anim = BOTH_DEATH14;
-				break;
-			case 1:
-				anim = BOTH_DEATH24;
-				break;
-			case 2:
-				anim = BOTH_DEATH25;
-				break;
-			case 3:
-				anim = BOTH_DEATH4; //thrown forwards
-				break;
-			case 4:
-				anim = BOTH_DEATH5; //thrown forwards
-				break;
-			case 5:
-				anim = BOTH_DEATH16; //thrown forwards
-				break;
-			default:;
-			}
-		}
-		else
-		{
-			//hit on side, spin
-			switch (Q_irand(0, 2))
-			{
-				//FIXME: don't start at beginning of anim?
-			case 0:
-				anim = BOTH_DEATH12;
-				break;
-			case 1:
-				anim = BOTH_DEATH14;
-				break;
-			case 2:
-				anim = BOTH_DEATH15;
-				break;
-			case 3:
-				anim = BOTH_DEATH6;
-				break;
-			case 4:
-				anim = BOTH_DEATH8;
-				break;
-			default:;
-			}
-		}
-	}
-	break;
-	default:;
+		break;
+	default: ;
 	}
 	if (anim != -1)
 	{
@@ -1920,7 +1922,7 @@ void G_AddPushVecToUcmd(const gentity_t* self, usercmd_t* ucmd)
 	}
 }
 
-qboolean G_ActionButtonPressed(int buttons)
+qboolean G_ActionButtonPressed(const int buttons)
 {
 	if (buttons & BUTTON_ATTACK)
 	{
@@ -2064,7 +2066,7 @@ void G_CheckClientIdleSabers(gentity_t* ent, usercmd_t* ucmd)
 				ent->client->ps.legsTimer = 0;
 				broke_out = qtrue;
 				break;
-			default:;
+			default: ;
 			}
 			switch (ent->client->ps.torsoAnim)
 			{
@@ -2076,7 +2078,7 @@ void G_CheckClientIdleSabers(gentity_t* ent, usercmd_t* ucmd)
 			case BOTH_MENUIDLE1:
 				ent->client->ps.torsoTimer = 0;
 				break;
-			default:;
+			default: ;
 			}
 		}
 		//
@@ -2145,7 +2147,7 @@ void G_CheckClientIdleSabers(gentity_t* ent, usercmd_t* ucmd)
 		case TORSO_WEAPONREADY10:
 			idleAnim = TORSO_WEAPONIDLE10;
 			break;
-		default:;
+		default: ;
 		}
 		if (idleAnim != -1 && idleAnim > 0 && idleAnim < MAX_ANIMATIONS)
 		{
@@ -2161,7 +2163,7 @@ qboolean GunisMelee(const gentity_t* ent)
 	case WP_MELEE:
 	case WP_STUN_BATON:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2173,7 +2175,7 @@ qboolean GunisShort(const gentity_t* ent)
 	case WP_BRYAR_PISTOL:
 	case WP_BRYAR_OLD:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2188,7 +2190,7 @@ qboolean GunisLong(const gentity_t* ent)
 	case WP_DEMP2:
 	case WP_FLECHETTE:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2201,7 +2203,7 @@ qboolean GunisMassive(const gentity_t* ent)
 	case WP_CONCUSSION:
 	case WP_ROCKET_LAUNCHER:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2214,7 +2216,7 @@ qboolean GunisBomb(const gentity_t* ent)
 	case WP_TRIP_MINE:
 	case WP_DET_PACK:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
@@ -2295,7 +2297,7 @@ void G_CheckClientIdleGuns(gentity_t* ent, usercmd_t* ucmd)
 				ent->client->ps.legsTimer = 0;
 				broke_out = qtrue;
 				break;
-			default:;
+			default: ;
 			}
 			switch (ent->client->ps.torsoAnim)
 			{
@@ -2310,9 +2312,9 @@ void G_CheckClientIdleGuns(gentity_t* ent, usercmd_t* ucmd)
 			case TORSO_WEAPONIDLE3:
 			case TORSO_WEAPONIDLE4:
 				ent->client->ps.torsoTimer = 0;
-				//brokeOut = qtrue;
+			//brokeOut = qtrue;
 				break;
-			default:;
+			default: ;
 			}
 		}
 		//
@@ -2394,7 +2396,7 @@ void G_CheckClientIdleGuns(gentity_t* ent, usercmd_t* ucmd)
 	}
 }
 
-void NPC_Accelerate(const gentity_t* ent, qboolean fullWalkAcc, qboolean fullRunAcc)
+void NPC_Accelerate(const gentity_t* ent, const qboolean fullWalkAcc, const qboolean fullRunAcc)
 {
 	if (!ent->client || !ent->NPC)
 	{
@@ -2524,7 +2526,7 @@ void G_CheckMovingLoopingSounds(gentity_t* ent, const usercmd_t* ucmd)
 			|| ucmd->forwardmove || ucmd->rightmove //moving using ucmds
 			|| ucmd->upmove && FlyingCreature(ent) //flier using ucmds to move
 			|| FlyingCreature(ent) && !VectorCompare(vec3_origin, ent->client->ps.velocity) && ent->health > 0)
-			//flier using velocity to move
+		//flier using velocity to move
 		{
 			switch (ent->client->NPC_class)
 			{
@@ -2564,7 +2566,7 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t* ucmd)
 	if (ent
 		&& ent->client
 		&& ent->client->ps.hasLookTarget)
-		//NOTE: lookTarget is an entity number, so this presumes that client 0 is NOT a Rancor...
+	//NOTE: lookTarget is an entity number, so this presumes that client 0 is NOT a Rancor...
 	{
 		gentity_t* monster = &g_entities[ent->client->ps.lookTarget];
 		if (monster && monster->client)
@@ -2575,27 +2577,27 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t* ucmd)
 			{
 				//only possibility right now, may add Wampa and Sand Creature later
 				BG_AttachToRancor(monster->ghoul2, //ghoul2 info
-					monster->r.currentAngles[YAW],
-					monster->r.currentOrigin,
-					level.time,
-					NULL,
-					monster->modelScale,
-					monster->client->ps.eFlags2 & EF2_GENERIC_NPC_FLAG,
-					ent->client->ps.origin,
-					ent->client->ps.viewangles,
-					NULL);
+				                  monster->r.currentAngles[YAW],
+				                  monster->r.currentOrigin,
+				                  level.time,
+				                  NULL,
+				                  monster->modelScale,
+				                  monster->client->ps.eFlags2 & EF2_GENERIC_NPC_FLAG,
+				                  ent->client->ps.origin,
+				                  ent->client->ps.viewangles,
+				                  NULL);
 			}
 			else if (monster->s.NPC_class == CLASS_SAND_CREATURE)
 			{
 				BG_AttachToSandCreature(monster->ghoul2, //ghoul2 info
-					monster->r.currentAngles[YAW],
-					monster->r.currentOrigin,
-					level.time,
-					NULL,
-					monster->modelScale,
-					ent->client->ps.origin,
-					ent->client->ps.viewangles,
-					NULL);
+				                        monster->r.currentAngles[YAW],
+				                        monster->r.currentOrigin,
+				                        level.time,
+				                        NULL,
+				                        monster->modelScale,
+				                        ent->client->ps.origin,
+				                        ent->client->ps.viewangles,
+				                        NULL);
 			}
 			VectorClear(ent->client->ps.velocity);
 			G_SetOrigin(ent, ent->client->ps.origin);
@@ -2765,12 +2767,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						break;
 					case SS_STRONG:
@@ -2782,7 +2784,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						break;
 					case SS_DUAL:
@@ -2800,7 +2802,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->saber[0].type == SABER_GRIE || ent->client->saber[0].type == SABER_GRIE4)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
@@ -2816,7 +2818,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						ent->client->ps.saberHolstered = 0;
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 				else
@@ -2843,12 +2845,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						break;
 					case SS_STRONG:
@@ -2860,7 +2862,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						break;
 					case SS_DUAL:
@@ -2878,7 +2880,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->saber[0].type == SABER_GRIE || ent->client->saber[0].type == SABER_GRIE4)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
@@ -2894,7 +2896,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						ent->client->ps.saberHolstered = 0;
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 			}
@@ -2993,12 +2995,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->ps.weapon == WP_DISRUPTOR)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_TUSKENTAUNT1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, TORSO_HANDSIGNAL1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 					}
 				}
@@ -3064,12 +3066,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->ps.weapon == WP_DISRUPTOR)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_TUSKENTAUNT1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, TORSO_HANDSIGNAL2,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 					}
 				}
@@ -3084,12 +3086,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->ps.weapon == WP_DISRUPTOR)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_TUSKENTAUNT1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, TORSO_HANDSIGNAL2,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 					}
 				}
@@ -3123,12 +3125,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_MEDIUM,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						break;
 					case SS_STRONG:
@@ -3141,7 +3143,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 					case SS_STAFF:
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_STAFF, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 				else
@@ -3156,12 +3158,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_MEDIUM,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						break;
 					case SS_STRONG:
@@ -3174,7 +3176,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 					case SS_STAFF:
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_STAFF, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 				if (ent->client->ps.saberHolstered == 1
@@ -3207,12 +3209,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->ps.weapon == WP_DISRUPTOR)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_TUSKENTAUNT1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, TORSO_HANDSIGNAL3,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 					}
 				}
@@ -3227,12 +3229,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->ps.weapon == WP_DISRUPTOR)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_TUSKENTAUNT1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, TORSO_HANDSIGNAL3,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 					}
 				}
@@ -3294,7 +3296,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						ent->client->ps.saberHolstered = 0;
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_STAFF, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 				else
@@ -3342,7 +3344,7 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						ent->client->ps.saberHolstered = 0;
 						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_STAFF, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 			}
@@ -3363,12 +3365,12 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 						if (ent->client->ps.weapon == WP_DISRUPTOR)
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_TUSKENTAUNT1,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 						else
 						{
 							NPC_SetAnim(ent, SETANIM_TORSO, TORSO_HANDSIGNAL4,
-								SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						}
 					}
 				}
@@ -3441,180 +3443,180 @@ void G_SetTauntAnim(gentity_t* ent, int taunt)
 			G_AddEvent(ent, EV_TAUNT, taunt);
 			break;
 		case TAUNT_RELOAD:
-		{
-			if (IsHoldingGun(ent)) //MP
 			{
-				if (ent->reloadTime > 0)
+				if (IsHoldingGun(ent)) //MP
 				{
-					CancelReload(ent);
+					if (ent->reloadTime > 0)
+					{
+						CancelReload(ent);
+					}
+					else
+					{
+						ReloadGun(ent);
+					}
+					break;
+				}
+				if (PM_WalkingAnim(ent->client->ps.legsAnim) || PM_RunningAnim(ent->client->ps.legsAnim))
+				{
+					//TORSO ONLY
+					switch (ent->client->ps.fd.saberAnimLevel)
+					{
+					case SS_FAST:
+					case SS_TAVION:
+						if (ent->client->ps.saberHolstered == 1
+							&& ent->client->saber[1].model[0])
+						{
+							//turn off second saber
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOff);
+						}
+						else if (ent->client->ps.saberHolstered == 0)
+						{
+							//turn off first
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOff);
+						}
+						ent->client->ps.saberHolstered = 2;
+						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_GESTURE1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						break;
+					case SS_MEDIUM:
+						if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						else
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						break;
+					case SS_STRONG:
+					case SS_DESANN:
+						if (saber1 && saber1->type == SABER_VADER) //saber kylo
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_VADERTAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						else
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						break;
+					case SS_DUAL:
+						if (ent->client->ps.saberHolstered == 1 && ent->client->saber[1].model[0])
+						{
+							//turn on second saber
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOn);
+						}
+						else if (ent->client->ps.saberHolstered == 2)
+						{
+							//turn on first
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
+						}
+						ent->client->ps.saberHolstered = 0;
+						if (ent->client->saber[0].type == SABER_GRIE || ent->client->saber[0].type == SABER_GRIE4)
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						else
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_DUAL_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						break;
+					case SS_STAFF:
+						if (ent->client->ps.saberHolstered > 0)
+						{
+							//turn on all blades
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
+						}
+						ent->client->ps.saberHolstered = 0;
+						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						break;
+					default: ;
+					}
 				}
 				else
 				{
-					ReloadGun(ent);
+					switch (ent->client->ps.fd.saberAnimLevel)
+					{
+					case SS_FAST:
+					case SS_TAVION:
+						if (ent->client->ps.saberHolstered == 1
+							&& ent->client->saber[1].model[0])
+						{
+							//turn off second saber
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOff);
+						}
+						else if (ent->client->ps.saberHolstered == 0)
+						{
+							//turn off first
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOff);
+						}
+						ent->client->ps.saberHolstered = 2;
+						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_GESTURE1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						break;
+					case SS_MEDIUM:
+						if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						else
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						break;
+					case SS_STRONG:
+					case SS_DESANN:
+						if (saber1 && saber1->type == SABER_VADER) //saber kylo
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_VADERTAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						else
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						break;
+					case SS_DUAL:
+						if (ent->client->ps.saberHolstered == 1 && ent->client->saber[1].model[0])
+						{
+							//turn on second saber
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOn);
+						}
+						else if (ent->client->ps.saberHolstered == 2)
+						{
+							//turn on first
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
+						}
+						ent->client->ps.saberHolstered = 0;
+						if (ent->client->saber[0].type == SABER_GRIE || ent->client->saber[0].type == SABER_GRIE4)
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT,
+							            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						else
+						{
+							NPC_SetAnim(ent, SETANIM_TORSO, BOTH_DUAL_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						}
+						break;
+					case SS_STAFF:
+						if (ent->client->ps.saberHolstered > 0)
+						{
+							//turn on all blades
+							G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
+						}
+						ent->client->ps.saberHolstered = 0;
+						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+						break;
+					default: ;
+					}
 				}
-				break;
+				G_AddEvent(ent, EV_TAUNT, taunt);
 			}
-			if (PM_WalkingAnim(ent->client->ps.legsAnim) || PM_RunningAnim(ent->client->ps.legsAnim))
-			{
-				//TORSO ONLY
-				switch (ent->client->ps.fd.saberAnimLevel)
-				{
-				case SS_FAST:
-				case SS_TAVION:
-					if (ent->client->ps.saberHolstered == 1
-						&& ent->client->saber[1].model[0])
-					{
-						//turn off second saber
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOff);
-					}
-					else if (ent->client->ps.saberHolstered == 0)
-					{
-						//turn off first
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOff);
-					}
-					ent->client->ps.saberHolstered = 2;
-					NPC_SetAnim(ent, SETANIM_TORSO, BOTH_GESTURE1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					break;
-				case SS_MEDIUM:
-					if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					else
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					break;
-				case SS_STRONG:
-				case SS_DESANN:
-					if (saber1 && saber1->type == SABER_VADER) //saber kylo
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_VADERTAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					else
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					break;
-				case SS_DUAL:
-					if (ent->client->ps.saberHolstered == 1 && ent->client->saber[1].model[0])
-					{
-						//turn on second saber
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOn);
-					}
-					else if (ent->client->ps.saberHolstered == 2)
-					{
-						//turn on first
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
-					}
-					ent->client->ps.saberHolstered = 0;
-					if (ent->client->saber[0].type == SABER_GRIE || ent->client->saber[0].type == SABER_GRIE4)
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					else
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_DUAL_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					break;
-				case SS_STAFF:
-					if (ent->client->ps.saberHolstered > 0)
-					{
-						//turn on all blades
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
-					}
-					ent->client->ps.saberHolstered = 0;
-					NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					break;
-				default:;
-				}
-			}
-			else
-			{
-				switch (ent->client->ps.fd.saberAnimLevel)
-				{
-				case SS_FAST:
-				case SS_TAVION:
-					if (ent->client->ps.saberHolstered == 1
-						&& ent->client->saber[1].model[0])
-					{
-						//turn off second saber
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOff);
-					}
-					else if (ent->client->ps.saberHolstered == 0)
-					{
-						//turn off first
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOff);
-					}
-					ent->client->ps.saberHolstered = 2;
-					NPC_SetAnim(ent, SETANIM_TORSO, BOTH_GESTURE1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					break;
-				case SS_MEDIUM:
-					if (saber1 && saber1->type == SABER_OBIWAN) //saber kylo
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_SHOWOFF_OBI,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					else
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					break;
-				case SS_STRONG:
-				case SS_DESANN:
-					if (saber1 && saber1->type == SABER_VADER) //saber kylo
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_VADERTAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					else
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_ENGAGETAUNT,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					break;
-				case SS_DUAL:
-					if (ent->client->ps.saberHolstered == 1 && ent->client->saber[1].model[0])
-					{
-						//turn on second saber
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[1].soundOn);
-					}
-					else if (ent->client->ps.saberHolstered == 2)
-					{
-						//turn on first
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
-					}
-					ent->client->ps.saberHolstered = 0;
-					if (ent->client->saber[0].type == SABER_GRIE || ent->client->saber[0].type == SABER_GRIE4)
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT,
-							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					else
-					{
-						NPC_SetAnim(ent, SETANIM_TORSO, BOTH_DUAL_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					}
-					break;
-				case SS_STAFF:
-					if (ent->client->ps.saberHolstered > 0)
-					{
-						//turn on all blades
-						G_Sound(ent, CHAN_WEAPON, ent->client->saber[0].soundOn);
-					}
-					ent->client->ps.saberHolstered = 0;
-					NPC_SetAnim(ent, SETANIM_TORSO, BOTH_STAFF_TAUNT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-					break;
-				default:;
-				}
-			}
-			G_AddEvent(ent, EV_TAUNT, taunt);
-		}
-		break;
-		default:;
+			break;
+		default: ;
 		}
 
 		if (anim != -1)
@@ -3735,12 +3737,12 @@ qboolean IsHoldingGun(const gentity_t* ent)
 	case WP_CONCUSSION:
 	case WP_BRYAR_PISTOL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }
 
-int ClipSize(int ammo, gentity_t* ent)
+int ClipSize(const int ammo, gentity_t* ent)
 {
 	switch (ammo)
 	{
@@ -3752,12 +3754,12 @@ int ClipSize(int ammo, gentity_t* ent)
 		return 50;
 	case AMMO_ROCKETS:
 		return 2;
-	default:;
+	default: ;
 	}
 	return -1;
 }
 
-int MagazineSize(int ammo, gentity_t* ent)
+int MagazineSize(const int ammo, gentity_t* ent)
 {
 	switch (ammo)
 	{
@@ -3769,7 +3771,7 @@ int MagazineSize(int ammo, gentity_t* ent)
 		return 100;
 	case AMMO_ROCKETS:
 		return 3;
-	default:;
+	default: ;
 	}
 	return -1;
 }
@@ -3893,7 +3895,7 @@ void ClientThink_real(gentity_t* ent)
 	pmove_t pmove;
 	int oldEventSequence;
 	int msec;
-	usercmd_t* ucmd;
+	usercmd_t * ucmd;
 	qboolean isNPC = qfalse;
 	qboolean controlledByPlayer = qfalse;
 	qboolean killJetFlags = qtrue;
@@ -4308,7 +4310,7 @@ void ClientThink_real(gentity_t* ent)
 
 			VectorSet(tAng, 0, ent->client->ps.viewangles[YAW], 0);
 			trap->G2API_GetBoltMatrix(ent->ghoul2, 0, 0, &rhMat, tAng, ent->client->ps.origin, level.time,
-				NULL, ent->modelScale); //0 is always going to be right hand bolt
+			                          NULL, ent->modelScale); //0 is always going to be right hand bolt
 			BG_GiveMeVectorFromMatrix(&rhMat, ORIGIN, rhOrg);
 
 			VectorSubtract(rhOrg, grabbed->r.currentOrigin, bodyDir);
@@ -4660,11 +4662,11 @@ void ClientThink_real(gentity_t* ent)
 			if (ent->health > 0 && ent->client->ps.stats[STAT_HEALTH] > 0)
 			{
 				trap->SendServerCommand(-1, va("cp \"%s %s %s!\n\"", ent->client->pers.netname,
-					G_GetStringEdString("MP_SVGAME", "PLDUELWINNER"),
-					duelAgainst->client->pers.netname));
+				                               G_GetStringEdString("MP_SVGAME", "PLDUELWINNER"),
+				                               duelAgainst->client->pers.netname));
 				trap->SendServerCommand(-1, va("print \"%s ^7survived with ^5%d ^7health and ^5%d ^7shield\n\"",
-					ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH],
-					ent->client->ps.stats[STAT_ARMOR]));
+				                               ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH],
+				                               ent->client->ps.stats[STAT_ARMOR]));
 			}
 			else
 			{
@@ -4712,7 +4714,7 @@ void ClientThink_real(gentity_t* ent)
 
 					trap->SendServerCommand(-1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "PLDUELSTOP")));
 					trap->SendServerCommand(duelAgainst - g_entities,
-						va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "PLDUELSTOP")));
+					                        va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "PLDUELSTOP")));
 				}
 			}
 		}
@@ -4754,21 +4756,25 @@ void ClientThink_real(gentity_t* ent)
 				}
 				ucmd->buttons &= ~BUTTON_ATTACK;
 
-				if (g_npcspskill.integer == 0)//easy blocking
-				{// started function
+				if (g_npcspskill.integer == 0) //easy blocking
+				{
+					// started function
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time...
+					{
+						// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING;// activate the function
+							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING; // activate the function
 						}
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.ManualblockStartTime >= 500)
-						{// Been holding block for too long....Turn off
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.
+							ManualblockStartTime >= 500)
+						{
+							// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						}
 					}
@@ -4776,18 +4782,21 @@ void ClientThink_real(gentity_t* ent)
 				else if (g_npcspskill.integer == 1) // medium blocking
 				{
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time...
+					{
+						// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING;// activate the function
+							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING; // activate the function
 						}
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.ManualblockStartTime >= 200)
-						{// Been holding block for too long....Turn off
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.
+							ManualblockStartTime >= 200)
+						{
+							// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						}
 					}
@@ -4795,27 +4804,32 @@ void ClientThink_real(gentity_t* ent)
 				else // hard blocking
 				{
 					if (client->ps.ManualblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time...
+					{
+						// They just pressed block. Mark the time...
 						client->ps.ManualblockStartTime = level.time;
 
 						if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 						{
-							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING;// activate the function
+							client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING; // activate the function
 						}
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.ManualblockStartTime >= 100)
-						{// Been holding block for too long....Turn off
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.
+							ManualblockStartTime >= 100)
+						{
+							// Been holding block for too long....Turn off
 							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 						}
 					}
 				}
 
 				if (client->ps.pm_flags & PMF_ACCURATE_MISSILE_BLOCK_HELD)
-				{// started function
+				{
+					// started function
 					if (client->ps.BoltblockStartTime <= 0) //fresh start
-					{// They just pressed block. Mark the time...
+					{
+						// They just pressed block. Mark the time...
 						client->ps.BoltblockStartTime = level.time; //start the timer
 
 						if (!(client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING))
@@ -4823,13 +4837,16 @@ void ClientThink_real(gentity_t* ent)
 							client->ps.ManualBlockingFlags |= 1 << MBF_ACCURATEMISSILEBLOCKING; // activate the function
 						}
 					}
-					else if (client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING && level.time - client->ps.BoltblockStartTime >= 3000)
-					{// Been holding block for too long....let go.
+					else if (client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING && level.time - client->
+						ps.BoltblockStartTime >= 3000)
+					{
+						// Been holding block for too long....let go.
 						client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 					}
 				}
 				else
-				{// not doing it so reset
+				{
+					// not doing it so reset
 					client->ps.BoltblockStartTime = 0;
 					client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 				}
@@ -5064,7 +5081,8 @@ void ClientThink_real(gentity_t* ent)
 			client->ps.communicatingflags &= ~(1 << GESTURING);
 			client->ps.communicatingflags &= ~(1 << DASHING);
 			client->ps.communicatingflags &= ~(1 << KICKING);
-			if (client->ps.weapon != WP_STUN_BATON || (client->ps.communicatingflags |= client->ps.grapplestartTime >= 3000))
+			if (client->ps.weapon != WP_STUN_BATON || (client->ps.communicatingflags |= client->ps.grapplestartTime >=
+				3000))
 			{
 				client->ps.communicatingflags &= ~(1 << STUNNING);
 			}
@@ -5097,7 +5115,8 @@ void ClientThink_real(gentity_t* ent)
 	}
 
 	if (ucmd->buttons & BUTTON_BLOCK)
-	{//blocking with saber
+	{
+		//blocking with saber
 		ent->client->ps.saberManualBlockingTime = level.time + FRAMETIME;
 	}
 
@@ -5246,9 +5265,9 @@ void ClientThink_real(gentity_t* ent)
 					intendedOrigin[2] = thrower->client->ps.origin[2];
 
 					trap->Trace(&tr, intendedOrigin, ent->r.mins, ent->r.maxs, intendedOrigin, ent->s.number,
-						ent->clipmask, qfalse, 0, 0);
+					            ent->clipmask, qfalse, 0, 0);
 					trap->Trace(&tr2, ent->client->ps.origin, ent->r.mins, ent->r.maxs, intendedOrigin, ent->s.number,
-						CONTENTS_SOLID, qfalse, 0, 0);
+					            CONTENTS_SOLID, qfalse, 0, 0);
 
 					if (tr.fraction == 1.0 && !tr.startsolid && tr2.fraction == 1.0 && !tr2.startsolid)
 					{
@@ -5322,7 +5341,7 @@ void ClientThink_real(gentity_t* ent)
 				}
 			}
 			G_Damage(ent, otherKiller, otherKiller, NULL, ent->client->ps.origin, 9999, DAMAGE_NO_PROTECTION,
-				MOD_FALLING);
+			         MOD_FALLING);
 
 			G_MuteSound(ent->s.number, CHAN_VOICE); //stop screaming, because you are dead!
 		}
@@ -5567,7 +5586,7 @@ void ClientThink_real(gentity_t* ent)
 					gentity_t* under = &g_entities[ent->client->ps.groundEntityNum];
 					if (under && under->health && under->takedamage)
 					{
-						vec3_t down = { 0, 0, -1 };
+						vec3_t down = {0, 0, -1};
 						//FIXME: we'll be doing traces down from each foot, so we'll have a real impact origin
 						G_Damage(under, ent, ent, down, under->r.currentOrigin, 100, 0, MOD_CRUSH);
 					}
@@ -5620,7 +5639,7 @@ void ClientThink_real(gentity_t* ent)
 			{
 				//a vehicle that's trying to take off!
 				//just kill me
-				vec3_t up = { 0, 0, 1 };
+				vec3_t up = {0, 0, 1};
 				G_Damage(ent, NULL, NULL, up, ent->r.currentOrigin, 9999999, DAMAGE_NO_PROTECTION, MOD_CRUSH);
 				return;
 			}
@@ -5817,7 +5836,8 @@ void ClientThink_real(gentity_t* ent)
 					Jedi_Decloak(ent);
 				}
 				else
-				{	//cloak
+				{
+					//cloak
 					if (ent->r.svFlags & SVF_BOT)
 					{
 						if (ent->health > 0
@@ -6268,7 +6288,7 @@ ClientThink
 A new command has arrived from the client
 ==================
 */
-void ClientThink(int client_num, const usercmd_t* ucmd)
+void ClientThink(const int client_num, const usercmd_t* ucmd)
 {
 	gentity_t* ent = g_entities + client_num;
 	if (client_num < MAX_CLIENTS)

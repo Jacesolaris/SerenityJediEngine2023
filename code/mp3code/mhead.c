@@ -43,18 +43,24 @@ ____________________________________________________________________________*/
 #include "mhead.h"		/* mpeg header structure */
 
 static const int mp_br_table[2][16] =
-{ {0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0},
- {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 0} };
+{
+	{0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0},
+	{0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 0}
+};
 static const int mp_sr20_table[2][4] =
-{ {441, 480, 320, -999}, {882, 960, 640, -999} };
+	{{441, 480, 320, -999}, {882, 960, 640, -999}};
 
 static const int mp_br_tableL1[2][16] =
-{ {0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256, 0},/* mpeg2 */
- {0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 0} };
+{
+	{0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256, 0}, /* mpeg2 */
+	{0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 0}
+};
 
 static const int mp_br_tableL3[2][16] =
-{ {0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0},      /* mpeg 2 */
- {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0} };
+{
+	{0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0}, /* mpeg 2 */
+	{0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0}
+};
 
 static int find_sync(unsigned char* buf, int n);
 static int sync_scan(unsigned char* buf, int n, int i0);
@@ -66,24 +72,24 @@ int head_info(unsigned char* buf, unsigned int n, MPEG_HEAD* h)
 	int mpeg25_flag;
 
 	if (n > 10000)
-		n = 10000;		/* limit scan for free format */
+		n = 10000; /* limit scan for free format */
 
 	h->sync = 0;
 	//if ((buf[0] == 0xFF) && ((buf[1] & 0xF0) == 0xF0))
 	if (buf[0] == 0xFF && (buf[0 + 1] & 0xF0) == 0xF0)
 	{
-		mpeg25_flag = 0;		// mpeg 1 & 2
+		mpeg25_flag = 0; // mpeg 1 & 2
 	}
 	else if (buf[0] == 0xFF && (buf[0 + 1] & 0xF0) == 0xE0)
 	{
-		mpeg25_flag = 1;		// mpeg 2.5
+		mpeg25_flag = 1; // mpeg 2.5
 	}
 	else
-		return 0;			// sync fail
+		return 0; // sync fail
 
 	h->sync = 1;
 	if (mpeg25_flag)
-		h->sync = 2;		//low bit clear signals mpeg25 (as in 0xFFE)
+		h->sync = 2; //low bit clear signals mpeg25 (as in 0xFFE)
 
 	h->id = (buf[0 + 1] & 0x08) >> 3;
 	h->option = (buf[0 + 1] & 0x06) >> 1;
@@ -100,8 +106,8 @@ int head_info(unsigned char* buf, unsigned int n, MPEG_HEAD* h)
 	h->emphasis = buf[0 + 3] & 0x03;
 
 	// if( mpeg25_flag ) {
-	 //    if( h->sr_index == 2 ) return 0;   // fail 8khz
-	 //}
+	//    if( h->sr_index == 2 ) return 0;   // fail 8khz
+	//}
 
 	/* compute framebytes for Layer I, II, III */
 	if (h->option < 1)
@@ -114,30 +120,36 @@ int head_info(unsigned char* buf, unsigned int n, MPEG_HEAD* h)
 	if (h->br_index > 0)
 	{
 		if (h->option == 3)
-		{				/* layer I */
+		{
+			/* layer I */
 			framebytes =
 				240 * mp_br_tableL1[h->id][h->br_index]
 				/ mp_sr20_table[h->id][h->sr_index];
 			framebytes = 4 * framebytes;
 		}
 		else if (h->option == 2)
-		{				/* layer II */
+		{
+			/* layer II */
 			framebytes =
 				2880 * mp_br_table[h->id][h->br_index]
 				/ mp_sr20_table[h->id][h->sr_index];
 		}
 		else if (h->option == 1)
-		{				/* layer III */
+		{
+			/* layer III */
 			if (h->id)
-			{			// mpeg1
+			{
+				// mpeg1
 				framebytes =
 					2880 * mp_br_tableL3[h->id][h->br_index]
 					/ mp_sr20_table[h->id][h->sr_index];
 			}
 			else
-			{			// mpeg2
+			{
+				// mpeg2
 				if (mpeg25_flag)
-				{			// mpeg2.2
+				{
+					// mpeg2.2
 					framebytes =
 						2880 * mp_br_tableL3[h->id][h->br_index]
 						/ mp_sr20_table[h->id][h->sr_index];
@@ -152,12 +164,13 @@ int head_info(unsigned char* buf, unsigned int n, MPEG_HEAD* h)
 		}
 	}
 	else
-		framebytes = find_sync(buf, n);	/* free format */
+		framebytes = find_sync(buf, n); /* free format */
 
 	return framebytes;
 }
 
-int head_info3(unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br, unsigned int* searchForward) {
+int head_info3(unsigned char* buf, const unsigned int n, MPEG_HEAD* h, int* br, unsigned int* searchForward)
+{
 	unsigned int pBuf = 0;
 
 	// jdw insertion...
@@ -174,7 +187,7 @@ int head_info3(unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br, unsign
 }
 
 /*--------------------------------------------------------------*/
-int head_info2(unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br)
+int head_info2(unsigned char* buf, const unsigned int n, MPEG_HEAD* h, int* br)
 {
 	/*---  return br (in bits/sec) in addition to frame bytes ---*/
 
@@ -187,52 +200,54 @@ int head_info2(unsigned char* buf, unsigned int n, MPEG_HEAD* h, int* br)
 
 	switch (h->option)
 	{
-	case 1:	/* layer III */
-	{
-		if (h->br_index > 0)
-			*br = 1000 * mp_br_tableL3[h->id][h->br_index];
-		else
+	case 1: /* layer III */
 		{
-			if (h->id)		// mpeg1
-
-				*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (144 * 20);
+			if (h->br_index > 0)
+				*br = 1000 * mp_br_tableL3[h->id][h->br_index];
 			else
-			{			// mpeg2
-				if ((h->sync & 1) == 0)	//  flags mpeg25
+			{
+				if (h->id) // mpeg1
 
-					*br = 500 * framebytes * mp_sr20_table[h->id][h->sr_index] / (72 * 20);
+					*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (144 * 20);
 				else
-					*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (72 * 20);
+				{
+					// mpeg2
+					if ((h->sync & 1) == 0) //  flags mpeg25
+
+						*br = 500 * framebytes * mp_sr20_table[h->id][h->sr_index] / (72 * 20);
+					else
+						*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (72 * 20);
+				}
 			}
 		}
-	}
-	break;
+		break;
 
-	case 2:	/* layer II */
-	{
-		if (h->br_index > 0)
-			*br = 1000 * mp_br_table[h->id][h->br_index];
-		else
-			*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (144 * 20);
-	}
-	break;
+	case 2: /* layer II */
+		{
+			if (h->br_index > 0)
+				*br = 1000 * mp_br_table[h->id][h->br_index];
+			else
+				*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (144 * 20);
+		}
+		break;
 
-	case 3:	/* layer I */
-	{
-		if (h->br_index > 0)
-			*br = 1000 * mp_br_tableL1[h->id][h->br_index];
-		else
-			*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (48 * 20);
-	}
-	break;
+	case 3: /* layer I */
+		{
+			if (h->br_index > 0)
+				*br = 1000 * mp_br_tableL1[h->id][h->br_index];
+			else
+				*br = 1000 * framebytes * mp_sr20_table[h->id][h->sr_index] / (48 * 20);
+		}
+		break;
 
 	default:
 
-		return 0;	// fuck knows what this is, but it ain't one of ours...
+		return 0; // fuck knows what this is, but it ain't one of ours...
 	}
 
 	return framebytes;
 }
+
 /*--------------------------------------------------------------*/
 static int compare(unsigned char* buf, unsigned char* buf2)
 {
@@ -242,6 +257,7 @@ static int compare(unsigned char* buf, unsigned char* buf2)
 		return 0;
 	return 1;
 }
+
 /*----------------------------------------------------------*/
 /*-- does not scan for initial sync, initial sync assumed --*/
 static int find_sync(unsigned char* buf, int n)
@@ -253,12 +269,12 @@ static int find_sync(unsigned char* buf, int n)
 	if (option == 3)
 	{
 		padbytes = 4;
-		i0 = 24;			/* for shorter layer I frames */
+		i0 = 24; /* for shorter layer I frames */
 	}
 
 	const int pad = (buf[2] & 0x02) >> 1;
 
-	n -= 3;			/*  need 3 bytes of header  */
+	n -= 3; /*  need 3 bytes of header  */
 
 	while (i0 < 2000)
 	{
@@ -274,10 +290,11 @@ static int find_sync(unsigned char* buf, int n)
 
 	return 0;
 }
+
 /*------------------------------------------------------*/
 /*---- scan for next sync, assume start is valid -------*/
 /*---- return number bytes to next sync ----------------*/
-static int sync_scan(unsigned char* buf, int n, int i0)
+static int sync_scan(unsigned char* buf, const int n, const int i0)
 {
 	for (int i = i0; i < n; i++)
 		if (compare(buf, buf + i))
@@ -285,9 +302,10 @@ static int sync_scan(unsigned char* buf, int n, int i0)
 
 	return 0;
 }
+
 /*------------------------------------------------------*/
 /*- test consecutative syncs, input isync without pad --*/
-static int sync_test(unsigned char* buf, int n, int isync, int padbytes)
+static int sync_test(unsigned char* buf, const int n, const int isync, const int padbytes)
 {
 	int nmatch = 0;
 	for (int i = 0;;)

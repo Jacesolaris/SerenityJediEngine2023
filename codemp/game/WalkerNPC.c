@@ -35,9 +35,9 @@ extern vec3_t playerMaxs;
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
-	qboolean breakSaberLock);
+                        qboolean breakSaberLock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
-	const vec3_t end, int passEntityNum, int contentmask);
+                           const vec3_t end, int passEntityNum, int contentmask);
 
 static void RegisterAssets(Vehicle_t* pVeh)
 {
@@ -85,7 +85,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	//Client sets ucmds and such for speed alterations
 	float speedInc;
 	const bgEntity_t* parent = pVeh->m_pParentEntity;
-	playerState_t* parentPS = parent->playerState;
+	playerState_t * parentPS = parent->playerState;
 
 	const float speedIdleDec = pVeh->m_pVehicleInfo->decelIdle * pVeh->m_fTimeModifier;
 	float speedMax = pVeh->m_pVehicleInfo->speedMax;
@@ -162,7 +162,11 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		}*/
 	}
 
-	if (parentPS && parentPS->electrifyTime > pm->cmd.serverTime)
+	if (parentPS&& parentPS
+	
+	->
+	electrifyTime > pm->cmd.serverTime
+	)
 	{
 		speedMax *= 0.5f;
 	}

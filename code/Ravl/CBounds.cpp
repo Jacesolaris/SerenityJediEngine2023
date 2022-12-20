@@ -80,7 +80,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////////////
 float CBBox::LargestAxisSize() const
 {
-	CVec3	Work(mMax);
+	CVec3 Work(mMax);
 	Work -= mMin;
 	return Work.MaxElement();
 }
@@ -175,17 +175,17 @@ ESide CBBox::InOutTest(const CVec3& v) const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-ESide CBBox::InOutTest(const CVec3& v, float tolout, float tolin) const
+ESide CBBox::InOutTest(const CVec3& v, const float tolout, const float tolin) const
 {
-	if (v[0]<mMin[0] - tolout || v[0]>mMax[0] + tolout ||
-		v[1]<mMin[1] - tolout || v[1]>mMax[1] + tolout ||
-		v[2]<mMin[2] - tolout || v[2]>mMax[2] + tolout)
+	if (v[0] < mMin[0] - tolout || v[0] > mMax[0] + tolout ||
+		v[1] < mMin[1] - tolout || v[1] > mMax[1] + tolout ||
+		v[2] < mMin[2] - tolout || v[2] > mMax[2] + tolout)
 	{
 		return Side_Out;
 	}
-	if (v[0] > mMin[0] + tolin && v[0]<mMax[0] - tolin &&
-		v[1]>mMin[1] + tolin && v[1]<mMax[1] - tolin &&
-		v[2]>mMin[2] + tolin && v[2] < mMax[2] - tolin)
+	if (v[0] > mMin[0] + tolin && v[0] < mMax[0] - tolin &&
+		v[1] > mMin[1] + tolin && v[1] < mMax[1] - tolin &&
+		v[2] > mMin[2] + tolin && v[2] < mMax[2] - tolin)
 	{
 		return Side_In;
 	}
@@ -195,7 +195,7 @@ ESide CBBox::InOutTest(const CVec3& v, float tolout, float tolin) const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CBBox::BoxTouchTest(const CBBox& b2, float tolout) const
+bool CBBox::BoxTouchTest(const CBBox& b2, const float tolout) const
 {
 	if (mMin[0] - tolout > b2.mMax[0] ||
 		mMin[1] - tolout > b2.mMax[1] ||
@@ -206,17 +206,17 @@ bool CBBox::BoxTouchTest(const CBBox& b2, float tolout) const
 	{
 		return false;
 	}
-	return  true;
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CBBox::SphereTouchTest(const CVec3& v, float rad) const
+bool CBBox::SphereTouchTest(const CVec3& v, const float rad) const
 {
-	if (v[0]<mMin[0] - rad || v[0]>mMax[0] + rad ||
-		v[1]<mMin[1] - rad || v[1]>mMax[1] + rad ||
-		v[2]<mMin[2] - rad || v[2]>mMax[2] + rad)
+	if (v[0] < mMin[0] - rad || v[0] > mMax[0] + rad ||
+		v[1] < mMin[1] - rad || v[1] > mMax[1] + rad ||
+		v[2] < mMin[2] - rad || v[2] > mMax[2] + rad)
 		return false;
 	return true;
 }
@@ -310,7 +310,7 @@ bool CBBox::HitTest(CBTrace& Tr) const
 
 	// Missed?
 	//---------
-	if (Tr.mRangeMax < Tr.mRange || Tr.mRangeMax<0.0f || Tr.mRange>Tr.mLength)
+	if (Tr.mRangeMax < Tr.mRange || Tr.mRangeMax < 0.0f || Tr.mRange > Tr.mLength)
 	{
 		return false;
 	}
@@ -339,8 +339,8 @@ void CBBox::FromStr(const char* s)
 {
 	assert(s && s[0]);
 
-	char	MinS[256];
-	char	MaxS[266];
+	char MinS[256];
+	char MaxS[266];
 	sscanf(s, "(%s|%s)", MinS, MaxS);
 
 	mMin.FromStr(MinS);
@@ -354,8 +354,8 @@ void CBBox::ToStr(char* s) const
 {
 	assert(s && s[0]);
 
-	char	MinS[256];
-	char	MaxS[266];
+	char MinS[256];
+	char MaxS[266];
 
 	mMin.ToStr(MinS);
 	mMax.ToStr(MaxS);

@@ -45,18 +45,19 @@ QVM files
 */
 
 constexpr auto VM_MAGIC = 0x12721444;
-using vmHeader_t = struct {
-	int		vmMagic;
+using vmHeader_t = struct
+{
+	int vmMagic;
 
-	int		instructionCount;
+	int instructionCount;
 
-	int		codeOffset;
-	int		codeLength;
+	int codeOffset;
+	int codeLength;
 
-	int		dataOffset;
-	int		dataLength;
-	int		litLength;			// ( dataLength - litLength ) should be byte swapped on load
-	int		bssLength;			// zero filled memory appended to data length
+	int dataOffset;
+	int dataLength;
+	int litLength; // ( dataLength - litLength ) should be byte swapped on load
+	int bssLength; // zero filled memory appended to data length
 };
 
 /*
@@ -67,20 +68,21 @@ PCX files are used for 8 bit images
 ========================================================================
 */
 
-using pcx_t = struct {
-	char	manufacturer;
-	char	version;
-	char	encoding;
-	char	bits_per_pixel;
-	unsigned short	xmin, ymin, xmax, ymax;
-	unsigned short	hres, vres;
-	unsigned char	palette[48];
-	char	reserved;
-	char	color_planes;
-	unsigned short	bytes_per_line;
-	unsigned short	palette_type;
-	char	filler[58];
-	unsigned char	data;			// unbounded
+using pcx_t = struct
+{
+	char manufacturer;
+	char version;
+	char encoding;
+	char bits_per_pixel;
+	unsigned short xmin, ymin, xmax, ymax;
+	unsigned short hres, vres;
+	unsigned char palette[48];
+	char reserved;
+	char color_planes;
+	unsigned short bytes_per_line;
+	unsigned short palette_type;
+	char filler[58];
+	unsigned char data; // unbounded
 };
 
 /*
@@ -96,27 +98,29 @@ constexpr auto MD3_VERSION = 15;
 
 // limits
 constexpr auto MD3_MAX_LODS = 3;
-constexpr auto MD3_MAX_TRIANGLES = 8192;	// per surface;
-constexpr auto MD3_MAX_VERTS = 4096;	// per surface;
-constexpr auto MD3_MAX_SHADERS = 256;		// per surface;
-constexpr auto MD3_MAX_FRAMES = 1024;	// per model;
-constexpr auto MD3_MAX_SURFACES = 32 + 32;	// per model;
-constexpr auto MD3_MAX_TAGS = 16;		// per frame;
+constexpr auto MD3_MAX_TRIANGLES = 8192; // per surface;
+constexpr auto MD3_MAX_VERTS = 4096; // per surface;
+constexpr auto MD3_MAX_SHADERS = 256; // per surface;
+constexpr auto MD3_MAX_FRAMES = 1024; // per model;
+constexpr auto MD3_MAX_SURFACES = 32 + 32; // per model;
+constexpr auto MD3_MAX_TAGS = 16; // per frame;
 
 // vertex scales
 constexpr auto MD3_XYZ_SCALE = 1.0 / 64;
 
-using md3Frame_t = struct md3Frame_s {
-	vec3_t		bounds[2];
-	vec3_t		localOrigin;
-	float		radius;
-	char		name[16];
+using md3Frame_t = struct md3Frame_s
+{
+	vec3_t bounds[2];
+	vec3_t localOrigin;
+	float radius;
+	char name[16];
 };
 
-using md3Tag_t = struct md3Tag_s {
-	char		name[MAX_QPATH];	// tag name
-	vec3_t		origin;
-	vec3_t		axis[3];
+using md3Tag_t = struct md3Tag_s
+{
+	char name[MAX_QPATH]; // tag name
+	vec3_t origin;
+	vec3_t axis[3];
 };
 
 /*
@@ -129,64 +133,70 @@ using md3Tag_t = struct md3Tag_s {
 ** st				sizeof( md3St_t ) * numVerts
 ** XyzNormals		sizeof( md3XyzNormal_t ) * numVerts * numFrames
 */
-using md3Surface_t = struct {
-	int		ident;				//
+using md3Surface_t = struct
+{
+	int ident; //
 
-	char	name[MAX_QPATH];	// polyset name
+	char name[MAX_QPATH]; // polyset name
 
-	int		flags;
-	int		numFrames;			// all surfaces in a model should have the same
+	int flags;
+	int numFrames; // all surfaces in a model should have the same
 
-	int		numShaders;			// all surfaces in a model should have the same
-	int		numVerts;
+	int numShaders; // all surfaces in a model should have the same
+	int numVerts;
 
-	int		numTriangles;
-	int		ofsTriangles;
+	int numTriangles;
+	int ofsTriangles;
 
-	int		ofsShaders;			// offset from start of
-	int		ofsSt;				// texture coords are common for all frames
-	int		ofsXyzNormals;		// numVerts * numFrames
+	int ofsShaders; // offset from start of
+	int ofsSt; // texture coords are common for all frames
+	int ofsXyzNormals; // numVerts * numFrames
 
-	int		ofsEnd;				// next surface follows
+	int ofsEnd; // next surface follows
 };
 
-using md3Shader_t = struct {
-	char			name[MAX_QPATH];
-	int				shaderIndex;	// for in-game use
+using md3Shader_t = struct
+{
+	char name[MAX_QPATH];
+	int shaderIndex; // for in-game use
 };
 
-using md3Triangle_t = struct {
-	int			indexes[3];
+using md3Triangle_t = struct
+{
+	int indexes[3];
 };
 
-using md3St_t = struct {
-	float		st[2];
+using md3St_t = struct
+{
+	float st[2];
 };
 
-using md3XyzNormal_t = struct {
-	short		xyz[3];
-	short		normal;
+using md3XyzNormal_t = struct
+{
+	short xyz[3];
+	short normal;
 };
 
-using md3Header_t = struct {
-	int			ident;
-	int			version;
+using md3Header_t = struct
+{
+	int ident;
+	int version;
 
-	char		name[MAX_QPATH];	// model name
+	char name[MAX_QPATH]; // model name
 
-	int			flags;
+	int flags;
 
-	int			numFrames;
-	int			numTags;
-	int			numSurfaces;
+	int numFrames;
+	int numTags;
+	int numSurfaces;
 
-	int			numSkins;
+	int numSkins;
 
-	int			ofsFrames;			// offset for first frame
-	int			ofsTags;			// numFrames * numTags
-	int			ofsSurfaces;		// first surface, others follow
+	int ofsFrames; // offset for first frame
+	int ofsTags; // numFrames * numTags
+	int ofsSurfaces; // first surface, others follow
 
-	int			ofsEnd;				// end of file
+	int ofsEnd; // end of file
 };
 
 /*
@@ -210,7 +220,7 @@ constexpr auto MAX_MAP_ENTITIES = 0x800;
 constexpr auto MAX_MAP_ENTSTRING = 0x40000;
 constexpr auto MAX_MAP_SHADERS = 0x400;
 
-constexpr auto MAX_MAP_AREAS = 0x100;	// MAX_MAP_AREA_BYTES in q_shared must match!;
+constexpr auto MAX_MAP_AREAS = 0x100; // MAX_MAP_AREA_BYTES in q_shared must match!;
 constexpr auto MAX_MAP_FOGS = 0x100;
 constexpr auto MAX_MAP_PLANES = 0x20000;
 constexpr auto MAX_MAP_NODES = 0x20000;
@@ -242,8 +252,9 @@ constexpr auto LIGHTMAP_HEIGHT = 128;
 
 //=============================================================================
 
-using lump_t = struct {
-	int		fileofs, filelen;
+using lump_t = struct
+{
+	int fileofs, filelen;
 };
 
 constexpr auto LUMP_ENTITIES = 0;
@@ -266,69 +277,78 @@ constexpr auto LUMP_VISIBILITY = 16;
 constexpr auto LUMP_LIGHTARRAY = 17;
 constexpr auto HEADER_LUMPS = 18;
 
-using dheader_t = struct {
-	int			ident;
-	int			version;
+using dheader_t = struct
+{
+	int ident;
+	int version;
 
-	lump_t		lumps[HEADER_LUMPS];
+	lump_t lumps[HEADER_LUMPS];
 };
 
-using dmodel_t = struct {
-	float		mins[3], maxs[3];
-	int			firstSurface, numSurfaces;
-	int			firstBrush, numBrushes;
+using dmodel_t = struct
+{
+	float mins[3], maxs[3];
+	int firstSurface, numSurfaces;
+	int firstBrush, numBrushes;
 };
 
-using dshader_t = struct dshader_s {
-	char		shader[MAX_QPATH];
-	int			surfaceFlags;
-	int			contentFlags;
+using dshader_t = struct dshader_s
+{
+	char shader[MAX_QPATH];
+	int surfaceFlags;
+	int contentFlags;
 };
 
 // planes x^1 is allways the opposite of plane x
 
-using dplane_t = struct {
-	float		normal[3];
-	float		dist;
+using dplane_t = struct
+{
+	float normal[3];
+	float dist;
 };
 
-using dnode_t = struct {
-	int			planeNum;
-	int			children[2];	// negative numbers are -(leafs+1), not nodes
-	int			mins[3];		// for frustom culling
-	int			maxs[3];
+using dnode_t = struct
+{
+	int planeNum;
+	int children[2]; // negative numbers are -(leafs+1), not nodes
+	int mins[3]; // for frustom culling
+	int maxs[3];
 };
 
-using dleaf_t = struct {
-	int			cluster;			// -1 = opaque cluster (do I still store these?)
-	int			area;
+using dleaf_t = struct
+{
+	int cluster; // -1 = opaque cluster (do I still store these?)
+	int area;
 
-	int			mins[3];			// for frustum culling
-	int			maxs[3];
+	int mins[3]; // for frustum culling
+	int maxs[3];
 
-	int			firstLeafSurface;
-	int			numLeafSurfaces;
+	int firstLeafSurface;
+	int numLeafSurfaces;
 
-	int			firstLeafBrush;
-	int			numLeafBrushes;
+	int firstLeafBrush;
+	int numLeafBrushes;
 };
 
-using dbrushside_t = struct {
-	int			planeNum;			// positive plane side faces out of the leaf
-	int			shaderNum;
-	int			drawSurfNum;
+using dbrushside_t = struct
+{
+	int planeNum; // positive plane side faces out of the leaf
+	int shaderNum;
+	int drawSurfNum;
 };
 
-using dbrush_t = struct {
-	int			firstSide;
-	int			numSides;
-	int			shaderNum;		// the shader that determines the contents flags
+using dbrush_t = struct
+{
+	int firstSide;
+	int numSides;
+	int shaderNum; // the shader that determines the contents flags
 };
 
-using dfog_t = struct {
-	char		shader[MAX_QPATH];
-	int			brushNum;
-	int			visibleSide;	// the brush side that ray tests need to clip against (-1 == none)
+using dfog_t = struct
+{
+	char shader[MAX_QPATH];
+	int brushNum;
+	int visibleSide; // the brush side that ray tests need to clip against (-1 == none)
 };
 
 // Light Style Constants
@@ -338,31 +358,34 @@ constexpr auto LS_UNUSED = 0xfe;
 #define	LS_NONE			0xff
 #define MAX_LIGHT_STYLES		64
 
-using mapVert_t = struct {
-	vec3_t		xyz;
-	float		st[2];
-	float		lightmap[MAXLIGHTMAPS][2];
-	vec3_t		normal;
-	byte		color[MAXLIGHTMAPS][4];
+using mapVert_t = struct
+{
+	vec3_t xyz;
+	float st[2];
+	float lightmap[MAXLIGHTMAPS][2];
+	vec3_t normal;
+	byte color[MAXLIGHTMAPS][4];
 };
 
-using drawVert_t = struct {
-	vec3_t		xyz;
-	float		st[2];
-	float		lightmap[MAXLIGHTMAPS][2];
-	vec3_t		normal;
-	byte		color[MAXLIGHTMAPS][4];
+using drawVert_t = struct
+{
+	vec3_t xyz;
+	float st[2];
+	float lightmap[MAXLIGHTMAPS][2];
+	vec3_t normal;
+	byte color[MAXLIGHTMAPS][4];
 };
 
 using dgrid_t = struct
 {
-	byte		ambientLight[MAXLIGHTMAPS][3];
-	byte		directLight[MAXLIGHTMAPS][3];
-	byte		styles[MAXLIGHTMAPS];
-	byte		latLong[2];
+	byte ambientLight[MAXLIGHTMAPS][3];
+	byte directLight[MAXLIGHTMAPS][3];
+	byte styles[MAXLIGHTMAPS];
+	byte latLong[2];
 };
 
-using mapSurfaceType_t = enum {
+using mapSurfaceType_t = enum
+{
 	MST_BAD,
 	MST_PLANAR,
 	MST_PATCH,
@@ -370,27 +393,28 @@ using mapSurfaceType_t = enum {
 	MST_FLARE
 };
 
-using dsurface_t = struct {
-	int			shaderNum;
-	int			fogNum;
-	int			surfaceType;
+using dsurface_t = struct
+{
+	int shaderNum;
+	int fogNum;
+	int surfaceType;
 
-	int			firstVert;
-	int			numVerts;
+	int firstVert;
+	int numVerts;
 
-	int			firstIndex;
-	int			numIndexes;
+	int firstIndex;
+	int numIndexes;
 
-	byte		lightmapStyles[MAXLIGHTMAPS], vertexStyles[MAXLIGHTMAPS];
-	int			lightmapNum[MAXLIGHTMAPS];
-	int			lightmapX[MAXLIGHTMAPS], lightmapY[MAXLIGHTMAPS];
-	int			lightmapWidth, lightmapHeight;
+	byte lightmapStyles[MAXLIGHTMAPS], vertexStyles[MAXLIGHTMAPS];
+	int lightmapNum[MAXLIGHTMAPS];
+	int lightmapX[MAXLIGHTMAPS], lightmapY[MAXLIGHTMAPS];
+	int lightmapWidth, lightmapHeight;
 
-	vec3_t		lightmapOrigin;
-	vec3_t		lightmapVecs[3];	// for patches, [0] and [1] are lodbounds
+	vec3_t lightmapOrigin;
+	vec3_t lightmapVecs[3]; // for patches, [0] and [1] are lodbounds
 
-	int			patchWidth;
-	int			patchHeight;
+	int patchWidth;
+	int patchHeight;
 };
 
 using hunkAllocType_t = enum //# hunkAllocType_e
@@ -420,15 +444,15 @@ constexpr auto SET_MASK = 0x00ffffff;
 
 using glyphInfo_t = struct
 {
-	short		width;					// number of pixels wide
-	short		height;					// number of scan lines
-	short		horizAdvance;			// number of pixels to advance to the next char
-	short		horizOffset;			// x offset into space to render glyph
-	int			baseline;				// y offset
-	float		s;						// x start tex coord
-	float		t;						// y start tex coord
-	float		s2;						// x end tex coord
-	float		t2;						// y end tex coord
+	short width; // number of pixels wide
+	short height; // number of scan lines
+	short horizAdvance; // number of pixels to advance to the next char
+	short horizOffset; // x offset into space to render glyph
+	int baseline; // y offset
+	float s; // x start tex coord
+	float t; // y start tex coord
+	float s2; // x end tex coord
+	float t2; // y end tex coord
 };
 
 // this file corresponds 1:1 with the "*.fontdat" files, so don't change it unless you're going to
@@ -436,14 +460,15 @@ using glyphInfo_t = struct
 //
 using dfontdat_t = struct dfontdat_s
 {
-	glyphInfo_t		mGlyphs[GLYPH_COUNT];
+	glyphInfo_t mGlyphs[GLYPH_COUNT];
 
-	short			mPointSize;
-	short			mHeight;				// max height of font
-	short			mAscender;
-	short			mDescender;
+	short mPointSize;
+	short mHeight; // max height of font
+	short mAscender;
+	short mDescender;
 
-	short			mKoreanHack;			// unused field, written out by John's fontgen program but we have to leave it there for disk structs <sigh>
+	short mKoreanHack;
+	// unused field, written out by John's fontgen program but we have to leave it there for disk structs <sigh>
 };
 
 /////////////////// fonts end ////////////////////////////////////

@@ -71,7 +71,7 @@ void NPC_Mark2_Precache()
 NPC_Mark2_Part_Explode
 -------------------------
 */
-void NPC_Mark2_Part_Explode(gentity_t* self, int bolt)
+void NPC_Mark2_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
@@ -79,9 +79,9 @@ void NPC_Mark2_Part_Explode(gentity_t* self, int bolt)
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			bolt,
-			&boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
-			nullptr, self->s.modelScale);
+		                       bolt,
+		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       nullptr, self->s.modelScale);
 
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
@@ -99,8 +99,9 @@ NPC_Mark2_Pain
 - look at what was hit and see if it should be removed from the model.
 -------------------------
 */
-void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hit_loc)
+void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                    const int mod,
+                    const int hit_loc)
 {
 	NPC_Pain(self, inflictor, other, point, damage, mod);
 
@@ -161,9 +162,9 @@ void Mark2_FireBlaster(qboolean advance)
 	mdxaBone_t boltMatrix;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		NPC->genericBolt1,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       NPC->genericBolt1,
+	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
 
@@ -202,7 +203,7 @@ void Mark2_FireBlaster(qboolean advance)
 Mark2_BlasterAttack
 -------------------------
 */
-void Mark2_BlasterAttack(qboolean advance)
+void Mark2_BlasterAttack(const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{
@@ -256,7 +257,7 @@ void Mark2_AttackDecision(void)
 		if (NPCInfo->localState == LSTATE_DOWN || NPCInfo->localState == LSTATE_DROPPINGDOWN)
 		{
 			if (TIMER_Done(NPC, "downTime"))
-				// Down being down?? (The delay is so he doesn't pop up and down when the player goes in and out of range)
+			// Down being down?? (The delay is so he doesn't pop up and down when the player goes in and out of range)
 			{
 				NPCInfo->localState = LSTATE_RISINGUP;
 				NPC_SetAnim(NPC, SETANIM_BOTH, BOTH_RUN1STOP, SETANIM_FLAG_HOLD | SETANIM_FLAG_OVERRIDE);

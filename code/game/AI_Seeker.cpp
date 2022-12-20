@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void NPC_BSST_Patrol();
 extern void Boba_FireDecide();
 extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
-	qboolean alt_fire = qfalse);
+                                 qboolean alt_fire = qfalse);
 
 void Seeker_Strafe();
 
@@ -57,7 +57,8 @@ void NPC_Seeker_Precache()
 }
 
 //------------------------------------
-void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod, int hit_loc)
+void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                     const int mod, int hit_loc)
 {
 	if (!(self->svFlags & SVF_CUSTOM_GRAVITY))
 	{
@@ -190,7 +191,7 @@ void Seeker_Strafe()
 		VectorMA(NPC->currentOrigin, SEEKER_STRAFE_DIS * side, right, end);
 
 		gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		// Close enough
 		if (tr.fraction > 0.9f)
@@ -232,7 +233,7 @@ void Seeker_Strafe()
 		VectorMA(end, Q_flrand(-1.0f, 1.0f) * 25, dir, end);
 
 		gi.trace(&tr, NPC->currentOrigin, nullptr, nullptr, end, NPC->s.number, MASK_SOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		// Close enough
 		if (tr.fraction > 0.9f)
@@ -263,7 +264,7 @@ void Seeker_Strafe()
 }
 
 //------------------------------------
-void Seeker_Hunt(qboolean visible, qboolean advance)
+void Seeker_Hunt(const qboolean visible, const qboolean advance)
 {
 	vec3_t forward;
 
@@ -330,7 +331,7 @@ void Seeker_Fire()
 }
 
 //------------------------------------
-void Seeker_Ranged(qboolean visible, qboolean advance)
+void Seeker_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (NPC->client->NPC_class != CLASS_BOBAFETT && NPC->client->NPC_class != CLASS_MANDO)
 	{
@@ -389,7 +390,7 @@ void Seeker_FindEnemy(void)
 {
 	float bestDis = SEEKER_SEEK_RADIUS * SEEKER_SEEK_RADIUS + 1;
 	vec3_t mins, maxs;
-	gentity_t* entity_list[MAX_GENTITIES], * best = nullptr;
+	gentity_t *entity_list[MAX_GENTITIES], *best = nullptr;
 
 	VectorSet(maxs, SEEKER_SEEK_RADIUS, SEEKER_SEEK_RADIUS, SEEKER_SEEK_RADIUS);
 	VectorScale(maxs, -1, mins);
@@ -406,7 +407,7 @@ void Seeker_FindEnemy(void)
 		}
 
 		if (ent->client->playerTeam == NPC->client->playerTeam || ent->client->playerTeam == TEAM_NEUTRAL)
-			// don't attack same team or bots
+		// don't attack same team or bots
 		{
 			continue;
 		}

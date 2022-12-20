@@ -62,7 +62,7 @@ void FX_FlechetteWeaponalt_blow(vec3_t origin, vec3_t normal)
 FX_FlechetteWeaponHitPlayer
 -------------------------
 */
-void FX_FlechetteWeaponHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_FlechetteWeaponHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{

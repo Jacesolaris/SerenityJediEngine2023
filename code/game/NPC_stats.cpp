@@ -448,7 +448,8 @@ ParseAnimationEvtBlock
 ======================
 */
 static void ParseAnimationEvtBlock(const int gla_index, const unsigned short model_index, const char* aeb_filename,
-                                   animevent_t* anim_events, const animation_t* animations, unsigned char& last_anim_event,
+                                   animevent_t* anim_events, const animation_t* animations,
+                                   unsigned char& last_anim_event,
                                    const char** text_p, const bool b_is_frame_skipped)
 {
 	const char* token;
@@ -529,7 +530,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 		int key_frame = atoi(token);
 		if (b_is_frame_skipped &&
 			animations[anim_num].numFrames > 2)
-			// important, else frame 1 gets divided down and becomes frame 0. Carcass & Assimilate also work this way
+		// important, else frame 1 gets divided down and becomes frame 0. Carcass & Assimilate also work this way
 		{
 			key_frame /= 2;
 			// if we ever use any other value in frame-skipping we'll have to figure out some way of reading it, since it's not stored anywhere
@@ -537,7 +538,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 		if (key_frame >= animations[anim_num].numFrames)
 		{
 			Com_Printf(S_COLOR_YELLOW"WARNING: Event out of range on %s in %s\n", GetStringForID(animTable, anim_num),
-				aeb_filename);
+			           aeb_filename);
 			//assert(keyFrame < animations[animNum].numFrames);
 			key_frame = animations[anim_num].numFrames - 1; //clamp it
 		}
@@ -598,7 +599,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 			{
 				anim_events[cur_anim_event].eventData[AED_SOUNDCHANNEL] = CHAN_AUTO;
 			}
-			//fall through to normal sound
+		//fall through to normal sound
 		case AEV_SOUND: //# animID AEV_SOUND framenum soundpath randomlow randomhi chancetoplay
 			//get soundstring
 			token = COM_Parse(text_p);
@@ -607,7 +608,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 				break;
 			}
 			strcpy(string_data, token);
-			//get lowest value
+		//get lowest value
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -615,7 +616,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 				break;
 			}
 			lowest_val = atoi(token);
-			//get highest value
+		//get highest value
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -623,14 +624,14 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 				break;
 			}
 			highest_val = atoi(token);
-			//Now precache all the sounds
-			//NOTE: If we can be assured sequential handles, we can store the first sound index and count
-			//		unfortunately, if these sounds were previously registered, we cannot be guaranteed sequential indices.  Thus an array
+		//Now precache all the sounds
+		//NOTE: If we can be assured sequential handles, we can store the first sound index and count
+		//		unfortunately, if these sounds were previously registered, we cannot be guaranteed sequential indices.  Thus an array
 			if (lowest_val && highest_val)
 			{
 				assert(highest_val - lowest_val < MAX_RANDOM_ANIM_SOUNDS);
 				for (n = lowest_val, num = AED_SOUNDINDEX_START; n <= highest_val && num <= AED_SOUNDINDEX_END; n++, num
-					++)
+				     ++)
 				{
 					anim_events[cur_anim_event].eventData[num] = G_SoundIndex(va(string_data, n)); //cgi_S_RegisterSound
 				}
@@ -648,7 +649,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 #endif
 				anim_events[cur_anim_event].eventData[AED_SOUND_NUMRANDOMSNDS] = 0;
 			}
-			//get probability
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -657,15 +658,16 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 			}
 			anim_events[cur_anim_event].eventData[AED_SOUND_PROBABILITY] = atoi(token);
 
-			//last part - cheat and check and see if it's a special overridable saber sound we know of...
+		//last part - cheat and check and see if it's a special overridable saber sound we know of...
 			if (!Q_stricmpn("sound/weapons/saber/saberhup", string_data, 28))
 			{
 				//a saber swing
 				anim_events[cur_anim_event].eventType = AEV_SABER_SWING;
 				anim_events[cur_anim_event].eventData[AED_SABER_SWING_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				anim_events[cur_anim_event].eventData[AED_SABER_SWING_PROBABILITY] = anim_events[cur_anim_event].eventData[
-					AED_SOUND_PROBABILITY];
+				anim_events[cur_anim_event].eventData[AED_SABER_SWING_PROBABILITY] = anim_events[cur_anim_event].
+					eventData[
+						AED_SOUND_PROBABILITY];
 				if (lowest_val < 4)
 				{
 					//fast swing
@@ -688,8 +690,9 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 				anim_events[cur_anim_event].eventType = AEV_SABER_SPIN;
 				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_saber_num] = 0;
 				//since we don't know which one they meant if we're hacking this, always use first saber
-				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_PROBABILITY] = anim_events[cur_anim_event].eventData[
-					AED_SOUND_PROBABILITY];
+				anim_events[cur_anim_event].eventData[AED_SABER_SPIN_PROBABILITY] = anim_events[cur_anim_event].
+					eventData[
+						AED_SOUND_PROBABILITY];
 				if (string_data[29] == 'o')
 				{
 					//saberspinoff
@@ -730,7 +733,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_FOOTSTEP_TYPE] = GetIDForString(footstepTypeTable, token);
-			//get probability
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -773,9 +776,9 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 					anim_events[cur_anim_event].stringData = G_NewString(token);
 				}
 			}
-			//NOTE: this string will later be used to add a bolt and store the index, as below:
-			//animEvent->eventData[AED_BOLTINDEX] = gi.G2API_AddBolt( &cent->gent->ghoul2[cent->gent->playerModel], animEvent->stringData );
-			//get probability
+		//NOTE: this string will later be used to add a bolt and store the index, as below:
+		//animEvent->eventData[AED_BOLTINDEX] = gi.G2API_AddBolt( &cent->gent->ghoul2[cent->gent->playerModel], animEvent->stringData );
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -793,7 +796,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 				break;
 			}
 			anim_events[cur_anim_event].eventData[AED_FIRE_ALT] = atoi(token);
-			//get probability
+		//get probability
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -813,7 +816,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 			temp_val = atoi(token);
 			assert(temp_val > -32767 && temp_val < 32767);
 			anim_events[cur_anim_event].eventData[AED_MOVE_FWD] = temp_val;
-			//get right push
+		//get right push
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -823,7 +826,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 			temp_val = atoi(token);
 			assert(temp_val > -32767 && temp_val < 32767);
 			anim_events[cur_anim_event].eventData[AED_MOVE_RT] = temp_val;
-			//get upwards push
+		//get upwards push
 			token = COM_Parse(text_p);
 			if (!token)
 			{
@@ -857,7 +860,8 @@ This file's presence is not required
 
 ======================
 */
-static void G_ParseAnimationEvtFile(const int gla_index, const char* events_directory, const int file_index, const int i_real_gla_index = -1,
+static void G_ParseAnimationEvtFile(const int gla_index, const char* events_directory, const int file_index,
+                                    const int i_real_gla_index = -1,
                                     const bool model_specific = false)
 {
 	char text[80000];
@@ -869,8 +873,8 @@ static void G_ParseAnimationEvtFile(const int gla_index, const char* events_dire
 	assert(file_index >= 0 && file_index < MAX_ANIM_FILES);
 
 	const char* ps_anim_file_internal_name = i_real_gla_index == -1
-		? nullptr
-		: gi.G2API_GetAnimFileInternalNameIndex(i_real_gla_index);
+		                                         ? nullptr
+		                                         : gi.G2API_GetAnimFileInternalNameIndex(i_real_gla_index);
 	const bool b_is_frame_skipped = ps_anim_file_internal_name && strlen(ps_anim_file_internal_name) > 5 && !Q_stricmp(
 		&ps_anim_file_internal_name[strlen(ps_anim_file_internal_name) - 5], "_skip");
 
@@ -925,12 +929,12 @@ static void G_ParseAnimationEvtFile(const int gla_index, const char* events_dire
 		if (!Q_stricmp(token, "UPPEREVENTS")) // A batch of upper events
 		{
 			ParseAnimationEvtBlock(gla_index, model_index, events_path, torso_anim_events, animations,
-				afileset.torsoAnimEventCount, &text_p, b_is_frame_skipped);
+			                       afileset.torsoAnimEventCount, &text_p, b_is_frame_skipped);
 		}
 		else if (!Q_stricmp(token, "LOWEREVENTS")) // A batch of lower events
 		{
 			ParseAnimationEvtBlock(gla_index, model_index, events_path, legs_anim_events, animations,
-				afileset.legsAnimEventCount, &text_p, b_is_frame_skipped);
+			                       afileset.legsAnimEventCount, &text_p, b_is_frame_skipped);
 		}
 	}
 	COM_EndParseSession();
@@ -1213,7 +1217,7 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 			legs_anim_events[i].glaIndex = 0;
 
 			for (int j = 0; j < AED_ARRAY_SIZE; j++)
-				//Unique IDs, can be soundIndex of sound file to play OR effect index or footstep type, etc.
+			//Unique IDs, can be soundIndex of sound file to play OR effect index or footstep type, etc.
 			{
 				torso_anim_events[i].eventData[j] = -1;
 				legs_anim_events[i].eventData[j] = -1;
@@ -1249,7 +1253,8 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 			if (cine_gla_index)
 			{
 				G_ParseAnimationFile(1, skeleton_map_name, file_index);
-				G_ParseAnimationEvtFile(1, skeleton_map_name, file_index, cine_gla_index, false/*flag for model specific*/);
+				G_ParseAnimationEvtFile(1, skeleton_map_name, file_index, cine_gla_index,
+				                        false/*flag for model specific*/);
 			}
 		}
 		else
@@ -1294,9 +1299,9 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 		if (Q_stricmp(skeleton_name, model_name) != 0)
 		{
 			const int i_gla_index_to_check_for_skip = Q_stricmp(skeleton_name, "_humanoid")
-				? -1
-				: gi.G2API_PrecacheGhoul2Model(
-					"models/players/_humanoid/_humanoid.gla"); // ;-)
+				                                          ? -1
+				                                          : gi.G2API_PrecacheGhoul2Model(
+					                                          "models/players/_humanoid/_humanoid.gla"); // ;-)
 
 			G_ParseAnimationEvtFile(0, model_name, file_index, i_gla_index_to_check_for_skip, true);
 		}
@@ -1502,6 +1507,7 @@ void NPC_PrecacheWeapons(const team_t player_team, const int spawnflags, const c
 		}
 	}
 }
+
 extern void npc_droideka_precache();
 extern void npc_sbd_precache();
 extern void npc_shadow_trooper_precache();
@@ -1718,7 +1724,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 	const char* p;
 	char* patch;
 	qboolean md3_model = qfalse;
-	char player_model[MAX_QPATH] = { 0 };
+	char player_model[MAX_QPATH] = {0};
 	char custom_skin[MAX_QPATH];
 
 	if (!Q_stricmp("random", spawner->NPC_type))
@@ -2099,7 +2105,8 @@ void NPC_BuildRandom()
 extern cvar_t* com_outcast;
 extern void G_MatchPlayerWeapon(gentity_t* ent);
 extern void G_InitPlayerFromCvars(gentity_t* ent);
-extern void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* custom_skin, const char* surf_off, const char* surf_on);
+extern void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* custom_skin, const char* surf_off,
+                                  const char* surf_on);
 
 qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 {
@@ -2113,8 +2120,8 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 	renderInfo_t* ri = &npc->client->renderInfo;
 	gNPCstats_t* stats;
 	qboolean md3_model = qtrue;
-	char surf_off[1024] = { 0 };
-	char surf_on[1024] = { 0 };
+	char surf_off[1024] = {0};
+	char surf_on[1024] = {0};
 	qboolean parsingPlayer = qfalse;
 
 	strcpy(custom_skin, "default");
@@ -4402,7 +4409,8 @@ void NPC_LoadParms() //jka version
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int file_cnt = gi.FS_GetFileList("ext_data/npcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/npcs", ".npc", npc_extension_list_buf,
+	                                       sizeof npc_extension_list_buf);
 
 	char* hold_char = npc_extension_list_buf;
 
@@ -4430,7 +4438,7 @@ void NPC_LoadParms() //jka version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					hold_char);
+				        hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4453,7 +4461,8 @@ void NPC_LoadParms1() //jko version
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int file_cnt = gi.FS_GetFileList("ext_data/jkonpcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/jkonpcs", ".npc", npc_extension_list_buf,
+	                                       sizeof npc_extension_list_buf);
 
 	char* hold_char = npc_extension_list_buf;
 
@@ -4481,7 +4490,7 @@ void NPC_LoadParms1() //jko version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					hold_char);
+				        hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4503,7 +4512,8 @@ void NPC_LoadParms2() //mod version
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int file_cnt = gi.FS_GetFileList("ext_data/crnpcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/crnpcs", ".npc", npc_extension_list_buf,
+	                                       sizeof npc_extension_list_buf);
 
 	char* hold_char = npc_extension_list_buf;
 
@@ -4531,7 +4541,7 @@ void NPC_LoadParms2() //mod version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					hold_char);
+				        hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4553,7 +4563,8 @@ void NPC_LoadParms3() //yav version
 	marker[0] = '\0';
 
 	//now load in the .npc definitions
-	const int file_cnt = gi.FS_GetFileList("ext_data/yavnpcs", ".npc", npc_extension_list_buf, sizeof npc_extension_list_buf);
+	const int file_cnt = gi.FS_GetFileList("ext_data/yavnpcs", ".npc", npc_extension_list_buf,
+	                                       sizeof npc_extension_list_buf);
 
 	char* hold_char = npc_extension_list_buf;
 	for (int i = 0; i < file_cnt; i++, hold_char += npc_ext_fn_len + 1)
@@ -4580,7 +4591,7 @@ void NPC_LoadParms3() //yav version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					hold_char);
+				        hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);
@@ -4603,7 +4614,7 @@ void NPC_LoadParms4() //eoc version
 
 	//now load in the .npc definitions
 	const int file_cnt = gi.FS_GetFileList("ext_data/kotornpcs", ".npc", npc_extension_list_buf,
-		sizeof npc_extension_list_buf);
+	                                       sizeof npc_extension_list_buf);
 
 	char* hold_char = npc_extension_list_buf;
 
@@ -4631,7 +4642,7 @@ void NPC_LoadParms4() //eoc version
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{
 				G_Error("NPC_LoadParms: ran out of space before reading %s\n(you must make the .npc files smaller)",
-					hold_char);
+				        hold_char);
 			}
 			strcat(marker, buffer);
 			gi.FS_FreeFile(buffer);

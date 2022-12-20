@@ -38,131 +38,145 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 constexpr auto MAX_ENT_CLUSTERS = 16;
 
-using svEntity_t = struct svEntity_s {
+using svEntity_t = struct svEntity_s
+{
 	struct worldSector_s* worldSector;
 	svEntity_s* nextEntityInWorldSector;
 
-	entityState_t	baseline;		// for delta compression of initial sighting
-	int			numClusters;		// if -1, use headnode instead
-	int			clusternums[MAX_ENT_CLUSTERS];
-	int			lastCluster;		// if all the clusters don't fit in clusternums
-	int			areanum, areanum2;
-	int			snapshotCounter;	// used to prevent double adding from portal views
+	entityState_t baseline; // for delta compression of initial sighting
+	int numClusters; // if -1, use headnode instead
+	int clusternums[MAX_ENT_CLUSTERS];
+	int lastCluster; // if all the clusters don't fit in clusternums
+	int areanum, areanum2;
+	int snapshotCounter; // used to prevent double adding from portal views
 };
 
-using serverState_t = enum {
-	SS_DEAD,			// no map loaded
-	SS_LOADING,			// spawning level entities
-	SS_GAME				// actively running
+using serverState_t = enum
+{
+	SS_DEAD,
+	// no map loaded
+	SS_LOADING,
+	// spawning level entities
+	SS_GAME // actively running
 };
 
-using server_t = struct {
-	serverState_t	state;
-	int				serverId;			// changes each server start
-	int				snapshotCounter;	// incremented for each snapshot built
-	int				time;				// all entities are correct for this time		// These 2 saved out
-	int				timeResidual;		// <= 1000 / sv_frame->value					//   during savegame.
-	float			timeResidualFraction;	// fraction of a msec accumulated
-	int				nextFrameTime;		// when time > nextFrameTime, process world		// this doesn't get used anywhere! -Ste
+using server_t = struct
+{
+	serverState_t state;
+	int serverId; // changes each server start
+	int snapshotCounter; // incremented for each snapshot built
+	int time; // all entities are correct for this time		// These 2 saved out
+	int timeResidual; // <= 1000 / sv_frame->value					//   during savegame.
+	float timeResidualFraction; // fraction of a msec accumulated
+	int nextFrameTime; // when time > nextFrameTime, process world		// this doesn't get used anywhere! -Ste
 	char* configstrings[MAX_CONFIGSTRINGS];
 	//
 	// be careful, Jake's code uses the 'svEntities' field as a marker to memset-this-far-only inside SV_InitSV()!!!!!
 	//
-	char* entityParsePoint;	// used during game VM init
+	char* entityParsePoint; // used during game VM init
 
-	int				mLocalSubBSPIndex;
-	int				mLocalSubBSPModelOffset;
+	int mLocalSubBSPIndex;
+	int mLocalSubBSPModelOffset;
 	char* mLocalSubBSPEntityParsePoint;
 
-	svEntity_t		svEntities[MAX_GENTITIES];
+	svEntity_t svEntities[MAX_GENTITIES];
 };
 
-using clientSnapshot_t = struct {
-	int				areabytes;
-	byte			areabits[MAX_MAP_AREA_BYTES];		// portalarea visibility bits
-	playerState_t	ps;
-	int				num_entities;
-	int				first_entity;		// into the circular sv_packet_entities[]
+using clientSnapshot_t = struct
+{
+	int areabytes;
+	byte areabits[MAX_MAP_AREA_BYTES]; // portalarea visibility bits
+	playerState_t ps;
+	int num_entities;
+	int first_entity; // into the circular sv_packet_entities[]
 	// the entities MUST be in increasing state number
 	// order, otherwise the delta compression will fail
-	int				messageSent;		// time the message was transmitted
-	int				messageAcked;		// time the message was acked
-	int				messageSize;		// used to rate drop packets
+	int messageSent; // time the message was transmitted
+	int messageAcked; // time the message was acked
+	int messageSize; // used to rate drop packets
 };
 
-using clientState_t = enum {
-	CS_FREE,		// can be reused for a new connection
-	CS_ZOMBIE,		// client has been disconnected, but don't reuse
+using clientState_t = enum
+{
+	CS_FREE,
+	// can be reused for a new connection
+	CS_ZOMBIE,
+	// client has been disconnected, but don't reuse
 	// connection for a couple seconds
-	CS_CONNECTED,	// has been assigned to a client_t, but no gamestate yet
-	CS_PRIMED,		// gamestate has been sent, but client hasn't sent a usercmd
-	CS_ACTIVE		// client is fully in game
+	CS_CONNECTED,
+	// has been assigned to a client_t, but no gamestate yet
+	CS_PRIMED,
+	// gamestate has been sent, but client hasn't sent a usercmd
+	CS_ACTIVE // client is fully in game
 };
 
-using client_t = struct client_s {
-	clientState_t	state;
-	char			userinfo[MAX_INFO_STRING];		// name, etc
+using client_t = struct client_s
+{
+	clientState_t state;
+	char userinfo[MAX_INFO_STRING]; // name, etc
 
 	char* reliableCommands[MAX_RELIABLE_COMMANDS];
-	int				reliableSequence;
-	int				reliableAcknowledge;
+	int reliableSequence;
+	int reliableAcknowledge;
 
-	int				gamestateMessageNum;	// netchan->outgoingSequence of gamestate
+	int gamestateMessageNum; // netchan->outgoingSequence of gamestate
 
-	usercmd_t		lastUsercmd;
-	int				lastMessageNum;		// for delta compression
-	int				cmdNum;				// command number last executed
-	int				lastClientCommand;	// reliable client message sequence
-	gentity_t* gentity;			// SV_GentityNum(client_num)
-	char			name[MAX_NAME_LENGTH];			// extracted from userinfo, high bits masked
-	byte* download;			// file being downloaded
-	int				downloadsize;		// total bytes (can't use EOF because of paks)
-	int				downloadcount;		// bytes sent
-	int				deltaMessage;		// frame last client usercmd message
-	int				lastPacketTime;		// sv.time when packet was last received
-	int				lastConnectTime;	// sv.time when connection started
-	qboolean		droppedCommands;	// true if enough pakets to pass the cl_packetdup were dropped
-	int				timeoutCount;		// must timeout a few frames in a row so debugging doesn't break
-	clientSnapshot_t	frames[PACKET_BACKUP];	// updates can be delta'd from here
-	netchan_t		netchan;
+	usercmd_t lastUsercmd;
+	int lastMessageNum; // for delta compression
+	int cmdNum; // command number last executed
+	int lastClientCommand; // reliable client message sequence
+	gentity_t* gentity; // SV_GentityNum(client_num)
+	char name[MAX_NAME_LENGTH]; // extracted from userinfo, high bits masked
+	byte* download; // file being downloaded
+	int downloadsize; // total bytes (can't use EOF because of paks)
+	int downloadcount; // bytes sent
+	int deltaMessage; // frame last client usercmd message
+	int lastPacketTime; // sv.time when packet was last received
+	int lastConnectTime; // sv.time when connection started
+	qboolean droppedCommands; // true if enough pakets to pass the cl_packetdup were dropped
+	int timeoutCount; // must timeout a few frames in a row so debugging doesn't break
+	clientSnapshot_t frames[PACKET_BACKUP]; // updates can be delta'd from here
+	netchan_t netchan;
 };
 
 //=============================================================================
 
-using challenge_t = struct {
-	netadr_t	adr;
-	int			challenge;
-	int			time;
+using challenge_t = struct
+{
+	netadr_t adr;
+	int challenge;
+	int time;
 };
 
 // this structure will be cleared only when the game dll changes
-using serverStatic_t = struct {
-	qboolean	initialized;				// sv_init has completed
-	client_t* clients;					// [sv_maxclients->integer];
-	int			numSnapshotEntities;		// sv_maxclients->integer*PACKET_BACKUP*MAX_PACKET_ENTITIES
-	int			nextSnapshotEntities;		// next snapshotEntities to use
-	entityState_t* snapshotEntities;		// [numSnapshotEntities]
+using serverStatic_t = struct
+{
+	qboolean initialized; // sv_init has completed
+	client_t* clients; // [sv_maxclients->integer];
+	int numSnapshotEntities; // sv_maxclients->integer*PACKET_BACKUP*MAX_PACKET_ENTITIES
+	int nextSnapshotEntities; // next snapshotEntities to use
+	entityState_t* snapshotEntities; // [numSnapshotEntities]
 };
 
 //=============================================================================
 
-extern	serverStatic_t	svs;				// persistant server info across maps
-extern	server_t		sv;					// cleared each map
+extern serverStatic_t svs; // persistant server info across maps
+extern server_t sv; // cleared each map
 
-extern	game_export_t* ge;
+extern game_export_t* ge;
 
-extern	cvar_t* sv_fps;
-extern	cvar_t* sv_timeout;
-extern	cvar_t* sv_zombietime;
-extern	cvar_t* sv_reconnectlimit;
-extern	cvar_t* sv_showloss;
-extern	cvar_t* sv_killserver;
-extern	cvar_t* sv_mapname;
-extern	cvar_t* sv_spawntarget;
-extern	cvar_t* sv_mapChecksum;
-extern	cvar_t* sv_serverid;
-extern  cvar_t* sv_testsave;
-extern  cvar_t* sv_compress_saved_games;
+extern cvar_t* sv_fps;
+extern cvar_t* sv_timeout;
+extern cvar_t* sv_zombietime;
+extern cvar_t* sv_reconnectlimit;
+extern cvar_t* sv_showloss;
+extern cvar_t* sv_killserver;
+extern cvar_t* sv_mapname;
+extern cvar_t* sv_spawntarget;
+extern cvar_t* sv_mapChecksum;
+extern cvar_t* sv_serverid;
+extern cvar_t* sv_testsave;
+extern cvar_t* sv_compress_saved_games;
 
 //===========================================================
 
@@ -198,7 +212,7 @@ void SV_ClientEnterWorld(client_t* client, usercmd_t* cmd, SavedGameJustLoaded_e
 void SV_DropClient(client_t* drop, const char* reason);
 
 void SV_ExecuteClientCommand(client_t* cl, const char* s);
-void SV_ClientThink(client_t* cl, usercmd_t* cmd);
+void SV_ClientThink(client_t * cl, usercmd_t * cmd);
 
 //
 // sv_snapshot.c
@@ -214,9 +228,9 @@ void SV_SendClientSnapshot(client_t* client);
 gentity_t* SV_GentityNum(int num);
 svEntity_t* SV_SvEntityForGentity(gentity_t* gEnt);
 gentity_t* SV_GEntityForSvEntity(svEntity_t* svEnt);
-void		SV_InitGameProgs(void);
-void		SV_ShutdownGameProgs(qboolean shutdownCin);
-qboolean	SV_inPVS(const vec3_t p1, const vec3_t p2);
+void SV_InitGameProgs(void);
+void SV_ShutdownGameProgs(qboolean shutdownCin);
+qboolean SV_inPVS(const vec3_t p1, const vec3_t p2);
 
 //============================================================
 //
@@ -256,7 +270,7 @@ int SV_PointContents(const vec3_t p, int passEntityNum);
 Ghoul2 Insert Start
 */
 void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int passEntityNum, int contentmask, EG2_Collision eG2TraceType = G2_NOCOLLIDE, int useLod = 0);
+              int passEntityNum, int contentmask, EG2_Collision eG2TraceType = G2_NOCOLLIDE, int useLod = 0);
 /*
 Ghoul2 Insert End
 */
@@ -291,7 +305,7 @@ void SG_TestSave();
 //	any new enhanced ones that need to ask for new chunks during loading.
 //
 constexpr auto iSAVEGAME_VERSION = 1;
-int SG_Version(void);	// call this to know what version number a successfully-opened savegame file was
+int SG_Version(void); // call this to know what version number a successfully-opened savegame file was
 //
 extern SavedGameJustLoaded_e e_saved_game_just_loaded;
 extern qboolean qbLoadTransition;

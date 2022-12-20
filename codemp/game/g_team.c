@@ -57,7 +57,7 @@ void Team_InitGame(void)
 	}
 }
 
-int OtherTeam(int team)
+int OtherTeam(const int team)
 {
 	if (team == TEAM_RED)
 		return TEAM_BLUE;
@@ -66,7 +66,7 @@ int OtherTeam(int team)
 	return team;
 }
 
-const char* TeamName(int team)
+const char* TeamName(const int team)
 {
 	if (team == TEAM_RED)
 		return "RED";
@@ -77,7 +77,7 @@ const char* TeamName(int team)
 	return "FREE";
 }
 
-const char* OtherTeamName(int team)
+const char* OtherTeamName(const int team)
 {
 	if (team == TEAM_RED)
 		return "BLUE";
@@ -88,7 +88,7 @@ const char* OtherTeamName(int team)
 	return "FREE";
 }
 
-const char* TeamColorString(int team)
+const char* TeamColorString(const int team)
 {
 	if (team == TEAM_RED)
 		return S_COLOR_RED;
@@ -101,7 +101,7 @@ const char* TeamColorString(int team)
 
 //plIndex used to print pl->client->pers.netname
 //teamIndex used to print team name
-void PrintCTFMessage(int plIndex, int teamIndex, int ctfMessage)
+void PrintCTFMessage(int plIndex, int teamIndex, const int ctfMessage)
 {
 	if (plIndex == -1)
 	{
@@ -141,7 +141,7 @@ AddTeamScore
  for gametype GT_TEAM the level.teamScores is updated in AddScore in g_combat.c
 ==============
 */
-void AddTeamScore(vec3_t origin, int team, int score)
+void AddTeamScore(vec3_t origin, const int team, const int score)
 {
 	gentity_t* te = G_TempEntity(origin, EV_GLOBAL_TEAM_SOUND);
 	te->r.svFlags |= SVF_BROADCAST;
@@ -258,9 +258,9 @@ qboolean OnSameTeam(const gentity_t* ent1, const gentity_t* ent2)
 	return qfalse;
 }
 
-static char ctfFlagStatusRemap[] = { '0', '1', '*', '*', '2' };
+static char ctfFlagStatusRemap[] = {'0', '1', '*', '*', '2'};
 
-void Team_SetFlagStatus(int team, flagStatus_t status)
+void Team_SetFlagStatus(const int team, const flagStatus_t status)
 {
 	qboolean modified = qfalse;
 
@@ -289,7 +289,7 @@ void Team_SetFlagStatus(int team, flagStatus_t status)
 			modified = qtrue;
 		}
 		break;
-	default:;
+	default: ;
 	}
 
 	if (modified)
@@ -457,9 +457,9 @@ void Team_FragBonuses(const gentity_t* targ, const gentity_t* attacker)
 	VectorSubtract(attacker->r.currentOrigin, flag->r.currentOrigin, v2);
 
 	if ((VectorLength(v1) < CTF_TARGET_PROTECT_RADIUS &&
-		trap->InPVS(flag->r.currentOrigin, targ->r.currentOrigin) ||
-		VectorLength(v2) < CTF_TARGET_PROTECT_RADIUS &&
-		trap->InPVS(flag->r.currentOrigin, attacker->r.currentOrigin)) &&
+			trap->InPVS(flag->r.currentOrigin, targ->r.currentOrigin) ||
+			VectorLength(v2) < CTF_TARGET_PROTECT_RADIUS &&
+			trap->InPVS(flag->r.currentOrigin, attacker->r.currentOrigin)) &&
 		attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam)
 	{
 		// we defended the base flag
@@ -478,9 +478,9 @@ void Team_FragBonuses(const gentity_t* targ, const gentity_t* attacker)
 		VectorSubtract(attacker->r.currentOrigin, carrier->r.currentOrigin, v1);
 
 		if ((VectorLength(v1) < CTF_ATTACKER_PROTECT_RADIUS &&
-			trap->InPVS(carrier->r.currentOrigin, targ->r.currentOrigin) ||
-			VectorLength(v2) < CTF_ATTACKER_PROTECT_RADIUS &&
-			trap->InPVS(carrier->r.currentOrigin, attacker->r.currentOrigin)) &&
+				trap->InPVS(carrier->r.currentOrigin, targ->r.currentOrigin) ||
+				VectorLength(v2) < CTF_ATTACKER_PROTECT_RADIUS &&
+				trap->InPVS(carrier->r.currentOrigin, attacker->r.currentOrigin)) &&
 			attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam)
 		{
 			AddScore(attacker, CTF_CARRIER_PROTECT_BONUS);
@@ -523,7 +523,7 @@ void Team_CheckHurtCarrier(const gentity_t* targ, const gentity_t* attacker)
 		attacker->client->pers.teamState.lasthurtcarrier = level.time;
 }
 
-gentity_t* Team_ResetFlag(int team)
+gentity_t* Team_ResetFlag(const int team)
 {
 	char* c;
 	gentity_t* rent = NULL;
@@ -569,7 +569,7 @@ void Team_ResetFlags(void)
 	}
 }
 
-void Team_ReturnFlagSound(gentity_t* ent, int team)
+void Team_ReturnFlagSound(gentity_t* ent, const int team)
 {
 	if (ent == NULL)
 	{
@@ -589,7 +589,7 @@ void Team_ReturnFlagSound(gentity_t* ent, int team)
 	te->r.svFlags |= SVF_BROADCAST;
 }
 
-void Team_TakeFlagSound(gentity_t* ent, int team)
+void Team_TakeFlagSound(gentity_t* ent, const int team)
 {
 	if (ent == NULL)
 	{
@@ -618,7 +618,7 @@ void Team_TakeFlagSound(gentity_t* ent, int team)
 		}
 		teamgame.redTakenTime = level.time;
 		break;
-	default:;
+	default: ;
 	}
 
 	gentity_t* te = G_TempEntity(ent->s.pos.trBase, EV_GLOBAL_TEAM_SOUND);
@@ -633,7 +633,7 @@ void Team_TakeFlagSound(gentity_t* ent, int team)
 	te->r.svFlags |= SVF_BROADCAST;
 }
 
-void Team_CaptureFlagSound(gentity_t* ent, int team)
+void Team_CaptureFlagSound(gentity_t* ent, const int team)
 {
 	if (ent == NULL)
 	{
@@ -653,7 +653,7 @@ void Team_CaptureFlagSound(gentity_t* ent, int team)
 	te->r.svFlags |= SVF_BROADCAST;
 }
 
-void Team_ReturnFlag(int team)
+void Team_ReturnFlag(const int team)
 {
 	Team_ReturnFlagSound(Team_ResetFlag(team), team);
 	if (team == TEAM_FREE)
@@ -724,11 +724,11 @@ Team_DroppedFlagThink
 // on flag stand and then flag gets returned. This leaded to bit random flag
 // grabs/captures, improved version takes distance to the center of flag stand
 // into consideration (closer player will get/capture the flag).
-static vec3_t minFlagRange = { 50, 36, 36 };
-static vec3_t maxFlagRange = { 44, 36, 36 };
+static vec3_t minFlagRange = {50, 36, 36};
+static vec3_t maxFlagRange = {44, 36, 36};
 int Team_TouchEnemyFlag(gentity_t* ent, const gentity_t* other, int team);
 
-int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, int team)
+int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, const int team)
 {
 	int enemyTeam;
 	gclient_t* cl = other->client;
@@ -882,7 +882,7 @@ int Team_TouchOurFlag(gentity_t* ent, const gentity_t* other, int team)
 	return 0; // Do not respawn this automatically
 }
 
-int Team_TouchEnemyFlag(gentity_t* ent, const gentity_t* other, int team)
+int Team_TouchEnemyFlag(gentity_t* ent, const gentity_t* other, const int team)
 {
 	gclient_t* cl = other->client;
 	vec3_t mins, maxs;
@@ -1065,7 +1065,7 @@ go to a random point that doesn't telefrag
 */
 #define	MAX_TEAM_SPAWN_POINTS	32
 
-gentity_t* SelectRandomTeamSpawnPoint(const int teamstate, team_t team, int siegeClass)
+gentity_t* SelectRandomTeamSpawnPoint(const int teamstate, const team_t team, const int siegeClass)
 {
 	int selection;
 	gentity_t* spots[MAX_TEAM_SPAWN_POINTS];
@@ -1173,7 +1173,8 @@ SelectCTFSpawnPoint
 
 ============
 */
-gentity_t* SelectCTFSpawnPoint(team_t team, int teamstate, vec3_t origin, vec3_t angles, const qboolean isbot)
+gentity_t* SelectCTFSpawnPoint(const team_t team, const int teamstate, vec3_t origin, vec3_t angles,
+                               const qboolean isbot)
 {
 	gentity_t* spot = SelectRandomTeamSpawnPoint(teamstate, team, -1);
 
@@ -1189,8 +1190,8 @@ gentity_t* SelectCTFSpawnPoint(team_t team, int teamstate, vec3_t origin, vec3_t
 	return spot;
 }
 
-static vec3_t playerMins = { -15, -15, DEFAULT_MINS_2 };
-static vec3_t playerMaxs = { 15, 15, DEFAULT_MAXS_2 };
+static vec3_t playerMins = {-15, -15, DEFAULT_MINS_2};
+static vec3_t playerMaxs = {15, 15, DEFAULT_MAXS_2};
 extern qboolean CheckforGoodSpawnPoint(vec3_t location, qboolean playersolidcheck);
 
 //checks to see if a certain location would telefrag.
@@ -1333,8 +1334,9 @@ SelectSiegeSpawnPoint
 
 ============
 */
-gentity_t* SelectSiegeSpawnPoint(int siegeClass, team_t team, int teamstate, vec3_t origin, vec3_t angles,
-	const qboolean isbot)
+gentity_t* SelectSiegeSpawnPoint(const int siegeClass, const team_t team, const int teamstate, vec3_t origin,
+                                 vec3_t angles,
+                                 const qboolean isbot)
 {
 	gentity_t* spot = SelectRandomTeamSpawnPoint(teamstate, team, siegeClass);
 
@@ -1429,8 +1431,8 @@ void TeamplayInfoMessage(const gentity_t* ent)
 				h = a = 0;
 
 				Com_sprintf(entry, sizeof entry,
-					" %i %i %i %i %i %i",
-					i, 0, h, a, 0, 0);
+				            " %i %i %i %i %i %i",
+				            i, 0, h, a, 0, 0);
 			}
 			else
 			{
@@ -1440,9 +1442,9 @@ void TeamplayInfoMessage(const gentity_t* ent)
 				if (a < 0) a = 0;
 
 				Com_sprintf(entry, sizeof entry,
-					" %i %i %i %i %i %i",
-					i, player->client->pers.teamState.location, h, a,
-					player->client->ps.weapon, player->s.powerups);
+				            " %i %i %i %i %i %i",
+				            i, player->client->pers.teamState.location, h, a,
+				            player->client->ps.weapon, player->s.powerups);
 			}
 			const int j = strlen(entry);
 			if (stringlength + j >= sizeof string)

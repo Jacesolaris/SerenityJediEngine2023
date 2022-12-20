@@ -38,7 +38,7 @@ constexpr auto CAMERA_SIZE = 4;
 
 float cg_zoomFov;
 extern qboolean CG_OnMovingPlat(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
 
 extern int g_crosshairSameEntTime;
 extern int g_crosshairEntNum;
@@ -106,7 +106,7 @@ void CG_TestG2Model_f()
 	cg.testModelEntity.hModel = cgi_R_RegisterModel(cg.testModelName);
 
 	cg.testModel = gi.G2API_InitGhoul2Model(*cg.testModelEntity.ghoul2, cg.testModelName, cg.testModelEntity.hModel,
-		NULL_HANDLE, NULL_HANDLE, 0, 0);
+	                                        NULL_HANDLE, NULL_HANDLE, 0, 0);
 	cg.testModelEntity.radius = 100.0f;
 
 	if (cgi_Argc() == 3)
@@ -175,7 +175,7 @@ void CG_TestModelSetAnglespre_f()
 	angles[1] = atof(CG_Argv(3));
 	angles[2] = atof(CG_Argv(4));
 	gi.G2API_SetBoneAngles(&ghoul2[cg.testModel], CG_Argv(1), angles, BONE_ANGLES_PREMULT, POSITIVE_X, POSITIVE_Z,
-		POSITIVE_Y, nullptr, 0, 0);
+	                       POSITIVE_Y, nullptr, 0, 0);
 }
 
 void CG_TestModelSetAnglespost_f()
@@ -192,7 +192,7 @@ void CG_TestModelSetAnglespost_f()
 	angles[1] = atof(CG_Argv(3));
 	angles[2] = atof(CG_Argv(4));
 	gi.G2API_SetBoneAngles(&ghoul2[cg.testModel], CG_Argv(1), angles, BONE_ANGLES_POSTMULT, POSITIVE_X, POSITIVE_Z,
-		POSITIVE_Y, nullptr, 0, 0);
+	                       POSITIVE_Y, nullptr, 0, 0);
 }
 
 void CG_TestModelAnimate_f()
@@ -202,7 +202,7 @@ void CG_TestModelAnimate_f()
 
 	strcpy(bone_name, CG_Argv(1));
 	gi.G2API_SetBoneAnim(&ghoul2[cg.testModel], bone_name, atoi(CG_Argv(2)), atoi(CG_Argv(3)), BONE_ANIM_OVERRIDE_LOOP,
-		atof(CG_Argv(4)), cg.time, -1, -1);
+	                     atof(CG_Argv(4)), cg.time, -1, -1);
 }
 
 /*
@@ -317,14 +317,14 @@ constexpr auto CAMERA_DAMP_INTERVAL = 50;
 
 constexpr auto CAMERA_CROUCH_NUDGE = 6;
 
-static vec3_t cameramins = { -CAMERA_SIZE, -CAMERA_SIZE, -CAMERA_SIZE };
-static vec3_t cameramaxs = { CAMERA_SIZE, CAMERA_SIZE, CAMERA_SIZE };
+static vec3_t cameramins = {-CAMERA_SIZE, -CAMERA_SIZE, -CAMERA_SIZE};
+static vec3_t cameramaxs = {CAMERA_SIZE, CAMERA_SIZE, CAMERA_SIZE};
 vec3_t camerafwd, cameraup, camerahorizdir;
 
 vec3_t cameraFocusAngles, cameraFocusLoc;
 vec3_t cameraIdealTarget, cameraIdealLoc;
-vec3_t cameraCurTarget = { 0, 0, 0 }, cameraCurLoc = { 0, 0, 0 };
-vec3_t cameraOldLoc = { 0, 0, 0 }, cameraNewLoc = { 0, 0, 0 };
+vec3_t cameraCurTarget = {0, 0, 0}, cameraCurLoc = {0, 0, 0};
+vec3_t cameraOldLoc = {0, 0, 0}, cameraNewLoc = {0, 0, 0};
 int cameraLastFrame = 0;
 
 float cameraLastYaw = 0;
@@ -478,7 +478,7 @@ static void CG_CalcIdealThirdPersonViewLocation()
 	{
 		//stay back
 		VectorMA(cameraIdealTarget, -180.0f * cg_entities[cg.snap->ps.client_num].gent->activator->s.modelScale[0],
-			camerafwd, cameraIdealLoc);
+		         camerafwd, cameraIdealLoc);
 	}
 	else if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_WAMPA
@@ -487,7 +487,7 @@ static void CG_CalcIdealThirdPersonViewLocation()
 	{
 		//stay back
 		VectorMA(cameraIdealTarget, -120.0f * cg_entities[cg.snap->ps.client_num].gent->activator->s.modelScale[0],
-			camerafwd, cameraIdealLoc);
+		         camerafwd, cameraIdealLoc);
 	}
 	else if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_SAND_CREATURE
@@ -495,14 +495,15 @@ static void CG_CalcIdealThirdPersonViewLocation()
 	{
 		//stay back
 		VectorMA(cg_entities[cg_entities[cg.snap->ps.client_num].gent->activator->s.number].lerpOrigin, -180.0f,
-			camerafwd, cameraIdealLoc);
+		         camerafwd, cameraIdealLoc);
 	}
 	else
 	{
 		VectorMA(cameraIdealTarget, -cg_thirdPersonRange.value, camerafwd, cameraIdealLoc);
 	}
 
-	if (!doing_dash_action && cg.renderingThirdPerson && cg.snap->ps.forcePowersActive & 1 << FP_SPEED && player->client->
+	if (!doing_dash_action && cg.renderingThirdPerson && cg.snap->ps.forcePowersActive & 1 << FP_SPEED && player->client
+		->
 		ps.forcePowerDuration[FP_SPEED])
 	{
 		const float time_left = player->client->ps.forcePowerDuration[FP_SPEED] - cg.time;
@@ -611,7 +612,7 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 		// We must exponent the amount LEFT rather than the amount bled off
 		const float dtime = static_cast<float>(cg.time - cameraLastFrame) * (1.0 / cg_timescale.value) * (1.0 /
 			static_cast<
-			float>(CAMERA_DAMP_INTERVAL)); // Our dampfactor is geared towards a time interval equal to "1".
+				float>(CAMERA_DAMP_INTERVAL)); // Our dampfactor is geared towards a time interval equal to "1".
 
 		// Note that since there are a finite number of "practical" delta millisecond values possible,
 		// the ratio should be initialized into a chart ultimately.
@@ -726,7 +727,7 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 		dampfactor = 1.0 - dampfactor; // We must exponent the amount LEFT rather than the amount bled off
 		const float dtime = static_cast<float>(cg.time - cameraLastFrame) * (1.0 / cg_timescale.value) * (1.0 /
 			static_cast<
-			float>(CAMERA_DAMP_INTERVAL)); // Our dampfactor is geared towards a time interval equal to "1".
+				float>(CAMERA_DAMP_INTERVAL)); // Our dampfactor is geared towards a time interval equal to "1".
 
 		// Note that since there are a finite number of "practical" delta millisecond values possible,
 		// the ratio should be initialized into a chart ultimately.
@@ -968,7 +969,7 @@ extern qboolean PM_InGetUp(const playerState_t* ps);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 extern int PM_AnimLength(int index, animNumber_t anim);
 
-static void CG_OffsetFirstPersonView(qboolean firstPersonSaber)
+static void CG_OffsetFirstPersonView(const qboolean firstPersonSaber)
 {
 	float bob;
 	float delta;
@@ -998,18 +999,18 @@ static void CG_OffsetFirstPersonView(qboolean firstPersonSaber)
 	if (g_entities[0].client && PM_InKnockDown(&g_entities[0].client->ps))
 	{
 		float perc;
-		const float animLen = static_cast<float>(PM_AnimLength(g_entities[0].client->clientInfo.animFileIndex,
-			static_cast<animNumber_t>(g_entities[0].client->ps.
-				legsAnim)));
+		const float anim_len = static_cast<float>(PM_AnimLength(g_entities[0].client->clientInfo.animFileIndex,
+		                                                        static_cast<animNumber_t>(g_entities[0].client->ps.
+			                                                        legsAnim)));
 		if (PM_InGetUp(&g_entities[0].client->ps) || PM_InForceGetUp(&g_entities[0].client->ps))
 		{
 			//start righting the view
-			perc = static_cast<float>(g_entities[0].client->ps.legsAnimTimer) / animLen * 2;
+			perc = static_cast<float>(g_entities[0].client->ps.legsAnimTimer) / anim_len * 2;
 		}
 		else
 		{
 			//tilt the view
-			perc = (animLen - g_entities[0].client->ps.legsAnimTimer) / animLen * 2;
+			perc = (anim_len - g_entities[0].client->ps.legsAnimTimer) / anim_len * 2;
 		}
 		if (perc > 1.0f)
 		{
@@ -1309,10 +1310,12 @@ float CG_ForceSpeedFOV()
 {
 	float fov;
 	const float time_left = player->client->ps.forcePowerDuration[FP_SPEED] - cg.time;
-	const float length = FORCE_SPEED_DURATION_FORCE_LEVEL_3 * forceSpeedValue[player->client->ps.forcePowerLevel[FP_SPEED]];
+	const float length = FORCE_SPEED_DURATION_FORCE_LEVEL_3 * forceSpeedValue[player->client->ps.forcePowerLevel[
+		FP_SPEED]];
 	const float amt = forceSpeedFOVMod[player->client->ps.forcePowerLevel[FP_SPEED]];
 
-	if (!cg.renderingThirdPerson && cg_truefov.value && (!cg.zoomMode && cg_trueguns.integer || cg.snap->ps.weapon == WP_SABER || cg.snap->ps.weapon == WP_MELEE) )
+	if (!cg.renderingThirdPerson && cg_truefov.value && (!cg.zoomMode && cg_trueguns.integer || cg.snap->ps.weapon ==
+		WP_SABER || cg.snap->ps.weapon == WP_MELEE))
 	{
 		fov = cg_truefov.value;
 	}
@@ -1400,8 +1403,9 @@ static qboolean CG_CalcFov()
 		{
 			fov_x = cg.overrides.fov;
 		}
-		else if (!cg.renderingThirdPerson && !cg.zoomMode && cg_truefov.value && (cg_trueguns.integer || cg.snap->ps.weapon == WP_SABER ||
-			cg.snap->ps.weapon == WP_MELEE) )
+		else if (!cg.renderingThirdPerson && !cg.zoomMode && cg_truefov.value && (cg_trueguns.integer || cg.snap->ps.
+			weapon == WP_SABER ||
+			cg.snap->ps.weapon == WP_MELEE))
 		{
 			fov_x = cg_truefov.value;
 		}
@@ -1582,8 +1586,8 @@ void CG_SaberClashFlare()
 	cgi_R_SetColor(color);
 
 	CG_DrawPic(x - v * 300 * cgs.widthRatioCoef, y - v * 300,
-		v * 600 * cgs.widthRatioCoef, v * 600,
-		cgi_R_RegisterShader("gfx/effects/saberFlare"));
+	           v * 600 * cgs.widthRatioCoef, v * 600,
+	           cgi_R_RegisterShader("gfx/effects/saberFlare"));
 }
 
 /*
@@ -1702,9 +1706,9 @@ static qboolean CG_CalcViewValues(void)
 				{
 					//looking through a client's eyes
 					VectorCopy(cg.refdef.vieworg,
-						cg_entities[cg.snap->ps.viewEntity].gent->client->renderInfo.eyePoint);
+					           cg_entities[cg.snap->ps.viewEntity].gent->client->renderInfo.eyePoint);
 					VectorCopy(cg.refdefViewAngles,
-						cg_entities[cg.snap->ps.viewEntity].gent->client->renderInfo.eyeAngles);
+					           cg_entities[cg.snap->ps.viewEntity].gent->client->renderInfo.eyeAngles);
 				}
 				else
 				{
@@ -1907,8 +1911,8 @@ static void CG_DrawSkyBoxPortal()
 //----------------------------
 void CG_RunEmplacedWeapon()
 {
-	const gentity_t* player = &g_entities[0],
-		* gun = player->owner;
+	const gentity_t *player = &g_entities[0],
+	                *gun = player->owner;
 
 	// Override the camera when we are locked onto the gun.
 	if (player
@@ -1946,7 +1950,7 @@ extern cvar_t* in_joystick;
 extern vec3_t serverViewOrg;
 static qboolean cg_rangedFogging = qfalse; //so we know if we should go back to normal fog
 
-void CG_DrawActiveFrame(int serverTime, stereoFrame_t stereoView)
+void CG_DrawActiveFrame(const int serverTime, const stereoFrame_t stereoView)
 {
 	qboolean inwater = qfalse;
 

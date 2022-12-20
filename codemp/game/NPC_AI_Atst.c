@@ -136,7 +136,7 @@ void g_atst_check_pain(gentity_t* self, gentity_t* other, int damage)
 NPC_ATST_Pain
 -------------------------
 */
-void NPC_ATST_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_ATST_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	g_atst_check_pain(self, attacker, damage);
 	NPC_Pain(self, attacker, damage);
@@ -165,7 +165,7 @@ void ATST_Hunt(qboolean visible, qboolean advance)
 ATST_Ranged
 -------------------------
 */
-void ATST_Ranged(qboolean visible, qboolean advance, qboolean altAttack)
+void ATST_Ranged(const qboolean visible, const qboolean advance, const qboolean altAttack)
 {
 	if (TIMER_Done(NPCS.NPC, "atkDelay") && visible) // Attack?
 	{
@@ -237,7 +237,7 @@ void ATST_Attack(void)
 		blasterTest = trap->G2API_GetSurfaceRenderStatus(NPCS.NPC->ghoul2, 0, "head_light_blaster_cann");
 		chargerTest = trap->G2API_GetSurfaceRenderStatus(NPCS.NPC->ghoul2, 0, "head_concussion_charger");
 
-		// It has both side weapons
+	// It has both side weapons
 		if (blasterTest != -1
 			&& !(blasterTest & TURN_OFF)
 			&& chargerTest != -1

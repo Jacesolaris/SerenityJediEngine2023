@@ -75,7 +75,7 @@ typedef gif_dest_struct* gif_dest_ptr;
  */
 
 LOCAL(void)
-flush_packet(gif_dest_ptr dinfo)
+flush_packet(const gif_dest_ptr dinfo)
 /* flush any accumulated data */
 {
 	if (dinfo->bytesinpkt > 0) {	/* never write zero-length packet */
@@ -97,7 +97,7 @@ flush_packet(gif_dest_ptr dinfo)
 /* Routine to convert variable-width codes into a byte stream */
 
 LOCAL(void)
-output(gif_dest_ptr dinfo, int code)
+output(const gif_dest_ptr dinfo, const int code)
 /* Emit a code of n_bits bits */
 /* Uses cur_accum and cur_bits to reblock into 8-bit bytes */
 {
@@ -134,7 +134,7 @@ output(gif_dest_ptr dinfo, int code)
  */
 
 LOCAL(void)
-compress_init(gif_dest_ptr dinfo, int i_bits)
+compress_init(const gif_dest_ptr dinfo, const int i_bits)
 /* Initialize pseudo-compressor */
 {
 	/* init all the state variables */
@@ -152,7 +152,7 @@ compress_init(gif_dest_ptr dinfo, int i_bits)
 }
 
 LOCAL(void)
-compress_pixel(gif_dest_ptr dinfo, int c)
+compress_pixel(const gif_dest_ptr dinfo, const int c)
 /* Accept and "compress" one pixel value.
  * The given value must be less than n_bits wide.
  */
@@ -172,7 +172,7 @@ compress_pixel(gif_dest_ptr dinfo, int c)
 }
 
 LOCAL(void)
-compress_term(gif_dest_ptr dinfo)
+compress_term(const gif_dest_ptr dinfo)
 /* Clean up at end */
 {
 	/* Send an EOF code */
@@ -188,7 +188,7 @@ compress_term(gif_dest_ptr dinfo)
 /* GIF header construction */
 
 LOCAL(void)
-put_word(gif_dest_ptr dinfo, unsigned int w)
+put_word(const gif_dest_ptr dinfo, const unsigned int w)
 /* Emit a 16-bit word, LSB first */
 {
 	putc(w & 0xFF, dinfo->pub.output_file);
@@ -196,7 +196,7 @@ put_word(gif_dest_ptr dinfo, unsigned int w)
 }
 
 LOCAL(void)
-put_3bytes(gif_dest_ptr dinfo, int val)
+put_3bytes(const gif_dest_ptr dinfo, const int val)
 /* Emit 3 copies of same byte value --- handy subr for colormap construction */
 {
 	putc(val, dinfo->pub.output_file);
@@ -205,7 +205,7 @@ put_3bytes(gif_dest_ptr dinfo, int val)
 }
 
 LOCAL(void)
-emit_header(gif_dest_ptr dinfo, int num_colors, JSAMPARRAY colormap)
+emit_header(const gif_dest_ptr dinfo, const int num_colors, const JSAMPARRAY colormap)
 /* Output the GIF file header, including color map */
 /* If colormap==NULL, synthesize a gray-scale colormap */
 {
@@ -289,7 +289,7 @@ emit_header(gif_dest_ptr dinfo, int num_colors, JSAMPARRAY colormap)
  */
 
 METHODDEF(void)
-start_output_gif(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+start_output_gif(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	const gif_dest_ptr dest = (gif_dest_ptr)dinfo;
 
@@ -305,8 +305,8 @@ start_output_gif(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 METHODDEF(void)
-put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
-	JDIMENSION rows_supplied)
+put_pixel_rows(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo,
+               JDIMENSION rows_supplied)
 {
 	const gif_dest_ptr dest = (gif_dest_ptr)dinfo;
 
@@ -321,7 +321,7 @@ put_pixel_rows(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
  */
 
 METHODDEF(void)
-finish_output_gif(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
+finish_output_gif(const j_decompress_ptr cinfo, const djpeg_dest_ptr dinfo)
 {
 	const gif_dest_ptr dest = (gif_dest_ptr)dinfo;
 
@@ -342,7 +342,7 @@ finish_output_gif(j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
  */
 
 GLOBAL(djpeg_dest_ptr)
-jinit_write_gif(j_decompress_ptr cinfo)
+jinit_write_gif(const j_decompress_ptr cinfo)
 {
 	/* Create module interface object, fill in method pointers */
 	const gif_dest_ptr dest = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

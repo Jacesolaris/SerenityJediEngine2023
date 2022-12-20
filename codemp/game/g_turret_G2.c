@@ -129,19 +129,19 @@ void G2Tur_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 	ent->s.boneOrient = forward | right << 3 | up << 6;
 
 	trap->G2API_SetBoneAngles(ent->ghoul2,
-		0,
-		bone,
-		angles,
-		flags,
-		up,
-		right,
-		forward,
-		NULL,
-		100,
-		level.time);
+	                          0,
+	                          bone,
+	                          angles,
+	                          flags,
+	                          up,
+	                          right,
+	                          forward,
+	                          NULL,
+	                          100,
+	                          level.time);
 }
 
-void turretG2_set_models(gentity_t* self, qboolean dying)
+void turretG2_set_models(gentity_t* self, const qboolean dying)
 {
 	if (dying)
 	{
@@ -175,30 +175,30 @@ void turretG2_set_models(gentity_t* self, qboolean dying)
 			self->s.modelindex2 = G_ModelIndex(name2);
 			//set the new onw
 			trap->G2API_InitGhoul2Model(&self->ghoul2,
-				name,
-				0, //base->s.modelindex,
-				//note, this is not the same kind of index - this one's referring to the actual
-				//index of the model in the g2 instance, whereas modelindex is the index of a
-				//configstring -rww
-				0,
-				0,
-				0,
-				0);
+			                            name,
+			                            0, //base->s.modelindex,
+			                            //note, this is not the same kind of index - this one's referring to the actual
+			                            //index of the model in the g2 instance, whereas modelindex is the index of a
+			                            //configstring -rww
+			                            0,
+			                            0,
+			                            0,
+			                            0);
 		}
 		else
 		{
 			self->s.modelindex = G_ModelIndex(name3);
 			//set the new onw
 			trap->G2API_InitGhoul2Model(&self->ghoul2,
-				name3,
-				0, //base->s.modelindex,
-				//note, this is not the same kind of index - this one's referring to the actual
-				//index of the model in the g2 instance, whereas modelindex is the index of a
-				//configstring -rww
-				0,
-				0,
-				0,
-				0);
+			                            name3,
+			                            0, //base->s.modelindex,
+			                            //note, this is not the same kind of index - this one's referring to the actual
+			                            //index of the model in the g2 instance, whereas modelindex is the index of a
+			                            //configstring -rww
+			                            0,
+			                            0,
+			                            0,
+			                            0);
 		}
 
 		self->s.modelGhoul2 = 1;
@@ -258,7 +258,7 @@ void TurretG2Pain(gentity_t* self, gentity_t* attacker, int damage)
 void turretG2_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath)
 //------------------------------------------------------------------------------------------------------------
 {
-	vec3_t forward = { 0, 0, -1 }, pos;
+	vec3_t forward = {0, 0, -1}, pos;
 
 	// Turn off the thinking of the base & use it's targets
 	//self->think = NULL;
@@ -295,12 +295,12 @@ void turretG2_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, in
 	if (self->splashDamage > 0 && self->splashRadius > 0)
 	{
 		g_radius_damage(self->r.currentOrigin,
-			attacker,
-			self->splashDamage,
-			self->splashRadius,
-			attacker,
-			NULL,
-			MOD_UNKNOWN);
+		                attacker,
+		                self->splashDamage,
+		                self->splashRadius,
+		                attacker,
+		                NULL,
+		                MOD_UNKNOWN);
 	}
 
 	if (self->s.eFlags & EF_SHADER_ANIM)
@@ -342,7 +342,7 @@ void turretG2_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, in
 #define START_DIS 15
 
 //start an animation on model_root both server side and client side
-void TurboLaser_SetBoneAnim(gentity_t* eweb, int startFrame, int endFrame)
+void TurboLaser_SetBoneAnim(gentity_t* eweb, const int startFrame, const int endFrame)
 {
 	//set info on the entity so it knows to start the anim on the client next snapshot.
 	eweb->s.eFlags |= EF_G2ANIMATING;
@@ -361,7 +361,7 @@ void TurboLaser_SetBoneAnim(gentity_t* eweb, int startFrame, int endFrame)
 	//now set the animation on the server ghoul2 instance.
 	assert(eweb->ghoul2);
 	trap->G2API_SetBoneAnim(eweb->ghoul2, 0, "model_root", startFrame, endFrame,
-		BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, 1.0f, level.time, -1, 100);
+	                        BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, 1.0f, level.time, -1, 100);
 }
 
 extern void WP_FireTurboLaserMissile(gentity_t* ent, vec3_t start, vec3_t dir);
@@ -476,14 +476,14 @@ void turretG2_head_think(gentity_t* self)
 
 		// Getting the flash bolt here
 		trap->G2API_GetBoltMatrix(self->ghoul2,
-			0,
-			self->alt_fire ? self->genericValue12 : self->genericValue11,
-			&boltMatrix,
-			self->r.currentAngles,
-			self->r.currentOrigin,
-			level.time,
-			NULL,
-			self->modelScale);
+		                          0,
+		                          self->alt_fire ? self->genericValue12 : self->genericValue11,
+		                          &boltMatrix,
+		                          self->r.currentAngles,
+		                          self->r.currentOrigin,
+		                          level.time,
+		                          NULL,
+		                          self->modelScale);
 		if (self->spawnflags & SPF_TURRETG2_TURBO)
 		{
 			self->alt_fire = !self->alt_fire;
@@ -565,14 +565,14 @@ static void turretG2_aim(gentity_t* self)
 
 		// Getting the "eye" here
 		trap->G2API_GetBoltMatrix(self->ghoul2,
-			0,
-			self->alt_fire ? self->genericValue12 : self->genericValue11,
-			&boltMatrix,
-			self->r.currentAngles,
-			self->s.origin,
-			level.time,
-			NULL,
-			self->modelScale);
+		                          0,
+		                          self->alt_fire ? self->genericValue12 : self->genericValue11,
+		                          &boltMatrix,
+		                          self->r.currentAngles,
+		                          self->s.origin,
+		                          level.time,
+		                          NULL,
+		                          self->modelScale);
 
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org2);
 
@@ -711,7 +711,7 @@ static qboolean turretG2_find_enemies(gentity_t* self)
 	float bestDist = self->radius * self->radius;
 	vec3_t org, org2;
 	qboolean foundClient = qfalse;
-	gentity_t* entity_list[MAX_GENTITIES], * bestTarget = NULL;
+	gentity_t *entity_list[MAX_GENTITIES], *bestTarget = NULL;
 
 	if (self->aimDebounceTime > level.time) // time since we've been shut off
 	{

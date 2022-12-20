@@ -55,10 +55,12 @@ PAIR* alias_init_addr();
 
 static const float Ci[8] =
 {
-   -0.6f, -0.535f, -0.33f, -0.185f, -0.095f, -0.041f, -0.0142f, -0.0037f };
+	-0.6f, -0.535f, -0.33f, -0.185f, -0.095f, -0.041f, -0.0142f, -0.0037f
+};
 
-void hwin_init();		/* hybrid windows -- */
+void hwin_init(); /* hybrid windows -- */
 void imdct_init();
+
 typedef struct
 {
 	float* w;
@@ -80,9 +82,9 @@ int L3table_init()
 		int i;
 		/*================ quant ===============================*/
 
-			/* 8 bit plus 2 lookup x = pow(2.0, 0.25*(global_gain-210)) */
-			/* extra 2 for ms scaling by 1/sqrt(2) */
-			/* extra 4 for cvt to mono scaling by 1/2 */
+		/* 8 bit plus 2 lookup x = pow(2.0, 0.25*(global_gain-210)) */
+		/* extra 2 for ms scaling by 1/sqrt(2) */
+		/* extra 4 for cvt to mono scaling by 1/2 */
 		float* x = quant_init_global_addr();
 		for (i = 0; i < 256 + 2 + 4; i++)
 			x[i] = (float)pow(2.0, 0.25 * (i - (2 + 4) - 210 + GLOBAL_GAIN_SCALE));
@@ -119,8 +121,8 @@ int L3table_init()
 		/*-------------------------*/
 		// quant_init_sf_band(sr_index);   replaced by code in sup.c
 
-	/*================ antialias ===============================*/
-		   // onceonly!!!!!!!!!!!!!!!!!!!!!
+		/*================ antialias ===============================*/
+		// onceonly!!!!!!!!!!!!!!!!!!!!!
 		PAIR* csa = alias_init_addr();
 		for (i = 0; i < 8; i++)
 		{
@@ -131,7 +133,7 @@ int L3table_init()
 
 	// these 4 are iOnceOnly-protected inside...
 
- /*================ msis ===============================*/
+	/*================ msis ===============================*/
 	msis_init();
 	msis_init_MPEG2();
 
@@ -143,6 +145,7 @@ int L3table_init()
 
 	return 0;
 }
+
 /*====================================================================*/
 typedef float ARRAY36[36];
 ARRAY36* hwin_init_addr();
@@ -203,6 +206,7 @@ void hwin_init()
 			win[2][i] = -win[2][i];
 	}
 }
+
 /*=============================================================*/
 typedef float ARRAY4[4];
 const IMDCT_INIT_BLOCK* imdct_init_addr_18();
@@ -263,6 +267,7 @@ void imdct_init()
 		*coef87 = (float)(2.0 * *coef87);
 	}
 }
+
 /*===============================================================*/
 typedef float ARRAY8_2[8][2];
 ARRAY8_2* msis_init_addr();
@@ -306,6 +311,7 @@ void msis_init()
 		-------------*/
 	}
 }
+
 /*-------------------------------------------------------------*/
 /*===============================================================*/
 typedef float ARRAY2_64_2[2][64][2];
@@ -359,7 +365,8 @@ void msis_init_MPEG2()
 
 					/* illegal is_pos used to do ms processing */
 					if (ms_mode == 0)
-					{			/* ms_mode = 0 */
+					{
+						/* ms_mode = 0 */
 						lr2[intensity_scale][ms_mode][k][0] = 1.0f;
 						lr2[intensity_scale][ms_mode][k][1] = 0.0f;
 					}
@@ -376,4 +383,5 @@ void msis_init_MPEG2()
 		}
 	}
 }
+
 /*-------------------------------------------------------------*/

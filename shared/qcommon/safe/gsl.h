@@ -18,8 +18,8 @@ inline gsl::cstring_view vs2013hack_cstring_view_literal(const char(&str)[length
 #else
 # define CSTRING_VIEW(x) x ## _v
 /** gsl::cstring_view from string literal (without null-termination) */
-inline gsl::cstring_view operator"" _v(const char* str, std::size_t length)
+inline gsl::cstring_view operator"" _v(const char* str, const std::size_t length)
 {
-	return { str, str + length };
+	return {str, str + length};
 }
 #endif

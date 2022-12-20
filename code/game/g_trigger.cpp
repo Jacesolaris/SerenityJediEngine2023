@@ -32,7 +32,7 @@ constexpr auto ENTDIST_NPC = 2;
 
 extern qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs);
 extern qboolean G_ClearTrace(const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int ignore,
-	int clipmask);
+                             int clipmask);
 extern qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest);
 extern qboolean PM_CrouchAnim(int anim);
 extern void Boba_FlyStart(gentity_t* self);
@@ -608,7 +608,7 @@ void trigger_push_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		if (self->spawnflags & 2048) // MULTIPLE - allow multiple entities to touch this trigger in one frame
 		{
 			if (self->painDebounceTime && level.time > self->painDebounceTime)
-				// if we haven't reached the next frame continue to let ents touch the trigger
+			// if we haven't reached the next frame continue to let ents touch the trigger
 			{
 				return;
 			}
@@ -811,7 +811,7 @@ void trigger_push_checkclear(gentity_t* self)
 
 	const gentity_t* target = G_Find(nullptr, FOFS(targetname), self->target);
 	gi.trace(&trace, center, vec3_origin, vec3_origin, target->currentOrigin, ENTITYNUM_NONE, CONTENTS_SOLID,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 
 	if (trace.fraction >= 1.0f)
 	{
@@ -984,7 +984,7 @@ void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* 
 		}
 
 		if (other->client->playerTeam != TEAM_FREE && spot_would_telefrag2(other, dest->currentOrigin))
-			//SpotWouldTelefrag( dest, other->client->playerTeam ) )
+		//SpotWouldTelefrag( dest, other->client->playerTeam ) )
 		{
 			//Don't go through if something blocking on the other side
 			return;
@@ -997,7 +997,7 @@ void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* 
 		other->s.pos.trDelta))
 	{
 		//It's a mover of some sort and is currently moving
-		vec3_t diffAngles = { 0, 0, 0 };
+		vec3_t diffAngles = {0, 0, 0};
 		qboolean snap = qfalse;
 
 		if (self->lastEnemy)
@@ -1140,7 +1140,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		if (self->spawnflags & 2048) // MULTIPLE - allow multiple entities to touch this trigger in one frame
 		{
 			if (self->painDebounceTime && level.time > self->painDebounceTime)
-				// if we haven't reached the next frame continue to let ents touch the trigger
+			// if we haven't reached the next frame continue to let ents touch the trigger
 			{
 				return;
 			}
@@ -1245,7 +1245,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 					if (self->count)
 					{
 						extern void CGCam_Fade(vec4_t source, vec4_t dest, float duration);
-						float src[4] = { 0, 0, 0, 0 }, dst[4] = { 0, 0, 0, 1 };
+						float src[4] = {0, 0, 0, 0}, dst[4] = {0, 0, 0, 1};
 						CGCam_Fade(src, dst, self->count);
 					}
 					if (self->spawnflags & 16)
@@ -1619,12 +1619,12 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 	targEnt->r.svFlags |= SVF_BROADCAST;//crap, need to tell the cgame about the target_position
  }
  */
- /*QUAKED trigger_hyperspace (.5 .5 .5) ?
-  Ship will turn to face the angles of the first target_position then fly forward, playing the hyperspace effect, then pop out at a relative point around the target
+/*QUAKED trigger_hyperspace (.5 .5 .5) ?
+ Ship will turn to face the angles of the first target_position then fly forward, playing the hyperspace effect, then pop out at a relative point around the target
 
-  "target"		whatever position the ship teleports from in relation to the target_position specified here, that's the relative position the ship will spawn at around the target2 target_position
-  "target2"		name of target_position to teleport the ship to (will be relative to it's origin)
-  */
+ "target"		whatever position the ship teleports from in relation to the target_position specified here, that's the relative position the ship will spawn at around the target2 target_position
+ "target2"		name of target_position to teleport the ship to (will be relative to it's origin)
+ */
 void SP_trigger_hyperspace(gentity_t* self)
 {
 	G_SpawnFloat("exitscale", "1", &self->radius);
@@ -2093,11 +2093,11 @@ void trigger_visible_check_player_visibility(gentity_t* self)
 			//3: see if player is in PVS
 			if (gi.inPVS(self->currentOrigin, player->client->renderInfo.eyePoint))
 			{
-				constexpr vec3_t mins = { -1, -1, -1 };
-				constexpr vec3_t maxs = { 1, 1, 1 };
+				constexpr vec3_t mins = {-1, -1, -1};
+				constexpr vec3_t maxs = {1, 1, 1};
 				//4: If needbe, trace to see if there is clear LOS from player viewpos
 				if (self->spawnflags & 1 || G_ClearTrace(player->client->renderInfo.eyePoint, mins, maxs,
-					self->currentOrigin, 0, MASK_OPAQUE))
+				                                         self->currentOrigin, 0, MASK_OPAQUE))
 				{
 					//5: Fire!
 					G_UseTargets(self, player);

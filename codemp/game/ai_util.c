@@ -34,12 +34,12 @@ void* BAllocList[MAX_BALLOC];
 
 char gBotChatBuffer[MAX_CLIENTS][MAX_CHAT_BUFFER_SIZE];
 
-void* B_TempAlloc(int size)
+void* B_TempAlloc(const int size)
 {
 	return BG_TempAlloc(size);
 }
 
-void B_TempFree(int size)
+void B_TempFree(const int size)
 {
 	BG_TempFree(size);
 }
@@ -297,19 +297,19 @@ int GetPairedValue(char* buf, const char* key, char* outbuf)
 			}
 		}
 
-			const char* placesecond = strstr(place + 1, key);
+		const char* placesecond = strstr(place + 1, key);
 
-			if (placesecond)
-			{
-				startpoint += placesecond - place;
-				startletter += placesecond - place;
-				place = placesecond;
-			}
-			else
-			{
-				place = NULL;
-				break;
-			}
+		if (placesecond)
+		{
+			startpoint += placesecond - place;
+			startletter += placesecond - place;
+			place = placesecond;
+		}
+		else
+		{
+			place = NULL;
+			break;
+		}
 	}
 
 	if (!found || !place || !buf[startpoint] || buf[startpoint] == '\0')
@@ -336,7 +336,7 @@ int GetPairedValue(char* buf, const char* key, char* outbuf)
 	return 1;
 }
 
-int BotDoChat(bot_state_t* bs, const char* section, int always)
+int BotDoChat(bot_state_t* bs, const char* section, const int always)
 {
 	gentity_t* cobject;
 
@@ -917,7 +917,7 @@ void BotUtilizePersonality(bot_state_t* bs)
 			case WP_DET_PACK:
 				bs->forceinfo[NUM_FORCE_POWERS + SK_DETPACK + 4] = '0' + skillLevel;
 				break;
-			default:;
+			default: ;
 			}
 		}
 	}

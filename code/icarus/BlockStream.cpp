@@ -102,7 +102,7 @@ void CBlockMember::SetData(vec3_t data, CIcarus* icarus)
 	WriteDataPointer(data, 3, icarus);
 }
 
-void CBlockMember::SetData(const void* data, int size, const CIcarus* icarus)
+void CBlockMember::SetData(const void* data, const int size, const CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 	if (m_data)
@@ -124,7 +124,7 @@ ReadMember
 int CBlockMember::ReadMember(char** stream, long* streamPos, const CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
-	m_id = LittleLong * reinterpret_cast<int*>(*stream + *streamPos);
+	m_id = LittleLong *reinterpret_cast<int*>(*stream + *streamPos);
 	*streamPos += sizeof(int);
 
 	if (m_id == CIcarus::ID_RANDOM)
@@ -138,7 +138,7 @@ int CBlockMember::ReadMember(char** stream, long* streamPos, const CIcarus* icar
 	}
 	else
 	{
-		m_size = LittleLong * reinterpret_cast<int*>(*stream + *streamPos);
+		m_size = LittleLong *reinterpret_cast<int*>(*stream + *streamPos);
 		*streamPos += sizeof(int);
 		m_data = game->Malloc(m_size);
 		memcpy(m_data, *stream + *streamPos, m_size);
@@ -216,7 +216,7 @@ Create
 -------------------------
 */
 
-int CBlock::Create(int block_id)
+int CBlock::Create(const int block_id)
 {
 	Init();
 
@@ -259,7 +259,7 @@ Write
 -------------------------
 */
 
-int CBlock::Write(int member_id, const char* member_data, CIcarus* icarus)
+int CBlock::Write(const int member_id, const char* member_data, CIcarus* icarus)
 {
 	const auto bMember = new CBlockMember;
 
@@ -273,7 +273,7 @@ int CBlock::Write(int member_id, const char* member_data, CIcarus* icarus)
 	return true;
 }
 
-int CBlock::Write(int member_id, vec3_t member_data, CIcarus* icarus)
+int CBlock::Write(const int member_id, vec3_t member_data, CIcarus* icarus)
 {
 	const auto bMember = new CBlockMember;
 
@@ -286,7 +286,7 @@ int CBlock::Write(int member_id, vec3_t member_data, CIcarus* icarus)
 	return true;
 }
 
-int CBlock::Write(int member_id, float member_data, CIcarus* icarus)
+int CBlock::Write(const int member_id, float member_data, CIcarus* icarus)
 {
 	const auto bMember = new CBlockMember;
 
@@ -299,7 +299,7 @@ int CBlock::Write(int member_id, float member_data, CIcarus* icarus)
 	return true;
 }
 
-int CBlock::Write(int member_id, int member_data, CIcarus* icarus)
+int CBlock::Write(const int member_id, int member_data, CIcarus* icarus)
 {
 	const auto bMember = new CBlockMember;
 
@@ -341,7 +341,7 @@ GetMember
 -------------------------
 */
 
-CBlockMember* CBlock::GetMember(int memberNum) const
+CBlockMember* CBlock::GetMember(const int memberNum) const
 {
 	if (memberNum >= GetNumMembers())
 	{
@@ -356,7 +356,7 @@ GetMemberData
 -------------------------
 */
 
-void* CBlock::GetMemberData(int memberNum) const
+void* CBlock::GetMemberData(const int memberNum) const
 {
 	if (memberNum >= GetNumMembers())
 	{
@@ -544,7 +544,7 @@ Open
 -------------------------
 */
 
-int CBlockStream::Open(char* buffer, long size)
+int CBlockStream::Open(char* buffer, const long size)
 {
 	char id_header[IBI_HEADER_ID_LENGTH];
 

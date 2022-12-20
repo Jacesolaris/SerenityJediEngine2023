@@ -138,7 +138,7 @@ int Pickup_Holdable(const gentity_t* ent, const gentity_t* other)
 }
 
 //======================================================================
-int Add_Ammo2(const gentity_t* ent, int ammoType, int count)
+int Add_Ammo2(const gentity_t* ent, const int ammoType, const int count)
 {
 	if (ammoType != AMMO_FORCE)
 	{
@@ -156,7 +156,7 @@ int Add_Ammo2(const gentity_t* ent, int ammoType, int count)
 		case AMMO_TRIPMINE:
 			ent->client->ps.stats[STAT_WEAPONS] |= 1 << WP_TRIP_MINE;
 			break;
-		default:;
+		default: ;
 		}
 
 		if (ent->client->ps.ammo[ammoType] > ammoData[ammoType].max)
@@ -194,7 +194,7 @@ int Add_Ammo2(const gentity_t* ent, int ammoType, int count)
 }
 
 //-------------------------------------------------------
-void Add_Ammo(const gentity_t* ent, int weapon, int count)
+void Add_Ammo(const gentity_t* ent, const int weapon, const int count)
 {
 	Add_Ammo2(ent, weaponData[weapon].ammoIndex, count);
 }
@@ -272,8 +272,8 @@ void G_CopySaberItemValues(const gentity_t* pickUpSaber, gentity_t* oldSaber)
 	}
 }
 
-gentity_t* G_DropSaberItem(const char* saberType, saber_colors_t saberColor, vec3_t saberPos, vec3_t saberVel,
-	vec3_t saberAngles, const gentity_t* copySaber)
+gentity_t* G_DropSaberItem(const char* saberType, const saber_colors_t saberColor, vec3_t saberPos, vec3_t saberVel,
+                           vec3_t saberAngles, const gentity_t* copySaber)
 {
 	//turn it into a pick-uppable item!
 	gentity_t* newItem = nullptr;
@@ -297,7 +297,7 @@ gentity_t* G_DropSaberItem(const char* saberType, saber_colors_t saberColor, vec
 			{
 				char rgb_color[8];
 				Com_sprintf(rgb_color, 8, "x%02x%02x%02x", saberColor & 0xff, saberColor >> 8 & 0xff,
-					saberColor >> 16 & 0xff);
+				            saberColor >> 16 & 0xff);
 				newItem->NPC_targetname = rgb_color;
 			}
 			else
@@ -344,7 +344,7 @@ qboolean Pickup_Saber(gentity_t* self, qboolean hadSaber, gentity_t* pickUpSaber
 	}
 	else
 	{
-		saberInfo_t newSaber = { nullptr };
+		saberInfo_t newSaber = {nullptr};
 		qboolean swapSabers = qfalse;
 
 		if (self->client->ps.weapon == WP_SABER
@@ -442,20 +442,20 @@ qboolean Pickup_Saber(gentity_t* self, qboolean hadSaber, gentity_t* pickUpSaber
 					case SS_STAFF:
 						NPC_SetAnim(self, SETANIM_TORSO, BOTH_SABERPULL_ALT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 						break;
-					default:;
+					default: ;
 					}
 				}
 				if (swapSabers)
 				{
 					//drop first one where the one we're picking up is
 					G_DropSaberItem(self->client->ps.saber[saber_num].name,
-						self->client->ps.saber[saber_num].blade[0].color, pickUpSaber->currentOrigin,
-						vec3_origin, pickUpSaber->currentAngles, pickUpSaber);
+					                self->client->ps.saber[saber_num].blade[0].color, pickUpSaber->currentOrigin,
+					                vec3_origin, pickUpSaber->currentAngles, pickUpSaber);
 					if (removeLeftSaber)
 					{
 						//drop other one at my origin
 						G_DropSaberItem(self->client->ps.saber[1].name, self->client->ps.saber[1].blade[0].color,
-							self->currentOrigin, vec3_origin, self->currentAngles, pickUpSaber);
+						                self->currentOrigin, vec3_origin, self->currentAngles, pickUpSaber);
 					}
 				}
 			}
@@ -464,8 +464,8 @@ qboolean Pickup_Saber(gentity_t* self, qboolean hadSaber, gentity_t* pickUpSaber
 				if (swapSabers)
 				{
 					G_DropSaberItem(self->client->ps.saber[saber_num].name,
-						self->client->ps.saber[saber_num].blade[0].color, pickUpSaber->currentOrigin,
-						vec3_origin, pickUpSaber->currentAngles, pickUpSaber);
+					                self->client->ps.saber[saber_num].blade[0].color, pickUpSaber->currentOrigin,
+					                vec3_origin, pickUpSaber->currentAngles, pickUpSaber);
 				}
 			}
 			if (removeLeftSaber)
@@ -600,7 +600,7 @@ int Pickup_Weapon(gentity_t* ent, gentity_t* other)
 
 //======================================================================
 
-int ITM_AddHealth(gentity_t* ent, int count)
+int ITM_AddHealth(gentity_t* ent, const int count)
 {
 	ent->health += count;
 
@@ -647,7 +647,7 @@ int Pickup_Health(const gentity_t* ent, gentity_t* other)
 
 //======================================================================
 
-int ITM_AddArmor(const gentity_t* ent, int count)
+int ITM_AddArmor(const gentity_t* ent, const int count)
 {
 	ent->client->ps.stats[STAT_ARMOR] += count;
 
@@ -1120,7 +1120,7 @@ Drop_Item
 Spawns an item and tosses it forward
 ================
 */
-gentity_t* Drop_Item(gentity_t* ent, gitem_t* item, float angle, const qboolean copytarget)
+gentity_t* Drop_Item(gentity_t* ent, gitem_t* item, const float angle, const qboolean copytarget)
 {
 	gentity_t* dropped;
 	vec3_t velocity;
@@ -1262,13 +1262,13 @@ void FinishSpawningItem(gentity_t* ent)
 			WP_SaberParseParms(ent->NPC_type, &itemSaber);
 		}
 		gi.G2API_InitGhoul2Model(ent->ghoul2, itemSaber.model, G_ModelIndex(itemSaber.model), NULL_HANDLE, NULL_HANDLE,
-			0, 0);
+		                         0, 0);
 		WP_SaberFreeStrings(itemSaber);
 	}
 	else
 	{
 		gi.G2API_InitGhoul2Model(ent->ghoul2, ent->item->world_model, G_ModelIndex(ent->item->world_model), NULL_HANDLE,
-			NULL_HANDLE, 0, 0);
+		                         NULL_HANDLE, 0, 0);
 	}
 	ent->s.eType = ET_ITEM;
 	ent->s.modelindex = ent->item - bg_itemlist; // store item number in modelindex
@@ -1294,18 +1294,18 @@ void FinishSpawningItem(gentity_t* ent)
 		// drop to floor
 		VectorSet(dest, ent->s.origin[0], ent->s.origin[1], MIN_WORLD_COORD);
 		gi.trace(&tr, ent->s.origin, ent->mins, ent->maxs, dest, ent->s.number, MASK_SOLID | CONTENTS_PLAYERCLIP,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (tr.startsolid)
 		{
 			if (&g_entities[tr.entityNum] != nullptr)
 			{
 				gi.Printf(S_COLOR_RED"FinishSpawningItem: removing %s startsolid at %s (in a %s)\n", ent->classname,
-					vtos(ent->s.origin), g_entities[tr.entityNum].classname);
+				          vtos(ent->s.origin), g_entities[tr.entityNum].classname);
 			}
 			else
 			{
 				gi.Printf(S_COLOR_RED"FinishSpawningItem: removing %s startsolid at %s (in a %s)\n", ent->classname,
-					vtos(ent->s.origin));
+				          vtos(ent->s.origin));
 			}
 			//assert( 0 && "item starting in solid");//jacesolaris removed for debugging
 			if (!g_entities[ENTITYNUM_WORLD].s.radius)
@@ -1622,6 +1622,7 @@ void G_RemoveWeaponEffect(gentity_t* ent)
 }
 
 extern cvar_t* g_remove_unused_weapons;
+
 void G_RunItem(gentity_t* ent)
 {
 	vec3_t origin;
@@ -1675,7 +1676,7 @@ void G_RunItem(gentity_t* ent)
 			}
 			VectorSet(origin, ent->currentOrigin[0], ent->currentOrigin[1], ent->currentOrigin[2] - 1);
 			gi.trace(&tr, ent->currentOrigin, ent->mins, ent->maxs, origin, ignore, mask, static_cast<EG2_Collision>(0),
-				0);
+			         0);
 			if (!tr.allsolid
 				&& !tr.startsolid
 				&& tr.fraction > 0.001f)
@@ -2000,7 +2001,7 @@ qboolean HeHasGun(const gentity_t* ent)
 	case WP_TUSKEN_RIFLE:
 	case WP_SBD_PISTOL:
 		return qtrue;
-	default:;
+	default: ;
 	}
 	return qfalse;
 }

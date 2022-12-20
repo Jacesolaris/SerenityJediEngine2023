@@ -119,7 +119,7 @@ const int jpeg_natural_order2[2 * 2 + 16] = {
  */
 
 GLOBAL(long)
-jdiv_round_up(long a, long b)
+jdiv_round_up(const long a, const long b)
 /* Compute a/b rounded up to next integer, ie, ceil(a/b) */
 /* Assumes a >= 0, b > 0 */
 {
@@ -127,7 +127,7 @@ jdiv_round_up(long a, long b)
 }
 
 GLOBAL(long)
-jround_up(long a, long b)
+jround_up(long a, const long b)
 /* Compute a rounded up to next multiple of b, ie, ceil(a/b)*b */
 /* Assumes a >= 0, b > 0 */
 {
@@ -169,9 +169,9 @@ jzero_far(void FAR* target, size_t bytestozero)
 #endif
 
 GLOBAL(void)
-jcopy_sample_rows(JSAMPARRAY input_array, int source_row,
-	JSAMPARRAY output_array, int dest_row,
-	int num_rows, JDIMENSION num_cols)
+jcopy_sample_rows(JSAMPARRAY input_array, const int source_row,
+	JSAMPARRAY output_array, const int dest_row,
+	const int num_rows, JDIMENSION num_cols)
 	/* Copy some rows of samples from one place to another.
 	 * num_rows rows are copied from input_array[source_row++]
 	 * to output_array[dest_row++]; these areas may overlap for duplication.

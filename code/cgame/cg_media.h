@@ -387,23 +387,23 @@ using cgMedia_t = struct
 
 	//JK2 HUD ONLY
 
-	qhandle_t	JK2HUDArmor1;
-	qhandle_t	JK2HUDArmor2;
-	qhandle_t	JK2HUDHealth;
-	qhandle_t	JK2HUDHealthTic;
-	qhandle_t	JK2HUDInnerLeft;
-	qhandle_t	JK2HUDLeftFrame;
+	qhandle_t JK2HUDArmor1;
+	qhandle_t JK2HUDArmor2;
+	qhandle_t JK2HUDHealth;
+	qhandle_t JK2HUDHealthTic;
+	qhandle_t JK2HUDInnerLeft;
+	qhandle_t JK2HUDLeftFrame;
 
-	qhandle_t	JK2HUDSaberStyleFast;
-	qhandle_t	JK2HUDSaberStyleMed;
-	qhandle_t	JK2HUDSaberStyleStrong;
-	qhandle_t   JK2HUDSaberStyleDesann;
-	qhandle_t   JK2HUDSaberStyleTavion;
-	qhandle_t   JK2HUDSaberStyleStaff;
-	qhandle_t   JK2HUDSaberStyleDuels;
+	qhandle_t JK2HUDSaberStyleFast;
+	qhandle_t JK2HUDSaberStyleMed;
+	qhandle_t JK2HUDSaberStyleStrong;
+	qhandle_t JK2HUDSaberStyleDesann;
+	qhandle_t JK2HUDSaberStyleTavion;
+	qhandle_t JK2HUDSaberStyleStaff;
+	qhandle_t JK2HUDSaberStyleDuels;
 
-	qhandle_t	JK2HUDRightFrame;
-	qhandle_t	JK2HUDInnerRight;
+	qhandle_t JK2HUDRightFrame;
+	qhandle_t JK2HUDInnerRight;
 
 	// fonts...
 	//

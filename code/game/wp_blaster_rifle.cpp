@@ -35,7 +35,7 @@ extern qboolean G_ControlledByPlayer(const gentity_t* self);
 //---------------
 
 //---------------------------------------------------------
-void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean alt_fire)
+void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	int velocity = BLASTER_VELOCITY;
@@ -107,7 +107,7 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean al
 }
 
 //---------------------------------------------------------
-void WP_FireBlaster(gentity_t* ent, qboolean alt_fire)
+void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -175,7 +175,7 @@ void WP_FireBlaster(gentity_t* ent, qboolean alt_fire)
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-2.0f, 2.0f) * (BLASTER_ALT_SPREAD + 1.5f);
 				angs[YAW] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
@@ -203,13 +203,13 @@ void WP_FireBlaster(gentity_t* ent, qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		WP_FireBlasterMissile(ent, muzzle, dir, alt_fire);
+	WP_FireBlasterMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------------------------------------------------
-void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean altFire)
+void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = CLONECOMMANDO_VELOCITY;
@@ -281,7 +281,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean
 }
 
 //---------------------------------------------------------
-void WP_FireWristPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -349,7 +349,7 @@ void WP_FireWristPistol(gentity_t* ent, qboolean alt_fire)
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-2.0f, 2.0f) * (BLASTER_ALT_SPREAD + 1.5f);
 				angs[YAW] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
@@ -377,7 +377,7 @@ void WP_FireWristPistol(gentity_t* ent, qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		WP_FireJangoWristMissile(ent, muzzle, dir, alt_fire);
+	WP_FireJangoWristMissile(ent, muzzle, dir, alt_fire);
 }

@@ -75,7 +75,7 @@ int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, const int surfaceNum, co
 int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surfNum)
 {
 	assert(ghlInfo && ghlInfo->mValid);
-	boltInfo_t			tempBolt;
+	boltInfo_t tempBolt;
 
 	// first up, make sure have a surface first
 	if (surfNum >= static_cast<int>(slist.size()))
@@ -122,11 +122,11 @@ int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfac
 int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& slist, const char* boneName)
 {
 	assert(ghlInfo && ghlInfo->mValid);
-	model_t* mod_m = const_cast<model_t*>(ghlInfo->currentModel);
+	auto mod_m = const_cast<model_t*>(ghlInfo->currentModel);
 	const model_t* mod_a = const_cast<model_t*>(ghlInfo->animModel);
-	int					x;
-	boltInfo_t			tempBolt;
-	int					flags;
+	int x;
+	boltInfo_t tempBolt;
+	int flags;
 
 	// first up, we'll search for that which this bolt names in all the surfaces
 	const int surfNum = G2_IsSurfaceLegal(mod_m, boneName, &flags);
@@ -171,12 +171,14 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& 
 
 	// no, check to see if it's a bone then
 
-	const mdxaSkelOffsets_t* offsets = reinterpret_cast<mdxaSkelOffsets_t*>(reinterpret_cast<byte*>(mod_a->mdxa) + sizeof(mdxaHeader_t));
+	const mdxaSkelOffsets_t* offsets = reinterpret_cast<mdxaSkelOffsets_t*>(reinterpret_cast<byte*>(mod_a->mdxa) +
+		sizeof(mdxaHeader_t));
 
 	// walk the entire list of bones in the gla file for this model and see if any match the name of the bone we want to find
 	for (x = 0; x < mod_a->mdxa->numBones; x++)
 	{
-		const mdxaSkel_t* skel = reinterpret_cast<mdxaSkel_t*>(reinterpret_cast<byte*>(mod_a->mdxa) + sizeof(mdxaHeader_t) + offsets->offsets[x]);
+		const mdxaSkel_t* skel = reinterpret_cast<mdxaSkel_t*>(reinterpret_cast<byte*>(mod_a->mdxa) + sizeof(
+			mdxaHeader_t) + offsets->offsets[x]);
 		// if name is the same, we found it
 		if (!Q_stricmp(skel->name, boneName))
 		{
@@ -190,7 +192,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& 
 		// didn't find it? Error
 		//assert(0&&x == mod_a->mdxa->numBones);
 #ifdef _DEBUG
-//		Com_Printf("WARNING: %s not found on skeleton\n", boneName);
+		//		Com_Printf("WARNING: %s not found on skeleton\n", boneName);
 #endif
 		return -1;
 	}
@@ -231,7 +233,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& 
 }
 
 // Given a model handle, and a bone name, we want to remove this bone from the bone override list
-qboolean G2_Remove_Bolt(boltInfo_v& bltlist, int index)
+qboolean G2_Remove_Bolt(boltInfo_v& bltlist, const int index)
 {
 	// did we find it?
 	if (index != -1)
@@ -280,7 +282,8 @@ void G2_Init_Bolt_List(boltInfo_v& bltlist)
 }
 
 // remove any bolts that reference original surfaces, generated surfaces, or bones that aren't active anymore
-void G2_RemoveRedundantBolts(boltInfo_v& bltlist, surfaceInfo_v& slist, const int* activeSurfaces, const int* activeBones)
+void G2_RemoveRedundantBolts(boltInfo_v& bltlist, surfaceInfo_v& slist, const int* activeSurfaces,
+                             const int* activeBones)
 {
 	// walk the bolt list
 	for (size_t i = 0; i < bltlist.size(); i++)

@@ -67,14 +67,15 @@ namespace ratl
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = T::CAPACITY;
+
 	private:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Data
 		////////////////////////////////////////////////////////////////////////////////////
-		array_base<TStorageTraits>	mData;			// The Memory
-		int							mPush;			// Address Of Next Add Location
-		int							mPop;			// Address Of Next Remove Location
-		int							mSize;
+		array_base<TStorageTraits> mData; // The Memory
+		int mPush; // Address Of Next Add Location
+		int mPop; // Address Of Next Remove Location
+		int mSize;
 
 		int push_low()
 		{
@@ -96,7 +97,6 @@ namespace ratl
 		}
 
 	public:
-
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Get The Size (The Difference Between The Push And Pop "Pointers")
 		////////////////////////////////////////////////////////////////////////////////////
-		int				size() const
+		int size() const
 		{
 			return mSize;
 		}
@@ -115,7 +115,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If The Size Is Zero
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			empty() const
+		bool empty() const
 		{
 			return !mSize;
 		}
@@ -123,7 +123,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Check To See If The Size Is Full
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			full() const
+		bool full() const
 		{
 			return mSize >= CAPACITY;
 		}
@@ -131,7 +131,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Empty Out The Entire Queue
 		////////////////////////////////////////////////////////////////////////////////////
-		void			clear()
+		void clear()
 		{
 			mPush = 0;
 			mPop = 0;
@@ -164,10 +164,11 @@ namespace ratl
 		{
 			return mData.alloc_raw(push_low());
 		}
+
 		////////////////////////////////////////////////////////////////////////////////////
 		// Remove A Value From The Queue
 		////////////////////////////////////////////////////////////////////////////////////
-		void			pop()
+		void pop()
 		{
 			assert(size() > 0);
 
@@ -194,42 +195,52 @@ namespace ratl
 			assert(size() > 0);
 			return mData[mPop];
 		}
-		template<class CAST_TO>
+
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return mData.verify_alloc(p);
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class queue_vs : public queue_base<storage::value_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class queue_vs : public queue_base<storage::value_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		queue_vs() {}
+
+		queue_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class queue_os : public queue_base<storage::object_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class queue_os : public queue_base<storage::object_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		queue_os() {}
+
+		queue_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class queue_is : public queue_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class queue_is : public queue_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		queue_is() {}
+
+		queue_is()
+		{
+		}
 	};
 }
 #endif

@@ -30,7 +30,7 @@ extern cvar_t* g_spskill;
 // Helper functions
 //
 //------------------------------------------------------------
-void SetMiscModelModels(const char* modelNameString, gentity_t* ent, qboolean damage_model)
+void SetMiscModelModels(const char* modelNameString, gentity_t* ent, const qboolean damage_model)
 {
 	//Main model
 	ent->s.modelindex = G_ModelIndex(modelNameString);
@@ -57,8 +57,9 @@ void SetMiscModelModels(const char* modelNameString, gentity_t* ent, qboolean da
 }
 
 //------------------------------------------------------------
-void SetMiscModelDefaults(gentity_t* ent, useFunc_t use_func, const char* material, int solid_mask, int animFlag,
-	qboolean take_damage, qboolean damage_model = qfalse)
+void SetMiscModelDefaults(gentity_t* ent, const useFunc_t use_func, const char* material, const int solid_mask,
+                          const int animFlag,
+                          const qboolean take_damage, const qboolean damage_model = qfalse)
 {
 	// Apply damage and chunk models if they exist
 	SetMiscModelModels(ent->model, ent, damage_model);
@@ -160,18 +161,18 @@ void set_MiscAnim(gentity_t* ent)
 
 		// yes, its the same animation, so work out where we are in the leg anim, and blend us
 		gi.G2API_SetBoneAnim(&ent->ghoul2[0], "model_root", animations[anim].firstFrame,
-			animations[anim].numFrames - 1 + animations[anim].firstFrame,
-			BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, animSpeed, cg.time ? cg.time : level.time, -1,
-			350);
+		                     animations[anim].numFrames - 1 + animations[anim].firstFrame,
+		                     BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, animSpeed, cg.time ? cg.time : level.time, -1,
+		                     350);
 	}
 	else
 	{
 		constexpr int anim = BOTH_PAIN3;
 		const float animSpeed = 50.0f / animations[anim].frameLerp;
 		gi.G2API_SetBoneAnim(&ent->ghoul2[0], "model_root", animations[anim].firstFrame,
-			animations[anim].numFrames - 1 + animations[anim].firstFrame,
-			BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, animSpeed, cg.time ? cg.time : level.time, -1,
-			350);
+		                     animations[anim].numFrames - 1 + animations[anim].firstFrame,
+		                     BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, animSpeed, cg.time ? cg.time : level.time, -1,
+		                     350);
 	}
 	ent->nextthink = level.time + 900;
 	ent->playerModel++;
@@ -287,7 +288,7 @@ REPEATER - Puts one or more repeater guns on the rack.
 ROCKET - Puts one or more rocket launchers on the rack.
 */
 
-void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fright, float fup)
+void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, const float ffwd, const float fright, const float fup)
 {
 	vec3_t fwd, right;
 	gentity_t* it_ent = G_Spawn();
@@ -314,7 +315,7 @@ void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fri
 			case WP_ROCKET_LAUNCHER:
 				it_ent->count = 4;
 				break;
-			default:;
+			default: ;
 			}
 		}
 		else
@@ -355,7 +356,7 @@ void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fri
 				case 2:
 					it_ent->count *= 0.5f;
 					break;
-				default:;
+				default: ;
 				}
 			}
 		}
@@ -404,7 +405,7 @@ void GunRackAddItem(gitem_t* gun, vec3_t org, vec3_t angs, float ffwd, float fri
 //---------------------------------------------
 void SP_misc_model_gun_rack(gentity_t* ent)
 {
-	gitem_t* blaster = nullptr, * repeater = nullptr, * rocket = nullptr;
+	gitem_t *blaster = nullptr, *repeater = nullptr, *rocket = nullptr;
 	int ct = 0;
 	float ofz[3];
 	gitem_t* itemList[3];
@@ -469,7 +470,7 @@ void SP_misc_model_gun_rack(gentity_t* ent)
 		for (int i = 0; i < ct; i++)
 		{
 			GunRackAddItem(itemList[i], ent->s.origin, ent->s.angles, Q_flrand(-1.0f, 1.0f) * 2,
-				(i - 1) * 9 + Q_flrand(-1.0f, 1.0f) * 2, ofz[i]);
+			               (i - 1) * 9 + Q_flrand(-1.0f, 1.0f) * 2, ofz[i]);
 		}
 	}
 
@@ -579,8 +580,8 @@ void SP_misc_model_ammo_rack(gentity_t* ent)
 // AMMO RACK!!
 void spawn_rack_goods(gentity_t* ent)
 {
-	gitem_t* blaster = nullptr, * metal_bolts = nullptr, * rockets = nullptr;
-	gitem_t* am_blaster = nullptr, * am_metal_bolts = nullptr, * am_rockets = nullptr, * am_pwr_cell = nullptr;
+	gitem_t *blaster = nullptr, *metal_bolts = nullptr, *rockets = nullptr;
+	gitem_t *am_blaster = nullptr, *am_metal_bolts = nullptr, *am_rockets = nullptr, *am_pwr_cell = nullptr;
 	gitem_t* health = nullptr;
 	int pos = 0, ct = 0;
 	gitem_t* itemList[4];
@@ -650,7 +651,7 @@ void spawn_rack_goods(gentity_t* ent)
 	}
 
 	if (!(ent->spawnflags & RACK_NO_FILL) && ct)
-		//double negative..should always have at least one item on there, but just being safe
+	//double negative..should always have at least one item on there, but just being safe
 	{
 		for (; ct < 3; ct++)
 		{
@@ -704,7 +705,7 @@ void spawn_rack_goods(gentity_t* ent)
 			pos = Q_flrand(0.0f, 1.0f) > .5 ? -1 : 1;
 
 			GunRackAddItem(it, ent->s.origin, ent->s.angles, Q_flrand(-1.0f, 1.0f) * 2,
-				(Q_flrand(0.0f, 1.0f) * 6 + 4) * pos, v_off);
+			               (Q_flrand(0.0f, 1.0f) * 6 + 4) * pos, v_off);
 		}
 	}
 
@@ -723,7 +724,7 @@ void spawn_rack_goods(gentity_t* ent)
 		}
 
 		GunRackAddItem(health, ent->s.origin, ent->s.angles, Q_flrand(-1.0f, 1.0f) * 0.5f,
-			(Q_flrand(0.0f, 1.0f) * 4 + 4) * pos, 24);
+		               (Q_flrand(0.0f, 1.0f) * 4 + 4) * pos, 24);
 	}
 
 	ent->s.modelindex = G_ModelIndex("models/map_objects/kejim/weaponsrung.md3");
@@ -759,8 +760,9 @@ BATTERIES -
 */
 extern gentity_t* LaunchItem(gitem_t* item, const vec3_t origin, const vec3_t velocity, const char* target);
 
-void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
-	int hit_loc)
+void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, const int damage,
+                          const int mod, int dFlags,
+                          int hit_loc)
 {
 	vec3_t org, temp;
 
@@ -913,8 +915,8 @@ void SP_misc_model_cargo_small(gentity_t* ent)
 	G_SpawnInt("health", "25", &ent->health);
 
 	SetMiscModelDefaults(ent, useF_NULL, "11",
-		CONTENTS_SOLID | CONTENTS_OPAQUE | CONTENTS_BODY | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, 0,
-		qtrue, qfalse);
+	                     CONTENTS_SOLID | CONTENTS_OPAQUE | CONTENTS_BODY | CONTENTS_MONSTERCLIP | CONTENTS_BOTCLIP, 0,
+	                     qtrue, qfalse);
 	ent->s.modelindex2 = G_ModelIndex("/models/map_objects/kejim/cargo_small.md3"); // Precache model
 
 	// we only take damage from a heavy weapon class missile

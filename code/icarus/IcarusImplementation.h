@@ -132,7 +132,7 @@ public:
 	void ClearSignal(const char* identifier);
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		return IGameInterface::GetGame()->Malloc(size);
 	}

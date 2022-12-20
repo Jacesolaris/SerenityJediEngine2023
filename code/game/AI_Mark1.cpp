@@ -91,7 +91,7 @@ void NPC_Mark1_Precache()
 NPC_Mark1_Part_Explode
 -------------------------
 */
-void NPC_Mark1_Part_Explode(gentity_t* self, int bolt)
+void NPC_Mark1_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
@@ -99,9 +99,9 @@ void NPC_Mark1_Part_Explode(gentity_t* self, int bolt)
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
-			bolt,
-			&boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
-			nullptr, self->s.modelScale);
+		                       bolt,
+		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       nullptr, self->s.modelScale);
 
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
@@ -137,9 +137,9 @@ void Mark1Dead_FireRocket(void)
 	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		NPC->genericBolt5,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       NPC->genericBolt5,
+	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzle_dir);
@@ -181,9 +181,9 @@ void Mark1Dead_FireBlaster(void)
 	const int bolt = NPC->genericBolt1;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		bolt,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       bolt,
+	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzle_dir);
@@ -256,7 +256,7 @@ void Mark1_dying(gentity_t* self)
 		}
 		// Randomly fire blaster
 		if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "l_arm"))
-			// Is the blaster still on the model?
+		// Is the blaster still on the model?
 		{
 			if (Q_irand(1, 5) == 1)
 			{
@@ -269,7 +269,7 @@ void Mark1_dying(gentity_t* self)
 
 		// Randomly fire rocket
 		if (!gi.G2API_GetSurfaceRenderStatus(&self->ghoul2[self->playerModel], "r_arm"))
-			// Is the rocket still on the model?
+		// Is the rocket still on the model?
 		{
 			if (Q_irand(1, 10) == 1)
 			{
@@ -288,8 +288,9 @@ NPC_Mark1_Pain
 - look at what was hit and see if it should be removed from the model.
 -------------------------
 */
-void NPC_Mark1_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage, int mod,
-	int hit_loc)
+void NPC_Mark1_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, const int damage,
+                    const int mod,
+                    const int hit_loc)
 {
 	int newBolt;
 
@@ -421,9 +422,9 @@ void Mark1_FireBlaster(void)
 	}
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		bolt,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       bolt,
+	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
 
@@ -462,7 +463,7 @@ void Mark1_FireBlaster(void)
 Mark1_BlasterAttack
 -------------------------
 */
-void Mark1_BlasterAttack(qboolean advance)
+void Mark1_BlasterAttack(const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{
@@ -528,9 +529,9 @@ void Mark1_FireRocket(void)
 	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
-		NPC->genericBolt5,
-		&boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
-		nullptr, NPC->s.modelScale);
+	                       NPC->genericBolt5,
+	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       nullptr, NPC->s.modelScale);
 
 	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
 
@@ -565,7 +566,7 @@ void Mark1_FireRocket(void)
 Mark1_RocketAttack
 -------------------------
 */
-void Mark1_RocketAttack(qboolean advance)
+void Mark1_RocketAttack(const qboolean advance)
 {
 	if (TIMER_Done(NPC, "attackDelay")) // Attack?
 	{

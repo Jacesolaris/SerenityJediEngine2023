@@ -38,9 +38,9 @@ class CMiniHeap : public IHeapAllocator
 private:
 	char* mHeap;
 	char* mCurrentHeap;
-	int		mSize;
-public:
+	int mSize;
 
+public:
 	// reset the heap back to the start
 	void ResetHeap() override
 	{
@@ -48,7 +48,7 @@ public:
 	}
 
 	// initialise the heap
-	CMiniHeap(int size)
+	CMiniHeap(const int size)
 	{
 		mHeap = static_cast<char*>(malloc(size));
 		mSize = size;
@@ -68,7 +68,7 @@ public:
 	}
 
 	// give me some space from the heap please
-	char* MiniHeapAlloc(int size) override
+	char* MiniHeapAlloc(const int size) override
 	{
 		if (static_cast<size_t>(size) < mSize - ((size_t)mCurrentHeap - (size_t)mHeap))
 		{

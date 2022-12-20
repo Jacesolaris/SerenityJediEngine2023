@@ -164,7 +164,7 @@ void CQuickSpriteSystem::Flush(void)
 	mNextVert = 0;
 }
 
-void CQuickSpriteSystem::StartGroup(textureBundle_t* bundle, uint32_t glbits, int fogIndex)
+void CQuickSpriteSystem::StartGroup(textureBundle_t* bundle, const uint32_t glbits, const int fogIndex)
 {
 	mNextVert = 0;
 

@@ -139,7 +139,7 @@ static weaponconfig_t* weaponconfig;
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-int BotValidWeaponNumber(int weaponnum)
+int BotValidWeaponNumber(const int weaponnum)
 {
 	if (weaponnum <= 0 || weaponnum > weaponconfig->numweapons)
 	{
@@ -154,7 +154,7 @@ int BotValidWeaponNumber(int weaponnum)
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-bot_weaponstate_t* BotWeaponStateFromHandle(int handle)
+bot_weaponstate_t* BotWeaponStateFromHandle(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{
@@ -346,7 +346,7 @@ int* WeaponWeightIndex(weightconfig_t* wwc, weaponconfig_t* wc)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotFreeWeaponWeights(int weaponstate)
+void BotFreeWeaponWeights(const int weaponstate)
 {
 	const bot_weaponstate_t* ws = BotWeaponStateFromHandle(weaponstate);
 	if (!ws) return;
@@ -359,7 +359,7 @@ void BotFreeWeaponWeights(int weaponstate)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotLoadWeaponWeights(int weaponstate, char* filename)
+int BotLoadWeaponWeights(const int weaponstate, char* filename)
 {
 	bot_weaponstate_t* ws = BotWeaponStateFromHandle(weaponstate);
 	if (!ws) return BLERR_CANNOTLOADWEAPONWEIGHTS;
@@ -381,7 +381,7 @@ int BotLoadWeaponWeights(int weaponstate, char* filename)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotGetWeaponInfo(int weaponstate, int weapon, weaponinfo_t* weaponinfo)
+void BotGetWeaponInfo(const int weaponstate, const int weapon, weaponinfo_t* weaponinfo)
 {
 	if (!BotValidWeaponNumber(weapon)) return;
 	const bot_weaponstate_t* ws = BotWeaponStateFromHandle(weaponstate);
@@ -395,7 +395,7 @@ void BotGetWeaponInfo(int weaponstate, int weapon, weaponinfo_t* weaponinfo)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int BotChooseBestFightWeapon(int weaponstate, int* inventory)
+int BotChooseBestFightWeapon(const int weaponstate, int* inventory)
 {
 	const bot_weaponstate_t* ws = BotWeaponStateFromHandle(weaponstate);
 	if (!ws) return 0;
@@ -427,7 +427,7 @@ int BotChooseBestFightWeapon(int weaponstate, int* inventory)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void BotResetWeaponState(int weaponstate)
+void BotResetWeaponState(const int weaponstate)
 {
 	bot_weaponstate_t* ws = BotWeaponStateFromHandle(weaponstate);
 	if (!ws) return;
@@ -462,7 +462,7 @@ int BotAllocWeaponState(void)
 // Returns:					-
 // Changes Globals:		-
 //========================================================================
-void BotFreeWeaponState(int handle)
+void BotFreeWeaponState(const int handle)
 {
 	if (handle <= 0 || handle > MAX_CLIENTS)
 	{

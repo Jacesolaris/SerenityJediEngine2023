@@ -66,7 +66,7 @@ void NPC_Mark2_Precache(void)
 NPC_Mark2_Part_Explode
 -------------------------
 */
-void NPC_Mark2_Part_Explode(gentity_t* self, int bolt)
+void NPC_Mark2_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
@@ -74,9 +74,9 @@ void NPC_Mark2_Part_Explode(gentity_t* self, int bolt)
 		vec3_t org, dir;
 
 		trap->G2API_GetBoltMatrix(self->ghoul2, 0,
-			bolt,
-			&boltMatrix, self->r.currentAngles, self->r.currentOrigin, level.time,
-			NULL, self->modelScale);
+		                          bolt,
+		                          &boltMatrix, self->r.currentAngles, self->r.currentOrigin, level.time,
+		                          NULL, self->modelScale);
 
 		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);
 		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, dir);
@@ -96,7 +96,7 @@ NPC_Mark2_Pain
 - look at what was hit and see if it should be removed from the model.
 -------------------------
 */
-void NPC_Mark2_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Mark2_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	const int hit_loc = gPainHitLoc;
 
@@ -160,9 +160,9 @@ void Mark2_FireBlaster(qboolean advance)
 	const int bolt = trap->G2API_AddBolt(NPCS.NPC->ghoul2, 0, "*flash");
 
 	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0,
-		bolt,
-		&boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
-		NULL, NPCS.NPC->modelScale);
+	                          bolt,
+	                          &boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
+	                          NULL, NPCS.NPC->modelScale);
 
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzle1);
 
@@ -198,7 +198,7 @@ void Mark2_FireBlaster(qboolean advance)
 Mark2_BlasterAttack
 -------------------------
 */
-void Mark2_BlasterAttack(qboolean advance)
+void Mark2_BlasterAttack(const qboolean advance)
 {
 	if (TIMER_Done(NPCS.NPC, "attackDelay")) // Attack?
 	{
@@ -252,7 +252,7 @@ void Mark2_AttackDecision(void)
 		if (NPCS.NPCInfo->localState == LSTATE_DOWN || NPCS.NPCInfo->localState == LSTATE_DROPPINGDOWN)
 		{
 			if (TIMER_Done(NPCS.NPC, "downTime"))
-				// Down being down?? (The delay is so he doesn't pop up and down when the player goes in and out of range)
+			// Down being down?? (The delay is so he doesn't pop up and down when the player goes in and out of range)
 			{
 				NPCS.NPCInfo->localState = LSTATE_RISINGUP;
 				NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, BOTH_RUN1STOP, SETANIM_FLAG_HOLD | SETANIM_FLAG_OVERRIDE);

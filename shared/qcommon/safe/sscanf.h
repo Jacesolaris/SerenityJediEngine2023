@@ -21,20 +21,20 @@ namespace Q
 			return accumulator;
 		}
 
-		inline gsl::cstring_view::const_iterator skipWhitespace(gsl::cstring_view::const_iterator begin,
-			gsl::cstring_view::const_iterator end)
+		inline gsl::cstring_view::const_iterator skipWhitespace(const gsl::cstring_view::const_iterator begin,
+		                                                        const gsl::cstring_view::const_iterator end)
 		{
 			return std::find_if_not<gsl::cstring_view::const_iterator, int(*)(int)>(
 				begin, end,
 				std::isspace
-				);
+			);
 		}
 
 		//    Verbatim string
 		// Try to consume the given string; whitespace means consume all available consecutive whitespace. (So format `"    "_v` also accepts input `""_v` and vice-versa.)
 		template <typename... Tail>
 		std::size_t sscanf_impl(const gsl::cstring_view& input, const std::size_t accumulator,
-			const gsl::cstring_view& expected, Tail&&... tail)
+		                        const gsl::cstring_view& expected, Tail&&... tail)
 		{
 			auto inputIt = input.begin();
 			auto expectedIt = expected.begin();
@@ -43,7 +43,7 @@ namespace Q
 				if (expectedIt == expected.end())
 				{
 					// success
-					return sscanf_impl({ inputIt, input.end() }, accumulator, std::forward<Tail>(tail)...);
+					return sscanf_impl({inputIt, input.end()}, accumulator, std::forward<Tail>(tail)...);
 				}
 				if (std::isspace(*expectedIt))
 				{
@@ -75,7 +75,7 @@ namespace Q
 		//    Whitespace-terminated string
 		template <typename... Tail>
 		std::size_t sscanf_impl(const gsl::cstring_view& input, const std::size_t accumulator,
-			gsl::cstring_view& string, Tail&&... tail)
+		                        gsl::cstring_view& string, Tail&&... tail)
 		{
 			// skip leading whitespace
 			auto begin = skipWhitespace(input.begin(), input.end());
@@ -83,14 +83,14 @@ namespace Q
 			auto end = std::find_if<gsl::cstring_view::const_iterator, int(*)(int)>(
 				begin, input.end(),
 				std::isspace
-				);
+			);
 			if (begin == end)
 			{
 				// empty string is not accepted
 				return accumulator;
 			}
-			string = { begin, end };
-			return sscanf_impl({ end, input.end() }, accumulator + 1, std::forward<Tail>(tail)...);
+			string = {begin, end};
+			return sscanf_impl({end, input.end()}, accumulator + 1, std::forward<Tail>(tail)...);
 		}
 
 		/**
@@ -111,21 +111,21 @@ namespace Q
 			/// @note required by istream.tellg()
 			typename std::basic_streambuf<CharT>::pos_type seekoff(
 				typename std::basic_streambuf<CharT>::off_type off,
-				std::ios_base::seekdir dir,
-				std::ios_base::openmode which
+				const std::ios_base::seekdir dir,
+				const std::ios_base::openmode which
 			) override
 			{
-				const typename std::basic_streambuf<CharT>::pos_type errVal{ -1 };
+				const typename std::basic_streambuf<CharT>::pos_type errVal{-1};
 				if (which != std::ios_base::in)
 				{
 					// only input pointer can be moved
 					return errVal;
 				}
 				char* newPos = dir == std::ios_base::beg
-					? this->eback()
-					: dir == std::ios_base::cur
-					? this->gptr()
-					: this->egptr();
+					               ? this->eback()
+					               : dir == std::ios_base::cur
+					               ? this->gptr()
+					               : this->egptr();
 				newPos += static_cast<int>(off);
 				if (this->eback() <= newPos && newPos <= this->egptr())
 				{
@@ -141,7 +141,7 @@ namespace Q
 		*/
 		template <bool skipws = true, typename T, typename... Tail>
 		std::size_t sscanf_impl_stream(const gsl::cstring_view& input, std::size_t accumulator, T& value,
-			Tail&&... tail);
+		                               Tail&&... tail);
 
 		//    Float
 		template <typename... Tail>
@@ -162,9 +162,9 @@ namespace Q
 		*/
 		template <bool skipws, typename T, typename... Tail>
 		std::size_t sscanf_impl_stream(const gsl::cstring_view& input, const std::size_t accumulator, T& value,
-			Tail&&... tail)
+		                               Tail&&... tail)
 		{
-			ArrayViewStreambuf<char> buf{ input };
+			ArrayViewStreambuf<char> buf{input};
 			std::istream stream(&buf);
 			if (!skipws)
 			{
@@ -175,13 +175,13 @@ namespace Q
 			{
 				auto pos = stream.tellg();
 				// tellg() fails on eof, returning -1
-				if (pos == std::istream::pos_type{ -1 })
+				if (pos == std::istream::pos_type{-1})
 				{
 					assert(stream.eof());
 					pos = input.size();
 				}
 				auto end = input.begin() + static_cast<int>(pos);
-				return sscanf_impl({ end, input.end() }, accumulator + 1, std::forward<Tail>(tail)...);
+				return sscanf_impl({end, input.end()}, accumulator + 1, std::forward<Tail>(tail)...);
 			}
 			return accumulator;
 		}

@@ -48,7 +48,7 @@ void QDECL Com_OPrintf(const char* msg, ...)
 	ri->OPrintf("%s", text);
 }
 
-void QDECL Com_Error(int level, const char* error, ...)
+void QDECL Com_Error(const int level, const char* error, ...)
 {
 	va_list         argptr;
 	char            text[1024];
@@ -61,7 +61,7 @@ void QDECL Com_Error(int level, const char* error, ...)
 }
 
 // HUNK
-void* Hunk_AllocateTempMemory(int size) {
+void* Hunk_AllocateTempMemory(const int size) {
 	return ri->Hunk_AllocateTempMemory(size);
 }
 
@@ -69,7 +69,7 @@ void Hunk_FreeTempMemory(void* buf) {
 	ri->Hunk_FreeTempMemory(buf);
 }
 
-void* Hunk_Alloc(int size, ha_pref preference) {
+void* Hunk_Alloc(const int size, const ha_pref preference) {
 	return ri->Hunk_Alloc(size, preference);
 }
 
@@ -78,7 +78,7 @@ int Hunk_MemoryRemaining(void) {
 }
 
 // ZONE
-void* Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, int iAlign) {
+void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, const int iAlign) {
 	return ri->Z_Malloc(iSize, eTag, bZeroit, iAlign);
 }
 
@@ -86,10 +86,10 @@ void Z_Free(void* ptr) {
 	ri->Z_Free(ptr);
 }
 
-int Z_MemSize(memtag_t eTag) {
+int Z_MemSize(const memtag_t eTag) {
 	return ri->Z_MemSize(eTag);
 }
 
-void Z_MorphMallocTag(void* pvBuffer, memtag_t eDesiredTag) {
+void Z_MorphMallocTag(void* pvBuffer, const memtag_t eDesiredTag) {
 	ri->Z_MorphMallocTag(pvBuffer, eDesiredTag);
 }

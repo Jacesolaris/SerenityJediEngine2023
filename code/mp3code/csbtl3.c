@@ -47,8 +47,9 @@ void sbt_mono_L3(float* sample, short* pcm, int ch)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
-void sbt_dual_L3(float* sample, short* pcm, int ch)
+void sbt_dual_L3(float* sample, short* pcm, const int ch)
 {
 	int i;
 
@@ -75,6 +76,7 @@ void sbt_dual_L3(float* sample, short* pcm, int ch)
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 /*------------------------------------------------------------*/
 /*---------------- 16 pt sbt's  -------------------------------*/
@@ -91,8 +93,9 @@ void sbt16_mono_L3(float* sample, short* pcm, int ch)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
-void sbt16_dual_L3(float* sample, short* pcm, int ch)
+void sbt16_dual_L3(float* sample, short* pcm, const int ch)
 {
 	int i;
 
@@ -119,6 +122,7 @@ void sbt16_dual_L3(float* sample, short* pcm, int ch)
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 8 pt sbt's  -------------------------------*/
 /*------------------------------------------------------------*/
@@ -134,8 +138,9 @@ void sbt8_mono_L3(float* sample, short* pcm, int ch)
 		pcm += 8;
 	}
 }
+
 /*------------------------------------------------------------*/
-void sbt8_dual_L3(float* sample, short* pcm, int ch)
+void sbt8_dual_L3(float* sample, short* pcm, const int ch)
 {
 	int i;
 
@@ -162,6 +167,7 @@ void sbt8_dual_L3(float* sample, short* pcm, int ch)
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 /*------- 8 bit output ---------------------------------------*/
 /*------------------------------------------------------------*/
@@ -177,8 +183,9 @@ void sbtB_mono_L3(float* sample, unsigned char* pcm, int ch)
 		pcm += 32;
 	}
 }
+
 /*------------------------------------------------------------*/
-void sbtB_dual_L3(float* sample, unsigned char* pcm, int ch)
+void sbtB_dual_L3(float* sample, unsigned char* pcm, const int ch)
 {
 	int i;
 
@@ -205,6 +212,7 @@ void sbtB_dual_L3(float* sample, unsigned char* pcm, int ch)
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 /*------------------------------------------------------------*/
 /*---------------- 16 pt sbtB's  -------------------------------*/
@@ -221,8 +229,9 @@ void sbtB16_mono_L3(float* sample, unsigned char* pcm, int ch)
 		pcm += 16;
 	}
 }
+
 /*------------------------------------------------------------*/
-void sbtB16_dual_L3(float* sample, unsigned char* pcm, int ch)
+void sbtB16_dual_L3(float* sample, unsigned char* pcm, const int ch)
 {
 	int i;
 
@@ -249,6 +258,7 @@ void sbtB16_dual_L3(float* sample, unsigned char* pcm, int ch)
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 /*---------------- 8 pt sbtB's  -------------------------------*/
 /*------------------------------------------------------------*/
@@ -264,8 +274,9 @@ void sbtB8_mono_L3(float* sample, unsigned char* pcm, int ch)
 		pcm += 8;
 	}
 }
+
 /*------------------------------------------------------------*/
-void sbtB8_dual_L3(float* sample, unsigned char* pcm, int ch)
+void sbtB8_dual_L3(float* sample, unsigned char* pcm, const int ch)
 {
 	int i;
 
@@ -292,5 +303,6 @@ void sbtB8_dual_L3(float* sample, unsigned char* pcm, int ch)
 		}
 	}
 }
+
 /*------------------------------------------------------------*/
 #endif	// #ifdef COMPILE_ME

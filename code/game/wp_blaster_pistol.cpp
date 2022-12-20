@@ -34,7 +34,7 @@ extern qboolean PM_CrouchAnim(int anim);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 //---------------------------------------------------------
-void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -108,7 +108,7 @@ void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
@@ -138,66 +138,66 @@ void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire)
 		AngleVectors(angs, forwardVec, nullptr, nullptr);
 	}
 
-		WP_MissileTargetHint(ent, start, forwardVec);
+	WP_MissileTargetHint(ent, start, forwardVec);
 
-		gentity_t* missile = create_missile(start, forwardVec, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, forwardVec, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
 
-		missile->classname = "bryar_proj";
+	missile->classname = "bryar_proj";
 
-		if (ent->s.weapon == WP_BRYAR_PISTOL
-			|| ent->s.weapon == WP_JAWA)
+	if (ent->s.weapon == WP_BRYAR_PISTOL
+		|| ent->s.weapon == WP_JAWA)
+	{
+		//*SIGH*... I hate our weapon system...
+		missile->s.weapon = ent->s.weapon;
+	}
+	else
+	{
+		missile->s.weapon = WP_BLASTER_PISTOL;
+	}
+
+	if (alt_fire)
+	{
+		int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
+
+		if (count < 1)
 		{
-			//*SIGH*... I hate our weapon system...
-			missile->s.weapon = ent->s.weapon;
+			count = 1;
 		}
-		else
+		else if (count > 5)
 		{
-			missile->s.weapon = WP_BLASTER_PISTOL;
-		}
-
-		if (alt_fire)
-		{
-			int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
-
-			if (count < 1)
-			{
-				count = 1;
-			}
-			else if (count > 5)
-			{
-				count = 5;
-			}
-
-			damage *= count;
-			missile->count = count; // this will get used in the projectile rendering code to make a beefier effect
+			count = 5;
 		}
 
-		missile->damage = damage;
-		missile->dflags = DAMAGE_DEATH_KNOCKBACK;
+		damage *= count;
+		missile->count = count; // this will get used in the projectile rendering code to make a beefier effect
+	}
 
-		if (alt_fire)
-		{
-			missile->methodOfDeath = MOD_BRYAR_ALT;
-		}
-		else
-		{
-			missile->methodOfDeath = MOD_BRYAR;
-		}
+	missile->damage = damage;
+	missile->dflags = DAMAGE_DEATH_KNOCKBACK;
 
-		missile->clipmask = MASK_SHOT;
+	if (alt_fire)
+	{
+		missile->methodOfDeath = MOD_BRYAR_ALT;
+	}
+	else
+	{
+		missile->methodOfDeath = MOD_BRYAR;
+	}
 
-		// we don't want it to bounce forever
-		missile->bounceCount = 8;
+	missile->clipmask = MASK_SHOT;
 
-		if (ent->weaponModel[1] > 0)
-		{
-			//dual pistols, toggle the muzzle point back and forth between the two pistols each time he fires
-			ent->count = ent->count ? 0 : 1;
-		}
+	// we don't want it to bounce forever
+	missile->bounceCount = 8;
+
+	if (ent->weaponModel[1] > 0)
+	{
+		//dual pistols, toggle the muzzle point back and forth between the two pistols each time he fires
+		ent->count = ent->count ? 0 : 1;
+	}
 }
 
 //---------------------------------------------------------
-void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol)
+void WP_FireBryarPistolDuals(gentity_t* ent, const qboolean alt_fire, const qboolean secondPistol)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -279,7 +279,7 @@ void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
@@ -309,62 +309,62 @@ void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 		AngleVectors(angs, forwardVec, nullptr, nullptr);
 	}
 
-		WP_MissileTargetHint(ent, start, forwardVec);
+	WP_MissileTargetHint(ent, start, forwardVec);
 
-		gentity_t* missile = create_missile(start, forwardVec, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, forwardVec, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
 
-		missile->classname = "bryar_proj";
+	missile->classname = "bryar_proj";
 
-		if (ent->s.weapon == WP_BRYAR_PISTOL
-			|| ent->s.weapon == WP_JAWA)
+	if (ent->s.weapon == WP_BRYAR_PISTOL
+		|| ent->s.weapon == WP_JAWA)
+	{
+		//*SIGH*... I hate our weapon system...
+		missile->s.weapon = ent->s.weapon;
+	}
+	else
+	{
+		missile->s.weapon = WP_BLASTER_PISTOL;
+	}
+
+	if (alt_fire)
+	{
+		int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
+
+		if (count < 1)
 		{
-			//*SIGH*... I hate our weapon system...
-			missile->s.weapon = ent->s.weapon;
+			count = 1;
 		}
-		else
+		else if (count > 5)
 		{
-			missile->s.weapon = WP_BLASTER_PISTOL;
-		}
-
-		if (alt_fire)
-		{
-			int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
-
-			if (count < 1)
-			{
-				count = 1;
-			}
-			else if (count > 5)
-			{
-				count = 5;
-			}
-
-			damage *= count;
-			missile->count = count; // this will get used in the projectile rendering code to make a beefier effect
+			count = 5;
 		}
 
-		missile->damage = damage;
-		missile->dflags = DAMAGE_DEATH_KNOCKBACK;
+		damage *= count;
+		missile->count = count; // this will get used in the projectile rendering code to make a beefier effect
+	}
 
-		if (alt_fire)
-		{
-			missile->methodOfDeath = MOD_BRYAR_ALT;
-		}
-		else
-		{
-			missile->methodOfDeath = MOD_BRYAR;
-		}
+	missile->damage = damage;
+	missile->dflags = DAMAGE_DEATH_KNOCKBACK;
 
-		missile->clipmask = MASK_SHOT;
+	if (alt_fire)
+	{
+		missile->methodOfDeath = MOD_BRYAR_ALT;
+	}
+	else
+	{
+		missile->methodOfDeath = MOD_BRYAR;
+	}
 
-		// we don't want it to bounce forever
-		missile->bounceCount = 8;
+	missile->clipmask = MASK_SHOT;
 
-		if (ent->weaponModel[1] > 0)
-		{
-			//dual pistols, toggle the muzzle point back and forth between the two pistols each time he fires
-			ent->count = ent->count ? 0 : 1;
-		}
+	// we don't want it to bounce forever
+	missile->bounceCount = 8;
+
+	if (ent->weaponModel[1] > 0)
+	{
+		//dual pistols, toggle the muzzle point back and forth between the two pistols each time he fires
+		ent->count = ent->count ? 0 : 1;
+	}
 }
 
 //---------------
@@ -372,7 +372,7 @@ void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondP
 //---------------
 
 //---------------------------------------------------------
-void WP_FireBryarsbdMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean alt_fire)
+void WP_FireBryarsbdMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	constexpr int velocity = BRYAR_PISTOL_VEL;
@@ -425,7 +425,7 @@ void WP_FireBryarsbdMissile(gentity_t* ent, vec3_t start, vec3_t dir, qboolean a
 }
 
 //---------------------------------------------------------
-void WP_FireBryarsbdPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireBryarsbdPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -492,7 +492,7 @@ void WP_FireBryarsbdPistol(gentity_t* ent, qboolean alt_fire)
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
@@ -520,13 +520,13 @@ void WP_FireBryarsbdPistol(gentity_t* ent, qboolean alt_fire)
 		}
 	}
 
-		AngleVectors(angs, dir, nullptr, nullptr);
+	AngleVectors(angs, dir, nullptr, nullptr);
 
-		WP_FireBryarsbdMissile(ent, muzzle, dir, alt_fire);
+	WP_FireBryarsbdMissile(ent, muzzle, dir, alt_fire);
 }
 
 //---------------------------------------------------------
-void WP_FireJawaPistol(gentity_t* ent, qboolean alt_fire)
+void WP_FireJawaPistol(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -563,7 +563,7 @@ void WP_FireJawaPistol(gentity_t* ent, qboolean alt_fire)
 				//was 0.5
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
 				angs[YAW] += Q_flrand(-2.0f, 2.0f) * (RUNNING_SPREAD + 1.5f);
@@ -656,7 +656,7 @@ void WP_FireJawaPistol(gentity_t* ent, qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireBryarPistolold(gentity_t* ent, qboolean alt_fire)
+void WP_FireBryarPistolold(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	vec3_t start;
@@ -730,7 +730,7 @@ void WP_FireBryarPistolold(gentity_t* ent, qboolean alt_fire)
 				}
 			}
 			else if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
-				//if running aim is shit
+			//if running aim is shit
 			{
 				angs[PITCH] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * BLASTER_MAIN_SPREAD;
@@ -760,59 +760,59 @@ void WP_FireBryarPistolold(gentity_t* ent, qboolean alt_fire)
 		AngleVectors(angs, forwardVec, nullptr, nullptr);
 	}
 
-		WP_MissileTargetHint(ent, start, forwardVec);
+	WP_MissileTargetHint(ent, start, forwardVec);
 
-		gentity_t* missile = create_missile(start, forwardVec, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, forwardVec, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
 
-		missile->classname = "bryar_proj";
-		if (ent->s.weapon == WP_BLASTER_PISTOL
-			|| ent->s.weapon == WP_JAWA)
+	missile->classname = "bryar_proj";
+	if (ent->s.weapon == WP_BLASTER_PISTOL
+		|| ent->s.weapon == WP_JAWA)
+	{
+		//*SIGH*... I hate our weapon system...
+		missile->s.weapon = ent->s.weapon;
+	}
+	else
+	{
+		missile->s.weapon = WP_BRYAR_PISTOL;
+	}
+
+	if (alt_fire)
+	{
+		int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
+
+		if (count < 1)
 		{
-			//*SIGH*... I hate our weapon system...
-			missile->s.weapon = ent->s.weapon;
+			count = 1;
 		}
-		else
+		else if (count > 5)
 		{
-			missile->s.weapon = WP_BRYAR_PISTOL;
-		}
-
-		if (alt_fire)
-		{
-			int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
-
-			if (count < 1)
-			{
-				count = 1;
-			}
-			else if (count > 5)
-			{
-				count = 5;
-			}
-
-			damage *= count;
-			missile->count = count; // this will get used in the projectile rendering code to make a beefier effect
+			count = 5;
 		}
 
-		missile->damage = damage;
-		missile->dflags = DAMAGE_DEATH_KNOCKBACK;
+		damage *= count;
+		missile->count = count; // this will get used in the projectile rendering code to make a beefier effect
+	}
 
-		if (alt_fire)
-		{
-			missile->methodOfDeath = MOD_PISTOL_ALT;
-		}
-		else
-		{
-			missile->methodOfDeath = MOD_PISTOL;
-		}
+	missile->damage = damage;
+	missile->dflags = DAMAGE_DEATH_KNOCKBACK;
 
-		missile->clipmask = MASK_SHOT | CONTENTS_LIGHTSABER;
+	if (alt_fire)
+	{
+		missile->methodOfDeath = MOD_PISTOL_ALT;
+	}
+	else
+	{
+		missile->methodOfDeath = MOD_PISTOL;
+	}
 
-		// we don't want it to bounce forever
-		missile->bounceCount = 8;
+	missile->clipmask = MASK_SHOT | CONTENTS_LIGHTSABER;
 
-		if (ent->weaponModel[1] > 0)
-		{
-			//dual pistols, toggle the muzzle point back and forth between the two pistols each time he fires
-			ent->count = ent->count ? 0 : 1;
-		}
+	// we don't want it to bounce forever
+	missile->bounceCount = 8;
+
+	if (ent->weaponModel[1] > 0)
+	{
+		//dual pistols, toggle the muzzle point back and forth between the two pistols each time he fires
+		ent->count = ent->count ? 0 : 1;
+	}
 }

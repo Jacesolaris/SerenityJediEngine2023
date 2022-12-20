@@ -89,7 +89,7 @@ int Sys_MilliSeconds(void)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean Validclient_number(int num, char* str)
+qboolean Validclient_number(const int num, char* str)
 {
 	if (num < 0 || num > botlibglobals.maxclients)
 	{
@@ -106,7 +106,7 @@ qboolean Validclient_number(int num, char* str)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean ValidEntityNumber(int num, char* str)
+qboolean ValidEntityNumber(const int num, char* str)
 {
 	if (num < 0 || num > botlibglobals.maxentities)
 	{
@@ -252,7 +252,7 @@ int Export_BotLibVarSet(char* var_name, char* value)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int Export_BotLibVarGet(char* var_name, char* value, int size)
+int Export_BotLibVarGet(char* var_name, char* value, const int size)
 {
 	const char* varvalue = LibVarGetString(var_name);
 	strncpy(value, varvalue, size - 1);
@@ -265,7 +265,7 @@ int Export_BotLibVarGet(char* var_name, char* value, int size)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int Export_BotLibStartFrame(float time)
+int Export_BotLibStartFrame(const float time)
 {
 	if (!BotLibSetup("BotStartFrame")) return BLERR_LIBRARYNOTSETUP;
 	return AAS_StartFrame(time);
@@ -305,7 +305,7 @@ int Export_BotLibLoadMap(const char* mapname)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int Export_BotLibUpdateEntity(int ent, bot_entitystate_t* state)
+int Export_BotLibUpdateEntity(const int ent, bot_entitystate_t* state)
 {
 	if (!BotLibSetup("BotUpdateEntity")) return BLERR_LIBRARYNOTSETUP;
 	if (!ValidEntityNumber(ent, "BotUpdateEntity")) return BLERR_INVALIDENTITYNUMBER;
@@ -864,7 +864,7 @@ static void Init_AI_Export(ai_export_t* ai) {
 GetBotLibAPI
 ============
 */
-botlib_export_t* GetBotLibAPI(int apiVersion, botlib_import_t* import) {
+botlib_export_t* GetBotLibAPI(const int apiVersion, botlib_import_t* import) {
 	assert(import);   // bk001129 - this wasn't set for base/
 	botimport = *import;
 	assert(botimport.Print);   // bk001129 - pars pro toto

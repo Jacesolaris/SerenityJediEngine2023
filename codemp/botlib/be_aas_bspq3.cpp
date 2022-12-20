@@ -147,7 +147,7 @@ void PrintContents(int contents)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-bsp_trace_t AAS_Trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask)
+bsp_trace_t AAS_Trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, const int passent, const int contentmask)
 {
 	bsp_trace_t bsptrace;
 	botimport.Trace(&bsptrace, start, mins, maxs, end, passent, contentmask);
@@ -170,9 +170,9 @@ int AAS_PointContents(vec3_t point)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-qboolean AAS_EntityCollision(int entnum,
-	vec3_t start, vec3_t boxmins, vec3_t boxmaxs, vec3_t end,
-	int contentmask, bsp_trace_t* trace)
+qboolean AAS_EntityCollision(const int entnum,
+                             vec3_t start, vec3_t boxmins, vec3_t boxmaxs, vec3_t end,
+                             const int contentmask, bsp_trace_t* trace)
 {
 	bsp_trace_t enttrace;
 
@@ -212,7 +212,7 @@ qboolean AAS_inPHS(vec3_t p1, vec3_t p2)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_BSPModelMinsMaxsOrigin(int modelnum, vec3_t angles, vec3_t mins, vec3_t maxs, vec3_t origin)
+void AAS_BSPModelMinsMaxsOrigin(const int modelnum, vec3_t angles, vec3_t mins, vec3_t maxs, vec3_t origin)
 {
 	botimport.BSPModelMinsMaxsOrigin(modelnum, angles, mins, maxs, origin);
 } //end of the function AAS_BSPModelMinsMaxs
@@ -264,7 +264,7 @@ int AAS_NextBSPEntity(int ent)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_BSPEntityInRange(int ent)
+int AAS_BSPEntityInRange(const int ent)
 {
 	if (ent <= 0 || ent >= bspworld.numentities)
 	{
@@ -279,7 +279,7 @@ int AAS_BSPEntityInRange(int ent)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AAS_ValueForBSPEpairKey(int ent, char* key, char* value, int size)
+int AAS_ValueForBSPEpairKey(const int ent, char* key, char* value, const int size)
 {
 	value[0] = '\0';
 	if (!AAS_BSPEntityInRange(ent)) return qfalse;
@@ -300,7 +300,7 @@ int AAS_ValueForBSPEpairKey(int ent, char* key, char* value, int size)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_VectorForBSPEpairKey(int ent, char* key, vec3_t v)
+int AAS_VectorForBSPEpairKey(const int ent, char* key, vec3_t v)
 {
 	char buf[MAX_EPAIRKEY];
 	double v1, v2, v3;
@@ -321,7 +321,7 @@ int AAS_VectorForBSPEpairKey(int ent, char* key, vec3_t v)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_FloatForBSPEpairKey(int ent, char* key, float* value)
+int AAS_FloatForBSPEpairKey(const int ent, char* key, float* value)
 {
 	char buf[MAX_EPAIRKEY];
 
@@ -336,7 +336,7 @@ int AAS_FloatForBSPEpairKey(int ent, char* key, float* value)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_IntForBSPEpairKey(int ent, char* key, int* value)
+int AAS_IntForBSPEpairKey(const int ent, char* key, int* value)
 {
 	char buf[MAX_EPAIRKEY];
 

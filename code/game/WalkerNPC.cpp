@@ -98,9 +98,9 @@ extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAni
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
-	const vec3_t end, int passEntityNum, int contentmask);
+                           const vec3_t end, int passEntityNum, int contentmask);
 
 static void RegisterAssets(Vehicle_t* pVeh)
 {
@@ -281,7 +281,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 	/********************************************************************************/
 	//float speed;
 	bgEntity_t* parent = pVeh->m_pParentEntity;
-	playerState_t* parentPS, * riderPS;
+	playerState_t *parentPS, *riderPS;
 
 #ifdef _JK2MP
 	bgEntity_t* rider = nullptr;
@@ -550,7 +550,7 @@ void G_CreateWalkerNPC(Vehicle_t** pVeh, const char* strAnimalType)
 	memset(*pVeh, 0, sizeof(Vehicle_t));
 	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strAnimalType)];
 #else
-	* pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
+	*pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strAnimalType)];
 #endif
 }

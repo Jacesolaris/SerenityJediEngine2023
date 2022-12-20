@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 constexpr auto MIN_ATTACK_DIST_SQ = 128;
 constexpr auto MIN_MISS_DIST = 100;
@@ -60,20 +60,20 @@ void SandCreature_ClearTimers(gentity_t* ent)
 }
 
 void NPC_SandCreature_Die(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hit_loc)
+                          int mod, int hit_loc)
 {
 	//FIXME: somehow make him solid when he dies?
 }
 
 void NPC_SandCreature_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, const vec3_t point, int damage,
-	int mod, int hit_loc)
+                           int mod, int hit_loc)
 {
 	if (TIMER_Done(self, "pain"))
 	{
 		//FIXME: effect and sound
 		//FIXME: shootable during this anim?
 		NPC_SetAnim(self, SETANIM_LEGS, Q_irand(BOTH_ATTACK1, BOTH_ATTACK2),
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 		G_AddEvent(self, EV_PAIN, Q_irand(0, 100));
 		TIMER_Set(self, "pain", self->client->ps.legsAnimTimer + Q_irand(500, 2000));
 		const float playerDist = Distance(player->currentOrigin, self->currentOrigin);
@@ -87,8 +87,8 @@ void NPC_SandCreature_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* oth
 
 void SandCreature_MoveEffect(void)
 {
-	constexpr vec3_t up = { 0, 0, 1 };
-	const vec3_t org = { NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->absmin[2] + 2 };
+	constexpr vec3_t up = {0, 0, 1};
+	const vec3_t org = {NPC->currentOrigin[0], NPC->currentOrigin[1], NPC->absmin[2] + 2};
 
 	const float playerDist = Distance(player->currentOrigin, NPC->currentOrigin);
 	if (playerDist < 256)
@@ -114,7 +114,7 @@ void SandCreature_MoveEffect(void)
 		trace_t trace;
 		//make him solid here so he can be hit/gets blocked on stuff. Check clear first.
 		gi.trace(&trace, NPC->currentOrigin, NPC->mins, NPC->maxs, NPC->currentOrigin, NPC->s.number, MASK_NPCSOLID,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 		if (!trace.allsolid && !trace.startsolid)
 		{
 			NPC->clipmask = MASK_NPCSOLID; //turn solid for a little bit
@@ -124,7 +124,7 @@ void SandCreature_MoveEffect(void)
 			//FIXME: Breach sound?
 			//FIXME: Breach effect?
 			NPC_SetAnim(NPC, SETANIM_LEGS, BOTH_WALK2,
-				SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+			            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 			TIMER_Set(NPC, "breaching", NPC->client->ps.legsAnimTimer);
 			TIMER_Set(NPC, "breachDebounce", NPC->client->ps.legsAnimTimer + Q_irand(0, 10000));
 		}
@@ -148,9 +148,9 @@ qboolean SandCreature_CheckAhead(vec3_t end)
 	int clipmask = NPC->clipmask | CONTENTS_BOTCLIP;
 
 	//make sure our goal isn't underground (else the trace will fail)
-	const vec3_t bottom = { end[0], end[1], end[2] + NPC->mins[2] };
+	const vec3_t bottom = {end[0], end[1], end[2] + NPC->mins[2]};
 	gi.trace(&trace, end, vec3_origin, vec3_origin, bottom, NPC->s.number, NPC->clipmask, static_cast<EG2_Collision>(0),
-		0);
+	         0);
 	if (trace.fraction < 1.0f)
 	{
 		//in the ground, raise it up
@@ -158,14 +158,14 @@ qboolean SandCreature_CheckAhead(vec3_t end)
 	}
 
 	gi.trace(&trace, NPC->currentOrigin, NPC->mins, NPC->maxs, end, NPC->s.number, clipmask,
-		static_cast<EG2_Collision>(0), 0);
+	         static_cast<EG2_Collision>(0), 0);
 
 	if (trace.startsolid && trace.contents & CONTENTS_BOTCLIP)
 	{
 		//started inside do not enter, so ignore them
 		clipmask &= ~CONTENTS_BOTCLIP;
 		gi.trace(&trace, NPC->currentOrigin, NPC->mins, NPC->maxs, end, NPC->s.number, clipmask,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 	}
 	//Do a simple check
 	if (trace.allsolid == qfalse && trace.startsolid == qfalse && trace.fraction == 1.0f)
@@ -244,7 +244,7 @@ qboolean SandCreature_Move(void)
 	//often erroneously returns false ???  something wrong with NAV...?
 }
 
-void SandCreature_Attack(qboolean miss)
+void SandCreature_Attack(const qboolean miss)
 {
 	//FIXME: make it able to grab a thermal detonator, take it down,
 	//		then have it explode inside them, killing them
@@ -260,7 +260,7 @@ void SandCreature_Attack(qboolean miss)
 	else
 	{
 		NPC_SetAnim(NPC, SETANIM_LEGS, Q_irand(BOTH_ATTACK1, BOTH_ATTACK2),
-			SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
+		            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART);
 	}
 	//don't do anything else while in this anim
 	TIMER_Set(NPC, "attacking", NPC->client->ps.legsAnimTimer);
@@ -309,7 +309,7 @@ void SandCreature_Attack(qboolean miss)
 								vec3_t vAng;
 								vectoangles(dir2Enemy, vAng);
 								VectorSet(vAng, AngleNormalize180(vAng[PITCH]) * -1,
-									NPC->enemy->client->ps.viewangles[YAW], 0);
+								          NPC->enemy->client->ps.viewangles[YAW], 0);
 								SetClientViewAngle(NPC->enemy, vAng);
 							}
 						}
@@ -378,7 +378,7 @@ float SandCreature_EntScore(const gentity_t* ent)
 	return moveSpeed - dist;
 }
 
-void SandCreature_SeekEnt(gentity_t* bestEnt, float score)
+void SandCreature_SeekEnt(gentity_t* bestEnt, const float score)
 {
 	if (bestEnt->s.weapon == WP_THERMAL && g_spskill->integer > 1)
 	{
@@ -499,7 +499,7 @@ void SandCreature_CheckMovingEnts(void)
 	}
 }
 
-void SandCreature_SeekAlert(int alert_event)
+void SandCreature_SeekAlert(const int alert_event)
 {
 	const alertEvent_t* alert = &level.alertEvents[alert_event];
 
@@ -526,7 +526,7 @@ void SandCreature_CheckAlerts(void)
 	}
 }
 
-float SandCreature_DistSqToGoal(qboolean goalIsEnemy)
+float SandCreature_DistSqToGoal(const qboolean goalIsEnemy)
 {
 	float goalDistSq;
 	if (!NPCInfo->goalEntity || goalIsEnemy)
@@ -815,7 +815,7 @@ void NPC_BSSandCreature_Default(void)
 		|| NPC->client->ps.legsAnim == BOTH_ATTACK2)
 	{
 		//FIXME: get start and end frame numbers for this effect for each of these anims
-		constexpr vec3_t up = { 0, 0, 1 };
+		constexpr vec3_t up = {0, 0, 1};
 		vec3_t org;
 		VectorCopy(NPC->currentOrigin, org);
 		org[2] -= 40;

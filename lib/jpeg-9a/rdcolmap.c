@@ -42,7 +42,7 @@
   */
 
 LOCAL(void)
-add_map_entry(j_decompress_ptr cinfo, int R, int G, int B)
+add_map_entry(const j_decompress_ptr cinfo, const int R, const int G, const int B)
 {
 	const JSAMPROW colormap0 = cinfo->colormap[0];
 	const JSAMPROW colormap1 = cinfo->colormap[1];
@@ -73,7 +73,7 @@ add_map_entry(j_decompress_ptr cinfo, int R, int G, int B)
  */
 
 LOCAL(void)
-read_gif_map(j_decompress_ptr cinfo, FILE* infile)
+read_gif_map(const j_decompress_ptr cinfo, FILE* infile)
 {
 	int header[13];
 	int i;
@@ -126,7 +126,7 @@ pbm_getc(FILE* infile)
 }
 
 LOCAL(unsigned int)
-read_pbm_integer(j_decompress_ptr cinfo, FILE* infile)
+read_pbm_integer(const j_decompress_ptr cinfo, FILE* infile)
 /* Read an unsigned decimal integer from the PPM file */
 /* Swallows one trailing character after the integer */
 /* Note that on a 16-bit-int machine, only values up to 64k can be read. */
@@ -157,7 +157,7 @@ read_pbm_integer(j_decompress_ptr cinfo, FILE* infile)
  */
 
 LOCAL(void)
-read_ppm_map(j_decompress_ptr cinfo, FILE* infile)
+read_ppm_map(const j_decompress_ptr cinfo, FILE* infile)
 {
 	unsigned int row, col;
 	int R, G, B;
@@ -215,7 +215,7 @@ read_ppm_map(j_decompress_ptr cinfo, FILE* infile)
  */
 
 GLOBAL(void)
-read_color_map(j_decompress_ptr cinfo, FILE* infile)
+read_color_map(const j_decompress_ptr cinfo, FILE* infile)
 {
 	/* Allocate space for a color map of maximum supported size. */
 	cinfo->colormap = (*cinfo->mem->alloc_sarray)

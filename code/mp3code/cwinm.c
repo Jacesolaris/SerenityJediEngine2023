@@ -37,7 +37,8 @@ portable C
 #include <math.h>
 
 const float wincoef[264] =
-{				/* window coefs */
+{
+	/* window coefs */
 #include "tableawd.h"
 };
 

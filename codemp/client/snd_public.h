@@ -44,9 +44,10 @@ float S_GetSampleLengthInMilliSeconds(sfxHandle_t sfxHandle);
 
 // cinematics and voice-over-network will send raw samples
 // 1.0 volume will be direct output of source samples
-void S_RawSamples(int samples, int rate, int width, int channels, const byte* data, float volume, int bFirstOrOnlyUpdateThisFrame);
+void S_RawSamples(int samples, int rate, int width, int channels, const byte* data, float volume,
+                  int bFirstOrOnlyUpdateThisFrame);
 // stop all sounds
-void S_StopSounds(void);	// from snd_dma.cpp
+void S_StopSounds(void); // from snd_dma.cpp
 // stop all sounds and the background track
 void S_StopAllSounds(void);
 
@@ -74,7 +75,7 @@ void S_BeginRegistration(void);
 // RegisterSound will allways return a valid sample, even if it
 // has to create a placeholder.  This prevents continuous filesystem
 // checks for missing files
-sfxHandle_t	S_RegisterSound(const char* sample);
+sfxHandle_t S_RegisterSound(const char* sample);
 
 extern qboolean s_shutUp;
 

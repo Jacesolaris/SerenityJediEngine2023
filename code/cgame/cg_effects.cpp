@@ -181,7 +181,7 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const mater
 {
 	int ct = 13;
 	vec3_t org, mid;
-	const char* effect = nullptr, * effect2 = nullptr;
+	const char *effect = nullptr, *effect2 = nullptr;
 
 	VectorAdd(mins, maxs, mid);
 	VectorScale(mid, 0.5f, mid);
@@ -287,7 +287,8 @@ Fun chunk spewer
 */
 
 void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
-               const float speed, const int num_chunks, const material_t chunk_type, const int custom_chunk, float base_scale, const int custom_sound = 0)
+               const float speed, const int num_chunks, const material_t chunk_type, const int custom_chunk,
+               float base_scale, const int custom_sound = 0)
 {
 	int chunk_model = 0;
 	leBounceSound_t bounce = LEBS_NONE;
@@ -326,7 +327,7 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 		if (!custom_sound)
 		{
 			cgi_S_StartSound(nullptr, owner, CHAN_BODY,
-				cgi_S_RegisterSound(va("sound/ambience/spark%d.wav", Q_irand(1, 6))));
+			                 cgi_S_RegisterSound(va("sound/ambience/spark%d.wav", Q_irand(1, 6))));
 		}
 		return;
 	case MAT_DRK_STONE:
@@ -479,7 +480,7 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 
 			// Angular Velocity
 			VectorSet(le->angles.trBase, Q_flrand(0.0f, 1.0f) * 360, Q_flrand(0.0f, 1.0f) * 360,
-				Q_flrand(0.0f, 1.0f) * 360);
+			          Q_flrand(0.0f, 1.0f) * 360);
 
 			le->angles.trDelta[0] = Q_flrand(-1.0f, 1.0f);
 			le->angles.trDelta[1] = Q_flrand(-1.0f, 1.0f);
@@ -499,7 +500,7 @@ void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t m
 			le->radius = Q_flrand(base_scale * 0.75f, base_scale * 1.25f);
 			re->nonNormalizedAxes = qtrue;
 			AxisCopy(axisDefault, re->axis); // could do an angles to axis, but this is cheaper and works ok
-			for (auto & axi : re->axis)
+			for (auto& axi : re->axis)
 			{
 				VectorScale(axi, le->radius, axi);
 			}
@@ -652,7 +653,7 @@ void CG_GrappleLine(vec3_t start, vec3_t end, const int time, unsigned int color
 // Since we have shared verts when we tesselate the glass sheet, it helps to have a
 //	random offset table set up up front...so that we can have more random looking breaks.
 
-static float offX[20][20],offZ[20][20];
+static float offX[20][20], offZ[20][20];
 
 static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const bool stick, const int time, vec3_t dmg_dir)
 {
@@ -680,15 +681,15 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const bool stick, const in
 	VectorSet(rot_delta, Q_flrand(-1.0f, 1.0f) * 40.0f, Q_flrand(-1.0f, 1.0f) * 40.0f, 0.0f);
 
 	CPoly* pol = FX_AddPoly(p, uv, 4, // verts, ST, vertCount
-		vel, accel, // motion
-		0.15f, 0.0f, 85.0f,
-		// alpha start, alpha end, alpha parm ( begin alpha fade when 85% of life is complete )
-		rgb1, rgb1, 0.0f, // rgb start, rgb end, rgb parm ( not used )
-		rot_delta, bounce, time,
-		// rotation amount, bounce, and time to delay motion for ( zero if no delay );
-		3500 + Q_flrand(0.0f, 1.0f) * 1000, // life
-		cgi_R_RegisterShader("gfx/misc/test_crackle"),
-		FX_APPLY_PHYSICS | FX_ALPHA_NONLINEAR | FX_USE_ALPHA);
+	                        vel, accel, // motion
+	                        0.15f, 0.0f, 85.0f,
+	                        // alpha start, alpha end, alpha parm ( begin alpha fade when 85% of life is complete )
+	                        rgb1, rgb1, 0.0f, // rgb start, rgb end, rgb parm ( not used )
+	                        rot_delta, bounce, time,
+	                        // rotation amount, bounce, and time to delay motion for ( zero if no delay );
+	                        3500 + Q_flrand(0.0f, 1.0f) * 1000, // life
+	                        cgi_R_RegisterShader("gfx/misc/test_crackle"),
+	                        FX_APPLY_PHYSICS | FX_ALPHA_NONLINEAR | FX_USE_ALPHA);
 
 	if (Q_flrand(0.0f, 1.0f) > 0.95f && pol)
 	{
@@ -1023,7 +1024,8 @@ void CG_DrawTargetBeam(vec3_t start, vec3_t end, vec3_t norm, const char* beam_f
 	}
 }
 
-void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int bolt_index, const int ent_num, vec3_t origin,
+void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int bolt_index, const int ent_num,
+                         vec3_t origin,
                          const int i_loop_time, const bool is_relative)
 {
 	vec3_t axis[3];
@@ -1032,22 +1034,23 @@ void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int b
 
 	//pack the data into boltInfo as if we were going to send it over the network
 	gi.G2API_AttachEnt(&boltInfo,
-		&g_entities[ent_num].ghoul2[model_index],
-		bolt_index,
-		ent_num,
-		model_index);
+	                   &g_entities[ent_num].ghoul2[model_index],
+	                   bolt_index,
+	                   ent_num,
+	                   model_index);
 	//send direcly to FX scheduler
 	theFxScheduler.PlayEffect(fx_name,
-		origin,
-		axis,
-		boltInfo,
-		-1,
-		false,
-		i_loop_time,
-		is_relative); //iLoopTime 0 = not looping, 1 for infinite, else duration
+	                          origin,
+	                          axis,
+	                          boltInfo,
+	                          -1,
+	                          false,
+	                          i_loop_time,
+	                          is_relative); //iLoopTime 0 = not looping, 1 for infinite, else duration
 }
 
-void CG_PlayEffectIDBolted(const int fx_id, const int model_index, const int bolt_index, const int ent_num, vec3_t origin,
+void CG_PlayEffectIDBolted(const int fx_id, const int model_index, const int bolt_index, const int ent_num,
+                           vec3_t origin,
                            const int i_loop_time, const bool is_relative)
 {
 	const char* fx_name = CG_ConfigString(CS_EFFECTS + fx_id);

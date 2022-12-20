@@ -173,7 +173,7 @@ ambientSet_t* CSetGroup::GetSet(const char* name) const
 	return (*mi).second;
 }
 
-ambientSet_t* CSetGroup::GetSet(int ID) const
+ambientSet_t* CSetGroup::GetSet(const int ID) const
 {
 	if (m_ambientSets->empty())
 		return nullptr;
@@ -596,7 +596,7 @@ Parses an individual set group out of a set file buffer
 -------------------------
 */
 
-static qboolean AS_ParseSet(int setID, CSetGroup* sg)
+static qboolean AS_ParseSet(const int setID, CSetGroup* sg)
 {
 	//Make sure we're not overstepping the name array
 	if (setID >= NUM_AS_SETS)
@@ -685,7 +685,7 @@ static void AS_ParseHeader(void)
 		case SET_KEYWORD_BASEDIR:
 			//TODO: Implement
 			break;
-		default:;
+		default: ;
 		}
 
 		AS_SkipLine();
@@ -938,7 +938,7 @@ Does internal maintenance to keep track of changing sets.
 -------------------------
 */
 
-static void AS_UpdateCurrentSet(int id)
+static void AS_UpdateCurrentSet(const int id)
 {
 	//Check for a change
 	if (id != currentSet)
@@ -979,7 +979,8 @@ Alters lastTime to reflect the time updates.
 -------------------------
 */
 
-static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambientSet_t* set, int entID, int* lastTime)
+static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambientSet_t* set, const int entID,
+                            int* lastTime)
 {
 	vec3_t dir;
 	const int time = cl.serverTime;
@@ -994,8 +995,8 @@ static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambient
 	//Determine the volume based on distance (NOTE: This sits on top of what SpatializeOrigin does)
 	const float distScale = dist < set->radius * 0.5f ? 1 : (set->radius - dist) / (set->radius * 0.5f);
 	unsigned char volume = distScale > 1.0f || distScale < 0.0f
-		? 0
-		: static_cast<unsigned char>(set->masterVolume * distScale);
+		                       ? 0
+		                       : static_cast<unsigned char>(set->masterVolume * distScale);
 
 	//Add the looping sound
 	if (set->loopedWave)
@@ -1011,7 +1012,7 @@ static void AS_PlayLocalSet(vec3_t listener_origin, vec3_t origin, const ambient
 	//Scale the volume ranges for the subwaves based on the overall master volume
 	const float volScale = static_cast<float>(volume) / static_cast<float>(MAX_SET_VOLUME);
 	volume = static_cast<unsigned char>(Q_irand(static_cast<int>(volScale * set->volRange_start),
-		static_cast<int>(volScale * set->volRange_end)));
+	                                            static_cast<int>(volScale * set->volRange_end)));
 
 	//Add the random subwave
 	if (set->numSubWaves)
@@ -1049,7 +1050,7 @@ static void AS_PlayAmbientSet(vec3_t origin, const ambientSet_t* set, int* lastT
 	//Scale the volume ranges for the subwaves based on the overall master volume
 	const float volScale = static_cast<float>(set->masterVolume) / static_cast<float>(MAX_SET_VOLUME);
 	unsigned char volume = Q_irand(static_cast<int>(volScale * set->volRange_start),
-		static_cast<int>(volScale * set->volRange_end));
+	                               static_cast<int>(volScale * set->volRange_end));
 
 	//Allow for softer noises than the masterVolume, but not louder
 	if (volume > set->masterVolume)
@@ -1098,7 +1099,7 @@ S_AddLocalSet
 -------------------------
 */
 
-int S_AddLocalSet(const char* name, vec3_t listener_origin, vec3_t origin, int entID, int time)
+int S_AddLocalSet(const char* name, vec3_t listener_origin, vec3_t origin, const int entID, const int time)
 {
 	int currentTime;
 
@@ -1120,7 +1121,7 @@ AS_GetBModelSound
 -------------------------
 */
 
-sfxHandle_t AS_GetBModelSound(const char* name, int stage)
+sfxHandle_t AS_GetBModelSound(const char* name, const int stage)
 {
 	const ambientSet_t* set = aSets->GetSet(name);
 

@@ -83,7 +83,7 @@ int com_frameNumber;
 qboolean com_errorEntered = qfalse;
 qboolean com_fullyInitialized = qfalse;
 
-char com_errorMessage[MAXPRINTMSG] = { 0 };
+char com_errorMessage[MAXPRINTMSG] = {0};
 
 void Com_WriteConfig_f(void);
 
@@ -93,7 +93,7 @@ static char* rd_buffer;
 static int rd_buffersize;
 static void (*rd_flush)(char* buffer);
 
-void Com_BeginRedirect(char* buffer, int buffersize, void (*flush)(char*))
+void Com_BeginRedirect(char* buffer, const int buffersize, void (*flush)(char*))
 {
 	if (!buffer || !buffersize || !flush)
 		return;
@@ -528,7 +528,7 @@ void Info_Print(const char* s)
 Com_StringContains
 ============
 */
-char* Com_StringContains(char* str1, char* str2, int casesensitive)
+char* Com_StringContains(char* str1, char* str2, const int casesensitive)
 {
 	int j;
 
@@ -565,7 +565,7 @@ char* Com_StringContains(char* str1, char* str2, int casesensitive)
 Com_Filter
 ============
 */
-int Com_Filter(char* filter, char* name, int casesensitive)
+int Com_Filter(char* filter, char* name, const int casesensitive)
 {
 	char buf[MAX_TOKEN_CHARS];
 	int i;
@@ -663,7 +663,7 @@ int Com_Filter(char* filter, char* name, int casesensitive)
 Com_FilterPath
 ============
 */
-int Com_FilterPath(char* filter, char* name, int casesensitive)
+int Com_FilterPath(char* filter, char* name, const int casesensitive)
 {
 	int i;
 	char new_filter[MAX_QPATH];
@@ -701,7 +701,7 @@ int Com_FilterPath(char* filter, char* name, int casesensitive)
 Com_HashKey
 ============
 */
-int Com_HashKey(char* string, int maxlen)
+int Com_HashKey(char* string, const int maxlen)
 {
 	int hash = 0;
 	for (int i = 0; i < maxlen && string[i] != '\0'; i++)
@@ -1036,7 +1036,8 @@ int Com_Milliseconds(void)
 		{
 			Com_PushEvent(&ev);
 		}
-	} while (ev.evType != SE_NONE);
+	}
+	while (ev.evType != SE_NONE);
 
 	return ev.evTime;
 }
@@ -1146,12 +1147,12 @@ Com_ErrorString
 Error string for the given error code (from Com_Error).
 =================
 */
-static const char* Com_ErrorString(int code)
+static const char* Com_ErrorString(const int code)
 {
 	switch (code)
 	{
 	case ERR_DISCONNECT:
-		// fallthrough
+	// fallthrough
 	case ERR_SERVERDISCONNECT:
 		return "DISCONNECTED";
 
@@ -1172,7 +1173,7 @@ Com_CatchError
 Handles freeing up of resources when Com_Error is called.
 =================
 */
-static void Com_CatchError(int code)
+static void Com_CatchError(const int code)
 {
 	if (code == ERR_DISCONNECT || code == ERR_SERVERDISCONNECT)
 	{
@@ -1186,8 +1187,8 @@ static void Com_CatchError(int code)
 	else if (code == ERR_DROP)
 	{
 		Com_Printf("********************\n"
-			"ERROR: %s\n"
-			"********************\n", com_errorMessage);
+		           "ERROR: %s\n"
+		           "********************\n", com_errorMessage);
 		SV_Shutdown(va("Server crashed: %s\n", com_errorMessage));
 		CL_Disconnect(qtrue);
 		CL_FlushMemory();
@@ -1292,12 +1293,12 @@ void Com_Init(char* commandLine)
 		com_dedicated = Cvar_Get("dedicated", "2", CVAR_INIT);
 		Cvar_CheckRange(com_dedicated, 1, 2, qtrue);
 #else
-	//OJKFIXME: Temporarily disabled dedicated server when not using the dedicated server binary.
-	//			Issue is the server not having a renderer when not using ^^^^^
-	//				and crashing in SV_SpawnServer calling re.RegisterMedia_LevelLoadBegin
-	//			Until we fully remove the renderer from the server, the client executable
-	//				will not have dedicated support capabilities.
-	//			Use the dedicated server package.
+		//OJKFIXME: Temporarily disabled dedicated server when not using the dedicated server binary.
+		//			Issue is the server not having a renderer when not using ^^^^^
+		//				and crashing in SV_SpawnServer calling re.RegisterMedia_LevelLoadBegin
+		//			Until we fully remove the renderer from the server, the client executable
+		//				will not have dedicated support capabilities.
+		//			Use the dedicated server package.
 		com_dedicated = Cvar_Get("_dedicated", "0", CVAR_ROM | CVAR_INIT | CVAR_PROTECTED);
 		//	Cvar_CheckRange( com_dedicated, 0, 2, qtrue );
 #endif
@@ -1493,7 +1494,7 @@ void Com_WriteConfig_f(void)
 	if (!FS_FilenameCompare(filename, "mpdefault.cfg") || !FS_FilenameCompare(filename, "spdefault.cfg"))
 	{
 		Com_Printf(S_COLOR_YELLOW "Com_WriteConfig_f: The filename \"%s\" is reserved! Please choose another name.\n",
-			filename);
+		           filename);
 		return;
 	}
 
@@ -1579,7 +1580,7 @@ Com_TimeVal
 =================
 */
 
-int Com_TimeVal(int minMsec)
+int Com_TimeVal(const int minMsec)
 {
 	int timeVal = Sys_Milliseconds() - com_frameTime;
 
@@ -1663,7 +1664,8 @@ void Com_Frame(void)
 				NET_Sleep(0);
 			else
 				NET_Sleep(timeVal - 1);
-		} while ((timeVal = Com_TimeVal(minMsec)) != 0);
+		}
+		while ((timeVal = Com_TimeVal(minMsec)) != 0);
 		IN_Frame();
 
 		lastTime = com_frameTime;
@@ -1758,7 +1760,7 @@ void Com_Frame(void)
 			cl -= time_frontend + time_backend;
 
 			Com_Printf("frame:%i all:%3i sv:%3i ev:%3i cl:%3i gm:%3i rf:%3i bk:%3i\n",
-				com_frameNumber, all, sv, ev, cl, time_game, time_frontend, time_backend);
+			           com_frameNumber, all, sv, ev, cl, time_game, time_frontend, time_backend);
 		}
 
 		//
@@ -1770,7 +1772,7 @@ void Com_Frame(void)
 			extern int c_pointcontents;
 
 			Com_Printf("%4i traces  (%ib %ip) %4i points\n", c_traces,
-				c_brush_traces, c_patch_traces, c_pointcontents);
+			           c_brush_traces, c_patch_traces, c_pointcontents);
 			c_traces = 0;
 			c_brush_traces = 0;
 			c_patch_traces = 0;
@@ -1942,8 +1944,10 @@ PrintKeyMatches
 
 ===============
 */
-static void PrintKeyMatches(const char* s) {
-	if (!Q_stricmpn(s, shortestMatch, strlen(shortestMatch))) {
+static void PrintKeyMatches(const char* s)
+{
+	if (!Q_stricmpn(s, shortestMatch, strlen(shortestMatch)))
+	{
 		Com_Printf(S_COLOR_GREY "Key  " S_COLOR_WHITE "%s\n", s);
 	}
 }
@@ -1975,7 +1979,7 @@ static void PrintCvarMatches(const char* s)
 {
 	if (!Q_stricmpn(s, shortestMatch, static_cast<int>(strlen(shortestMatch))))
 	{
-		char value[TRUNCATE_LENGTH] = { 0 };
+		char value[TRUNCATE_LENGTH] = {0};
 		const char* description = Cvar_DescriptionString(s);
 		Com_TruncateLongString(value, Cvar_VariableString(s));
 		Com_Printf(
@@ -2015,7 +2019,7 @@ static qboolean Field_Complete(void)
 	const int completionOffset = strlen(completionField->buffer) - strlen(completionString);
 
 	Q_strncpyz(&completionField->buffer[completionOffset], shortestMatch,
-		sizeof completionField->buffer - completionOffset);
+	           sizeof completionField->buffer - completionOffset);
 
 	completionField->cursor = strlen(completionField->buffer);
 
@@ -2054,7 +2058,8 @@ void Field_CompleteKeyname(void)
 Field_CompleteFilename
 ===============
 */
-void Field_CompleteFilename(const char* dir, const char* ext, qboolean stripExt, qboolean allowNonPureFilesOnDisk)
+void Field_CompleteFilename(const char* dir, const char* ext, const qboolean stripExt,
+                            const qboolean allowNonPureFilesOnDisk)
 {
 	matchCount = 0;
 	shortestMatch[0] = 0;
@@ -2070,7 +2075,7 @@ void Field_CompleteFilename(const char* dir, const char* ext, qboolean stripExt,
 Field_CompleteCommand
 ===============
 */
-void Field_CompleteCommand(char* cmd, qboolean doCommands, qboolean doCvars)
+void Field_CompleteCommand(char* cmd, const qboolean doCommands, const qboolean doCvars)
 {
 	// Skip leading whitespace and quotes
 	cmd = Com_SkipCharset(cmd, " \"");
@@ -2155,7 +2160,7 @@ Com_RandomBytes
 fills string array with len radom bytes, peferably from the OS randomizer
 ==================
 */
-void Com_RandomBytes(byte* string, int len)
+void Com_RandomBytes(byte* string, const int len)
 {
 	if (Sys_RandomBytes(string, len))
 		return;

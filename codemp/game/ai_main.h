@@ -46,6 +46,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define WPFLAG_ONEWAY_BACK		0x00008000 //can only go backward on the trail from here
 #define WPFLAG_GOALPOINT		0x00010000 //make it a goal to get here.. goal points will be decided by setting "weight" values
 
+
 #define WPFLAG_RED_FLAG			0x00020000 //red flag
 #define WPFLAG_BLUE_FLAG		0x00040000 //blue flag
 #define WPFLAG_SIEGE_REBELOBJ	0x00080000 //rebel siege objective
@@ -66,6 +67,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //area before moving to this waypoint.
 
 #define LEVELFLAG_NOPOINTPREDICTION			1 //don't take waypoint beyond current into account when adjusting path view angles
+
 
 #define LEVELFLAG_IGNOREINFALLBACK			2 //ignore enemies when in a fallback navigation routine
 #define LEVELFLAG_IMUSTNTRUNAWAY			4 //don't be scared
@@ -93,11 +95,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define BOT_PLANT_INTERVAL			15000 //only plant once per 15 seconds at max
 #define BOT_PLANT_BLOW_DISTANCE		256 //blow det packs if enemy is within this radius and I am further away than the enemy
 
+
 #define BOT_MAX_WEAPON_GATHER_TIME	1000 //spend a max of 1 second after spawn issuing orders to gather weapons before attacking enemy base
+
 
 #define BOT_MAX_WEAPON_CHASE_TIME	15000 //time to spend gathering the weapon before persuing the enemy base (in case it takes longer than expected)
 
+
 #define BOT_MAX_WEAPON_CHASE_CTF	5000 //time to spend gathering the weapon before persuing the enemy base (in case it takes longer than expected) [ctf-only]
+
 
 #define BOT_MIN_SIEGE_GOAL_SHOOT		1024
 #define BOT_MIN_SIEGE_GOAL_TRAVEL	128

@@ -42,7 +42,7 @@ int			c_gridVerts;
 
 //===============================================================================
 
-static void HSVtoRGB(float h, float s, float v, float rgb[3])
+static void HSVtoRGB(float h, const float s, const float v, float rgb[3])
 {
 	h *= 5;
 
@@ -325,7 +325,7 @@ static shader_t* ShaderForShaderNum(int shaderNum, const int* lightmapNum, const
 ParseFace
 ===============
 */
-static void ParseFace(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& worldData, int index) {
+static void ParseFace(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& worldData, const int index) {
 	int					i, j, k;
 	int					lightmapNum[MAXLIGHTMAPS];
 
@@ -406,7 +406,7 @@ static void ParseFace(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, 
 ParseMesh
 ===============
 */
-static void ParseMesh(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, const world_t& worldData, int index) {
+static void ParseMesh(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, const world_t& worldData, const int index) {
 	int						i, j, k;
 	drawVert_t				points[MAX_PATCH_SIZE * MAX_PATCH_SIZE];
 	int						lightmapNum[MAXLIGHTMAPS];
@@ -484,7 +484,7 @@ static void ParseMesh(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, 
 ParseTriSurf
 ===============
 */
-static void ParseTriSurf(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& worldData, int index) {
+static void ParseTriSurf(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& worldData, const int index) {
 	int				i, j, k;
 
 	// get fog volume
@@ -558,7 +558,7 @@ static void ParseTriSurf(const dsurface_t* ds, mapVert_t* verts, msurface_t* sur
 ParseFlare
 ===============
 */
-static void ParseFlare(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& worldData, int index) {
+static void ParseFlare(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& worldData, const int index) {
 	constexpr int				lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_BY_VERTEX };
 
 	// get fog volume
@@ -593,7 +593,7 @@ R_MergedWidthPoints
 returns true if there are grid points merged on a width edge
 =================
 */
-int R_MergedWidthPoints(const srfGridMesh_t* grid, int offset) {
+int R_MergedWidthPoints(const srfGridMesh_t* grid, const int offset) {
 	for (int i = 1; i < grid->width - 1; i++) {
 		for (int j = i + 1; j < grid->width - 1; j++) {
 			if (fabs(grid->verts[i + offset].xyz[0] - grid->verts[j + offset].xyz[0]) > .1) continue;
@@ -612,7 +612,7 @@ R_MergedHeightPoints
 returns true if there are grid points merged on a height edge
 =================
 */
-int R_MergedHeightPoints(const srfGridMesh_t* grid, int offset) {
+int R_MergedHeightPoints(const srfGridMesh_t* grid, const int offset) {
 	for (int i = 1; i < grid->height - 1; i++) {
 		for (int j = i + 1; j < grid->height - 1; j++) {
 			if (fabs(grid->verts[grid->width * i + offset].xyz[0] - grid->verts[grid->width * j + offset].xyz[0]) > .1) continue;
@@ -633,7 +633,7 @@ NOTE: never sync LoD through grid edges with merged points!
 FIXME: write generalized version that also avoids cracks between a patch and one that meets half way?
 =================
 */
-void R_FixSharedVertexLodError_r(int start, const srfGridMesh_t* grid1, world_t& worldData) {
+void R_FixSharedVertexLodError_r(const int start, const srfGridMesh_t* grid1, world_t& worldData) {
 	int k, l, m, n, offset1, offset2;
 
 	for (int j = start; j < worldData.numsurfaces; j++) {
@@ -1183,7 +1183,7 @@ of the patch (on the same row or column) the vertices will not be joined and cra
 might still appear at that side.
 ===============
 */
-int R_TryStitchingPatch(int grid1num, world_t& worldData) {
+int R_TryStitchingPatch(const int grid1num, world_t& worldData) {
 	int numstitches = 0;
 	const srfGridMesh_t* grid1 = (srfGridMesh_t*)worldData.surfaces[grid1num].data;
 	for (int j = 0; j < worldData.numsurfaces; j++) {
@@ -1271,7 +1271,7 @@ void R_MovePatchSurfacesToHunk(world_t& worldData) {
 R_LoadSurfaces
 ===============
 */
-static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, world_t& worldData, int index) {
+static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, world_t& worldData, const int index) {
 	int numFaces = 0;
 	int numMeshes = 0;
 	int numTriSurfs = 0;
@@ -1336,7 +1336,7 @@ static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, worl
 R_LoadSubmodels
 =================
 */
-static	void R_LoadSubmodels(lump_t* l, world_t& worldData, int index) {
+static	void R_LoadSubmodels(lump_t* l, world_t& worldData, const int index) {
 	bmodel_t* out;
 
 	dmodel_t* in = (dmodel_t*)(fileBase + l->fileofs);
@@ -1555,7 +1555,7 @@ R_LoadFogs
 
 =================
 */
-static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_t& worldData, int index) {
+static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_t& worldData, const int index) {
 	fog_t* out;
 	int			sideNum;
 	int			planeNum;
@@ -1867,7 +1867,7 @@ void R_LoadEntities(lump_t* l, world_t& worldData) {
 R_GetEntityToken
 =================
 */
-qboolean R_GetEntityToken(char* buffer, int size) {
+qboolean R_GetEntityToken(char* buffer, const int size) {
 	if (size == -1)
 	{ //force reset
 		s_worldData.entityParsePoint = s_worldData.entityString;
@@ -1889,7 +1889,7 @@ RE_LoadWorldMap
 Called directly from cgame
 =================
 */
-void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, int index)
+void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, const int index)
 {
 	byte* buffer;
 

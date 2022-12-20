@@ -27,7 +27,7 @@
   */
 
 GLOBAL(void)
-jpeg_CreateCompress(j_compress_ptr cinfo, int version, size_t structsize)
+jpeg_CreateCompress(const j_compress_ptr cinfo, const int version, const size_t structsize)
 {
 	int i;
 
@@ -91,7 +91,7 @@ jpeg_CreateCompress(j_compress_ptr cinfo, int version, size_t structsize)
  */
 
 GLOBAL(void)
-jpeg_destroy_compress(j_compress_ptr cinfo)
+jpeg_destroy_compress(const j_compress_ptr cinfo)
 {
 	jpeg_destroy((j_common_ptr)cinfo); /* use common routine */
 }
@@ -102,7 +102,7 @@ jpeg_destroy_compress(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_abort_compress(j_compress_ptr cinfo)
+jpeg_abort_compress(const j_compress_ptr cinfo)
 {
 	jpeg_abort((j_common_ptr)cinfo); /* use common routine */
 }
@@ -120,7 +120,7 @@ jpeg_abort_compress(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_suppress_tables(j_compress_ptr cinfo, boolean suppress)
+jpeg_suppress_tables(const j_compress_ptr cinfo, const boolean suppress)
 {
 	int i;
 	JQUANT_TBL* qtbl;
@@ -147,7 +147,7 @@ jpeg_suppress_tables(j_compress_ptr cinfo, boolean suppress)
  */
 
 GLOBAL(void)
-jpeg_finish_compress(j_compress_ptr cinfo)
+jpeg_finish_compress(const j_compress_ptr cinfo)
 {
 	if (cinfo->global_state == CSTATE_SCANNING ||
 		cinfo->global_state == CSTATE_RAW_OK) {
@@ -190,8 +190,8 @@ jpeg_finish_compress(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jpeg_write_marker(j_compress_ptr cinfo, int marker,
-	const JOCTET* dataptr, unsigned int datalen)
+jpeg_write_marker(const j_compress_ptr cinfo, const int marker,
+                  const JOCTET* dataptr, unsigned int datalen)
 {
 	JMETHOD(void, write_marker_byte, (j_compress_ptr info, int val));
 
@@ -212,7 +212,7 @@ jpeg_write_marker(j_compress_ptr cinfo, int marker,
 /* Same, but piecemeal. */
 
 GLOBAL(void)
-jpeg_write_m_header(j_compress_ptr cinfo, int marker, unsigned int datalen)
+jpeg_write_m_header(const j_compress_ptr cinfo, const int marker, const unsigned int datalen)
 {
 	if (cinfo->next_scanline != 0 ||
 		cinfo->global_state != CSTATE_SCANNING &&
@@ -224,7 +224,7 @@ jpeg_write_m_header(j_compress_ptr cinfo, int marker, unsigned int datalen)
 }
 
 GLOBAL(void)
-jpeg_write_m_byte(j_compress_ptr cinfo, int val)
+jpeg_write_m_byte(const j_compress_ptr cinfo, const int val)
 {
 	(*cinfo->marker->write_marker_byte) (cinfo, val);
 }
@@ -251,7 +251,7 @@ jpeg_write_m_byte(j_compress_ptr cinfo, int val)
  */
 
 GLOBAL(void)
-jpeg_write_tables(j_compress_ptr cinfo)
+jpeg_write_tables(const j_compress_ptr cinfo)
 {
 	if (cinfo->global_state != CSTATE_START)
 		ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);

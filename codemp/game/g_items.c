@@ -67,7 +67,7 @@ extern void player_Burn(const gentity_t* self);
 extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
 
 // For more than four players, adjust the respawn times, up to 1/4.
-int adjustRespawnTime(float preRespawnTime, int itemType, int itemTag)
+int adjustRespawnTime(const float preRespawnTime, const int itemType, const int itemTag)
 {
 	float respawnTime = preRespawnTime;
 
@@ -201,7 +201,7 @@ void ShieldGoSolid(gentity_t* self)
 	}
 
 	trap->Trace(&tr, self->r.currentOrigin, self->r.mins, self->r.maxs, self->r.currentOrigin, self->s.number,
-		CONTENTS_BODY, qfalse, 0, 0);
+	            CONTENTS_BODY, qfalse, 0, 0);
 	if (tr.startsolid)
 	{
 		// gah, we can't activate yet
@@ -281,7 +281,7 @@ int sje_number_of_allies(const gentity_t* ent)
 }
 
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 // Somebody (a player) has touched the shield.  See if it is a "friend".
 void ShieldTouch(gentity_t* self, gentity_t* other, trace_t* trace)
 {
@@ -439,7 +439,7 @@ void CreateShield(gentity_t* ent)
 
 	// see if we're valid
 	trap->Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, ent->r.currentOrigin, ent->s.number, CONTENTS_BODY,
-		qfalse, 0, 0);
+	            qfalse, 0, 0);
 
 	if (tr.startsolid)
 	{
@@ -478,8 +478,8 @@ qboolean PlaceShield(gentity_t* playerent)
 	static const gitem_t* shieldItem = NULL;
 	trace_t tr;
 	vec3_t fwd, dest;
-	const vec3_t maxs = { 4, 4, 4 };
-	const vec3_t mins = { -4, -4, 0 };
+	const vec3_t maxs = {4, 4, 4};
+	const vec3_t mins = {-4, -4, 0};
 	static qboolean registered = qfalse;
 
 	if (!registered)
@@ -866,8 +866,9 @@ void pas_think(gentity_t* ent)
 			//client stuck inside me. go nonsolid.
 			const int clNum = iEntityList[i];
 
-			num_listed_entities = trap->EntitiesInBox(g_entities[clNum].r.absmin, g_entities[clNum].r.absmax, iEntityList,
-				MAX_GENTITIES);
+			num_listed_entities = trap->EntitiesInBox(g_entities[clNum].r.absmin, g_entities[clNum].r.absmax,
+			                                          iEntityList,
+			                                          MAX_GENTITIES);
 
 			i = 0;
 			while (i < num_listed_entities)
@@ -1366,7 +1367,7 @@ void ItemUse_Decca(gentity_t* ent)
 	}
 }
 
-static void MedPackGive(gentity_t* ent, int amount)
+static void MedPackGive(gentity_t* ent, const int amount)
 {
 	if (!ent || !ent->client)
 	{
@@ -1555,7 +1556,7 @@ void Flamethrower_Fire(gentity_t* self)
 
 		//Now check and see if we can actually hit it
 		trap->Trace(&tr, self->client->ps.origin, vec3_origin, vec3_origin, ent_org, self->s.number, MASK_SHOT, qfalse,
-			0, 0);
+		            0, 0);
 
 		if (tr.fraction < 1.0f && tr.entityNum != traceEnt->s.number)
 		{
@@ -1567,7 +1568,7 @@ void Flamethrower_Fire(gentity_t* self)
 		{
 			const int damage = FLAMETHROWER_DAMAGE;
 			G_Damage(traceEnt, self, self, dir, tr.endpos, damage,
-				DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
+			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
 
 			if (traceEnt->health > 0 && traceEnt->painDebounceTime > level.time)
 			{
@@ -1577,7 +1578,7 @@ void Flamethrower_Fire(gentity_t* self)
 				{
 					G_PlayBoltedEffect(G_EffectIndex("flamethrower/flame_impact"), traceEnt, "thoracic");
 					G_SetAnim(traceEnt, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FACEPROTECT,
-						SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
+					          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 				}
 				player_Burn(traceEnt);
 			}
@@ -1789,9 +1790,9 @@ void G_PrecacheDispensers(void)
 	}
 }
 
-void ItemUse_UseDisp(const gentity_t* ent, int type)
+void ItemUse_UseDisp(const gentity_t* ent, const int type)
 {
-	gitem_t* item;
+	gitem_t * item;
 
 	if (!ent->client ||
 		ent->client->tossableItemDebounce > level.time)
@@ -2020,20 +2021,20 @@ void EWeb_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 	ent->s.boneOrient = forward | right << 3 | up << 6;
 
 	trap->G2API_SetBoneAngles(ent->ghoul2,
-		0,
-		bone,
-		angles,
-		flags,
-		up,
-		right,
-		forward,
-		NULL,
-		100,
-		level.time);
+	                          0,
+	                          bone,
+	                          angles,
+	                          flags,
+	                          up,
+	                          right,
+	                          forward,
+	                          NULL,
+	                          100,
+	                          level.time);
 }
 
 //start an animation on model_root both server side and client side
-void EWeb_SetBoneAnim(gentity_t* eweb, int startFrame, int endFrame)
+void EWeb_SetBoneAnim(gentity_t* eweb, const int startFrame, const int endFrame)
 {
 	//set info on the entity so it knows to start the anim on the client next snapshot.
 	eweb->s.eFlags |= EF_G2ANIMATING;
@@ -2052,7 +2053,7 @@ void EWeb_SetBoneAnim(gentity_t* eweb, int startFrame, int endFrame)
 	//now set the animation on the server ghoul2 instance.
 	assert(eweb->ghoul2);
 	trap->G2API_SetBoneAnim(eweb->ghoul2, 0, "model_root", startFrame, endFrame,
-		BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, 1.0f, level.time, -1, 100);
+	                        BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, 1.0f, level.time, -1, 100);
 }
 
 //fire a shot off
@@ -2072,7 +2073,7 @@ void EWebFire(gentity_t* owner, gentity_t* eweb)
 
 	//get the muzzle point
 	trap->G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->genericValue10, &boltMatrix, eweb->s.apos.trBase,
-		eweb->r.currentOrigin, level.time, NULL, eweb->modelScale);
+	                          eweb->r.currentOrigin, level.time, NULL, eweb->modelScale);
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, p);
 	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, d);
 
@@ -2109,7 +2110,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 	trace_t tr;
 
 	trap->G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->genericValue9, &boltMatrix, eweb->s.apos.trBase,
-		eweb->r.currentOrigin, level.time, NULL, eweb->modelScale);
+	                          eweb->r.currentOrigin, level.time, NULL, eweb->modelScale);
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, p);
 	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, d);
 
@@ -2119,7 +2120,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 	p[2] += 4.0f;
 
 	trap->Trace(&tr, owner->client->ps.origin, owner->r.mins, owner->r.maxs, p, owner->s.number, MASK_PLAYERSOLID,
-		qfalse, 0, 0);
+	            qfalse, 0, 0);
 
 	if (!tr.startsolid && !tr.allsolid && tr.fraction == 1.0f)
 	{
@@ -2558,7 +2559,7 @@ int Pickup_Powerup(const gentity_t* ent, const gentity_t* other)
 
 		// if not line of sight, no sound
 		trap->Trace(&tr, client->ps.origin, NULL, NULL, ent->s.pos.trBase, ENTITYNUM_NONE, CONTENTS_SOLID, qfalse, 0,
-			0);
+		            0);
 		if (tr.fraction != 1.0)
 		{
 			continue;
@@ -2585,7 +2586,7 @@ int Pickup_Holdable(const gentity_t* ent, const gentity_t* other)
 
 //======================================================================
 
-void Add_Ammo3(const gentity_t* ent, int weapon, int count, int* stop, qboolean* gaveSome)
+void Add_Ammo3(const gentity_t* ent, const int weapon, const int count, int* stop, qboolean* gaveSome)
 {
 	// weapon is actually ammotype
 	if (ent->client->ps.eFlags & EF_DOUBLE_AMMO)
@@ -2622,7 +2623,7 @@ void Add_Ammo3(const gentity_t* ent, int weapon, int count, int* stop, qboolean*
 	}
 }
 
-void Add_Ammo(const gentity_t* ent, int weapon, int count)
+void Add_Ammo(const gentity_t* ent, const int weapon, const int count)
 {
 	if (ent->client->ps.eFlags & EF_DOUBLE_AMMO)
 	{
@@ -2707,7 +2708,7 @@ int Pickup_Ammo(const gentity_t* ent, const gentity_t* other)
 	{
 		//an ammo_all, give them a bit of everything
 		if (level.gametype == GT_SIEGE)
-			// complaints that siege tech's not giving enough ammo.  Does anything else use ammo all?
+		// complaints that siege tech's not giving enough ammo.  Does anything else use ammo all?
 		{
 			Add_Ammo(other, AMMO_BLASTER, 100);
 			Add_Ammo(other, AMMO_POWERCELL, 100);
@@ -3140,7 +3141,7 @@ void Touch_Item(gentity_t* ent, gentity_t* other, trace_t* trace)
 	{
 	case IT_WEAPON:
 		respawn = Pickup_Weapon(ent, other);
-		//		predict = qfalse;
+	//		predict = qfalse;
 		predict = qtrue;
 		break;
 	case IT_AMMO:
@@ -3168,12 +3169,12 @@ void Touch_Item(gentity_t* ent, gentity_t* other, trace_t* trace)
 				G_AddEvent(other, EV_WEAPINVCHANGE, other->client->ps.stats[STAT_WEAPONS]);
 			}
 		}
-		//		predict = qfalse;
+	//		predict = qfalse;
 		predict = qtrue;
 		break;
 	case IT_ARMOR:
 		respawn = Pickup_Armor(ent, other);
-		//		predict = qfalse;
+	//		predict = qfalse;
 		predict = qtrue;
 		break;
 	case IT_HEALTH:
@@ -3413,7 +3414,7 @@ Drop_Item
 Spawns an item and tosses it forward
 ================
 */
-gentity_t* Drop_Item(gentity_t* ent, gitem_t* item, float angle)
+gentity_t* Drop_Item(gentity_t* ent, gitem_t* item, const float angle)
 {
 	vec3_t velocity;
 	vec3_t angles;
@@ -3771,7 +3772,7 @@ int G_ItemDisabled(const gitem_t* item)
 }
 
 //This function checks an ammo type against the disabled weapons list.
-qboolean G_AmmoDisabled(int wDisable, const gitem_t* item)
+qboolean G_AmmoDisabled(const int wDisable, const gitem_t* item)
 {
 	if (item->giType != IT_AMMO)
 	{
@@ -3786,66 +3787,66 @@ qboolean G_AmmoDisabled(int wDisable, const gitem_t* item)
 		//never disable these since they aren't actually associated with a weapon
 		return qfalse;
 	case AMMO_BLASTER:
-	{
-		if (!(wDisable & 1 << WP_BRYAR_PISTOL)
-			|| !(wDisable & 1 << WP_BLASTER)
-			|| !(wDisable & 1 << WP_BRYAR_OLD))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_BRYAR_PISTOL)
+				|| !(wDisable & 1 << WP_BLASTER)
+				|| !(wDisable & 1 << WP_BRYAR_OLD))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	case AMMO_POWERCELL:
-	{
-		if (!(wDisable & 1 << WP_DISRUPTOR)
-			|| !(wDisable & 1 << WP_BOWCASTER)
-			|| !(wDisable & 1 << WP_DEMP2))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_DISRUPTOR)
+				|| !(wDisable & 1 << WP_BOWCASTER)
+				|| !(wDisable & 1 << WP_DEMP2))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	case AMMO_METAL_BOLTS:
-	{
-		if (!(wDisable & 1 << WP_REPEATER)
-			|| !(wDisable & 1 << WP_FLECHETTE))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_REPEATER)
+				|| !(wDisable & 1 << WP_FLECHETTE))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	case AMMO_ROCKETS:
-	{
-		if (!(wDisable & 1 << WP_ROCKET_LAUNCHER))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_ROCKET_LAUNCHER))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	case AMMO_THERMAL:
-	{
-		if (!(wDisable & 1 << WP_THERMAL))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_THERMAL))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	case AMMO_TRIPMINE:
-	{
-		if (!(wDisable & 1 << WP_THERMAL))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_THERMAL))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	case AMMO_DETPACK:
-	{
-		if (!(wDisable & 1 << WP_THERMAL))
 		{
-			return qfalse;
+			if (!(wDisable & 1 << WP_THERMAL))
+			{
+				return qfalse;
+			}
+			return qtrue;
 		}
-		return qtrue;
-	}
 	default:
 		Com_Printf("Error: G_AmmoDisabled couldn't find ammo type.\n");
 		return qfalse;

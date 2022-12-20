@@ -87,7 +87,7 @@ private:
 	std::vector<int> mMediaList;
 
 public:
-	void AddHandle(int item) { mMediaList.push_back(item); }
+	void AddHandle(const int item) { mMediaList.push_back(item); }
 
 	int GetHandle() const
 	{
@@ -120,19 +120,19 @@ public:
 		mMax = 0;
 	}
 
-	void SetRange(float min, float max)
+	void SetRange(const float min, const float max)
 	{
 		mMin = min;
 		mMax = max;
 	}
 
-	void SetMin(float min) { mMin = min; }
-	void SetMax(float max) { mMax = max; }
+	void SetMin(const float min) { mMin = min; }
+	void SetMax(const float max) { mMax = max; }
 
 	float GetMax() const { return mMax; }
 	float GetMin() const { return mMin; }
 
-	float GetVal(float percent) const
+	float GetVal(const float percent) const
 	{
 		if (mMin == mMax) { return mMin; }
 		return mMin + (mMax - mMin) * percent;
@@ -150,7 +150,7 @@ public:
 		return static_cast<int>((flrand(mMin, mMax) + 0.5f));
 	}
 
-	void ForceRange(float min, float max)
+	void ForceRange(const float min, const float max)
 	{
 		if (mMin < min) { mMin = min; }
 		if (mMin > max) { mMin = max; }
@@ -437,9 +437,9 @@ class PoolAllocator
 public:
 	PoolAllocator()
 		: pool(new T[N])
-		, freeAndAllocated(new int[N])
-		, numFree(N)
-		, highWatermark(0)
+		  , freeAndAllocated(new int[N])
+		  , numFree(N)
+		  , highWatermark(0)
 	{
 		for (int i = 0; i < N; i++)
 		{
@@ -538,7 +538,7 @@ class PagedPoolAllocator
 public:
 	PagedPoolAllocator()
 		: numPages(1)
-		, pages(new PoolAllocator<T, N>[1]())
+		  , pages(new PoolAllocator<T, N>[1]())
 	{
 	}
 
@@ -702,7 +702,7 @@ private:
 	int ParseEffect(const char* file, const CGPGroup& base);
 
 	void CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], int lateTime, int clientID = -1,
-		int modelNum = -1, int boltNum = -1);
+	                  int modelNum = -1, int boltNum = -1);
 	void CreateEffect(CPrimitiveTemplate* fx, int clientID, int lateTime) const;
 
 public:
@@ -719,12 +719,12 @@ public:
 	void PlayEffect(int id, vec3_t org, vec3_t fwd, bool isPortal = false);
 	// builds arbitrary perp. right vector, does a cross product to define up
 	void PlayEffect(int id, vec3_t origin, vec3_t axis[3], int boltInfo = -1, int entNum = -1, bool isPortal = false,
-		int iLoopTime = false, bool isRelative = false);
+	                int iLoopTime = false, bool isRelative = false);
 	void PlayEffect(const char* file, vec3_t org, bool isPortal = false); // uses a default up axis
 	void PlayEffect(const char* file, vec3_t org, vec3_t fwd, bool isPortal = false);
 	// builds arbitrary perp. right vector, does a cross product to define up
 	void PlayEffect(const char* file, vec3_t origin, vec3_t axis[3], int boltInfo, int entNum, bool isPortal = false,
-		int iLoopTime = false, bool isRelative = false);
+	                int iLoopTime = false, bool isRelative = false);
 
 	//for muzzle
 	void PlayEffect(const char* file, int clientID, bool isPortal = false);

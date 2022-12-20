@@ -34,7 +34,8 @@ extern void NPC_AngerSound();
 //
 extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
-extern void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir, float* enemy_movespeed, int prediction);
+extern void jedi_set_enemy_info(vec3_t enemy_dest, vec3_t enemy_dir, float* enemy_dist, vec3_t enemy_movedir,
+                                float* enemy_movespeed, int prediction);
 
 void npc_check_speak(gentity_t* speaker_npc)
 {
@@ -188,7 +189,6 @@ void npc_check_speak(gentity_t* speaker_npc)
 
 void g_do_m_block_response(const gentity_t* speaker_npc_self)
 {
-
 	if (d_npctalk->integer)
 	{
 		gi.Printf("Combat speaker_npc talking\n");
@@ -227,7 +227,7 @@ void NPC_LostEnemyDecideChase()
 			//FIXME: Should we only do this if there's no other enemies or we've got LOCKED_ENEMY on?
 			NPC_BSSearchStart(NPC->enemy->lastWaypoint, BS_SEARCH);
 		}
-		//If he's not our goalEntity, we're running somewhere else, so lose him
+	//If he's not our goalEntity, we're running somewhere else, so lose him
 		break;
 	default:
 		break;
@@ -415,7 +415,8 @@ void NPC_BSHuntAndKill()
 		const int cur_anim = NPC->client->ps.legsAnim;
 		if (cur_anim != BOTH_ATTACK1 && cur_anim != BOTH_ATTACK2 && cur_anim != BOTH_ATTACK_DUAL && cur_anim !=
 			BOTH_ATTACK_FP && cur_anim != BOTH_ATTACK3 && cur_anim != BOTH_MELEE1 && cur_anim != BOTH_MELEE2
-			&& cur_anim != BOTH_MELEE3 && cur_anim != BOTH_MELEE4 && cur_anim != BOTH_MELEE5 && cur_anim != BOTH_MELEE6 &&
+			&& cur_anim != BOTH_MELEE3 && cur_anim != BOTH_MELEE4 && cur_anim != BOTH_MELEE5 && cur_anim != BOTH_MELEE6
+			&&
 			cur_anim != BOTH_MELEE_L
 			&& cur_anim != BOTH_MELEE_R && cur_anim != BOTH_MELEEUP && cur_anim != BOTH_WOOKIE_SLAP)
 		{

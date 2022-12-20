@@ -29,8 +29,9 @@ CM_PointLeafnum_r
 
 ==================
 */
-int CM_PointLeafnum_r(const vec3_t p, int num, clipMap_t* local) {
-	float		d;
+int CM_PointLeafnum_r(const vec3_t p, int num, clipMap_t* local)
+{
+	float d;
 
 	while (num >= 0)
 	{
@@ -47,13 +48,16 @@ int CM_PointLeafnum_r(const vec3_t p, int num, clipMap_t* local) {
 			num = node->children[0];
 	}
 
-	c_pointcontents++;		// optimize counter
+	c_pointcontents++; // optimize counter
 
 	return -1 - num;
 }
 
-int CM_PointLeafnum(const vec3_t p) {
-	if (!cmg.numNodes) {	// map not loaded
+int CM_PointLeafnum(const vec3_t p)
+{
+	if (!cmg.numNodes)
+	{
+		// map not loaded
 		return 0;
 	}
 	return CM_PointLeafnum_r(p, 0, &cmg);
@@ -67,44 +71,54 @@ LEAF LISTING
 ======================================================================
 */
 
-void CM_StoreLeafs(leafList_t* ll, int nodenum) {
+void CM_StoreLeafs(leafList_t* ll, const int nodenum)
+{
 	const int leafNum = -1 - nodenum;
 
 	// store the lastLeaf even if the list is overflowed
-	if (cmg.leafs[leafNum].cluster != -1) {
+	if (cmg.leafs[leafNum].cluster != -1)
+	{
 		ll->lastLeaf = leafNum;
 	}
 
-	if (ll->count >= ll->maxcount) {
+	if (ll->count >= ll->maxcount)
+	{
 		ll->overflowed = qtrue;
 		return;
 	}
 	ll->list[ll->count++] = leafNum;
 }
 
-void CM_StoreBrushes(leafList_t* ll, int nodenum) {
-	int			i;
+void CM_StoreBrushes(leafList_t* ll, const int nodenum)
+{
+	int i;
 
 	const int leafnum = -1 - nodenum;
 
 	cLeaf_t* leaf = &cmg.leafs[leafnum];
 
-	for (int k = 0; k < leaf->numLeafBrushes; k++) {
+	for (int k = 0; k < leaf->numLeafBrushes; k++)
+	{
 		const int brushnum = cmg.leafbrushes[leaf->firstLeafBrush + k];
 		cbrush_t* b = &cmg.brushes[brushnum];
-		if (b->checkcount == cmg.checkcount) {
-			continue;	// already checked this brush in another leaf
+		if (b->checkcount == cmg.checkcount)
+		{
+			continue; // already checked this brush in another leaf
 		}
 		b->checkcount = cmg.checkcount;
-		for (i = 0; i < 3; i++) {
-			if (b->bounds[0][i] >= ll->bounds[1][i] || b->bounds[1][i] <= ll->bounds[0][i]) {
+		for (i = 0; i < 3; i++)
+		{
+			if (b->bounds[0][i] >= ll->bounds[1][i] || b->bounds[1][i] <= ll->bounds[0][i])
+			{
 				break;
 			}
 		}
-		if (i != 3) {
+		if (i != 3)
+		{
 			continue;
 		}
-		if (ll->count >= ll->maxcount) {
+		if (ll->count >= ll->maxcount)
+		{
 			ll->overflowed = qtrue;
 			return;
 		}
@@ -128,9 +142,12 @@ CM_BoxLeafnums
 Fills in a list of all the leafs touched
 =============
 */
-void CM_BoxLeafnums_r(leafList_t* ll, int nodenum) {
-	while (true) {
-		if (nodenum < 0) {
+void CM_BoxLeafnums_r(leafList_t* ll, int nodenum)
+{
+	while (true)
+	{
+		if (nodenum < 0)
+		{
 			ll->storeLeafs(ll, nodenum);
 			return;
 		}
@@ -139,13 +156,16 @@ void CM_BoxLeafnums_r(leafList_t* ll, int nodenum) {
 		const cplane_t* plane = node->plane;
 
 		const int s = BoxOnPlaneSide(ll->bounds[0], ll->bounds[1], plane);
-		if (s == 1) {
+		if (s == 1)
+		{
 			nodenum = node->children[0];
 		}
-		else if (s == 2) {
+		else if (s == 2)
+		{
 			nodenum = node->children[1];
 		}
-		else {
+		else
+		{
 			// go down both
 			CM_BoxLeafnums_r(ll, node->children[0]);
 			nodenum = node->children[1];
@@ -158,9 +178,10 @@ void CM_BoxLeafnums_r(leafList_t* ll, int nodenum) {
 CM_BoxLeafnums
 ==================
 */
-int	CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int* boxList, int listsize, int* lastLeaf) {
+int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int* boxList, const int listsize, int* lastLeaf)
+{
 	//rwwRMG - changed to boxList to not conflict with list type
-	leafList_t	ll;
+	leafList_t ll;
 
 	cmg.checkcount++;
 
@@ -187,13 +208,16 @@ CM_PointContents
 
 ==================
 */
-int CM_PointContents(const vec3_t p, clipHandle_t model) {
-	int			leafnum;
-	int			i;
+int CM_PointContents(const vec3_t p, const clipHandle_t model)
+{
+	int leafnum;
+	int i;
 	cLeaf_t* leaf;
 	clipMap_t* local;
 
-	if (!cmg.numNodes) {	// map not loaded
+	if (!cmg.numNodes)
+	{
+		// map not loaded
 		return 0;
 	}
 
@@ -218,16 +242,19 @@ int CM_PointContents(const vec3_t p, clipHandle_t model) {
 	}
 
 	int contents = 0;
-	for (int k = 0; k < leaf->numLeafBrushes; k++) {
+	for (int k = 0; k < leaf->numLeafBrushes; k++)
+	{
 		const int brushnum = local->leafbrushes[leaf->firstLeafBrush + k];
 		const cbrush_t* b = &local->brushes[brushnum];
 
 		// see if the point is in the brush
-		for (i = 0; i < b->numsides; i++) {
+		for (i = 0; i < b->numsides; i++)
+		{
 			const float d = DotProduct(p, b->sides[i].plane->normal);
 			// FIXME test for Cash
 			//			if ( d >= b->sides[i].plane->dist ) {
-			if (d > b->sides[i].plane->dist) {
+			if (d > b->sides[i].plane->dist)
+			{
 				break;
 			}
 		}
@@ -249,8 +276,9 @@ Handles offseting and rotation of the end points for moving and
 rotating entities
 ==================
 */
-int	CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles) {
-	vec3_t		p_l;
+int CM_TransformedPointContents(const vec3_t p, const clipHandle_t model, const vec3_t origin, const vec3_t angles)
+{
+	vec3_t p_l;
 
 	// subtract origin offset
 	VectorSubtract(p, origin, p_l);
@@ -281,8 +309,10 @@ PVS
 
 ===============================================================================
 */
-byte* CM_ClusterPVS(int cluster) {
-	if (cluster < 0 || cluster >= cmg.numClusters || !cmg.vised) {
+byte* CM_ClusterPVS(const int cluster)
+{
+	if (cluster < 0 || cluster >= cmg.numClusters || !cmg.vised)
+	{
 		return cmg.visibility;
 	}
 
@@ -296,10 +326,12 @@ AREAPORTALS
 
 ===============================================================================
 */
-void CM_FloodArea_r(int areaNum, int floodnum, clipMap_t& cm) {
+void CM_FloodArea_r(const int areaNum, const int floodnum, clipMap_t& cm)
+{
 	cArea_t* area = &cm.areas[areaNum];
 
-	if (area->floodvalid == cm.floodvalid) {
+	if (area->floodvalid == cm.floodvalid)
+	{
 		if (area->floodnum == floodnum)
 			return;
 		Com_Error(ERR_DROP, "FloodArea_r: reflooded");
@@ -308,8 +340,10 @@ void CM_FloodArea_r(int areaNum, int floodnum, clipMap_t& cm) {
 	area->floodnum = floodnum;
 	area->floodvalid = cm.floodvalid;
 	const int* con = cm.areaPortals + areaNum * cm.numAreas;
-	for (int i = 0; i < cm.numAreas; i++) {
-		if (con[i] > 0) {
+	for (int i = 0; i < cm.numAreas; i++)
+	{
+		if (con[i] > 0)
+		{
 			CM_FloodArea_r(i, floodnum, cm);
 		}
 	}
@@ -321,15 +355,18 @@ CM_FloodAreaConnections
 
 ====================
 */
-void	CM_FloodAreaConnections(clipMap_t& cm) {
+void CM_FloodAreaConnections(clipMap_t& cm)
+{
 	// all current floods are now invalid
 	cm.floodvalid++;
 	int floodnum = 0;
 
-	for (int i = 0; i < cm.numAreas; i++) {
+	for (int i = 0; i < cm.numAreas; i++)
+	{
 		const cArea_t* area = &cm.areas[i];
-		if (area->floodvalid == cm.floodvalid) {
-			continue;		// already flooded into
+		if (area->floodvalid == cm.floodvalid)
+		{
+			continue; // already flooded into
 		}
 		floodnum++;
 		CM_FloodArea_r(i, floodnum, cm);
@@ -342,23 +379,29 @@ CM_AdjustAreaPortalState
 
 ====================
 */
-void	CM_AdjustAreaPortalState(int area1, int area2, qboolean open) {
-	if (area1 < 0 || area2 < 0) {
+void CM_AdjustAreaPortalState(const int area1, const int area2, const qboolean open)
+{
+	if (area1 < 0 || area2 < 0)
+	{
 		return;
 	}
 
-	if (area1 >= cmg.numAreas || area2 >= cmg.numAreas) {
+	if (area1 >= cmg.numAreas || area2 >= cmg.numAreas)
+	{
 		Com_Error(ERR_DROP, "CM_ChangeAreaPortalState: bad area number");
 	}
 
-	if (open) {
+	if (open)
+	{
 		cmg.areaPortals[area1 * cmg.numAreas + area2]++;
 		cmg.areaPortals[area2 * cmg.numAreas + area1]++;
 	}
-	else {
+	else
+	{
 		cmg.areaPortals[area1 * cmg.numAreas + area2]--;
 		cmg.areaPortals[area2 * cmg.numAreas + area1]--;
-		if (cmg.areaPortals[area2 * cmg.numAreas + area1] < 0) {
+		if (cmg.areaPortals[area2 * cmg.numAreas + area1] < 0)
+		{
 			Com_Error(ERR_DROP, "CM_AdjustAreaPortalState: negative reference count");
 		}
 	}
@@ -372,22 +415,27 @@ CM_AreasConnected
 
 ====================
 */
-qboolean	CM_AreasConnected(int area1, int area2) {
+qboolean CM_AreasConnected(const int area1, const int area2)
+{
 #ifndef BSPC
-	if (cm_noAreas->integer) {
+	if (cm_noAreas->integer)
+	{
 		return qtrue;
 	}
 #endif
 
-	if (area1 < 0 || area2 < 0) {
+	if (area1 < 0 || area2 < 0)
+	{
 		return qfalse;
 	}
 
-	if (area1 >= cmg.numAreas || area2 >= cmg.numAreas) {
+	if (area1 >= cmg.numAreas || area2 >= cmg.numAreas)
+	{
 		Com_Error(ERR_DROP, "area >= cmg.numAreas");
 	}
 
-	if (cmg.areas[area1].floodnum == cmg.areas[area2].floodnum) {
+	if (cmg.areas[area1].floodnum == cmg.areas[area2].floodnum)
+	{
 		return qtrue;
 	}
 	return qfalse;
@@ -416,7 +464,8 @@ int CM_WriteAreaBits(byte* buffer, int area)
 #else
 	if (area == -1)
 #endif
-	{	// for debugging, send everything
+	{
+		// for debugging, send everything
 		Com_Memset(buffer, 255, bytes);
 	}
 	else

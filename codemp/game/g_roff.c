@@ -355,7 +355,7 @@ static qboolean G_InitRoff(char* file, unsigned char* data)
 			if (roffs[num_roffs].mFrameTime < 50)
 			{
 				Com_Printf(S_COLOR_RED"Error: \"%s\" has an invalid ROFF framerate (%d < 50)\n", file,
-					roffs[num_roffs].mFrameTime);
+				           roffs[num_roffs].mFrameTime);
 			}
 			assert(roffs[num_roffs].mFrameTime >= 50); //HAS to be at least 50 to be reliable
 
@@ -518,9 +518,9 @@ void G_Roffs(gentity_t* ent)
 	if (developer.integer)
 	{
 		Com_Printf(S_COLOR_GREEN"ROFF dat: num: %d o:<%.2f %.2f %.2f> a:<%.2f %.2f %.2f>\n",
-			ent->roff_ctr,
-			org[0], org[1], org[2],
-			ang[0], ang[1], ang[2]);
+		           ent->roff_ctr,
+		           org[0], org[1], org[2],
+		           ang[0], ang[1], ang[2]);
 	}
 #endif
 

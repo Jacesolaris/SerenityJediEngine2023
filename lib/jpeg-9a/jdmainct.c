@@ -151,7 +151,7 @@ JPP((j_decompress_ptr cinfo, JSAMPARRAY output_buf,
 #endif
 
 LOCAL(void)
-alloc_funny_pointers(j_decompress_ptr cinfo)
+alloc_funny_pointers(const j_decompress_ptr cinfo)
 /* Allocate space for the funny pointer lists.
  * This is done only once, not once per pass.
  */
@@ -186,7 +186,7 @@ alloc_funny_pointers(j_decompress_ptr cinfo)
 }
 
 LOCAL(void)
-make_funny_pointers(j_decompress_ptr cinfo)
+make_funny_pointers(const j_decompress_ptr cinfo)
 /* Create the funny pointer lists discussed in the comments above.
  * The actual workspace is already allocated (in main->buffer),
  * and the space for the pointer lists is allocated too.
@@ -227,7 +227,7 @@ make_funny_pointers(j_decompress_ptr cinfo)
 }
 
 LOCAL(void)
-set_wraparound_pointers(j_decompress_ptr cinfo)
+set_wraparound_pointers(const j_decompress_ptr cinfo)
 /* Set up the "wraparound" pointers at top and bottom of the pointer lists.
  * This changes the pointer list state from top-of-image to the normal state.
  */
@@ -253,7 +253,7 @@ set_wraparound_pointers(j_decompress_ptr cinfo)
 }
 
 LOCAL(void)
-set_bottom_pointers(j_decompress_ptr cinfo)
+set_bottom_pointers(const j_decompress_ptr cinfo)
 /* Change the pointer lists to duplicate the last sample row at the bottom
  * of the image.  whichptr indicates which xbuffer holds the final iMCU row.
  * Also sets rowgroups_avail to indicate number of nondummy row groups in row.
@@ -292,7 +292,7 @@ set_bottom_pointers(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_pass_main(j_decompress_ptr cinfo, J_BUF_MODE pass_mode)
+start_pass_main(const j_decompress_ptr cinfo, const J_BUF_MODE pass_mode)
 {
 	const my_main_ptr mainp = (my_main_ptr)cinfo->main;
 
@@ -330,9 +330,9 @@ start_pass_main(j_decompress_ptr cinfo, J_BUF_MODE pass_mode)
  */
 
 METHODDEF(void)
-process_data_simple_main(j_decompress_ptr cinfo,
-	JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
-	JDIMENSION out_rows_avail)
+process_data_simple_main(const j_decompress_ptr cinfo,
+                         const JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
+                         const JDIMENSION out_rows_avail)
 {
 	const my_main_ptr mainp = (my_main_ptr)cinfo->main;
 
@@ -368,9 +368,9 @@ process_data_simple_main(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-process_data_context_main(j_decompress_ptr cinfo,
-	JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
-	JDIMENSION out_rows_avail)
+process_data_context_main(const j_decompress_ptr cinfo,
+                          const JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
+                          const JDIMENSION out_rows_avail)
 {
 	const my_main_ptr mainp = (my_main_ptr)cinfo->main;
 
@@ -441,9 +441,9 @@ process_data_context_main(j_decompress_ptr cinfo,
 #ifdef QUANT_2PASS_SUPPORTED
 
 METHODDEF(void)
-process_data_crank_post(j_decompress_ptr cinfo,
-	JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
-	JDIMENSION out_rows_avail)
+process_data_crank_post(const j_decompress_ptr cinfo,
+                        const JSAMPARRAY output_buf, JDIMENSION* out_row_ctr,
+                        const JDIMENSION out_rows_avail)
 {
 	(*cinfo->post->post_process_data) (cinfo, (JSAMPIMAGE)NULL,
 		(JDIMENSION*)NULL, (JDIMENSION)0,
@@ -457,7 +457,7 @@ process_data_crank_post(j_decompress_ptr cinfo,
  */
 
 GLOBAL(void)
-jinit_d_main_controller(j_decompress_ptr cinfo, boolean need_full_buffer)
+jinit_d_main_controller(const j_decompress_ptr cinfo, const boolean need_full_buffer)
 {
 	int ci, ngroups;
 	jpeg_component_info* compptr;

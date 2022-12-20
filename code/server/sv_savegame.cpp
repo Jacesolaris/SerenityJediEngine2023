@@ -33,15 +33,15 @@ constexpr auto JPEG_IMAGE_QUALITY = 95;
 #include "qcommon/ojk_saved_game.h"
 #include "qcommon/ojk_saved_game_helper.h"
 
-static char	save_game_comment[iSG_COMMENT_SIZE];
+static char save_game_comment[iSG_COMMENT_SIZE];
 
 //#define SG_PROFILE	// enable for debug save stats if you want
 
-int giSaveGameVersion;	// filled in when a savegame file is opened
+int giSaveGameVersion; // filled in when a savegame file is opened
 
 SavedGameJustLoaded_e e_saved_game_just_loaded = eNO;
 
-char sLastSaveFileLoaded[MAX_QPATH] = { 0 };
+char sLastSaveFileLoaded[MAX_QPATH] = {0};
 
 #ifdef JK2_MODE
 #define iSG_MAPCMD_SIZE (MAX_TOKEN_CHARS)
@@ -156,7 +156,8 @@ qboolean SV_TryLoadTransition(const char* mapname)
 	Com_Printf(S_COLOR_CYAN "Restoring game \"%s\"...\n", psFilename);
 
 	if (!SG_ReadSavegame(psFilename))
-	{//couldn't load a savegame
+	{
+		//couldn't load a savegame
 		return qfalse;
 	}
 #ifdef JK2_MODE
@@ -169,6 +170,7 @@ qboolean SV_TryLoadTransition(const char* mapname)
 }
 
 qboolean gbAlreadyDoingLoad = qfalse;
+
 void SV_LoadGame_f()
 {
 	if (gbAlreadyDoingLoad)
@@ -201,7 +203,7 @@ void SV_LoadGame_f()
 	//
 	if (!Q_stricmp(psFilename, "*respawn"))
 	{
-		psFilename = "auto";	// default to standard respawn behaviour
+		psFilename = "auto"; // default to standard respawn behaviour
 
 		// see if there's a last-loaded file to even check against as regards loading...
 		//
@@ -213,7 +215,8 @@ void SV_LoadGame_f()
 			const char* psMapNameOfAutoSave = SG_GetSaveGameMapName("auto");
 
 			if (!Q_stricmp(psMapName, "_brig"))
-			{//if you're in the brig and there is no autosave, load the last loaded savegame
+			{
+				//if you're in the brig and there is no autosave, load the last loaded savegame
 				if (!psMapNameOfAutoSave)
 				{
 					psFilename = sLastSaveFileLoaded;
@@ -233,12 +236,12 @@ void SV_LoadGame_f()
 				}
 				else
 #endif
-					if (!(psMapName && psMapNameOfAutoSave && !Q_stricmp(psMapName, psMapNameOfAutoSave)))
-					{
-						// either there's no auto file, or it's from a different map to the one we've just died on...
-						//
-						psFilename = sLastSaveFileLoaded;
-					}
+				if (!(psMapName && psMapNameOfAutoSave && !Q_stricmp(psMapName, psMapNameOfAutoSave)))
+				{
+					// either there's no auto file, or it's from a different map to the one we've just died on...
+					//
+					psFilename = sLastSaveFileLoaded;
+				}
 			}
 		}
 		//default will continue to load auto
@@ -250,8 +253,10 @@ void SV_LoadGame_f()
 #endif
 
 	gbAlreadyDoingLoad = qtrue;
-	if (!SG_ReadSavegame(psFilename)) {
-		gbAlreadyDoingLoad = qfalse; //	do NOT do this here now, need to wait until client spawn, unless the load failed.
+	if (!SG_ReadSavegame(psFilename))
+	{
+		gbAlreadyDoingLoad = qfalse;
+		//	do NOT do this here now, need to wait until client spawn, unless the load failed.
 	}
 	else
 	{
@@ -314,7 +319,7 @@ void SV_SaveGame_f()
 	}
 
 	const char* psFilename = Cmd_Argv(1);
-	char filename[MAX_QPATH] = { 0 };
+	char filename[MAX_QPATH] = {0};
 
 	Q_strncpyz(filename, psFilename, sizeof filename);
 
@@ -330,8 +335,8 @@ void SV_SaveGame_f()
 		return;
 	}
 
-	if (!SG_GameAllowedToSaveHere(qfalse))	//full check
-		return;	// this prevents people saving via quick-save now during cinematic.
+	if (!SG_GameAllowedToSaveHere(qfalse)) //full check
+		return; // this prevents people saving via quick-save now during cinematic.
 
 #ifdef JK2_MODE
 	if (!Q_stricmp(filename, "quik*") || !Q_stricmp(filename, "auto*"))
@@ -344,7 +349,7 @@ void SV_SaveGame_f()
 #else
 	if (!Q_stricmp(filename, "auto"))
 	{
-		SG_StoreSaveGameComment("");	// clear previous comment/description, which will force time/date comment.
+		SG_StoreSaveGameComment(""); // clear previous comment/description, which will force time/date comment.
 	}
 #endif
 
@@ -373,7 +378,7 @@ void SV_SaveGame_f()
 }
 
 //---------------
-static void WriteGame(qboolean autosave)
+static void WriteGame(const qboolean autosave)
 {
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
@@ -387,7 +392,7 @@ static void WriteGame(qboolean autosave)
 		// write out player ammo level, health, etc...
 		//
 		extern void SV_Player_EndOfLevelSave();
-		SV_Player_EndOfLevelSave();	// this sets up the various cvars needed, so we can then write them to disk
+		SV_Player_EndOfLevelSave(); // this sets up the various cvars needed, so we can then write them to disk
 		//
 		char s[MAX_STRING_CHARS] = {};
 
@@ -439,7 +444,7 @@ static qboolean ReadGame()
 
 	if (qbAutoSave)
 	{
-		char s[MAX_STRING_CHARS] = { 0 };
+		char s[MAX_STRING_CHARS] = {0};
 
 		// read health/armour etc...
 		//
@@ -490,12 +495,13 @@ static qboolean ReadGame()
 // write all CVAR_SAVEGAME cvars
 // these will be things like model, name, ...
 //
-extern  cvar_t* cvar_vars;	// I know this is really unpleasant, but I need access for scanning/writing latched cvars during save games
+extern cvar_t* cvar_vars;
+// I know this is really unpleasant, but I need access for scanning/writing latched cvars during save games
 
 void SG_WriteCvars()
 {
 	cvar_t* var;
-	int		iCount = 0;
+	int iCount = 0;
 
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
@@ -569,10 +575,10 @@ void SG_ReadCvars()
 		saved_game.read_chunk(
 			INT_ID('V', 'A', 'L', 'U'));
 
-		const char* psValue = static_cast<const char*>(
+		auto psValue = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
-		::Cvar_Set(psName.c_str(), psValue);
+		Cvar_Set(psName.c_str(), psValue);
 	}
 }
 
@@ -582,7 +588,8 @@ void SG_WriteServerConfigStrings()
 		&ojk::SavedGame::get_instance());
 
 	int iCount = 0;
-	int i;	// not in FOR statement in case compiler goes weird by reg-optimizing it then failing to get the address later
+	int i;
+	// not in FOR statement in case compiler goes weird by reg-optimizing it then failing to get the address later
 
 	// count how many non-blank server strings there are...
 	//
@@ -590,7 +597,7 @@ void SG_WriteServerConfigStrings()
 	{
 		if (i != CS_SYSTEMINFO)
 		{
-			if (sv.configstrings[i] && strlen(sv.configstrings[i]))		// paranoia... <g>
+			if (sv.configstrings[i] && strlen(sv.configstrings[i])) // paranoia... <g>
 			{
 				iCount++;
 			}
@@ -615,8 +622,8 @@ void SG_WriteServerConfigStrings()
 
 				saved_game.write_chunk(
 					INT_ID('C', 'S', 'D', 'A'),
-					::sv.configstrings[i],
-					static_cast<int>(strlen(::sv.configstrings[i]) + 1));
+					sv.configstrings[i],
+					static_cast<int>(strlen(sv.configstrings[i]) + 1));
 			}
 		}
 	}
@@ -662,7 +669,7 @@ void SG_ReadServerConfigStrings()
 		saved_game.read_chunk(
 			INT_ID('C', 'S', 'D', 'A'));
 
-		const char* psName = static_cast<const char*>(
+		auto psName = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
 		Com_DPrintf("Cfg str %d = %s\n", iIndex, psName);
@@ -677,12 +684,12 @@ static unsigned int SG_UnixTimestamp(const time_t& t)
 	return static_cast<unsigned int>(t);
 }
 
-static void SG_WriteComment(qboolean qbAutosave, const char* psMapName)
+static void SG_WriteComment(const qboolean qbAutosave, const char* psMapName)
 {
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
 
-	char	sComment[iSG_COMMENT_SIZE];
+	char sComment[iSG_COMMENT_SIZE];
 
 	if (qbAutosave || !*save_game_comment)
 	{
@@ -707,7 +714,7 @@ static void SG_WriteComment(qboolean qbAutosave, const char* psMapName)
 	Com_DPrintf("Saving: current (%s)\n", sComment);
 }
 
-static time_t SG_GetTime(unsigned int timestamp)
+static time_t SG_GetTime(const unsigned int timestamp)
 {
 	return timestamp;
 }
@@ -758,7 +765,7 @@ int SG_GetSaveGameComment(
 
 	// Read timestamp
 	//
-	time_t tFileTime = ::SG_GetTime(0);
+	time_t tFileTime = SG_GetTime(0);
 
 	if (is_succeed)
 	{
@@ -770,7 +777,7 @@ int SG_GetSaveGameComment(
 
 		if (is_succeed)
 		{
-			tFileTime = ::SG_GetTime(
+			tFileTime = SG_GetTime(
 				fileTime);
 		}
 	}
@@ -834,7 +841,7 @@ int SG_GetSaveGameComment(
 //
 static char* SG_GetSaveGameMapName(const char* psPathlessBaseName)
 {
-	static char sMapName[iSG_MAPCMD_SIZE] = { 0 };
+	static char sMapName[iSG_MAPCMD_SIZE] = {0};
 	char* psReturn = nullptr;
 	if (SG_GetSaveGameComment(psPathlessBaseName, nullptr, sMapName))
 	{
@@ -1056,45 +1063,46 @@ static void SG_WriteScreenshot(qboolean qbAutosave, const char* psMapName)
 }
 #endif
 
-qboolean SG_GameAllowedToSaveHere(qboolean inCamera)
+qboolean SG_GameAllowedToSaveHere(const qboolean inCamera)
 {
-	if (!inCamera) {
+	if (!inCamera)
+	{
 		if (!com_sv_running || !com_sv_running->integer)
 		{
-			return qfalse;	//		Com_Printf( S_COLOR_RED "Server is not running\n" );
+			return qfalse; //		Com_Printf( S_COLOR_RED "Server is not running\n" );
 		}
 
 		if (CL_IsRunningInGameCinematic())
 		{
-			return qfalse;	//nope, not during a video
+			return qfalse; //nope, not during a video
 		}
 
 		if (sv.state != SS_GAME)
 		{
-			return qfalse;	//		Com_Printf (S_COLOR_RED "You must be in a game to save.\n");
+			return qfalse; //		Com_Printf (S_COLOR_RED "You must be in a game to save.\n");
 		}
 
 		//No savegames from "_" maps
 		if (!sv_mapname || sv_mapname->string != nullptr && sv_mapname->string[0] == '_')
 		{
-			return qfalse;	//		Com_Printf (S_COLOR_RED "Cannot save on holo deck or brig.\n");
+			return qfalse; //		Com_Printf (S_COLOR_RED "Cannot save on holo deck or brig.\n");
 		}
 
 		if (svs.clients[0].frames[svs.clients[0].netchan.outgoingSequence & PACKET_MASK].ps.stats[STAT_HEALTH] <= 0)
 		{
-			return qfalse;	//		Com_Printf (S_COLOR_RED "\nCan't savegame while dead!\n");
+			return qfalse; //		Com_Printf (S_COLOR_RED "\nCan't savegame while dead!\n");
 		}
 	}
 	if (!ge)
-		return inCamera;	// only happens when called to test if inCamera
+		return inCamera; // only happens when called to test if inCamera
 
 	return ge->GameAllowedToSaveHere();
 }
 
 qboolean SG_WriteSavegame(const char* psPathlessBaseName, qboolean qbAutosave)
 {
-	if (!qbAutosave && !SG_GameAllowedToSaveHere(qfalse))	//full check
-		return qfalse;	// this prevents people saving via quick-save now during cinematic
+	if (!qbAutosave && !SG_GameAllowedToSaveHere(qfalse)) //full check
+		return qfalse; // this prevents people saving via quick-save now during cinematic
 
 	const int iPrevTestSave = sv_testsave->integer;
 	sv_testsave->integer = 0;
@@ -1117,7 +1125,7 @@ qboolean SG_WriteSavegame(const char* psPathlessBaseName, qboolean qbAutosave)
 
 	if (!saved_game.create("current"))
 	{
-		Com_Printf(GetString_FailedToOpenSaveGame("current", qfalse));//S_COLOR_RED "Failed to create savegame\n");
+		Com_Printf(GetString_FailedToOpenSaveGame("current", qfalse)); //S_COLOR_RED "Failed to create savegame\n");
 		SG_WipeSavegame("current");
 		sv_testsave->integer = iPrevTestSave;
 		return qfalse;
@@ -1127,7 +1135,7 @@ qboolean SG_WriteSavegame(const char* psPathlessBaseName, qboolean qbAutosave)
 	ojk::SavedGameHelper sgh(
 		&saved_game);
 
-	char   sMapCmd[iSG_MAPCMD_SIZE] = { 0 };
+	char sMapCmd[iSG_MAPCMD_SIZE] = {0};
 	Q_strncpyz(sMapCmd, psMapName, sizeof sMapCmd);
 
 	SG_WriteComment(qbAutosave, sMapCmd);
@@ -1149,16 +1157,16 @@ qboolean SG_WriteSavegame(const char* psPathlessBaseName, qboolean qbAutosave)
 	{
 		sgh.write_chunk<int32_t>(
 			INT_ID('T', 'I', 'M', 'E'),
-			::sv.time);
+			sv.time);
 
 		sgh.write_chunk<int32_t>(
 			INT_ID('T', 'I', 'M', 'R'),
-			::sv.timeResidual);
+			sv.timeResidual);
 
 		CM_WritePortalState();
 		SG_WriteServerConfigStrings();
 	}
-	ge->WriteLevel(qbAutosave);	// always done now, but ent saver only does player if auto
+	ge->WriteLevel(qbAutosave); // always done now, but ent saver only does player if auto
 
 	const bool is_write_failed = saved_game.is_failed();
 
@@ -1166,7 +1174,7 @@ qboolean SG_WriteSavegame(const char* psPathlessBaseName, qboolean qbAutosave)
 
 	if (is_write_failed)
 	{
-		Com_Printf(GetString_FailedToOpenSaveGame("current", qfalse));//S_COLOR_RED "Failed to write savegame!\n");
+		Com_Printf(GetString_FailedToOpenSaveGame("current", qfalse)); //S_COLOR_RED "Failed to write savegame!\n");
 		SG_WipeSavegame("current");
 		sv_testsave->integer = iPrevTestSave;
 		return qfalse;
@@ -1196,26 +1204,26 @@ qboolean SG_ReadSavegame
 	ojk::SavedGameHelper sgh(
 		&saved_game);
 
-	const int iPrevTestSave = ::sv_testsave->integer;
+	const int iPrevTestSave = sv_testsave->integer;
 
 	ojk::ScopeGuard scope_guard(
 		[&]()
 		{
-			::sv_testsave->integer = 0;
+			sv_testsave->integer = 0;
 		},
 
 		[&]()
 		{
 			saved_game.close();
 
-		::sv_testsave->integer = iPrevTestSave;
+			sv_testsave->integer = iPrevTestSave;
 		}
-		);
+	);
 
 	if (!saved_game.open(psPathlessBaseName))
 	{
-		::Com_Printf(
-			::GetString_FailedToOpenSaveGame(
+		Com_Printf(
+			GetString_FailedToOpenSaveGame(
 				psPathlessBaseName,
 				qtrue));
 
@@ -1226,8 +1234,8 @@ qboolean SG_ReadSavegame
 	//
 	if (psPathlessBaseName != sLastSaveFileLoaded)
 	{
-		::Q_strncpyz(
-			::sLastSaveFileLoaded,
+		Q_strncpyz(
+			sLastSaveFileLoaded,
 			psPathlessBaseName,
 			sizeof sLastSaveFileLoaded);
 	}
@@ -1238,7 +1246,7 @@ qboolean SG_ReadSavegame
 		INT_ID('C', 'O', 'M', 'M'),
 		sComment);
 
-	::Com_DPrintf(
+	Com_DPrintf(
 		"Reading: %s\n",
 		sComment);
 
@@ -1255,18 +1263,18 @@ qboolean SG_ReadSavegame
 		INT_ID('M', 'P', 'C', 'M'),
 		sMapCmd);
 
-	::SG_ReadCvars();
+	SG_ReadCvars();
 
 	// read game state
-	const qboolean qbAutosave = ::ReadGame();
+	const qboolean qbAutosave = ReadGame();
 
-	::e_saved_game_just_loaded = qbAutosave ? eAUTO : eFULL;
+	e_saved_game_just_loaded = qbAutosave ? eAUTO : eFULL;
 
 	// note that this also trashes the whole G_Alloc pool as well (of course)
 	::SV_SpawnServer(
 		sMapCmd,
 		eForceReload_NOTHING,
-		::e_saved_game_just_loaded != eFULL ? qtrue : qfalse);
+		e_saved_game_just_loaded != eFULL ? qtrue : qfalse);
 
 	// read in all the level data...
 	//
@@ -1274,18 +1282,18 @@ qboolean SG_ReadSavegame
 	{
 		sgh.read_chunk<int32_t>(
 			INT_ID('T', 'I', 'M', 'E'),
-			::sv.time);
+			sv.time);
 
 		sgh.read_chunk<int32_t>(
 			INT_ID('T', 'I', 'M', 'R'),
-			::sv.timeResidual);
+			sv.timeResidual);
 
-		::CM_ReadPortalState();
-		::SG_ReadServerConfigStrings();
+		CM_ReadPortalState();
+		SG_ReadServerConfigStrings();
 	}
 
 	// always done now, but ent reader only does player if auto
-	::ge->ReadLevel(
+	ge->ReadLevel(
 		qbAutosave,
 		qbLoadTransition);
 

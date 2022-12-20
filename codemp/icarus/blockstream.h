@@ -33,8 +33,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define IBI_HEADER_ID	"IBI"
 #define IBI_HEADER_ID_LENGTH 4 // Length of IBI_HEADER_ID + 1 for the null terminating byte.
 
-constexpr	float	IBI_VERSION = 1.57f;
-constexpr	int		MAX_FILENAME_LENGTH = 1024;
+constexpr float IBI_VERSION = 1.57f;
+constexpr int MAX_FILENAME_LENGTH = 1024;
 
 using vector_t = float[3];
 
@@ -53,17 +53,16 @@ enum
 class CBlockMember
 {
 public:
-
 	CBlockMember();
 	~CBlockMember();
 
 	void Free(void);
 
-	int WriteMember(FILE*) const;				//Writes the member's data, in block format, to FILE *
-	int	ReadMember(char**, int*);		//Reads the member's data, in block format, from FILE *
+	int WriteMember(FILE*) const; //Writes the member's data, in block format, to FILE *
+	int ReadMember(char**, int*); //Reads the member's data, in block format, from FILE *
 
-	void SetID(int id) { m_id = id; }	//Set the ID member variable
-	void SetSize(int size) { m_size = size; }	//Set the size member variable
+	void SetID(const int id) { m_id = id; } //Set the ID member variable
+	void SetSize(const int size) { m_size = size; } //Set the size member variable
 
 	void GetInfo(int*, int*, void**) const;
 
@@ -72,23 +71,27 @@ public:
 	void SetData(vector_t);
 	void SetData(const void* data, int size);
 
-	int	GetID(void)		const { return m_id; }	//Get ID member variables
-	void* GetData(void)	const { return m_data; }	//Get data member variable
-	int	GetSize(void)		const { return m_size; }	//Get size member variable
+	int GetID(void) const { return m_id; } //Get ID member variables
+	void* GetData(void) const { return m_data; } //Get data member variable
+	int GetSize(void) const { return m_size; } //Get size member variable
 
-	void* operator new(size_t size)
-	{	// Allocate the memory.
+	void* operator new(const size_t size)
+	{
+		// Allocate the memory.
 		return Z_Malloc(size, TAG_ICARUS4, qtrue);
 	}
+
 	// Overloaded delete operator.
 	void operator delete(void* pRawData)
-	{	// Free the Memory.
+	{
+		// Free the Memory.
 		Z_Free(pRawData);
 	}
 
 	CBlockMember* Duplicate(void) const;
 
-	template <class T> void WriteData(T& data)
+	template <class T>
+	void WriteData(T& data)
 	{
 		if (m_data)
 		{
@@ -100,7 +103,8 @@ public:
 		m_size = sizeof(T);
 	}
 
-	template <class T> void WriteDataPointer(const T* data, int num)
+	template <class T>
+	void WriteDataPointer(const T* data, const int num)
 	{
 		if (m_data)
 		{
@@ -113,20 +117,18 @@ public:
 	}
 
 protected:
-
-	int		m_id;		//ID of the value contained in data
-	int		m_size;		//Size of the data member variable
-	void* m_data;	//Data for this member
+	int m_id; //ID of the value contained in data
+	int m_size; //Size of the data member variable
+	void* m_data; //Data for this member
 };
 
 //CBlock
 
 class CBlock
 {
-	using blockMember_v = std::vector< CBlockMember* >;
+	using blockMember_v = std::vector<CBlockMember*>;
 
 public:
-
 	CBlock();
 	~CBlock();
 
@@ -152,20 +154,20 @@ public:
 
 	CBlock* Duplicate(void);
 
-	int	GetBlockID(void)		const { return m_id; }	//Get the ID for the block
-	int	GetNumMembers(void)	const { return static_cast<int>(m_members.size()); }	//Get the number of member in the block's list
+	int GetBlockID(void) const { return m_id; } //Get the ID for the block
+	int GetNumMembers(void) const { return static_cast<int>(m_members.size()); }
+	//Get the number of member in the block's list
 
-	void SetFlags(unsigned char flags) { m_flags = flags; }
-	void SetFlag(unsigned char flag) { m_flags |= flag; }
+	void SetFlags(const unsigned char flags) { m_flags = flags; }
+	void SetFlag(const unsigned char flag) { m_flags |= flag; }
 
-	int HasFlag(unsigned char flag)	const { return m_flags & flag; }
-	unsigned char GetFlags(void)		const { return m_flags; }
+	int HasFlag(const unsigned char flag) const { return m_flags & flag; }
+	unsigned char GetFlags(void) const { return m_flags; }
 
 protected:
-
-	blockMember_v				m_members;			//List of all CBlockMembers owned by this list
-	int							m_id;				//ID of the block
-	unsigned char				m_flags;
+	blockMember_v m_members; //List of all CBlockMembers owned by this list
+	int m_id; //ID of the block
+	unsigned char m_flags;
 };
 
 // CBlockStream
@@ -173,7 +175,6 @@ protected:
 class CBlockStream
 {
 public:
-
 	CBlockStream();
 	~CBlockStream();
 
@@ -186,24 +187,23 @@ public:
 
 	int BlockAvailable(void) const;
 
-	int WriteBlock(CBlock*) const;	//Write the block out
-	int ReadBlock(CBlock*);	//Read the block in
+	int WriteBlock(CBlock*) const; //Write the block out
+	int ReadBlock(CBlock*); //Read the block in
 
-	int Open(char*, long);	//Open a stream for reading / writing
+	int Open(char*, long); //Open a stream for reading / writing
 
 protected:
+	unsigned GetUnsignedInteger(void);
+	int GetInteger(void);
 
-	unsigned	GetUnsignedInteger(void);
-	int			GetInteger(void);
+	char GetChar(void);
+	long GetLong(void);
+	float GetFloat(void);
 
-	char	GetChar(void);
-	long	GetLong(void);
-	float	GetFloat(void);
+	long m_fileSize; //Size of the file
+	FILE* m_fileHandle; //Global file handle of current I/O source
+	char m_fileName[MAX_FILENAME_LENGTH]; //Name of the current file
 
-	long	m_fileSize;							//Size of the file
-	FILE* m_fileHandle;						//Global file handle of current I/O source
-	char	m_fileName[MAX_FILENAME_LENGTH];	//Name of the current file
-
-	char* m_stream;							//Stream of data to be parsed
-	int		m_streamPos;
+	char* m_stream; //Stream of data to be parsed
+	int m_streamPos;
 };

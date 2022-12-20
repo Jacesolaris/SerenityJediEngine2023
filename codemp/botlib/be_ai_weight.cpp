@@ -752,7 +752,7 @@ void EvolveWeightConfig(weightconfig_t* config)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void ScaleFuzzySeperator_r(fuzzyseperator_t* fs, float scale)
+void ScaleFuzzySeperator_r(fuzzyseperator_t* fs, const float scale)
 {
 	if (fs->child)
 	{
@@ -793,7 +793,7 @@ void ScaleWeight(weightconfig_t* config, char* name, float scale)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void ScaleFuzzySeperatorBalanceRange_r(fuzzyseperator_t* fs, float scale)
+void ScaleFuzzySeperatorBalanceRange_r(fuzzyseperator_t* fs, const float scale)
 {
 	if (fs->child)
 	{

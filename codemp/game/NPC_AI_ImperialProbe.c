@@ -226,7 +226,7 @@ ImperialProbe_Hunt
 #define HUNTER_FORWARD_BASE_SPEED	10
 #define HUNTER_FORWARD_MULTIPLIER	5
 
-void ImperialProbe_Hunt(qboolean visible, qboolean advance)
+void ImperialProbe_Hunt(const qboolean visible, const qboolean advance)
 {
 	float distance;
 	vec3_t forward;
@@ -285,9 +285,9 @@ void ImperialProbe_FireBlaster(void)
 
 	//FIXME: use {0, NPC->client->ps.legsYaw, 0}
 	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0,
-		genBolt1,
-		&boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
-		NULL, NPCS.NPC->modelScale);
+	                          genBolt1,
+	                          &boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
+	                          NULL, NPCS.NPC->modelScale);
 
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzle1);
 
@@ -336,7 +336,7 @@ void ImperialProbe_FireBlaster(void)
 ImperialProbe_Ranged
 -------------------------
 */
-void ImperialProbe_Ranged(qboolean visible, qboolean advance)
+void ImperialProbe_Ranged(const qboolean visible, const qboolean advance)
 {
 	if (TIMER_Done(NPCS.NPC, "attackDelay")) // Attack?
 	{
@@ -433,7 +433,7 @@ void ImperialProbe_AttackDecision(void)
 NPC_BSDroid_Pain
 -------------------------
 */
-void NPC_Probe_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Probe_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	const gentity_t* other = attacker;
 	const int mod = gPainMOD;
@@ -572,9 +572,9 @@ void ImperialProbe_Wait(void)
 		NPCS.NPCInfo->desiredYaw = AngleNormalize360(NPCS.NPCInfo->desiredYaw + 25);
 
 		VectorSet(endPos, NPCS.NPC->r.currentOrigin[0], NPCS.NPC->r.currentOrigin[1],
-			NPCS.NPC->r.currentOrigin[2] - 32);
+		          NPCS.NPC->r.currentOrigin[2] - 32);
 		trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NULL, NULL, endPos, NPCS.NPC->s.number, MASK_SOLID, qfalse, 0,
-			0);
+		            0);
 
 		if (trace.fraction != 1.0f)
 		{

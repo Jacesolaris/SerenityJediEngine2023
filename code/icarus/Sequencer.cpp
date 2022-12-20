@@ -88,7 +88,7 @@ Init
 Initializes the sequencer
 ========================
 */
-int CSequencer::Init(int ownerID, CTaskManager* taskManager)
+int CSequencer::Init(const int ownerID, CTaskManager* taskManager)
 {
 	m_ownerID = ownerID;
 	m_taskManager = taskManager;
@@ -291,7 +291,7 @@ CSequence* CSequencer::AddSequence(CIcarus* icarus)
 	return sequence;
 }
 
-CSequence* CSequencer::AddSequence(CSequence* parent, CSequence* returnSeq, int flags, CIcarus* icarus)
+CSequence* CSequencer::AddSequence(CSequence* parent, CSequence* returnSeq, const int flags, CIcarus* icarus)
 {
 	const auto sequence = icarus->GetSequence();
 
@@ -321,7 +321,7 @@ Retrieves a sequence by its ID
 ========================
 */
 
-CSequence* CSequencer::GetSequence(int id)
+CSequence* CSequencer::GetSequence(const int id)
 {
 	/*	sequenceID_m::iterator mi;
 
@@ -366,7 +366,7 @@ Run
 Runs a script
 ========================
 */
-int CSequencer::Run(char* buffer, long size, CIcarus* icarus)
+int CSequencer::Run(char* buffer, const long size, CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 
@@ -417,7 +417,7 @@ int CSequencer::ParseRun(CBlock* block, CIcarus* icarus)
 	if (buffer_size <= 0)
 	{
 		game->DebugPrint(IGameInterface::WL_ERROR, "'%s' : could not open file\n",
-			static_cast<char*>(block->GetMemberData(0)));
+		                 static_cast<char*>(block->GetMemberData(0)));
 		block->Free(icarus);
 		delete block;
 		block = nullptr;
@@ -439,7 +439,7 @@ int CSequencer::ParseRun(CBlock* block, CIcarus* icarus)
 
 	//Create a new sequence
 	CSequence* new_sequence = AddSequence(m_curSequence, m_curSequence, CSequence::SQ_RUN | CSequence::SQ_PENDING,
-		icarus);
+	                                      icarus);
 
 	m_curSequence->AddChild(new_sequence);
 
@@ -569,7 +569,7 @@ int CSequencer::ParseLoop(CBlock* block, bstream_t* bstream, CIcarus* icarus)
 
 	//Set the parent
 	CSequence* sequence = AddSequence(m_curSequence, m_curSequence, CSequence::SQ_LOOP | CSequence::SQ_RETAIN,
-		icarus);
+	                                  icarus);
 
 	assert(sequence);
 	if (sequence == nullptr)
@@ -621,7 +621,7 @@ Adds a sequence that is saved until the affect is called by the parent
 ========================
 */
 
-int CSequencer::AddAffect(const bstream_t* bstream, int retain, int* id, CIcarus* icarus)
+int CSequencer::AddAffect(const bstream_t* bstream, const int retain, int* id, CIcarus* icarus)
 {
 	CSequence* sequence = AddSequence(icarus);
 	bstream_t new_stream;
@@ -680,7 +680,7 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream, CIcarus* icarus)
 
 		switch (id)
 		{
-			// these 3 cases probably aren't necessary
+		// these 3 cases probably aren't necessary
 		case CIcarus::TK_STRING:
 		case CIcarus::TK_IDENTIFIER:
 		case CIcarus::TK_CHAR:
@@ -688,34 +688,34 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream, CIcarus* icarus)
 			break;
 
 		case CIcarus::ID_GET:
-		{
-			//get( TYPE, NAME )
-			const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(1)));
-			const char* name = static_cast<char*>(block->GetMemberData(2));
-
-			switch (type) // what type are they attempting to get
 			{
-			case CIcarus::TK_STRING:
-				//only string is acceptable for affect, store result in p1
-				if (game->GetString(m_ownerID, name, &p1) == false)
+				//get( TYPE, NAME )
+				const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(1)));
+				const char* name = static_cast<char*>(block->GetMemberData(2));
+
+				switch (type) // what type are they attempting to get
 				{
+				case CIcarus::TK_STRING:
+					//only string is acceptable for affect, store result in p1
+					if (game->GetString(m_ownerID, name, &p1) == false)
+					{
+						block->Free(icarus);
+						delete block;
+						block = nullptr;
+						return false;
+					}
+					break;
+				default:
+					//FIXME: Make an enum id for the error...
+					game->DebugPrint(IGameInterface::WL_ERROR, "Invalid parameter type on affect _1");
 					block->Free(icarus);
 					delete block;
 					block = nullptr;
 					return false;
 				}
-				break;
-			default:
-				//FIXME: Make an enum id for the error...
-				game->DebugPrint(IGameInterface::WL_ERROR, "Invalid parameter type on affect _1");
-				block->Free(icarus);
-				delete block;
-				block = nullptr;
-				return false;
-			}
 
-			break;
-		}
+				break;
+			}
 
 		default:
 			//FIXME: Make an enum id for the error...
@@ -868,7 +868,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 
 		switch (block->GetBlockID())
 		{
-			//Marks the end of a blocked section
+		//Marks the end of a blocked section
 		case CIcarus::ID_BLOCK_END:
 
 			//Save this as a pre-process marker
@@ -891,7 +891,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 
 			return SEQ_OK;
 
-			//Affect pre-processor
+		//Affect pre-processor
 		case CIcarus::ID_AFFECT:
 
 			if S_FAILED(ParseAffect(block, bstream, icarus))
@@ -899,7 +899,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 
 			break;
 
-			//Run pre-processor
+		//Run pre-processor
 		case CIcarus::ID_RUN:
 
 			if S_FAILED(ParseRun(block, icarus))
@@ -907,7 +907,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 
 			break;
 
-			//Loop pre-processor
+		//Loop pre-processor
 		case CIcarus::ID_LOOP:
 
 			if S_FAILED(ParseLoop(block, bstream, icarus))
@@ -915,7 +915,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 
 			break;
 
-			//Conditional pre-processor
+		//Conditional pre-processor
 		case CIcarus::ID_IF:
 
 			if S_FAILED(ParseIf(block, bstream, icarus))
@@ -944,7 +944,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 
 			break;
 
-			//FIXME: For now this is to catch problems, but can ultimately be removed
+		//FIXME: For now this is to catch problems, but can ultimately be removed
 		case CIcarus::ID_WAIT:
 		case CIcarus::ID_PRINT:
 		case CIcarus::ID_SOUND:
@@ -967,7 +967,7 @@ int CSequencer::Route(CSequence* sequence, bstream_t* bstream, CIcarus* icarus)
 			PushCommand(block, CSequence::PUSH_FRONT);
 			break;
 
-			//Error
+		//Error
 		default:
 
 			game->DebugPrint(IGameInterface::WL_ERROR, "'%d' : invalid block ID", block->GetBlockID());
@@ -1031,7 +1031,7 @@ void CSequencer::CheckRun(CBlock** command, CIcarus* icarus)
 		const int id = static_cast<int>(*static_cast<float*>(block->GetMemberData(1)));
 
 		game->DebugPrint(IGameInterface::WL_DEBUG, "%4d run( \"%s\" ); [%d]", m_ownerID,
-			static_cast<char*>(block->GetMemberData(0)), game->GetTime());
+		                 static_cast<char*>(block->GetMemberData(0)), game->GetTime());
 
 		if (m_curSequence->HasFlag(CSequence::SQ_RETAIN))
 		{
@@ -1111,7 +1111,7 @@ int CSequencer::EvaluateConditional(CBlock* block, CIcarus* icarus) const
 	char tempString1[128], tempString2[128];
 	vec3_t vec;
 	int id, i, oper, memberNum = 0;
-	char* p1 = nullptr, * p2 = nullptr;
+	char *p1 = nullptr, *p2 = nullptr;
 	int t1, t2;
 
 	//
@@ -1153,108 +1153,108 @@ int CSequencer::EvaluateConditional(CBlock* block, CIcarus* icarus) const
 		break;
 
 	case CIcarus::ID_GET:
-	{
-		int type;
-		char* name;
-
-		//get( TYPE, NAME )
-		type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-
-		//Get the type returned and hold onto it
-		t1 = type;
-
-		switch (type)
 		{
-		case CIcarus::TK_FLOAT:
-		{
-			float fVal;
+			int type;
+			char* name;
 
-			if (game->GetFloat(m_ownerID, name, &fVal) == false)
-				return false;
+			//get( TYPE, NAME )
+			type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
 
-			sprintf(static_cast<char*>(tempString1), "%.3f", fVal);
-			p1 = static_cast<char*>(tempString1);
-		}
+			//Get the type returned and hold onto it
+			t1 = type;
 
-		break;
+			switch (type)
+			{
+			case CIcarus::TK_FLOAT:
+				{
+					float fVal;
 
-		case CIcarus::TK_INT:
-		{
-			float fVal;
+					if (game->GetFloat(m_ownerID, name, &fVal) == false)
+						return false;
 
-			if (game->GetFloat(m_ownerID, name, &fVal) == false)
-				return false;
+					sprintf(static_cast<char*>(tempString1), "%.3f", fVal);
+					p1 = static_cast<char*>(tempString1);
+				}
 
-			sprintf(static_cast<char*>(tempString1), "%d", static_cast<int>(fVal));
-			p1 = static_cast<char*>(tempString1);
-		}
-		break;
+				break;
 
-		case CIcarus::TK_STRING:
+			case CIcarus::TK_INT:
+				{
+					float fVal;
 
-			if (game->GetString(m_ownerID, name, &p1) == false)
-				return false;
+					if (game->GetFloat(m_ownerID, name, &fVal) == false)
+						return false;
+
+					sprintf(static_cast<char*>(tempString1), "%d", static_cast<int>(fVal));
+					p1 = static_cast<char*>(tempString1);
+				}
+				break;
+
+			case CIcarus::TK_STRING:
+
+				if (game->GetString(m_ownerID, name, &p1) == false)
+					return false;
+
+				break;
+
+			case CIcarus::TK_VECTOR:
+				{
+					vec3_t vVal;
+
+					if (game->GetVector(m_ownerID, name, vVal) == false)
+						return false;
+
+					sprintf(static_cast<char*>(tempString1), "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
+					p1 = static_cast<char*>(tempString1);
+				}
+
+				break;
+			default: ;
+			}
 
 			break;
+		}
 
-		case CIcarus::TK_VECTOR:
+	case CIcarus::ID_RANDOM:
 		{
-			vec3_t vVal;
+			float min, max;
+			//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
 
-			if (game->GetVector(m_ownerID, name, vVal) == false)
-				return false;
+			min = *static_cast<float*>(block->GetMemberData(memberNum++));
+			max = *static_cast<float*>(block->GetMemberData(memberNum++));
 
-			sprintf(static_cast<char*>(tempString1), "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
+			//A float value is returned from the function
+			t1 = CIcarus::TK_FLOAT;
+
+			sprintf(static_cast<char*>(tempString1), "%.3f", game->Random(min, max));
 			p1 = static_cast<char*>(tempString1);
 		}
 
 		break;
-		default:;
-		}
-
-		break;
-	}
-
-	case CIcarus::ID_RANDOM:
-	{
-		float min, max;
-		//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
-
-		min = *static_cast<float*>(block->GetMemberData(memberNum++));
-		max = *static_cast<float*>(block->GetMemberData(memberNum++));
-
-		//A float value is returned from the function
-		t1 = CIcarus::TK_FLOAT;
-
-		sprintf(static_cast<char*>(tempString1), "%.3f", game->Random(min, max));
-		p1 = static_cast<char*>(tempString1);
-	}
-
-	break;
 
 	case CIcarus::ID_TAG:
-	{
-		char* name;
-		float type;
-
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-		type = *static_cast<float*>(block->GetMemberData(memberNum++));
-
-		t1 = CIcarus::TK_VECTOR;
-
-		//TODO: Emit warning
-		if (game->GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
 		{
-			game->DebugPrint(IGameInterface::WL_ERROR, "Unable to find tag \"%s\"!\n", name);
-			return false;
+			char* name;
+			float type;
+
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
+			type = *static_cast<float*>(block->GetMemberData(memberNum++));
+
+			t1 = CIcarus::TK_VECTOR;
+
+			//TODO: Emit warning
+			if (game->GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
+			{
+				game->DebugPrint(IGameInterface::WL_ERROR, "Unable to find tag \"%s\"!\n", name);
+				return false;
+			}
+
+			sprintf(static_cast<char*>(tempString1), "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
+			p1 = static_cast<char*>(tempString1);
+
+			break;
 		}
-
-		sprintf(static_cast<char*>(tempString1), "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
-		p1 = static_cast<char*>(tempString1);
-
-		break;
-	}
 
 	default:
 		//FIXME: Make an enum id for the error...
@@ -1322,110 +1322,110 @@ int CSequencer::EvaluateConditional(CBlock* block, CIcarus* icarus) const
 		break;
 
 	case CIcarus::ID_GET:
-	{
-		int type;
-		char* name;
-
-		//get( TYPE, NAME )
-		type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-
-		//Get the type returned and hold onto it
-		t2 = type;
-
-		switch (type)
 		{
-		case CIcarus::TK_FLOAT:
-		{
-			float fVal;
+			int type;
+			char* name;
 
-			if (game->GetFloat(m_ownerID, name, &fVal) == false)
-				return false;
+			//get( TYPE, NAME )
+			type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
 
-			sprintf(static_cast<char*>(tempString2), "%.3f", fVal);
-			p2 = static_cast<char*>(tempString2);
-		}
+			//Get the type returned and hold onto it
+			t2 = type;
 
-		break;
+			switch (type)
+			{
+			case CIcarus::TK_FLOAT:
+				{
+					float fVal;
 
-		case CIcarus::TK_INT:
-		{
-			float fVal;
+					if (game->GetFloat(m_ownerID, name, &fVal) == false)
+						return false;
 
-			if (game->GetFloat(m_ownerID, name, &fVal) == false)
-				return false;
+					sprintf(static_cast<char*>(tempString2), "%.3f", fVal);
+					p2 = static_cast<char*>(tempString2);
+				}
 
-			sprintf(static_cast<char*>(tempString2), "%d", static_cast<int>(fVal));
-			p2 = static_cast<char*>(tempString2);
-		}
-		break;
+				break;
 
-		case CIcarus::TK_STRING:
+			case CIcarus::TK_INT:
+				{
+					float fVal;
 
-			if (game->GetString(m_ownerID, name, &p2) == false)
-				return false;
+					if (game->GetFloat(m_ownerID, name, &fVal) == false)
+						return false;
+
+					sprintf(static_cast<char*>(tempString2), "%d", static_cast<int>(fVal));
+					p2 = static_cast<char*>(tempString2);
+				}
+				break;
+
+			case CIcarus::TK_STRING:
+
+				if (game->GetString(m_ownerID, name, &p2) == false)
+					return false;
+
+				break;
+
+			case CIcarus::TK_VECTOR:
+				{
+					vec3_t vVal;
+
+					if (game->GetVector(m_ownerID, name, vVal) == false)
+						return false;
+
+					sprintf(static_cast<char*>(tempString2), "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
+					p2 = static_cast<char*>(tempString2);
+				}
+
+				break;
+			default: ;
+			}
 
 			break;
-
-		case CIcarus::TK_VECTOR:
-		{
-			vec3_t vVal;
-
-			if (game->GetVector(m_ownerID, name, vVal) == false)
-				return false;
-
-			sprintf(static_cast<char*>(tempString2), "%.3f %.3f %.3f", vVal[0], vVal[1], vVal[2]);
-			p2 = static_cast<char*>(tempString2);
 		}
-
-		break;
-		default:;
-		}
-
-		break;
-	}
 
 	case CIcarus::ID_RANDOM:
 
-	{
-		float min, max;
-		//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
+		{
+			float min, max;
+			//FIXME: This will not account for nested Q_flrand(0.0f, 1.0f) statements
 
-		min = *static_cast<float*>(block->GetMemberData(memberNum++));
-		max = *static_cast<float*>(block->GetMemberData(memberNum++));
+			min = *static_cast<float*>(block->GetMemberData(memberNum++));
+			max = *static_cast<float*>(block->GetMemberData(memberNum++));
 
-		//A float value is returned from the function
-		t2 = CIcarus::TK_FLOAT;
+			//A float value is returned from the function
+			t2 = CIcarus::TK_FLOAT;
 
-		sprintf(static_cast<char*>(tempString2), "%.3f", game->Random(min, max));
-		p2 = static_cast<char*>(tempString2);
-	}
+			sprintf(static_cast<char*>(tempString2), "%.3f", game->Random(min, max));
+			p2 = static_cast<char*>(tempString2);
+		}
 
-	break;
+		break;
 
 	case CIcarus::ID_TAG:
 
-	{
-		char* name;
-		float type;
-
-		name = static_cast<char*>(block->GetMemberData(memberNum++));
-		type = *static_cast<float*>(block->GetMemberData(memberNum++));
-
-		t2 = CIcarus::TK_VECTOR;
-
-		//TODO: Emit warning
-		if (game->GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
 		{
-			game->DebugPrint(IGameInterface::WL_ERROR, "Unable to find tag \"%s\"!\n", name);
-			return false;
+			char* name;
+			float type;
+
+			name = static_cast<char*>(block->GetMemberData(memberNum++));
+			type = *static_cast<float*>(block->GetMemberData(memberNum++));
+
+			t2 = CIcarus::TK_VECTOR;
+
+			//TODO: Emit warning
+			if (game->GetTag(m_ownerID, name, static_cast<int>(type), vec) == false)
+			{
+				game->DebugPrint(IGameInterface::WL_ERROR, "Unable to find tag \"%s\"!\n", name);
+				return false;
+			}
+
+			sprintf(static_cast<char*>(tempString2), "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
+			p2 = static_cast<char*>(tempString2);
+
+			break;
 		}
-
-		sprintf(static_cast<char*>(tempString2), "%.3f %.3f %.3f", vec[0], vec[1], vec[2]);
-		p2 = static_cast<char*>(tempString2);
-
-		break;
-	}
 
 	default:
 		//FIXME: Make an enum id for the error...
@@ -1503,7 +1503,8 @@ void CSequencer::CheckIf(CBlock** command, CIcarus* icarus)
 
 		if (ret == false && block->HasFlag(BF_ELSE))
 		{
-			const int failureID = static_cast<int>(*static_cast<float*>(block->GetMemberData(block->GetNumMembers() - 1)));
+			const int failureID = static_cast<int>(*static_cast<float*>(block->
+				GetMemberData(block->GetNumMembers() - 1)));
 			CSequence* failureSeq = GetSequence(failureID);
 
 			//TODO: Emit warning
@@ -1806,7 +1807,7 @@ void CSequencer::CheckAffect(CBlock** command, CIcarus* icarus)
 
 			switch (id)
 			{
-				// these 3 cases probably aren't necessary
+			// these 3 cases probably aren't necessary
 			case CIcarus::TK_STRING:
 			case CIcarus::TK_IDENTIFIER:
 			case CIcarus::TK_CHAR:
@@ -1814,28 +1815,28 @@ void CSequencer::CheckAffect(CBlock** command, CIcarus* icarus)
 				break;
 
 			case CIcarus::ID_GET:
-			{
-				//get( TYPE, NAME )
-				const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(member_num++)));
-				const char* name = static_cast<char*>(block->GetMemberData(member_num++));
-
-				switch (type) // what type are they attempting to get
 				{
-				case CIcarus::TK_STRING:
-					//only string is acceptable for affect, store result in p1
-					if (game->GetString(m_ownerID, name, &p1) == false)
+					//get( TYPE, NAME )
+					const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(member_num++)));
+					const char* name = static_cast<char*>(block->GetMemberData(member_num++));
+
+					switch (type) // what type are they attempting to get
 					{
+					case CIcarus::TK_STRING:
+						//only string is acceptable for affect, store result in p1
+						if (game->GetString(m_ownerID, name, &p1) == false)
+						{
+							return;
+						}
+						break;
+					default:
+						//FIXME: Make an enum id for the error...
+						game->DebugPrint(IGameInterface::WL_ERROR, "Invalid parameter type on affect _1");
 						return;
 					}
-					break;
-				default:
-					//FIXME: Make an enum id for the error...
-					game->DebugPrint(IGameInterface::WL_ERROR, "Invalid parameter type on affect _1");
-					return;
-				}
 
-				break;
-			}
+					break;
+				}
 
 			default:
 				//FIXME: Make an enum id for the error...
@@ -2094,7 +2095,7 @@ Handles a completed task and returns a new task to be completed
 ========================
 */
 
-int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, int returnCode, CIcarus* icarus)
+int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, const int returnCode, CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 	CBlock* command;
@@ -2180,7 +2181,7 @@ Affect
 -------------------------
 */
 
-int CSequencer::Affect(int id, int type, CIcarus* icarus)
+int CSequencer::Affect(const int id, const int type, CIcarus* icarus)
 {
 	IGameInterface* game = icarus->GetGame();
 	CSequence* sequence = GetSequence(id);
@@ -2235,7 +2236,7 @@ Pushes a commands onto the current sequence
 ========================
 */
 
-int CSequencer::PushCommand(CBlock* command, int flag)
+int CSequencer::PushCommand(CBlock* command, const int flag)
 {
 	//Make sure everything is ok
 	assert(m_curSequence);
@@ -2257,7 +2258,7 @@ Pops a command off the current sequence
 ========================
 */
 
-CBlock* CSequencer::PopCommand(int flag)
+CBlock* CSequencer::PopCommand(const int flag)
 {
 	//Make sure everything is ok
 	if (m_curSequence == nullptr)

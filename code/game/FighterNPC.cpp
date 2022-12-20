@@ -95,7 +95,7 @@ extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
-	const vec3_t end, int passEntityNum, int contentmask);
+                           const vec3_t end, int passEntityNum, int contentmask);
 #endif
 
 extern qboolean BG_UnrestrainedPitchRoll();
@@ -110,12 +110,11 @@ extern void G_DamageFromKiller(gentity_t* pEnt, gentity_t* pVehEnt, gentity_t* a
 #endif
 
 #include "b_local.h"
-extern void BG_ExternThisSoICanRecompileInDebug(Vehicle_t* pVeh, playerState_t* riderPS);
 
 //this stuff has got to be predicted, so..
 bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, float gravity,
-	void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs,
-		const vec3_t end, int passEntityNum, int contentMask))
+                      void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs,
+                                        const vec3_t end, int passEntityNum, int contentMask))
 {
 	vec3_t bottom;
 	playerState_t* parentPS;
@@ -164,7 +163,7 @@ bool BG_FighterUpdate(Vehicle_t* pVeh, const usercmd_t* pUcmd, vec3_t trMins, ve
 	bottom[2] -= pVeh->m_pVehicleInfo->landingHeight;
 
 	traceFunc(&pVeh->m_LandTrace, parentPS->origin, trMins, trMaxs, bottom, pVeh->m_pParentEntity->s.number,
-		MASK_NPCSOLID & ~CONTENTS_BODY);
+	          MASK_NPCSOLID & ~CONTENTS_BODY);
 
 	return true;
 }
@@ -182,9 +181,9 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 #ifdef _JK2MP
 		g_gravity.value,
 #else
-		g_gravity->value,
+	                      g_gravity->value,
 #endif
-		G_VehicleTrace))
+	                      G_VehicleTrace))
 	{
 		return false;
 	}
@@ -206,7 +205,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
 				G_PlayEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],
-					parent->s.number, parent->currentOrigin, 1, qtrue);
+				             parent->s.number, parent->currentOrigin, 1, qtrue);
 			}
 		}
 
@@ -218,7 +217,7 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 			for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 			{
 				G_StopEffect(p_veh->m_pVehicleInfo->iExhaustFX, parent->playerModel, p_veh->m_iExhaustTag[i],
-					parent->s.number);
+				             parent->s.number);
 			}
 		}
 		else
@@ -227,7 +226,8 @@ static bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 			{
 				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 				{
-					G_PlayEffect(p_veh->m_pVehicleInfo->iTurboFX, parent->playerModel, p_veh->m_iExhaustTag[i], parent->s.number, parent->currentOrigin, 1, qtrue);
+					G_PlayEffect(p_veh->m_pVehicleInfo->iTurboFX, parent->playerModel, p_veh->m_iExhaustTag[i],
+					             parent->s.number, parent->currentOrigin, 1, qtrue);
 				}
 			}
 		}
@@ -249,7 +249,7 @@ static bool Board(Vehicle_t* pVeh, bgEntity_t* pEnt)
 }
 
 // Eject an entity from the vehicle.
-static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
+static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, const qboolean forceEject)
 {
 	if (g_vehicleInfo[VEHICLE_BASE].Eject(pVeh, pEnt, forceEject))
 	{
@@ -266,7 +266,7 @@ static bool Eject(Vehicle_t* pVeh, bgEntity_t* pEnt, qboolean forceEject)
 #endif //end game-side only
 
 //method of decrementing the given angle based on the given taking variable frame times into account
-static float PredictedAngularDecrement(float scale, float timeMod, float originalAngle)
+static float PredictedAngularDecrement(const float scale, const float timeMod, const float originalAngle)
 {
 	float fixedBaseDec = originalAngle * 0.05f;
 	float r = 0.0f;
@@ -309,6 +309,8 @@ static float PredictedAngularDecrement(float scale, float timeMod, float origina
 
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
 
+
+
 qboolean FighterIsInSpace(const gentity_t* gParent)
 {
 	if (gParent
@@ -326,7 +328,7 @@ qboolean FighterOverValidLandingSurface(const Vehicle_t* pVeh)
 {
 	if (pVeh->m_LandTrace.fraction < 1.0f //ground present
 		&& pVeh->m_LandTrace.plane.normal[2] >= MIN_LANDING_SLOPE) //flat enough
-		//FIXME: also check for a certain surface flag ... "landing zones"?
+	//FIXME: also check for a certain surface flag ... "landing zones"?
 	{
 		return qtrue;
 	}
@@ -349,7 +351,7 @@ qboolean FighterIsLanding(Vehicle_t* pVeh, playerState_t* parentPS)
 		&& pVeh->m_pVehicleInfo->Inhabited(pVeh) //has to have a driver in order to be capable of landing
 		&& (pVeh->m_ucmd.forwardmove < 0 || pVeh->m_ucmd.upmove < 0) //decelerating or holding crouch button
 		&& parentPS->speed <= MIN_LANDING_SPEED)
-		//going slow enough to start landing - was using pVeh->m_pVehicleInfo->speedIdle, but that's still too fast
+	//going slow enough to start landing - was using pVeh->m_pVehicleInfo->speedIdle, but that's still too fast
 	{
 		parentPS->speed = 0;
 		return qtrue;
@@ -362,11 +364,13 @@ qboolean FighterIsLaunching(Vehicle_t* pVeh, const playerState_t* parentPS)
 	if (FighterOverValidLandingSurface(pVeh)
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
 
+
+
 		&& pVeh->m_pVehicleInfo->Inhabited(pVeh) //has to have a driver in order to be capable of landing
 #endif
 		&& pVeh->m_ucmd.upmove > 0 //trying to take off
 		&& parentPS->speed <= 200.0f)
-		//going slow enough to start landing - was using pVeh->m_pVehicleInfo->speedIdle, but that's still too fast
+	//going slow enough to start landing - was using pVeh->m_pVehicleInfo->speedIdle, but that's still too fast
 	{
 		return qtrue;
 	}
@@ -376,6 +380,8 @@ qboolean FighterIsLaunching(Vehicle_t* pVeh, const playerState_t* parentPS)
 qboolean FighterSuspended(const Vehicle_t* pVeh, const playerState_t* parentPS)
 {
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
+
+
 
 	if (!pVeh->m_pPilot //empty
 		&& !parentPS->speed //not moving
@@ -442,17 +448,17 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 						// Start The Turbo Fx Start
 						//--------------------------
 						G_PlayEffect(pVeh->m_pVehicleInfo->iTurboStartFX, pVeh->m_pParentEntity->playerModel,
-							pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-							pVeh->m_pParentEntity->currentOrigin);
+						             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
+						             pVeh->m_pParentEntity->currentOrigin);
 
 						// Start The Looping Effect
 						//--------------------------
 						if (pVeh->m_pVehicleInfo->iTurboFX)
 						{
 							G_PlayEffect(pVeh->m_pVehicleInfo->iTurboFX, pVeh->m_pParentEntity->playerModel,
-								pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-								pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration,
-								qtrue);
+							             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
+							             pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration,
+							             qtrue);
 						}
 					}
 				}
@@ -492,7 +498,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	// If we are hitting the ground, just allow the fighter to go up and down.
 	if (isLandingOrLaunching //going slow enough to start landing
 		&& (pVeh->m_ucmd.forwardmove <= 0 || pVeh->m_LandTrace.fraction <= FIGHTER_MIN_TAKEOFF_FRACTION))
-		//not trying to accelerate away already (or: you are trying to, but not high enough off the ground yet)
+	//not trying to accelerate away already (or: you are trying to, but not high enough off the ground yet)
 	{
 		//FIXME: if start to move forward and fly over something low while still going relatively slow, you may try to land even though you don't mean to...
 		//float fInvFrac = 1.0f - pVeh->m_LandTrace.fraction;
@@ -522,7 +528,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 			if (pVeh->m_LandTrace.fraction <= FIGHTER_MIN_TAKEOFF_FRACTION)
 			{
 				parentPS->velocity[2] = PredictedAngularDecrement(pVeh->m_LandTrace.fraction,
-					pVeh->m_fTimeModifier * 5.0f, parentPS->velocity[2]);
+				                                                  pVeh->m_fTimeModifier * 5.0f, parentPS->velocity[2]);
 
 				parentPS->speed = 0;
 			}
@@ -530,7 +536,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 
 		// Make sure they don't pitch as they near the ground.
 		pVeh->m_vOrientation[PITCH] = PredictedAngularDecrement(0.7f, pVeh->m_fTimeModifier * 10.0f,
-			pVeh->m_vOrientation[PITCH]);
+		                                                        pVeh->m_vOrientation[PITCH]);
 
 		return;
 	}
@@ -541,15 +547,16 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	{
 		for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
 		{
-			G_PlayEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i], parent->s.number, parent->currentOrigin, 1, qtrue);
+			G_PlayEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
+			             parent->s.number, parent->currentOrigin, 1, qtrue);
 
 			if (pVeh->m_ucmd.forwardmove > 0)
 			{
 				if (pVeh->m_pVehicleInfo->iTrailFX)
 				{
 					G_PlayEffect(pVeh->m_pVehicleInfo->iTrailFX, pVeh->m_pParentEntity->playerModel,
-						pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-						pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration, qtrue);
+					             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
+					             pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration, qtrue);
 				}
 			}
 		}
@@ -559,7 +566,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
 		{
 			G_StopEffect(pVeh->m_pVehicleInfo->iExhaustFX, parent->playerModel, pVeh->m_iExhaustTag[i],
-				parent->s.number);
+			             parent->s.number);
 		}
 	}
 
@@ -577,16 +584,16 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 					// Start The Turbo Fx Start
 					//--------------------------
 					G_PlayEffect(pVeh->m_pVehicleInfo->iTurboStartFX, pVeh->m_pParentEntity->playerModel,
-						pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-						pVeh->m_pParentEntity->currentOrigin);
+					             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
+					             pVeh->m_pParentEntity->currentOrigin);
 
 					// Start The Looping Effect
 					//--------------------------
 					if (pVeh->m_pVehicleInfo->iTurboFX)
 					{
 						G_PlayEffect(pVeh->m_pVehicleInfo->iTurboFX, pVeh->m_pParentEntity->playerModel,
-							pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-							pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration, qtrue);
+						             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
+						             pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration, qtrue);
 					}
 
 #else
@@ -777,7 +784,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 			//accelerate to cruising speed only, otherwise, just coast
 			// If they've launched, apply some constant motion.
 			if ((pVeh->m_LandTrace.fraction >= 1.0f //no ground
-				|| pVeh->m_LandTrace.plane.normal[2] < MIN_LANDING_SLOPE) //or can't land on ground below us
+					|| pVeh->m_LandTrace.plane.normal[2] < MIN_LANDING_SLOPE) //or can't land on ground below us
 				&& speedIdle > 0)
 			{
 				//not above ground and have an idle speed
@@ -841,6 +848,8 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	//STRAFING==============================================================================
 	if (pVeh->m_pVehicleInfo->strafePerc
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
+
+
 
 		&& pVeh->m_pVehicleInfo->Inhabited(pVeh) //has to have a driver in order to be capable of landing
 #endif
@@ -1019,7 +1028,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	/********************************************************************************/
 }
 
-extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
+extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* p_veh, float speed, float* m_pitch_override, float* m_yaw_override);
 
 static void FighterWingMalfunctionCheck(Vehicle_t* pVeh, const playerState_t* parentPS)
 {
@@ -1077,8 +1086,9 @@ static void FighterNoseMalfunctionCheck(Vehicle_t* pVeh, const playerState_t* pa
 	}
 }
 
-static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const playerState_t* parentPS, playerState_t* riderPS,
-	qboolean isDead)
+static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const playerState_t* parentPS,
+                                 playerState_t* riderPS,
+                                 const qboolean isDead)
 {
 	if (!pVeh->m_iRemovedSurfaces)
 	{
@@ -1172,13 +1182,13 @@ static void FighterDamageRoutine(Vehicle_t* pVeh, bgEntity_t* parent, const play
 #else
 		gentity_t* killer = gentity_s;
 		G_Damage(gentity_s, killer, killer, vec3_origin, gentity_s->client->ps.origin, 99999, DAMAGE_NO_ARMOR,
-			MOD_SUICIDE);
+		         MOD_SUICIDE);
 #endif
 	}
 #endif
 
 	if ((pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_C ||
-		pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_D) &&
+			pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_D) &&
 		(pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_E ||
 			pVeh->m_iRemovedSurfaces & SHIPSURF_BROKEN_F))
 	{
@@ -1304,7 +1314,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 	/********************************************************************************/
 
 	bgEntity_t* parent = pVeh->m_pParentEntity;
-	playerState_t* parentPS, * riderPS;
+	playerState_t *parentPS, *riderPS;
 	float angleTimeMod;
 #ifdef QAGAME
 	constexpr float groundFraction = 0.1f;
@@ -1454,7 +1464,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			else
 			{
 				pVeh->m_vOrientation[PITCH] = PredictedAngularDecrement(0.83f, angleTimeMod * 10.0f,
-					pVeh->m_vOrientation[PITCH]);
+				                                                        pVeh->m_vOrientation[PITCH]);
 			}
 		}
 		if (pVeh->m_LandTrace.fraction > 0.1f
@@ -1475,15 +1485,12 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 		//no yaw control
 	}
 	else if (pVeh->m_pPilot && pVeh->m_pPilot->s.number < MAX_CLIENTS && parentPS->speed > 0.0f)
-		//&& !( pVeh->m_ucmd.forwardmove > 0 && pVeh->m_LandTrace.fraction != 1.0f ) )
+	//&& !( pVeh->m_ucmd.forwardmove > 0 && pVeh->m_LandTrace.fraction != 1.0f ) )
 	{
 		if (BG_UnrestrainedPitchRoll())
 		{
 			VectorCopy(riderPS->viewangles, pVeh->m_vOrientation);
 			VectorCopy(riderPS->viewangles, parentPS->viewangles);
-#ifdef _JK2MP
-			//BG_ExternThisSoICanRecompileInDebug( pVeh, riderPS );
-#endif
 
 			curRoll = pVeh->m_vOrientation[ROLL];
 
@@ -1502,7 +1509,7 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			// If we are not hitting the ground, allow the fighter to pitch up and down.
 			if (!FighterOverValidLandingSurface(pVeh)
 				|| parentPS->speed > MIN_LANDING_SPEED)
-				//if ( ( pVeh->m_LandTrace.fraction >= 1.0f || pVeh->m_ucmd.forwardmove != 0 ) && pVeh->m_LandTrace.fraction >= 0.0f )
+			//if ( ( pVeh->m_LandTrace.fraction >= 1.0f || pVeh->m_ucmd.forwardmove != 0 ) && pVeh->m_LandTrace.fraction >= 0.0f )
 			{
 				float fYawDelta;
 
@@ -1557,17 +1564,19 @@ static void ProcessOrientCommands(Vehicle_t* pVeh)
 			if (pVeh->m_vOrientation[PITCH] > 0)
 			{
 				pVeh->m_vOrientation[PITCH] = PredictedAngularDecrement(0.2f, angleTimeMod * 10.0f,
-					pVeh->m_vOrientation[PITCH]);
+				                                                        pVeh->m_vOrientation[PITCH]);
 			}
 			else
 			{
 				pVeh->m_vOrientation[PITCH] = PredictedAngularDecrement(0.75f, angleTimeMod * 10.0f,
-					pVeh->m_vOrientation[PITCH]);
+				                                                        pVeh->m_vOrientation[PITCH]);
 			}
 		}
 	}
 	// If no one is in this vehicle and it's up in the sky, pitch it forward as it comes tumbling down.
 #ifdef QAGAME //never gonna happen on client anyway, we can't be getting predicted unless the predicting client is boarded
+
+
 
 	if (!pVeh->m_pVehicleInfo->Inhabited(pVeh)
 		&& pVeh->m_LandTrace.fraction >= groundFraction
@@ -1826,7 +1835,7 @@ void G_CreateFighterNPC(Vehicle_t** pVeh, const char* strType)
 #endif
 	memset(*pVeh, 0, sizeof(Vehicle_t));
 #else
-	* pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
+	*pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 #endif
 	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
 }

@@ -44,17 +44,17 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define GFL_ROAM				2
 #define GFL_DROPPED				4
 
- //a bot goal
-typedef struct bot_goal_s
+//a bot goal
+using bot_goal_t = struct bot_goal_s
 {
-	vec3_t origin;				//origin of the goal
-	int areanum;				//area number of the goal
-	vec3_t mins, maxs;			//mins and maxs of the goal
-	int entitynum;				//number of the goal entity
-	int number;					//goal number
-	int flags;					//goal flags
-	int iteminfo;				//item information
-} bot_goal_t;
+	vec3_t origin; //origin of the goal
+	int areanum; //area number of the goal
+	vec3_t mins, maxs; //mins and maxs of the goal
+	int entitynum; //number of the goal entity
+	int number; //goal number
+	int flags; //goal flags
+	int iteminfo; //item information
+};
 
 //reset the whole goal state, but keep the item weights
 void BotResetGoalState(int goalstate);
@@ -85,7 +85,7 @@ int BotChooseLTGItem(int goalstate, vec3_t origin, int* inventory, int travelfla
 //also the travel time from the nearby goal towards the long term goal may not
 //be larger than the travel time towards the long term goal from the current bot position
 int BotChooseNBGItem(int goalstate, vec3_t origin, int* inventory, int travelflags,
-	bot_goal_t* ltg, float maxtime);
+                     bot_goal_t* ltg, float maxtime);
 //returns true if the bot touches the goal
 int BotTouchingGoal(vec3_t origin, bot_goal_t* goal);
 //returns true if the goal should be visible but isn't

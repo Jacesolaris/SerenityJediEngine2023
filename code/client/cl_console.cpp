@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 int g_console_field_width = 78;
 
-console_t	con;
+console_t con;
 
 cvar_t* con_conspeed;
 cvar_t* con_notifytime;
@@ -42,16 +42,18 @@ cvar_t* con_DebugSaberCombat;
 
 constexpr auto DEFAULT_CONSOLE_WIDTH = 78;
 
-vec4_t	console_color = { 0.509f, 0.609f, 0.847f, 1.0f };
+vec4_t console_color = {0.509f, 0.609f, 0.847f, 1.0f};
 
 /*
 ================
 Con_ToggleConsole_f
 ================
 */
-void Con_ToggleConsole_f(void) {
+void Con_ToggleConsole_f(void)
+{
 	// closing a full screen console restarts the demo loop
-	if (cls.state == CA_DISCONNECTED && Key_GetCatcher() == KEYCATCH_CONSOLE) {
+	if (cls.state == CA_DISCONNECTED && Key_GetCatcher() == KEYCATCH_CONSOLE)
+	{
 		//		CL_StartDemoLoop();
 		return;
 	}
@@ -69,7 +71,8 @@ void Con_ToggleConsole_f(void) {
 Con_ToggleMenu_f
 ===================
 */
-void Con_ToggleMenu_f(void) {
+void Con_ToggleMenu_f(void)
+{
 	CL_KeyEvent(A_ESCAPE, qtrue, Sys_Milliseconds());
 	CL_KeyEvent(A_ESCAPE, qfalse, Sys_Milliseconds());
 }
@@ -79,12 +82,14 @@ void Con_ToggleMenu_f(void) {
 Con_Clear_f
 ================
 */
-void Con_Clear_f(void) {
-	for (int i = 0; i < CON_TEXTSIZE; i++) {
+void Con_Clear_f(void)
+{
+	for (int i = 0; i < CON_TEXTSIZE; i++)
+	{
 		con.text[i] = ColorIndex(COLOR_WHITE) << 8 | ' ';
 	}
 
-	Con_Bottom();		// go to end
+	Con_Bottom(); // go to end
 }
 
 /*
@@ -96,11 +101,11 @@ Save the console contents out to a file
 */
 void Con_Dump_f(void)
 {
-	int		l, x;
+	int l, x;
 	short* line;
-	int		bufferlen;
+	int bufferlen;
 	char* buffer;
-	char	filename[MAX_QPATH];
+	char filename[MAX_QPATH];
 
 	if (Cmd_Argc() != 2)
 	{
@@ -176,8 +181,10 @@ void Con_Dump_f(void)
 Con_ClearNotify
 ================
 */
-void Con_ClearNotify(void) {
-	for (int i = 0; i < NUM_CON_TIMES; i++) {
+void Con_ClearNotify(void)
+{
+	for (int i = 0; i < NUM_CON_TIMES; i++)
+	{
 		con.times[i] = 0;
 	}
 }
@@ -191,14 +198,14 @@ If the line width has changed, reformat the buffer.
 */
 void Con_CheckResize(void)
 {
-	int		i;
+	int i;
 
 	int width = cls.glconfig.vidWidth / SMALLCHAR_WIDTH - 2;
 
 	if (width == con.linewidth)
 		return;
 
-	if (width < 1)			// video hasn't been initialized yet
+	if (width < 1) // video hasn't been initialized yet
 	{
 		con.xadjust = 1;
 		con.yadjust = 1;
@@ -242,7 +249,7 @@ void Con_CheckResize(void)
 			{
 				con.text[(con.totallines - 1 - i) * con.linewidth + j] =
 					tbuf[(con.current - i + oldtotallines) %
-					oldtotallines * oldwidth + j];
+						oldtotallines * oldwidth + j];
 			}
 		}
 
@@ -258,7 +265,8 @@ void Con_CheckResize(void)
 Cmd_CompleteTxtName
 ==================
 */
-void Cmd_CompleteTxtName(char* args, int argNum) {
+void Cmd_CompleteTxtName(char* args, const int argNum)
+{
 	if (argNum == 2)
 		Field_CompleteFilename("", "txt", qfalse, qtrue);
 }
@@ -280,7 +288,8 @@ void Con_Init(void)
 
 	Field_Clear(&g_consoleField);
 	g_consoleField.widthInChars = g_console_field_width;
-	for (int i = 0; i < COMMAND_HISTORY; i++) {
+	for (int i = 0; i < COMMAND_HISTORY; i++)
+	{
 		Field_Clear(&historyEditLines[i]);
 		historyEditLines[i].widthInChars = g_console_field_width;
 	}
@@ -320,8 +329,9 @@ All console printing must go through this in order to be logged to disk
 If no console is visible, the text will appear at the top of the game window
 ================
 */
-void CL_ConsolePrint(char* txt) {
-	int		c, l;
+void CL_ConsolePrint(char* txt)
+{
+	int c, l;
 
 	// for some demos we don't want to ever show anything on the console
 	if (cl_noprint && cl_noprint->integer)
@@ -336,7 +346,8 @@ void CL_ConsolePrint(char* txt) {
 		}
 	}
 
-	if (!con.initialized) {
+	if (!con.initialized)
+	{
 		con.color[0] =
 			con.color[1] =
 			con.color[2] =
@@ -348,22 +359,27 @@ void CL_ConsolePrint(char* txt) {
 
 	int color = ColorIndex(COLOR_WHITE);
 
-	while ((c = static_cast<unsigned char>(*txt)) != 0) {
-		if (Q_IsColorString((unsigned char*)txt)) {
+	while ((c = static_cast<unsigned char>(*txt)) != 0)
+	{
+		if (Q_IsColorString((unsigned char*)txt))
+		{
 			color = ColorIndex(*(txt + 1));
 			txt += 2;
 			continue;
 		}
 
 		// count word length
-		for (l = 0; l < con.linewidth; l++) {
-			if (txt[l] <= ' ') {
+		for (l = 0; l < con.linewidth; l++)
+		{
+			if (txt[l] <= ' ')
+			{
 				break;
 			}
 		}
 
 		// word wrap
-		if (l != con.linewidth && con.x + l >= con.linewidth) {
+		if (l != con.linewidth && con.x + l >= con.linewidth)
+		{
 			Con_Linefeed();
 		}
 
@@ -377,11 +393,12 @@ void CL_ConsolePrint(char* txt) {
 		case '\r':
 			con.x = 0;
 			break;
-		default:	// display character and advance
+		default: // display character and advance
 			const int y = con.current % con.totallines;
 			con.text[y * con.linewidth + con.x] = color << 8 | c;
 			con.x++;
-			if (con.x >= con.linewidth) {
+			if (con.x >= con.linewidth)
+			{
 				Con_Linefeed();
 				con.x = 0;
 			}
@@ -410,8 +427,10 @@ Con_DrawInput
 Draw the editline after a ] prompt
 ================
 */
-void Con_DrawInput(void) {
-	if (cls.state != CA_DISCONNECTED && !(Key_GetCatcher() & KEYCATCH_CONSOLE)) {
+void Con_DrawInput(void)
+{
+	if (cls.state != CA_DISCONNECTED && !(Key_GetCatcher() & KEYCATCH_CONSOLE))
+	{
 		return;
 	}
 
@@ -422,7 +441,7 @@ void Con_DrawInput(void) {
 	SCR_DrawSmallChar(con.xadjust + 1 * SMALLCHAR_WIDTH, y, CONSOLE_PROMPT_CHAR);
 
 	Field_Draw(&g_consoleField, con.xadjust + 2 * SMALLCHAR_WIDTH, y,
-		SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue);
+	           SCREEN_WIDTH - 3 * SMALLCHAR_WIDTH, qtrue, qtrue);
 }
 
 /*
@@ -434,7 +453,7 @@ Draws the last few lines of output transparently over the game top
 */
 void Con_DrawNotify(void)
 {
-	int		x;
+	int x;
 
 	int currentColor = 7;
 	re.SetColor(g_color_table[currentColor]);
@@ -458,16 +477,18 @@ void Con_DrawNotify(void)
 		//
 		if (re.Language_IsAsian())
 		{
-			const int iFontIndex = re.RegisterFont("ocr_a");	// this seems naughty
+			const int iFontIndex = re.RegisterFont("ocr_a"); // this seems naughty
 			const float fFontScale = 0.75f * con.yadjust;
-			const int iPixelHeightToAdvance = 2 + 1.3 / con.yadjust * re.Font_HeightPixels(iFontIndex, fFontScale);	// for asian spacing, since we don't want glyphs to touch.
+			const int iPixelHeightToAdvance = 2 + 1.3 / con.yadjust * re.Font_HeightPixels(iFontIndex, fFontScale);
+			// for asian spacing, since we don't want glyphs to touch.
 
 			// concat the text to be printed...
 			//
-			char sTemp[4096] = { 0 };	// ott
+			char sTemp[4096] = {0}; // ott
 			for (x = 0; x < con.linewidth; x++)
 			{
-				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor) {
+				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor)
+				{
 					currentColor = text[x] >> 8 & Q_COLOR_BITS;
 					strcat(sTemp, va("^%i", text[x] >> 8 & Q_COLOR_BITS));
 				}
@@ -476,17 +497,21 @@ void Con_DrawNotify(void)
 			//
 			// and print...
 			//
-			re.Font_DrawString(con.xadjust * (con.xadjust + 1 * SMALLCHAR_WIDTH/*aesthetics*/), con.yadjust * v, sTemp, g_color_table[currentColor], iFontIndex, -1, fFontScale);
+			re.Font_DrawString(con.xadjust * (con.xadjust + 1 * SMALLCHAR_WIDTH/*aesthetics*/), con.yadjust * v, sTemp,
+			                   g_color_table[currentColor], iFontIndex, -1, fFontScale);
 
 			v += iPixelHeightToAdvance;
 		}
 		else
 		{
-			for (x = 0; x < con.linewidth; x++) {
-				if ((text[x] & 0xff) == ' ') {
+			for (x = 0; x < con.linewidth; x++)
+			{
+				if ((text[x] & 0xff) == ' ')
+				{
 					continue;
 				}
-				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor) {
+				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor)
+				{
 					currentColor = text[x] >> 8 & Q_COLOR_BITS;
 					re.SetColor(g_color_table[currentColor]);
 				}
@@ -506,7 +531,7 @@ Con_DrawSolidConsole
 Draws the console with the solid background
 ================
 */
-void Con_DrawSolidConsole(float frac)
+void Con_DrawSolidConsole(const float frac)
 {
 	int x;
 
@@ -519,10 +544,12 @@ void Con_DrawSolidConsole(float frac)
 
 	// draw the background
 	int y = frac * SCREEN_HEIGHT - 2;
-	if (y < 1) {
+	if (y < 1)
+	{
 		y = 0;
 	}
-	else {
+	else
+	{
 		// draw the background at full opacity only if fullscreen
 		if (frac < 1.0f)
 		{
@@ -544,14 +571,15 @@ void Con_DrawSolidConsole(float frac)
 
 	int i = strlen(Q3_VERSION);
 
-	for (x = 0; x < i; x++) {
+	for (x = 0; x < i; x++)
+	{
 		SCR_DrawSmallChar(cls.glconfig.vidWidth - (i - x + 1) * SMALLCHAR_WIDTH,
-			lines - (SMALLCHAR_HEIGHT + SMALLCHAR_HEIGHT / 2), Q3_VERSION[x]);
+		                  lines - (SMALLCHAR_HEIGHT + SMALLCHAR_HEIGHT / 2), Q3_VERSION[x]);
 	}
 
 	// draw the text
 	con.vislines = lines;
-	int rows = (lines - SMALLCHAR_WIDTH) / SMALLCHAR_WIDTH;		// rows of text to draw
+	int rows = (lines - SMALLCHAR_WIDTH) / SMALLCHAR_WIDTH; // rows of text to draw
 
 	y = lines - SMALLCHAR_HEIGHT * 3;
 
@@ -568,30 +596,34 @@ void Con_DrawSolidConsole(float frac)
 
 	int row = con.display;
 
-	if (con.x == 0) {
+	if (con.x == 0)
+	{
 		row--;
 	}
 
 	int currentColor = 7;
 	re.SetColor(g_color_table[currentColor]);
 
-	int iFontIndexForAsian = 0;	// kinda tacky, this just gets the first registered font, since Asian stuff ignores the contents anyway
+	int iFontIndexForAsian = 0;
+	// kinda tacky, this just gets the first registered font, since Asian stuff ignores the contents anyway
 	const float fFontScaleForAsian = 0.75f * con.yadjust;
 	int iPixelHeightToAdvance = SMALLCHAR_HEIGHT;
 	if (re.Language_IsAsian())
 	{
 		if (!iFontIndexForAsian)
 		{
-			iFontIndexForAsian = re.RegisterFont("ocr_a");	// must be a font that's used elsewhere
+			iFontIndexForAsian = re.RegisterFont("ocr_a"); // must be a font that's used elsewhere
 		}
-		iPixelHeightToAdvance = 1.3 / con.yadjust * re.Font_HeightPixels(iFontIndexForAsian, fFontScaleForAsian);	// for asian spacing, since we don't want glyphs to touch.
+		iPixelHeightToAdvance = 1.3 / con.yadjust * re.Font_HeightPixels(iFontIndexForAsian, fFontScaleForAsian);
+		// for asian spacing, since we don't want glyphs to touch.
 	}
 
 	for (i = 0; i < rows; i++, y -= iPixelHeightToAdvance, row--)
 	{
 		if (row < 0)
 			break;
-		if (con.current - row >= con.totallines) {
+		if (con.current - row >= con.totallines)
+		{
 			// past scrollback wrap point
 			continue;
 		}
@@ -606,10 +638,11 @@ void Con_DrawSolidConsole(float frac)
 		{
 			// concat the text to be printed...
 			//
-			char sTemp[4096] = { 0 };	// ott
+			char sTemp[4096] = {0}; // ott
 			for (x = 0; x < con.linewidth; x++)
 			{
-				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor) {
+				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor)
+				{
 					currentColor = text[x] >> 8 & Q_COLOR_BITS;
 					strcat(sTemp, va("^%i", text[x] >> 8 & Q_COLOR_BITS));
 				}
@@ -618,16 +651,20 @@ void Con_DrawSolidConsole(float frac)
 			//
 			// and print...
 			//
-			re.Font_DrawString(con.xadjust * (con.xadjust + 1 * SMALLCHAR_WIDTH/*(aesthetics)*/), con.yadjust * y, sTemp, g_color_table[currentColor], iFontIndexForAsian, -1, fFontScaleForAsian);
+			re.Font_DrawString(con.xadjust * (con.xadjust + 1 * SMALLCHAR_WIDTH/*(aesthetics)*/), con.yadjust * y,
+			                   sTemp, g_color_table[currentColor], iFontIndexForAsian, -1, fFontScaleForAsian);
 		}
 		else
 		{
-			for (x = 0; x < con.linewidth; x++) {
-				if ((text[x] & 0xff) == ' ') {
+			for (x = 0; x < con.linewidth; x++)
+			{
+				if ((text[x] & 0xff) == ' ')
+				{
 					continue;
 				}
 
-				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor) {
+				if ((text[x] >> 8 & Q_COLOR_BITS) != currentColor)
+				{
 					currentColor = text[x] >> 8 & Q_COLOR_BITS;
 					re.SetColor(g_color_table[currentColor]);
 				}
@@ -647,24 +684,30 @@ void Con_DrawSolidConsole(float frac)
 Con_DrawConsole
 ==================
 */
-void Con_DrawConsole(void) {
+void Con_DrawConsole(void)
+{
 	// check for console width changes from a vid mode change
 	Con_CheckResize();
 
 	// if disconnected, render console full screen
-	if (cls.state == CA_DISCONNECTED) {
-		if (!(Key_GetCatcher() & KEYCATCH_UI)) {
+	if (cls.state == CA_DISCONNECTED)
+	{
+		if (!(Key_GetCatcher() & KEYCATCH_UI))
+		{
 			Con_DrawSolidConsole(1.0);
 			return;
 		}
 	}
 
-	if (con.displayFrac) {
+	if (con.displayFrac)
+	{
 		Con_DrawSolidConsole(con.displayFrac);
 	}
-	else {
+	else
+	{
 		// draw notify lines
-		if (cls.state == CA_ACTIVE) {
+		if (cls.state == CA_ACTIVE)
+		{
 			Con_DrawNotify();
 		}
 	}
@@ -679,12 +722,13 @@ Con_RunConsole
 Scroll it up or down
 ==================
 */
-void Con_RunConsole(void) {
+void Con_RunConsole(void)
+{
 	// decide on the destination height of the console
 	if (Key_GetCatcher() & KEYCATCH_CONSOLE)
-		con.finalFrac = 0.5;		// half screen
+		con.finalFrac = 0.5; // half screen
 	else
-		con.finalFrac = 0;				// none visible
+		con.finalFrac = 0; // none visible
 
 	// scroll towards the destination height
 	if (con.finalFrac < con.displayFrac)
@@ -701,35 +745,43 @@ void Con_RunConsole(void) {
 	}
 }
 
-void Con_PageUp(void) {
+void Con_PageUp(void)
+{
 	con.display -= 2;
-	if (con.current - con.display >= con.totallines) {
+	if (con.current - con.display >= con.totallines)
+	{
 		con.display = con.current - con.totallines + 1;
 	}
 }
 
-void Con_PageDown(void) {
+void Con_PageDown(void)
+{
 	con.display += 2;
-	if (con.display > con.current) {
+	if (con.display > con.current)
+	{
 		con.display = con.current;
 	}
 }
 
-void Con_Top(void) {
+void Con_Top(void)
+{
 	con.display = con.totallines;
-	if (con.current - con.display >= con.totallines) {
+	if (con.current - con.display >= con.totallines)
+	{
 		con.display = con.current - con.totallines + 1;
 	}
 }
 
-void Con_Bottom(void) {
+void Con_Bottom(void)
+{
 	con.display = con.current;
 }
 
-void Con_Close(void) {
+void Con_Close(void)
+{
 	Field_Clear(&g_consoleField);
 	Con_ClearNotify();
 	Key_SetCatcher(Key_GetCatcher() & ~KEYCATCH_CONSOLE);
-	con.finalFrac = 0;				// none visible
+	con.finalFrac = 0; // none visible
 	con.displayFrac = 0;
 }

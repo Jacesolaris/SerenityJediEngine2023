@@ -27,10 +27,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // counters are only bumped when running single threaded,
 // because they are an awefull coherence problem
-int	c_active_windings;
-int	c_peak_windings;
-int	c_winding_allocs;
-int	c_winding_points;
+int c_active_windings;
+int c_peak_windings;
+int c_winding_allocs;
+int c_winding_points;
 
 void pw(winding_t* w)
 {
@@ -43,7 +43,7 @@ void pw(winding_t* w)
 AllocWinding
 =============
 */
-winding_t* AllocWinding(int points)
+winding_t* AllocWinding(const int points)
 {
 	c_winding_allocs++;
 	c_winding_points += points;
@@ -52,7 +52,7 @@ winding_t* AllocWinding(int points)
 		c_peak_windings = c_active_windings;
 
 	const int s = sizeof(vec_t) * 3 * points + sizeof(int);
-	winding_t* w = static_cast<winding_t*>(Z_Malloc(s, TAG_BSP, qtrue));//TAG_WINDING);
+	auto w = static_cast<winding_t*>(Z_Malloc(s, TAG_BSP, qtrue)); //TAG_WINDING);
 	//	memset (w, 0, s);	// qtrue above does this
 	return w;
 }
@@ -67,10 +67,10 @@ void FreeWinding(winding_t* w)
 	Z_Free(w);
 }
 
-void	WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
+void WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
 {
-	mins[0] = mins[1] = mins[2] = WORLD_SIZE;	// 99999;	// WORLD_SIZE instead of MAX_WORLD_COORD so that...
-	maxs[0] = maxs[1] = maxs[2] = -WORLD_SIZE;	//-99999;	// ... it's guaranteed to be outide of legal
+	mins[0] = mins[1] = mins[2] = WORLD_SIZE; // 99999;	// WORLD_SIZE instead of MAX_WORLD_COORD so that...
+	maxs[0] = maxs[1] = maxs[2] = -WORLD_SIZE; //-99999;	// ... it's guaranteed to be outide of legal
 
 	for (int i = 0; i < w->numpoints; i++)
 	{
@@ -90,10 +90,10 @@ void	WindingBounds(winding_t* w, vec3_t mins, vec3_t maxs)
 BaseWindingForPlane
 =================
 */
-winding_t* BaseWindingForPlane(vec3_t normal, vec_t dist)
+winding_t* BaseWindingForPlane(vec3_t normal, const vec_t dist)
 {
 	vec_t v;
-	vec3_t	org, vright, vup;
+	vec3_t org, vright, vup;
 
 	// find the major axis
 
@@ -172,14 +172,14 @@ winding_t* CopyWinding(winding_t* w)
 ChopWindingInPlace
 =============
 */
-void ChopWindingInPlace(winding_t** inout, vec3_t normal, vec_t dist, vec_t epsilon)
+void ChopWindingInPlace(winding_t** inout, vec3_t normal, const vec_t dist, const vec_t epsilon)
 {
-	vec_t	dists[MAX_POINTS_ON_WINDING + 4];
-	int		sides[MAX_POINTS_ON_WINDING + 4];
-	int		counts[3];
-	static	vec_t	dot;		// VC 4.2 optimizer bug if not static
-	int		i;
-	vec3_t	mid;
+	vec_t dists[MAX_POINTS_ON_WINDING + 4];
+	int sides[MAX_POINTS_ON_WINDING + 4];
+	int counts[3];
+	static vec_t dot; // VC 4.2 optimizer bug if not static
+	int i;
+	vec3_t mid;
 
 	winding_t* in = *inout;
 	counts[0] = counts[1] = counts[2] = 0;
@@ -210,9 +210,9 @@ void ChopWindingInPlace(winding_t** inout, vec3_t normal, vec_t dist, vec_t epsi
 		return;
 	}
 	if (!counts[1])
-		return;		// inout stays the same
+		return; // inout stays the same
 
-	const int maxpts = in->numpoints + 4;	// cant use counts[0]+2 because
+	const int maxpts = in->numpoints + 4; // cant use counts[0]+2 because
 	// of fp grouping errors
 
 	winding_t* f = AllocWinding(maxpts);
@@ -242,7 +242,8 @@ void ChopWindingInPlace(winding_t** inout, vec3_t normal, vec_t dist, vec_t epsi
 
 		dot = dists[i] / (dists[i] - dists[i + 1]);
 		for (int j = 0; j < 3; j++)
-		{	// avoid round off error when possible
+		{
+			// avoid round off error when possible
 			if (normal[j] == 1)
 				mid[j] = dist;
 			else if (normal[j] == -1)

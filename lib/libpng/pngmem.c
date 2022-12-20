@@ -21,7 +21,7 @@
 #if defined(PNG_READ_SUPPORTED) || defined(PNG_WRITE_SUPPORTED)
  /* Free a png_struct */
 void /* PRIVATE */
-png_destroy_png_struct(png_structrp png_ptr)
+png_destroy_png_struct(const png_structrp png_ptr)
 {
 	if (png_ptr != NULL)
 	{
@@ -98,8 +98,8 @@ PNG_FUNCTION(png_voidp /* PRIVATE */,
  * png_malloc_array.
  */
 static png_voidp
-png_malloc_array_checked(png_const_structrp png_ptr, int nelements,
-	size_t element_size)
+png_malloc_array_checked(const png_const_structrp png_ptr, const int nelements,
+                         const size_t element_size)
 {
 	const png_alloc_size_t req = nelements; /* known to be > 0 */
 
@@ -217,7 +217,7 @@ PNG_FUNCTION(png_voidp, PNGAPI
  * without taking any action.
  */
 void PNGAPI
-png_free(png_const_structrp png_ptr, png_voidp ptr)
+png_free(const png_const_structrp png_ptr, const png_voidp ptr)
 {
 	if (png_ptr == NULL || ptr == NULL)
 		return;
@@ -245,8 +245,8 @@ PNG_FUNCTION(void, PNGAPI
  * of allocating and freeing memory.
  */
 void PNGAPI
-png_set_mem_fn(png_structrp png_ptr, png_voidp mem_ptr, png_malloc_ptr
-	malloc_fn, png_free_ptr free_fn)
+png_set_mem_fn(const png_structrp png_ptr, const png_voidp mem_ptr, const png_malloc_ptr
+               malloc_fn, const png_free_ptr free_fn)
 {
 	if (png_ptr != NULL)
 	{
@@ -261,7 +261,7 @@ png_set_mem_fn(png_structrp png_ptr, png_voidp mem_ptr, png_malloc_ptr
  * pointer before png_write_destroy and png_read_destroy are called.
  */
 png_voidp PNGAPI
-png_get_mem_ptr(png_const_structrp png_ptr)
+png_get_mem_ptr(const png_const_structrp png_ptr)
 {
 	if (png_ptr == NULL)
 		return NULL;

@@ -83,9 +83,10 @@ enum
 	TK_USERDEF,
 };
 
-using keywordArray_t = struct keywordArray_s {
+using keywordArray_t = struct keywordArray_s
+{
 	char* m_keyword;
-	int			m_tokenvalue;
+	int m_tokenvalue;
 };
 
 class lessstr
@@ -183,7 +184,7 @@ public:
 protected:
 	void Init(long value);
 
-	long			m_value;
+	long m_value;
 };
 
 class CFloatToken : public CToken
@@ -201,7 +202,7 @@ public:
 protected:
 	void Init(float value);
 
-	float			m_value;
+	float m_value;
 };
 
 class CIdentifierToken : public CToken
@@ -245,7 +246,7 @@ public:
 protected:
 	void Init(int value, const char* string);
 
-	int				m_value;
+	int m_value;
 };
 
 class CUndefinedToken : public CToken
@@ -309,7 +310,7 @@ public:
 protected:
 	void Init(const char* symbolName, int value);
 
-	int				m_value;
+	int m_value;
 };
 
 class CSymbolTable
@@ -328,7 +329,7 @@ public:
 
 protected:
 	void Init();
-	symbolmap_t			m_symbols;
+	symbolmap_t m_symbols;
 };
 
 class CSymbolLookup
@@ -354,8 +355,8 @@ protected:
 	CSymbolLookup* m_child;
 	CSymbolLookup* m_sibling;
 	CSymbolLookup* m_parent;
-	int					m_value;
-	byte				m_byte;
+	int m_value;
+	byte m_byte;
 };
 
 class CTokenizerState
@@ -373,8 +374,8 @@ public:
 protected:
 	void Init(bool skip);
 
-	bool				m_skip;
-	bool				m_elseHit;
+	bool m_skip;
+	bool m_elseHit;
 	CTokenizerState* m_next;
 };
 
@@ -410,7 +411,8 @@ public:
 
 	CToken* GetToken(unsigned onFlags = 0, unsigned offFlags = 0);
 	CToken* GetToken(keywordArray_t* keywords, unsigned onFlags, unsigned offFlags);
-	void PutBackToken(CToken* theToken, bool commented = false, const char* addedChars = nullptr, bool bIgnoreThisTokenType = false);
+	void PutBackToken(CToken* theToken, bool commented = false, const char* addedChars = nullptr,
+	                  bool bIgnoreThisTokenType = false);
 	bool RequireToken(int tokenType);
 	void ScanUntilToken(int tokenType);
 	void SkipToLineEnd();
@@ -462,10 +464,10 @@ protected:
 	keywordArray_t* m_errors;
 	CSymbolLookup* m_symbolLookup;
 	CToken* m_nextToken;
-	CSymbolTable			m_defines;
+	CSymbolTable m_defines;
 	CTokenizerState* m_state;
-	unsigned				m_flags;
-	LPTokenizerErrorProc	m_errorProc;
+	unsigned m_flags;
+	LPTokenizerErrorProc m_errorProc;
 
 	static keywordArray_t errorMessages[];
 	static keywordArray_t directiveKeywords[];
@@ -497,9 +499,9 @@ public:
 protected:
 	void Init(byte theByte, int curLine, const char* filename);
 
-	byte			m_byte;
-	bool			m_consumed;
-	int				m_curLine;
+	byte m_byte;
+	bool m_consumed;
+	int m_curLine;
 	char* m_curFile;
 };
 
@@ -519,10 +521,10 @@ protected:
 	void Init(byte* data, long datasize);
 
 	byte* m_data;
-	int				m_curLine;
-	long			m_curPos;
-	long			m_datasize;
-	long			m_offset;
+	int m_curLine;
+	long m_curPos;
+	long m_datasize;
+	long m_offset;
 };
 
 class CParseBlock : public CParseMemory
@@ -553,10 +555,10 @@ protected:
 	void Init(CToken* token);
 
 	byte* m_data;
-	int				m_curLine;
-	long			m_curPos;
-	long			m_datasize;
-	long			m_offset;
+	int m_curLine;
+	long m_curPos;
+	long m_datasize;
+	long m_offset;
 };
 
 class CParseDefine : public CParseMemory

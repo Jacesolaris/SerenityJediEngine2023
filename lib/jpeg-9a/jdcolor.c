@@ -110,7 +110,7 @@ typedef my_color_deconverter* my_cconvert_ptr;
    */
 
 LOCAL(void)
-build_ycc_rgb_table(j_decompress_ptr cinfo)
+build_ycc_rgb_table(const j_decompress_ptr cinfo)
 /* Normal case, sYCC */
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
@@ -151,7 +151,7 @@ build_ycc_rgb_table(j_decompress_ptr cinfo)
 }
 
 LOCAL(void)
-build_bg_ycc_rgb_table(j_decompress_ptr cinfo)
+build_bg_ycc_rgb_table(const j_decompress_ptr cinfo)
 /* Wide gamut case, bg-sYCC */
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
@@ -219,9 +219,9 @@ build_bg_ycc_rgb_table(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-ycc_rgb_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+ycc_rgb_convert(const j_decompress_ptr cinfo,
+                const JSAMPIMAGE input_buf, JDIMENSION input_row,
+                JSAMPARRAY output_buf, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const JDIMENSION num_cols = cinfo->output_width;
@@ -263,7 +263,7 @@ ycc_rgb_convert(j_decompress_ptr cinfo,
  */
 
 LOCAL(void)
-build_rgb_y_table(j_decompress_ptr cinfo)
+build_rgb_y_table(const j_decompress_ptr cinfo)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	INT32* rgb_y_tab;
@@ -285,9 +285,9 @@ build_rgb_y_table(j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-rgb_gray_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+rgb_gray_convert(const j_decompress_ptr cinfo,
+                 const JSAMPIMAGE input_buf, JDIMENSION input_row,
+                 JSAMPARRAY output_buf, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const register INT32* ctab = cconvert->rgb_y_tab;
@@ -320,9 +320,9 @@ rgb_gray_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-rgb1_rgb_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+rgb1_rgb_convert(const j_decompress_ptr cinfo,
+                 const JSAMPIMAGE input_buf, JDIMENSION input_row,
+                 JSAMPARRAY output_buf, int num_rows)
 {
 	const JDIMENSION num_cols = cinfo->output_width;
 
@@ -353,9 +353,9 @@ rgb1_rgb_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-rgb1_gray_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+rgb1_gray_convert(const j_decompress_ptr cinfo,
+                  const JSAMPIMAGE input_buf, JDIMENSION input_row,
+                  JSAMPARRAY output_buf, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const register INT32* ctab = cconvert->rgb_y_tab;
@@ -390,9 +390,9 @@ rgb1_gray_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-rgb_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+rgb_convert(const j_decompress_ptr cinfo,
+            const JSAMPIMAGE input_buf, JDIMENSION input_row,
+            JSAMPARRAY output_buf, int num_rows)
 {
 	const JDIMENSION num_cols = cinfo->output_width;
 
@@ -418,9 +418,9 @@ rgb_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-null_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+null_convert(const j_decompress_ptr cinfo,
+             const JSAMPIMAGE input_buf, JDIMENSION input_row,
+             JSAMPARRAY output_buf, int num_rows)
 {
 	const register int nc = cinfo->num_components;
 	const JDIMENSION num_cols = cinfo->output_width;
@@ -446,9 +446,9 @@ null_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-grayscale_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+grayscale_convert(const j_decompress_ptr cinfo,
+                  const JSAMPIMAGE input_buf, const JDIMENSION input_row,
+                  const JSAMPARRAY output_buf, const int num_rows)
 {
 	jcopy_sample_rows(input_buf[0], input_row, output_buf, 0,
 		num_rows, cinfo->output_width);
@@ -461,9 +461,9 @@ grayscale_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-gray_rgb_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+gray_rgb_convert(const j_decompress_ptr cinfo,
+                 const JSAMPIMAGE input_buf, JDIMENSION input_row,
+                 JSAMPARRAY output_buf, int num_rows)
 {
 	const JDIMENSION num_cols = cinfo->output_width;
 
@@ -486,9 +486,9 @@ gray_rgb_convert(j_decompress_ptr cinfo,
  */
 
 METHODDEF(void)
-ycck_cmyk_convert(j_decompress_ptr cinfo,
-	JSAMPIMAGE input_buf, JDIMENSION input_row,
-	JSAMPARRAY output_buf, int num_rows)
+ycck_cmyk_convert(const j_decompress_ptr cinfo,
+                  const JSAMPIMAGE input_buf, JDIMENSION input_row,
+                  JSAMPARRAY output_buf, int num_rows)
 {
 	const my_cconvert_ptr cconvert = (my_cconvert_ptr)cinfo->cconvert;
 	const JDIMENSION num_cols = cinfo->output_width;
@@ -541,7 +541,7 @@ start_pass_dcolor(j_decompress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_color_deconverter(j_decompress_ptr cinfo)
+jinit_color_deconverter(const j_decompress_ptr cinfo)
 {
 	int ci;
 

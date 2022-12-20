@@ -62,15 +62,15 @@ FX_ConcHitPlayer
 ---------------------------
 */
 
-void FX_ConcHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_ConcHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
 		if (hit && hit->client && hit->ghoul2.size())
 		{
 			CG_AddGhoul2Mark(cgs.media.bdecal_bodyburn1, flrand(3.5, 4.0), origin, normal, hit->s.number,
-				hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
-				Q_irand(10000, 13000));
+			                 hit->client->ps.origin, hit->client->renderInfo.legsYaw, hit->ghoul2, hit->s.modelScale,
+			                 Q_irand(10000, 13000));
 		}
 		theFxScheduler.PlayEffect("concussion/explosion", origin, normal);
 	}
@@ -85,25 +85,25 @@ void FX_ConcHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean hum
 FX_ConcAltShot
 ---------------------------
 */
-static vec3_t WHITE = { 1.0f, 1.0f, 1.0f };
+static vec3_t WHITE = {1.0f, 1.0f, 1.0f};
 
 void FX_ConcAltShot(vec3_t start, vec3_t end)
 {
 	//"concussion/beam"
 	FX_AddLine(-1, start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		675, cgi_R_RegisterShader("gfx/effects/blueLine"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           WHITE, WHITE, 0.0f,
+	           675, cgi_R_RegisterShader("gfx/effects/blueLine"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
-	vec3_t BRIGHT = { 0.75f, 0.5f, 1.0f };
+	vec3_t BRIGHT = {0.75f, 0.5f, 1.0f};
 
 	// add some beef
 	FX_AddLine(-1, start, end, 0.1f, 7.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		BRIGHT, BRIGHT, 0.0f,
-		650, cgi_R_RegisterShader("gfx/misc/whiteline2"),
-		0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	           1.0f, 0.0f, 0.0f,
+	           BRIGHT, BRIGHT, 0.0f,
+	           650, cgi_R_RegisterShader("gfx/misc/whiteline2"),
+	           0, FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 /*
@@ -125,7 +125,7 @@ void FX_ConcAltMiss(vec3_t origin, vec3_t normal)
 	pos[2] += 28;
 
 	FX_AddBezier(origin, pos, c1, vec3_origin, c2, vec3_origin, 6.0f, 6.0f, 0.0f, 0.0f, 0.2f, 0.5f, WHITE, WHITE, 0.0f,
-		4000, cgi_R_RegisterShader("gfx/effects/smokeTrail"), FX_ALPHA_WAVE);
+	             4000, cgi_R_RegisterShader("gfx/effects/smokeTrail"), FX_ALPHA_WAVE);
 
 	theFxScheduler.PlayEffect("concussion/alt_miss", origin, normal);
 }

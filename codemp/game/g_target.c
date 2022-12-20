@@ -424,13 +424,13 @@ void target_laser_think(gentity_t* self)
 	VectorMA(self->s.origin, 2048, self->movedir, end);
 
 	trap->Trace(&tr, self->s.origin, NULL, NULL, end, self->s.number, CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE,
-		qfalse, 0, 0);
+	            qfalse, 0, 0);
 
 	if (tr.entityNum)
 	{
 		// hurt it if we can
 		G_Damage(&g_entities[tr.entityNum], self, self->activator, self->movedir,
-			tr.endpos, self->damage, DAMAGE_NO_KNOCKBACK, MOD_TARGET_LASER);
+		         tr.endpos, self->damage, DAMAGE_NO_KNOCKBACK, MOD_TARGET_LASER);
 	}
 
 	VectorCopy(tr.endpos, self->s.origin2);
@@ -657,7 +657,7 @@ void SP_target_location(gentity_t* self)
 
 	VectorCopy(self->s.origin, level.locations.data[level.locations.num].origin);
 	Q_strncpyz(level.locations.data[level.locations.num].message, self->message,
-		sizeof level.locations.data[level.locations.num].message);
+	           sizeof level.locations.data[level.locations.num].message);
 	level.locations.data[level.locations.num].count = Com_Clampi(0, 7, self->count);
 
 	level.locations.num++;
@@ -691,7 +691,7 @@ void target_counter_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	if (activator)
 	{
 		G_DebugPrint(WL_VERBOSE, "target_counter %s used by %s (%d/%d)\n", self->targetname, activator->targetname,
-			self->genericValue1 - self->count, self->genericValue1);
+		             self->genericValue1 - self->count, self->genericValue1);
 	}
 
 	if (self->count)
@@ -876,7 +876,7 @@ void scriptrunner_run(gentity_t* self)
 			if (developer.integer)
 			{
 				Com_Printf("target_scriptrunner running %s on activator %s\n", self->behaviorSet[BSET_USE],
-					self->activator->targetname);
+				           self->activator->targetname);
 			}
 
 			//make the code handle the case of the scripts directory already being given
@@ -888,7 +888,7 @@ void scriptrunner_run(gentity_t* self)
 			else
 			{
 				trap->ICARUS_RunScript((sharedEntity_t*)self->activator,
-					va("%s/%s", Q3_SCRIPT_DIR, self->behaviorSet[BSET_USE]));
+				                       va("%s/%s", Q3_SCRIPT_DIR, self->behaviorSet[BSET_USE]));
 			}
 		}
 		else
@@ -963,7 +963,7 @@ void SP_target_scriptrunner(gentity_t* self)
 	self->use = target_scriptrunner_use;
 }
 
-void G_SetActiveState(const char* targetstring, qboolean act_state)
+void G_SetActiveState(const char* targetstring, const qboolean act_state)
 {
 	gentity_t* target = NULL;
 	while (NULL != (target = G_Find(target, FOFS(targetname), targetstring)))
@@ -1142,7 +1142,7 @@ void Use_Secret(gentity_t* ent, gentity_t* other, gentity_t* activator)
 	else
 	{
 		trap->SendServerCommand(-1, va("cp \"^4%i / %i^1 Secrets Found\n\"", ent->genericValue1 - ent->count,
-			ent->genericValue1));
+		                               ent->genericValue1));
 	}
 }
 
@@ -1161,12 +1161,12 @@ void SP_target_secret(gentity_t* self)
 check to see if this is a good spawnpoint if not, return false.  In addition, move the
 spawn location vector down to the ground.
 */
-qboolean CheckforGoodSpawnPoint(vec3_t location, qboolean playersolidcheck)
+qboolean CheckforGoodSpawnPoint(vec3_t location, const qboolean playersolidcheck)
 {
 	trace_t tr;
 	vec3_t locend;
-	const vec3_t playerMins = { -15, -15, DEFAULT_MINS_2 };
-	const vec3_t playerMaxs = { 15, 15, DEFAULT_MAXS_2 };
+	const vec3_t playerMins = {-15, -15, DEFAULT_MINS_2};
+	const vec3_t playerMaxs = {15, 15, DEFAULT_MAXS_2};
 
 	VectorCopy(location, locend);
 	locend[2] -= 900;

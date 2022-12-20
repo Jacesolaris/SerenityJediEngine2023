@@ -62,12 +62,12 @@ public:
 	int GetGUID(void) const { return m_id; }
 	int GetID(void) const { return m_block->GetBlockID(); }
 
-	void SetTimeStamp(unsigned int timeStamp) { m_timeStamp = timeStamp; }
+	void SetTimeStamp(const unsigned int timeStamp) { m_timeStamp = timeStamp; }
 	void SetBlock(CBlock* block) { m_block = block; }
-	void SetGUID(int id) { m_id = id; }
+	void SetGUID(const int id) { m_id = id; }
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);
@@ -111,7 +111,7 @@ public:
 	int GetGUID(void) const { return m_GUID; }
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);
@@ -178,7 +178,7 @@ public:
 	void Load(CIcarus* icarus);
 
 	// Overloaded new operator.
-	void* operator new(size_t size)
+	void* operator new(const size_t size)
 	{
 		// Allocate the memory.
 		return IGameInterface::GetGame()->Malloc(size);

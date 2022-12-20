@@ -29,12 +29,12 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include <float.h>
 #endif // __FXCHECKER
 
-int	FX_RegisterEffect(const char* file)
+int FX_RegisterEffect(const char* file)
 {
 	return theFxScheduler.RegisterEffect(file, true);
 }
 
-void FX_PlayEffect(const char* file, vec3_t org, vec3_t fwd, int vol, int rad)
+void FX_PlayEffect(const char* file, vec3_t org, vec3_t fwd, const int vol, const int rad)
 {
 #ifdef __FXCHECKER
 	if (_isnan(org[0]) || _isnan(org[1]) || _isnan(org[2]))
@@ -54,7 +54,7 @@ void FX_PlayEffect(const char* file, vec3_t org, vec3_t fwd, int vol, int rad)
 	theFxScheduler.PlayEffect(file, org, fwd, vol, rad);
 }
 
-void FX_PlayEffectID(int id, vec3_t org, vec3_t fwd, int vol, int rad, qboolean isPortal)
+void FX_PlayEffectID(const int id, vec3_t org, vec3_t fwd, const int vol, const int rad, const qboolean isPortal)
 {
 #ifdef __FXCHECKER
 	if (_isnan(org[0]) || _isnan(org[1]) || _isnan(org[2]))
@@ -74,14 +74,14 @@ void FX_PlayEffectID(int id, vec3_t org, vec3_t fwd, int vol, int rad, qboolean 
 	theFxScheduler.PlayEffect(id, org, fwd, vol, rad, !!isPortal);
 }
 
-void FX_PlayBoltedEffectID(int id, vec3_t org,
-	const int boltInfo, CGhoul2Info_v* ghoul2, int iLooptime, qboolean isRelative)
+void FX_PlayBoltedEffectID(const int id, vec3_t org,
+                           const int boltInfo, CGhoul2Info_v* ghoul2, const int iLooptime, const qboolean isRelative)
 {
 	theFxScheduler.PlayEffect(id, org, nullptr, boltInfo, ghoul2, -1, -1, -1, qfalse, iLooptime, !!isRelative);
 }
 
-void FX_PlayEntityEffectID(int id, vec3_t org,
-	matrix3_t axis, const int boltInfo, const int entNum, int vol, int rad)
+void FX_PlayEntityEffectID(const int id, vec3_t org,
+                           matrix3_t axis, const int boltInfo, const int entNum, const int vol, const int rad)
 {
 #ifdef __FXCHECKER
 	if (_isnan(org[0]) || _isnan(org[1]) || _isnan(org[2]))
@@ -93,12 +93,12 @@ void FX_PlayEntityEffectID(int id, vec3_t org,
 	theFxScheduler.PlayEffect(id, org, axis, boltInfo, nullptr, -1, vol, rad);
 }
 
-void FX_AddScheduledEffects(qboolean portal)
+void FX_AddScheduledEffects(const qboolean portal)
 {
 	theFxScheduler.AddScheduledEffects(!!portal);
 }
 
-void FX_Draw2DEffects(float screenXScale, float screenYScale)
+void FX_Draw2DEffects(const float screenXScale, const float screenYScale)
 {
 	theFxScheduler.Draw2DEffects(screenXScale, screenYScale);
 }
@@ -118,7 +118,7 @@ qboolean FX_FreeSystem(void)
 	return static_cast<qboolean>(FX_Free(true));
 }
 
-void FX_AdjustTime(int time)
+void FX_AdjustTime(const int time)
 {
 	theFxHelper.AdjustTime(time);
 }

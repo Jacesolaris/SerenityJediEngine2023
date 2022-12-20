@@ -972,7 +972,7 @@ public:
 	void CameraTrack(const char* name, float speed, float initLerp) OVERRIDE;
 	void CameraDistance(float dist, float initLerp) OVERRIDE;
 	void CameraFade(float sr, float sg, float sb, float sa, float dr, float dg, float db, float da,
-		float duration) OVERRIDE;
+	                float duration) OVERRIDE;
 	void CameraPath(const char* name) OVERRIDE;
 	void CameraEnable(void) OVERRIDE;
 	void CameraDisable(void) OVERRIDE;

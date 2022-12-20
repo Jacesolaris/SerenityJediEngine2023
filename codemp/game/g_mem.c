@@ -47,7 +47,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 static char memoryPool[POOLSIZE];
 static int allocPoint;
 
-void* G_Alloc(int size)
+void* G_Alloc(const int size)
 {
 	if (size <= 0)
 	{

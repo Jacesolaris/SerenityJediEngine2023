@@ -113,7 +113,7 @@ RE_AddPolyToScene
 
 =====================
 */
-void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts) {
+void RE_AddPolyToScene(const qhandle_t hShader, const int numVerts, const polyVert_t* verts) {
 	int			fogIndex = 0;
 
 	if (!tr.registered) {
@@ -227,7 +227,7 @@ RE_AddLightToScene
 
 =====================
 */
-void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b) {
+void RE_AddLightToScene(const vec3_t org, const float intensity, const float r, const float g, const float b) {
 	if (!tr.registered) {
 		return;
 	}

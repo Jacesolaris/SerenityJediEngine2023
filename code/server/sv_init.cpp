@@ -44,17 +44,21 @@ SV_SetConfigstring
 
 ===============
 */
-void SV_SetConfigstring(int index, const char* val) {
-	if (index < 0 || index >= MAX_CONFIGSTRINGS) {
+void SV_SetConfigstring(const int index, const char* val)
+{
+	if (index < 0 || index >= MAX_CONFIGSTRINGS)
+	{
 		Com_Error(ERR_DROP, "SV_SetConfigstring: bad index %i\n", index);
 	}
 
-	if (!val) {
+	if (!val)
+	{
 		val = "";
 	}
 
 	// don't bother broadcasting an update if no change
-	if (strcmp(val, sv.configstrings[index]) == 0) {
+	if (strcmp(val, sv.configstrings[index]) == 0)
+	{
 		return;
 	}
 
@@ -64,7 +68,8 @@ void SV_SetConfigstring(int index, const char* val) {
 
 	// send it to all the clients if we aren't
 	// spawning a new server
-	if (sv.state == SS_GAME) {
+	if (sv.state == SS_GAME)
+	{
 		SV_SendServerCommand(nullptr, "cs %i \"%s\"\n", index, val);
 	}
 }
@@ -75,14 +80,18 @@ SV_GetConfigstring
 
 ===============
 */
-void SV_GetConfigstring(int index, char* buffer, int bufferSize) {
-	if (bufferSize < 1) {
+void SV_GetConfigstring(const int index, char* buffer, const int bufferSize)
+{
+	if (bufferSize < 1)
+	{
 		Com_Error(ERR_DROP, "SV_GetConfigstring: bufferSize == %i", bufferSize);
 	}
-	if (index < 0 || index >= MAX_CONFIGSTRINGS) {
+	if (index < 0 || index >= MAX_CONFIGSTRINGS)
+	{
 		Com_Error(ERR_DROP, "SV_GetConfigstring: bad index %i\n", index);
 	}
-	if (!sv.configstrings[index]) {
+	if (!sv.configstrings[index])
+	{
 		buffer[0] = 0;
 		return;
 	}
@@ -96,12 +105,15 @@ SV_SetUserinfo
 
 ===============
 */
-void SV_SetUserinfo(int index, const char* val) {
-	if (index < 0 || index >= 1) {
+void SV_SetUserinfo(const int index, const char* val)
+{
+	if (index < 0 || index >= 1)
+	{
 		Com_Error(ERR_DROP, "SV_SetUserinfo: bad index %i\n", index);
 	}
 
-	if (!val) {
+	if (!val)
+	{
 		val = "";
 	}
 
@@ -114,11 +126,14 @@ SV_GetUserinfo
 
 ===============
 */
-void SV_GetUserinfo(int index, char* buffer, int bufferSize) {
-	if (bufferSize < 1) {
+void SV_GetUserinfo(const int index, char* buffer, const int bufferSize)
+{
+	if (bufferSize < 1)
+	{
 		Com_Error(ERR_DROP, "SV_GetUserinfo: bufferSize == %i", bufferSize);
 	}
-	if (index < 0 || index >= 1) {
+	if (index < 0 || index >= 1)
+	{
 		Com_Error(ERR_DROP, "SV_GetUserinfo: bad index %i\n", index);
 	}
 	Q_strncpyz(buffer, svs.clients[index].userinfo, bufferSize);
@@ -133,13 +148,17 @@ to the clients -- only the fields that differ from the
 baseline will be transmitted
 ================
 */
-void SV_CreateBaseline(void) {
-	for (int entnum = 0; entnum < ge->num_entities; entnum++) {
+void SV_CreateBaseline(void)
+{
+	for (int entnum = 0; entnum < ge->num_entities; entnum++)
+	{
 		gentity_t* svent = SV_GentityNum(entnum);
-		if (!svent->inuse) {
+		if (!svent->inuse)
+		{
 			continue;
 		}
-		if (!svent->linked) {
+		if (!svent->linked)
+		{
 			continue;
 		}
 		svent->s.number = entnum;
@@ -158,8 +177,10 @@ SV_Startup
 Called when a game is about to begin
 ===============
 */
-void SV_Startup(void) {
-	if (svs.initialized) {
+void SV_Startup(void)
+{
+	if (svs.initialized)
+	{
 		Com_Error(ERR_FATAL, "SV_Startup: svs.initialized");
 	}
 
@@ -181,15 +202,15 @@ Change the server to a new map, taking all connected
 clients along with it.
 ================
 */
-void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAllowScreenDissolve)
+void SV_SpawnServer(const char* server, const ForceReload_e eForceReload, const qboolean bAllowScreenDissolve)
 {
-	int			i;
-	int			checksum;
+	int i;
+	int checksum;
 
 	re.RegisterMedia_LevelLoadBegin(server, eForceReload, bAllowScreenDissolve);
 
 	Cvar_SetValue("cl_paused", 0);
-	Cvar_Set("timescale", "1");//jic we were skipping
+	Cvar_Set("timescale", "1"); //jic we were skipping
 	Cvar_Set("r_ratiofix", "0");
 
 	// shut down the existing game if it is running
@@ -209,7 +230,8 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 	CL_MapLoading();
 
 	if (!CM_SameMap(server))
-	{ //rww - only clear if not loading the same map
+	{
+		//rww - only clear if not loading the same map
 		CM_ClearMap();
 	}
 
@@ -220,8 +242,10 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 
 	// wipe the entire per-level structure
 	// Also moved up, trying to do all freeing before new allocs
-	for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
-		if (sv.configstrings[i]) {
+	for (i = 0; i < MAX_CONFIGSTRINGS; i++)
+	{
+		if (sv.configstrings[i])
+		{
 			Z_Free(sv.configstrings[i]);
 			sv.configstrings[i] = nullptr;
 		}
@@ -240,7 +264,8 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 	// init client structures and svs.numSnapshotEntities
 	// This is moved down quite a bit, but should be safe. And keeps
 	// svs.clients right at the beginning of memory
-	if (!Cvar_VariableIntegerValue("sv_running")) {
+	if (!Cvar_VariableIntegerValue("sv_running"))
+	{
 		SV_Startup();
 	}
 
@@ -252,7 +277,8 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 	re.SVModelInit();
 
 	// allocate the snapshot entities
-	svs.snapshotEntities = static_cast<entityState_t*>(Z_Malloc(sizeof entityState_t * svs.numSnapshotEntities, TAG_CLIENTS, qtrue));
+	svs.snapshotEntities = static_cast<entityState_t*>(Z_Malloc(sizeof entityState_t * svs.numSnapshotEntities,
+	                                                            TAG_CLIENTS, qtrue));
 
 	Music_SetLevelName(server);
 
@@ -265,7 +291,8 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 
 	memset(&sv, 0, sizeof sv);
 
-	for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
+	for (i = 0; i < MAX_CONFIGSTRINGS; i++)
+	{
 		sv.configstrings[i] = CopyString("");
 	}
 
@@ -295,7 +322,8 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 	SV_InitGameProgs();
 
 	// run a few frames to allow everything to settle
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++)
+	{
 		ge->RunFrame(sv.time);
 		sv.time += 100;
 		re.G2API_SetTime(sv.time, G2T_SV_TIME);
@@ -307,21 +335,25 @@ void SV_SpawnServer(const char* server, ForceReload_e eForceReload, qboolean bAl
 	// create a baseline for more efficient communications
 	SV_CreateBaseline();
 
-	for (i = 0; i < 1; i++) {
+	for (i = 0; i < 1; i++)
+	{
 		// clear all time counters, because we have reset sv.time
 		svs.clients[i].lastPacketTime = 0;
 		svs.clients[i].lastConnectTime = 0;
 
 		// send the new gamestate to all connected clients
-		if (svs.clients[i].state >= CS_CONNECTED) {
+		if (svs.clients[i].state >= CS_CONNECTED)
+		{
 			// connect the client again
-			const char* denied = ge->ClientConnect(i, qfalse, eNO/*qfalse*/);	// firstTime = qfalse, qbFromSavedGame
-			if (denied) {
+			const char* denied = ge->ClientConnect(i, qfalse, eNO/*qfalse*/); // firstTime = qfalse, qbFromSavedGame
+			if (denied)
+			{
 				// this generally shouldn't happen, because the client
 				// was connected before the level change
 				SV_DropClient(&svs.clients[i], denied);
 			}
-			else {
+			else
+			{
 				svs.clients[i].state = CS_CONNECTED;
 				// when we get the next packet from a connected client,
 				// the new gamestate will be sent
@@ -364,7 +396,8 @@ SV_Init
 Only called at main exe startup, not for each game
 ===============
 */
-void SV_Init(void) {
+void SV_Init(void)
+{
 	SV_AddOperatorCommands();
 
 	// serverinfo vars
@@ -407,14 +440,16 @@ not just stuck on the outgoing message list, because the server is going
 to totally exit after returning from this function.
 ==================
 */
-void SV_FinalMessage(const char* message) {
+void SV_FinalMessage(const char* message)
+{
 	client_t* cl = svs.clients;
 
 	SV_SendServerCommand(nullptr, "print \"%s\"", message);
 	SV_SendServerCommand(nullptr, "disconnect");
 
 	// send it twice, ignoring rate
-	if (cl->state >= CS_CONNECTED) {
+	if (cl->state >= CS_CONNECTED)
+	{
 		SV_SendClientSnapshot(cl);
 		SV_SendClientSnapshot(cl);
 	}
@@ -428,14 +463,17 @@ Called when each game quits,
 before Sys_Quit or Sys_Error
 ================
 */
-void SV_Shutdown(const char* finalmsg) {
-	if (!com_sv_running || !com_sv_running->integer) {
+void SV_Shutdown(const char* finalmsg)
+{
+	if (!com_sv_running || !com_sv_running->integer)
+	{
 		return;
 	}
 
 	//Com_Printf( "----- Server Shutdown -----\n" );
 
-	if (svs.clients && !com_errorEntered) {
+	if (svs.clients && !com_errorEntered)
+	{
 		SV_FinalMessage(finalmsg);
 	}
 
@@ -448,8 +486,10 @@ void SV_Shutdown(const char* finalmsg) {
 		svs.snapshotEntities = nullptr;
 	}
 
-	for (int i = 0; i < MAX_CONFIGSTRINGS; i++) {
-		if (sv.configstrings[i]) {
+	for (int i = 0; i < MAX_CONFIGSTRINGS; i++)
+	{
+		if (sv.configstrings[i])
+		{
 			Z_Free(sv.configstrings[i]);
 		}
 	}
@@ -458,7 +498,8 @@ void SV_Shutdown(const char* finalmsg) {
 	memset(&sv, 0, sizeof sv);
 
 	// free server static data
-	if (svs.clients) {
+	if (svs.clients)
+	{
 		SV_FreeClient(svs.clients);
 		Z_Free(svs.clients);
 	}

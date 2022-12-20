@@ -139,18 +139,19 @@ void SE_FreeFileDataAfterLoad(unsigned char* psLoadedFile)
 // quake-style method of doing things since their file-list code doesn't have a 'recursive' flag...
 //
 int giFilesFound;
+
 static void SE_R_ListFiles(const char* psExtension, const char* psDir, std::string& strResults)
 {
 	//	Com_Printf(va("Scanning Dir: %s\n",psDir));
 
-	int		numSysFiles, i, numdirs;
+	int numSysFiles, i, numdirs;
 
 	char** dirFiles = FS_ListFiles(psDir, "/", &numdirs);
 	for (i = 0; i < numdirs; i++)
 	{
-		if (dirFiles[i][0] && dirFiles[i][0] != '.')	// skip blanks, plus ".", ".." etc
+		if (dirFiles[i][0] && dirFiles[i][0] != '.') // skip blanks, plus ".", ".." etc
 		{
-			char	sDirName[MAX_QPATH];
+			char sDirName[MAX_QPATH];
 			Com_sprintf(sDirName, sizeof sDirName, "%s/%s", psDir, dirFiles[i]);
 			//
 			// for some reason the quake filesystem in this game now returns an extra slash on the end,
@@ -167,7 +168,7 @@ static void SE_R_ListFiles(const char* psExtension, const char* psDir, std::stri
 	char** sysFiles = FS_ListFiles(psDir, psExtension, &numSysFiles);
 	for (i = 0; i < numSysFiles; i++)
 	{
-		char	sFilename[MAX_QPATH];
+		char sFilename[MAX_QPATH];
 		Com_sprintf(sFilename, sizeof sFilename, "%s/%s", psDir, sysFiles[i]);
 
 		//		Com_Printf("%sFound file: %s",!i?"\n":"",sFilename);
@@ -178,14 +179,14 @@ static void SE_R_ListFiles(const char* psExtension, const char* psDir, std::stri
 
 		// read it in...
 		//
-/*		byte *pbData = NULL;
-		int iSize = FS_ReadFile( sFilename, (void **)&pbData);
-
-		if (pbData)
-		{
-			FS_FreeFile( pbData );
-		}
-*/
+		/*		byte *pbData = NULL;
+				int iSize = FS_ReadFile( sFilename, (void **)&pbData);
+		
+				if (pbData)
+				{
+					FS_FreeFile( pbData );
+				}
+		*/
 	}
 	FS_FreeFileList(sysFiles);
 	FS_FreeFileList(dirFiles);

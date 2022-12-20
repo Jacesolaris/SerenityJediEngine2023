@@ -33,15 +33,14 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 class ICARUS_Instance
 {
 public:
-
-	using sequence_l = std::list< CSequence* >;
-	using sequencer_l = std::list< CSequencer* >;
-	using signal_m = std::map < std::string, unsigned char >;
+	using sequence_l = std::list<CSequence*>;
+	using sequencer_l = std::list<CSequencer*>;
+	using signal_m = std::map<std::string, unsigned char>;
 
 	ICARUS_Instance(void);
 	virtual ~ICARUS_Instance(void);
 
-	static	ICARUS_Instance* Create(interface_export_t*);
+	static ICARUS_Instance* Create(interface_export_t*);
 	int Delete(void);
 
 	CSequencer* GetSequencer(int);
@@ -51,7 +50,7 @@ public:
 	CSequence* GetSequence(int id);
 	void DeleteSequence(CSequence*);
 
-	interface_export_t* GetInterface(void)	const { return	m_interface; }
+	interface_export_t* GetInterface(void) const { return m_interface; }
 
 	//These are overriddable for "worst-case" save / loads
 	virtual int Save(void /*FIXME*/);
@@ -62,7 +61,6 @@ public:
 	void ClearSignal(const char* identifier);
 
 protected:
-
 	virtual int SaveSignals(void);
 	virtual int SaveSequences(void);
 	virtual int SaveSequenceIDTable(void);
@@ -70,29 +68,29 @@ protected:
 
 	int AllocateSequences(int numSequences, int* idTable);
 
-	virtual	int LoadSignals(void);
-	virtual	int LoadSequencers(void);
-	virtual	int LoadSequences(void);
+	virtual int LoadSignals(void);
+	virtual int LoadSequencers(void);
+	virtual int LoadSequences(void);
 	virtual int LoadSequence(void);
 
 	int Free(void);
 
 	interface_export_t* m_interface;
-	int					m_GUID;
+	int m_GUID;
 
-	sequence_l			m_sequences;
-	sequencer_l			m_sequencers;
+	sequence_l m_sequences;
+	sequencer_l m_sequencers;
 
-	signal_m			m_signals;
+	signal_m m_signals;
 
 #ifdef _DEBUG
 
-	int	m_DEBUG_NumSequencerAlloc;
-	int	m_DEBUG_NumSequencerFreed;
+	int m_DEBUG_NumSequencerAlloc;
+	int m_DEBUG_NumSequencerFreed;
 	int m_DEBUG_NumSequencerResidual;
 
-	int	m_DEBUG_NumSequenceAlloc;
-	int	m_DEBUG_NumSequenceFreed;
+	int m_DEBUG_NumSequenceAlloc;
+	int m_DEBUG_NumSequenceFreed;
 	int m_DEBUG_NumSequenceResidual;
 
 #endif

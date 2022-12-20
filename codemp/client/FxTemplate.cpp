@@ -89,7 +89,7 @@ CPrimitiveTemplate::CPrimitiveTemplate()
 	mTexCoordT.SetRange(1.0f, 1.0f);
 
 	mVariance.SetRange(1.0f, 1.0f);
-	mDensity.SetRange(10.0f, 10.0f);// default this high so it doesn't do bad things
+	mDensity.SetRange(10.0f, 10.0f); // default this high so it doesn't do bad things
 }
 
 //-----------------------------------------------------------
@@ -208,7 +208,8 @@ bool CPrimitiveTemplate::ParseFloat(const char* val, float* min, float* max)
 {
 	// We don't allow passing in a null for either of the fields
 	if (min == nullptr || max == nullptr)
-	{ // failue
+	{
+		// failue
 		return false;
 	}
 
@@ -216,11 +217,13 @@ bool CPrimitiveTemplate::ParseFloat(const char* val, float* min, float* max)
 	const int v = sscanf(val, "%f %f", min, max);
 
 	if (v == 0)
-	{ // nothing was there, failure
+	{
+		// nothing was there, failure
 		return false;
 	}
 	if (v == 1)
-	{ // only one field entered, this is ok, but we should copy min into max
+	{
+		// only one field entered, this is ok, but we should copy min into max
 		*max = *min;
 	}
 
@@ -253,11 +256,13 @@ bool CPrimitiveTemplate::ParseVector(const char* val, vec3_t min, vec3_t max)
 
 	// Check for completeness
 	if (v < 3 || v == 4 || v == 5)
-	{ // not a complete value
+	{
+		// not a complete value
 		return false;
 	}
 	if (v == 3)
-	{ // only a min was entered, so copy the result into max
+	{
+		// only a min was entered, so copy the result into max
 		VectorCopy(min, max);
 	}
 
@@ -285,8 +290,8 @@ bool CPrimitiveTemplate::ParseGroupFlags(const char* val, int* flags)
 		return false;
 	}
 
-	char	flag[][32] = { "\0","\0","\0","0" };
-	bool	ok = true;
+	char flag[][32] = {"\0", "\0", "\0", "0"};
+	bool ok = true;
 
 	// For a sub group, really you probably only have one or two flags set
 	const int v = sscanf(val, "%s %s %s %s", flag[0], flag[1], flag[2], flag[3]);
@@ -313,7 +318,8 @@ bool CPrimitiveTemplate::ParseGroupFlags(const char* val, int* flags)
 			*flags |= FX_CLAMP;
 
 		else
-		{ // we have badness going on, but continue on in case there are any valid fields in here
+		{
+			// we have badness going on, but continue on in case there are any valid fields in here
 			ok = false;
 		}
 	}
@@ -722,8 +728,8 @@ bool CPrimitiveTemplate::ParseVelocity(const char* val)
 //------------------------------------------------------
 bool CPrimitiveTemplate::ParseFlags(const char* val)
 {
-	char	flag[][32] = { "\0","\0","\0","\0","\0","\0","\0" };
-	bool	ok = true;
+	char flag[][32] = {"\0", "\0", "\0", "\0", "\0", "\0", "\0"};
+	bool ok = true;
 
 	// For a primitive, really you probably only have two or less flags set
 	const int v = sscanf(val, "%s %s %s %s %s %s %s", flag[0], flag[1], flag[2], flag[3], flag[4], flag[5], flag[6]);
@@ -743,12 +749,12 @@ bool CPrimitiveTemplate::ParseFlags(const char* val)
 			mFlags |= FX_APPLY_PHYSICS;
 		else if (!Q_stricmp(flag[i], "expensivePhysics"))
 			mFlags |= FX_EXPENSIVE_PHYSICS;
-		//rww - begin g2 stuff
+			//rww - begin g2 stuff
 		else if (!Q_stricmp(flag[i], "ghoul2Collision"))
 			mFlags |= FX_GHOUL2_TRACE | FX_APPLY_PHYSICS | FX_EXPENSIVE_PHYSICS;
 		else if (!Q_stricmp(flag[i], "ghoul2Decals"))
 			mFlags |= FX_GHOUL2_DECALS;
-		//rww - end
+			//rww - end
 		else if (!Q_stricmp(flag[i], "impactKills"))
 			mFlags |= FX_KILL_ON_IMPACT;
 		else if (!Q_stricmp(flag[i], "impactFx"))
@@ -766,13 +772,17 @@ bool CPrimitiveTemplate::ParseFlags(const char* val)
 		else if (!Q_stricmp(flag[i], "setShaderTime"))
 			mFlags |= FX_SET_SHADER_TIME;
 		else if (!Q_stricmp(flag[i], "paperPhysics"))
-			mFlags |= FX_PAPER_PHYSICS; //warning! shared flag.  You use this with a cylinder and you can expect evilness to ensue
+			mFlags |= FX_PAPER_PHYSICS;
+			//warning! shared flag.  You use this with a cylinder and you can expect evilness to ensue
 		else if (!Q_stricmp(flag[i], "localizedFlash"))
-			mFlags |= FX_LOCALIZED_FLASH; //warning! shared flag.  You use this with a cylinder and you can expect evilness to ensue
+			mFlags |= FX_LOCALIZED_FLASH;
+			//warning! shared flag.  You use this with a cylinder and you can expect evilness to ensue
 		else if (!Q_stricmp(flag[i], "playerView"))
-			mFlags |= FX_PLAYER_VIEW; //warning! shared flag.  You use this with a cylinder and you can expect evilness to ensue
+			mFlags |= FX_PLAYER_VIEW;
+		//warning! shared flag.  You use this with a cylinder and you can expect evilness to ensue
 		else
-		{ // we have badness going on, but continue on in case there are any valid fields in here
+		{
+			// we have badness going on, but continue on in case there are any valid fields in here
 			ok = false;
 		}
 	}
@@ -793,8 +803,8 @@ bool CPrimitiveTemplate::ParseFlags(const char* val)
 //------------------------------------------------------
 bool CPrimitiveTemplate::ParseSpawnFlags(const char* val)
 {
-	char	flag[][32] = { "\0","\0","\0","\0","\0","\0","\0" };
-	bool	ok = true;
+	char flag[][32] = {"\0", "\0", "\0", "\0", "\0", "\0", "\0"};
+	bool ok = true;
 
 	// For a primitive, really you probably only have two or less flags set
 	const int v = sscanf(val, "%s %s %s %s %s %s %s", flag[0], flag[1], flag[2], flag[3], flag[4], flag[5], flag[6]);
@@ -835,7 +845,8 @@ bool CPrimitiveTemplate::ParseSpawnFlags(const char* val)
 		else if (!Q_stricmp(flag[i], "affectedByWind"))
 			mSpawnFlags |= FX_AFFECTED_BY_WIND;
 		else
-		{ // we have badness going on, but continue on in case there are any valid fields in here
+		{
+			// we have badness going on, but continue on in case there are any valid fields in here
 			ok = false;
 		}
 	}
@@ -1439,7 +1450,7 @@ bool CPrimitiveTemplate::ParseLengthFlags(const char* val)
 bool CPrimitiveTemplate::ParseShaders(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -1491,7 +1502,7 @@ bool CPrimitiveTemplate::ParseShaders(const CGPValue* grp)
 bool CPrimitiveTemplate::ParseSounds(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -1543,7 +1554,7 @@ bool CPrimitiveTemplate::ParseSounds(const CGPValue* grp)
 bool CPrimitiveTemplate::ParseModels(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -1597,7 +1608,7 @@ bool CPrimitiveTemplate::ParseModels(const CGPValue* grp)
 bool CPrimitiveTemplate::ParseImpactFxStrings(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -1668,7 +1679,7 @@ bool CPrimitiveTemplate::ParseImpactFxStrings(const CGPValue* grp)
 bool CPrimitiveTemplate::ParseDeathFxStrings(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -1739,7 +1750,7 @@ bool CPrimitiveTemplate::ParseDeathFxStrings(const CGPValue* grp)
 bool CPrimitiveTemplate::ParseEmitterFxStrings(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -1810,7 +1821,7 @@ bool CPrimitiveTemplate::ParseEmitterFxStrings(const CGPValue* grp)
 bool CPrimitiveTemplate::ParsePlayFxStrings(const CGPValue* grp)
 {
 	const char* val;
-	int			handle;
+	int handle;
 
 	if (grp->IsList())
 	{
@@ -2103,11 +2114,13 @@ bool CPrimitiveTemplate::ParsePrimitive(const CGPGroup* grp)
 			ParseLife(val);
 		else if (!Q_stricmp(key, "delay"))
 			ParseDelay(val);
-		else if (!Q_stricmp(key, "cullrange")) {
+		else if (!Q_stricmp(key, "cullrange"))
+		{
 			//			mCullRange = atoi( val );
 			//			mCullRange *= mCullRange; // square it now so we don't have to square every time we compare
 		}
-		else if (!Q_stricmp(key, "bounce") || !Q_stricmp(key, "intensity")) // me==bad for reusing this...but it shouldn't hurt anything)
+		else if (!Q_stricmp(key, "bounce") || !Q_stricmp(key, "intensity"))
+			// me==bad for reusing this...but it shouldn't hurt anything)
 			ParseElasticity(val);
 		else if (!Q_stricmp(key, "min"))
 			ParseMin(val);
@@ -2141,13 +2154,14 @@ bool CPrimitiveTemplate::ParsePrimitive(const CGPGroup* grp)
 			ParseRotation(val);
 		else if (!Q_stricmp(key, "rotationDelta"))
 			ParseRotationDelta(val);
-		// these need to get passed on to the primitive
+			// these need to get passed on to the primitive
 		else if (!Q_stricmp(key, "flags") || !Q_stricmp(key, "flag"))
 			ParseFlags(val);
-		// these are used to spawn things in cool ways, but don't ever get passed on to prims.
+			// these are used to spawn things in cool ways, but don't ever get passed on to prims.
 		else if (!Q_stricmp(key, "spawnFlags") || !Q_stricmp(key, "spawnFlag"))
 			ParseSpawnFlags(val);
-		else if (!Q_stricmp(key, "name")) {
+		else if (!Q_stricmp(key, "name"))
+		{
 			if (val) // just stash the descriptive name of the primitive
 				strcpy(mName, val);
 		}

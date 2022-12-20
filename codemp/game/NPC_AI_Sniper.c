@@ -105,7 +105,7 @@ NPC_ST_Pain
 -------------------------
 */
 
-void NPC_Sniper_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Sniper_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	self->NPC->localState = LSTATE_UNDERFIRE;
 
@@ -182,14 +182,14 @@ static qboolean Sniper_Move(void)
 				cpFlags |= CP_NEAREST;
 			}
 			int cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-				NPCS.NPC->r.currentOrigin,
-				cpFlags, 32, -1);
+			                             NPCS.NPC->r.currentOrigin,
+			                             cpFlags, 32, -1);
 			if (cp == -1 && !(NPCS.NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 			{
 				//okay, try one by the enemy
 				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-					NPCS.NPC->enemy->r.currentOrigin, CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL,
-					32, -1);
+				                         NPCS.NPC->enemy->r.currentOrigin, CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL,
+				                         32, -1);
 			}
 			//NOTE: there may be a perfectly valid one, just not one within CP_COLLECT_RADIUS of either me or him...
 			if (cp != -1)
@@ -256,7 +256,7 @@ void NPC_BSSniper_Patrol(void)
 						G_SetEnemy(NPCS.NPC, level.alertEvents[alert_event].owner);
 						//NPCInfo->enemyLastSeenTime = level.time;
 						TIMER_Set(NPCS.NPC, "attackDelay",
-							Q_irand((6 - NPCS.NPCInfo->stats.aim) * 100, (6 - NPCS.NPCInfo->stats.aim) * 500));
+						          Q_irand((6 - NPCS.NPCInfo->stats.aim) * 100, (6 - NPCS.NPCInfo->stats.aim) * 500));
 					}
 				}
 				else
@@ -375,7 +375,7 @@ static void Sniper_CheckMoveState(void)
 	{
 		//Did we make it?
 		if (NAV_HitNavGoal(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.mins, NPCS.NPC->r.maxs,
-			NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
+		                   NPCS.NPCInfo->goalEntity->r.currentOrigin, 16, FlyingCreature(NPCS.NPC)) ||
 			NPCS.NPCInfo->squadState == SQUAD_SCOUT && enemyLOS2 && enemyDist2 <= 10000)
 		{
 			//	int	newSquadState = SQUAD_STAND_AND_SHOOT;
@@ -385,7 +385,7 @@ static void Sniper_CheckMoveState(void)
 			case SQUAD_RETREAT: //was running away
 				TIMER_Set(NPCS.NPC, "duck", (NPCS.NPC->client->pers.maxHealth - NPCS.NPC->health) * 100);
 				TIMER_Set(NPCS.NPC, "hideTime", Q_irand(3000, 7000));
-				//	newSquadState = SQUAD_COVER;
+			//	newSquadState = SQUAD_COVER;
 				break;
 			case SQUAD_TRANSITION: //was heading for a combat point
 				TIMER_Set(NPCS.NPC, "hideTime", Q_irand(2000, 4000));
@@ -398,7 +398,7 @@ static void Sniper_CheckMoveState(void)
 			NPC_ReachedGoal();
 			//don't attack right away
 			TIMER_Set(NPCS.NPC, "attackDelay",
-				Q_irand((6 - NPCS.NPCInfo->stats.aim) * 50, (6 - NPCS.NPCInfo->stats.aim) * 100));
+			          Q_irand((6 - NPCS.NPCInfo->stats.aim) * 50, (6 - NPCS.NPCInfo->stats.aim) * 100));
 			//FIXME: Slant for difficulty levels, too?
 			//don't do something else just yet
 			TIMER_Set(NPCS.NPC, "roamTime", Q_irand(1000, 4000));
@@ -438,14 +438,14 @@ static void Sniper_ResolveBlockedShot(void)
 					cpFlags |= CP_NEAREST;
 				}
 				int cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-					NPCS.NPC->r.currentOrigin,
-					cpFlags, 32, -1);
+				                             NPCS.NPC->r.currentOrigin,
+				                             cpFlags, 32, -1);
 				if (cp == -1 && !(NPCS.NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 				{
 					//okay, try one by the enemy
 					cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin,
-						NPCS.NPC->enemy->r.currentOrigin,
-						CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL, 32, -1);
+					                         NPCS.NPC->enemy->r.currentOrigin,
+					                         CP_CLEAR | CP_HAS_ROUTE | CP_HORZ_DIST_COLL, 32, -1);
 				}
 				//NOTE: there may be a perfectly valid one, just not one within CP_COLLECT_RADIUS of either me or him...
 				if (cp != -1)
@@ -535,7 +535,7 @@ static void Sniper_CheckFireState(void)
 	}
 }
 
-qboolean Sniper_EvaluateShot(int hit)
+qboolean Sniper_EvaluateShot(const int hit)
 {
 	if (!NPCS.NPC->enemy)
 	{
@@ -612,7 +612,7 @@ void Sniper_FaceEnemy(void)
 							}
 						}
 						trap->Trace(&trace, muzzle, vec3_origin, vec3_origin, target, NPCS.NPC->s.number, MASK_SHOT,
-							qfalse, 0, 0);
+						            qfalse, 0, 0);
 						hit = Sniper_EvaluateShot(trace.entityNum);
 					}
 					NPCS.NPC->count++;
@@ -776,8 +776,8 @@ void NPC_BSSniper_Attack(void)
 				//use primary fire
 				trace_t trace;
 				trap->Trace(&trace, NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->enemy->r.mins, NPCS.NPC->enemy->r.maxs,
-					NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->s.number, NPCS.NPC->enemy->clipmask, qfalse, 0,
-					0);
+				            NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->s.number, NPCS.NPC->enemy->clipmask, qfalse, 0,
+				            0);
 				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPCS.NPC->s.
 					number))
 				{
@@ -812,7 +812,7 @@ void NPC_BSSniper_Attack(void)
 	Sniper_UpdateEnemyPos();
 	//can we see our target?
 	if (NPC_ClearLOS4(NPCS.NPC->enemy))
-		//|| (NPCInfo->stats.aim >= 5 && trap->inPVS( NPC->client->renderInfo.eyePoint, NPC->enemy->currentOrigin )) )
+	//|| (NPCInfo->stats.aim >= 5 && trap->inPVS( NPC->client->renderInfo.eyePoint, NPC->enemy->currentOrigin )) )
 	{
 		NPCS.NPCInfo->enemyLastSeenTime = level.time;
 		VectorCopy(NPCS.NPC->enemy->r.currentOrigin, NPCS.NPCInfo->enemyLastSeenLocation);

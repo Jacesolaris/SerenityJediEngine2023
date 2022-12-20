@@ -28,7 +28,7 @@ class CPoint
 public:
 	float x, y, z;
 
-	CPoint(float _x, float _y, float _z) :
+	CPoint(const float _x, const float _y, const float _z) :
 		x(_x),
 		y(_y),
 		z(_z)
@@ -139,7 +139,7 @@ LEAF LISTING
 ======================================================================
 */
 
-void CM_StoreLeafs(leafList_t* ll, int nodenum)
+void CM_StoreLeafs(leafList_t* ll, const int nodenum)
 {
 	const int leafNum = -1 - nodenum;
 
@@ -157,7 +157,7 @@ void CM_StoreLeafs(leafList_t* ll, int nodenum)
 	ll->list[ll->count++] = leafNum;
 }
 
-void CM_StoreBrushes(leafList_t* ll, int nodenum)
+void CM_StoreBrushes(leafList_t* ll, const int nodenum)
 {
 	int i;
 
@@ -246,7 +246,7 @@ void CM_BoxLeafnums_r(leafList_t* ll, int nodenum)
 CM_BoxLeafnums
 ==================
 */
-int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int* boxList, int listsize, int* lastLeaf)
+int CM_BoxLeafnums(const vec3_t mins, const vec3_t maxs, int* boxList, const int listsize, int* lastLeaf)
 {
 	leafList_t ll;
 
@@ -278,7 +278,7 @@ CM_PointContents
 
 #if 1
 
-int CM_PointContents(const vec3_t p, clipHandle_t model)
+int CM_PointContents(const vec3_t p, const clipHandle_t model)
 {
 	int i;
 	cLeaf_t* leaf;
@@ -481,7 +481,7 @@ Handles offseting and rotation of the end points for moving and
 rotating entities
 ==================
 */
-int CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles)
+int CM_TransformedPointContents(const vec3_t p, const clipHandle_t model, const vec3_t origin, const vec3_t angles)
 {
 	vec3_t p_l;
 
@@ -515,7 +515,7 @@ PVS
 ===============================================================================
 */
 
-byte* CM_ClusterPVS(int cluster)
+byte* CM_ClusterPVS(const int cluster)
 {
 	if (cluster < 0 || cluster >= cmg.numClusters || !cmg.vised)
 	{
@@ -533,7 +533,7 @@ AREAPORTALS
 ===============================================================================
 */
 
-void CM_FloodArea_r(int areaNum, int floodnum, clipMap_t& cm)
+void CM_FloodArea_r(const int areaNum, const int floodnum, clipMap_t& cm)
 {
 	cArea_t* area = &cmg.areas[areaNum];
 
@@ -586,7 +586,7 @@ CM_AdjustAreaPortalState
 
 ====================
 */
-void CM_AdjustAreaPortalState(int area1, int area2, qboolean open)
+void CM_AdjustAreaPortalState(const int area1, const int area2, const qboolean open)
 {
 	if (area1 < 0 || area2 < 0)
 	{
@@ -622,7 +622,7 @@ CM_AreasConnected
 
 ====================
 */
-qboolean CM_AreasConnected(int area1, int area2)
+qboolean CM_AreasConnected(const int area1, const int area2)
 {
 #ifndef BSPC
 	if (cm_noAreas->integer)

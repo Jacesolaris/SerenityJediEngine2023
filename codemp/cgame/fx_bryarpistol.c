@@ -78,7 +78,7 @@ void FX_BryarsbdHitWall(vec3_t origin, vec3_t normal)
 FX_BryarHitPlayer
 -------------------------
 */
-void FX_BryarHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BryarHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -125,7 +125,7 @@ void FX_BryarAltProjectileThink(centity_t* cent, const struct weaponInfo_s* weap
 FX_BryarAltHitWall
 -------------------------
 */
-void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, int power)
+void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, const int power)
 {
 	switch (power)
 	{
@@ -145,7 +145,7 @@ void FX_BryarAltHitWall(vec3_t origin, vec3_t normal, int power)
 	}
 }
 
-void FX_BryarsbdAltHitWall(vec3_t origin, vec3_t normal, int power)
+void FX_BryarsbdAltHitWall(vec3_t origin, vec3_t normal, const int power)
 {
 	switch (power)
 	{
@@ -170,7 +170,7 @@ void FX_BryarsbdAltHitWall(vec3_t origin, vec3_t normal, int power)
 FX_BryarAltHitPlayer
 -------------------------
 */
-void FX_BryarAltHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_BryarAltHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -215,7 +215,7 @@ void FX_TurretHitWall(vec3_t origin, vec3_t normal)
 FX_TurretHitPlayer
 -------------------------
 */
-void FX_TurretHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_TurretHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -254,7 +254,7 @@ void FX_DestructionHitWall(vec3_t origin, vec3_t normal)
 FX_ConcussionHitPlayer
 -------------------------
 */
-void FX_ConcussionHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_ConcussionHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -271,7 +271,7 @@ void FX_ConcussionHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
 FX_ConcussionHitPlayer
 -------------------------
 */
-void FX_DestructionHitPlayer(vec3_t origin, vec3_t normal, qboolean humanoid)
+void FX_DestructionHitPlayer(vec3_t origin, vec3_t normal, const qboolean humanoid)
 {
 	if (humanoid)
 	{
@@ -305,24 +305,24 @@ void FX_ConcussionProjectileThink(centity_t* cent, const struct weaponInfo_s* we
 FX_ConcAltShot
 ---------------------------
 */
-static vec3_t WHITE = { 1.0f,1.0f,1.0f };
-static vec3_t BRIGHT = { 0.75f,0.5f,1.0f };
+static vec3_t WHITE = {1.0f, 1.0f, 1.0f};
+static vec3_t BRIGHT = {0.75f, 0.5f, 1.0f};
 
 void FX_ConcAltShot(vec3_t start, vec3_t end)
 {
 	//"concussion/beam"
 	trap->FX_AddLine(start, end, 0.1f, 10.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		WHITE, WHITE, 0.0f,
-		675, trap->R_RegisterShader("gfx/effects/blueLine"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 WHITE, WHITE, 0.0f,
+	                 675, trap->R_RegisterShader("gfx/effects/blueLine"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 
 	// add some beef
 	trap->FX_AddLine(start, end, 0.1f, 7.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		BRIGHT, BRIGHT, 0.0f,
-		650, trap->R_RegisterShader("gfx/misc/whiteline2"),
-		FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
+	                 1.0f, 0.0f, 0.0f,
+	                 BRIGHT, BRIGHT, 0.0f,
+	                 650, trap->R_RegisterShader("gfx/misc/whiteline2"),
+	                 FX_SIZE_LINEAR | FX_ALPHA_LINEAR);
 }
 
 /*

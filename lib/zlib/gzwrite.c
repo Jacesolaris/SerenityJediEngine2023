@@ -307,7 +307,7 @@ const char* str;
 #include <stdarg.h>
 
 /* -- see zlib.h -- */
-int ZEXPORTVA gzvprintf(gzFile file, const char* format, va_list va)
+int ZEXPORTVA gzvprintf(const gzFile file, const char* format, va_list va)
 {
 	int len;
 
@@ -367,7 +367,7 @@ int ZEXPORTVA gzvprintf(gzFile file, const char* format, va_list va)
 	return len;
 }
 
-int ZEXPORTVA gzprintf(gzFile file, const char* format, ...)
+int ZEXPORTVA gzprintf(const gzFile file, const char* format, ...)
 {
 	va_list va;
 

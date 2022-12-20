@@ -52,7 +52,7 @@ NPC_CheckAttacker
 -------------------------
 */
 
-static void NPC_CheckAttacker(gentity_t* other, int mod)
+static void NPC_CheckAttacker(gentity_t* other, const int mod)
 {
 	//FIXME: I don't see anything in here that would stop teammates from taking a teammate
 	//			as an enemy.  Ideally, there would be code before this to prevent that from
@@ -115,17 +115,17 @@ static void NPC_CheckAttacker(gentity_t* other, int mod)
 
 		switch (g_npcspskill.integer)
 		{
-			//Easiest difficulty, mild chance of picking up the player
+		//Easiest difficulty, mild chance of picking up the player
 		case 0:
 			luckThreshold = 0.9f;
 			break;
 
-			//Medium difficulty, half-half chance of picking up the player
+		//Medium difficulty, half-half chance of picking up the player
 		case 1:
 			luckThreshold = 0.5f;
 			break;
 
-			//Hardest difficulty, always turn on attacking player
+		//Hardest difficulty, always turn on attacking player
 		case 2:
 		default:
 			luckThreshold = 0.0f;
@@ -158,7 +158,7 @@ NPC_GetPainChance
 -------------------------
 */
 
-float NPC_GetPainChance(const gentity_t* self, int damage)
+float NPC_GetPainChance(const gentity_t* self, const int damage)
 {
 	if (!self->enemy)
 	{
@@ -179,25 +179,25 @@ float NPC_GetPainChance(const gentity_t* self, int damage)
 
 	float pain_chance = (float)(self->client->ps.stats[STAT_MAX_HEALTH] - self->health) / (self->client->ps.stats[
 		STAT_MAX_HEALTH] * 2.0f) + (float)damage / (self->client->ps.stats[STAT_MAX_HEALTH] / 2.0f);
-		switch (g_npcspskill.integer)
-		{
-		case 0: //easy
-			//return 0.75f;
-			break;
+	switch (g_npcspskill.integer)
+	{
+	case 0: //easy
+		//return 0.75f;
+		break;
 
-		case 1: //med
-			pain_chance *= 0.5f;
-			//return 0.35f;
-			break;
+	case 1: //med
+		pain_chance *= 0.5f;
+	//return 0.35f;
+		break;
 
-		case 2: //hard
-		default:
-			pain_chance *= 0.1f;
-			//return 0.05f;
-			break;
-		}
-		//Com_Printf( "%s: %4.2f\n", self->NPC_type, pain_chance );
-		return pain_chance;
+	case 2: //hard
+	default:
+		pain_chance *= 0.1f;
+	//return 0.05f;
+		break;
+	}
+	//Com_Printf( "%s: %4.2f\n", self->NPC_type, pain_chance );
+	return pain_chance;
 }
 
 /*
@@ -210,15 +210,16 @@ NPC_ChoosePainAnimation
 
 extern int G_PickPainAnim(const gentity_t* self, vec3_t point, int hit_loc);
 
-void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, vec3_t point, int damage, int mod, int hit_loc,
-	int voiceEvent)
+void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, vec3_t point, const int damage, const int mod,
+                             const int hit_loc,
+                             const int voiceEvent)
 {
 	int pain_anim = -1;
 	float pain_chance;
 
 	//If we've already taken pain, then don't take it again
 	if (level.time < self->painDebounceTime && mod != MOD_ELECTROCUTE && mod != MOD_MELEE)
-		//rwwFIXMEFIXME: MOD_ELECTROCUTE
+	//rwwFIXMEFIXME: MOD_ELECTROCUTE
 	{
 		//FIXME: if hit while recoving from losing a saber lock, we should still play a pain anim?
 		return;
@@ -388,7 +389,7 @@ gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy,
 NPC_Pain
 ===============
 */
-void NPC_Pain(gentity_t* self, gentity_t* attacker, int damage)
+void NPC_Pain(gentity_t* self, gentity_t* attacker, const int damage)
 {
 	npcteam_t other_team = NPCTEAM_FREE;
 	int voiceEvent = -1;
@@ -553,7 +554,7 @@ void NPC_Pain(gentity_t* self, gentity_t* attacker, int damage)
 }
 
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
-	qboolean break_saber_lock);
+                        qboolean break_saber_lock);
 
 void npc_push(gentity_t* self, gentity_t* other, trace_t* trace)
 {
@@ -709,7 +710,7 @@ void NPC_Touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		if (other->health > 0)
 		{
 			if (NPCS.NPC->enemy == other && other->NPC->scriptFlags & SVF_NONNPC_ENEMY)
-				//if (0)
+			//if (0)
 			{
 				NPCS.NPCInfo->touchedByPlayer = other;
 			}
@@ -745,7 +746,7 @@ NPC_TempLookTarget
 -------------------------
 */
 
-void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime)
+void NPC_TempLookTarget(const gentity_t* self, const int lookEntNum, int minLookTime, int maxLookTime)
 {
 	if (!self->client)
 	{
@@ -776,7 +777,7 @@ void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, 
 	}
 }
 
-void NPC_Respond(gentity_t* self, int userNum)
+void NPC_Respond(gentity_t* self, const int userNum)
 {
 	int event = -1;
 	/*
@@ -1121,7 +1122,7 @@ NPC_UseResponse
 -------------------------
 */
 
-void NPC_UseResponse(gentity_t* self, const gentity_t* user, qboolean useWhenDone)
+void NPC_UseResponse(gentity_t* self, const gentity_t* user, const qboolean useWhenDone)
 {
 	if (!self->NPC || !self->client)
 	{
@@ -1237,7 +1238,7 @@ void NPC_Use(gentity_t* self, gentity_t* other, gentity_t* activator)
 		else if (activator && !self->enemy
 			&& activator->s.number >= 0 && activator->s.number < MAX_CLIENTS
 			&& !(self->NPC->scriptFlags & SCF_NO_RESPONSE))
-			//rwwFIXMEFIXME: voice volume support?
+		//rwwFIXMEFIXME: voice volume support?
 		{
 			//I don't have an enemy and I'm not talking and I was used by the player
 			NPC_UseResponse(self, other, qfalse);

@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "w_local.h"
 //---------------------------------------------------------
-void WP_FireStunBaton(gentity_t* ent, qboolean alt_fire)
+void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 {
 	if (alt_fire)
 	{
@@ -48,7 +48,7 @@ void WP_FireStunBaton(gentity_t* ent, qboolean alt_fire)
 		VectorScale(maxs, -1, mins);
 
 		gi.trace(&tr, start, mins, maxs, end, ent->s.number, CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_SHOTCLIP,
-			static_cast<EG2_Collision>(0), 0);
+		         static_cast<EG2_Collision>(0), 0);
 
 		if (tr.entityNum >= ENTITYNUM_WORLD || tr.entityNum < 0)
 		{
@@ -63,10 +63,10 @@ void WP_FireStunBaton(gentity_t* ent, qboolean alt_fire)
 			tr_ent->client->ps.powerups[PW_SHOCKED] = level.time + 1500;
 
 			G_Damage(tr_ent, ent, ent, forwardVec, tr.endpos, weaponData[WP_STUN_BATON].damage, DAMAGE_NO_KNOCKBACK,
-				MOD_MELEE);
+			         MOD_MELEE);
 		}
 		else if (tr_ent->svFlags & SVF_GLASS_BRUSH || tr_ent->svFlags & SVF_BBRUSH && tr_ent->material == 12)
-			// material grate...we are breaking a grate!
+		// material grate...we are breaking a grate!
 		{
 			G_Damage(tr_ent, ent, ent, forwardVec, tr.endpos, 999, DAMAGE_NO_KNOCKBACK, MOD_MELEE); // smash that puppy
 		}

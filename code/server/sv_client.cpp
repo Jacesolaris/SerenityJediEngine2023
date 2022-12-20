@@ -34,18 +34,20 @@ SV_DirectConnect
 A "connect" OOB command has been received
 ==================
 */
-void SV_DirectConnect(netadr_t from) {
-	char		userinfo[MAX_INFO_STRING];
-	int			i;
+void SV_DirectConnect(const netadr_t from)
+{
+	char userinfo[MAX_INFO_STRING];
+	int i;
 	client_t* cl;
-	client_t	temp;
+	client_t temp;
 
 	Com_DPrintf("SVC_DirectConnect ()\n");
 
 	Q_strncpyz(userinfo, Cmd_Argv(1), sizeof userinfo);
 
 	const int version = atoi(Info_ValueForKey(userinfo, "protocol"));
-	if (version != PROTOCOL_VERSION) {
+	if (version != PROTOCOL_VERSION)
+	{
 		NET_OutOfBandPrint(NS_SERVER, from, "print\nServer uses protocol version %i.\n", PROTOCOL_VERSION);
 		Com_DPrintf("    rejected connect from version %i\n", version);
 		return;
@@ -56,7 +58,8 @@ void SV_DirectConnect(netadr_t from) {
 	//challenge = atoi( Info_ValueForKey( userinfo, "challenge" ) );
 
 	// see if the challenge is valid (local clients don't need to challenge)
-	if (!NET_IsLocalAddress(from)) {
+	if (!NET_IsLocalAddress(from))
+	{
 		NET_OutOfBandPrint(NS_SERVER, from, "print\nNo challenge for address.\n");
 		return;
 	}
@@ -69,7 +72,8 @@ void SV_DirectConnect(netadr_t from) {
 	// if there is already a slot for this ip, reuse it
 	for (i = 0, cl = svs.clients; i < 1; i++, cl++)
 	{
-		if (cl->state == CS_FREE) {
+		if (cl->state == CS_FREE)
+		{
 			continue;
 		}
 		if (NET_CompareBaseAdr(from, cl->netchan.remoteAddress)
@@ -89,15 +93,18 @@ void SV_DirectConnect(netadr_t from) {
 	}
 
 	newcl = nullptr;
-	for (i = 0; i < 1; i++) {
+	for (i = 0; i < 1; i++)
+	{
 		cl = &svs.clients[i];
-		if (cl->state == CS_FREE) {
+		if (cl->state == CS_FREE)
+		{
 			newcl = cl;
 			break;
 		}
 	}
 
-	if (!newcl) {
+	if (!newcl)
+	{
 		NET_OutOfBandPrint(NS_SERVER, from, "print\nServer is full.\n");
 		Com_DPrintf("Rejected a connection.\n");
 		return;
@@ -120,7 +127,8 @@ gotnewcl:
 
 	// get the game a chance to reject this connection or modify the userinfo
 	char* denied = ge->ClientConnect(client_num, qtrue, e_saved_game_just_loaded); // firstTime = qtrue
-	if (denied) {
+	if (denied)
+	{
 		NET_OutOfBandPrint(NS_SERVER, from, "print\n%s\n", denied);
 		Com_DPrintf("Game rejected a connection: %s.\n", denied);
 		return;
@@ -150,13 +158,16 @@ or unwillingly.  This is NOT called if the entire server is quiting
 or crashing -- SV_FinalMessage() will handle that
 =====================
 */
-void SV_DropClient(client_t* drop, const char* reason) {
-	if (drop->state == CS_ZOMBIE) {
-		return;		// already dropped
+void SV_DropClient(client_t* drop, const char* reason)
+{
+	if (drop->state == CS_ZOMBIE)
+	{
+		return; // already dropped
 	}
-	drop->state = CS_ZOMBIE;		// become free in a few seconds
+	drop->state = CS_ZOMBIE; // become free in a few seconds
 
-	if (drop->download) {
+	if (drop->download)
+	{
 		FS_FreeFile(drop->download);
 		drop->download = nullptr;
 	}
@@ -183,9 +194,10 @@ It will be resent if the client acknowledges a later message but has
 the wrong gamestate.
 ================
 */
-void SV_SendClientGameState(client_t* client) {
-	msg_t		msg;
-	byte		msgBuffer[MAX_MSGLEN];
+void SV_SendClientGameState(client_t* client)
+{
+	msg_t msg;
+	byte msgBuffer[MAX_MSGLEN];
 
 	Com_DPrintf("SV_SendGameState() for %s\n", client->name);
 	client->state = CS_PRIMED;
@@ -206,8 +218,10 @@ void SV_SendClientGameState(client_t* client) {
 	MSG_WriteLong(&msg, client->reliableSequence);
 
 	// write the configstrings
-	for (int start = 0; start < MAX_CONFIGSTRINGS; start++) {
-		if (sv.configstrings[start][0]) {
+	for (int start = 0; start < MAX_CONFIGSTRINGS; start++)
+	{
+		if (sv.configstrings[start][0])
+		{
 			MSG_WriteByte(&msg, svc_configstring);
 			MSG_WriteShort(&msg, start);
 			MSG_WriteString(&msg, sv.configstrings[start]);
@@ -217,7 +231,8 @@ void SV_SendClientGameState(client_t* client) {
 	MSG_WriteByte(&msg, 0);
 
 	// check for overflow
-	if (msg.overflowed) {
+	if (msg.overflowed)
+	{
 		Com_Printf("WARNING: GameState overflowed for %s\n", client->name);
 	}
 
@@ -230,7 +245,8 @@ void SV_SendClientGameState(client_t* client) {
 SV_ClientEnterWorld
 ==================
 */
-void SV_ClientEnterWorld(client_t* client, usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded) {
+void SV_ClientEnterWorld(client_t* client, usercmd_t* cmd, const SavedGameJustLoaded_e e_saved_game_just_loaded)
+{
 	Com_DPrintf("SV_ClientEnterWorld() from %s\n", client->name);
 	client->state = CS_ACTIVE;
 
@@ -266,7 +282,8 @@ SV_Disconnect_f
 The client is going to disconnect, so remove the connection immediately  FIXME: move to game?
 =================
 */
-static void SV_Disconnect_f(client_t* cl) {
+static void SV_Disconnect_f(client_t* cl)
+{
 	SV_DropClient(cl, "disconnected");
 }
 
@@ -277,7 +294,8 @@ SV_UserinfoChanged
 Pull specific info from a newly changed userinfo string into a more C friendly form.
 =================
 */
-void SV_UserinfoChanged(client_t* cl) {
+void SV_UserinfoChanged(client_t* cl)
+{
 	Q_strncpyz(cl->name, Info_ValueForKey(cl->userinfo, "name"), sizeof cl->name);
 }
 
@@ -286,7 +304,8 @@ void SV_UserinfoChanged(client_t* cl) {
 SV_UpdateUserinfo_f
 ==================
 */
-static void SV_UpdateUserinfo_f(client_t* cl) {
+static void SV_UpdateUserinfo_f(client_t* cl)
+{
 	Q_strncpyz(cl->userinfo, Cmd_Argv(1), sizeof cl->userinfo);
 
 	SV_UserinfoChanged(cl);
@@ -294,9 +313,10 @@ static void SV_UpdateUserinfo_f(client_t* cl) {
 	ge->ClientUserinfoChanged(cl - svs.clients);
 }
 
-using ucmd_t = struct {
+using ucmd_t = struct
+{
 	const char* name;
-	void	(*func)(client_t* cl);
+	void (*func)(client_t* cl);
 };
 
 static ucmd_t ucmds[] = {
@@ -311,21 +331,25 @@ static ucmd_t ucmds[] = {
 SV_ExecuteClientCommand
 ==================
 */
-void SV_ExecuteClientCommand(client_t* cl, const char* s) {
+void SV_ExecuteClientCommand(client_t* cl, const char* s)
+{
 	ucmd_t* u;
 
 	Cmd_TokenizeString(s);
 
 	// see if it is a server level command
-	for (u = ucmds; u->name; u++) {
-		if (strcmp(Cmd_Argv(0), u->name) == 0) {
+	for (u = ucmds; u->name; u++)
+	{
+		if (strcmp(Cmd_Argv(0), u->name) == 0)
+		{
 			u->func(cl);
 			break;
 		}
 	}
 
 	// pass unknown strings to the game
-	if (!u->name && sv.state == SS_GAME) {
+	if (!u->name && sv.state == SS_GAME)
+	{
 		ge->ClientCommand(cl - svs.clients);
 	}
 }
@@ -337,21 +361,24 @@ constexpr auto MAX_STRINGCMDS = 8;
 SV_ClientCommand
 ===============
 */
-static void SV_ClientCommand(client_t* cl, msg_t* msg) {
+static void SV_ClientCommand(client_t* cl, msg_t* msg)
+{
 	const int seq = MSG_ReadLong(msg);
 	const char* s = MSG_ReadString(msg);
 
 	// see if we have already executed it
-	if (cl->lastClientCommand >= seq) {
+	if (cl->lastClientCommand >= seq)
+	{
 		return;
 	}
 
 	Com_DPrintf("clientCommand: %s : %i : %s\n", cl->name, seq, s);
 
 	// drop the connection if we have somehow lost commands
-	if (seq > cl->lastClientCommand + 1) {
+	if (seq > cl->lastClientCommand + 1)
+	{
 		Com_Printf("Client %s lost %i clientCommands\n", cl->name,
-			seq - cl->lastClientCommand + 1);
+		           seq - cl->lastClientCommand + 1);
 	}
 
 	SV_ExecuteClientCommand(cl, s);
@@ -366,11 +393,13 @@ static void SV_ClientCommand(client_t* cl, msg_t* msg) {
 SV_ClientThink
 ==================
 */
-void SV_ClientThink(client_t* cl, usercmd_t* cmd) {
+void SV_ClientThink(client_t* cl, usercmd_t* cmd)
+{
 	cl->lastUsercmd = *cmd;
 
-	if (cl->state != CS_ACTIVE) {
-		return;		// may have been kicked during the last usercmd
+	if (cl->state != CS_ACTIVE)
+	{
+		return; // may have been kicked during the last usercmd
 	}
 
 	ge->ClientThink(cl - svs.clients, cmd);
@@ -388,33 +417,38 @@ On very fast clients, there may be multiple usercmd packed into
 each of the backup packets.
 ==================
 */
-static void SV_UserMove(client_t* cl, msg_t* msg) {
-	int			i;
-	usercmd_t	nullcmd;
-	usercmd_t	cmds[MAX_PACKET_USERCMDS];
+static void SV_UserMove(client_t* cl, msg_t* msg)
+{
+	int i;
+	usercmd_t nullcmd;
+	usercmd_t cmds[MAX_PACKET_USERCMDS];
 
 	cl->reliableAcknowledge = MSG_ReadLong(msg);
 	const int serverId = MSG_ReadLong(msg);
-	/*clientTime = */MSG_ReadLong(msg);
+	/*clientTime = */
+	MSG_ReadLong(msg);
 	cl->deltaMessage = MSG_ReadLong(msg);
 
 	// cmdNum is the command number of the most recent included usercmd
 	const int cmdNum = MSG_ReadLong(msg);
 	const int cmdCount = MSG_ReadByte(msg);
 
-	if (cmdCount < 1) {
+	if (cmdCount < 1)
+	{
 		Com_Printf("cmdCount < 1\n");
 		return;
 	}
 
-	if (cmdCount > MAX_PACKET_USERCMDS) {
+	if (cmdCount > MAX_PACKET_USERCMDS)
+	{
 		Com_Printf("cmdCount > MAX_PACKET_USERCMDS\n");
 		return;
 	}
 
 	memset(&nullcmd, 0, sizeof nullcmd);
 	usercmd_t* oldcmd = &nullcmd;
-	for (i = 0; i < cmdCount; i++) {
+	for (i = 0; i < cmdCount; i++)
+	{
 		usercmd_t* cmd = &cmds[i];
 		MSG_ReadDeltaUsercmd(msg, oldcmd, cmd);
 		oldcmd = cmd;
@@ -436,7 +470,8 @@ static void SV_UserMove(client_t* cl, msg_t* msg) {
 
 	// if this is the first usercmd we have received
 	// this gamestate, put the client into the world
-	if (cl->state == CS_PRIMED) {
+	if (cl->state == CS_PRIMED)
+	{
 		SV_ClientEnterWorld(cl, &cmds[0], e_saved_game_just_loaded);
 		if (sv_mapname->string[0] != '_')
 		{
@@ -447,21 +482,22 @@ static void SV_UserMove(client_t* cl, msg_t* msg) {
 				if (Q_stricmpn(sv_mapname->string, "academy", 7) != 0)
 				{
 					Com_sprintf(savename, sizeof savename, "auto_%s", sv_mapname->string);
-					SG_WriteSavegame(savename, qtrue);//can't use va becuase it's nested
+					SG_WriteSavegame(savename, qtrue); //can't use va becuase it's nested
 				}
 			}
 			else if (qbLoadTransition == qtrue)
 			{
 				Com_sprintf(savename, sizeof savename, "hub/%s", sv_mapname->string);
-				SG_WriteSavegame(savename, qfalse);//save a full one
-				SG_WriteSavegame("auto", qfalse);//need a copy for auto, too
+				SG_WriteSavegame(savename, qfalse); //save a full one
+				SG_WriteSavegame("auto", qfalse); //need a copy for auto, too
 			}
 		}
 		e_saved_game_just_loaded = eNO;
 		// the moves can be processed normaly
 	}
 
-	if (cl->state != CS_ACTIVE) {
+	if (cl->state != CS_ACTIVE)
+	{
 		cl->deltaMessage = -1;
 		return;
 	}
@@ -471,23 +507,28 @@ static void SV_UserMove(client_t* cl, msg_t* msg) {
 
 	// with a packetdup of 0, firstNum == cmdNum
 	const int firstNum = cmdNum - (cmdCount - 1);
-	if (cl->cmdNum < firstNum - 1) {
+	if (cl->cmdNum < firstNum - 1)
+	{
 		cl->droppedCommands = qtrue;
-		if (sv_showloss->integer) {
+		if (sv_showloss->integer)
+		{
 			Com_Printf("Lost %i usercmds from %s\n", firstNum - 1 - cl->cmdNum,
-				cl->name);
+			           cl->name);
 		}
-		if (cl->cmdNum < firstNum - 6) {
-			cl->cmdNum = firstNum - 6;		// don't generate too many
+		if (cl->cmdNum < firstNum - 6)
+		{
+			cl->cmdNum = firstNum - 6; // don't generate too many
 		}
-		while (cl->cmdNum < firstNum - 1) {
+		while (cl->cmdNum < firstNum - 1)
+		{
 			cl->cmdNum++;
 			SV_ClientThink(cl, &cmds[0]);
 		}
 	}
 	// skip over any usercmd_t we have already executed
 	const int start = cl->cmdNum - (firstNum - 1);
-	for (i = start; i < cmdCount; i++) {
+	for (i = start; i < cmdCount; i++)
+	{
 		SV_ClientThink(cl, &cmds[i]);
 	}
 	cl->cmdNum = cmdNum;
@@ -508,19 +549,24 @@ SV_ExecuteClientMessage
 Parse a client packet
 ===================
 */
-void SV_ExecuteClientMessage(client_t* cl, msg_t* msg) {
-	while (true) {
-		if (msg->readcount > msg->cursize) {
+void SV_ExecuteClientMessage(client_t* cl, msg_t* msg)
+{
+	while (true)
+	{
+		if (msg->readcount > msg->cursize)
+		{
 			SV_DropClient(cl, "had a badread");
 			return;
 		}
 
 		const int c = MSG_ReadByte(msg);
-		if (c == -1) {
+		if (c == -1)
+		{
 			break;
 		}
 
-		switch (c) {
+		switch (c)
+		{
 		default:
 			SV_DropClient(cl, "had an unknown command char");
 			return;
@@ -534,8 +580,9 @@ void SV_ExecuteClientMessage(client_t* cl, msg_t* msg) {
 
 		case clc_clientCommand:
 			SV_ClientCommand(cl, msg);
-			if (cl->state == CS_ZOMBIE) {
-				return;	// disconnect command
+			if (cl->state == CS_ZOMBIE)
+			{
+				return; // disconnect command
 			}
 			break;
 		}
@@ -546,8 +593,10 @@ void SV_FreeClient(client_t* client)
 {
 	if (!client) return;
 
-	for (int i = 0; i < MAX_RELIABLE_COMMANDS; i++) {
-		if (client->reliableCommands[i]) {
+	for (int i = 0; i < MAX_RELIABLE_COMMANDS; i++)
+	{
+		if (client->reliableCommands[i])
+		{
 			Z_Free(client->reliableCommands[i]);
 			client->reliableCommands[i] = nullptr;
 			client->reliableSequence = 0;

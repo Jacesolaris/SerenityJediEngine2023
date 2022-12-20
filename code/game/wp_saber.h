@@ -278,21 +278,21 @@ extern void WP_InitForcePowers(const gentity_t* ent);
 extern int WP_GetVelocityForForceJump(const gentity_t* self, vec3_t jump_vel, const usercmd_t* ucmd);
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
-	int weapon_num);
+                                              int weapon_num);
 extern void wp_saber_add_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 extern void wp_saber_add_holstered_g2_saber_models(gentity_t* ent, int specific_saber_num = -1);
 extern qboolean WP_SaberParseParms(const char* SaberName, saberInfo_t* saber, qboolean setColors = qtrue);
 extern qboolean WP_BreakSaber(gentity_t* ent, const char* surfName, saberType_t saberType = SABER_NONE);
 extern void ForceThrow(gentity_t* self, qboolean pull, qboolean fake = qfalse);
 extern qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit_loc, vec3_t point, vec3_t dir,
-	vec3_t blade_dir, int mod, saberType_t saber_type = SABER_NONE);
+                                        vec3_t blade_dir, int mod, saberType_t saber_type = SABER_NONE);
 extern qboolean G_CheckEnemyPresence(const gentity_t* ent, int dir, float radius, float tolerance = 0.75f);
 extern void WP_SaberFreeStrings(saberInfo_t& saber);
 extern qboolean G_EnoughPowerForSpecialMove(int forcePower, int cost, qboolean kataMove = qfalse);
 extern void G_DrainPowerForSpecialMove(const gentity_t* self, forcePowers_t fp, int cost, qboolean kataMove = qfalse);
 extern int G_CostForSpecialMove(int cost, qboolean kataMove = qfalse);
 extern gentity_t* G_DropSaberItem(const char* saberType, saber_colors_t saberColor, vec3_t saberPos, vec3_t saberVel,
-	vec3_t saberAngles, const gentity_t* copySaber = nullptr);
+                                  vec3_t saberAngles, const gentity_t* copySaber = nullptr);
 
 using evasionType_t = enum
 {

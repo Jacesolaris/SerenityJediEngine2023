@@ -36,7 +36,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
- //projectile flags
+//projectile flags
 #define PFL_WINDOWDAMAGE			1		//projectile damages through window
 #define PFL_RETURN					2		//set when projectile returns to owner
 //weapon flags
@@ -46,7 +46,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define DAMAGETYPE_RADIAL			2		//radial damage
 #define DAMAGETYPE_VISIBLE			4		//damage to all entities visible to the projectile
 
-typedef struct projectileinfo_s
+using projectileinfo_t = struct projectileinfo_s
 {
 	char name[MAX_STRINGFIELD];
 	char model[MAX_STRINGFIELD];
@@ -62,12 +62,12 @@ typedef struct projectileinfo_s
 	float bounce;
 	float bouncefric;
 	float bouncestop;
-} projectileinfo_t;
+};
 
-typedef struct weaponinfo_s
+using weaponinfo_t = struct weaponinfo_s
 {
-	int valid;					//true if the weapon info is valid
-	int number;									//number of the weapon
+	int valid; //true if the weapon info is valid
+	int number; //number of the weapon
 	char name[MAX_STRINGFIELD];
 	char model[MAX_STRINGFIELD];
 	int level;
@@ -89,8 +89,8 @@ typedef struct weaponinfo_s
 	float reload;
 	float spinup;
 	float spindown;
-	projectileinfo_t proj;						//pointer to the used projectile
-} weaponinfo_t;
+	projectileinfo_t proj; //pointer to the used projectile
+};
 
 //setup the weapon AI
 int BotSetupWeaponAI(void);

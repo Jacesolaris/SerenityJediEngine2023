@@ -53,7 +53,7 @@ namespace ratl
 	////////////////////////////////////////////////////////////////////////////////////////
 	// The Vector Class
 	////////////////////////////////////////////////////////////////////////////////////////
-	template<class T>
+	template <class T>
 	class vector_base : public ratl_base
 	{
 	public:
@@ -63,11 +63,12 @@ namespace ratl
 		// Capacity Enum
 		////////////////////////////////////////////////////////////////////////////////////
 		static const int CAPACITY = T::CAPACITY;
-	private:
-		array_base<TStorageTraits>		mArray;			// The Memory
-		int								mSize;
-	public:
 
+	private:
+		array_base<TStorageTraits> mArray; // The Memory
+		int mSize;
+
+	public:
 		////////////////////////////////////////////////////////////////////////////////////
 		// Constructor
 		////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +92,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Objects Can Be Added?
 		////////////////////////////////////////////////////////////////////////////////////
-		int				capacity() const
+		int capacity() const
 		{
 			assert(mSize >= 0 && mSize <= CAPACITY);
 			return CAPACITY;
@@ -100,7 +101,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// How Many Objects Have Been Added To This Vector?
 		////////////////////////////////////////////////////////////////////////////////////
-		int				size() const
+		int size() const
 		{
 			assert(mSize >= 0 && mSize <= CAPACITY);
 			return mSize;
@@ -109,7 +110,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Have Any Objects Have Been Added To This Vector?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			empty() const
+		bool empty() const
 		{
 			assert(mSize >= 0 && mSize <= CAPACITY);
 			return !mSize;
@@ -118,7 +119,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Have Any Objects Have Been Added To This Vector?
 		////////////////////////////////////////////////////////////////////////////////////
-		bool			full() const
+		bool full() const
 		{
 			assert(mSize >= 0 && mSize <= CAPACITY);
 			return mSize == CAPACITY;
@@ -127,11 +128,12 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Clear Out Entire Array
 		////////////////////////////////////////////////////////////////////////////////////
-		void			clear()
+		void clear()
 		{
 			mArray.clear();
 			mSize = 0;
 		}
+
 		// Constant Access Operator
 		////////////////////////////////////////////////////////////////////////////////////
 		const TTValue& operator[](int index) const
@@ -155,7 +157,7 @@ namespace ratl
 		TTValue* raw_array()
 		{
 			// this (intentionally) won't compile for anything except value semantics
-			  // could be done with object semantics, but I would want to assert that all objects are contructed
+			// could be done with object semantics, but I would want to assert that all objects are contructed
 			return T::raw_array(mArray);
 		}
 
@@ -165,7 +167,7 @@ namespace ratl
 		const TTValue* raw_array() const
 		{
 			// this (intentionally) won't compile for anything except value semantics
-			  // could be done with object semantics, but I would want to assert that all objects are contructed
+			// could be done with object semantics, but I would want to assert that all objects are contructed
 			return T::raw_array(mArray);
 		}
 
@@ -196,7 +198,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Add (And Set)
 		////////////////////////////////////////////////////////////////////////////////////
-		void			push_back(const TTValue& value)
+		void push_back(const TTValue& value)
 		{
 			assert(mSize >= 0 && mSize < CAPACITY);
 			mArray.construct(mSize, value);
@@ -216,7 +218,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Remove
 		////////////////////////////////////////////////////////////////////////////////////
-		void			pop_back()
+		void pop_back()
 		{
 			assert(mSize > 0);
 			mSize--;
@@ -226,7 +228,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Resizes The Array.  If New Elements Are Needed, It Uses The (value) Param
 		////////////////////////////////////////////////////////////////////////////////////
-		void			resize(int nSize, const TTValue& value)
+		void resize(const int nSize, const TTValue& value)
 		{
 			int i;
 			for (i = mSize - 1; i >= nSize; i--)
@@ -244,7 +246,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Resizes The Array.  If New Elements Are Needed, It Uses The (value) Param
 		////////////////////////////////////////////////////////////////////////////////////
-		void			resize(int nSize)
+		void resize(const int nSize)
 		{
 			int i;
 			for (i = mSize - 1; i >= nSize; i--)
@@ -284,7 +286,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Binary Search
 		////////////////////////////////////////////////////////////////////////////////////
-		int				find_index(const TTValue& value) const
+		int find_index(const TTValue& value) const
 		{
 			int base = 0;
 			int head = mSize - 1;
@@ -327,13 +329,13 @@ namespace ratl
 		// "in place" and requires no additional storage.
 		//
 		////////////////////////////////////////////////////////////////////////////////////
-		void			sort()
+		void sort()
 		{
 			// Temporary Data
 			//----------------
-			int	HeapSize;	// How Large The Heap Is (Grows In PHASE 1, Shrinks In PHASE 2)
-			int	Pos;		// The Location We Are AT During "re-heapify" Loops
-			int	Compare;	// The Location We Are Comparing AGAINST During "re-heapify" Loops
+			int HeapSize; // How Large The Heap Is (Grows In PHASE 1, Shrinks In PHASE 2)
+			int Pos; // The Location We Are AT During "re-heapify" Loops
+			int Compare; // The Location We Are Comparing AGAINST During "re-heapify" Loops
 
 			// PHASE 1, CONSTRUCT THE HEAP										  O(n log n)
 			//===============================================================================
@@ -386,7 +388,7 @@ namespace ratl
 		// THIS IS A QUICK VALIDATION OF A SORTED LIST
 		////////////////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-		void			sort_validate() const
+		void sort_validate() const
 		{
 			for (int a = 0; a < mSize - 1; a++)
 			{
@@ -400,7 +402,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Node (i)'s Parent Node (The Parent Node Of Zero Is Zero)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			parent(int i)
+		static int parent(const int i)
 		{
 			return (i - 1) / 2;
 		}
@@ -409,7 +411,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Node (i)'s Left Child (The Child Of A Leaf Is The Leaf)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			left(int i)
+		static int left(const int i)
 		{
 			return 2 * i + 1;
 		}
@@ -418,7 +420,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Node (i)'s Right Child (The Child Of A Leaf Is The Leaf)
 		////////////////////////////////////////////////////////////////////////////////////
-		static int			right(int i)
+		static int right(const int i)
 		{
 			return 2 * i + 2;
 		}
@@ -427,7 +429,7 @@ namespace ratl
 		// For Heap Sort
 		// Returns The Location Of Largest Child Of Node (i)
 		////////////////////////////////////////////////////////////////////////////////////
-		int			largest_child(int i, int Size) const
+		int largest_child(const int i, const int Size) const
 		{
 			if (left(i) < Size)
 			{
@@ -435,9 +437,9 @@ namespace ratl
 				{
 					return mArray[right(i)] < mArray[left(i)] ? left(i) : right(i);
 				}
-				return left(i);	// Node i only has a left child, so by default it is the biggest
+				return left(i); // Node i only has a left child, so by default it is the biggest
 			}
-			return i;		// Node i is a leaf, so just return it
+			return i; // Node i is a leaf, so just return it
 		}
 
 	public:
@@ -445,29 +447,34 @@ namespace ratl
 		// Iterator
 		////////////////////////////////////////////////////////////////////////////////////
 		class const_iterator;
+
 		class iterator
 		{
 			friend class vector_base<T>;
 			friend class const_iterator;
 			// Data
 			//------
-			int						mLoc;
+			int mLoc;
 			vector_base<T>* mOwner;
 
 		public:
 			// Constructors
 			//--------------
 			iterator() : mLoc(0), mOwner(nullptr)
-			{}
-			iterator(vector_base<T>* p, int t) : mLoc(t), mOwner(p)
-			{}
+			{
+			}
+
+			iterator(vector_base<T>* p, const int t) : mLoc(t), mOwner(p)
+			{
+			}
 
 			iterator(const iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
-			{}
+			{
+			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const iterator& t)
+			void operator=(const iterator& t)
 			{
 				mOwner = t.mOwner;
 				mLoc = t.mLoc;
@@ -475,25 +482,19 @@ namespace ratl
 
 			// Equality Operators
 			//--------------------
-			bool		operator!=(const iterator& t)	const
+			bool operator!=(const iterator& t) const
 			{
 				return mLoc != t.mLoc || mOwner != t.mOwner;
 			}
-			bool		operator==(const iterator& t)	const
+
+			bool operator==(const iterator& t) const
 			{
 				return mLoc == t.mLoc && mOwner == t.mOwner;
 			}
 
 			// DeReference Operator
 			//----------------------
-			TTValue& operator* ()	const
-			{
-				assert(mLoc >= 0 && mLoc < mOwner->mSize);
-				return mOwner->mArray[mLoc];
-			}
-			// DeReference Operator
-			//----------------------
-			TTValue& value()	const
+			TTValue& operator*() const
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				return mOwner->mArray[mLoc];
@@ -501,7 +502,15 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			TTValue* operator-> ()	const
+			TTValue& value() const
+			{
+				assert(mLoc >= 0 && mLoc < mOwner->mSize);
+				return mOwner->mArray[mLoc];
+			}
+
+			// DeReference Operator
+			//----------------------
+			TTValue* operator->() const
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				return &mOwner->mArray[mLoc];
@@ -509,7 +518,7 @@ namespace ratl
 
 			// Inc Operator
 			//--------------
-			iterator	operator++(int) //postfix
+			iterator operator++(int) //postfix
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				iterator old(*this);
@@ -519,7 +528,7 @@ namespace ratl
 
 			// Inc Operator
 			//--------------
-			iterator	operator++()
+			iterator operator++()
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				mLoc++;
@@ -534,31 +543,39 @@ namespace ratl
 		{
 			friend class vector_base<T>;
 
-			int							mLoc;
+			int mLoc;
 			const vector_base<T>* mOwner;
 
 		public:
 			// Constructors
 			//--------------
 			const_iterator() : mLoc(0), mOwner(nullptr)
-			{}
-			const_iterator(const vector_base<T>* p, int t) : mLoc(t), mOwner(p)
-			{}
+			{
+			}
+
+			const_iterator(const vector_base<T>* p, const int t) : mLoc(t), mOwner(p)
+			{
+			}
+
 			const_iterator(const const_iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
-			{}
+			{
+			}
+
 			const_iterator(const iterator& t) : mLoc(t.mLoc), mOwner(t.mOwner)
-			{}
+			{
+			}
 
 			// Assignment Operator
 			//---------------------
-			void		operator= (const const_iterator& t)
+			void operator=(const const_iterator& t)
 			{
 				mOwner = t.mOwner;
 				mLoc = t.mLoc;
 			}
+
 			// Assignment Operator
 			//---------------------
-			void		operator= (const iterator& t)
+			void operator=(const iterator& t)
 			{
 				mOwner = t.mOwner;
 				mLoc = t.mLoc;
@@ -566,29 +583,31 @@ namespace ratl
 
 			// Equality Operators
 			//--------------------
-			bool		operator!=(const iterator& t)		const
+			bool operator!=(const iterator& t) const
 			{
 				return mLoc != t.mLoc || mOwner != t.mOwner;
 			}
-			bool		operator==(const iterator& t)		const
+
+			bool operator==(const iterator& t) const
 			{
 				return mLoc == t.mLoc && mOwner == t.mOwner;
 			}
 
 			// Equality Operators
 			//--------------------
-			bool		operator!=(const const_iterator& t)		const
+			bool operator!=(const const_iterator& t) const
 			{
 				return mLoc != t.mLoc || mOwner != t.mOwner;
 			}
-			bool		operator==(const const_iterator& t)		const
+
+			bool operator==(const const_iterator& t) const
 			{
 				return mLoc == t.mLoc && mOwner == t.mOwner;
 			}
 
 			// DeReference Operator
 			//----------------------
-			const TTValue& operator* ()		const
+			const TTValue& operator*() const
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				return mOwner->mArray[mLoc];
@@ -596,7 +615,7 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			const TTValue& value()		const
+			const TTValue& value() const
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				return mOwner->mArray[mLoc];
@@ -604,7 +623,7 @@ namespace ratl
 
 			// DeReference Operator
 			//----------------------
-			const TTValue* operator-> ()		const
+			const TTValue* operator->() const
 			{
 				assert(mLoc >= 0 && mLoc < mOwner->mSize);
 				return &mOwner->mArray[mLoc];
@@ -629,13 +648,14 @@ namespace ratl
 				return *this;
 			}
 		};
-		friend class				iterator;
-		friend class				const_iterator;
+
+		friend class iterator;
+		friend class const_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin (Starts At Address 0)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	begin()
+		iterator begin()
 		{
 			return iterator(this, 0);
 		}
@@ -643,7 +663,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator End (Set To Address mSize)
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	end()
+		iterator end()
 		{
 			return iterator(this, mSize);
 		}
@@ -651,7 +671,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Begin (Starts At Address 0)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	begin() const
+		const_iterator begin() const
 		{
 			return const_iterator(this, 0);
 		}
@@ -659,7 +679,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator End (Set To Address mSize)
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	end() const
+		const_iterator end() const
 		{
 			return const_iterator(this, mSize);
 		}
@@ -667,27 +687,27 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Find (If Fails To Find, Returns iterator end()
 		////////////////////////////////////////////////////////////////////////////////////
-		iterator	find(const TTValue& value)
+		iterator find(const TTValue& value)
 		{
-			int		index = find_index(value);		// Call Find By Index
+			int index = find_index(value); // Call Find By Index
 			if (index < mSize)
 			{
-				return iterator(this, index);		// Found It, Return An Iterator To Index
+				return iterator(this, index); // Found It, Return An Iterator To Index
 			}
-			return end();							// Return "end" Iterator If Not Found
+			return end(); // Return "end" Iterator If Not Found
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// Iterator Find (If Fails To Find, Returns iterator end()
 		////////////////////////////////////////////////////////////////////////////////////
-		const_iterator	find(const TTValue& value) const
+		const_iterator find(const TTValue& value) const
 		{
-			int		index = find_index(value);		// Call Find By Index
+			int index = find_index(value); // Call Find By Index
 			if (index < mSize)
 			{
-				return const_iterator(this, index);		// Found It, Return An Iterator To Index
+				return const_iterator(this, index); // Found It, Return An Iterator To Index
 			}
-			return end();							// Return "end" Iterator If Not Found
+			return end(); // Return "end" Iterator If Not Found
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////
@@ -703,42 +723,52 @@ namespace ratl
 			pop_back();
 			return it;
 		}
-		template<class CAST_TO>
+
+		template <class CAST_TO>
 		CAST_TO* verify_alloc(CAST_TO* p) const
 		{
 			return mArray.verify_alloc(p);
 		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class vector_vs : public vector_base<storage::value_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class vector_vs : public vector_base<storage::value_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::value_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		vector_vs() {}
+
+		vector_vs()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY>
-	class vector_os : public vector_base<storage::object_semantics<T, ARG_CAPACITY> >
+	template <class T, int ARG_CAPACITY>
+	class vector_os : public vector_base<storage::object_semantics<T, ARG_CAPACITY>>
 	{
 	public:
 		using TStorageTraits = storage::object_semantics<T, ARG_CAPACITY>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
-		vector_os() {}
+
+		vector_os()
+		{
+		}
 	};
 
-	template<class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
-	class vector_is : public vector_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE> >
+	template <class T, int ARG_CAPACITY, int ARG_MAX_CLASS_SIZE>
+	class vector_is : public vector_base<storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>>
 	{
 	public:
 		using TStorageTraits = storage::virtual_semantics<T, ARG_CAPACITY, ARG_MAX_CLASS_SIZE>;
 		using TTValue = typename TStorageTraits::TValue;
 		static const int CAPACITY = ARG_CAPACITY;
 		static const int MAX_CLASS_SIZE = ARG_MAX_CLASS_SIZE;
-		vector_is() {}
+
+		vector_is()
+		{
+		}
 	};
 }
 #endif

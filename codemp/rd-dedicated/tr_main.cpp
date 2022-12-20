@@ -25,7 +25,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "tr_local.h"
 #include "ghoul2/g2_local.h"
 
-trGlobals_t		tr;
+trGlobals_t tr;
 
 refimport_t* ri = nullptr;
 
@@ -34,7 +34,7 @@ void R_AddTerrainSurfaces(void);
 /*
 ** R_CullLocalPointAndRadius
 */
-int R_CullLocalPointAndRadius(const vec3_t pt, float radius)
+int R_CullLocalPointAndRadius(const vec3_t pt, const float radius)
 {
 	vec3_t transformed;
 
@@ -46,11 +46,12 @@ int R_CullLocalPointAndRadius(const vec3_t pt, float radius)
 /*
 ** R_CullPointAndRadius
 */
-int R_CullPointAndRadius(const vec3_t pt, float radius)
+int R_CullPointAndRadius(const vec3_t pt, const float radius)
 {
 	qboolean mightBeClipped = qfalse;
 
-	if (r_nocull->integer == 1) {
+	if (r_nocull->integer == 1)
+	{
 		return CULL_CLIP;
 	}
 
@@ -75,7 +76,7 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 		return CULL_CLIP;
 	}
 
-	return CULL_IN;		// completely inside frustum
+	return CULL_IN; // completely inside frustum
 }
 
 /*
@@ -84,8 +85,12 @@ R_LocalPointToWorld
 
 =================
 */
-void R_LocalPointToWorld(const vec3_t local, vec3_t world) {
-	world[0] = local[0] * tr.ori.axis[0][0] + local[1] * tr.ori.axis[1][0] + local[2] * tr.ori.axis[2][0] + tr.ori.origin[0];
-	world[1] = local[0] * tr.ori.axis[0][1] + local[1] * tr.ori.axis[1][1] + local[2] * tr.ori.axis[2][1] + tr.ori.origin[1];
-	world[2] = local[0] * tr.ori.axis[0][2] + local[1] * tr.ori.axis[1][2] + local[2] * tr.ori.axis[2][2] + tr.ori.origin[2];
+void R_LocalPointToWorld(const vec3_t local, vec3_t world)
+{
+	world[0] = local[0] * tr.ori.axis[0][0] + local[1] * tr.ori.axis[1][0] + local[2] * tr.ori.axis[2][0] + tr.ori.
+		origin[0];
+	world[1] = local[0] * tr.ori.axis[0][1] + local[1] * tr.ori.axis[1][1] + local[2] * tr.ori.axis[2][1] + tr.ori.
+		origin[1];
+	world[2] = local[0] * tr.ori.axis[0][2] + local[1] * tr.ori.axis[1][2] + local[2] * tr.ori.axis[2][2] + tr.ori.
+		origin[2];
 }

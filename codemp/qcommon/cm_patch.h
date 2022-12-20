@@ -63,36 +63,40 @@ properly.
 #define	MAX_FACETS			4096
 #define	MAX_PATCH_PLANES	8192
 
-typedef struct patchPlane_s {
-	float	plane[4];
-	int		signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
-} patchPlane_t;
+using patchPlane_t = struct patchPlane_s
+{
+	float plane[4];
+	int signbits; // signx + (signy<<1) + (signz<<2), used as lookup during collision
+};
 
-typedef struct facet_s {
-	int			surfacePlane;
-	int			numBorders;		// 3 or four + 6 axial bevels + 4 or 3 * 4 edge bevels
-	int			borderPlanes[4 + 6 + 16];
-	int			borderInward[4 + 6 + 16];
-	qboolean	borderNoAdjust[4 + 6 + 16];
-} facet_t;
+using facet_t = struct facet_s
+{
+	int surfacePlane;
+	int numBorders; // 3 or four + 6 axial bevels + 4 or 3 * 4 edge bevels
+	int borderPlanes[4 + 6 + 16];
+	int borderInward[4 + 6 + 16];
+	qboolean borderNoAdjust[4 + 6 + 16];
+};
 
-typedef struct patchCollide_s {
-	vec3_t	bounds[2];
-	int		numPlanes;			// surface planes plus edge planes
+using patchCollide_t = struct patchCollide_s
+{
+	vec3_t bounds[2];
+	int numPlanes; // surface planes plus edge planes
 	patchPlane_t* planes;
-	int		numFacets;
+	int numFacets;
 	facet_t* facets;
-} patchCollide_t;
+};
 
 #define	MAX_GRID_SIZE	129
 
-typedef struct cGrid_s {
-	int			width;
-	int			height;
-	qboolean	wrapWidth;
-	qboolean	wrapHeight;
-	vec3_t	points[MAX_GRID_SIZE][MAX_GRID_SIZE];	// [width][height]
-} cGrid_t;
+using cGrid_t = struct cGrid_s
+{
+	int width;
+	int height;
+	qboolean wrapWidth;
+	qboolean wrapHeight;
+	vec3_t points[MAX_GRID_SIZE][MAX_GRID_SIZE]; // [width][height]
+};
 
 #define	SUBDIVIDE_DISTANCE	16	//4	// never more than this units away from curve
 #define	PLANE_TRI_EPSILON	0.1

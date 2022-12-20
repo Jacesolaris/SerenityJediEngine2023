@@ -35,7 +35,8 @@ extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern int PM_AnimLength(int index, animNumber_t anim);
 #endif
 
-extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim, int set_anim_flags);
+extern void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim,
+                       int set_anim_flags);
 extern int BG_GetTime(void);
 extern qboolean BG_SabersOff(const playerState_t* ps);
 
@@ -89,7 +90,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	//	playerState_t *pilotPS = NULL;
 	int curTime;
 
-	playerState_t* parentPS = pVeh->m_pParentEntity->playerState;
+	playerState_t * parentPS = pVeh->m_pParentEntity->playerState;
 	if (pVeh->m_pPilot)
 	{
 		//	pilotPS = pVeh->m_pPilot->playerState;
@@ -123,10 +124,14 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	if (pVeh->m_pPilot &&
 		pVeh->m_ucmd.buttons & BUTTON_ALT_ATTACK && pVeh->m_pVehicleInfo->turboSpeed)
 	{
-		if (parentPS && parentPS->electrifyTime > curTime ||
+		if (parentPS&& parentPS
+		
+		->
+		electrifyTime > curTime ||
 			pVeh->m_pPilot->playerState &&
 			(pVeh->m_pPilot->playerState->weapon == WP_MELEE ||
-				pVeh->m_pPilot->playerState->weapon == WP_SABER && BG_SabersOff(pVeh->m_pPilot->playerState)))
+				pVeh->m_pPilot->playerState->weapon == WP_SABER && BG_SabersOff(pVeh->m_pPilot->playerState))
+		)
 		{
 			if (curTime - pVeh->m_iTurboTime > pVeh->m_pVehicleInfo->turboRecharge)
 			{
@@ -147,8 +152,8 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 							VectorSet(boltDir, 0.0f, pVeh->m_pParentEntity->playerState->viewangles[YAW], 0.0f);
 
 							trap->G2API_GetBoltMatrix(pVeh->m_pParentEntity->ghoul2, 0, pVeh->m_iExhaustTag[i],
-								&boltMatrix, boltDir, pVeh->m_pParentEntity->playerState->origin,
-								level.time, NULL, pVeh->m_pParentEntity->modelScale);
+							                          &boltMatrix, boltDir, pVeh->m_pParentEntity->playerState->origin,
+							                          level.time, NULL, pVeh->m_pParentEntity->modelScale);
 							BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, boltOrg);
 							BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, boltDir);
 							G_PlayEffectID(pVeh->m_pVehicleInfo->iTurboStartFX, boltOrg, boltDir);
@@ -253,7 +258,11 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 		parentPS->speed = speedMin;
 	}
 
-	if (parentPS && parentPS->electrifyTime > curTime)
+	if (parentPS&& parentPS
+	
+	->
+	electrifyTime > curTime
+	)
 	{
 		parentPS->speed *= pVeh->m_fTimeModifier / 60.0f;
 	}
@@ -280,7 +289,7 @@ void ProcessOrientCommands(const Vehicle_t* pVeh)
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
 	/********************************************************************************/
-	playerState_t* riderPS;
+	playerState_t * riderPS;
 
 	if (pVeh->m_pPilot)
 	{
@@ -384,7 +393,7 @@ void AnimateRiders(Vehicle_t* pVeh)
 			const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
 			BG_SetAnim(pVeh->m_pPilot->playerState, bgAllAnims[pVeh->m_pPilot->localAnimIndex].anims,
-				SETANIM_BOTH, Anim, iFlags);
+			           SETANIM_BOTH, Anim, iFlags);
 		}
 
 		return;

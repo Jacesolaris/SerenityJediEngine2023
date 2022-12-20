@@ -104,7 +104,7 @@ typedef my_marker_writer* my_marker_ptr;
  */
 
 LOCAL(void)
-emit_byte(j_compress_ptr cinfo, int val)
+emit_byte(const j_compress_ptr cinfo, const int val)
 /* Emit a byte */
 {
 	struct jpeg_destination_mgr* dest = cinfo->dest;
@@ -117,7 +117,7 @@ emit_byte(j_compress_ptr cinfo, int val)
 }
 
 LOCAL(void)
-emit_marker(j_compress_ptr cinfo, JPEG_MARKER mark)
+emit_marker(const j_compress_ptr cinfo, const JPEG_MARKER mark)
 /* Emit a marker code */
 {
 	emit_byte(cinfo, 0xFF);
@@ -125,7 +125,7 @@ emit_marker(j_compress_ptr cinfo, JPEG_MARKER mark)
 }
 
 LOCAL(void)
-emit_2bytes(j_compress_ptr cinfo, int value)
+emit_2bytes(const j_compress_ptr cinfo, const int value)
 /* Emit a 2-byte integer; these are always MSB first in JPEG files */
 {
 	emit_byte(cinfo, value >> 8 & 0xFF);
@@ -137,7 +137,7 @@ emit_2bytes(j_compress_ptr cinfo, int value)
  */
 
 LOCAL(int)
-emit_dqt(j_compress_ptr cinfo, int index)
+emit_dqt(const j_compress_ptr cinfo, const int index)
 /* Emit a DQT marker */
 /* Returns the precision used (0 = 8bits, 1 = 16bits) for baseline checking */
 {
@@ -176,7 +176,7 @@ emit_dqt(j_compress_ptr cinfo, int index)
 }
 
 LOCAL(void)
-emit_dht(j_compress_ptr cinfo, int index, boolean is_ac)
+emit_dht(const j_compress_ptr cinfo, int index, const boolean is_ac)
 /* Emit a DHT marker */
 {
 	JHUFF_TBL* htbl;
@@ -214,7 +214,7 @@ emit_dht(j_compress_ptr cinfo, int index, boolean is_ac)
 }
 
 LOCAL(void)
-emit_dac(j_compress_ptr cinfo)
+emit_dac(const j_compress_ptr cinfo)
 /* Emit a DAC marker */
 /* Since the useful info is so small, we want to emit all the tables in */
 /* one DAC marker.  Therefore this routine does its own scan of the table. */
@@ -261,7 +261,7 @@ emit_dac(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-emit_dri(j_compress_ptr cinfo)
+emit_dri(const j_compress_ptr cinfo)
 /* Emit a DRI marker */
 {
 	emit_marker(cinfo, M_DRI);
@@ -272,7 +272,7 @@ emit_dri(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-emit_lse_ict(j_compress_ptr cinfo)
+emit_lse_ict(const j_compress_ptr cinfo)
 /* Emit an LSE inverse color transform specification marker */
 {
 	/* Support only 1 transform */
@@ -302,7 +302,7 @@ emit_lse_ict(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-emit_sof(j_compress_ptr cinfo, JPEG_MARKER code)
+emit_sof(const j_compress_ptr cinfo, const JPEG_MARKER code)
 /* Emit a SOF marker */
 {
 	int ci;
@@ -332,7 +332,7 @@ emit_sof(j_compress_ptr cinfo, JPEG_MARKER code)
 }
 
 LOCAL(void)
-emit_sos(j_compress_ptr cinfo)
+emit_sos(const j_compress_ptr cinfo)
 /* Emit a SOS marker */
 {
 	emit_marker(cinfo, M_SOS);
@@ -363,7 +363,7 @@ emit_sos(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-emit_pseudo_sos(j_compress_ptr cinfo)
+emit_pseudo_sos(const j_compress_ptr cinfo)
 /* Emit a pseudo SOS marker */
 {
 	emit_marker(cinfo, M_SOS);
@@ -378,7 +378,7 @@ emit_pseudo_sos(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-emit_jfif_app0(j_compress_ptr cinfo)
+emit_jfif_app0(const j_compress_ptr cinfo)
 /* Emit a JFIF-compliant APP0 marker */
 {
 	/*
@@ -412,7 +412,7 @@ emit_jfif_app0(j_compress_ptr cinfo)
 }
 
 LOCAL(void)
-emit_adobe_app14(j_compress_ptr cinfo)
+emit_adobe_app14(const j_compress_ptr cinfo)
 /* Emit an Adobe APP14 marker */
 {
 	/*
@@ -465,7 +465,7 @@ emit_adobe_app14(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-write_marker_header(j_compress_ptr cinfo, int marker, unsigned int datalen)
+write_marker_header(const j_compress_ptr cinfo, const int marker, const unsigned int datalen)
 /* Emit an arbitrary marker header */
 {
 	if (datalen > (unsigned int)65533)		/* safety check */
@@ -477,7 +477,7 @@ write_marker_header(j_compress_ptr cinfo, int marker, unsigned int datalen)
 }
 
 METHODDEF(void)
-write_marker_byte(j_compress_ptr cinfo, int val)
+write_marker_byte(const j_compress_ptr cinfo, const int val)
 /* Emit one byte of marker parameters following write_marker_header */
 {
 	emit_byte(cinfo, val);
@@ -495,7 +495,7 @@ write_marker_byte(j_compress_ptr cinfo, int val)
  */
 
 METHODDEF(void)
-write_file_header(j_compress_ptr cinfo)
+write_file_header(const j_compress_ptr cinfo)
 {
 	const my_marker_ptr marker = (my_marker_ptr)cinfo->marker;
 
@@ -520,7 +520,7 @@ write_file_header(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-write_frame_header(j_compress_ptr cinfo)
+write_frame_header(const j_compress_ptr cinfo)
 {
 	int ci;
 	boolean is_baseline;
@@ -589,7 +589,7 @@ write_frame_header(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-write_scan_header(j_compress_ptr cinfo)
+write_scan_header(const j_compress_ptr cinfo)
 {
 	const my_marker_ptr marker = (my_marker_ptr)cinfo->marker;
 
@@ -631,7 +631,7 @@ write_scan_header(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-write_file_trailer(j_compress_ptr cinfo)
+write_file_trailer(const j_compress_ptr cinfo)
 {
 	emit_marker(cinfo, M_EOI);
 }
@@ -644,7 +644,7 @@ write_file_trailer(j_compress_ptr cinfo)
  */
 
 METHODDEF(void)
-write_tables_only(j_compress_ptr cinfo)
+write_tables_only(const j_compress_ptr cinfo)
 {
 	int i;
 
@@ -672,7 +672,7 @@ write_tables_only(j_compress_ptr cinfo)
  */
 
 GLOBAL(void)
-jinit_marker_writer(j_compress_ptr cinfo)
+jinit_marker_writer(const j_compress_ptr cinfo)
 {
 	/* Create the subobject */
 	const my_marker_ptr marker = (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_IMAGE,

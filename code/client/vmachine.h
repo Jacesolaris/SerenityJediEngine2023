@@ -72,7 +72,7 @@ VIRTUAL MACHINE
 */
 using vm_t = struct vm_s
 {
-	intptr_t(*entryPoint)(int callNum, ...);
+	intptr_t (*entryPoint)(int callNum, ...);
 };
 
 extern vm_t cgvm;

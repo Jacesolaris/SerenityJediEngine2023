@@ -34,7 +34,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include <jpeglib.h>
 
-static void R_JPGErrorExit(j_common_ptr cinfo)
+static void R_JPGErrorExit(const j_common_ptr cinfo)
 {
 	char buffer[JMSG_LENGTH_MAX];
 
@@ -46,7 +46,7 @@ static void R_JPGErrorExit(j_common_ptr cinfo)
 	Com_Printf("%s", buffer);
 }
 
-static void R_JPGOutputMessage(j_common_ptr cinfo)
+static void R_JPGOutputMessage(const j_common_ptr cinfo)
 {
 	char buffer[JMSG_LENGTH_MAX];
 
@@ -236,7 +236,7 @@ typedef my_destination_mgr* my_dest_ptr;
 * before any data is actually written.
 */
 
-static void init_destination(j_compress_ptr cinfo)
+static void init_destination(const j_compress_ptr cinfo)
 {
 	const my_dest_ptr dest = (my_dest_ptr)cinfo->dest;
 
@@ -267,7 +267,7 @@ static void init_destination(j_compress_ptr cinfo)
 * write it out when emptying the buffer externally.
 */
 
-static boolean empty_output_buffer(j_compress_ptr cinfo)
+static boolean empty_output_buffer(const j_compress_ptr cinfo)
 {
 	const my_dest_ptr dest = (my_dest_ptr)cinfo->dest;
 
@@ -296,7 +296,7 @@ static void term_destination(j_compress_ptr cinfo)
 * for closing it after finishing compression.
 */
 
-static void jpegDest(j_compress_ptr cinfo, byte* outfile, int size)
+static void jpegDest(const j_compress_ptr cinfo, byte* outfile, const int size)
 {
 	/* The destination object is made permanent so that multiple JPEG images
 	* can be written to the same file without re-executing jpeg_stdio_dest.
@@ -394,7 +394,7 @@ size_t RE_SaveJPGToBuffer(byte* buffer, size_t bufSize, int quality,
 	return outcount;
 }
 
-void RE_SaveJPG(const char* filename, int quality, int image_width, int image_height, byte* image_buffer, int padding)
+void RE_SaveJPG(const char* filename, const int quality, const int image_width, const int image_height, byte* image_buffer, const int padding)
 {
 	size_t bufSize = image_width * image_height * 3;
 	byte* out = static_cast<byte*>(Hunk_AllocateTempMemory(bufSize));

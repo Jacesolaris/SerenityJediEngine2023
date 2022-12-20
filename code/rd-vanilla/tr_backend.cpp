@@ -80,7 +80,7 @@ void GL_Bind(image_t* image) {
 /*
 ** GL_SelectTexture
 */
-void GL_SelectTexture(int unit)
+void GL_SelectTexture(const int unit)
 {
 	if (glState.currenttmu == unit)
 	{
@@ -125,7 +125,7 @@ void GL_SelectTexture(int unit)
 /*
 ** GL_Cull
 */
-void GL_Cull(int cullType) {
+void GL_Cull(const int cullType) {
 	if (glState.faceCulling == cullType) {
 		return;
 	}
@@ -170,7 +170,7 @@ void GL_Cull(int cullType) {
 /*
 ** GL_TexEnv
 */
-void GL_TexEnv(int env)
+void GL_TexEnv(const int env)
 {
 	if (env == glState.texEnv[glState.currenttmu])
 	{
@@ -204,7 +204,7 @@ void GL_TexEnv(int env)
 ** This routine is responsible for setting the most commonly changed state
 ** in Q3.
 */
-void GL_State(uint32_t stateBits)
+void GL_State(const uint32_t stateBits)
 {
 	const uint32_t diff = stateBits ^ glState.glStateBits;
 
@@ -626,7 +626,7 @@ using postRender_t = struct
 static postRender_t g_postRenders[MAX_POST_RENDERS];
 static int g_numPostRenders = 0;
 
-void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, int numDrawSurfs) {
+void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 	shader_t* shader;
 	int				fogNum;
 	int				entityNum;
@@ -1599,7 +1599,7 @@ void RB_ExecuteRenderCommands(const void* data) {
 GLuint g_uiCurrentPixelShaderType = 0x0;
 
 // Begin using a Pixel Shader.
-void BeginPixelShader(GLuint uiType, GLuint uiID)
+void BeginPixelShader(const GLuint uiType, const GLuint uiID)
 {
 	switch (uiType)
 	{

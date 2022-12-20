@@ -68,7 +68,7 @@ int numclusterareas;
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void AAS_AltRoutingFloodCluster_r(int areanum)
+void AAS_AltRoutingFloodCluster_r(const int areanum)
 {
 	int otherareanum;
 
@@ -99,9 +99,9 @@ void AAS_AltRoutingFloodCluster_r(int areanum)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int AAS_AlternativeRouteGoals(vec3_t start, int startareanum, vec3_t goal, int goalareanum, int travelflags,
-	aas_altroutegoal_t* altroutegoals, int maxaltroutegoals,
-	int type)
+int AAS_AlternativeRouteGoals(vec3_t start, const int startareanum, vec3_t goal, const int goalareanum, const int travelflags,
+	aas_altroutegoal_t* altroutegoals, const int maxaltroutegoals,
+	const int type)
 {
 #ifndef ENABLE_ALTROUTING
 	return 0;

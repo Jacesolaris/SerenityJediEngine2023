@@ -540,8 +540,8 @@ void CL_CheckForResend(void)
 		Info_SetValueForKey(info, "qport", va("%i", port));
 		Info_SetValueForKey(info, "challenge", va("%i", clc.challenge));
 		NET_OutOfBandPrint(NS_CLIENT, clc.serverAddress, "connect \"%s\"", info);
-		// the most current userinfo has been sent, so watch for any
-		// newer changes to userinfo variables
+	// the most current userinfo has been sent, so watch for any
+	// newer changes to userinfo variables
 		cvar_modifiedFlags &= ~CVAR_USERINFO;
 		break;
 
@@ -560,7 +560,7 @@ to the server, the server will send out of band disconnect packets
 to the client so it doesn't have to wait for the full timeout period.
 ===================
 */
-void CL_DisconnectPacket(netadr_t from)
+void CL_DisconnectPacket(const netadr_t from)
 {
 	if (cls.state != CA_ACTIVE)
 	{
@@ -592,7 +592,7 @@ CL_ConnectionlessPacket
 Responses to broadcasts, etc
 =================
 */
-void CL_ConnectionlessPacket(netadr_t from, msg_t* msg)
+void CL_ConnectionlessPacket(const netadr_t from, msg_t* msg)
 {
 	MSG_BeginReading(msg);
 	MSG_ReadLong(msg); // skip the -1
@@ -644,7 +644,7 @@ void CL_ConnectionlessPacket(netadr_t from, msg_t* msg)
 		{
 			Com_Printf("connectResponse from a different address.  Ignored.\n");
 			Com_Printf("%s should have been %s\n", NET_AdrToString(from),
-				NET_AdrToString(clc.serverAddress));
+			           NET_AdrToString(clc.serverAddress));
 			return;
 		}
 		Netchan_Setup(NS_CLIENT, &clc.netchan, from, Cvar_VariableIntegerValue("net_qport"));
@@ -687,7 +687,7 @@ CL_PacketEvent
 A packet has arrived from the main event loop
 =================
 */
-void CL_PacketEvent(netadr_t from, msg_t* msg)
+void CL_PacketEvent(const netadr_t from, msg_t* msg)
 {
 	clc.lastPacketTime = cls.realtime;
 
@@ -714,7 +714,7 @@ void CL_PacketEvent(netadr_t from, msg_t* msg)
 	if (!NET_CompareAdr(from, clc.netchan.remoteAddress))
 	{
 		Com_DPrintf("%s:sequenced packet without connection\n"
-			, NET_AdrToString(from));
+		            , NET_AdrToString(from));
 		// FIXME: send a client disconnect?
 		return;
 	}
@@ -811,7 +811,7 @@ extern cvar_t* cl_newClock;
 static unsigned int frameCount;
 float avgFrametime = 0.0;
 
-void CL_Frame(int msec, float fractionMsec)
+void CL_Frame(int msec, const float fractionMsec)
 {
 	if (!com_cl_running->integer)
 	{
@@ -976,7 +976,7 @@ void CL_Frame(int msec, float fractionMsec)
 CL_ShutdownRef
 ============
 */
-static void CL_ShutdownRef(qboolean restarting)
+static void CL_ShutdownRef(const qboolean restarting)
 {
 	if (re.Shutdown)
 	{
@@ -1087,7 +1087,7 @@ CL_RefPrintf
 DLL glue
 ================
 */
-void QDECL CL_RefPrintf(int print_level, const char* fmt, ...)
+void QDECL CL_RefPrintf(const int print_level, const char* fmt, ...)
 {
 	va_list argptr;
 	char msg[MAXPRINTMSG];
@@ -1157,7 +1157,7 @@ int get_com_frameTime(void)
 	return com_frameTime;
 }
 
-void* CL_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, int iAlign)
+void* CL_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, int iAlign)
 {
 	return Z_Malloc(iSize, eTag, bZeroit);
 }
@@ -1319,7 +1319,7 @@ void CL_Init()
 
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("---------- Genuine SerenityJediEngine-(Solaris Edition)----------\n");
-	Com_Printf("---------------------Build date 18/12/2022-----------------------\n");
+	Com_Printf("---------------------Build date 20/12/2022-----------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");

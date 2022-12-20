@@ -39,7 +39,7 @@ void QDECL Com_Printf(const char* msg, ...)
 	ri.Printf(PRINT_ALL, "%s", text);
 }
 
-void QDECL Com_Error(int level, const char* error, ...)
+void QDECL Com_Error(const int level, const char* error, ...)
 {
 	va_list         argptr;
 	char            text[1024];
@@ -78,7 +78,7 @@ void Com_DPrintf(const char* format, ...)
 
 // ZONE
 
-void* R_Malloc(int iSize, memtag_t eTag, qboolean bZeroit) {
+void* R_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit) {
 	return ri.Malloc(iSize, eTag, bZeroit, 4);
 }
 
@@ -86,14 +86,14 @@ void R_Free(void* ptr) {
 	ri.Z_Free(ptr);
 }
 
-int R_MemSize(memtag_t eTag) {
+int R_MemSize(const memtag_t eTag) {
 	return ri.Z_MemSize(eTag);
 }
 
-void R_MorphMallocTag(void* pvBuffer, memtag_t eDesiredTag) {
+void R_MorphMallocTag(void* pvBuffer, const memtag_t eDesiredTag) {
 	ri.Z_MorphMallocTag(pvBuffer, eDesiredTag);
 }
 
-void* R_Hunk_Alloc(int iSize, qboolean bZeroit) {
+void* R_Hunk_Alloc(const int iSize, const qboolean bZeroit) {
 	return ri.Malloc(iSize, TAG_HUNKALLOC, bZeroit, 4);
 }

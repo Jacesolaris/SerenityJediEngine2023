@@ -104,8 +104,8 @@ static void ObjectivePrint_Line(const int color, const int objectIndex, int& mis
 		// this is execrable, and should NOT have had to've been done now, but...
 		//
 		extern const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHeight,
-			const char* psText, int iFontHandle, float fScale,
-			const vec4_t v4Color);
+		                                       const char* psText, int iFontHandle, float fScale,
+		                                       const vec4_t v4Color);
 		extern int giLinesOutput;
 		extern float gfAdvanceHack;
 
@@ -317,7 +317,7 @@ void CG_DrawDataPadObjectives(const centity_t* cent)
 	}
 
 	// Title Text at the top
-	char text[1024] = { 0 };
+	char text[1024] = {0};
 	cgi_SP_GetStringTextString("SP_INGAME_OBJECTIVES", text, sizeof text);
 	cgi_R_Font_DrawString(titleXPos, titleYPos, text, colorTable[CT_TITLE], cgs.media.qhFontMedium, -1, 1.0f);
 
@@ -335,11 +335,11 @@ void CG_DrawDataPadObjectives(const centity_t* cent)
 			//	Draw graphics that show if mission has been accomplished or not
 			cgi_R_SetColor(colorTable[CT_BLUE3]);
 			CG_DrawPic(graphicXpos, totalY - graphicYOffset, graphic_size, graphic_size,
-				cgs.media.messageObjCircle); // Circle in front
+			           cgs.media.messageObjCircle); // Circle in front
 			if (cent->gent->client->sess.mission_objectives[i].status == OBJECTIVE_STAT_SUCCEEDED)
 			{
 				CG_DrawPic(graphicXpos, totalY - graphicYOffset, graphic_size, graphic_size,
-					cgs.media.messageLitOn); // Center Dot
+				           cgs.media.messageLitOn); // Center Dot
 			}
 
 			// Print current objective text
@@ -410,7 +410,8 @@ constexpr int MAXLOADWEAPONS = 16;
 constexpr int MAXLOAD_FORCEICONSIZE = 40; // Size of force power icons
 constexpr int MAXLOAD_FORCEICONPAD = 12; // Padding space between icons
 
-static int CG_DrawLoadWeaponsPrintRow(const char* itemName, int weaponsBits, int rowIconCnt, int startIndex)
+static int CG_DrawLoadWeaponsPrintRow(const char* itemName, const int weaponsBits, const int rowIconCnt,
+                                      const int startIndex)
 {
 	int endIndex = 0, printedIconCnt = 0;
 	int x, y;
@@ -470,7 +471,7 @@ static int CG_DrawLoadWeaponsPrintRow(const char* itemName, int weaponsBits, int
 
 // Print weapons the player is carrying
 // Two rows print if there are too many
-static void CG_DrawLoadWeapons(int weaponBits)
+static void CG_DrawLoadWeapons(const int weaponBits)
 {
 	// count the number of weapons owned
 	int iconCnt = 0;
@@ -506,7 +507,8 @@ static void CG_DrawLoadWeapons(int weaponBits)
 	cgi_R_SetColor(nullptr);
 }
 
-static int CG_DrawLoadForcePrintRow(const char* itemName, int forceBits, int rowIconCnt, int startIndex)
+static int CG_DrawLoadForcePrintRow(const char* itemName, const int forceBits, const int rowIconCnt,
+                                    const int startIndex)
 {
 	int endIndex = 0, printedIconCnt = 0;
 	int x, y;
@@ -566,7 +568,7 @@ int loadForcePowerLevel[NUM_FORCE_POWERS];
 ForcePowerDataPad_Valid
 ===============
 */
-qboolean CG_ForcePower_Valid(int forceKnownBits, int index)
+qboolean CG_ForcePower_Valid(const int forceKnownBits, const int index)
 {
 	if (forceKnownBits & 1 << showPowers[index] &&
 		loadForcePowerLevel[showPowers[index]]) // Does he have the force power?
@@ -579,7 +581,7 @@ qboolean CG_ForcePower_Valid(int forceKnownBits, int index)
 
 // Print force powers the player is using
 // Two rows print if there are too many
-static void CG_DrawLoadForcePowers(int forceBits)
+static void CG_DrawLoadForcePowers(const int forceBits)
 {
 	int iconCnt = 0;
 
@@ -630,19 +632,19 @@ static void CG_GetLoadScreenInfo(int* weaponBits, int* forceBits)
 	{
 		//				|general info				  |-force powers
 		sscanf(s, "%i %i %i %i %i %i %i %f %f %f %i %i",
-			&iDummy, //	&client->ps.stats[STAT_HEALTH],
-			&iDummy, //	&client->ps.stats[STAT_ARMOR],
-			&*weaponBits, //	&client->ps.stats[STAT_WEAPONS],
-			&iDummy, //	&client->ps.stats[STAT_ITEMS],
-			&iDummy, //	&client->ps.weapon,
-			&iDummy, //	&client->ps.weaponstate,
-			&iDummy, //	&client->ps.batteryCharge,
-			&fDummy, //	&client->ps.viewangles[0],
-			&fDummy, //	&client->ps.viewangles[1],
-			&fDummy, //	&client->ps.viewangles[2],
-			//force power data
-			&*forceBits, //	&client->ps.forcePowersKnown,
-			&iDummy //	&client->ps.forcePower,
+		       &iDummy, //	&client->ps.stats[STAT_HEALTH],
+		       &iDummy, //	&client->ps.stats[STAT_ARMOR],
+		       &*weaponBits, //	&client->ps.stats[STAT_WEAPONS],
+		       &iDummy, //	&client->ps.stats[STAT_ITEMS],
+		       &iDummy, //	&client->ps.weapon,
+		       &iDummy, //	&client->ps.weaponstate,
+		       &iDummy, //	&client->ps.batteryCharge,
+		       &fDummy, //	&client->ps.viewangles[0],
+		       &fDummy, //	&client->ps.viewangles[1],
+		       &fDummy, //	&client->ps.viewangles[2],
+		       //force power data
+		       &*forceBits, //	&client->ps.forcePowersKnown,
+		       &iDummy //	&client->ps.forcePower,
 
 		);
 	}
@@ -668,7 +670,7 @@ CG_DrawLoadingScreen
 Load screen displays the map pic, the mission briefing and weapons/force powers
 ====================
 */
-static void CG_DrawLoadingScreen(qhandle_t levelshot, const char* mapName)
+static void CG_DrawLoadingScreen(const qhandle_t levelshot, const char* mapName)
 {
 	int xPos, yPos, width, height;
 	vec4_t color;
@@ -748,7 +750,7 @@ Draw all the status / pacifier stuff during level loading
 int SCREENSHOT_TOTAL = -1;
 int SCREENSHOT_CHOICE = 0;
 int SCREENSHOT_NEXT_UPDATE_TIME = 0;
-char SCREENSHOT_CURRENT[64] = { 0 };
+char SCREENSHOT_CURRENT[64] = {0};
 
 char* cg_GetCurrentLevelshot1(const char* s)
 {
@@ -772,7 +774,7 @@ char* cg_GetCurrentLevelshot1(const char* s)
 
 			while (true)
 			{
-				char screenShot[128] = { 0 };
+				char screenShot[128] = {0};
 
 				strcpy(screenShot, va("menu/art/unknownmap_mp%i", SCREENSHOT_TOTAL));
 
@@ -814,7 +816,7 @@ char* cg_GetCurrentLevelshot2(const char* s)
 
 			while (true)
 			{
-				char screenShot[128] = { 0 };
+				char screenShot[128] = {0};
 
 				strcpy(screenShot, va("menu/art/unknownmap_mp%i", SCREENSHOT_TOTAL));
 
@@ -884,7 +886,7 @@ void CG_DrawInformation(void)
 			|| strcmp(s, "level0") == 0
 			|| strcmp(s, "kejim_post") == 0)) //special case for first map!
 	{
-		constexpr char text[1024] = { 0 };
+		constexpr char text[1024] = {0};
 
 		CG_DrawPic(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Loadshot);
 
@@ -917,7 +919,7 @@ void CG_DrawInformation(void)
 		int y = 20;
 		if (s[0] == '@')
 		{
-			char text[1024] = { 0 };
+			char text[1024] = {0};
 			cgi_SP_GetStringTextString(s + 1, text, sizeof text);
 			cgi_R_Font_DrawString(15, y, va("\"%s\"", text), colorTable[CT_WHITE], cgs.media.qhFontMedium, -1, 1.0f);
 		}
