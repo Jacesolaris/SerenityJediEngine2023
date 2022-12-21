@@ -1862,8 +1862,8 @@ void CG_AddViewWeapon(playerState_t* ps)
 
 		val += Q_flrand(0.0f, 1.0f) * 0.5f;
 
-		FX_AddSprite(flash.origin, nullptr, nullptr, 3.0f * val * scale, 0.0f, 0.7f, 0.7f, WHITE, WHITE,
-		             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
+		FX_AddSprite(flash.origin, nullptr, nullptr, 3.0f * val * scale, 0.7f, 0.7f, WHITE, WHITE, Q_flrand(0.0f, 1.0f) * 360,
+		             0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
 	}
 
 	// Check if the heavy repeater is finishing up a sustained burst
@@ -2383,8 +2383,8 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 
 		val += Q_flrand(0.0f, 1.0f) * 0.5f;
 
-		FX_AddSprite(flash.origin, nullptr, nullptr, 3.0f * val * scale, 0.0f, 0.7f, 0.7f, WHITE, WHITE,
-		             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
+		FX_AddSprite(flash.origin, nullptr, nullptr, 3.0f * val * scale, 0.7f, 0.7f, WHITE, WHITE, Q_flrand(0.0f, 1.0f) * 360,
+		             0.0f, 1.0f, shader, FX_USE_ALPHA | FX_DEPTH_HACK);
 	}
 
 	// Check if the heavy repeater is finishing up a sustained burst

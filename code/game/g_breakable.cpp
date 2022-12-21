@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_navigator.h"
 
 //client side shortcut hacks from cg_local.h
-extern void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType);
+extern void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunk_type);
 extern void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
                       float speed, int num_chunks, material_t chunk_type, int custom_chunk, float base_scale,
                       int custom_sound = 0);
@@ -1455,7 +1455,7 @@ void SP_misc_model_breakable(gentity_t* ent)
 
 // Really naughty cheating.  Put in an EVENT at some point...
 extern void cgi_R_GetBModelVerts(int bmodelIndex, vec3_t* verts, vec3_t normal);
-extern void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, float dmgRadius);
+extern void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, float dmg_radius);
 extern cgs_t cgs;
 
 //-----------------------------------------------------

@@ -843,14 +843,14 @@ void CG_EntityEvent(centity_t* cent, vec3_t position);
 // cg_ents.c
 //
 vec3_t* CG_SetEntitySoundPosition(const centity_t* cent);
-void CG_AddPacketEntities(qboolean isPortal);
+void CG_AddPacketEntities(qboolean is_portal);
 void CG_Beam(const centity_t* cent, int color);
-void CG_AdjustPositionForMover(const vec3_t in, int moverNum, int atTime, vec3_t out);
+void CG_AdjustPositionForMover(const vec3_t in, int mover_num, int at_time, vec3_t out);
 
 void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-                            qhandle_t parentModel, const char* tagName);
+                            qhandle_t parent_model, const char* tag_name);
 void CG_PositionRotatedEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-                                   qhandle_t parentModel, const char* tagName, orientation_t* tagOrient);
+                                   qhandle_t parent_model, const char* tag_name, orientation_t* tag_orient);
 
 /*
 Ghoul2 Insert Start
@@ -888,13 +888,13 @@ void CG_OutOfAmmoChange(void); // should this be in pmove?
 //
 // cg_marks.c
 //
-void CG_InitMarkPolys(void);
-void CG_AddMarks(void);
-void CG_ImpactMark(qhandle_t markShader,
+void CG_InitMarkPolys();
+void CG_AddMarks();
+void CG_ImpactMark(qhandle_t mark_shader,
                    const vec3_t origin, const vec3_t dir,
                    float orientation,
-                   float r, float g, float b, float a,
-                   qboolean alphaFade,
+                   float red, float green, float blue, float alpha,
+                   qboolean alpha_fade,
                    float radius, qboolean temporary);
 
 //

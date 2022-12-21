@@ -2853,33 +2853,30 @@ void CG_DrawEdge(vec3_t start, vec3_t end, const int type)
 	//=====================================
 	case EDGE_NORMAL:
 		{
-			FX_AddLine(start, end, 8.0f, 4.0f, 0.0f, 0.5f, 0.5f, 51, cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
+			FX_AddLine(start, end, 4.0f, 0.5f, 0.5f, 51, cgi_R_RegisterShader("gfx/misc/nav_line"));
 		}
 		break;
 	case EDGE_LARGE:
 		{
-			FX_AddLine(start, end, 8.0f, 15.0f, 0.0f, 0.5f, 0.5f, 51, cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
+			FX_AddLine(start, end, 15.0f, 0.5f, 0.5f, 51, cgi_R_RegisterShader("gfx/misc/nav_line"));
 		}
 		break;
 	case EDGE_BLOCKED:
 		{
 			vec3_t color = {255, 0, 0}; // RED
-			FX_AddLine(start, end, 8.0f, 4.0f, 0.0f, 0.5f, 0.5f, color, color, 51,
-			           cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
+			FX_AddLine(start, end, 4.0f, 0.5f, 0.5f, color, color, 51, cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
 		}
 		break;
 	case EDGE_FLY:
 		{
 			vec3_t color = {0, 255, 255}; // GREEN
-			FX_AddLine(start, end, 8.0f, 4.0f, 0.0f, 0.5f, 0.5f, color, color, 51,
-			           cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
+			FX_AddLine(start, end, 4.0f, 0.5f, 0.5f, color, color, 51, cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
 		}
 		break;
 	case EDGE_JUMP:
 		{
 			vec3_t color = {0, 0, 255}; // BLUE
-			FX_AddLine(start, end, 8.0f, 4.0f, 0.0f, 0.5f, 0.5f, color, color, 51,
-			           cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
+			FX_AddLine(start, end, 4.0f, 0.5f, 0.5f, color, color, 51, cgi_R_RegisterShader("gfx/misc/nav_line"), 0);
 		}
 		break;
 
@@ -2888,29 +2885,25 @@ void CG_DrawEdge(vec3_t start, vec3_t end, const int type)
 	case EDGE_NODE_NORMAL:
 		{
 			vec3_t color = {155, 155, 155};
-			FX_AddLine(start, end, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_NODE_FLOATING:
 		{
 			vec3_t color = {155, 155, 0};
-			FX_AddLine(start, end, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_NODE_GOAL:
 		{
 			vec3_t color = {0, 0, 155};
-			FX_AddLine(start, end, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_NODE_COMBAT:
 		{
 			vec3_t color = {155, 0, 0};
-			FX_AddLine(start, end, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 
@@ -2954,24 +2947,21 @@ void CG_DrawEdge(vec3_t start, vec3_t end, const int type)
 	case EDGE_PATH:
 		{
 			vec3_t color = {0, 0, 155}; // WHITE
-			FX_AddLine(start, end, 5.0f, 5.0f, 0.0f, 0.5f, 0.5f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/nav_arrow_new"), 0);
+			FX_AddLine(start, end, 5.0f, 0.5f, 0.5f, color, color, 151, cgi_R_RegisterShader("gfx/misc/nav_arrow_new"), 0);
 		}
 		break;
 
 	case EDGE_PATHBLOCKED:
 		{
 			vec3_t color = {255, 0, 0}; // RED
-			FX_AddLine(start, end, 5.0f, 5.0f, 0.0f, 0.5f, 0.5f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/nav_arrow_new"), 0);
+			FX_AddLine(start, end, 5.0f, 0.5f, 0.5f, color, color, 151, cgi_R_RegisterShader("gfx/misc/nav_arrow_new"), 0);
 			break;
 		}
 
 	case EDGE_FOLLOWPOS:
 		{
 			vec3_t color = {0, 255, 0}; // GREEN
-			FX_AddLine(start, end, 5.0f, 5.0f, 0.0f, 0.5f, 0.5f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/nav_arrow_new"), 0);
+			FX_AddLine(start, end, 5.0f, 0.5f, 0.5f, color, color, 151, cgi_R_RegisterShader("gfx/misc/nav_arrow_new"), 0);
 			break;
 		}
 
@@ -2980,29 +2970,25 @@ void CG_DrawEdge(vec3_t start, vec3_t end, const int type)
 	case EDGE_IMPACT_SAFE:
 		{
 			vec3_t color = {155, 155, 155}; // WHITE
-			FX_AddLine(start, end, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_IMPACT_POSSIBLE:
 		{
 			vec3_t color = {255, 0, 0}; // RED
-			FX_AddLine(start, end, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_VELOCITY:
 		{
 			vec3_t color = {0, 255, 0}; // GREEN
-			FX_AddLine(start, end, 4.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_THRUST:
 		{
 			vec3_t color = {0, 0, 255}; // BLUE
-			FX_AddLine(start, end, 3.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 151,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 151, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 
@@ -3011,29 +2997,25 @@ void CG_DrawEdge(vec3_t start, vec3_t end, const int type)
 	case EDGE_WHITE_ONESECOND:
 		{
 			vec3_t color = {155, 155, 155}; // WHITE
-			FX_AddLine(start, end, 3.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 1051,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 1051, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_WHITE_TWOSECOND:
 		{
 			vec3_t color = {155, 155, 155}; // WHITE
-			FX_AddLine(start, end, 3.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 1051,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 1051, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_RED_ONESECOND:
 		{
 			vec3_t color = {255, 0, 0}; // RED
-			FX_AddLine(start, end, 3.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 2051,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 2051, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 	case EDGE_RED_TWOSECOND:
 		{
 			vec3_t color = {255, 0, 0}; // RED
-			FX_AddLine(start, end, 3.0f, 1.0f, 0.0f, 1.0f, 1.0f, color, color, 2051,
-			           cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
+			FX_AddLine(start, end, 1.0f, 1.0f, 1.0f, color, color, 2051, cgi_R_RegisterShader("gfx/misc/whiteline2"), 0);
 		}
 		break;
 
@@ -3085,8 +3067,7 @@ void CG_DrawAlert(vec3_t origin, const float rating)
 	startRGB[1] = 1 - rating;
 	startRGB[2] = 0;
 
-	FX_AddSprite(drawPos, nullptr, nullptr, 16, 0.0f, 1.0f, 1.0f, startRGB, startRGB, 0, 0, 50,
-	             cgs.media.whiteShader);
+	FX_AddSprite(drawPos, nullptr, nullptr, 16, 1.0f, 1.0f, startRGB, startRGB, 0, 0, 50, cgs.media.whiteShader);
 }
 
 constexpr auto MAX_MENUDEFFILE = 8192;

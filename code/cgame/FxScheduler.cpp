@@ -819,7 +819,7 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, vec3_t axis[3], c
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::PlayEffect(const char* file, const int clientID, const bool isPortal)
+void CFxScheduler::PlayEffect(const char* file, const int client_id, const bool isPortal)
 {
 	char sfile[MAX_QPATH];
 
@@ -883,7 +883,7 @@ void CFxScheduler::PlayEffect(const char* file, const int clientID, const bool i
 			// if the delay is so small, we may as well just create this bit right now
 			if (delay < 1 && !isPortal)
 			{
-				CreateEffect(prim, clientID, -delay);
+				CreateEffect(prim, client_id, -delay);
 			}
 			else
 			{
@@ -896,7 +896,7 @@ void CFxScheduler::PlayEffect(const char* file, const int clientID, const bool i
 
 				sfx->mStartTime = theFxHelper.mTime + delay;
 				sfx->mpTemplate = prim;
-				sfx->mClientID = clientID;
+				sfx->mClientID = client_id;
 
 				if (isPortal)
 				{
@@ -936,7 +936,7 @@ bool gEffectsInPortal = false;
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int delay) const
+void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int client_id, int delay) const
 {
 	vec3_t sRGB, eRGB;
 	vec3_t vel, accel;
@@ -985,7 +985,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 	case Particle:
 		//---------
 
-		FX_AddParticle(clientID, org, vel, accel, fx->mGravity.GetVal(),
+		FX_AddParticle(client_id, org, vel, accel, fx->mGravity.GetVal(),
 		               fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		               fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
 		               sRGB, eRGB, fx->mRGBParm.GetVal(),
@@ -999,7 +999,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 	case Line:
 		//---------
 
-		FX_AddLine(clientID, org, org2,
+		FX_AddLine(client_id, org, org2,
 		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
 		           sRGB, eRGB, fx->mRGBParm.GetVal(),
@@ -1010,7 +1010,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 	case Tail:
 		//---------
 
-		FX_AddTail(clientID, org, vel, accel,
+		FX_AddTail(client_id, org, vel, accel,
 		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		           fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
 		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
@@ -1032,7 +1032,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 		else
 		{
 			// bolted sounds actually play on the client....
-			theFxHelper.PlaySound(nullptr, clientID, CHAN_WEAPON, fx->mMediaHandles.GetHandle());
+			theFxHelper.PlaySound(nullptr, client_id, CHAN_WEAPON, fx->mMediaHandles.GetHandle());
 		}
 		break;
 	//---------
@@ -1040,10 +1040,10 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 		//---------
 
 		// don't much care if the light stays bolted...so just add it.
-		if (clientID >= 0 && clientID < ENTITYNUM_WORLD)
+		if (client_id >= 0 && client_id < ENTITYNUM_WORLD)
 		{
 			// ..um, ok.....
-			const centity_t* cent = &cg_entities[clientID];
+			const centity_t* cent = &cg_entities[client_id];
 
 			if (cent && cent->gent && cent->gent->client)
 			{
@@ -1059,10 +1059,10 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const int clientID, int 
 	case CameraShake:
 		//---------
 
-		if (clientID >= 0 && clientID < ENTITYNUM_WORLD)
+		if (client_id >= 0 && client_id < ENTITYNUM_WORLD)
 		{
 			// ..um, ok.....
-			const centity_t* cent = &cg_entities[clientID];
+			const centity_t* cent = &cg_entities[client_id];
 
 			if (cent && cent->gent && cent->gent->client)
 			{
@@ -1451,7 +1451,7 @@ void CFxScheduler::AddScheduledEffects(const bool portal)
 //	none
 //------------------------------------------------------
 void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], const int lateTime,
-                                const int clientID,
+                                const int client_id,
                                 const int modelNum, const int boltNum)
 {
 	vec3_t org, org2, temp,
@@ -1466,7 +1466,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	AxisCopy(axis, ax);
 
 	int flags = fx->mFlags;
-	if (clientID >= 0 && modelNum >= 0 && boltNum >= 0)
+	if (client_id >= 0 && modelNum >= 0 && boltNum >= 0)
 	{
 		//since you passed in these values, mark as relative to use them
 		flags |= FX_RELATIVE;
@@ -1685,7 +1685,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	case Particle:
 		//---------
 
-		FX_AddParticle(clientID, org, vel, accel, fx->mGravity.GetVal(),
+		FX_AddParticle(client_id, org, vel, accel, fx->mGravity.GetVal(),
 		               fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		               fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
 		               sRGB, eRGB, fx->mRGBParm.GetVal(),
@@ -1699,7 +1699,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	case Line:
 		//---------
 
-		FX_AddLine(clientID, org, org2,
+		FX_AddLine(client_id, org, org2,
 		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
 		           sRGB, eRGB, fx->mRGBParm.GetVal(),
@@ -1711,7 +1711,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	case Tail:
 		//---------
 
-		FX_AddTail(clientID, org, vel, accel,
+		FX_AddTail(client_id, org, vel, accel,
 		           fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		           fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
 		           fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
@@ -1725,7 +1725,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	case Electricity:
 		//----------------
 
-		FX_AddElectricity(clientID, org, org2,
+		FX_AddElectricity(client_id, org, org2,
 		                  fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		                  fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
 		                  sRGB, eRGB, fx->mRGBParm.GetVal(),
@@ -1737,7 +1737,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	case Cylinder:
 		//---------
 
-		FX_AddCylinder(clientID, org, ax[0],
+		FX_AddCylinder(client_id, org, ax[0],
 		               fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		               fx->mSize2Start.GetVal(), fx->mSize2End.GetVal(), fx->mSize2Parm.GetVal(),
 		               fx->mLengthStart.GetVal(), fx->mLengthEnd.GetVal(), fx->mLengthParm.GetVal(),
@@ -1854,7 +1854,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec
 	case OrientedParticle:
 		//-------------------
 
-		FX_AddOrientedParticle(clientID, org, ax[0], vel, accel,
+		FX_AddOrientedParticle(client_id, org, ax[0], vel, accel,
 		                       fx->mSizeStart.GetVal(), fx->mSizeEnd.GetVal(), fx->mSizeParm.GetVal(),
 		                       fx->mAlphaStart.GetVal(), fx->mAlphaEnd.GetVal(), fx->mAlphaParm.GetVal(),
 		                       sRGB, eRGB, fx->mRGBParm.GetVal(),

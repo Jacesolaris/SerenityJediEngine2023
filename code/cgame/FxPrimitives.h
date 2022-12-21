@@ -432,9 +432,9 @@ public:
 	void SetRotationDelta(const float rot) { mRotationDelta = rot; }
 	void SetElasticity(const float el) { mElasticity = el; }
 
-	void SetClient(const int clientID, const int modelNum = -1, const int boltNum = -1)
+	void SetClient(const int client_id, const int modelNum = -1, const int boltNum = -1)
 	{
-		mClientID = clientID;
+		mClientID = client_id;
 		mModelNum = modelNum;
 		mBoltNum = boltNum;
 	}

@@ -53,13 +53,13 @@ tag location
 ======================
 */
 void CG_PositionEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-                            const qhandle_t parentModel, const char* tagName)
+                            const qhandle_t parent_model, const char* tag_name)
 {
 	orientation_t lerped;
 
 	// lerp the tag
-	cgi_R_LerpTag(&lerped, parentModel, parent->oldframe, parent->frame,
-	              1.0f - parent->backlerp, tagName);
+	cgi_R_LerpTag(&lerped, parent_model, parent->oldframe, parent->frame,
+	              1.0f - parent->backlerp, tag_name);
 
 	// FIXME: allow origin offsets along tag?
 	VectorCopy(parent->origin, entity->origin);
@@ -82,22 +82,22 @@ tag location
 ======================
 */
 void CG_PositionRotatedEntityOnTag(refEntity_t* entity, const refEntity_t* parent,
-                                   const qhandle_t parentModel, const char* tagName, orientation_t* tagOrient)
+                                   const qhandle_t parent_model, const char* tag_name, orientation_t* tag_orient)
 {
 	int i;
 	orientation_t lerped;
 	vec3_t tempAxis[3];
 
 	// lerp the tag
-	cgi_R_LerpTag(&lerped, parentModel, parent->oldframe, parent->frame,
-	              1.0f - parent->backlerp, tagName);
+	cgi_R_LerpTag(&lerped, parent_model, parent->oldframe, parent->frame,
+	              1.0f - parent->backlerp, tag_name);
 
-	if (tagOrient)
+	if (tag_orient)
 	{
-		VectorCopy(lerped.origin, tagOrient->origin);
+		VectorCopy(lerped.origin, tag_orient->origin);
 		for (i = 0; i < 3; i++)
 		{
-			VectorCopy(lerped.axis[i], tagOrient->axis[i]);
+			VectorCopy(lerped.axis[i], tag_orient->axis[i]);
 		}
 	}
 
@@ -129,7 +129,7 @@ Also called by event processing code
 */
 vec3_t* CG_SetEntitySoundPosition(const centity_t* cent)
 {
-	static vec3_t v3Return;
+	static vec3_t v3_return;
 	if (cent->currentState.solid == SOLID_BMODEL)
 	{
 		vec3_t origin;
@@ -137,7 +137,7 @@ vec3_t* CG_SetEntitySoundPosition(const centity_t* cent)
 		const float* v = cgs.inlineModelMidpoints[cent->currentState.modelindex];
 		VectorAdd(cent->lerpOrigin, v, origin);
 		cgi_S_UpdateEntityPosition(cent->currentState.number, origin);
-		VectorCopy(origin, v3Return);
+		VectorCopy(origin, v3_return);
 	}
 	else
 	{
@@ -149,17 +149,17 @@ vec3_t* CG_SetEntitySoundPosition(const centity_t* cent)
 		{
 			//I might be running out of my bounding box, so use my headPoint from the last render frame...?
 			//NOTE: if I'm not rendered, will this not update correctly?  Would cent->lerpOrigin be any more updated?
-			VectorCopy(cent->gent->client->renderInfo.eyePoint, v3Return);
+			VectorCopy(cent->gent->client->renderInfo.eyePoint, v3_return);
 		}
 		else
 		{
 			//just use my org
-			VectorCopy(cent->lerpOrigin, v3Return);
+			VectorCopy(cent->lerpOrigin, v3_return);
 		}
-		cgi_S_UpdateEntityPosition(cent->currentState.number, v3Return);
+		cgi_S_UpdateEntityPosition(cent->currentState.number, v3_return);
 	}
 
-	return &v3Return;
+	return &v3_return;
 }
 
 /*
@@ -172,8 +172,8 @@ Add continuous entity effects, like local entity emission and lighting
 static void CG_EntityEffects(const centity_t* cent)
 {
 	// update sound origins
-	vec3_t v3Origin;
-	VectorCopy(*CG_SetEntitySoundPosition(cent), v3Origin);
+	vec3_t v3_origin;
+	VectorCopy(*CG_SetEntitySoundPosition(cent), v3_origin);
 
 	// add loop sound
 	if (cent->currentState.loopSound)
@@ -194,7 +194,7 @@ static void CG_EntityEffects(const centity_t* cent)
 		// Only play sound if being drawn.
 		if (!(ent->s.eFlags & EF_NODRAW))
 		{
-			cgi_S_AddLoopingSound(cent->currentState.number, v3Origin/*cent->lerpOrigin*/, vec3_origin, sfx, chan);
+			cgi_S_AddLoopingSound(cent->currentState.number, v3_origin/*cent->lerpOrigin*/, vec3_origin, sfx, chan);
 		}
 	}
 
@@ -240,14 +240,14 @@ void CG_AddRefEntWithTransportEffect(const centity_t* cent, refEntity_t* ent)
 			vec3_t org;
 			VectorMA(ent->origin, -i, ent->axis[2], org);
 
-			FX_AddSprite(org, nullptr, nullptr, 5.5f, 5.5f, wv, wv, 0.0f, 0.0f, 1.0f,
-			             cgs.media.yellowDroppedSaberShader, 0x08000000);
+			FX_AddSprite(org, nullptr, nullptr, 5.5f, wv, wv, 0.0f, 0.0f, 1.0f, cgs.media.yellowDroppedSaberShader,
+			             0x08000000);
 		}
 		if (cent->gent->owner->s.weapon == WP_SABER)
 		{
 			//he's still controlling me
-			FX_AddSprite(cent->gent->owner->client->renderInfo.handRPoint, nullptr, nullptr, 8.0f, 8.0f, wv, wv, 0.0f,
-			             0.0f, 1.0f, cgs.media.yellowDroppedSaberShader, 0x08000000);
+			FX_AddSprite(cent->gent->owner->client->renderInfo.handRPoint, nullptr, nullptr, 8.0f, wv, wv, 0.0f, 0.0f,
+			             1.0f, cgs.media.yellowDroppedSaberShader, 0x08000000);
 		}
 	}
 }
@@ -269,18 +269,18 @@ void CG_SetGhoul2Info(refEntity_t* ent, const centity_t* cent)
 void G2_BoltToGhoul2Model(const centity_t* cent, refEntity_t* ent)
 {
 	// extract the wraith ID from the bolt info
-	int modelNum = cent->currentState.boltInfo >> MODEL_SHIFT;
-	modelNum &= MODEL_AND;
-	int boltNum = cent->currentState.boltInfo >> BOLT_SHIFT;
-	boltNum &= BOLT_AND;
-	int entNum = cent->currentState.boltInfo >> ENTITY_SHIFT;
-	entNum &= ENTITY_AND;
+	int model_num = cent->currentState.boltInfo >> MODEL_SHIFT;
+	model_num &= MODEL_AND;
+	int bolt_num = cent->currentState.boltInfo >> BOLT_SHIFT;
+	bolt_num &= BOLT_AND;
+	int ent_num = cent->currentState.boltInfo >> ENTITY_SHIFT;
+	ent_num &= ENTITY_AND;
 
 	mdxaBone_t boltMatrix;
 
 	// go away and get me the bolt position for this frame please
-	gi.G2API_GetBoltMatrix(cent->gent->ghoul2, modelNum, boltNum, &boltMatrix, cg_entities[entNum].currentState.angles,
-	                       cg_entities[entNum].currentState.origin, cg.time, cgs.model_draw,
+	gi.G2API_GetBoltMatrix(cent->gent->ghoul2, model_num, bolt_num, &boltMatrix, cg_entities[ent_num].currentState.angles,
+	                       cg_entities[ent_num].currentState.origin, cg.time, cgs.model_draw,
 	                       cent->currentState.modelScale);
 
 	// set up the axis and origin we need for the actual effect spawning
@@ -436,7 +436,7 @@ static void CG_General(centity_t* cent)
 
 		vec3_t start;
 		vec3_t end;
-		vec3_t rHandPos;
+		vec3_t r_hand_pos;
 
 		centity_t* parent;
 		mdxaBone_t mat;
@@ -456,9 +456,9 @@ static void CG_General(centity_t* cent)
 		gi.G2API_GetBoltMatrix(parent->gent->ghoul2, 0, 0, &mat, parent->lerpAngles, parent->lerpOrigin, cg.time,
 		                       cgs.model_draw, cent->currentState.modelScale);
 
-		rHandPos[0] = mat.matrix[0][3];
-		rHandPos[1] = mat.matrix[1][3];
-		rHandPos[2] = mat.matrix[2][3];
+		r_hand_pos[0] = mat.matrix[0][3];
+		r_hand_pos[1] = mat.matrix[1][3];
+		r_hand_pos[2] = mat.matrix[2][3];
 
 		gi.G2API_GiveMeVectorFromMatrix(mat, ORIGIN, start);
 		CG_StunStartpoint(end);
@@ -494,8 +494,7 @@ static void CG_General(centity_t* cent)
 
 		vec4_t v4DKGREY2 = {0.15f, 0.15f, 0.15f};
 
-		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15,
-		           cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
+		FX_AddLine(start, end, 0.5f, 0.0f, 0.5f, v4DKGREY2, v4DKGREY2, 15, cgi_R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
 		CG_GrappleStartpoint(end);
 		//GOING OUT
@@ -566,11 +565,11 @@ static void CG_General(centity_t* cent)
 		{
 			centity_t* cc = &cg_entities[cent->gent->activator->s.number];
 
-			const weaponData_t* wData = nullptr;
+			const weaponData_t* w_data = nullptr;
 
 			if (cc->currentState.weapon)
 			{
-				wData = &weaponData[cc->currentState.weapon];
+				w_data = &weaponData[cc->currentState.weapon];
 			}
 
 			if (!(cc->currentState.eFlags & EF_FIRING) && !(cc->currentState.eFlags & EF_ALT_FIRING))
@@ -581,7 +580,7 @@ static void CG_General(centity_t* cent)
 
 			// get alternating muzzle end bolts
 			int bolt = cent->gent->handRBolt;
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 
 			if (!cc->gent->fxID || bolt == -1)
 			{
@@ -593,41 +592,41 @@ static void CG_General(centity_t* cent)
 				bolt = 0;
 			}
 			gi.G2API_GetBoltMatrix(cent->gent->ghoul2, 0, bolt,
-			                       &boltMatrix, cent->lerpAngles, cent->lerpOrigin, cg.time,
+			                       &bolt_matrix, cent->lerpAngles, cent->lerpOrigin, cg.time,
 			                       cgs.model_draw, cent->currentState.modelScale);
 
 			// store the muzzle point and direction so that we can fire in the right direction
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, cc->gent->client->renderInfo.muzzlePoint);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, cc->gent->client->renderInfo.muzzlePoint);
 			if (cent->gent->bounceCount)
 			{
 				//EWeb - *sigh* the muzzle tag on this is not aligned like th eone on the emplaced gun... consistency anyone...?
-				gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_X, cc->gent->client->renderInfo.muzzleDir);
+				gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_X, cc->gent->client->renderInfo.muzzleDir);
 			}
 			else
 			{
 				//Emplaced gun
-				gi.G2API_GiveMeVectorFromMatrix(boltMatrix, POSITIVE_Y, cc->gent->client->renderInfo.muzzleDir);
+				gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, POSITIVE_Y, cc->gent->client->renderInfo.muzzleDir);
 			}
 			cc->gent->client->renderInfo.mPCalcTime = cg.time;
 
 			// HACK: adding in muzzle flashes
-			if (cc->muzzleFlashTime > 0 && wData)
+			if (cc->muzzleFlashTime > 0 && w_data)
 			{
 				const char* effect = nullptr;
 				cc->muzzleFlashTime = 0;
 
 				// Try and get a default muzzle so we have one to fall back on
-				if (wData->mMuzzleEffect[0])
+				if (w_data->mMuzzleEffect[0])
 				{
-					effect = &wData->mMuzzleEffect[0];
+					effect = &w_data->mMuzzleEffect[0];
 				}
 
 				if (cc->currentState.eFlags & EF_ALT_FIRING)
 				{
 					// We're alt-firing, so see if we need to override with a custom alt-fire effect
-					if (wData->mAltMuzzleEffect[0])
+					if (w_data->mAltMuzzleEffect[0])
 					{
-						effect = &wData->mAltMuzzleEffect[0];
+						effect = &w_data->mAltMuzzleEffect[0];
 					}
 				}
 
@@ -720,15 +719,15 @@ static void CG_General(centity_t* cent)
 					}
 					else
 					{
-						int spinSound;
+						int spin_sound;
 						if (cent->gent->owner->client->ps.saber[0].spinSound
 							&& cgs.sound_precache[cent->gent->owner->client->ps.saber[0].spinSound])
 						{
-							spinSound = cgs.sound_precache[cent->gent->owner->client->ps.saber[0].spinSound];
+							spin_sound = cgs.sound_precache[cent->gent->owner->client->ps.saber[0].spinSound];
 						}
 						else if (cent->gent->owner->client->ps.saber[0].type == SABER_SITH_SWORD)
 						{
-							spinSound = cgi_S_RegisterSound("sound/weapons/saber/saberspinoff.wav");
+							spin_sound = cgi_S_RegisterSound("sound/weapons/saber/saberspinoff.wav");
 						}
 						else
 						{
@@ -739,15 +738,15 @@ static void CG_General(centity_t* cent)
 								|| cent->gent->owner->client->ps.saber[0].type == SABER_GRIE
 								|| cent->gent->owner->client->ps.saber[0].type == SABER_UNSTABLE)
 							{
-								spinSound = cgi_S_RegisterSound("sound/weapons/saber/saberspin2.wav");
+								spin_sound = cgi_S_RegisterSound("sound/weapons/saber/saberspin2.wav");
 							}
 							else
 							{
-								spinSound = cgi_S_RegisterSound("sound/weapons/saber/saberspin1.wav");
+								spin_sound = cgi_S_RegisterSound("sound/weapons/saber/saberspin1.wav");
 							}
 						}
 						cgi_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin,
-						                      vec3_origin, spinSound);
+						                      vec3_origin, spin_sound);
 					}
 				}
 				if (cent->gent->owner->client)
@@ -794,15 +793,15 @@ static void CG_General(centity_t* cent)
 				}
 				else
 				{
-					int spinSound;
+					int spin_sound;
 					if (cent->gent->owner->client->ps.saber[0].spinSound
 						&& cgs.sound_precache[cent->gent->owner->client->ps.saber[0].spinSound])
 					{
-						spinSound = cgs.sound_precache[cent->gent->owner->client->ps.saber[0].spinSound];
+						spin_sound = cgs.sound_precache[cent->gent->owner->client->ps.saber[0].spinSound];
 					}
 					else if (cent->gent->owner->client->ps.saber[0].type == SABER_SITH_SWORD)
 					{
-						spinSound = cgi_S_RegisterSound("sound/weapons/saber/saberspinoff.wav");
+						spin_sound = cgi_S_RegisterSound("sound/weapons/saber/saberspinoff.wav");
 					}
 					else
 					{
@@ -813,14 +812,14 @@ static void CG_General(centity_t* cent)
 							|| cent->gent->owner->client->ps.saber[0].type == SABER_GRIE
 							|| cent->gent->owner->client->ps.saber[0].type == SABER_UNSTABLE)
 						{
-							spinSound = cgi_S_RegisterSound("sound/weapons/saber/saberspin2.wav");
+							spin_sound = cgi_S_RegisterSound("sound/weapons/saber/saberspin2.wav");
 						}
 						else
 						{
-							spinSound = cgi_S_RegisterSound("sound/weapons/saber/saberspin1.wav");
+							spin_sound = cgi_S_RegisterSound("sound/weapons/saber/saberspin1.wav");
 						}
 					}
-					cgi_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, vec3_origin, spinSound);
+					cgi_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, vec3_origin, spin_sound);
 				}
 			}
 			CG_AddSaberBlade(&cg_entities[cent->gent->owner->s.number],
@@ -863,11 +862,11 @@ static void CG_General(centity_t* cent)
 	if (s1->eFlags & EF_FIRING && cent->gent->inuse)
 	{
 		//special code for adding the beam to the attached tripwire mine
-		vec3_t beamOrg;
+		vec3_t beam_org;
 		int handle = 0;
 		SEffectTemplate* temp;
 
-		VectorMA(ent.origin, 6.6f, ent.axis[0], beamOrg); // forward
+		VectorMA(ent.origin, 6.6f, ent.axis[0], beam_org); // forward
 
 		// overriding the effect, so give us a copy first
 		temp = theFxScheduler.GetEffectCopy(cgs.effects.tripminelaser, &handle);
@@ -895,7 +894,7 @@ static void CG_General(centity_t* cent)
 					primitive_template->mOrigin2Z.SetRange(cent->gent->pos4[2], cent->gent->pos4[2]);
 
 					// play the modified effect
-					theFxScheduler.PlayEffect(handle, beamOrg, ent.axis[0]);
+					theFxScheduler.PlayEffect(handle, beam_org, ent.axis[0]);
 				}
 			}
 		}
@@ -906,10 +905,10 @@ static void CG_General(centity_t* cent)
 	if (s1->eFlags & EF_PROX_TRIP)
 	{
 		//special code for adding the glow end to proximity tripmine
-		vec3_t beamOrg;
+		vec3_t beam_org;
 
-		VectorMA(ent.origin, 6.6f, ent.axis[0], beamOrg); // forward
-		theFxScheduler.PlayEffect(cgs.effects.tripmineglowBit, beamOrg, ent.axis[0]);
+		VectorMA(ent.origin, 6.6f, ent.axis[0], beam_org); // forward
+		theFxScheduler.PlayEffect(cgs.effects.tripmineglowBit, beam_org, ent.axis[0]);
 	}
 
 	if (s1->eFlags & EF_ALT_FIRING)
@@ -1075,10 +1074,10 @@ static void CG_Item(centity_t* cent)
 		VectorCopy(cg.autoAngles, cent->lerpAngles);
 		AxisCopy(cg.autoAxis, ent.axis);
 	}
-	vec3_t spinAngles;
+	vec3_t spin_angles;
 
 	//AxisClear( ent.axis );
-	VectorCopy(cent->gent->s.angles, spinAngles);
+	VectorCopy(cent->gent->s.angles, spin_angles);
 
 	if (cent->gent->ghoul2.IsValid()
 		&& cent->gent->ghoul2.size())
@@ -1113,22 +1112,22 @@ static void CG_Item(centity_t* cent)
 			if (cent->gent->random)
 			{
 				//pitch specified
-				spinAngles[PITCH] += cent->gent->random;
+				spin_angles[PITCH] += cent->gent->random;
 			}
 			else
 			{
-				spinAngles[PITCH] -= 20;
+				spin_angles[PITCH] -= 20;
 			}
 		}
 		else
 		{
-			spinAngles[PITCH] -= 75;
+			spin_angles[PITCH] -= 75;
 		}
 	}
 
 	if (item->giType != IT_HOLOCRON)
 	{
-		AnglesToAxis(spinAngles, ent.axis);
+		AnglesToAxis(spin_angles, ent.axis);
 	}
 
 	// items without glow textures need to keep a minimum light value
@@ -1172,8 +1171,8 @@ static void CG_Item(centity_t* cent)
 			vec3_t org;
 			VectorMA(ent.origin, -i, ent.axis[2], org);
 
-			FX_AddSprite(org, nullptr, nullptr, 10.0f, 10.0f, wv * 0.5f, wv * 0.5f, 0.0f, 0.0f, 1.0f,
-			             cgs.media.yellowDroppedSaberShader, 0x08000000);
+			FX_AddSprite(org, nullptr, nullptr, 10.0f, wv * 0.5f, wv * 0.5f, 0.0f, 0.0f, 1.0f, cgs.media.yellowDroppedSaberShader,
+			             0x08000000);
 		}
 
 		// THIS light looks crappy...maybe it should just be removed...
@@ -1207,7 +1206,7 @@ static void CG_Missile(centity_t* cent)
 	}
 
 	const weaponInfo_t* weapon = &cg_weapons[s1->weapon];
-	const weaponData_t* wData = &weaponData[s1->weapon];
+	const weaponData_t* w_data = &weaponData[s1->weapon];
 
 	if (s1->pos.trType != TR_INTERPOLATE)
 	{
@@ -1297,10 +1296,10 @@ static void CG_Missile(centity_t* cent)
 			weapon->alt_missileTrailFunc(cent, weapon);
 
 		// add dynamic light
-		if (wData->alt_missileDlight)
-			cgi_R_AddLightToScene(cent->lerpOrigin, wData->alt_missileDlight,
-			                      wData->alt_missileDlightColor[0], wData->alt_missileDlightColor[1],
-			                      wData->alt_missileDlightColor[2]);
+		if (w_data->alt_missileDlight)
+			cgi_R_AddLightToScene(cent->lerpOrigin, w_data->alt_missileDlight,
+			                      w_data->alt_missileDlightColor[0], w_data->alt_missileDlightColor[1],
+			                      w_data->alt_missileDlightColor[2]);
 
 		// add missile sound
 		if (weapon->alt_missileSound)
@@ -1317,10 +1316,10 @@ static void CG_Missile(centity_t* cent)
 			weapon->missileTrailFunc(cent, weapon);
 
 		// add dynamic light
-		if (wData->missileDlight)
-			cgi_R_AddLightToScene(cent->lerpOrigin, wData->missileDlight,
-			                      wData->missileDlightColor[0], wData->missileDlightColor[1],
-			                      wData->missileDlightColor[2]);
+		if (w_data->missileDlight)
+			cgi_R_AddLightToScene(cent->lerpOrigin, w_data->missileDlight,
+			                      w_data->missileDlightColor[0], w_data->missileDlightColor[1],
+			                      w_data->missileDlightColor[2]);
 
 		// add missile sound
 		if (weapon->missileSound)
@@ -1344,7 +1343,7 @@ static void CG_Missile(centity_t* cent)
 
 		vec3_t start;
 		vec3_t end;
-		vec3_t rHandPos;
+		vec3_t r_hand_pos;
 		vec3_t BLUER = {0.0f, 0.0f, 1.0f};
 
 		mdxaBone_t mat;
@@ -1362,14 +1361,13 @@ static void CG_Missile(centity_t* cent)
 		gi.G2API_GetBoltMatrix(parent->gent->ghoul2, 1, 0, &mat, parent->lerpAngles, parent->lerpOrigin, cg.time,
 		                       cgs.model_draw, cent->currentState.modelScale);
 
-		rHandPos[0] = mat.matrix[0][3];
-		rHandPos[1] = mat.matrix[1][3];
-		rHandPos[2] = mat.matrix[2][3];
+		r_hand_pos[0] = mat.matrix[0][3];
+		r_hand_pos[1] = mat.matrix[1][3];
+		r_hand_pos[2] = mat.matrix[2][3];
 
 		gi.G2API_GiveMeVectorFromMatrix(mat, ORIGIN, start);
 
-		FX_AddLine(start, end, 0.1f, 0.1f, 0.0f, 0.5f, 0.0f, BLUER, BLUER, 300,
-		           cgi_R_RegisterShader("gfx/effects/blueline"), 0);
+		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, BLUER, BLUER, 300, cgi_R_RegisterShader("gfx/effects/blueline"), 0);
 
 		CG_StunStartpoint(end);
 	}
@@ -1399,8 +1397,7 @@ static void CG_Missile(centity_t* cent)
 
 		vec4_t v4DKGREY2 = {0.15f, 0.15f, 0.15f};
 
-		FX_AddLine(start, end, 0.1f, 0.5f, 0.0f, 0.5f, 0.0f, v4DKGREY2, v4DKGREY2, 15,
-		           cgi_R_RegisterShader("gfx/misc/whiteline2"), FX_SIZE_LINEAR);
+		FX_AddLine(start, end, 0.5f, 0.0f, 0.5f, v4DKGREY2, v4DKGREY2, 15, cgi_R_RegisterShader("gfx/misc/whiteline2"), FX_SIZE_LINEAR);
 
 		CG_GrappleStartpoint(end);
 	}
@@ -1487,7 +1484,7 @@ static void CG_Mover(centity_t* cent)
 	if (cent->currentState.eFlags2 & EF2_HYPERSPACE)
 	{
 		//I'm the hyperspace brush
-		qboolean drawMe = qfalse;
+		qboolean draw_me = qfalse;
 
 		if (cg.predicted_player_state.m_iVehicleNum
 			&& cent->gent->s.hyperSpaceTime
@@ -1502,14 +1499,14 @@ static void CG_Mover(centity_t* cent)
 			else if (cent->gent->s.eFlags2 & EF2_HYPERSPACE)
 			{
 				//actually hyperspacing now
-				const float timeFrac = static_cast<float>(cg.time - cent->gent->s.hyperSpaceTime - 1000) / (
+				const float time_frac = static_cast<float>(cg.time - cent->gent->s.hyperSpaceTime - 1000) / (
 					HYPERSPACE_TIME - 1000);
-				if (timeFrac < HYPERSPACE_TELEPORT_FRAC + 0.1f)
+				if (time_frac < HYPERSPACE_TELEPORT_FRAC + 0.1f)
 				{
 					//still in hyperspace or just popped out
-					const float alpha = timeFrac < 0.5f ? timeFrac / 0.5f : 1.0f;
-					drawMe = qtrue;
-					VectorMA(cg.refdef.vieworg, 1000.0f + (1.0f - timeFrac) * 1000.0f, cg.refdef.viewaxis[0],
+					const float alpha = time_frac < 0.5f ? time_frac / 0.5f : 1.0f;
+					draw_me = qtrue;
+					VectorMA(cg.refdef.vieworg, 1000.0f + (1.0f - time_frac) * 1000.0f, cg.refdef.viewaxis[0],
 					         cent->lerpOrigin);
 					VectorSet(cent->lerpAngles, cg.refdef.viewangles[PITCH], cg.refdef.viewangles[YAW] - 90.0f, 0);
 					ent.shaderRGBA[0] = ent.shaderRGBA[1] = ent.shaderRGBA[2] = 255;
@@ -1517,7 +1514,7 @@ static void CG_Mover(centity_t* cent)
 				}
 			}
 		}
-		if (!drawMe)
+		if (!draw_me)
 		{
 			//else, never draw
 			return;
@@ -1578,9 +1575,9 @@ static void CG_Mover(centity_t* cent)
 		if (!VectorCompare(vec3_origin, cent->gent->modelAngles))
 		{
 			//we have a rotational offset for the model for this brush
-			vec3_t modelAngles;
-			VectorAdd(cent->lerpAngles, cent->gent->modelAngles, modelAngles);
-			AnglesToAxis(modelAngles, ent.axis);
+			vec3_t model_angles;
+			VectorAdd(cent->lerpAngles, cent->gent->modelAngles, model_angles);
+			AnglesToAxis(model_angles, ent.axis);
 		}
 		ent.hModel = cgs.model_draw[s1->modelindex2];
 	}
@@ -1895,34 +1892,34 @@ CG_AdjustPositionForMover
 Also called by client movement prediction code
 =========================
 */
-void CG_AdjustPositionForMover(const vec3_t in, const int moverNum, const int atTime, vec3_t out)
+void CG_AdjustPositionForMover(const vec3_t in, const int mover_num, const int at_time, vec3_t out)
 {
-	vec3_t oldOrigin, origin, deltaOrigin;
+	vec3_t old_origin, origin, delta_origin;
 	//	vec3_t	oldAngles, angles, deltaAngles;
 
-	if (moverNum <= 0)
+	if (mover_num <= 0)
 	{
 		VectorCopy(in, out);
 		return;
 	}
 
-	const centity_t* cent = &cg_entities[moverNum];
+	const centity_t* cent = &cg_entities[mover_num];
 	if (cent->currentState.eType != ET_MOVER)
 	{
 		VectorCopy(in, out);
 		return;
 	}
 
-	EvaluateTrajectory(&cent->currentState.pos, cg.snap->serverTime, oldOrigin);
+	EvaluateTrajectory(&cent->currentState.pos, cg.snap->serverTime, old_origin);
 	//	EvaluateTrajectory( &cent->currentState.apos, cg.snap->serverTime, oldAngles );
 
-	EvaluateTrajectory(&cent->currentState.pos, atTime, origin);
+	EvaluateTrajectory(&cent->currentState.pos, at_time, origin);
 	//	EvaluateTrajectory( &cent->currentState.apos, atTime, angles );
 
-	VectorSubtract(origin, oldOrigin, deltaOrigin);
+	VectorSubtract(origin, old_origin, delta_origin);
 	//	VectorSubtract( angles, oldAngles, deltaAngles );
 
-	VectorAdd(in, deltaOrigin, out);
+	VectorAdd(in, delta_origin, out);
 
 	// FIXME: origin change when on a rotating object
 }
@@ -2053,7 +2050,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 	// makes it there - we need to predict it in the right place if this is happens...
 
 	// just use the current frame and evaluate as best we can
-	const trajectory_t* posData = &cent->currentState.pos;
+	const trajectory_t* pos_data = &cent->currentState.pos;
 	{
 		const gentity_t* ent = &g_entities[cent->currentState.number];
 
@@ -2064,18 +2061,18 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 				//this mover has stopped moving and is going to wig out if we predict it
 				//based on last frame's info- cut across the network and use the currentOrigin
 				VectorCopy(ent->currentOrigin, cent->lerpOrigin);
-				posData = nullptr;
+				pos_data = nullptr;
 			}
 			else
 			{
-				posData = &ent->s.pos;
+				pos_data = &ent->s.pos;
 			}
 		}
 	}
 
-	if (posData)
+	if (pos_data)
 	{
-		EvaluateTrajectory(posData, cg.time, cent->lerpOrigin);
+		EvaluateTrajectory(pos_data, cg.time, cent->lerpOrigin);
 	}
 
 	// FIXME: this will stomp an apos trType of TR_INTERPOLATE!!
@@ -2225,10 +2222,10 @@ void CG_DLightThink(const centity_t* cent)
 {
 	if (cent->gent)
 	{
-		const float tDelta = cg.time - cent->gent->painDebounceTime;
-		float percentage = tDelta / cent->gent->speed;
+		const float t_delta = cg.time - cent->gent->painDebounceTime;
+		float percentage = t_delta / cent->gent->speed;
 		vec3_t org;
-		vec4_t currentRGBA;
+		vec4_t current_rgba;
 		const gentity_t* owner;
 		int i;
 
@@ -2242,7 +2239,7 @@ void CG_DLightThink(const centity_t* cent)
 				if (cent->gent->spawnflags & 8)
 				{
 					//PULSER
-					if (tDelta - cent->gent->speed - cent->gent->wait >= 0)
+					if (t_delta - cent->gent->speed - cent->gent->wait >= 0)
 					{
 						//Time to start fading down
 						cent->gent->painDebounceTime = cg.time;
@@ -2257,7 +2254,7 @@ void CG_DLightThink(const centity_t* cent)
 				}
 				break;
 			case 1: //Fading from final to start
-				if (tDelta - cent->gent->speed - cent->gent->radius >= 0)
+				if (t_delta - cent->gent->speed - cent->gent->radius >= 0)
 				{
 					//Time to start fading up
 					cent->gent->painDebounceTime = cg.time;
@@ -2288,31 +2285,31 @@ void CG_DLightThink(const centity_t* cent)
 		case 0: //Fading from start to final
 			for (i = 0; i < 4; i++)
 			{
-				currentRGBA[i] = cent->gent->startRGBA[i] + (cent->gent->finalRGBA[i] - cent->gent->startRGBA[i]) *
+				current_rgba[i] = cent->gent->startRGBA[i] + (cent->gent->finalRGBA[i] - cent->gent->startRGBA[i]) *
 					percentage;
 			}
 			break;
 		case 1: //Fading from final to start
 			for (i = 0; i < 4; i++)
 			{
-				currentRGBA[i] = cent->gent->finalRGBA[i] + (cent->gent->startRGBA[i] - cent->gent->finalRGBA[i]) *
+				current_rgba[i] = cent->gent->finalRGBA[i] + (cent->gent->startRGBA[i] - cent->gent->finalRGBA[i]) *
 					percentage;
 			}
 			break;
 		case 2: //Fading from 0 intensity to start
 			for (i = 0; i < 3; i++)
 			{
-				currentRGBA[i] = cent->gent->startRGBA[i];
+				current_rgba[i] = cent->gent->startRGBA[i];
 			}
-			currentRGBA[3] = cent->gent->startRGBA[3] * percentage;
+			current_rgba[3] = cent->gent->startRGBA[3] * percentage;
 			break;
 		case 3: //Fading from current intensity to 0
 			for (i = 0; i < 3; i++)
 			{
 				//FIXME: use last
-				currentRGBA[i] = cent->gent->startRGBA[i];
+				current_rgba[i] = cent->gent->startRGBA[i];
 			}
-			currentRGBA[3] = cent->gent->startRGBA[3] - cent->gent->startRGBA[3] * percentage;
+			current_rgba[3] = cent->gent->startRGBA[3] - cent->gent->startRGBA[3] * percentage;
 			break;
 		default:
 			return;
@@ -2336,7 +2333,7 @@ void CG_DLightThink(const centity_t* cent)
 			VectorCopy(owner->currentOrigin, org);
 		}
 
-		cgi_R_AddLightToScene(org, currentRGBA[3] * 10, currentRGBA[0], currentRGBA[1], currentRGBA[2]);
+		cgi_R_AddLightToScene(org, current_rgba[3] * 10, current_rgba[0], current_rgba[1], current_rgba[2]);
 	}
 }
 
@@ -2382,11 +2379,11 @@ void CG_Limb(const centity_t* cent)
 						npc_class != CLASS_ASSASSIN_DROID && npc_class != CLASS_SABER_DROID)
 					{
 						//Only the humanoids bleed
-						const int newBolt = gi.G2API_AddBolt(&owner->ghoul2[owner->playerModel], cent->gent->target);
-						if (newBolt != -1)
+						const int new_bolt = gi.G2API_AddBolt(&owner->ghoul2[owner->playerModel], cent->gent->target);
+						if (new_bolt != -1)
 						{
 							cent->gent->delay = cg.time + 50;
-							CG_PlayEffectBolted("saber/limb_bolton", owner->playerModel, newBolt, owner->s.number,
+							CG_PlayEffectBolted("saber/limb_bolton", owner->playerModel, new_bolt, owner->s.number,
 							                    owner->s.origin); //ent origin used to make FX culling work
 						}
 					}
@@ -2452,36 +2449,36 @@ void CG_MatrixEffect(const centity_t* cent)
 			MATRIX_EFFECT_TIME = cent->currentState.eventParm;
 		}
 	}
-	const float totalElapsedTime = static_cast<float>(cg.time - cent->currentState.time);
-	float elapsedTime = totalElapsedTime;
-	bool stopEffect = totalElapsedTime > cent->currentState.eventParm || cg.missionStatusShow || in_camera;
+	const float total_elapsed_time = static_cast<float>(cg.time - cent->currentState.time);
+	float elapsed_time = total_elapsed_time;
+	bool stop_effect = total_elapsed_time > cent->currentState.eventParm || cg.missionStatusShow || in_camera;
 
-	if (!stopEffect && cent->currentState.boltInfo & MEF_HIT_GROUND_STOP && g_entities[cent->currentState.
+	if (!stop_effect && cent->currentState.boltInfo & MEF_HIT_GROUND_STOP && g_entities[cent->currentState.
 		otherEntityNum].client)
 	{
 		if (g_entities[cent->currentState.otherEntityNum].client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
-			stopEffect = true;
+			stop_effect = true;
 		}
 		else if (g_entities[cent->currentState.otherEntityNum].client->NPC_class == CLASS_VEHICLE)
 		{
 			const Vehicle_t* pVeh = g_entities[cent->currentState.otherEntityNum].m_pVehicle;
 			if (pVeh && !(pVeh->m_ulFlags & VEH_FLYING))
 			{
-				stopEffect = true;
+				stop_effect = true;
 			}
 		}
 	}
-	if (!stopEffect && cent->currentState.boltInfo & MEF_LOOK_AT_ENEMY)
+	if (!stop_effect && cent->currentState.boltInfo & MEF_LOOK_AT_ENEMY)
 	{
 		if (!g_entities[cent->currentState.otherEntityNum].lastEnemy ||
 			!g_entities[cent->currentState.otherEntityNum].lastEnemy->inuse)
 		{
-			stopEffect = true;
+			stop_effect = true;
 		}
 	}
 
-	if (stopEffect)
+	if (stop_effect)
 	{
 		//time is up or this is a falling spin and they hit the ground or mission end screen is up
 		cg.overrides.active &= ~(CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_3RD_PERSON_ANG | CG_OVERRIDE_3RD_PERSON_POF);
@@ -2504,34 +2501,34 @@ void CG_MatrixEffect(const centity_t* cent)
 		cent->gent->nextthink = cg.time + 500;
 		return;
 	}
-	while (elapsedTime > MATRIX_EFFECT_TIME)
+	while (elapsed_time > MATRIX_EFFECT_TIME)
 	{
-		elapsedTime -= MATRIX_EFFECT_TIME;
+		elapsed_time -= MATRIX_EFFECT_TIME;
 	}
 
 	MatrixMode = qtrue;
 
 	if (cent->currentState.boltInfo & MEF_LOOK_AT_ENEMY)
 	{
-		vec3_t toEnemy;
-		vec3_t toEnemyAngles;
+		vec3_t to_enemy;
+		vec3_t to_enemy_angles;
 
-		VectorCopy(cg_entities[g_entities[cent->currentState.otherEntityNum].lastEnemy->s.number].lerpOrigin, toEnemy);
-		VectorSubtract(cg_entities[cent->currentState.otherEntityNum].lerpOrigin, toEnemy, toEnemy);
-		vectoangles(toEnemy, toEnemyAngles);
+		VectorCopy(cg_entities[g_entities[cent->currentState.otherEntityNum].lastEnemy->s.number].lerpOrigin, to_enemy);
+		VectorSubtract(cg_entities[cent->currentState.otherEntityNum].lerpOrigin, to_enemy, to_enemy);
+		vectoangles(to_enemy, to_enemy_angles);
 
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
 		cg.overrides.thirdPersonAngle =
-			toEnemyAngles[1] -
+			to_enemy_angles[1] -
 			cg_entities[cent->currentState.otherEntityNum].lerpAngles[1] +
 			145.0f;
 		cg.overrides.thirdPersonAngle = AngleNormalize180(cg.overrides.thirdPersonAngle);
 
 		const float MATRIX_EFFECT_TIME_HALF = MATRIX_EFFECT_TIME / 2.0f;
 		float X = 1.0f;
-		if (elapsedTime > MATRIX_EFFECT_TIME_HALF)
+		if (elapsed_time > MATRIX_EFFECT_TIME_HALF)
 		{
-			X -= (elapsedTime - MATRIX_EFFECT_TIME_HALF) / MATRIX_EFFECT_TIME_HALF;
+			X -= (elapsed_time - MATRIX_EFFECT_TIME_HALF) / MATRIX_EFFECT_TIME_HALF;
 		}
 		cg.overrides.thirdPersonAngle *= X;
 		cg.overrides.thirdPersonPitchOffset = 0.0f;
@@ -2543,7 +2540,7 @@ void CG_MatrixEffect(const centity_t* cent)
 		//rotate around them
 		//rotate
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
-		cg.overrides.thirdPersonAngle = 360.0f * elapsedTime / MATRIX_EFFECT_TIME;
+		cg.overrides.thirdPersonAngle = 360.0f * elapsed_time / MATRIX_EFFECT_TIME;
 		if (cent->currentState.boltInfo & MEF_REVERSE_SPIN)
 		{
 			cg.overrides.thirdPersonAngle *= -1;
@@ -2559,7 +2556,7 @@ void CG_MatrixEffect(const centity_t* cent)
 	{
 		//ramp the timescale
 		//slowdown
-		float timescale = elapsedTime / MATRIX_EFFECT_TIME;
+		float timescale = elapsed_time / MATRIX_EFFECT_TIME;
 		if (timescale < 0.01f)
 		{
 			timescale = 0.01f;
@@ -2578,13 +2575,13 @@ void CG_MatrixEffect(const centity_t* cent)
 		//dip - FIXME: use pitchOffet?
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_POF;
 		cg.overrides.thirdPersonPitchOffset = cg_thirdPersonPitchOffset.value;
-		if (elapsedTime < MATRIX_EFFECT_TIME * 0.33f)
+		if (elapsed_time < MATRIX_EFFECT_TIME * 0.33f)
 		{
-			cg.overrides.thirdPersonPitchOffset -= 30.0f * elapsedTime / (MATRIX_EFFECT_TIME * 0.33);
+			cg.overrides.thirdPersonPitchOffset -= 30.0f * elapsed_time / (MATRIX_EFFECT_TIME * 0.33);
 		}
-		else if (elapsedTime > MATRIX_EFFECT_TIME * 0.66f)
+		else if (elapsed_time > MATRIX_EFFECT_TIME * 0.66f)
 		{
-			cg.overrides.thirdPersonPitchOffset -= 30.0f * (MATRIX_EFFECT_TIME - elapsedTime) / (MATRIX_EFFECT_TIME *
+			cg.overrides.thirdPersonPitchOffset -= 30.0f * (MATRIX_EFFECT_TIME - elapsed_time) / (MATRIX_EFFECT_TIME *
 				0.33);
 		}
 		else
@@ -2599,13 +2596,13 @@ void CG_MatrixEffect(const centity_t* cent)
 		//pull back
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_RNG;
 		cg.overrides.thirdPersonRange = cg_thirdPersonRange.value;
-		if (elapsedTime < MATRIX_EFFECT_TIME * 0.33)
+		if (elapsed_time < MATRIX_EFFECT_TIME * 0.33)
 		{
-			cg.overrides.thirdPersonRange += 80.0f * elapsedTime / (MATRIX_EFFECT_TIME * 0.33);
+			cg.overrides.thirdPersonRange += 80.0f * elapsed_time / (MATRIX_EFFECT_TIME * 0.33);
 		}
-		else if (elapsedTime > MATRIX_EFFECT_TIME * 0.66)
+		else if (elapsed_time > MATRIX_EFFECT_TIME * 0.66)
 		{
-			cg.overrides.thirdPersonRange += 80.0f * (MATRIX_EFFECT_TIME - elapsedTime) / (MATRIX_EFFECT_TIME * 0.33);
+			cg.overrides.thirdPersonRange += 80.0f * (MATRIX_EFFECT_TIME - elapsed_time) / (MATRIX_EFFECT_TIME * 0.33);
 		}
 		else
 		{
@@ -2636,36 +2633,36 @@ void CG_StasisEffect(const centity_t* cent)
 			STASIS_EFFECT_TIME = cent->currentState.eventParm;
 		}
 	}
-	const float totalElapsedTime = static_cast<float>(cg.time - cent->currentState.time);
-	float elapsedTime = totalElapsedTime;
-	bool stopEffect = totalElapsedTime > cent->currentState.eventParm || cg.missionStatusShow || in_camera;
+	const float total_elapsed_time = static_cast<float>(cg.time - cent->currentState.time);
+	float elapsed_time = total_elapsed_time;
+	bool stop_effect = total_elapsed_time > cent->currentState.eventParm || cg.missionStatusShow || in_camera;
 
-	if (!stopEffect && cent->currentState.boltInfo & MEF_HIT_GROUND_STOP && g_entities[cent->currentState.
+	if (!stop_effect && cent->currentState.boltInfo & MEF_HIT_GROUND_STOP && g_entities[cent->currentState.
 		otherEntityNum].client)
 	{
 		if (g_entities[cent->currentState.otherEntityNum].client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
-			stopEffect = true;
+			stop_effect = true;
 		}
 		else if (g_entities[cent->currentState.otherEntityNum].client->NPC_class == CLASS_VEHICLE)
 		{
 			const Vehicle_t* pVeh = g_entities[cent->currentState.otherEntityNum].m_pVehicle;
 			if (pVeh && !(pVeh->m_ulFlags & VEH_FLYING))
 			{
-				stopEffect = true;
+				stop_effect = true;
 			}
 		}
 	}
-	if (!stopEffect && cent->currentState.boltInfo & MEF_LOOK_AT_ENEMY)
+	if (!stop_effect && cent->currentState.boltInfo & MEF_LOOK_AT_ENEMY)
 	{
 		if (!g_entities[cent->currentState.otherEntityNum].lastEnemy ||
 			!g_entities[cent->currentState.otherEntityNum].lastEnemy->inuse)
 		{
-			stopEffect = true;
+			stop_effect = true;
 		}
 	}
 
-	if (stopEffect)
+	if (stop_effect)
 	{
 		//time is up or this is a falling spin and they hit the ground or mission end screen is up
 		cg.overrides.active &= ~(CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_3RD_PERSON_ANG | CG_OVERRIDE_3RD_PERSON_POF);
@@ -2687,34 +2684,34 @@ void CG_StasisEffect(const centity_t* cent)
 		cent->gent->nextthink = cg.time + 500;
 		return;
 	}
-	while (elapsedTime > STASIS_EFFECT_TIME)
+	while (elapsed_time > STASIS_EFFECT_TIME)
 	{
-		elapsedTime -= STASIS_EFFECT_TIME;
+		elapsed_time -= STASIS_EFFECT_TIME;
 	}
 
 	MatrixMode = qtrue;
 
 	if (cent->currentState.boltInfo & MEF_LOOK_AT_ENEMY)
 	{
-		vec3_t toEnemy;
-		vec3_t toEnemyAngles;
+		vec3_t to_enemy;
+		vec3_t to_enemy_angles;
 
-		VectorCopy(cg_entities[g_entities[cent->currentState.otherEntityNum].lastEnemy->s.number].lerpOrigin, toEnemy);
-		VectorSubtract(cg_entities[cent->currentState.otherEntityNum].lerpOrigin, toEnemy, toEnemy);
-		vectoangles(toEnemy, toEnemyAngles);
+		VectorCopy(cg_entities[g_entities[cent->currentState.otherEntityNum].lastEnemy->s.number].lerpOrigin, to_enemy);
+		VectorSubtract(cg_entities[cent->currentState.otherEntityNum].lerpOrigin, to_enemy, to_enemy);
+		vectoangles(to_enemy, to_enemy_angles);
 
 		cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_ANG;
 		cg.overrides.thirdPersonAngle =
-			toEnemyAngles[1] -
+			to_enemy_angles[1] -
 			cg_entities[cent->currentState.otherEntityNum].lerpAngles[1] +
 			145.0f;
 		cg.overrides.thirdPersonAngle = AngleNormalize180(cg.overrides.thirdPersonAngle);
 
 		const float STASIS_EFFECT_TIME_HALF = STASIS_EFFECT_TIME / 2.0f;
 		float X = 1.0f;
-		if (elapsedTime > STASIS_EFFECT_TIME_HALF)
+		if (elapsed_time > STASIS_EFFECT_TIME_HALF)
 		{
-			X -= (elapsedTime - STASIS_EFFECT_TIME_HALF) / STASIS_EFFECT_TIME_HALF;
+			X -= (elapsed_time - STASIS_EFFECT_TIME_HALF) / STASIS_EFFECT_TIME_HALF;
 		}
 		cg.overrides.thirdPersonAngle *= X;
 		cg.overrides.thirdPersonPitchOffset = 0.0f;
@@ -2730,7 +2727,7 @@ void CG_StasisEffect(const centity_t* cent)
 	{
 		//ramp the timescale
 		//slowdown
-		float timescale = elapsedTime / STASIS_EFFECT_TIME;
+		float timescale = elapsed_time / STASIS_EFFECT_TIME;
 		if (timescale < 0.01f)
 		{
 			timescale = 0.01f;
@@ -2887,12 +2884,12 @@ CG_AddPacketEntities
 
 ===============
 */
-void CG_AddPacketEntities(const qboolean isPortal)
+void CG_AddPacketEntities(const qboolean is_portal)
 {
 	int num;
 	centity_t* cent;
 
-	if (isPortal)
+	if (is_portal)
 	{
 		for (num = 0; num < cg.snap->numEntities; num++)
 		{
@@ -2965,12 +2962,12 @@ void CG_AddPacketEntities(const qboolean isPortal)
 //callback once that's implemented fully.
 void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 {
-	int i = 0, r = 0, objectID;
+	int i = 0, r = 0, object_id;
 	char type[256];
 	char argument[512];
-	char addlArg[512];
-	char errMsg[256];
-	int addlArgs = 0;
+	char addl_arg[512];
+	char err_msg[256];
+	int addl_args = 0;
 
 	if (!cent || !notetrack)
 	{
@@ -3011,40 +3008,40 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 	if (notetrack[i] == ' ')
 	{
 		//additional arguments...
-		addlArgs = 1;
+		addl_args = 1;
 
 		i++;
 		r = 0;
 		while (notetrack[i])
 		{
-			addlArg[r] = notetrack[i];
+			addl_arg[r] = notetrack[i];
 			r++;
 			i++;
 		}
-		addlArg[r] = '\0';
+		addl_arg[r] = '\0';
 	}
 
 	if (strcmp(type, "effect") == 0)
 	{
 		char t[64];
-		vec3_t parsedOffset;
-		int posoffsetGathered = 0;
-		if (!addlArgs)
+		vec3_t parsed_offset;
+		int posoffset_gathered = 0;
+		if (!addl_args)
 		{
 			//sprintf(errMsg, "Offset position argument for 'effect' type is invalid.");
 			//goto functionend;
-			VectorClear(parsedOffset);
+			VectorClear(parsed_offset);
 			goto defaultoffsetposition;
 		}
 
 		i = 0;
 
-		while (posoffsetGathered < 3)
+		while (posoffset_gathered < 3)
 		{
 			r = 0;
-			while (addlArg[i] && addlArg[i] != '+' && addlArg[i] != ' ')
+			while (addl_arg[i] && addl_arg[i] != '+' && addl_arg[i] != ' ')
 			{
-				t[r] = addlArg[i];
+				t[r] = addl_arg[i];
 				r++;
 				i++;
 			}
@@ -3055,50 +3052,50 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 				//failure..
 				//sprintf(errMsg, "Offset position argument for 'effect' type is invalid.");
 				//goto functionend;
-				VectorClear(parsedOffset);
+				VectorClear(parsed_offset);
 				i = 0;
 				goto defaultoffsetposition;
 			}
-			parsedOffset[posoffsetGathered] = atof(t);
-			posoffsetGathered++;
+			parsed_offset[posoffset_gathered] = atof(t);
+			posoffset_gathered++;
 		}
 
-		if (posoffsetGathered < 3)
+		if (posoffset_gathered < 3)
 		{
-			Q_strncpyz(errMsg, "Offset position argument for 'effect' type is invalid.", sizeof errMsg);
+			Q_strncpyz(err_msg, "Offset position argument for 'effect' type is invalid.", sizeof err_msg);
 			goto functionend;
 		}
 
 		i--;
 
-		if (addlArg[i] != ' ')
+		if (addl_arg[i] != ' ')
 		{
-			addlArgs = 0;
+			addl_args = 0;
 		}
 
 	defaultoffsetposition:
 
-		objectID = theFxScheduler.RegisterEffect(argument);
+		object_id = theFxScheduler.RegisterEffect(argument);
 
-		if (objectID)
+		if (object_id)
 		{
 			vec3_t up;
 			vec3_t right;
 			vec3_t forward;
-			vec3_t useOrigin;
-			vec3_t useAngles;
-			if (addlArgs)
+			vec3_t use_origin;
+			vec3_t use_angles;
+			if (addl_args)
 			{
-				vec3_t parsedAngles;
-				int anglesGathered = 0;
+				vec3_t parsed_angles;
+				int angles_gathered = 0;
 				//if there is an additional argument for an effect it is expected to be XANGLE-YANGLE-ZANGLE
 				i++;
-				while (anglesGathered < 3)
+				while (angles_gathered < 3)
 				{
 					r = 0;
-					while (addlArg[i] && addlArg[i] != '-')
+					while (addl_arg[i] && addl_arg[i] != '-')
 					{
-						t[r] = addlArg[i];
+						t[r] = addl_arg[i];
 						r++;
 						i++;
 					}
@@ -3108,56 +3105,56 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 					if (!r)
 					{
 						//failed to get a new part of the vector
-						anglesGathered = 0;
+						angles_gathered = 0;
 						break;
 					}
 
-					parsedAngles[anglesGathered] = atof(t);
-					anglesGathered++;
+					parsed_angles[angles_gathered] = atof(t);
+					angles_gathered++;
 				}
 
-				if (anglesGathered)
+				if (angles_gathered)
 				{
-					VectorCopy(parsedAngles, useAngles);
+					VectorCopy(parsed_angles, use_angles);
 				}
 				else
 				{
 					//failed to parse angles from the extra argument provided..
-					VectorCopy(cent->lerpAngles, useAngles);
+					VectorCopy(cent->lerpAngles, use_angles);
 				}
 			}
 			else
 			{
 				//if no constant angles, play in direction entity is facing
-				VectorCopy(cent->lerpAngles, useAngles);
+				VectorCopy(cent->lerpAngles, use_angles);
 			}
 
-			AngleVectors(useAngles, forward, right, up);
+			AngleVectors(use_angles, forward, right, up);
 
-			VectorCopy(cent->lerpOrigin, useOrigin);
+			VectorCopy(cent->lerpOrigin, use_origin);
 
 			//forward
-			useOrigin[0] += forward[0] * parsedOffset[0];
-			useOrigin[1] += forward[1] * parsedOffset[0];
-			useOrigin[2] += forward[2] * parsedOffset[0];
+			use_origin[0] += forward[0] * parsed_offset[0];
+			use_origin[1] += forward[1] * parsed_offset[0];
+			use_origin[2] += forward[2] * parsed_offset[0];
 
 			//right
-			useOrigin[0] += right[0] * parsedOffset[1];
-			useOrigin[1] += right[1] * parsedOffset[1];
-			useOrigin[2] += right[2] * parsedOffset[1];
+			use_origin[0] += right[0] * parsed_offset[1];
+			use_origin[1] += right[1] * parsed_offset[1];
+			use_origin[2] += right[2] * parsed_offset[1];
 
 			//up
-			useOrigin[0] += up[0] * parsedOffset[2];
-			useOrigin[1] += up[1] * parsedOffset[2];
-			useOrigin[2] += up[2] * parsedOffset[2];
+			use_origin[0] += up[0] * parsed_offset[2];
+			use_origin[1] += up[1] * parsed_offset[2];
+			use_origin[2] += up[2] * parsed_offset[2];
 
-			theFxScheduler.PlayEffect(objectID, useOrigin, useAngles);
+			theFxScheduler.PlayEffect(object_id, use_origin, use_angles);
 		}
 	}
 	else if (strcmp(type, "sound") == 0)
 	{
-		objectID = cgi_S_RegisterSound(argument);
-		cgi_S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_BODY, objectID);
+		object_id = cgi_S_RegisterSound(argument);
+		cgi_S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_BODY, object_id);
 	}
 	else if (strcmp(type, "loop") == 0)
 	{
@@ -3180,5 +3177,5 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 	return;
 
 functionend:
-	Com_Printf("^3Type-specific notetrack error: %s\n", errMsg);
+	Com_Printf("^3Type-specific notetrack error: %s\n", err_msg);
 }

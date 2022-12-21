@@ -986,8 +986,7 @@ static void CG_General(centity_t* cent)
 
 		vec3_t v4DKGREY2 = {0.15f, 0.15f, 0.15f};
 
-		trap->FX_AddLine(start, end, 0.1f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, v4DKGREY2, v4DKGREY2, 0.0f, 300,
-		                 trap->R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
+		trap->FX_AddLine(start, end, 0.1f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, v4DKGREY2, v4DKGREY2, 0.0f, 300,trap->R_RegisterShader("gfx/misc/nav_line"), FX_SIZE_LINEAR);
 
 		CG_GrappleStartpoint(end);
 		//GOING OUT
@@ -3191,43 +3190,43 @@ static void CG_Missile(centity_t* cent)
 
 		if (s1->owner != ENTITYNUM_NONE)
 		{
-			vec3_t bladeAngles;
+			vec3_t blade_angles;
 			//we have an owner associated with this player.
 			//get the our owner's information.
-			clientInfo_t* SaberOwnInfo = &cgs.clientinfo[s1->owner];
-			centity_t* saberOwn = &cg_entities[s1->owner];
+			clientInfo_t* saber_own_info = &cgs.clientinfo[s1->owner];
+			centity_t* saber_own = &cg_entities[s1->owner];
 
-			VectorCopy(cent->lerpAngles, bladeAngles);
-			bladeAngles[ROLL] = 0;
+			VectorCopy(cent->lerpAngles, blade_angles);
+			blade_angles[ROLL] = 0;
 
 			//render the blade.  Note, we're only rendering the blades on the first saber since the first saber
 			//is the only one that can be tossed...for now.
-			if (SaberOwnInfo->saber[0].model[0])
+			if (saber_own_info->saber[0].model[0])
 			{
 				int k;
 				k = 0;
-				while (k < SaberOwnInfo->saber[0].numBlades)
+				while (k < saber_own_info->saber[0].numBlades)
 				{
 					int l = 0;
 					if (l == 0 //first saber
-						&& saberOwn->currentState.saberHolstered == 1 //extra blades should be off
+						&& saber_own->currentState.saberHolstered == 1 //extra blades should be off
 						&& k > 0) //this is an extra blade
 					{
 						//extra blades off
 						//don't draw them
-						CG_AddSaberBlade(saberOwn, cent, 0, 0, k, cent->lerpOrigin, bladeAngles, qtrue, qtrue);
+						CG_AddSaberBlade(saber_own, cent, 0, 0, k, cent->lerpOrigin, blade_angles, qtrue, qtrue);
 					}
 					else
 					{
-						CG_AddSaberBlade(saberOwn, cent, 0, 0, k, cent->lerpOrigin, bladeAngles, qtrue, qfalse);
+						CG_AddSaberBlade(saber_own, cent, 0, 0, k, cent->lerpOrigin, blade_angles, qtrue, qfalse);
 					}
 
 					k++;
 				}
-				if (SaberOwnInfo->saber[0].numBlades > 2)
+				if (saber_own_info->saber[0].numBlades > 2)
 				{
 					//add a single glow for the saber based on all the blade colors combined
-					CG_DoSaberLight(&SaberOwnInfo->saber[0], saberOwn->currentState.client_num, 0);
+					CG_DoSaberLight(&saber_own_info->saber[0], saber_own->currentState.client_num, 0);
 				}
 			}
 		}
@@ -3240,12 +3239,12 @@ static void CG_Missile(centity_t* cent)
 
 	if (s1->weapon == WP_SABER
 		&& (cgs.gametype == GT_JEDIMASTER || //playing JediMaster
-			(s1->owner == cg.snap->ps.client_num))) //or it's our saber and we've dropped it.
+			s1->owner == cg.snap->ps.client_num)) //or it's our saber and we've dropped it.
 	{
 		// always make the saber glow when on the ground
 		float wv;
 		int i;
-		addspriteArgStruct_t fxSArgs;
+		addspriteArgStruct_t fx_s_args;
 
 		ent.customShader = cgs.media.solidWhite;
 		ent.renderfx = RF_RGB_TINT;
@@ -3260,20 +3259,20 @@ static void CG_Missile(centity_t* cent)
 			vec3_t org;
 			VectorMA(ent.origin, -i, ent.axis[2], org);
 
-			VectorCopy(org, fxSArgs.origin);
-			VectorClear(fxSArgs.vel);
-			VectorClear(fxSArgs.accel);
-			fxSArgs.scale = 5.5f;
-			fxSArgs.dscale = 5.5f;
-			fxSArgs.sAlpha = wv;
-			fxSArgs.eAlpha = wv;
-			fxSArgs.rotation = 0.0f;
-			fxSArgs.bounce = 0.0f;
-			fxSArgs.life = 1.0f;
-			fxSArgs.shader = cgs.media.yellowDroppedSaberShader;
-			fxSArgs.flags = 0x08000000;
+			VectorCopy(org, fx_s_args.origin);
+			VectorClear(fx_s_args.vel);
+			VectorClear(fx_s_args.accel);
+			fx_s_args.scale = 5.5f;
+			fx_s_args.dscale = 5.5f;
+			fx_s_args.sAlpha = wv;
+			fx_s_args.eAlpha = wv;
+			fx_s_args.rotation = 0.0f;
+			fx_s_args.bounce = 0.0f;
+			fx_s_args.life = 1.0f;
+			fx_s_args.shader = cgs.media.yellowDroppedSaberShader;
+			fx_s_args.flags = 0x08000000;
 
-			trap->FX_AddSprite(&fxSArgs);
+			trap->FX_AddSprite(&fx_s_args);
 		}
 
 		if (cgs.gametype == GT_JEDIMASTER)
@@ -3318,14 +3317,14 @@ void CG_PlayDoorLoopSound(const centity_t* cent)
 		return;
 	}
 
-	const char* soundSet = CG_ConfigString(CS_AMBIENT_SET + cent->currentState.soundSetIndex);
+	const char* sound_set = CG_ConfigString(CS_AMBIENT_SET + cent->currentState.soundSetIndex);
 
-	if (!soundSet || !soundSet[0])
+	if (!sound_set || !sound_set[0])
 	{
 		return;
 	}
 
-	const sfxHandle_t sfx = trap->AS_GetBModelSound(soundSet, CG_BMS_MID);
+	const sfxHandle_t sfx = trap->AS_GetBModelSound(sound_set, CG_BMS_MID);
 
 	if (sfx == -1)
 	{
@@ -3359,14 +3358,14 @@ void CG_PlayDoorSound(const centity_t* cent, const int type)
 		return;
 	}
 
-	const char* soundSet = CG_ConfigString(CS_AMBIENT_SET + cent->currentState.soundSetIndex);
+	const char* sound_set = CG_ConfigString(CS_AMBIENT_SET + cent->currentState.soundSetIndex);
 
-	if (!soundSet || !soundSet[0])
+	if (!sound_set || !sound_set[0])
 	{
 		return;
 	}
 
-	const sfxHandle_t sfx = trap->AS_GetBModelSound(soundSet, type);
+	const sfxHandle_t sfx = trap->AS_GetBModelSound(sound_set, type);
 
 	if (sfx == -1)
 	{
@@ -3393,7 +3392,7 @@ static void CG_Mover(centity_t* cent)
 	if (cent->currentState.eFlags2 & EF2_HYPERSPACE)
 	{
 		//I'm the hyperspace brush
-		qboolean drawMe = qfalse;
+		qboolean draw_me = qfalse;
 		if (cg.predictedPlayerState.m_iVehicleNum
 			&& cg.predictedVehicleState.hyperSpaceTime
 			&& cg.time - cg.predictedVehicleState.hyperSpaceTime < HYPERSPACE_TIME
@@ -3407,14 +3406,14 @@ static void CG_Mover(centity_t* cent)
 			else if (cg.predictedVehicleState.eFlags2 & EF2_HYPERSPACE)
 			{
 				//actually hyperspacing now
-				const float timeFrac = (float)(cg.time - cg.predictedVehicleState.hyperSpaceTime - 1000) / (
+				const float time_frac = (float)(cg.time - cg.predictedVehicleState.hyperSpaceTime - 1000) / (
 					HYPERSPACE_TIME - 1000);
-				if (timeFrac < HYPERSPACE_TELEPORT_FRAC + 0.1f)
+				if (time_frac < HYPERSPACE_TELEPORT_FRAC + 0.1f)
 				{
 					//still in hyperspace or just popped out
-					const float alpha = timeFrac < 0.5f ? timeFrac / 0.5f : 1.0f;
-					drawMe = qtrue;
-					VectorMA(cg.refdef.vieworg, 1000.0f + (1.0f - timeFrac) * 1000.0f, cg.refdef.viewaxis[0],
+					const float alpha = time_frac < 0.5f ? time_frac / 0.5f : 1.0f;
+					draw_me = qtrue;
+					VectorMA(cg.refdef.vieworg, 1000.0f + (1.0f - time_frac) * 1000.0f, cg.refdef.viewaxis[0],
 					         cent->lerpOrigin);
 					VectorSet(cent->lerpAngles, cg.refdef.viewangles[PITCH], cg.refdef.viewangles[YAW] - 90.0f, 0);
 					//cos( ( cg.time + 1000 ) *  scale ) * 4 );
@@ -3423,7 +3422,7 @@ static void CG_Mover(centity_t* cent)
 				}
 			}
 		}
-		if (!drawMe)
+		if (!draw_me)
 		{
 			//else, never draw
 			return;
@@ -3638,10 +3637,10 @@ CG_AdjustPositionForMover
 Also called by client movement prediction code
 =========================
 */
-void CG_AdjustPositionForMover(const vec3_t in, const int moverNum, const int fromTime, const int toTime, vec3_t out)
+void CG_AdjustPositionForMover(const vec3_t in, const int mover_num, const int from_time, const int to_time, vec3_t out)
 {
-	vec3_t oldOrigin, origin, deltaOrigin;
-	vec3_t oldAngles, angles, deltaAngles;
+	vec3_t old_origin, origin, delta_origin;
+	vec3_t old_angles, angles, delta_angles;
 
 	if (cg.predictedPlayerState.persistant[PERS_TEAM] == TEAM_SPECTATOR)
 	{
@@ -3649,29 +3648,29 @@ void CG_AdjustPositionForMover(const vec3_t in, const int moverNum, const int fr
 		return;
 	}
 
-	if (moverNum <= 0 || moverNum >= ENTITYNUM_MAX_NORMAL)
+	if (mover_num <= 0 || mover_num >= ENTITYNUM_MAX_NORMAL)
 	{
 		VectorCopy(in, out);
 		return;
 	}
 
-	const centity_t* cent = &cg_entities[moverNum];
+	const centity_t* cent = &cg_entities[mover_num];
 	if (cent->currentState.eType != ET_MOVER)
 	{
 		VectorCopy(in, out);
 		return;
 	}
 
-	BG_EvaluateTrajectory(&cent->currentState.pos, fromTime, oldOrigin);
-	BG_EvaluateTrajectory(&cent->currentState.apos, fromTime, oldAngles);
+	BG_EvaluateTrajectory(&cent->currentState.pos, from_time, old_origin);
+	BG_EvaluateTrajectory(&cent->currentState.apos, from_time, old_angles);
 
-	BG_EvaluateTrajectory(&cent->currentState.pos, toTime, origin);
-	BG_EvaluateTrajectory(&cent->currentState.apos, toTime, angles);
+	BG_EvaluateTrajectory(&cent->currentState.pos, to_time, origin);
+	BG_EvaluateTrajectory(&cent->currentState.apos, to_time, angles);
 
-	VectorSubtract(origin, oldOrigin, deltaOrigin);
-	VectorSubtract(angles, oldAngles, deltaAngles);
+	VectorSubtract(origin, old_origin, delta_origin);
+	VectorSubtract(angles, old_angles, delta_angles);
 
-	VectorAdd(in, deltaOrigin, out);
+	VectorAdd(in, delta_origin, out);
 
 	// FIXME: origin change when on a rotating object
 }
@@ -3720,7 +3719,7 @@ CG_CalcEntityLerpPositions
 */
 void CG_CalcEntityLerpPositions(centity_t* cent)
 {
-	qboolean goAway = qfalse;
+	qboolean go_away = qfalse;
 
 	// if this player does not want to see extrapolated players
 	if (!cg_smoothClients.integer)
@@ -3763,13 +3762,13 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 			eType == ET_NPC))
 	{
 		CG_InterpolateEntityPosition(cent);
-		goAway = qtrue;
+		go_away = qtrue;
 	}
 	else if (cent->interpolate &&
 		cent->currentState.eType == ET_NPC && cent->currentState.NPC_class == CLASS_VEHICLE)
 	{
 		CG_InterpolateEntityPosition(cent);
-		goAway = qtrue;
+		go_away = qtrue;
 	}
 	else
 	{
@@ -3838,7 +3837,7 @@ void CG_CalcEntityLerpPositions(centity_t* cent)
 	}
 #endif
 
-	if (goAway)
+	if (go_away)
 	{
 		return;
 	}
@@ -3856,8 +3855,8 @@ void CG_G2Animated(centity_t* cent);
 
 static void CG_FX(centity_t* cent)
 {
-	vec3_t fxDir;
-	int efxIndex = 0;
+	vec3_t fx_dir;
+	int efx_index = 0;
 
 	if (cent->miscTime > cg.time)
 	{
@@ -3890,36 +3889,36 @@ static void CG_FX(centity_t* cent)
 
 	cent->miscTime = cg.time + s1->speed + Q_flrand(0.0f, 1.0f) * s1->time;
 
-	AngleVectors(s1->angles, fxDir, 0, 0);
+	AngleVectors(s1->angles, fx_dir, 0, 0);
 
-	if (!fxDir[0] && !fxDir[1] && !fxDir[2])
+	if (!fx_dir[0] && !fx_dir[1] && !fx_dir[2])
 	{
-		fxDir[1] = 1;
+		fx_dir[1] = 1;
 	}
 
 	if (cgs.gameEffects[s1->modelindex])
 	{
-		efxIndex = cgs.gameEffects[s1->modelindex];
+		efx_index = cgs.gameEffects[s1->modelindex];
 	}
 	else
 	{
 		const char* s = CG_ConfigString(CS_EFFECTS + s1->modelindex);
 		if (s && s[0])
 		{
-			efxIndex = trap->FX_RegisterEffect(s);
-			cgs.gameEffects[s1->modelindex] = efxIndex;
+			efx_index = trap->FX_RegisterEffect(s);
+			cgs.gameEffects[s1->modelindex] = efx_index;
 		}
 	}
 
-	if (efxIndex)
+	if (efx_index)
 	{
 		if (s1->isPortalEnt)
 		{
-			trap->FX_PlayEffectID(efxIndex, cent->lerpOrigin, fxDir, -1, -1, qtrue);
+			trap->FX_PlayEffectID(efx_index, cent->lerpOrigin, fx_dir, -1, -1, qtrue);
 		}
 		else
 		{
-			trap->FX_PlayEffectID(efxIndex, cent->lerpOrigin, fxDir, -1, -1, qfalse);
+			trap->FX_PlayEffectID(efx_index, cent->lerpOrigin, fx_dir, -1, -1, qfalse);
 		}
 	}
 }
@@ -3969,11 +3968,11 @@ static void CG_AddCEntity(centity_t* cent)
 	// add local sound set if any
 	if (cent->currentState.soundSetIndex && cent->currentState.eType != ET_MOVER)
 	{
-		const char* soundSet = CG_ConfigString(CS_AMBIENT_SET + cent->currentState.soundSetIndex);
+		const char* sound_set = CG_ConfigString(CS_AMBIENT_SET + cent->currentState.soundSetIndex);
 
-		if (soundSet && soundSet[0])
+		if (sound_set && sound_set[0])
 		{
-			trap->S_AddLocalSet(soundSet, cg.refdef.vieworg, cent->lerpOrigin, cent->currentState.number, cg.time);
+			trap->S_AddLocalSet(sound_set, cg.refdef.vieworg, cent->lerpOrigin, cent->currentState.number, cg.time);
 		}
 	}
 
@@ -4050,12 +4049,12 @@ CG_AddPacketEntities
 
 ===============
 */
-void CG_AddPacketEntities(const qboolean isPortal)
+void CG_AddPacketEntities(const qboolean is_portal)
 {
 	int num;
 	centity_t* cent;
 
-	if (isPortal)
+	if (is_portal)
 	{
 		for (num = 0; num < cg.snap->numEntities; num++)
 		{
@@ -4185,12 +4184,12 @@ void CG_AddPacketEntities(const qboolean isPortal)
 
 void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 {
-	int i = 0, r = 0, objectID;
+	int i = 0, r = 0, object_id;
 	char type[256];
 	char argument[512];
-	char addlArg[512];
-	char errMsg[256];
-	int addlArgs = 0;
+	char addl_arg[512];
+	char err_msg[256];
+	int addl_args = 0;
 
 	if (!cent || !notetrack)
 	{
@@ -4231,29 +4230,29 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 	if (notetrack[i] == ' ')
 	{
 		//additional arguments...
-		addlArgs = 1;
+		addl_args = 1;
 
 		i++;
 		r = 0;
 		while (notetrack[i])
 		{
-			addlArg[r] = notetrack[i];
+			addl_arg[r] = notetrack[i];
 			r++;
 			i++;
 		}
-		addlArg[r] = '\0';
+		addl_arg[r] = '\0';
 	}
 
 	if (strcmp(type, "effect") == 0)
 	{
 		char t[64];
-		vec3_t parsedOffset;
+		vec3_t parsed_offset;
 		int posoffset_gathered = 0;
-		if (!addlArgs)
+		if (!addl_args)
 		{
 			//sprintf(errMsg, "Offset position argument for 'effect' type is invalid.");
 			//goto functionend;
-			VectorClear(parsedOffset);
+			VectorClear(parsed_offset);
 			goto defaultoffsetposition;
 		}
 
@@ -4262,9 +4261,9 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 		while (posoffset_gathered < 3)
 		{
 			r = 0;
-			while (addlArg[i] && addlArg[i] != '+' && addlArg[i] != ' ')
+			while (addl_arg[i] && addl_arg[i] != '+' && addl_arg[i] != ' ')
 			{
-				t[r] = addlArg[i];
+				t[r] = addl_arg[i];
 				r++;
 				i++;
 			}
@@ -4275,50 +4274,50 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 				//failure..
 				//sprintf(errMsg, "Offset position argument for 'effect' type is invalid.");
 				//goto functionend;
-				VectorClear(parsedOffset);
+				VectorClear(parsed_offset);
 				i = 0;
 				goto defaultoffsetposition;
 			}
-			parsedOffset[posoffset_gathered] = atof(t);
+			parsed_offset[posoffset_gathered] = atof(t);
 			posoffset_gathered++;
 		}
 
 		if (posoffset_gathered < 3)
 		{
-			Com_sprintf(errMsg, sizeof errMsg, "Offset position argument for 'effect' type is invalid.");
+			Com_sprintf(err_msg, sizeof err_msg, "Offset position argument for 'effect' type is invalid.");
 			goto functionend;
 		}
 
 		i--;
 
-		if (addlArg[i] != ' ')
+		if (addl_arg[i] != ' ')
 		{
-			addlArgs = 0;
+			addl_args = 0;
 		}
 
 	defaultoffsetposition:
 
-		objectID = trap->FX_RegisterEffect(argument);
+		object_id = trap->FX_RegisterEffect(argument);
 
-		if (objectID)
+		if (object_id)
 		{
 			vec3_t up;
 			vec3_t right;
 			vec3_t forward;
-			vec3_t useOrigin;
-			vec3_t useAngles;
-			if (addlArgs)
+			vec3_t use_origin;
+			vec3_t use_angles;
+			if (addl_args)
 			{
-				vec3_t parsedAngles;
+				vec3_t parsed_angles;
 				int angles_gathered = 0;
 				//if there is an additional argument for an effect it is expected to be XANGLE-YANGLE-ZANGLE
 				i++;
 				while (angles_gathered < 3)
 				{
 					r = 0;
-					while (addlArg[i] && addlArg[i] != '-')
+					while (addl_arg[i] && addl_arg[i] != '-')
 					{
-						t[r] = addlArg[i];
+						t[r] = addl_arg[i];
 						r++;
 						i++;
 					}
@@ -4332,52 +4331,52 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 						break;
 					}
 
-					parsedAngles[angles_gathered] = atof(t);
+					parsed_angles[angles_gathered] = atof(t);
 					angles_gathered++;
 				}
 
 				if (angles_gathered)
 				{
-					VectorCopy(parsedAngles, useAngles);
+					VectorCopy(parsed_angles, use_angles);
 				}
 				else
 				{
 					//failed to parse angles from the extra argument provided..
-					VectorCopy(cent->lerpAngles, useAngles);
+					VectorCopy(cent->lerpAngles, use_angles);
 				}
 			}
 			else
 			{
 				//if no constant angles, play in direction entity is facing
-				VectorCopy(cent->lerpAngles, useAngles);
+				VectorCopy(cent->lerpAngles, use_angles);
 			}
 
-			AngleVectors(useAngles, forward, right, up);
+			AngleVectors(use_angles, forward, right, up);
 
-			VectorCopy(cent->lerpOrigin, useOrigin);
+			VectorCopy(cent->lerpOrigin, use_origin);
 
 			//forward
-			useOrigin[0] += forward[0] * parsedOffset[0];
-			useOrigin[1] += forward[1] * parsedOffset[0];
-			useOrigin[2] += forward[2] * parsedOffset[0];
+			use_origin[0] += forward[0] * parsed_offset[0];
+			use_origin[1] += forward[1] * parsed_offset[0];
+			use_origin[2] += forward[2] * parsed_offset[0];
 
 			//right
-			useOrigin[0] += right[0] * parsedOffset[1];
-			useOrigin[1] += right[1] * parsedOffset[1];
-			useOrigin[2] += right[2] * parsedOffset[1];
+			use_origin[0] += right[0] * parsed_offset[1];
+			use_origin[1] += right[1] * parsed_offset[1];
+			use_origin[2] += right[2] * parsed_offset[1];
 
 			//up
-			useOrigin[0] += up[0] * parsedOffset[2];
-			useOrigin[1] += up[1] * parsedOffset[2];
-			useOrigin[2] += up[2] * parsedOffset[2];
+			use_origin[0] += up[0] * parsed_offset[2];
+			use_origin[1] += up[1] * parsed_offset[2];
+			use_origin[2] += up[2] * parsed_offset[2];
 
-			trap->FX_PlayEffectID(objectID, useOrigin, useAngles, -1, -1, qfalse);
+			trap->FX_PlayEffectID(object_id, use_origin, use_angles, -1, -1, qfalse);
 		}
 	}
 	else if (strcmp(type, "sound") == 0)
 	{
-		objectID = trap->S_RegisterSound(argument);
-		trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_BODY, objectID);
+		object_id = trap->S_RegisterSound(argument);
+		trap->S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_BODY, object_id);
 	}
 	else if (strcmp(type, "loop") == 0)
 	{
@@ -4400,7 +4399,7 @@ void CG_ROFF_NotetrackCallback(const centity_t* cent, const char* notetrack)
 	return;
 
 functionend:
-	Com_Printf("^3Type-specific notetrack error: %s\n", errMsg);
+	Com_Printf("^3Type-specific notetrack error: %s\n", err_msg);
 }
 
 void CG_Cube(vec3_t mins, vec3_t maxs, vec3_t color, const float alpha)

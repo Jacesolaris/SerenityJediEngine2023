@@ -126,19 +126,17 @@ passed to the renderer.
 #define	MAX_MARK_FRAGMENTS	128
 #define	MAX_MARK_POINTS		384
 
-void CG_ImpactMark(const qhandle_t markShader, const vec3_t origin, const vec3_t dir,
+void CG_ImpactMark(const qhandle_t mark_shader, const vec3_t origin, const vec3_t dir,
                    const float orientation, const float red, const float green, const float blue, const float alpha,
-                   const qboolean alphaFade, const float radius, const qboolean temporary)
+                   const qboolean alpha_fade, const float radius, const qboolean temporary)
 {
 	matrix3_t axis;
-	vec3_t originalPoints[4];
+	vec3_t original_points[4];
 	byte colors[4];
 	int i, j;
-	markFragment_t markFragments[MAX_MARK_FRAGMENTS], *mf;
-	vec3_t markPoints[MAX_MARK_POINTS];
+	markFragment_t mark_fragments[MAX_MARK_FRAGMENTS], *mf;
+	vec3_t mark_points[MAX_MARK_POINTS];
 	vec3_t projection;
-
-	//assert(markShader);
 
 	if (!cg_marks.integer)
 	{
@@ -146,8 +144,8 @@ void CG_ImpactMark(const qhandle_t markShader, const vec3_t origin, const vec3_t
 	}
 	if (cg_marks.integer == 2)
 	{
-		trap->R_AddDecalToScene(markShader, origin, dir, orientation, red, green, blue, alpha,
-		                        alphaFade, radius, temporary);
+		trap->R_AddDecalToScene(mark_shader, origin, dir, orientation, red, green, blue, alpha,
+		                        alpha_fade, radius, temporary);
 		return;
 	}
 
@@ -162,28 +160,28 @@ void CG_ImpactMark(const qhandle_t markShader, const vec3_t origin, const vec3_t
 	RotatePointAroundVector(axis[2], axis[0], axis[1], orientation);
 	CrossProduct(axis[0], axis[2], axis[1]);
 
-	const float texCoordScale = 0.5 * 1.0 / radius;
+	const float tex_coord_scale = 0.5 * 1.0 / radius;
 
 	// create the full polygon
 	for (i = 0; i < 3; i++)
 	{
-		originalPoints[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
-		originalPoints[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
-		originalPoints[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
-		originalPoints[3][i] = origin[i] - radius * axis[1][i] + radius * axis[2][i];
+		original_points[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
+		original_points[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
+		original_points[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
+		original_points[3][i] = origin[i] - radius * axis[1][i] + radius * axis[2][i];
 	}
 
 	// get the fragments
 	VectorScale(dir, -20, projection);
-	const int numFragments = trap->R_MarkFragments(4, (const vec3_t*)originalPoints, projection, MAX_MARK_POINTS,
-	                                               markPoints[0], MAX_MARK_FRAGMENTS, markFragments);
+	const int num_fragments = trap->R_MarkFragments(4, (const vec3_t*)original_points, projection, MAX_MARK_POINTS,
+	                                               mark_points[0], MAX_MARK_FRAGMENTS, mark_fragments);
 
 	colors[0] = red * 255;
 	colors[1] = green * 255;
 	colors[2] = blue * 255;
 	colors[3] = alpha * 255;
 
-	for (i = 0, mf = markFragments; i < numFragments; i++, mf++)
+	for (i = 0, mf = mark_fragments; i < num_fragments; i++, mf++)
 	{
 		polyVert_t* v;
 		polyVert_t verts[MAX_VERTS_ON_POLY];
@@ -198,11 +196,11 @@ void CG_ImpactMark(const qhandle_t markShader, const vec3_t origin, const vec3_t
 		{
 			vec3_t delta;
 
-			VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
+			VectorCopy(mark_points[mf->firstPoint + j], v->xyz);
 
 			VectorSubtract(v->xyz, origin, delta);
-			v->st[0] = 0.5 + DotProduct(delta, axis[1]) * texCoordScale;
-			v->st[1] = 0.5 + DotProduct(delta, axis[2]) * texCoordScale;
+			v->st[0] = 0.5 + DotProduct(delta, axis[1]) * tex_coord_scale;
+			v->st[1] = 0.5 + DotProduct(delta, axis[2]) * tex_coord_scale;
 			for (int k = 0; k < 4; k++)
 				v->modulate[k] = colors[k];
 		}
@@ -210,15 +208,15 @@ void CG_ImpactMark(const qhandle_t markShader, const vec3_t origin, const vec3_t
 		// if it is a temporary (shadow) mark, add it immediately and forget about it
 		if (temporary)
 		{
-			trap->R_AddPolysToScene(markShader, mf->numPoints, verts, 1);
+			trap->R_AddPolysToScene(mark_shader, mf->numPoints, verts, 1);
 			continue;
 		}
 
 		// otherwise save it persistantly
 		markPoly_t* mark = CG_AllocMark();
 		mark->time = cg.time;
-		mark->alphaFade = alphaFade;
-		mark->markShader = markShader;
+		mark->alphaFade = alpha_fade;
+		mark->markShader = mark_shader;
 		mark->poly.numVerts = mf->numPoints;
 		mark->color[0] = red;
 		mark->color[1] = green;
@@ -247,8 +245,7 @@ void CG_AddMarks(void)
 		return;
 	}
 
-	markPoly_t* mp = cg_activeMarkPolys.nextMark;
-	for (; mp != &cg_activeMarkPolys; mp = next)
+	for (markPoly_t* mp = cg_activeMarkPolys.nextMark; mp != &cg_activeMarkPolys; mp = next)
 	{
 		// grab next now, so if the local entity is freed we
 		// still have it

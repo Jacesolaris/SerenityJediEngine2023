@@ -11893,7 +11893,7 @@ static void CG_CreateSaberMarks(vec3_t start, vec3_t end, vec3_t normal)
 	}
 }
 
-extern void FX_AddPrimitive(CEffect** effect, int killTime);
+extern void FX_AddPrimitive(CEffect** effect, int kill_time);
 //-------------------------------------------------------
 void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const int saber_num, const int model_index,
                           vec3_t origin, vec3_t angles)
@@ -16118,8 +16118,8 @@ void CG_Player(centity_t* cent)
 
 			val += Q_flrand(0.0f, 1.0f) * 0.5f;
 
-			FX_AddSprite(cent->gent->client->renderInfo.muzzlePoint, nullptr, nullptr, 3.0f * val * scale, 0.0f, 0.7f,
-			             0.7f, WHITE, WHITE, Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA);
+			FX_AddSprite(cent->gent->client->renderInfo.muzzlePoint, nullptr, nullptr, 3.0f * val * scale, 0.7f, 0.7f,
+			             WHITE, WHITE, Q_flrand(0.0f, 1.0f) * 360, 0.0f, 1.0f, shader, FX_USE_ALPHA);
 		}
 	}
 }

@@ -238,19 +238,15 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 
 	VectorMA(start, 14.0f, dir, c1);
 
-	FX_AddSprite(c1, nullptr, nullptr, 12.0f + Q_flrand(-1.0f, 1.0f) * 4, 0.0f, 1.0f, 1.0f, Q_flrand(0.0f, 1.0f) * 360,
-	             0.0f, 1.0f,
-	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
-	FX_AddSprite(c1, nullptr, nullptr, 6.0f + Q_flrand(-1.0f, 1.0f) * 2, 0.0f, 1.0f, 1.0f, Q_flrand(0.0f, 1.0f) * 360,
-	             0.0f, 1.0f,
-	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	FX_AddSprite(c1, nullptr, nullptr, 12.0f + Q_flrand(-1.0f, 1.0f) * 4, 1.0f, 1.0f, Q_flrand(0.0f, 1.0f) * 360, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	FX_AddSprite(c1, nullptr, nullptr, 6.0f + Q_flrand(-1.0f, 1.0f) * 2, 1.0f, 1.0f, Q_flrand(0.0f, 1.0f) * 360, 0.0f,
+	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowflash"));
 
-	FX_AddSprite(targ1, nullptr, nullptr, 4.0f + Q_flrand(-1.0f, 1.0f), 0.0f, 1.0f, 0.0f, chaos, chaos,
-	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
-	FX_AddSprite(targ1, nullptr, nullptr, 8.0f + Q_flrand(-1.0f, 1.0f) * 2, 0.0f, 1.0f, 0.0f, chaos, chaos,
-	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	FX_AddSprite(targ1, nullptr, nullptr, 4.0f + Q_flrand(-1.0f, 1.0f), 1.0f, 0.0f, chaos, chaos, Q_flrand(0.0f, 1.0f) * 360,
+	             0.0f, 10, cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	FX_AddSprite(targ1, nullptr, nullptr, 8.0f + Q_flrand(-1.0f, 1.0f) * 2, 1.0f, 0.0f, chaos, chaos, Q_flrand(0.0f, 1.0f) * 360,
+	             0.0f, 10, cgi_R_RegisterShader("gfx/effects/yellowflash"));
 
 	//--------------------------------------------
 
@@ -331,10 +327,8 @@ void FX_Strike_Beam(vec3_t start, vec3_t end, vec3_t targ1, vec3_t targ2)
 	             chaos, chaos, 0.0f,
 	             1.0f, cgi_R_RegisterShader("gfx/effects/yellowline"), FX_ALPHA_LINEAR);
 
-	FX_AddSprite(targ2, nullptr, nullptr, 4.0f + Q_flrand(-1.0f, 1.0f), 0.0f, 1.0f, 0.0f, chaos, chaos,
-	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
-	FX_AddSprite(targ2, nullptr, nullptr, 8.0f + Q_flrand(-1.0f, 1.0f) * 2, 0.0f, 1.0f, 0.0f, chaos, chaos,
-	             Q_flrand(0.0f, 1.0f) * 360, 0.0f, 10,
-	             cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	FX_AddSprite(targ2, nullptr, nullptr, 4.0f + Q_flrand(-1.0f, 1.0f), 1.0f, 0.0f, chaos, chaos, Q_flrand(0.0f, 1.0f) * 360,
+	             0.0f, 10, cgi_R_RegisterShader("gfx/effects/yellowflash"));
+	FX_AddSprite(targ2, nullptr, nullptr, 8.0f + Q_flrand(-1.0f, 1.0f) * 2, 1.0f, 0.0f, chaos, chaos, Q_flrand(0.0f, 1.0f) * 360,
+	             0.0f, 10, cgi_R_RegisterShader("gfx/effects/yellowflash"));
 }

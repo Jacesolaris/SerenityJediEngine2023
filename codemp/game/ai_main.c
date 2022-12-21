@@ -443,7 +443,7 @@ qboolean visible(const gentity_t* self, const gentity_t* other)
 	return qfalse;
 }
 
-gentity_t* find_closest_human_player(vec3_t position, const int enemyTeam)
+gentity_t* find_closest_human_player(vec3_t position, const int enemy_team)
 {
 	float bestdist = 9999;
 	gentity_t* closestplayer = NULL;
@@ -462,7 +462,7 @@ gentity_t* find_closest_human_player(vec3_t position, const int enemyTeam)
 			continue;
 		}
 
-		if (player->client->playerTeam != enemyTeam)
+		if (player->client->playerTeam != enemy_team)
 		{
 			//this player isn't on the team I hate.
 			continue;
@@ -597,7 +597,7 @@ void ai_mod_jump(bot_state_t* bs)
 {
 	vec3_t dir, p1, p2, apex;
 	float time, height, forward, z, xy, dist;
-	float apexHeight;
+	float apex_height;
 	gentity_t* bot = &g_entities[bs->entitynum];
 
 	if (!bs->currentEnemy)
@@ -657,8 +657,8 @@ void ai_mod_jump(bot_state_t* bs)
 			return;
 		}
 
-		apexHeight = APEX_HEIGHT / 2;
-		z = sqrt(apexHeight + z) - sqrt(apexHeight);
+		apex_height = APEX_HEIGHT / 2;
+		z = sqrt(apex_height + z) - sqrt(apex_height);
 
 		assert(z >= 0);
 
@@ -670,7 +670,7 @@ void ai_mod_jump(bot_state_t* bs)
 
 		VectorMA(p1, xy, dir, apex);
 
-		apex[2] += apexHeight;
+		apex[2] += apex_height;
 
 		VectorCopy(apex, bot->pos1);
 
@@ -5620,7 +5620,6 @@ int scan_for_enemies(bot_state_t* bs)
 	{
 		if (G_ThereIsAMaster() && !bs->cur_ps.isJediMaster)
 		{
-			//if friendly fire is on in jedi master we can attack people that bug us
 			if (!g_friendlyFire.integer)
 			{
 				no_attack_non_jm = qtrue;

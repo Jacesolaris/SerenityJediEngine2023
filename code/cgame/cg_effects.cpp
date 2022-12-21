@@ -177,7 +177,7 @@ Adds an explosion to a misc model breakables
 -------------------------
 */
 
-void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunkType)
+void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunk_type)
 {
 	int ct = 13;
 	vec3_t org, mid;
@@ -186,7 +186,7 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const mater
 	VectorAdd(mins, maxs, mid);
 	VectorScale(mid, 0.5f, mid);
 
-	switch (chunkType)
+	switch (chunk_type)
 	{
 	case MAT_GLASS:
 		effect = "chunks/glassbreak";
@@ -780,7 +780,7 @@ constexpr auto TIME_DECAY_SLOW = 0.1f;
 constexpr auto TIME_DECAY_MED = 0.04f;
 constexpr auto TIME_DECAY_FAST = 0.009f;
 
-void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmgRadius)
+void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_radius)
 {
 	int i, t;
 	int mx_height, mx_width;
@@ -920,7 +920,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmgRa
 			float dif = DistanceSquared(sub_verts[0], dmg_pt) * time_decay - Q_flrand(0.0f, 1.0f) * 32;
 
 			// If we decrease dif, we are increasing the impact area, making it more likely to blow out large holes
-			dif -= dmgRadius * dmgRadius;
+			dif -= dmg_radius * dmg_radius;
 
 			if (dif > 1)
 			{
@@ -1030,10 +1030,10 @@ void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int b
 {
 	vec3_t axis[3];
 	//FIXME: shouldn't this be initialized to something?  It isn't in the EV_PLAY_EFFECT call... irrelevant?
-	int boltInfo;
+	int bolt_info;
 
 	//pack the data into boltInfo as if we were going to send it over the network
-	gi.G2API_AttachEnt(&boltInfo,
+	gi.G2API_AttachEnt(&bolt_info,
 	                   &g_entities[ent_num].ghoul2[model_index],
 	                   bolt_index,
 	                   ent_num,
@@ -1042,7 +1042,7 @@ void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int b
 	theFxScheduler.PlayEffect(fx_name,
 	                          origin,
 	                          axis,
-	                          boltInfo,
+	                          bolt_info,
 	                          -1,
 	                          false,
 	                          i_loop_time,

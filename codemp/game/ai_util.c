@@ -366,9 +366,9 @@ int BotDoChat(bot_state_t* bs, const char* section, const int always)
 
 	char* chatgroup = B_TempAlloc(MAX_CHAT_BUFFER_SIZE);
 
-	const int rVal = GetValueGroup(gBotChatBuffer[bs->client], section, chatgroup);
+	const int r_val = GetValueGroup(gBotChatBuffer[bs->client], section, chatgroup);
 
-	if (!rVal) //the bot has no group defined for the specified chat event
+	if (!r_val) //the bot has no group defined for the specified chat event
 	{
 		B_TempFree(MAX_CHAT_BUFFER_SIZE); //chatgroup
 		return 0;
@@ -637,8 +637,7 @@ void BotUtilizePersonality(bot_state_t* bs)
 	}
 
 	trap->FS_Read(buf, len, f);
-
-	const int rlen = len;
+	
 
 	while (len < 131072)
 	{
@@ -646,8 +645,6 @@ void BotUtilizePersonality(bot_state_t* bs)
 		buf[len] = '\0';
 		len++;
 	}
-
-	len = rlen;
 
 	char* readbuf = B_TempAlloc(1024);
 	char* group = B_TempAlloc(65536);

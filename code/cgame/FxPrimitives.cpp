@@ -58,11 +58,11 @@ void ClampVec(vec3_t dat, byte* res)
 	}
 }
 
-void GetOrigin(const int clientID, vec3_t org)
+void GetOrigin(const int client_id, vec3_t org)
 {
-	if (clientID >= 0)
+	if (client_id >= 0)
 	{
-		const centity_t* cent = &cg_entities[clientID];
+		const centity_t* cent = &cg_entities[client_id];
 
 		if (cent && cent->gent && cent->gent->client)
 		{
@@ -71,11 +71,11 @@ void GetOrigin(const int clientID, vec3_t org)
 	}
 }
 
-void GetDir(const int clientID, vec3_t org)
+void GetDir(const int client_id, vec3_t org)
 {
-	if (clientID >= 0)
+	if (client_id >= 0)
 	{
-		const centity_t* cent = &cg_entities[clientID];
+		const centity_t* cent = &cg_entities[client_id];
 
 		if (cent && cent->gent && cent->gent->client)
 		{

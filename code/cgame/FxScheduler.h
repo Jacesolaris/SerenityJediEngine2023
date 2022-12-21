@@ -701,9 +701,9 @@ private:
 	static void AddPrimitiveToEffect(SEffectTemplate* fx, CPrimitiveTemplate* prim);
 	int ParseEffect(const char* file, const CGPGroup& base);
 
-	void CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], int lateTime, int clientID = -1,
+	void CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, vec3_t axis[3], int lateTime, int client_id = -1,
 	                  int modelNum = -1, int boltNum = -1);
-	void CreateEffect(CPrimitiveTemplate* fx, int clientID, int lateTime) const;
+	void CreateEffect(CPrimitiveTemplate* fx, int client_id, int lateTime) const;
 
 public:
 	CFxScheduler();
@@ -727,7 +727,7 @@ public:
 	                int iLoopTime = false, bool isRelative = false);
 
 	//for muzzle
-	void PlayEffect(const char* file, int clientID, bool isPortal = false);
+	void PlayEffect(const char* file, int client_id, bool isPortal = false);
 
 	void StopEffect(const char* file, int boltInfo, bool isPortal = false);
 	//find a scheduled Looping effect with these parms and kill it

@@ -26,9 +26,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // following another player or playing back a demo, it will be checked
 // when the snapshot transitions like all the other entities
 
-// this line must stay at top so the whole PCH thing works...
-#include "cg_headers.h"
-
 #include "cg_media.h"
 
 /*

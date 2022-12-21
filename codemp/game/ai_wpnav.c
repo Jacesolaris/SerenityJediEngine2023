@@ -1030,7 +1030,7 @@ int CanGetToVectorTravel(vec3_t org1, vec3_t moveTo, vec3_t mins, vec3_t maxs)
 }
 #endif
 
-int ConnectTrail(const int startindex, const int endindex, qboolean behindTheScenes)
+int ConnectTrail(const int startindex, const int endindex, const qboolean behind_the_scenes)
 {
 	static byte extendednodes[MAX_NODETABLE_SIZE];
 	//for storing checked nodes and not trying to extend them each a bazillion times
@@ -1102,9 +1102,7 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 		i++;
 	}
 
-	i = 0;
-
-	if (!behindTheScenes)
+	if (!behind_the_scenes)
 	{
 		trap->Print(S_COLOR_YELLOW "Point %i is not connected to %i - Repairing...\n", startindex, endindex);
 	}
@@ -1132,14 +1130,14 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 		if (RMG.integer)
 		{
 			//adjust the branch distance dynamically depending on the distance from the start and end points.
-			vec3_t startDist;
-			vec3_t endDist;
+			vec3_t start_dist;
+			vec3_t end_dist;
 
-			VectorSubtract(nodetable[nodenum - 1].origin, gWPArray[startindex]->origin, startDist);
-			VectorSubtract(nodetable[nodenum - 1].origin, gWPArray[endindex]->origin, endDist);
+			VectorSubtract(nodetable[nodenum - 1].origin, gWPArray[startindex]->origin, start_dist);
+			VectorSubtract(nodetable[nodenum - 1].origin, gWPArray[endindex]->origin, end_dist);
 
-			const float start_distf = VectorLength(startDist);
-			const float end_distf = VectorLength(endDist);
+			const float start_distf = VectorLength(start_dist);
+			const float end_distf = VectorLength(end_dist);
 
 			if (start_distf < 64 || end_distf < 64)
 			{
@@ -1322,14 +1320,14 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 	if (!foundit)
 	{
 #ifndef _DEBUG //if debug just always print this.
-		if (!behindTheScenes)
+		if (!behind_the_scenes)
 #endif
 		{
 			trap->Print(S_COLOR_RED "Could not link %i to %i, unreachable by node branching.\n", startindex, endindex);
 		}
 		gWPArray[startindex]->flags |= WPFLAG_ONEWAY_FWD;
 		gWPArray[endindex]->flags |= WPFLAG_ONEWAY_BACK;
-		if (!behindTheScenes)
+		if (!behind_the_scenes)
 		{
 			trap->Print(
 				S_COLOR_YELLOW
@@ -1348,14 +1346,14 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 		}*/
 		//The above code transfers nodes into the "rendered" waypoint array. Strictly for debugging.
 
-		if (!behindTheScenes)
+		if (!behind_the_scenes)
 		{
 			//just use what we have if we're auto-pathing the level
 			return 0;
 		}
-		int nCount = 0;
-		int idealNode = -1;
-		float bestDist = 0;
+		int n_count = 0;
+		int ideal_node = -1;
+		float best_dist = 0;
 
 		if (nodenum <= 10)
 		{
@@ -1364,34 +1362,34 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 		}
 
 		//Since it failed, find whichever node is closest to the desired end.
-		while (nCount < nodenum)
+		while (n_count < nodenum)
 		{
-			vec3_t endDist;
-			VectorSubtract(nodetable[nCount].origin, gWPArray[endindex]->origin, endDist);
-			const float testDist = VectorLength(endDist);
-			if (idealNode == -1)
+			vec3_t end_dist;
+			VectorSubtract(nodetable[n_count].origin, gWPArray[endindex]->origin, end_dist);
+			const float test_dist = VectorLength(end_dist);
+			if (ideal_node == -1)
 			{
-				idealNode = nCount;
-				bestDist = testDist;
-				nCount++;
+				ideal_node = n_count;
+				best_dist = test_dist;
+				n_count++;
 				continue;
 			}
 
-			if (testDist < bestDist)
+			if (test_dist < best_dist)
 			{
-				idealNode = nCount;
-				bestDist = testDist;
+				ideal_node = n_count;
+				best_dist = test_dist;
 			}
 
-			nCount++;
+			n_count++;
 		}
 
-		if (idealNode == -1)
+		if (ideal_node == -1)
 		{
 			return 0;
 		}
 
-		successnodeindex = idealNode;
+		successnodeindex = ideal_node;
 	}
 
 	i = successnodeindex;
@@ -1411,7 +1409,7 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 			nodetable[i].flags |= WPFLAG_CALCULATED;
 			if (!CreateNewWP_InTrail(nodetable[i].origin, nodetable[i].flags, insertindex))
 			{
-				if (!behindTheScenes)
+				if (!behind_the_scenes)
 				{
 					trap->Print(S_COLOR_RED "Could not link %i to %i, waypoint limit hit.\n", startindex, endindex);
 				}
@@ -1431,7 +1429,7 @@ int ConnectTrail(const int startindex, const int endindex, qboolean behindTheSce
 		failsafe++;
 	}
 
-	if (!behindTheScenes)
+	if (!behind_the_scenes)
 	{
 		trap->Print(S_COLOR_YELLOW "Finished connecting %i to %i.\n", startindex, endindex);
 	}
@@ -1503,10 +1501,10 @@ int DoorBlockingSection(const int start, const int end)
 	return 0;
 }
 
-int RepairPaths(const qboolean behindTheScenes)
+int RepairPaths(const qboolean behind_the_scenes)
 {
 	//	int ctRet;
-	float maxDistFactor = 400;
+	float max_dist_factor = 400;
 
 	if (!gWPNum)
 	{
@@ -1515,7 +1513,7 @@ int RepairPaths(const qboolean behindTheScenes)
 
 	if (RMG.integer)
 	{
-		maxDistFactor = 800; //higher tolerance here.
+		max_dist_factor = 800; //higher tolerance here.
 	}
 
 	int i = 0;
@@ -1535,12 +1533,12 @@ int RepairPaths(const qboolean behindTheScenes)
 				//don't calculate on jump points because they might not always want to be visible (in cases of force jumping)
 				!(gWPArray[i]->flags & WPFLAG_CALCULATED) && //don't calculate it again
 				!OpposingEnds(i, i + 1) &&
-				(bot_wp_distconnect.value && VectorLength(a) > maxDistFactor || !org_visible(
+				(bot_wp_distconnect.value && VectorLength(a) > max_dist_factor || !org_visible(
 					gWPArray[i]->origin, gWPArray[i + 1]->origin, ENTITYNUM_NONE) && bot_wp_visconnect.value) &&
 				!DoorBlockingSection(i, i + 1))
 			{
 				/*ctRet = */
-				ConnectTrail(i, i + 1, behindTheScenes);
+				ConnectTrail(i, i + 1, behind_the_scenes);
 
 				if (gWPNum >= MAX_WPARRAY_SIZE)
 				{
@@ -1548,11 +1546,6 @@ int RepairPaths(const qboolean behindTheScenes)
 					gWPNum = MAX_WPARRAY_SIZE;
 					break;
 				}
-
-				/* we still want to write it..
-				if ( !ctRet )
-					return 0;
-				*/
 			}
 		}
 
@@ -1589,8 +1582,8 @@ int CanForceJumpTo(const int baseindex, const int testingindex, const float dist
 {
 	float heightdif;
 	vec3_t xy_base, xy_test, v, mins, maxs;
-	wpobject_t * wpBase = gWPArray[baseindex];
-	wpobject_t * wpTest = gWPArray[testingindex];
+	wpobject_t * wp_base = gWPArray[baseindex];
+	wpobject_t * wp_test = gWPArray[testingindex];
 
 	mins[0] = -15;
 	mins[1] = -15;
@@ -1599,7 +1592,7 @@ int CanForceJumpTo(const int baseindex, const int testingindex, const float dist
 	maxs[1] = 15;
 	maxs[2] = 15; //1
 
-	if (!wpBase || !wpBase->inuse || !wpTest || !wpTest->inuse)
+	if (!wp_base || !wp_base->inuse || !wp_test || !wp_test->inuse)
 	{
 		return 0;
 	}
@@ -1609,8 +1602,8 @@ int CanForceJumpTo(const int baseindex, const int testingindex, const float dist
 		return 0;
 	}
 
-	VectorCopy(wpBase->origin, xy_base);
-	VectorCopy(wpTest->origin, xy_test);
+	VectorCopy(wp_base->origin, xy_base);
+	VectorCopy(wp_test->origin, xy_test);
 
 	xy_base[2] = xy_test[2];
 
@@ -1621,9 +1614,9 @@ int CanForceJumpTo(const int baseindex, const int testingindex, const float dist
 		return 0;
 	}
 
-	if ((int)wpBase->origin[2] < (int)wpTest->origin[2])
+	if ((int)wp_base->origin[2] < (int)wp_test->origin[2])
 	{
-		heightdif = wpTest->origin[2] - wpBase->origin[2];
+		heightdif = wp_test->origin[2] - wp_base->origin[2];
 	}
 	else
 	{
@@ -1642,7 +1635,7 @@ int CanForceJumpTo(const int baseindex, const int testingindex, const float dist
 		return 0;
 	}
 
-	if (!OrgVisibleCurve(wpBase->origin, mins, maxs, wpTest->origin, ENTITYNUM_NONE))
+	if (!OrgVisibleCurve(wp_base->origin, mins, maxs, wp_test->origin, ENTITYNUM_NONE))
 	{
 		return 0;
 	}
@@ -1660,7 +1653,7 @@ int CanForceJumpTo(const int baseindex, const int testingindex, const float dist
 
 void CalculatePaths(void)
 {
-	int maxNeighborDist = MAX_NEIGHBOR_LINK_DISTANCE;
+	int max_neighbor_dist = MAX_NEIGHBOR_LINK_DISTANCE;
 	vec3_t mins, maxs;
 
 	if (!gWPNum)
@@ -1670,7 +1663,7 @@ void CalculatePaths(void)
 
 	if (RMG.integer)
 	{
-		maxNeighborDist = DEFAULT_GRID_SPACING + DEFAULT_GRID_SPACING * 0.5;
+		max_neighbor_dist = DEFAULT_GRID_SPACING + DEFAULT_GRID_SPACING * 0.5;
 	}
 
 	mins[0] = -15;
@@ -1718,14 +1711,14 @@ void CalculatePaths(void)
 					const float nLDist = VectorLength(a);
 					const int force_jumpable = CanForceJumpTo(i, c, nLDist);
 
-					if ((nLDist < maxNeighborDist || force_jumpable) &&
+					if ((nLDist < max_neighbor_dist || force_jumpable) &&
 						((int)gWPArray[i]->origin[2] == (int)gWPArray[c]->origin[2] || force_jumpable) &&
 						(org_visible_box(gWPArray[i]->origin, mins, maxs, gWPArray[c]->origin, ENTITYNUM_NONE) ||
 							force_jumpable))
 					{
 						gWPArray[i]->neighbors[gWPArray[i]->neighbornum].num = c;
 						if (force_jumpable && ((int)gWPArray[i]->origin[2] != (int)gWPArray[c]->origin[2] || nLDist <
-							maxNeighborDist))
+							max_neighbor_dist))
 						{
 							gWPArray[i]->neighbors[gWPArray[i]->neighbornum].forceJumpTo = 999; //forceJumpable; //FJSR
 						}
@@ -1781,21 +1774,19 @@ void CalculateSiegeGoals(void)
 		if (ent && ent->classname && strcmp(ent->classname, "info_siege_objective") == 0)
 		{
 			tent = ent;
-			const gentity_t* t2ent = GetObjectThatTargets(tent);
+			const gentity_t* t2_ent = GetObjectThatTargets(tent);
 			int looptracker = 0;
 
-			while (t2ent && looptracker < 2048)
+			while (t2_ent && looptracker < 2048)
 			{
 				//looptracker keeps us from getting stuck in case something is set up weird on this map
-				tent = t2ent;
-				t2ent = GetObjectThatTargets(tent);
+				tent = t2_ent;
+				t2_ent = GetObjectThatTargets(tent);
 				looptracker++;
 			}
 
 			if (looptracker >= 2048)
 			{
-				//something unpleasent has happened
-				tent = NULL;
 				break;
 			}
 		}
@@ -1875,12 +1866,12 @@ int GetNearestVisibleWPToItem(vec3_t org, const int ignore)
 		{
 			vec3_t a;
 			VectorSubtract(org, gWPArray[i]->origin, a);
-			const float flLen = VectorLength(a);
+			const float fl_len = VectorLength(a);
 
-			if (flLen < bestdist && trap->InPVS(org, gWPArray[i]->origin) && org_visible_box(
+			if (fl_len < bestdist && trap->InPVS(org, gWPArray[i]->origin) && org_visible_box(
 				org, mins, maxs, gWPArray[i]->origin, ignore))
 			{
-				bestdist = flLen;
+				bestdist = fl_len;
 				bestindex = i;
 			}
 		}
@@ -2043,16 +2034,16 @@ void CalculateJumpRoutes(void)
 int LoadPathData(const char* filename)
 {
 	fileHandle_t f;
-	char fileString[WPARRAY_BUFFER_SIZE];
-	char routePath[MAX_QPATH];
+	char file_string[WPARRAY_BUFFER_SIZE];
+	char route_path[MAX_QPATH];
 	wpobject_t thiswp;
 
 	int i = 0;
 	int i_cv;
 
-	Com_sprintf(routePath, sizeof routePath, "botroutes/%s.wnt\0", filename);
+	Com_sprintf(route_path, sizeof route_path, "botroutes/%s.wnt\0", filename);
 
-	const int len = trap->FS_Open(routePath, &f, FS_READ);
+	const int len = trap->FS_Open(route_path, &f, FS_READ);
 
 	if (!f)
 	{
@@ -2067,31 +2058,31 @@ int LoadPathData(const char* filename)
 		return 0;
 	}
 
-	char* currentVar = B_TempAlloc(2048);
+	char* current_var = B_TempAlloc(2048);
 
-	trap->FS_Read(fileString, len, f);
+	trap->FS_Read(file_string, len, f);
 
-	if (fileString[i] == 'l')
+	if (file_string[i] == 'l')
 	{
 		//contains a "levelflags" entry..
-		char readLFlags[64];
+		char read_l_flags[64];
 		i_cv = 0;
 
-		while (fileString[i] != ' ')
+		while (file_string[i] != ' ')
 		{
 			i++;
 		}
 		i++;
-		while (fileString[i] != '\n')
+		while (file_string[i] != '\n')
 		{
-			readLFlags[i_cv] = fileString[i];
+			read_l_flags[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		readLFlags[i_cv] = 0;
+		read_l_flags[i_cv] = 0;
 		i++;
 
-		gLevelFlags = atoi(readLFlags);
+		gLevelFlags = atoi(read_l_flags);
 	}
 	else
 	{
@@ -2123,109 +2114,109 @@ int LoadPathData(const char* filename)
 			nei_num++;
 		}
 
-		while (fileString[i] != ' ')
+		while (file_string[i] != ' ')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.index = atoi(currentVar);
+		thiswp.index = atoi(current_var);
 
 		i_cv = 0;
 		i++;
 
-		while (fileString[i] != ' ')
+		while (file_string[i] != ' ')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.flags = atoi(currentVar);
+		thiswp.flags = atoi(current_var);
 
 		i_cv = 0;
 		i++;
 
-		while (fileString[i] != ' ')
+		while (file_string[i] != ' ')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.weight = atof(currentVar);
+		thiswp.weight = atof(current_var);
 
 		i_cv = 0;
 		i++;
 		i++;
 
-		while (fileString[i] != ' ')
+		while (file_string[i] != ' ')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.origin[0] = atof(currentVar);
+		thiswp.origin[0] = atof(current_var);
 
 		i_cv = 0;
 		i++;
 
-		while (fileString[i] != ' ')
+		while (file_string[i] != ' ')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.origin[1] = atof(currentVar);
+		thiswp.origin[1] = atof(current_var);
 
 		i_cv = 0;
 		i++;
 
-		while (fileString[i] != ')')
+		while (file_string[i] != ')')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.origin[2] = atof(currentVar);
+		thiswp.origin[2] = atof(current_var);
 
 		i += 4;
 
-		while (fileString[i] != '}')
+		while (file_string[i] != '}')
 		{
 			i_cv = 0;
-			while (fileString[i] != ' ' && fileString[i] != '-')
+			while (file_string[i] != ' ' && file_string[i] != '-')
 			{
-				currentVar[i_cv] = fileString[i];
+				current_var[i_cv] = file_string[i];
 				i_cv++;
 				i++;
 			}
-			currentVar[i_cv] = '\0';
+			current_var[i_cv] = '\0';
 
-			thiswp.neighbors[thiswp.neighbornum].num = atoi(currentVar);
+			thiswp.neighbors[thiswp.neighbornum].num = atoi(current_var);
 
-			if (fileString[i] == '-')
+			if (file_string[i] == '-')
 			{
 				i_cv = 0;
 				i++;
 
-				while (fileString[i] != ' ')
+				while (file_string[i] != ' ')
 				{
-					currentVar[i_cv] = fileString[i];
+					current_var[i_cv] = file_string[i];
 					i_cv++;
 					i++;
 				}
-				currentVar[i_cv] = '\0';
+				current_var[i_cv] = '\0';
 
 				thiswp.neighbors[thiswp.neighbornum].forceJumpTo = 999; //atoi(currentVar); //FJSR
 			}
@@ -2243,15 +2234,15 @@ int LoadPathData(const char* filename)
 		i++;
 		i++;
 
-		while (fileString[i] != '\n')
+		while (file_string[i] != '\n')
 		{
-			currentVar[i_cv] = fileString[i];
+			current_var[i_cv] = file_string[i];
 			i_cv++;
 			i++;
 		}
-		currentVar[i_cv] = '\0';
+		current_var[i_cv] = '\0';
 
-		thiswp.disttonext = atof(currentVar);
+		thiswp.disttonext = atof(current_var);
 
 		CreateNewWP_FromObject(&thiswp);
 		i++;
@@ -2398,9 +2389,9 @@ void FlagObjects(void)
 int SavePathData(const char* filename)
 {
 	fileHandle_t f;
-	char fileString[WPARRAY_BUFFER_SIZE];
+	char file_string[WPARRAY_BUFFER_SIZE];
 	vec3_t a;
-	float flLen;
+	float fl_len;
 
 	int i = 0;
 
@@ -2409,9 +2400,9 @@ int SavePathData(const char* filename)
 		return 0;
 	}
 
-	const char* routePath = va("botroutes/%s.wnt\0", filename);
+	const char* route_path = va("botroutes/%s.wnt\0", filename);
 
-	trap->FS_Open(routePath, &f, FS_WRITE);
+	trap->FS_Open(route_path, &f, FS_WRITE);
 
 	if (!f)
 	{
@@ -2429,9 +2420,9 @@ int SavePathData(const char* filename)
 
 	FlagObjects(); //currently only used for flagging waypoints nearest CTF flags
 
-	char* storeString = B_TempAlloc(4096);
+	char* store_string = B_TempAlloc(4096);
 
-	Com_sprintf(fileString, WPARRAY_BUFFER_SIZE, "%i %i %f (%f %f %f) { ", gWPArray[i]->index, gWPArray[i]->flags,
+	Com_sprintf(file_string, WPARRAY_BUFFER_SIZE, "%i %i %f (%f %f %f) { ", gWPArray[i]->index, gWPArray[i]->flags,
 	            gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
 
 	int n = 0;
@@ -2440,12 +2431,12 @@ int SavePathData(const char* filename)
 	{
 		if (gWPArray[i]->neighbors[n].forceJumpTo)
 		{
-			Com_sprintf(storeString, 4096, "%s%i-%i ", storeString, gWPArray[i]->neighbors[n].num,
+			Com_sprintf(store_string, 4096, "%s%i-%i ", store_string, gWPArray[i]->neighbors[n].num,
 			            gWPArray[i]->neighbors[n].forceJumpTo);
 		}
 		else
 		{
-			Com_sprintf(storeString, 4096, "%s%i ", storeString, gWPArray[i]->neighbors[n].num);
+			Com_sprintf(store_string, 4096, "%s%i ", store_string, gWPArray[i]->neighbors[n].num);
 		}
 		n++;
 	}
@@ -2453,23 +2444,23 @@ int SavePathData(const char* filename)
 	if (gWPArray[i + 1] && gWPArray[i + 1]->inuse && gWPArray[i + 1]->index)
 	{
 		VectorSubtract(gWPArray[i]->origin, gWPArray[i + 1]->origin, a);
-		flLen = VectorLength(a);
+		fl_len = VectorLength(a);
 	}
 	else
 	{
-		flLen = 0;
+		fl_len = 0;
 	}
 
-	gWPArray[i]->disttonext = flLen;
+	gWPArray[i]->disttonext = fl_len;
 
-	Com_sprintf(fileString, WPARRAY_BUFFER_SIZE, "%s} %f\n", fileString, flLen);
+	Com_sprintf(file_string, WPARRAY_BUFFER_SIZE, "%s} %f\n", file_string, fl_len);
 
 	i++;
 
 	while (i < gWPNum)
 	{
 		//sprintf(fileString, "%s%i %i %f (%f %f %f) { ", fileString, gWPArray[i]->index, gWPArray[i]->flags, gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
-		Com_sprintf(storeString, 4096, "%i %i %f (%f %f %f) { ", gWPArray[i]->index, gWPArray[i]->flags,
+		Com_sprintf(store_string, 4096, "%i %i %f (%f %f %f) { ", gWPArray[i]->index, gWPArray[i]->flags,
 		            gWPArray[i]->weight, gWPArray[i]->origin[0], gWPArray[i]->origin[1], gWPArray[i]->origin[2]);
 
 		n = 0;
@@ -2478,12 +2469,12 @@ int SavePathData(const char* filename)
 		{
 			if (gWPArray[i]->neighbors[n].forceJumpTo)
 			{
-				Com_sprintf(storeString, 4096, "%s%i-%i ", storeString, gWPArray[i]->neighbors[n].num,
+				Com_sprintf(store_string, 4096, "%s%i-%i ", store_string, gWPArray[i]->neighbors[n].num,
 				            gWPArray[i]->neighbors[n].forceJumpTo);
 			}
 			else
 			{
-				Com_sprintf(storeString, 4096, "%s%i ", storeString, gWPArray[i]->neighbors[n].num);
+				Com_sprintf(store_string, 4096, "%s%i ", store_string, gWPArray[i]->neighbors[n].num);
 			}
 			n++;
 		}
@@ -2491,23 +2482,23 @@ int SavePathData(const char* filename)
 		if (gWPArray[i + 1] && gWPArray[i + 1]->inuse && gWPArray[i + 1]->index)
 		{
 			VectorSubtract(gWPArray[i]->origin, gWPArray[i + 1]->origin, a);
-			flLen = VectorLength(a);
+			fl_len = VectorLength(a);
 		}
 		else
 		{
-			flLen = 0;
+			fl_len = 0;
 		}
 
-		gWPArray[i]->disttonext = flLen;
+		gWPArray[i]->disttonext = fl_len;
 
-		Com_sprintf(storeString, 4096, "%s} %f\n", storeString, flLen);
+		Com_sprintf(store_string, 4096, "%s} %f\n", store_string, fl_len);
 
-		Q_strcat(fileString, WPARRAY_BUFFER_SIZE, storeString);
+		Q_strcat(file_string, WPARRAY_BUFFER_SIZE, store_string);
 
 		i++;
 	}
 
-	trap->FS_Write(fileString, strlen(fileString), f);
+	trap->FS_Write(file_string, strlen(file_string), f);
 
 	B_TempFree(4096); //storeString
 
@@ -2526,34 +2517,34 @@ gentity_t* gSpawnPoints[MAX_SPAWNPOINT_ARRAY];
 int G_NearestNodeToPoint(vec3_t point)
 {
 	//gets the node on the entire grid which is nearest to the specified coordinates.
-	int bestIndex = -1;
+	int best_index = -1;
 	int i = 0;
-	float bestDist = 0;
+	float best_dist = 0;
 
 	while (i < nodenum)
 	{
-		vec3_t vSub;
-		VectorSubtract(nodetable[i].origin, point, vSub);
-		const float testDist = VectorLength(vSub);
+		vec3_t v_sub;
+		VectorSubtract(nodetable[i].origin, point, v_sub);
+		const float testDist = VectorLength(v_sub);
 
-		if (bestIndex == -1)
+		if (best_index == -1)
 		{
-			bestIndex = i;
-			bestDist = testDist;
+			best_index = i;
+			best_dist = testDist;
 
 			i++;
 			continue;
 		}
 
-		if (testDist < bestDist)
+		if (testDist < best_dist)
 		{
-			bestIndex = i;
-			bestDist = testDist;
+			best_index = i;
+			best_dist = testDist;
 		}
 		i++;
 	}
 
-	return bestIndex;
+	return best_index;
 }
 
 void G_NodeClearForNext(void)
@@ -2608,21 +2599,21 @@ int G_NodeMatchingXY_BA(const int x, const int y, const int final)
 	//return the node with the lowest weight that matches the specified x,y coordinates.
 	int i = 0;
 	int bestindex = -1;
-	float bestWeight = 9999;
+	float best_weight = 9999;
 
 	while (i < nodenum)
 	{
 		if ((int)nodetable[i].origin[0] == x &&
 			(int)nodetable[i].origin[1] == y &&
 			!nodetable[i].flags &&
-			(nodetable[i].weight < bestWeight || i == final))
+			(nodetable[i].weight < best_weight || i == final))
 		{
 			if (i == final)
 			{
 				return i;
 			}
 			bestindex = i;
-			bestWeight = nodetable[i].weight;
+			best_weight = nodetable[i].weight;
 		}
 
 		i++;
@@ -2631,86 +2622,86 @@ int G_NodeMatchingXY_BA(const int x, const int y, const int final)
 	return bestindex;
 }
 
-int G_RecursiveConnection(const int start, const int end, const int weight, const qboolean traceCheck,
-                          const float baseHeight)
+int G_RecursiveConnection(const int start, const int end, const int weight, const qboolean trace_check,
+                          const float base_height)
 {
-	int indexDirections[4]; //0 == down, 1 == up, 2 == left, 3 == right
-	int recursiveIndex = -1;
-	int passWeight = weight;
-	vec2_t givenXY;
+	int index_directions[4]; //0 == down, 1 == up, 2 == left, 3 == right
+	int recursive_index = -1;
+	int pass_weight = weight;
+	vec2_t given_xy;
 	trace_t tr;
 
-	passWeight++;
-	nodetable[start].weight = passWeight;
+	pass_weight++;
+	nodetable[start].weight = pass_weight;
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[0] -= DEFAULT_GRID_SPACING;
-	indexDirections[0] = G_NodeMatchingXY(givenXY[0], givenXY[1]);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[0] -= DEFAULT_GRID_SPACING;
+	index_directions[0] = G_NodeMatchingXY(given_xy[0], given_xy[1]);
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[0] += DEFAULT_GRID_SPACING;
-	indexDirections[1] = G_NodeMatchingXY(givenXY[0], givenXY[1]);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[0] += DEFAULT_GRID_SPACING;
+	index_directions[1] = G_NodeMatchingXY(given_xy[0], given_xy[1]);
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[1] -= DEFAULT_GRID_SPACING;
-	indexDirections[2] = G_NodeMatchingXY(givenXY[0], givenXY[1]);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[1] -= DEFAULT_GRID_SPACING;
+	index_directions[2] = G_NodeMatchingXY(given_xy[0], given_xy[1]);
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[1] += DEFAULT_GRID_SPACING;
-	indexDirections[3] = G_NodeMatchingXY(givenXY[0], givenXY[1]);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[1] += DEFAULT_GRID_SPACING;
+	index_directions[3] = G_NodeMatchingXY(given_xy[0], given_xy[1]);
 
 	int i = 0;
 	while (i < 4)
 	{
-		if (indexDirections[i] == end)
+		if (index_directions[i] == end)
 		{
 			//we've connected all the way to the destination.
-			return indexDirections[i];
+			return index_directions[i];
 		}
 
-		if (indexDirections[i] != -1 && nodetable[indexDirections[i]].flags)
+		if (index_directions[i] != -1 && nodetable[index_directions[i]].flags)
 		{
 			//this point is already used, so it's not valid.
-			indexDirections[i] = -1;
+			index_directions[i] = -1;
 		}
-		else if (indexDirections[i] != -1)
+		else if (index_directions[i] != -1)
 		{
 			//otherwise mark it as used.
-			nodetable[indexDirections[i]].flags = 1;
+			nodetable[index_directions[i]].flags = 1;
 		}
 
-		if (indexDirections[i] != -1 && traceCheck)
+		if (index_directions[i] != -1 && trace_check)
 		{
 			//if we care about trace visibility between nodes, perform the check and mark as not valid if the trace isn't clear.
-			trap->Trace(&tr, nodetable[start].origin, NULL, NULL, nodetable[indexDirections[i]].origin, ENTITYNUM_NONE,
+			trap->Trace(&tr, nodetable[start].origin, NULL, NULL, nodetable[index_directions[i]].origin, ENTITYNUM_NONE,
 			            CONTENTS_SOLID, qfalse, 0, 0);
 
 			if (tr.fraction != 1)
 			{
-				indexDirections[i] = -1;
+				index_directions[i] = -1;
 			}
 		}
 
-		if (indexDirections[i] != -1)
+		if (index_directions[i] != -1)
 		{
 			//it's still valid, so keep connecting via this point.
-			recursiveIndex = G_RecursiveConnection(indexDirections[i], end, passWeight, traceCheck, baseHeight);
+			recursive_index = G_RecursiveConnection(index_directions[i], end, pass_weight, trace_check, base_height);
 		}
 
-		if (recursiveIndex != -1)
+		if (recursive_index != -1)
 		{
 			//the result of the recursive check was valid, so return it.
-			return recursiveIndex;
+			return recursive_index;
 		}
 
 		i++;
 	}
 
-	return recursiveIndex;
+	return recursive_index;
 }
 
 #ifdef DEBUG_NODE_FILE
@@ -3001,64 +2992,64 @@ void CreateAsciiNodeTableRepresentation(int start, int end)
 }
 #endif
 
-qboolean G_BackwardAttachment(const int start, const int finalDestination, const int insertAfter)
+qboolean G_BackwardAttachment(const int start, const int final_destination, const int insert_after)
 {
 	//After creating a node path between 2 points, this function links the 2 points with actual waypoint data.
-	int indexDirections[4]; //0 == down, 1 == up, 2 == left, 3 == right
+	int index_directions[4]; //0 == down, 1 == up, 2 == left, 3 == right
 	int i = 0;
-	int lowestWeight = 9999;
-	int desiredIndex = -1;
-	vec2_t givenXY;
+	int lowest_weight = 9999;
+	int desired_index = -1;
+	vec2_t given_xy;
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[0] -= DEFAULT_GRID_SPACING;
-	indexDirections[0] = G_NodeMatchingXY_BA(givenXY[0], givenXY[1], finalDestination);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[0] -= DEFAULT_GRID_SPACING;
+	index_directions[0] = G_NodeMatchingXY_BA(given_xy[0], given_xy[1], final_destination);
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[0] += DEFAULT_GRID_SPACING;
-	indexDirections[1] = G_NodeMatchingXY_BA(givenXY[0], givenXY[1], finalDestination);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[0] += DEFAULT_GRID_SPACING;
+	index_directions[1] = G_NodeMatchingXY_BA(given_xy[0], given_xy[1], final_destination);
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[1] -= DEFAULT_GRID_SPACING;
-	indexDirections[2] = G_NodeMatchingXY_BA(givenXY[0], givenXY[1], finalDestination);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[1] -= DEFAULT_GRID_SPACING;
+	index_directions[2] = G_NodeMatchingXY_BA(given_xy[0], given_xy[1], final_destination);
 
-	givenXY[0] = nodetable[start].origin[0];
-	givenXY[1] = nodetable[start].origin[1];
-	givenXY[1] += DEFAULT_GRID_SPACING;
-	indexDirections[3] = G_NodeMatchingXY_BA(givenXY[0], givenXY[1], finalDestination);
+	given_xy[0] = nodetable[start].origin[0];
+	given_xy[1] = nodetable[start].origin[1];
+	given_xy[1] += DEFAULT_GRID_SPACING;
+	index_directions[3] = G_NodeMatchingXY_BA(given_xy[0], given_xy[1], final_destination);
 
 	while (i < 4)
 	{
-		if (indexDirections[i] != -1)
+		if (index_directions[i] != -1)
 		{
-			if (indexDirections[i] == finalDestination)
+			if (index_directions[i] == final_destination)
 			{
 				//hooray, we've found the original point and linked all the way back to it.
-				CreateNewWP_InsertUnder(nodetable[start].origin, 0, insertAfter);
-				CreateNewWP_InsertUnder(nodetable[indexDirections[i]].origin, 0, insertAfter);
+				CreateNewWP_InsertUnder(nodetable[start].origin, 0, insert_after);
+				CreateNewWP_InsertUnder(nodetable[index_directions[i]].origin, 0, insert_after);
 				return qtrue;
 			}
 
-			if (nodetable[indexDirections[i]].weight < lowestWeight && nodetable[indexDirections[i]].weight && !
-				nodetable[indexDirections[i]].flags
+			if (nodetable[index_directions[i]].weight < lowest_weight && nodetable[index_directions[i]].weight && !
+				nodetable[index_directions[i]].flags
 				/*&& (nodetable[indexDirections[i]].origin[2]-64 < nodetable[start].origin[2])*/)
 			{
-				desiredIndex = indexDirections[i];
-				lowestWeight = nodetable[indexDirections[i]].weight;
+				desired_index = index_directions[i];
+				lowest_weight = nodetable[index_directions[i]].weight;
 			}
 		}
 		i++;
 	}
 
-	if (desiredIndex != -1)
+	if (desired_index != -1)
 	{
 		//Create a waypoint here, and then recursively call this function for the next neighbor with the lowest weight.
 		if (gWPNum < 3900)
 		{
-			CreateNewWP_InsertUnder(nodetable[start].origin, 0, insertAfter);
+			CreateNewWP_InsertUnder(nodetable[start].origin, 0, insert_after);
 		}
 		else
 		{
@@ -3066,7 +3057,7 @@ qboolean G_BackwardAttachment(const int start, const int finalDestination, const
 		}
 
 		nodetable[start].flags = 1;
-		return G_BackwardAttachment(desiredIndex, finalDestination, insertAfter);
+		return G_BackwardAttachment(desired_index, final_destination, insert_after);
 	}
 
 	return qfalse;
@@ -3079,15 +3070,15 @@ qboolean G_BackwardAttachment(const int start, const int finalDestination, const
 void G_RMGPathing(void)
 {
 	//Generate waypoint information on-the-fly for the random mission.
-	float placeX, placeY, placeZ;
+	float place_x, place_y, place_z;
 	int i = 0;
-	int nearestIndex;
-	int nearestIndexForNext;
+	int nearest_index;
+	int nearest_index_for_next;
 #ifdef PATH_TIME_DEBUG
 	int startTime;
 	int endTime;
 #endif
-	vec3_t downVec, trMins, trMaxs;
+	vec3_t down_vec, tr_mins, tr_maxs;
 	trace_t tr;
 	const gentity_t* terrain = G_Find(NULL, FOFS(classname), "terrain");
 
@@ -3104,37 +3095,37 @@ void G_RMGPathing(void)
 	nodenum = 0;
 	memset(&nodetable, 0, sizeof nodetable);
 
-	VectorSet(trMins, -15, -15, DEFAULT_MINS_2);
-	VectorSet(trMaxs, 15, 15, DEFAULT_MAXS_2);
+	VectorSet(tr_mins, -15, -15, DEFAULT_MINS_2);
+	VectorSet(tr_maxs, 15, 15, DEFAULT_MAXS_2);
 
-	placeX = terrain->r.absmin[0];
-	placeY = terrain->r.absmin[1];
-	placeZ = terrain->r.absmax[2] - 400;
+	place_x = terrain->r.absmin[0];
+	place_y = terrain->r.absmin[1];
+	place_z = terrain->r.absmax[2] - 400;
 
 	//skim through the entirety of the terrain limits and drop nodes, removing
 	//nodes that start in solid or fall too high on the terrain.
-	while (placeY < terrain->r.absmax[1])
+	while (place_y < terrain->r.absmax[1])
 	{
-		const int gridSpacing = DEFAULT_GRID_SPACING;
+		const int grid_spacing = DEFAULT_GRID_SPACING;
 		if (nodenum >= MAX_NODETABLE_SIZE)
 		{
 			break;
 		}
 
-		while (placeX < terrain->r.absmax[0])
+		while (place_x < terrain->r.absmax[0])
 		{
 			if (nodenum >= MAX_NODETABLE_SIZE)
 			{
 				break;
 			}
 
-			nodetable[nodenum].origin[0] = placeX;
-			nodetable[nodenum].origin[1] = placeY;
-			nodetable[nodenum].origin[2] = placeZ;
+			nodetable[nodenum].origin[0] = place_x;
+			nodetable[nodenum].origin[1] = place_y;
+			nodetable[nodenum].origin[2] = place_z;
 
-			VectorCopy(nodetable[nodenum].origin, downVec);
-			downVec[2] -= 3000;
-			trap->Trace(&tr, nodetable[nodenum].origin, trMins, trMaxs, downVec, ENTITYNUM_NONE, MASK_SOLID, qfalse, 0,
+			VectorCopy(nodetable[nodenum].origin, down_vec);
+			down_vec[2] -= 3000;
+			trap->Trace(&tr, nodetable[nodenum].origin, tr_mins, tr_maxs, down_vec, ENTITYNUM_NONE, MASK_SOLID, qfalse, 0,
 			            0);
 
 			if ((tr.entityNum >= ENTITYNUM_WORLD || g_entities[tr.entityNum].s.eType == ET_TERRAIN) && tr.endpos[2] <
@@ -3149,11 +3140,11 @@ void G_RMGPathing(void)
 				VectorClear(nodetable[nodenum].origin);
 			}
 
-			placeX += gridSpacing;
+			place_x += grid_spacing;
 		}
 
-		placeX = terrain->r.absmin[0];
-		placeY += gridSpacing;
+		place_x = terrain->r.absmin[0];
+		place_y += grid_spacing;
 	}
 
 	G_NodeClearForNext();
@@ -3167,17 +3158,17 @@ void G_RMGPathing(void)
 			continue;
 		}
 
-		nearestIndex = G_NearestNodeToPoint(gSpawnPoints[i]->s.origin);
-		nearestIndexForNext = G_NearestNodeToPoint(gSpawnPoints[i + 1]->s.origin);
+		nearest_index = G_NearestNodeToPoint(gSpawnPoints[i]->s.origin);
+		nearest_index_for_next = G_NearestNodeToPoint(gSpawnPoints[i + 1]->s.origin);
 
-		if (nearestIndex == -1 || nearestIndexForNext == -1)
+		if (nearest_index == -1 || nearest_index_for_next == -1)
 		{
 			//Looks like there is no grid data near one of the points. Ideally, this will never happen.
 			i++;
 			continue;
 		}
 
-		if (nearestIndex == nearestIndexForNext)
+		if (nearest_index == nearest_index_for_next)
 		{
 			//Two spawn points on top of each other? We don't need to do both points, keep going until the next differs.
 			i++;
@@ -3189,14 +3180,14 @@ void G_RMGPathing(void)
 
 		//For now I am going to branch out mindlessly, but I will probably want to use some sort of A* algorithm
 		//here to lessen the time taken.
-		if (G_RecursiveConnection(nearestIndex, nearestIndexForNext, 0, qtrue, terrain->r.absmin[2]) !=
-			nearestIndexForNext)
+		if (G_RecursiveConnection(nearest_index, nearest_index_for_next, 0, qtrue, terrain->r.absmin[2]) !=
+			nearest_index_for_next)
 		{
 			//failed to branch to where we want. Oh well, try it without trace checks.
 			G_NodeClearForNext();
 
-			if (G_RecursiveConnection(nearestIndex, nearestIndexForNext, 0, qfalse, terrain->r.absmin[2]) !=
-				nearestIndexForNext)
+			if (G_RecursiveConnection(nearest_index, nearest_index_for_next, 0, qfalse, terrain->r.absmin[2]) !=
+				nearest_index_for_next)
 			{
 				//still failed somehow. Just disregard this point.
 				G_NodeClearForNext();
@@ -3214,7 +3205,7 @@ void G_RMGPathing(void)
 		CreateAsciiNodeTableRepresentation(nearestIndex, nearestIndexForNext);
 #endif
 #endif
-		if (G_BackwardAttachment(nearestIndexForNext, nearestIndex, gWPNum - 1))
+		if (G_BackwardAttachment(nearest_index_for_next, nearest_index, gWPNum - 1))
 		{
 			//successfully connected the trail from nearestIndex to nearestIndexForNext
 			if (gSpawnPoints[i + 1]->inuse && gSpawnPoints[i + 1]->item &&
@@ -3393,8 +3384,8 @@ void LoadPath_ThisLevel(void)
 
 gentity_t* GetClosestSpawn(const gentity_t* ent)
 {
-	gentity_t* closestSpawn = NULL;
-	float closestDist = -1;
+	gentity_t* closest_spawn = NULL;
+	float closest_dist = -1;
 	int i = MAX_CLIENTS;
 
 	while (i < level.num_entities)
@@ -3404,28 +3395,28 @@ gentity_t* GetClosestSpawn(const gentity_t* ent)
 		if (spawn && spawn->inuse && (!Q_stricmp(spawn->classname, "info_player_start") || !Q_stricmp(
 			spawn->classname, "info_player_deathmatch")))
 		{
-			vec3_t vSub;
+			vec3_t v_sub;
 
-			VectorSubtract(ent->client->ps.origin, spawn->r.currentOrigin, vSub);
-			const float checkDist = VectorLength(vSub);
+			VectorSubtract(ent->client->ps.origin, spawn->r.currentOrigin, v_sub);
+			const float checkDist = VectorLength(v_sub);
 
-			if (closestDist == -1 || checkDist < closestDist)
+			if (closest_dist == -1 || checkDist < closest_dist)
 			{
-				closestSpawn = spawn;
-				closestDist = checkDist;
+				closest_spawn = spawn;
+				closest_dist = checkDist;
 			}
 		}
 
 		i++;
 	}
 
-	return closestSpawn;
+	return closest_spawn;
 }
 
-gentity_t* GetNextSpawnInIndex(const gentity_t* currentSpawn)
+gentity_t* GetNextSpawnInIndex(const gentity_t* current_spawn)
 {
-	gentity_t* nextSpawn = NULL;
-	int i = currentSpawn->s.number + 1;
+	gentity_t* next_spawn = NULL;
+	int i = current_spawn->s.number + 1;
 
 	gentity_t* spawn;
 
@@ -3436,14 +3427,14 @@ gentity_t* GetNextSpawnInIndex(const gentity_t* currentSpawn)
 		if (spawn && spawn->inuse && (!Q_stricmp(spawn->classname, "info_player_start") || !Q_stricmp(
 			spawn->classname, "info_player_deathmatch")))
 		{
-			nextSpawn = spawn;
+			next_spawn = spawn;
 			break;
 		}
 
 		i++;
 	}
 
-	if (!nextSpawn)
+	if (!next_spawn)
 	{
 		//loop back around to 0
 		i = MAX_CLIENTS;
@@ -3455,7 +3446,7 @@ gentity_t* GetNextSpawnInIndex(const gentity_t* currentSpawn)
 			if (spawn && spawn->inuse && (!Q_stricmp(spawn->classname, "info_player_start") || !Q_stricmp(
 				spawn->classname, "info_player_deathmatch")))
 			{
-				nextSpawn = spawn;
+				next_spawn = spawn;
 				break;
 			}
 
@@ -3463,7 +3454,7 @@ gentity_t* GetNextSpawnInIndex(const gentity_t* currentSpawn)
 		}
 	}
 
-	return nextSpawn;
+	return next_spawn;
 }
 
 int AcceptBotCommand(const char* cmd, const gentity_t* pl)
@@ -3475,11 +3466,11 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 		return 0;
 	}
 
-	int OptionalArgument = 0;
+	int optional_argument = 0;
 	int i = 0;
-	int FlagsFromArgument = 0;
-	const char* OptionalSArgument;
-	const char* RequiredSArgument;
+	int flags_from_argument = 0;
+	const char* optional_s_argument;
+	const char* required_s_argument;
 
 	//if a waypoint editing related command is issued, bots will deactivate.
 	//once bot_wp_save is issued and the trail is recalculated, bots will activate again.
@@ -3517,16 +3508,16 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 	if (Q_stricmp(cmd, "bot_wp_add") == 0)
 	{
 		gDeactivated = 1;
-		OptionalSArgument = ConcatArgs(1);
+		optional_s_argument = ConcatArgs(1);
 
-		if (OptionalSArgument)
+		if (optional_s_argument)
 		{
-			OptionalArgument = atoi(OptionalSArgument);
+			optional_argument = atoi(optional_s_argument);
 		}
 
-		if (OptionalSArgument && OptionalSArgument[0])
+		if (optional_s_argument && optional_s_argument[0])
 		{
-			CreateNewWP_InTrail(pl->client->ps.origin, 0, OptionalArgument);
+			CreateNewWP_InTrail(pl->client->ps.origin, 0, optional_argument);
 		}
 		else
 		{
@@ -3539,16 +3530,16 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 	{
 		gDeactivated = 1;
 
-		OptionalSArgument = ConcatArgs(1);
+		optional_s_argument = ConcatArgs(1);
 
-		if (OptionalSArgument)
+		if (optional_s_argument)
 		{
-			OptionalArgument = atoi(OptionalSArgument);
+			optional_argument = atoi(optional_s_argument);
 		}
 
-		if (OptionalSArgument && OptionalSArgument[0])
+		if (optional_s_argument && optional_s_argument[0])
 		{
-			RemoveWP_InTrail(OptionalArgument);
+			RemoveWP_InTrail(optional_argument);
 		}
 		else
 		{
@@ -3561,16 +3552,16 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 	if (Q_stricmp(cmd, "bot_wp_tele") == 0)
 	{
 		gDeactivated = 1;
-		OptionalSArgument = ConcatArgs(1);
+		optional_s_argument = ConcatArgs(1);
 
-		if (OptionalSArgument)
+		if (optional_s_argument)
 		{
-			OptionalArgument = atoi(OptionalSArgument);
+			optional_argument = atoi(optional_s_argument);
 		}
 
-		if (OptionalSArgument && OptionalSArgument[0])
+		if (optional_s_argument && optional_s_argument[0])
 		{
-			TeleportToWP(pl, OptionalArgument);
+			TeleportToWP(pl, optional_argument);
 		}
 		else
 		{
@@ -3582,19 +3573,19 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 
 	if (Q_stricmp(cmd, "bot_wp_spawntele") == 0)
 	{
-		const gentity_t* closestSpawn = GetClosestSpawn(pl);
+		const gentity_t* closest_spawn = GetClosestSpawn(pl);
 
-		if (!closestSpawn)
+		if (!closest_spawn)
 		{
 			//There should always be a spawn point..
 			return 1;
 		}
 
-		closestSpawn = GetNextSpawnInIndex(closestSpawn);
+		closest_spawn = GetNextSpawnInIndex(closest_spawn);
 
-		if (closestSpawn)
+		if (closest_spawn)
 		{
-			VectorCopy(closestSpawn->r.currentOrigin, pl->client->ps.origin);
+			VectorCopy(closest_spawn->r.currentOrigin, pl->client->ps.origin);
 		}
 		return 1;
 	}
@@ -3603,9 +3594,9 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 	{
 		gDeactivated = 1;
 
-		RequiredSArgument = ConcatArgs(1);
+		required_s_argument = ConcatArgs(1);
 
-		if (!RequiredSArgument || !RequiredSArgument[0])
+		if (!required_s_argument || !required_s_argument[0])
 		{
 			trap->Print(
 				S_COLOR_YELLOW
@@ -3613,86 +3604,86 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 			return 1;
 		}
 
-		while (RequiredSArgument[i])
+		while (required_s_argument[i])
 		{
-			if (RequiredSArgument[i] == 'j')
+			if (required_s_argument[i] == 'j')
 			{
-				FlagsFromArgument |= WPFLAG_JUMP;
+				flags_from_argument |= WPFLAG_JUMP;
 			}
-			else if (RequiredSArgument[i] == 'd')
+			else if (required_s_argument[i] == 'd')
 			{
-				FlagsFromArgument |= WPFLAG_DUCK;
+				flags_from_argument |= WPFLAG_DUCK;
 			}
-			else if (RequiredSArgument[i] == 'c')
+			else if (required_s_argument[i] == 'c')
 			{
-				FlagsFromArgument |= WPFLAG_SNIPEORCAMPSTAND;
+				flags_from_argument |= WPFLAG_SNIPEORCAMPSTAND;
 			}
-			else if (RequiredSArgument[i] == 'f')
+			else if (required_s_argument[i] == 'f')
 			{
-				FlagsFromArgument |= WPFLAG_WAITFORFUNC;
+				flags_from_argument |= WPFLAG_WAITFORFUNC;
 			}
-			else if (RequiredSArgument[i] == 's')
+			else if (required_s_argument[i] == 's')
 			{
-				FlagsFromArgument |= WPFLAG_SNIPEORCAMP;
+				flags_from_argument |= WPFLAG_SNIPEORCAMP;
 			}
-			else if (RequiredSArgument[i] == 'x')
+			else if (required_s_argument[i] == 'x')
 			{
-				FlagsFromArgument |= WPFLAG_ONEWAY_FWD;
+				flags_from_argument |= WPFLAG_ONEWAY_FWD;
 			}
-			else if (RequiredSArgument[i] == 'y')
+			else if (required_s_argument[i] == 'y')
 			{
-				FlagsFromArgument |= WPFLAG_ONEWAY_BACK;
+				flags_from_argument |= WPFLAG_ONEWAY_BACK;
 			}
-			else if (RequiredSArgument[i] == 'g')
+			else if (required_s_argument[i] == 'g')
 			{
-				FlagsFromArgument |= WPFLAG_GOALPOINT;
+				flags_from_argument |= WPFLAG_GOALPOINT;
 			}
-			else if (RequiredSArgument[i] == 'n')
+			else if (required_s_argument[i] == 'n')
 			{
-				FlagsFromArgument |= WPFLAG_NOVIS;
+				flags_from_argument |= WPFLAG_NOVIS;
 			}
-			else if (RequiredSArgument[i] == 'm')
+			else if (required_s_argument[i] == 'm')
 			{
-				FlagsFromArgument |= WPFLAG_NOMOVEFUNC;
+				flags_from_argument |= WPFLAG_NOMOVEFUNC;
 			}
-			else if (RequiredSArgument[i] == 'q')
+			else if (required_s_argument[i] == 'q')
 			{
-				FlagsFromArgument |= WPFLAG_DESTROY_FUNCBREAK;
+				flags_from_argument |= WPFLAG_DESTROY_FUNCBREAK;
 			}
-			else if (RequiredSArgument[i] == 'r')
+			else if (required_s_argument[i] == 'r')
 			{
-				FlagsFromArgument |= WPFLAG_REDONLY;
+				flags_from_argument |= WPFLAG_REDONLY;
 			}
-			else if (RequiredSArgument[i] == 'b')
+			else if (required_s_argument[i] == 'b')
 			{
-				FlagsFromArgument |= WPFLAG_BLUEONLY;
+				flags_from_argument |= WPFLAG_BLUEONLY;
 			}
-			else if (RequiredSArgument[i] == 'p')
+			else if (required_s_argument[i] == 'p')
 			{
-				FlagsFromArgument |= WPFLAG_FORCEPUSH;
+				flags_from_argument |= WPFLAG_FORCEPUSH;
 			}
-			else if (RequiredSArgument[i] == 'o')
+			else if (required_s_argument[i] == 'o')
 			{
-				FlagsFromArgument |= WPFLAG_FORCEPULL;
+				flags_from_argument |= WPFLAG_FORCEPULL;
 			}
 
 			i++;
 		}
 
-		OptionalSArgument = ConcatArgs(2);
+		optional_s_argument = ConcatArgs(2);
 
-		if (OptionalSArgument)
+		if (optional_s_argument)
 		{
-			OptionalArgument = atoi(OptionalSArgument);
+			optional_argument = atoi(optional_s_argument);
 		}
 
-		if (OptionalSArgument && OptionalSArgument[0])
+		if (optional_s_argument && optional_s_argument[0])
 		{
-			CreateNewWP_InTrail(pl->client->ps.origin, FlagsFromArgument, OptionalArgument);
+			CreateNewWP_InTrail(pl->client->ps.origin, flags_from_argument, optional_argument);
 		}
 		else
 		{
-			CreateNewWP(pl->client->ps.origin, FlagsFromArgument);
+			CreateNewWP(pl->client->ps.origin, flags_from_argument);
 		}
 		return 1;
 	}
@@ -3701,9 +3692,9 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 	{
 		gDeactivated = 1;
 
-		RequiredSArgument = ConcatArgs(1);
+		required_s_argument = ConcatArgs(1);
 
-		if (!RequiredSArgument || !RequiredSArgument[0])
+		if (!required_s_argument || !required_s_argument[0])
 		{
 			trap->Print(
 				S_COLOR_YELLOW
@@ -3711,82 +3702,82 @@ int AcceptBotCommand(const char* cmd, const gentity_t* pl)
 			return 1;
 		}
 
-		while (RequiredSArgument[i])
+		while (required_s_argument[i])
 		{
-			if (RequiredSArgument[i] == 'j')
+			if (required_s_argument[i] == 'j')
 			{
-				FlagsFromArgument |= WPFLAG_JUMP;
+				flags_from_argument |= WPFLAG_JUMP;
 			}
-			else if (RequiredSArgument[i] == 'd')
+			else if (required_s_argument[i] == 'd')
 			{
-				FlagsFromArgument |= WPFLAG_DUCK;
+				flags_from_argument |= WPFLAG_DUCK;
 			}
-			else if (RequiredSArgument[i] == 'c')
+			else if (required_s_argument[i] == 'c')
 			{
-				FlagsFromArgument |= WPFLAG_SNIPEORCAMPSTAND;
+				flags_from_argument |= WPFLAG_SNIPEORCAMPSTAND;
 			}
-			else if (RequiredSArgument[i] == 'f')
+			else if (required_s_argument[i] == 'f')
 			{
-				FlagsFromArgument |= WPFLAG_WAITFORFUNC;
+				flags_from_argument |= WPFLAG_WAITFORFUNC;
 			}
-			else if (RequiredSArgument[i] == 's')
+			else if (required_s_argument[i] == 's')
 			{
-				FlagsFromArgument |= WPFLAG_SNIPEORCAMP;
+				flags_from_argument |= WPFLAG_SNIPEORCAMP;
 			}
-			else if (RequiredSArgument[i] == 'x')
+			else if (required_s_argument[i] == 'x')
 			{
-				FlagsFromArgument |= WPFLAG_ONEWAY_FWD;
+				flags_from_argument |= WPFLAG_ONEWAY_FWD;
 			}
-			else if (RequiredSArgument[i] == 'y')
+			else if (required_s_argument[i] == 'y')
 			{
-				FlagsFromArgument |= WPFLAG_ONEWAY_BACK;
+				flags_from_argument |= WPFLAG_ONEWAY_BACK;
 			}
-			else if (RequiredSArgument[i] == 'g')
+			else if (required_s_argument[i] == 'g')
 			{
-				FlagsFromArgument |= WPFLAG_GOALPOINT;
+				flags_from_argument |= WPFLAG_GOALPOINT;
 			}
-			else if (RequiredSArgument[i] == 'n')
+			else if (required_s_argument[i] == 'n')
 			{
-				FlagsFromArgument |= WPFLAG_NOVIS;
+				flags_from_argument |= WPFLAG_NOVIS;
 			}
-			else if (RequiredSArgument[i] == 'm')
+			else if (required_s_argument[i] == 'm')
 			{
-				FlagsFromArgument |= WPFLAG_NOMOVEFUNC;
+				flags_from_argument |= WPFLAG_NOMOVEFUNC;
 			}
-			else if (RequiredSArgument[i] == 'q')
+			else if (required_s_argument[i] == 'q')
 			{
-				FlagsFromArgument |= WPFLAG_DESTROY_FUNCBREAK;
+				flags_from_argument |= WPFLAG_DESTROY_FUNCBREAK;
 			}
-			else if (RequiredSArgument[i] == 'r')
+			else if (required_s_argument[i] == 'r')
 			{
-				FlagsFromArgument |= WPFLAG_REDONLY;
+				flags_from_argument |= WPFLAG_REDONLY;
 			}
-			else if (RequiredSArgument[i] == 'b')
+			else if (required_s_argument[i] == 'b')
 			{
-				FlagsFromArgument |= WPFLAG_BLUEONLY;
+				flags_from_argument |= WPFLAG_BLUEONLY;
 			}
-			else if (RequiredSArgument[i] == 'p')
+			else if (required_s_argument[i] == 'p')
 			{
-				FlagsFromArgument |= WPFLAG_FORCEPUSH;
+				flags_from_argument |= WPFLAG_FORCEPUSH;
 			}
-			else if (RequiredSArgument[i] == 'o')
+			else if (required_s_argument[i] == 'o')
 			{
-				FlagsFromArgument |= WPFLAG_FORCEPULL;
+				flags_from_argument |= WPFLAG_FORCEPULL;
 			}
 
 			i++;
 		}
 
-		OptionalSArgument = ConcatArgs(2);
+		optional_s_argument = ConcatArgs(2);
 
-		if (OptionalSArgument)
+		if (optional_s_argument)
 		{
-			OptionalArgument = atoi(OptionalSArgument);
+			optional_argument = atoi(optional_s_argument);
 		}
 
-		if (OptionalSArgument && OptionalSArgument[0])
+		if (optional_s_argument && optional_s_argument[0])
 		{
-			WPFlagsModify(OptionalArgument, FlagsFromArgument);
+			WPFlagsModify(optional_argument, flags_from_argument);
 		}
 		else
 		{

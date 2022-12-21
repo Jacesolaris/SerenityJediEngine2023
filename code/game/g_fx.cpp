@@ -378,12 +378,12 @@ void SP_CreateWind(gentity_t* ent)
 	if (ent->spawnflags & 2)
 	{
 		char temp[256];
-		vec3_t windDir;
-		AngleVectors(ent->s.angles, windDir, nullptr, nullptr);
+		vec3_t wind_dir;
+		AngleVectors(ent->s.angles, wind_dir, nullptr, nullptr);
 		G_SpawnFloat("speed", "500", &ent->speed);
-		VectorScale(windDir, ent->speed, windDir);
+		VectorScale(wind_dir, ent->speed, wind_dir);
 
-		sprintf(temp, "constantwind ( %f %f %f )", windDir[0], windDir[1], windDir[2]);
+		sprintf(temp, "constantwind ( %f %f %f )", wind_dir[0], wind_dir[1], wind_dir[2]);
 		G_FindConfigstringIndex(temp, CS_WORLD_FX, MAX_WORLD_FX, qtrue);
 	}
 
@@ -432,16 +432,16 @@ void SP_CreateWindZone(gentity_t* ent)
 
 	gi.SetBrushModel(ent, ent->model);
 
-	vec3_t windDir;
-	AngleVectors(ent->s.angles, windDir, nullptr, nullptr);
+	vec3_t wind_dir;
+	AngleVectors(ent->s.angles, wind_dir, nullptr, nullptr);
 	G_SpawnFloat("speed", "500", &ent->speed);
-	VectorScale(windDir, ent->speed, windDir);
+	VectorScale(wind_dir, ent->speed, wind_dir);
 
 	char temp[256];
 	sprintf(temp, "windzone ( %f %f %f ) ( %f %f %f ) ( %f %f %f )",
 	        ent->mins[0], ent->mins[1], ent->mins[2],
 	        ent->maxs[0], ent->maxs[1], ent->maxs[2],
-	        windDir[0], windDir[1], windDir[2]
+	        wind_dir[0], wind_dir[1], wind_dir[2]
 	);
 	G_FindConfigstringIndex(temp, CS_WORLD_FX, MAX_WORLD_FX, qtrue);
 }
@@ -501,11 +501,11 @@ void fx_rain_think(gentity_t* ent)
 		}
 		else if (gi.WE_IsOutside(player->currentOrigin))
 		{
-			vec3_t effectPos;
-			vec3_t effectDir;
-			VectorClear(effectDir);
-			effectDir[0] += Q_flrand(-1.0f, 1.0f);
-			effectDir[1] += Q_flrand(-1.0f, 1.0f);
+			vec3_t effect_pos;
+			vec3_t effect_dir;
+			VectorClear(effect_dir);
+			effect_dir[0] += Q_flrand(-1.0f, 1.0f);
+			effect_dir[1] += Q_flrand(-1.0f, 1.0f);
 
 			const bool PlayEffect = Q_irand(1, ent->aimDebounceTime) == 1;
 			const bool PlayFlicker = Q_irand(1, ent->attackDebounceTime) == 1;
@@ -515,15 +515,15 @@ void fx_rain_think(gentity_t* ent)
 			//----------------
 			if (PlaySound && !PlayEffect)
 			{
-				VectorMA(player->currentOrigin, 250.0f, effectDir, effectPos);
-				G_SoundAtSpot(effectPos, G_SoundIndex(va("sound/ambience/thunder%d", Q_irand(1, 4))), qtrue);
+				VectorMA(player->currentOrigin, 250.0f, effect_dir, effect_pos);
+				G_SoundAtSpot(effect_pos, G_SoundIndex(va("sound/ambience/thunder%d", Q_irand(1, 4))), qtrue);
 			}
 
 			// Play The Effect
 			//-----------------
 			if (PlayEffect)
 			{
-				VectorMA(player->currentOrigin, 400.0f, effectDir, effectPos);
+				VectorMA(player->currentOrigin, 400.0f, effect_dir, effect_pos);
 				if (PlaySound)
 				{
 					G_Sound(player, G_SoundIndex(va("sound/ambience/thunder_close%d", Q_irand(1, 2))));
@@ -531,12 +531,12 @@ void fx_rain_think(gentity_t* ent)
 
 				// Raise It Up Into The Sky
 				//--------------------------
-				effectPos[2] += Q_flrand(600.0f, 1000.0f);
+				effect_pos[2] += Q_flrand(600.0f, 1000.0f);
 
-				VectorClear(effectDir);
-				effectDir[2] = -1.0f;
+				VectorClear(effect_dir);
+				effect_dir[2] = -1.0f;
 
-				G_PlayEffect("env/huge_lightning", effectPos, effectDir);
+				G_PlayEffect("env/huge_lightning", effect_pos, effect_dir);
 				ent->nextthink = level.time + Q_irand(100, 200);
 			}
 
@@ -711,14 +711,14 @@ void SP_CreatePuffSystem(gentity_t* ent)
 	const cvar_t* r_weatherScale = gi.cvar("r_weatherScale", "1", CVAR_ARCHIVE);
 
 	// See which puff system to use.
-	int iPuffSystem = 0;
-	int iVal = 0;
-	if (G_SpawnInt("whichsystem", "0", &iVal))
+	int i_puff_system = 0;
+	int i_val = 0;
+	if (G_SpawnInt("whichsystem", "0", &i_val))
 	{
-		iPuffSystem = iVal;
-		if (iPuffSystem < 0 || iPuffSystem > 1)
+		i_puff_system = i_val;
+		if (i_puff_system < 0 || i_puff_system > 1)
 		{
-			iPuffSystem = 0;
+			i_puff_system = 0;
 			//ri.Error( ERR_DROP, "Weather Effect: Invalid value for whichsystem key" );
 			Com_Printf("Weather Effect: Invalid value for whichsystem key\n");
 		}
@@ -726,15 +726,15 @@ void SP_CreatePuffSystem(gentity_t* ent)
 
 	if (r_weatherScale->value > 0.0f)
 	{
-		sprintf(temp, "puff%i init %i", iPuffSystem, static_cast<int>(ent->count * r_weatherScale->value));
+		sprintf(temp, "puff%i init %i", i_puff_system, static_cast<int>(ent->count * r_weatherScale->value));
 
 		G_FindConfigstringIndex(temp, CS_WORLD_FX, MAX_WORLD_FX, qtrue);
 	}
 
 	// See whether we should have the saber spark from the puff system.
-	iVal = 0;
-	G_SpawnInt("sabersparks", "0", &iVal);
-	if (iVal == 1)
+	i_val = 0;
+	G_SpawnInt("sabersparks", "0", &i_val);
+	if (i_val == 1)
 		level.worldFlags |= WF_PUFFING;
 	else
 		level.worldFlags &= ~WF_PUFFING;
@@ -755,7 +755,7 @@ void SP_CreatePuffSystem(gentity_t* ent)
 			continue;
 
 		// Send the command.
-		Com_sprintf(temp, 128, "puff%i %s %s", iPuffSystem, key, value);
+		Com_sprintf(temp, 128, "puff%i %s %s", i_puff_system, key, value);
 		G_FindConfigstringIndex(temp, CS_WORLD_FX, MAX_WORLD_FX, qtrue);
 	}
 }

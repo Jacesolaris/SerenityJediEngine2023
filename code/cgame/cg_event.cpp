@@ -479,7 +479,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_STEP_16: // smooth out step up transitions
 		DEBUGNAME("EV_STEP");
 		{
-			float oldStep;
+			float old_step;
 
 			if (client_num != cg.predicted_player_state.client_num)
 			{
@@ -494,16 +494,16 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			const int delta = cg.time - cg.stepTime;
 			if (delta < STEP_TIME)
 			{
-				oldStep = cg.stepChange * (STEP_TIME - delta) / STEP_TIME;
+				old_step = cg.stepChange * (STEP_TIME - delta) / STEP_TIME;
 			}
 			else
 			{
-				oldStep = 0;
+				old_step = 0;
 			}
 
 			// add this amount
 			const int step = 4 * (event - EV_STEP_4 + 1);
-			cg.stepChange = oldStep + step;
+			cg.stepChange = old_step + step;
 			if (cg.stepChange > MAX_STEP_CHANGE)
 			{
 				cg.stepChange = MAX_STEP_CHANGE;
