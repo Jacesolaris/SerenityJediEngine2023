@@ -6833,10 +6833,10 @@ static void Q3_RemoveEnt(gentity_t* victim)
 		if (victim->client->NPC_class == CLASS_VEHICLE)
 		{
 			//eject everyone out of a vehicle that's about to remove itself
-			Vehicle_t* pVeh = victim->m_pVehicle;
-			if (pVeh && pVeh->m_pVehicleInfo)
+			Vehicle_t* p_veh = victim->m_pVehicle;
+			if (p_veh && p_veh->m_pVehicleInfo)
 			{
-				pVeh->m_pVehicleInfo->EjectAll(pVeh);
+				p_veh->m_pVehicleInfo->EjectAll(p_veh);
 			}
 		}
 		//ClientDisconnect(ent);

@@ -1127,7 +1127,7 @@ void Trooper_UpdateTroop(gentity_t* actor)
 
 					if (!trace.allsolid &&
 						!trace.startsolid &&
-						(trace.fraction >= 1.0f || trace.entityNum == iTroop->TroopLeader()->s.number))
+						(trace.fraction >= 1.0f || trace.entity_num == iTroop->TroopLeader()->s.number))
 					{
 						closestDist = curDist;
 						closestTroop = iTroop;
@@ -1283,11 +1283,11 @@ int Trooper_CanHitTarget(gentity_t* actor, const gentity_t* target, c_troop& tro
 		{
 			return ENTITYNUM_NONE;
 		}
-		if (tr.entityNum == target->s.number || tr.fraction > 0.9f)
+		if (tr.entity_num == target->s.number || tr.fraction > 0.9f)
 		{
 			return target->s.number;
 		}
-		return tr.entityNum;
+		return tr.entity_num;
 	}
 	return ENTITYNUM_NONE;
 }

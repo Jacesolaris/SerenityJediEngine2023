@@ -79,7 +79,7 @@ public:
 	}
 
 	// Sound
-	static void PlaySound(vec3_t origin, int entityNum, int entchannel, const sfxHandle_t sfxHandle, int volume,
+	static void PlaySound(vec3_t origin, int entity_num, int entchannel, const sfxHandle_t sfxHandle, int volume,
 	                      int radius)
 	{
 		//S_StartSound( origin, ENTITYNUM_NONE, CHAN_AUTO, sfxHandle, volume, radius );

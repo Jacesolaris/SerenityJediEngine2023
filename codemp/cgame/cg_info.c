@@ -54,11 +54,11 @@ void CG_LoadingString(const char* s)
 CG_LoadingItem
 ===================
 */
-void CG_LoadingItem(const int itemNum)
+void CG_LoadingItem(const int item_num)
 {
-	char upperKey[1024];
+	char upper_key[1024];
 
-	const gitem_t* item = &bg_itemlist[itemNum];
+	const gitem_t* item = &bg_itemlist[item_num];
 
 	if (!item->classname || !item->classname[0])
 	{
@@ -66,8 +66,8 @@ void CG_LoadingItem(const int itemNum)
 		return;
 	}
 
-	strcpy(upperKey, item->classname);
-	CG_LoadingString(CG_GetStringEdString("SP_INGAME", Q_strupr(upperKey)));
+	strcpy(upper_key, item->classname);
+	CG_LoadingString(CG_GetStringEdString("SP_INGAME", Q_strupr(upper_key)));
 }
 
 /*
@@ -202,10 +202,10 @@ void CG_DrawInformation(void)
 {
 	int value;
 	char buf[1024];
-	const int iPropHeight = 18; // I know, this is total crap, but as a post release asian-hack....  -Ste
+	const int i_prop_height = 18; // I know, this is total crap, but as a post release asian-hack....  -Ste
 
 	const char* info = CG_ConfigString(CS_SERVERINFO);
-	const char* sysInfo = CG_ConfigString(CS_SYSTEMINFO);
+	const char* sys_info = CG_ConfigString(CS_SYSTEMINFO);
 
 	const char* s = Info_ValueForKey(info, "mapname");
 	qhandle_t levelshot = trap->R_RegisterShaderNoMip(va("levelshots/%s", s));
@@ -245,15 +245,15 @@ void CG_DrawInformation(void)
 		Q_strncpyz(buf, Info_ValueForKey(info, "sv_hostname"), sizeof buf);
 		Q_CleanStr(buf);
 		CG_DrawProportionalString(320, y, buf, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-		y += iPropHeight;
+		y += i_prop_height;
 
 		// pure server
-		s = Info_ValueForKey(sysInfo, "sv_pure");
+		s = Info_ValueForKey(sys_info, "sv_pure");
 		if (s[0] == '1')
 		{
 			const char* psPure = CG_GetStringEdString("MP_INGAME", "PURE_SERVER");
 			CG_DrawProportionalString(320, y, psPure, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 
 		// server-specific message of the day
@@ -261,17 +261,17 @@ void CG_DrawInformation(void)
 		if (s[0])
 		{
 			CG_DrawProportionalString(320, y, s, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 
 		{
 			// display global MOTD at bottom (mirrors ui_main UI_DrawConnectScreen
-			char motdString[1024];
-			trap->Cvar_VariableStringBuffer("cl_motdString", motdString, sizeof motdString);
+			char motd_string[1024];
+			trap->Cvar_VariableStringBuffer("cl_motdString", motd_string, sizeof motd_string);
 
-			if (motdString[0])
+			if (motd_string[0])
 			{
-				CG_DrawProportionalString(320, 425, motdString, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
+				CG_DrawProportionalString(320, 425, motd_string, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
 			}
 		}
 
@@ -284,22 +284,22 @@ void CG_DrawInformation(void)
 	if (s[0])
 	{
 		CG_DrawProportionalString(320, y, s, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-		y += iPropHeight;
+		y += i_prop_height;
 	}
 
 	// cheats warning
-	s = Info_ValueForKey(sysInfo, "sv_cheats");
+	s = Info_ValueForKey(sys_info, "sv_cheats");
 	if (s[0] == '1')
 	{
 		CG_DrawProportionalString(320, y, CG_GetStringEdString("MP_INGAME", "CHEATSAREENABLED"),
 		                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-		y += iPropHeight;
+		y += i_prop_height;
 	}
 
 	// game type
 	s = BG_GetGametypeString(cgs.gametype);
 	CG_DrawProportionalString(320, y, s, UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-	y += iPropHeight;
+	y += i_prop_height;
 
 	if (cgs.gametype != GT_SIEGE)
 	{
@@ -310,7 +310,7 @@ void CG_DrawInformation(void)
 			{
 				CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "TIMELIMIT"), value),
 				                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-				y += iPropHeight;
+				y += i_prop_height;
 			}
 		}
 
@@ -321,7 +321,7 @@ void CG_DrawInformation(void)
 			{
 				CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "FRAGLIMIT"), value),
 				                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-				y += iPropHeight;
+				y += i_prop_height;
 			}
 
 			if (cgs.gametype == GT_DUEL || cgs.gametype == GT_POWERDUEL)
@@ -331,7 +331,7 @@ void CG_DrawInformation(void)
 				{
 					CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "WINLIMIT"), value),
 					                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-					y += iPropHeight;
+					y += i_prop_height;
 				}
 			}
 		}
@@ -344,7 +344,7 @@ void CG_DrawInformation(void)
 		{
 			CG_DrawProportionalString(320, y, va("%s %i", CG_GetStringEdString("MP_INGAME", "CAPTURELIMIT"), value),
 			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 	}
 
@@ -355,60 +355,60 @@ void CG_DrawInformation(void)
 		{
 			CG_DrawProportionalString(320, y, CG_GetStringEdString("MP_INGAME", "FORCEBASEDTEAMS"),
 			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 	}
 
 	if (cgs.gametype != GT_SIEGE)
 	{
-		const int valueNOFP = atoi(Info_ValueForKey(info, "g_forcePowerDisable"));
+		const int value_nofp = atoi(Info_ValueForKey(info, "g_forcePowerDisable"));
 
 		value = atoi(Info_ValueForKey(info, "g_maxForceRank"));
-		if (value && valueNOFP != FORCE_ALLOFF && value < NUM_FORCE_MASTERY_LEVELS)
+		if (value && value_nofp != FORCE_ALLOFF && value < NUM_FORCE_MASTERY_LEVELS)
 		{
-			char fmStr[1024];
+			char fm_str[1024];
 
-			trap->SE_GetStringTextString("MP_INGAME_MAXFORCERANK", fmStr, sizeof fmStr);
+			trap->SE_GetStringTextString("MP_INGAME_MAXFORCERANK", fm_str, sizeof fm_str);
 
 			CG_DrawProportionalString(
-				320, y, va("%s %s", fmStr, CG_GetStringEdString("MP_INGAME", forceMasteryLevels[value])),
+				320, y, va("%s %s", fm_str, CG_GetStringEdString("MP_INGAME", forceMasteryLevels[value])),
 				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
-		else if (valueNOFP != FORCE_ALLOFF)
+		else if (value_nofp != FORCE_ALLOFF)
 		{
-			char fmStr[1024];
-			trap->SE_GetStringTextString("MP_INGAME_MAXFORCERANK", fmStr, sizeof fmStr);
+			char fm_str[1024];
+			trap->SE_GetStringTextString("MP_INGAME_MAXFORCERANK", fm_str, sizeof fm_str);
 
 			CG_DrawProportionalString(
-				320, y, va("%s %s", fmStr, (char*)CG_GetStringEdString("MP_INGAME", forceMasteryLevels[7])),
+				320, y, va("%s %s", fm_str, (char*)CG_GetStringEdString("MP_INGAME", forceMasteryLevels[7])),
 				UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 
-		if (valueNOFP == FORCE_ALLOFF)
+		if (value_nofp == FORCE_ALLOFF)
 		{
 			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),
 			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
-		else if (valueNOFP == FORCE_JUMPONLY)
+		else if (value_nofp == FORCE_JUMPONLY)
 		{
 			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "NOFPSET")),
 			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
-		else if (valueNOFP == FORCE_NEUTRALSONLY)
+		else if (value_nofp == FORCE_NEUTRALSONLY)
 		{
 			CG_DrawProportionalString(320, y, "Neutral Force Powers Only", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
 			                          colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
-		else if (valueNOFP)
+		else if (value_nofp)
 		{
 			CG_DrawProportionalString(320, y, "Custom Force Setup", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
 			                          colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 
 		if (cgs.gametype == GT_DUEL || cgs.gametype == GT_POWERDUEL)
@@ -423,29 +423,29 @@ void CG_DrawInformation(void)
 		{
 			CG_DrawProportionalString(320, y, va("%s", (char*)CG_GetStringEdString("MP_INGAME", "SABERONLYSET")),
 			                          UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 		else if (value == WP_MELEEONLY)
 		{
 			CG_DrawProportionalString(320, y, "Melee Only", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 		else if (value == WP_MELEESABERS)
 		{
 			CG_DrawProportionalString(320, y, "Sabers & Melee Only", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
 			                          colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 		else if (value == WP_NOEXPLOS)
 		{
 			CG_DrawProportionalString(320, y, "No Explosives", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW, colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 		else if (value)
 		{
 			CG_DrawProportionalString(320, y, "Custom Weapon Setup", UI_CENTER | UI_INFOFONT | UI_DROPSHADOW,
 			                          colorWhite);
-			y += iPropHeight;
+			y += i_prop_height;
 		}
 	}
 }

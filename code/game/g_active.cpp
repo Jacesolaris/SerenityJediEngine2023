@@ -383,8 +383,8 @@ qboolean G_ValidateLookEnemy(gentity_t* self, gentity_t* enemy)
 			return qfalse;
 		}
 
-		const Vehicle_t* pVeh = G_IsRidingVehicle(self);
-		if (pVeh && pVeh == enemy->m_pVehicle)
+		const Vehicle_t* p_veh = G_IsRidingVehicle(self);
+		if (p_veh && p_veh == enemy->m_pVehicle)
 		{
 			return qfalse;
 		}
@@ -2044,7 +2044,7 @@ but any server game effects are handled here
 extern void WP_SabersDamageTrace(gentity_t* ent, qboolean no_effects = qfalse);
 extern void wp_saber_update_old_blade_data(gentity_t* ent);
 
-void ClientEvents(gentity_t* ent, const int oldEventSequence)
+void ClientEvents(gentity_t* ent, const int old_event_sequence)
 {
 	int event;
 	gclient_t* client;
@@ -2055,7 +2055,7 @@ void ClientEvents(gentity_t* ent, const int oldEventSequence)
 
 	client = ent->client;
 
-	for (int i = oldEventSequence; i < client->ps.eventSequence; i++)
+	for (int i = old_event_sequence; i < client->ps.eventSequence; i++)
 	{
 		event = client->ps.events[i & MAX_PS_EVENTS - 1];
 
@@ -2473,14 +2473,14 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 	         static_cast<EG2_Collision>(0),
 	         0); //clipmask ok?
 
-	if (trace.fraction < 1.0f || trace.startsolid && trace.entityNum < ENTITYNUM_NONE)
+	if (trace.fraction < 1.0f || trace.startsolid && trace.entity_num < ENTITYNUM_NONE)
 	{
-		hit_ent = &g_entities[trace.entityNum];
+		hit_ent = &g_entities[trace.entity_num];
 
-		if (ent->client->ps.lastKickedEntNum != trace.entityNum)
+		if (ent->client->ps.lastKickedEntNum != trace.entity_num)
 		{
 			TIMER_Remove(ent, "kickSoundDebounce");
-			ent->client->ps.lastKickedEntNum = trace.entityNum;
+			ent->client->ps.lastKickedEntNum = trace.entity_num;
 		}
 
 		if (hit_ent)
@@ -5843,7 +5843,7 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
 		ent->waypoint = monster->waypoint;
 
 		//update the actual origin of the victim
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 
 		// Getting the bolt here
 		int bolt_index = monster->gutBolt; //default to being held in his mouth
@@ -5855,10 +5855,10 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
 		vec3_t monAngles = {0};
 		monAngles[YAW] = monster->currentAngles[YAW]; //only use YAW when passing angles to G2
 		gi.G2API_GetBoltMatrix(monster->ghoul2, monster->playerModel, bolt_index,
-		                       &boltMatrix, monAngles, monster->currentOrigin, cg.time ? cg.time : level.time,
+		                       &bolt_matrix, monAngles, monster->currentOrigin, cg.time ? cg.time : level.time,
 		                       nullptr, monster->s.modelScale);
 		// Storing ent position, bolt position, and bolt axis
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, ent->client->ps.origin);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, ent->client->ps.origin);
 		gi.linkentity(ent);
 		//lock view angles
 		PM_AdjustAnglesForHeldByMonster(ent, monster, *ucmd);
@@ -6309,13 +6309,13 @@ void DoCallout(gentity_t* caller, gentity_t* ourFriend)
 		return;
 	}
 
-	if (tr.entityNum == ENTITYNUM_WORLD)
+	if (tr.entity_num == ENTITYNUM_WORLD)
 	{
 		// Didn't hit an entity
 		return;
 	}
 
-	gentity_t* tracedEnemy = &g_entities[tr.entityNum];
+	gentity_t* tracedEnemy = &g_entities[tr.entity_num];
 
 	if (tracedEnemy->s.eType != ET_PLAYER)
 	{
@@ -6390,11 +6390,11 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
                       float vehicleFrameTimeModifier)
 {
 	gclient_t* client = ent->client;
-	const Vehicle_t* pVeh = nullptr;
+	const Vehicle_t* p_veh = nullptr;
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
-		pVeh = ent->m_pVehicle;
+		p_veh = ent->m_pVehicle;
 	}
 	//don't allow movement during viewlocks.
 	if (ent->client && ent->client->ps.userInt1)
@@ -6711,7 +6711,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
 		}
 	}
 
-	if (!pVeh)
+	if (!p_veh)
 	{
 		if (ucmd->forwardmove < 0 && !(ucmd->buttons & BUTTON_WALKING) && client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
@@ -6995,7 +6995,7 @@ void CG_DamagedBreathPuffs(const gentity_t* ent)
 }
 
 extern int G_FindLocalInterestPoint(gentity_t* self);
-extern float G_CanJumpToEnemyVeh(Vehicle_t* pVeh, const usercmd_t* pUmcd);
+extern float G_CanJumpToEnemyVeh(Vehicle_t* p_veh, const usercmd_t* pUmcd);
 
 //// reload ////
 
@@ -7207,13 +7207,13 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	int msec;
 	qboolean inSpinFlipAttack = PM_AdjustAnglesForSpinningFlip(ent, ucmd, qfalse);
 	qboolean controlledByPlayer = qfalse;
-	Vehicle_t* pVeh = nullptr;
+	Vehicle_t* p_veh = nullptr;
 
 	qboolean HoldingStun = ent->client->ps.communicatingflags & 1 << STUNNING ? qtrue : qfalse;
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
-		pVeh = ent->m_pVehicle;
+		p_veh = ent->m_pVehicle;
 	}
 
 	//Don't let the player do anything if in a camera
@@ -7435,12 +7435,12 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	}*/
 
 	// If we are a vehicle, update ourself.
-	if (pVeh
-		&& (pVeh->m_pVehicleInfo->Inhabited(pVeh)
-			|| pVeh->m_iBoarding != 0
-			|| pVeh->m_pVehicleInfo->type != VH_ANIMAL))
+	if (p_veh
+		&& (p_veh->m_pVehicleInfo->Inhabited(p_veh)
+			|| p_veh->m_iBoarding != 0
+			|| p_veh->m_pVehicleInfo->type != VH_ANIMAL))
 	{
-		pVeh->m_pVehicleInfo->Update(pVeh, ucmd);
+		p_veh->m_pVehicleInfo->Update(p_veh, ucmd);
 	}
 	else if (ent->client)
 	{
@@ -7547,7 +7547,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					qboolean forceKnockdown = qfalse;
 
 					// If in a vehicle when land on someone, always knockdown.
-					if (pVeh)
+					if (p_veh)
 					{
 						forceKnockdown = qtrue;
 					}
@@ -8688,13 +8688,13 @@ void ClientThink(const int client_num, usercmd_t* ucmd)
 		PM_CheckForceUseButton(ent, ucmd);
 	}
 
-	Vehicle_t* pVeh;
+	Vehicle_t* p_veh;
 
 	// Rider logic.
 	// NOTE: Maybe this should be extracted into a RiderUpdate() within the vehicle.
-	if ((pVeh = G_IsRidingVehicle(ent)) != nullptr)
+	if ((p_veh = G_IsRidingVehicle(ent)) != nullptr)
 	{
-		if (pVeh->m_pVehicleInfo->UpdateRider(pVeh, ent, ucmd))
+		if (p_veh->m_pVehicleInfo->UpdateRider(p_veh, ent, ucmd))
 		{
 			restore_ucmd = qtrue;
 			memcpy(&sav_ucmd, ucmd, sizeof(usercmd_t));
@@ -8727,8 +8727,8 @@ void ClientThink(const int client_num, usercmd_t* ucmd)
 	// If a vehicle, make sure to attach our driver and passengers here (after we pmove, which is done in Think_Real))
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
-		pVeh = ent->m_pVehicle;
-		pVeh->m_pVehicleInfo->AttachRiders(pVeh);
+		p_veh = ent->m_pVehicle;
+		p_veh->m_pVehicleInfo->AttachRiders(p_veh);
 	}
 
 	// ClientThink_real can end up freeing this ent, need to check

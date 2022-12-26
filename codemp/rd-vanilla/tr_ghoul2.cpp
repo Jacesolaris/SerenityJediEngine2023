@@ -3420,7 +3420,7 @@ bool G2_NeedsRecalc(CGhoul2Info* ghlInfo, const int frameNum)
 		ghlInfo->mBoneCache->mod != ghlInfo->currentModel)
 	{
 #ifdef _G2_LISTEN_SERVER_OPT
-		if (ghlInfo->entityNum != ENTITYNUM_NONE &&
+		if (ghlInfo->entity_num != ENTITYNUM_NONE &&
 			G2API_OverrideServerWithClientData(ghlInfo))
 		{ //if we can manage this, then we don't have to reconstruct
 			return false;
@@ -3478,7 +3478,7 @@ void G2_ConstructGhoulSkeleton(CGhoul2Info_v& ghoul2, const int frameNum, const 
 				G2_TransformGhoulBones(ghoul2[i].mBlist, bolt, ghoul2[i], frameNum, checkForNewOrigin);
 			}
 #ifdef _G2_LISTEN_SERVER_OPT
-			else if (ghoul2[i].entityNum == ENTITYNUM_NONE || ghoul2[i].mSkelFrameNum != frameNum)
+			else if (ghoul2[i].entity_num == ENTITYNUM_NONE || ghoul2[i].mSkelFrameNum != frameNum)
 #else
 			else
 #endif

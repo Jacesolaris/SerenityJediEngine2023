@@ -75,16 +75,16 @@ void NPC_Mark2_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
 		                       bolt,
-		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       &bolt_matrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
 		                       nullptr, self->s.modelScale);
 
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
 		G_PlayEffect("env/med_explode2", org, dir);
 		G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, bolt, self->s.number, org);
@@ -159,14 +159,14 @@ void Mark2_FireBlaster(qboolean advance)
 {
 	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 	                       NPC->genericBolt1,
-	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
 	if (NPC->health)
 	{

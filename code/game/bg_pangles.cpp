@@ -1726,7 +1726,7 @@ void PM_UpdateViewAngles(int saber_anim_level, playerState_t* ps, usercmd_t* cmd
 			locked_yaw_value = p_veh->m_vOrientation[YAW];
 			yaw_max = yaw_min = 0;
 			root_pitch = p_veh->m_vOrientation[PITCH]; //???  what if goes over 90 when add the min/max?
-			pitch_max = 0.0f; //pVeh->m_pVehicleInfo->pitchLimit;
+			pitch_max = 0.0f; //p_veh->m_pVehicleInfo->pitchLimit;
 			pitch_min = 0.0f; //-pitchMax;
 			locked_yaw = qtrue;
 		}

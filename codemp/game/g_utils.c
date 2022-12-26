@@ -475,7 +475,7 @@ static Vehicle_t g_vehiclePool[MAX_VEHICLES_AT_A_TIME];
 static qboolean g_vehiclePoolOccupied[MAX_VEHICLES_AT_A_TIME];
 static qboolean g_vehiclePoolInit = qfalse;
 
-void G_AllocateVehicleObject(Vehicle_t** pVeh)
+void G_AllocateVehicleObject(Vehicle_t** p_veh)
 {
 	int i = 0;
 
@@ -492,7 +492,7 @@ void G_AllocateVehicleObject(Vehicle_t** pVeh)
 		{
 			g_vehiclePoolOccupied[i] = qtrue;
 			memset(&g_vehiclePool[i], 0, sizeof(Vehicle_t));
-			*pVeh = &g_vehiclePool[i];
+			*p_veh = &g_vehiclePool[i];
 			return;
 		}
 		i++;
@@ -501,13 +501,13 @@ void G_AllocateVehicleObject(Vehicle_t** pVeh)
 }
 
 //free the pointer, sort of a lame method
-void G_FreeVehicleObject(const Vehicle_t* pVeh)
+void G_FreeVehicleObject(const Vehicle_t* p_veh)
 {
 	int i = 0;
 	while (i < MAX_VEHICLES_AT_A_TIME)
 	{
 		if (g_vehiclePoolOccupied[i] &&
-			&g_vehiclePool[i] == pVeh)
+			&g_vehiclePool[i] == p_veh)
 		{
 			//guess this is it
 			g_vehiclePoolOccupied[i] = qfalse;
@@ -1123,7 +1123,7 @@ G_FreeEntity
 Marks the entity as free
 =================
 */
-extern qboolean EjectAll(Vehicle_t* pVeh);
+extern qboolean EjectAll(Vehicle_t* p_veh);
 
 void G_FreeEntity(gentity_t* ed)
 {
@@ -1843,8 +1843,8 @@ Try and use an entity in the world, directly ahead of us
 
 extern void Touch_Button(gentity_t* ent, gentity_t* other, trace_t* trace);
 extern qboolean gSiegeRoundBegun;
-static vec3_t playerMins = {-15, -15, DEFAULT_MINS_2};
-static vec3_t playerMaxs = {15, 15, DEFAULT_MAXS_2};
+static vec3_t player_mins = {-15, -15, DEFAULT_MINS_2};
+static vec3_t player_maxs = {15, 15, DEFAULT_MAXS_2};
 
 void TryUse(gentity_t* ent)
 {
@@ -1879,10 +1879,10 @@ void TryUse(gentity_t* ent)
 		const gentity_t* currentVeh = &g_entities[ent->client->ps.m_iVehicleNum];
 		if (currentVeh->inuse && currentVeh->m_pVehicle)
 		{
-			Vehicle_t* pVeh = currentVeh->m_pVehicle;
-			if (!pVeh->m_iBoarding)
+			Vehicle_t* p_veh = currentVeh->m_pVehicle;
+			if (!p_veh->m_iBoarding)
 			{
-				pVeh->m_pVehicleInfo->Eject(pVeh, (bgEntity_t*)ent, qfalse);
+				p_veh->m_pVehicleInfo->Eject(p_veh, (bgEntity_t*)ent, qfalse);
 			}
 			return;
 		}
@@ -1930,12 +1930,12 @@ void TryUse(gentity_t* ent)
 	trap->Trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
 	            MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, qfalse, 0, 0);
 
-	if (trace.fraction == 1.0f || trace.entityNum == ENTITYNUM_NONE)
+	if (trace.fraction == 1.0f || trace.entity_num == ENTITYNUM_NONE)
 	{
 		goto tryJetPack;
 	}
 
-	gentity_t* target = &g_entities[trace.entityNum];
+	gentity_t* target = &g_entities[trace.entity_num];
 
 	//Enable for corpse dragging
 #if 0
@@ -1962,14 +1962,14 @@ void TryUse(gentity_t* ent)
 		!ent->client->ps.zoomMode)
 	{
 		//if target is a vehicle then perform appropriate checks
-		Vehicle_t* pVeh = target->m_pVehicle;
+		Vehicle_t* p_veh = target->m_pVehicle;
 
-		if (pVeh->m_pVehicleInfo)
+		if (p_veh->m_pVehicleInfo)
 		{
 			if (ent->r.ownerNum == target->s.number)
 			{
 				//user is already on this vehicle so eject him
-				pVeh->m_pVehicleInfo->Eject(pVeh, (bgEntity_t*)ent, qfalse);
+				p_veh->m_pVehicleInfo->Eject(p_veh, (bgEntity_t*)ent, qfalse);
 			}
 			else
 			{
@@ -1979,7 +1979,7 @@ void TryUse(gentity_t* ent)
 					target->alliedTeam == ent->client->sess.sessionTeam)
 				{
 					//not belonging to a team, or client is on same team
-					pVeh->m_pVehicleInfo->Board(pVeh, (bgEntity_t*)ent);
+					p_veh->m_pVehicleInfo->Board(p_veh, (bgEntity_t*)ent);
 				}
 			}
 			//clear the damn button!
@@ -2112,7 +2112,7 @@ tryJetPack:
 		AngleVectors(fAng, fwd, 0, 0);
 
 		VectorMA(ent->client->ps.origin, 64.0f, fwd, fwd);
-		trap->Trace(&trToss, ent->client->ps.origin, playerMins, playerMaxs, fwd, ent->s.number, ent->clipmask, qfalse,
+		trap->Trace(&trToss, ent->client->ps.origin, player_mins, player_maxs, fwd, ent->s.number, ent->clipmask, qfalse,
 		            0, 0);
 		if (trToss.fraction == 1.0f && !trToss.allsolid && !trToss.startsolid)
 		{
@@ -2478,7 +2478,7 @@ gentity_t* ViewTarget(const gentity_t* ent, const int length, vec3_t* target, cp
 	if (target)
 		VectorCopy(tr.endpos, *target);
 
-	if (tr.entityNum >= ENTITYNUM_MAX_NORMAL)
+	if (tr.entity_num >= ENTITYNUM_MAX_NORMAL)
 		return NULL;
-	return &g_entities[tr.entityNum];
+	return &g_entities[tr.entity_num];
 }

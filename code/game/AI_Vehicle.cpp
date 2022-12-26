@@ -120,23 +120,23 @@ void Pilot_Update(void)
 	{
 		TIMER_Set(player, "FlybySoundArchitectureDebounce", 300);
 
-		const Vehicle_t* pVeh = G_IsRidingVehicle(player);
+		const Vehicle_t* p_veh = G_IsRidingVehicle(player);
 
-		if (pVeh &&
-			(pVeh->m_pVehicleInfo->soundFlyBy || pVeh->m_pVehicleInfo->soundFlyBy2) &&
-			//fabsf(pVeh->m_pParentEntity->currentAngles[2])<15.0f &&
-			VectorLength(pVeh->m_pParentEntity->client->ps.velocity) > 500.0f)
+		if (p_veh &&
+			(p_veh->m_pVehicleInfo->soundFlyBy || p_veh->m_pVehicleInfo->soundFlyBy2) &&
+			//fabsf(p_veh->m_pParentEntity->currentAngles[2])<15.0f &&
+			VectorLength(p_veh->m_pParentEntity->client->ps.velocity) > 500.0f)
 		{
 			vec3_t projectedPosition;
 			vec3_t projectedDirection;
 			vec3_t projectedRight;
 			vec3_t anglesNoRoll;
 
-			VectorCopy(pVeh->m_pParentEntity->currentAngles, anglesNoRoll);
+			VectorCopy(p_veh->m_pParentEntity->currentAngles, anglesNoRoll);
 			anglesNoRoll[2] = 0;
 			AngleVectors(anglesNoRoll, projectedDirection, projectedRight, nullptr);
 
-			VectorMA(player->currentOrigin, 1.2f, pVeh->m_pParentEntity->client->ps.velocity, projectedPosition);
+			VectorMA(player->currentOrigin, 1.2f, p_veh->m_pParentEntity->client->ps.velocity, projectedPosition);
 			VectorMA(projectedPosition, Q_flrand(-200.0f, 200.0f), projectedRight, projectedPosition);
 
 			gi.trace(&mPilotViewTrace,
@@ -155,10 +155,10 @@ void Pilot_Update(void)
 			{
 				TIMER_Set(player, "FlybySoundArchitectureDebounce", Q_irand(1000, 2000));
 
-				int soundFlyBy = pVeh->m_pVehicleInfo->soundFlyBy;
-				if (pVeh->m_pVehicleInfo->soundFlyBy2 && (!soundFlyBy || !Q_irand(0, 1)))
+				int soundFlyBy = p_veh->m_pVehicleInfo->soundFlyBy;
+				if (p_veh->m_pVehicleInfo->soundFlyBy2 && (!soundFlyBy || !Q_irand(0, 1)))
 				{
-					soundFlyBy = pVeh->m_pVehicleInfo->soundFlyBy2;
+					soundFlyBy = p_veh->m_pVehicleInfo->soundFlyBy2;
 				}
 				G_SoundAtSpot(mPilotViewTrace.endpos, soundFlyBy, qtrue);
 			}
@@ -249,20 +249,20 @@ bool Pilot_MasterUpdate()
 			if (NPCInfo->greetEnt && NPCInfo->greetEnt->m_pVehicle && (level.time < NPCInfo->confusionTime || level.time
 				< NPCInfo->insanityTime))
 			{
-				Vehicle_t* pVeh = NPCInfo->greetEnt->m_pVehicle;
-				if (!(pVeh->m_ulFlags & VEH_OUTOFCONTROL))
+				Vehicle_t* p_veh = NPCInfo->greetEnt->m_pVehicle;
+				if (!(p_veh->m_ulFlags & VEH_OUTOFCONTROL))
 				{
-					gentity_t* parent = pVeh->m_pParentEntity;
+					gentity_t* parent = p_veh->m_pParentEntity;
 					const float CurSpeed = VectorLength(parent->client->ps.velocity);
-					pVeh->m_pVehicleInfo->StartDeathDelay(pVeh, 10000);
-					pVeh->m_ulFlags |= VEH_OUTOFCONTROL;
+					p_veh->m_pVehicleInfo->StartDeathDelay(p_veh, 10000);
+					p_veh->m_ulFlags |= VEH_OUTOFCONTROL;
 					VectorScale(parent->client->ps.velocity, 1.25f, parent->pos3);
-					if (CurSpeed < pVeh->m_pVehicleInfo->speedMax)
+					if (CurSpeed < p_veh->m_pVehicleInfo->speedMax)
 					{
 						VectorNormalize(parent->pos3);
 						if (fabsf(parent->pos3[2]) < 0.25f)
 						{
-							VectorScale(parent->pos3, pVeh->m_pVehicleInfo->speedMax * 1.25f, parent->pos3);
+							VectorScale(parent->pos3, p_veh->m_pVehicleInfo->speedMax * 1.25f, parent->pos3);
 						}
 						else
 						{
@@ -357,7 +357,7 @@ void Pilot_Update_Enemy()
 
 			if (mPilotViewTrace.allsolid == qfalse &&
 				mPilotViewTrace.startsolid == qfalse &&
-				(mPilotViewTrace.entityNum == NPC->enemy->s.number || mPilotViewTrace.entityNum == NPC->enemy->s.
+				(mPilotViewTrace.entity_num == NPC->enemy->s.number || mPilotViewTrace.entity_num == NPC->enemy->s.
 					m_iVehicleNum))
 			{
 				TIMER_Set(NPC, "PilotRemoveTime", MIN_STAY_VIEWABLE_TIME);
@@ -409,7 +409,7 @@ void Pilot_Goto_Vehicle()
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-extern bool VEH_StartStrafeRam(Vehicle_t* pVeh, bool Right);
+extern bool VEH_StartStrafeRam(Vehicle_t* p_veh, bool Right);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //

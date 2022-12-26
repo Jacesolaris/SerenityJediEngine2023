@@ -613,7 +613,7 @@ void Sniper_FaceEnemy(void)
 						}
 						trap->Trace(&trace, muzzle, vec3_origin, vec3_origin, target, NPCS.NPC->s.number, MASK_SHOT,
 						            qfalse, 0, 0);
-						hit = Sniper_EvaluateShot(trace.entityNum);
+						hit = Sniper_EvaluateShot(trace.entity_num);
 					}
 					NPCS.NPC->count++;
 				}
@@ -778,7 +778,7 @@ void NPC_BSSniper_Attack(void)
 				trap->Trace(&trace, NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->enemy->r.mins, NPCS.NPC->enemy->r.maxs,
 				            NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->s.number, NPCS.NPC->enemy->clipmask, qfalse, 0,
 				            0);
-				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPCS.NPC->s.
+				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entity_num == NPCS.NPC->s.
 					number))
 				{
 					//he can get right to me
@@ -828,7 +828,7 @@ void NPC_BSSniper_Attack(void)
 			VectorMA(muzzle, 8192, fwd, end);
 			trap->Trace(&tr, muzzle, NULL, NULL, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
 
-			const int hit = tr.entityNum;
+			const int hit = tr.entity_num;
 			//can we shoot our target?
 			if (Sniper_EvaluateShot(hit))
 			{

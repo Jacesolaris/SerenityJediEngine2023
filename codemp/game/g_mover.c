@@ -135,7 +135,7 @@ gentity_t* G_TestEntityPosition(const gentity_t* ent)
 	}
 
 	if (tr.startsolid)
-		return &g_entities[tr.entityNum];
+		return &g_entities[tr.entity_num];
 
 	return NULL;
 }
@@ -1173,7 +1173,7 @@ static void Touch_DoorTriggerSpectator(const gentity_t* ent, gentity_t* other, t
 	if (!tr.startsolid &&
 		!tr.allsolid &&
 		tr.fraction == 1.0f &&
-		tr.entityNum == ENTITYNUM_NONE)
+		tr.entity_num == ENTITYNUM_NONE)
 	{
 		TeleportPlayer(other, origin, doorangles);
 	}
@@ -1326,14 +1326,14 @@ void Think_MatchTeam(gentity_t* ent)
 	MatchTeam(ent, ent->moverState, level.time);
 }
 
-qboolean G_EntIsDoor(const int entityNum)
+qboolean G_EntIsDoor(const int entity_num)
 {
-	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
+	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* ent = &g_entities[entityNum];
+	const gentity_t* ent = &g_entities[entity_num];
 	if (ent && !Q_stricmp("func_door", ent->classname))
 	{
 		//blocked by a door
@@ -1389,16 +1389,16 @@ gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 
 qboolean G_TriggerActive(const gentity_t* self);
 
-qboolean G_EntIsUnlockedDoor(const int entityNum)
+qboolean G_EntIsUnlockedDoor(const int entity_num)
 {
-	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
+	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	if (G_EntIsDoor(entityNum))
+	if (G_EntIsDoor(entity_num))
 	{
-		const gentity_t* ent = &g_entities[entityNum];
+		const gentity_t* ent = &g_entities[entity_num];
 		gentity_t* owner;
 		if (ent->flags & FL_TEAMSLAVE)
 		{
@@ -3023,14 +3023,14 @@ void SP_func_breakable(gentity_t* self)
 	self->genericValue4 = 1; //so damage sys knows it's a bbrush
 }
 
-qboolean G_EntIsBreakable(const int entityNum)
+qboolean G_EntIsBreakable(const int entity_num)
 {
-	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
+	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* ent = &g_entities[entityNum];
+	const gentity_t* ent = &g_entities[entity_num];
 	if (ent->r.svFlags & SVF_GLASS_BRUSH)
 	{
 		return qtrue;

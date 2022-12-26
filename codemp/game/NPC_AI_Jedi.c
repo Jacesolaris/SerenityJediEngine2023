@@ -428,7 +428,7 @@ void Tavion_ScepterDamage(void)
 
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base, angles;
 			trace_t trace;
 
@@ -436,16 +436,16 @@ void Tavion_ScepterDamage(void)
 
 			trap->G2API_GetBoltMatrix(NPCS.NPC->client->weaponGhoul2[1], 0,
 			                          NPCS.NPC->NPC->genericBolt1,
-			                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, time,
+			                          &bolt_matrix, angles, NPCS.NPC->r.currentOrigin, time,
 			                          NULL, NPCS.NPC->modelScale);
-			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
-			BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, dir);
+			BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, base);
+			BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, dir);
 			VectorMA(base, 512, dir, tip);
 			trap->Trace(&trace, base, vec3_origin, vec3_origin, tip, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
 			if (trace.fraction < 1.0f)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* traceEnt = &g_entities[trace.entity_num];
 
 				//FIXME: too expensive!
 				//if ( time == curTime )
@@ -455,7 +455,7 @@ void Tavion_ScepterDamage(void)
 				}
 
 				if (traceEnt->takedamage
-					&& trace.entityNum != lastHit
+					&& trace.entity_num != lastHit
 					&& (!traceEnt->client || traceEnt == NPCS.NPC->enemy || traceEnt->client->NPC_class != NPCS.NPC->
 						client->NPC_class))
 				{
@@ -481,14 +481,14 @@ void Tavion_ScepterDamage(void)
 						}
 					}
 					hit = qtrue;
-					lastHit = trace.entityNum;
+					lastHit = trace.entity_num;
 				}
 			}
 		}
 	}
 }
 
-extern qboolean G_EntIsBreakable(int entityNum);
+extern qboolean G_EntIsBreakable(int entity_num);
 
 void Tavion_ScepterSlam(void)
 {
@@ -500,7 +500,7 @@ void Tavion_ScepterSlam(void)
 	const int bolt_index = trap->G2API_AddBolt(NPCS.NPC->client->weaponGhoul2[1], 0, "*weapon");
 	if (bolt_index != -1)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t handle, bottom, angles;
 		trace_t trace;
 		const float radius = 300.0f;
@@ -513,9 +513,9 @@ void Tavion_ScepterSlam(void)
 
 		trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 2,
 		                          bolt_index,
-		                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, level.time,
+		                          &bolt_matrix, angles, NPCS.NPC->r.currentOrigin, level.time,
 		                          NULL, NPCS.NPC->modelScale);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, handle);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, handle);
 		VectorCopy(handle, bottom);
 		bottom[2] -= 128.0f;
 
@@ -624,15 +624,15 @@ void Tavion_StartScepterBeam(void)
 {
 	//Activate the scepter beam for the current NPC.
 	//RAFIXME:  This probably needs to be moved to client side.
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t dir, base, angles;
 
 	VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
 
-	trap->G2API_GetBoltMatrix(NPCS.NPC->client->weaponGhoul2[1], 0, NPCS.NPC->NPC->genericBolt1, &boltMatrix, angles,
+	trap->G2API_GetBoltMatrix(NPCS.NPC->client->weaponGhoul2[1], 0, NPCS.NPC->NPC->genericBolt1, &bolt_matrix, angles,
 	                          NPCS.NPC->r.currentOrigin, level.time, NULL, NPCS.NPC->modelScale);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, dir);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, base);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, dir);
 
 	G_PlayEffect(G_EffectIndex("scepter/beam_warmup.efx"), base, dir);
 	G_SoundOnEnt(NPCS.NPC, CHAN_ITEM, "sound/weapons/scepter/beam_warmup.wav");
@@ -648,17 +648,17 @@ void Tavion_StartScepterBeam(void)
 
 void Tavion_StartScepterSlam(void)
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t dir, base, angles;
 
 	VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
 
 	trap->G2API_GetBoltMatrix(NPCS.NPC->client->weaponGhoul2[1], 0,
 	                          NPCS.NPC->NPC->genericBolt1,
-	                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, level.time,
+	                          &bolt_matrix, angles, NPCS.NPC->r.currentOrigin, level.time,
 	                          NULL, NPCS.NPC->modelScale);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, dir);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, base);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, dir);
 	G_PlayEffect(G_EffectIndex("scepter/slam_warmup.efx"), base, dir);
 	G_SoundOnEnt(NPCS.NPC, CHAN_ITEM, "sound/weapons/scepter/slam_warmup.wav");
 	NPCS.NPC->client->ps.legsTimer = NPCS.NPC->client->ps.torsoTimer = 0;
@@ -678,7 +678,7 @@ void Tavion_SithSwordRecharge(void)
 		&& TIMER_Done(NPCS.NPC, "rechargeDebounce")
 		&& NPCS.NPC->client->weaponGhoul2[0])
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t dir, base, angles;
 
 		VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
@@ -691,10 +691,10 @@ void Tavion_SithSwordRecharge(void)
 		//RAFIXME:  This probably needs to be moved to client side.
 		trap->G2API_GetBoltMatrix(NPCS.NPC->client->weaponGhoul2[0], 0,
 		                          bolt_index,
-		                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, level.time,
+		                          &bolt_matrix, angles, NPCS.NPC->r.currentOrigin, level.time,
 		                          NULL, NPCS.NPC->modelScale);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, dir);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, base);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, dir);
 		G_PlayEffect(G_EffectIndex("scepter/recharge.efx"), base, dir);
 		NPCS.NPC->painDebounceTime = level.time + NPCS.NPC->client->ps.torsoTimer;
 		NPCS.NPC->client->ps.pm_time = NPCS.NPC->client->ps.torsoTimer;
@@ -1127,22 +1127,22 @@ void Boba_FireFlameThrower(gentity_t* self)
 {
 	const int damage = Q_irand(8, 12);
 	trace_t tr;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t start, end, dir, traceMins = {-4, -4, -4}, traceMaxs = {4, 4, 4};
 
 	trap->G2API_GetBoltMatrix(self->ghoul2, 0, self->client->renderInfo.handLBolt,
-	                          &boltMatrix, self->r.currentAngles, self->r.currentOrigin, level.time,
+	                          &bolt_matrix, self->r.currentAngles, self->r.currentOrigin, level.time,
 	                          NULL, self->modelScale);
 
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, start);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, dir);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, start);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, dir);
 	VectorMA(start, 128, dir, end);
 
 	trap->Trace(&tr, start, traceMins, traceMaxs, end, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
+	gentity_t* traceEnt = &g_entities[tr.entity_num];
 
-	if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage)
+	if (tr.entity_num < ENTITYNUM_WORLD && traceEnt->takedamage)
 	{
 		G_Damage(traceEnt, self, self, dir, tr.endpos, damage,
 		         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
@@ -1175,7 +1175,7 @@ void Boba_FireFlameThrower(gentity_t* self)
 void Boba_StartFlameThrower(gentity_t* self)
 {
 	const int flameTime = 4000; //Q_irand( 1000, 3000 );
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t org, dir;
 
 	self->client->ps.torsoTimer = flameTime; //+1000;
@@ -1187,12 +1187,12 @@ void Boba_StartFlameThrower(gentity_t* self)
 	TIMER_Set(self, "flameTime", flameTime);
 	G_SoundOnEnt(self, CHAN_WEAPON, "sound/effects/combustfire.mp3");
 
-	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0, NPCS.NPC->client->renderInfo.handLBolt, &boltMatrix,
+	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0, NPCS.NPC->client->renderInfo.handLBolt, &bolt_matrix,
 	                          NPCS.NPC->r.currentAngles,
 	                          NPCS.NPC->r.currentOrigin, level.time, NULL, NPCS.NPC->modelScale);
 
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, dir);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, dir);
 
 	G_PlayEffectID(G_EffectIndex("flamethrower/flamethrower"), org, dir);
 }
@@ -1343,19 +1343,19 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	self->client->ps.weaponTime += addTime;
 	self->client->ps.lastShotTime = level.time;
 
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t muzzlePoint;
 	vec3_t muzzleDir;
 
-	//trap->G2API_GetBoltMatrix(self->ghoul2, 0, self->client->renderInfo.handLBolt, &boltMatrix, self->r.currentAngles, self->r.currentOrigin, level.time, NULL, self->modelScale);
+	//trap->G2API_GetBoltMatrix(self->ghoul2, 0, self->client->renderInfo.handLBolt, &bolt_matrix, self->r.currentAngles, self->r.currentOrigin, level.time, NULL, self->modelScale);
 	trap->G2API_GetBoltMatrix(self->ghoul2, 0,
 	                          missileStates[whichMissile].leftBolt
 		                          ? self->genericBolt3
-		                          : self->client->renderInfo.handLBolt, &boltMatrix, self->r.currentAngles,
+		                          : self->client->renderInfo.handLBolt, &bolt_matrix, self->r.currentAngles,
 	                          self->r.currentOrigin, level.time, NULL, self->modelScale);
 
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzlePoint);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, muzzleDir);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, muzzlePoint);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, muzzleDir);
 	// work the matrix axis stuff into the original axis and origins used.
 
 	VectorCopy(muzzlePoint, self->client->renderInfo.muzzlePoint);
@@ -2243,7 +2243,7 @@ static qboolean Jedi_ClearPathToSpot(vec3_t dest, const int impactEntNum)
 	if (trace.fraction < 1.0f)
 	{
 		//hit something
-		if (impactEntNum != ENTITYNUM_NONE && trace.entityNum == impactEntNum)
+		if (impactEntNum != ENTITYNUM_NONE && trace.entity_num == impactEntNum)
 		{
 			//hit what we're going after
 			return qtrue;
@@ -2336,8 +2336,8 @@ qboolean NPC_MoveDirClear(const int forwardmove, const int rightmove, const qboo
 	if (trace.fraction < 0.6)
 	{
 		//Going to bump into something very close, don't move, just turn
-		if (NPCS.NPC->enemy && trace.entityNum == NPCS.NPC->enemy->s.number || NPCS.NPCInfo->goalEntity && trace.
-			entityNum == NPCS.NPCInfo->goalEntity->s.number)
+		if (NPCS.NPC->enemy && trace.entity_num == NPCS.NPC->enemy->s.number || NPCS.NPCInfo->goalEntity && trace.
+			entity_num == NPCS.NPCInfo->goalEntity->s.number)
 		{
 			//okay to bump into enemy or goal
 			return qtrue;
@@ -2345,7 +2345,7 @@ qboolean NPC_MoveDirClear(const int forwardmove, const int rightmove, const qboo
 		if (reset)
 		{
 			//actually want to screw with the ucmd
-			//Com_Printf( "%d avoiding walk into wall (entnum %d)\n", level.time, trace.entityNum );
+			//Com_Printf( "%d avoiding walk into wall (entnum %d)\n", level.time, trace.entity_num );
 			NPCS.ucmd.forwardmove = 0;
 			NPCS.ucmd.rightmove = 0;
 			VectorClear(NPCS.NPC->client->ps.moveDir);
@@ -4505,8 +4505,8 @@ evasionType_t Jedi_CheckFlipEvasions(gentity_t* self, const float rightdot, floa
 
 			VectorSubtract(self->r.currentOrigin, traceto, idealNormal);
 			VectorNormalize(idealNormal);
-			const gentity_t* traceEnt = &g_entities[trace.entityNum];
-			if (trace.entityNum < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL || DotProduct(
+			const gentity_t* traceEnt = &g_entities[trace.entity_num];
+			if (trace.entity_num < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL || DotProduct(
 				trace.plane.normal, idealNormal) > 0.7f)
 			{
 				//it's a ent of some sort or it's a wall roughly facing us
@@ -6744,7 +6744,7 @@ gentity_t* Jedi_FindEnemyInCone(gentity_t* self, gentity_t* fallback, const floa
 		//really should have a clear LOS to this thing...
 		trap->Trace(&tr, self->r.currentOrigin, vec3_origin, vec3_origin, check->r.currentOrigin, self->s.number,
 		            MASK_SHOT, qfalse, 0, 0);
-		if (tr.fraction < 1.0f && tr.entityNum != check->s.number)
+		if (tr.fraction < 1.0f && tr.entity_num != check->s.number)
 		{
 			//must have clear shot
 			continue;
@@ -7812,7 +7812,7 @@ static qboolean Jedi_Jump(vec3_t dest, const int goalEntNum)
 					if (trace.fraction < 1.0f)
 					{
 						//hit something
-						if (trace.entityNum == goalEntNum)
+						if (trace.entity_num == goalEntNum)
 						{
 							//hit the enemy, that's perfect!
 							//Hmm, don't want to land on him, though...
@@ -8322,10 +8322,10 @@ static void Jedi_CheckJumps(void)
 	if (trace.allsolid || trace.startsolid || trace.fraction < 1.0f)
 	{
 		//hit ground!
-		if (trace.entityNum < ENTITYNUM_WORLD)
+		if (trace.entity_num < ENTITYNUM_WORLD)
 		{
 			//landed on an ent
-			const gentity_t* groundEnt = &g_entities[trace.entityNum];
+			const gentity_t* groundEnt = &g_entities[trace.entity_num];
 			if (groundEnt->r.svFlags & SVF_GLASS_BRUSH)
 			{
 				//don't land on breakable glass!
@@ -9950,19 +9950,19 @@ qboolean Kothos_HealRosh(void)
 
 			if (NPCS.NPC->ghoul2)
 			{
-				mdxaBone_t boltMatrix;
-				vec3_t fxOrg, fxDir, angles;
+				mdxaBone_t bolt_matrix;
+				vec3_t fxOrg, fx_dir, angles;
 
 				VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
 
 				trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0,
 				                          Q_irand(0, 1),
-				                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, level.time,
+				                          &bolt_matrix, angles, NPCS.NPC->r.currentOrigin, level.time,
 				                          NULL, NPCS.NPC->modelScale);
-				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, fxOrg);
-				VectorSubtract(NPCS.NPC->client->leader->r.currentOrigin, fxOrg, fxDir);
-				VectorNormalize(fxDir);
-				G_PlayEffect(G_EffectIndex("force/kothos_beam.efx"), fxOrg, fxDir);
+				BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, fxOrg);
+				VectorSubtract(NPCS.NPC->client->leader->r.currentOrigin, fxOrg, fx_dir);
+				VectorNormalize(fx_dir);
+				G_PlayEffect(G_EffectIndex("force/kothos_beam.efx"), fxOrg, fx_dir);
 			}
 
 			NPCS.NPC->client->leader->health += Q_irand(1 + g_npcspskill.integer * 2, 4 + g_npcspskill.integer * 3);

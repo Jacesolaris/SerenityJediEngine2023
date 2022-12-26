@@ -580,12 +580,12 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 
 	if (trace.fraction < 1.0)
 	{
-		if (trace.entityNum < ENTITYNUM_WORLD &&
-			cg_entities[trace.entityNum].currentState.solid == SOLID_BMODEL &&
-			cg_entities[trace.entityNum].currentState.eType == ET_MOVER)
+		if (trace.entity_num < ENTITYNUM_WORLD &&
+			cg_entities[trace.entity_num].currentState.solid == SOLID_BMODEL &&
+			cg_entities[trace.entity_num].currentState.eType == ET_MOVER)
 		{
 			//get a different position for movers -rww
-			centity_t* mover = &cg_entities[trace.entityNum];
+			centity_t* mover = &cg_entities[trace.entity_num];
 
 			//this is absolutely hackiful, since we calc view values before we add packet ents and lerp,
 			//if we hit a mover we want to update its lerp pos and force it when we do the trace against
@@ -639,7 +639,7 @@ CG_OffsetThirdPersonView
 ===============
 */
 extern vmCvar_t cg_thirdPersonHorzOffset;
-extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, Vehicle_t* pVeh);
+extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, Vehicle_t* p_veh);
 
 static void CG_OffsetThirdPersonView(void)
 {
@@ -1588,14 +1588,14 @@ static int CG_CalcViewValues(void)
 #ifdef VEH_CONTROL_SCHEME_4
 		if (cg.predictedPlayerState.m_iVehicleNum)//in a vehicle
 		{
-			Vehicle_t* pVeh = cg_entities[cg.predictedPlayerState.m_iVehicleNum].m_pVehicle;
-			if (BG_UnrestrainedPitchRoll(&cg.predictedPlayerState, pVeh))//can roll/pitch without restriction
+			Vehicle_t* p_veh = cg_entities[cg.predictedPlayerState.m_iVehicleNum].m_pVehicle;
+			if (BG_UnrestrainedPitchRoll(&cg.predictedPlayerState, p_veh))//can roll/pitch without restriction
 			{//use the vehicle's viewangles to render view!
 				VectorCopy(cg.predictedVehicleState.viewangles, cg.refdef.viewangles);
 			}
-			else if (pVeh //valid vehicle data pointer
-				&& pVeh->m_pVehicleInfo//valid vehicle info
-				&& pVeh->m_pVehicleInfo->type == VH_FIGHTER)//fighter
+			else if (p_veh //valid vehicle data pointer
+				&& p_veh->m_pVehicleInfo//valid vehicle info
+				&& p_veh->m_pVehicleInfo->type == VH_FIGHTER)//fighter
 			{
 				VectorCopy(cg.predictedVehicleState.viewangles, cg.refdef.viewangles);
 				cg.refdef.viewangles[PITCH] = AngleNormalize180(cg.refdef.viewangles[PITCH]);
@@ -2152,7 +2152,7 @@ CG_EmplacedView
 Keep view reasonably constrained in relation to gun -rww
 =================
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint);
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint);
 
 void CG_EmplacedView(vec3_t angles)
 {
@@ -2387,15 +2387,15 @@ void CG_DrawAutoMap(void)
 	}
 	else
 	{
-		vec3_t playerMaxs;
-		vec3_t playerMins;
+		vec3_t player_maxs;
+		vec3_t player_mins;
 		//Trace down and set the ground elevation as the main automap elevation point
-		VectorSet(playerMins, -15, -15, DEFAULT_MINS_2);
-		VectorSet(playerMaxs, 15, 15, DEFAULT_MAXS_2);
+		VectorSet(player_mins, -15, -15, DEFAULT_MINS_2);
+		VectorSet(player_maxs, 15, 15, DEFAULT_MAXS_2);
 
 		VectorCopy(cg.predictedPlayerState.origin, fwd);
 		fwd[2] -= 4096.0f;
-		CG_Trace(&tr, cg.predictedPlayerState.origin, playerMins, playerMaxs, fwd, cg.predictedPlayerState.client_num,
+		CG_Trace(&tr, cg.predictedPlayerState.origin, player_mins, player_maxs, fwd, cg.predictedPlayerState.client_num,
 		         MASK_SOLID);
 
 		if (!tr.startsolid && !tr.allsolid)
@@ -2499,7 +2499,7 @@ Generates and draws a game scene and status information at the given time.
 static qboolean cg_rangedFogging = qfalse; //so we know if we should go back to normal fog
 float cg_linearFogOverride = 0.0f; //designer-specified override for linear fogging style
 
-extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* pVeh, float speed, float* mPitchOverride, float* mYawOverride);
+extern void BG_VehicleTurnRateForSpeed(const Vehicle_t* p_veh, float speed, float* mPitchOverride, float* mYawOverride);
 extern qboolean PM_InKnockDown(const playerState_t* ps);
 
 extern qboolean cgQueueLoad;

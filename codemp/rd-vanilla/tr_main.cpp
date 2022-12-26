@@ -673,13 +673,13 @@ void R_PlaneForSurface(surfaceType_t* surfType, cplane_t* plane)
 =================
 R_GetPortalOrientation
 
-entityNum is the entity that the portal surface is a part of, which may
+entity_num is the entity that the portal surface is a part of, which may
 be moving and rotating.
 
 Returns qtrue if it should be mirrored
 =================
 */
-qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, const int entityNum,
+qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, const int entity_num,
 	orientation_t* surface, orientation_t* camera,
 	vec3_t pvsOrigin, qboolean* mirror)
 {
@@ -689,10 +689,10 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, const int entityNum,
 	R_PlaneForSurface(drawSurf->surface, &originalPlane);
 
 	// rotate the plane if necessary
-	if (entityNum != REFENTITYNUM_WORLD)
+	if (entity_num != REFENTITYNUM_WORLD)
 	{
-		tr.currentEntityNum = entityNum;
-		tr.currentEntity = &tr.refdef.entities[entityNum];
+		tr.currentEntityNum = entity_num;
+		tr.currentEntity = &tr.refdef.entities[entity_num];
 
 		// get the orientation of the entity
 		R_RotateForEntity(tr.currentEntity, &tr.viewParms, &tr.ori);
@@ -808,7 +808,7 @@ qboolean R_GetPortalOrientations(drawSurf_t* drawSurf, const int entityNum,
 	return qfalse;
 }
 
-static qboolean IsMirror(const drawSurf_t* drawSurf, const int entityNum)
+static qboolean IsMirror(const drawSurf_t* drawSurf, const int entity_num)
 {
 	cplane_t originalPlane, plane;
 
@@ -816,10 +816,10 @@ static qboolean IsMirror(const drawSurf_t* drawSurf, const int entityNum)
 	R_PlaneForSurface(drawSurf->surface, &originalPlane);
 
 	// rotate the plane if necessary
-	if (entityNum != REFENTITYNUM_WORLD)
+	if (entity_num != REFENTITYNUM_WORLD)
 	{
-		tr.currentEntityNum = entityNum;
-		tr.currentEntity = &tr.refdef.entities[entityNum];
+		tr.currentEntityNum = entity_num;
+		tr.currentEntity = &tr.refdef.entities[entity_num];
 
 		// get the orientation of the entity
 		R_RotateForEntity(tr.currentEntity, &tr.viewParms, &tr.ori);
@@ -875,7 +875,7 @@ static qboolean IsMirror(const drawSurf_t* drawSurf, const int entityNum)
 static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128])
 {
 	float shortest = 100000000;
-	int entityNum;
+	int entity_num;
 	shader_t* shader;
 	int fogNum;
 	int dlighted;
@@ -885,7 +885,7 @@ static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128]
 
 	R_RotateForViewer();
 
-	R_DecomposeSort(drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted);
+	R_DecomposeSort(drawSurf->sort, &entity_num, &shader, &fogNum, &dlighted);
 	RB_BeginSurface(shader, fogNum);
 	rb_surfaceTable[*drawSurf->surface](drawSurf->surface);
 	assert(tess.numVertexes < 128);
@@ -951,7 +951,7 @@ static qboolean SurfIsOffscreen(const drawSurf_t* drawSurf, vec4_t clipDest[128]
 
 	// mirrors can early out at this point, since we don't do a fade over distance
 	// with them (although we could)
-	if (IsMirror(drawSurf, entityNum))
+	if (IsMirror(drawSurf, entity_num))
 	{
 		return qfalse;
 	}
@@ -971,7 +971,7 @@ R_MirrorViewBySurface
 Returns qtrue if another view has been rendered
 ========================
 */
-qboolean R_MirrorViewBySurface(drawSurf_t* drawSurf, int entityNum)
+qboolean R_MirrorViewBySurface(drawSurf_t* drawSurf, int entity_num)
 {
 	vec4_t clipDest[128];
 	viewParms_t newParms;
@@ -1001,7 +1001,7 @@ qboolean R_MirrorViewBySurface(drawSurf_t* drawSurf, int entityNum)
 
 	newParms = tr.viewParms;
 	newParms.isPortal = qtrue;
-	if (!R_GetPortalOrientations(drawSurf, entityNum, &surface, &camera,
+	if (!R_GetPortalOrientations(drawSurf, entity_num, &surface, &camera,
 		newParms.pvsOrigin, &newParms.isMirror))
 	{
 		return qfalse; // bad portal, no portalentity
@@ -1159,12 +1159,12 @@ void R_AddDrawSurf(surfaceType_t* surface, shader_t* shader,
 R_DecomposeSort
 =================
 */
-void R_DecomposeSort(const unsigned sort, int* entityNum, shader_t** shader,
+void R_DecomposeSort(const unsigned sort, int* entity_num, shader_t** shader,
                      int* fogNum, int* dlightMap)
 {
 	*fogNum = sort >> QSORT_FOGNUM_SHIFT & 31;
 	*shader = tr.sortedShaders[sort >> QSORT_SHADERNUM_SHIFT & MAX_SHADERS - 1];
-	*entityNum = sort >> QSORT_REFENTITYNUM_SHIFT & REFENTITYNUM_MASK;
+	*entity_num = sort >> QSORT_REFENTITYNUM_SHIFT & REFENTITYNUM_MASK;
 	*dlightMap = sort & 3;
 }
 
@@ -1177,7 +1177,7 @@ void R_SortDrawSurfs(drawSurf_t* drawSurfs, int numDrawSurfs)
 {
 	shader_t* shader;
 	int fogNum;
-	int entityNum;
+	int entity_num;
 	int dlighted;
 
 	// it is possible for some views to not have any surfaces
@@ -1203,7 +1203,7 @@ void R_SortDrawSurfs(drawSurf_t* drawSurfs, int numDrawSurfs)
 	// may cause another view to be rendered first
 	for (int i = 0; i < numDrawSurfs; i++)
 	{
-		R_DecomposeSort((drawSurfs + i)->sort, &entityNum, &shader, &fogNum, &dlighted);
+		R_DecomposeSort((drawSurfs + i)->sort, &entity_num, &shader, &fogNum, &dlighted);
 
 		if (shader->sort > SS_PORTAL)
 		{
@@ -1217,7 +1217,7 @@ void R_SortDrawSurfs(drawSurf_t* drawSurfs, int numDrawSurfs)
 		}
 
 		// if the mirror was completely clipped away, we may need to check another surface
-		if (R_MirrorViewBySurface(drawSurfs + i, entityNum))
+		if (R_MirrorViewBySurface(drawSurfs + i, entity_num))
 		{
 			// this is a debug option to see exactly what is being mirrored
 			if (r_portalOnly->integer)

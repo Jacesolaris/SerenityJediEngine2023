@@ -39,7 +39,7 @@ constexpr auto LSTATE_WAITING = 1;
 constexpr auto SPF_RANCOR_MUTANT = 1;
 constexpr auto SPF_RANCOR_FASTKILL = 2;
 
-extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
 extern cvar_t* g_dismemberment;
 extern cvar_t* g_bobaDebug;
 
@@ -97,11 +97,11 @@ qboolean Rancor_CheckAhead(vec3_t end)
 	if (trace.allsolid == qfalse && trace.startsolid == qfalse && trace.fraction == 1.0f)
 		return qtrue;
 
-	if (trace.entityNum < ENTITYNUM_WORLD
-		&& G_EntIsBreakable(trace.entityNum, NPC))
+	if (trace.entity_num < ENTITYNUM_WORLD
+		&& G_EntIsBreakable(trace.entity_num, NPC))
 	{
 		//breakable brush in our way, break it
-		//	NPCInfo->blockedEntity = &g_entities[trace.entityNum];
+		//	NPCInfo->blockedEntity = &g_entities[trace.entity_num];
 		return qtrue;
 	}
 
@@ -426,9 +426,9 @@ void Rancor_Swing(const int bolt_index, const qboolean tryGrab)
 		//remember pos3 for the trace from last hand pos to current hand pos next time
 		VectorCopy(boltOrg, NPC->pos3);
 		//FIXME: also do a trace TO the bolt from where we are...?
-		if (G_EntIsBreakable(trace.entityNum, NPC))
+		if (G_EntIsBreakable(trace.entity_num, NPC))
 		{
-			G_Damage(&g_entities[trace.entityNum], NPC, NPC, vec3_origin, boltOrg, 100, 0, MOD_MELEE);
+			G_Damage(&g_entities[trace.entity_num], NPC, NPC, vec3_origin, boltOrg, 100, 0, MOD_MELEE);
 		}
 		else
 		{
@@ -441,9 +441,9 @@ void Rancor_Swing(const int bolt_index, const qboolean tryGrab)
 				G_DebugLine(originUp, boltOrg, 1000, 0x000000ff);
 			}
 #endif
-			if (G_EntIsBreakable(trace.entityNum, NPC))
+			if (G_EntIsBreakable(trace.entity_num, NPC))
 			{
-				G_Damage(&g_entities[trace.entityNum], NPC, NPC, vec3_origin, boltOrg, 200, 0, MOD_MELEE);
+				G_Damage(&g_entities[trace.entity_num], NPC, NPC, vec3_origin, boltOrg, 200, 0, MOD_MELEE);
 			}
 		}
 	}
@@ -619,9 +619,9 @@ void Rancor_Smash(void)
 		//remember pos3 for the trace from last hand pos to current hand pos next time
 		VectorCopy(boltOrg, NPC->pos3);
 		//FIXME: also do a trace TO the bolt from where we are...?
-		if (G_EntIsBreakable(trace.entityNum, NPC))
+		if (G_EntIsBreakable(trace.entity_num, NPC))
 		{
-			G_Damage(&g_entities[trace.entityNum], NPC, NPC, vec3_origin, boltOrg, 200, 0, MOD_MELEE);
+			G_Damage(&g_entities[trace.entity_num], NPC, NPC, vec3_origin, boltOrg, 200, 0, MOD_MELEE);
 		}
 		else
 		{
@@ -634,9 +634,9 @@ void Rancor_Smash(void)
 				G_DebugLine(NPC->currentOrigin, boltOrg, 1000, 0x000000ff);
 			}
 #endif
-			if (G_EntIsBreakable(trace.entityNum, NPC))
+			if (G_EntIsBreakable(trace.entity_num, NPC))
 			{
-				G_Damage(&g_entities[trace.entityNum], NPC, NPC, vec3_origin, boltOrg, 200, 0, MOD_MELEE);
+				G_Damage(&g_entities[trace.entity_num], NPC, NPC, vec3_origin, boltOrg, 200, 0, MOD_MELEE);
 			}
 		}
 	}
@@ -1456,7 +1456,7 @@ qboolean Rancor_AttackBBrush(void)
 	{
 		//close enough to just hit it
 		trace.fraction = 0.0f;
-		trace.entityNum = NPCInfo->blockedEntity->s.number;
+		trace.entity_num = NPCInfo->blockedEntity->s.number;
 	}
 	else
 	{
@@ -1472,7 +1472,7 @@ qboolean Rancor_AttackBBrush(void)
 		}
 	}
 	if (trace.fraction >= 1.0f //too far away
-		|| trace.entityNum != NPCInfo->blockedEntity->s.number) //OR blocked by something else
+		|| trace.entity_num != NPCInfo->blockedEntity->s.number) //OR blocked by something else
 	{
 		//keep moving towards it
 		ucmd.buttons &= ~BUTTON_WALKING; // Unset from MoveToGoal()
@@ -1491,7 +1491,7 @@ qboolean Rancor_AttackBBrush(void)
 		//NPCInfo->enemyLastSeenTime = level.time;
 		//let the function that called us know that we called NAV ourselves
 	}
-	else if (trace.entityNum == NPCInfo->blockedEntity->s.number)
+	else if (trace.entity_num == NPCInfo->blockedEntity->s.number)
 	{
 		//close enough, smash it!
 		Rancor_Attack(trace.fraction * checkDist, qfalse, qtrue); //FIXME: maybe charge at it, smash through?
@@ -1500,13 +1500,13 @@ qboolean Rancor_AttackBBrush(void)
 	}
 	else
 	{
-		//Com_Printf( S_COLOR_RED"RANCOR cannot reach intended breakable %s, blocked by %s\n", NPC->blockedEntity->targetname, g_entities[trace.entityNum].classname );
-		if (G_EntIsBreakable(trace.entityNum, NPC))
+		//Com_Printf( S_COLOR_RED"RANCOR cannot reach intended breakable %s, blocked by %s\n", NPC->blockedEntity->targetname, g_entities[trace.entity_num].classname );
+		if (G_EntIsBreakable(trace.entity_num, NPC))
 		{
 			//oh, well, smash that, then
-			//G_SetEnemy( NPC, &g_entities[trace.entityNum] );
+			//G_SetEnemy( NPC, &g_entities[trace.entity_num] );
 			gentity_t* prevblockedEnt = NPCInfo->blockedEntity;
-			NPCInfo->blockedEntity = &g_entities[trace.entityNum];
+			NPCInfo->blockedEntity = &g_entities[trace.entity_num];
 			Rancor_Attack(trace.fraction * checkDist, qfalse, qtrue); //FIXME: maybe charge at it, smash through?
 			TIMER_Remove(NPC, "attackDebounce"); //don't wait on these
 			NPCInfo->enemyLastSeenTime = level.time;
@@ -1525,24 +1525,24 @@ void Rancor_FireBreathAttack(void)
 {
 	const int damage = Q_irand(10, 15);
 	trace_t tr;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t start, end, dir;
 	constexpr vec3_t traceMaxs = {4, 4, 4};
 	constexpr vec3_t traceMins = {-4, -4, -4};
 	const vec3_t ranc_angles = {0, NPC->client->ps.viewangles[YAW], 0};
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel, NPC->gutBolt,
-	                       &boltMatrix, ranc_angles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, ranc_angles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, start);
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Z, dir);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, start);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Z, dir);
 	VectorMA(start, 512, dir, end);
 
 	gi.trace(&tr, start, traceMins, traceMaxs, end, NPC->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
-	if (tr.entityNum < ENTITYNUM_WORLD
+	gentity_t* traceEnt = &g_entities[tr.entity_num];
+	if (tr.entity_num < ENTITYNUM_WORLD
 		&& traceEnt->takedamage
 		&& traceEnt->client)
 	{

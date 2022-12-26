@@ -31,14 +31,14 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean G_CheckForStrongAttackMomentum(const gentity_t* self);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
+extern void cgi_S_StartSound(const vec3_t origin, int entity_num, int entchannel, sfxHandle_t sfx);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern qboolean Jedi_WaitingAmbush(const gentity_t* self);
 extern void Jedi_Ambush(gentity_t* self);
-extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_SpinningSaberAnim(int anim);
 extern qboolean PM_SpinningAnim(int anim);
@@ -1607,25 +1607,25 @@ void NPC_Use(gentity_t* self, gentity_t* other, gentity_t* activator)
 		// If this is a vehicle, let the other guy board it. Added 12/14/02 by AReis.
 		if (self->client->NPC_class == CLASS_VEHICLE)
 		{
-			Vehicle_t* pVeh = self->m_pVehicle;
+			Vehicle_t* p_veh = self->m_pVehicle;
 
-			if (pVeh && pVeh->m_pVehicleInfo && other && other->client)
+			if (p_veh && p_veh->m_pVehicleInfo && other && other->client)
 			{
 				//safety
 				//if I used myself, eject everyone on me
 				if (other == self)
 				{
-					pVeh->m_pVehicleInfo->EjectAll(pVeh);
+					p_veh->m_pVehicleInfo->EjectAll(p_veh);
 				}
 				// If other is already riding this vehicle (self), eject him.
 				else if (other->owner == self)
 				{
-					pVeh->m_pVehicleInfo->Eject(pVeh, other, qfalse);
+					p_veh->m_pVehicleInfo->Eject(p_veh, other, qfalse);
 				}
 				// Otherwise board this vehicle.
 				else
 				{
-					pVeh->m_pVehicleInfo->Board(pVeh, other);
+					p_veh->m_pVehicleInfo->Board(p_veh, other);
 				}
 			}
 		}

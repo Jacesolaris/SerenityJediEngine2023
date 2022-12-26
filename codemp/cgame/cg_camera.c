@@ -658,11 +658,11 @@ void CGCam_FollowUpdate(void)
 			const int newBolt = trap->G2API_AddBolt(&fromCent->ghoul2, 0, client_camera.cameraGroupTag);
 			if (newBolt != -1)
 			{
-				mdxaBone_t boltMatrix;
+				mdxaBone_t bolt_matrix;
 
-				trap->G2API_GetBoltMatrix(&fromCent->ghoul2, 0, newBolt, &boltMatrix, fromCent->turAngles,
+				trap->G2API_GetBoltMatrix(&fromCent->ghoul2, 0, newBolt, &bolt_matrix, fromCent->turAngles,
 				                          fromCent->lerpOrigin, cg.time, cgs.game_models, fromCent->modelScale);
-				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, focus[num_subjects]);
+				BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, focus[num_subjects]);
 
 				focused = qtrue;
 			}
@@ -747,11 +747,11 @@ void CGCam_FollowUpdate(void)
 		int newBolt = gi.G2API_AddBolt( &fromCent->gent->ghoul2[from->playerModel], client_camera.cameraGroupTag );
 		if ( newBolt != -1 )
 		{
-			mdxaBone_t	boltMatrix;
+			mdxaBone_t	bolt_matrix;
 			vec3_t	fromAngles = {0,from->client->ps.legsYaw,0};
 
-			gi.G2API_GetBoltMatrix( fromCent->gent->ghoul2, from->playerModel, newBolt, &boltMatrix, fromAngles, fromCent->lerpOrigin, cg.time, cgs.model_draw, fromCent->currentState.modelScale );
-			gi.G2API_GiveMeVectorFromMatrix( boltMatrix, ORIGIN, focus[num_subjects] );
+			gi.G2API_GetBoltMatrix( fromCent->gent->ghoul2, from->playerModel, newBolt, &bolt_matrix, fromAngles, fromCent->lerpOrigin, cg.time, cgs.model_draw, fromCent->currentState.modelScale );
+			gi.G2API_GiveMeVectorFromMatrix( bolt_matrix, ORIGIN, focus[num_subjects] );
 
 			focused = qtrue;
 		}

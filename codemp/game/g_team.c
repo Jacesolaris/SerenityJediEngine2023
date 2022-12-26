@@ -1190,8 +1190,8 @@ gentity_t* SelectCTFSpawnPoint(const team_t team, const int teamstate, vec3_t or
 	return spot;
 }
 
-static vec3_t playerMins = {-15, -15, DEFAULT_MINS_2};
-static vec3_t playerMaxs = {15, 15, DEFAULT_MAXS_2};
+static vec3_t player_mins = {-15, -15, DEFAULT_MINS_2};
+static vec3_t player_maxs = {15, 15, DEFAULT_MAXS_2};
 extern qboolean CheckforGoodSpawnPoint(vec3_t location, qboolean playersolidcheck);
 
 //checks to see if a certain location would telefrag.
@@ -1200,8 +1200,8 @@ qboolean PointWouldTelefrag(vec3_t point)
 	int touch[MAX_GENTITIES];
 	vec3_t mins, maxs;
 
-	VectorAdd(point, playerMins, mins);
-	VectorAdd(point, playerMaxs, maxs);
+	VectorAdd(point, player_mins, mins);
+	VectorAdd(point, player_maxs, maxs);
 	const int num = trap->EntitiesInBox(mins, maxs, touch, MAX_GENTITIES);
 
 	for (int i = 0; i < num; i++)

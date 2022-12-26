@@ -96,7 +96,7 @@ void NPC_BSAdvanceFight(void)
 					trace_t tr;
 					//are we gonna hit him if we shoot at his center?
 					trap->Trace(&tr, muzzle, NULL, NULL, enemy_org, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
-					const gentity_t* traceEnt = &g_entities[tr.entityNum];
+					const gentity_t* traceEnt = &g_entities[tr.entity_num];
 					if (traceEnt != NPCS.NPC->enemy &&
 						(!traceEnt || !traceEnt->client || !NPCS.NPC->client->enemyTeam || NPCS.NPC->client->enemyTeam
 							!= traceEnt->client->playerTeam))
@@ -104,7 +104,7 @@ void NPC_BSAdvanceFight(void)
 						//no, so shoot for the head
 						attack_scale *= 0.75;
 						trap->Trace(&tr, muzzle, NULL, NULL, enemy_head, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
-						traceEnt = &g_entities[tr.entityNum];
+						traceEnt = &g_entities[tr.entity_num];
 					}
 
 					VectorCopy(tr.endpos, hitspot);

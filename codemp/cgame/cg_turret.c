@@ -29,9 +29,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 void CreepToPosition(vec3_t ideal, vec3_t current)
 {
 	const float max_degree_switch = 90;
-	int degrees_negative = 0;
-	int degrees_positive = 0;
-	int doNegative = 0;
+	int degrees_negative;
+	int degrees_positive;
+	int do_negative = 0;
 
 	int angle_ideal = (int)ideal[YAW];
 	int angle_current = (int)current[YAW];
@@ -51,10 +51,10 @@ void CreepToPosition(vec3_t ideal, vec3_t current)
 
 	if (degrees_negative < degrees_positive)
 	{
-		doNegative = 1;
+		do_negative = 1;
 	}
 
-	if (doNegative)
+	if (do_negative)
 	{
 		current[YAW] -= max_degree_switch;
 
@@ -91,7 +91,7 @@ void CreepToPosition(vec3_t ideal, vec3_t current)
 	angle_ideal = (int)ideal[PITCH];
 	angle_current = (int)current[PITCH];
 
-	doNegative = 0;
+	do_negative = 0;
 
 	if (angle_ideal <= angle_current)
 	{
@@ -108,10 +108,10 @@ void CreepToPosition(vec3_t ideal, vec3_t current)
 
 	if (degrees_negative < degrees_positive)
 	{
-		doNegative = 1;
+		do_negative = 1;
 	}
 
-	if (doNegative)
+	if (do_negative)
 	{
 		current[PITCH] -= max_degree_switch;
 
@@ -169,9 +169,9 @@ void TurretClientRun(centity_t* ent)
 		ent->turAngles[PITCH] = 90;
 		ent->turAngles[YAW] = 0;
 
-		const weaponInfo_t* weaponInfo = &cg_weapons[WP_TURRET];
+		const weaponInfo_t* weapon_info = &cg_weapons[WP_TURRET];
 
-		if (!weaponInfo->registered)
+		if (!weapon_info->registered)
 		{
 			CG_RegisterWeapon(WP_TURRET);
 		}
@@ -186,15 +186,15 @@ void TurretClientRun(centity_t* ent)
 	}
 	if (ent->currentState.fireflag && ent->bolt4 != ent->currentState.fireflag)
 	{
-		vec3_t muzzleOrg, muzzleDir;
-		mdxaBone_t boltMatrix;
+		vec3_t muzzle_org, muzzle_dir;
+		mdxaBone_t bolt_matrix;
 
-		trap->G2API_GetBoltMatrix(ent->ghoul2, 0, ent->torsoBolt, &boltMatrix, /*ent->lerpAngles*/vec3_origin,
+		trap->G2API_GetBoltMatrix(ent->ghoul2, 0, ent->torsoBolt, &bolt_matrix, /*ent->lerpAngles*/vec3_origin,
 		                          ent->lerpOrigin, cg.time, cgs.game_models, ent->modelScale);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzleOrg);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, muzzleDir);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, muzzle_org);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, muzzle_dir);
 
-		trap->FX_PlayEffectID(cgs.effects.mTurretMuzzleFlash, muzzleOrg, muzzleDir, -1, -1, qfalse);
+		trap->FX_PlayEffectID(cgs.effects.mTurretMuzzleFlash, muzzle_org, muzzle_dir, -1, -1, qfalse);
 
 		ent->bolt4 = ent->currentState.fireflag;
 	}
@@ -210,18 +210,18 @@ void TurretClientRun(centity_t* ent)
 
 		if (enemy)
 		{
-			vec3_t enAng;
-			vec3_t enPos;
+			vec3_t en_ang;
+			vec3_t en_pos;
 
-			VectorCopy(enemy->currentState.pos.trBase, enPos);
+			VectorCopy(enemy->currentState.pos.trBase, en_pos);
 
-			VectorSubtract(enPos, ent->lerpOrigin, enAng);
-			VectorNormalize(enAng);
-			vectoangles(enAng, enAng);
-			enAng[ROLL] = 0;
-			enAng[PITCH] += 90;
+			VectorSubtract(en_pos, ent->lerpOrigin, en_ang);
+			VectorNormalize(en_ang);
+			vectoangles(en_ang, en_ang);
+			en_ang[ROLL] = 0;
+			en_ang[PITCH] += 90;
 
-			CreepToPosition(enAng, ent->turAngles);
+			CreepToPosition(en_ang, ent->turAngles);
 		}
 	}
 	else
@@ -238,16 +238,16 @@ void TurretClientRun(centity_t* ent)
 			ent->dustTrailTime = cg.time;
 		}
 
-		float turnAmount = (cg.time - ent->dustTrailTime) * 0.03;
+		float turn_amount = (cg.time - ent->dustTrailTime) * 0.03;
 
-		if (turnAmount > 360)
+		if (turn_amount > 360)
 		{
-			turnAmount = 360;
+			turn_amount = 360;
 		}
 
 		idleAng[PITCH] = 90;
 		idleAng[ROLL] = 0;
-		idleAng[YAW] = ent->turAngles[YAW] + turnAmount;
+		idleAng[YAW] = ent->turAngles[YAW] + turn_amount;
 		ent->dustTrailTime = cg.time;
 
 		CreepToPosition(idleAng, ent->turAngles);

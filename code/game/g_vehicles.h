@@ -312,75 +312,75 @@ using vehicleInfo_t = struct
 	// inherited from, only contained and reimplemented (through an object and a setup function respectively)). -AReis
 
 	// Makes sure that the vehicle is properly animated.
-	void (*AnimateVehicle)(Vehicle_t* pVeh);
+	void (*AnimateVehicle)(Vehicle_t* p_veh);
 
 	// Makes sure that the rider's in this vehicle are properly animated.
-	void (*AnimateRiders)(Vehicle_t* pVeh);
+	void (*AnimateRiders)(Vehicle_t* p_veh);
 
 	// Determine whether this entity is able to board this vehicle or not.
-	bool (*ValidateBoard)(Vehicle_t* pVeh, gentity_t* pEnt);
+	bool (*ValidateBoard)(Vehicle_t* p_veh, gentity_t* pEnt);
 
 	// Set the parent entity of this Vehicle NPC.
-	void (*SetParent)(Vehicle_t* pVeh, gentity_t* pParentEntity);
+	void (*SetParent)(Vehicle_t* p_veh, gentity_t* pParentEntity);
 
 	// Add a pilot to the vehicle.
-	void (*SetPilot)(Vehicle_t* pVeh, gentity_t* pPilot);
+	void (*SetPilot)(Vehicle_t* p_veh, gentity_t* pPilot);
 
 	// Add a passenger to the vehicle (false if we're full).
-	bool (*AddPassenger)(Vehicle_t* pVeh);
+	bool (*AddPassenger)(Vehicle_t* p_veh);
 
 	// Animate the vehicle and it's riders.
-	void (*Animate)(Vehicle_t* pVeh);
+	void (*Animate)(Vehicle_t* p_veh);
 
 	// Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-	bool (*Board)(Vehicle_t* pVeh, gentity_t* pEnt);
+	bool (*Board)(Vehicle_t* p_veh, gentity_t* pEnt);
 
 	// Eject an entity from the vehicle.
-	bool (*Eject)(Vehicle_t* pVeh, gentity_t* pEnt, qboolean forceEject);
+	bool (*Eject)(Vehicle_t* p_veh, gentity_t* pEnt, qboolean forceEject);
 
 	// Eject all the inhabitants of this vehicle.
-	bool (*EjectAll)(Vehicle_t* pVeh);
+	bool (*EjectAll)(Vehicle_t* p_veh);
 
 	// Start a delay until the vehicle dies.
-	void (*StartDeathDelay)(Vehicle_t* pVeh, int iDelayTime);
+	void (*StartDeathDelay)(Vehicle_t* p_veh, int iDelayTime);
 
 	// Update death sequence.
-	void (*DeathUpdate)(Vehicle_t* pVeh);
+	void (*DeathUpdate)(Vehicle_t* p_veh);
 
 	// Register all the assets used by this vehicle.
-	void (*RegisterAssets)(Vehicle_t* pVeh);
+	void (*RegisterAssets)(Vehicle_t* p_veh);
 
 	// Initialize the vehicle (should be called by Spawn?).
-	bool (*Initialize)(Vehicle_t* pVeh);
+	bool (*Initialize)(Vehicle_t* p_veh);
 
 	// Like a think or move command, this updates various vehicle properties.
-	bool (*Update)(Vehicle_t* pVeh, const usercmd_t* pUcmd);
+	bool (*Update)(Vehicle_t* p_veh, const usercmd_t* pUcmd);
 
 	// Update the properties of a Rider (that may reflect what happens to the vehicle).
 	//
 	//	[return]		bool			True if still in vehicle, false if otherwise.
-	bool (*UpdateRider)(Vehicle_t* pVeh, gentity_t* pRider, usercmd_t* pUcmd);
+	bool (*UpdateRider)(Vehicle_t* p_veh, gentity_t* pRider, usercmd_t* pUcmd);
 
 	// ProcessMoveCommands the Vehicle.
-	void (*ProcessMoveCommands)(Vehicle_t* pVeh);
+	void (*ProcessMoveCommands)(Vehicle_t* p_veh);
 
 	// ProcessOrientCommands the Vehicle.
-	void (*ProcessOrientCommands)(Vehicle_t* pVeh);
+	void (*ProcessOrientCommands)(Vehicle_t* p_veh);
 
 	// Attachs all the riders of this vehicle to their appropriate position/tag (*driver, *pass1, *pass2, whatever...).
-	void (*AttachRiders)(Vehicle_t* pVeh);
+	void (*AttachRiders)(Vehicle_t* p_veh);
 
 	// Make someone invisible and un-collidable.
-	void (*Ghost)(Vehicle_t* pVeh, gentity_t* pEnt);
+	void (*Ghost)(Vehicle_t* p_veh, gentity_t* pEnt);
 
 	// Make someone visible and collidable.
-	void (*UnGhost)(Vehicle_t* pVeh, gentity_t* pEnt);
+	void (*UnGhost)(Vehicle_t* p_veh, gentity_t* pEnt);
 
 	// Get the pilot of this vehicle.
-	const gentity_t* (*GetPilot)(Vehicle_t* pVeh);
+	const gentity_t* (*GetPilot)(Vehicle_t* p_veh);
 
 	// Whether this vehicle is currently inhabited (by anyone) or not.
-	bool (*Inhabited)(Vehicle_t* pVeh);
+	bool (*Inhabited)(Vehicle_t* p_veh);
 };
 
 #define	VFOFS(x) offsetof(vehicleInfo_t, x)
@@ -399,10 +399,10 @@ extern void G_SetWalkerVehicleFunctions(vehicleInfo_t* pVehInfo);
 extern void G_SetSharedVehicleFunctions(vehicleInfo_t* pVehInfo);
 
 // Create/Allocate a new Animal Vehicle (initializing it as well).
-extern void G_CreateSpeederNPC(Vehicle_t** pVeh, const char* strType);
-extern void G_CreateAnimalNPC(Vehicle_t** pVeh, const char* strType);
-extern void G_CreateFighterNPC(Vehicle_t** pVeh, const char* strType);
-extern void G_CreateWalkerNPC(Vehicle_t** pVeh, const char* strType);
+extern void G_CreateSpeederNPC(Vehicle_t** p_veh, const char* strType);
+extern void G_CreateAnimalNPC(Vehicle_t** p_veh, const char* strType);
+extern void G_CreateFighterNPC(Vehicle_t** p_veh, const char* strType);
+extern void G_CreateWalkerNPC(Vehicle_t** p_veh, const char* strType);
 
 #define VEH_DEFAULT_SPEED_MAX		800.0f
 #define VEH_DEFAULT_ACCEL			10.0f

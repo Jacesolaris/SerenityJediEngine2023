@@ -276,29 +276,29 @@ void G2_BoltToGhoul2Model(const centity_t* cent, refEntity_t* ent)
 	int ent_num = cent->currentState.boltInfo >> ENTITY_SHIFT;
 	ent_num &= ENTITY_AND;
 
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 
 	// go away and get me the bolt position for this frame please
-	gi.G2API_GetBoltMatrix(cent->gent->ghoul2, model_num, bolt_num, &boltMatrix, cg_entities[ent_num].currentState.angles,
+	gi.G2API_GetBoltMatrix(cent->gent->ghoul2, model_num, bolt_num, &bolt_matrix, cg_entities[ent_num].currentState.angles,
 	                       cg_entities[ent_num].currentState.origin, cg.time, cgs.model_draw,
 	                       cent->currentState.modelScale);
 
 	// set up the axis and origin we need for the actual effect spawning
-	ent->origin[0] = boltMatrix.matrix[0][3];
-	ent->origin[1] = boltMatrix.matrix[1][3];
-	ent->origin[2] = boltMatrix.matrix[2][3];
+	ent->origin[0] = bolt_matrix.matrix[0][3];
+	ent->origin[1] = bolt_matrix.matrix[1][3];
+	ent->origin[2] = bolt_matrix.matrix[2][3];
 
-	ent->axis[0][0] = boltMatrix.matrix[0][0];
-	ent->axis[0][1] = boltMatrix.matrix[1][0];
-	ent->axis[0][2] = boltMatrix.matrix[2][0];
+	ent->axis[0][0] = bolt_matrix.matrix[0][0];
+	ent->axis[0][1] = bolt_matrix.matrix[1][0];
+	ent->axis[0][2] = bolt_matrix.matrix[2][0];
 
-	ent->axis[1][0] = boltMatrix.matrix[0][1];
-	ent->axis[1][1] = boltMatrix.matrix[1][1];
-	ent->axis[1][2] = boltMatrix.matrix[2][1];
+	ent->axis[1][0] = bolt_matrix.matrix[0][1];
+	ent->axis[1][1] = bolt_matrix.matrix[1][1];
+	ent->axis[1][2] = bolt_matrix.matrix[2][1];
 
-	ent->axis[2][0] = boltMatrix.matrix[0][2];
-	ent->axis[2][1] = boltMatrix.matrix[1][2];
-	ent->axis[2][2] = boltMatrix.matrix[2][2];
+	ent->axis[2][0] = bolt_matrix.matrix[0][2];
+	ent->axis[2][1] = bolt_matrix.matrix[1][2];
+	ent->axis[2][2] = bolt_matrix.matrix[2][2];
 }
 
 void ScaleModelAxis(refEntity_t* ent)
@@ -2462,8 +2462,8 @@ void CG_MatrixEffect(const centity_t* cent)
 		}
 		else if (g_entities[cent->currentState.otherEntityNum].client->NPC_class == CLASS_VEHICLE)
 		{
-			const Vehicle_t* pVeh = g_entities[cent->currentState.otherEntityNum].m_pVehicle;
-			if (pVeh && !(pVeh->m_ulFlags & VEH_FLYING))
+			const Vehicle_t* p_veh = g_entities[cent->currentState.otherEntityNum].m_pVehicle;
+			if (p_veh && !(p_veh->m_ulFlags & VEH_FLYING))
 			{
 				stop_effect = true;
 			}
@@ -2646,8 +2646,8 @@ void CG_StasisEffect(const centity_t* cent)
 		}
 		else if (g_entities[cent->currentState.otherEntityNum].client->NPC_class == CLASS_VEHICLE)
 		{
-			const Vehicle_t* pVeh = g_entities[cent->currentState.otherEntityNum].m_pVehicle;
-			if (pVeh && !(pVeh->m_ulFlags & VEH_FLYING))
+			const Vehicle_t* p_veh = g_entities[cent->currentState.otherEntityNum].m_pVehicle;
+			if (p_veh && !(p_veh->m_ulFlags & VEH_FLYING))
 			{
 				stop_effect = true;
 			}

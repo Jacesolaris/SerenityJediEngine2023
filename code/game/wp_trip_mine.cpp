@@ -153,7 +153,7 @@ void laserTrapThink(gentity_t* ent)
 	VectorMA(ent->s.pos.trBase, 2048, ent->movedir, end);
 	gi.trace(&tr, ent->s.origin2, mins, maxs, end, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 0);
 
-	const gentity_t* traceEnt = &g_entities[tr.entityNum];
+	const gentity_t* traceEnt = &g_entities[tr.entity_num];
 
 	// Adjust this so that the effect has a relatively fresh endpoint
 	VectorCopy(tr.endpos, ent->pos4);

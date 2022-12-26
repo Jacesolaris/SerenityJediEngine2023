@@ -1309,11 +1309,11 @@ void NPC_BSST_Patrol(void)
 		{
 			//racc - looking for entities.
 			//FIXME: do a FOV cone check, then a trace
-			if (trace.entityNum < ENTITYNUM_WORLD)
+			if (trace.entity_num < ENTITYNUM_WORLD)
 			{
 				//hit something
 				//try cheap check first
-				gentity_t* enemy = &g_entities[trace.entityNum];
+				gentity_t* enemy = &g_entities[trace.entity_num];
 				if (enemy && enemy->client && NPC_ValidEnemy(enemy) && enemy->client->playerTeam == NPCS.NPC->client->
 					enemyTeam)
 				{
@@ -2902,7 +2902,7 @@ void Noghri_StickTrace(void)
 		int lastHit = ENTITYNUM_NONE;
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base, angles;
 			vec3_t mins, maxs;
 			trace_t trace;
@@ -2913,16 +2913,16 @@ void Noghri_StickTrace(void)
 
 			trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 1,
 			                          bolt_index,
-			                          &boltMatrix, angles, NPCS.NPC->r.currentOrigin, time,
+			                          &bolt_matrix, angles, NPCS.NPC->r.currentOrigin, time,
 			                          NULL, NPCS.NPC->modelScale);
-			BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, base);
-			BG_GiveMeVectorFromMatrix(&boltMatrix, POSITIVE_Y, dir);
+			BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, base);
+			BG_GiveMeVectorFromMatrix(&bolt_matrix, POSITIVE_Y, dir);
 			VectorMA(base, 48, dir, tip);
 			trap->Trace(&trace, base, mins, maxs, tip, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
-			if (trace.fraction < 1.0f && trace.entityNum != lastHit)
+			if (trace.fraction < 1.0f && trace.entity_num != lastHit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* traceEnt = &g_entities[trace.entity_num];
 				if (traceEnt->takedamage
 					&& (!traceEnt->client || traceEnt == NPCS.NPC->enemy || traceEnt->client->NPC_class != NPCS.NPC->
 						client->NPC_class))
@@ -2938,7 +2938,7 @@ void Noghri_StickTrace(void)
 						//do pain on enemy
 						G_Knockdown(traceEnt, NPCS.NPC, dir, 300, qtrue);
 					}
-					lastHit = trace.entityNum;
+					lastHit = trace.entity_num;
 					hit = qtrue;
 				}
 			}
@@ -3118,7 +3118,7 @@ void NPC_BSST_Attack(void)
 				trace_t trace;
 				trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->r.mins, NPCS.NPC->r.maxs,
 				            NPCS.NPC->r.currentOrigin, NPCS.NPC->s.number, NPCS.NPC->clipmask, qfalse, 0, 0);
-				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPCS.NPC->s.
+				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entity_num == NPCS.NPC->s.
 					number))
 				{
 					//he can get right to me

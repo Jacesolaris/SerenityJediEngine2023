@@ -4697,8 +4697,8 @@ void LimbThink(gentity_t* ent)
 	ent->nextthink = level.time;
 }
 
-extern qboolean BG_GetRootSurfNameWithVariant(void* ghoul2, const char* rootSurfName, char* returnSurfName,
-                                              int returnSize);
+extern qboolean BG_GetRootSurfNameWithVariant(void* ghoul2, const char* root_surf_name, char* return_surf_name,
+                                              int return_size);
 
 void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, const int limb_type)
 {
@@ -5198,16 +5198,16 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit
 		*hit_loc = HL_WAIST;
 		if (ent->client != NULL && ent->ghoul2)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			vec3_t tagOrg, angles;
 
 			VectorSet(angles, 0, ent->r.currentAngles[YAW], 0);
 			if (knee_l_bolt >= 0)
 			{
 				trap->G2API_GetBoltMatrix(ent->ghoul2, 0, knee_l_bolt,
-				                          &boltMatrix, angles, ent->r.currentOrigin,
+				                          &bolt_matrix, angles, ent->r.currentOrigin,
 				                          actual_time, NULL, ent->modelScale);
-				BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
+				BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, tagOrg);
 				if (DistanceSquared(point, tagOrg) < 100)
 				{
 					//actually hit the knee
@@ -5219,9 +5219,9 @@ qboolean G_GetHitLocFromSurfName(gentity_t* ent, const char* surf_name, int* hit
 				if (knee_r_bolt >= 0)
 				{
 					trap->G2API_GetBoltMatrix(ent->ghoul2, 0, knee_r_bolt,
-					                          &boltMatrix, angles, ent->r.currentOrigin,
+					                          &bolt_matrix, angles, ent->r.currentOrigin,
 					                          actual_time, NULL, ent->modelScale);
-					BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, tagOrg);
+					BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, tagOrg);
 					if (DistanceSquared(point, tagOrg) < 100)
 					{
 						//actually hit the knee
@@ -7385,7 +7385,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, vec3_t
 
 			if (!testTrace.startsolid &&
 				!testTrace.allsolid &&
-				testTrace.entityNum == targ->s.number &&
+				testTrace.entity_num == targ->s.number &&
 				testTrace.G2CollisionMap[0].mEntityNum != -1)
 			{
 				if (chance_of_fizz > 0)
@@ -7912,7 +7912,7 @@ qboolean CanDamage(const gentity_t* targ, vec3_t origin)
 
 	VectorCopy(midpoint, dest);
 	trap->Trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, qfalse, 0, 0);
-	if (tr.fraction == 1.0 || tr.entityNum == targ->s.number)
+	if (tr.fraction == 1.0 || tr.entity_num == targ->s.number)
 		return qtrue;
 
 	// this should probably check in the plane of projection,

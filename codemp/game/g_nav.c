@@ -23,9 +23,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "b_local.h"
 #include "g_nav.h"
 
-extern qboolean G_EntIsUnlockedDoor(int entityNum);
-extern qboolean G_EntIsDoor(int entityNum);
-extern qboolean G_EntIsBreakable(int entityNum);
+extern qboolean G_EntIsUnlockedDoor(int entity_num);
+extern qboolean G_EntIsDoor(int entity_num);
+extern qboolean G_EntIsBreakable(int entity_num);
 extern qboolean G_EntIsRemovableUsable(int entNum);
 extern qboolean G_FindClosestPointOnLineSegment(const vec3_t start, const vec3_t end, const vec3_t from, vec3_t result);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
@@ -297,7 +297,7 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 			return qtrue;
 		}
 
-		if (okToHitEntNum != ENTITYNUM_NONE && trace.entityNum == okToHitEntNum)
+		if (okToHitEntNum != ENTITYNUM_NONE && trace.entity_num == okToHitEntNum)
 		{
 			return qtrue;
 		}
@@ -310,13 +310,13 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 		}
 		if (NAVDEBUG_showCollision)
 		{
-			if (trace.entityNum < ENTITYNUM_WORLD && &g_entities[trace.entityNum] != NULL && g_entities[trace.entityNum]
+			if (trace.entity_num < ENTITYNUM_WORLD && &g_entities[trace.entity_num] != NULL && g_entities[trace.entity_num]
 				.s.eType != ET_MOVER)
 			{
 				vec3_t p1, p2;
 				G_DrawEdge(point, trace.endpos, EDGE_PATH);
-				VectorAdd(g_entities[trace.entityNum].r.mins, g_entities[trace.entityNum].r.currentOrigin, p1);
-				VectorAdd(g_entities[trace.entityNum].r.maxs, g_entities[trace.entityNum].r.currentOrigin, p2);
+				VectorAdd(g_entities[trace.entity_num].r.mins, g_entities[trace.entity_num].r.currentOrigin, p1);
+				VectorAdd(g_entities[trace.entity_num].r.maxs, g_entities[trace.entity_num].r.currentOrigin, p2);
 				G_CubeOutline(p1, p2, FRAMETIME, 0x0000ff, 0.5);
 			}
 			//FIXME: if it is a bmodel, light up the surf?
@@ -340,20 +340,20 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 			return qtrue;
 		}
 
-		if (okToHitEntNum != ENTITYNUM_NONE && trace.entityNum == okToHitEntNum)
+		if (okToHitEntNum != ENTITYNUM_NONE && trace.entity_num == okToHitEntNum)
 		{
 			return qtrue;
 		}
 
 		if (NAVDEBUG_showCollision)
 		{
-			if (trace.entityNum < ENTITYNUM_WORLD && &g_entities[trace.entityNum] != NULL && g_entities[trace.entityNum]
+			if (trace.entity_num < ENTITYNUM_WORLD && &g_entities[trace.entity_num] != NULL && g_entities[trace.entity_num]
 				.s.eType != ET_MOVER)
 			{
 				vec3_t p1, p2;
 				G_DrawEdge(self->r.currentOrigin, trace.endpos, EDGE_PATH);
-				VectorAdd(g_entities[trace.entityNum].r.mins, g_entities[trace.entityNum].r.currentOrigin, p1);
-				VectorAdd(g_entities[trace.entityNum].r.maxs, g_entities[trace.entityNum].r.currentOrigin, p2);
+				VectorAdd(g_entities[trace.entity_num].r.mins, g_entities[trace.entity_num].r.currentOrigin, p1);
+				VectorAdd(g_entities[trace.entity_num].r.maxs, g_entities[trace.entity_num].r.currentOrigin, p2);
 				G_CubeOutline(p1, p2, FRAMETIME, 0x0000ff, 0.5);
 			}
 			//FIXME: if it is a bmodel, light up the surf?
@@ -541,9 +541,9 @@ qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t* trace, int c
 		return qtrue;
 
 	//Do a special check for doors
-	if (trace->entityNum < ENTITYNUM_WORLD)
+	if (trace->entity_num < ENTITYNUM_WORLD)
 	{
-		const gentity_t* blocker = &g_entities[trace->entityNum];
+		const gentity_t* blocker = &g_entities[trace->entity_num];
 
 		if (VALIDSTRING(blocker->classname))
 		{
@@ -944,7 +944,7 @@ qboolean NAV_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info)
 	if (NAV_CheckAhead(self, movepos, &info->trace, CONTENTS_BODY) == qfalse)
 	{
 		//Get the blocker
-		info->blocker = &g_entities[info->trace.entityNum];
+		info->blocker = &g_entities[info->trace.entity_num];
 		info->flags |= NIF_COLLISION;
 
 		//Ok to hit our goal entity
@@ -1035,9 +1035,9 @@ int NAV_TestBestNode(const gentity_t* self, const int startID, const int endID, 
 	}
 
 	//Do a special check for doors
-	if (trace.entityNum < ENTITYNUM_WORLD)
+	if (trace.entity_num < ENTITYNUM_WORLD)
 	{
-		const gentity_t* blocker = &g_entities[trace.entityNum];
+		const gentity_t* blocker = &g_entities[trace.entity_num];
 
 		if VALIDSTRING(blocker->classname)
 		{

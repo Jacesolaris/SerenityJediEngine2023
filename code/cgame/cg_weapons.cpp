@@ -131,17 +131,17 @@ CG_RegisterWeapon
 The server says this item is used on this level
 =================
 */
-void CG_RegisterWeapon(const int weaponNum)
+void CG_RegisterWeapon(const int weapon_num)
 {
 	gitem_t *item, *ammo;
 	char path[MAX_QPATH];
 	vec3_t mins, maxs;
 	int i;
 
-	weaponInfo_t* weaponInfo = &cg_weapons[weaponNum];
+	weaponInfo_t* weaponInfo = &cg_weapons[weapon_num];
 
 	// error checking
-	if (weaponNum == 0)
+	if (weapon_num == 0)
 	{
 		return;
 	}
@@ -158,7 +158,7 @@ void CG_RegisterWeapon(const int weaponNum)
 	// find the weapon in the item list
 	for (item = bg_itemlist + 1; item->classname; item++)
 	{
-		if (item->giType == IT_WEAPON && item->giTag == weaponNum)
+		if (item->giType == IT_WEAPON && item->giTag == weapon_num)
 		{
 			weaponInfo->item = item;
 			break;
@@ -167,17 +167,17 @@ void CG_RegisterWeapon(const int weaponNum)
 	// if we couldn't find which weapon this is, give us an error
 	if (!item->classname)
 	{
-		CG_Error("Couldn't find item for weapon %s\nNeed to update Items.dat!", weaponData[weaponNum].classname);
+		CG_Error("Couldn't find item for weapon %s\nNeed to update Items.dat!", weaponData[weapon_num].classname);
 	}
 	CG_RegisterItemVisuals(item - bg_itemlist);
 
 	// set up in view weapon model
-	weaponInfo->weaponModel = cgi_R_RegisterModel(weaponData[weaponNum].weaponMdl);
+	weaponInfo->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].weaponMdl);
 	{
 		//in case the weaponmodel isn't _w, precache the _w.glm
 		char weaponModel[64];
 
-		Q_strncpyz(weaponModel, weaponData[weaponNum].weaponMdl, sizeof weaponModel);
+		Q_strncpyz(weaponModel, weaponData[weapon_num].weaponMdl, sizeof weaponModel);
 		if (char* spot = strstr(weaponModel, ".md3"))
 		{
 			*spot = 0;
@@ -194,8 +194,8 @@ void CG_RegisterWeapon(const int weaponNum)
 
 	if (weaponInfo->weaponModel == 0)
 	{
-		CG_Error("Couldn't find weapon model %s for weapon %s\n", weaponData[weaponNum].weaponMdl,
-		         weaponData[weaponNum].classname);
+		CG_Error("Couldn't find weapon model %s for weapon %s\n", weaponData[weapon_num].weaponMdl,
+		         weaponData[weapon_num].classname);
 		return;
 	}
 
@@ -207,15 +207,15 @@ void CG_RegisterWeapon(const int weaponNum)
 	}
 
 	// setup the shader we will use for the icon
-	if (weaponData[weaponNum].weaponIcon[0])
+	if (weaponData[weapon_num].weaponIcon[0])
 	{
-		weaponInfo->weaponIcon = cgi_R_RegisterShaderNoMip(weaponData[weaponNum].weaponIcon);
-		weaponInfo->weaponIconNoAmmo = cgi_R_RegisterShaderNoMip(va("%s_na", weaponData[weaponNum].weaponIcon));
+		weaponInfo->weaponIcon = cgi_R_RegisterShaderNoMip(weaponData[weapon_num].weaponIcon);
+		weaponInfo->weaponIconNoAmmo = cgi_R_RegisterShaderNoMip(va("%s_na", weaponData[weapon_num].weaponIcon));
 	}
 
 	for (ammo = bg_itemlist + 1; ammo->classname; ammo++)
 	{
-		if (ammo->giType == IT_AMMO && ammo->giTag == weaponData[weaponNum].ammoIndex)
+		if (ammo->giType == IT_AMMO && ammo->giTag == weaponData[weapon_num].ammoIndex)
 		{
 			break;
 		}
@@ -226,9 +226,9 @@ void CG_RegisterWeapon(const int weaponNum)
 		weaponInfo->ammoModel = cgi_R_RegisterModel(ammo->world_model);
 	}
 
-	for (i = 0; i < weaponData[weaponNum].numBarrels; i++)
+	for (i = 0; i < weaponData[weapon_num].numBarrels; i++)
 	{
-		Q_strncpyz(path, weaponData[weaponNum].weaponMdl, sizeof path);
+		Q_strncpyz(path, weaponData[weapon_num].weaponMdl, sizeof path);
 		COM_StripExtension(path, path, sizeof path);
 		if (i)
 		{
@@ -247,7 +247,7 @@ void CG_RegisterWeapon(const int weaponNum)
 	}
 
 	// set up the hand that holds the in view weapon - assuming we have one
-	Q_strncpyz(path, weaponData[weaponNum].weaponMdl, sizeof path);
+	Q_strncpyz(path, weaponData[weapon_num].weaponMdl, sizeof path);
 	COM_StripExtension(path, path, sizeof path);
 	Q_strcat(path, sizeof path, "_hand.md3");
 	weaponInfo->handsModel = cgi_R_RegisterModel(path);
@@ -258,80 +258,80 @@ void CG_RegisterWeapon(const int weaponNum)
 	}
 
 	// register the sounds for the weapon
-	if (weaponData[weaponNum].firingSnd[0])
+	if (weaponData[weapon_num].firingSnd[0])
 	{
-		weaponInfo->firingSound = cgi_S_RegisterSound(weaponData[weaponNum].firingSnd);
+		weaponInfo->firingSound = cgi_S_RegisterSound(weaponData[weapon_num].firingSnd);
 	}
-	if (weaponData[weaponNum].altFiringSnd[0])
+	if (weaponData[weapon_num].altFiringSnd[0])
 	{
-		weaponInfo->altFiringSound = cgi_S_RegisterSound(weaponData[weaponNum].altFiringSnd);
+		weaponInfo->altFiringSound = cgi_S_RegisterSound(weaponData[weapon_num].altFiringSnd);
 	}
-	if (weaponData[weaponNum].stopSnd[0])
+	if (weaponData[weapon_num].stopSnd[0])
 	{
-		weaponInfo->stopSound = cgi_S_RegisterSound(weaponData[weaponNum].stopSnd);
+		weaponInfo->stopSound = cgi_S_RegisterSound(weaponData[weapon_num].stopSnd);
 	}
-	if (weaponData[weaponNum].chargeSnd[0])
+	if (weaponData[weapon_num].chargeSnd[0])
 	{
-		weaponInfo->chargeSound = cgi_S_RegisterSound(weaponData[weaponNum].chargeSnd);
+		weaponInfo->chargeSound = cgi_S_RegisterSound(weaponData[weapon_num].chargeSnd);
 	}
-	if (weaponData[weaponNum].altChargeSnd[0])
+	if (weaponData[weapon_num].altChargeSnd[0])
 	{
-		weaponInfo->altChargeSound = cgi_S_RegisterSound(weaponData[weaponNum].altChargeSnd);
+		weaponInfo->altChargeSound = cgi_S_RegisterSound(weaponData[weapon_num].altChargeSnd);
 	}
-	if (weaponData[weaponNum].selectSnd[0])
+	if (weaponData[weapon_num].selectSnd[0])
 	{
-		weaponInfo->selectSound = cgi_S_RegisterSound(weaponData[weaponNum].selectSnd);
+		weaponInfo->selectSound = cgi_S_RegisterSound(weaponData[weapon_num].selectSnd);
 	}
 
 	// give us missile models if we should
-	if (weaponData[weaponNum].missileMdl[0])
+	if (weaponData[weapon_num].missileMdl[0])
 	{
-		weaponInfo->missileModel = cgi_R_RegisterModel(weaponData[weaponNum].missileMdl);
+		weaponInfo->missileModel = cgi_R_RegisterModel(weaponData[weapon_num].missileMdl);
 	}
-	if (weaponData[weaponNum].alt_missileMdl[0])
+	if (weaponData[weapon_num].alt_missileMdl[0])
 	{
-		weaponInfo->alt_missileModel = cgi_R_RegisterModel(weaponData[weaponNum].alt_missileMdl);
+		weaponInfo->alt_missileModel = cgi_R_RegisterModel(weaponData[weapon_num].alt_missileMdl);
 	}
-	if (weaponData[weaponNum].missileSound[0])
+	if (weaponData[weapon_num].missileSound[0])
 	{
-		weaponInfo->missileSound = cgi_S_RegisterSound(weaponData[weaponNum].missileSound);
+		weaponInfo->missileSound = cgi_S_RegisterSound(weaponData[weapon_num].missileSound);
 	}
-	if (weaponData[weaponNum].alt_missileSound[0])
+	if (weaponData[weapon_num].alt_missileSound[0])
 	{
-		weaponInfo->alt_missileSound = cgi_S_RegisterSound(weaponData[weaponNum].alt_missileSound);
+		weaponInfo->alt_missileSound = cgi_S_RegisterSound(weaponData[weapon_num].alt_missileSound);
 	}
-	if (weaponData[weaponNum].missileHitSound[0])
+	if (weaponData[weapon_num].missileHitSound[0])
 	{
-		weaponInfo->missileHitSound = cgi_S_RegisterSound(weaponData[weaponNum].missileHitSound);
+		weaponInfo->missileHitSound = cgi_S_RegisterSound(weaponData[weapon_num].missileHitSound);
 	}
-	if (weaponData[weaponNum].altmissileHitSound[0])
+	if (weaponData[weapon_num].altmissileHitSound[0])
 	{
-		weaponInfo->altmissileHitSound = cgi_S_RegisterSound(weaponData[weaponNum].altmissileHitSound);
+		weaponInfo->altmissileHitSound = cgi_S_RegisterSound(weaponData[weapon_num].altmissileHitSound);
 	}
-	if (weaponData[weaponNum].mMuzzleEffect[0])
+	if (weaponData[weapon_num].mMuzzleEffect[0])
 	{
-		weaponData[weaponNum].mMuzzleEffectID = theFxScheduler.RegisterEffect(weaponData[weaponNum].mMuzzleEffect);
+		weaponData[weapon_num].mMuzzleEffectID = theFxScheduler.RegisterEffect(weaponData[weapon_num].mMuzzleEffect);
 	}
-	if (weaponData[weaponNum].mAltMuzzleEffect[0])
+	if (weaponData[weapon_num].mAltMuzzleEffect[0])
 	{
-		weaponData[weaponNum].mAltMuzzleEffectID = theFxScheduler.
-			RegisterEffect(weaponData[weaponNum].mAltMuzzleEffect);
+		weaponData[weapon_num].mAltMuzzleEffectID = theFxScheduler.
+			RegisterEffect(weaponData[weapon_num].mAltMuzzleEffect);
 	}
 
 	//fixme: don't really need to copy these, should just use directly
 	// give ourselves the functions if we can
-	if (weaponData[weaponNum].func)
+	if (weaponData[weapon_num].func)
 	{
-		weaponInfo->missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weaponNum].
+		weaponInfo->missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weapon_num].
 			func);
 	}
-	if (weaponData[weaponNum].altfunc)
+	if (weaponData[weapon_num].altfunc)
 	{
-		weaponInfo->alt_missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weaponNum].
+		weaponInfo->alt_missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weapon_num].
 			altfunc);
 	}
 
-	switch (weaponNum) //extra client only stuff
+	switch (weapon_num) //extra client only stuff
 	{
 	case WP_SABER:
 		//saber/force FX
@@ -872,7 +872,7 @@ void CG_RegisterWeapon(const int weaponNum)
 		theFxScheduler.RegisterEffect("blaster/flesh_impact");
 		theFxScheduler.RegisterEffect("impacts/droid_impact1");
 
-		if (weaponNum == WP_MELEE)
+		if (weapon_num == WP_MELEE)
 		{
 			//grapple hook
 			MAKERGB(weaponInfo->flashDlightColor, 0.6f, 0.6f, 1.0f);
@@ -957,15 +957,15 @@ CG_RegisterItemVisuals
 The server says this item is used on this level
 =================
 */
-void CG_RegisterItemVisuals(const int itemNum)
+void CG_RegisterItemVisuals(const int item_num)
 {
-	itemInfo_t* itemInfo = &cg_items[itemNum];
+	itemInfo_t* itemInfo = &cg_items[item_num];
 	if (itemInfo->registered)
 	{
 		return;
 	}
 
-	const gitem_t* item = &bg_itemlist[itemNum];
+	const gitem_t* item = &bg_itemlist[item_num];
 
 	memset(itemInfo, 0, sizeof *itemInfo);
 	itemInfo->registered = qtrue;
@@ -4117,7 +4117,7 @@ CG_BounceEffect
 Caused by an EV_BOUNCE | EV_BOUNCE_HALF event
 =================
 */
-void CG_BounceEffect(centity_t* cent, const int weapon, vec3_t origin, vec3_t normal)
+void CG_BounceEffect(const int weapon, vec3_t origin, vec3_t normal)
 {
 	switch (weapon)
 	{

@@ -343,7 +343,7 @@ void BotImport_Trace(bsp_trace_t* bsptrace, vec3_t start, vec3_t mins, vec3_t ma
 	bsptrace->plane.signbits = trace.plane.signbits;
 	bsptrace->plane.type = trace.plane.type;
 	bsptrace->surface.value = trace.surfaceFlags;
-	bsptrace->ent = trace.entityNum;
+	bsptrace->ent = trace.entity_num;
 	bsptrace->exp_dist = 0;
 	bsptrace->sidenum = 0;
 	bsptrace->contents = 0;
@@ -370,7 +370,7 @@ void BotImport_EntityTrace(bsp_trace_t* bsptrace, vec3_t start, vec3_t mins, vec
 	bsptrace->plane.signbits = trace.plane.signbits;
 	bsptrace->plane.type = trace.plane.type;
 	bsptrace->surface.value = trace.surfaceFlags;
-	bsptrace->ent = trace.entityNum;
+	bsptrace->ent = trace.entity_num;
 	bsptrace->exp_dist = 0;
 	bsptrace->sidenum = 0;
 	bsptrace->contents = 0;
@@ -800,7 +800,7 @@ int SV_BotGetConsoleMessage(const int client, char* buf, const int size)
 EntityInPVS
 ==================
 */
-int EntityInPVS(int client, int entityNum) {
+int EntityInPVS(int client, int entity_num) {
 	client_t* cl;
 	clientSnapshot_t* frame;
 	int					i;
@@ -808,7 +808,7 @@ int EntityInPVS(int client, int entityNum) {
 	cl = &svs.clients[client];
 	frame = &cl->frames[cl->netchan.outgoingSequence & PACKET_MASK];
 	for (i = 0; i < frame->num_entities; i++) {
-		if (svs.snapshotEntities[(frame->first_entity + i) % svs.numSnapshotEntities].number == entityNum) {
+		if (svs.snapshotEntities[(frame->first_entity + i) % svs.numSnapshotEntities].number == entity_num) {
 			return qtrue;
 		}
 	}

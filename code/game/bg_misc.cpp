@@ -462,9 +462,9 @@ void PlayerStateToEntityState(playerState_t* ps, entityState_t* s)
 		[
 			ps->client_num].NPC)
 	{
-		const Vehicle_t* pVeh = g_entities[ps->client_num].m_pVehicle;
-		s->vehicleArmor = pVeh->m_iArmor;
-		VectorCopy(pVeh->m_vOrientation, s->vehicleAngles);
+		const Vehicle_t* p_veh = g_entities[ps->client_num].m_pVehicle;
+		s->vehicleArmor = p_veh->m_iArmor;
+		VectorCopy(p_veh->m_vOrientation, s->vehicleAngles);
 	}
 
 	s->vehicleModel = ps->vehicleModel;
@@ -597,9 +597,9 @@ BG_EmplacedView
 Shared code for emplaced angle gun constriction
 =================
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, const float constraint)
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, const float constraint)
 {
-	float dif = AngleSubtract(baseAngles[YAW], angles[YAW]);
+	float dif = AngleSubtract(base_angles[YAW], angles[YAW]);
 
 	if (dif > constraint ||
 		dif < -constraint)
@@ -621,7 +621,7 @@ int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, const float
 			amt = 0.0f;
 		}
 
-		*newYaw = AngleSubtract(angles[YAW], -dif);
+		*new_yaw = AngleSubtract(angles[YAW], -dif);
 
 		if (amt > 1.0f || amt < -1.0f)
 		{

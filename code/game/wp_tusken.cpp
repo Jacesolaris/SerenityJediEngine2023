@@ -53,7 +53,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 		//need to loop this in case we hit a Jedi who dodges the shot
 		gi.trace(&tr, start, nullptr, nullptr, end, ignore, MASK_SHOT, G2_RETURNONHIT, 0);
 
-		gentity_t* traceEnt = &g_entities[tr.entityNum];
+		gentity_t* traceEnt = &g_entities[tr.entity_num];
 
 		if (traceEnt)
 		{
@@ -69,7 +69,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 				//force player into a projective block move.
 				WP_SaberBlockBolt(traceEnt, tr.endpos, qtrue);
 				VectorCopy(tr.endpos, start);
-				ignore = tr.entityNum;
+				ignore = tr.entity_num;
 				traces++;
 				continue;
 			}
@@ -77,7 +77,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 			{
 				//act like we didn't even hit him
 				VectorCopy(tr.endpos, start);
-				ignore = tr.entityNum;
+				ignore = tr.entity_num;
 				traces++;
 				continue;
 			}

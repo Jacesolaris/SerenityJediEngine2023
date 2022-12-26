@@ -827,7 +827,7 @@ void CG_PlayerShieldHit(int entitynum, vec3_t dir, int amount);
 //
 // cg_predict.c
 //
-int CG_PointContents(const vec3_t point, int passEntityNum);
+int CG_PointContents(const vec3_t point, int pass_entity_num);
 void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
               int skip_number, int mask);
 void CG_PredictPlayerState(void);
@@ -873,8 +873,8 @@ void CG_DPPrevInventory_f(void);
 void CG_DPNextForcePower_f(void);
 void CG_DPPrevForcePower_f(void);
 
-void CG_RegisterWeapon(int weaponNum);
-void CG_RegisterItemVisuals(int itemNum);
+void CG_RegisterWeapon(int weapon_num);
+void CG_RegisterItemVisuals(int item_num);
 void CG_RegisterItemSounds(int itemNum);
 
 void CG_FireWeapon(centity_t* cent, qboolean alt_fire);
@@ -1044,19 +1044,19 @@ int cgi_CM_MarkFragments(int numPoints, const vec3_t* points,
 
 // normal sounds will have their volume dynamically changed as their entity
 // moves and the listener moves
-void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
+void cgi_S_StartSound(const vec3_t origin, int entity_num, int entchannel, sfxHandle_t sfx);
 void cgi_S_StopSounds(void);
 
 // a local sound is always played full volume
 void cgi_S_StartLocalSound(sfxHandle_t sfx, int channelNum);
 void cgi_S_ClearLoopingSounds(void);
-void cgi_S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx,
+void cgi_S_AddLoopingSound(int entity_num, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx,
                            soundChannel_t chan = CHAN_AUTO);
-void cgi_S_UpdateEntityPosition(int entityNum, const vec3_t origin);
+void cgi_S_UpdateEntityPosition(int entity_num, const vec3_t origin);
 
 // repatialize recalculates the volumes of sound as they should be heard by the
-// given entityNum and position
-void cgi_S_Respatialize(int entityNum, const vec3_t origin, vec3_t axis[3], qboolean inwater);
+// given entity_num and position
+void cgi_S_Respatialize(int entity_num, const vec3_t origin, vec3_t axis[3], qboolean inwater);
 sfxHandle_t cgi_S_RegisterSound(const char* sample); // returns buzz if not found
 void cgi_S_StartBackgroundTrack(const char* intro, const char* loop, qboolean bForceStart); // empty name stops music
 float cgi_S_GetSampleLength(sfxHandle_t sfx);
@@ -1236,7 +1236,7 @@ void FX_NoghriShotProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 void FX_NoghriShotWeaponHitWall(vec3_t origin, vec3_t normal);
 void FX_NoghriShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid);
 
-void CG_BounceEffect(centity_t* cent, int weapon, vec3_t origin, vec3_t normal);
+void CG_BounceEffect(const int weapon, vec3_t origin, vec3_t normal);
 void CG_MissileStick(const centity_t* cent, int weapon, vec3_t origin);
 
 void cg_missile_hit_player(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);

@@ -50,12 +50,12 @@ void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 		gi.trace(&tr, start, mins, maxs, end, ent->s.number, CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_SHOTCLIP,
 		         static_cast<EG2_Collision>(0), 0);
 
-		if (tr.entityNum >= ENTITYNUM_WORLD || tr.entityNum < 0)
+		if (tr.entity_num >= ENTITYNUM_WORLD || tr.entity_num < 0)
 		{
 			return;
 		}
 
-		gentity_t* tr_ent = &g_entities[tr.entityNum];
+		gentity_t* tr_ent = &g_entities[tr.entity_num];
 
 		if (tr_ent && tr_ent->takedamage && tr_ent->client)
 		{

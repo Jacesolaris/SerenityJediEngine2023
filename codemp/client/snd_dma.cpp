@@ -1457,7 +1457,7 @@ Starts an ambient, 'one-shot" sound.
 ====================
 */
 
-void S_StartAmbientSound(const vec3_t origin, const int entityNum, const unsigned char volume,
+void S_StartAmbientSound(const vec3_t origin, const int entity_num, const unsigned char volume,
                          const sfxHandle_t sfxHandle)
 {
 	channel_t* ch;
@@ -1466,8 +1466,8 @@ void S_StartAmbientSound(const vec3_t origin, const int entityNum, const unsigne
 	{
 		return;
 	}
-	if (!origin && (entityNum < 0 || entityNum >= MAX_GENTITIES))
-		Com_Error(ERR_DROP, "S_StartAmbientSound: bad entitynum %i", entityNum);
+	if (!origin && (entity_num < 0 || entity_num >= MAX_GENTITIES))
+		Com_Error(ERR_DROP, "S_StartAmbientSound: bad entitynum %i", entity_num);
 
 	if (sfxHandle < 0 || sfxHandle >= s_numSfx)
 		Com_Error(ERR_DROP, "S_StartAmbientSound: handle %i out of range", sfxHandle);
@@ -1489,11 +1489,11 @@ void S_StartAmbientSound(const vec3_t origin, const int entityNum, const unsigne
 
 	if (s_show->integer == 1)
 	{
-		Com_Printf("%i : %s on (%d) Ambient\n", s_paintedtime, sfx->sSoundName, entityNum);
+		Com_Printf("%i : %s on (%d) Ambient\n", s_paintedtime, sfx->sSoundName, entity_num);
 	}
 
 	// pick a channel to play on
-	ch = S_PickChannel(entityNum, CHAN_AMBIENT);
+	ch = S_PickChannel(entity_num, CHAN_AMBIENT);
 	if (!ch)
 	{
 		return;
@@ -1510,7 +1510,7 @@ void S_StartAmbientSound(const vec3_t origin, const int entityNum, const unsigne
 	}
 
 	ch->master_vol = volume;
-	ch->entnum = entityNum;
+	ch->entnum = entity_num;
 	ch->entchannel = CHAN_AMBIENT;
 	ch->thesfx = sfx;
 	ch->startSample = START_SAMPLE_IMMEDIATE;
@@ -1537,10 +1537,10 @@ S_MuteSound
 Mutes sound on specified channel for specified entity.
 ====================
 */
-void S_MuteSound(const int entityNum, const int entchannel)
+void S_MuteSound(const int entity_num, const int entchannel)
 {
 	//I guess this works.
-	channel_t* ch = S_PickChannel(entityNum, entchannel);
+	channel_t* ch = S_PickChannel(entity_num, entchannel);
 
 	if (!ch)
 	{
@@ -1566,7 +1566,7 @@ if pos is NULL, the sound will be dynamically sourced from the entity
 entchannel 0 will never override a playing sound
 ====================
 */
-void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel, const sfxHandle_t sfxHandle)
+void S_StartSound(const vec3_t origin, const int entity_num, const int entchannel, const sfxHandle_t sfxHandle)
 {
 	channel_t* ch;
 
@@ -1575,9 +1575,9 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 		return;
 	}
 
-	if (!origin && (entityNum < 0 || entityNum >= MAX_GENTITIES))
+	if (!origin && (entity_num < 0 || entity_num >= MAX_GENTITIES))
 	{
-		Com_Error(ERR_DROP, "S_StartSound: bad entitynum %i", entityNum);
+		Com_Error(ERR_DROP, "S_StartSound: bad entitynum %i", entity_num);
 	}
 
 	if (sfxHandle < 0 || sfxHandle >= s_numSfx)
@@ -1594,7 +1594,7 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 
 	if (s_show->integer == 1)
 	{
-		Com_Printf("%i : %s on (%d)\n", s_paintedtime, sfx->sSoundName, entityNum);
+		Com_Printf("%i : %s on (%d)\n", s_paintedtime, sfx->sSoundName, entity_num);
 	}
 
 #ifdef USE_OPENAL
@@ -1607,7 +1607,7 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 			ch = s_channels + 1;
 			for (i = 1; i < s_numChannels; i++, ch++)
 			{
-				if (ch->entnum == entityNum && ch->entchannel == CHAN_WEAPON && ch->thesfx && strstr(
+				if (ch->entnum == entity_num && ch->entchannel == CHAN_WEAPON && ch->thesfx && strstr(
 					ch->thesfx->sSoundName, "altcharge") != nullptr)
 				{
 					// Stop this sound
@@ -1624,7 +1624,7 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 			ch = s_channels + 1;
 			for (i = 1; i < s_numChannels; i++, ch++)
 			{
-				if (ch->entnum == entityNum && ch->thesfx && strstr(ch->thesfx->sSoundName, "falling") != nullptr)
+				if (ch->entnum == entity_num && ch->thesfx && strstr(ch->thesfx->sSoundName, "falling") != nullptr)
 				{
 					// Stop this sound
 					alSourceStop(ch->alSource);
@@ -1640,7 +1640,7 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 
 	// pick a channel to play on
 
-	ch = S_PickChannel(entityNum, entchannel);
+	ch = S_PickChannel(entity_num, entchannel);
 	if (!ch)
 	{
 		return;
@@ -1657,7 +1657,7 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 	}
 
 	ch->master_vol = SOUND_MAXVOL; //FIXME: Um.. control?
-	ch->entnum = entityNum;
+	ch->entnum = entity_num;
 	ch->entchannel = entchannel;
 	ch->thesfx = sfx;
 	ch->startSample = START_SAMPLE_IMMEDIATE;
@@ -1665,7 +1665,7 @@ void S_StartSound(const vec3_t origin, const int entityNum, const int entchannel
 	ch->leftvol = ch->master_vol; // these will get calced at next spatialize
 	ch->rightvol = ch->master_vol; // unless the game isn't running
 
-	if (entchannel < CHAN_AMBIENT && entityNum == listener_number)
+	if (entchannel < CHAN_AMBIENT && entity_num == listener_number)
 	{
 		//only do it for body sounds not local sounds
 		ch->master_vol = SOUND_MAXVOL * SOUND_FMAXVOL; //this won't be attenuated so let it scale down
@@ -1932,13 +1932,13 @@ Stops all active looping sounds on a specified entity.
 Sort of a slow method though, isn't there some better way?
 ==================
 */
-void S_StopLoopingSound(const int entityNum)
+void S_StopLoopingSound(const int entity_num)
 {
 	int i = 0;
 
 	while (i < numLoopSounds)
 	{
-		if (loopSounds[i].entnum == entityNum)
+		if (loopSounds[i].entnum == entity_num)
 		{
 			int x = i + 1;
 			while (x < numLoopSounds)
@@ -1962,7 +1962,7 @@ Called during entity generation for a frame
 Include velocity in case I get around to doing doppler...
 ==================
 */
-void S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfxHandle)
+void S_AddLoopingSound(const int entity_num, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfxHandle)
 {
 	if (!s_soundStarted || s_soundMuted)
 	{
@@ -1996,7 +1996,7 @@ void S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t ve
 	loopSounds[numLoopSounds].dopplerScale = 1.0;
 	loopSounds[numLoopSounds].sfx = sfx;
 	loopSounds[numLoopSounds].volume = SOUND_MAXVOL;
-	loopSounds[numLoopSounds].entnum = entityNum;
+	loopSounds[numLoopSounds].entnum = entity_num;
 
 	if (s_doppler->integer && VectorLengthSquared(velocity) > 0.0)
 	{
@@ -2367,23 +2367,23 @@ S_UpdateEntityPosition
 let the sound system know where an entity currently is
 ======================
 */
-void S_UpdateEntityPosition(const int entityNum, const vec3_t origin)
+void S_UpdateEntityPosition(const int entity_num, const vec3_t origin)
 {
-	if (entityNum < 0 || entityNum >= MAX_GENTITIES)
+	if (entity_num < 0 || entity_num >= MAX_GENTITIES)
 	{
-		Com_Error(ERR_DROP, "S_UpdateEntityPosition: bad entitynum %i", entityNum);
+		Com_Error(ERR_DROP, "S_UpdateEntityPosition: bad entitynum %i", entity_num);
 	}
 
 #ifdef USE_OPENAL
 	if (s_UseOpenAL)
 	{
-		if (entityNum == 0)
+		if (entity_num == 0)
 			return;
 
 		channel_t* ch = s_channels + 1;
 		for (int i = 1; i < s_numChannels; i++, ch++)
 		{
-			if (s_channels[i].bPlaying && s_channels[i].entnum == entityNum && !s_channels[i].bLooping)
+			if (s_channels[i].bPlaying && s_channels[i].entnum == entity_num && !s_channels[i].bLooping)
 			{
 				// Ignore position updates for CHAN_VOICE_GLOBAL
 				if (ch->entchannel != CHAN_VOICE_GLOBAL && ch->entchannel != CHAN_ANNOUNCER)
@@ -2412,7 +2412,7 @@ void S_UpdateEntityPosition(const int entityNum, const vec3_t origin)
 	}
 #endif
 
-	VectorCopy(origin, s_entityPosition[entityNum]);
+	VectorCopy(origin, s_entityPosition[entity_num]);
 }
 
 // Given a current wav we are playing, and our position within it, lets figure out its volume...
@@ -2543,7 +2543,7 @@ S_Respatialize
 Change the volumes of all the playing sounds for changes in their positions
 ============
 */
-void S_Respatialize(const int entityNum, const vec3_t head, matrix3_t axis, const int inwater)
+void S_Respatialize(const int entity_num, const vec3_t head, matrix3_t axis, const int inwater)
 {
 #ifdef USE_OPENAL
 	EAXOCCLUSIONPROPERTIES eaxOCProp;
@@ -2649,7 +2649,7 @@ void S_Respatialize(const int entityNum, const vec3_t head, matrix3_t axis, cons
 	else
 	{
 #endif
-		listener_number = entityNum;
+		listener_number = entity_num;
 		VectorCopy(head, listener_origin);
 		VectorCopy(axis[0], listener_axis[0]);
 		VectorCopy(axis[1], listener_axis[1]);

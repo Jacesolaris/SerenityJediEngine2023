@@ -435,7 +435,7 @@ qboolean visible(const gentity_t* self, const gentity_t* other)
 	// And a standard pass..
 	trap->Trace(&tr, spot1, NULL, NULL, other->r.currentOrigin, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-	const gentity_t* trace_ent = &g_entities[tr.entityNum];
+	const gentity_t* trace_ent = &g_entities[tr.entity_num];
 
 	if (trace_ent == other)
 		return qtrue;
@@ -1819,11 +1819,11 @@ int wp_org_visible(const gentity_t* bot, vec3_t org1, vec3_t org2, const int ign
 	{
 		trap->Trace(&tr, org1, NULL, NULL, org2, ignore, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-		if (tr.fraction != 1 && tr.entityNum != ENTITYNUM_NONE && g_entities[tr.entityNum].s.eType == ET_SPECIAL)
+		if (tr.fraction != 1 && tr.entity_num != ENTITYNUM_NONE && g_entities[tr.entity_num].s.eType == ET_SPECIAL)
 		{
-			if (g_entities[tr.entityNum].parent && g_entities[tr.entityNum].parent->client)
+			if (g_entities[tr.entity_num].parent && g_entities[tr.entity_num].parent->client)
 			{
-				const gentity_t* ownent = g_entities[tr.entityNum].parent;
+				const gentity_t* ownent = g_entities[tr.entity_num].parent;
 
 				if (OnSameTeam(bot, ownent) || bot->s.number == ownent->s.number)
 				{
@@ -1880,7 +1880,7 @@ int check_for_func(vec3_t org, const int ignore)
 		return 0;
 	}
 
-	const gentity_t* fent = &g_entities[tr.entityNum];
+	const gentity_t* fent = &g_entities[tr.entity_num];
 
 	if (!fent)
 	{
@@ -2951,7 +2951,7 @@ qboolean use_forceon_local(bot_state_t* bs, vec3_t origin, const qboolean pull)
 			}
 		}
 
-		//if(tr.entityNum == test->s.number || tr.fraction == 1.0)
+		//if(tr.entity_num == test->s.number || tr.fraction == 1.0)
 		{
 			vec3_t view_dir;
 			vec3_t ang;
@@ -3145,7 +3145,7 @@ qboolean AttackLocalBreakable(bot_state_t* bs)
 
 		trap->Trace(&tr, bs->eye, NULL, NULL, testorigin, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-		if (tr.entityNum == test->s.number || tr.fraction == 1.0)
+		if (tr.entity_num == test->s.number || tr.fraction == 1.0)
 		{
 			//we can see the breakable
 			//doing special wp move
@@ -4266,7 +4266,7 @@ qboolean attack_local_breakables(bot_state_t* bs)
 		//visual check
 		trap->Trace(&tr, bs->eye, NULL, NULL, testorigin, bs->client, MASK_SOLID, qfalse, 0, 0);
 
-		if (tr.entityNum == test->s.number || tr.fraction == 1.0)
+		if (tr.entity_num == test->s.number || tr.fraction == 1.0)
 		{
 			//we can see the breakable
 			//doing special wp move
@@ -5000,7 +5000,7 @@ int bot_trace_jump(bot_state_t* bs, vec3_t traceto)
 		return 0;
 	}
 
-	const int or_tr = tr.entityNum;
+	const int or_tr = tr.entity_num;
 
 	VectorCopy(bs->origin, tracefrom_mod);
 
@@ -5543,7 +5543,7 @@ void enemy_visual_update(bot_state_t* bs)
 
 	trap->Trace(&tr, bs->eye, NULL, NULL, enemy_origin, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-	if (tr.entityNum == bs->currentEnemy->s.number && in_field_of_vision(bs->viewangles, 90, a) && !bot_mind_tricked(
+	if (tr.entity_num == bs->currentEnemy->s.number && in_field_of_vision(bs->viewangles, 90, a) && !bot_mind_tricked(
 			bs->client, bs->currentEnemy->s.number)
 		|| bot_can_hear(bs, bs->currentEnemy, dist))
 	{
@@ -6292,7 +6292,7 @@ gentity_t* get_nearest_bad_thing(bot_state_t* bs)
 			{
 				trap->Trace(&tr, bs->origin, NULL, NULL, ent->s.pos.trBase, bs->client, MASK_SOLID, qfalse, 0, 0);
 
-				if (tr.fraction == 1 || tr.entityNum == ent->s.number)
+				if (tr.fraction == 1 || tr.entity_num == ent->s.number)
 				{
 					bestindex = i;
 					bestdist = glen;
@@ -6930,7 +6930,7 @@ int entity_visible_box(vec3_t org1, vec3_t mins, vec3_t maxs, vec3_t org2, const
 	{
 		return 1;
 	}
-	if (tr.entityNum != ENTITYNUM_NONE && tr.entityNum == ignore2)
+	if (tr.entity_num != ENTITYNUM_NONE && tr.entity_num == ignore2)
 	{
 		return 1;
 	}
@@ -7233,7 +7233,7 @@ int siege_takes_priority(bot_state_t* bs)
 				{
 					trap->Trace(&tr, bs->origin, NULL, NULL, dif, bs->client, MASK_SOLID, qfalse, 0, 0);
 
-					if (tr.fraction != 1 && tr.entityNum != bs->shootGoal->s.number)
+					if (tr.fraction != 1 && tr.entity_num != bs->shootGoal->s.number)
 					{
 						bs->shootGoal = NULL;
 					}
@@ -7258,7 +7258,7 @@ int siege_takes_priority(bot_state_t* bs)
 			{
 				trap->Trace(&tr, bs->origin, NULL, NULL, dif, bs->client, MASK_SOLID, qfalse, 0, 0);
 
-				if (tr.fraction != 1 && tr.entityNum != bs->shootGoal->s.number)
+				if (tr.fraction != 1 && tr.entity_num != bs->shootGoal->s.number)
 				{
 					bs->shootGoal = NULL;
 				}
@@ -7283,7 +7283,7 @@ int siege_takes_priority(bot_state_t* bs)
 			{
 				trap->Trace(&tr, bs->origin, NULL, NULL, dif, bs->client, MASK_SOLID, qfalse, 0, 0);
 
-				if (tr.fraction != 1 && tr.entityNum != bs->shootGoal->s.number)
+				if (tr.fraction != 1 && tr.entity_num != bs->shootGoal->s.number)
 				{
 					bs->shootGoal = NULL;
 				}
@@ -8315,10 +8315,10 @@ qboolean bot_behave_check_backstab(bot_state_t* bs)
 
 	trap->Trace(&tr, cur_org, NULL, NULL, back_org, bs->client, MASK_SHOT, 0, 0, 0);
 
-	if (tr.entityNum < 0 || tr.entityNum > ENTITYNUM_MAX_NORMAL)
+	if (tr.entity_num < 0 || tr.entity_num > ENTITYNUM_MAX_NORMAL)
 		return qfalse;
 
-	const gentity_t* enemy = &g_entities[tr.entityNum];
+	const gentity_t* enemy = &g_entities[tr.entity_num];
 
 	if (!enemy
 		|| enemy->s.eType != ET_PLAYER && enemy->s.eType != ET_NPC
@@ -8341,7 +8341,7 @@ qboolean bot_behave_check_backstab(bot_state_t* bs)
 
 	//adjust the moveDir to do strafing
 	adjustfor_strafe(bs, move_dir);
-	trace_move(bs, move_dir, tr.entityNum);
+	trace_move(bs, move_dir, tr.entity_num);
 	trap->EA_Move(bs->client, move_dir, 5000);
 	trap->EA_Attack(bs->client);
 
@@ -8366,10 +8366,10 @@ qboolean bot_behave_check_use_kata(const bot_state_t* bs)
 
 	trap->Trace(&tr, cur_org, NULL, NULL, back_org, bs->client, MASK_SHOT, 0, 0, 0);
 
-	if (tr.entityNum < 0 || tr.entityNum > ENTITYNUM_MAX_NORMAL)
+	if (tr.entity_num < 0 || tr.entity_num > ENTITYNUM_MAX_NORMAL)
 		return qfalse;
 
-	const gentity_t* enemy = &g_entities[tr.entityNum];
+	const gentity_t* enemy = &g_entities[tr.entity_num];
 
 	if (!enemy
 		|| enemy->s.eType != ET_PLAYER && enemy->s.eType != ET_NPC
@@ -8408,10 +8408,10 @@ qboolean bot_behave_check_use_crouch_attack(bot_state_t* bs)
 
 	trap->Trace(&tr, cur_org, NULL, NULL, back_org, bs->client, MASK_SHOT, 0, 0, 0);
 
-	if (tr.entityNum < 0 || tr.entityNum > ENTITYNUM_MAX_NORMAL)
+	if (tr.entity_num < 0 || tr.entity_num > ENTITYNUM_MAX_NORMAL)
 		return qfalse;
 
-	const gentity_t* enemy = &g_entities[tr.entityNum];
+	const gentity_t* enemy = &g_entities[tr.entity_num];
 
 	if (!enemy
 		|| enemy->s.eType != ET_PLAYER && enemy->s.eType != ET_NPC
@@ -8438,7 +8438,7 @@ qboolean bot_behave_check_use_crouch_attack(bot_state_t* bs)
 
 	//adjust the moveDir to do strafing
 	adjustfor_strafe(bs, moveDir);
-	trace_move(bs, moveDir, tr.entityNum);
+	trace_move(bs, moveDir, tr.entity_num);
 	trap->EA_Crouch(bs->client);
 	trap->EA_Move(bs->client, moveDir, 5000);
 	trap->EA_Attack(bs->client);
@@ -9903,9 +9903,9 @@ gentity_t* check_for_friend_in_lof(const bot_state_t* bs)
 
 	trap->Trace(&tr, trfrom, mins, maxs, trto, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-	if (tr.fraction != 1 && tr.entityNum <= MAX_CLIENTS)
+	if (tr.fraction != 1 && tr.entity_num <= MAX_CLIENTS)
 	{
-		gentity_t* trent = &g_entities[tr.entityNum];
+		gentity_t* trent = &g_entities[tr.entity_num];
 
 		if (trent && trent->client)
 		{
@@ -10054,7 +10054,7 @@ void ctf_flag_movement(bot_state_t* bs)
 					trap->Trace(&tr, bs->origin, mins, maxs, desired_drop->s.pos.trBase, bs->client, MASK_SOLID, qfalse,
 					            0, 0);
 
-					if (tr.fraction == 1 || tr.entityNum == desired_drop->s.number)
+					if (tr.fraction == 1 || tr.entity_num == desired_drop->s.number)
 					{
 						VectorCopy(desired_drop->s.pos.trBase, bs->goalPosition);
 						VectorCopy(desired_drop->s.pos.trBase, bs->staticFlagSpot);
@@ -12854,13 +12854,13 @@ int trace_jump_crouch_fall(const bot_state_t* bs, vec3_t move_dir, const int tar
 	trap->Trace(&tr, bs->origin, mins, maxs, traceto_mod, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
 	if (tr.fraction == 1 //trace is clear
-		|| tr.entityNum == target_num //is our ignore target
-		|| bs->currentEnemy && bs->currentEnemy->s.number == tr.entityNum) //is our current enemy
+		|| tr.entity_num == target_num //is our ignore target
+		|| bs->currentEnemy && bs->currentEnemy->s.number == tr.entity_num) //is our current enemy
 	{
 		//nothing blocking our path
 		move_command = 0;
 	}
-	else if (tr.entityNum == ENTITYNUM_WORLD)
+	else if (tr.entity_num == ENTITYNUM_WORLD)
 	{
 		//world object, check to see if we can walk on it.
 		if (tr.plane.normal[2] >= 0.7f)
@@ -12871,10 +12871,10 @@ int trace_jump_crouch_fall(const bot_state_t* bs, vec3_t move_dir, const int tar
 	}
 	//check to see if this is another player.  If so, we should be able to jump over them easily.
 	//RAFIXME - add force power/force jump skill check?
-	else if (tr.entityNum < MAX_CLIENTS
+	else if (tr.entity_num < MAX_CLIENTS
 		//not a bot or a bot that isn't jumping.
-		&& (!botstates[tr.entityNum] || !botstates[tr.entityNum]->inuse
-			|| botstates[tr.entityNum]->jumpTime < level.time)
+		&& (!botstates[tr.entity_num] || !botstates[tr.entity_num]->inuse
+			|| botstates[tr.entity_num]->jumpTime < level.time)
 		&& bs->cur_ps.fd.forcePowerLevel[FP_LEVITATION] >= FORCE_LEVEL_1)
 	{
 		//another player who isn't our objective and isn't our current enemy.  Hop over them.  Don't hop
@@ -12898,14 +12898,14 @@ int trace_jump_crouch_fall(const bot_state_t* bs, vec3_t move_dir, const int tar
 		trap->Trace(&tr, tracefrom_mod, mins, maxs, traceto_mod, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
 		if (tr.fraction == 1 //trace is clear
-			|| tr.entityNum == target_num //is our ignore target
-			|| bs->currentEnemy && bs->currentEnemy->s.number == tr.entityNum) //is our current enemy
+			|| tr.entity_num == target_num //is our ignore target
+			|| bs->currentEnemy && bs->currentEnemy->s.number == tr.entity_num) //is our current enemy
 		{
 			//the hop check was clean.
 			move_command = 1;
 		}
 		//check the slope of the thing blocking us
-		else if (tr.entityNum == ENTITYNUM_WORLD)
+		else if (tr.entity_num == ENTITYNUM_WORLD)
 		{
 			//world object
 			if (tr.plane.normal[2] >= 0.7f)
@@ -12927,14 +12927,14 @@ int trace_jump_crouch_fall(const bot_state_t* bs, vec3_t move_dir, const int tar
 			trap->Trace(&tr, bs->origin, mins, maxs, traceto_mod, bs->client, MASK_PLAYERSOLID, qfalse, 0, 0);
 
 			if (tr.fraction == 1 //trace is clear
-				|| tr.entityNum == target_num //is our ignore target
-				|| bs->currentEnemy && bs->currentEnemy->s.number == tr.entityNum) //is our current enemy
+				|| tr.entity_num == target_num //is our ignore target
+				|| bs->currentEnemy && bs->currentEnemy->s.number == tr.entity_num) //is our current enemy
 			{
 				//we can duck under this object.
 				move_command = 2;
 			}
 			//check the slope of the thing blocking us
-			else if (tr.entityNum == ENTITYNUM_WORLD)
+			else if (tr.entity_num == ENTITYNUM_WORLD)
 			{
 				//world object
 				if (tr.plane.normal[2] >= 0.7f)

@@ -880,7 +880,7 @@ void Do_Strike(gentity_t* ent)
 	else
 	{
 		//only damage individuals
-		gentity_t* trHit = &g_entities[localTrace.entityNum];
+		gentity_t* trHit = &g_entities[localTrace.entity_num];
 
 		if (trHit->inuse && trHit->takedamage)
 		{
@@ -1699,8 +1699,8 @@ void shipboundary_think(gentity_t* ent)
 			if (listedEnt->s.eType == ET_NPC &&
 				listedEnt->s.NPC_class == CLASS_VEHICLE)
 			{
-				const Vehicle_t* pVeh = listedEnt->m_pVehicle;
-				if (pVeh && pVeh->m_pVehicleInfo->type == VH_FIGHTER)
+				const Vehicle_t* p_veh = listedEnt->m_pVehicle;
+				if (p_veh && p_veh->m_pVehicleInfo->type == VH_FIGHTER)
 				{
 					shipboundary_touch(ent, listedEnt, NULL);
 				}

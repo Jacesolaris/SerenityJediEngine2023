@@ -142,7 +142,7 @@ int DirToByte(vec3_t dir)
 	return best;
 }
 
-void ByteToDir(int b, vec3_t dir)
+void ByteToDir(const int b, vec3_t dir)
 {
 	if (b < 0 || b >= NUMVERTEXNORMALS) {
 		VectorCopy(vec3_origin, dir);
@@ -212,13 +212,13 @@ float Q_crandom(int* seed)
 
 static uint32_t	holdrand = 0x89abcdef;
 
-void Rand_Init(int seed)
+void Rand_Init(const int seed)
 {
 	holdrand = seed;
 }
 
 // Returns a float min <= x < max (exclusive; will get max - 0.00001; but never max)
-float flrand(float min, float max)
+float flrand(const float min, const float max)
 {
 	holdrand = holdrand * 214013L + 2531011L;
 	float result = (float)(holdrand >> 17); // 0 - 32767 range
@@ -227,13 +227,13 @@ float flrand(float min, float max)
 	return result;
 }
 
-float Q_flrand(float min, float max)
+float Q_flrand(const float min, const float max)
 {
 	return flrand(min, max);
 }
 
 // Returns an integer min <= x <= max (ie inclusive)
-int irand(int min, int max)
+int irand(const int min, int max)
 {
 	assert(max - min < QRAND_MAX);
 
@@ -245,12 +245,12 @@ int irand(int min, int max)
 	return result;
 }
 
-int Q_irand(int value1, int value2)
+int Q_irand(const int value1, const int value2)
 {
 	return irand(value1, value2);
 }
 
-int Q_irand2(int min, int max)
+int Q_irand2(const int min, const int max)
 {
 	return rand() % (max - min + 1) + min;
 }
@@ -261,7 +261,7 @@ erandom
 This function produces a random number with a exponential
 distribution and the specified mean value.
 */
-float erandom(float mean)
+float erandom(const float mean)
 {
 	float	r;
 
@@ -277,7 +277,7 @@ float erandom(float mean)
 //      MATH UTILITIES
 //
 ///////////////////////////////////////////////////////////////////////////
-signed char ClampChar(int i)
+signed char ClampChar(const int i)
 {
 	if (i < -128) {
 		return -128;
@@ -288,7 +288,7 @@ signed char ClampChar(int i)
 	return i;
 }
 
-signed short ClampShort(int i)
+signed short ClampShort(const int i)
 {
 	if (i < -32768) {
 		return -32768;
@@ -299,7 +299,7 @@ signed short ClampShort(int i)
 	return i;
 }
 
-int Com_Clampi(int min, int max, int value)
+int Com_Clampi(const int min, const int max, const int value)
 {
 	if (value < min)
 	{
@@ -312,7 +312,7 @@ int Com_Clampi(int min, int max, int value)
 	return value;
 }
 
-float Com_Clamp(float min, float max, float value) {
+float Com_Clamp(const float min, const float max, const float value) {
 	if (value < min) {
 		return min;
 	}
@@ -322,7 +322,7 @@ float Com_Clamp(float min, float max, float value) {
 	return value;
 }
 
-int Com_AbsClampi(int min, int max, int value)
+int Com_AbsClampi(const int min, const int max, const int value)
 {
 	if (value < 0)
 	{
@@ -331,7 +331,7 @@ int Com_AbsClampi(int min, int max, int value)
 	return Com_Clampi(min, max, value);
 }
 
-float Com_AbsClamp(float min, float max, float value)
+float Com_AbsClamp(const float min, const float max, const float value)
 {
 	if (value < 0.0f)
 	{
@@ -340,7 +340,7 @@ float Com_AbsClamp(float min, float max, float value)
 	return Com_Clamp(min, max, value);
 }
 
-float Q_rsqrt(float number)
+float Q_rsqrt(const float number)
 {
 	byteAlias_t t;
 	const float threehalfs = 1.5F;
@@ -356,7 +356,7 @@ float Q_rsqrt(float number)
 	return y;
 }
 
-float Q_fabs(float f)
+float Q_fabs(const float f)
 {
 	byteAlias_t fi;
 	fi.f = f;
@@ -378,7 +378,7 @@ This should go in q_math but it is too late to add new traps
 to game and ui
 =====================
 */
-float Q_acos(float c) {
+float Q_acos(const float c) {
 	const float angle = acosf(c);
 
 	if (angle > M_PI) {
@@ -390,7 +390,7 @@ float Q_acos(float c) {
 	return angle;
 }
 
-float Q_asin(float c)
+float Q_asin(const float c)
 {
 	const float angle = asinf(c);
 
@@ -403,7 +403,7 @@ float Q_asin(float c)
 	return angle;
 }
 
-float Q_powf(float x, int y)
+float Q_powf(const float x, int y)
 {
 	float r = x;
 	for (y--; y > 0; y--)
@@ -429,7 +429,7 @@ int Q_log2(int val)
 	return answer;
 }
 
-float LerpAngle(float from, float to, float frac)
+float LerpAngle(const float from, float to, const float frac)
 {
 	if (to - from > 180) {
 		to -= 360;
@@ -449,7 +449,7 @@ AngleSubtract
 Always returns a value from -180 to 180
 =================
 */
-float AngleSubtract(float a1, float a2) {
+float AngleSubtract(const float a1, const float a2) {
 	float a = a1 - a2;
 	a = fmodf(a, 360);//chop it down quickly, then level it out
 	while (a > 180) {
@@ -479,7 +479,7 @@ AngleNormalize360
 returns angle normalized to the range [0 <= angle < 360]
 =================
 */
-float AngleNormalize360(float angle) {
+float AngleNormalize360(const float angle) {
 	return 360.0f / 65536 * ((int)(angle * (65536 / 360.0f)) & 65535);
 }
 
@@ -505,7 +505,7 @@ AngleDelta
 returns the normalized delta from angle1 to angle2
 =================
 */
-float AngleDelta(float angle1, float angle2) {
+float AngleDelta(const float angle1, const float angle2) {
 	return AngleNormalize180(angle1 - angle2);
 }
 
@@ -565,7 +565,7 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	VectorRotate(point, m, dst);
 }
 
-void RotateAroundDirection(matrix3_t axis, float yaw) {
+void RotateAroundDirection(matrix3_t axis, const float yaw) {
 	// create an arbitrary axis[1]
 	PerpendicularVector(axis[1], axis[0]);
 
@@ -1136,19 +1136,19 @@ void VectorSubtract2(const vec2_t vec1, const vec2_t vec2, vec2_t vecOut)
 	vecOut[1] = vec1[1] - vec2[1];
 }
 
-void VectorScale2(const vec2_t vecIn, float scale, vec2_t vecOut)
+void VectorScale2(const vec2_t vecIn, const float scale, vec2_t vecOut)
 {
 	vecOut[0] = vecIn[0] * scale;
 	vecOut[1] = vecIn[1] * scale;
 }
 
-void VectorMA2(const vec2_t vec1, float scale, const vec2_t vec2, vec2_t vecOut)
+void VectorMA2(const vec2_t vec1, const float scale, const vec2_t vec2, vec2_t vecOut)
 {
 	vecOut[0] = vec1[0] + scale * vec2[0];
 	vecOut[1] = vec1[1] + scale * vec2[1];
 }
 
-void VectorSet2(vec2_t vec, float x, float y)
+void VectorSet2(vec2_t vec, const float x, const float y)
 {
 	vec[0] = x; vec[1] = y;
 }
@@ -1185,21 +1185,21 @@ void VectorSubtract(const vec3_t vec1, const vec3_t vec2, vec3_t vecOut)
 	vecOut[2] = vec1[2] - vec2[2];
 }
 
-void VectorScale(const vec3_t vecIn, float scale, vec3_t vecOut)
+void VectorScale(const vec3_t vecIn, const float scale, vec3_t vecOut)
 {
 	vecOut[0] = vecIn[0] * scale;
 	vecOut[1] = vecIn[1] * scale;
 	vecOut[2] = vecIn[2] * scale;
 }
 
-void VectorMA(const vec3_t vec1, float scale, const vec3_t vec2, vec3_t vecOut)
+void VectorMA(const vec3_t vec1, const float scale, const vec3_t vec2, vec3_t vecOut)
 {
 	vecOut[0] = vec1[0] + scale * vec2[0];
 	vecOut[1] = vec1[1] + scale * vec2[1];
 	vecOut[2] = vec1[2] + scale * vec2[2];
 }
 
-void VectorSet(vec3_t vec, float x, float y, float z)
+void VectorSet(vec3_t vec, const float x, const float y, const float z)
 {
 	vec[0] = x; vec[1] = y; vec[2] = z;
 }
@@ -1487,7 +1487,7 @@ float DotProductNormalize(const vec3_t inVec1, const vec3_t inVec2)
 //      VEC4
 //
 ///////////////////////////////////////////////////////////////////////////
-void VectorScale4(const vec4_t vecIn, float scale, vec4_t vecOut)
+void VectorScale4(const vec4_t vecIn, const float scale, vec4_t vecOut)
 {
 	vecOut[0] = vecIn[0] * scale;
 	vecOut[1] = vecIn[1] * scale;
@@ -1503,7 +1503,7 @@ void VectorCopy4(const vec4_t vecIn, vec4_t vecOut)
 	vecOut[3] = vecIn[3];
 }
 
-void VectorSet4(vec4_t vec, float x, float y, float z, float w)
+void VectorSet4(vec4_t vec, const float x, const float y, const float z, const float w)
 {
 	vec[0] = x; vec[1] = y; vec[2] = z; vec[3] = w;
 }
@@ -1518,7 +1518,7 @@ void VectorClear4(vec4_t vec)
 //      VEC5
 //
 ///////////////////////////////////////////////////////////////////////////
-void VectorSet5(vec5_t vec, float x, float y, float z, float w, float u) {
+void VectorSet5(vec5_t vec, const float x, const float y, const float z, const float w, const float u) {
 	vec[0] = x; vec[1] = y; vec[2] = z; vec[3] = w; vec[4] = u;
 }
 

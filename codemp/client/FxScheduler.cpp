@@ -804,14 +804,14 @@ void CFxScheduler::PlayEffect(const int id, vec3_t origin, matrix3_t axis, const
 #endif
 
 	int modelNum = 0, boltNum = -1;
-	int entityNum = -1;
+	int entity_num = -1;
 
 	if (boltInfo > 0)
 	{
 		// extract the wraith ID from the bolt info
 		modelNum = boltInfo >> MODEL_SHIFT & MODEL_AND;
 		boltNum = boltInfo >> BOLT_SHIFT & BOLT_AND;
-		entityNum = boltInfo >> ENTITY_SHIFT & ENTITY_AND;
+		entity_num = boltInfo >> ENTITY_SHIFT & ENTITY_AND;
 
 		// We always force ghoul bolted objects to be scheduled so that they don't play right away.
 		forceScheduling = true;
@@ -902,12 +902,12 @@ void CFxScheduler::PlayEffect(const int id, vec3_t origin, matrix3_t axis, const
 			// if the delay is so small, we may as well just create this bit right now
 			if (delay < 1 && !forceScheduling && !isPortal)
 			{
-				if (boltInfo == -1 && entityNum != -1)
+				if (boltInfo == -1 && entity_num != -1)
 				{
 					// Find out where the entity currently is
 					auto data = reinterpret_cast<TCGVectorData*>(cl.mSharedMemory);
 
-					data->mEntityNum = entityNum;
+					data->mEntityNum = entity_num;
 					CGVM_GetLerpOrigin();
 					CreateEffect(prim, data->mPoint, axis, -delay, fxParm);
 				}
@@ -933,7 +933,7 @@ void CFxScheduler::PlayEffect(const int id, vec3_t origin, matrix3_t axis, const
 				if (boltInfo == -1)
 				{
 					sfx->ghoul2 = nullptr;
-					if (entityNum == -1)
+					if (entity_num == -1)
 					{
 						// we aren't bolting, so make sure the spawn system knows this by putting -1's in these fields
 						sfx->mBoltNum = -1;
@@ -955,7 +955,7 @@ void CFxScheduler::PlayEffect(const int id, vec3_t origin, matrix3_t axis, const
 					{
 						// we are doing bolting onto the origin of the entity, so use a cheaper method
 						sfx->mBoltNum = -1;
-						sfx->mEntNum = entityNum;
+						sfx->mEntNum = entity_num;
 						sfx->mModelNum = 0;
 
 						AxisCopy(axis, sfx->mAxis);
@@ -965,7 +965,7 @@ void CFxScheduler::PlayEffect(const int id, vec3_t origin, matrix3_t axis, const
 				{
 					// we are bolting, so store the extra info
 					sfx->mBoltNum = boltNum;
-					sfx->mEntNum = entityNum;
+					sfx->mEntNum = entity_num;
 					sfx->mModelNum = modelNum;
 					sfx->ghoul2 = ghoul2;
 

@@ -848,7 +848,7 @@ Ghoul2 Insert End
 typedef struct trace_s {
 	byte		allsolid;	// if true, plane is not valid
 	byte		startsolid;	// if true, the initial point was in a solid area
-	short		entityNum;	// entity the contacted sirface is a part of
+	short		entity_num;	// entity the contacted sirface is a part of
 
 	float		fraction;	// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;		// final position
@@ -860,7 +860,7 @@ typedef struct trace_s {
 	CollisionRecord_t G2CollisionMap[MAX_G2_COLLISIONS];	// map that describes all of the parts of ghoul2 models that got hit
 } trace_t;
 
-// trace->entityNum can also be 0 to (MAX_GENTITIES-1)
+// trace->entity_num can also be 0 to (MAX_GENTITIES-1)
 // or ENTITYNUM_NONE, ENTITYNUM_WORLD
 
 // markfragments are returned by CM_MarkFragments()

@@ -384,7 +384,7 @@ static void CL_G2API_CollisionDetect(
 	vec3_t rayEnd,
 	vec3_t scale,
 	const int traceFlags,
-	const int useLod,
+	const int use_lod,
 	const float fRadius)
 {
 	if (!ghoul2)
@@ -404,7 +404,7 @@ static void CL_G2API_CollisionDetect(
 		scale,
 		G2VertSpaceClient,
 		traceFlags,
-		useLod,
+		use_lod,
 		fRadius);
 }
 
@@ -419,7 +419,7 @@ static void CL_G2API_CollisionDetectCache(
 	vec3_t rayEnd,
 	vec3_t scale,
 	const int traceFlags,
-	const int useLod,
+	const int use_lod,
 	const float fRadius)
 {
 	if (!ghoul2)
@@ -439,7 +439,7 @@ static void CL_G2API_CollisionDetectCache(
 		scale,
 		G2VertSpaceClient,
 		traceFlags,
-		useLod,
+		use_lod,
 		fRadius);
 }
 

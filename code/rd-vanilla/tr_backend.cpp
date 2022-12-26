@@ -629,7 +629,7 @@ static int g_numPostRenders = 0;
 void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 	shader_t* shader;
 	int				fogNum;
-	int				entityNum;
+	int				entity_num;
 	int				dlighted;
 	int				i;
 	drawSurf_t* drawSurf;
@@ -665,13 +665,13 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 			rb_surfaceTable[*drawSurf->surface](drawSurf->surface);
 			continue;
 		}
-		R_DecomposeSort(drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted);
+		R_DecomposeSort(drawSurf->sort, &entity_num, &shader, &fogNum, &dlighted);
 
 		// If we're rendering glowing objects, but this shader has no stages with glow, skip it!
 		if (g_bRenderGlowingObjects && !shader->hasGlow)
 		{
 			shader = oldShader;
-			entityNum = oldEntityNum;
+			entity_num = oldEntityNum;
 			fogNum = oldFogNum;
 			dlighted = oldDlighted;
 			continue;
@@ -683,13 +683,13 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 		// change the tess parameters if needed
 		// a "entityMergable" shader is a shader that can have surfaces from seperate
 		// entities merged into a single batch, like smoke and blood puff sprites
-		if (entityNum != REFENTITYNUM_WORLD &&
+		if (entity_num != REFENTITYNUM_WORLD &&
 			g_numPostRenders < MAX_POST_RENDERS)
 		{
-			if (backEnd.refdef.entities[entityNum].e.renderfx & RF_DISTORTION ||
-				backEnd.refdef.entities[entityNum].e.renderfx & RF_FORCE_ENT_ALPHA)
+			if (backEnd.refdef.entities[entity_num].e.renderfx & RF_DISTORTION ||
+				backEnd.refdef.entities[entity_num].e.renderfx & RF_FORCE_ENT_ALPHA)
 			{ //must render last
-				const trRefEntity_t* curEnt = &backEnd.refdef.entities[entityNum];
+				const trRefEntity_t* curEnt = &backEnd.refdef.entities[entity_num];
 				pRender = &g_postRenders[g_numPostRenders];
 
 				g_numPostRenders++;
@@ -711,7 +711,7 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 				depthRange = oldDepthRange;
 
 				//store off the ent num
-				pRender->entNum = entityNum;
+				pRender->entNum = entity_num;
 
 				//remember the other values necessary for rendering this surf
 				pRender->drawSurf = drawSurf;
@@ -721,7 +721,7 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 
 				//assure the info is back to the last set state
 				shader = oldShader;
-				entityNum = oldEntityNum;
+				entity_num = oldEntityNum;
 				fogNum = oldFogNum;
 				dlighted = oldDlighted;
 
@@ -733,7 +733,7 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 		}
 
 		if (shader != oldShader || fogNum != oldFogNum || dlighted != oldDlighted
-			|| entityNum != oldEntityNum && !shader->entityMergable)
+			|| entity_num != oldEntityNum && !shader->entityMergable)
 		{
 			if (oldShader != nullptr) {
 				RB_EndSurface();
@@ -753,11 +753,11 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 		//
 		// change the modelview matrix if needed
 		//
-		if (entityNum != oldEntityNum) {
+		if (entity_num != oldEntityNum) {
 			depthRange = qfalse;
 
-			if (entityNum != REFENTITYNUM_WORLD) {
-				backEnd.currentEntity = &backEnd.refdef.entities[entityNum];
+			if (entity_num != REFENTITYNUM_WORLD) {
+				backEnd.currentEntity = &backEnd.refdef.entities[entity_num];
 				backEnd.refdef.floatTime = originalTime - backEnd.currentEntity->e.shaderTime;
 
 				// set up the transformation matrix
@@ -808,7 +808,7 @@ void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs) {
 				oldDepthRange = depthRange;
 			}
 
-			oldEntityNum = entityNum;
+			oldEntityNum = entity_num;
 		}
 
 		// add the triangles for this surface

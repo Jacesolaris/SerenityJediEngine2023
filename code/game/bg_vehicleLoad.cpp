@@ -1649,15 +1649,15 @@ extern int BG_GetTime(void);
 extern int trap_G2API_AddBolt(void* ghoul2, int model_index, const char* boneName);
 extern qboolean trap_G2API_GetBoltMatrix(void* ghoul2, const int model_index, const int bolt_index, mdxaBone_t* matrix,
 	const vec3_t angles, const vec3_t position, const int frameNum, qhandle_t* modelList, vec3_t scale);
-void AttachRidersGeneric(Vehicle_t* pVeh)
+void AttachRidersGeneric(Vehicle_t* p_veh)
 {
 	// If we have a pilot, attach him to the driver tag.
-	if (pVeh->m_pPilot)
+	if (p_veh->m_pPilot)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t	yawOnlyAngles;
-		bgEntity_t* parent = pVeh->m_pParentEntity;
-		bgEntity_t* pilot = pVeh->m_pPilot;
+		bgEntity_t* parent = p_veh->m_pParentEntity;
+		bgEntity_t* pilot = p_veh->m_pPilot;
 		int crotchBolt = trap_G2API_AddBolt(parent->ghoul2, 0, "*driver");
 
 		assert(parent->playerState);
@@ -1665,10 +1665,10 @@ void AttachRidersGeneric(Vehicle_t* pVeh)
 		VectorSet(yawOnlyAngles, 0, parent->playerState->viewangles[YAW], 0);
 
 		// Get the driver tag.
-		trap_G2API_GetBoltMatrix(parent->ghoul2, 0, crotchBolt, &boltMatrix,
+		trap_G2API_GetBoltMatrix(parent->ghoul2, 0, crotchBolt, &bolt_matrix,
 			yawOnlyAngles, parent->playerState->origin,
 			BG_GetTime(), nullptr, parent->modelScale);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, pilot->playerState->origin);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, pilot->playerState->origin);
 	}
 }
 #endif

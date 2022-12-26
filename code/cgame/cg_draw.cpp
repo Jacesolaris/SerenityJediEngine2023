@@ -318,7 +318,7 @@ void CG_DrawJK2ForcePower(const centity_t* cent, const int x, const int y)
 		value -= inc;
 	}
 
-	if (cg_com_outcast.integer == 2 && (cent->currentState.weapon != WP_SABER)) //custom
+	if (cg_com_outcast.integer == 2 && cent->currentState.weapon != WP_SABER) //custom
 	{
 	}
 	else
@@ -2502,13 +2502,13 @@ static void CG_DrawVehicleAmmo(const Vehicle_t* p_veh)
 	}
 }
 
-static void CG_DrawVehicleHud(const Vehicle_t* pVeh)
+static void CG_DrawVehicleHud(const Vehicle_t* p_veh)
 {
 	int x_pos, y_pos, width, height;
 	vec4_t color;
 	qhandle_t background;
 
-	CG_DrawVehicleTurboRecharge(pVeh);
+	CG_DrawVehicleTurboRecharge(p_veh);
 
 	// Draw frame
 	if (cgi_UI_GetMenuItemInfo(
@@ -2539,13 +2539,13 @@ static void CG_DrawVehicleHud(const Vehicle_t* pVeh)
 		CG_DrawPic(x_pos, y_pos, width, height, background);
 	}
 
-	CG_DrawVehicleSheild(pVeh);
+	CG_DrawVehicleSheild(p_veh);
 
-	CG_DrawVehicleSpeed(pVeh, "swoopvehiclehud");
+	CG_DrawVehicleSpeed(p_veh, "swoopvehiclehud");
 
-	CG_DrawVehicleArmor(pVeh);
+	CG_DrawVehicleArmor(p_veh);
 
-	CG_DrawVehicleAmmo(pVeh);
+	CG_DrawVehicleAmmo(p_veh);
 }
 
 static void CG_DrawTauntaunHud(const Vehicle_t* p_veh)
@@ -5222,10 +5222,10 @@ static void CG_ScanForCrosshairEntity(const qboolean scanAll)
 		         G2_NOCOLLIDE, 10);
 		// ); took out CONTENTS_SOLID| so you can target people through glass.... took out CONTENTS_CORPSE so disintegrated guys aren't shown, could just remove their body earlier too...
 
-		if (trace.entityNum < ENTITYNUM_WORLD)
+		if (trace.entity_num < ENTITYNUM_WORLD)
 		{
 			//hit something
-			trace_ent = &g_entities[trace.entityNum];
+			trace_ent = &g_entities[trace.entity_num];
 			if (trace_ent)
 			{
 				// Check for mind trickable-guys
@@ -5391,15 +5391,15 @@ static void CG_ScanForCrosshairEntity(const qboolean scanAll)
 			// trace should not be allowed to pick up anything if it started solid.  I tried actually moving the trace start back, which also worked,
 			//	but the dynamic cursor drawing caused it to render around the clip of the gun when I pushed the blaster all the way into a wall.
 			//	It looked quite horrible...but, if this is bad for some reason that I don't know
-			trace.entityNum = ENTITYNUM_NONE;
+			trace.entity_num = ENTITYNUM_NONE;
 		}
 
-		trace_ent = &g_entities[trace.entityNum];
+		trace_ent = &g_entities[trace.entity_num];
 	}
 	//draw crosshair at endpoint
 	CG_DrawCrosshair(trace.endpos);
 
-	g_crosshairEntNum = trace.entityNum;
+	g_crosshairEntNum = trace.entity_num;
 	g_crosshairEntDist = 4096 * trace.fraction;
 
 	if (!trace_ent)
@@ -5412,7 +5412,7 @@ static void CG_ScanForCrosshairEntity(const qboolean scanAll)
 	{
 		//looking at a valid ent
 		//store the distance
-		if (trace.entityNum != g_crosshairEntNum)
+		if (trace.entity_num != g_crosshairEntNum)
 		{
 			//new crosshair ent
 			g_crosshairSameEntTime = 0;
@@ -5445,18 +5445,18 @@ static void CG_ScanForCrosshairEntity(const qboolean scanAll)
 	}
 
 	// if the player is cloaked, don't show it
-	if (cg_entities[trace.entityNum].currentState.powerups & 1 << PW_CLOAKED)
+	if (cg_entities[trace.entity_num].currentState.powerups & 1 << PW_CLOAKED)
 	{
 		return;
 	}
 
 	// update the fade timer
-	if (cg.crosshairclient_num != trace.entityNum)
+	if (cg.crosshairclient_num != trace.entity_num)
 	{
 		infoStringCount = 0;
 	}
 
-	cg.crosshairclient_num = trace.entityNum;
+	cg.crosshairclient_num = trace.entity_num;
 	cg.crosshairClientTime = cg.time;
 }
 

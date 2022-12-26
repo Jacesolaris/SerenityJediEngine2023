@@ -108,17 +108,17 @@ void G2_List_Model_Bones(const char* fileName, int frame);
 qboolean G2_GetAnimFileName(const char* fileName, char** filename);
 #ifdef _G2_GORE
 void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CCollisionRecord* collRecMap, int entNum,
-                    EG2_Collision eG2TraceType, int useLod, float fRadius, float ssize, float tsize, float theta,
+                    EG2_Collision e_g2_trace_type, int use_lod, float fRadius, float ssize, float tsize, float theta,
                     int shader, SSkinGoreData* gore, qboolean skipIfLODNotMatch);
 #else
-void		G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CCollisionRecord* collRecMap, int entNum, EG2_Collision eG2TraceType, int useLod, float fRadius);
+void		G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CCollisionRecord* collRecMap, int entNum, EG2_Collision e_g2_trace_type, int use_lod, float fRadius);
 #endif
 void TransformAndTranslatePoint(const vec3_t in, vec3_t out, const mdxaBone_t* mat);
 #ifdef _G2_GORE
-void G2_TransformModel(CGhoul2Info_v& ghoul2, int frameNum, vec3_t scale, CMiniHeap* G2VertSpace, int useLod,
+void G2_TransformModel(CGhoul2Info_v& ghoul2, int frameNum, vec3_t scale, CMiniHeap* G2VertSpace, int use_lod,
                        bool ApplyGore, const SSkinGoreData* gore = nullptr);
 #else
-void		G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, CMiniHeap* G2VertSpace, int useLod);
+void		G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, CMiniHeap* G2VertSpace, int use_lod);
 #endif
 void G2_GenerateWorldMatrix(const vec3_t angles, const vec3_t origin);
 void TransformPoint(const vec3_t in, vec3_t out, const mdxaBone_t* mat);
@@ -197,8 +197,8 @@ void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, 
                            const vec3_t position,
                            int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale,
                            CMiniHeap* G2VertSpace,
-                           EG2_Collision eG2TraceType, int useLod, float fRadius);
-void G2API_GiveMeVectorFromMatrix(mdxaBone_t& boltMatrix, Eorientations flags, vec3_t& vec);
+                           EG2_Collision e_g2_trace_type, int use_lod, float fRadius);
+void G2API_GiveMeVectorFromMatrix(mdxaBone_t& bolt_matrix, Eorientations flags, vec3_t& vec);
 void G2API_CopyGhoul2Instance(CGhoul2Info_v& Ghoul2From, CGhoul2Info_v& Ghoul2To, int model_index = -1);
 void G2API_CleanGhoul2Models(CGhoul2Info_v& ghoul2);
 int G2API_GetParentSurface(CGhoul2Info* ghlInfo, int index);

@@ -510,8 +510,8 @@ qboolean CG_ParseSurfsFile(const char* model_name, const char* skin_name, char* 
 CG_RegisterClientModelname
 ==========================
 */
-qboolean BG_IsValidCharacterModel(const char* modelName, const char* skinName);
-qboolean BG_ValidateSkinForTeam(const char* modelName, char* skinName, int team, float* colors);
+qboolean BG_IsValidCharacterModel(const char* model_name, const char* skin_name);
+qboolean BG_ValidateSkinForTeam(const char* model_name, char* skin_name, int team, float* colors);
 
 static qboolean CG_RegisterClientModelname(clientInfo_t* ci, const char* model_name, const char* skin_name,
                                            const char* team_name, const int client_num)
@@ -3866,7 +3866,7 @@ void CG_Rag_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const 
                   const int mask)
 {
 	trap->CM_Trace(result, start, end, mins, maxs, 0, mask, 0);
-	result->entityNum = result->fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
+	result->entity_num = result->fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 }
 
 //#define _RAG_BOLT_TESTING
@@ -3874,7 +3874,7 @@ void CG_Rag_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const 
 #ifdef _RAG_BOLT_TESTING
 void CG_TempTestFunction(centity_t* cent, vec3_t forcedAngles)
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t tAngles;
 	vec3_t bOrg;
 	vec3_t bDir;
@@ -3882,10 +3882,10 @@ void CG_TempTestFunction(centity_t* cent, vec3_t forcedAngles)
 
 	VectorSet(tAngles, 0, cent->lerpAngles[YAW], 0);
 
-	trap->G2API_GetBoltMatrix(cent->ghoul2, 1, 0, &boltMatrix, tAngles, cent->lerpOrigin,
+	trap->G2API_GetBoltMatrix(cent->ghoul2, 1, 0, &bolt_matrix, tAngles, cent->lerpOrigin,
 		cg.time, cgs.game_models, cent->modelScale);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, bOrg);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, bDir);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, bOrg);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, bDir);
 
 	VectorMA(bOrg, 40, bDir, uOrg);
 
@@ -11546,7 +11546,7 @@ qboolean CG_G2TraceCollide(trace_t* tr, const vec3_t mins, const vec3_t maxs, co
 		g2_trace[t_n].mEntityNum = -1;
 		t_n++;
 	}
-	centity_t* g2_hit = &cg_entities[tr->entityNum];
+	centity_t* g2_hit = &cg_entities[tr->entity_num];
 
 	if (g2_hit && g2_hit->ghoul2)
 	{
@@ -11574,7 +11574,7 @@ qboolean CG_G2TraceCollide(trace_t* tr, const vec3_t mins, const vec3_t maxs, co
 		if (g2_trace[0].mEntityNum != g2_hit->currentState.number)
 		{
 			tr->fraction = 1.0f;
-			tr->entityNum = ENTITYNUM_NONE;
+			tr->entity_num = ENTITYNUM_NONE;
 			tr->startsolid = 0;
 			tr->allsolid = 0;
 			return qfalse;
@@ -11611,16 +11611,16 @@ void CG_G2SaberEffects(vec3_t start, vec3_t end, const centity_t* owner)
 
 		CG_Trace(&trace, start_tr, NULL, NULL, end_tr, owner->currentState.number, MASK_PLAYERSOLID);
 
-		if (trace.entityNum < MAX_CLIENTS || cg_entities[trace.entityNum].currentState.eType == ET_NPC)
+		if (trace.entity_num < MAX_CLIENTS || cg_entities[trace.entity_num].currentState.eType == ET_NPC)
 		{
 			//hit a client..
 			CG_G2TraceCollide(&trace, NULL, NULL, start_tr, end_tr);
 
-			if (trace.entityNum != ENTITYNUM_NONE)
+			if (trace.entity_num != ENTITYNUM_NONE)
 			{
 				//it succeeded with the ghoul2 trace
 				trap->FX_PlayEffectID(cgs.effects.mSaberBloodSparks, trace.endpos, trace.plane.normal, -1, -1, qfalse);
-				trap->S_StartSound(trace.endpos, trace.entityNum, CHAN_AUTO,
+				trap->S_StartSound(trace.endpos, trace.entity_num, CHAN_AUTO,
 				                   trap->S_RegisterSound(va("sound/weapons/saber/saberhit%i.mp3", Q_irand(1, 15))));
 			}
 		}
@@ -11731,22 +11731,22 @@ void CG_SaberCompWork(vec3_t start, vec3_t end, centity_t* owner, const int sabe
 
 		CG_Trace(&trace, start_tr, NULL, NULL, end_tr, owner->currentState.number, MASK_PLAYERSOLID);
 
-		if (trace.entityNum == owner->serverSaberHitIndex)
+		if (trace.entity_num == owner->serverSaberHitIndex)
 		{
 			//this is the guy the server says we last hit, so continue.
-			if (cg_entities[trace.entityNum].ghoul2)
+			if (cg_entities[trace.entity_num].ghoul2)
 			{
 				//If it has a g2 instance, do the proper ghoul2 checks
 				CG_G2TraceCollide(&trace, NULL, NULL, start_tr, end_tr);
 
-				if (trace.entityNum != ENTITYNUM_NONE)
+				if (trace.entity_num != ENTITYNUM_NONE)
 				{
 					//it succeeded with the ghoul2 trace
 					do_effect = qtrue;
 
 					if (cg_ghoul2Marks.integer)
 					{
-						centity_t* tr_ent = &cg_entities[trace.entityNum];
+						centity_t* tr_ent = &cg_entities[trace.entity_num];
 
 						if (tr_ent->ghoul2)
 						{
@@ -11807,7 +11807,7 @@ void CG_SaberCompWork(vec3_t start, vec3_t end, centity_t* owner, const int sabe
 									&& tr_ent->m_pVehicle && tr_ent->m_pVehicle->m_pVehicleInfo->ResistsMarking))
 								{
 									CG_AddGhoul2Mark(markShader, flrand(3.0f, 4.0f),
-									                 trace.endpos, e_pos, trace.entityNum, tr_ent->lerpOrigin,
+									                 trace.endpos, e_pos, trace.entity_num, tr_ent->lerpOrigin,
 									                 tr_ent->lerpAngles[YAW],
 									                 tr_ent->ghoul2, tr_ent->modelScale, Q_irand(5000, 10000));
 									if (weapon_mark_shader)
@@ -11963,7 +11963,7 @@ void CG_AddSaberBlade(centity_t* cent, centity_t* scent, int renderfx, int saber
 		trap->FX_PlayBoltedEffectID(client->saber[saber_num].bladeEffect2, scent->lerpOrigin,
 		                            scent->ghoul2, blade_num, scent->currentState.number, use_model_index, -1, qfalse);
 	}
-	//get the boltMatrix
+	//get the bolt_matrix
 	trap->G2API_GetBoltMatrix(scent->ghoul2, use_model_index, blade_num, &bolt_matrix, future_angles, origin, cg.time,
 	                          cgs.game_models, scent->modelScale);
 
@@ -12120,8 +12120,8 @@ void CG_AddSaberBlade(centity_t* cent, centity_t* scent, int renderfx, int saber
 					//....come up with something better..
 					if (client->saber[saber_num].blade[blade_num].trail.haveOldPos[i])
 					{
-						if (trace.entityNum == ENTITYNUM_WORLD || cg_entities[trace.entityNum].currentState.eType ==
-							ET_TERRAIN || cg_entities[trace.entityNum].currentState.eFlags & EF_PERMANENT)
+						if (trace.entity_num == ENTITYNUM_WORLD || cg_entities[trace.entity_num].currentState.eType ==
+							ET_TERRAIN || cg_entities[trace.entity_num].currentState.eFlags & EF_PERMANENT)
 						{
 							//only put marks on architecture
 							// Let's do some cool burn/glowing mark bits!!!
@@ -13758,59 +13758,59 @@ void CG_CacheG2AnimInfo(const char* model_name)
 	}
 }
 
-static void CG_RegisterVehicleAssets(Vehicle_t* pVeh)
+static void CG_RegisterVehicleAssets(Vehicle_t* p_veh)
 {
 	/*
-	if ( pVeh->m_pVehicleInfo->exhaustFX )
+	if ( p_veh->m_pVehicleInfo->exhaustFX )
 	{
-		pVeh->m_pVehicleInfo->iExhaustFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->exhaustFX );
+		p_veh->m_pVehicleInfo->iExhaustFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->exhaustFX );
 	}
-	if ( pVeh->m_pVehicleInfo->trailFX )
+	if ( p_veh->m_pVehicleInfo->trailFX )
 	{
-		pVeh->m_pVehicleInfo->iTrailFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->trailFX );
+		p_veh->m_pVehicleInfo->iTrailFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->trailFX );
 	}
-	if ( pVeh->m_pVehicleInfo->impactFX )
+	if ( p_veh->m_pVehicleInfo->impactFX )
 	{
-		pVeh->m_pVehicleInfo->iImpactFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->impactFX );
+		p_veh->m_pVehicleInfo->iImpactFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->impactFX );
 	}
-	if ( pVeh->m_pVehicleInfo->explodeFX )
+	if ( p_veh->m_pVehicleInfo->explodeFX )
 	{
-		pVeh->m_pVehicleInfo->iExplodeFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->explodeFX );
+		p_veh->m_pVehicleInfo->iExplodeFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->explodeFX );
 	}
-	if ( pVeh->m_pVehicleInfo->wakeFX )
+	if ( p_veh->m_pVehicleInfo->wakeFX )
 	{
-		pVeh->m_pVehicleInfo->iWakeFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->wakeFX );
+		p_veh->m_pVehicleInfo->iWakeFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->wakeFX );
 	}
 
-	if ( pVeh->m_pVehicleInfo->dmgFX )
+	if ( p_veh->m_pVehicleInfo->dmgFX )
 	{
-		pVeh->m_pVehicleInfo->iDmgFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->dmgFX );
+		p_veh->m_pVehicleInfo->iDmgFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->dmgFX );
 	}
-	if ( pVeh->m_pVehicleInfo->wpn1FX )
+	if ( p_veh->m_pVehicleInfo->wpn1FX )
 	{
-		pVeh->m_pVehicleInfo->iWpn1FX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->wpn1FX );
+		p_veh->m_pVehicleInfo->iWpn1FX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->wpn1FX );
 	}
-	if ( pVeh->m_pVehicleInfo->wpn2FX )
+	if ( p_veh->m_pVehicleInfo->wpn2FX )
 	{
-		pVeh->m_pVehicleInfo->iWpn2FX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->wpn2FX );
+		p_veh->m_pVehicleInfo->iWpn2FX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->wpn2FX );
 	}
-	if ( pVeh->m_pVehicleInfo->wpn1FireFX )
+	if ( p_veh->m_pVehicleInfo->wpn1FireFX )
 	{
-		pVeh->m_pVehicleInfo->iWpn1FireFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->wpn1FireFX );
+		p_veh->m_pVehicleInfo->iWpn1FireFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->wpn1FireFX );
 	}
-	if ( pVeh->m_pVehicleInfo->wpn2FireFX )
+	if ( p_veh->m_pVehicleInfo->wpn2FireFX )
 	{
-		pVeh->m_pVehicleInfo->iWpn2FireFX = trap->FX_RegisterEffect( pVeh->m_pVehicleInfo->wpn2FireFX );
+		p_veh->m_pVehicleInfo->iWpn2FireFX = trap->FX_RegisterEffect( p_veh->m_pVehicleInfo->wpn2FireFX );
 	}
 	*/
 }
 
 extern void CG_HandleNPCSounds(const centity_t* cent);
 
-extern void G_CreateAnimalNPC(Vehicle_t** pVeh, const char* strAnimalType);
-extern void G_CreateSpeederNPC(Vehicle_t** pVeh, const char* strType);
-extern void G_CreateWalkerNPC(Vehicle_t** pVeh, const char* strAnimalType);
-extern void G_CreateFighterNPC(Vehicle_t** pVeh, const char* strType);
+extern void G_CreateAnimalNPC(Vehicle_t** p_veh, const char* strAnimalType);
+extern void G_CreateSpeederNPC(Vehicle_t** p_veh, const char* strType);
+extern void G_CreateWalkerNPC(Vehicle_t** p_veh, const char* strAnimalType);
+extern void G_CreateFighterNPC(Vehicle_t** p_veh, const char* strType);
 
 extern playerState_t* cgSendPS[MAX_GENTITIES];
 
@@ -14280,7 +14280,7 @@ qboolean CG_VehicleShouldDrawShields(const centity_t* veh_cent)
 extern	vmCvar_t		cg_showVehBounds;
 extern void BG_VehicleAdjustBBoxForOrientation( Vehicle_t *veh, vec3_t origin, vec3_t mins, vec3_t maxs,
 										int client_num, int tracemask,
-										void (*localTrace)(trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask)); // bg_pmove.c
+										void (*localTrace)(trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int content_mask)); // bg_pmove.c
 */
 qboolean CG_VehicleAttachDroidUnit(centity_t* droid_cent)
 {
@@ -15220,7 +15220,7 @@ static QINLINE void CG_VehicleEffects(centity_t* cent)
 CG_Player
 ===============
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint);
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint);
 
 float CG_RadiusForCent(const centity_t* cent)
 {
@@ -15292,8 +15292,8 @@ void CG_CheckThirdPersonAlpha(const centity_t* cent, refEntity_t* legs)
 				VectorNormalize(dir2_crosshair);
 				VectorMA(cameraCurLoc, cent->m_pVehicle->m_pVehicleInfo->cameraRange * 2.0f, dir2_crosshair, end);
 				CG_G2Trace(&trace, cameraCurLoc, vec3_origin, vec3_origin, end, ENTITYNUM_NONE, CONTENTS_BODY);
-				if (trace.entityNum == cent->currentState.client_num
-					|| trace.entityNum == cg.predictedPlayerState.client_num)
+				if (trace.entity_num == cent->currentState.client_num
+					|| trace.entity_num == cg.predictedPlayerState.client_num)
 				{
 					//hit me or the vehicle I'm in
 					cg_vehThirdPersonAlpha -= 0.1f * cg.frametime / 50.0f;
@@ -15739,7 +15739,7 @@ void SmoothTrueView(vec3_t eye_angles)
 }
 
 extern void* g2HolsterWeaponInstances[MAX_WEAPONS];
-void* CG_G2HolsterWeaponInstance(const centity_t* cent, int weapon, qboolean secondSaber);
+void* CG_G2HolsterWeaponInstance(const centity_t* cent, int weapon, qboolean second_saber);
 
 void ApplyAxisRotation(vec3_t axis[3], const int rot_type, const float value)
 {
@@ -16982,13 +16982,13 @@ void CG_Player(centity_t* cent)
 				cent->playerState->client_num != cg.snap->ps.client_num)
 			{
 				//has a pilot...???
-				vec3_t oldPSOrg;
+				vec3_t old_ps_org;
 
 				//make sure it has its pilot and parent set
 				veh->m_pVehicle->m_pPilot = (bgEntity_t*)&cg_entities[veh->currentState.owner];
 				veh->m_pVehicle->m_pParentEntity = (bgEntity_t*)veh;
 
-				VectorCopy(veh->playerState->origin, oldPSOrg);
+				VectorCopy(veh->playerState->origin, old_ps_org);
 
 				//update the veh's playerstate org for getting the bolt
 				VectorCopy(veh->lerpOrigin, veh->playerState->origin);
@@ -17001,7 +17001,7 @@ void CG_Player(centity_t* cent)
 				//copy the "playerstate origin" to the lerpOrigin since that's what we use to display
 				VectorCopy(cent->playerState->origin, cent->lerpOrigin);
 
-				VectorCopy(oldPSOrg, veh->playerState->origin);
+				VectorCopy(old_ps_org, veh->playerState->origin);
 			}
 		}
 	}
@@ -17192,26 +17192,26 @@ void CG_Player(centity_t* cent)
 
 			while (n < 2)
 			{
-				vec3_t flameDir;
-				vec3_t flamePos;
+				vec3_t flame_dir;
+				vec3_t flame_pos;
 				//Get the position/dir of the flame bolt on the jetpack model bolted to the player
 				trap->G2API_GetBoltMatrix(cent->ghoul2, 3, n, &mat, cent->turAngles, cent->lerpOrigin, cg.time,
 				                          cgs.game_models, cent->modelScale);
-				BG_GiveMeVectorFromMatrix(&mat, ORIGIN, flamePos);
+				BG_GiveMeVectorFromMatrix(&mat, ORIGIN, flame_pos);
 
 				if (n == 0)
 				{
-					BG_GiveMeVectorFromMatrix(&mat, NEGATIVE_Y, flameDir);
-					VectorMA(flamePos, -9.5f, flameDir, flamePos);
-					BG_GiveMeVectorFromMatrix(&mat, POSITIVE_X, flameDir);
-					VectorMA(flamePos, -13.5f, flameDir, flamePos);
+					BG_GiveMeVectorFromMatrix(&mat, NEGATIVE_Y, flame_dir);
+					VectorMA(flame_pos, -9.5f, flame_dir, flame_pos);
+					BG_GiveMeVectorFromMatrix(&mat, POSITIVE_X, flame_dir);
+					VectorMA(flame_pos, -13.5f, flame_dir, flame_pos);
 				}
 				else
 				{
-					BG_GiveMeVectorFromMatrix(&mat, POSITIVE_X, flameDir);
-					VectorMA(flamePos, -9.5f, flameDir, flamePos);
-					BG_GiveMeVectorFromMatrix(&mat, NEGATIVE_Y, flameDir);
-					VectorMA(flamePos, -13.5f, flameDir, flamePos);
+					BG_GiveMeVectorFromMatrix(&mat, POSITIVE_X, flame_dir);
+					VectorMA(flame_pos, -9.5f, flame_dir, flame_pos);
+					BG_GiveMeVectorFromMatrix(&mat, NEGATIVE_Y, flame_dir);
+					VectorMA(flame_pos, -13.5f, flame_dir, flame_pos);
 				}
 
 				if (cent->currentState.eFlags & EF_JETPACK_ACTIVE
@@ -17220,8 +17220,8 @@ void CG_Player(centity_t* cent)
 				{
 					//create effects
 					//Play the effect
-					trap->FX_PlayEffectID(cgs.effects.mBobaJet, flamePos, flameDir, -1, -1, qfalse);
-					trap->FX_PlayEffectID(cgs.effects.mBobaJet, flamePos, flameDir, -1, -1, qfalse);
+					trap->FX_PlayEffectID(cgs.effects.mBobaJet, flame_pos, flame_dir, -1, -1, qfalse);
+					trap->FX_PlayEffectID(cgs.effects.mBobaJet, flame_pos, flame_dir, -1, -1, qfalse);
 
 					//Keep the jet fire sound looping
 					trap->S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, vec3_origin,
@@ -17230,7 +17230,7 @@ void CG_Player(centity_t* cent)
 				else
 				{
 					//just idling
-					trap->FX_PlayEffectID(cgs.effects.mBlueJet, flamePos, flameDir, -1, -1, qfalse);
+					trap->FX_PlayEffectID(cgs.effects.mBlueJet, flame_pos, flame_dir, -1, -1, qfalse);
 				}
 
 				n++;
@@ -18287,8 +18287,8 @@ SkipTrueView:
 		}
 	}
 
-	if (cent->currentState.userInt3 & 1 << FLAG_FLAMETHROWER || cg.snap->ps.forceHandExtend ==
-		HANDEXTEND_FLAMETHROWER_HOLD)
+	if (/*cent->currentState.userInt3 & 1 << FLAG_FLAMETHROWER
+		&& */cg.snap->ps.forceHandExtend == HANDEXTEND_FLAMETHROWER_HOLD)
 	{
 		//player is firing flamethrower, render effect.
 		vec3_t axis[3];
@@ -18315,14 +18315,7 @@ SkipTrueView:
 
 		AnglesToAxis(f_ang, axis);
 
-		if (cent->currentState.botclass == BCLASS_BOBAFETT ||
-			cent->currentState.botclass == BCLASS_MANDOLORIAN ||
-			cent->currentState.botclass == BCLASS_MANDOLORIAN1 ||
-			cent->currentState.botclass == BCLASS_MANDOLORIAN2)
-		{
-			trap->FX_PlayEntityEffectID(cgs.effects.flamethrower, ef_org, axis, -1, -1, -1, -1);
-		}
-		else
+		if (cg.snap->ps.forceHandExtend == HANDEXTEND_FLAMETHROWER_HOLD)
 		{
 			trap->FX_PlayEntityEffectID(cgs.effects.Bobaflamethrower, ef_org, axis, -1, -1, -1, -1);
 		}
@@ -19669,11 +19662,11 @@ stillDoSaber:
 	{
 		if (cent->currentState.eFlags & EF_DUAL_WEAPONS && cent->currentState.weapon == WP_BRYAR_PISTOL)
 		{
-			cg_add_player_weaponduals(&legs, NULL, cent, ci->team, root_angles, qtrue, qtrue);
+			cg_add_player_weaponduals(&legs, NULL, cent, root_angles, qtrue, qtrue);
 		}
 		else
 		{
-			CG_AddPlayerWeapon(&legs, NULL, cent, ci->team, root_angles, qtrue);
+			CG_AddPlayerWeapon(&legs, NULL, cent, root_angles, qtrue);
 		}
 	}
 	// add powerups floating behind the player
@@ -19744,10 +19737,10 @@ stillDoSaber:
 	//droid in vehicle
 	{
 		//Vehicles have form-fitting shields
-		Vehicle_t* pVeh = cent->m_pVehicle;
+		Vehicle_t* p_veh = cent->m_pVehicle;
 		if (check_droid_shields)
 		{
-			pVeh = cg_entities[cent->currentState.m_iVehicleNum].m_pVehicle;
+			p_veh = cg_entities[cent->currentState.m_iVehicleNum].m_pVehicle;
 		}
 		legs.shaderRGBA[0] = 255;
 		legs.shaderRGBA[1] = 255;
@@ -19758,12 +19751,12 @@ stillDoSaber:
 		legs.renderfx &= ~RF_RGB_TINT;
 		legs.renderfx &= ~RF_FORCE_ENT_ALPHA;
 
-		if (pVeh
-			&& pVeh->m_pVehicleInfo
-			&& pVeh->m_pVehicleInfo->shieldShaderHandle)
+		if (p_veh
+			&& p_veh->m_pVehicleInfo
+			&& p_veh->m_pVehicleInfo->shieldShaderHandle)
 		{
 			//use the vehicle-specific shader
-			legs.customShader = pVeh->m_pVehicleInfo->shieldShaderHandle;
+			legs.customShader = p_veh->m_pVehicleInfo->shieldShaderHandle;
 		}
 		else
 		{

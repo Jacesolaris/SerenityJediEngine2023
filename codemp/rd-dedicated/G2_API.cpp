@@ -196,25 +196,25 @@ int G2API_GetTime(int argTime) // this may or may not return arg depending on gh
 CGhoul2Info_v* g2ClientAttachments[MAX_GENTITIES];
 #endif
 
-void G2API_AttachInstanceToEntNum(CGhoul2Info_v& ghoul2, int entityNum, qboolean server)
+void G2API_AttachInstanceToEntNum(CGhoul2Info_v& ghoul2, int entity_num, qboolean server)
 {
 	//Assign the pointers in the arrays
 #ifdef _G2_LISTEN_SERVER_OPT
 	if (server)
 	{
-		ghoul2[0].entityNum = entityNum;
+		ghoul2[0].entity_num = entity_num;
 	}
 	else
 	{
-		g2ClientAttachments[entityNum] = &ghoul2;
+		g2ClientAttachments[entity_num] = &ghoul2;
 	}
 #endif
 }
 
-void G2API_ClearAttachedInstance(int entityNum)
+void G2API_ClearAttachedInstance(int entity_num)
 {
 #ifdef _G2_LISTEN_SERVER_OPT
-	g2ClientAttachments[entityNum] = NULL;
+	g2ClientAttachments[entity_num] = NULL;
 #endif
 }
 
@@ -248,12 +248,12 @@ qboolean G2API_OverrideServerWithClientData(CGhoul2Info_v& ghoul2, int model_ind
 		return qfalse;
 	}
 
-	if (!g2ClientAttachments[serverInstance->entityNum])
+	if (!g2ClientAttachments[serverInstance->entity_num])
 	{ //No clientside instance is attached to this entity
 		return qfalse;
 	}
 
-	CGhoul2Info_v& g2Ref = *g2ClientAttachments[serverInstance->entityNum];
+	CGhoul2Info_v& g2Ref = *g2ClientAttachments[serverInstance->entity_num];
 	clientInstance = &g2Ref[0];
 
 	int frameNum = G2API_GetTime(0);
@@ -2051,7 +2051,7 @@ static inline bool G2_NeedRetransform(CGhoul2Info* g2, const int frameNum)
 void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
                                 const vec3_t position,
                                 int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale,
-                                IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius)
+                                IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius)
 {
 	//this will store off the transformed verts for the next trace - this is slower, but for models that do not animate
 	//frequently it is much much faster. -rww
@@ -2098,9 +2098,9 @@ void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& gh
 
 			// now having done that, time to build the model
 #ifdef _G2_GORE
-			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod, false);
+			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod, false);
 #else
-			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod);
+			G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod);
 #endif
 
 			//don't need to do this anymore now that I am using a flag for zone alloc.
@@ -2130,10 +2130,10 @@ void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& gh
 
 		// now walk each model and check the ray against each poly - sigh, this is SO expensive. I wish there was a better way to do this.
 #ifdef _G2_GORE
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius, 0, 0, 0, 0,
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius, 0, 0, 0, 0,
 		               nullptr, qfalse);
 #else
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius);
 #endif
 		int i;
 		// ReSharper disable once CppPossiblyErroneousEmptyStatements
@@ -2148,13 +2148,13 @@ void G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, CGhoul2Info_v& gh
 void G2API_CollisionDetect(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
                            const vec3_t position,
                            int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale,
-                           IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius)
+                           IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius)
 {
 	/*
 	if (1)
 	{
 		G2API_CollisionDetectCache(collRecMap, ghoul2, angles, position, frameNumber, entNum,
-			rayStart, rayEnd, scale, G2VertSpace, traceFlags, useLod, fRadius);
+			rayStart, rayEnd, scale, G2VertSpace, traceFlags, use_lod, fRadius);
 		return;
 	}
 	*/
@@ -2173,9 +2173,9 @@ void G2API_CollisionDetect(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2,
 
 		// now having done that, time to build the model
 #ifdef _G2_GORE
-		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod, false);
+		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod, false);
 #else
-		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, useLod);
+		G2_TransformModel(ghoul2, frameNumber, scale, G2VertSpace, use_lod);
 #endif
 
 		// model is built. Lets check to see if any triangles are actually hit.
@@ -2185,10 +2185,10 @@ void G2API_CollisionDetect(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2,
 
 		// now walk each model and check the ray against each poly - sigh, this is SO expensive. I wish there was a better way to do this.
 #ifdef _G2_GORE
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius, 0, 0, 0, 0,
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius, 0, 0, 0, 0,
 		               nullptr, qfalse);
 #else
-		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, useLod, fRadius);
+		G2_TraceModels(ghoul2, transRayStart, transRayEnd, collRecMap, entNum, traceFlags, use_lod, fRadius);
 #endif
 		int i;
 		// ReSharper disable once CppPossiblyErroneousEmptyStatements
@@ -2221,44 +2221,44 @@ int G2API_GetGhoul2ModelFlags(CGhoul2Info* ghlInfo)
 }
 
 // given a boltmatrix, return in vec a normalised vector for the axis requested in flags
-void G2API_GiveMeVectorFromMatrix(mdxaBone_t* boltMatrix, const Eorientations flags, vec3_t vec)
+void G2API_GiveMeVectorFromMatrix(mdxaBone_t* bolt_matrix, const Eorientations flags, vec3_t vec)
 {
 	switch (flags)
 	{
 	case ORIGIN:
-		vec[0] = boltMatrix->matrix[0][3];
-		vec[1] = boltMatrix->matrix[1][3];
-		vec[2] = boltMatrix->matrix[2][3];
+		vec[0] = bolt_matrix->matrix[0][3];
+		vec[1] = bolt_matrix->matrix[1][3];
+		vec[2] = bolt_matrix->matrix[2][3];
 		break;
 	case POSITIVE_Y:
-		vec[0] = boltMatrix->matrix[0][1];
-		vec[1] = boltMatrix->matrix[1][1];
-		vec[2] = boltMatrix->matrix[2][1];
+		vec[0] = bolt_matrix->matrix[0][1];
+		vec[1] = bolt_matrix->matrix[1][1];
+		vec[2] = bolt_matrix->matrix[2][1];
 		break;
 	case POSITIVE_X:
-		vec[0] = boltMatrix->matrix[0][0];
-		vec[1] = boltMatrix->matrix[1][0];
-		vec[2] = boltMatrix->matrix[2][0];
+		vec[0] = bolt_matrix->matrix[0][0];
+		vec[1] = bolt_matrix->matrix[1][0];
+		vec[2] = bolt_matrix->matrix[2][0];
 		break;
 	case POSITIVE_Z:
-		vec[0] = boltMatrix->matrix[0][2];
-		vec[1] = boltMatrix->matrix[1][2];
-		vec[2] = boltMatrix->matrix[2][2];
+		vec[0] = bolt_matrix->matrix[0][2];
+		vec[1] = bolt_matrix->matrix[1][2];
+		vec[2] = bolt_matrix->matrix[2][2];
 		break;
 	case NEGATIVE_Y:
-		vec[0] = -boltMatrix->matrix[0][1];
-		vec[1] = -boltMatrix->matrix[1][1];
-		vec[2] = -boltMatrix->matrix[2][1];
+		vec[0] = -bolt_matrix->matrix[0][1];
+		vec[1] = -bolt_matrix->matrix[1][1];
+		vec[2] = -bolt_matrix->matrix[2][1];
 		break;
 	case NEGATIVE_X:
-		vec[0] = -boltMatrix->matrix[0][0];
-		vec[1] = -boltMatrix->matrix[1][0];
-		vec[2] = -boltMatrix->matrix[2][0];
+		vec[0] = -bolt_matrix->matrix[0][0];
+		vec[1] = -bolt_matrix->matrix[1][0];
+		vec[2] = -bolt_matrix->matrix[2][0];
 		break;
 	case NEGATIVE_Z:
-		vec[0] = -boltMatrix->matrix[0][2];
-		vec[1] = -boltMatrix->matrix[1][2];
-		vec[2] = -boltMatrix->matrix[2][2];
+		vec[0] = -bolt_matrix->matrix[0][2];
+		vec[1] = -bolt_matrix->matrix[1][2];
+		vec[2] = -bolt_matrix->matrix[2][2];
 		break;
 	}
 }
@@ -2585,7 +2585,7 @@ int G2API_Ghoul2Size(CGhoul2Info_v& ghoul2)
 	return ghoul2.size();
 }
 
-extern int G2_DecideTraceLod(const CGhoul2Info& ghoul2, int useLod);
+extern int G2_DecideTraceLod(const CGhoul2Info& ghoul2, int use_lod);
 
 void G2API_AddSkinGore(CGhoul2Info_v& ghoul2, SSkinGoreData& gore)
 {

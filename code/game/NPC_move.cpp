@@ -135,7 +135,7 @@ static qboolean NPC_Jump(vec3_t dest, const int goalEntNum)
 					{
 						CG_DrawEdge(lastPos, trace.endpos, EDGE_RED_TWOSECOND); // TryJump
 					}
-					if (trace.entityNum == goalEntNum)
+					if (trace.entity_num == goalEntNum)
 					{
 						//hit the enemy, that's bad!
 						blocked = qtrue;
@@ -810,7 +810,7 @@ qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position)
 
 	gi.trace(&tr, testPos, mins, maxs, downPos, NPC->s.number, MASK_PLAYERSOLID, static_cast<EG2_Collision>(0), 0);
 
-	if (tr.entityNum != ENTITYNUM_NONE)
+	if (tr.entity_num != ENTITYNUM_NONE)
 	{
 		return qtrue;
 	}

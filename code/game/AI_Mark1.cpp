@@ -95,16 +95,16 @@ void NPC_Mark1_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel,
 		                       bolt,
-		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       &bolt_matrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
 		                       nullptr, self->s.modelScale);
 
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
 		G_PlayEffect("env/med_explode2", org, dir);
 		G_PlayEffect(G_EffectIndex("blaster/smoke_bolton"), self->playerModel, bolt, self->s.number, org);
@@ -131,18 +131,18 @@ Mark1Dead_FireRocket
 */
 void Mark1Dead_FireRocket(void)
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t muzzle1, muzzle_dir;
 
 	constexpr int damage = 50;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 	                       NPC->genericBolt5,
-	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzle_dir);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, muzzle_dir);
 
 	G_PlayEffect("bryar/muzzle_flash", muzzle1, muzzle_dir);
 
@@ -176,17 +176,17 @@ Mark1Dead_FireBlaster
 void Mark1Dead_FireBlaster(void)
 {
 	vec3_t muzzle1, muzzle_dir;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 
 	const int bolt = NPC->genericBolt1;
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 	                       bolt,
-	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, muzzle_dir);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, muzzle_dir);
 
 	G_PlayEffect("bryar_old/muzzle_flash", muzzle1, muzzle_dir);
 
@@ -396,7 +396,7 @@ void Mark1_FireBlaster(void)
 {
 	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	int bolt;
 
 	// Which muzzle to fire from?
@@ -423,10 +423,10 @@ void Mark1_FireBlaster(void)
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 	                       bolt,
-	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
 	if (NPC->health)
 	{
@@ -522,7 +522,7 @@ Mark1_FireRocket
 */
 void Mark1_FireRocket(void)
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
 	static vec3_t forward, vright, up;
 
@@ -530,10 +530,10 @@ void Mark1_FireRocket(void)
 
 	gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->playerModel,
 	                       NPC->genericBolt5,
-	                       &boltMatrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
+	                       &bolt_matrix, NPC->currentAngles, NPC->currentOrigin, cg.time ? cg.time : level.time,
 	                       nullptr, NPC->s.modelScale);
 
-	gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, muzzle1);
+	gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, muzzle1);
 
 	CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
 	VectorSubtract(enemy_org1, muzzle1, delta1);

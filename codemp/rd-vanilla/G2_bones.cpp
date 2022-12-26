@@ -2612,7 +2612,7 @@ int ragSSCount = 0;
 int ragTraceCount = 0;
 #endif
 
-void Rag_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, const int passEntityNum, const int contentmask, const EG2_Collision eG2TraceType, const int useLod)
+void Rag_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, const int pass_entity_num, const int contentmask, const EG2_Collision e_g2_trace_type, const int use_lod)
 {
 #ifdef _DEBUG
 	const int ragPreTrace = ri->Milliseconds();
@@ -2625,7 +2625,7 @@ void Rag_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const ve
 		VectorCopy(end, callData->end);
 		VectorCopy(mins, callData->mins);
 		VectorCopy(maxs, callData->maxs);
-		callData->ignore = passEntityNum;
+		callData->ignore = pass_entity_num;
 		callData->mask = contentmask;
 
 		ri->CGVM_RagCallback(RAG_CALLBACK_TRACELINE);
@@ -2634,10 +2634,10 @@ void Rag_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const ve
 	}
 	else
 	{
-		results->entityNum = ENTITYNUM_NONE;
-		//SV_Trace(results, start, mins, maxs, end, passEntityNum, contentmask, eG2TraceType, useLod);
+		results->entity_num = ENTITYNUM_NONE;
+		//SV_Trace(results, start, mins, maxs, end, pass_entity_num, contentmask, e_g2_trace_type, use_lod);
 		ri->CM_BoxTrace(results, start, end, mins, maxs, 0, contentmask, 0);
-		results->entityNum = results->fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
+		results->entity_num = results->fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	}
 
 #ifdef _DEBUG
@@ -2699,7 +2699,7 @@ static bool G2_ApplyRealBonePhysics(boneInfo_t& bone, const SRagEffector& e, con
 
 		Rag_Trace(&tr, e.currentOrigin, testMins, testMaxs, ground, params->me, RAG_MASK, G2_NOCOLLIDE, 0);
 
-		if (tr.entityNum == ENTITYNUM_NONE)
+		if (tr.entity_num == ENTITYNUM_NONE)
 		{
 			boneOnGround = false;
 		}
@@ -2790,9 +2790,9 @@ static bool G2_ApplyRealBonePhysics(boneInfo_t& bone, const SRagEffector& e, con
 		//I suppose it could be sort of neat to make a game callback here to actual do stuff
 		//when bones slam into things. But it could be slow too.
 		/*
-		if (tr.entityNum != ENTITYNUM_NONE && ent->touch)
+		if (tr.entity_num != ENTITYNUM_NONE && ent->touch)
 		{ //then call the touch function
-			ent->touch(ent, &g_entities[tr.entityNum], &tr);
+			ent->touch(ent, &g_entities[tr.entity_num], &tr);
 		}
 		*/
 	}
@@ -2875,7 +2875,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 			assert(!Q_isnan(testMins[1]));
 			assert(!Q_isnan(testMaxs[1]));
 			Rag_Trace(&tr, testStart, testMins, testMaxs, testEnd, ignoreNum, RAG_MASK, G2_NOCOLLIDE, 0/*SV_TRACE_NO_PLAYER*/);
-			if (tr.entityNum == 0)
+			if (tr.entity_num == 0)
 			{
 				VectorAdvance(testStart, .5f, testEnd, tr.endpos);
 			}
@@ -2936,7 +2936,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 		{
 			trace_t		tr;
 			Rag_Trace(&tr, testStart, testMins, testMaxs, testEnd, ignoreNum, RAG_MASK, G2_NOCOLLIDE, 0);
-			if (tr.entityNum == 0)
+			if (tr.entity_num == 0)
 			{
 				VectorAdvance(testStart, .5f, testEnd, tr.endpos);
 			}
@@ -2952,7 +2952,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 					// lets try higher
 					testStart[2] = groundSpot[2] + 8.0f;
 					Rag_Trace(&tr, testStart, testMins, testMaxs, testEnd, ignoreNum, RAG_MASK, G2_NOCOLLIDE, 0);
-					if (tr.entityNum == 0)
+					if (tr.entity_num == 0)
 					{
 						VectorAdvance(testStart, .5f, testEnd, tr.endpos);
 					}
@@ -3060,7 +3060,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 		{
 			trace_t		tr;
 			Rag_Trace(&tr, testStart, testMins, testMaxs, testEnd, ignoreNum, RAG_MASK, G2_NOCOLLIDE, 0);
-			if (tr.entityNum == 0)
+			if (tr.entity_num == 0)
 			{
 				VectorAdvance(testStart, .5f, testEnd, tr.endpos);
 			}
@@ -3113,7 +3113,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 
 						// this can be a line trace, we just want the plane normal
 						Rag_Trace(&tr, testEnd, 0, 0, testStart, ignoreNum, RAG_MASK, G2_NOCOLLIDE, 0);
-						if (tr.entityNum == 0)
+						if (tr.entity_num == 0)
 						{
 							VectorAdvance(testStart, .5f, testEnd, tr.endpos);
 						}
@@ -3146,7 +3146,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2V, const ve
 		{
 			trace_t		tr;
 			Rag_Trace(&tr, testStart, NULL, NULL, testEnd, ignoreNum, RAG_MASK, G2_NOCOLLIDE, 0);
-			if (tr.entityNum == 0)
+			if (tr.entity_num == 0)
 			{
 				VectorAdvance(testStart, .5f, testEnd, tr.endpos);
 			}

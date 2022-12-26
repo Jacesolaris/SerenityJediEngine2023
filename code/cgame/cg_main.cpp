@@ -1431,20 +1431,20 @@ static void CG_RegisterEffects(void)
 }
 
 /*
-void CG_RegisterClientModels (int entityNum)
+void CG_RegisterClientModels (int entity_num)
 
 Only call if clientInfo->infoValid is not true
 
 For players and NPCs to register their models
 */
-void CG_RegisterClientModels(const int entityNum)
+void CG_RegisterClientModels(const int entity_num)
 {
-	if (entityNum < 0 || entityNum > ENTITYNUM_WORLD)
+	if (entity_num < 0 || entity_num > ENTITYNUM_WORLD)
 	{
 		return;
 	}
 
-	const gentity_t* ent = &g_entities[entityNum];
+	const gentity_t* ent = &g_entities[entity_num];
 
 	if (!ent->client)
 	{
@@ -1460,9 +1460,9 @@ void CG_RegisterClientModels(const int entityNum)
 
 	CG_RegisterClientRenderInfo(&ent->client->clientInfo, &ent->client->renderInfo);
 
-	if (entityNum < MAX_CLIENTS)
+	if (entity_num < MAX_CLIENTS)
 	{
-		memcpy(&cgs.clientinfo[entityNum], &ent->client->clientInfo, sizeof(clientInfo_t));
+		memcpy(&cgs.clientinfo[entity_num], &ent->client->clientInfo, sizeof(clientInfo_t));
 	}
 }
 

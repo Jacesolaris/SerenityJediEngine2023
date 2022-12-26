@@ -39,8 +39,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 // g_client.c -- client functions that don't happen every frame
 
-static vec3_t playerMins = {-15, -15, DEFAULT_MINS_2};
-static vec3_t playerMaxs = {15, 15, DEFAULT_MAXS_2};
+static vec3_t player_mins = {-15, -15, DEFAULT_MINS_2};
+static vec3_t player_maxs = {15, 15, DEFAULT_MAXS_2};
 
 extern int g_siegeRespawnCheck;
 
@@ -610,8 +610,8 @@ qboolean SpotWouldTelefrag(const gentity_t* spot)
 	int touch[MAX_GENTITIES];
 	vec3_t mins, maxs;
 
-	VectorAdd(spot->s.origin, playerMins, mins);
-	VectorAdd(spot->s.origin, playerMaxs, maxs);
+	VectorAdd(spot->s.origin, player_mins, mins);
+	VectorAdd(spot->s.origin, player_maxs, maxs);
 	const int num = trap->EntitiesInBox(mins, maxs, touch, MAX_GENTITIES);
 
 	for (int i = 0; i < num; i++)
@@ -1664,8 +1664,8 @@ is used for determining where the lightsaber should be, and for per-poly collisi
 */
 void* g2SaberInstance = NULL;
 
-qboolean BG_IsValidCharacterModel(const char* modelName, const char* skinName);
-qboolean BG_ValidateSkinForTeam(const char* modelName, char* skinName, int team, float* colors);
+qboolean BG_IsValidCharacterModel(const char* model_name, const char* skin_name);
+qboolean BG_ValidateSkinForTeam(const char* model_name, char* skin_name, int team, float* colors);
 void BG_GetVehicleModelName(char* modelName, const char* vehicleName, size_t len);
 
 void SetupGameGhoul2Model(gentity_t* ent, char* modelname, char* skinName)
@@ -5821,8 +5821,8 @@ void ClientSpawn(gentity_t* ent)
 	ent->watertype = 0;
 	ent->flags = 0;
 
-	VectorCopy(playerMins, ent->r.mins);
-	VectorCopy(playerMaxs, ent->r.maxs);
+	VectorCopy(player_mins, ent->r.mins);
+	VectorCopy(player_maxs, ent->r.maxs);
 	client->ps.crouchheight = CROUCH_MAXS_2;
 	client->ps.standheight = DEFAULT_MAXS_2;
 
@@ -6100,6 +6100,7 @@ void ClientSpawn(gentity_t* ent)
 					client->skillLevel[SK_SMOKEGRENADE] = FORCE_LEVEL_3;
 					client->ps.ammo[AMMO_THERMAL] = 4;
 					client->skillLevel[SK_GRAPPLE] = FORCE_LEVEL_3;
+					client->skillLevel[SK_FLAMETHROWER] = FORCE_LEVEL_3;
 					break;
 				case BCLASS_CHEWIE:
 					client->ps.stats[STAT_WEAPONS] |= 1 << WP_MELEE;
@@ -6443,6 +6444,7 @@ void ClientSpawn(gentity_t* ent)
 					client->ps.stats[STAT_WEAPONS] |= 1 << WP_THERMAL;
 					client->ps.ammo[AMMO_THERMAL] = 4;
 					client->skillLevel[SK_GRAPPLE] = FORCE_LEVEL_3;
+					client->skillLevel[SK_FLAMETHROWER] = FORCE_LEVEL_3;
 					break;
 				case BCLASS_MANDOLORIAN1:
 					client->ps.stats[STAT_WEAPONS] |= 1 << WP_MELEE;
@@ -6461,6 +6463,7 @@ void ClientSpawn(gentity_t* ent)
 					client->skillLevel[SK_ROCKET] = FORCE_LEVEL_3;
 					client->ps.ammo[AMMO_ROCKETS] = 5;
 					client->skillLevel[SK_GRAPPLE] = FORCE_LEVEL_3;
+					client->skillLevel[SK_FLAMETHROWER] = FORCE_LEVEL_3;
 					break;
 				case BCLASS_MANDOLORIAN2:
 					client->ps.stats[STAT_WEAPONS] |= 1 << WP_MELEE;
@@ -6477,6 +6480,7 @@ void ClientSpawn(gentity_t* ent)
 					client->skillLevel[SK_FLASHGRENADE] = FORCE_LEVEL_3;
 					client->ps.ammo[AMMO_THERMAL] = 4;
 					client->skillLevel[SK_GRAPPLE] = FORCE_LEVEL_3;
+					client->skillLevel[SK_FLAMETHROWER] = FORCE_LEVEL_3;
 					break;
 				case BCLASS_SOILDER:
 					client->ps.stats[STAT_WEAPONS] |= 1 << WP_MELEE;

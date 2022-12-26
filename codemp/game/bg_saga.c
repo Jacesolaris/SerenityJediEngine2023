@@ -1145,7 +1145,7 @@ void BG_SiegeParseClassFile(const char* filename, siegeClassDesc_t* descBuffer)
 		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof bgSiegeClasses[bgNumSiegeClasses].uiPortrait);
 #elif defined(_CGAME)
 		bgSiegeClasses[bgNumSiegeClasses].uiPortraitShader = 0;
-		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof(bgSiegeClasses[bgNumSiegeClasses].uiPortrait));
+		memset(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, 0, sizeof bgSiegeClasses[bgNumSiegeClasses].uiPortrait);
 #elif defined(UI_BUILD) //ui
 		bgSiegeClasses[bgNumSiegeClasses].uiPortraitShader = trap->R_RegisterShaderNoMip(parseBuf);
 		memcpy(bgSiegeClasses[bgNumSiegeClasses].uiPortrait, parseBuf,
@@ -1522,7 +1522,7 @@ siegeTeam_t* BG_SiegeFindThemeForTeam(const int team)
 #if defined(_GAME) || defined(_CGAME) //only for game/cgame
 //precache all the sabers for the active classes for the team
 extern qboolean WP_SaberParseParms(const char* saberName, saberInfo_t* saber); //bg_saberLoad.cpp
-extern int BG_ModelCache(const char* modelName, const char* skinName); //bg_misc.c
+extern int BG_ModelCache(const char* model_name, const char* skin_name); //bg_misc.c
 
 void BG_PrecacheSabersForSiegeTeam(const int team)
 {

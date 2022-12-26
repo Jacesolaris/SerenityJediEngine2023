@@ -377,12 +377,12 @@ void WorkshopSelect_f(gentity_t* ent)
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
 	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
-	if (trace.fraction == 1.0f || trace.entityNum < 1)
+	if (trace.fraction == 1.0f || trace.entity_num < 1)
 	{
 		return;
 	}
 
-	const gentity_t* target = &g_entities[trace.entityNum];
+	const gentity_t* target = &g_entities[trace.entity_num];
 	if (target->client)
 	{
 		selectedAI = target->s.number;
@@ -610,14 +610,14 @@ void Workshop_Set_GoalEntity_f(gentity_t* ent)
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
 	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
-	if (trace.fraction == 1.0f || trace.entityNum < 1 || trace.entityNum == ENTITYNUM_NONE || trace.entityNum ==
+	if (trace.fraction == 1.0f || trace.entity_num < 1 || trace.entity_num == ENTITYNUM_NONE || trace.entity_num ==
 		ENTITYNUM_WORLD)
 	{
 		gi.Printf("Invalid entity\n");
 		return;
 	}
 
-	gentity_t* target = &g_entities[trace.entityNum];
+	gentity_t* target = &g_entities[trace.entity_num];
 	const gentity_t* selected = &g_entities[selectedAI];
 	selected->NPC->lastGoalEntity = selected->NPC->goalEntity;
 	selected->NPC->goalEntity = target;
@@ -669,14 +669,14 @@ void Workshop_Set_Enemy_f(gentity_t* ent)
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
 	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
-	if (trace.fraction == 1.0f || trace.entityNum < 1 || trace.entityNum == ENTITYNUM_NONE || trace.entityNum ==
+	if (trace.fraction == 1.0f || trace.entity_num < 1 || trace.entity_num == ENTITYNUM_NONE || trace.entity_num ==
 		ENTITYNUM_WORLD)
 	{
 		gi.Printf("Invalid entity\n");
 		return;
 	}
 
-	gentity_t* target = &g_entities[trace.entityNum];
+	gentity_t* target = &g_entities[trace.entity_num];
 	gentity_t* selected = &g_entities[selectedAI];
 	selected->lastEnemy = selected->enemy;
 	selected->enemy = target;
@@ -871,14 +871,14 @@ void Workshop_Set_Leader_f(gentity_t* ent)
 	//Trace ahead to find a valid target
 	gi.trace(&trace, src, vec3_origin, vec3_origin, dest, ent->s.number,
 	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE, G2_NOCOLLIDE, 0);
-	if (trace.fraction == 1.0f || trace.entityNum < 1 || trace.entityNum == ENTITYNUM_NONE || trace.entityNum ==
+	if (trace.fraction == 1.0f || trace.entity_num < 1 || trace.entity_num == ENTITYNUM_NONE || trace.entity_num ==
 		ENTITYNUM_WORLD)
 	{
 		gi.Printf("Invalid entity\n");
 		return;
 	}
 
-	gentity_t* target = &g_entities[trace.entityNum];
+	gentity_t* target = &g_entities[trace.entity_num];
 	const gentity_t* selected = &g_entities[selectedAI];
 	selected->client->leader = target;
 }

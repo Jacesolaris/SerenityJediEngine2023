@@ -247,10 +247,10 @@ static void Howler_TryDamage(const int damage, const qboolean tongue, const qboo
 	// Should probably trace from the mouth, but, ah well.
 	trap->Trace(&tr, start, vec3_origin, vec3_origin, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
 
-	if (tr.entityNum < ENTITYNUM_WORLD)
+	if (tr.entity_num < ENTITYNUM_WORLD)
 	{
 		//hit *something*
-		gentity_t* victim = &g_entities[tr.entityNum];
+		gentity_t* victim = &g_entities[tr.entity_num];
 		if (!victim->client
 			|| victim->client->NPC_class != CLASS_HOWLER)
 		{

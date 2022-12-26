@@ -425,7 +425,7 @@ void Tusken_StaffTrace()
 		int last_hit = ENTITYNUM_NONE;
 		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;
 			const vec3_t angles = {0, NPC->currentAngles[YAW], 0};
 			constexpr vec3_t mins = {-2, -2, -2}, maxs = {2, 2, 2};
@@ -433,10 +433,10 @@ void Tusken_StaffTrace()
 
 			gi.G2API_GetBoltMatrix(NPC->ghoul2, NPC->weaponModel[0],
 			                       bolt_index,
-			                       &boltMatrix, angles, NPC->currentOrigin, time,
+			                       &bolt_matrix, angles, NPC->currentOrigin, time,
 			                       nullptr, NPC->s.modelScale);
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, base);
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, base);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 			VectorMA(base, -20, dir, base);
 			VectorMA(base, 78, dir, tip);
 #ifndef FINAL_BUILD
@@ -446,10 +446,10 @@ void Tusken_StaffTrace()
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entityNum != last_hit)
+			if (trace.fraction < 1.0f && trace.entity_num != last_hit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* traceEnt = &g_entities[trace.entity_num];
 				if (traceEnt->takedamage
 					&& (!traceEnt->client || traceEnt == NPC->enemy || traceEnt->client->NPC_class != NPC->client->
 						NPC_class))
@@ -467,7 +467,7 @@ void Tusken_StaffTrace()
 						//do pain on enemy
 						G_Knockdown(traceEnt, NPC, dir, 300, qtrue);
 					}
-					last_hit = trace.entityNum;
+					last_hit = trace.entity_num;
 					hit = qtrue;
 				}
 			}
@@ -491,7 +491,7 @@ void Tusken_StaffTracenew(gentity_t* self)
 		int lastHit = ENTITYNUM_NONE;
 		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
-			mdxaBone_t boltMatrix;
+			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;
 			const vec3_t angles = {0, self->currentAngles[YAW], 0};
 			constexpr vec3_t mins = {-2, -2, -2}, maxs = {2, 2, 2};
@@ -499,10 +499,10 @@ void Tusken_StaffTracenew(gentity_t* self)
 
 			gi.G2API_GetBoltMatrix(self->ghoul2, self->weaponModel[0],
 			                       bolt_index,
-			                       &boltMatrix, angles, self->currentOrigin, time,
+			                       &bolt_matrix, angles, self->currentOrigin, time,
 			                       nullptr, self->s.modelScale);
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, base);
-			gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, base);
+			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 			VectorMA(base, -20, dir, base);
 			VectorMA(base, 78, dir, tip);
 #ifndef FINAL_BUILD
@@ -512,10 +512,10 @@ void Tusken_StaffTracenew(gentity_t* self)
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, self->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entityNum != lastHit)
+			if (trace.fraction < 1.0f && trace.entity_num != lastHit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* traceEnt = &g_entities[trace.entity_num];
 				if (traceEnt->takedamage
 					&& (!traceEnt->client || traceEnt == self->enemy || traceEnt->client->NPC_class != self->client->
 						NPC_class))
@@ -533,7 +533,7 @@ void Tusken_StaffTracenew(gentity_t* self)
 						//do pain on enemy
 						G_Knockdown(traceEnt, self, dir, 300, qtrue);
 					}
-					lastHit = trace.entityNum;
+					lastHit = trace.entity_num;
 					hit = qtrue;
 				}
 			}

@@ -120,19 +120,19 @@ static void C_GetLerpData(void)
 	else if (cg_entities[data->mEntityNum].currentState.eType == ET_NPC)
 	{
 		// an NPC
-		const Vehicle_t* pVeh = cg_entities[data->mEntityNum].m_pVehicle;
-		if (!pVeh)
+		const Vehicle_t* p_veh = cg_entities[data->mEntityNum].m_pVehicle;
+		if (!p_veh)
 		{
 			// for vehicles, we may or may not want to 0 out pitch and roll
 			data->mAngles[PITCH] = 0.0f;
 			data->mAngles[ROLL] = 0.0f;
 		}
-		else if (pVeh->m_pVehicleInfo->type == VH_SPEEDER)
+		else if (p_veh->m_pVehicleInfo->type == VH_SPEEDER)
 		{
 			// speeder wants no pitch but a roll
 			data->mAngles[PITCH] = 0.0f;
 		}
-		else if (pVeh->m_pVehicleInfo->type != VH_FIGHTER)
+		else if (p_veh->m_pVehicleInfo->type != VH_FIGHTER)
 		{
 			// fighters want all angles
 			data->mAngles[PITCH] = 0.0f;
@@ -162,20 +162,20 @@ static void C_G2Mark(void)
 	VectorMA(td->start, 64.0f, td->dir, end);
 	CG_G2Trace(&tr, td->start, NULL, NULL, end, ENTITYNUM_NONE, MASK_PLAYERSOLID);
 
-	if (tr.entityNum < ENTITYNUM_WORLD && cg_entities[tr.entityNum].ghoul2)
+	if (tr.entity_num < ENTITYNUM_WORLD && cg_entities[tr.entity_num].ghoul2)
 	{
 		// hit someone with a ghoul2 instance, let's project the decal on them then.
-		centity_t* cent = &cg_entities[tr.entityNum];
+		centity_t* cent = &cg_entities[tr.entity_num];
 
 		//	CG_TestLine( tr.endpos, end, 2000, 0x0000ff, 1 );
 
-		CG_AddGhoul2Mark(td->shader, td->size, tr.endpos, end, tr.entityNum, cent->lerpOrigin, cent->lerpAngles[YAW],
+		CG_AddGhoul2Mark(td->shader, td->size, tr.endpos, end, tr.entity_num, cent->lerpOrigin, cent->lerpAngles[YAW],
 			cent->ghoul2, cent->modelScale, Q_irand(2000, 4000));
 		// I'm making fx system decals have a very short lifetime.
 	}
 }
 
-static void CG_DebugBoxLines(vec3_t mins, vec3_t maxs, int duration)
+static void CG_DebugBoxLines(vec3_t mins, vec3_t maxs, const int duration)
 {
 	vec3_t start, end, vert;
 	const float x = maxs[0] - mins[0];
@@ -235,7 +235,7 @@ static void CG_DebugBoxLines(vec3_t mins, vec3_t maxs, int duration)
 }
 
 //handle ragdoll callbacks, for events and debugging -rww
-static int CG_RagCallback(int callType)
+static int CG_RagCallback(const int callType)
 {
 	switch (callType)
 	{
@@ -418,7 +418,7 @@ int CG_LastAttacker(void)
 CG_Argv
 ================
 */
-const char* CG_Argv(int arg)
+const char* CG_Argv(const int arg)
 {
 	static char buffer[MAX_STRING_CHARS] = { 0 };
 
@@ -442,7 +442,7 @@ CG_RegisterItemSounds
 The server says this item is used on this level
 =================
 */
-static void CG_RegisterItemSounds(int itemNum)
+static void CG_RegisterItemSounds(const int itemNum)
 {
 	char data[MAX_QPATH];
 	char* start;
@@ -796,6 +796,8 @@ static void CG_RegisterSounds(void)
 	{
 		trap->S_RegisterSound(va("sound/weapons/saber/saberstrikewall%d.mp3", i));
 	}
+
+	trap->S_RegisterSound("sound/effects/fireburst");
 
 	trap->S_RegisterSound("sound/weapons/saber/enemy_saber_on");
 	trap->S_RegisterSound("sound/weapons/saber/enemy_saber_off");
@@ -1247,7 +1249,7 @@ Some weapons like the noghri stick can be used by the player
 but those are in special circumstances.
 =================
 */
-static qboolean CG_IsWeaponUsablePlayer(int weaponNum)
+static qboolean CG_IsWeaponUsablePlayer(const int weaponNum)
 {
 	if (weaponNum == WP_EMPLACED_GUN || weaponNum == WP_TURRET)
 	{
@@ -1905,7 +1907,7 @@ static void CG_RegisterClients(void)
 CG_ConfigString
 =================
 */
-const char* CG_ConfigString(int index)
+const char* CG_ConfigString(const int index)
 {
 	if (index < 0 || index >= MAX_CONFIGSTRINGS)
 	{
@@ -1922,7 +1924,7 @@ CG_StartMusic
 
 ======================
 */
-void CG_StartMusic(qboolean bForceStart)
+void CG_StartMusic(const qboolean bForceStart)
 {
 	char* s;
 	char parm1[MAX_QPATH], parm2[MAX_QPATH];
@@ -1973,7 +1975,7 @@ char* CG_GetMenuBuffer(const char* filename)
 // new hud stuff ( mission pack )
 // ==============================
 //
-qboolean CG_Asset_Parse(int handle)
+qboolean CG_Asset_Parse(const int handle)
 {
 	pc_token_t token;
 
@@ -2250,7 +2252,7 @@ static qboolean CG_OwnerDrawHandleKey(int ownerDraw, int flags, float* special, 
 	return qfalse;
 }
 
-static int CG_FeederCount(float feederID)
+static int CG_FeederCount(const float feederID)
 {
 	int i;
 	int count = 0;
@@ -2327,7 +2329,7 @@ void CG_SetScoreSelection(void* p)
 }
 
 // FIXME: might need to cache this info
-static clientInfo_t* CG_InfoFromScoreIndex(int index, int team, int* scoreIndex)
+static clientInfo_t* CG_InfoFromScoreIndex(const int index, const int team, int* scoreIndex)
 {
 	if (cgs.gametype >= GT_TEAM)
 	{
@@ -2349,8 +2351,8 @@ static clientInfo_t* CG_InfoFromScoreIndex(int index, int team, int* scoreIndex)
 	return &cgs.clientinfo[cg.scores[index].client];
 }
 
-static const char* CG_FeederItemText(float feederID, int index, int column,
-	qhandle_t* handle1, qhandle_t* handle2, qhandle_t* handle3)
+static const char* CG_FeederItemText(const float feederID, const int index, const int column,
+                                     qhandle_t* handle1, qhandle_t* handle2, qhandle_t* handle3)
 {
 	int scoreIndex = 0;
 	int team = -1;
@@ -2456,7 +2458,7 @@ static qhandle_t CG_FeederItemImage(float feederID, int index)
 	return 0;
 }
 
-static qboolean CG_FeederSelection(float feederID, int index, itemDef_t* item)
+static qboolean CG_FeederSelection(const float feederID, const int index, itemDef_t* item)
 {
 	if (cgs.gametype >= GT_TEAM)
 	{
@@ -2489,13 +2491,13 @@ static float CG_Cvar_Get(const char* cvar)
 	return atof(buff);
 }
 
-void CG_Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char* text, int cursorPos, char cursor,
-	int limit, int style, int iMenuFont)
+void CG_Text_PaintWithCursor(const float x, const float y, const float scale, vec4_t color, const char* text, int cursorPos, char cursor,
+                             const int limit, const int style, const int i_menu_font)
 {
-	CG_Text_Paint(x, y, scale, color, text, 0, limit, style, iMenuFont);
+	CG_Text_Paint(x, y, scale, color, text, 0, limit, style, i_menu_font);
 }
 
-static int CG_OwnerDrawWidth(int ownerDraw, float scale)
+static int CG_OwnerDrawWidth(const int ownerDraw, const float scale)
 {
 	switch (ownerDraw)
 	{
@@ -2514,23 +2516,23 @@ static int CG_OwnerDrawWidth(int ownerDraw, float scale)
 	return 0;
 }
 
-static int CG_PlayCinematic(const char* name, float x, float y, float w, float h)
+static int CG_PlayCinematic(const char* name, const float x, const float y, const float w, const float h)
 {
 	return trap->CIN_PlayCinematic(name, x, y, w, h, CIN_loop);
 }
 
-static void CG_StopCinematic(int handle)
+static void CG_StopCinematic(const int handle)
 {
 	trap->CIN_StopCinematic(handle);
 }
 
-static void CG_DrawCinematic(int handle, float x, float y, float w, float h)
+static void CG_DrawCinematic(const int handle, const float x, const float y, const float w, const float h)
 {
 	trap->CIN_SetExtents(handle, x, y, w, h);
 	trap->CIN_DrawCinematic(handle);
 }
 
-static void CG_RunCinematicFrame(int handle)
+static void CG_RunCinematicFrame(const int handle)
 {
 	trap->CIN_RunCinematic(handle);
 }
@@ -2760,7 +2762,7 @@ Called after every level change or subsystem restart
 Will perform callbacks to make the loading info screen update.
 =================
 */
-void CG_Init(int serverMessageNum, int serverCommandSequence, int client_num)
+void CG_Init(const int serverMessageNum, const int serverCommandSequence, const int client_num)
 {
 	static gitem_t* item;
 	char buf[64];
@@ -3267,7 +3269,7 @@ void cg_prev_inventory_f(void)
 	}
 }
 
-static void _CG_MouseEvent(int x, int y)
+static void _CG_MouseEvent(const int x, const int y)
 {
 	cgDC.cursorx = cgs.cursorX;
 	cgDC.cursory = cgs.cursorY;
@@ -3297,27 +3299,27 @@ static qboolean CG_IncomingConsoleCommand(void)
 	return qtrue;
 }
 
-static void CG_GetOrigin(int entID, vec3_t out)
+static void CG_GetOrigin(const int entID, vec3_t out)
 {
 	VectorCopy(cg_entities[entID].currentState.pos.trBase, out);
 }
 
-static void CG_GetAngles(int entID, vec3_t out)
+static void CG_GetAngles(const int entID, vec3_t out)
 {
 	VectorCopy(cg_entities[entID].currentState.apos.trBase, out);
 }
 
-static trajectory_t* CG_GetOriginTrajectory(int entID)
+static trajectory_t* CG_GetOriginTrajectory(const int entID)
 {
 	return &cg_entities[entID].nextState.pos;
 }
 
-static trajectory_t* CG_GetAngleTrajectory(int entID)
+static trajectory_t* CG_GetAngleTrajectory(const int entID)
 {
 	return &cg_entities[entID].nextState.apos;
 }
 
-static void _CG_ROFF_NotetrackCallback(int entID, const char* notetrack)
+static void _CG_ROFF_NotetrackCallback(const int entID, const char* notetrack)
 {
 	CG_ROFF_NotetrackCallback(&cg_entities[entID], notetrack);
 }
@@ -3362,7 +3364,7 @@ GetModuleAPI
 
 cgameImport_t* trap = NULL;
 
-Q_EXPORT cgameExport_t* QDECL GetModuleAPI(int apiVersion, cgameImport_t* import)
+Q_EXPORT cgameExport_t* QDECL GetModuleAPI(const int apiVersion, cgameImport_t* import)
 {
 	static cgameExport_t cge = { 0 };
 
@@ -3418,8 +3420,8 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .q3vm file
 ================
 */
-Q_EXPORT intptr_t vmMain(int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4,
-	intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11)
+Q_EXPORT intptr_t vmMain(const int command, const intptr_t arg0, const intptr_t arg1, const intptr_t arg2, intptr_t arg3, intptr_t arg4,
+                         intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11)
 {
 	switch (command) {
 	case CG_INIT:

@@ -458,12 +458,12 @@ int WeaponAltAttackAnim[WP_NUM_WEAPONS] =
 	BOTH_ATTACK1 //WP_TURRET,
 };
 
-qboolean BG_FileExists(const char* fileName)
+qboolean BG_FileExists(const char* file_name)
 {
-	if (fileName && fileName[0])
+	if (file_name && file_name[0])
 	{
 		fileHandle_t f = NULL_FILE;
-		trap->FS_Open(fileName, &f, FS_READ);
+		trap->FS_Open(file_name, &f, FS_READ);
 
 		if (f > 0)
 		{
@@ -475,44 +475,44 @@ qboolean BG_FileExists(const char* fileName)
 }
 
 // given a boltmatrix, return in vec a normalised vector for the axis requested in flags
-void BG_GiveMeVectorFromMatrix(const mdxaBone_t* boltMatrix, int flags, vec3_t vec)
+void BG_GiveMeVectorFromMatrix(const mdxaBone_t* bolt_matrix, const int flags, vec3_t vec)
 {
 	switch (flags)
 	{
 	case ORIGIN:
-		vec[0] = boltMatrix->matrix[0][3];
-		vec[1] = boltMatrix->matrix[1][3];
-		vec[2] = boltMatrix->matrix[2][3];
+		vec[0] = bolt_matrix->matrix[0][3];
+		vec[1] = bolt_matrix->matrix[1][3];
+		vec[2] = bolt_matrix->matrix[2][3];
 		break;
 	case POSITIVE_Y:
-		vec[0] = boltMatrix->matrix[0][1];
-		vec[1] = boltMatrix->matrix[1][1];
-		vec[2] = boltMatrix->matrix[2][1];
+		vec[0] = bolt_matrix->matrix[0][1];
+		vec[1] = bolt_matrix->matrix[1][1];
+		vec[2] = bolt_matrix->matrix[2][1];
 		break;
 	case POSITIVE_X:
-		vec[0] = boltMatrix->matrix[0][0];
-		vec[1] = boltMatrix->matrix[1][0];
-		vec[2] = boltMatrix->matrix[2][0];
+		vec[0] = bolt_matrix->matrix[0][0];
+		vec[1] = bolt_matrix->matrix[1][0];
+		vec[2] = bolt_matrix->matrix[2][0];
 		break;
 	case POSITIVE_Z:
-		vec[0] = boltMatrix->matrix[0][2];
-		vec[1] = boltMatrix->matrix[1][2];
-		vec[2] = boltMatrix->matrix[2][2];
+		vec[0] = bolt_matrix->matrix[0][2];
+		vec[1] = bolt_matrix->matrix[1][2];
+		vec[2] = bolt_matrix->matrix[2][2];
 		break;
 	case NEGATIVE_Y:
-		vec[0] = -boltMatrix->matrix[0][1];
-		vec[1] = -boltMatrix->matrix[1][1];
-		vec[2] = -boltMatrix->matrix[2][1];
+		vec[0] = -bolt_matrix->matrix[0][1];
+		vec[1] = -bolt_matrix->matrix[1][1];
+		vec[2] = -bolt_matrix->matrix[2][1];
 		break;
 	case NEGATIVE_X:
-		vec[0] = -boltMatrix->matrix[0][0];
-		vec[1] = -boltMatrix->matrix[1][0];
-		vec[2] = -boltMatrix->matrix[2][0];
+		vec[0] = -bolt_matrix->matrix[0][0];
+		vec[1] = -bolt_matrix->matrix[1][0];
+		vec[2] = -bolt_matrix->matrix[2][0];
 		break;
 	case NEGATIVE_Z:
-		vec[0] = -boltMatrix->matrix[0][2];
-		vec[1] = -boltMatrix->matrix[1][2];
-		vec[2] = -boltMatrix->matrix[2][2];
+		vec[0] = -bolt_matrix->matrix[0][2];
+		vec[1] = -bolt_matrix->matrix[1][2];
+		vec[2] = -bolt_matrix->matrix[2][2];
 		break;
 	default:;
 	}
@@ -530,61 +530,61 @@ fpDisabled is actually only expected (needed) from the server, because the ui di
 force power selection anyway when force powers are disabled on the server.
 ================
 */
-qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRank, qboolean freeSaber, int teamForce,
-	int gametype, int fpDisabled)
+qboolean BG_LegalizedForcePowers(char* power_out, const size_t power_out_size, const int max_rank, const qboolean free_saber, const int team_force,
+                                 const int gametype, const int fp_disabled)
 {
-	char powerBuf[128];
-	char readBuf[128];
-	qboolean maintainsValidity = qtrue;
-	const int powerLen = strlen(powerOut);
+	char power_buf[128];
+	char read_buf[128];
+	qboolean maintains_validity = qtrue;
+	const int power_len = strlen(power_out);
 	int i = 0;
 	int c = 0;
 
-	int final_Powers[NUM_FORCE_POWERS] = { 0 };
+	int final_powers[NUM_FORCE_POWERS] = { 0 };
 
-	if (powerLen >= 128)
+	if (power_len >= 128)
 	{
 		//This should not happen. If it does, this is obviously a bogus string.
 		//They can have this string. Because I said so.
-		Q_strncpyz(powerBuf, DEFAULT_FORCEPOWERS, sizeof powerBuf);
-		maintainsValidity = qfalse;
+		Q_strncpyz(power_buf, DEFAULT_FORCEPOWERS, sizeof power_buf);
+		maintains_validity = qfalse;
 	}
 	else
-		Q_strncpyz(powerBuf, powerOut, sizeof powerBuf); //copy it as the original
+		Q_strncpyz(power_buf, power_out, sizeof power_buf); //copy it as the original
 
 	//first of all, print the max rank into the string as the rank
-	Q_strncpyz(powerOut, va("%i-", maxRank), powerOutSize);
+	Q_strncpyz(power_out, va("%i-", max_rank), power_out_size);
 
-	while (i < sizeof powerBuf && powerBuf[i] && powerBuf[i] != '-')
+	while (i < sizeof power_buf && power_buf[i] && power_buf[i] != '-')
 	{
 		i++;
 	}
 	i++;
-	while (i < sizeof powerBuf && powerBuf[i] && powerBuf[i] != '-')
+	while (i < sizeof power_buf && power_buf[i] && power_buf[i] != '-')
 	{
-		readBuf[c] = powerBuf[i];
+		read_buf[c] = power_buf[i];
 		c++;
 		i++;
 	}
-	readBuf[c] = 0;
+	read_buf[c] = 0;
 	i++;
 	//at this point, readBuf contains the intended side
-	int final_Side = atoi(readBuf);
+	int final_side = atoi(read_buf);
 
-	if (final_Side != FORCE_LIGHTSIDE &&
-		final_Side != FORCE_DARKSIDE)
+	if (final_side != FORCE_LIGHTSIDE &&
+		final_side != FORCE_DARKSIDE)
 	{
 		//Not a valid side. You will be dark. Because I said so. (this is something that should never actually happen unless you purposely feed in an invalid config)
-		final_Side = FORCE_DARKSIDE;
-		maintainsValidity = qfalse;
+		final_side = FORCE_DARKSIDE;
+		maintains_validity = qfalse;
 	}
 
-	if (teamForce)
+	if (team_force)
 	{
 		//If we are under force-aligned teams, make sure we're on the right side.
-		if (final_Side != teamForce)
+		if (final_side != team_force)
 		{
-			final_Side = teamForce;
+			final_side = team_force;
 			//maintainsValidity = qfalse;
 			//Not doing this, for now. Let them join the team with their filtered powers.
 		}
@@ -593,37 +593,37 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 	//Now we have established a valid rank, and a valid side.
 	//Read the force powers in, and cut them down based on the various rules supplied.
 	c = 0;
-	while (i < sizeof powerBuf && powerBuf[i] && powerBuf[i] != '\n' && powerBuf[i] != '\r'
-		&& powerBuf[i] >= '0' && powerBuf[i] <= '3' && c < NUM_FORCE_POWERS)
+	while (i < sizeof power_buf && power_buf[i] && power_buf[i] != '\n' && power_buf[i] != '\r'
+		&& power_buf[i] >= '0' && power_buf[i] <= '3' && c < NUM_FORCE_POWERS)
 	{
-		readBuf[0] = powerBuf[i];
-		readBuf[1] = 0;
-		final_Powers[c] = atoi(readBuf);
+		read_buf[0] = power_buf[i];
+		read_buf[1] = 0;
+		final_powers[c] = atoi(read_buf);
 		c++;
 		i++;
 	}
 
 	//final_Powers now contains all the stuff from the string
 	//Set the maximum allowed points used based on the max rank level, and count the points actually used.
-	const int allowed_points = forceMasteryPoints[maxRank];
+	const int allowed_points = forceMasteryPoints[max_rank];
 
 	i = 0;
 	while (i < NUM_FORCE_POWERS)
 	{
 		//if this power doesn't match the side we're on, then 0 it now.
-		if (final_Powers[i] &&
+		if (final_powers[i] &&
 			force_power_dark_light[i] &&
-			force_power_dark_light[i] != final_Side)
+			force_power_dark_light[i] != final_side)
 		{
-			final_Powers[i] = 0;
+			final_powers[i] = 0;
 			//This is only likely to happen with g_forceBasedTeams. Let it slide.
 		}
 
-		if (final_Powers[i] &&
-			fpDisabled & 1 << i)
+		if (final_powers[i] &&
+			fp_disabled & 1 << i)
 		{
 			//if this power is disabled on the server via said server option, then we don't get it.
-			final_Powers[i] = 0;
+			final_powers[i] = 0;
 		}
 
 		i++;
@@ -632,15 +632,15 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 	if (gametype < GT_TEAM)
 	{
 		//don't bother with team powers then
-		final_Powers[FP_TEAM_HEAL] = 0;
-		final_Powers[FP_TEAM_FORCE] = 0;
+		final_powers[FP_TEAM_HEAL] = 0;
+		final_powers[FP_TEAM_FORCE] = 0;
 	}
 
 	int used_points = 0;
 	i = 0;
 	while (i < NUM_FORCE_POWERS)
 	{
-		int count_down = Com_Clampi(0, NUM_FORCE_POWER_LEVELS, final_Powers[i]);
+		int count_down = Com_Clampi(0, NUM_FORCE_POWER_LEVELS, final_powers[i]);
 
 		while (count_down > 0)
 		{
@@ -648,8 +648,8 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 			//if this is jump, or we have a free saber and it's offense or defense, take the level back down on level 1
 			if (count_down == 1 &&
 				(i == FP_LEVITATION ||
-					i == FP_SABER_OFFENSE && freeSaber ||
-					i == FP_SABER_DEFENSE && freeSaber))
+					i == FP_SABER_OFFENSE && free_saber ||
+					i == FP_SABER_DEFENSE && free_saber))
 			{
 				used_points -= bgForcePowerCost[i][count_down];
 			}
@@ -662,16 +662,16 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 	if (used_points > allowed_points)
 	{
 		//Time to do the fancy stuff. (meaning, slowly cut parts off while taking a guess at what is most or least important in the config)
-		int attemptedCycles = 0;
-		int powerCycle = 2;
-		int minPow = 0;
+		int attempted_cycles = 0;
+		int power_cycle = 2;
+		int min_pow = 0;
 
-		if (freeSaber)
+		if (free_saber)
 		{
-			minPow = 1;
+			min_pow = 1;
 		}
 
-		maintainsValidity = qfalse;
+		maintains_validity = qfalse;
 
 		while (used_points > allowed_points)
 		{
@@ -679,29 +679,29 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 
 			while (c < NUM_FORCE_POWERS && used_points > allowed_points)
 			{
-				if (final_Powers[c] && final_Powers[c] < powerCycle)
+				if (final_powers[c] && final_powers[c] < power_cycle)
 				{
 					//kill in order of lowest powers, because the higher powers are probably more important
 					if (c == FP_SABER_OFFENSE &&
-						(final_Powers[FP_SABER_DEFENSE] > minPow || final_Powers[FP_SABERTHROW] > 0))
+						(final_powers[FP_SABER_DEFENSE] > min_pow || final_powers[FP_SABERTHROW] > 0))
 					{
 						//if we're on saber attack, only suck it down if we have no def or throw either
-						int whichOne = FP_SABERTHROW; //first try throw
+						int which_one = FP_SABERTHROW; //first try throw
 
-						if (!final_Powers[whichOne])
+						if (!final_powers[which_one])
 						{
-							whichOne = FP_SABER_DEFENSE; //if no throw, drain defense
+							which_one = FP_SABER_DEFENSE; //if no throw, drain defense
 						}
 
-						while (final_Powers[whichOne] > 0 && used_points > allowed_points)
+						while (final_powers[which_one] > 0 && used_points > allowed_points)
 						{
-							if (final_Powers[whichOne] > 1 ||
-								(whichOne != FP_SABER_OFFENSE || !freeSaber) &&
-								(whichOne != FP_SABER_DEFENSE || !freeSaber))
+							if (final_powers[which_one] > 1 ||
+								(which_one != FP_SABER_OFFENSE || !free_saber) &&
+								(which_one != FP_SABER_DEFENSE || !free_saber))
 							{
 								//don't take attack or defend down on level 1 still, if it's free
-								used_points -= bgForcePowerCost[whichOne][final_Powers[whichOne]];
-								final_Powers[whichOne]--;
+								used_points -= bgForcePowerCost[which_one][final_powers[which_one]];
+								final_powers[which_one]--;
 							}
 							else
 							{
@@ -711,15 +711,15 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 					}
 					else
 					{
-						while (final_Powers[c] > 0 && used_points > allowed_points)
+						while (final_powers[c] > 0 && used_points > allowed_points)
 						{
-							if (final_Powers[c] > 1 ||
+							if (final_powers[c] > 1 ||
 								c != FP_LEVITATION &&
-								(c != FP_SABER_OFFENSE || !freeSaber) &&
-								(c != FP_SABER_DEFENSE || !freeSaber))
+								(c != FP_SABER_OFFENSE || !free_saber) &&
+								(c != FP_SABER_DEFENSE || !free_saber))
 							{
-								used_points -= bgForcePowerCost[c][final_Powers[c]];
-								final_Powers[c]--;
+								used_points -= bgForcePowerCost[c][final_powers[c]];
+								final_powers[c]--;
 							}
 							else
 							{
@@ -732,10 +732,10 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 				c++;
 			}
 
-			powerCycle++;
-			attemptedCycles++;
+			power_cycle++;
+			attempted_cycles++;
 
-			if (attemptedCycles > NUM_FORCE_POWERS)
+			if (attempted_cycles > NUM_FORCE_POWERS)
 			{
 				//I think this should be impossible. But just in case.
 				break;
@@ -749,72 +749,72 @@ qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRan
 
 			while (i < NUM_FORCE_POWERS)
 			{
-				final_Powers[i] = 0;
+				final_powers[i] = 0;
 				if (i == FP_LEVITATION ||
-					i == FP_SABER_OFFENSE && freeSaber ||
-					i == FP_SABER_DEFENSE && freeSaber)
+					i == FP_SABER_OFFENSE && free_saber ||
+					i == FP_SABER_DEFENSE && free_saber)
 				{
-					final_Powers[i] = 1;
+					final_powers[i] = 1;
 				}
 				i++;
 			}
 		}
 	}
 
-	if (freeSaber)
+	if (free_saber)
 	{
-		if (final_Powers[FP_SABER_OFFENSE] < 1)
-			final_Powers[FP_SABER_OFFENSE] = 1;
-		if (final_Powers[FP_SABER_DEFENSE] < 1)
-			final_Powers[FP_SABER_DEFENSE] = 1;
+		if (final_powers[FP_SABER_OFFENSE] < 1)
+			final_powers[FP_SABER_OFFENSE] = 1;
+		if (final_powers[FP_SABER_DEFENSE] < 1)
+			final_powers[FP_SABER_DEFENSE] = 1;
 	}
-	if (final_Powers[FP_LEVITATION] < 1)
-		final_Powers[FP_LEVITATION] = 1;
+	if (final_powers[FP_LEVITATION] < 1)
+		final_powers[FP_LEVITATION] = 1;
 
 	i = 0;
 	while (i < NUM_FORCE_POWERS)
 	{
-		if (final_Powers[i] > FORCE_LEVEL_3)
-			final_Powers[i] = FORCE_LEVEL_3;
+		if (final_powers[i] > FORCE_LEVEL_3)
+			final_powers[i] = FORCE_LEVEL_3;
 		i++;
 	}
 
-	if (fpDisabled)
+	if (fp_disabled)
 	{
 		//If we specifically have attack or def disabled, force them up to level 3. It's the way
 		//things work for the case of all powers disabled.
 		//If jump is disabled, down-cap it to level 1. Otherwise don't do a thing.
-		if (fpDisabled & 1 << FP_LEVITATION)
-			final_Powers[FP_LEVITATION] = 1;
-		if (fpDisabled & 1 << FP_SABER_OFFENSE)
-			final_Powers[FP_SABER_OFFENSE] = 3;
-		if (fpDisabled & 1 << FP_SABER_DEFENSE)
-			final_Powers[FP_SABER_DEFENSE] = 3;
+		if (fp_disabled & 1 << FP_LEVITATION)
+			final_powers[FP_LEVITATION] = 1;
+		if (fp_disabled & 1 << FP_SABER_OFFENSE)
+			final_powers[FP_SABER_OFFENSE] = 3;
+		if (fp_disabled & 1 << FP_SABER_DEFENSE)
+			final_powers[FP_SABER_DEFENSE] = 3;
 	}
 
-	if (final_Powers[FP_SABER_OFFENSE] < 1)
+	if (final_powers[FP_SABER_OFFENSE] < 1)
 	{
-		final_Powers[FP_SABER_DEFENSE] = 0;
-		final_Powers[FP_SABERTHROW] = 0;
+		final_powers[FP_SABER_DEFENSE] = 0;
+		final_powers[FP_SABERTHROW] = 0;
 	}
 
 	//We finally have all the force powers legalized and stored locally.
 	//Put them all into the string and return the result. We already have
 	//the rank there, so print the side and the powers now.
-	Q_strcat(powerOut, powerOutSize, va("%i-", final_Side));
+	Q_strcat(power_out, power_out_size, va("%i-", final_side));
 
-	i = strlen(powerOut);
+	i = strlen(power_out);
 	c = 0;
 	while (c < NUM_FORCE_POWERS)
 	{
-		Q_strncpyz(readBuf, va("%i", final_Powers[c]), sizeof readBuf);
-		powerOut[i] = readBuf[0];
+		Q_strncpyz(read_buf, va("%i", final_powers[c]), sizeof read_buf);
+		power_out[i] = read_buf[0];
 		c++;
 		i++;
 	}
-	powerOut[i] = 0;
+	power_out[i] = 0;
 
-	return maintainsValidity;
+	return maintains_validity;
 }
 
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
@@ -2015,7 +2015,7 @@ float vectoyaw(const vec3_t vec)
 	return yaw;
 }
 
-qboolean BG_HasYsalamiri(int gametype, const playerState_t* ps)
+qboolean BG_HasYsalamiri(const int gametype, const playerState_t* ps)
 {
 	if (gametype == GT_CTY &&
 		(ps->powerups[PW_REDFLAG] || ps->powerups[PW_BLUEFLAG]))
@@ -2031,7 +2031,7 @@ qboolean BG_HasYsalamiri(int gametype, const playerState_t* ps)
 	return qfalse;
 }
 
-qboolean BG_CanUseFPNow(int gametype, const playerState_t* ps, int time, forcePowers_t power)
+qboolean BG_CanUseFPNow(const int gametype, const playerState_t* ps, const int time, const forcePowers_t power)
 {
 	if (BG_HasYsalamiri(gametype, ps))
 	{
@@ -2111,7 +2111,7 @@ qboolean BG_CanUseFPNow(int gametype, const playerState_t* ps, int time, forcePo
 BG_FindItemForPowerup
 ==============
 */
-gitem_t* BG_FindItemForPowerup(powerup_t pw)
+gitem_t* BG_FindItemForPowerup(const powerup_t pw)
 {
 	for (int i = 0; i < bg_numItems; i++)
 	{
@@ -2131,7 +2131,7 @@ gitem_t* BG_FindItemForPowerup(powerup_t pw)
 BG_FindItemForHoldable
 ==============
 */
-gitem_t* BG_FindItemForHoldable(holdable_t pw)
+gitem_t* BG_FindItemForHoldable(const holdable_t pw)
 {
 	for (int i = 0; i < bg_numItems; i++)
 	{
@@ -2152,7 +2152,7 @@ BG_FindItemForWeapon
 
 ===============
 */
-gitem_t* BG_FindItemForWeapon(weapon_t weapon)
+gitem_t* BG_FindItemForWeapon(const weapon_t weapon)
 {
 	for (gitem_t* it = bg_itemlist + 1; it->classname; it++)
 	{
@@ -2172,7 +2172,7 @@ BG_FindItemForAmmo
 
 ===============
 */
-gitem_t* BG_FindItemForAmmo(ammo_t ammo)
+gitem_t* BG_FindItemForAmmo(const ammo_t ammo)
 {
 	for (gitem_t* it = bg_itemlist + 1; it->classname; it++)
 	{
@@ -2211,11 +2211,11 @@ Items can be picked up without actually touching their physical bounds to make
 grabbing them easier
 ============
 */
-qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int atTime)
+qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, const int at_time)
 {
 	vec3_t origin;
 
-	BG_EvaluateTrajectory(&item->pos, atTime, origin);
+	BG_EvaluateTrajectory(&item->pos, at_time, origin);
 
 	// we are ignoring ducked differences here
 	if (ps->origin[0] - origin[0] > 44
@@ -2231,7 +2231,7 @@ qboolean BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item
 	return qtrue;
 }
 
-int BG_ProperForceIndex(int power)
+int BG_ProperForceIndex(const int power)
 {
 	for (int i = 0; i < NUM_FORCE_POWERS; i++)
 	{
@@ -2311,7 +2311,7 @@ int BG_GetItemIndexByTag(const int tag, const int type)
 }
 
 //yeah..
-qboolean BG_IsItemSelectable(playerState_t* ps, int item)
+qboolean BG_IsItemSelectable(const int item)
 {
 	if (item == HI_HEALTHDISP || item == HI_AMMODISP ||
 		item == HI_JETPACK)
@@ -2321,9 +2321,9 @@ qboolean BG_IsItemSelectable(playerState_t* ps, int item)
 	return qtrue;
 }
 
-void BG_CycleInven(playerState_t* ps, int direction)
+void BG_CycleInven(playerState_t* ps, const int direction)
 {
-	int dontFreeze = 0;
+	int dont_freeze = 0;
 
 	int i = bg_itemlist[ps->stats[STAT_HOLDABLE_ITEM]].giTag;
 	const int original = i;
@@ -2353,7 +2353,7 @@ void BG_CycleInven(playerState_t* ps, int direction)
 		if (ps->stats[STAT_HOLDABLE_ITEMS] & 1 << i)
 		{
 			//we have it, select it.
-			if (BG_IsItemSelectable(ps, i))
+			if (BG_IsItemSelectable(i))
 			{
 				ps->stats[STAT_HOLDABLE_ITEM] = BG_GetItemIndexByTag(i, IT_HOLDABLE);
 				break;
@@ -2382,8 +2382,8 @@ void BG_CycleInven(playerState_t* ps, int direction)
 			i = 1;
 		}
 
-		dontFreeze++;
-		if (dontFreeze >= 32)
+		dont_freeze++;
+		if (dont_freeze >= 32)
 		{
 			//yeah, sure, whatever (it's 2 am and I'm paranoid and can't frickin think)
 			break;
@@ -2398,16 +2398,16 @@ COM_BitCheck
   Allows bit-wise checks on arrays with more than one item (> 32 bits)
 ==================
 */
-qboolean COM_BitCheck(const int array[], int bitNum)
+qboolean COM_BitCheck(const int array[], int bit_num)
 {
 	int i = 0;
-	while (bitNum > 31)
+	while (bit_num > 31)
 	{
 		i++;
-		bitNum -= 32;
+		bit_num -= 32;
 	}
 	if (i >= sizeof array) return qfalse;
-	return (array[i] & 1 << bitNum) != 0; // (SA) heh, whoops. :)
+	return (array[i] & 1 << bit_num) != 0; // (SA) heh, whoops. :)
 }
 
 /*
@@ -2422,7 +2422,7 @@ pmove_t* pm;
 
 bgEntity_t* pm_entBot = NULL;
 
-qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t* ent, const playerState_t* ps)
+qboolean BG_CanItemBeGrabbed(const int gametype, const entityState_t* ent, const playerState_t* ps)
 {
 	if (ent->modelindex < 1 || ent->modelindex >= bg_numItems)
 	{
@@ -2548,9 +2548,9 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t* ent, const playe
 		}
 		if (gametype == GT_SINGLE_PLAYER)
 		{
-			const int ammoIndex = weaponData[item->giTag].ammoIndex;
+			const int ammo_index = weaponData[item->giTag].ammoIndex;
 
-			if (COM_BitCheck(&ps->stats[STAT_WEAPONS], item->giTag) && ps->ammo[ammoIndex] >= ammoData[ammoIndex].max &&
+			if (COM_BitCheck(&ps->stats[STAT_WEAPONS], item->giTag) && ps->ammo[ammo_index] >= ammoData[ammo_index].max &&
 				item->giTag != WP_THERMAL && item->giTag != WP_TRIP_MINE && item->giTag != WP_DET_PACK)
 			{
 				//weaponstay stuff.. in CoOp all weapons (not just dropped ones) are restricted to already have checks
@@ -2569,9 +2569,9 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t* ent, const playe
 		if (item->giTag == WP_THERMAL || item->giTag == WP_TRIP_MINE || item->giTag == WP_DET_PACK)
 		{
 			//check to see if full on ammo for this, if so, then..
-			const int ammoIndex = weaponData[item->giTag].ammoIndex;
+			const int ammo_index = weaponData[item->giTag].ammoIndex;
 			//JAC: Only restrict pickups on full ammo if the player already has this weapon.
-			if (ps->ammo[ammoIndex] >= ammoData[ammoIndex].max && ps->stats[STAT_WEAPONS] & 1 << item->giTag)
+			if (ps->ammo[ammo_index] >= ammoData[ammo_index].max && ps->stats[STAT_WEAPONS] & 1 << item->giTag)
 			{
 				//don't need it
 				return qfalse;
@@ -2682,9 +2682,9 @@ BG_EvaluateTrajectory
 
 ================
 */
-void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
+void BG_EvaluateTrajectory(const trajectory_t* tr, int at_time, vec3_t result)
 {
-	float deltaTime;
+	float delta_time;
 	float phase;
 
 	switch (tr->trType)
@@ -2694,48 +2694,48 @@ void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result)
 		VectorCopy(tr->trBase, result);
 		break;
 	case TR_LINEAR:
-		deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+		delta_time = (at_time - tr->trTime) * 0.001; // milliseconds to seconds
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
 		break;
 	case TR_SINE:
-		deltaTime = (atTime - tr->trTime) / (float)tr->trDuration;
-		phase = sin(deltaTime * M_PI * 2);
+		delta_time = (at_time - tr->trTime) / (float)tr->trDuration;
+		phase = sin(delta_time * M_PI * 2);
 		VectorMA(tr->trBase, phase, tr->trDelta, result);
 		break;
 	case TR_LINEAR_STOP:
-		if (atTime > tr->trTime + tr->trDuration)
+		if (at_time > tr->trTime + tr->trDuration)
 		{
-			atTime = tr->trTime + tr->trDuration;
+			at_time = tr->trTime + tr->trDuration;
 		}
-		deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
-		if (deltaTime < 0)
+		delta_time = (at_time - tr->trTime) * 0.001; // milliseconds to seconds
+		if (delta_time < 0)
 		{
-			deltaTime = 0;
+			delta_time = 0;
 		}
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
 		break;
 	case TR_NONLINEAR_STOP:
-		if (atTime > tr->trTime + tr->trDuration)
+		if (at_time > tr->trTime + tr->trDuration)
 		{
-			atTime = tr->trTime + tr->trDuration;
+			at_time = tr->trTime + tr->trDuration;
 		}
 		//new slow-down at end
-		if (atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0)
+		if (at_time - tr->trTime > tr->trDuration || at_time - tr->trTime <= 0)
 		{
-			deltaTime = 0;
+			delta_time = 0;
 		}
 		else
 		{
 			//FIXME: maybe scale this somehow?  So that it starts out faster and stops faster?
-			deltaTime = tr->trDuration * 0.001f * (float)cos(
-				DEG2RAD(90.0f - 90.0f * (float)(atTime - tr->trTime) / (float)tr->trDuration));
+			delta_time = tr->trDuration * 0.001f * (float)cos(
+				DEG2RAD(90.0f - 90.0f * (float)(at_time - tr->trTime) / (float)tr->trDuration));
 		}
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
 		break;
 	case TR_GRAVITY:
-		deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
-		VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
-		result[2] -= 0.5 * DEFAULT_GRAVITY * deltaTime * deltaTime; // FIXME: local gravity...
+		delta_time = (at_time - tr->trTime) * 0.001; // milliseconds to seconds
+		VectorMA(tr->trBase, delta_time, tr->trDelta, result);
+		result[2] -= 0.5 * DEFAULT_GRAVITY * delta_time * delta_time; // FIXME: local gravity...
 		break;
 	default:
 #ifdef _GAME
@@ -2754,9 +2754,9 @@ BG_EvaluateTrajectoryDelta
 For determining velocity at a given time
 ================
 */
-void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result)
+void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, const int at_time, vec3_t result)
 {
-	float deltaTime;
+	float delta_time;
 	float phase;
 
 	switch (tr->trType)
@@ -2769,13 +2769,13 @@ void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t resul
 		VectorCopy(tr->trDelta, result);
 		break;
 	case TR_SINE:
-		deltaTime = (atTime - tr->trTime) / (float)tr->trDuration;
-		phase = cos(deltaTime * M_PI * 2); // derivative of sin = cos
+		delta_time = (at_time - tr->trTime) / (float)tr->trDuration;
+		phase = cos(delta_time * M_PI * 2); // derivative of sin = cos
 		phase *= 0.5;
 		VectorScale(tr->trDelta, phase, result);
 		break;
 	case TR_LINEAR_STOP:
-		if (atTime > tr->trTime + tr->trDuration)
+		if (at_time > tr->trTime + tr->trDuration)
 		{
 			VectorClear(result);
 			return;
@@ -2783,19 +2783,19 @@ void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t resul
 		VectorCopy(tr->trDelta, result);
 		break;
 	case TR_NONLINEAR_STOP:
-		if (atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0)
+		if (at_time - tr->trTime > tr->trDuration || at_time - tr->trTime <= 0)
 		{
 			VectorClear(result);
 			return;
 		}
-		deltaTime = tr->trDuration * 0.001f * (float)cos(
-			DEG2RAD(90.0f - 90.0f * (float)(atTime - tr->trTime) / (float)tr->trDuration));
-		VectorScale(tr->trDelta, deltaTime, result);
+		delta_time = tr->trDuration * 0.001f * (float)cos(
+			DEG2RAD(90.0f - 90.0f * (float)(at_time - tr->trTime) / (float)tr->trDuration));
+		VectorScale(tr->trDelta, delta_time, result);
 		break;
 	case TR_GRAVITY:
-		deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
+		delta_time = (at_time - tr->trTime) * 0.001; // milliseconds to seconds
 		VectorCopy(tr->trDelta, result);
-		result[2] -= DEFAULT_GRAVITY * deltaTime; // FIXME: local gravity...
+		result[2] -= DEFAULT_GRAVITY * delta_time; // FIXME: local gravity...
 		break;
 	default:
 #ifdef _GAME
@@ -2995,33 +2995,33 @@ Handles the sequence numbers
 ===============
 */
 
-void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm, playerState_t* ps)
+void BG_AddPredictableEventToPlayerstate(const int new_event, const int event_parm, playerState_t* ps)
 {
 #ifdef _DEBUG
 	{
-		static vmCvar_t showEvents;
-		static qboolean isRegistered = qfalse;
+		static vmCvar_t show_events;
+		static qboolean is_registered = qfalse;
 
-		if (!isRegistered)
+		if (!is_registered)
 		{
-			trap->Cvar_Register(&showEvents, "showevents", "0", 0);
-			isRegistered = qtrue;
+			trap->Cvar_Register(&show_events, "showevents", "0", 0);
+			is_registered = qtrue;
 		}
 
-		if (showEvents.integer != 0)
+		if (show_events.integer != 0)
 		{
 #ifdef _GAME
 			Com_Printf(" game event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount, ps->eventSequence,
-				eventnames[newEvent], eventParm);
+				eventnames[new_event], event_parm);
 #else
 			Com_Printf("Cgame event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount, ps->eventSequence,
-				eventnames[newEvent], eventParm);
+				eventnames[new_event], event_parm);
 #endif
 		}
 	}
 #endif
-	ps->events[ps->eventSequence & MAX_PS_EVENTS - 1] = newEvent;
-	ps->eventParms[ps->eventSequence & MAX_PS_EVENTS - 1] = eventParm;
+	ps->events[ps->eventSequence & MAX_PS_EVENTS - 1] = new_event;
+	ps->eventParms[ps->eventSequence & MAX_PS_EVENTS - 1] = event_parm;
 	ps->eventSequence++;
 }
 
@@ -3067,9 +3067,9 @@ BG_EmplacedView
 Shared code for emplaced angle gun constriction
 =================
 */
-int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint)
+int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, const float constraint)
 {
-	float dif = AngleSubtract(baseAngles[YAW], angles[YAW]);
+	float dif = AngleSubtract(base_angles[YAW], angles[YAW]);
 
 	if (dif > constraint ||
 		dif < -constraint)
@@ -3091,7 +3091,7 @@ int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float const
 			amt = 0.0f;
 		}
 
-		*newYaw = AngleSubtract(angles[YAW], -dif);
+		*new_yaw = AngleSubtract(angles[YAW], -dif);
 
 		if (amt > 1.0f || amt < -1.0f)
 		{
@@ -3107,23 +3107,23 @@ int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float const
 
 //To see if the client is trying to use one of the included skins not meant for MP.
 //I don't much care for hardcoded strings, but this seems the best way to go.
-qboolean BG_IsValidCharacterModel(const char* modelName, const char* skinName)
+qboolean BG_IsValidCharacterModel(const char* model_name, const char* skin_name)
 {
-	if (!Q_stricmp(skinName, "menu"))
+	if (!Q_stricmp(skin_name, "menu"))
 	{
 		return qfalse;
 	}
-	if (!Q_stricmp(modelName, "kyle"))
+	if (!Q_stricmp(model_name, "kyle"))
 	{
-		if (!Q_stricmp(skinName, "fpls"))
+		if (!Q_stricmp(skin_name, "fpls"))
 		{
 			return qfalse;
 		}
-		if (!Q_stricmp(skinName, "fpls2"))
+		if (!Q_stricmp(skin_name, "fpls2"))
 		{
 			return qfalse;
 		}
-		if (!Q_stricmp(skinName, "fpls3"))
+		if (!Q_stricmp(skin_name, "fpls3"))
 		{
 			return qfalse;
 		}
@@ -3131,9 +3131,9 @@ qboolean BG_IsValidCharacterModel(const char* modelName, const char* skinName)
 	return qtrue;
 }
 
-qboolean BG_ValidateSkinForTeam(const char* modelName, char* skinName, int team, float* colors)
+qboolean BG_ValidateSkinForTeam(const char* model_name, char* skin_name, const int team, float* colors)
 {
-	if (strlen(modelName) > 5 && Q_stricmpn(modelName, "jedi_", 5) == 0)
+	if (strlen(model_name) > 5 && Q_stricmpn(model_name, "jedi_", 5) == 0)
 	{
 		//argh, it's a custom player skin!
 		if (team == TEAM_RED && colors)
@@ -3153,85 +3153,85 @@ qboolean BG_ValidateSkinForTeam(const char* modelName, char* skinName, int team,
 
 	if (team == TEAM_RED)
 	{
-		if (Q_stricmp("red", skinName) != 0)
+		if (Q_stricmp("red", skin_name) != 0)
 		{
 			//not "red"
-			if (Q_stricmp("blue", skinName) == 0
-				|| Q_stricmp("default", skinName) == 0
-				|| strchr(skinName, '|') //a multi-skin playerModel
-				|| !BG_IsValidCharacterModel(modelName, skinName))
+			if (Q_stricmp("blue", skin_name) == 0
+				|| Q_stricmp("default", skin_name) == 0
+				|| strchr(skin_name, '|') //a multi-skin playerModel
+				|| !BG_IsValidCharacterModel(model_name, skin_name))
 			{
-				Q_strncpyz(skinName, "red", MAX_QPATH);
+				Q_strncpyz(skin_name, "red", MAX_QPATH);
 				return qfalse;
 			}
 			//need to set it to red
-			const int len = strlen(skinName);
+			const int len = strlen(skin_name);
 			if (len < 3)
 			{
 				//too short to be "red"
-				Q_strcat(skinName, MAX_QPATH, "_red");
+				Q_strcat(skin_name, MAX_QPATH, "_red");
 			}
 			else
 			{
-				const char* start = &skinName[len - 3];
+				const char* start = &skin_name[len - 3];
 				if (Q_strncmp("red", start, 3) != 0)
 				{
 					//doesn't already end in "red"
 					if (len + 4 >= MAX_QPATH)
 					{
 						//too big to append "_red"
-						Q_strncpyz(skinName, "red", MAX_QPATH);
+						Q_strncpyz(skin_name, "red", MAX_QPATH);
 						return qfalse;
 					}
-					Q_strcat(skinName, MAX_QPATH, "_red");
+					Q_strcat(skin_name, MAX_QPATH, "_red");
 				}
 			}
 			//if file does not exist, set to "red"
-			if (!BG_FileExists(va("models/players/%s/model_%s.skin", modelName, skinName)))
+			if (!BG_FileExists(va("models/players/%s/model_%s.skin", model_name, skin_name)))
 			{
-				Q_strncpyz(skinName, "red", MAX_QPATH);
+				Q_strncpyz(skin_name, "red", MAX_QPATH);
 			}
 			return qfalse;
 		}
 	}
 	else if (team == TEAM_BLUE)
 	{
-		if (Q_stricmp("blue", skinName) != 0)
+		if (Q_stricmp("blue", skin_name) != 0)
 		{
-			if (Q_stricmp("red", skinName) == 0
-				|| Q_stricmp("default", skinName) == 0
-				|| strchr(skinName, '|') //a multi-skin playerModel
-				|| !BG_IsValidCharacterModel(modelName, skinName))
+			if (Q_stricmp("red", skin_name) == 0
+				|| Q_stricmp("default", skin_name) == 0
+				|| strchr(skin_name, '|') //a multi-skin playerModel
+				|| !BG_IsValidCharacterModel(model_name, skin_name))
 			{
-				Q_strncpyz(skinName, "blue", MAX_QPATH);
+				Q_strncpyz(skin_name, "blue", MAX_QPATH);
 				return qfalse;
 			}
 			//need to set it to blue
-			const int len = strlen(skinName);
+			const int len = strlen(skin_name);
 			if (len < 4)
 			{
 				//too short to be "blue"
-				Q_strcat(skinName, MAX_QPATH, "_blue");
+				Q_strcat(skin_name, MAX_QPATH, "_blue");
 			}
 			else
 			{
-				const char* start = &skinName[len - 4];
+				const char* start = &skin_name[len - 4];
 				if (Q_strncmp("blue", start, 4) != 0)
 				{
 					//doesn't already end in "blue"
 					if (len + 5 >= MAX_QPATH)
 					{
 						//too big to append "_blue"
-						Q_strncpyz(skinName, "blue", MAX_QPATH);
+						Q_strncpyz(skin_name, "blue", MAX_QPATH);
 						return qfalse;
 					}
-					Q_strcat(skinName, MAX_QPATH, "_blue");
+					Q_strcat(skin_name, MAX_QPATH, "_blue");
 				}
 			}
 			//if file does not exist, set to "blue"
-			if (!BG_FileExists(va("models/players/%s/model_%s.skin", modelName, skinName)))
+			if (!BG_FileExists(va("models/players/%s/model_%s.skin", model_name, skin_name)))
 			{
-				Q_strncpyz(skinName, "blue", MAX_QPATH);
+				Q_strncpyz(skin_name, "blue", MAX_QPATH);
 			}
 			return qfalse;
 		}
@@ -3247,7 +3247,7 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, qboolean snap)
+void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, const qboolean snap)
 {
 	if (ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR)
 	{
@@ -3453,7 +3453,7 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s, int time, qboolean snap)
+void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s, const int time, const qboolean snap)
 {
 	if (ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR)
 	{
@@ -3662,34 +3662,34 @@ PLAYER ANGLES
 =============================================================================
 */
 
-int BG_ModelCache(const char* modelName, const char* skinName)
+int BG_ModelCache(const char* model_name, const char* skin_name)
 {
 #ifdef _GAME
 	void* g2 = NULL;
 
-	if (VALIDSTRING(skinName))
-		trap->R_RegisterSkin(skinName);
+	if (VALIDSTRING(skin_name))
+		trap->R_RegisterSkin(skin_name);
 
 	//I could hook up a precache ghoul2 function, but oh well, this works
-	trap->G2API_InitGhoul2Model(&g2, modelName, 0, 0, 0, 0, 0);
+	trap->G2API_InitGhoul2Model(&g2, model_name, 0, 0, 0, 0, 0);
 	//now get rid of it
 	if (g2)
 		trap->G2API_CleanGhoul2Models(&g2);
 
 	return 0;
 #else // !_GAME
-	if (VALIDSTRING(skinName))
+	if (VALIDSTRING(skin_name))
 	{
 #ifdef _CGAME
-		trap->R_RegisterSkin(skinName);
+		trap->R_RegisterSkin(skin_name);
 #else // !_CGAME
-		trap->R_RegisterSkin(skinName);
+		trap->R_RegisterSkin(skin_name);
 #endif // _CGAME
 	}
 #ifdef _CGAME
-	return trap->R_RegisterModel(modelName);
+	return trap->R_RegisterModel(model_name);
 #else // !_CGAME
-	return trap->R_RegisterModel(modelName);
+	return trap->R_RegisterModel(model_name);
 #endif // _CGAME
 #endif // _GAME
 }
@@ -3711,7 +3711,7 @@ static char bg_pool[MAX_POOL_SIZE];
 static int bg_poolSize = 0;
 static int bg_poolTail = MAX_POOL_SIZE;
 
-void* BG_Alloc(int size)
+void* BG_Alloc(const int size)
 {
 	bg_poolSize = bg_poolSize + 0x00000003 & 0xfffffffc;
 
@@ -3726,7 +3726,7 @@ void* BG_Alloc(int size)
 	return &bg_pool[bg_poolSize - size];
 }
 
-void* BG_AllocUnaligned(int size)
+void* BG_AllocUnaligned(const int size)
 {
 	if (bg_poolSize + size > bg_poolTail)
 	{
@@ -3778,7 +3778,7 @@ qboolean BG_OutOfMemory(void)
 	return bg_poolSize >= MAX_POOL_SIZE;
 }
 
-qboolean BG_IsWhiteSpace(char c)
+qboolean BG_IsWhiteSpace(const char c)
 {
 	//this function simply checks to see if the given character is whitespace.
 	if (c == ' ' || c == '\n' || c == '\0')
@@ -3803,7 +3803,7 @@ const char* gametypeStringShort[GT_MAX_GAME_TYPE] =
 	"CTY"
 };
 
-const char* BG_GetGametypeString(int gametype)
+const char* BG_GetGametypeString(const int gametype)
 {
 	switch (gametype)
 	{
@@ -3893,7 +3893,7 @@ qboolean BG_IsUsingHeavyWeap(const playerState_t* ps)
 	}
 }
 
-qboolean BG_IsLMSGametype(int gametype)
+qboolean BG_IsLMSGametype(const int gametype)
 {
 	//indicates if this is a Last Man Standing compatible gametype or not.
 	if (gametype != GT_DUEL && gametype != GT_POWERDUEL && gametype != GT_SIEGE)

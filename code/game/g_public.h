@@ -225,10 +225,10 @@ using game_import_t = struct
 
 	// collision detection against all linked entities
 	void (*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	              int passEntityNum, int contentmask, EG2_Collision eG2TraceType, int useLod);
+	              int pass_entity_num, int contentmask, EG2_Collision e_g2_trace_type, int use_lod);
 
 	// point contents against all linked entities
-	int (*pointcontents)(const vec3_t point, int passEntityNum);
+	int (*pointcontents)(const vec3_t point, int pass_entity_num);
 	// what contents are on the map?
 	int (*totalMapContents)();
 
@@ -329,8 +329,8 @@ using game_import_t = struct
 	                              const vec3_t position,
 	                              int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale,
 	                              CMiniHeap* G2VertSpace,
-	                              EG2_Collision eG2TraceType, int useLod, float fRadius);
-	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t& boltMatrix, Eorientations flags, vec3_t& vec);
+	                              EG2_Collision e_g2_trace_type, int use_lod, float fRadius);
+	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t& bolt_matrix, Eorientations flags, vec3_t& vec);
 	void (*G2API_CleanGhoul2Models)(CGhoul2Info_v& ghoul2);
 	IGhoul2InfoArray& (*TheGhoul2InfoArray)();
 	int (*G2API_GetParentSurface)(CGhoul2Info* ghlInfo, int index);

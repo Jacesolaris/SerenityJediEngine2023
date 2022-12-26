@@ -59,9 +59,9 @@ qboolean NAV_ClearPathToPoint(gentity_t* self, vec3_t pmins, vec3_t pmaxs, vec3_
 qboolean NPC_ClearLOS2(gentity_t* ent, const vec3_t end);
 int NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, int ignore, int clipmask);
 qboolean NAV_CheckNodeFailedForEnt(const gentity_t* ent, int nodeNum);
-qboolean G_EntIsUnlockedDoor(int entityNum);
-qboolean G_EntIsDoor(int entityNum);
-qboolean G_EntIsBreakable(int entityNum);
+qboolean G_EntIsUnlockedDoor(int entity_num);
+qboolean G_EntIsDoor(int entity_num);
+qboolean G_EntIsBreakable(int entity_num);
 qboolean G_EntIsRemovableUsable(int entNum);
 void CP_FindCombatPointWaypoints(void);
 extern void G_CheckSpecialPersistentEvents(gentity_t* ent);

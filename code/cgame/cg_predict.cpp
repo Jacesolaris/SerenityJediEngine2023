@@ -164,7 +164,7 @@ void CG_ClipMoveToEntities(const vec3_t start, const vec3_t mins, const vec3_t m
 
 		if (trace.allsolid || trace.fraction < tr->fraction)
 		{
-			trace.entityNum = ent->number;
+			trace.entity_num = ent->number;
 			*tr = trace;
 		}
 		else if (trace.startsolid)
@@ -190,7 +190,7 @@ void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3
 	trace_t t;
 
 	cgi_CM_BoxTrace(&t, start, end, mins, maxs, 0, mask);
-	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
+	t.entity_num = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	// check all other solid models
 	CG_ClipMoveToEntities(start, mins, maxs, end, skip_number, mask, &t);
 
@@ -206,12 +206,12 @@ CG_PointContents
 #define USE_SV_PNT_CONTENTS (1)
 
 #if USE_SV_PNT_CONTENTS
-int CG_PointContents(const vec3_t point, const int passEntityNum)
+int CG_PointContents(const vec3_t point, const int pass_entity_num)
 {
-	return gi.pointcontents(point, passEntityNum);
+	return gi.pointcontents(point, pass_entity_num);
 }
 #else
-int		CG_PointContents(const vec3_t point, int passEntityNum) {
+int		CG_PointContents(const vec3_t point, int pass_entity_num) {
 	int			i;
 	entityState_t* ent;
 	centity_t* cent;
@@ -225,7 +225,7 @@ int		CG_PointContents(const vec3_t point, int passEntityNum) {
 
 		ent = &cent->currentState;
 
-		if (ent->number == passEntityNum) {
+		if (ent->number == pass_entity_num) {
 			continue;
 		}
 
@@ -361,7 +361,7 @@ Generates cg.predicted_player_state by interpolating between
 cg.snap->player_state and cg.nextFrame->player_state
 ========================
 */
-void CG_InterpolatePlayerState(const qboolean grabAngles)
+void CG_InterpolatePlayerState(const qboolean grab_angles)
 {
 	int i;
 	vec3_t old_org;
@@ -374,7 +374,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 	*out = cg.snap->ps;
 
 	// if we are still allowing local input, short circuit the view angles
-	if (grabAngles)
+	if (grab_angles)
 	{
 		usercmd_t cmd;
 
@@ -410,7 +410,7 @@ void CG_InterpolatePlayerState(const qboolean grabAngles)
 		for (i = 0; i < 3; i++)
 		{
 			out->origin[i] = prev->ps.origin[i] + f * (next->ps.origin[i] - prev->ps.origin[i]);
-			if (!grabAngles)
+			if (!grab_angles)
 			{
 				out->viewangles[i] = LerpAngle(
 					prev->ps.viewangles[i], next->ps.viewangles[i], f);

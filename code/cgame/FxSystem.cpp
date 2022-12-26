@@ -102,9 +102,9 @@ void SFxHelper::CloseFile(const fileHandle_t fh)
 }
 
 //------------------------------------------------------
-void SFxHelper::PlaySound(const vec3_t org, const int entityNum, const int entchannel, const int sfxHandle)
+void SFxHelper::PlaySound(const vec3_t org, const int entity_num, const int entchannel, const int sfxHandle)
 {
-	cgi_S_StartSound(org, entityNum, entchannel, sfxHandle);
+	cgi_S_StartSound(org, entity_num, entchannel, sfxHandle);
 }
 
 //------------------------------------------------------
@@ -181,7 +181,7 @@ int SFxHelper::GetOriginAxisFromBolt(const centity_t& cent, const int modelNum, 
 		return 0;
 	}
 
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t G2Angles = {cent.lerpAngles[0], cent.lerpAngles[1], cent.lerpAngles[2]};
 	if (cent.currentState.eType == ET_PLAYER)
 	{
@@ -202,24 +202,24 @@ int SFxHelper::GetOriginAxisFromBolt(const centity_t& cent, const int modelNum, 
 
 	// go away and get me the bolt position for this frame please
 	const int doesBoltExist = gi.G2API_GetBoltMatrix(cent.gent->ghoul2, modelNum,
-	                                                 boltNum, &boltMatrix, G2Angles,
+	                                                 boltNum, &bolt_matrix, G2Angles,
 	                                                 cent.lerpOrigin, cg.time, cgs.model_draw,
 	                                                 cent.currentState.modelScale);
 	// set up the axis and origin we need for the actual effect spawning
-	origin[0] = boltMatrix.matrix[0][3];
-	origin[1] = boltMatrix.matrix[1][3];
-	origin[2] = boltMatrix.matrix[2][3];
+	origin[0] = bolt_matrix.matrix[0][3];
+	origin[1] = bolt_matrix.matrix[1][3];
+	origin[2] = bolt_matrix.matrix[2][3];
 
-	axis[1][0] = boltMatrix.matrix[0][0];
-	axis[1][1] = boltMatrix.matrix[1][0];
-	axis[1][2] = boltMatrix.matrix[2][0];
+	axis[1][0] = bolt_matrix.matrix[0][0];
+	axis[1][1] = bolt_matrix.matrix[1][0];
+	axis[1][2] = bolt_matrix.matrix[2][0];
 
-	axis[0][0] = boltMatrix.matrix[0][1];
-	axis[0][1] = boltMatrix.matrix[1][1];
-	axis[0][2] = boltMatrix.matrix[2][1];
+	axis[0][0] = bolt_matrix.matrix[0][1];
+	axis[0][1] = bolt_matrix.matrix[1][1];
+	axis[0][2] = bolt_matrix.matrix[2][1];
 
-	axis[2][0] = boltMatrix.matrix[0][2];
-	axis[2][1] = boltMatrix.matrix[1][2];
-	axis[2][2] = boltMatrix.matrix[2][2];
+	axis[2][0] = bolt_matrix.matrix[0][2];
+	axis[2][1] = bolt_matrix.matrix[1][2];
+	axis[2][2] = bolt_matrix.matrix[2][2];
 	return doesBoltExist;
 }

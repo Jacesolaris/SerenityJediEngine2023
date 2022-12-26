@@ -93,7 +93,7 @@ extern float NPC_EnemyRangeFromBolt(int bolt_index);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
 	qboolean break_saber_lock);
-extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask);
 void NPC_CheckEvasion();
@@ -600,13 +600,13 @@ void Tavion_ScepterDamage()
 			if (trace.fraction < 1.0f)
 			{
 				//hit something
-				gentity_t* trace_ent = &g_entities[trace.entityNum];
+				gentity_t* trace_ent = &g_entities[trace.entity_num];
 
 				//UGH
 				G_PlayEffect(G_EffectIndex("scepter/impact.efx"), trace.endpos, trace.plane.normal);
 
 				if (trace_ent->takedamage
-					&& trace.entityNum != last_hit
+					&& trace.entity_num != last_hit
 					&& (!trace_ent->client || trace_ent == NPC->enemy || trace_ent->client->NPC_class != NPC->client->
 						NPC_class))
 				{
@@ -631,7 +631,7 @@ void Tavion_ScepterDamage()
 						}
 					}
 					hit = qtrue;
-					last_hit = trace.entityNum;
+					last_hit = trace.entity_num;
 				}
 			}
 		}
@@ -1236,7 +1236,7 @@ static qboolean Jedi_ClearPathToSpot(vec3_t dest, const int impactEntNum)
 	if (trace.fraction < 1.0f)
 	{
 		//hit something
-		if (impactEntNum != ENTITYNUM_NONE && trace.entityNum == impactEntNum)
+		if (impactEntNum != ENTITYNUM_NONE && trace.entity_num == impactEntNum)
 		{
 			//hit what we're going after
 			return qtrue;
@@ -1328,7 +1328,7 @@ qboolean NPC_MoveDirClear(const int forwardmove, const int rightmove, const qboo
 	if (trace.fraction < 0.6)
 	{
 		//Going to bump into something very close, don't move, just turn
-		if (NPC->enemy && trace.entityNum == NPC->enemy->s.number || NPCInfo->goalEntity && trace.entityNum ==
+		if (NPC->enemy && trace.entity_num == NPC->enemy->s.number || NPCInfo->goalEntity && trace.entity_num ==
 			NPCInfo->goalEntity->s.number)
 		{
 			//okay to bump into enemy or goal
@@ -4201,9 +4201,9 @@ evasionType_t jedi_check_flip_evasions(gentity_t* self, const float rightdot)
 			VectorSubtract(self->currentOrigin, traceto, ideal_normal);
 			VectorNormalize(ideal_normal);
 
-			const gentity_t* trace_ent = &g_entities[trace.entityNum];
+			const gentity_t* trace_ent = &g_entities[trace.entity_num];
 
-			if (trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL
+			if (trace.entity_num < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL
 				|| DotProduct(trace.plane.normal, ideal_normal) > 0.7f)
 			{
 				//it's a ent of some sort or it's a wall roughly facing us
@@ -6444,7 +6444,7 @@ gentity_t* Jedi_FindEnemyInCone(const gentity_t* self, gentity_t* fallback, cons
 		//really should have a clear LOS to this thing...
 		gi.trace(&tr, self->currentOrigin, vec3_origin, vec3_origin, check->currentOrigin, self->s.number, MASK_SHOT,
 			static_cast<EG2_Collision>(0), 0);
-		if (tr.fraction < 1.0f && tr.entityNum != check->s.number)
+		if (tr.fraction < 1.0f && tr.entity_num != check->s.number)
 		{
 			//must have clear shot
 			continue;
@@ -7579,7 +7579,7 @@ static qboolean Jedi_Jump(vec3_t dest, const int goalEntNum)
 					if (trace.fraction < 1.0f)
 					{
 						//hit something
-						if (trace.entityNum == goalEntNum)
+						if (trace.entity_num == goalEntNum)
 						{
 							//hit the enemy, that's perfect!
 							//Hmm, don't want to land on him, though...
@@ -8086,10 +8086,10 @@ static void Jedi_CheckJumps()
 	if (trace.allsolid || trace.startsolid || trace.fraction < 1.0f)
 	{
 		//hit ground!
-		if (trace.entityNum < ENTITYNUM_WORLD)
+		if (trace.entity_num < ENTITYNUM_WORLD)
 		{
 			//landed on an ent
-			const gentity_t* groundEnt = &g_entities[trace.entityNum];
+			const gentity_t* groundEnt = &g_entities[trace.entity_num];
 			if (groundEnt->svFlags & SVF_GLASS_BRUSH)
 			{
 				//don't land on breakable glass!

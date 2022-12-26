@@ -132,7 +132,7 @@ void Sentry_Fire(void)
 {
 	vec3_t muzzle;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	int bolt;
 
 	NPCS.NPC->flags &= ~FL_SHIELDED;
@@ -183,10 +183,10 @@ void Sentry_Fire(void)
 
 	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0,
 	                          bolt,
-	                          &boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
+	                          &bolt_matrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
 	                          NULL, NPCS.NPC->modelScale);
 
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzle);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, muzzle);
 
 	AngleVectors(NPCS.NPC->r.currentAngles, forward, vright, up);
 

@@ -83,11 +83,11 @@ char* CG_NewString(const char* string) {
 }
 #endif
 
-qboolean CG_SpawnString(const char* key, const char* defaultString, char** out)
+qboolean CG_SpawnString(const char* key, const char* default_string, char** out)
 {
 	if (!cg.spawning)
 	{
-		*out = (char*)defaultString;
+		*out = (char*)default_string;
 		// trap->Error( ERR_DROP, "CG_SpawnString() called while not spawning" );
 	}
 
@@ -100,33 +100,33 @@ qboolean CG_SpawnString(const char* key, const char* defaultString, char** out)
 		}
 	}
 
-	*out = (char*)defaultString;
+	*out = (char*)default_string;
 	return qfalse;
 }
 
-qboolean CG_SpawnFloat(const char* key, const char* defaultString, float* out)
+qboolean CG_SpawnFloat(const char* key, const char* default_string, float* out)
 {
 	char* s;
 
-	const qboolean present = CG_SpawnString(key, defaultString, &s);
+	const qboolean present = CG_SpawnString(key, default_string, &s);
 	*out = atof(s);
 	return present;
 }
 
-qboolean CG_SpawnInt(const char* key, const char* defaultString, int* out)
+qboolean CG_SpawnInt(const char* key, const char* default_string, int* out)
 {
 	char* s;
 
-	const qboolean present = CG_SpawnString(key, defaultString, &s);
+	const qboolean present = CG_SpawnString(key, default_string, &s);
 	*out = atoi(s);
 	return present;
 }
 
-qboolean CG_SpawnBoolean(const char* key, const char* defaultString, qboolean* out)
+qboolean CG_SpawnBoolean(const char* key, const char* default_string, qboolean* out)
 {
 	char* s;
 
-	const qboolean present = CG_SpawnString(key, defaultString, &s);
+	const qboolean present = CG_SpawnString(key, default_string, &s);
 	if (!Q_stricmp(s, "qfalse") || !Q_stricmp(s, "false") || !Q_stricmp(s, "no") || !Q_stricmp(s, "0"))
 	{
 		*out = qfalse;
@@ -143,14 +143,14 @@ qboolean CG_SpawnBoolean(const char* key, const char* defaultString, qboolean* o
 	return present;
 }
 
-qboolean CG_SpawnVector(const char* key, const char* defaultString, float* out)
+qboolean CG_SpawnVector(const char* key, const char* default_string, float* out)
 {
 	char* s;
 
-	const qboolean present = CG_SpawnString(key, defaultString, &s);
+	const qboolean present = CG_SpawnString(key, default_string, &s);
 	if (sscanf(s, "%f %f %f", &out[0], &out[1], &out[2]) != 3)
 	{
-		trap->Print("CG_SpawnVector: Failed sscanf on %s (default: %s)\n", key, defaultString);
+		trap->Print("CG_SpawnVector: Failed sscanf on %s (default: %s)\n", key, default_string);
 		VectorClear(out);
 		return qfalse;
 	}
@@ -185,7 +185,7 @@ void SP_misc_model_static(void)
 	float angle;
 	vec3_t angles;
 	float scale;
-	vec3_t vScale;
+	vec3_t v_scale;
 	vec3_t org;
 	float zoffset;
 
@@ -212,11 +212,11 @@ void SP_misc_model_static(void)
 		}
 	}
 
-	if (!CG_SpawnVector("modelscale_vec", "1 1 1", vScale))
+	if (!CG_SpawnVector("modelscale_vec", "1 1 1", v_scale))
 	{
 		if (CG_SpawnFloat("modelscale", "1", &scale))
 		{
-			VectorSet(vScale, scale, scale, scale);
+			VectorSet(v_scale, scale, scale, scale);
 		}
 	}
 
@@ -232,7 +232,7 @@ void SP_misc_model_static(void)
 	AnglesToAxis(angles, staticmodel->axes);
 	for (int i = 0; i < 3; i++)
 	{
-		VectorScale(staticmodel->axes[i], vScale[i], staticmodel->axes[i]);
+		VectorScale(staticmodel->axes[i], v_scale[i], staticmodel->axes[i]);
 	}
 
 	VectorCopy(org, staticmodel->org);
@@ -244,8 +244,8 @@ void SP_misc_model_static(void)
 
 		trap->R_ModelBounds(staticmodel->model, mins, maxs);
 
-		VectorScaleVector(mins, vScale, mins);
-		VectorScaleVector(maxs, vScale, maxs);
+		VectorScaleVector(mins, v_scale, mins);
+		VectorScaleVector(maxs, v_scale, maxs);
 
 		staticmodel->radius = RadiusFromBounds(mins, maxs);
 	}

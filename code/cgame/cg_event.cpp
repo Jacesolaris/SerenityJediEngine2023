@@ -877,7 +877,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	// This does not necessarily have to be from a grenade...
 	case EV_GRENADE_BOUNCE:
 		DEBUGNAME("EV_GRENADE_BOUNCE");
-		CG_BounceEffect(cent, es->weapon, position, cent->gent->pos1);
+		CG_BounceEffect(es->weapon, position, cent->gent->pos1);
 		break;
 
 	//

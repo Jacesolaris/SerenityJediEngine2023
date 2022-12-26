@@ -93,7 +93,7 @@ int NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t 
 	//if( ( ( trace.startsolid == false ) && ( trace.allsolid == false ) ) && ( trace.fraction < 1.0f ) )
 	//{//FIXME: check for drops?
 	//FIXME: if startsolid or allsolid, then the path isn't clear... but returning ENTITYNUM_NONE indicates to CheckFailedEdge that is is clear...?
-	return trace.entityNum;
+	return trace.entity_num;
 	//}
 
 	//return ENTITYNUM_NONE;
@@ -510,7 +510,7 @@ qboolean NAVNEW_AvoidCollision(gentity_t* self, gentity_t* goal, navInfo_t* info
 	if (NAV_CheckAhead(self, movepos, &info->trace, CONTENTS_BODY) == qfalse)
 	{
 		//Get the blocker
-		info->blocker = &g_entities[info->trace.entityNum];
+		info->blocker = &g_entities[info->trace.entity_num];
 		info->flags |= NIF_COLLISION;
 
 		//Ok to hit our goal entity
@@ -576,15 +576,15 @@ qboolean NAVNEW_TestNodeConnectionBlocked(const int wp1, const int wp2, const ge
 	trace_t trace;
 	int clipmask = MASK_NPCSOLID | CONTENTS_BOTCLIP;
 	int ignoreEntNum;
-	vec3_t playerMins, playerMaxs;
+	vec3_t player_mins, player_maxs;
 
 	if (!checkWorld && !checkEnts)
 	{
 		//duh, nothing to trace against
 		return qfalse;
 	}
-	VectorSet(playerMins, -15, -15, DEFAULT_MINS_2);
-	VectorSet(playerMaxs, 15, 15, DEFAULT_MAXS_2);
+	VectorSet(player_mins, -15, -15, DEFAULT_MINS_2);
+	VectorSet(player_maxs, 15, 15, DEFAULT_MAXS_2);
 
 	trap->Nav_GetNodePosition(wp1, pos1);
 	trap->Nav_GetNodePosition(wp2, pos2);
@@ -605,8 +605,8 @@ qboolean NAVNEW_TestNodeConnectionBlocked(const int wp1, const int wp2, const ge
 	}
 	else
 	{
-		VectorCopy(playerMins, mins);
-		VectorCopy(playerMaxs, maxs);
+		VectorCopy(player_mins, mins);
+		VectorCopy(player_maxs, maxs);
 		ignoreEntNum = ENTITYNUM_NONE;
 	}
 	mins[2] += STEPSIZE;
@@ -617,7 +617,7 @@ qboolean NAVNEW_TestNodeConnectionBlocked(const int wp1, const int wp2, const ge
 	}
 
 	trap->Trace(&trace, pos1, mins, maxs, pos2, ignoreEntNum, clipmask, qfalse, 0, 0);
-	if (trace.fraction >= 1.0f || trace.entityNum == goalEntNum)
+	if (trace.fraction >= 1.0f || trace.entity_num == goalEntNum)
 	{
 		//clear or hit goal
 		return qfalse;

@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../cgame/cg_local.h"
 #include "b_local.h"
 
-extern qboolean G_EntIsUnlockedDoor(int entityNum);
+extern qboolean G_EntIsUnlockedDoor(int entity_num);
 extern qboolean FlyingCreature(const gentity_t* ent);
 
 constexpr auto MIN_DOOR_BLOCK_DIST = 16;
@@ -119,9 +119,9 @@ qboolean NAV_CheckAhead(const gentity_t* self, vec3_t end, trace_t& trace, int c
 		return qtrue;
 
 	//Do a special check for doors
-	if (trace.entityNum < ENTITYNUM_WORLD)
+	if (trace.entity_num < ENTITYNUM_WORLD)
 	{
-		const gentity_t* blocker = &g_entities[trace.entityNum];
+		const gentity_t* blocker = &g_entities[trace.entity_num];
 
 		if VALIDSTRING(blocker->classname)
 		{

@@ -1085,9 +1085,9 @@ void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
 }
 
 static void SV_PMTrace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-                       const int passEntityNum, const int contentMask)
+                       const int pass_entity_num, const int content_mask)
 {
-	trap->Trace(results, start, mins, maxs, end, passEntityNum, contentMask, qfalse, 0, 10);
+	trap->Trace(results, start, mins, maxs, end, pass_entity_num, content_mask, qfalse, 0, 10);
 }
 
 /*
@@ -1355,14 +1355,14 @@ void G_VehicleAttachDroidUnit(gentity_t* vehEnt)
 	if (vehEnt && vehEnt->m_pVehicle && vehEnt->m_pVehicle->m_pDroidUnit != NULL)
 	{
 		gentity_t* droidEnt = (gentity_t*)vehEnt->m_pVehicle->m_pDroidUnit;
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t fwd;
 
-		trap->G2API_GetBoltMatrix(vehEnt->ghoul2, 0, vehEnt->m_pVehicle->m_iDroidUnitTag, &boltMatrix,
+		trap->G2API_GetBoltMatrix(vehEnt->ghoul2, 0, vehEnt->m_pVehicle->m_iDroidUnitTag, &bolt_matrix,
 		                          vehEnt->r.currentAngles, vehEnt->r.currentOrigin, level.time,
 		                          NULL, vehEnt->modelScale);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, droidEnt->r.currentOrigin);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, fwd);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, droidEnt->r.currentOrigin);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, fwd);
 		vectoangles(fwd, droidEnt->r.currentAngles);
 
 		if (droidEnt->client)
@@ -1447,17 +1447,17 @@ but any server game effects are handled here
 ================
 */
 
-void ClientEvents(gentity_t* ent, int oldEventSequence)
+void ClientEvents(gentity_t* ent, int old_event_sequence)
 {
 	int damage;
 
 	const gclient_t* client = ent->client;
 
-	if (oldEventSequence < client->ps.eventSequence - MAX_PS_EVENTS)
+	if (old_event_sequence < client->ps.eventSequence - MAX_PS_EVENTS)
 	{
-		oldEventSequence = client->ps.eventSequence - MAX_PS_EVENTS;
+		old_event_sequence = client->ps.eventSequence - MAX_PS_EVENTS;
 	}
-	for (int i = oldEventSequence; i < client->ps.eventSequence; i++)
+	for (int i = old_event_sequence; i < client->ps.eventSequence; i++)
 	{
 		vec3_t dir;
 		const int event = ent->client->ps.events[i & MAX_PS_EVENTS - 1];
@@ -1534,7 +1534,7 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 		case EV_ROLL:
 			{
 				const int delta = client->ps.eventParms[i & MAX_PS_EVENTS - 1];
-				qboolean knockDownage = qfalse;
+				qboolean knock_downage = qfalse;
 
 				if (ent->client && ent->client->ps.fallingToDeath)
 				{
@@ -1557,7 +1557,7 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 					{
 						break;
 					}
-					knockDownage = qtrue;
+					knock_downage = qtrue;
 				}
 				else
 				{
@@ -1567,7 +1567,7 @@ void ClientEvents(gentity_t* ent, int oldEventSequence)
 					}
 				}
 
-				if (knockDownage)
+				if (knock_downage)
 				{
 					damage = delta * 1;
 					//you suffer for falling unprepared. A lot. Makes throws and things useful, and more realistic I suppose.
@@ -2014,12 +2014,12 @@ void G_CheckClientIdleSabers(gentity_t* ent, usercmd_t* ucmd)
 		//they press use all the time..
 		buttons &= ~BUTTON_BOTUSE;
 	}
-	const qboolean actionPressed = G_ActionButtonPressed(buttons);
+	const qboolean action_pressed = G_ActionButtonPressed(buttons);
 
 	VectorSubtract(ent->client->ps.viewangles, ent->client->idleViewAngles, viewChange);
 
 	if (!VectorCompare(vec3_origin, ent->client->ps.velocity)
-		|| actionPressed || ucmd->forwardmove || ucmd->rightmove || ucmd->upmove
+		|| action_pressed || ucmd->forwardmove || ucmd->rightmove || ucmd->upmove
 		|| !PM_StandingAnim(ent->client->ps.legsAnim)
 		|| ent->health + ent->client->ps.stats[STAT_ARMOR] != ent->client->idleHealth
 		|| VectorLength(viewChange) > 10
@@ -2039,7 +2039,7 @@ void G_CheckClientIdleSabers(gentity_t* ent, usercmd_t* ucmd)
 		//FIXME: also check for turning?
 
 		if (!VectorCompare(vec3_origin, ent->client->ps.velocity)
-			|| actionPressed || ucmd->forwardmove || ucmd->rightmove || ucmd->upmove
+			|| action_pressed || ucmd->forwardmove || ucmd->rightmove || ucmd->upmove
 			|| ent->health + ent->client->ps.stats[STAT_ARMOR] != ent->client->idleHealth
 			|| ent->client->ps.zoomMode
 			|| ent->client->ps.weaponstate != WEAPON_READY && ent->client->ps.weapon != WP_SABER
@@ -5171,12 +5171,12 @@ void ClientThink_real(gentity_t* ent)
 
 				//Get the direction between the pelvis and position of the hand
 #if 0
-				mdxaBone_t boltMatrix, pBoltMatrix;
+				mdxaBone_t bolt_matrix, pBoltMatrix;
 
-				trap->G2API_GetBoltMatrix(thrower->ghoul2, 0, lHandBolt, &boltMatrix, tAngles, thrower->client->ps.origin, level.time, 0, thrower->modelScale);
-				boltOrg[0] = boltMatrix.matrix[0][3];
-				boltOrg[1] = boltMatrix.matrix[1][3];
-				boltOrg[2] = boltMatrix.matrix[2][3];
+				trap->G2API_GetBoltMatrix(thrower->ghoul2, 0, lHandBolt, &bolt_matrix, tAngles, thrower->client->ps.origin, level.time, 0, thrower->modelScale);
+				boltOrg[0] = bolt_matrix.matrix[0][3];
+				boltOrg[1] = bolt_matrix.matrix[1][3];
+				boltOrg[2] = bolt_matrix.matrix[2][3];
 
 				trap->G2API_GetBoltMatrix(thrower->ghoul2, 0, pelBolt, &pBoltMatrix, tAngles, thrower->client->ps.origin, level.time, 0, thrower->modelScale);
 				pBoltOrg[0] = pBoltMatrix.matrix[0][3];

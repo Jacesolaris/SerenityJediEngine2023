@@ -1377,13 +1377,13 @@ void CL_FinishMove(usercmd_t* cmd)
 	if (cl_crazyShipControls)
 	{
 		const float yawDelta = AngleSubtract(cl.viewangles[YAW], cl_lastViewAngles[YAW]);
-		//yawDelta *= (4.0f*pVeh->m_fTimeModifier);
+		//yawDelta *= (4.0f*p_veh->m_fTimeModifier);
 		cl_sendAngles[ROLL] -= yawDelta;
 
 		float nRoll = fabs(cl_sendAngles[ROLL]);
 
 		const float pitchDelta = AngleSubtract(cl.viewangles[PITCH], cl_lastViewAngles[PITCH]);
-		//pitchDelta *= (2.0f*pVeh->m_fTimeModifier);
+		//pitchDelta *= (2.0f*p_veh->m_fTimeModifier);
 		float pitchSubtract = pitchDelta * (nRoll / 90.0f);
 		cl_sendAngles[PITCH] += pitchDelta - pitchSubtract;
 

@@ -31,7 +31,7 @@ extern gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir,
 
 extern void G_VehMuzzleFireFX(const gentity_t* ent, gentity_t* broadcaster, int muzzlesFired);
 //-----------------------------------------------------
-void VEH_TurretCheckFire(Vehicle_t* pVeh,
+void VEH_TurretCheckFire(Vehicle_t* p_veh,
                          gentity_t* parent,
                          //gentity_t *turretEnemy,
                          const turretStats_t* turretStats,
@@ -39,19 +39,19 @@ void VEH_TurretCheckFire(Vehicle_t* pVeh,
                          const int turretNum, const int curMuzzle)
 {
 	// if it's time to fire and we have an enemy, then gun 'em down!  pushDebounce time controls next fire time
-	if (pVeh->m_iMuzzleTag[curMuzzle] == -1)
+	if (p_veh->m_iMuzzleTag[curMuzzle] == -1)
 	{
 		//invalid muzzle?
 		return;
 	}
 
-	if (pVeh->m_iMuzzleWait[curMuzzle] >= level.time)
+	if (p_veh->m_iMuzzleWait[curMuzzle] >= level.time)
 	{
 		//can't fire yet
 		return;
 	}
 
-	if (pVeh->turretStatus[turretNum].ammo < vehWeapon->iAmmoPerShot)
+	if (p_veh->turretStatus[turretNum].ammo < vehWeapon->iAmmoPerShot)
 	{
 		//no ammo, can't fire
 		return;
@@ -64,30 +64,30 @@ void VEH_TurretCheckFire(Vehicle_t* pVeh,
 		WP_CalcVehMuzzle(parent, curMuzzle);
 
 		//FIXME: some variation in fire dir
-		gentity_t* missile = WP_FireVehicleWeapon(parent, pVeh->m_vMuzzlePos[curMuzzle], pVeh->m_vMuzzleDir[curMuzzle],
+		gentity_t* missile = WP_FireVehicleWeapon(parent, p_veh->m_vMuzzlePos[curMuzzle], p_veh->m_vMuzzleDir[curMuzzle],
 		                                          vehWeapon, turretNum != 0, qtrue);
 
 		//play the weapon's muzzle effect if we have one
 		G_VehMuzzleFireFX(parent, missile, muzzlesFired);
 
 		//take the ammo away
-		pVeh->turretStatus[turretNum].ammo -= vehWeapon->iAmmoPerShot;
+		p_veh->turretStatus[turretNum].ammo -= vehWeapon->iAmmoPerShot;
 		//toggle to the next muzzle on this turret, if there is one
-		const int nextMuzzle = curMuzzle + 1 == pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[0]
-			                       ? pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[1]
-			                       : pVeh->m_pVehicleInfo->turret[turretNum].iMuzzle[0];
+		const int nextMuzzle = curMuzzle + 1 == p_veh->m_pVehicleInfo->turret[turretNum].iMuzzle[0]
+			                       ? p_veh->m_pVehicleInfo->turret[turretNum].iMuzzle[1]
+			                       : p_veh->m_pVehicleInfo->turret[turretNum].iMuzzle[0];
 		if (nextMuzzle)
 		{
 			//a valid muzzle to toggle to
-			pVeh->turretStatus[turretNum].nextMuzzle = nextMuzzle - 1;
+			p_veh->turretStatus[turretNum].nextMuzzle = nextMuzzle - 1;
 			//-1 because you type muzzles 1-10 in the .veh file
 		}
 		//add delay to the next muzzle so it doesn't fire right away on the next frame
-		pVeh->m_iMuzzleWait[pVeh->turretStatus[turretNum].nextMuzzle] = level.time + turretStats->iDelay;
+		p_veh->m_iMuzzleWait[p_veh->turretStatus[turretNum].nextMuzzle] = level.time + turretStats->iDelay;
 	}
 }
 
-void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, const int curMuzzle, const float fSpeed, gentity_t* turretEnemy,
+void VEH_TurretAnglesToEnemy(Vehicle_t* p_veh, const int curMuzzle, const float fSpeed, gentity_t* turretEnemy,
                              const qboolean bAILead,
                              vec3_t desiredAngles)
 {
@@ -97,7 +97,7 @@ void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, const int curMuzzle, const float f
 	{
 		//we want to lead them a bit
 		vec3_t diff, velocity;
-		VectorSubtract(org, pVeh->m_vMuzzlePos[curMuzzle], diff);
+		VectorSubtract(org, p_veh->m_vMuzzlePos[curMuzzle], diff);
 		const float dist = VectorNormalize(diff);
 		if (turretEnemy->client)
 		{
@@ -111,13 +111,13 @@ void VEH_TurretAnglesToEnemy(Vehicle_t* pVeh, const int curMuzzle, const float f
 	}
 
 	//FIXME: this isn't quite right, it's aiming from the muzzle, not the center of the turret...
-	VectorSubtract(org, pVeh->m_vMuzzlePos[curMuzzle], enemyDir);
+	VectorSubtract(org, p_veh->m_vMuzzlePos[curMuzzle], enemyDir);
 	//Get the desired absolute, world angles to our target
 	vectoangles(enemyDir, desiredAngles);
 }
 
 //-----------------------------------------------------
-qboolean VEH_TurretAim(Vehicle_t* pVeh,
+qboolean VEH_TurretAim(Vehicle_t* p_veh,
                        gentity_t* parent,
                        gentity_t* turretEnemy,
                        const turretStats_t* turretStats,
@@ -130,47 +130,47 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 
 	WP_CalcVehMuzzle(parent, curMuzzle);
 	//get the current absolute angles of the turret right now
-	vectoangles(pVeh->m_vMuzzleDir[curMuzzle], curAngles);
+	vectoangles(p_veh->m_vMuzzleDir[curMuzzle], curAngles);
 	//subtract out the vehicle's angles to get the relative alignment
-	AnglesSubtract(curAngles, pVeh->m_vOrientation, curAngles);
+	AnglesSubtract(curAngles, p_veh->m_vOrientation, curAngles);
 
 	if (turretEnemy)
 	{
 		aimCorrect = qtrue;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
-		VEH_TurretAnglesToEnemy(pVeh, curMuzzle, vehWeapon->fSpeed, turretEnemy, turretStats->bAILead, desiredAngles);
+		VEH_TurretAnglesToEnemy(p_veh, curMuzzle, vehWeapon->fSpeed, turretEnemy, turretStats->bAILead, desiredAngles);
 	}
 	//subtract out the vehicle's angles to get the relative desired alignment
-	AnglesSubtract(desiredAngles, pVeh->m_vOrientation, desiredAngles);
+	AnglesSubtract(desiredAngles, p_veh->m_vOrientation, desiredAngles);
 	//Now clamp the desired relative angles
 	//clamp yaw
 	desiredAngles[YAW] = AngleNormalize180(desiredAngles[YAW]);
-	if (pVeh->m_pVehicleInfo->turret[turretNum].yawClampLeft
-		&& desiredAngles[YAW] > pVeh->m_pVehicleInfo->turret[turretNum].yawClampLeft)
+	if (p_veh->m_pVehicleInfo->turret[turretNum].yawClampLeft
+		&& desiredAngles[YAW] > p_veh->m_pVehicleInfo->turret[turretNum].yawClampLeft)
 	{
 		aimCorrect = qfalse;
-		desiredAngles[YAW] = pVeh->m_pVehicleInfo->turret[turretNum].yawClampLeft;
+		desiredAngles[YAW] = p_veh->m_pVehicleInfo->turret[turretNum].yawClampLeft;
 	}
-	if (pVeh->m_pVehicleInfo->turret[turretNum].yawClampRight
-		&& desiredAngles[YAW] < pVeh->m_pVehicleInfo->turret[turretNum].yawClampRight)
+	if (p_veh->m_pVehicleInfo->turret[turretNum].yawClampRight
+		&& desiredAngles[YAW] < p_veh->m_pVehicleInfo->turret[turretNum].yawClampRight)
 	{
 		aimCorrect = qfalse;
-		desiredAngles[YAW] = pVeh->m_pVehicleInfo->turret[turretNum].yawClampRight;
+		desiredAngles[YAW] = p_veh->m_pVehicleInfo->turret[turretNum].yawClampRight;
 	}
 	//clamp pitch
 	desiredAngles[PITCH] = AngleNormalize180(desiredAngles[PITCH]);
-	if (pVeh->m_pVehicleInfo->turret[turretNum].pitchClampDown
-		&& desiredAngles[PITCH] > pVeh->m_pVehicleInfo->turret[turretNum].pitchClampDown)
+	if (p_veh->m_pVehicleInfo->turret[turretNum].pitchClampDown
+		&& desiredAngles[PITCH] > p_veh->m_pVehicleInfo->turret[turretNum].pitchClampDown)
 	{
 		aimCorrect = qfalse;
-		desiredAngles[PITCH] = pVeh->m_pVehicleInfo->turret[turretNum].pitchClampDown;
+		desiredAngles[PITCH] = p_veh->m_pVehicleInfo->turret[turretNum].pitchClampDown;
 	}
-	if (pVeh->m_pVehicleInfo->turret[turretNum].pitchClampUp
-		&& desiredAngles[PITCH] < pVeh->m_pVehicleInfo->turret[turretNum].pitchClampUp)
+	if (p_veh->m_pVehicleInfo->turret[turretNum].pitchClampUp
+		&& desiredAngles[PITCH] < p_veh->m_pVehicleInfo->turret[turretNum].pitchClampUp)
 	{
 		aimCorrect = qfalse;
-		desiredAngles[PITCH] = pVeh->m_pVehicleInfo->turret[turretNum].pitchClampUp;
+		desiredAngles[PITCH] = p_veh->m_pVehicleInfo->turret[turretNum].pitchClampUp;
 	}
 	//Now get the offset we want from our current relative angles
 	AnglesSubtract(desiredAngles, curAngles, addAngles);
@@ -217,13 +217,13 @@ qboolean VEH_TurretAim(Vehicle_t* pVeh,
 		NPC_SetBoneAngles(parent, turretStats->pitchBone, pitchAngles);
 	}
 	//force muzzle to recalc next check
-	pVeh->m_iMuzzleTime[curMuzzle] = 0;
+	p_veh->m_iMuzzleTime[curMuzzle] = 0;
 
 	return aimCorrect;
 }
 
 //-----------------------------------------------------
-static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
+static qboolean VEH_TurretFindEnemies(Vehicle_t* p_veh,
                                       gentity_t* parent,
                                       const turretStats_t* turretStats,
                                       const int turretNum, const int curMuzzle)
@@ -236,14 +236,14 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 	gentity_t* entity_list[MAX_GENTITIES];
 	const gentity_t* bestTarget = NULL;
 
-	if (!pVeh->m_pPilot)
+	if (!p_veh->m_pPilot)
 	{
 		// only try to find enemies if the vehicle has a pilot
 		return qfalse;
 	}
 
 	WP_CalcVehMuzzle(parent, curMuzzle);
-	VectorCopy(pVeh->m_vMuzzlePos[curMuzzle], org2);
+	VectorCopy(p_veh->m_vMuzzlePos[curMuzzle], org2);
 
 	const int count = G_RadiusList(org2, turretStats->fAIRange, parent, qtrue, entity_list);
 
@@ -289,7 +289,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 		{
 			continue;
 		}
-		if (target == (gentity_t*)pVeh->m_pPilot
+		if (target == (gentity_t*)p_veh->m_pPilot
 			|| target->r.ownerNum == parent->s.number)
 		{
 			//don't get angry at my pilot or passengers?
@@ -321,7 +321,7 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 
 		trap->Trace(&tr, org2, NULL, NULL, org, parent->s.number, MASK_SHOT, qfalse, 0, 0);
 
-		if (tr.entityNum == target->s.number
+		if (tr.entity_num == target->s.number
 			|| !tr.allsolid && !tr.startsolid && tr.fraction == 1.0)
 		{
 			vec3_t enemyDir;
@@ -345,39 +345,39 @@ static qboolean VEH_TurretFindEnemies(Vehicle_t* pVeh,
 
 	if (found)
 	{
-		pVeh->turretStatus[turretNum].enemyEntNum = bestTarget->s.number;
+		p_veh->turretStatus[turretNum].enemyEntNum = bestTarget->s.number;
 	}
 
 	return found;
 }
 
-void VEH_TurretObeyPassengerControl(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
+void VEH_TurretObeyPassengerControl(Vehicle_t* p_veh, gentity_t* parent, const int turretNum)
 {
-	const turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
-	const gentity_t* passenger = (gentity_t*)pVeh->m_ppPassengers[turretStats->passengerNum - 1];
+	const turretStats_t* turretStats = &p_veh->m_pVehicleInfo->turret[turretNum];
+	const gentity_t* passenger = (gentity_t*)p_veh->m_ppPassengers[turretStats->passengerNum - 1];
 
 	if (passenger && passenger->client && passenger->health > 0)
 	{
 		//a valid, living passenger client
 		const vehWeaponInfo_t* vehWeapon = &g_vehWeaponInfo[turretStats->iWeapon];
-		const int curMuzzle = pVeh->turretStatus[turretNum].nextMuzzle;
+		const int curMuzzle = p_veh->turretStatus[turretNum].nextMuzzle;
 		vec3_t aimAngles;
 		VectorCopy(passenger->client->ps.viewangles, aimAngles);
 
-		VEH_TurretAim(pVeh, parent, NULL, turretStats, vehWeapon, turretNum, curMuzzle, aimAngles);
+		VEH_TurretAim(p_veh, parent, NULL, turretStats, vehWeapon, turretNum, curMuzzle, aimAngles);
 		if (passenger->client->pers.cmd.buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK))
 		{
 			//he's pressing an attack button, so fire!
-			VEH_TurretCheckFire(pVeh, parent, turretStats, vehWeapon, turretNum, curMuzzle);
+			VEH_TurretCheckFire(p_veh, parent, turretStats, vehWeapon, turretNum, curMuzzle);
 		}
 	}
 }
 
-void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
+void VEH_TurretThink(Vehicle_t* p_veh, gentity_t* parent, const int turretNum)
 //-----------------------------------------------------
 {
 	qboolean doAim = qfalse;
-	const turretStats_t* turretStats = &pVeh->m_pVehicleInfo->turret[turretNum];
+	const turretStats_t* turretStats = &p_veh->m_pVehicleInfo->turret[turretNum];
 	gentity_t* turretEnemy = NULL;
 
 	if (!turretStats || !turretStats->iAmmoMax)
@@ -387,10 +387,10 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 	}
 
 	if (turretStats->passengerNum
-		&& pVeh->m_iNumPassengers >= turretStats->passengerNum)
+		&& p_veh->m_iNumPassengers >= turretStats->passengerNum)
 	{
 		//the passenger that has control of this turret is on the ship
-		VEH_TurretObeyPassengerControl(pVeh, parent, turretNum);
+		VEH_TurretObeyPassengerControl(p_veh, parent, turretNum);
 		return;
 	}
 	if (!turretStats->bAI) //try AI
@@ -400,21 +400,21 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 	}
 
 	//okay, so it has AI, but still don't think if there's no pilot!
-	if (!pVeh->m_pPilot)
+	if (!p_veh->m_pPilot)
 	{
 		return;
 	}
 
 	const vehWeaponInfo_t* vehWeapon = &g_vehWeaponInfo[turretStats->iWeapon];
 	const float rangeSq = turretStats->fAIRange * turretStats->fAIRange;
-	const int curMuzzle = pVeh->turretStatus[turretNum].nextMuzzle;
+	const int curMuzzle = p_veh->turretStatus[turretNum].nextMuzzle;
 
-	if (pVeh->turretStatus[turretNum].enemyEntNum < ENTITYNUM_WORLD)
+	if (p_veh->turretStatus[turretNum].enemyEntNum < ENTITYNUM_WORLD)
 	{
-		turretEnemy = &g_entities[pVeh->turretStatus[turretNum].enemyEntNum];
+		turretEnemy = &g_entities[p_veh->turretStatus[turretNum].enemyEntNum];
 		if (turretEnemy->health < 0
 			|| !turretEnemy->inuse
-			|| turretEnemy == (gentity_t*)pVeh->m_pPilot //enemy became my pilot///?
+			|| turretEnemy == (gentity_t*)p_veh->m_pPilot //enemy became my pilot///?
 			|| turretEnemy == parent
 			|| turretEnemy->r.ownerNum == parent->s.number // a passenger?
 			|| turretEnemy->client && turretEnemy->client->sess.sessionTeam == TEAM_SPECTATOR
@@ -422,15 +422,15 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 		{
 			//don't keep going after spectators, pilot, self, dead people, etc.
 			turretEnemy = NULL;
-			pVeh->turretStatus[turretNum].enemyEntNum = ENTITYNUM_NONE;
+			p_veh->turretStatus[turretNum].enemyEntNum = ENTITYNUM_NONE;
 		}
 	}
 
-	if (pVeh->turretStatus[turretNum].enemyHoldTime < level.time)
+	if (p_veh->turretStatus[turretNum].enemyHoldTime < level.time)
 	{
-		if (VEH_TurretFindEnemies(pVeh, parent, turretStats, turretNum, curMuzzle))
+		if (VEH_TurretFindEnemies(p_veh, parent, turretStats, turretNum, curMuzzle))
 		{
-			turretEnemy = &g_entities[pVeh->turretStatus[turretNum].enemyEntNum];
+			turretEnemy = &g_entities[p_veh->turretStatus[turretNum].enemyEntNum];
 			doAim = qtrue;
 		}
 		else if (parent->enemy && parent->enemy->s.number < ENTITYNUM_WORLD)
@@ -448,12 +448,12 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 			if (turretEnemy->client)
 			{
 				//hold on to clients for a min of 3 seconds
-				pVeh->turretStatus[turretNum].enemyHoldTime = level.time + 3000;
+				p_veh->turretStatus[turretNum].enemyHoldTime = level.time + 3000;
 			}
 			else
 			{
 				//hold less
-				pVeh->turretStatus[turretNum].enemyHoldTime = level.time + 500;
+				p_veh->turretStatus[turretNum].enemyHoldTime = level.time + 500;
 			}
 		}
 	}
@@ -464,23 +464,23 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 			vec3_t enemyDir;
 			// enemy is alive
 			WP_CalcVehMuzzle(parent, curMuzzle);
-			VectorSubtract(turretEnemy->r.currentOrigin, pVeh->m_vMuzzlePos[curMuzzle], enemyDir);
+			VectorSubtract(turretEnemy->r.currentOrigin, p_veh->m_vMuzzlePos[curMuzzle], enemyDir);
 			const float enemyDist = VectorLengthSquared(enemyDir);
 
 			if (enemyDist < rangeSq)
 			{
 				// was in valid radius
-				if (trap->InPVS(pVeh->m_vMuzzlePos[curMuzzle], turretEnemy->r.currentOrigin))
+				if (trap->InPVS(p_veh->m_vMuzzlePos[curMuzzle], turretEnemy->r.currentOrigin))
 				{
 					// Every now and again, check to see if we can even trace to the enemy
 					trace_t tr;
 					vec3_t start, end;
-					VectorCopy(pVeh->m_vMuzzlePos[curMuzzle], start);
+					VectorCopy(p_veh->m_vMuzzlePos[curMuzzle], start);
 
 					VectorCopy(turretEnemy->r.currentOrigin, end);
 					trap->Trace(&tr, start, NULL, NULL, end, parent->s.number, MASK_SHOT, qfalse, 0, 0);
 
-					if (tr.entityNum == turretEnemy->s.number
+					if (tr.entity_num == turretEnemy->s.number
 						|| !tr.allsolid && !tr.startsolid)
 					{
 						doAim = qtrue; // Can see our enemy
@@ -493,9 +493,9 @@ void VEH_TurretThink(Vehicle_t* pVeh, gentity_t* parent, const int turretNum)
 	if (doAim)
 	{
 		vec3_t aimAngles;
-		if (VEH_TurretAim(pVeh, parent, turretEnemy, turretStats, vehWeapon, turretNum, curMuzzle, aimAngles))
+		if (VEH_TurretAim(p_veh, parent, turretEnemy, turretStats, vehWeapon, turretNum, curMuzzle, aimAngles))
 		{
-			VEH_TurretCheckFire(pVeh, parent, /*turretEnemy,*/ turretStats, vehWeapon, turretNum, curMuzzle);
+			VEH_TurretCheckFire(p_veh, parent, /*turretEnemy,*/ turretStats, vehWeapon, turretNum, curMuzzle);
 		}
 	}
 }

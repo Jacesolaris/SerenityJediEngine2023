@@ -182,7 +182,7 @@ png_set_hIST(const png_const_structrp png_ptr, const png_inforp info_ptr,
 	 * version 1.2.1
 	 */
 	info_ptr->hist = png_voidcast(png_uint_16p, png_malloc_warn(png_ptr,
-		PNG_MAX_PALETTE_LENGTH * (sizeof(png_uint_16))));
+		PNG_MAX_PALETTE_LENGTH * sizeof(png_uint_16)));
 
 	if (info_ptr->hist == NULL)
 	{
@@ -324,7 +324,7 @@ png_set_pCAL(const png_const_structrp png_ptr, const png_inforp info_ptr,
 	memcpy(info_ptr->pcal_units, units, length);
 
 	info_ptr->pcal_params = png_voidcast(png_charpp, png_malloc_warn(png_ptr,
-		(png_size_t)((nparams + 1) * (sizeof(png_charp)))));
+		(png_size_t)((nparams + 1) * sizeof(png_charp))));
 
 	if (info_ptr->pcal_params == NULL)
 	{
@@ -332,7 +332,7 @@ png_set_pCAL(const png_const_structrp png_ptr, const png_inforp info_ptr,
 		return;
 	}
 
-	memset(info_ptr->pcal_params, 0, (nparams + 1) * (sizeof(png_charp)));
+	memset(info_ptr->pcal_params, 0, (nparams + 1) * sizeof(png_charp));
 
 	for (i = 0; i < nparams; i++)
 	{
@@ -441,9 +441,9 @@ png_set_sCAL(const png_const_structrp png_ptr, const png_inforp info_ptr, const 
 		char swidth[PNG_sCAL_MAX_DIGITS + 1];
 		char sheight[PNG_sCAL_MAX_DIGITS + 1];
 
-		png_ascii_from_fp(png_ptr, swidth, (sizeof swidth), width,
+		png_ascii_from_fp(png_ptr, swidth, sizeof swidth, width,
 			PNG_sCAL_PRECISION);
-		png_ascii_from_fp(png_ptr, sheight, (sizeof sheight), height,
+		png_ascii_from_fp(png_ptr, sheight, sizeof sheight, height,
 			PNG_sCAL_PRECISION);
 
 		png_set_sCAL_s(png_ptr, info_ptr, unit, swidth, sheight);
@@ -471,8 +471,8 @@ png_set_sCAL_fixed(const png_const_structrp png_ptr, const png_inforp info_ptr, 
 		char swidth[PNG_sCAL_MAX_DIGITS + 1];
 		char sheight[PNG_sCAL_MAX_DIGITS + 1];
 
-		png_ascii_from_fixed(png_ptr, swidth, (sizeof swidth), width);
-		png_ascii_from_fixed(png_ptr, sheight, (sizeof sheight), height);
+		png_ascii_from_fixed(png_ptr, swidth, sizeof swidth, width);
+		png_ascii_from_fixed(png_ptr, sheight, sizeof sheight, height);
 
 		png_set_sCAL_s(png_ptr, info_ptr, unit, swidth, sheight);
 	}
@@ -538,10 +538,10 @@ png_set_PLTE(const png_structrp png_ptr, const png_inforp info_ptr,
 	 * too-large sample values.
 	 */
 	png_ptr->palette = png_voidcast(png_colorp, png_calloc(png_ptr,
-		PNG_MAX_PALETTE_LENGTH * (sizeof(png_color))));
+		PNG_MAX_PALETTE_LENGTH * sizeof(png_color)));
 
 	if (num_palette > 0)
-		memcpy(png_ptr->palette, palette, num_palette * (sizeof(png_color)));
+		memcpy(png_ptr->palette, palette, num_palette * sizeof(png_color));
 	info_ptr->palette = png_ptr->palette;
 	info_ptr->num_palette = png_ptr->num_palette = (png_uint_16)num_palette;
 
@@ -687,7 +687,7 @@ png_set_text_2(png_const_structrp png_ptr, const png_inforp info_ptr,
 		(unsigned long)png_ptr->chunk_name);
 
 	if (png_ptr == NULL || info_ptr == NULL || num_text <= 0 || text_ptr == NULL)
-		return(0);
+		return 0;
 
 	/* Make sure we have enough space in the "text" array in info_struct
 	 * to hold all of the incoming text_ptr objects.  This compare can't overflow
@@ -707,7 +707,7 @@ png_set_text_2(png_const_structrp png_ptr, const png_inforp info_ptr,
 
 			/* Round up to a multiple of 8 */
 			if (max_text < INT_MAX - 8)
-				max_text = (max_text + 8) & ~0x7;
+				max_text = max_text + 8 & ~0x7;
 
 			else
 				max_text = INT_MAX;
@@ -741,7 +741,7 @@ png_set_text_2(png_const_structrp png_ptr, const png_inforp info_ptr,
 	{
 		size_t text_length;
 		size_t lang_len, lang_key_len;
-		const png_textp textp = &(info_ptr->text[info_ptr->num_text]);
+		const png_textp textp = &info_ptr->text[info_ptr->num_text];
 
 		if (text_ptr[i].key == NULL)
 			continue;
@@ -864,7 +864,7 @@ png_set_text_2(png_const_structrp png_ptr, const png_inforp info_ptr,
 		png_debug1(3, "transferred text chunk %d", info_ptr->num_text);
 	}
 
-	return(0);
+	return 0;
 }
 #endif
 
@@ -926,7 +926,7 @@ png_set_tRNS(const png_structrp png_ptr, const png_inforp info_ptr,
 
 	if (trans_color != NULL)
 	{
-		const int sample_max = (1 << info_ptr->bit_depth);
+		const int sample_max = 1 << info_ptr->bit_depth;
 
 		if ((info_ptr->color_type == PNG_COLOR_TYPE_GRAY &&
 			trans_color->gray > sample_max) ||
@@ -1038,7 +1038,7 @@ png_set_sPLT(const png_const_structrp png_ptr,
 		 * count, so an invalid entry is not added.
 		 */
 		info_ptr->valid |= PNG_INFO_sPLT;
-		++(info_ptr->splt_palettes_num);
+		++info_ptr->splt_palettes_num;
 		++np;
 	} while (++entries, --nentries);
 
@@ -1051,7 +1051,7 @@ png_set_sPLT(const png_const_structrp png_ptr,
 static png_byte
 check_location(const png_const_structrp png_ptr, int location)
 {
-	location &= (PNG_HAVE_IHDR | PNG_HAVE_PLTE | PNG_AFTER_IDAT);
+	location &= PNG_HAVE_IHDR | PNG_HAVE_PLTE | PNG_AFTER_IDAT;
 
 	/* New in 1.6.0; copy the location and check it.  This is an API
 	 * change; previously the app had to use the
@@ -1145,8 +1145,8 @@ png_set_unknown_chunks(png_const_structrp png_ptr,
 	 */
 	for (; num_unknowns > 0; --num_unknowns, ++unknowns)
 	{
-		memcpy(np->name, unknowns->name, (sizeof np->name));
-		np->name[(sizeof np->name) - 1] = '\0';
+		memcpy(np->name, unknowns->name, sizeof np->name);
+		np->name[sizeof np->name - 1] = '\0';
 		np->location = check_location(png_ptr, unknowns->location);
 
 		if (unknowns->size == 0)
@@ -1177,7 +1177,7 @@ png_set_unknown_chunks(png_const_structrp png_ptr,
 		 * This is correct in the read case (the chunk is just dropped.)
 		 */
 		++np;
-		++(info_ptr->unknown_chunks_num);
+		++info_ptr->unknown_chunks_num;
 	}
 }
 
@@ -1302,7 +1302,7 @@ png_set_keep_unknown_chunks(const png_structrp png_ptr, const int keep,
 		};
 
 		chunk_list = chunks_to_ignore;
-		num_chunks = (unsigned int)/*SAFE*/(sizeof chunks_to_ignore) / 5U;
+		num_chunks = (unsigned int)/*SAFE*/sizeof chunks_to_ignore / 5U;
 	}
 
 	else /* num_chunks_in > 0 */
@@ -1431,7 +1431,7 @@ png_set_rows(const png_const_structrp png_ptr, const png_inforp info_ptr,
 		return;
 
 	if (info_ptr->row_pointers != NULL &&
-		(info_ptr->row_pointers != row_pointers))
+		info_ptr->row_pointers != row_pointers)
 		png_free_data(png_ptr, info_ptr, PNG_FREE_ROWS, 0);
 
 	info_ptr->row_pointers = row_pointers;

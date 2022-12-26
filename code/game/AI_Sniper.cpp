@@ -632,7 +632,7 @@ void Sniper_FaceEnemy(void)
 						}
 						gi.trace(&trace, muzzle, vec3_origin, vec3_origin, target, NPC->s.number, MASK_SHOT,
 						         static_cast<EG2_Collision>(0), 0);
-						hit = Sniper_EvaluateShot(trace.entityNum);
+						hit = Sniper_EvaluateShot(trace.entity_num);
 					}
 					NPC->count++;
 				}
@@ -793,7 +793,7 @@ void NPC_BSSniper_Attack(void)
 				trace_t trace;
 				gi.trace(&trace, NPC->enemy->currentOrigin, NPC->enemy->mins, NPC->enemy->maxs, NPC->currentOrigin,
 				         NPC->enemy->s.number, NPC->enemy->clipmask, static_cast<EG2_Collision>(0), 0);
-				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPC->s.number))
+				if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entity_num == NPC->s.number))
 				{
 					//he can get right to me
 					NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
@@ -842,7 +842,7 @@ void NPC_BSSniper_Attack(void)
 			VectorMA(muzzle, 8192, fwd, end);
 			gi.trace(&tr, muzzle, nullptr, nullptr, end, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 0);
 
-			const int hit = tr.entityNum;
+			const int hit = tr.entity_num;
 			//can we shoot our target?
 			if (Sniper_EvaluateShot(hit))
 			{

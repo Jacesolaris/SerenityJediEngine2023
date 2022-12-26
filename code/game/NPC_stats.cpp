@@ -36,8 +36,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern qboolean NPCsPrecached;
-extern vec3_t playerMins;
-extern vec3_t playerMaxs;
+extern vec3_t player_mins;
+extern vec3_t player_maxs;
 extern stringID_table_t WPTable[];
 extern qboolean is_outcast_map();
 
@@ -389,7 +389,7 @@ static int MoveTypeNameToEnum(const char* name)
 }
 
 extern void CG_RegisterClientRenderInfo(clientInfo_t* ci, const renderInfo_t* ri);
-extern void CG_RegisterClientModels(int entityNum);
+extern void CG_RegisterClientModels(int entity_num);
 extern void CG_RegisterNPCCustomSounds(clientInfo_t* ci);
 
 #ifdef CONVENIENT_ANIMATION_FILE_DEBUG_THING
@@ -2205,8 +2205,8 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 	ri->torsoPitchRangeUp = 30;
 	ri->torsoPitchRangeDown = 50;
 
-	VectorCopy(playerMins, npc->mins);
-	VectorCopy(playerMaxs, npc->maxs);
+	VectorCopy(player_mins, npc->mins);
+	VectorCopy(player_maxs, npc->maxs);
 	npc->client->crouchheight = CROUCH_MAXS_2;
 	npc->client->standheight = DEFAULT_MAXS_2;
 

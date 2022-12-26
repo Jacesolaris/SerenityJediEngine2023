@@ -70,16 +70,16 @@ void NPC_Mark2_Part_Explode(gentity_t* self, const int bolt)
 {
 	if (bolt >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
 		trap->G2API_GetBoltMatrix(self->ghoul2, 0,
 		                          bolt,
-		                          &boltMatrix, self->r.currentAngles, self->r.currentOrigin, level.time,
+		                          &bolt_matrix, self->r.currentAngles, self->r.currentOrigin, level.time,
 		                          NULL, self->modelScale);
 
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, dir);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, dir);
 
 		G_PlayEffectID(G_EffectIndex("env/med_explode2"), org, dir);
 		G_PlayEffectID(G_EffectIndex("blaster/smoke_bolton"), org, dir);
@@ -156,15 +156,15 @@ void Mark2_FireBlaster(qboolean advance)
 {
 	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
 	static vec3_t forward, vright, up;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	const int bolt = trap->G2API_AddBolt(NPCS.NPC->ghoul2, 0, "*flash");
 
 	trap->G2API_GetBoltMatrix(NPCS.NPC->ghoul2, 0,
 	                          bolt,
-	                          &boltMatrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
+	                          &bolt_matrix, NPCS.NPC->r.currentAngles, NPCS.NPC->r.currentOrigin, level.time,
 	                          NULL, NPCS.NPC->modelScale);
 
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, muzzle1);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, muzzle1);
 
 	if (NPCS.NPC->health)
 	{

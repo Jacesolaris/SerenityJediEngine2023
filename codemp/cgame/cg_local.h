@@ -376,7 +376,7 @@ typedef struct clientInfo_s {
 #define MAX_CG_LOOPSOUNDS 8
 
 typedef struct cgLoopSound_s {
-	int entityNum;
+	int entity_num;
 	vec3_t origin;
 	vec3_t velocity;
 	sfxHandle_t sfx;
@@ -2013,8 +2013,8 @@ void CG_DrawTeamBackground(int x, int y, int w, int h, float alpha, int team);
 void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int font);
 void CG_Text_Paint(float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, int style, int i_menu_font);
 int CG_Text_Width(const char* text, float scale, int i_menu_font);
-int CG_Text_Height(const char* text, float scale, int iMenuFont);
-float CG_GetValue(int ownerDraw);
+int CG_Text_Height(const char* text, float scale, int i_menu_font);
+float CG_GetValue(int owner_draw);
 qboolean CG_OwnerDrawVisible(int flags);
 void CG_RunMenuScript(char** args);
 qboolean CG_DeferMenuScript(char** args);
@@ -2050,7 +2050,7 @@ void CG_PlayerShieldHit(int entitynum, vec3_t dir, int amount);
 // cg_predict.c
 //
 void CG_BuildSolidList(void);
-int	CG_PointContents(const vec3_t point, int passEntityNum);
+int	CG_PointContents(const vec3_t point, int pass_entity_num);
 void CG_Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
 	int skip_number, int mask);
 void CG_G2Trace(trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
@@ -2071,10 +2071,10 @@ void CG_ReattachLimb(centity_t* source);
 // cg_ents.c
 //
 
-void CG_S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx);
-void CG_S_AddRealLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx);
-void CG_S_StopLoopingSound(int entityNum, sfxHandle_t sfx);
-void CG_S_UpdateLoopingSounds(int entityNum);
+void CG_S_AddLoopingSound(int entity_num, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx);
+void CG_S_AddRealLoopingSound(int entity_num, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx);
+void CG_S_StopLoopingSound(int entity_num, sfxHandle_t sfx);
+void CG_S_UpdateLoopingSounds(int entity_num);
 
 void CG_SetEntitySoundPosition(const centity_t* cent);
 void CG_AddPacketEntities(qboolean is_portal);
@@ -2103,28 +2103,28 @@ void TurretClientRun(centity_t* ent);
 //
 // cg_weapons.c
 //
-void CG_GetClientWeaponMuzzleBoltPoint(int clIndex, vec3_t to);
-void CG_GetClientWeaponMuzzleBoltPointduals(int clIndex, vec3_t to, qboolean leftweap);
+void CG_GetClientWeaponMuzzleBoltPoint(int cl_index, vec3_t to);
+void CG_GetClientWeaponMuzzleBoltPointduals(int cl_index, vec3_t to, qboolean leftweap);
 
 void CG_NextWeapon_f(void);
 void CG_PrevWeapon_f(void);
 void CG_Weapon_f(void);
 void CG_WeaponClean_f(void);
 
-void CG_RegisterWeapon(int weaponNum);
-void CG_RegisterItemVisuals(int itemNum);
+void CG_RegisterWeapon(int weapon_num);
+void CG_RegisterItemVisuals(int item_num);
 
 void CG_FireWeapon(centity_t* cent, qboolean alt_fire);
 void cg_missile_hit_wall(int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire, int charge);
-void cg_missile_hit_player(int weapon, vec3_t origin, vec3_t dir, int entity_num, qboolean alt_fire);
+void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qboolean alt_fire);
 
 void CG_AddViewWeapon(playerState_t* ps);
-void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t* cent, int team, vec3_t newAngles, qboolean thirdPerson, qboolean leftweap);
-void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent, int team, vec3_t newAngles, qboolean thirdPerson);
+void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t* cent, vec3_t new_angles, qboolean third_person, qboolean leftweap);
+void CG_AddPlayerWeapon(refEntity_t* parent, playerState_t* ps, centity_t* cent, vec3_t new_angles, qboolean third_person);
 void CG_DrawWeaponSelect(void);
 void CG_DrawIconBackground(void);
 
-void CG_OutOfAmmoChange(int oldWeapon);	// should this be in pmove?
+void CG_OutOfAmmoChange(int old_weapon);	// should this be in pmove?
 
 //
 // cg_marks.c
@@ -2153,10 +2153,10 @@ localEntity_t* CG_SmokePuff(const vec3_t p,
 	float radius,
 	float r, float g, float b, float a,
 	float duration,
-	int startTime,
-	int fadeInTime,
-	int leFlags,
-	qhandle_t hShader);
+	int start_time,
+	int fade_in_time,
+	int le_flags,
+	qhandle_t h_shader);
 void CG_BubbleTrail(vec3_t start, vec3_t end, float spacing);
 void CG_GlassShatter(int entnum, vec3_t dmg_pt, vec3_t dmg_dir, float dmg_radius, int max_shards);
 void CG_ScorePlum(int client, vec3_t org, int score);
@@ -2166,11 +2166,11 @@ void CG_GibPlayerHeadshot(vec3_t player_origin);
 
 void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
                float speed, int num_chunks, material_t chunk_type, int custom_chunk, float base_scale);
-void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunkType);
+void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunk_type);
 
 localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
-	qhandle_t h_model, int numframes, qhandle_t shader, int msec,
-	qboolean isSprite, float scale, int flags);// Overloaded in single player
+	qhandle_t h_model, int num_frames, qhandle_t shader, int msec,
+	qboolean is_sprite, float scale, int flags);// Overloaded in single player
 
 void CG_TestLine(vec3_t start, vec3_t end, int time, unsigned int color, int radius);
 
@@ -2191,19 +2191,19 @@ void CG_ProcessSnapshots(void);
 // cg_info.c
 //
 void CG_LoadingString(const char* s);
-void CG_LoadingItem(int itemNum);
+void CG_LoadingItem(int item_num);
 void CG_LoadingClient(int client_num);
 void CG_DrawInformation(void);
 
 //
 // cg_spawn.c
 //
-qboolean	CG_SpawnString(const char* key, const char* defaultString, char** out);
+qboolean	CG_SpawnString(const char* key, const char* default_string, char** out);
 // spawn string returns a temporary reference, you must CopyString() if you want to keep it
-qboolean	CG_SpawnFloat(const char* key, const char* defaultString, float* out);
-qboolean	CG_SpawnInt(const char* key, const char* defaultString, int* out);
-qboolean	CG_SpawnBoolean(const char* key, const char* defaultString, qboolean* out);
-qboolean	CG_SpawnVector(const char* key, const char* defaultString, float* out);
+qboolean	CG_SpawnFloat(const char* key, const char* default_string, float* out);
+qboolean	CG_SpawnInt(const char* key, const char* default_string, int* out);
+qboolean	CG_SpawnBoolean(const char* key, const char* default_string, qboolean* out);
+qboolean	CG_SpawnVector(const char* key, const char* default_string, float* out);
 void		CG_ParseEntitiesFromString(void);
 
 //
@@ -2298,7 +2298,7 @@ void CG_CreateBBRefEnts(entityState_t* s1, vec3_t origin);
 
 void CG_InitG2Weapons(void);
 void CG_ShutDownG2Weapons(void);
-void CG_CopyG2WeaponInstance(const centity_t* cent, int weaponNum, void* toGhoul2);
+void CG_CopyG2WeaponInstance(const centity_t* cent, int weapon_num, void* to_ghoul2);
 void* CG_G2WeaponInstance(const centity_t* cent, int weapon);
 void CG_CheckPlayerG2Weapons(const playerState_t* ps, centity_t* cent);
 

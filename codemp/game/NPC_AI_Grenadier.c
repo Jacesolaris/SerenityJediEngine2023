@@ -505,7 +505,7 @@ void NPC_BSGrenadier_Attack(void)
 			trace_t trace;
 			trap->Trace(&trace, NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->r.mins, NPCS.NPC->enemy->r.maxs,
 			            NPCS.NPC->enemy->r.currentOrigin, NPCS.NPC->s.number, NPCS.NPC->enemy->clipmask, qfalse, 0, 0);
-			if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPCS.NPC->enemy->s.
+			if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entity_num == NPCS.NPC->enemy->s.
 				number))
 			{
 				//I can get right to him

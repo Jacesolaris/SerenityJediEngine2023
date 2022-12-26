@@ -103,11 +103,11 @@ typedef struct entityShared_s {
 	vec3_t		lastAngles;			//Where you were looking last frame
 	qboolean	mIsRoffing;			// set to qtrue when the entity is being roffed
 
-	// when a trace call is made and passEntityNum != ENTITYNUM_NONE,
+	// when a trace call is made and pass_entity_num != ENTITYNUM_NONE,
 	// an ent will be excluded from testing if:
-	// ent->s.number == passEntityNum	(don't interact with self)
-	// ent->s.ownerNum = passEntityNum	(don't interact with your own missiles)
-	// entity[ent->s.ownerNum].ownerNum = passEntityNum	(don't interact with other missiles from owner)
+	// ent->s.number == pass_entity_num	(don't interact with self)
+	// ent->s.ownerNum = pass_entity_num	(don't interact with your own missiles)
+	// entity[ent->s.ownerNum].ownerNum = pass_entity_num	(don't interact with other missiles from owner)
 	int			ownerNum;
 
 	// mask of clients that this entity should be broadcast to
@@ -831,7 +831,7 @@ typedef struct gameImport_s {
 	qboolean(*InPVSIgnorePortals)					(const vec3_t p1, const vec3_t p2);
 	void		(*LinkEntity)							(sharedEntity_t* ent);
 	void		(*LocateGameData)						(sharedEntity_t* gEnts, int numGEntities, int sizeofGEntity_t, playerState_t* clients, int sizeofGClient);
-	int			(*PointContents)						(const vec3_t point, int passEntityNum);
+	int			(*PointContents)						(const vec3_t point, int pass_entity_num);
 	void		(*SendConsoleCommand)					(int exec_when, const char* text);
 	void		(*SendServerCommand)					(int client_num, const char* text);
 	void		(*SetBrushModel)						(sharedEntity_t* ent, const char* name);
@@ -840,7 +840,7 @@ typedef struct gameImport_s {
 	void		(*SetUserinfo)							(int num, const char* buffer);
 	void		(*SiegePersSet)							(siegePers_t* pers);
 	void		(*SiegePersGet)							(siegePers_t* pers);
-	void		(*Trace)								(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod);
+	void		(*Trace)								(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int contentmask, int capsule, int traceFlags, int use_lod);
 	void		(*UnlinkEntity)							(sharedEntity_t* ent);
 
 	qboolean(*SMP_GetStringTextString)				(const char* text, char* buffer, int bufferLength);
@@ -1098,8 +1098,8 @@ typedef struct gameImport_s {
 	qboolean(*G2API_RemoveGhoul2Model)				(void* ghlInfo, int model_index);
 	qboolean(*G2API_RemoveGhoul2Models)				(void* ghlInfo);
 	void		(*G2API_CleanGhoul2Models)				(void** ghoul2Ptr);
-	void		(*G2API_CollisionDetect)				(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius);
-	void		(*G2API_CollisionDetectCache)			(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int useLod, float fRadius);
+	void		(*G2API_CollisionDetect)				(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius);
+	void		(*G2API_CollisionDetectCache)			(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius);
 	qboolean(*G2API_SetRootSurface)					(void* ghoul2, int model_index, const char* surfaceName);
 	qboolean(*G2API_SetSurfaceOnOff)				(void* ghoul2, const char* surfaceName, int flags);
 	qboolean(*G2API_SetNewOrigin)					(void* ghoul2, int bolt_index);
@@ -1117,8 +1117,8 @@ typedef struct gameImport_s {
 	qboolean(*G2API_SetBoneIKState)					(void* ghoul2, int time, const char* boneName, int ikState, sharedSetBoneIKStateParams_t* params);
 	qboolean(*G2API_IKMove)							(void* ghoul2, int time, sharedIKMoveParams_t* params);
 	qboolean(*G2API_RemoveBone)						(void* ghoul2, const char* boneName, int model_index);
-	void		(*G2API_AttachInstanceToEntNum)			(void* ghoul2, int entityNum, qboolean server);
-	void		(*G2API_ClearAttachedInstance)			(int entityNum);
+	void		(*G2API_AttachInstanceToEntNum)			(void* ghoul2, int entity_num, qboolean server);
+	void		(*G2API_ClearAttachedInstance)			(int entity_num);
 	void		(*G2API_CleanEntAttachments)			(void);
 	qboolean(*G2API_OverrideServer)					(void* serverInstance);
 	void		(*G2API_GetSurfaceName)					(void* ghoul2, int surfNumber, int model_index, char* fillBuf);
@@ -1159,9 +1159,9 @@ typedef struct gameExport_s {
 	qboolean(*NPC_ClearLOS2)					(int entID, const vec3_t end);
 	int			(*NAVNEW_ClearPathBetweenPoints)	(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, int ignore, int clipmask);
 	qboolean(*NAV_CheckNodeFailedForEnt)		(int entID, int nodeNum);
-	qboolean(*NAV_EntIsUnlockedDoor)			(int entityNum);
-	qboolean(*NAV_EntIsDoor)					(int entityNum);
-	qboolean(*NAV_EntIsBreakable)				(int entityNum);
+	qboolean(*NAV_EntIsUnlockedDoor)			(int entity_num);
+	qboolean(*NAV_EntIsDoor)					(int entity_num);
+	qboolean(*NAV_EntIsBreakable)				(int entity_num);
 	qboolean(*NAV_EntIsRemovableUsable)			(int entNum);
 	void		(*NAV_FindCombatPointWaypoints)		(void);
 	int			(*BG_GetItemIndexByTag)				(int tag, int type);

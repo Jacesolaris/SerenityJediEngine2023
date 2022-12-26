@@ -69,14 +69,14 @@ const char* GetStringForID(const stringID_table_t* table, const int id)
 	return NULL;
 }
 
-float Q_clamp(float min, float value, float max)
+float Q_clamp(const float min, const float value, const float max)
 {
 	if (value < min) return min;
 	if (value > max) return max;
 	return value;
 }
 
-int Q_clampi(int min, int value, int max) {
+int Q_clampi(const int min, const int value, const int max) {
 	if (value < min) return min;
 	if (value > max) return max;
 	return value;
@@ -157,7 +157,7 @@ qboolean COM_CompareExtension(const char* in, const char* ext)
 COM_DefaultExtension
 ==================
 */
-void COM_DefaultExtension(char* path, int maxSize, const char* extension)
+void COM_DefaultExtension(char* path, const int maxSize, const char* extension)
 {
 	const char* dot = strrchr(path, '.'), * slash;
 	if (dot && (!((slash = strrchr(path, '/'))) || slash < dot))
@@ -328,7 +328,7 @@ int COM_Compress(char* data_p) {
 	return out - data_p;
 }
 
-char* COM_ParseExt(const char** data_p, qboolean allowLineBreaks)
+char* COM_ParseExt(const char** data_p, const qboolean allowLineBreaks)
 {
 	int c;
 	qboolean hasNewLines = qfalse;
@@ -572,7 +572,7 @@ void SkipRestOfLine(const char** data) {
 	*data = p;
 }
 
-void Parse1DMatrix(const char** buf_p, int x, float* m) {
+void Parse1DMatrix(const char** buf_p, const int x, float* m) {
 	COM_MatchToken(buf_p, "(");
 
 	for (int i = 0; i < x; i++) {
@@ -583,7 +583,7 @@ void Parse1DMatrix(const char** buf_p, int x, float* m) {
 	COM_MatchToken(buf_p, ")");
 }
 
-void Parse2DMatrix(const char** buf_p, int y, int x, float* m) {
+void Parse2DMatrix(const char** buf_p, const int y, const int x, float* m) {
 	COM_MatchToken(buf_p, "(");
 
 	for (int i = 0; i < y; i++) {
@@ -593,7 +593,7 @@ void Parse2DMatrix(const char** buf_p, int y, int x, float* m) {
 	COM_MatchToken(buf_p, ")");
 }
 
-void Parse3DMatrix(const char** buf_p, int z, int y, int x, float* m) {
+void Parse3DMatrix(const char** buf_p, const int z, const int y, const int x, float* m) {
 	COM_MatchToken(buf_p, "(");
 
 	for (int i = 0; i < z; i++) {
@@ -648,7 +648,7 @@ int Com_HexStrToInt(const char* str)
 ============================================================================
 */
 
-int QDECL Com_sprintf(char* dest, int size, const char* fmt, ...) {
+int QDECL Com_sprintf(char* dest, const int size, const char* fmt, ...) {
 	va_list		argptr;
 
 	va_start(argptr, fmt);
@@ -661,7 +661,7 @@ int QDECL Com_sprintf(char* dest, int size, const char* fmt, ...) {
 	return len;
 }
 
-int FloatAsInt(float f) {
+int FloatAsInt(const float f) {
 	byteAlias_t fi;
 	fi.f = f;
 	return fi.i;
@@ -1041,7 +1041,7 @@ void Info_SetValueForKey_Big(char* s, const char* key, const char* value) {
 Com_CharIsOneOfCharset
 ==================
 */
-static qboolean Com_CharIsOneOfCharset(char c, const char* set) {
+static qboolean Com_CharIsOneOfCharset(const char c, const char* set) {
 	for (size_t i = 0; i < strlen(set); i++) {
 		if (set[i] == c)
 			return qtrue;
@@ -1073,7 +1073,7 @@ char* Com_SkipCharset(char* s, const char* sep) {
 Com_SkipTokens
 ==================
 */
-char* Com_SkipTokens(char* s, int numTokens, const char* sep) {
+char* Com_SkipTokens(char* s, const int numTokens, const char* sep) {
 	int sepCount = 0;
 	char* p = s;
 
@@ -1092,20 +1092,20 @@ char* Com_SkipTokens(char* s, int numTokens, const char* sep) {
 	return s;
 }
 
-qboolean Q_InBitflags(const uint32_t* bits, int index, uint32_t bitsPerByte) {
+qboolean Q_InBitflags(const uint32_t* bits, const int index, const uint32_t bitsPerByte) {
 	return bits[index / bitsPerByte] & 1 << index % bitsPerByte ? qtrue : qfalse;
 }
 
-void Q_AddToBitflags(uint32_t* bits, int index, uint32_t bitsPerByte) {
+void Q_AddToBitflags(uint32_t* bits, const int index, const uint32_t bitsPerByte) {
 	bits[index / bitsPerByte] |= 1 << index % bitsPerByte;
 }
 
-void Q_RemoveFromBitflags(uint32_t* bits, int index, uint32_t bitsPerByte) {
+void Q_RemoveFromBitflags(uint32_t* bits, const int index, const uint32_t bitsPerByte) {
 	bits[index / bitsPerByte] &= ~(1 << index % bitsPerByte);
 }
 
-void* Q_LinearSearch(const void* key, const void* ptr, size_t count,
-	size_t size, cmpFunc_t cmp)
+void* Q_LinearSearch(const void* key, const void* ptr, const size_t count,
+                     const size_t size, const cmpFunc_t cmp)
 {
 	for (size_t i = 0; i < count; i++)
 	{

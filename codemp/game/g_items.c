@@ -540,7 +540,7 @@ qboolean PlaceShield(gentity_t* playerent)
 			shield->use = 0; //Use_Item;
 
 			// allow to ride movers
-			shield->s.groundEntityNum = tr.entityNum;
+			shield->s.groundEntityNum = tr.entity_num;
 
 			G_SetOrigin(shield, tr.endpos);
 
@@ -745,7 +745,7 @@ static qboolean pas_find_enemies(gentity_t* self)
 
 		trap->Trace(&tr, org2, NULL, NULL, org, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
+		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
 		{
 			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
@@ -802,9 +802,9 @@ void pas_adjust_enemy(gentity_t* ent)
 
 		trap->Trace(&tr, org2, NULL, NULL, org, ent->s.number, MASK_SHOT, qfalse, 0, 0);
 
-		if (tr.allsolid || tr.startsolid || tr.fraction < 0.9f || tr.entityNum == ent->s.number)
+		if (tr.allsolid || tr.startsolid || tr.fraction < 0.9f || tr.entity_num == ent->s.number)
 		{
-			if (tr.entityNum != ent->enemy->s.number)
+			if (tr.entity_num != ent->enemy->s.number)
 			{
 				// trace failed
 				keep = qfalse;
@@ -1473,7 +1473,7 @@ void Flamethrower_Fire(gentity_t* self)
 
 	const float radius = FLAMETHROWER_RADIUS;
 	gentity_t* entity_list[MAX_GENTITIES];
-	int iEntityList[MAX_GENTITIES];
+	int i_entity_list[MAX_GENTITIES];
 	int i;
 
 	AngleVectors(self->client->ps.viewangles, forward, NULL, NULL);
@@ -1485,12 +1485,12 @@ void Flamethrower_Fire(gentity_t* self)
 		mins[i] = center[i] - radius;
 		maxs[i] = center[i] + radius;
 	}
-	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, iEntityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(mins, maxs, i_entity_list, MAX_GENTITIES);
 
 	i = 0;
 	while (i < num_listed_entities)
 	{
-		entity_list[i] = &g_entities[iEntityList[i]];
+		entity_list[i] = &g_entities[i_entity_list[i]];
 
 		i++;
 	}
@@ -1500,29 +1500,28 @@ void Flamethrower_Fire(gentity_t* self)
 		vec3_t size;
 		vec3_t ent_org;
 		vec3_t dir;
-		// ReSharper disable once CppEntityAssignedButNoRead
 		float dot;
-		gentity_t* traceEnt = entity_list[e];
+		gentity_t* trace_ent = entity_list[e];
 
-		if (!traceEnt)
+		if (!trace_ent)
 			continue;
-		if (traceEnt == self)
+		if (trace_ent == self)
 			continue;
-		if (!traceEnt->inuse)
+		if (!trace_ent->inuse)
 			continue;
-		if (!traceEnt->takedamage)
+		if (!trace_ent->takedamage)
 			continue;
-		if (!g_friendlyFire.integer && OnSameTeam(self, traceEnt))
+		if (!g_friendlyFire.integer && OnSameTeam(self, trace_ent))
 			continue;
 		for (i = 0; i < 3; i++)
 		{
-			if (center[i] < traceEnt->r.absmin[i])
+			if (center[i] < trace_ent->r.absmin[i])
 			{
-				v[i] = traceEnt->r.absmin[i] - center[i];
+				v[i] = trace_ent->r.absmin[i] - center[i];
 			}
-			else if (center[i] > traceEnt->r.absmax[i])
+			else if (center[i] > trace_ent->r.absmax[i])
 			{
-				v[i] = center[i] - traceEnt->r.absmax[i];
+				v[i] = center[i] - trace_ent->r.absmax[i];
 			}
 			else
 			{
@@ -1530,8 +1529,8 @@ void Flamethrower_Fire(gentity_t* self)
 			}
 		}
 
-		VectorSubtract(traceEnt->r.absmax, traceEnt->r.absmin, size);
-		VectorMA(traceEnt->r.absmin, 0.5, size, ent_org);
+		VectorSubtract(trace_ent->r.absmax, trace_ent->r.absmin, size);
+		VectorMA(trace_ent->r.absmin, 0.5, size, ent_org);
 
 		//see if they're in front of me
 		//must be within the forward cone
@@ -1548,48 +1547,46 @@ void Flamethrower_Fire(gentity_t* self)
 		}
 
 		//in PVS?
-		if (!traceEnt->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
+		if (!trace_ent->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
 		{
 			//must be in PVS
 			continue;
 		}
 
 		//Now check and see if we can actually hit it
-		trap->Trace(&tr, self->client->ps.origin, vec3_origin, vec3_origin, ent_org, self->s.number, MASK_SHOT, qfalse,
-		            0, 0);
+		trap->Trace(&tr, self->client->ps.origin, vec3_origin, vec3_origin, ent_org, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-		if (tr.fraction < 1.0f && tr.entityNum != traceEnt->s.number)
+		if (tr.fraction < 1.0f && tr.entity_num != trace_ent->s.number)
 		{
 			//must have clear LOS
 			continue;
 		}
 
-		if (tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage)
+		if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
 		{
 			const int damage = FLAMETHROWER_DAMAGE;
-			G_Damage(traceEnt, self, self, dir, tr.endpos, damage,
-			         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
+			G_Damage(trace_ent, self, self, dir, tr.endpos, damage,DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
 
-			if (traceEnt->health > 0 && traceEnt->painDebounceTime > level.time)
+			if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
 			{
-				g_throw(traceEnt, dir, 30);
+				g_throw(trace_ent, dir, 30);
 
-				if (traceEnt->client)
+				if (trace_ent->client)
 				{
-					G_PlayBoltedEffect(G_EffectIndex("flamethrower/flame_impact"), traceEnt, "thoracic");
-					G_SetAnim(traceEnt, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FACEPROTECT,
-					          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
+					G_PlayBoltedEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent, "thoracic");
+					G_SetAnim(trace_ent, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FACEPROTECT,SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 				}
-				player_Burn(traceEnt);
+				player_Burn(trace_ent);
 			}
 		}
 		else
 		{
-			Player_CheckBurn(traceEnt);
+			Player_CheckBurn(trace_ent);
 		}
 	}
 }
 
+extern qboolean G_ControlledByPlayer(gentity_t* self);
 void ItemUse_FlameThrower(const gentity_t* ent)
 {
 	if (ent->client->ps.jetpackFuel < 15)
@@ -1609,8 +1606,13 @@ void ItemUse_FlameThrower(const gentity_t* ent)
 		//can't use flamethrower with saber
 		return;
 	}
+	//if (!G_ControlledByPlayer(ent))
+	//{
+	//	//can't use flamethrower
+	//	return;
+	//}
+
 	ent->client->flameTime = level.time + 300;
-	//ent->client->ps.jetpackFuel -= 15;
 }
 
 void ItemUse_Jetpack(gentity_t* ent)
@@ -1885,12 +1887,12 @@ extern void BG_CycleInven(playerState_t* ps, int direction); //bg_misc.c
 
 void EWebDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod)
 {
-	vec3_t fxDir;
+	vec3_t fx_dir;
 
 	g_radius_damage(self->r.currentOrigin, self, EWEB_DEATH_DMG, EWEB_DEATH_RADIUS, self, self, MOD_SUICIDE);
 
-	VectorSet(fxDir, 1.0f, 0.0f, 0.0f);
-	G_PlayEffect(EFFECT_EXPLOSION_DETPACK, self->r.currentOrigin, fxDir);
+	VectorSet(fx_dir, 1.0f, 0.0f, 0.0f);
+	G_PlayEffect(EFFECT_EXPLOSION_DETPACK, self->r.currentOrigin, fx_dir);
 
 	if (self->r.ownerNum != ENTITYNUM_NONE)
 	{
@@ -2061,7 +2063,7 @@ void EWeb_SetBoneAnim(gentity_t* eweb, const int startFrame, const int endFrame)
 
 void EWebFire(gentity_t* owner, gentity_t* eweb)
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t p, d, bPoint;
 
 	if (eweb->genericValue10 == -1)
@@ -2072,10 +2074,10 @@ void EWebFire(gentity_t* owner, gentity_t* eweb)
 	}
 
 	//get the muzzle point
-	trap->G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->genericValue10, &boltMatrix, eweb->s.apos.trBase,
+	trap->G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->genericValue10, &bolt_matrix, eweb->s.apos.trBase,
 	                          eweb->r.currentOrigin, level.time, NULL, eweb->modelScale);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, p);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, d);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, p);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, d);
 
 	//Start the thing backwards into the bounding box so it can't start inside other solid things
 	VectorMA(p, -16.0f, d, bPoint);
@@ -2105,14 +2107,14 @@ void EWebFire(gentity_t* owner, gentity_t* eweb)
 //lock the owner into place relative to the cannon pos
 void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 {
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 	vec3_t p, d;
 	trace_t tr;
 
-	trap->G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->genericValue9, &boltMatrix, eweb->s.apos.trBase,
+	trap->G2API_GetBoltMatrix(eweb->ghoul2, 0, eweb->genericValue9, &bolt_matrix, eweb->s.apos.trBase,
 	                          eweb->r.currentOrigin, level.time, NULL, eweb->modelScale);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, p);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, d);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, p);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, d);
 
 	VectorMA(p, 32.0f, d, p);
 	p[2] = eweb->r.currentOrigin[2];
@@ -2216,7 +2218,7 @@ void EWebUpdateBoneAngles(gentity_t* owner, gentity_t* eweb)
 }
 
 //keep it updated
-extern int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float* newYaw, float constraint); //bg_misc.c
+extern int BG_EmplacedView(vec3_t base_angles, vec3_t angles, float* new_yaw, float constraint); //bg_misc.c
 
 void EWebThink(gentity_t* self)
 {
@@ -2350,7 +2352,7 @@ gentity_t* EWeb_Create(gentity_t* spawner)
 	downPos[2] -= 18.0f;
 	trap->Trace(&tr, pos, mins, maxs, downPos, spawner->s.number, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-	if (tr.startsolid || tr.allsolid || tr.fraction == 1.0f || tr.entityNum < ENTITYNUM_WORLD)
+	if (tr.startsolid || tr.allsolid || tr.fraction == 1.0f || tr.entity_num < ENTITYNUM_WORLD)
 	{
 		//didn't hit ground.
 		G_FreeEntity(ent);
@@ -3617,7 +3619,7 @@ void FinishSpawningItem(gentity_t* ent)
 		ent->r.maxs[2] += 0.1f;
 
 		// allow to ride movers
-		ent->s.groundEntityNum = tr.entityNum;
+		ent->s.groundEntityNum = tr.entity_num;
 
 		G_SetOrigin(ent, tr.endpos);
 	}
@@ -3939,7 +3941,7 @@ void G_BounceItem(gentity_t* ent, trace_t* trace)
 		//detpacks only
 		if (ent->touch)
 		{
-			ent->touch(ent, &g_entities[trace->entityNum], trace);
+			ent->touch(ent, &g_entities[trace->entity_num], trace);
 			return;
 		}
 	}
@@ -3950,7 +3952,7 @@ void G_BounceItem(gentity_t* ent, trace_t* trace)
 		trace->endpos[2] += 1.0; // make sure it is off ground
 		SnapVector(trace->endpos);
 		G_SetOrigin(ent, trace->endpos);
-		ent->s.groundEntityNum = trace->entityNum;
+		ent->s.groundEntityNum = trace->entity_num;
 		return;
 	}
 
@@ -3964,7 +3966,7 @@ void G_BounceItem(gentity_t* ent, trace_t* trace)
 		//holocrons and sentry guns
 		if (ent->touch)
 		{
-			ent->touch(ent, &g_entities[trace->entityNum], trace);
+			ent->touch(ent, &g_entities[trace->entity_num], trace);
 		}
 	}
 }

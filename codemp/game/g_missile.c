@@ -44,7 +44,7 @@ float rand_float(float min, float max);
 
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern void Jedi_Decloak(gentity_t* self);
-extern qboolean FighterIsLanded(const Vehicle_t* pVeh, const playerState_t* parentPS);
+extern qboolean FighterIsLanded(const Vehicle_t* p_veh, const playerState_t* parentPS);
 extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern float VectorDistance(vec3_t v1, vec3_t v2);
 qboolean PM_SaberInStart(int move);
@@ -678,7 +678,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 	qboolean is_knocked_saber = qfalse;
 	int missile_dmg;
 
-	gentity_t* other = &g_entities[trace->entityNum];
+	gentity_t* other = &g_entities[trace->entity_num];
 
 	// check for bounce
 	if ((!other->takedamage || ent->s.weapon == WP_THERMAL) &&
@@ -777,7 +777,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 
 			g_manual_block_missile(other, ent, fwd);
 
-			g_missile_bounce_effect(ent, ent->r.currentOrigin, fwd, trace->entityNum == ENTITYNUM_WORLD);
+			g_missile_bounce_effect(ent, ent->r.currentOrigin, fwd, trace->entity_num == ENTITYNUM_WORLD);
 			return qtrue;
 		}
 	}
@@ -807,7 +807,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 
 		g_manual_block_missile(other, ent, fwd);
 
-		g_missile_bounce_effect(ent, ent->r.currentOrigin, fwd, trace->entityNum == ENTITYNUM_WORLD);
+		g_missile_bounce_effect(ent, ent->r.currentOrigin, fwd, trace->entity_num == ENTITYNUM_WORLD);
 		return qtrue;
 	}
 
@@ -1247,14 +1247,14 @@ void g_run_missile(gentity_t* ent)
 
 	if (tr.startsolid || tr.allsolid)
 	{
-		// make sure the tr.entityNum is set to the entity we're stuck in
+		// make sure the tr.entity_num is set to the entity we're stuck in
 	}
 	else
 	{
 		VectorCopy(tr.endpos, ent->r.currentOrigin);
 	}
 
-	if (ent->passThroughNum && tr.entityNum == ent->passThroughNum - 1)
+	if (ent->passThroughNum && tr.entity_num == ent->passThroughNum - 1)
 	{
 		VectorCopy(origin, ent->r.currentOrigin);
 		trap->LinkEntity((sharedEntity_t*)ent);
@@ -1275,9 +1275,9 @@ void g_run_missile(gentity_t* ent)
 
 		VectorCopy(tr_g.endpos, ground_spot);
 
-		if (!tr_g.startsolid && !tr_g.allsolid && tr_g.entityNum == ENTITYNUM_WORLD)
+		if (!tr_g.startsolid && !tr_g.allsolid && tr_g.entity_num == ENTITYNUM_WORLD)
 		{
-			ent->s.groundEntityNum = tr_g.entityNum;
+			ent->s.groundEntityNum = tr_g.entity_num;
 		}
 		else
 		{
@@ -1317,7 +1317,7 @@ void g_run_missile(gentity_t* ent)
 
 #if 0 //will get stomped with missile impact event...
 		if (ent->s.weapon > WP_NONE && ent->s.weapon < WP_NUM_WEAPONS &&
-			(tr.entityNum < MAX_CLIENTS || g_entities[tr.entityNum].s.eType == ET_NPC))
+			(tr.entity_num < MAX_CLIENTS || g_entities[tr.entity_num].s.eType == ET_NPC))
 		{ //player or NPC, try making a mark on him
 		  //ok, let's try adding it to the missile ent instead
 			G_AddEvent(ent, EV_GHOUL2_MARK, 0);
@@ -1327,7 +1327,7 @@ void g_run_missile(gentity_t* ent)
 			BG_EvaluateTrajectory(&ent->s.pos, level.time, ent->s.origin2);
 
 			//the index for whoever we are hitting
-			ent->s.otherEntityNum = tr.entityNum;
+			ent->s.otherEntityNum = tr.entity_num;
 
 			if (VectorCompare(ent->s.origin, ent->s.origin2))
 			{
@@ -1336,7 +1336,7 @@ void g_run_missile(gentity_t* ent)
 		}
 #else
 		if (ent->s.weapon > WP_NONE && ent->s.weapon < WP_NUM_WEAPONS &&
-			(tr.entityNum < MAX_CLIENTS || g_entities[tr.entityNum].s.eType == ET_NPC))
+			(tr.entity_num < MAX_CLIENTS || g_entities[tr.entity_num].s.eType == ET_NPC))
 		{
 			//player or NPC, try making a mark on him
 			//copy current pos to s.origin, and current projected to origin2
@@ -1358,7 +1358,7 @@ void g_run_missile(gentity_t* ent)
 			return;
 		}
 
-		if (tr.entityNum == ent->s.otherEntityNum)
+		if (tr.entity_num == ent->s.otherEntityNum)
 		{
 			//if the impact event other and the trace ent match then it's ok to do the g2 mark
 			ent->s.trickedentindex = 1;

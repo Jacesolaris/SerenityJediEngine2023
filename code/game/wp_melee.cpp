@@ -53,16 +53,16 @@ void WP_Melee(gentity_t* ent)
 
 	gi.trace(&tr, muzzle, mins, maxs, end, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	if (tr.entityNum >= ENTITYNUM_WORLD)
+	if (tr.entity_num >= ENTITYNUM_WORLD)
 	{
-		if (tr.entityNum == ENTITYNUM_WORLD)
+		if (tr.entity_num == ENTITYNUM_WORLD)
 		{
 			G_PlayEffect(G_EffectIndex("melee/punch_impact"), tr.endpos, forwardVec);
 		}
 		return;
 	}
 
-	gentity_t* tr_ent = &g_entities[tr.entityNum];
+	gentity_t* tr_ent = &g_entities[tr.entity_num];
 
 	if (ent->client && !PM_DroidMelee(ent->client->NPC_class))
 	{

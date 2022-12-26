@@ -60,9 +60,9 @@ float DEFAULT_MINS_1 = -16;
 float DEFAULT_MAXS_0 = 16;
 float DEFAULT_MAXS_1 = 16;
 float DEFAULT_PLAYER_RADIUS = sqrt(DEFAULT_MAXS_0 * DEFAULT_MAXS_0 + DEFAULT_MAXS_1 * DEFAULT_MAXS_1);
-vec3_t playerMins = {DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2};
+vec3_t player_mins = {DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2};
 vec3_t playerMinsStep = {DEFAULT_MINS_0, DEFAULT_MINS_1, DEFAULT_MINS_2 + STEPSIZE};
-vec3_t playerMaxs = {DEFAULT_MAXS_0, DEFAULT_MAXS_1, DEFAULT_MAXS_2};
+vec3_t player_maxs = {DEFAULT_MAXS_0, DEFAULT_MAXS_1, DEFAULT_MAXS_2};
 extern void Player_CheckBurn(const gentity_t* self);
 extern void Player_CheckFreeze(const gentity_t* self);
 extern void RemoveBarrier(gentity_t* ent);
@@ -260,13 +260,13 @@ qboolean SpotWouldTelefrag(const gentity_t* spot, const team_t checkteam)
 	if (!VectorCompare(spot->mins, vec3_origin) && VectorLength(spot->mins))
 		VectorAdd(spot->s.origin, spot->mins, mins);
 	else
-		VectorAdd(spot->s.origin, playerMins, mins);
+		VectorAdd(spot->s.origin, player_mins, mins);
 
 	// If we have a maxs, use that instead of the hardcoded bounding box
 	if (!VectorCompare(spot->maxs, vec3_origin) && VectorLength(spot->maxs))
 		VectorAdd(spot->s.origin, spot->maxs, maxs);
 	else
-		VectorAdd(spot->s.origin, playerMaxs, maxs);
+		VectorAdd(spot->s.origin, player_maxs, maxs);
 
 	const int num = gi.EntitiesInBox(mins, maxs, touch, MAX_GENTITIES);
 
@@ -451,7 +451,7 @@ gentity_t* SelectSpawnPoint(vec3_t avoidPoint, const team_t team, vec3_t origin,
 		trace_t tr;
 
 		origin[2] = MIN_WORLD_COORD;
-		gi.trace(&tr, spot->s.origin, playerMins, playerMaxs, origin, ENTITYNUM_NONE, MASK_PLAYERSOLID,
+		gi.trace(&tr, spot->s.origin, player_mins, player_maxs, origin, ENTITYNUM_NONE, MASK_PLAYERSOLID,
 		         static_cast<EG2_Collision>(0), 0);
 		if (tr.fraction < 1.0 && !tr.allsolid && !tr.startsolid)
 		{
@@ -2029,10 +2029,10 @@ void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* c
 	{
 		//vehicles actually grab their model from the appropriate vehicle data entry
 		// This will register the model and other assets.
-		Vehicle_t* pVeh = ent->m_pVehicle;
-		pVeh->m_pVehicleInfo->RegisterAssets(pVeh);
+		Vehicle_t* p_veh = ent->m_pVehicle;
+		p_veh->m_pVehicleInfo->RegisterAssets(p_veh);
 		ent->playerModel = gi.G2API_InitGhoul2Model(ent->ghoul2, va("models/players/%s/model.glm", model_name),
-		                                            pVeh->m_pVehicleInfo->model_index, G_SkinIndex(skinName),
+		                                            p_veh->m_pVehicleInfo->model_index, G_SkinIndex(skinName),
 		                                            NULL_HANDLE, 0, 0);
 	}
 	else
@@ -2825,8 +2825,8 @@ qboolean client_spawn(gentity_t* ent, SavedGameJustLoaded_e e_saved_game_just_lo
 		client->renderInfo.lookTargetClearTime = 0;
 		client->renderInfo.lookMode = LM_ENT;
 
-		VectorCopy(playerMins, ent->mins);
-		VectorCopy(playerMaxs, ent->maxs);
+		VectorCopy(player_mins, ent->mins);
+		VectorCopy(player_maxs, ent->maxs);
 		client->crouchheight = CROUCH_MAXS_2;
 		client->standheight = DEFAULT_MAXS_2;
 

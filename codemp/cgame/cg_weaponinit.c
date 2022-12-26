@@ -103,15 +103,15 @@ CG_RegisterWeapon
 The server says this item is used on this level
 =================
 */
-void CG_RegisterWeapon(const int weaponNum)
+void CG_RegisterWeapon(const int weapon_num)
 {
 	gitem_t * item, *ammo;
 	char path[MAX_QPATH];
 	vec3_t mins, maxs;
 
-	weaponInfo_t* weaponInfo = &cg_weapons[weaponNum];
+	weaponInfo_t* weaponInfo = &cg_weapons[weapon_num];
 
-	if (weaponNum == 0)
+	if (weapon_num == 0)
 	{
 		return;
 	}
@@ -126,7 +126,7 @@ void CG_RegisterWeapon(const int weaponNum)
 
 	for (item = bg_itemlist + 1; item->classname; item++)
 	{
-		if (item->giType == IT_WEAPON && item->giTag == weaponNum)
+		if (item->giType == IT_WEAPON && item->giTag == weapon_num)
 		{
 			weaponInfo->item = item;
 			break;
@@ -134,7 +134,7 @@ void CG_RegisterWeapon(const int weaponNum)
 	}
 	if (!item->classname)
 	{
-		trap->Error(ERR_DROP, "Couldn't find weapon %i", weaponNum);
+		trap->Error(ERR_DROP, "Couldn't find weapon %i", weapon_num);
 	}
 	CG_RegisterItemVisuals(item - bg_itemlist);
 
@@ -155,7 +155,7 @@ void CG_RegisterWeapon(const int weaponNum)
 
 	for (ammo = bg_itemlist + 1; ammo->classname; ammo++)
 	{
-		if (ammo->giType == IT_AMMO && ammo->giTag == weaponNum)
+		if (ammo->giType == IT_AMMO && ammo->giTag == weapon_num)
 		{
 			break;
 		}
@@ -167,18 +167,18 @@ void CG_RegisterWeapon(const int weaponNum)
 
 	weaponInfo->flashModel = 0;
 
-	if (weaponNum == WP_DISRUPTOR ||
-		weaponNum == WP_FLECHETTE ||
-		weaponNum == WP_REPEATER ||
-		weaponNum == WP_ROCKET_LAUNCHER ||
-		weaponNum == WP_CONCUSSION)
+	if (weapon_num == WP_DISRUPTOR ||
+		weapon_num == WP_FLECHETTE ||
+		weapon_num == WP_REPEATER ||
+		weapon_num == WP_ROCKET_LAUNCHER ||
+		weapon_num == WP_CONCUSSION)
 	{
 		Q_strncpyz(path, item->view_model, sizeof path);
 		COM_StripExtension(path, path, sizeof path);
 		Q_strcat(path, sizeof path, "_barrel.md3");
 		weaponInfo->barrelModel = trap->R_RegisterModel(path);
 	}
-	else if (weaponNum == WP_STUN_BATON)
+	else if (weapon_num == WP_STUN_BATON)
 	{
 		//only weapon with more than 1 barrel..
 		trap->R_RegisterModel("models/weapons2/stun_baton/baton_barrel.md3");
@@ -190,7 +190,7 @@ void CG_RegisterWeapon(const int weaponNum)
 		weaponInfo->barrelModel = 0;
 	}
 
-	if (weaponNum != WP_SABER)
+	if (weapon_num != WP_SABER)
 	{
 		Q_strncpyz(path, item->view_model, sizeof path);
 		COM_StripExtension(path, path, sizeof path);
@@ -202,7 +202,7 @@ void CG_RegisterWeapon(const int weaponNum)
 		weaponInfo->handsModel = 0;
 	}
 
-	switch (weaponNum)
+	switch (weapon_num)
 	{
 	case WP_STUN_BATON:
 		trap->R_RegisterShader("gfx/effects/stunPass");
@@ -230,7 +230,7 @@ void CG_RegisterWeapon(const int weaponNum)
 		trap->FX_RegisterEffect("blaster/flesh_impact");
 		trap->FX_RegisterEffect("impacts/droid_impact1");
 
-		if (weaponNum == WP_MELEE)
+		if (weapon_num == WP_MELEE)
 		{
 			//grapple hook
 			MAKERGB(weaponInfo->flashDlightColor, 0.6f, 0.6f, 1.0f);
@@ -431,7 +431,7 @@ void CG_RegisterWeapon(const int weaponNum)
 		weaponInfo->firingSound = NULL_SOUND;
 		weaponInfo->chargeSound = NULL_SOUND;
 
-		if (weaponNum == WP_DISRUPTOR)
+		if (weapon_num == WP_DISRUPTOR)
 		{
 			weaponInfo->muzzleEffect = trap->FX_RegisterEffect("disruptor/muzzle_flash");
 		}
@@ -449,7 +449,7 @@ void CG_RegisterWeapon(const int weaponNum)
 		weaponInfo->altFiringSound = NULL_SOUND;
 		weaponInfo->altChargeSound = trap->S_RegisterSound("sound/weapons/disruptor/altCharge.wav");
 
-		if (weaponNum == WP_DISRUPTOR)
+		if (weapon_num == WP_DISRUPTOR)
 		{
 			weaponInfo->altMuzzleEffect = trap->FX_RegisterEffect("disruptor/altmuzzle_flash");
 		}

@@ -1310,11 +1310,11 @@ void NPC_BSST_Patrol()
 		if (NPCInfo->scriptFlags & SCF_LOOK_FOR_ENEMIES)
 		{
 			//FIXME: do a FOV cone check, then a trace
-			if (trace.entityNum < ENTITYNUM_WORLD)
+			if (trace.entity_num < ENTITYNUM_WORLD)
 			{
 				//hit something
 				//try cheap check first
-				gentity_t* enemy = &g_entities[trace.entityNum];
+				gentity_t* enemy = &g_entities[trace.entity_num];
 				if (enemy && enemy->client && NPC_ValidEnemy(enemy) && enemy->client->playerTeam == NPC->client->
 					enemyTeam)
 				{
@@ -2916,10 +2916,10 @@ void Noghri_StickTrace()
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entityNum != last_hit)
+			if (trace.fraction < 1.0f && trace.entity_num != last_hit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entityNum];
+				gentity_t* traceEnt = &g_entities[trace.entity_num];
 				if (traceEnt->takedamage
 					&& (!traceEnt->client || traceEnt == NPC->enemy || traceEnt->client->NPC_class != NPC->client->
 						NPC_class))
@@ -2934,7 +2934,7 @@ void Noghri_StickTrace()
 						//do pain on enemy
 						G_Knockdown(traceEnt, NPC, dir, 300, qtrue);
 					}
-					last_hit = trace.entityNum;
+					last_hit = trace.entity_num;
 					hit = qtrue;
 				}
 			}
@@ -2978,10 +2978,10 @@ void Noghri_StickTracenew(gentity_t* self)
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, self->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entityNum != last_hit)
+			if (trace.fraction < 1.0f && trace.entity_num != last_hit)
 			{
 				//hit something
-				gentity_t* trace_ent = &g_entities[trace.entityNum];
+				gentity_t* trace_ent = &g_entities[trace.entity_num];
 				if (trace_ent->takedamage
 					&& (!trace_ent->client || trace_ent == self->enemy || trace_ent->client->NPC_class != self->client->
 						NPC_class))
@@ -2996,7 +2996,7 @@ void Noghri_StickTracenew(gentity_t* self)
 						//do pain on enemy
 						G_Knockdown(trace_ent, self, dir, 300, qtrue);
 					}
-					last_hit = trace.entityNum;
+					last_hit = trace.entity_num;
 					hit = qtrue;
 				}
 			}

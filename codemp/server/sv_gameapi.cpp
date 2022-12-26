@@ -411,31 +411,31 @@ qboolean GVM_NAV_CheckNodeFailedForEnt(const int entID, const int nodeNum)
 	return ge->NAV_CheckNodeFailedForEnt(entID, nodeNum);
 }
 
-qboolean GVM_NAV_EntIsUnlockedDoor(const int entityNum)
+qboolean GVM_NAV_EntIsUnlockedDoor(const int entity_num)
 {
 	if (gvm->isLegacy)
-		return static_cast<qboolean>(VM_Call(gvm, GAME_NAV_ENTISUNLOCKEDDOOR, entityNum));
+		return static_cast<qboolean>(VM_Call(gvm, GAME_NAV_ENTISUNLOCKEDDOOR, entity_num));
 	VMSwap v(gvm);
 
-	return ge->NAV_EntIsUnlockedDoor(entityNum);
+	return ge->NAV_EntIsUnlockedDoor(entity_num);
 }
 
-qboolean GVM_NAV_EntIsDoor(const int entityNum)
+qboolean GVM_NAV_EntIsDoor(const int entity_num)
 {
 	if (gvm->isLegacy)
-		return static_cast<qboolean>(VM_Call(gvm, GAME_NAV_ENTISDOOR, entityNum));
+		return static_cast<qboolean>(VM_Call(gvm, GAME_NAV_ENTISDOOR, entity_num));
 	VMSwap v(gvm);
 
-	return ge->NAV_EntIsDoor(entityNum);
+	return ge->NAV_EntIsDoor(entity_num);
 }
 
-qboolean GVM_NAV_EntIsBreakable(const int entityNum)
+qboolean GVM_NAV_EntIsBreakable(const int entity_num)
 {
 	if (gvm->isLegacy)
-		return static_cast<qboolean>(VM_Call(gvm, GAME_NAV_ENTISBREAKABLE, entityNum));
+		return static_cast<qboolean>(VM_Call(gvm, GAME_NAV_ENTISBREAKABLE, entity_num));
 	VMSwap v(gvm);
 
-	return ge->NAV_EntIsBreakable(entityNum);
+	return ge->NAV_EntIsBreakable(entity_num);
 }
 
 qboolean GVM_NAV_EntIsRemovableUsable(const int entNum)
@@ -1832,20 +1832,20 @@ static qboolean SV_G2API_SetSkin(void* ghoul2, const int model_index, const qhan
 
 static void SV_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles,
                                      const vec3_t position, const int frameNumber, const int entNum, vec3_t rayStart,
-                                     vec3_t rayEnd, vec3_t scale, const int traceFlags, const int useLod,
+                                     vec3_t rayEnd, vec3_t scale, const int traceFlags, const int use_lod,
                                      const float fRadius)
 {
 	re->G2API_CollisionDetect(collRecMap, *static_cast<CGhoul2Info_v*>(ghoul2), angles, position, frameNumber, entNum,
-	                          rayStart, rayEnd, scale, G2VertSpaceServer, traceFlags, useLod, fRadius);
+	                          rayStart, rayEnd, scale, G2VertSpaceServer, traceFlags, use_lod, fRadius);
 }
 
 static void SV_G2API_CollisionDetectCache(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles,
                                           const vec3_t position, const int frameNumber, const int entNum,
                                           vec3_t rayStart, vec3_t rayEnd, vec3_t scale, const int traceFlags,
-                                          const int useLod, const float fRadius)
+                                          const int use_lod, const float fRadius)
 {
 	re->G2API_CollisionDetectCache(collRecMap, *static_cast<CGhoul2Info_v*>(ghoul2), angles, position, frameNumber,
-	                               entNum, rayStart, rayEnd, scale, G2VertSpaceServer, traceFlags, useLod, fRadius);
+	                               entNum, rayStart, rayEnd, scale, G2VertSpaceServer, traceFlags, use_lod, fRadius);
 }
 
 static void SV_G2API_CleanGhoul2Models(void** ghoul2Ptr)
@@ -2084,14 +2084,14 @@ static qboolean SV_G2API_RemoveBone(void* ghoul2, const char* boneName, const in
 	return re->G2API_RemoveBone(g2, model_index, boneName);
 }
 
-static void SV_G2API_AttachInstanceToEntNum(void* ghoul2, const int entityNum, const qboolean server)
+static void SV_G2API_AttachInstanceToEntNum(void* ghoul2, const int entity_num, const qboolean server)
 {
-	re->G2API_AttachInstanceToEntNum(*static_cast<CGhoul2Info_v*>(ghoul2), entityNum, server);
+	re->G2API_AttachInstanceToEntNum(*static_cast<CGhoul2Info_v*>(ghoul2), entity_num, server);
 }
 
-static void SV_G2API_ClearAttachedInstance(const int entityNum)
+static void SV_G2API_ClearAttachedInstance(const int entity_num)
 {
-	re->G2API_ClearAttachedInstance(entityNum);
+	re->G2API_ClearAttachedInstance(entity_num);
 }
 
 static void SV_G2API_CleanEntAttachments(void)

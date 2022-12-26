@@ -213,9 +213,9 @@ void cgi_S_StopSounds(void)
 	Q_syscall(CG_S_STOPSOUNDS);
 }
 
-void cgi_S_StartSound(const vec3_t origin, const int entityNum, const int entchannel, const sfxHandle_t sfx)
+void cgi_S_StartSound(const vec3_t origin, const int entity_num, const int entchannel, const sfxHandle_t sfx)
 {
-	Q_syscall(CG_S_STARTSOUND, origin, entityNum, entchannel, sfx);
+	Q_syscall(CG_S_STARTSOUND, origin, entity_num, entchannel, sfx);
 }
 
 void cgi_AS_ParseSets(void)
@@ -253,20 +253,20 @@ void cgi_S_ClearLoopingSounds(void)
 	Q_syscall(CG_S_CLEARLOOPINGSOUNDS);
 }
 
-void cgi_S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfx,
+void cgi_S_AddLoopingSound(const int entity_num, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfx,
                            const soundChannel_t chan)
 {
-	Q_syscall(CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, sfx, chan);
+	Q_syscall(CG_S_ADDLOOPINGSOUND, entity_num, origin, velocity, sfx, chan);
 }
 
-void cgi_S_UpdateEntityPosition(const int entityNum, const vec3_t origin)
+void cgi_S_UpdateEntityPosition(const int entity_num, const vec3_t origin)
 {
-	Q_syscall(CG_S_UPDATEENTITYPOSITION, entityNum, origin);
+	Q_syscall(CG_S_UPDATEENTITYPOSITION, entity_num, origin);
 }
 
-void cgi_S_Respatialize(const int entityNum, const vec3_t origin, vec3_t axis[3], const qboolean inwater)
+void cgi_S_Respatialize(const int entity_num, const vec3_t origin, vec3_t axis[3], const qboolean inwater)
 {
-	Q_syscall(CG_S_RESPATIALIZE, entityNum, origin, axis, inwater);
+	Q_syscall(CG_S_RESPATIALIZE, entity_num, origin, axis, inwater);
 }
 
 sfxHandle_t cgi_S_RegisterSound(const char* sample)

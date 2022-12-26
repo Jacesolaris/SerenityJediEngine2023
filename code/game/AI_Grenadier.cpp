@@ -525,7 +525,7 @@ void NPC_BSGrenadier_Attack(void)
 			trace_t trace;
 			gi.trace(&trace, NPC->currentOrigin, NPC->enemy->mins, NPC->enemy->maxs, NPC->enemy->currentOrigin,
 			         NPC->s.number, NPC->enemy->clipmask, static_cast<EG2_Collision>(0), 0);
-			if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entityNum == NPC->enemy->s.
+			if (!trace.allsolid && !trace.startsolid && (trace.fraction == 1.0 || trace.entity_num == NPC->enemy->s.
 				number))
 			{
 				//I can get right to him

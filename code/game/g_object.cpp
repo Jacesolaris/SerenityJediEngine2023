@@ -179,7 +179,7 @@ void G_RunObject(gentity_t* ent)
 	//hit something
 
 	//Do impact damage
-	gentity_t* traceEnt = &g_entities[tr.entityNum];
+	gentity_t* traceEnt = &g_entities[tr.entity_num];
 	if (tr.fraction || traceEnt && traceEnt->takedamage)
 	{
 		if (!VectorCompare(ent->currentOrigin, oldOrg))
@@ -188,10 +188,10 @@ void G_RunObject(gentity_t* ent)
 			if (traceEnt && traceEnt->takedamage)
 			{
 				//hurt someone
-				vec3_t fxDir;
-				VectorNormalize2(ent->s.pos.trDelta, fxDir);
-				VectorScale(fxDir, -1, fxDir);
-				G_PlayEffect(G_EffectIndex("melee/kick_impact"), tr.endpos, fxDir);
+				vec3_t fx_dir;
+				VectorNormalize2(ent->s.pos.trDelta, fx_dir);
+				VectorScale(fx_dir, -1, fx_dir);
+				G_PlayEffect(G_EffectIndex("melee/kick_impact"), tr.endpos, fx_dir);
 				//G_Sound( ent, G_SoundIndex( va( "sound/weapons/melee/punch%d", Q_irand( 1, 4 ) ) ) );
 			}
 			else
@@ -267,7 +267,7 @@ void G_RunObject(gentity_t* ent)
 	}
 
 	//call touch func
-	GEntity_TouchFunc(ent, &g_entities[tr.entityNum], &tr);
+	GEntity_TouchFunc(ent, &g_entities[tr.entity_num], &tr);
 }
 
 void G_StopObjectMoving(gentity_t* object)

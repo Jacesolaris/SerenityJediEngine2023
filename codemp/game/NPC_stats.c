@@ -828,13 +828,13 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 	char surfOff[1024];
 	char surfOn[1024];
 	qboolean parsingPlayer = qfalse;
-	vec3_t playerMins;
-	vec3_t playerMaxs;
+	vec3_t player_mins;
+	vec3_t player_maxs;
 	int npcSaber1 = 0;
 	int npcSaber2 = 0;
 
-	VectorSet(playerMins, -15, -15, DEFAULT_MINS_2);
-	VectorSet(playerMaxs, 15, 15, DEFAULT_MAXS_2);
+	VectorSet(player_mins, -15, -15, DEFAULT_MINS_2);
+	VectorSet(player_maxs, 15, 15, DEFAULT_MAXS_2);
 
 	strcpy(customSkin, "default");
 	if (!npc_name || !npc_name[0])
@@ -887,8 +887,8 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 	ri->torsoPitchRangeUp = 30;
 	ri->torsoPitchRangeDown = 50;
 
-	VectorCopy(playerMins, npc->r.mins);
-	VectorCopy(playerMaxs, npc->r.maxs);
+	VectorCopy(player_mins, npc->r.mins);
+	VectorCopy(player_maxs, npc->r.maxs);
 	npc->client->ps.crouchheight = CROUCH_MAXS_2;
 	npc->client->ps.standheight = DEFAULT_MAXS_2;
 

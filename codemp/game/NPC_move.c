@@ -141,7 +141,7 @@ static qboolean NPC_Jump(vec3_t dest, const int goalEntNum)
 					{
 						G_DrawEdge(lastPos, trace.endpos, EDGE_RED_TWOSECOND); // TryJump
 					}
-					if (trace.entityNum == goalEntNum)
+					if (trace.entity_num == goalEntNum)
 					{
 						//hit the enemy, that's bad!
 						blocked = qtrue;
@@ -1165,7 +1165,7 @@ qboolean NPC_GetMoveDirectionAltRoute(vec3_t out, float* distance, const qboolea
 }
 
 extern qboolean NPC_MoveDirClear(int forwardmove, int rightmove, qboolean reset);
-extern qboolean G_EntIsBreakable(int entityNum);
+extern qboolean G_EntIsBreakable(int entity_num);
 
 qboolean NPC_EntityIsBreakable(const gentity_t* ent)
 {
@@ -1554,7 +1554,7 @@ qboolean NPC_CheckFallPositionOK(const gentity_t* NPC, vec3_t position)
 
 	trap->Trace(&tr, testPos, mins, maxs, downPos, NPC->s.number, MASK_PLAYERSOLID, 0, 0, 0);
 
-	if (tr.entityNum != ENTITYNUM_NONE)
+	if (tr.entity_num != ENTITYNUM_NONE)
 	{
 		return qtrue;
 	}

@@ -469,7 +469,7 @@ void turretG2_head_think(gentity_t* self)
 		&& self->attackDebounceTime < level.time)
 	{
 		vec3_t fwd, org;
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 
 		// set up our next fire time
 		self->setTime = level.time + self->wait;
@@ -478,7 +478,7 @@ void turretG2_head_think(gentity_t* self)
 		trap->G2API_GetBoltMatrix(self->ghoul2,
 		                          0,
 		                          self->alt_fire ? self->genericValue12 : self->genericValue11,
-		                          &boltMatrix,
+		                          &bolt_matrix,
 		                          self->r.currentAngles,
 		                          self->r.currentOrigin,
 		                          level.time,
@@ -489,15 +489,15 @@ void turretG2_head_think(gentity_t* self)
 			self->alt_fire = !self->alt_fire;
 		}
 
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);
-		//BG_GiveMeVectorFromMatrix( &boltMatrix, POSITIVE_Y, fwd );
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org);
+		//BG_GiveMeVectorFromMatrix( &bolt_matrix, POSITIVE_Y, fwd );
 		if (self->spawnflags & SPF_TURRETG2_TURBO)
 		{
-			BG_GiveMeVectorFromMatrix(&boltMatrix, POSITIVE_X, fwd);
+			BG_GiveMeVectorFromMatrix(&bolt_matrix, POSITIVE_X, fwd);
 		}
 		else
 		{
-			BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, fwd);
+			BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, fwd);
 		}
 
 		VectorMA(org, START_DIS, fwd, org);
@@ -526,7 +526,7 @@ static void turretG2_aim(gentity_t* self)
 		vec3_t org2;
 		vec3_t org;
 		vec3_t enemyDir;
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
 		if (self->enemy->client)
@@ -567,14 +567,14 @@ static void turretG2_aim(gentity_t* self)
 		trap->G2API_GetBoltMatrix(self->ghoul2,
 		                          0,
 		                          self->alt_fire ? self->genericValue12 : self->genericValue11,
-		                          &boltMatrix,
+		                          &bolt_matrix,
 		                          self->r.currentAngles,
 		                          self->s.origin,
 		                          level.time,
 		                          NULL,
 		                          self->modelScale);
 
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org2);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org2);
 
 		VectorSubtract(org, org2, enemyDir);
 		vectoangles(enemyDir, desiredAngles);
@@ -808,7 +808,7 @@ static qboolean turretG2_find_enemies(gentity_t* self)
 
 		trap->Trace(&tr, org2, NULL, NULL, org, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
+		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
 		{
 			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
@@ -972,7 +972,7 @@ void turretG2_base_think(gentity_t* self)
 					}
 					trap->Trace(&tr, org2, NULL, NULL, org, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-					if (!tr.allsolid && !tr.startsolid && tr.entityNum == self->enemy->s.number)
+					if (!tr.allsolid && !tr.startsolid && tr.entity_num == self->enemy->s.number)
 					{
 						turnOff = qfalse; // Can see our enemy
 					}

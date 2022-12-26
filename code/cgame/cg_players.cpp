@@ -5083,15 +5083,15 @@ static void CG_BoltedEffects(const centity_t* cent)
 {
 	if (cent->gent && cent->gent->client && cent->gent->client->NPC_class == CLASS_VEHICLE)
 	{
-		Vehicle_t* pVeh = cent->gent->m_pVehicle;
+		Vehicle_t* p_veh = cent->gent->m_pVehicle;
 		gentity_t* parent = cent->gent;
 
-		if (pVeh->m_ulFlags & VEH_ARMORLOW
-			&& pVeh->m_iLastFXTime <= cg.time
+		if (p_veh->m_ulFlags & VEH_ARMORLOW
+			&& p_veh->m_iLastFXTime <= cg.time
 			&& Q_irand(0, 1) == 0)
 		{
-			pVeh->m_iLastFXTime = cg.time + 50; //Q_irand(50, 100);
-			CG_PlayEffectIDBolted(pVeh->m_pVehicleInfo->iArmorLowFX, parent->playerModel, parent->crotchBolt,
+			p_veh->m_iLastFXTime = cg.time + 50; //Q_irand(50, 100);
+			CG_PlayEffectIDBolted(p_veh->m_pVehicleInfo->iArmorLowFX, parent->playerModel, parent->crotchBolt,
 			                      parent->s.number, parent->currentOrigin);
 		}
 	}
@@ -11997,7 +11997,7 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 			CG_PlayEffectIDBolted(cent->gent->client->ps.saber[saber_num].bladeEffect2, model_index, bolt,
 			                      scent->currentState.client_num, scent->lerpOrigin, -1, qfalse);
 		}
-		//get the boltMatrix
+		//get the bolt_matrix
 		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, model_index, bolt, &bolt_matrix, angles, origin, cg.time,
 		                       cgs.model_draw, scent->currentState.modelScale);
 
@@ -12338,7 +12338,7 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 								saber[saber_num].saberFlags2 & SFL2_NO_WALL_MARKS2))
 						{
 							if (!(trace.surfaceFlags & SURF_NOIMPACT) // never spark on sky
-								&& (trace.entityNum == ENTITYNUM_WORLD || cg_entities[trace.entityNum].currentState.
+								&& (trace.entity_num == ENTITYNUM_WORLD || cg_entities[trace.entity_num].currentState.
 									solid == SOLID_BMODEL)
 								&& Q_irand(1, client->ps.saber[saber_num].numBlades) == 1)
 							{
@@ -12350,8 +12350,8 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 						//....come up with something better..
 						if (client->ps.saber[saber_num].blade[blade_num].trail.haveOldPos[i])
 						{
-							if (trace.entityNum == ENTITYNUM_WORLD || cg_entities[trace.entityNum].currentState.eFlags
-								& EF_PERMANENT || cg_entities[trace.entityNum].currentState.eType == ET_TERRAIN)
+							if (trace.entity_num == ENTITYNUM_WORLD || cg_entities[trace.entity_num].currentState.eFlags
+								& EF_PERMANENT || cg_entities[trace.entity_num].currentState.eType == ET_TERRAIN)
 							{
 								//only put marks on architecture
 								if (!WP_SaberBladeUseSecondBladeStyle(&client->ps.saber[saber_num], blade_num) && !(
@@ -12392,7 +12392,7 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 							else if (!i)
 							{
 								//can put marks on G2 clients (but only on base to tip trace)
-								gentity_t* hit_ent = &g_entities[trace.entityNum];
+								gentity_t* hit_ent = &g_entities[trace.entity_num];
 								vec3_t uaxis, splash_back_dir;
 								VectorSubtract(client->ps.saber[saber_num].blade[blade_num].trail.oldPos[i],
 								               trace.endpos, uaxis);

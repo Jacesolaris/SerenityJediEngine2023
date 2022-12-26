@@ -133,9 +133,9 @@ void MineMonster_TryDamage(const gentity_t* enemy, const int damage)
 	trap->Trace(&tr, NPCS.NPC->r.currentOrigin, vec3_origin, vec3_origin, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0,
 	            0);
 
-	if (tr.entityNum >= 0 && tr.entityNum < ENTITYNUM_NONE)
+	if (tr.entity_num >= 0 && tr.entity_num < ENTITYNUM_NONE)
 	{
-		G_Damage(&g_entities[tr.entityNum], NPCS.NPC, NPCS.NPC, dir, tr.endpos, damage, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+		G_Damage(&g_entities[tr.entity_num], NPCS.NPC, NPCS.NPC, dir, tr.endpos, damage, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 
 		NPCS.NPC->enemy->client->poisonDamage = 18;
 		NPCS.NPC->enemy->client->poisonTime = level.time + 1000;

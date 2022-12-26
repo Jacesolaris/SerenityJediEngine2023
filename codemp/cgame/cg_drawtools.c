@@ -247,7 +247,7 @@ void CG_DrawStringExt(const int x, const int y, const char* string, const float*
 		              0.0f, // float adjust,
 		              0, // int limit,
 		              shadow ? ITEM_TEXTSTYLE_SHADOWED : 0, // int style,
-		              FONT_MEDIUM // iMenuFont
+		              FONT_MEDIUM // i_menu_font
 		);
 	}
 	else
@@ -647,7 +647,7 @@ void CG_DrawProportionalString(int x, const int y, const char* str, const int st
 	//	is dumb, but for now...
 	//
 	int iStyle = 0;
-	const int iMenuFont = style & UI_SMALLFONT ? FONT_SMALL : FONT_MEDIUM;
+	const int i_menu_font = style & UI_SMALLFONT ? FONT_SMALL : FONT_MEDIUM;
 
 	switch (style & (UI_LEFT | UI_CENTER | UI_RIGHT))
 	{
@@ -660,13 +660,13 @@ void CG_DrawProportionalString(int x, const int y, const char* str, const int st
 
 	case UI_CENTER:
 		{
-			x -= CG_Text_Width(str, 1.0, iMenuFont) / 2;
+			x -= CG_Text_Width(str, 1.0, i_menu_font) / 2;
 		}
 		break;
 
 	case UI_RIGHT:
 		{
-			x -= CG_Text_Width(str, 1.0, iMenuFont) / 2;
+			x -= CG_Text_Width(str, 1.0, i_menu_font) / 2;
 		}
 		break;
 	}
@@ -680,7 +680,7 @@ void CG_DrawProportionalString(int x, const int y, const char* str, const int st
 		iStyle = ITEM_TEXTSTYLE_BLINK;
 	}
 
-	CG_Text_Paint(x, y, 1.0, color, str, 0, 0, iStyle, iMenuFont);
+	CG_Text_Paint(x, y, 1.0, color, str, 0, 0, iStyle, i_menu_font);
 }
 
 void UI_DrawProportionalString(int x, const int y, const char* str, const int style, vec4_t color, int font)
@@ -689,7 +689,7 @@ void UI_DrawProportionalString(int x, const int y, const char* str, const int st
 	//	is dumb, but for now...
 	//
 	int iStyle = 0;
-	const int iMenuFont = style & UI_SMALLFONT ? FONT_SMALL : FONT_SMALL2;
+	const int i_menu_font = style & UI_SMALLFONT ? FONT_SMALL : FONT_SMALL2;
 
 	switch (style & (UI_LEFT | UI_CENTER | UI_RIGHT))
 	{
@@ -702,13 +702,13 @@ void UI_DrawProportionalString(int x, const int y, const char* str, const int st
 
 	case UI_CENTER:
 		{
-			x -= CG_Text_Width(str, 0.5f, iMenuFont) / 2;
+			x -= CG_Text_Width(str, 0.5f, i_menu_font) / 2;
 		}
 		break;
 
 	case UI_RIGHT:
 		{
-			x -= CG_Text_Width(str, 0.5f, iMenuFont);
+			x -= CG_Text_Width(str, 0.5f, i_menu_font);
 		}
 		break;
 	}
@@ -722,7 +722,7 @@ void UI_DrawProportionalString(int x, const int y, const char* str, const int st
 		iStyle = ITEM_TEXTSTYLE_BLINK;
 	}
 
-	CG_Text_Paint(x, y, 0.5, color, str, 0, 0, iStyle, iMenuFont);
+	CG_Text_Paint(x, y, 0.5, color, str, 0, 0, iStyle, i_menu_font);
 }
 
 void CG_DrawScaledProportionalString(int x, const int y, const char* str, const int style, vec4_t color,

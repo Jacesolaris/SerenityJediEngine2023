@@ -108,8 +108,8 @@ using refimport_t = struct
 
 	// ============= NOT IN MP BEYOND THIS POINT
 	void (*SV_Trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	                 int passEntityNum, int contentmask,
-	                 EG2_Collision eG2TraceType, int useLod);
+	                 int pass_entity_num, int contentmask,
+	                 EG2_Collision e_g2_trace_type, int use_lod);
 
 	ojk::ISavedGame* saved_game;
 
@@ -288,7 +288,7 @@ using refexport_t = struct
 	void (*G2API_CollisionDetect)(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
 	                              const vec3_t position, int AframeNumber, int entNum, vec3_t rayStart, vec3_t rayEnd,
 	                              vec3_t scale,
-	                              CMiniHeap*, EG2_Collision eG2TraceType, int useLod, float fRadius);
+	                              CMiniHeap*, EG2_Collision e_g2_trace_type, int use_lod, float fRadius);
 	void (*G2API_CleanGhoul2Models)(CGhoul2Info_v& ghoul2);
 	void (*G2API_CopyGhoul2Instance)(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, int model_index);
 	void (*G2API_DetachEnt)(int* boltInfo);
@@ -318,7 +318,7 @@ using refexport_t = struct
 	char* (*G2API_GetSurfaceName)(CGhoul2Info* ghlInfo, int surfNumber);
 	int (*G2API_GetSurfaceRenderStatus)(CGhoul2Info* ghlInfo, const char* surfaceName);
 	int (*G2API_GetTime)(int argTime);
-	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t& boltMatrix, Eorientations flags, vec3_t& vec);
+	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t& bolt_matrix, Eorientations flags, vec3_t& vec);
 	qboolean (*G2API_HaveWeGhoul2Models)(CGhoul2Info_v& ghoul2);
 	qboolean (*G2API_IKMove)(CGhoul2Info_v& ghoul2, int time, sharedIKMoveParams_t* params);
 	int (*G2API_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int model_index,

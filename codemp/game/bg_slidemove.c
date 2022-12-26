@@ -51,14 +51,14 @@ extern void G_FlyVehicleSurfaceDestruction(gentity_t* veh, trace_t* trace, int m
 extern qboolean G_CanBeEnemy(gentity_t* self, gentity_t* enemy); //w_saber.c
 #endif
 
-extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, Vehicle_t* pVeh);
+extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, Vehicle_t* p_veh);
 
 extern bgEntity_t* pm_entSelf;
 extern bgEntity_t* pm_entVeh;
 
 //vehicle impact stuff continued...
 #ifdef _GAME
-extern qboolean FighterIsLanded(Vehicle_t* pVeh, playerState_t* parentPS);
+extern qboolean FighterIsLanded(Vehicle_t* p_veh, playerState_t* parentPS);
 extern void G_DamageFromKiller(gentity_t* pEnt, gentity_t* pVehEnt, gentity_t* attacker, vec3_t org, int damage,
                                int dflags, int mod);
 #endif
@@ -72,7 +72,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 	float magnitude = VectorLength(pm->ps->velocity) * pSelfVeh->m_pVehicleInfo->mass / 50.0f;
 	qboolean forceSurfDestruction = qfalse;
 #ifdef _GAME
-	gentity_t* hitEnt = trace != NULL ? &g_entities[trace->entityNum] : NULL;
+	gentity_t* hitEnt = trace != NULL ? &g_entities[trace->entity_num] : NULL;
 
 	if (!hitEnt ||
 		pSelfVeh && pSelfVeh->m_pPilot &&
@@ -96,7 +96,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			return;
 		}
 		if (!VectorCompare(trace->plane.normal, vec3_origin)
-			&& (trace->entityNum == ENTITYNUM_WORLD || hitEnt->r.bmodel))
+			&& (trace->entity_num == ENTITYNUM_WORLD || hitEnt->r.bmodel))
 		{
 			//have a valid hit plane and we hit a solid brush
 			vec3_t moveDir;
@@ -113,7 +113,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 		}
 	}
 
-	if (trace->entityNum < ENTITYNUM_WORLD
+	if (trace->entity_num < ENTITYNUM_WORLD
 		&& hitEnt->s.eType == ET_MOVER
 		&& hitEnt->s.apos.trType != TR_STATIONARY //rotating
 		&& hitEnt->spawnflags & 16 //IMPACT
@@ -126,7 +126,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 	else if (fabs(pm->ps->velocity[0]) + fabs(pm->ps->velocity[1]) < 100.0f
 		&& pm->ps->velocity[2] > -100.0f)
 #elif defined(_CGAME)
-	if ((fabs(pm->ps->velocity[0]) + fabs(pm->ps->velocity[1])) < 100.0f
+	if (fabs(pm->ps->velocity[0]) + fabs(pm->ps->velocity[1]) < 100.0f
 		&& pm->ps->velocity[2] > -100.0f)
 #endif
 	{
@@ -169,9 +169,9 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				float l = pm->ps->speed * 0.5f;
 				vec3_t bounceDir;
 #ifdef _CGAME
-				bgEntity_t* hitEnt = PM_BGEntForNum(trace->entityNum);
+				bgEntity_t* hitEnt = PM_BGEntForNum(trace->entity_num);
 #endif
-				if ((trace->entityNum == ENTITYNUM_WORLD || hitEnt->s.solid == SOLID_BMODEL) //bounce off any brush
+				if ((trace->entity_num == ENTITYNUM_WORLD || hitEnt->s.solid == SOLID_BMODEL) //bounce off any brush
 					&& !VectorCompare(trace->plane.normal, vec3_origin)) //have a valid plane to bounce off of
 				{
 					//bounce off in the opposite direction of the impact
@@ -200,7 +200,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				{
 					//check for impact with another fighter
 #ifdef _CGAME
-					bgEntity_t* hitEnt = PM_BGEntForNum(trace->entityNum);
+					bgEntity_t* hitEnt = PM_BGEntForNum(trace->entity_num);
 #endif
 					if (hitEnt->s.NPC_class == CLASS_VEHICLE
 						&& hitEnt->m_pVehicle
@@ -546,7 +546,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			}
 #else	//this is gonna result in "double effects" for the client doing the prediction.
 			//it doesn't look bad though. could just use predicted events, but I'm too lazy.
-			hitEnt = PM_BGEntForNum(trace->entityNum);
+			hitEnt = PM_BGEntForNum(trace->entity_num);
 
 			if (!hitEnt || hitEnt->s.owner != pEnt->s.number)
 			{
@@ -599,7 +599,7 @@ extern qboolean PM_CheckGrabWall(trace_t* trace);
 
 qboolean PM_ClientImpact(const trace_t* trace, qboolean damageSelf)
 {
-	const int otherEntityNum = trace->entityNum;
+	const int otherEntityNum = trace->entity_num;
 
 	if (!pm_entSelf)
 	{
@@ -723,17 +723,17 @@ qboolean PM_SlideMove(const qboolean gravity)
 		}
 
 		// save entity for contact
-		PM_AddTouchEnt(trace.entityNum);
+		PM_AddTouchEnt(trace.entity_num);
 
 		if (pm->ps->client_num >= MAX_CLIENTS)
 		{
-			bgEntity_t* pEnt = pm_entSelf;
+			bgEntity_t* p_ent = pm_entSelf;
 
-			if (pEnt && pEnt->s.eType == ET_NPC && pEnt->s.NPC_class == CLASS_VEHICLE &&
-				pEnt->m_pVehicle)
+			if (p_ent && p_ent->s.eType == ET_NPC && p_ent->s.NPC_class == CLASS_VEHICLE &&
+				p_ent->m_pVehicle)
 			{
 				//do vehicle impact stuff then
-				PM_VehicleImpact(pEnt, &trace);
+				PM_VehicleImpact(p_ent, &trace);
 			}
 		}
 #ifdef _GAME
@@ -797,7 +797,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 		for (i = 0; i < numplanes; i++)
 		{
 			vec3_t end_clip_velocity;
-			vec3_t clipVelocity;
+			vec3_t clip_velocity;
 			const float into = DotProduct(pm->ps->velocity, planes[i]);
 			if (into >= 0.1)
 			{
@@ -811,7 +811,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 			}
 
 			// slide along the plane
-			PM_ClipVelocity(pm->ps->velocity, planes[i], clipVelocity, OVERCLIP);
+			PM_ClipVelocity(pm->ps->velocity, planes[i], clip_velocity, OVERCLIP);
 
 			// slide along the plane
 			PM_ClipVelocity(end_velocity, planes[i], end_clip_velocity, OVERCLIP);
@@ -824,17 +824,17 @@ qboolean PM_SlideMove(const qboolean gravity)
 				{
 					continue;
 				}
-				if (DotProduct(clipVelocity, planes[j]) >= 0.1)
+				if (DotProduct(clip_velocity, planes[j]) >= 0.1)
 				{
 					continue; // move doesn't interact with the plane
 				}
 
 				// try clipping the move to the plane
-				PM_ClipVelocity(clipVelocity, planes[j], clipVelocity, OVERCLIP);
+				PM_ClipVelocity(clip_velocity, planes[j], clip_velocity, OVERCLIP);
 				PM_ClipVelocity(end_clip_velocity, planes[j], end_clip_velocity, OVERCLIP);
 
 				// see if it goes back into the first clip plane
-				if (DotProduct(clipVelocity, planes[i]) >= 0)
+				if (DotProduct(clip_velocity, planes[i]) >= 0)
 				{
 					continue;
 				}
@@ -843,7 +843,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 				CrossProduct(planes[i], planes[j], dir);
 				VectorNormalize(dir);
 				float d = DotProduct(dir, pm->ps->velocity);
-				VectorScale(dir, d, clipVelocity);
+				VectorScale(dir, d, clip_velocity);
 
 				CrossProduct(planes[i], planes[j], dir);
 				VectorNormalize(dir);
@@ -857,7 +857,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 					{
 						continue;
 					}
-					if (DotProduct(clipVelocity, planes[k]) >= 0.1)
+					if (DotProduct(clip_velocity, planes[k]) >= 0.1)
 					{
 						continue; // move doesn't interact with the plane
 					}
@@ -869,7 +869,7 @@ qboolean PM_SlideMove(const qboolean gravity)
 			}
 
 			// if we have fixed all interactions, try another move
-			VectorCopy(clipVelocity, pm->ps->velocity);
+			VectorCopy(clip_velocity, pm->ps->velocity);
 			VectorCopy(end_clip_velocity, end_velocity);
 			break;
 		}
@@ -901,8 +901,8 @@ void PM_StepSlideMove(qboolean gravity)
 	vec3_t down_o, down_v;
 	trace_t trace;
 	vec3_t up, down;
-	qboolean isGiant = qfalse;
-	qboolean skipStep = qfalse;
+	qboolean is_giant = qfalse;
+	qboolean skip_step = qfalse;
 
 	VectorCopy(pm->ps->origin, start_o);
 	VectorCopy(pm->ps->velocity, start_v);
@@ -953,13 +953,13 @@ void PM_StepSlideMove(qboolean gravity)
 		{
 			//AT-STs can step high
 			up[2] += 66.0f;
-			isGiant = qtrue;
+			is_giant = qtrue;
 		}
 		else if (p_ent && p_ent->s.NPC_class == CLASS_RANCOR)
 		{
 			//also can step up high
 			up[2] += 64.0f;
-			isGiant = qtrue;
+			is_giant = qtrue;
 		}
 		else
 		{
@@ -1012,7 +1012,7 @@ void PM_StepSlideMove(qboolean gravity)
 			&& trace.plane.normal[2] < MIN_WALK_NORMAL)
 		{
 			//normal players cannot step up slopes that are too steep to walk on!
-			vec3_t stepVec;
+			vec3_t step_vec;
 			//okay, the step up ends on a slope that it too steep to step up onto,
 			//BUT:
 			//If the step looks like this:
@@ -1020,21 +1020,21 @@ void PM_StepSlideMove(qboolean gravity)
 			//        \_____(A)
 			//Then it might still be okay, so we figure out the slope of the entire move
 			//from (A) to (B) and if that slope is walk-upabble, then it's okay
-			VectorSubtract(trace.endpos, down_o, stepVec);
-			VectorNormalize(stepVec);
-			if (stepVec[2] > 1.0f - MIN_WALK_NORMAL)
+			VectorSubtract(trace.endpos, down_o, step_vec);
+			VectorNormalize(step_vec);
+			if (step_vec[2] > 1.0f - MIN_WALK_NORMAL)
 			{
-				skipStep = qtrue;
+				skip_step = qtrue;
 			}
 		}
 	}
 
 	if (!trace.allsolid
-		&& !skipStep) //normal players cannot step up slopes that are too steep to walk on!
+		&& !skip_step) //normal players cannot step up slopes that are too steep to walk on!
 	{
 		if (pm->ps->client_num >= MAX_CLIENTS //NPC
-			&& isGiant
-			&& trace.entityNum < MAX_CLIENTS
+			&& is_giant
+			&& trace.entity_num < MAX_CLIENTS
 			&& p_ent
 			&& p_ent->s.NPC_class == CLASS_RANCOR)
 		{

@@ -2976,7 +2976,7 @@ int G_ItemUsable(playerState_t* ps, int forcedUse)
 		forcedUse = bg_itemlist[ps->stats[STAT_HOLDABLE_ITEM]].giTag;
 	}
 
-	if (!BG_IsItemSelectable(ps, forcedUse))
+	if (!BG_IsItemSelectable(forcedUse))
 	{
 		return 0;
 	}
@@ -3030,7 +3030,7 @@ int G_ItemUsable(playerState_t* ps, int forcedUse)
 
 		trap->Trace(&tr, ps->origin, mins, maxs, trtest, ps->client_num, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-		if (tr.fraction != 1 && tr.entityNum != ps->client_num || tr.startsolid || tr.allsolid)
+		if (tr.fraction != 1 && tr.entity_num != ps->client_num || tr.startsolid || tr.allsolid)
 		{
 			G_AddEvent(&g_entities[ps->client_num], EV_ITEMUSEFAIL, SENTRY_NOROOM);
 			return 0;
@@ -3474,9 +3474,9 @@ void Cmd_EngageDuel_f(gentity_t* ent)
 
 	trap->Trace(&tr, ent->client->ps.origin, NULL, NULL, fwdOrg, ent->s.number, MASK_PLAYERSOLID, qfalse, 0, 0);
 
-	if (tr.fraction != 1 && tr.entityNum < MAX_CLIENTS)
+	if (tr.fraction != 1 && tr.entity_num < MAX_CLIENTS)
 	{
-		gentity_t* challenged = &g_entities[tr.entityNum];
+		gentity_t* challenged = &g_entities[tr.entity_num];
 
 		if (!challenged || !challenged->client || !challenged->inuse ||
 			challenged->health < 1 || challenged->client->ps.stats[STAT_HEALTH] < 1 ||

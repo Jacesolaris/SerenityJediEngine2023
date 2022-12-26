@@ -106,7 +106,7 @@ void NPC_BSAdvanceFight()
 					//are we gonna hit him if we shoot at his center?
 					gi.trace(&tr, muzzle, nullptr, nullptr, enemy_org, NPC->s.number, MASK_SHOT,
 					         static_cast<EG2_Collision>(0), 0);
-					const gentity_t* trace_ent = &g_entities[tr.entityNum];
+					const gentity_t* trace_ent = &g_entities[tr.entity_num];
 					if (trace_ent != NPC->enemy &&
 						(!trace_ent || !trace_ent->client || !NPC->client->enemyTeam || NPC->client->enemyTeam !=
 							trace_ent
@@ -116,7 +116,7 @@ void NPC_BSAdvanceFight()
 						attack_scale *= 0.75;
 						gi.trace(&tr, muzzle, nullptr, nullptr, enemy_head, NPC->s.number, MASK_SHOT,
 						         static_cast<EG2_Collision>(0), 0);
-						trace_ent = &g_entities[tr.entityNum];
+						trace_ent = &g_entities[tr.entity_num];
 					}
 
 					VectorCopy(tr.endpos, hitspot);

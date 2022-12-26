@@ -98,28 +98,28 @@ localEntity_t* CG_SmokePuff(const vec3_t p, const vec3_t vel,
                             const float radius,
                             const float r, const float g, const float b, const float a,
                             const float duration,
-                            const int startTime,
-                            const int fadeInTime,
-                            const int leFlags,
-                            const qhandle_t hShader)
+                            const int start_time,
+                            const int fade_in_time,
+                            const int le_flags,
+                            const qhandle_t h_shader)
 {
 	static int seed = 0x92;
 	//	int fadeInTime = startTime + duration / 2;
 
 	localEntity_t* le = CG_AllocLocalEntity();
-	le->leFlags = leFlags;
+	le->leFlags = le_flags;
 	le->radius = radius;
 
 	refEntity_t* re = &le->refEntity;
 	re->rotation = Q_random(&seed) * 360;
 	re->radius = radius;
-	re->shaderTime = startTime / 1000.0f;
+	re->shaderTime = start_time / 1000.0f;
 
 	le->leType = LE_MOVE_SCALE_FADE;
-	le->startTime = startTime;
-	le->fadeInTime = fadeInTime;
-	le->endTime = startTime + duration;
-	if (fadeInTime > startTime)
+	le->startTime = start_time;
+	le->fadeInTime = fade_in_time;
+	le->endTime = start_time + duration;
+	if (fade_in_time > start_time)
 	{
 		le->lifeRate = 1.0 / (le->endTime - le->fadeInTime);
 	}
@@ -133,12 +133,12 @@ localEntity_t* CG_SmokePuff(const vec3_t p, const vec3_t vel,
 	le->color[3] = a;
 
 	le->pos.trType = TR_LINEAR;
-	le->pos.trTime = startTime;
+	le->pos.trTime = start_time;
 	VectorCopy(vel, le->pos.trDelta);
 	VectorCopy(p, le->pos.trBase);
 
 	VectorCopy(p, re->origin);
-	re->customShader = hShader;
+	re->customShader = h_shader;
 
 	re->shaderRGBA[0] = le->color[0] * 0xff;
 	re->shaderRGBA[1] = le->color[1] * 0xff;
@@ -151,9 +151,9 @@ localEntity_t* CG_SmokePuff(const vec3_t p, const vec3_t vel,
 	return le;
 }
 
-int CGDEBUG_SaberColor(const int saberColor)
+int CGDEBUG_SaberColor(const int saber_color)
 {
-	switch (saberColor)
+	switch (saber_color)
 	{
 	case SABER_RED:
 		return 0x000000ff;
@@ -170,7 +170,7 @@ int CGDEBUG_SaberColor(const int saberColor)
 	case SABER_LIME:
 		return 0x0000ff00;
 	default:
-		return saberColor;
+		return saber_color;
 	}
 }
 
@@ -333,10 +333,10 @@ static float offX[20][20],
 
 static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const qboolean stick, const int time, vec3_t dmg_dir)
 {
-	vec3_t rotDelta;
+	vec3_t rot_delta;
 	vec3_t vel, accel;
 	vec3_t rgb1;
-	addpolyArgStruct_t apArgs;
+	addpolyArgStruct_t ap_args;
 
 	VectorSet(vel, Q_flrand(-12.0f, 12.0f), Q_flrand(-12.0f, 12.0f), -1);
 
@@ -357,25 +357,7 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const qboolean stick, cons
 	const float bounce = Q_flrand(0.0f, 1.0f) * 0.2f + 0.15f;
 
 	// Set up our random rotate, we only do PITCH and YAW, not ROLL.  This is something like degrees per second
-	VectorSet(rotDelta, Q_flrand(-40.0f, 40.0f), Q_flrand(-40.0f, 40.0f), 0.0f);
-
-	//In an ideal world, this might actually work.
-	/*
-	CPoly *pol = FX_AddPoly(p, uv, 4,			// verts, ST, vertCount
-			vel, accel,				// motion
-			0.15f, 0.0f, 85.0f,		// alpha start, alpha end, alpha parm ( begin alpha fade when 85% of life is complete )
-			rgb1, rgb1, 0.0f,		// rgb start, rgb end, rgb parm ( not used )
-			rotDelta, bounce, time,	// rotation amount, bounce, and time to delay motion for ( zero if no delay );
-			6000,					// life
-			cgi_R_RegisterShader( "gfx/misc/test_crackle" ),
-			FX_APPLY_PHYSICS | FX_ALPHA_NONLINEAR | FX_USE_ALPHA );
-
-	if ( Q_flrand(0.0f, 1.0f) > 0.95f && pol )
-	{
-		pol->AddFlags( FX_IMPACT_RUNS_FX | FX_KILL_ON_IMPACT );
-		pol->SetImpactFxID( theFxScheduler.RegisterEffect( "glass_impact" ));
-	}
-	*/
+	VectorSet(rot_delta, Q_flrand(-40.0f, 40.0f), Q_flrand(-40.0f, 40.0f), 0.0f);
 
 	//rww - this is dirty.
 
@@ -386,7 +368,7 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const qboolean stick, cons
 	{
 		while (i_2 < 3)
 		{
-			apArgs.p[i][i_2] = p[i][i_2];
+			ap_args.p[i][i_2] = p[i][i_2];
 
 			i_2++;
 		}
@@ -402,7 +384,7 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const qboolean stick, cons
 	{
 		while (i_2 < 2)
 		{
-			apArgs.ev[i][i_2] = uv[i][i_2];
+			ap_args.ev[i][i_2] = uv[i][i_2];
 
 			i_2++;
 		}
@@ -411,28 +393,28 @@ static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const qboolean stick, cons
 		i++;
 	}
 
-	apArgs.numVerts = 4;
-	VectorCopy(vel, apArgs.vel);
-	VectorCopy(accel, apArgs.accel);
+	ap_args.numVerts = 4;
+	VectorCopy(vel, ap_args.vel);
+	VectorCopy(accel, ap_args.accel);
 
-	apArgs.alpha1 = 0.15f;
-	apArgs.alpha2 = 0.0f;
-	apArgs.alphaParm = 85.0f;
+	ap_args.alpha1 = 0.15f;
+	ap_args.alpha2 = 0.0f;
+	ap_args.alphaParm = 85.0f;
 
-	VectorCopy(rgb1, apArgs.rgb1);
-	VectorCopy(rgb1, apArgs.rgb2);
+	VectorCopy(rgb1, ap_args.rgb1);
+	VectorCopy(rgb1, ap_args.rgb2);
 
-	apArgs.rgbParm = 0.0f;
+	ap_args.rgbParm = 0.0f;
 
-	VectorCopy(rotDelta, apArgs.rotationDelta);
+	VectorCopy(rot_delta, ap_args.rotationDelta);
 
-	apArgs.bounce = bounce;
-	apArgs.motionDelay = time;
-	apArgs.killTime = 6000;
-	apArgs.shader = cgs.media.glassShardShader;
-	apArgs.flags = FX_APPLY_PHYSICS | FX_ALPHA_NONLINEAR | FX_USE_ALPHA;
+	ap_args.bounce = bounce;
+	ap_args.motionDelay = time;
+	ap_args.killTime = 6000;
+	ap_args.shader = cgs.media.glassShardShader;
+	ap_args.flags = FX_APPLY_PHYSICS | FX_ALPHA_NONLINEAR | FX_USE_ALPHA;
 
-	trap->FX_AddPoly(&apArgs);
+	trap->FX_AddPoly(&ap_args);
 }
 
 static void CG_CalcBiLerp(vec3_t verts[4], vec3_t sub_verts[4], vec2_t uv[4])
@@ -747,7 +729,7 @@ Adds an explosion to a misc model breakables
 -------------------------
 */
 
-void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunkType)
+void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const material_t chunk_type)
 {
 	int ct = 13;
 	vec3_t org, mid;
@@ -757,7 +739,7 @@ void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, const int size, const mater
 	VectorAdd(mins, maxs, mid);
 	VectorScale(mid, 0.5f, mid);
 
-	switch (chunkType)
+	switch (chunk_type)
 	{
 	default:
 		break;
@@ -1105,8 +1087,8 @@ CG_MakeExplosion
 ====================
 */
 localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
-                                const qhandle_t h_model, const int numFrames, const qhandle_t shader,
-                                const int msec, const qboolean isSprite, const float scale, const int flags)
+                                const qhandle_t h_model, const int num_frames, const qhandle_t shader,
+                                const int msec, const qboolean is_sprite, const float scale, const int flags)
 {
 	vec3_t new_origin;
 
@@ -1119,7 +1101,7 @@ localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
 	const int offset = rand() & 63;
 
 	localEntity_t* ex = CG_AllocLocalEntity();
-	if (isSprite)
+	if (is_sprite)
 	{
 		vec3_t tmp_vec;
 		ex->leType = LE_SPRITE_EXPLOSION;
@@ -1156,7 +1138,7 @@ localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
 
 	ex->refEntity.hModel = h_model;
 	ex->refEntity.customShader = shader;
-	ex->lifeRate = (float)numFrames / msec;
+	ex->lifeRate = (float)num_frames / msec;
 	ex->leFlags = flags;
 
 	//Scale the explosion

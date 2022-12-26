@@ -721,26 +721,26 @@ int MenuFontToHandle(int i_menu_font)
 	return uiInfo.uiDC.Assets.qhMediumFont; // 0;
 }
 
-int Text_Width(const char* text, float scale, int iMenuFont)
+int Text_Width(const char* text, float scale, int i_menu_font)
 {
-	const int iFontIndex = MenuFontToHandle(iMenuFont);
+	const int iFontIndex = MenuFontToHandle(i_menu_font);
 
 	return trap->R_Font_StrLenPixels(text, iFontIndex, scale);
 }
 
-int Text_Height(const char* text, float scale, int iMenuFont)
+int Text_Height(const char* text, float scale, int i_menu_font)
 {
-	const int iFontIndex = MenuFontToHandle(iMenuFont);
+	const int iFontIndex = MenuFontToHandle(i_menu_font);
 
 	return trap->R_Font_HeightPixels(iFontIndex, scale);
 }
 
 void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, int style,
-	int iMenuFont)
+	int i_menu_font)
 {
 	int iStyleOR = 0;
 
-	const int iFontIndex = MenuFontToHandle(iMenuFont);
+	const int iFontIndex = MenuFontToHandle(i_menu_font);
 	//
 	// kludge.. convert JK2 menu styles to SOF2 printstring ctrl codes...
 	//
@@ -774,9 +774,9 @@ void Text_Paint(float x, float y, float scale, vec4_t color, const char* text, f
 }
 
 void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char* text, int cursorPos, char cursor,
-	int limit, int style, int iMenuFont)
+	int limit, int style, int i_menu_font)
 {
-	Text_Paint(x, y, scale, color, text, 0, limit, style, iMenuFont);
+	Text_Paint(x, y, scale, color, text, 0, limit, style, i_menu_font);
 
 	// now print the cursor as well...  (excuse the braces, it's for porting C++ to C)
 	//
@@ -792,11 +792,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 		sTemp[iCopyCount] = '\0';
 
 		{
-			const int iFontIndex = MenuFontToHandle(iMenuFont);
+			const int iFontIndex = MenuFontToHandle(i_menu_font);
 			const int iNextXpos = trap->R_Font_StrLenPixels(sTemp, iFontIndex, scale);
 
 			Text_Paint(x + iNextXpos, y, scale, color, va("%c", cursor), 0, limit, style | ITEM_TEXTSTYLE_BLINK,
-				iMenuFont);
+				i_menu_font);
 		}
 	}
 }
@@ -804,11 +804,11 @@ void Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const cha
 // maxX param is initially an X limit, but is also used as feedback. 0 = text was clipped to fit within, else maxX = next pos
 //
 static void Text_Paint_Limit(float* maxX, float x, float y, float scale, vec4_t color, const char* text, float adjust,
-	int limit, int iMenuFont)
+	int limit, int i_menu_font)
 {
 	// this is kinda dirty, but...
 	//
-	const int iFontIndex = MenuFontToHandle(iMenuFont);
+	const int iFontIndex = MenuFontToHandle(i_menu_font);
 
 	//float fMax = *maxX;
 	const int iPixelLen = trap->R_Font_StrLenPixels(text, iFontIndex, scale);
@@ -845,14 +845,14 @@ static void Text_Paint_Limit(float* maxX, float x, float y, float scale, vec4_t 
 		*psOutLastGood = '\0';
 
 		*maxX = 0; // feedback
-		Text_Paint(x, y, scale, color, sTemp, adjust, limit, ITEM_TEXTSTYLE_NORMAL, iMenuFont);
+		Text_Paint(x, y, scale, color, sTemp, adjust, limit, ITEM_TEXTSTYLE_NORMAL, i_menu_font);
 	}
 	else
 	{
 		// whole text fits fine, so print it all...
 		//
 		*maxX = x + iPixelLen; // feedback the next position, as the caller expects
-		Text_Paint(x, y, scale, color, text, adjust, limit, ITEM_TEXTSTYLE_NORMAL, iMenuFont);
+		Text_Paint(x, y, scale, color, text, adjust, limit, ITEM_TEXTSTYLE_NORMAL, i_menu_font);
 	}
 }
 
@@ -1093,7 +1093,7 @@ char parsedFPMessage[1024];
 
 extern int FPMessageTime;
 
-void Text_PaintCenter(float x, float y, float scale, vec4_t color, const char* text, float adjust, int iMenuFont);
+void Text_PaintCenter(float x, float y, float scale, vec4_t color, const char* text, float adjust, int i_menu_font);
 
 const char* UI_GetStringEdString(const char* refSection, const char* refName)
 {
@@ -1657,17 +1657,17 @@ static const char* handicapValues[] = {
 	"5",NULL
 };
 
-static void UI_DrawHandicap(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawHandicap(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	const int h = Com_Clamp(5, 100, trap->Cvar_VariableValue("handicap"));
 	const int i = 20 - h / 5;
 
-	Text_Paint(rect->x, rect->y, scale, color, handicapValues[i], 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, handicapValues[i], 0, 0, textStyle, i_menu_font);
 }
 
-static void UI_DrawClanName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawClanName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
-	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("ui_teamName"), 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("ui_teamName"), 0, 0, textStyle, i_menu_font);
 }
 
 static void UI_SetCapFragLimits(qboolean uiVars)
@@ -1717,13 +1717,13 @@ static const char* UI_GetGameTypeName(int gtEnum)
 }
 
 // ui_gameType assumes gametype 0 is -1 ALL and will not show
-static void UI_DrawGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	Text_Paint(rect->x, rect->y, scale, color, UI_GetGameTypeName(uiInfo.gameTypes[ui_gametype.integer].gtEnum), 0, 0,
-		textStyle, iMenuFont);
+		textStyle, i_menu_font);
 }
 
-static void UI_DrawNetGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawNetGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (ui_netGametype.integer < 0 || ui_netGametype.integer >= uiInfo.numGameTypes)
 	{
@@ -1733,10 +1733,10 @@ static void UI_DrawNetGameType(rectDef_t* rect, float scale, vec4_t color, int t
 		trap->Cvar_Update(&ui_actualNetGametype);
 	}
 	Text_Paint(rect->x, rect->y, scale, color, UI_GetGameTypeName(uiInfo.gameTypes[ui_netGametype.integer].gtEnum), 0,
-		0, textStyle, iMenuFont);
+		0, textStyle, i_menu_font);
 }
 
-static void UI_DrawAutoSwitch(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawAutoSwitch(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	const int switchVal = trap->Cvar_VariableValue("cg_autoswitch");
 	const char* switchString = "AUTOSWITCH1";
@@ -1760,11 +1760,11 @@ static void UI_DrawAutoSwitch(rectDef_t* rect, float scale, vec4_t color, int te
 
 	if (stripString)
 	{
-		Text_Paint(rect->x, rect->y, scale, color, stripString, 0, 0, textStyle, iMenuFont);
+		Text_Paint(rect->x, rect->y, scale, color, stripString, 0, 0, textStyle, i_menu_font);
 	}
 }
 
-static void UI_DrawJoinGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawJoinGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (ui_joinGametype.integer < 0 || ui_joinGametype.integer > uiInfo.numJoinGameTypes)
 	{
@@ -1773,7 +1773,7 @@ static void UI_DrawJoinGameType(rectDef_t* rect, float scale, vec4_t color, int 
 	}
 
 	Text_Paint(rect->x, rect->y, scale, color, UI_GetGameTypeName(uiInfo.joinGameTypes[ui_joinGametype.integer].gtEnum),
-		0, 0, textStyle, iMenuFont);
+		0, 0, textStyle, i_menu_font);
 }
 
 static int UI_TeamIndexFromName(const char* name)
@@ -1866,7 +1866,7 @@ static void UI_DrawPreviewCinematic(rectDef_t* rect, float scale, vec4_t color)
 	}
 }
 
-static void UI_DrawSkill(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawSkill(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	int i = trap->Cvar_VariableValue("g_spSkill");
 	if (i < 1 || i > numSkillLevels)
@@ -1874,11 +1874,11 @@ static void UI_DrawSkill(rectDef_t* rect, float scale, vec4_t color, int textSty
 		i = 1;
 	}
 	Text_Paint(rect->x, rect->y, scale, color, (char*)UI_GetStringEdString("MP_INGAME", (char*)skillLevels[i - 1]), 0,
-		0, textStyle, iMenuFont);
+		0, textStyle, i_menu_font);
 }
 
 static void UI_DrawGenericNum(rectDef_t* rect, float scale, vec4_t color, int textStyle, int val, int min, int max,
-	int type, int iMenuFont)
+	int type, int i_menu_font)
 {
 	char s[256];
 
@@ -1889,11 +1889,11 @@ static void UI_DrawGenericNum(rectDef_t* rect, float scale, vec4_t color, int te
 	}
 
 	Com_sprintf(s, sizeof s, "%i\0", val);
-	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, i_menu_font);
 }
 
 static void UI_DrawForceMastery(rectDef_t* rect, float scale, vec4_t color, int textStyle, int val, int min, int max,
-	int iMenuFont)
+	int i_menu_font)
 {
 	int i = val;
 	if (i < min)
@@ -1906,11 +1906,11 @@ static void UI_DrawForceMastery(rectDef_t* rect, float scale, vec4_t color, int 
 	}
 
 	const char* s = (char*)UI_GetStringEdString("MP_INGAME", forceMasteryLevels[i]);
-	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, i_menu_font);
 }
 
 static void UI_DrawSkinColor(rectDef_t* rect, float scale, vec4_t color, int textStyle, int val, int min, int max,
-	int iMenuFont)
+	int i_menu_font)
 {
 	char s[256];
 
@@ -1930,11 +1930,11 @@ static void UI_DrawSkinColor(rectDef_t* rect, float scale, vec4_t color, int tex
 		break;
 	}
 
-	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, i_menu_font);
 }
 
 static void UI_DrawForceSide(rectDef_t* rect, float scale, vec4_t color, int textStyle, int val, int min, int max,
-	int iMenuFont)
+	int i_menu_font)
 {
 	char s[256];
 	menuDef_t* menu;
@@ -2010,7 +2010,7 @@ static void UI_DrawForceSide(rectDef_t* rect, float scale, vec4_t color, int tex
 		}
 	}
 
-	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, i_menu_font);
 }
 
 qboolean UI_HasSetSaberOnly(const char* info, const int gametype)
@@ -2095,7 +2095,7 @@ qboolean UI_TrueJediEnabled(void)
 }
 
 static void UI_DrawJediNonJedi(rectDef_t* rect, float scale, vec4_t color, int textStyle, int val, int min, int max,
-	int iMenuFont)
+	int i_menu_font)
 {
 	char s[256];
 	//menuDef_t *menu;
@@ -2122,21 +2122,21 @@ static void UI_DrawJediNonJedi(rectDef_t* rect, float scale, vec4_t color, int t
 	else
 		trap->SE_GetStringTextString("MENUS_YES", s, sizeof s);
 
-	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, s, 0, 0, textStyle, i_menu_font);
 }
 
-static void UI_DrawTeamName(rectDef_t* rect, float scale, vec4_t color, qboolean blue, int textStyle, int iMenuFont)
+static void UI_DrawTeamName(rectDef_t* rect, float scale, vec4_t color, qboolean blue, int textStyle, int i_menu_font)
 {
 	const int i = UI_TeamIndexFromName(UI_Cvar_VariableString(blue ? "ui_blueTeam" : "ui_redTeam"));
 	if (i >= 0 && i < uiInfo.teamCount)
 	{
 		Text_Paint(rect->x, rect->y, scale, color, va("%s: %s", blue ? "Blue" : "Red", uiInfo.teamList[i].teamName),
-			0, 0, textStyle, iMenuFont);
+			0, 0, textStyle, i_menu_font);
 	}
 }
 
 static void UI_DrawTeamMember(rectDef_t* rect, float scale, vec4_t color, qboolean blue, int num, int textStyle,
-	int iMenuFont)
+	int i_menu_font)
 {
 	// 0 - None
 	// 1 - Human
@@ -2199,7 +2199,7 @@ static void UI_DrawTeamMember(rectDef_t* rect, float scale, vec4_t color, qboole
 		text = UI_GetBotNameByNumber(value);
 	}
 
-	Text_Paint(rect->x, rect->y, scale, finalColor, text, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, finalColor, text, 0, 0, textStyle, i_menu_font);
 }
 
 int SCREENSHOT_TOTAL = -1;
@@ -2526,7 +2526,7 @@ void UpdateForceStatus()
 	}
 }
 
-static void UI_DrawNetSource(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawNetSource(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (ui_netSource.integer < 0 || ui_netSource.integer >= numNetSources)
 	{
@@ -2537,7 +2537,7 @@ static void UI_DrawNetSource(rectDef_t* rect, float scale, vec4_t color, int tex
 	trap->SE_GetStringTextString("MENUS_SOURCE", holdSPString, sizeof holdSPString);
 	Text_Paint(rect->x, rect->y, scale, color, va("%s %s", holdSPString,
 		GetNetSourceString(ui_netSource.integer)), 0, 0, textStyle,
-		iMenuFont);
+		i_menu_font);
 }
 
 static void UI_DrawNetMapPreview(rectDef_t* rect, float scale, vec4_t color)
@@ -2572,23 +2572,23 @@ static void UI_DrawNetMapCinematic(rectDef_t* rect, float scale, vec4_t color)
 	}
 }
 
-static void UI_DrawNetFilter(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawNetFilter(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	trap->SE_GetStringTextString("MENUS_GAME", holdSPString, sizeof holdSPString);
 
 	Text_Paint(rect->x, rect->y, scale, color,
 		va("%s %s", holdSPString, UI_FilterDescription(ui_serverFilterType.integer)), 0, 0, textStyle,
-		iMenuFont);
+		i_menu_font);
 }
 
-static void UI_DrawTier(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawTier(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	int i = trap->Cvar_VariableValue("ui_currentTier");
 	if (i < 0 || i >= uiInfo.tierCount)
 	{
 		i = 0;
 	}
-	Text_Paint(rect->x, rect->y, scale, color, va("Tier: %s", uiInfo.tierList[i].tierName), 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, va("Tier: %s", uiInfo.tierList[i].tierName), 0, 0, textStyle, i_menu_font);
 }
 
 static void UI_DrawTierMap(rectDef_t* rect, int index)
@@ -2620,7 +2620,7 @@ static const char* UI_EnglishMapName(const char* map)
 	return "";
 }
 
-static void UI_DrawTierMapName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawTierMapName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	int i = trap->Cvar_VariableValue("ui_currentTier");
 	if (i < 0 || i >= uiInfo.tierCount)
@@ -2634,10 +2634,10 @@ static void UI_DrawTierMapName(rectDef_t* rect, float scale, vec4_t color, int t
 	}
 
 	Text_Paint(rect->x, rect->y, scale, color, UI_EnglishMapName(uiInfo.tierList[i].maps[j]), 0, 0, textStyle,
-		iMenuFont);
+		i_menu_font);
 }
 
-static void UI_DrawTierGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawTierGameType(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	int i = trap->Cvar_VariableValue("ui_currentTier");
 	if (i < 0 || i >= uiInfo.tierCount)
@@ -2651,7 +2651,7 @@ static void UI_DrawTierGameType(rectDef_t* rect, float scale, vec4_t color, int 
 	}
 
 	Text_Paint(rect->x, rect->y, scale, color, uiInfo.gameTypes[uiInfo.tierList[i].gameTypes[j]].gameType, 0, 0,
-		textStyle, iMenuFont);
+		textStyle, i_menu_font);
 }
 
 static const char* UI_AIFromName(const char* name)
@@ -2826,18 +2826,18 @@ static void UI_DrawOpponentLogoName(rectDef_t* rect, vec3_t color)
 }
 
 static void UI_DrawAllMapsSelection(rectDef_t* rect, float scale, vec4_t color, int textStyle, qboolean net,
-	int iMenuFont)
+	int i_menu_font)
 {
 	const int map = net ? ui_currentNetMap.integer : ui_currentMap.integer;
 	if (map >= 0 && map < uiInfo.mapCount)
 	{
-		Text_Paint(rect->x, rect->y, scale, color, uiInfo.mapList[map].mapName, 0, 0, textStyle, iMenuFont);
+		Text_Paint(rect->x, rect->y, scale, color, uiInfo.mapList[map].mapName, 0, 0, textStyle, i_menu_font);
 	}
 }
 
-static void UI_DrawOpponentName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawOpponentName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
-	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("ui_opponentName"), 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("ui_opponentName"), 0, 0, textStyle, i_menu_font);
 }
 
 static int UI_OwnerDrawWidth(int ownerDraw, float scale)
@@ -3089,7 +3089,7 @@ static int UI_OwnerDrawWidth(int ownerDraw, float scale)
 	return 0;
 }
 
-static void UI_DrawBotName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawBotName(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	int value = uiInfo.botIndex;
 	if (value >= UI_GetNumBots())
@@ -3097,20 +3097,20 @@ static void UI_DrawBotName(rectDef_t* rect, float scale, vec4_t color, int textS
 		value = 0;
 	}
 	const char* text = UI_GetBotNameByNumber(value);
-	Text_Paint(rect->x, rect->y, scale, color, text, 0, 0, textStyle, iMenuFont);
+	Text_Paint(rect->x, rect->y, scale, color, text, 0, 0, textStyle, i_menu_font);
 }
 
-static void UI_DrawBotSkill(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawBotSkill(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (uiInfo.skillIndex >= 0 && uiInfo.skillIndex < numSkillLevels)
 	{
 		Text_Paint(rect->x, rect->y, scale, color,
 			(char*)UI_GetStringEdString("MP_INGAME", (char*)skillLevels[uiInfo.skillIndex]), 0, 0, textStyle,
-			iMenuFont);
+			i_menu_font);
 	}
 }
 
-static void UI_DrawRedBlue(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawRedBlue(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (trap->Cvar_VariableValue("g_gametype") == GT_SINGLE_PLAYER)
 	{
@@ -3118,14 +3118,14 @@ static void UI_DrawRedBlue(rectDef_t* rect, float scale, vec4_t color, int textS
 		Text_Paint(rect->x, rect->y, scale, color,
 			uiInfo.redBlue == 0
 			? UI_GetStringEdString("OJP_MENUS", "ENEMYTEAM")
-			: UI_GetStringEdString("OJP_MENUS", "PLAYERTEAM"), 0, 0, textStyle, iMenuFont);
+			: UI_GetStringEdString("OJP_MENUS", "PLAYERTEAM"), 0, 0, textStyle, i_menu_font);
 	}
 	else
 	{
 		Text_Paint(rect->x, rect->y, scale, color,
 			uiInfo.redBlue == 0
 			? UI_GetStringEdString("MP_INGAME", "RED")
-			: UI_GetStringEdString("MP_INGAME", "BLUE"), 0, 0, textStyle, iMenuFont);
+			: UI_GetStringEdString("MP_INGAME", "BLUE"), 0, 0, textStyle, i_menu_font);
 	}
 }
 
@@ -3142,7 +3142,7 @@ static void UI_DrawCrosshair(rectDef_t* rect, float scale, vec4_t color)
 	trap->R_SetColor(NULL);
 }
 
-static void UI_DrawSelectedPlayer(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawSelectedPlayer(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (uiInfo.uiDC.realTime > uiInfo.playerRefresh)
 	{
@@ -3150,10 +3150,10 @@ static void UI_DrawSelectedPlayer(rectDef_t* rect, float scale, vec4_t color, in
 		UI_BuildPlayerList();
 	}
 	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("cg_selectedPlayerName"), 0, 0, textStyle,
-		iMenuFont);
+		i_menu_font);
 }
 
-static void UI_DrawServerRefreshDate(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawServerRefreshDate(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (uiInfo.serverStatus.refreshActive)
 	{
@@ -3166,7 +3166,7 @@ static void UI_DrawServerRefreshDate(rectDef_t* rect, float scale, vec4_t color,
 
 		trap->SE_GetStringTextString("MP_INGAME_GETTINGINFOFORSERVERS", holdSPString, sizeof holdSPString);
 		Text_Paint(rect->x, rect->y, scale, newColor,
-			va((char*)holdSPString, trap->LAN_GetServerCount(UI_SourceForLAN())), 0, 0, textStyle, iMenuFont);
+			va((char*)holdSPString, trap->LAN_GetServerCount(UI_SourceForLAN())), 0, 0, textStyle, i_menu_font);
 	}
 	else
 	{
@@ -3174,11 +3174,11 @@ static void UI_DrawServerRefreshDate(rectDef_t* rect, float scale, vec4_t color,
 		Q_strncpyz(buff, UI_Cvar_VariableString(va("ui_lastServerRefresh_%i", ui_netSource.integer)), sizeof buff);
 		trap->SE_GetStringTextString("MP_INGAME_SERVER_REFRESHTIME", holdSPString, sizeof holdSPString);
 
-		Text_Paint(rect->x, rect->y, scale, color, va("%s: %s", holdSPString, buff), 0, 0, textStyle, iMenuFont);
+		Text_Paint(rect->x, rect->y, scale, color, va("%s: %s", holdSPString, buff), 0, 0, textStyle, i_menu_font);
 	}
 }
 
-static void UI_DrawServerMOTD(rectDef_t* rect, float scale, vec4_t color, int iMenuFont)
+static void UI_DrawServerMOTD(rectDef_t* rect, float scale, vec4_t color, int i_menu_font)
 {
 	if (uiInfo.serverStatus.motdLen)
 	{
@@ -3237,12 +3237,12 @@ static void UI_DrawServerMOTD(rectDef_t* rect, float scale, vec4_t color, int iM
 
 		maxX = rect->x + rect->w - 2;
 		Text_Paint_Limit(&maxX, uiInfo.serverStatus.motdPaintX, rect->y + rect->h - 3, scale, color,
-			&uiInfo.serverStatus.motd[uiInfo.serverStatus.motdOffset], 0, 0, iMenuFont);
+			&uiInfo.serverStatus.motd[uiInfo.serverStatus.motdOffset], 0, 0, i_menu_font);
 		if (uiInfo.serverStatus.motdPaintX2 >= 0)
 		{
 			float maxX2 = rect->x + rect->w - 2;
 			Text_Paint_Limit(&maxX2, uiInfo.serverStatus.motdPaintX2, rect->y + rect->h - 3, scale, color,
-				uiInfo.serverStatus.motd, 0, uiInfo.serverStatus.motdOffset, iMenuFont);
+				uiInfo.serverStatus.motd, 0, uiInfo.serverStatus.motdOffset, i_menu_font);
 		}
 		if (uiInfo.serverStatus.motdOffset && maxX > 0)
 		{
@@ -3259,32 +3259,32 @@ static void UI_DrawServerMOTD(rectDef_t* rect, float scale, vec4_t color, int iM
 	}
 }
 
-static void UI_DrawKeyBindStatus(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawKeyBindStatus(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	if (Display_KeyBindPending())
 	{
 		Text_Paint(rect->x, rect->y, scale, color, UI_GetStringEdString("MP_INGAME", "WAITING_FOR_NEW_KEY"), 0, 0,
-			textStyle, iMenuFont);
+			textStyle, i_menu_font);
 	}
 	else
 	{
-		//		Text_Paint(rect->x, rect->y, scale, color, "Press ENTER or CLICK to change, Press BACKSPACE to clear", 0, 0, textStyle,iMenuFont);
+		//		Text_Paint(rect->x, rect->y, scale, color, "Press ENTER or CLICK to change, Press BACKSPACE to clear", 0, 0, textStyle,i_menu_font);
 	}
 }
 
-static void UI_DrawGLInfo(rectDef_t* rect, float scale, vec4_t color, int textStyle, int iMenuFont)
+static void UI_DrawGLInfo(rectDef_t* rect, float scale, vec4_t color, int textStyle, int i_menu_font)
 {
 	char buff[4096] = { 0 };
 	int i = 0;
 
 	Text_Paint(rect->x + 2, rect->y, scale, color, va("GL_VENDOR: %s", uiInfo.uiDC.glconfig.vendor_string), 0, rect->w,
-		textStyle, iMenuFont);
+		textStyle, i_menu_font);
 	Text_Paint(rect->x + 2, rect->y + 15, scale, color,
 		va("GL_VERSION: %s: %s", uiInfo.uiDC.glconfig.version_string, uiInfo.uiDC.glconfig.renderer_string), 0,
-		rect->w, textStyle, iMenuFont);
+		rect->w, textStyle, i_menu_font);
 	Text_Paint(rect->x + 2, rect->y + 30, scale, color,
 		va("GL_PIXELFORMAT: color(%d-bits) Z(%d-bits) stencil(%d-bits)", uiInfo.uiDC.glconfig.colorBits,
-			uiInfo.uiDC.glconfig.depthBits, uiInfo.uiDC.glconfig.stencilBits), 0, rect->w, textStyle, iMenuFont);
+			uiInfo.uiDC.glconfig.depthBits, uiInfo.uiDC.glconfig.stencilBits), 0, rect->w, textStyle, i_menu_font);
 
 	// build null terminated extension strings
 	Q_strncpyz(buff, uiInfo.uiDC.glconfig.extensions_string, sizeof buff);
@@ -3295,11 +3295,11 @@ static void UI_DrawGLInfo(rectDef_t* rect, float scale, vec4_t color, int textSt
 	{
 		if (i % 2 == 0)
 		{
-			Text_Paint(rect->x + 2, y, scale, color, extensionName, 0, rect->w / 2, textStyle, iMenuFont);
+			Text_Paint(rect->x + 2, y, scale, color, extensionName, 0, rect->w / 2, textStyle, i_menu_font);
 		}
 		else
 		{
-			Text_Paint(rect->x + rect->w / 2, y, scale, color, extensionName, 0, rect->w / 2, textStyle, iMenuFont);
+			Text_Paint(rect->x + rect->w / 2, y, scale, color, extensionName, 0, rect->w / 2, textStyle, i_menu_font);
 			y += 11;
 		}
 
@@ -3313,11 +3313,11 @@ static void UI_DrawGLInfo(rectDef_t* rect, float scale, vec4_t color, int textSt
 UI_Version
 =================
 */
-static void UI_Version(rectDef_t* rect, float scale, vec4_t color, int iMenuFont)
+static void UI_Version(rectDef_t* rect, float scale, vec4_t color, int i_menu_font)
 {
-	const int width = uiInfo.uiDC.textWidth(JK_VERSION, scale, iMenuFont);
+	const int width = uiInfo.uiDC.textWidth(JK_VERSION, scale, i_menu_font);
 
-	uiInfo.uiDC.drawText(rect->x - width, rect->y, scale, color, JK_VERSION, 0, 0, 0, iMenuFont);
+	uiInfo.uiDC.drawText(rect->x - width, rect->y, scale, color, JK_VERSION, 0, 0, 0, i_menu_font);
 }
 
 /*
@@ -3329,7 +3329,7 @@ UI_OwnerDraw
 //
 static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw,
 	int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader,
-	int textStyle, int iMenuFont)
+	int textStyle, int i_menu_font)
 {
 	rectDef_t rect;
 	int findex;
@@ -3344,26 +3344,26 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 	switch (ownerDraw)
 	{
 	case UI_HANDICAP:
-		UI_DrawHandicap(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawHandicap(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_SKIN_COLOR:
-		UI_DrawSkinColor(&rect, scale, color, textStyle, uiSkinColor, TEAM_FREE, TEAM_BLUE, iMenuFont);
+		UI_DrawSkinColor(&rect, scale, color, textStyle, uiSkinColor, TEAM_FREE, TEAM_BLUE, i_menu_font);
 		break;
 	case UI_FORCE_SIDE:
-		UI_DrawForceSide(&rect, scale, color, textStyle, uiForceSide, 1, 2, iMenuFont);
+		UI_DrawForceSide(&rect, scale, color, textStyle, uiForceSide, 1, 2, i_menu_font);
 		break;
 	case UI_JEDI_NONJEDI:
-		UI_DrawJediNonJedi(&rect, scale, color, textStyle, uiJediNonJedi, 0, 1, iMenuFont);
+		UI_DrawJediNonJedi(&rect, scale, color, textStyle, uiJediNonJedi, 0, 1, i_menu_font);
 		break;
 	case UI_FORCE_POINTS:
 		UI_DrawGenericNum(&rect, scale, color, textStyle, uiForceAvailable, 1, forceMasteryPoints[MAX_FORCE_RANK],
-			ownerDraw, iMenuFont);
+			ownerDraw, i_menu_font);
 		break;
 	case UI_FORCE_MASTERY_SET:
-		UI_DrawForceMastery(&rect, scale, color, textStyle, uiForceRank, 0, MAX_FORCE_RANK, iMenuFont);
+		UI_DrawForceMastery(&rect, scale, color, textStyle, uiForceRank, 0, MAX_FORCE_RANK, i_menu_font);
 		break;
 	case UI_FORCE_RANK:
-		UI_DrawForceMastery(&rect, scale, color, textStyle, uiForceRank, 0, MAX_FORCE_RANK, iMenuFont);
+		UI_DrawForceMastery(&rect, scale, color, textStyle, uiForceRank, 0, MAX_FORCE_RANK, i_menu_font);
 		break;
 	case UI_FORCE_RANK_HEAL:
 	case UI_FORCE_RANK_LEVITATION:
@@ -3423,7 +3423,7 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		//UI_DrawPlayerModel(&rect);
 		break;
 	case UI_CLANNAME:
-		UI_DrawClanName(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawClanName(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_CLANLOGO:
 		UI_DrawClanLogo(&rect, scale, color);
@@ -3435,16 +3435,16 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		UI_DrawPreviewCinematic(&rect, scale, color);
 		break;
 	case UI_GAMETYPE:
-		UI_DrawGameType(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawGameType(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_NETGAMETYPE:
-		UI_DrawNetGameType(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawNetGameType(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_AUTOSWITCHLIST:
-		UI_DrawAutoSwitch(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawAutoSwitch(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_JOINGAMETYPE:
-		UI_DrawJoinGameType(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawJoinGameType(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_MAPPREVIEW:
 		UI_DrawMapPreview(&rect, scale, color, qtrue);
@@ -3458,16 +3458,16 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		UI_DrawMapCinematic(&rect, scale, color, qtrue);
 		break;
 	case UI_SKILL:
-		UI_DrawSkill(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawSkill(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_TOTALFORCESTARS:
 		//      UI_DrawTotalForceStars(&rect, scale, color, textStyle);
 		break;
 	case UI_BLUETEAMNAME:
-		UI_DrawTeamName(&rect, scale, color, qtrue, textStyle, iMenuFont);
+		UI_DrawTeamName(&rect, scale, color, qtrue, textStyle, i_menu_font);
 		break;
 	case UI_REDTEAMNAME:
-		UI_DrawTeamName(&rect, scale, color, qfalse, textStyle, iMenuFont);
+		UI_DrawTeamName(&rect, scale, color, qfalse, textStyle, i_menu_font);
 		break;
 	case UI_BLUETEAM1:
 	case UI_BLUETEAM2:
@@ -3485,7 +3485,7 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		{
 			iUse = ownerDraw - 274; //unpleasent hack because I don't want to move up all the UI_BLAHTEAM# defines
 		}
-		UI_DrawTeamMember(&rect, scale, color, qtrue, iUse, textStyle, iMenuFont);
+		UI_DrawTeamMember(&rect, scale, color, qtrue, iUse, textStyle, i_menu_font);
 		break;
 	case UI_REDTEAM1:
 	case UI_REDTEAM2:
@@ -3503,10 +3503,10 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		{
 			iUse = ownerDraw - 277; //unpleasent hack because I don't want to move up all the UI_BLAHTEAM# defines
 		}
-		UI_DrawTeamMember(&rect, scale, color, qfalse, iUse, textStyle, iMenuFont);
+		UI_DrawTeamMember(&rect, scale, color, qfalse, iUse, textStyle, i_menu_font);
 		break;
 	case UI_NETSOURCE:
-		UI_DrawNetSource(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawNetSource(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_NETMAPPREVIEW:
 		UI_DrawNetMapPreview(&rect, scale, color);
@@ -3515,10 +3515,10 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		UI_DrawNetMapCinematic(&rect, scale, color);
 		break;
 	case UI_NETFILTER:
-		UI_DrawNetFilter(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawNetFilter(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_TIER:
-		UI_DrawTier(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawTier(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_OPPONENTMODEL:
 		//UI_DrawOpponent(&rect);
@@ -3551,49 +3551,49 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		UI_DrawOpponentLogoName(&rect, color);
 		break;
 	case UI_TIER_MAPNAME:
-		UI_DrawTierMapName(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawTierMapName(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_TIER_GAMETYPE:
-		UI_DrawTierGameType(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawTierGameType(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_ALLMAPS_SELECTION:
-		UI_DrawAllMapsSelection(&rect, scale, color, textStyle, qtrue, iMenuFont);
+		UI_DrawAllMapsSelection(&rect, scale, color, textStyle, qtrue, i_menu_font);
 		break;
 	case UI_MAPS_SELECTION:
-		UI_DrawAllMapsSelection(&rect, scale, color, textStyle, qfalse, iMenuFont);
+		UI_DrawAllMapsSelection(&rect, scale, color, textStyle, qfalse, i_menu_font);
 		break;
 	case UI_OPPONENT_NAME:
-		UI_DrawOpponentName(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawOpponentName(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_BOTNAME:
-		UI_DrawBotName(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawBotName(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_BOTSKILL:
-		UI_DrawBotSkill(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawBotSkill(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_REDBLUE:
-		UI_DrawRedBlue(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawRedBlue(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_CROSSHAIR:
 		UI_DrawCrosshair(&rect, scale, color);
 		break;
 	case UI_SELECTEDPLAYER:
-		UI_DrawSelectedPlayer(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawSelectedPlayer(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_SERVERREFRESHDATE:
-		UI_DrawServerRefreshDate(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawServerRefreshDate(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_SERVERMOTD:
-		UI_DrawServerMOTD(&rect, scale, color, iMenuFont);
+		UI_DrawServerMOTD(&rect, scale, color, i_menu_font);
 		break;
 	case UI_GLINFO:
-		UI_DrawGLInfo(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawGLInfo(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_KEYBINDSTATUS:
-		UI_DrawKeyBindStatus(&rect, scale, color, textStyle, iMenuFont);
+		UI_DrawKeyBindStatus(&rect, scale, color, textStyle, i_menu_font);
 		break;
 	case UI_VERSION:
-		UI_Version(&rect, scale, color, iMenuFont);
+		UI_Version(&rect, scale, color, i_menu_font);
 		break;
 	default:
 		break;
@@ -11197,14 +11197,14 @@ static void UI_PrintTime(char* buf, int bufsize, int time)
 	}
 }
 
-void Text_PaintCenter(float x, float y, float scale, vec4_t color, const char* text, float adjust, int iMenuFont)
+void Text_PaintCenter(float x, float y, float scale, vec4_t color, const char* text, float adjust, int i_menu_font)
 {
-	const int len = Text_Width(text, scale, iMenuFont);
-	Text_Paint(x - len / 2, y, scale, color, text, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE, iMenuFont);
+	const int len = Text_Width(text, scale, i_menu_font);
+	Text_Paint(x - len / 2, y, scale, color, text, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE, i_menu_font);
 }
 
 static void UI_DisplayDownloadInfo(const char* downloadName, float centerPoint, float yStart, float scale,
-	int iMenuFont)
+	int i_menu_font)
 {
 	char sDownLoading[256];
 	char sEstimatedTimeLeft[256];
@@ -11239,9 +11239,9 @@ static void UI_DisplayDownloadInfo(const char* downloadName, float centerPoint, 
 
 	UI_SetColor(colorWhite);
 
-	Text_PaintCenter(centerPoint, yStart + 112, scale, colorWhite, sDownLoading, 0, iMenuFont);
-	Text_PaintCenter(centerPoint, yStart + 192, scale, colorWhite, sEstimatedTimeLeft, 0, iMenuFont);
-	Text_PaintCenter(centerPoint, yStart + 248, scale, colorWhite, sTransferRate, 0, iMenuFont);
+	Text_PaintCenter(centerPoint, yStart + 112, scale, colorWhite, sDownLoading, 0, i_menu_font);
+	Text_PaintCenter(centerPoint, yStart + 192, scale, colorWhite, sEstimatedTimeLeft, 0, i_menu_font);
+	Text_PaintCenter(centerPoint, yStart + 248, scale, colorWhite, sTransferRate, 0, i_menu_font);
 
 	if (downloadSize > 0)
 	{
@@ -11252,16 +11252,16 @@ static void UI_DisplayDownloadInfo(const char* downloadName, float centerPoint, 
 		s = downloadName;
 	}
 
-	Text_PaintCenter(centerPoint, yStart + 136, scale, colorWhite, s, 0, iMenuFont);
+	Text_PaintCenter(centerPoint, yStart + 136, scale, colorWhite, s, 0, i_menu_font);
 
 	UI_ReadableSize(dlSizeBuf, sizeof dlSizeBuf, downloadCount);
 	UI_ReadableSize(totalSizeBuf, sizeof totalSizeBuf, downloadSize);
 
 	if (downloadCount < 4096 || !downloadTime)
 	{
-		Text_PaintCenter(leftWidth, yStart + 216, scale, colorWhite, "estimating", 0, iMenuFont);
+		Text_PaintCenter(leftWidth, yStart + 216, scale, colorWhite, "estimating", 0, i_menu_font);
 		Text_PaintCenter(leftWidth, yStart + 160, scale, colorWhite,
-			va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, iMenuFont);
+			va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, i_menu_font);
 	}
 	else
 	{
@@ -11287,29 +11287,29 @@ static void UI_DisplayDownloadInfo(const char* downloadName, float centerPoint, 
 			UI_PrintTime(dlTimeBuf, sizeof dlTimeBuf,
 				(n - downloadCount / 1024 * n / (downloadSize / 1024)) * 1000);
 
-			Text_PaintCenter(leftWidth, yStart + 216, scale, colorWhite, dlTimeBuf, 0, iMenuFont);
+			Text_PaintCenter(leftWidth, yStart + 216, scale, colorWhite, dlTimeBuf, 0, i_menu_font);
 			Text_PaintCenter(leftWidth, yStart + 160, scale, colorWhite,
-				va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, iMenuFont);
+				va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, i_menu_font);
 		}
 		else
 		{
-			Text_PaintCenter(leftWidth, yStart + 216, scale, colorWhite, "estimating", 0, iMenuFont);
+			Text_PaintCenter(leftWidth, yStart + 216, scale, colorWhite, "estimating", 0, i_menu_font);
 			if (downloadSize)
 			{
 				Text_PaintCenter(leftWidth, yStart + 160, scale, colorWhite,
-					va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, iMenuFont);
+					va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, i_menu_font);
 			}
 			else
 			{
 				Text_PaintCenter(leftWidth, yStart + 160, scale, colorWhite, va("(%s %s)", dlSizeBuf, sCopied), 0,
-					iMenuFont);
+					i_menu_font);
 			}
 		}
 
 		if (xferRate)
 		{
 			Text_PaintCenter(leftWidth, yStart + 272, scale, colorWhite, va("%s/%s", xferRateBuf, sSec), 0,
-				iMenuFont);
+				i_menu_font);
 		}
 	}
 }

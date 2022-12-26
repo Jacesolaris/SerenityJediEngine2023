@@ -311,7 +311,7 @@ typedef struct itemDef_s {
 	} typeData;								// type specific data ptr's
 	const char* descText;					//	Description text
 	int			appearanceSlot;				// order of appearance
-	int			iMenuFont;					// FONT_SMALL,FONT_MEDIUM,FONT_LARGE	// changed from 'font' so I could see what didn't compile, and differentiate between font handles returned from RegisterFont -ste
+	int			i_menu_font;					// FONT_SMALL,FONT_MEDIUM,FONT_LARGE	// changed from 'font' so I could see what didn't compile, and differentiate between font handles returned from RegisterFont -ste
 	qboolean	disabled;					// Does this item ignore mouse and keyboard focus
 	int			invertYesNo;
 	int			xoffset;
@@ -415,9 +415,9 @@ typedef struct displayContextDef_s {
 	void			(*setColor)							(const vec4_t v);
 	void			(*drawHandlePic)					(float x, float y, float w, float h, qhandle_t asset);
 	void			(*drawStretchPic)					(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader);
-	void			(*drawText)							(float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, int style, int iMenuFont);
-	int				(*textWidth)						(const char* text, float scale, int iMenuFont);
-	int				(*textHeight)						(const char* text, float scale, int iMenuFont);
+	void			(*drawText)							(float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit, int style, int i_menu_font);
+	int				(*textWidth)						(const char* text, float scale, int i_menu_font);
+	int				(*textHeight)						(const char* text, float scale, int i_menu_font);
 	qhandle_t(*registerModel)					(const char* p);
 	void			(*modelBounds)						(qhandle_t model, vec3_t min, vec3_t max);
 	void			(*fillRect)							(float x, float y, float w, float h, const vec4_t color);
@@ -435,7 +435,7 @@ typedef struct displayContextDef_s {
 	qboolean(*Language_IsAsian)					(void);
 	qboolean(*Language_UsesSpaces)				(void);
 	unsigned int	(*AnyLanguage_ReadCharFromString)	(const char* psText, int* piAdvanceCount, qboolean* pbIsTrailingPunctuation);
-	void			(*ownerDrawItem)					(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int iMenuFont);
+	void			(*ownerDrawItem)					(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle, int i_menu_font);
 	float			(*getValue)							(int ownerDraw);
 	qboolean(*ownerDrawVisible)					(int flags);
 	void			(*runScript)						(char** p);

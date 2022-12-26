@@ -603,8 +603,8 @@ typedef struct pmove_s {
 
 	// callbacks to test the world
 	// these will be different functions during game and cgame
-	void(*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask);
-	int(*pointcontents)(const vec3_t point, int passEntityNum);
+	void(*trace)(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int pass_entity_num, int content_mask);
+	int(*pointcontents)(const vec3_t point, int pass_entity_num);
 
 	int			checkDuelLoss;
 
@@ -1935,10 +1935,10 @@ typedef struct saberInfo_s {
 
 bgEntity_t* PM_BGEntForNum(int num);
 qboolean BG_KnockDownable(const playerState_t* ps);
-qboolean BG_LegalizedForcePowers(char* powerOut, size_t powerOutSize, int maxRank, qboolean freeSaber, int teamForce, int gametype, int fpDisabled);
+qboolean BG_LegalizedForcePowers(char* power_out, size_t power_out_size, int max_rank, qboolean free_saber, int team_force, int gametype, int fp_disabled);
 
 // given a boltmatrix, return in vec a normalised vector for the axis requested in flags
-void BG_GiveMeVectorFromMatrix(const mdxaBone_t* boltMatrix, int flags, vec3_t vec);
+void BG_GiveMeVectorFromMatrix(const mdxaBone_t* bolt_matrix, int flags, vec3_t vec);
 
 void BG_IK_MoveArm(void* ghoul2, int lHandBolt, int time, const entityState_t* ent, int basePose, vec3_t desiredPos, qboolean* ikInProgress,
 	vec3_t origin, vec3_t angles, vec3_t scale, int blendTime, qboolean forceHalt);
@@ -1989,17 +1989,17 @@ void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level,
 void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t force_power, int override_amt);
 void BG_ForcePowerKill(playerState_t* ps);
 
-void	BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, vec3_t result);
-void	BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, vec3_t result);
+void	BG_EvaluateTrajectory(const trajectory_t* tr, int at_time, vec3_t result);
+void	BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int at_time, vec3_t result);
 
-void	BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm, playerState_t* ps);
+void	BG_AddPredictableEventToPlayerstate(int new_event, int event_parm, playerState_t* ps);
 
 void	BG_TouchJumpPad(playerState_t* ps, const entityState_t* jumppad);
 
 void	BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, qboolean snap);
 void	BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s, int time, qboolean snap);
 
-qboolean	BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int atTime);
+qboolean	BG_PlayerTouchesItem(const playerState_t* ps, const entityState_t* item, int at_time);
 
 void	BG_InitAnimsets(void);
 void	BG_ClearAnimsets(void);
@@ -2016,7 +2016,7 @@ int BG_GetItemIndexByTag(int tag, int type);
 qboolean BG_IsUsingMediumWeap(const playerState_t* ps);
 qboolean BG_IsUsingHeavyWeap(const playerState_t* ps);
 
-qboolean BG_IsItemSelectable(playerState_t* ps, int item);
+qboolean BG_IsItemSelectable(const int item);
 qboolean BG_IsLMSGametype(int gametype);
 
 qboolean BG_HasYsalamiri(int gametype, const playerState_t* ps);
@@ -2044,9 +2044,9 @@ float BG_SI_Length(const saberInfo_t* saber);
 float BG_SI_LengthMax(const saberInfo_t* saber);
 void BG_SI_ActivateTrail(saberInfo_t* saber, float duration);
 void BG_SI_DeactivateTrail(saberInfo_t* saber, float duration);
-extern void BG_AttachToRancor(void* ghoul2, float rancYaw, vec3_t rancOrigin, int time, qhandle_t* modelList, vec3_t modelScale, qboolean inMouth, vec3_t out_origin, vec3_t out_angles, matrix3_t out_axis);
+extern void BG_AttachToRancor(void* ghoul2, float ranc_yaw, vec3_t ranc_origin, int time, qhandle_t* model_list, vec3_t model_scale, qboolean in_mouth, vec3_t out_origin, vec3_t out_angles, matrix3_t out_axis);
 void BG_ClearRocketLock(playerState_t* ps);
-extern void BG_AttachToSandCreature(void* ghoul2, float rancYaw, vec3_t rancOrigin, int time, qhandle_t* modelList, vec3_t modelScale, vec3_t out_origin, vec3_t out_angles, vec3_t out_axis[3]);
+extern void BG_AttachToSandCreature(void* ghoul2, float ranc_yaw, vec3_t ranc_origin, int time, qhandle_t* model_list, vec3_t model_scale, vec3_t out_origin, vec3_t out_angles, vec3_t out_axis[3]);
 
 extern int WeaponReadyAnim[WP_NUM_WEAPONS];
 extern int WeaponAttackAnim[WP_NUM_WEAPONS];

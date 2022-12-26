@@ -263,7 +263,7 @@ void G_StopEffect(const char* name, const int model_index, const int bolt_index,
 
 //===Bypass network for sounds on specific channels====================
 
-extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
+extern void cgi_S_StartSound(const vec3_t origin, int entity_num, int entchannel, sfxHandle_t sfx);
 #include "../cgame/cg_media.h"	//access to cgs
 extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChannel_t channel, const char* sound_name,
                                       int custom_sound_set);
@@ -1575,7 +1575,7 @@ static void DebugTraceForNPC(const gentity_t* ent)
 
 	if (trace.fraction < 0.99f)
 	{
-		const gentity_t* found = &g_entities[trace.entityNum];
+		const gentity_t* found = &g_entities[trace.entity_num];
 
 		if (found)
 		{
@@ -1802,12 +1802,12 @@ qboolean CanUseInfrontOf(const gentity_t* ent)
 	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
 	         G2_NOCOLLIDE, 10);
 
-	if (trace.fraction == 1.0f || trace.entityNum >= ENTITYNUM_WORLD)
+	if (trace.fraction == 1.0f || trace.entity_num >= ENTITYNUM_WORLD)
 	{
 		return CanUseInfrontOfPartOfLevel(ent);
 	}
 
-	const gentity_t* target = &g_entities[trace.entityNum];
+	const gentity_t* target = &g_entities[trace.entity_num];
 
 	if (target && target->client && target->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -1923,16 +1923,16 @@ void TryUse(gentity_t* ent)
 	         MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
 	         G2_NOCOLLIDE, 10);
 
-	if (trace.fraction == 1.0f || trace.entityNum >= ENTITYNUM_WORLD)
+	if (trace.fraction == 1.0f || trace.entity_num >= ENTITYNUM_WORLD)
 	{
 		return;
 	}
-	if (trace.fraction == 1.0f || trace.entityNum < 1)
+	if (trace.fraction == 1.0f || trace.entity_num < 1)
 	{
 		goto tryJetPack;
 	}
 
-	gentity_t* target = &g_entities[trace.entityNum];
+	gentity_t* target = &g_entities[trace.entity_num];
 
 	if (target && target->client && target->client->NPC_class == CLASS_VEHICLE)
 	{

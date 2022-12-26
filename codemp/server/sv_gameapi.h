@@ -54,9 +54,9 @@ qboolean GVM_NAV_ClearPathToPoint(int entID, vec3_t pmins, vec3_t pmaxs, vec3_t 
 qboolean GVM_NPC_ClearLOS2(int entID, const vec3_t end);
 int GVM_NAVNEW_ClearPathBetweenPoints(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, int ignore, int clipmask);
 qboolean GVM_NAV_CheckNodeFailedForEnt(int entID, int nodeNum);
-qboolean GVM_NAV_EntIsUnlockedDoor(int entityNum);
-qboolean GVM_NAV_EntIsDoor(int entityNum);
-qboolean GVM_NAV_EntIsBreakable(int entityNum);
+qboolean GVM_NAV_EntIsUnlockedDoor(int entity_num);
+qboolean GVM_NAV_EntIsDoor(int entity_num);
+qboolean GVM_NAV_EntIsBreakable(int entity_num);
 qboolean GVM_NAV_EntIsRemovableUsable(int entNum);
 void GVM_NAV_FindCombatPointWaypoints(void);
 int GVM_BG_GetItemIndexByTag(int tag, int type);

@@ -65,12 +65,12 @@ static void DROIDEKA_CreateExplosion(gentity_t* self, const int boltID, const qb
 {
 	if (boltID >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
-		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, boltID, &boltMatrix, self->currentAngles,
+		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, boltID, &bolt_matrix, self->currentAngles,
 		                       self->currentOrigin, level.time, nullptr, self->s.modelScale);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, NEGATIVE_Y, dir);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
 		if (doSmall)
 		{

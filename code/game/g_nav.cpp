@@ -27,8 +27,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 //Global navigator
 //CNavigator		navigator;
 
-extern qboolean G_EntIsUnlockedDoor(int entityNum);
-extern qboolean G_EntIsDoor(int entityNum);
+extern qboolean G_EntIsUnlockedDoor(int entity_num);
+extern qboolean G_EntIsDoor(int entity_num);
 extern qboolean G_EntIsRemovableUsable(int entNum);
 extern qboolean G_FindClosestPointOnLineSegment(const vec3_t start, const vec3_t end, const vec3_t from, vec3_t result);
 //For debug graphics

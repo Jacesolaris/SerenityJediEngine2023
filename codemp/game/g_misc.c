@@ -796,7 +796,7 @@ void G_PortalifyEntities(gentity_t* ent)
 			trap->Trace(&tr, ent->s.origin, vec3_origin, vec3_origin, scan->r.currentOrigin, ent->s.number,
 			            CONTENTS_SOLID, qfalse, 0, 0);
 
-			if (tr.fraction == 1.0 || tr.entityNum == scan->s.number && tr.entityNum != ENTITYNUM_NONE && tr.entityNum
+			if (tr.fraction == 1.0 || tr.entity_num == scan->s.number && tr.entity_num != ENTITYNUM_NONE && tr.entity_num
 				!= ENTITYNUM_WORLD)
 			{
 				if (!scan->client || scan->s.eType == ET_NPC)
@@ -898,7 +898,7 @@ void HolocronTouch(gentity_t* self, gentity_t* other, const trace_t* trace)
 
 	if (trace)
 	{
-		self->s.groundEntityNum = trace->entityNum;
+		self->s.groundEntityNum = trace->entity_num;
 	}
 
 	if (!other || !other->client || other->health < 1)
@@ -1138,7 +1138,7 @@ void SP_misc_holocron(gentity_t* ent)
 	ent->r.maxs[2] += 0.1f;
 
 	// allow to ride movers
-	//	ent->s.groundEntityNum = tr.entityNum;
+	//	ent->s.groundEntityNum = tr.entity_num;
 
 	G_SetOrigin(ent, tr.endpos);
 
@@ -1729,7 +1729,7 @@ void SP_misc_ammo_floor_unit(gentity_t* ent)
 	ent->r.maxs[2] += 0.1f;
 
 	// allow to ride movers
-	ent->s.groundEntityNum = tr.entityNum;
+	ent->s.groundEntityNum = tr.entity_num;
 
 	G_SetOrigin(ent, tr.endpos);
 
@@ -1823,7 +1823,7 @@ void SP_misc_shield_floor_unit(gentity_t* ent)
 	ent->r.maxs[2] += 0.1f;
 
 	// allow to ride movers
-	ent->s.groundEntityNum = tr.entityNum;
+	ent->s.groundEntityNum = tr.entity_num;
 
 	G_SetOrigin(ent, tr.endpos);
 
@@ -3018,8 +3018,8 @@ void maglock_link(gentity_t* self)
 		*/
 		return;
 	}
-	gentity_t* traceEnt = &g_entities[trace.entityNum];
-	if (trace.entityNum >= ENTITYNUM_WORLD || !traceEnt || Q_stricmp("func_door", traceEnt->classname))
+	gentity_t* traceEnt = &g_entities[trace.entity_num];
+	if (trace.entity_num >= ENTITYNUM_WORLD || !traceEnt || Q_stricmp("func_door", traceEnt->classname))
 	{
 		self->think = maglock_link;
 		self->nextthink = level.time + 100;

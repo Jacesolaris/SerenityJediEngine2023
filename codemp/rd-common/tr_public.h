@@ -165,20 +165,20 @@ using refexport_t = struct refexport_s
 	                            int toModelNum);
 	qboolean (*G2API_AttachG2Model)(CGhoul2Info_v& ghoul2From, int modelFrom, CGhoul2Info_v& ghoul2To, int toBoltIndex,
 	                                int toModel);
-	void (*G2API_AttachInstanceToEntNum)(CGhoul2Info_v& ghoul2, int entityNum, qboolean server);
+	void (*G2API_AttachInstanceToEntNum)(CGhoul2Info_v& ghoul2, int entity_num, qboolean server);
 	void (*G2API_AbsurdSmoothing)(CGhoul2Info_v& ghoul2, qboolean status);
 	void (*G2API_BoltMatrixReconstruction)(qboolean reconstruct);
 	void (*G2API_BoltMatrixSPMethod)(qboolean spMethod);
 	void (*G2API_CleanEntAttachments)(void);
 	void (*G2API_CleanGhoul2Models)(CGhoul2Info_v** ghoul2Ptr);
-	void (*G2API_ClearAttachedInstance)(int entityNum);
+	void (*G2API_ClearAttachedInstance)(int entity_num);
 	void (*G2API_CollisionDetect)(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
 	                              const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd,
-	                              vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int useLod, float fRadius);
+	                              vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags, int use_lod, float fRadius);
 	void (*G2API_CollisionDetectCache)(CollisionRecord_t* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
 	                                   const vec3_t position, int frameNumber, int entNum, vec3_t rayStart,
 	                                   vec3_t rayEnd, vec3_t scale, IHeapAllocator* G2VertSpace, int traceFlags,
-	                                   int useLod, float fRadius);
+	                                   int use_lod, float fRadius);
 	int (*G2API_CopyGhoul2Instance)(CGhoul2Info_v& g2From, CGhoul2Info_v& g2To, int model_index);
 	void (*G2API_CopySpecificG2Model)(CGhoul2Info_v& ghoul2From, int modelFrom, CGhoul2Info_v& ghoul2To, int modelTo);
 	qboolean (*G2API_DetachG2Model)(CGhoul2Info* ghlInfo);
@@ -207,7 +207,7 @@ using refexport_t = struct refexport_s
 	int (*G2API_GetSurfaceRenderStatus)(CGhoul2Info_v& ghoul2, int model_index, const char* surfaceName);
 	int (*G2API_GetTime)(int argTime);
 	int (*G2API_Ghoul2Size)(CGhoul2Info_v& ghoul2);
-	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t* boltMatrix, Eorientations flags, vec3_t vec);
+	void (*G2API_GiveMeVectorFromMatrix)(mdxaBone_t* bolt_matrix, Eorientations flags, vec3_t vec);
 	qboolean (*G2API_HasGhoul2ModelOnIndex)(CGhoul2Info_v** ghlRemove, int model_index);
 	qboolean (*G2API_HaveWeGhoul2Models)(CGhoul2Info_v& ghoul2);
 	qboolean (*G2API_IKMove)(CGhoul2Info_v& ghoul2, int time, sharedIKMoveParams_t* params);

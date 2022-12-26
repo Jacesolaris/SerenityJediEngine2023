@@ -1164,7 +1164,7 @@ void R_AddMD3Surfaces(trRefEntity_t* e);
 
 void R_AddPolygonSurfaces(void);
 
-void R_DecomposeSort(unsigned sort, int* entityNum, shader_t** shader,
+void R_DecomposeSort(unsigned sort, int* entity_num, shader_t** shader,
 	int* fogNum, int* dlightMap);
 
 void R_AddDrawSurf(const surfaceType_t* surface, const shader_t* shader, int fogIndex, int dlightMap);

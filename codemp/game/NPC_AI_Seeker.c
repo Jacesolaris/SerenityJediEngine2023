@@ -359,7 +359,7 @@ qboolean Seeker_Fire(void)
 
 	trap->Trace(&tr, muzzle, NULL, NULL, enemy_org, NPCS.NPC->s.number, MASK_PLAYERSOLID, qfalse, 0, 0);
 	//tr.fraction wont be 1.0f, since we hit our enemy.
-	if (tr.entityNum != NPCS.NPC->enemy->s.number)
+	if (tr.entity_num != NPCS.NPC->enemy->s.number)
 		return qfalse;
 
 	gentity_t* missile = create_missile(muzzle, dir, 1000, 10000, NPCS.NPC, qfalse);

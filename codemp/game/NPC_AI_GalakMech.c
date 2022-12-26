@@ -115,14 +115,14 @@ static void GM_CreateExplosion(gentity_t* self, const int bolt_id, const qboolea
 {
 	if (bolt_id >= 0)
 	{
-		mdxaBone_t boltMatrix;
+		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
 
-		trap->G2API_GetBoltMatrix(self->ghoul2, 0, bolt_id, &boltMatrix, self->r.currentAngles, self->r.currentOrigin,
+		trap->G2API_GetBoltMatrix(self->ghoul2, 0, bolt_id, &bolt_matrix, self->r.currentAngles, self->r.currentOrigin,
 		                          level.time, NULL, self->modelScale);
 
-		BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, org);
-		BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, dir);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org);
+		BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, dir);
 
 		if (doSmall)
 		{
@@ -808,7 +808,7 @@ void NPC_BSGM_Attack(void)
 					if (trace.fraction < 1.0f)
 					{
 						//hit something
-						gentity_t* traceEnt = &g_entities[trace.entityNum];
+						gentity_t* traceEnt = &g_entities[trace.entity_num];
 						if (traceEnt && traceEnt->takedamage)
 						{
 							//damage it

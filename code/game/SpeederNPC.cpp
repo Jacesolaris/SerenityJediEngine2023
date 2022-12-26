@@ -92,8 +92,8 @@ extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimF
 extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 #ifdef QAGAME //SP or gameside MP
 extern vmCvar_t cg_thirdPersonAlpha;
-extern vec3_t playerMins;
-extern vec3_t playerMaxs;
+extern vec3_t player_mins;
+extern vec3_t player_maxs;
 extern cvar_t* g_speederControlScheme;
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
@@ -116,42 +116,42 @@ constexpr auto STRAFERAM_DURATION = 8;
 constexpr auto STRAFERAM_ANGLE = 8;
 
 #ifndef _JK2MP
-bool VEH_StartStrafeRam(Vehicle_t* pVeh, const bool Right)
+bool VEH_StartStrafeRam(Vehicle_t* p_veh, const bool Right)
 {
-	if (!(pVeh->m_ulFlags & VEH_STRAFERAM))
+	if (!(p_veh->m_ulFlags & VEH_STRAFERAM))
 	{
-		const float speed = VectorLength(pVeh->m_pParentEntity->client->ps.velocity);
+		const float speed = VectorLength(p_veh->m_pParentEntity->client->ps.velocity);
 		if (speed > 400.0f)
 		{
 			// Compute Pos3
 			//--------------
 			vec3_t right;
-			AngleVectors(pVeh->m_vOrientation, nullptr, right, nullptr);
-			VectorMA(pVeh->m_pParentEntity->client->ps.velocity, Right ? speed : -speed, right,
-			         pVeh->m_pParentEntity->pos3);
+			AngleVectors(p_veh->m_vOrientation, nullptr, right, nullptr);
+			VectorMA(p_veh->m_pParentEntity->client->ps.velocity, Right ? speed : -speed, right,
+			         p_veh->m_pParentEntity->pos3);
 
-			pVeh->m_ulFlags |= VEH_STRAFERAM;
-			pVeh->m_fStrafeTime = Right ? STRAFERAM_DURATION : -STRAFERAM_DURATION;
+			p_veh->m_ulFlags |= VEH_STRAFERAM;
+			p_veh->m_fStrafeTime = Right ? STRAFERAM_DURATION : -STRAFERAM_DURATION;
 
-			if (pVeh->m_iSoundDebounceTimer < level.time && Q_irand(0, 1) == 0)
+			if (p_veh->m_iSoundDebounceTimer < level.time && Q_irand(0, 1) == 0)
 			{
 				int shiftSound = Q_irand(1, 4);
 				switch (shiftSound)
 				{
-				case 1: shiftSound = pVeh->m_pVehicleInfo->soundShift1;
+				case 1: shiftSound = p_veh->m_pVehicleInfo->soundShift1;
 					break;
-				case 2: shiftSound = pVeh->m_pVehicleInfo->soundShift2;
+				case 2: shiftSound = p_veh->m_pVehicleInfo->soundShift2;
 					break;
-				case 3: shiftSound = pVeh->m_pVehicleInfo->soundShift3;
+				case 3: shiftSound = p_veh->m_pVehicleInfo->soundShift3;
 					break;
-				case 4: shiftSound = pVeh->m_pVehicleInfo->soundShift4;
+				case 4: shiftSound = p_veh->m_pVehicleInfo->soundShift4;
 					break;
 				default: ;
 				}
 				if (shiftSound)
 				{
-					pVeh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 3000);
-					G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, shiftSound);
+					p_veh->m_iSoundDebounceTimer = level.time + Q_irand(1000, 3000);
+					G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, shiftSound);
 				}
 			}
 			return true;
@@ -160,7 +160,7 @@ bool VEH_StartStrafeRam(Vehicle_t* pVeh, const bool Right)
 	return false;
 }
 #else
-bool	VEH_StartStrafeRam(Vehicle_t* pVeh, bool Right, int Duration)
+bool	VEH_StartStrafeRam(Vehicle_t* p_veh, bool Right, int Duration)
 {
 	return false;
 }
@@ -408,7 +408,7 @@ bool update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 //as a gentity, but the MP-compatible access restrictions are based
 //on the bgEntity structure in the MP codebase) -rww
 // ProcessMoveCommands the Vehicle.
-static void ProcessMoveCommands(Vehicle_t* pVeh)
+static void ProcessMoveCommands(Vehicle_t* p_veh)
 {
 	/************************************************************************************/
 	/*	BEGIN	Here is where we move the vehicle (forward or back or whatever). BEGIN	*/
@@ -420,40 +420,40 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	int curTime;
 
 #ifdef _JK2MP
-	parentPS = pVeh->m_pParentEntity->playerState;
-	if (pVeh->m_pPilot)
+	parentPS = p_veh->m_pParentEntity->playerState;
+	if (p_veh->m_pPilot)
 	{
-		//pilotPS = pVeh->m_pPilot->playerState;
+		//pilotPS = p_veh->m_pPilot->playerState;
 	}
 #else
-	parentPS = &pVeh->m_pParentEntity->client->ps;
-	if (pVeh->m_pPilot)
+	parentPS = &p_veh->m_pParentEntity->client->ps;
+	if (p_veh->m_pPilot)
 	{
-		//pilotPS = &pVeh->m_pPilot->client->ps;
+		//pilotPS = &p_veh->m_pPilot->client->ps;
 	}
 #endif
 
 	// If we're flying, make us accelerate at 40% (about half) acceleration rate, and restore the pitch
 	// to origin (straight) position (at 5% increments).
-	if (pVeh->m_ulFlags & VEH_FLYING)
+	if (p_veh->m_ulFlags & VEH_FLYING)
 	{
-		speedInc = pVeh->m_pVehicleInfo->acceleration * pVeh->m_fTimeModifier * 0.4f;
+		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier * 0.4f;
 	}
 #ifdef _JK2MP
 	else if (!parentPS->m_iVehicleNum)
 #else
-	else if (!pVeh->m_pVehicleInfo->Inhabited(pVeh))
+	else if (!p_veh->m_pVehicleInfo->Inhabited(p_veh))
 #endif
 	{
 		//drifts to a stop
 		speedInc = 0;
-		//pVeh->m_ucmd.forwardmove = 127;
+		//p_veh->m_ucmd.forwardmove = 127;
 	}
 	else
 	{
-		speedInc = pVeh->m_pVehicleInfo->acceleration * pVeh->m_fTimeModifier;
+		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier;
 	}
-	speedIdleDec = pVeh->m_pVehicleInfo->decelIdle * pVeh->m_fTimeModifier;
+	speedIdleDec = p_veh->m_pVehicleInfo->decelIdle * p_veh->m_fTimeModifier;
 
 #ifndef _JK2MP//SP
 	curTime = level.time;
@@ -464,70 +464,70 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	curTime = pm->cmd.serverTime;
 #endif
 
-	if (pVeh->m_pPilot && pVeh->m_ucmd.buttons & BUTTON_ALT_ATTACK && pVeh->m_pVehicleInfo->turboSpeed
+	if (p_veh->m_pPilot && p_veh->m_ucmd.buttons & BUTTON_ALT_ATTACK && p_veh->m_pVehicleInfo->turboSpeed
 #ifdef _JK2MP
 		||
-		(parentPS && parentPS->electrifyTime > curTime && pVeh->m_pVehicleInfo->turboSpeed) //make them go!
+		(parentPS && parentPS->electrifyTime > curTime && p_veh->m_pVehicleInfo->turboSpeed) //make them go!
 #endif
 	)
 	{
 #ifdef _JK2MP
 		if ((parentPS && parentPS->electrifyTime > curTime) ||
-			(pVeh->m_pPilot->playerState &&
-				(pVeh->m_pPilot->playerState->weapon == WP_MELEE ||
-					(pVeh->m_pPilot->playerState->weapon == WP_SABER && pVeh->m_pPilot->playerState->saberHolstered))))
+			(p_veh->m_pPilot->playerState &&
+				(p_veh->m_pPilot->playerState->weapon == WP_MELEE ||
+					(p_veh->m_pPilot->playerState->weapon == WP_SABER && p_veh->m_pPilot->playerState->saberHolstered))))
 		{
 #endif
-		if (curTime - pVeh->m_iTurboTime > pVeh->m_pVehicleInfo->turboRecharge)
+		if (curTime - p_veh->m_iTurboTime > p_veh->m_pVehicleInfo->turboRecharge)
 		{
-			pVeh->m_iTurboTime = curTime + pVeh->m_pVehicleInfo->turboDuration;
-			if (pVeh->m_pVehicleInfo->iTurboStartFX)
+			p_veh->m_iTurboTime = curTime + p_veh->m_pVehicleInfo->turboDuration;
+			if (p_veh->m_pVehicleInfo->iTurboStartFX)
 			{
-				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && pVeh->m_iExhaustTag[i] != -1; i++)
+				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS && p_veh->m_iExhaustTag[i] != -1; i++)
 				{
 #ifndef _JK2MP//SP
 					// Start The Turbo Fx Start
 					//--------------------------
-					G_PlayEffect(pVeh->m_pVehicleInfo->iTurboStartFX, pVeh->m_pParentEntity->playerModel,
-					             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-					             pVeh->m_pParentEntity->currentOrigin);
+					G_PlayEffect(p_veh->m_pVehicleInfo->iTurboStartFX, p_veh->m_pParentEntity->playerModel,
+					             p_veh->m_iExhaustTag[i], p_veh->m_pParentEntity->s.number,
+					             p_veh->m_pParentEntity->currentOrigin);
 
 					// Start The Looping Effect
 					//--------------------------
-					if (pVeh->m_pVehicleInfo->iTurboFX)
+					if (p_veh->m_pVehicleInfo->iTurboFX)
 					{
-						G_PlayEffect(pVeh->m_pVehicleInfo->iTurboFX, pVeh->m_pParentEntity->playerModel,
-						             pVeh->m_iExhaustTag[i], pVeh->m_pParentEntity->s.number,
-						             pVeh->m_pParentEntity->currentOrigin, pVeh->m_pVehicleInfo->turboDuration, qtrue);
+						G_PlayEffect(p_veh->m_pVehicleInfo->iTurboFX, p_veh->m_pParentEntity->playerModel,
+						             p_veh->m_iExhaustTag[i], p_veh->m_pParentEntity->s.number,
+						             p_veh->m_pParentEntity->currentOrigin, p_veh->m_pVehicleInfo->turboDuration, qtrue);
 					}
 
 #else
 #ifdef QAGAME
-						if (pVeh->m_pParentEntity &&
-							pVeh->m_pParentEntity->ghoul2 &&
-							pVeh->m_pParentEntity->playerState)
+						if (p_veh->m_pParentEntity &&
+							p_veh->m_pParentEntity->ghoul2 &&
+							p_veh->m_pParentEntity->playerState)
 						{ //fine, I'll use a tempent for this, but only because it's played only once at the start of a turbo.
 							vec3_t boltOrg, boltDir;
-							mdxaBone_t boltMatrix;
+							mdxaBone_t bolt_matrix;
 
-							VectorSet(boltDir, 0.0f, pVeh->m_pParentEntity->playerState->viewangles[YAW], 0.0f);
+							VectorSet(boltDir, 0.0f, p_veh->m_pParentEntity->playerState->viewangles[YAW], 0.0f);
 
-							trap_G2API_GetBoltMatrix(pVeh->m_pParentEntity->ghoul2, 0, pVeh->m_iExhaustTag[i], &boltMatrix, boltDir, pVeh->m_pParentEntity->playerState->origin, level.time, nullptr, pVeh->m_pParentEntity->modelScale);
-							BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, boltOrg);
-							BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, boltDir);
-							G_PlayEffectID(pVeh->m_pVehicleInfo->iTurboStartFX, boltOrg, boltDir);
+							trap_G2API_GetBoltMatrix(p_veh->m_pParentEntity->ghoul2, 0, p_veh->m_iExhaustTag[i], &bolt_matrix, boltDir, p_veh->m_pParentEntity->playerState->origin, level.time, nullptr, p_veh->m_pParentEntity->modelScale);
+							BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, boltOrg);
+							BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, boltDir);
+							G_PlayEffectID(p_veh->m_pVehicleInfo->iTurboStartFX, boltOrg, boltDir);
 						}
 #endif
 #endif
 				}
 			}
 #ifndef _JK2MP //kill me now
-			if (pVeh->m_pVehicleInfo->soundTurbo)
+			if (p_veh->m_pVehicleInfo->soundTurbo)
 			{
-				G_SoundIndexOnEnt(pVeh->m_pParentEntity, CHAN_AUTO, pVeh->m_pVehicleInfo->soundTurbo);
+				G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, p_veh->m_pVehicleInfo->soundTurbo);
 			}
 #endif
-			parentPS->speed = pVeh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
+			parentPS->speed = p_veh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
 		}
 #ifdef _JK2MP
 		}
@@ -535,30 +535,30 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	}
 
 	// Slide Breaking
-	if (pVeh->m_ulFlags & VEH_SLIDEBREAKING)
+	if (p_veh->m_ulFlags & VEH_SLIDEBREAKING)
 	{
-		if (pVeh->m_ucmd.forwardmove >= 0
+		if (p_veh->m_ucmd.forwardmove >= 0
 #ifndef _JK2MP
-			|| level.time - pVeh->m_pParentEntity->lastMoveTime > 500
+			|| level.time - p_veh->m_pParentEntity->lastMoveTime > 500
 #endif
 		)
 		{
-			pVeh->m_ulFlags &= ~VEH_SLIDEBREAKING;
+			p_veh->m_ulFlags &= ~VEH_SLIDEBREAKING;
 		}
 		parentPS->speed = 0;
 	}
 	else if (
-		curTime > pVeh->m_iTurboTime &&
-		!(pVeh->m_ulFlags & VEH_FLYING) &&
-		pVeh->m_ucmd.forwardmove < 0 &&
-		fabs(pVeh->m_vOrientation[ROLL]) > 25.0f)
+		curTime > p_veh->m_iTurboTime &&
+		!(p_veh->m_ulFlags & VEH_FLYING) &&
+		p_veh->m_ucmd.forwardmove < 0 &&
+		fabs(p_veh->m_vOrientation[ROLL]) > 25.0f)
 	{
-		pVeh->m_ulFlags |= VEH_SLIDEBREAKING;
+		p_veh->m_ulFlags |= VEH_SLIDEBREAKING;
 	}
 
-	if (curTime < pVeh->m_iTurboTime)
+	if (curTime < p_veh->m_iTurboTime)
 	{
-		speedMax = pVeh->m_pVehicleInfo->turboSpeed;
+		speedMax = p_veh->m_pVehicleInfo->turboSpeed;
 		if (parentPS)
 		{
 			parentPS->eFlags |= EF_JETPACK_ACTIVE;
@@ -566,25 +566,25 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	}
 	else
 	{
-		speedMax = pVeh->m_pVehicleInfo->speedMax;
+		speedMax = p_veh->m_pVehicleInfo->speedMax;
 		if (parentPS)
 		{
 			parentPS->eFlags &= ~EF_JETPACK_ACTIVE;
 		}
 	}
 
-	speedIdle = pVeh->m_pVehicleInfo->speedIdle;
-	//speedIdleAccel = pVeh->m_pVehicleInfo->accelIdle * pVeh->m_fTimeModifier;
-	speedMin = pVeh->m_pVehicleInfo->speedMin;
+	speedIdle = p_veh->m_pVehicleInfo->speedIdle;
+	//speedIdleAccel = p_veh->m_pVehicleInfo->accelIdle * p_veh->m_fTimeModifier;
+	speedMin = p_veh->m_pVehicleInfo->speedMin;
 
 	if (parentPS->speed || parentPS->groundEntityNum == ENTITYNUM_NONE ||
-		pVeh->m_ucmd.forwardmove || pVeh->m_ucmd.upmove > 0)
+		p_veh->m_ucmd.forwardmove || p_veh->m_ucmd.upmove > 0)
 	{
-		if (pVeh->m_ucmd.forwardmove > 0 && speedInc)
+		if (p_veh->m_ucmd.forwardmove > 0 && speedInc)
 		{
 			parentPS->speed += speedInc;
 		}
-		else if (pVeh->m_ucmd.forwardmove < 0)
+		else if (p_veh->m_ucmd.forwardmove < 0)
 		{
 			if (parentPS->speed > speedIdle)
 			{
@@ -615,15 +615,15 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	}
 	else
 	{
-		if (!pVeh->m_pVehicleInfo->strafePerc
+		if (!p_veh->m_pVehicleInfo->strafePerc
 #ifdef _JK2MP
-			|| (0 && pVeh->m_pParentEntity->s.number < MAX_CLIENTS))
+			|| (0 && p_veh->m_pParentEntity->s.number < MAX_CLIENTS))
 #else
-			|| !g_speederControlScheme->value && !pVeh->m_pParentEntity->s.number)
+			|| !g_speederControlScheme->value && !p_veh->m_pParentEntity->s.number)
 #endif
 		{
 			//if in a strafe-capable vehicle, clear strafing unless using alternate control scheme
-			//pVeh->m_ucmd.rightmove = 0;
+			//p_veh->m_ucmd.rightmove = 0;
 		}
 	}
 
@@ -640,9 +640,9 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	// In SP, The AI Pilots Can Directly Control The Speed Of Their Bike In Order To
 	// Match The Speed Of The Person They Are Trying To Chase
 	//-------------------------------------------------------------------------------
-	if (pVeh->m_pPilot && pVeh->m_ucmd.buttons & BUTTON_VEH_SPEED)
+	if (p_veh->m_pPilot && p_veh->m_ucmd.buttons & BUTTON_VEH_SPEED)
 	{
-		parentPS->speed = pVeh->m_pPilot->client->ps.speed;
+		parentPS->speed = p_veh->m_pPilot->client->ps.speed;
 	}
 #endif
 
@@ -662,9 +662,9 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 //and MP. -rww
 // ProcessOrientCommands the Vehicle.
 #ifdef _JK2MP //temp hack til mp speeder controls are sorted -rww
-extern void AnimalProcessOri(Vehicle_t* pVeh);
+extern void AnimalProcessOri(Vehicle_t* p_veh);
 #endif
-void ProcessOrientCommands(Vehicle_t* pVeh)
+void ProcessOrientCommands(Vehicle_t* p_veh)
 {
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
@@ -675,27 +675,27 @@ void ProcessOrientCommands(Vehicle_t* pVeh)
 	playerState_t* parentPS;
 	float angDif;
 
-	if (pVeh->m_pPilot)
+	if (p_veh->m_pPilot)
 	{
-		riderPS = pVeh->m_pPilot->playerState;
+		riderPS = p_veh->m_pPilot->playerState;
 	}
 	else
 	{
-		riderPS = pVeh->m_pParentEntity->playerState;
+		riderPS = p_veh->m_pParentEntity->playerState;
 	}
-	//parentPS = pVeh->m_pParentEntity->playerState;
+	//parentPS = p_veh->m_pParentEntity->playerState;
 
-	//pVeh->m_vOrientation[YAW] = 0.0f;//riderPS->viewangles[YAW];
-	angDif = AngleSubtract(pVeh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
+	//p_veh->m_vOrientation[YAW] = 0.0f;//riderPS->viewangles[YAW];
+	angDif = AngleSubtract(p_veh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
 	if (parentPS && parentPS->speed)
 	{
 		float s = parentPS->speed;
-		float maxDif = pVeh->m_pVehicleInfo->turningSpeed * 4.0f; //magic number hackery
+		float maxDif = p_veh->m_pVehicleInfo->turningSpeed * 4.0f; //magic number hackery
 		if (s < 0.0f)
 		{
 			s = -s;
 		}
-		angDif *= s / pVeh->m_pVehicleInfo->speedMax;
+		angDif *= s / p_veh->m_pVehicleInfo->speedMax;
 		if (angDif > maxDif)
 		{
 			angDif = maxDif;
@@ -704,59 +704,59 @@ void ProcessOrientCommands(Vehicle_t* pVeh)
 		{
 			angDif = -maxDif;
 		}
-		pVeh->m_vOrientation[YAW] = AngleNormalize180(pVeh->m_vOrientation[YAW] - angDif * (pVeh->m_fTimeModifier * 0.2f));
+		p_veh->m_vOrientation[YAW] = AngleNormalize180(p_veh->m_vOrientation[YAW] - angDif * (p_veh->m_fTimeModifier * 0.2f));
 
 		if (parentPS->electrifyTime > pm->cmd.serverTime)
 		{ //do some crazy stuff
-			pVeh->m_vOrientation[YAW] += (sin(pm->cmd.serverTime / 1000.0f) * 3.0f) * pVeh->m_fTimeModifier;
+			p_veh->m_vOrientation[YAW] += (sin(pm->cmd.serverTime / 1000.0f) * 3.0f) * p_veh->m_fTimeModifier;
 		}
 	}
 
 #else
-	const gentity_t* rider = pVeh->m_pParentEntity->owner;
+	const gentity_t* rider = p_veh->m_pParentEntity->owner;
 	if (!rider || !rider->client)
 	{
-		riderPS = &pVeh->m_pParentEntity->client->ps;
+		riderPS = &p_veh->m_pParentEntity->client->ps;
 	}
 	else
 	{
 		riderPS = &rider->client->ps;
 	}
-	//parentPS = &pVeh->m_pParentEntity->client->ps;
+	//parentPS = &p_veh->m_pParentEntity->client->ps;
 
-	if (pVeh->m_ulFlags & VEH_FLYING)
+	if (p_veh->m_ulFlags & VEH_FLYING)
 	{
-		pVeh->m_vOrientation[YAW] += pVeh->m_vAngularVelocity;
+		p_veh->m_vOrientation[YAW] += p_veh->m_vAngularVelocity;
 	}
 	else if (
-		pVeh->m_ulFlags & VEH_SLIDEBREAKING || // No Angles Control While Out Of Control
-		pVeh->m_ulFlags & VEH_OUTOFCONTROL // No Angles Control While Out Of Control
+		p_veh->m_ulFlags & VEH_SLIDEBREAKING || // No Angles Control While Out Of Control
+		p_veh->m_ulFlags & VEH_OUTOFCONTROL // No Angles Control While Out Of Control
 	)
 	{
 		// Any ability to change orientation?
 	}
 	else if (
-		pVeh->m_ulFlags & VEH_STRAFERAM // No Angles Control While Strafe Ramming
+		p_veh->m_ulFlags & VEH_STRAFERAM // No Angles Control While Strafe Ramming
 	)
 	{
-		if (pVeh->m_fStrafeTime > 0)
+		if (p_veh->m_fStrafeTime > 0)
 		{
-			pVeh->m_fStrafeTime--;
-			pVeh->m_vOrientation[ROLL] += pVeh->m_fStrafeTime < STRAFERAM_DURATION / 2
+			p_veh->m_fStrafeTime--;
+			p_veh->m_vOrientation[ROLL] += p_veh->m_fStrafeTime < STRAFERAM_DURATION / 2
 				                              ? -STRAFERAM_ANGLE
 				                              : STRAFERAM_ANGLE;
 		}
-		else if (pVeh->m_fStrafeTime < 0)
+		else if (p_veh->m_fStrafeTime < 0)
 		{
-			pVeh->m_fStrafeTime++;
-			pVeh->m_vOrientation[ROLL] += pVeh->m_fStrafeTime > -STRAFERAM_DURATION / 2
+			p_veh->m_fStrafeTime++;
+			p_veh->m_vOrientation[ROLL] += p_veh->m_fStrafeTime > -STRAFERAM_DURATION / 2
 				                              ? STRAFERAM_ANGLE
 				                              : -STRAFERAM_ANGLE;
 		}
 	}
 	else
 	{
-		pVeh->m_vOrientation[YAW] = riderPS->viewangles[YAW];
+		p_veh->m_vOrientation[YAW] = riderPS->viewangles[YAW];
 	}
 #endif
 
@@ -771,7 +771,7 @@ extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAni
 extern int PM_AnimLength(int index, animNumber_t anim);
 
 // This function makes sure that the vehicle is properly animated.
-void AnimateVehicle(Vehicle_t* pVeh)
+void AnimateVehicle(Vehicle_t* p_veh)
 {
 }
 
@@ -792,7 +792,7 @@ extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int leng
 //I want to keep this function BG too, because it's fairly generic already, and it
 //would be nice to have proper prediction of animations. -rww
 // This function makes sure that the rider's in this vehicle are properly animated.
-void AnimateRiders(Vehicle_t* pVeh)
+void AnimateRiders(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VS_IDLE;
 	int i_flags;
@@ -802,32 +802,32 @@ void AnimateRiders(Vehicle_t* pVeh)
 	int curTime;
 
 	// Boarding animation.
-	if (pVeh->m_iBoarding != 0)
+	if (p_veh->m_iBoarding != 0)
 	{
 		// We've just started moarding, set the amount of time it will take to finish moarding.
-		if (pVeh->m_iBoarding < 0)
+		if (p_veh->m_iBoarding < 0)
 		{
 			int iAnimLen;
 
 			// Boarding from left...
-			if (pVeh->m_iBoarding == -1)
+			if (p_veh->m_iBoarding == -1)
 			{
 				Anim = BOTH_VS_MOUNT_L;
 			}
-			else if (pVeh->m_iBoarding == -2)
+			else if (p_veh->m_iBoarding == -2)
 			{
 				Anim = BOTH_VS_MOUNT_R;
 			}
-			else if (pVeh->m_iBoarding == -3)
+			else if (p_veh->m_iBoarding == -3)
 			{
 				Anim = BOTH_VS_MOUNTJUMP_L;
 			}
-			else if (pVeh->m_iBoarding == VEH_MOUNT_THROW_LEFT)
+			else if (p_veh->m_iBoarding == VEH_MOUNT_THROW_LEFT)
 			{
 				i_blend = 0;
 				Anim = BOTH_VS_MOUNTTHROW_R;
 			}
-			else if (pVeh->m_iBoarding == VEH_MOUNT_THROW_RIGHT)
+			else if (p_veh->m_iBoarding == VEH_MOUNT_THROW_RIGHT)
 			{
 				i_blend = 0;
 				Anim = BOTH_VS_MOUNTTHROW_L;
@@ -836,17 +836,17 @@ void AnimateRiders(Vehicle_t* pVeh)
 			// Set the delay time (which happens to be the time it takes for the animation to complete).
 			// NOTE: Here I made it so the delay is actually 40% (0.4f) of the animation time.
 #ifdef _JK2MP
-			iAnimLen = BG_AnimLength(pVeh->m_pPilot->localAnimIndex, Anim) * 0.4f;
-			pVeh->m_iBoarding = BG_GetTime() + iAnimLen;
+			iAnimLen = BG_AnimLength(p_veh->m_pPilot->localAnimIndex, Anim) * 0.4f;
+			p_veh->m_iBoarding = BG_GetTime() + iAnimLen;
 #else
-			iAnimLen = PM_AnimLength(pVeh->m_pPilot->client->clientInfo.animFileIndex, Anim); // * 0.4f;
-			if (pVeh->m_iBoarding != VEH_MOUNT_THROW_LEFT && pVeh->m_iBoarding != VEH_MOUNT_THROW_RIGHT)
+			iAnimLen = PM_AnimLength(p_veh->m_pPilot->client->clientInfo.animFileIndex, Anim); // * 0.4f;
+			if (p_veh->m_iBoarding != VEH_MOUNT_THROW_LEFT && p_veh->m_iBoarding != VEH_MOUNT_THROW_RIGHT)
 			{
-				pVeh->m_iBoarding = level.time + iAnimLen * 0.4f;
+				p_veh->m_iBoarding = level.time + iAnimLen * 0.4f;
 			}
 			else
 			{
-				pVeh->m_iBoarding = level.time + iAnimLen;
+				p_veh->m_iBoarding = level.time + iAnimLen;
 			}
 #endif
 			// Set the animation, which won't be interrupted until it's completed.
@@ -854,47 +854,47 @@ void AnimateRiders(Vehicle_t* pVeh)
 			i_flags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
 #ifdef _JK2MP
-			BG_SetAnim(pVeh->m_pPilot->playerState, bgAllAnims[pVeh->m_pPilot->localAnimIndex].anims,
+			BG_SetAnim(p_veh->m_pPilot->playerState, bgAllAnims[p_veh->m_pPilot->localAnimIndex].anims,
 				SETANIM_BOTH, Anim, iFlags);
 #else
-			NPC_SetAnim(pVeh->m_pPilot, SETANIM_BOTH, Anim, i_flags, i_blend);
-			if (pVeh->m_pOldPilot)
+			NPC_SetAnim(p_veh->m_pPilot, SETANIM_BOTH, Anim, i_flags, i_blend);
+			if (p_veh->m_pOldPilot)
 			{
-				iAnimLen = PM_AnimLength(pVeh->m_pPilot->client->clientInfo.animFileIndex, BOTH_VS_MOUNTTHROWEE);
-				NPC_SetAnim(pVeh->m_pOldPilot, SETANIM_BOTH, BOTH_VS_MOUNTTHROWEE, i_flags, i_blend);
+				iAnimLen = PM_AnimLength(p_veh->m_pPilot->client->clientInfo.animFileIndex, BOTH_VS_MOUNTTHROWEE);
+				NPC_SetAnim(p_veh->m_pOldPilot, SETANIM_BOTH, BOTH_VS_MOUNTTHROWEE, i_flags, i_blend);
 			}
 #endif
 		}
 
 #ifndef _JK2MP
-		if (pVeh->m_pOldPilot && pVeh->m_pOldPilot->client->ps.torsoAnimTimer <= 0)
+		if (p_veh->m_pOldPilot && p_veh->m_pOldPilot->client->ps.torsoAnimTimer <= 0)
 		{
 			if (Q_irand(0, player->count) == 0)
 			{
 				player->count++;
-				player->lastEnemy = pVeh->m_pOldPilot;
+				player->lastEnemy = p_veh->m_pOldPilot;
 				G_StartMatrixEffect(player, MEF_LOOK_AT_ENEMY | MEF_NO_RANGEVAR | MEF_NO_VERTBOB | MEF_NO_SPIN, 1000);
 			}
 
-			gentity_t* oldPilot = pVeh->m_pOldPilot;
-			pVeh->m_pVehicleInfo->Eject(pVeh, pVeh->m_pOldPilot, qtrue); // will set pointer to zero
+			gentity_t* oldPilot = p_veh->m_pOldPilot;
+			p_veh->m_pVehicleInfo->Eject(p_veh, p_veh->m_pOldPilot, qtrue); // will set pointer to zero
 
 			// Kill Him
 			//----------
 			oldPilot->client->noRagTime = -1; // no ragdoll for you
-			G_Damage(oldPilot, pVeh->m_pPilot, pVeh->m_pPilot, pVeh->m_pPilot->currentAngles,
-			         pVeh->m_pPilot->currentOrigin, 1000, 0, MOD_CRUSH);
+			G_Damage(oldPilot, p_veh->m_pPilot, p_veh->m_pPilot, p_veh->m_pPilot->currentAngles,
+			         p_veh->m_pPilot->currentOrigin, 1000, 0, MOD_CRUSH);
 
 			// Compute THe Throw Direction As Backwards From The Vehicle's Velocity
 			//----------------------------------------------------------------------
 			vec3_t throwDir;
-			VectorScale(pVeh->m_pParentEntity->client->ps.velocity, -1.0f, throwDir);
+			VectorScale(p_veh->m_pParentEntity->client->ps.velocity, -1.0f, throwDir);
 			VectorNormalize(throwDir);
 			throwDir[2] += 0.3f; // up a little
 
 			// Now Throw Him Out
 			//-------------------
-			g_throw(oldPilot, throwDir, VectorLength(pVeh->m_pParentEntity->client->ps.velocity) / 10.0f);
+			g_throw(oldPilot, throwDir, VectorLength(p_veh->m_pParentEntity->client->ps.velocity) / 10.0f);
 			NPC_SetAnim(oldPilot, SETANIM_BOTH, BOTH_DEATHBACKWARD1, SETANIM_FLAG_OVERRIDE, i_blend);
 		}
 #endif
@@ -907,11 +907,11 @@ void AnimateRiders(Vehicle_t* pVeh)
 #endif
 
 #ifdef _JK2MP
-	pilotPS = pVeh->m_pPilot->playerState;
-	//parentPS = pVeh->m_pPilot->playerState;
+	pilotPS = p_veh->m_pPilot->playerState;
+	//parentPS = p_veh->m_pPilot->playerState;
 #else
-	pilotPS = &pVeh->m_pPilot->client->ps;
-	//parentPS = &pVeh->m_pParentEntity->client->ps;
+	pilotPS = &p_veh->m_pPilot->client->ps;
+	//parentPS = &p_veh->m_pParentEntity->client->ps;
 #endif
 
 #ifndef _JK2MP//SP
@@ -924,13 +924,13 @@ void AnimateRiders(Vehicle_t* pVeh)
 #endif
 
 	// Percentage of maximum speed relative to current speed.
-	//fSpeedPercToMax = parentPS->speed / pVeh->m_pVehicleInfo->speedMax;
+	//fSpeedPercToMax = parentPS->speed / p_veh->m_pVehicleInfo->speedMax;
 
 	/*	// Going in reverse...
 	#ifdef _JK2MP
-		if ( pVeh->m_ucmd.forwardmove < 0 && !(pVeh->m_ulFlags & VEH_SLIDEBREAKING))
+		if ( p_veh->m_ucmd.forwardmove < 0 && !(p_veh->m_ulFlags & VEH_SLIDEBREAKING))
 	#else
-		if ( fSpeedPercToMax < -0.018f && !(pVeh->m_ulFlags & VEH_SLIDEBREAKING))
+		if ( fSpeedPercToMax < -0.018f && !(p_veh->m_ulFlags & VEH_SLIDEBREAKING))
 	#endif
 		{
 			Anim = BOTH_VS_REV;
@@ -938,51 +938,51 @@ void AnimateRiders(Vehicle_t* pVeh)
 			bool		HasWeapon	= ((pilotPS->weapon != WP_NONE) && (pilotPS->weapon != WP_MELEE));
 			if (HasWeapon)
 			{
-				if (pVeh->m_pPilot->s.number<MAX_CLIENTS)
+				if (p_veh->m_pPilot->s.number<MAX_CLIENTS)
 				{
 					CG_ChangeWeapon(WP_NONE);
 				}
 
-				pVeh->m_pPilot->client->ps.weapon = WP_NONE;
-				G_RemoveWeaponModels(pVeh->m_pPilot);
+				p_veh->m_pPilot->client->ps.weapon = WP_NONE;
+				G_RemoveWeaponModels(p_veh->m_pPilot);
 			}
 		}
 		else
 	*/
 	{
 		const bool HasWeapon = pilotPS->weapon != WP_NONE && pilotPS->weapon != WP_MELEE;
-		const bool Attacking = HasWeapon && !!(pVeh->m_ucmd.buttons & BUTTON_ATTACK);
+		const bool Attacking = HasWeapon && !!(p_veh->m_ucmd.buttons & BUTTON_ATTACK);
 #ifdef _JK2MP //fixme: flying tends to spaz out a lot
 		bool		Flying = false;
 		bool		Crashing = false;
 #else
-		bool Flying = !!(pVeh->m_ulFlags & VEH_FLYING);
-		bool Crashing = !!(pVeh->m_ulFlags & VEH_CRASHING);
+		bool Flying = !!(p_veh->m_ulFlags & VEH_FLYING);
+		bool Crashing = !!(p_veh->m_ulFlags & VEH_CRASHING);
 #endif
-		bool Right = pVeh->m_ucmd.rightmove > 0;
-		bool Left = pVeh->m_ucmd.rightmove < 0;
-		const bool Turbo = curTime < pVeh->m_iTurboTime;
+		bool Right = p_veh->m_ucmd.rightmove > 0;
+		bool Left = p_veh->m_ucmd.rightmove < 0;
+		const bool Turbo = curTime < p_veh->m_iTurboTime;
 		EWeaponPose WeaponPose = WPOSE_NONE;
 
 		// Remove Crashing Flag
 		//----------------------
-		pVeh->m_ulFlags &= ~VEH_CRASHING;
+		p_veh->m_ulFlags &= ~VEH_CRASHING;
 
 		// Put Away Saber When It Is Not Active
 		//--------------------------------------
 #ifndef _JK2MP
 		if (HasWeapon &&
-			(pVeh->m_pPilot->s.number >= MAX_CLIENTS || cg.weaponSelectTime + 500 < cg.time) &&
+			(p_veh->m_pPilot->s.number >= MAX_CLIENTS || cg.weaponSelectTime + 500 < cg.time) &&
 			(Turbo || pilotPS->weapon == WP_SABER && !pilotPS->SaberActive()))
 		{
-			if (pVeh->m_pPilot->s.number < MAX_CLIENTS)
+			if (p_veh->m_pPilot->s.number < MAX_CLIENTS)
 			{
-				pVeh->m_pPilot->client->ps.stats[STAT_WEAPONS] |= 1; // Riding means you get WP_NONE
+				p_veh->m_pPilot->client->ps.stats[STAT_WEAPONS] |= 1; // Riding means you get WP_NONE
 				CG_ChangeWeapon(WP_NONE);
 			}
 
-			pVeh->m_pPilot->client->ps.weapon = WP_NONE;
-			G_RemoveWeaponModels(pVeh->m_pPilot);
+			p_veh->m_pPilot->client->ps.weapon = WP_NONE;
+			G_RemoveWeaponModels(p_veh->m_pPilot);
 		}
 #endif
 
@@ -998,8 +998,8 @@ void AnimateRiders(Vehicle_t* pVeh)
 		{
 			float bodyCurrent = 0.0f;
 			int bodyEnd = 0;
-			if (!!gi.G2API_GetBoneAnimIndex(&pVeh->m_pPilot->ghoul2[pVeh->m_pPilot->playerModel],
-			                                pVeh->m_pPilot->rootBone, level.time, &bodyCurrent, nullptr, &bodyEnd,
+			if (!!gi.G2API_GetBoneAnimIndex(&p_veh->m_pPilot->ghoul2[p_veh->m_pPilot->playerModel],
+			                                p_veh->m_pPilot->rootBone, level.time, &bodyCurrent, nullptr, &bodyEnd,
 			                                nullptr, nullptr, nullptr))
 			{
 				if (bodyCurrent <= static_cast<float>(bodyEnd) - 1.5f)
@@ -1024,15 +1024,15 @@ void AnimateRiders(Vehicle_t* pVeh)
 		}
 		else if (pilotPS->weapon == WP_SABER)
 		{
-			if (pVeh->m_ulFlags & VEH_SABERINLEFTHAND && pilotPS->torsoAnim == BOTH_VS_ATL_TO_R_S)
+			if (p_veh->m_ulFlags & VEH_SABERINLEFTHAND && pilotPS->torsoAnim == BOTH_VS_ATL_TO_R_S)
 			{
-				pVeh->m_ulFlags &= ~VEH_SABERINLEFTHAND;
+				p_veh->m_ulFlags &= ~VEH_SABERINLEFTHAND;
 			}
-			if (!(pVeh->m_ulFlags & VEH_SABERINLEFTHAND) && pilotPS->torsoAnim == BOTH_VS_ATR_TO_L_S)
+			if (!(p_veh->m_ulFlags & VEH_SABERINLEFTHAND) && pilotPS->torsoAnim == BOTH_VS_ATR_TO_L_S)
 			{
-				pVeh->m_ulFlags |= VEH_SABERINLEFTHAND;
+				p_veh->m_ulFlags |= VEH_SABERINLEFTHAND;
 			}
-			WeaponPose = pVeh->m_ulFlags & VEH_SABERINLEFTHAND ? WPOSE_SABERLEFT : WPOSE_SABERRIGHT;
+			WeaponPose = p_veh->m_ulFlags & VEH_SABERINLEFTHAND ? WPOSE_SABERLEFT : WPOSE_SABERRIGHT;
 		}
 
 		if (Attacking && WeaponPose)
@@ -1046,17 +1046,17 @@ void AnimateRiders(Vehicle_t* pVeh)
 			if (!Left && !Right) // Allow player strafe keys to override
 			{
 #ifndef _JK2MP
-				if (pVeh->m_pPilot->enemy)
+				if (p_veh->m_pPilot->enemy)
 				{
 					vec3_t toEnemy;
 					//float	toEnemyDistance;
 					vec3_t actorRight;
 
-					VectorSubtract(pVeh->m_pPilot->currentOrigin, pVeh->m_pPilot->enemy->currentOrigin, toEnemy);
+					VectorSubtract(p_veh->m_pPilot->currentOrigin, p_veh->m_pPilot->enemy->currentOrigin, toEnemy);
 					/*toEnemyDistance = */
 					VectorNormalize(toEnemy);
 
-					AngleVectors(pVeh->m_pParentEntity->currentAngles, nullptr, actorRight, nullptr);
+					AngleVectors(p_veh->m_pParentEntity->currentAngles, nullptr, actorRight, nullptr);
 					const float actorRightDot = DotProduct(toEnemy, actorRight);
 
 					if (fabsf(actorRightDot) > 0.5f || pilotPS->weapon == WP_SABER)
@@ -1117,7 +1117,7 @@ void AnimateRiders(Vehicle_t* pVeh)
 				}
 			}
 		}
-		else if (Left && pVeh->m_ucmd.buttons & BUTTON_USE)
+		else if (Left && p_veh->m_ucmd.buttons & BUTTON_USE)
 		{
 			// Look To The Left Behind
 			i_blend = 400;
@@ -1131,7 +1131,7 @@ void AnimateRiders(Vehicle_t* pVeh)
 			default: Anim = BOTH_VS_LOOKLEFT;
 			}
 		}
-		else if (Right && pVeh->m_ucmd.buttons & BUTTON_USE)
+		else if (Right && p_veh->m_ucmd.buttons & BUTTON_USE)
 		{
 			// Look To The Right Behind
 			i_blend = 400;
@@ -1196,7 +1196,7 @@ void AnimateRiders(Vehicle_t* pVeh)
 			i_blend = 300;
 			i_flags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS;
 
-			if (pVeh->m_vOrientation[ROLL] <= -20)
+			if (p_veh->m_vOrientation[ROLL] <= -20)
 			{
 				// Lean Left
 				switch (WeaponPose)
@@ -1212,7 +1212,7 @@ void AnimateRiders(Vehicle_t* pVeh)
 				default: assert(0);
 				}
 			}
-			else if (pVeh->m_vOrientation[ROLL] >= 20)
+			else if (p_veh->m_vOrientation[ROLL] >= 20)
 			{
 				// Lean Right
 				switch (WeaponPose)
@@ -1249,23 +1249,23 @@ void AnimateRiders(Vehicle_t* pVeh)
 
 #ifdef _JK2MP
 	iFlags &= ~SETANIM_FLAG_OVERRIDE;
-	if (pVeh->m_pPilot->playerState->torsoAnim == Anim)
+	if (p_veh->m_pPilot->playerState->torsoAnim == Anim)
 	{
-		pVeh->m_pPilot->playerState->torsoTimer = BG_AnimLength(pVeh->m_pPilot->localAnimIndex, Anim);
+		p_veh->m_pPilot->playerState->torsoTimer = BG_AnimLength(p_veh->m_pPilot->localAnimIndex, Anim);
 	}
-	if (pVeh->m_pPilot->playerState->legsAnim == Anim)
+	if (p_veh->m_pPilot->playerState->legsAnim == Anim)
 	{
-		pVeh->m_pPilot->playerState->legsTimer = BG_AnimLength(pVeh->m_pPilot->localAnimIndex, Anim);
+		p_veh->m_pPilot->playerState->legsTimer = BG_AnimLength(p_veh->m_pPilot->localAnimIndex, Anim);
 	}
-	BG_SetAnim(pVeh->m_pPilot->playerState, bgAllAnims[pVeh->m_pPilot->localAnimIndex].anims,
+	BG_SetAnim(p_veh->m_pPilot->playerState, bgAllAnims[p_veh->m_pPilot->localAnimIndex].anims,
 		SETANIM_BOTH, Anim, iFlags | SETANIM_FLAG_HOLD);
 #else
-	NPC_SetAnim(pVeh->m_pPilot, SETANIM_BOTH, Anim, i_flags, i_blend);
+	NPC_SetAnim(p_veh->m_pPilot, SETANIM_BOTH, Anim, i_flags, i_blend);
 #endif
 }
 
 #ifndef QAGAME
-void AttachRidersGeneric(Vehicle_t* pVeh);
+void AttachRidersGeneric(Vehicle_t* p_veh);
 #endif
 
 void G_SetSpeederVehicleFunctions(vehicleInfo_t* pVehInfo)
@@ -1308,7 +1308,7 @@ void G_SetSpeederVehicleFunctions(vehicleInfo_t* pVehInfo)
 #endif
 
 #ifdef QAGAME
-extern void G_AllocateVehicleObject(Vehicle_t** pVeh);
+extern void G_AllocateVehicleObject(Vehicle_t** p_veh);
 #endif
 
 #ifdef _JK2MP
@@ -1316,26 +1316,26 @@ extern void G_AllocateVehicleObject(Vehicle_t** pVeh);
 #endif
 
 // Create/Allocate a new Animal Vehicle (initializing it as well).
-void G_CreateSpeederNPC(Vehicle_t** pVeh, const char* strType)
+void G_CreateSpeederNPC(Vehicle_t** p_veh, const char* strType)
 {
 #ifdef _JK2MP
 #ifdef QAGAME
 	//these will remain on entities on the client once allocated because the pointer is
 	//never stomped. on the server, however, when an ent is freed, the entity struct is
 	//memset to 0, so this memory would be lost..
-	G_AllocateVehicleObject(pVeh);
+	G_AllocateVehicleObject(p_veh);
 #else
-	if (!*pVeh)
+	if (!*p_veh)
 	{ //only allocate a new one if we really have to
-		(*pVeh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
+		(*p_veh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
 	}
 #endif
-	memset(*pVeh, 0, sizeof(Vehicle_t));
-	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
+	memset(*p_veh, 0, sizeof(Vehicle_t));
+	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
 #else
 	// Allocate the Vehicle.
-	*pVeh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
-	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
+	*p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
+	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
 #endif
 }
 

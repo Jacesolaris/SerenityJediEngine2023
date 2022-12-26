@@ -1570,15 +1570,15 @@ void SP_func_glass(gentity_t* self)
 	gi.linkentity(self);
 }
 
-qboolean G_EntIsBreakable(const int entityNum, const gentity_t* breaker)
+qboolean G_EntIsBreakable(const int entity_num, const gentity_t* breaker)
 {
 	//breakable brush/model that can actually be broken
-	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
+	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* ent = &g_entities[entityNum];
+	const gentity_t* ent = &g_entities[entity_num];
 	if (!ent->takedamage)
 	{
 		return qfalse;

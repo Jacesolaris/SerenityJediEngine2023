@@ -30,8 +30,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "Q3_Interface.h"
 #include "g_vehicles.h"
 
-extern vec3_t playerMins;
-extern vec3_t playerMaxs;
+extern vec3_t player_mins;
+extern vec3_t player_maxs;
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torsoAnimTimer, int time);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);
 extern void NPC_BSNoClip();
@@ -91,7 +91,7 @@ extern int eventClearTime;
 extern void GM_Dying(gentity_t* self);
 extern void DROIDEKA_Dying(gentity_t* self);
 
-extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
 
 qboolean NPC_EntityIsBreakable(const gentity_t* ent)
 {
@@ -220,10 +220,10 @@ qboolean G_OkayToRemoveCorpse(gentity_t* self)
 	//if we're still on a vehicle, we won't remove ourselves until we get ejected
 	if (self->client && self->client->NPC_class != CLASS_VEHICLE && self->s.m_iVehicleNum != 0)
 	{
-		Vehicle_t* pVeh = g_entities[self->s.m_iVehicleNum].m_pVehicle;
-		if (pVeh)
+		Vehicle_t* p_veh = g_entities[self->s.m_iVehicleNum].m_pVehicle;
+		if (p_veh)
 		{
-			if (!pVeh->m_pVehicleInfo->Eject(pVeh, self, qtrue))
+			if (!p_veh->m_pVehicleInfo->Eject(p_veh, self, qtrue))
 			{
 				//dammit, still can't get off the vehicle...
 				return qfalse;

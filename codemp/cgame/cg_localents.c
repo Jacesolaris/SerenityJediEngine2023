@@ -127,10 +127,10 @@ void CG_BloodTrail(const localEntity_t* le)
 
 	for (; t <= t2; t += step)
 	{
-		vec3_t newOrigin;
-		BG_EvaluateTrajectory(&le->pos, t, newOrigin);
+		vec3_t new_origin;
+		BG_EvaluateTrajectory(&le->pos, t, new_origin);
 
-		localEntity_t* blood = CG_SmokePuff(newOrigin, vec3_origin,
+		localEntity_t* blood = CG_SmokePuff(new_origin, vec3_origin,
 		                                    20, // radius
 		                                    1, 1, 1, 1, // color
 		                                    2000, // trailTime
@@ -150,7 +150,7 @@ void CG_BloodTrail(const localEntity_t* le)
 CG_FragmentBounceMark
 ================
 */
-void CG_FragmentBounceMark(localEntity_t* le, trace_t* trace)
+void CG_FragmentBounceMark(localEntity_t* le)
 {
 	//	int radius;
 
@@ -250,7 +250,7 @@ CG_AddFragment
 */
 void CG_AddFragment(localEntity_t* le)
 {
-	vec3_t newOrigin;
+	vec3_t new_origin;
 	trace_t trace;
 
 	if (le->forceAlpha)
@@ -295,14 +295,14 @@ void CG_AddFragment(localEntity_t* le)
 	}
 
 	// calculate new position
-	BG_EvaluateTrajectory(&le->pos, cg.time, newOrigin);
+	BG_EvaluateTrajectory(&le->pos, cg.time, new_origin);
 
 	// trace a line from previous position to new position
-	CG_Trace(&trace, le->refEntity.origin, NULL, NULL, newOrigin, -1, CONTENTS_SOLID);
+	CG_Trace(&trace, le->refEntity.origin, NULL, NULL, new_origin, -1, CONTENTS_SOLID);
 	if (trace.fraction == 1.0)
 	{
 		// still in free fall
-		VectorCopy(newOrigin, le->refEntity.origin);
+		VectorCopy(new_origin, le->refEntity.origin);
 
 		if (le->leFlags & LEF_TUMBLE)
 		{
@@ -336,7 +336,7 @@ void CG_AddFragment(localEntity_t* le)
 	if (!trace.startsolid)
 	{
 		// leave a mark
-		CG_FragmentBounceMark(le, &trace);
+		CG_FragmentBounceMark(le);
 
 		// do a bouncy sound
 		CG_FragmentBounceSound(le, &trace);
@@ -828,8 +828,7 @@ void CG_AddLocalEntities(void)
 
 	// walk the list backwards, so any new local entities generated
 	// (trails, marks, etc) will be present this frame
-	localEntity_t* le = cg_activeLocalEntities.prev;
-	for (; le != &cg_activeLocalEntities; le = next)
+	for (localEntity_t* le = cg_activeLocalEntities.prev; le != &cg_activeLocalEntities; le = next)
 	{
 		// grab next now, so if the local entity is freed we
 		// still have it

@@ -456,10 +456,10 @@ static void SV_G2API_CleanGhoul2Models(CGhoul2Info_v& ghoul2)
 static void SV_G2API_CollisionDetect(
 	CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position,
 	const int AframeNumber, const int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, CMiniHeap* miniHeap,
-	const EG2_Collision eG2TraceType, const int useLod, const float fRadius)
+	const EG2_Collision e_g2_trace_type, const int use_lod, const float fRadius)
 {
 	re.G2API_CollisionDetect(collRecMap, ghoul2, angles, position, AframeNumber,
-	                         entNum, rayStart, rayEnd, scale, miniHeap, eG2TraceType, useLod, fRadius);
+	                         entNum, rayStart, rayEnd, scale, miniHeap, e_g2_trace_type, use_lod, fRadius);
 }
 
 static void SV_G2API_CopyGhoul2Instance(CGhoul2Info_v& ghoul2From, CGhoul2Info_v& ghoul2To, const int model_index)
@@ -572,9 +572,9 @@ static int SV_G2API_GetSurfaceRenderStatus(CGhoul2Info* ghlInfo, const char* sur
 	return re.G2API_GetSurfaceRenderStatus(ghlInfo, surfaceName);
 }
 
-static void SV_G2API_GiveMeVectorFromMatrix(mdxaBone_t& boltMatrix, const Eorientations flags, vec3_t& vec)
+static void SV_G2API_GiveMeVectorFromMatrix(mdxaBone_t& bolt_matrix, const Eorientations flags, vec3_t& vec)
 {
-	re.G2API_GiveMeVectorFromMatrix(boltMatrix, flags, vec);
+	re.G2API_GiveMeVectorFromMatrix(bolt_matrix, flags, vec);
 }
 
 static qboolean SV_G2API_HaveWeGhoul2Models(CGhoul2Info_v& ghoul2)

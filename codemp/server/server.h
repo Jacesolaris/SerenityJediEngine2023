@@ -446,11 +446,11 @@ int SV_AreaEntities(const vec3_t mins, const vec3_t maxs, int* entity_list, int 
 // returns the number of pointers filled in
 // The world entity is never returned in this list.
 
-int SV_PointContents(const vec3_t p, int passEntityNum);
+int SV_PointContents(const vec3_t p, int pass_entity_num);
 // returns the CONTENTS_* value from the world and all entities at the given point.
 
 void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-              int passEntityNum, int contentmask, int capsule, int traceFlags, int useLod);
+              int pass_entity_num, int contentmask, int capsule, int traceFlags, int use_lod);
 // mins and maxs are relative
 
 // if the entire move stays in a solid volume, trace.allsolid will be set,
@@ -459,10 +459,10 @@ void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec
 // if the starting point is in a solid, it will be allowed to move out
 // to an open area
 
-// passEntityNum is explicitly excluded from clipping checks (normally ENTITYNUM_NONE)
+// pass_entity_num is explicitly excluded from clipping checks (normally ENTITYNUM_NONE)
 
 void SV_ClipToEntity(trace_t* trace, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-                     int entityNum, int contentmask, int capsule);
+                     int entity_num, int contentmask, int capsule);
 // clip to a specific entity
 
 //

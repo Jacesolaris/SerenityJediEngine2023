@@ -29,8 +29,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #ifdef _GAME //we only want a few of these functions for BG
 
 extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
-extern vec3_t playerMins;
-extern vec3_t playerMaxs;
+extern vec3_t player_mins;
+extern vec3_t player_maxs;
 
 extern int BG_AnimLength(int index, animNumber_t anim);
 
@@ -38,17 +38,17 @@ extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setA
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
                         qboolean breakSaberLock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
-                           const vec3_t end, int passEntityNum, int contentmask);
+                           const vec3_t end, int pass_entity_num, int contentmask);
 
 // Update death sequence.
-static void DeathUpdate(Vehicle_t* pVeh)
+static void DeathUpdate(Vehicle_t* p_veh)
 {
-	if (level.time >= pVeh->m_iDieTime)
+	if (level.time >= p_veh->m_iDieTime)
 	{
 		// If the vehicle is not empty.
-		if (pVeh->m_pVehicleInfo->Inhabited(pVeh))
+		if (p_veh->m_pVehicleInfo->Inhabited(p_veh))
 		{
-			pVeh->m_pVehicleInfo->EjectAll(pVeh);
+			p_veh->m_pVehicleInfo->EjectAll(p_veh);
 		}
 		else
 		{
@@ -58,9 +58,9 @@ static void DeathUpdate(Vehicle_t* pVeh)
 }
 
 // Like a think or move command, this updates various vehicle properties.
-static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
+static qboolean Update(Vehicle_t* p_veh, const usercmd_t* pUcmd)
 {
-	return g_vehicleInfo[VEHICLE_BASE].Update(pVeh, pUcmd);
+	return g_vehicleInfo[VEHICLE_BASE].Update(p_veh, pUcmd);
 }
 #endif //_GAME
 
@@ -71,7 +71,7 @@ static qboolean Update(Vehicle_t* pVeh, const usercmd_t* pUcmd)
 //as a gentity, but the MP-compatible access restrictions are based
 //on the bgEntity structure in the MP codebase) -rww
 // ProcessMoveCommands the Vehicle.
-static void ProcessMoveCommands(Vehicle_t* pVeh)
+static void ProcessMoveCommands(Vehicle_t* p_veh)
 {
 	/************************************************************************************/
 	/*	BEGIN	Here is where we move the vehicle (forward or back or whatever). BEGIN	*/
@@ -81,7 +81,7 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	float speedInc, speedIdleDec, speedIdle, speedMin, speedMax;
 	float fWalkSpeedMax;
 	int curTime;
-	const bgEntity_t* parent = pVeh->m_pParentEntity;
+	const bgEntity_t* parent = p_veh->m_pParentEntity;
 	playerState_t * parentPS = parent->playerState;
 
 #ifdef _GAME
@@ -91,52 +91,52 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	curTime = pm->cmd.serverTime;
 #endif
 
-	speedIdleDec = pVeh->m_pVehicleInfo->decelIdle * pVeh->m_fTimeModifier;
-	speedMax = pVeh->m_pVehicleInfo->speedMax;
+	speedIdleDec = p_veh->m_pVehicleInfo->decelIdle * p_veh->m_fTimeModifier;
+	speedMax = p_veh->m_pVehicleInfo->speedMax;
 
-	speedIdle = pVeh->m_pVehicleInfo->speedIdle;
-	speedMin = pVeh->m_pVehicleInfo->speedMin;
+	speedIdle = p_veh->m_pVehicleInfo->speedIdle;
+	speedMin = p_veh->m_pVehicleInfo->speedMin;
 
-	if (pVeh->m_pPilot &&
-		pVeh->m_ucmd.buttons & BUTTON_ALT_ATTACK && pVeh->m_pVehicleInfo->turboSpeed)
+	if (p_veh->m_pPilot &&
+		p_veh->m_ucmd.buttons & BUTTON_ALT_ATTACK && p_veh->m_pVehicleInfo->turboSpeed)
 	{
-		if (curTime - pVeh->m_iTurboTime > pVeh->m_pVehicleInfo->turboRecharge)
+		if (curTime - p_veh->m_iTurboTime > p_veh->m_pVehicleInfo->turboRecharge)
 		{
-			pVeh->m_iTurboTime = curTime + pVeh->m_pVehicleInfo->turboDuration;
-			parentPS->speed = pVeh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
+			p_veh->m_iTurboTime = curTime + p_veh->m_pVehicleInfo->turboDuration;
+			parentPS->speed = p_veh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
 		}
 	}
 
-	if (curTime < pVeh->m_iTurboTime)
+	if (curTime < p_veh->m_iTurboTime)
 	{
-		speedMax = pVeh->m_pVehicleInfo->turboSpeed;
+		speedMax = p_veh->m_pVehicleInfo->turboSpeed;
 	}
 	else
 	{
-		speedMax = pVeh->m_pVehicleInfo->speedMax;
+		speedMax = p_veh->m_pVehicleInfo->speedMax;
 	}
 
 	if (!parentPS->m_iVehicleNum)
 	{
 		//drifts to a stop
-		speedInc = speedIdle * pVeh->m_fTimeModifier;
+		speedInc = speedIdle * p_veh->m_fTimeModifier;
 		VectorClear(parentPS->moveDir);
 		//m_ucmd.forwardmove = 127;
 		parentPS->speed = 0;
 	}
 	else
 	{
-		speedInc = pVeh->m_pVehicleInfo->acceleration * pVeh->m_fTimeModifier;
+		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier;
 	}
 
 	if (parentPS->speed || parentPS->groundEntityNum == ENTITYNUM_NONE ||
-		pVeh->m_ucmd.forwardmove || pVeh->m_ucmd.upmove > 0)
+		p_veh->m_ucmd.forwardmove || p_veh->m_ucmd.upmove > 0)
 	{
-		if (pVeh->m_ucmd.forwardmove > 0 && speedInc)
+		if (p_veh->m_ucmd.forwardmove > 0 && speedInc)
 		{
 			parentPS->speed += speedInc;
 		}
-		else if (pVeh->m_ucmd.forwardmove < 0)
+		else if (p_veh->m_ucmd.forwardmove < 0)
 		{
 			if (parentPS->speed > speedIdle)
 			{
@@ -167,26 +167,26 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 	}
 	else
 	{
-		if (pVeh->m_ucmd.forwardmove < 0)
+		if (p_veh->m_ucmd.forwardmove < 0)
 		{
-			pVeh->m_ucmd.forwardmove = 0;
+			p_veh->m_ucmd.forwardmove = 0;
 		}
-		if (pVeh->m_ucmd.upmove < 0)
+		if (p_veh->m_ucmd.upmove < 0)
 		{
-			pVeh->m_ucmd.upmove = 0;
+			p_veh->m_ucmd.upmove = 0;
 		}
 
-		//pVeh->m_ucmd.rightmove = 0;
+		//p_veh->m_ucmd.rightmove = 0;
 
-		/*if ( !pVeh->m_pVehicleInfo->strafePerc
+		/*if ( !p_veh->m_pVehicleInfo->strafePerc
 			|| (!g_speederControlScheme->value && !parent->s.number) )
 		{//if in a strafe-capable vehicle, clear strafing unless using alternate control scheme
-			pVeh->m_ucmd.rightmove = 0;
+			p_veh->m_ucmd.rightmove = 0;
 		}*/
 	}
 
 	fWalkSpeedMax = speedMax * 0.275f;
-	if (curTime > pVeh->m_iTurboTime && pVeh->m_ucmd.buttons & BUTTON_WALKING && parentPS->speed > fWalkSpeedMax)
+	if (curTime > p_veh->m_iTurboTime && p_veh->m_ucmd.buttons & BUTTON_WALKING && parentPS->speed > fWalkSpeedMax)
 	{
 		parentPS->speed = fWalkSpeedMax;
 	}
@@ -211,12 +211,12 @@ static void ProcessMoveCommands(Vehicle_t* pVeh)
 //as a gentity, but the MP-compatible access restrictions are based
 //on the bgEntity structure in the MP codebase) -rww
 // ProcessOrientCommands the Vehicle.
-static void ProcessOrientCommands(const Vehicle_t* pVeh)
+static void ProcessOrientCommands(const Vehicle_t* p_veh)
 {
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
 	/********************************************************************************/
-	const bgEntity_t* parent = pVeh->m_pParentEntity;
+	const bgEntity_t* parent = p_veh->m_pParentEntity;
 
 	const bgEntity_t* rider = NULL;
 	if (parent->s.owner != ENTITYNUM_NONE)
@@ -234,16 +234,16 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 	if (rider)
 	{
 		const playerState_t* riderPS = rider->playerState;
-		float angDif = AngleSubtract(pVeh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
+		float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
 		if (parentPS && parentPS->speed)
 		{
 			float s = parentPS->speed;
-			const float maxDif = pVeh->m_pVehicleInfo->turningSpeed * 4.0f; //magic number hackery
+			const float maxDif = p_veh->m_pVehicleInfo->turningSpeed * 4.0f; //magic number hackery
 			if (s < 0.0f)
 			{
 				s = -s;
 			}
-			angDif *= s / pVeh->m_pVehicleInfo->speedMax;
+			angDif *= s / p_veh->m_pVehicleInfo->speedMax;
 			if (angDif > maxDif)
 			{
 				angDif = maxDif;
@@ -252,8 +252,8 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 			{
 				angDif = -maxDif;
 			}
-			pVeh->m_vOrientation[YAW] = AngleNormalize180(
-				pVeh->m_vOrientation[YAW] - angDif * (pVeh->m_fTimeModifier * 0.2f));
+			p_veh->m_vOrientation[YAW] = AngleNormalize180(
+				p_veh->m_vOrientation[YAW] - angDif * (p_veh->m_fTimeModifier * 0.2f));
 		}
 	}
 
@@ -262,13 +262,13 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 		// If the player is the rider...
 		if ( rider->s.number < MAX_CLIENTS )
 		{//FIXME: use the vehicle's turning stat in this calc
-			pVeh->m_vOrientation[YAW] = riderPS->viewangles[YAW];
+			p_veh->m_vOrientation[YAW] = riderPS->viewangles[YAW];
 		}
 		else
 		{
-			float turnSpeed = pVeh->m_pVehicleInfo->turningSpeed;
-			if ( !pVeh->m_pVehicleInfo->turnWhenStopped
-				&& !parentPS->speed )//FIXME: or !pVeh->m_ucmd.forwardmove?
+			float turnSpeed = p_veh->m_pVehicleInfo->turningSpeed;
+			if ( !p_veh->m_pVehicleInfo->turnWhenStopped
+				&& !parentPS->speed )//FIXME: or !p_veh->m_ucmd.forwardmove?
 			{//can't turn when not moving
 				//FIXME: or ramp up to max turnSpeed?
 				turnSpeed = 0.0f;
@@ -281,19 +281,19 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 					turnSpeed += turnSpeed * parentPS->speed/200.0f*0.05f;
 				}
 			}
-			turnSpeed *= pVeh->m_fTimeModifier;
+			turnSpeed *= p_veh->m_fTimeModifier;
 
 			//default control scheme: strafing turns, mouselook aims
-			if ( pVeh->m_ucmd.rightmove < 0 )
+			if ( p_veh->m_ucmd.rightmove < 0 )
 			{
-				pVeh->m_vOrientation[YAW] += turnSpeed;
+				p_veh->m_vOrientation[YAW] += turnSpeed;
 			}
-			else if ( pVeh->m_ucmd.rightmove > 0 )
+			else if ( p_veh->m_ucmd.rightmove > 0 )
 			{
-				pVeh->m_vOrientation[YAW] -= turnSpeed;
+				p_veh->m_vOrientation[YAW] -= turnSpeed;
 			}
 
-			if ( pVeh->m_pVehicleInfo->malfunctionArmorLevel && pVeh->m_iArmor <= pVeh->m_pVehicleInfo->malfunctionArmorLevel )
+			if ( p_veh->m_pVehicleInfo->malfunctionArmorLevel && p_veh->m_iArmor <= p_veh->m_pVehicleInfo->malfunctionArmorLevel )
 			{//damaged badly
 			}
 		}*/
@@ -303,26 +303,26 @@ static void ProcessOrientCommands(const Vehicle_t* pVeh)
 	/********************************************************************************/
 }
 
-void AnimalProcessOri(const Vehicle_t* pVeh)
+void AnimalProcessOri(const Vehicle_t* p_veh)
 {
-	ProcessOrientCommands(pVeh);
+	ProcessOrientCommands(p_veh);
 }
 
 #ifdef _GAME //back to our game-only functions
-static void AnimateVehicle(Vehicle_t* pVeh)
+static void AnimateVehicle(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VT_IDLE;
 	int iFlags = SETANIM_FLAG_NORMAL, iBlend = 300;
-	gentity_t* pilot = (gentity_t*)pVeh->m_pPilot;
-	gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
+	gentity_t* pilot = (gentity_t*)p_veh->m_pPilot;
+	gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
 
 	// We're dead (boarding is reused here so I don't have to make another variable :-).
 	if (parent->health <= 0)
 	{
 		/*
-		if ( pVeh->m_iBoarding != -999 )	// Animate the death just once!
+		if ( p_veh->m_iBoarding != -999 )	// Animate the death just once!
 		{
-			pVeh->m_iBoarding = -999;
+			p_veh->m_iBoarding = -999;
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
 			// FIXME! Why do you keep repeating over and over!!?!?!? Bastard!
@@ -338,14 +338,14 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 		// Done with animation? Erase the flag.
 		if (parent->client->ps.legsTimer <= 0)
 		{
-			pVeh->m_ulFlags &= ~VEH_BUCKING;
+			p_veh->m_ulFlags &= ~VEH_BUCKING;
 		}
 		else
 		{
 			return;
 		}
 	}
-	else if (pVeh->m_ulFlags & VEH_BUCKING)
+	else if (p_veh->m_ulFlags & VEH_BUCKING)
 	{
 		iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 		Anim = BOTH_VT_BUCK;
@@ -355,21 +355,21 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 	}
 
 	// Boarding animation.
-	if (pVeh->m_iBoarding != 0)
+	if (p_veh->m_iBoarding != 0)
 	{
 		// We've just started boarding, set the amount of time it will take to finish boarding.
-		if (pVeh->m_iBoarding < 0)
+		if (p_veh->m_iBoarding < 0)
 		{
 			// Boarding from left...
-			if (pVeh->m_iBoarding == -1)
+			if (p_veh->m_iBoarding == -1)
 			{
 				Anim = BOTH_VT_MOUNT_L;
 			}
-			else if (pVeh->m_iBoarding == -2)
+			else if (p_veh->m_iBoarding == -2)
 			{
 				Anim = BOTH_VT_MOUNT_R;
 			}
-			else if (pVeh->m_iBoarding == -3)
+			else if (p_veh->m_iBoarding == -3)
 			{
 				Anim = BOTH_VT_MOUNT_B;
 			}
@@ -377,7 +377,7 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 			// Set the delay time (which happens to be the time it takes for the animation to complete).
 			// NOTE: Here I made it so the delay is actually 70% (0.7f) of the animation time.
 			const int iAnimLen = BG_AnimLength(parent->localAnimIndex, Anim) * 0.7f;
-			pVeh->m_iBoarding = level.time + iAnimLen;
+			p_veh->m_iBoarding = level.time + iAnimLen;
 
 			// Set the animation, which won't be interrupted until it's completed.
 			// TODO: But what if he's killed? Should the animation remain persistant???
@@ -391,15 +391,15 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 			return;
 		}
 		// Otherwise we're done.
-		if (pVeh->m_iBoarding <= level.time)
+		if (p_veh->m_iBoarding <= level.time)
 		{
-			pVeh->m_iBoarding = 0;
+			p_veh->m_iBoarding = 0;
 		}
 	}
 
 	// Percentage of maximum speed relative to current speed.
 	//float fSpeed = VectorLength( client->ps.velocity );
-	const float fSpeedPercToMax = parent->client->ps.speed / pVeh->m_pVehicleInfo->speedMax;
+	const float fSpeedPercToMax = parent->client->ps.speed / p_veh->m_pVehicleInfo->speedMax;
 
 	// Going in reverse...
 	if (fSpeedPercToMax < -0.01f)
@@ -409,14 +409,14 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 	}
 	else
 	{
-		const qboolean Turbo = fSpeedPercToMax > 0.0f && level.time < pVeh->m_iTurboTime;
-		const qboolean Walking = fSpeedPercToMax > 0.0f && (pVeh->m_ucmd.buttons & BUTTON_WALKING || fSpeedPercToMax <=
+		const qboolean Turbo = fSpeedPercToMax > 0.0f && level.time < p_veh->m_iTurboTime;
+		const qboolean Walking = fSpeedPercToMax > 0.0f && (p_veh->m_ucmd.buttons & BUTTON_WALKING || fSpeedPercToMax <=
 			0.275f);
 		const qboolean Running = fSpeedPercToMax > 0.275f;
 
 		// Remove Crashing Flag
 		//----------------------
-		pVeh->m_ulFlags &= ~VEH_CRASHING;
+		p_veh->m_ulFlags &= ~VEH_CRASHING;
 
 		if (Turbo)
 		{
@@ -439,17 +439,17 @@ static void AnimateVehicle(Vehicle_t* pVeh)
 //rwwFIXMEFIXME: This is all going to have to be predicted I think, or it will feel awful
 //and lagged
 // This function makes sure that the rider's in this vehicle are properly animated.
-static void AnimateRiders(Vehicle_t* pVeh)
+static void AnimateRiders(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VT_IDLE;
 	int iFlags, iBlend;
-	gentity_t* pilot = (gentity_t*)pVeh->m_pPilot;
-	const gentity_t* parent = (gentity_t*)pVeh->m_pParentEntity;
+	gentity_t* pilot = (gentity_t*)p_veh->m_pPilot;
+	const gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
 
-	const playerState_t* pilotPS = pVeh->m_pPilot->playerState;
+	const playerState_t* pilotPS = p_veh->m_pPilot->playerState;
 
 	// Boarding animation.
-	if (pVeh->m_iBoarding != 0)
+	if (p_veh->m_iBoarding != 0)
 	{
 		return;
 	}
@@ -458,20 +458,20 @@ static void AnimateRiders(Vehicle_t* pVeh)
 
 	// Going in reverse...
 	{
-		const float fSpeedPercToMax = parent->client->ps.speed / pVeh->m_pVehicleInfo->speedMax;
+		const float fSpeedPercToMax = parent->client->ps.speed / p_veh->m_pVehicleInfo->speedMax;
 		const qboolean HasWeapon = pilotPS->weapon != WP_NONE && pilotPS->weapon != WP_MELEE;
-		const qboolean Attacking = HasWeapon && !!(pVeh->m_ucmd.buttons & BUTTON_ATTACK);
-		qboolean Right = pVeh->m_ucmd.rightmove > 0;
-		qboolean Left = pVeh->m_ucmd.rightmove < 0;
-		const qboolean Turbo = fSpeedPercToMax > 0.0f && level.time < pVeh->m_iTurboTime;
-		const qboolean Walking = fSpeedPercToMax > 0.0f && (pVeh->m_ucmd.buttons & BUTTON_WALKING || fSpeedPercToMax <=
+		const qboolean Attacking = HasWeapon && !!(p_veh->m_ucmd.buttons & BUTTON_ATTACK);
+		qboolean Right = p_veh->m_ucmd.rightmove > 0;
+		qboolean Left = p_veh->m_ucmd.rightmove < 0;
+		const qboolean Turbo = fSpeedPercToMax > 0.0f && level.time < p_veh->m_iTurboTime;
+		const qboolean Walking = fSpeedPercToMax > 0.0f && (p_veh->m_ucmd.buttons & BUTTON_WALKING || fSpeedPercToMax <=
 			0.275f);
 		const qboolean Running = fSpeedPercToMax > 0.275f;
 		EWeaponPose WeaponPose = WPOSE_NONE;
 
 		// Remove Crashing Flag
 		//----------------------
-		pVeh->m_ulFlags &= ~VEH_CRASHING;
+		p_veh->m_ulFlags &= ~VEH_CRASHING;
 
 		// Put Away Saber When It Is Not Active
 		//--------------------------------------
@@ -491,15 +491,15 @@ static void AnimateRiders(Vehicle_t* pVeh)
 		}
 		else if (pilotPS->weapon == WP_SABER)
 		{
-			if (pVeh->m_ulFlags & VEH_SABERINLEFTHAND && pilotPS->torsoAnim == BOTH_VT_ATL_TO_R_S)
+			if (p_veh->m_ulFlags & VEH_SABERINLEFTHAND && pilotPS->torsoAnim == BOTH_VT_ATL_TO_R_S)
 			{
-				pVeh->m_ulFlags &= ~VEH_SABERINLEFTHAND;
+				p_veh->m_ulFlags &= ~VEH_SABERINLEFTHAND;
 			}
-			if (!(pVeh->m_ulFlags & VEH_SABERINLEFTHAND) && pilotPS->torsoAnim == BOTH_VT_ATR_TO_L_S)
+			if (!(p_veh->m_ulFlags & VEH_SABERINLEFTHAND) && pilotPS->torsoAnim == BOTH_VT_ATR_TO_L_S)
 			{
-				pVeh->m_ulFlags |= VEH_SABERINLEFTHAND;
+				p_veh->m_ulFlags |= VEH_SABERINLEFTHAND;
 			}
-			WeaponPose = pVeh->m_ulFlags & VEH_SABERINLEFTHAND ? WPOSE_SABERLEFT : WPOSE_SABERRIGHT;
+			WeaponPose = p_veh->m_ulFlags & VEH_SABERINLEFTHAND ? WPOSE_SABERLEFT : WPOSE_SABERRIGHT;
 		}
 
 		if (Attacking && WeaponPose)
@@ -613,7 +613,7 @@ static void AnimateRiders(Vehicle_t* pVeh)
 #endif //_GAME
 
 #ifdef _CGAME
-void AttachRidersGeneric(Vehicle_t* pVeh);
+void AttachRidersGeneric(Vehicle_t* p_veh);
 #endif
 
 //on the client this function will only set up the process command funcs
@@ -650,26 +650,26 @@ void G_SetAnimalVehicleFunctions(vehicleInfo_t* pVehInfo)
 }
 
 #ifdef _GAME
-extern void G_AllocateVehicleObject(Vehicle_t** pVeh);
+extern void G_AllocateVehicleObject(Vehicle_t** p_veh);
 #endif
 
 // Create/Allocate a new Animal Vehicle (initializing it as well).
 //this is a BG function too in MP so don't un-bg-compatibilify it -rww
-void G_CreateAnimalNPC(Vehicle_t** pVeh, const char* strAnimalType)
+void G_CreateAnimalNPC(Vehicle_t** p_veh, const char* strAnimalType)
 {
 	// Allocate the Vehicle.
 #ifdef _GAME
 	//these will remain on entities on the client once allocated because the pointer is
 	//never stomped. on the server, however, when an ent is freed, the entity struct is
 	//memset to 0, so this memory would be lost..
-	G_AllocateVehicleObject(pVeh);
+	G_AllocateVehicleObject(p_veh);
 #else
-	if (!*pVeh)
+	if (!*p_veh)
 	{
 		//only allocate a new one if we really have to
-		*pVeh = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
+		*p_veh = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
 	}
 #endif
-	memset(*pVeh, 0, sizeof(Vehicle_t));
-	(*pVeh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strAnimalType)];
+	memset(*p_veh, 0, sizeof(Vehicle_t));
+	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strAnimalType)];
 }

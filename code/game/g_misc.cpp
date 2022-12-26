@@ -697,7 +697,7 @@ void G_PortalifyEntities(gentity_t* ent)
 			gi.trace(&tr, ent->s.origin, vec3_origin, vec3_origin, scan->currentOrigin, ent->s.number, CONTENTS_SOLID,
 			         G2_NOCOLLIDE, 0);
 
-			if (tr.fraction == 1.0 || tr.entityNum == scan->s.number && tr.entityNum != ENTITYNUM_NONE && tr.entityNum
+			if (tr.fraction == 1.0 || tr.entity_num == scan->s.number && tr.entity_num != ENTITYNUM_NONE && tr.entity_num
 				!= ENTITYNUM_WORLD)
 			{
 				scan->s.isPortalEnt = qtrue; //he's flagged now
@@ -1973,8 +1973,8 @@ void maglock_link(gentity_t* self)
 		*/
 		return;
 	}
-	gentity_t* traceEnt = &g_entities[trace.entityNum];
-	if (trace.entityNum >= ENTITYNUM_WORLD || !traceEnt || Q_stricmp("func_door", traceEnt->classname))
+	gentity_t* traceEnt = &g_entities[trace.entity_num];
+	if (trace.entity_num >= ENTITYNUM_WORLD || !traceEnt || Q_stricmp("func_door", traceEnt->classname))
 	{
 		self->e_ThinkFunc = thinkF_maglock_link;
 		self->nextthink = level.time + 100;
@@ -2632,7 +2632,7 @@ welder_think
 void welder_think(gentity_t* self)
 {
 	self->nextthink = level.time + 200;
-	mdxaBone_t boltMatrix;
+	mdxaBone_t bolt_matrix;
 
 	if (self->svFlags & SVF_INACTIVE)
 	{
@@ -2651,10 +2651,10 @@ void welder_think(gentity_t* self)
 		//	G_PlayEffect( "blueWeldSparks", self->playerModel, newBolt, self->s.number);
 		// The welder gets rotated around a lot, and since the origin is offset by 352 I have to make this super expensive call to position the hurt...
 		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, newBolt,
-		                       &boltMatrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
+		                       &bolt_matrix, self->currentAngles, self->currentOrigin, cg.time ? cg.time : level.time,
 		                       nullptr, self->s.modelScale);
 
-		gi.G2API_GiveMeVectorFromMatrix(boltMatrix, ORIGIN, org);
+		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
 		VectorSubtract(self->currentOrigin, org, dir);
 		VectorNormalize(dir);
 		// we want the  welder effect to face inwards....

@@ -2018,7 +2018,7 @@ void UI_SaberDrawBlade(itemDef_t* item, const char* saberName, int saberModel, s
 	char bladeColorString[MAX_QPATH];
 	vec3_t	bladeOrigin = { 0 };
 	matrix3_t	axis;
-	mdxaBone_t	boltMatrix;
+	mdxaBone_t	bolt_matrix;
 	qboolean tagHack = qfalse;
 	int snum;
 
@@ -2059,14 +2059,14 @@ void UI_SaberDrawBlade(itemDef_t* item, const char* saberName, int saberModel, s
 		}
 	}
 
-	trap->G2API_GetBoltMatrix(item->ghoul2, saberModel, bolt, &boltMatrix, angles, origin, uiInfo.uiDC.realTime, NULL, vec3_origin);//NULL was cgs.model_draw
+	trap->G2API_GetBoltMatrix(item->ghoul2, saberModel, bolt, &bolt_matrix, angles, origin, uiInfo.uiDC.realTime, NULL, vec3_origin);//NULL was cgs.model_draw
 
 	// work the matrix axis stuff into the original axis and origins used.
-	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, bladeOrigin);
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_Y, axis[0]);//front (was NEGATIVE_Y, but the md3->glm exporter screws up this tag somethin' awful)
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, bladeOrigin);
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, axis[0]);//front (was NEGATIVE_Y, but the md3->glm exporter screws up this tag somethin' awful)
 	//		...changed this back to NEGATIVE_Y
-	BG_GiveMeVectorFromMatrix(&boltMatrix, NEGATIVE_X, axis[1]);//right ... and changed this to NEGATIVE_X
-	BG_GiveMeVectorFromMatrix(&boltMatrix, POSITIVE_Z, axis[2]);//up
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_X, axis[1]);//right ... and changed this to NEGATIVE_X
+	BG_GiveMeVectorFromMatrix(&bolt_matrix, POSITIVE_Z, axis[2]);//up
 
 	// Where do I get scale from?
 

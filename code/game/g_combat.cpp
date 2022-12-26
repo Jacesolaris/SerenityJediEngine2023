@@ -7822,7 +7822,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 
 				if (!test_trace.startsolid &&
 					!test_trace.allsolid &&
-					test_trace.entityNum == targ->s.number &&
+					test_trace.entity_num == targ->s.number &&
 					test_trace.G2CollisionMap[0].mEntityNum != -1)
 				{
 					G_PlayEffect("world/acid_fizz", test_trace.G2CollisionMap[0].mCollisionPosition);
@@ -8650,7 +8650,7 @@ qboolean CanDamage(const gentity_t* targ, const vec3_t origin)
 
 	VectorCopy(midpoint, dest);
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
 		// if we also test the entitynum's we can bust up bbrushes better!
 		return qtrue;
 
@@ -8660,28 +8660,28 @@ qboolean CanDamage(const gentity_t* targ, const vec3_t origin)
 	dest[0] += 15.0;
 	dest[1] += 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
 		return qtrue;
 
 	VectorCopy(midpoint, dest);
 	dest[0] += 15.0;
 	dest[1] -= 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
 		return qtrue;
 
 	VectorCopy(midpoint, dest);
 	dest[0] -= 15.0;
 	dest[1] += 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
 		return qtrue;
 
 	VectorCopy(midpoint, dest);
 	dest[0] -= 15.0;
 	dest[1] -= 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
 		return qtrue;
 
 	return qfalse;

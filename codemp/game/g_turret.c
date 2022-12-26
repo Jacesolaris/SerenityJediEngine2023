@@ -225,16 +225,16 @@ void turret_head_think(gentity_t* self)
 		self->setTime = level.time + self->wait;
 
 		/*
-		mdxaBone_t	boltMatrix;
+		mdxaBone_t	bolt_matrix;
 
 		// Getting the flash bolt here
 		trap->G2API_GetBoltMatrix( self->ghoul2, self->playerModel,
 					self->torsoBolt,
-					&boltMatrix, self->r.currentAngles, self->r.currentOrigin, (cg.time?cg.time:level.time),
+					&bolt_matrix, self->r.currentAngles, self->r.currentOrigin, (cg.time?cg.time:level.time),
 					NULL, self->s.modelScale );
 
-		trap->G2API_GiveMeVectorFromMatrix( boltMatrix, ORIGIN, org );
-		trap->G2API_GiveMeVectorFromMatrix( boltMatrix, POSITIVE_Y, fwd );
+		trap->G2API_GiveMeVectorFromMatrix( bolt_matrix, ORIGIN, org );
+		trap->G2API_GiveMeVectorFromMatrix( bolt_matrix, POSITIVE_Y, fwd );
 		*/
 		VectorCopy(top->r.currentOrigin, org);
 		org[2] += top->r.maxs[2] - 8;
@@ -302,15 +302,15 @@ static void turret_aim(const gentity_t* self)
 			org[2] += 32.0f;
 		}
 		/*
-		mdxaBone_t	boltMatrix;
+		mdxaBone_t	bolt_matrix;
 
 		// Getting the "eye" here
 		trap->G2API_GetBoltMatrix( self->ghoul2, self->playerModel,
 					self->torsoBolt,
-					&boltMatrix, self->r.currentAngles, self->s.origin, (cg.time?cg.time:level.time),
+					&bolt_matrix, self->r.currentAngles, self->s.origin, (cg.time?cg.time:level.time),
 					NULL, self->s.modelScale );
 
-		trap->G2API_GiveMeVectorFromMatrix( boltMatrix, ORIGIN, org2 );
+		trap->G2API_GiveMeVectorFromMatrix( bolt_matrix, ORIGIN, org2 );
 		*/
 		VectorCopy(top->r.currentOrigin, org2);
 
@@ -494,7 +494,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 
 		trap->Trace(&tr, org2, NULL, NULL, org, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
+		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
 		{
 			vec3_t enemyDir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
@@ -611,7 +611,7 @@ void turret_base_think(gentity_t* self)
 					}
 					trap->Trace(&tr, org2, NULL, NULL, org, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-					if (!tr.allsolid && !tr.startsolid && tr.entityNum == self->enemy->s.number)
+					if (!tr.allsolid && !tr.startsolid && tr.entity_num == self->enemy->s.number)
 					{
 						turnOff = qfalse; // Can see our enemy
 					}
