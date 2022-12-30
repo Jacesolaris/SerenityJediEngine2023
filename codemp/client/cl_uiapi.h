@@ -30,5 +30,5 @@ void UIVM_SetActiveMenu(uiMenuCommand_t menu);
 qboolean UIVM_ConsoleCommand(int realTime);
 void UIVM_DrawConnectScreen(qboolean overlay);
 
-void CL_BindUI(void);
-void CL_UnbindUI(void);
+void CL_BindUI();
+void CL_UnbindUI();

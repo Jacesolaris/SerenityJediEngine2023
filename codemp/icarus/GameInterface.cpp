@@ -408,7 +408,7 @@ bool ICARUS_RegisterScript(const char* name, qboolean bCalledDuringInterrogate /
 
 void ICARUS_SoundPrecache(const char* filename)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_SOUNDINDEX*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_SOUNDINDEX*>(sv.mSharedMemory);
 
 	strcpy(sharedMem->filename, filename);
 
@@ -417,7 +417,7 @@ void ICARUS_SoundPrecache(const char* filename)
 
 int ICARUS_GetIDForString(const char* string)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETSETIDFORSTRING*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_GETSETIDFORSTRING*>(sv.mSharedMemory);
 
 	strcpy(sharedMem->string, string);
 
@@ -539,7 +539,7 @@ void ICARUS_InterrogateScript(const char* filename)
 			if (blockMember->GetID() == TK_STRING)
 			{
 				sVal1 = static_cast<const char*>(block.GetMemberData(0));
-				auto sVal2 = static_cast<const char*>(block.GetMemberData(1));
+				const auto sVal2 = static_cast<const char*>(block.GetMemberData(1));
 
 				//Get the id for this set identifier
 				const int setID = ICARUS_GetIDForString(sVal1);

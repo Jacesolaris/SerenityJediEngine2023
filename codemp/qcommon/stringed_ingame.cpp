@@ -480,7 +480,7 @@ static char* CopeWithDumbStringData(const char* psSentence, const char* psThisLa
 {
 	const int iBufferSize = strlen(psSentence) * 3;
 	// *3 to allow for expansion of anything even stupid string consisting entirely of elipsis chars
-	auto psNewString = static_cast<char*>(Z_Malloc(iBufferSize, TAG_TEMP_WORKSPACE, qfalse));
+	const auto psNewString = static_cast<char*>(Z_Malloc(iBufferSize, TAG_TEMP_WORKSPACE, qfalse));
 	Q_strncpyz(psNewString, psSentence, iBufferSize);
 
 	// this is annoying, I have to just guess at which languages to do it for (ie NOT ASIAN/MBCS!!!) since the

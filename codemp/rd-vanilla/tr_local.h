@@ -1298,7 +1298,7 @@ qboolean	R_GetEntityToken(char* buffer, int size);
 
 model_t* R_AllocModel(void);
 
-void    	R_Init(void);
+void    	R_Init();
 
 image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int glWrapClampMode);
 

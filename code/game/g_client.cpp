@@ -1306,10 +1306,9 @@ void G_BoneOrientationsForClass(const int NPC_class, const char* boneName, Eorie
 	}
 }
 
-extern void G_LoadAnimFileSet(gentity_t* ent, const char* modelName);
+extern void G_LoadAnimFileSet(gentity_t* ent, const char* p_model_name);
 
-qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const char* customSkin, const char* surfOff,
-                                const char* surfOn)
+qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* model_name, const char* surf_off, const char* surf_on)
 {
 	if (ent->playerModel != -1)
 	{
@@ -1319,9 +1318,9 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 		const char* p;
 
 		//Now turn on/off any surfaces
-		if (surfOff && surfOff[0])
+		if (surf_off && surf_off[0])
 		{
-			p = surfOff;
+			p = surf_off;
 			COM_BeginParseSession();
 			while (true)
 			{
@@ -1336,9 +1335,9 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 			}
 			COM_EndParseSession();
 		}
-		if (surfOn && surfOn[0])
+		if (surf_on && surf_on[0])
 		{
-			p = surfOn;
+			p = surf_on;
 			COM_BeginParseSession();
 			while (true)
 			{
@@ -1359,7 +1358,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 			gi.G2API_SetSurfaceOnOff(&ent->ghoul2[ent->playerModel], "l_arm_key", 0);
 		}
 
-		G_LoadAnimFileSet(ent, modelName);
+		G_LoadAnimFileSet(ent, model_name);
 
 		ent->headBolt = ent->cervicalBolt = ent->torsoBolt = ent->gutBolt = ent->chestBolt =
 			ent->crotchBolt = ent->elbowLBolt = ent->elbowRBolt = ent->handLBolt =
@@ -1371,7 +1370,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 			//only _humanoid skeleton is expected to have these
 			ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head_eyes");
 			ent->cervicalBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "cervical");
-			if (!Q_stricmp("protocol", modelName))
+			if (!Q_stricmp("protocol", model_name))
 			{
 				//*sigh*, no thoracic bone
 				ent->gutBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "upper_lumbar");
@@ -1417,25 +1416,25 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				// Setup the droid unit (or other misc tag we're using this for).
 				ent->m_pVehicle->m_iDroidUnitTag = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*droidunit");
 
-				char strTemp[128];
+				char str_temp[128];
 
 				// Setup the Exhausts.
 				for (int i = 0; i < MAX_VEHICLE_EXHAUSTS; i++)
 				{
-					Com_sprintf(strTemp, 128, "*exhaust%d", i + 1);
-					ent->m_pVehicle->m_iExhaustTag[i] = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], strTemp);
+					Com_sprintf(str_temp, 128, "*exhaust%d", i + 1);
+					ent->m_pVehicle->m_iExhaustTag[i] = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], str_temp);
 				}
 
 				// Setup the Muzzles.
 				for (int i = 0; i < MAX_VEHICLE_MUZZLES; i++)
 				{
-					Com_sprintf(strTemp, 128, "*muzzle%d", i + 1);
-					ent->m_pVehicle->m_iMuzzleTag[i] = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], strTemp);
+					Com_sprintf(str_temp, 128, "*muzzle%d", i + 1);
+					ent->m_pVehicle->m_iMuzzleTag[i] = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], str_temp);
 					if (ent->m_pVehicle->m_iMuzzleTag[i] == -1)
 					{
 						//ergh, try *flash?
-						Com_sprintf(strTemp, 128, "*flash%d", i + 1);
-						ent->m_pVehicle->m_iMuzzleTag[i] = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], strTemp);
+						Com_sprintf(str_temp, 128, "*flash%d", i + 1);
+						ent->m_pVehicle->m_iMuzzleTag[i] = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], str_temp);
 					}
 				}
 			}
@@ -1444,29 +1443,29 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "Tongue01"); // tongue base
 				ent->genericBolt2 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "Tongue08"); // tongue tip
 			}
-			else if (!Q_stricmp("gonk", modelName) || !Q_stricmp("seeker", modelName) || !Q_stricmp("remote", modelName)
-				|| !Q_stricmpn("r2d2", modelName, 4) || !Q_stricmpn("r5d2", modelName, 4))
+			else if (!Q_stricmp("gonk", model_name) || !Q_stricmp("seeker", model_name) || !Q_stricmp("remote", model_name)
+				|| !Q_stricmpn("r2d2", model_name, 4) || !Q_stricmpn("r5d2", model_name, 4))
 			{
 				//TEMP HACK: not a non-humanoid droid
 				ent->headBolt = -1;
 			}
-			else if (!Q_stricmp("interrogator", modelName))
+			else if (!Q_stricmp("interrogator", model_name))
 			{
 				ent->headBolt = -1;
 			}
-			else if (!Q_stricmpn("probe", modelName, 5))
+			else if (!Q_stricmpn("probe", model_name, 5))
 			{
 				ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "cranium"); // head pivot point
 				ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash"); // Gun 1
 			}
-			else if (!Q_stricmp("sentry", modelName))
+			else if (!Q_stricmp("sentry", model_name))
 			{
 				ent->headBolt = -1;
 				ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash1"); // Gun 1
 				ent->genericBolt2 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash2"); // Gun 2
 				ent->genericBolt3 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash03"); // Gun 3
 			}
-			else if (!Q_stricmp("mark1", modelName))
+			else if (!Q_stricmp("mark1", model_name))
 			{
 				ent->headBolt = -1;
 				ent->handRBolt = ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash1");
@@ -1476,13 +1475,13 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				ent->genericBolt4 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash4"); // Blaster Gun 4
 				ent->genericBolt5 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash5"); // Missile Gun 1
 			}
-			else if (!Q_stricmp("mark2", modelName))
+			else if (!Q_stricmp("mark2", model_name))
 			{
 				ent->headBolt = -1;
 				ent->handRBolt = ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flash");
 				// Blaster Gun 1
 			}
-			else if (!Q_stricmp("atst", modelName)) //&& (ent->client->playerTeam != TEAM_PLAYER))
+			else if (!Q_stricmp("atst", model_name)) //&& (ent->client->playerTeam != TEAM_PLAYER))
 			{
 				ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head");
 
@@ -1496,11 +1495,11 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				ent->footLBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*l_foot");
 				ent->footRBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*r_foot");
 			}
-			else if (!Q_stricmp("minemonster", modelName))
+			else if (!Q_stricmp("minemonster", model_name))
 			{
 				ent->handRBolt = ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head_f1");
 			}
-			else if (!Q_stricmp("galak_mech", modelName))
+			else if (!Q_stricmp("galak_mech", model_name))
 			{
 				ent->genericBolt1 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*antenna_effect");
 				ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head_eyes");
@@ -1510,20 +1509,20 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				ent->genericBolt3 = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flashb");
 				ent->handLBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*flashc");
 			}
-			else if (!Q_stricmp("rancor", modelName)
-				|| !Q_stricmp("mutant_rancor", modelName))
+			else if (!Q_stricmp("rancor", model_name)
+				|| !Q_stricmp("mutant_rancor", model_name))
 			{
 				ent->handLBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*l_hand");
 				ent->handRBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*r_hand");
 				ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head_eyes");
 				ent->gutBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head_mouth");
 			}
-			else if (!Q_stricmp("sand_creature", modelName))
+			else if (!Q_stricmp("sand_creature", model_name))
 			{
 				ent->gutBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*mouth");
 				ent->crotchBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*ground");
 			}
-			else if (!Q_stricmp("wampa", modelName))
+			else if (!Q_stricmp("wampa", model_name))
 			{
 				ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*head_eyes");
 				ent->cervicalBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "neck_bone");
@@ -1544,7 +1543,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 			{
 				//TEMP HACK: not a non-humanoid droid
 				ent->handRBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*weapon"); //should be r_hand
-				if (Q_stricmp("atst", modelName))
+				if (Q_stricmp("atst", model_name))
 				{
 					//not an ATST
 					ent->headBolt = gi.G2API_AddBolt(&ent->ghoul2[ent->playerModel], "*headg");
@@ -1592,14 +1591,14 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 		else if (ent->client->NPC_class == CLASS_HOWLER)
 		{
 		}
-		else if (!Q_stricmp("gonk", modelName) || !Q_stricmp("seeker", modelName) || !Q_stricmp("remote", modelName))
+		else if (!Q_stricmp("gonk", model_name) || !Q_stricmp("seeker", model_name) || !Q_stricmp("remote", model_name))
 		{
 			//
 		}
-		else if (!Q_stricmp("sentry", modelName))
+		else if (!Q_stricmp("sentry", model_name))
 		{
 		}
-		else if (!Q_stricmpn("probe", modelName, 5))
+		else if (!Q_stricmpn("probe", model_name, 5))
 		{
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
@@ -1614,7 +1613,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmp("interrogator", modelName))
+		else if (!Q_stricmp("interrogator", model_name))
 		{
 			ent->genericBone1 = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "left_arm", qtrue);
 			if (ent->genericBone1 >= 0)
@@ -1635,7 +1634,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmpn("r2d2", modelName, 4))
+		else if (!Q_stricmpn("r2d2", model_name, 4))
 		{
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
@@ -1656,7 +1655,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, NEGATIVE_Y, NEGATIVE_X, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmpn("r5d2", modelName, 4))
+		else if (!Q_stricmpn("r5d2", model_name, 4))
 		{
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
@@ -1671,7 +1670,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmp("atst", modelName))
+		else if (!Q_stricmp("atst", model_name))
 		{
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
@@ -1698,7 +1697,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, POSITIVE_Z, NEGATIVE_Y, NEGATIVE_X, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmp("mark1", modelName))
+		else if (!Q_stricmp("mark1", model_name))
 		{
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
@@ -1713,7 +1712,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmp("mark2", modelName))
+		else if (!Q_stricmp("mark2", model_name))
 		{
 			ent->craniumBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "cranium", qtrue);
 			if (ent->craniumBone >= 0)
@@ -1728,7 +1727,7 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmp("minemonster", modelName))
+		else if (!Q_stricmp("minemonster", model_name))
 		{
 			ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "thoracic1", qtrue);
 			if (ent->thoracicBone >= 0)
@@ -1770,10 +1769,10 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 				                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 			}
 		}
-		else if (!Q_stricmp("sand_creature", modelName))
+		else if (!Q_stricmp("sand_creature", model_name))
 		{
 		}
-		else if (!Q_stricmp("wampa", modelName))
+		else if (!Q_stricmp("wampa", model_name))
 		{
 			//Eorientations oUp, oRt, oFwd;
 			//bone needed for turning anims
@@ -1823,13 +1822,13 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 			}
 			*/
 		}
-		else if (!Q_stricmp("rockettrooper", modelName)
-			|| !Q_stricmp("hazardtrooper", modelName)
-			|| !Q_stricmp("saber_droid", modelName)
-			|| !Q_stricmp("assassin_droid", modelName))
+		else if (!Q_stricmp("rockettrooper", model_name)
+			|| !Q_stricmp("hazardtrooper", model_name)
+			|| !Q_stricmp("saber_droid", model_name)
+			|| !Q_stricmp("assassin_droid", model_name))
 		{
 			Eorientations oUp, oRt, oFwd;
-			if (Q_stricmp("saber_droid", modelName))
+			if (Q_stricmp("saber_droid", model_name))
 			{
 				//saber droid doesn't use these lower bones
 				//regular bones we need
@@ -1848,10 +1847,10 @@ qboolean G_SetG2PlayerModelInfo(gentity_t* ent, const char* modelName, const cha
 					                            BONE_ANGLES_POSTMULT, oUp, oRt, oFwd, nullptr, 0, 0);
 				}
 			}
-			if (Q_stricmp("hazardtrooper", modelName))
+			if (Q_stricmp("hazardtrooper", model_name))
 			{
 				//hazard trooper doesn't have these upper bones
-				if (Q_stricmp("saber_droid", modelName))
+				if (Q_stricmp("saber_droid", model_name))
 				{
 					//saber droid doesn't use thoracic bone
 					ent->thoracicBone = gi.G2API_GetBoneIndex(&ent->ghoul2[ent->playerModel], "thoracic", qtrue);
@@ -2071,7 +2070,7 @@ void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* c
 	//this is going to set the surfs on/off matching the skin file
 
 	// did we find a ghoul2 model? if so, load the animation.cfg file
-	if (!G_SetG2PlayerModelInfo(ent, model_name, custom_skin, surf_off, surf_on))
+	if (!G_SetG2PlayerModelInfo(ent, model_name, surf_off, surf_on))
 	{
 		//couldn't set g2 info, fall back to a mouse md3
 		NPC_ParseParms("mouse", ent);

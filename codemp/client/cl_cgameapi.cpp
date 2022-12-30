@@ -363,7 +363,7 @@ void CGVM_CameraShake(void)
 extern int CL_GetValueForHidden(const char* s); //cl_parse.cpp
 extern qboolean cl_bUseFighterPitch; //cl_input.cpp
 int CM_LoadSubBSP(const char* name, qboolean clientload); //cm_load.cpp
-void FX_FeedTrail(effectTrailArgStruct_t* a); //FxPrimitives.cpp
+void FX_FeedTrail(const effectTrailArgStruct_t* a); //FxPrimitives.cpp
 
 // wrappers and such
 
@@ -517,14 +517,14 @@ static void CL_SetClientForceAngle(const int time, vec3_t angle)
 
 static void CL_PrecisionTimerStart(void** p)
 {
-	auto newTimer = new timing_c; //create the new timer
-	*p = newTimer; //assign the pointer within the pointer to point at the mem addr of our new timer
-	newTimer->Start(); //start the timer
+	const auto new_timer = new timing_c; //create the new timer
+	*p = new_timer; //assign the pointer within the pointer to point at the mem addr of our new timer
+	new_timer->Start(); //start the timer
 }
 
 static int CL_PrecisionTimerEnd(void* p)
 {
-	auto timer = static_cast<timing_c*>(p); //this is the pointer we assigned in start, so we can directly cast it back
+	const auto timer = static_cast<timing_c*>(p); //this is the pointer we assigned in start, so we can directly cast it back
 	const int r = timer->End(); //get the result
 	delete timer; //delete the timer since we're done with it
 	return r; //return the result
@@ -849,7 +849,7 @@ static int CL_G2API_GetSurfaceRenderStatus(void* ghoul2, const int model_index, 
 	return re->G2API_GetSurfaceRenderStatus(g2, model_index, surfaceName);
 }
 
-static int CL_G2API_GetTime(void)
+static int CL_G2API_GetTime()
 {
 	return re->G2API_GetTime(0);
 }
@@ -904,16 +904,16 @@ static void CL_G2API_AnimateG2Models(void* ghoul2, const int time, sharedRagDoll
 	if (!ghoul2) return;
 	if (!params) return;
 
-	CRagDollUpdateParams rduParams;
-	VectorCopy(params->angles, rduParams.angles);
-	VectorCopy(params->position, rduParams.position);
-	VectorCopy(params->scale, rduParams.scale);
-	VectorCopy(params->velocity, rduParams.velocity);
+	CRagDollUpdateParams rdu_params;
+	VectorCopy(params->angles, rdu_params.angles);
+	VectorCopy(params->position, rdu_params.position);
+	VectorCopy(params->scale, rdu_params.scale);
+	VectorCopy(params->velocity, rdu_params.velocity);
 
-	rduParams.me = params->me;
-	rduParams.settleFrame = params->settleFrame;
+	rdu_params.me = params->me;
+	rdu_params.settleFrame = params->settleFrame;
 
-	re->G2API_AnimateG2ModelsRag(*static_cast<CGhoul2Info_v*>(ghoul2), time, &rduParams);
+	re->G2API_AnimateG2ModelsRag(*static_cast<CGhoul2Info_v*>(ghoul2), time, &rdu_params);
 }
 
 static qboolean CL_G2API_RagPCJConstraint(void* ghoul2, const char* boneName, vec3_t min, vec3_t max)
@@ -1549,15 +1549,15 @@ intptr_t CL_CgameSystemCalls(intptr_t* args)
 
 	case CG_R_GETDISTANCECULL:
 		{
-			auto f = static_cast<float*>(VMA(1));
+			const auto f = static_cast<float*>(VMA(1));
 			*f = re->GetDistanceCull();
 		}
 		return 0;
 
 	case CG_R_GETREALRES:
 		{
-			auto w = static_cast<int*>(VMA(1));
-			auto h = static_cast<int*>(VMA(2));
+			const auto w = static_cast<int*>(VMA(1));
+			const auto h = static_cast<int*>(VMA(2));
 			re->GetRealRes(w, h);
 		}
 		return 0;

@@ -194,7 +194,7 @@ CL_WriteDemoMessage
 Dumps the current net message, prefixed by the length
 ====================
 */
-void CL_WriteDemoMessage(msg_t* msg, const int headerBytes)
+void CL_WriteDemoMessage(const msg_t* msg, const int headerBytes)
 {
 	int swlen;
 
@@ -1738,7 +1738,7 @@ void CL_MotdPacket(const netadr_t from)
 CL_InitServerInfo
 ===================
 */
-void CL_InitServerInfo(serverInfo_t* server, netadr_t* address)
+void CL_InitServerInfo(serverInfo_t* server, const netadr_t* address)
 {
 	server->adr = *address;
 	server->clients = 0;
@@ -1765,7 +1765,7 @@ constexpr auto MAX_SERVERSPERPACKET = 256;
 CL_ServersResponsePacket
 ===================
 */
-void CL_ServersResponsePacket(const netadr_t* from, msg_t* msg)
+void CL_ServersResponsePacket(const msg_t* msg)
 {
 	int i, j;
 	netadr_t addresses[MAX_SERVERSPERPACKET];
@@ -2090,7 +2090,7 @@ void CL_ConnectionlessPacket(const netadr_t from, msg_t* msg)
 	// list of servers sent back by a master server (classic)
 	if (!Q_strncmp(c, "getserversResponse", 18))
 	{
-		CL_ServersResponsePacket(&from, msg);
+		CL_ServersResponsePacket(msg);
 		return;
 	}
 
@@ -3481,7 +3481,7 @@ void CL_LocalServers_f(void)
 		// can nicely run multiple servers
 		for (int j = 0; j < NUM_SERVER_PORTS; j++)
 		{
-			auto message = "\377\377\377\377getinfo xxx";
+			const auto message = "\377\377\377\377getinfo xxx";
 			to.port = BigShort((short)(PORT_SERVER + j));
 
 			to.type = NA_BROADCAST;

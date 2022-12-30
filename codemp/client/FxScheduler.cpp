@@ -141,7 +141,7 @@ void CFxScheduler::AddLoopedEffects()
 		{
 			const int entNum = mLoopedEffectArray[i].mBoltInfo >> ENTITY_SHIFT & ENTITY_AND;
 			// Find out where the entity currently is
-			auto data = (TCGVectorData*)cl.mSharedMemory;
+			const auto data = (TCGVectorData*)cl.mSharedMemory;
 
 			data->mEntityNum = entNum;
 			CGVM_GetLerpOrigin();
@@ -398,7 +398,7 @@ struct primitiveType_s
 	{"flash", ScreenFlash},
 };
 
-int CFxScheduler::ParseEffect(const char* file, CGPGroup* base)
+int CFxScheduler::ParseEffect(const char* file, const CGPGroup* base)
 {
 	const char* grpName;
 	int handle;
@@ -442,7 +442,7 @@ int CFxScheduler::ParseEffect(const char* file, CGPGroup* base)
 
 		if (type != None)
 		{
-			auto prim = new CPrimitiveTemplate;
+			const auto prim = new CPrimitiveTemplate;
 
 			prim->mType = type;
 			prim->ParsePrimitive(primitiveGroup);
@@ -747,7 +747,7 @@ void CFxScheduler::PlayEffect(const char* file, vec3_t origin, matrix3_t axis, c
 int totalPrimitives = 0;
 int totalEffects = 0;
 
-void GetRGB_Colors(CPrimitiveTemplate* fx, vec3_t outStartRGB, vec3_t outEndRGB)
+void GetRGB_Colors(const CPrimitiveTemplate* fx, vec3_t outStartRGB, vec3_t outEndRGB)
 {
 	if (fx->mSpawnFlags & FX_RGB_COMPONENT_INTERP)
 	{
@@ -905,7 +905,7 @@ void CFxScheduler::PlayEffect(const int id, vec3_t origin, matrix3_t axis, const
 				if (boltInfo == -1 && entity_num != -1)
 				{
 					// Find out where the entity currently is
-					auto data = reinterpret_cast<TCGVectorData*>(cl.mSharedMemory);
+					const auto data = reinterpret_cast<TCGVectorData*>(cl.mSharedMemory);
 
 					data->mEntityNum = entity_num;
 					CGVM_GetLerpOrigin();
@@ -1074,7 +1074,7 @@ void CFxScheduler::AddScheduledEffects(const bool portal)
 				if (effect->mEntNum != ENTITYNUM_NONE)
 				{
 					// Find out where the entity currently is
-					auto data = (TCGVectorData*)cl.mSharedMemory;
+					const auto data = (TCGVectorData*)cl.mSharedMemory;
 
 					data->mEntityNum = effect->mEntNum;
 					CGVM_GetLerpOrigin();
@@ -1727,7 +1727,7 @@ void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, mat
 // Return:
 //	none
 //------------------------------------------------------
-void CFxScheduler::CreateEffect(CPrimitiveTemplate* fx, SScheduledEffect* scheduledFx)
+void CFxScheduler::CreateEffect(const CPrimitiveTemplate* fx, SScheduledEffect* scheduledFx)
 {
 	// annoying bit....we have to pack the values back into an int before calling playEffect since there isn't the ideal overload we can already use.
 	int boltInfo = (scheduledFx->mModelNum & MODEL_AND) << MODEL_SHIFT;

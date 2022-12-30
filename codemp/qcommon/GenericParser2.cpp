@@ -285,7 +285,7 @@ CGPValue* CGPValue::Duplicate(CTextPool** textPool) const
 		name = (char*)mName;
 	}
 
-	auto newValue = new CGPValue(name);
+	const auto newValue = new CGPValue(name);
 	const CGPObject* iterator = mList;
 	while (iterator)
 	{
@@ -503,7 +503,7 @@ CGPGroup* CGPGroup::Duplicate(CTextPool** textPool, CGPGroup* initParent) const
 		name = (char*)mName;
 	}
 
-	auto newGroup = new CGPGroup(name);
+	const auto newGroup = new CGPGroup(name);
 
 	const CGPGroup* subSub = mSubGroups;
 	while (subSub)
@@ -580,7 +580,7 @@ CGPValue* CGPGroup::AddPair(const char* name, const char* value, CTextPool** tex
 		}
 	}
 
-	auto newPair = new CGPValue(name, value);
+	const auto newPair = new CGPValue(name, value);
 
 	AddPair(newPair);
 
@@ -600,7 +600,7 @@ CGPGroup* CGPGroup::AddGroup(const char* name, CTextPool** textPool)
 		name = (*textPool)->AllocText((char*)name, true, textPool);
 	}
 
-	auto newGroup = new CGPGroup(name, this);
+	const auto newGroup = new CGPGroup(name, this);
 
 	AddGroup(newGroup);
 
@@ -843,7 +843,7 @@ bool CGenericParser2::Write(CTextPool* textPool) const
 // CGenericParser2 (void *) routines
 TGenericParser2 GP_Parse(char** dataPtr, const bool cleanFirst, const bool writeable)
 {
-	auto parse = new CGenericParser2;
+	const auto parse = new CGenericParser2;
 	if (parse->Parse(dataPtr, cleanFirst, writeable))
 	{
 		return parse;

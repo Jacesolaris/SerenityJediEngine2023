@@ -42,7 +42,7 @@ class CQuickOverride
 	int mAt[512];
 	int mCurrentTouch;
 public:
-	CQuickOverride()
+	CQuickOverride(): mAt{}
 	{
 		mCurrentTouch = 1;
 		for (int i = 0; i < 512; i++)
@@ -50,6 +50,7 @@ public:
 			mOverride[i] = 0;
 		}
 	}
+
 	void Invalidate()
 	{
 		mCurrentTouch++;
@@ -158,13 +159,13 @@ int G2_IsSurfaceLegal(const model_s* mod_m, const char* surfaceName, uint32_t* f
  *    pointer to surface if successful, false otherwise
  *
  ************************************************************************************************/
-const mdxmSurface_t* G2_FindSurface(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const char* surfaceName,
-	int* surfIndex/*NULL*/)
+const mdxmSurface_t* G2_FindSurface(const CGhoul2Info* ghlInfo, const surfaceInfo_v& slist, const char* surfaceName,
+                                    int* surfIndex)
 {
 	// find the model we want
 	assert(G2_MODEL_OK(ghlInfo));
 
-	const mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)ghlInfo->currentModel->mdxm + sizeof(mdxmHeader_t));
+	const mdxmHierarchyOffsets_t* surf_indexes = reinterpret_cast<mdxmHierarchyOffsets_t*>(reinterpret_cast<byte*>(ghlInfo->currentModel->mdxm) + sizeof(mdxmHeader_t));
 
 	// first find if we already have this surface in the list
 	for (int i = slist.size() - 1; i >= 0; i--)
@@ -173,10 +174,10 @@ const mdxmSurface_t* G2_FindSurface(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, 
 		{
 			const mdxmSurface_t* surf = static_cast<mdxmSurface_t*>(G2_FindSurface(ghlInfo->currentModel, slist[i].surface, 0));
 			// back track and get the surfinfo struct for this surface
-			const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surf->thisSurfaceIndex]);
+			const mdxmSurfHierarchy_t* surf_info = reinterpret_cast<mdxmSurfHierarchy_t*>((byte*)surf_indexes + surf_indexes->offsets[surf->thisSurfaceIndex]);
 
 			// are these the droids we're looking for?
-			if (!Q_stricmp(surfInfo->name, surfaceName))
+			if (!Q_stricmp(surf_info->name, surfaceName))
 			{
 				// yup
 				if (surfIndex)

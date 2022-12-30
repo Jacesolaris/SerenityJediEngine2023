@@ -1509,7 +1509,7 @@ void Cvar_Defrag(void)
 		}
 	}
 
-	auto mem = static_cast<char*>(Z_Malloc(totalMem, TAG_SMALL, qfalse));
+	const auto mem = static_cast<char*>(Z_Malloc(totalMem, TAG_SMALL, qfalse));
 	const int nextMemPoolSize = totalMem;
 	totalMem = 0;
 

@@ -316,7 +316,7 @@ static consoleCommand_t commands[] = {
 R_Register
 ===============
 */
-void R_Register(void)
+void R_Register()
 {
 	//
 	// latched and archived variables
@@ -479,8 +479,8 @@ void R_Register(void)
 R_Init
 ===============
 */
-extern void R_InitWorldEffects(void); //tr_WorldEffects.cpp
-void R_Init(void)
+extern void R_InitWorldEffects(); //tr_WorldEffects.cpp
+void R_Init()
 {
 	//	Com_Printf ("----- R_Init -----\n" );
 	// clear all our internal state
@@ -536,7 +536,7 @@ void R_Init(void)
 RE_Shutdown
 ===============
 */
-void RE_Shutdown(qboolean destroyWindow, qboolean restarting)
+void RE_Shutdown(qboolean destroy_window, qboolean restarting)
 {
 	//	Com_Printf ("RE_Shutdown( %i )\n", destroyWindow );
 
@@ -564,7 +564,7 @@ GetRefAPI
 
 @@@@@@@@@@@@@@@@@@@@@
 */
-refexport_t* GetRefAPI(const int apiVersion, refimport_t* rimp)
+refexport_t* GetRefAPI(const int api_version, refimport_t* rimp)
 {
 	static refexport_t re;
 
@@ -573,9 +573,9 @@ refexport_t* GetRefAPI(const int apiVersion, refimport_t* rimp)
 
 	memset(&re, 0, sizeof re);
 
-	if (apiVersion != REF_API_VERSION)
+	if (api_version != REF_API_VERSION)
 	{
-		Com_Printf("Mismatched REF_API_VERSION: expected %i, got %i\n", REF_API_VERSION, apiVersion);
+		Com_Printf("Mismatched REF_API_VERSION: expected %i, got %i\n", REF_API_VERSION, api_version);
 		return nullptr;
 	}
 

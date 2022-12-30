@@ -335,7 +335,7 @@ R_AddBrushModelSurfaces
 void R_AddBrushModelSurfaces(trRefEntity_t* ent) {
 	const model_t* pModel = R_GetModelByHandle(ent->e.hModel);
 
-	bmodel_t* bmodel = pModel->bmodel;
+	const bmodel_t* bmodel = pModel->bmodel;
 
 	const int clip = R_CullLocalBox(bmodel->bounds);
 	if (clip == CULL_OUT) {

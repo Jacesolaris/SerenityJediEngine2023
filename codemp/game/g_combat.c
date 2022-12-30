@@ -46,8 +46,8 @@ extern void G_LetGoOfWall(const gentity_t* ent);
 extern void BG_ClearRocketLock(playerState_t* ps);
 void bot_damage_notification(const gclient_t* bot, gentity_t* attacker);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir);
-extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
-                                   qboolean forceKnockdown);
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir,
+                                   qboolean force_knockdown);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean PM_FaceProtectAnim(int anim);
@@ -3232,7 +3232,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 
 	//turn off flamethrower
 	self->client->flameTime = 0;
-	self->client->ps.userInt3 &= ~(1 << FLAG_FLAMETHROWER);
+	self->client->ps.PlayerEffectFlags &= ~(1 << PEF_FLAMING);
 	self->client->ps.userInt3 &= ~(1 << FLAG_WRISTBLASTER);
 
 	//this is set earlier since some of the previous function calls depend on this being

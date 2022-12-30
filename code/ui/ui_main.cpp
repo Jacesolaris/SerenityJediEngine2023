@@ -6741,8 +6741,8 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 		return;
 	}
 
-	auto chosenItemName = "chosenthrowweapon_icon";
-	auto chosenButtonName = "chosenthrowweapon_button";
+	const auto chosenItemName = "chosenthrowweapon_icon";
+	const auto chosenButtonName = "chosenthrowweapon_button";
 	uiInfo.selectedThrowWeapon = weaponIndex;
 	uiInfo.selectedThrowWeaponAmmoIndex = ammoIndex;
 	uiInfo.weaponThrowButton = uiInfo.runScriptItem;
@@ -6828,8 +6828,8 @@ static void UI_RemoveThrowWeaponSelection(void)
 		return;
 	}
 
-	auto chosenItemName = "chosenthrowweapon_icon";
-	auto chosenButtonName = "chosenthrowweapon_button";
+	const auto chosenItemName = "chosenthrowweapon_icon";
+	const auto chosenButtonName = "chosenthrowweapon_button";
 	const char* background = uiInfo.selectedThrowWeaponItemName;
 
 	// Reset background of upper icon

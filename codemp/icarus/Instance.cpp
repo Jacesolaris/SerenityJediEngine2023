@@ -72,7 +72,7 @@ Create
 
 ICARUS_Instance* ICARUS_Instance::Create(interface_export_t* ie)
 {
-	auto instance = new ICARUS_Instance;
+	const auto instance = new ICARUS_Instance;
 	instance->m_interface = ie;
 	Com_OPrintf("ICARUS Instance successfully created\n");
 	return instance;
@@ -322,7 +322,7 @@ int ICARUS_Instance::SaveSequenceIDTable(void)
 	sequence_l::iterator sqi;
 
 	//First pass, save all sequences ID for reconstruction
-	auto idTable = new int[numSequences];
+	const auto idTable = new int[numSequences];
 	int itr = 0;
 
 	if (idTable == nullptr)
@@ -511,7 +511,7 @@ int ICARUS_Instance::LoadSequences(void)
 	//Get the number of sequences to read in
 	m_interface->I_ReadSaveData(INT_ID('#', 'S', 'E', 'Q'), &numSequences, sizeof numSequences);
 
-	auto idTable = new int[numSequences];
+	const auto idTable = new int[numSequences];
 
 	if (idTable == nullptr)
 		return false;

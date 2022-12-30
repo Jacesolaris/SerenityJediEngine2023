@@ -12096,7 +12096,7 @@ rest:
 	return qfalse; // continue with the rest of the weapon code
 }
 
-int PM_ItemUsable(playerState_t* ps, int forcedUse)
+int PM_ItemUsable(const playerState_t* ps, int forced_use)
 {
 	vec3_t fwd, fwdorg, dest;
 	vec3_t yawonly;
@@ -12121,17 +12121,17 @@ int PM_ItemUsable(playerState_t* ps, int forcedUse)
 		return 0;
 	}
 
-	if (!forcedUse)
+	if (!forced_use)
 	{
-		forcedUse = bg_itemlist[ps->stats[STAT_HOLDABLE_ITEM]].giTag;
+		forced_use = bg_itemlist[ps->stats[STAT_HOLDABLE_ITEM]].giTag;
 	}
 
-	if (!BG_IsItemSelectable(forcedUse))
+	if (!BG_IsItemSelectable(forced_use))
 	{
 		return 0;
 	}
 
-	switch (forcedUse)
+	switch (forced_use)
 	{
 	case HI_MEDPAC:
 	case HI_MEDPAC_BIG:
@@ -12229,6 +12229,10 @@ int PM_ItemUsable(playerState_t* ps, int forcedUse)
 			//not enough fuel to fire the weapon.
 			return 0;
 		}
+		/*if (!(pm->cmd.buttons & BUTTON_FORCEPOWER))
+		{
+			return 0;
+		}*/
 		if (PM_InGrappleMove(pm->ps->torsoAnim))
 		{
 			//In grapple
@@ -12766,25 +12770,7 @@ void PM_Weapon(void)
 		}
 	}
 #endif
-#endif //0
-
-	if (pm_entSelf->s.botclass == BCLASS_BOBAFETT ||
-		pm_entSelf->s.botclass == BCLASS_MANDOLORIAN ||
-		pm_entSelf->s.botclass == BCLASS_MANDOLORIAN1 ||
-		pm_entSelf->s.botclass == BCLASS_MANDOLORIAN2)
-	{
-		//player playing as boba fett
-		if (pm->cmd.buttons & BUTTON_FORCEPOWER && pm->ps->stats[STAT_HOLDABLE_ITEMS] & 1 << HI_FLAMETHROWER)
-		{
-#ifdef _GAME
-			gentity_t* ent = &g_entities[pm->ps->client_num];
-
-
-			ItemUse_FlameThrower(ent);
-#endif
-		}
-	}
-	
+#endif //0	
 
 
 	if (!pm->ps->emplacedIndex &&
@@ -12850,9 +12836,9 @@ void PM_Weapon(void)
 		//check for exceeding max charge time if not using disruptor or rocket launcher or thermals
 		if (pm->ps->weaponstate == WEAPON_CHARGING_ALT)
 		{
-			int timeDif = pm->cmd.serverTime - pm->ps->weaponChargeTime;
+			int time_dif = pm->cmd.serverTime - pm->ps->weaponChargeTime;
 
-			if (timeDif > MAX_WEAPON_CHARGE_TIME)
+			if (time_dif > MAX_WEAPON_CHARGE_TIME)
 			{
 				pm->cmd.buttons &= ~BUTTON_ALT_ATTACK;
 			}
@@ -12860,9 +12846,9 @@ void PM_Weapon(void)
 
 		if (pm->ps->weaponstate == WEAPON_CHARGING)
 		{
-			int timeDif = pm->cmd.serverTime - pm->ps->weaponChargeTime;
+			int time_dif = pm->cmd.serverTime - pm->ps->weaponChargeTime;
 
-			if (timeDif > MAX_WEAPON_CHARGE_TIME)
+			if (time_dif > MAX_WEAPON_CHARGE_TIME)
 			{
 				pm->cmd.buttons &= ~BUTTON_ATTACK;
 			}
@@ -12871,8 +12857,7 @@ void PM_Weapon(void)
 	//we handle the flame thrower item useage seperately to allow it to be held down and used continously (ignores PMF_USE_ITEM_HELD)
 	//it's also processed before the handextend stuff so we can continue to use it even when the player's already in the
 	//handextend animation for the flamethrower.
-	if (pm->cmd.buttons & BUTTON_USE_HOLDABLE && bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag ==
-		HI_FLAMETHROWER)
+	if (pm->cmd.buttons & BUTTON_USE_HOLDABLE && bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_FLAMETHROWER)
 	{
 		if (pm_entSelf && pm_entSelf->s.NPC_class != CLASS_VEHICLE && pm->ps->m_iVehicleNum)
 		{
@@ -16339,7 +16324,7 @@ void BG_IK_MoveArm(void* ghoul2, const int lHandBolt, const int time, const enti
                    qboolean* ikInProgress,
                    vec3_t origin, vec3_t angles, vec3_t scale, const int blendTime, const qboolean forceHalt)
 {
-	mdxaBone_t lHandMatrix;
+	mdxaBone_t l_hand_matrix;
 
 	if (!ghoul2)
 	{
@@ -16416,12 +16401,12 @@ void BG_IK_MoveArm(void* ghoul2, const int lHandBolt, const int time, const enti
 		VectorCopy(angles, tAngles);
 		tAngles[PITCH] = tAngles[ROLL] = 0;
 
-		trap->G2API_GetBoltMatrix(ghoul2, 0, lHandBolt, &lHandMatrix, tAngles, origin, time, 0, scale);
+		trap->G2API_GetBoltMatrix(ghoul2, 0, lHandBolt, &l_hand_matrix, tAngles, origin, time, 0, scale);
 
 		//Get the point position from the matrix.
-		lHand[0] = lHandMatrix.matrix[0][3];
-		lHand[1] = lHandMatrix.matrix[1][3];
-		lHand[2] = lHandMatrix.matrix[2][3];
+		lHand[0] = l_hand_matrix.matrix[0][3];
+		lHand[1] = l_hand_matrix.matrix[1][3];
+		lHand[2] = l_hand_matrix.matrix[2][3];
 
 		VectorSubtract(lHand, desiredPos, torg);
 		const float distToDest = VectorLength(torg);

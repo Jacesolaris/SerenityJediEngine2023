@@ -44,14 +44,14 @@ int SV_NumForGentity(sharedEntity_t* ent)
 
 sharedEntity_t* SV_GentityNum(const int num)
 {
-	auto ent = (sharedEntity_t*)((byte*)sv.gentities + sv.gentitySize * num);
+	const auto ent = (sharedEntity_t*)((byte*)sv.gentities + sv.gentitySize * num);
 
 	return ent;
 }
 
 playerState_t* SV_Gameclient_num(const int num)
 {
-	auto ps = (playerState_t*)((byte*)sv.gameClients + sv.gameClientSize * num);
+	const auto ps = (playerState_t*)((byte*)sv.gameClients + sv.gameClientSize * num);
 
 	return ps;
 }

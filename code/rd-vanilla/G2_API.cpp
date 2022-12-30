@@ -980,7 +980,7 @@ qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghlInfo, const int model_index)
 
 //rww - RAGDOLL_END
 
-int G2API_GetAnimIndex(CGhoul2Info* ghlInfo)
+int G2API_GetAnimIndex( CGhoul2Info* ghlInfo)
 {
 	if (ghlInfo)
 	{

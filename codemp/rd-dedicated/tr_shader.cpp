@@ -2438,7 +2438,7 @@ static shader_t* GeneratePermanentShader(void)
 		return tr.defaultShader;
 	}
 
-	auto newShader = static_cast<shader_s*>(ri->Hunk_Alloc(sizeof(shader_t), h_low));
+	const auto newShader = static_cast<shader_s*>(ri->Hunk_Alloc(sizeof(shader_t), h_low));
 
 	*newShader = shader;
 

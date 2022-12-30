@@ -404,7 +404,7 @@ static char* StripTrailingWhiteSpaceOnEveryLine(char* pText)
 		strNewText += "\n";
 	}
 
-	auto pNewText = static_cast<char*>(Z_Malloc(strlen(strNewText.c_str()) + 1, TAG_TEMP_WORKSPACE, qfalse));
+	const auto pNewText = static_cast<char*>(Z_Malloc(strlen(strNewText.c_str()) + 1, TAG_TEMP_WORKSPACE, qfalse));
 	strcpy(pNewText, strNewText.c_str());
 	return pNewText;
 }

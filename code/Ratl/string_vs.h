@@ -309,7 +309,7 @@ namespace ratl
 				strncpy(mGap, gap, TOKEN_GAP_LEN); // Safe String Copy
 				mGap[TOKEN_GAP_LEN - 1] = 0; // Make Sure We Have A Null Terminated Str
 
-				auto temp = (char*)t;
+				const auto temp = (char*)t;
 				mLoc = str::tok(temp, mGap);
 			}
 

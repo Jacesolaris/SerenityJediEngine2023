@@ -141,7 +141,7 @@ CGoreSet* FindGoreSet(const int goreSetTag)
 
 CGoreSet* NewGoreSet()
 {
-	auto ret = new CGoreSet(CurrentGoreSet++);
+	const auto ret = new CGoreSet(CurrentGoreSet++);
 	GoreSets[ret->mMyGoreSetTag] = ret;
 	ret->mRefCount = 1;
 	return ret;
@@ -306,7 +306,7 @@ void G2_List_Model_Bones(const char* fileName, int frame)
 	// walk each bone and list it's name
 	for (int x = 0; x < mod_a->mdxa->numBones; x++)
 	{
-		auto skel = (mdxaSkel_t*)((byte*)header + sizeof(mdxaHeader_t) + offsets->offsets[x]);
+		const auto skel = (mdxaSkel_t*)((byte*)header + sizeof(mdxaHeader_t) + offsets->offsets[x]);
 		Com_Printf("Bone %i Name %s\n", x, skel->name);
 
 		Com_Printf("X pos %f, Y pos %f, Z pos %f\n", skel->BasePoseMat.matrix[0][3], skel->BasePoseMat.matrix[1][3],
@@ -1657,22 +1657,22 @@ void G2_GenerateWorldMatrix(const vec3_t angles, const vec3_t origin)
 void* G2_FindSurface(void* mod_t, const int index, const int lod)
 {
 	// damn include file dependancies
-	auto mod = static_cast<model_t*>(mod_t);
+	const auto mod = static_cast<model_t*>(mod_t);
 
 	// point at first lod list
-	auto current = (byte*)((size_t)mod->mdxm + static_cast<size_t>(mod->mdxm->ofsLODs));
+	auto current = reinterpret_cast<byte*>(reinterpret_cast<size_t>(mod->mdxm) + static_cast<size_t>(mod->mdxm->ofsLODs));
 
 	//walk the lods
 	for (int i = 0; i < lod; i++)
 	{
-		const mdxmLOD_t* lodData = (mdxmLOD_t*)current;
-		current += lodData->ofsEnd;
+		const mdxmLOD_t* lod_data = reinterpret_cast<mdxmLOD_t*>(current);
+		current += lod_data->ofsEnd;
 	}
 
 	// avoid the lod pointer data structure
 	current += sizeof(mdxmLOD_t);
 
-	const mdxmLODSurfOffset_t* indexes = (mdxmLODSurfOffset_t*)current;
+	const mdxmLODSurfOffset_t* indexes = reinterpret_cast<mdxmLODSurfOffset_t*>(current);
 	// we are now looking at the offset array
 	current += indexes->offsets[index];
 
@@ -1689,7 +1689,7 @@ qboolean G2_SaveGhoul2Models(CGhoul2Info_v& ghoul2, char** buffer, int* size)
 	if (!ghoul2.size())
 	{
 		*buffer = static_cast<char*>(Z_Malloc(4, TAG_GHOUL2, qtrue));
-		auto tempBuffer = (int*)*buffer;
+		const auto tempBuffer = (int*)*buffer;
 		*tempBuffer = 0;
 		*size = 4;
 		return qtrue;
@@ -1876,7 +1876,7 @@ void G2_LerpAngles(CGhoul2Info_v& ghoul2, CGhoul2Info_v& nextGhoul2, const float
 					{
 						const float* nowMatrix = (float*)&bone.matrix;
 						const float* nextMatrix = (float*)&nextBone.matrix;
-						auto newMatrix = (float*)&bone.newMatrix;
+						const auto newMatrix = (float*)&bone.newMatrix;
 						// now interpolate the matrix
 						for (int z = 0; z < 12; z++)
 						{

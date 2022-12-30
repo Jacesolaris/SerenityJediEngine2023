@@ -199,7 +199,7 @@ void Cbuf_Execute(void)
 		}
 
 		// find a \n or ; line break or comment: // or /* */
-		auto text = (char*)cmd_text.data;
+		const auto text = (char*)cmd_text.data;
 
 		int quotes = 0;
 		for (i = 0; i < cmd_text.cursize; i++)
@@ -696,7 +696,7 @@ void Cmd_AddCommand(const char* cmd_name, const xcommand_t function, const char*
 	}
 
 	// use a small malloc to avoid zone fragmentation
-	auto cmd = static_cast<cmd_function_s*>(S_Malloc(sizeof(cmd_function_t)));
+	const auto cmd = static_cast<cmd_function_s*>(S_Malloc(sizeof(cmd_function_t)));
 	cmd->name = CopyString(cmd_name);
 	if (VALIDSTRING(cmd_desc))
 		cmd->description = CopyString(cmd_desc);

@@ -4046,7 +4046,7 @@ int FGetLittleShort(const fileHandle_t f)
 }
 
 // returns the length of the data in the chunk, or 0 if not found
-int S_FindWavChunk(const fileHandle_t f, char* chunk)
+int S_FindWavChunk(const fileHandle_t f, const char* chunk)
 {
 	char name[5];
 

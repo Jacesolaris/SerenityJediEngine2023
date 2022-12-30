@@ -554,7 +554,7 @@ void CMod_LoadPatches(lump_t* surfs, lump_t* verts, clipMap_t& cm)
 	cm.numSurfaces = count = surfs->filelen / sizeof *in;
 	cm.surfaces = static_cast<cPatch_t**>(Z_Malloc(cm.numSurfaces * sizeof cm.surfaces[0], TAG_BSP, qtrue));
 
-	auto dv = (mapVert_t*)(cmod_base + verts->fileofs);
+	const auto dv = (mapVert_t*)(cmod_base + verts->fileofs);
 	if (verts->filelen % sizeof *dv)
 		Com_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size");
 

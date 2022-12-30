@@ -158,7 +158,7 @@ qboolean CROFFSystem::IsROFF(unsigned char* data)
 //---------------------------------------------------------------------------
 qboolean CROFFSystem::InitROFF(unsigned char* data, CROFF* obj)
 {
-	auto hdr = (TROFFHeader*)data;
+	const auto hdr = (TROFFHeader*)data;
 
 	if (LittleLong hdr->mVersion == ROFF_NEW_VERSION)
 	{
@@ -217,7 +217,7 @@ qboolean CROFFSystem::InitROFF(unsigned char* data, CROFF* obj)
 //---------------------------------------------------------------------------
 qboolean CROFFSystem::InitROFF2(unsigned char* data, CROFF* obj)
 {
-	auto hdr = (TROFF2Header*)data;
+	const auto hdr = (TROFF2Header*)data;
 
 	obj->mROFFEntries = LittleLong hdr->mCount;
 	obj->mMoveRotateList = new TROFF2Entry[LittleLong hdr->mCount];
@@ -630,7 +630,7 @@ qboolean CROFFSystem::Play(const int entID, const int id, const qboolean doTrans
 		//bjg TODO: reset this latter?
 	}
 
-	auto roffing_ent = new SROFFEntity;
+	const auto roffing_ent = new SROFFEntity;
 
 	roffing_ent->mEntID = entID;
 	roffing_ent->mROFFID = id;

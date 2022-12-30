@@ -277,7 +277,7 @@ void		G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale,
 void G2_GenerateWorldMatrix(const vec3_t angles, const vec3_t origin);
 void TransformPoint(const vec3_t in, vec3_t out, mdxaBone_t* mat);
 void Inverse_Matrix(mdxaBone_t* src, mdxaBone_t* dest);
-void* G2_FindSurface(void* mod, int index, int lod);
+void* G2_FindSurface(void* mod_t, int index, int lod);
 qboolean G2_SaveGhoul2Models(CGhoul2Info_v& ghoul2, char** buffer, int* size);
 void G2_LoadGhoul2Model(CGhoul2Info_v& ghoul2, const char* buffer);
 
@@ -287,7 +287,7 @@ qboolean G2_Remove_Bolt(boltInfo_v& bltlist, int index);
 void G2_Init_Bolt_List(boltInfo_v& bltlist);
 int G2_Find_Bolt_Bone_Num(const boltInfo_v& bltlist, int boneNum);
 int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, int surfaceNum, int flags);
-int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, int surfNum);
+int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, int surfNum);
 void G2_RemoveRedundantBolts(boltInfo_v& bltlist, surfaceInfo_v& slist, const int* activeSurfaces,
                              const int* activeBones);
 

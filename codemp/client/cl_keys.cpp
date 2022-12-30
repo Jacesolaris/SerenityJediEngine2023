@@ -734,7 +734,7 @@ void Console_Key(const int key)
 		// check if cgame wants to eat the command...?
 		if (cls.cgameStarted && cl.mSharedMemory)
 		{
-			auto icc = (TCGIncomingConsoleCommand*)cl.mSharedMemory;
+			const auto icc = (TCGIncomingConsoleCommand*)cl.mSharedMemory;
 
 			Q_strncpyz(icc->conCommand, g_consoleField.buffer, sizeof icc->conCommand);
 
@@ -1366,7 +1366,7 @@ void CL_ParseBinding(const int key, const qboolean down, const unsigned time)
 				if (cls.cgameStarted && cl.mSharedMemory)
 				{
 					// don't do this unless cgame is inited and shared memory is valid
-					auto icc = (TCGIncomingConsoleCommand*)cl.mSharedMemory;
+					const auto icc = (TCGIncomingConsoleCommand*)cl.mSharedMemory;
 
 					Q_strncpyz(icc->conCommand, p, sizeof icc->conCommand);
 

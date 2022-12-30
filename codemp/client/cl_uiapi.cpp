@@ -698,7 +698,7 @@ static qboolean CL_G2API_SetNewOrigin(void* ghoul2, const int bolt_index)
 	return re->G2API_SetNewOrigin(*static_cast<CGhoul2Info_v*>(ghoul2), bolt_index);
 }
 
-static int CL_G2API_GetTime(void)
+static int CL_G2API_GetTime()
 {
 	return re->G2API_GetTime(0);
 }
@@ -809,8 +809,8 @@ static qboolean CL_G2API_AttachG2Model(void* ghoul2From, const int modelIndexFro
 		return qfalse;
 	}
 
-	auto g2From = static_cast<CGhoul2Info_v*>(ghoul2From);
-	auto g2To = static_cast<CGhoul2Info_v*>(ghoul2To);
+	const auto g2From = static_cast<CGhoul2Info_v*>(ghoul2From);
+	const auto g2To = static_cast<CGhoul2Info_v*>(ghoul2To);
 
 	return re->G2API_AttachG2Model(*g2From, modelIndexFrom, *g2To, toBoltIndex, toModel);
 }
@@ -1343,7 +1343,7 @@ intptr_t CL_UISystemCalls(intptr_t* args)
 	case UI_G2_GETGLANAME:
 		//	return (int)G2API_GetGLAName(*((CGhoul2Info_v *)VMA(1)), args[2]);
 		{
-			auto point = static_cast<char*>(VMA(3));
+			const auto point = static_cast<char*>(VMA(3));
 			const char* local = re->G2API_GetGLAName(*(CGhoul2Info_v*)args[1], args[2]);
 			if (local)
 			{
@@ -1417,7 +1417,7 @@ intptr_t CL_UISystemCalls(intptr_t* args)
 	case UI_G2_GETSURFACENAME:
 		{
 			//Since returning a pointer in such a way to a VM seems to cause MASSIVE FAILURE<tm>, we will shove data into the pointer the vm passes instead
-			auto point = static_cast<char*>(VMA(4));
+			const auto point = static_cast<char*>(VMA(4));
 			const int modelindex = args[3];
 
 			CGhoul2Info_v& g2 = *(CGhoul2Info_v*)args[1];
@@ -1440,8 +1440,8 @@ intptr_t CL_UISystemCalls(intptr_t* args)
 
 	case UI_G2_ATTACHG2MODEL:
 		{
-			auto g2From = (CGhoul2Info_v*)args[1];
-			auto g2To = (CGhoul2Info_v*)args[3];
+			const auto g2From = (CGhoul2Info_v*)args[1];
+			const auto g2To = (CGhoul2Info_v*)args[3];
 
 			return re->G2API_AttachG2Model(*g2From, args[2], *g2To, args[4], args[5]);
 		}
@@ -1451,10 +1451,10 @@ intptr_t CL_UISystemCalls(intptr_t* args)
 	}
 }
 
-void CL_BindUI(void)
+void CL_BindUI()
 {
 	static uiImport_t uii;
-	char dllName[MAX_OSPATH] = "SerenityJediEngine2023-ui" ARCH_STRING DLL_EXT;
+	char dll_name[MAX_OSPATH] = "SerenityJediEngine2023-ui" ARCH_STRING DLL_EXT;
 
 	memset(&uii, 0, sizeof uii);
 
@@ -1615,7 +1615,7 @@ void CL_BindUI(void)
 		{
 			//free VM?
 			cls.uiStarted = qfalse;
-			Com_Error(ERR_FATAL, "GetGameAPI failed on %s", dllName);
+			Com_Error(ERR_FATAL, "GetGameAPI failed on %s", dll_name);
 		}
 		uie = ret;
 
@@ -1631,7 +1631,7 @@ void CL_BindUI(void)
 	}
 }
 
-void CL_UnbindUI(void)
+void CL_UnbindUI()
 {
 	UIVM_Shutdown();
 	VM_Free(uivm);

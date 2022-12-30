@@ -544,7 +544,7 @@ static void CMod_LoadPatches(const lump_t* surfs, const lump_t* verts, clipMap_t
 	cm.numSurfaces = count = surfs->filelen / sizeof *in;
 	cm.surfaces = static_cast<cPatch_t**>(Hunk_Alloc(cm.numSurfaces * sizeof cm.surfaces[0], h_high));
 
-	auto dv = (drawVert_t*)(cmod_base + verts->fileofs);
+	const auto dv = (drawVert_t*)(cmod_base + verts->fileofs);
 	if (verts->filelen % sizeof *dv)
 		Com_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size");
 

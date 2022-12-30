@@ -101,7 +101,7 @@ public:
 	static void Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, const int skipEntNum,
 	                  const int flags)
 	{
-		auto td = (TCGTrace*)cl.mSharedMemory;
+		const auto td = (TCGTrace*)cl.mSharedMemory;
 
 		if (!min)
 		{
@@ -129,7 +129,7 @@ public:
 	static void G2Trace(trace_t& tr, vec3_t start, vec3_t min, vec3_t max, vec3_t end, const int skipEntNum,
 	                    const int flags)
 	{
-		auto td = (TCGTrace*)cl.mSharedMemory;
+		const auto td = (TCGTrace*)cl.mSharedMemory;
 
 		if (!min)
 		{
@@ -156,7 +156,7 @@ public:
 
 	static void AddGhoul2Decal(const int shader, vec3_t start, vec3_t dir, const float size)
 	{
-		auto td = (TCGG2Mark*)cl.mSharedMemory;
+		const auto td = (TCGG2Mark*)cl.mSharedMemory;
 
 		td->size = size;
 		td->shader = shader;
@@ -166,7 +166,7 @@ public:
 		CGVM_G2Mark();
 	}
 
-	void AddFxToScene(refEntity_t* ent)
+	void AddFxToScene(const refEntity_t* ent)
 	{
 #ifdef _DEBUG
 		mMainRefs++;
@@ -176,7 +176,7 @@ public:
 		re->AddRefEntityToScene(ent);
 	}
 
-	void AddFxToScene(miniRefEntity_t* ent)
+	void AddFxToScene(const miniRefEntity_t* ent)
 	{
 #ifdef _DEBUG
 		mMiniRefs++;
@@ -201,7 +201,7 @@ public:
 		return re->RegisterModel(model);
 	}
 
-	static void AddPolyToScene(const int shader, const int count, polyVert_t* verts)
+	static void AddPolyToScene(const int shader, const int count, const polyVert_t* verts)
 	{
 		re->AddPolyToScene(shader, count, verts, 1);
 	}

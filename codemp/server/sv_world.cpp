@@ -405,7 +405,7 @@ SV_AreaEntities_r
 
 ====================
 */
-void SV_AreaEntities_r(worldSector_t* node, areaParms_t* ap)
+void SV_AreaEntities_r(const worldSector_t* node, areaParms_t* ap)
 {
 	svEntity_t* next;
 

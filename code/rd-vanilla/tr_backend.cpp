@@ -952,7 +952,7 @@ RB_SetGL2D
 
 ================
 */
-void	RB_SetGL2D(void) {
+void	RB_SetGL2D() {
 	backEnd.projection2D = qtrue;
 
 	// set 2D virtual screen size

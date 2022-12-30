@@ -5087,7 +5087,7 @@ void Cmd_NPC_f(gentity_t* ent)
 	else if (Q_stricmp(cmd, "score") == 0)
 	{
 		char cmd2[1024];
-		gentity_t* thisent = NULL;
+		const gentity_t* thisent = NULL;
 
 		trap->Argv(2, cmd2, sizeof cmd2);
 

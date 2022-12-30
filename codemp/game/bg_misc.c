@@ -3861,7 +3861,7 @@ qboolean BG_IsUsingMediumWeap(const playerState_t* ps)
 	//checks to see if the player is using a "medium" class weapon, which prevent offensive Force powers, but not defensive ones.
 	assert(ps);
 
-	if (ps->userInt3 & 1 << FLAG_FLAMETHROWER)
+	if (ps->PlayerEffectFlags & 1 << PEF_FLAMING)
 	{
 		return qtrue;
 	}

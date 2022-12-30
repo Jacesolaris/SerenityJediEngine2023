@@ -1995,11 +1995,11 @@ void R_ShutdownFonts(void)
 
 // this is only really for debugging while tinkering with fonts, but harmless to leave in...
 //
-void R_ReloadFonts_f(void)
+void R_ReloadFonts_f()
 {
 	// first, grab all the currently-registered fonts IN THE ORDER THEY WERE REGISTERED...
 	//
-	std::vector <sstring_t> vstrFonts;
+	std::vector <sstring_t> vstr_fonts;
 
 	int iFontToFind = 1;
 	for (; iFontToFind < g_iCurrentFontIndex; iFontToFind++)
@@ -2009,7 +2009,7 @@ void R_ReloadFonts_f(void)
 		{
 			if (iFontToFind == (*it).second)
 			{
-				vstrFonts.push_back((*it).first);
+				vstr_fonts.push_back((*it).first);
 				break;
 			}
 		}
@@ -2027,13 +2027,13 @@ void R_ReloadFonts_f(void)
 		//
 		// and re-register our fonts in the same order as before (note that some menu items etc cache the string lengths so really a vid_restart is better, but this is just for my testing)
 		//
-		for (size_t font = 0; font < vstrFonts.size(); font++)
+		for (size_t font = 0; font < vstr_fonts.size(); font++)
 		{
 #ifdef _DEBUG
-			const int iNewFontHandle = RE_RegisterFont(vstrFonts[font].c_str());
+			const int iNewFontHandle = RE_RegisterFont(vstr_fonts[font].c_str());
 			assert(static_cast<unsigned>(iNewFontHandle) == font + 1);
 #else
-			RE_RegisterFont(vstrFonts[font].c_str());
+			RE_RegisterFont(vstr_fonts[font].c_str());
 #endif
 		}
 		Com_Printf("Done.\n");

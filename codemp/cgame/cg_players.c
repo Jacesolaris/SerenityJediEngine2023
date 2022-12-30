@@ -18287,8 +18287,7 @@ SkipTrueView:
 		}
 	}
 
-	if (/*cent->currentState.userInt3 & 1 << FLAG_FLAMETHROWER
-		&& */cg.snap->ps.forceHandExtend == HANDEXTEND_FLAMETHROWER_HOLD)
+	if (cent->currentState.PlayerEffectFlags & 1 << PEF_FLAMING/* && cg.snap->ps.forceHandExtend == HANDEXTEND_FLAMETHROWER_HOLD*/)
 	{
 		//player is firing flamethrower, render effect.
 		vec3_t axis[3];
@@ -18315,10 +18314,7 @@ SkipTrueView:
 
 		AnglesToAxis(f_ang, axis);
 
-		if (cg.snap->ps.forceHandExtend == HANDEXTEND_FLAMETHROWER_HOLD)
-		{
-			trap->FX_PlayEntityEffectID(cgs.effects.Bobaflamethrower, ef_org, axis, -1, -1, -1, -1);
-		}
+		trap->FX_PlayEntityEffectID(cgs.effects.flamethrower, ef_org, axis, -1, -1, -1, -1);
 	}
 
 	//fullbody push effect

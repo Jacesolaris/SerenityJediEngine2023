@@ -73,10 +73,10 @@ int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, const int surfaceNum, co
 
 //=========================================================================================
 //// Public Bolt Routines
-int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surfNum)
+int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surfNum)
 {
 	assert(ghlInfo && ghlInfo->mValid);
-	boltInfo_t			tempBolt;
+	boltInfo_t			temp_bolt;
 
 	assert(surfNum >= 0 && surfNum < static_cast<int>(slist.size()));
 	// ensure surface num is valid
@@ -113,11 +113,11 @@ int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfac
 	}
 
 	// ok, we didn't find an existing surface of that name, or an empty slot. Lets add an entry
-	tempBolt.surfaceNumber = surfNum;
-	tempBolt.surfaceType = G2SURFACEFLAG_GENERATED;
-	tempBolt.boneNumber = -1;
-	tempBolt.boltUsed = 1;
-	bltlist.push_back(tempBolt);
+	temp_bolt.surfaceNumber = surfNum;
+	temp_bolt.surfaceType = G2SURFACEFLAG_GENERATED;
+	temp_bolt.boneNumber = -1;
+	temp_bolt.boltUsed = 1;
+	bltlist.push_back(temp_bolt);
 	return bltlist.size() - 1;
 }
 

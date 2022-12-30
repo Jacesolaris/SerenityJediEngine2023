@@ -121,7 +121,7 @@ Create
 
 CNode* CNode::Create(vec3_t position, const int flags, const int radius, const int ID)
 {
-	auto node = new CNode;
+	const auto node = new CNode;
 
 	VectorCopy(position, node->m_position);
 
@@ -823,10 +823,10 @@ void CNavigator::CalculatePath(CNode* node) const
 {
 	int curRank = 0;
 
-	auto pathList = new CPriorityQueue();
+	const auto pathList = new CPriorityQueue();
 
 	//Init the completion table
-	auto checked = new byte[m_nodes.size()];
+	const auto checked = new byte[m_nodes.size()];
 	memset(checked, 0, m_nodes.size());
 
 	//Mark this node as checked
@@ -953,7 +953,7 @@ void CNavigator::ShowEdges(void)
 {
 	node_v::iterator ni;
 
-	auto drawMap = new drawMap_m[m_nodes.size()];
+	const auto drawMap = new drawMap_m[m_nodes.size()];
 
 	STL_ITERATE(ni, m_nodes)
 	{

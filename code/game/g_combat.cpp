@@ -6114,8 +6114,8 @@ int CheckArmor(const gentity_t* ent, const int damage, const int dflags, const i
 
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean PM_FaceProtectAnim(int anim);
-extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
-                                   qboolean forceKnockdown = qfalse);
+extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir,
+                                   qboolean force_knockdown = qfalse);
 extern qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir);
 
 void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,

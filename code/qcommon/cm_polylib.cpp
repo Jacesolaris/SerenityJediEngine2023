@@ -52,7 +52,7 @@ winding_t* AllocWinding(const int points)
 		c_peak_windings = c_active_windings;
 
 	const int s = sizeof(vec_t) * 3 * points + sizeof(int);
-	auto w = static_cast<winding_t*>(Z_Malloc(s, TAG_BSP, qtrue)); //TAG_WINDING);
+	const auto w = static_cast<winding_t*>(Z_Malloc(s, TAG_BSP, qtrue)); //TAG_WINDING);
 	//	memset (w, 0, s);	// qtrue above does this
 	return w;
 }

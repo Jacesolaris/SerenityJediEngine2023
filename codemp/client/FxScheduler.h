@@ -662,11 +662,11 @@ private:
 	SEffectTemplate* GetNewEffectTemplate(int* id, const char* file);
 
 	static void AddPrimitiveToEffect(SEffectTemplate* fx, CPrimitiveTemplate* prim);
-	int ParseEffect(const char* file, CGPGroup* base);
+	int ParseEffect(const char* file, const CGPGroup* base);
 
 	void CreateEffect(CPrimitiveTemplate* fx, const vec3_t origin, matrix3_t axis, int lateTime, int fxParm = -1,
 	                  CGhoul2Info_v* ghoul2 = nullptr, int entNum = -1, int modelNum = -1, int boltNum = -1);
-	void CreateEffect(CPrimitiveTemplate* fx, SScheduledEffect* scheduledFx);
+	void CreateEffect(const CPrimitiveTemplate* fx, SScheduledEffect* scheduledFx);
 
 public:
 	CFxScheduler();

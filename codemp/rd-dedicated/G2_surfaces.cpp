@@ -106,8 +106,8 @@ mdxmSurface_t* G2_FindSurface(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const 
                               int* surfIndex/*NULL*/)
 {
 	// find the model we want
-	auto mod = (model_t*)ghlInfo->currentModel;
-	auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)mod->mdxm + sizeof(mdxmHeader_t));
+	const auto mod = (model_t*)ghlInfo->currentModel;
+	const auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)mod->mdxm + sizeof(mdxmHeader_t));
 
 	// did we find a ghoul 2 model or not?
 	if (!mod->mdxm)
@@ -125,7 +125,7 @@ mdxmSurface_t* G2_FindSurface(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const 
 	{
 		if (slist[i].surface != 10000 && slist[i].surface != -1)
 		{
-			auto surf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, slist[i].surface, 0));
+			const auto surf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, slist[i].surface, 0));
 			// back track and get the surfinfo struct for this surface
 			const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surf
 				->
@@ -156,7 +156,7 @@ qboolean G2_SetSurfaceOnOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const ch
 {
 	int surfIndex = -1;
 	// find the model we want
-	auto mod = (model_t*)ghlInfo->currentModel;
+	const auto mod = (model_t*)ghlInfo->currentModel;
 
 	// did we find a ghoul 2 model or not?
 	if (!mod->mdxm)
@@ -270,7 +270,7 @@ int G2_IsSurfaceOff(CGhoul2Info* ghlInfo, surfaceInfo_v& slist, const char* surf
 void G2_FindRecursiveSurface(model_t* currentModel, int surfaceNum, surfaceInfo_v& rootList, int* activeSurfaces)
 {
 	const mdxmSurface_t* surface = static_cast<mdxmSurface_t*>(G2_FindSurface(currentModel, surfaceNum, 0));
-	auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)currentModel->mdxm + sizeof(mdxmHeader_t));
+	const auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)currentModel->mdxm + sizeof(mdxmHeader_t));
 	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surface->
 		thisSurfaceIndex]);
 
@@ -341,7 +341,7 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int model_index, const c
 
 	assert(ghoul2[model_index].currentModel && ghoul2[model_index].animModel);
 
-	auto mod_m = (model_t*)ghoul2[model_index].currentModel;
+	const auto mod_m = (model_t*)ghoul2[model_index].currentModel;
 	const model_t* mod_a = (model_t*)ghoul2[model_index].animModel;
 
 	// did we find a ghoul 2 model or not?
@@ -367,9 +367,9 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, const int model_index, const c
 		// firstly, generate a list of active / on surfaces below the root point
 
 		// gimme some space to put this list into
-		auto activeSurfaces = static_cast<int*>(Z_Malloc(mod_m->mdxm->numSurfaces * 4, TAG_GHOUL2, qtrue));
+		const auto activeSurfaces = static_cast<int*>(Z_Malloc(mod_m->mdxm->numSurfaces * 4, TAG_GHOUL2, qtrue));
 		memset(activeSurfaces, 0, mod_m->mdxm->numSurfaces * 4);
-		auto activeBones = static_cast<int*>(Z_Malloc(mod_a->mdxa->numBones * 4, TAG_GHOUL2, qtrue));
+		const auto activeBones = static_cast<int*>(Z_Malloc(mod_a->mdxa->numBones * 4, TAG_GHOUL2, qtrue));
 		memset(activeBones, 0, mod_a->mdxa->numBones * 4);
 
 		G2_FindRecursiveSurface(mod_m, surf, ghoul2[model_index].mSlist, activeSurfaces);
@@ -585,8 +585,8 @@ qboolean G2_RemoveSurface(surfaceInfo_v& slist, const int index)
 
 int G2_GetParentSurface(CGhoul2Info* ghlInfo, const int index)
 {
-	auto mod = (model_t*)ghlInfo->currentModel;
-	auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)mod->mdxm + sizeof(mdxmHeader_t));
+	const auto mod = (model_t*)ghlInfo->currentModel;
+	const auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)mod->mdxm + sizeof(mdxmHeader_t));
 
 	// walk each surface and see if this index is listed in it's children
 	const mdxmSurface_t* surf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, index, 0));
@@ -598,7 +598,7 @@ int G2_GetParentSurface(CGhoul2Info* ghlInfo, const int index)
 
 int G2_GetSurfaceIndex(CGhoul2Info* ghlInfo, const char* surfaceName)
 {
-	auto mod = (model_t*)ghlInfo->currentModel;
+	const auto mod = (model_t*)ghlInfo->currentModel;
 	int flags;
 
 	return G2_IsSurfaceLegal(mod, surfaceName, &flags);

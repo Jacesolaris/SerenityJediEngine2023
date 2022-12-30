@@ -570,7 +570,7 @@ model_t* R_AllocModel(void)
 		return nullptr;
 	}
 
-	auto mod = static_cast<model_s*>(Hunk_Alloc(sizeof *tr.models[tr.numModels], h_low));
+	const auto mod = static_cast<model_s*>(Hunk_Alloc(sizeof *tr.models[tr.numModels], h_low));
 	mod->index = tr.numModels;
 	tr.models[tr.numModels] = mod;
 	tr.numModels++;
@@ -608,7 +608,7 @@ void RE_InsertModelIntoHash(const char* name, model_t* mod)
 	const int hash = generateHashValue(name, FILE_HASH_SIZE);
 
 	// insert this file into the hash table so we can look it up faster later
-	auto mh = static_cast<modelHash_t*>(Hunk_Alloc(sizeof(modelHash_t), h_low));
+	const auto mh = static_cast<modelHash_t*>(Hunk_Alloc(sizeof(modelHash_t), h_low));
 
 	mh->next = mhHashTable[hash];
 	mh->handle = mod->index;

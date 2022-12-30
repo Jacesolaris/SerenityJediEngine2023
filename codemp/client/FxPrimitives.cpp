@@ -2279,7 +2279,7 @@ void CFlash::Draw(void)
 
 void FX_AddPrimitive(CEffect** p_effect, int kill_time);
 
-void FX_FeedTrail(effectTrailArgStruct_t* a)
+void FX_FeedTrail(const effectTrailArgStruct_t* a)
 {
 	auto fx = new CTrail;
 	int i = 0;

@@ -3893,7 +3893,7 @@ void ClientThink_real(gentity_t* ent)
 {
 	gclient_t* client;
 	pmove_t pmove;
-	int oldEventSequence;
+	int old_event_sequence;
 	int msec;
 	usercmd_t * ucmd;
 	qboolean isNPC = qfalse;
@@ -5313,7 +5313,7 @@ void ClientThink_real(gentity_t* ent)
 	}
 
 	// set up for pmove
-	oldEventSequence = client->ps.eventSequence;
+	old_event_sequence = client->ps.eventSequence;
 
 	memset(&pmove, 0, sizeof pmove);
 
@@ -5884,7 +5884,7 @@ void ClientThink_real(gentity_t* ent)
 	}
 
 	// save results of pmove
-	if (ent->client->ps.eventSequence != oldEventSequence)
+	if (ent->client->ps.eventSequence != old_event_sequence)
 	{
 		ent->eventTime = level.time;
 	}
@@ -6062,7 +6062,7 @@ void ClientThink_real(gentity_t* ent)
 	ent->watertype = pmove.watertype;
 
 	// execute client events
-	ClientEvents(ent, oldEventSequence);
+	ClientEvents(ent, old_event_sequence);
 
 	if (pmove.useEvent)
 	{
@@ -6094,7 +6094,7 @@ void ClientThink_real(gentity_t* ent)
 	ClientImpacts(ent, &pmove);
 
 	// save results of triggers and client events
-	if (ent->client->ps.eventSequence != oldEventSequence)
+	if (ent->client->ps.eventSequence != old_event_sequence)
 	{
 		ent->eventTime = level.time;
 	}

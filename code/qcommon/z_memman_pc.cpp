@@ -944,7 +944,7 @@ char* CopyString(const char* in)
 		}
 	}
 
-	auto out = static_cast<char*>(S_Malloc(strlen(in) + 1));
+	const auto out = static_cast<char*>(S_Malloc(strlen(in) + 1));
 	strcpy(out, in);
 
 	Z_Label(out, in);
@@ -971,7 +971,7 @@ void Com_TouchMemory(void)
 	zoneHeader_t* pMemory = TheZone.Header.pNext;
 	while (pMemory)
 	{
-		auto pMem = (byte*)&pMemory[1];
+		const auto pMem = (byte*)&pMemory[1];
 		const int j = pMemory->iSize >> 2;
 		for (int i = 0; i < j; i += 64)
 		{

@@ -251,7 +251,7 @@ qboolean sje_is_ally(const gentity_t* ent, const gentity_t* other)
 	if (ent && other && !ent->NPC && !other->NPC && ent != other && ent->client && other->client && other->client->pers.
 		connected == CON_CONNECTED)
 	{
-		if (other->s.number > 15 && (ent->client->sess.ally2 & (1 << (other->s.number - 16))))
+		if (other->s.number > 15 && ent->client->sess.ally2 & 1 << (other->s.number - 16))
 		{
 			return qtrue;
 		}
@@ -389,27 +389,27 @@ void CreateShield(gentity_t* ent)
 	const int negWidth = MAX_SHIELD_HALFWIDTH * tr.fraction;
 
 	// kef -- monkey with dimensions and place origin in center
-	const int halfWidth = (posWidth + negWidth) >> 1;
+	const int half_width = (posWidth + negWidth) >> 1;
 	if (xaxis)
 	{
-		ent->r.currentOrigin[0] = ent->r.currentOrigin[0] - negWidth + halfWidth;
+		ent->r.currentOrigin[0] = ent->r.currentOrigin[0] - negWidth + half_width;
 	}
 	else
 	{
-		ent->r.currentOrigin[1] = ent->r.currentOrigin[1] - negWidth + halfWidth;
+		ent->r.currentOrigin[1] = ent->r.currentOrigin[1] - negWidth + half_width;
 	}
 	ent->r.currentOrigin[2] += height >> 1;
 
 	// set entity's mins and maxs to new values, make it solid, and link it
 	if (xaxis)
 	{
-		VectorSet(ent->r.mins, -halfWidth, -SHIELD_HALFTHICKNESS, -(height >> 1));
-		VectorSet(ent->r.maxs, halfWidth, SHIELD_HALFTHICKNESS, height >> 1);
+		VectorSet(ent->r.mins, -half_width, -SHIELD_HALFTHICKNESS, -(height >> 1));
+		VectorSet(ent->r.maxs, half_width, SHIELD_HALFTHICKNESS, height >> 1);
 	}
 	else
 	{
-		VectorSet(ent->r.mins, -SHIELD_HALFTHICKNESS, -halfWidth, -(height >> 1));
-		VectorSet(ent->r.maxs, SHIELD_HALFTHICKNESS, halfWidth, height);
+		VectorSet(ent->r.mins, -SHIELD_HALFTHICKNESS, -half_width, -(height >> 1));
+		VectorSet(ent->r.maxs, SHIELD_HALFTHICKNESS, half_width, height);
 	}
 	ent->clipmask = MASK_SHOT;
 
@@ -1565,16 +1565,18 @@ void Flamethrower_Fire(gentity_t* self)
 		if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
 		{
 			const int damage = FLAMETHROWER_DAMAGE;
+
 			G_Damage(trace_ent, self, self, dir, tr.endpos, damage,DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
 
-			if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
+			if (trace_ent->health > 0)
 			{
 				g_throw(trace_ent, dir, 30);
 
 				if (trace_ent->client)
 				{
 					G_PlayBoltedEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent, "thoracic");
-					G_SetAnim(trace_ent, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FACEPROTECT,SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
+
+					NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_FACEPROTECT, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 				}
 				player_Burn(trace_ent);
 			}
@@ -1590,8 +1592,7 @@ extern qboolean G_ControlledByPlayer(gentity_t* self);
 void ItemUse_FlameThrower(const gentity_t* ent)
 {
 	if (ent->client->ps.jetpackFuel < 15)
-	{
-		//can't use flamethrower
+	{//can't use flamethrower
 		return;
 	}
 
@@ -1606,11 +1607,6 @@ void ItemUse_FlameThrower(const gentity_t* ent)
 		//can't use flamethrower with saber
 		return;
 	}
-	//if (!G_ControlledByPlayer(ent))
-	//{
-	//	//can't use flamethrower
-	//	return;
-	//}
 
 	ent->client->flameTime = level.time + 300;
 }
@@ -1697,9 +1693,9 @@ void ItemUse_UseCloak(gentity_t* ent)
 			{
 				if (ent->health > 0
 					&& ent->painDebounceTime < level.time
-					&& !(ent->client->ps.saberInFlight)
-					&& !(PM_SaberInAttack(ent->client->ps.saberMove))
-					&& !(ent->client->ps.fd.forceGripBeingGripped > level.time)
+					&& !ent->client->ps.saberInFlight
+					&& !PM_SaberInAttack(ent->client->ps.saberMove)
+					&& ent->client->ps.fd.forceGripBeingGripped < level.time
 					&& !(ent->client->ps.communicatingflags & 1 << CLOAK_CHARGE_RESTRICTION))
 				{
 					Jedi_Cloak(ent);

@@ -707,14 +707,14 @@ static qboolean SV_GetEntityToken(char* buffer, const int bufferSize)
 
 static void SV_PrecisionTimerStart(void** timer)
 {
-	auto newTimer = new timing_c; //create the new timer
+	const auto newTimer = new timing_c; //create the new timer
 	*timer = newTimer; //assign the pointer within the pointer to point at the mem addr of our new timer
 	newTimer->Start(); //start the timer
 }
 
 static int SV_PrecisionTimerEnd(void* timer)
 {
-	auto theTimer = static_cast<timing_c*>(timer);
+	const auto theTimer = static_cast<timing_c*>(timer);
 	//this is the pointer we assigned in start, so we can directly cast it back
 	const int r = theTimer->End(); //get the result
 	delete theTimer; //delete the timer since we're done with it
@@ -3119,7 +3119,7 @@ case G_GET_ENTITY_TOKEN:
 		//return (int)G2API_GetGLAName(*((CGhoul2Info_v *)args[1]), args[2]);
 		{
 			//Since returning a pointer in such a way to a VM seems to cause MASSIVE FAILURE<tm>, we will shove data into the pointer the vm passes instead
-			auto point = static_cast<char*>(VMA(3));
+			const auto point = static_cast<char*>(VMA(3));
 			const char* local = re->G2API_GetGLAName(*(CGhoul2Info_v*)args[1], args[2]);
 			if (local)
 			{
@@ -3221,7 +3221,7 @@ case G_GET_ENTITY_TOKEN:
 	case G_G2_SETRAGDOLL:
 		{
 			//Convert the info in the shared structure over to the class-based version.
-			auto rdParamst = static_cast<sharedRagDollParams_t*>(VMA(2));
+			const auto rdParamst = static_cast<sharedRagDollParams_t*>(VMA(2));
 			CRagDollParams rdParams;
 
 			if (!rdParamst)
@@ -3327,7 +3327,7 @@ case G_GET_ENTITY_TOKEN:
 	case G_G2_GETSURFACENAME:
 		{
 			//Since returning a pointer in such a way to a VM seems to cause MASSIVE FAILURE<tm>, we will shove data into the pointer the vm passes instead
-			auto point = static_cast<char*>(VMA(4));
+			const auto point = static_cast<char*>(VMA(4));
 			const int modelindex = args[3];
 
 			CGhoul2Info_v& g2 = *(CGhoul2Info_v*)args[1];

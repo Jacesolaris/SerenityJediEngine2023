@@ -47,7 +47,7 @@ CTask::~CTask(void)
 
 CTask* CTask::Create(const int GUID, CBlock* block)
 {
-	auto task = new CTask;
+	const auto task = new CTask;
 
 	//TODO: Emit warning
 	assert(task);
@@ -538,7 +538,7 @@ int CTaskManager::Get(const int entID, CBlock* block, int& memberNum, char** val
 
 		//get( TYPE, NAME )
 		const int type = static_cast<int>(*static_cast<float*>(block->GetMemberData(memberNum++)));
-		auto name = static_cast<char*>(block->GetMemberData(memberNum++));
+		const auto name = static_cast<char*>(block->GetMemberData(memberNum++));
 
 		//Format the return properly
 		//FIXME: This is probably doing double formatting in certain cases...

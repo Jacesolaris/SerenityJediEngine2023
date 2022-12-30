@@ -2198,6 +2198,7 @@ typedef enum
 	PEF_FREEZING,
 	PEF_SPRINTING,
 	PEF_WEAPONSPRINTING,
+	PEF_FLAMING,
 } PlayerEffectFlags_e;
 
 enum {

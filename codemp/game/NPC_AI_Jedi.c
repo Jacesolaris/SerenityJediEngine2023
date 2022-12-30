@@ -375,11 +375,11 @@ void Boba_Precache(void)
 	G_SoundIndex("sound/boba/jethover.wav");
 	G_SoundIndex("sound/effects/combustfire.mp3");
 	G_EffectIndex("boba/jet");
-	G_EffectIndex("effects/flamethrower/flamethrower.efx");
+	G_EffectIndex("effects/flamethrower/flamethrower_mp.efx");
 	G_EffectIndex("volumetric/black_smoke");
 	G_EffectIndex("chunks/dustFall");
 	G_EffectIndex("boba/fthrw");
-	G_EffectIndex("flamethrower/flamethrower");
+	G_EffectIndex("flamethrower/flamethrower_mp");
 	G_EffectIndex("flamethrower/flame_impact");
 }
 
@@ -722,8 +722,8 @@ void Boba_ChangeWeapon(const int wp)
 	G_AddEvent(NPCS.NPC, EV_GENERAL_SOUND, G_SoundIndex("sound/weapons/change.wav"));
 }
 
-qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t pushDir,
-                            const qboolean forceKnockdown)
+qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir,
+                            const qboolean force_knockdown)
 //forceKnockdown = qfalse
 {
 	vec3_t pDir, fwd, right, ang;
@@ -746,7 +746,7 @@ qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3
 	const int strafeTime = Q_irand(1000, 2000);
 
 	AngleVectors(ang, fwd, right, NULL);
-	VectorNormalize2(pushDir, pDir);
+	VectorNormalize2(push_dir, pDir);
 	const float fDot = DotProduct(pDir, fwd);
 	const float rDot = DotProduct(pDir, right);
 
@@ -790,7 +790,7 @@ qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, const vec3
 		}
 		self->painDebounceTime = 0; //so we do something
 	}
-	else if (!Q_irand(0, 1) && forceKnockdown)
+	else if (!Q_irand(0, 1) && force_knockdown)
 	{
 		//resist
 		WP_ResistForcePush(self, pusher, qtrue);
@@ -1194,7 +1194,7 @@ void Boba_StartFlameThrower(gentity_t* self)
 	BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org);
 	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, dir);
 
-	G_PlayEffectID(G_EffectIndex("flamethrower/flamethrower"), org, dir);
+	G_PlayEffectID(G_EffectIndex("flamethrower/flamethrower_mp"), org, dir);
 }
 
 void Boba_DoFlameThrower(gentity_t* self)
@@ -1379,11 +1379,11 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	self->s.weapon = oldWeapon;
 }
 
-void Boba_EndWristMissile(const gentity_t* self, const int whichMissile)
+void Boba_EndWristMissile(const gentity_t* self, const int which_missile)
 {
-	if (missileStates[whichMissile].hold)
+	if (missileStates[which_missile].hold)
 	{
-		self->client->ps.fd.forcePowerDuration[missileStates[whichMissile].dummyForcePower] = 0;
+		self->client->ps.fd.forcePowerDuration[missileStates[which_missile].dummyForcePower] = 0;
 		self->client->ps.torsoTimer = 0;
 	}
 }

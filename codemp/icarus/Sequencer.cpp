@@ -60,7 +60,7 @@ Static creation function
 
 CSequencer* CSequencer::Create(void)
 {
-	auto sequencer = new CSequencer;
+	const auto sequencer = new CSequencer;
 
 	return sequencer;
 }
@@ -160,7 +160,7 @@ Creates a stream for parsing
 
 bstream_t* CSequencer::AddStream(void)
 {
-	auto stream = new bstream_t; //deleted in Route()
+	const auto stream = new bstream_t; //deleted in Route()
 	stream->stream = new CBlockStream; //deleted in Route()
 	stream->last = m_curStream;
 
@@ -596,7 +596,7 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream)
 	CSequencer* stream_sequencer = nullptr;
 	int ret;
 
-	auto entname = static_cast<char*>(block->GetMemberData(0));
+	const auto entname = static_cast<char*>(block->GetMemberData(0));
 	const sharedEntity_t* ent = m_ie->I_GetEntityByName(entname);
 
 	if (!ent) // if there wasn't a valid entname in the affect, we need to check if it's a get command
@@ -725,7 +725,7 @@ int CSequencer::ParseTask(CBlock* block, bstream_t* bstream)
 	m_curSequence->AddChild(sequence);
 
 	//Get the name of this task for reference later
-	auto taskName = static_cast<const char*>(block->GetMemberData(0));
+	const auto taskName = static_cast<const char*>(block->GetMemberData(0));
 
 	//Get a new task group from the task manager
 	CTaskGroup* group = m_taskManager->AddTaskGroup(taskName);
@@ -1853,7 +1853,7 @@ void CSequencer::CheckDo(CBlock** command)
 	if (block->GetBlockID() == ID_DO)
 	{
 		//Get the sequence
-		auto groupName = static_cast<const char*>(block->GetMemberData(0));
+		const auto groupName = static_cast<const char*>(block->GetMemberData(0));
 		CTaskGroup* group = m_taskManager->GetTaskGroup(groupName);
 		CSequence* sequence = GetTaskSequence(group);
 

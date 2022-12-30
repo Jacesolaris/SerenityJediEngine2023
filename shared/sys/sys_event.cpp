@@ -75,7 +75,7 @@ sysEvent_t Sys_GetEvent(void)
 	if (s)
 	{
 		const int len = strlen(s) + 1;
-		auto b = static_cast<char*>(Z_Malloc(len, TAG_EVENT, qfalse));
+		const auto b = static_cast<char*>(Z_Malloc(len, TAG_EVENT, qfalse));
 		strcpy(b, s);
 		Sys_QueEvent(0, SE_CONSOLE, 0, 0, len, b);
 	}

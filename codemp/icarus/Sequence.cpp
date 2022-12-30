@@ -52,7 +52,7 @@ Create
 
 CSequence* CSequence::Create(void)
 {
-	auto seq = new CSequence;
+	const auto seq = new CSequence;
 
 	//TODO: Emit warning
 	assert(seq);

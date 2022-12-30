@@ -250,8 +250,8 @@ using refexport_t = struct
 	unsigned int (*AnyLanguage_ReadCharFromString2)(char** psText, qboolean* pbIsTrailingPunctuation /* = NULL */);
 
 	// Misc
-	void (*R_InitWorldEffects)(void);
-	void (*R_ClearStuffToStopGhoul2CrashingThings)(void);
+	void (*R_InitWorldEffects)();
+	void (*R_ClearStuffToStopGhoul2CrashingThings)();
 	qboolean (*R_inPVS)(vec3_t p1, vec3_t p2);
 
 	void (*SVModelInit)(void);

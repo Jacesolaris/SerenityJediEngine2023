@@ -7202,14 +7202,14 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 {
 	gclient_t* client;
 	pmove_t pm;
-	vec3_t oldOrigin;
-	int oldEventSequence;
+	vec3_t old_origin;
+	int old_event_sequence;
 	int msec;
-	qboolean inSpinFlipAttack = PM_AdjustAnglesForSpinningFlip(ent, ucmd, qfalse);
-	qboolean controlledByPlayer = qfalse;
+	qboolean in_spin_flip_attack = PM_AdjustAnglesForSpinningFlip(ent, ucmd, qfalse);
+	qboolean controlled_by_player = qfalse;
 	Vehicle_t* p_veh = nullptr;
 
-	qboolean HoldingStun = ent->client->ps.communicatingflags & 1 << STUNNING ? qtrue : qfalse;
+	qboolean holding_stun = ent->client->ps.communicatingflags & 1 << STUNNING ? qtrue : qfalse;
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -7409,7 +7409,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 		if (player && player->client && player->client->ps.viewEntity == ent->s.number)
 		{
-			controlledByPlayer = qtrue;
+			controlled_by_player = qtrue;
 			int sav_weapon = ucmd->weapon;
 			memcpy(ucmd, &player->client->usercmd, sizeof(usercmd_t));
 			ucmd->weapon = sav_weapon;
@@ -7540,7 +7540,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					&& !(groundEnt->client->ps.eFlags & EF_HELD_BY_RANCOR)
 					&& !(groundEnt->client->ps.eFlags & EF_HELD_BY_WAMPA)
 					&& !(groundEnt->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
-					&& !inSpinFlipAttack)
+					&& !in_spin_flip_attack)
 
 				{
 					//landed on a live client who is on the ground, jump off them and knock them down
@@ -7748,7 +7748,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 
 	if (ent->s.number == 0)
 	{
-		ClientAlterSpeed(ent, ucmd, controlledByPlayer, 0);
+		ClientAlterSpeed(ent, ucmd, controlled_by_player, 0);
 	}
 
 	// Activate the Blocking flags
@@ -8334,7 +8334,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	//remember your last angles
 	VectorCopy(client->ps.viewangles, ent->lastAngles);
 	// set up for pmove
-	oldEventSequence = client->ps.eventSequence;
+	old_event_sequence = client->ps.eventSequence;
 
 	memset(&pm, 0, sizeof pm);
 
@@ -8352,7 +8352,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		pm.cmd.weapon = ent->client->ps.weapon;
 	}
 
-	VectorCopy(client->ps.origin, oldOrigin);
+	VectorCopy(client->ps.origin, old_origin);
 
 	// perform a pmove
 	Pmove(&pm);
@@ -8361,7 +8361,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	ProcessGenericCmd(ent, pm.cmd.generic_cmd);
 
 	// save results of pmove
-	if (ent->client->ps.eventSequence != oldEventSequence)
+	if (ent->client->ps.eventSequence != old_event_sequence)
 	{
 		ent->eventTime = level.time;
 		{
@@ -8397,7 +8397,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	VectorCopyM(ucmd->angles, client->pers.cmd_angles);
 
 	// execute client events
-	ClientEvents(ent, oldEventSequence);
+	ClientEvents(ent, old_event_sequence);
 
 	if (pm.useEvent)
 	{
@@ -8518,7 +8518,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			Weapon_HookFree(client->hook);
 		}
 	}
-	else if (ent->client->ps.weapon == WP_STUN_BATON && HoldingStun)
+	else if (ent->client->ps.weapon == WP_STUN_BATON && holding_stun)
 	{
 		if (ent->client->ps.pm_type != PM_DEAD && !ent->client->stunhasbeenfired)
 		{
@@ -8538,7 +8538,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			}
 		}
 		else if (client->stun && (client->stunHeld == qfalse ||
-			!HoldingStun ||
+			!holding_stun ||
 			ucmd->buttons & BUTTON_USE ||
 			ucmd->buttons & BUTTON_BLOCK ||
 			ent->client->ps.pm_type == PM_DEAD))
@@ -8560,7 +8560,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 
 		if (client->stun && (client->stunHeld == qfalse ||
-			!HoldingStun ||
+			!holding_stun ||
 			ucmd->buttons & BUTTON_USE ||
 			ucmd->buttons & BUTTON_BLOCK ||
 			ent->client->ps.pm_type == PM_DEAD))

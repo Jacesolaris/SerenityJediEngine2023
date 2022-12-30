@@ -133,7 +133,7 @@ qboolean G2_Remove_Bolt(boltInfo_v& bltlist, int index);
 void G2_Init_Bolt_List(boltInfo_v& bltlist);
 int G2_Find_Bolt_Bone_Num(const boltInfo_v& bltlist, int boneNum);
 int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, int surfaceNum, int flags);
-int G2_Add_Bolt_Surf_Num(CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, int surfNum);
+int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, int surfNum);
 
 // API calls - G2_API.cpp
 void RestoreGhoul2InfoArray();

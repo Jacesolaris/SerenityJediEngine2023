@@ -22,8 +22,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-void R_InitWorldEffects(void);
-void R_ShutdownWorldEffects(void);
+void R_InitWorldEffects();
+void R_ShutdownWorldEffects();
 void RB_RenderWorldEffects(void);
 
 void RE_WorldEffectCommand(const char* command);

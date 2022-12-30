@@ -134,7 +134,7 @@ using refexport_t = struct refexport_s
 	void (*SetRangedFog)(float range);
 	void (*SetRefractionProperties)(float distortionAlpha, float distortionStretch, qboolean distortionPrePost,
 	                                qboolean distortionNegate);
-	float (*GetDistanceCull)(void);
+	float (*GetDistanceCull)();
 	void (*GetRealRes)(int* w, int* h);
 	void (*AutomapElevationAdjustment)(float newHeight);
 	qboolean (*InitializeWireframeAutomap)(void);
@@ -392,7 +392,7 @@ using refimport_t = struct refimport_s
 // If the module can't init to a valid rendering state, NULL will be
 // returned.
 #ifdef DEDICATED // dedicated server will statically compile rd-dedicated
-refexport_t* GetRefAPI(int apiVersion, refimport_t* rimp);
+refexport_t* GetRefAPI(int api_version, refimport_t* rimp);
 #else
 typedef	refexport_t* (QDECL* GetRefAPI_t) (int apiVersion, refimport_t* rimp);
 #endif

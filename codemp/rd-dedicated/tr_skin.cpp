@@ -148,7 +148,7 @@ qhandle_t RE_RegisterIndividualSkin(const char* name, const qhandle_t hSkin)
 			Com_Printf("WARNING: RE_RegisterSkin( '%s' ) more than %u surfaces!\n", name, std::size(skin->surfaces));
 			break;
 		}
-		auto surf = static_cast<skinSurface_t*>(Hunk_Alloc(sizeof *skin->surfaces[0], h_low));
+		const auto surf = static_cast<skinSurface_t*>(Hunk_Alloc(sizeof *skin->surfaces[0], h_low));
 		skin->surfaces[skin->numSurfaces] = (_skinSurface_t*)surf;
 
 		Q_strncpyz(surf->name, surfName, sizeof surf->name);

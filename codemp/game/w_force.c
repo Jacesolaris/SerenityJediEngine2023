@@ -73,7 +73,7 @@ int IsPressingDashButton(const gentity_t* self);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean PM_SaberCanInterruptMove(int move, int anim);
 extern void Boba_FireWristMissile(gentity_t* self, int whichMissile);
-extern void Boba_EndWristMissile(const gentity_t* self, int whichMissile);
+extern void Boba_EndWristMissile(const gentity_t* self, int which_missile);
 extern qboolean PM_RollingAnim(int anim);
 extern void Jedi_PlayBlockedPushSound(const gentity_t* self);
 extern bot_state_t* botstates[MAX_CLIENTS];
@@ -1741,28 +1741,28 @@ void ForceHeal(gentity_t* self)
 	G_PlayBoltedEffect(G_EffectIndex("force/heal2.efx"), self, "thoracic");
 }
 
-void wp_add_to_client_bitflags(gentity_t* ent, const int entNum)
+void wp_add_to_client_bitflags(gentity_t* ent, const int ent_num)
 {
 	if (!ent)
 	{
 		return;
 	}
 
-	if (entNum > 47)
+	if (ent_num > 47)
 	{
-		ent->s.trickedentindex4 |= (1 << (entNum - 48));
+		ent->s.trickedentindex4 |= (1 << (ent_num - 48));
 	}
-	else if (entNum > 31)
+	else if (ent_num > 31)
 	{
-		ent->s.trickedentindex3 |= (1 << (entNum - 32));
+		ent->s.trickedentindex3 |= (1 << (ent_num - 32));
 	}
-	else if (entNum > 15)
+	else if (ent_num > 15)
 	{
-		ent->s.trickedentindex2 |= (1 << (entNum - 16));
+		ent->s.trickedentindex2 |= (1 << (ent_num - 16));
 	}
 	else
 	{
-		ent->s.trickedentindex |= (1 << entNum);
+		ent->s.trickedentindex |= (1 << ent_num);
 	}
 }
 
@@ -3133,7 +3133,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 					}
 
 					if ((trace_ent->NPC || trace_ent->s.eType == ET_PLAYER || self->r.svFlags & SVF_BOT)
-						&& !(trace_ent->s.weapon == WP_EMPLACED_GUN))
+						&& trace_ent->s.weapon != WP_EMPLACED_GUN)
 					{
 						if (trace_ent
 							&& trace_ent->health <= 35 && (trace_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(
@@ -8688,12 +8688,12 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		{
 			//not enough gas, turn it off.
 			self->client->flameTime = 0;
-			self->client->ps.userInt3 &= ~(1 << FLAG_FLAMETHROWER);
+			self->client->ps.PlayerEffectFlags &= ~(1 << PEF_FLAMING);
 		}
 		else
 		{
 			//fire flamethrower
-			self->client->ps.userInt3 |= 1 << FLAG_FLAMETHROWER;
+			self->client->ps.PlayerEffectFlags |= 1 << PEF_FLAMING;
 			self->client->ps.forceHandExtend = HANDEXTEND_FLAMETHROWER_HOLD;
 			self->client->ps.forceHandExtendTime = level.time + 100;
 
@@ -8709,7 +8709,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 	else
 	{
-		self->client->ps.userInt3 &= ~(1 << FLAG_FLAMETHROWER);
+		self->client->ps.PlayerEffectFlags &= ~(1 << PEF_FLAMING);
 	}
 
 	if (self->client->pers.botclass == BCLASS_MANDOLORIAN

@@ -279,7 +279,7 @@ Plays a sound from an entity
 */
 static int Q3_PlaySound(const int taskID, const int entID, const char* name, const char* channel)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_PLAYSOUND*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_PLAYSOUND*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -353,7 +353,7 @@ Q3_Set
 */
 static void Q3_Set(const int taskID, const int entID, const char* type_name, const char* data)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_SET*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_SET*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -703,7 +703,7 @@ static unsigned int Q3_GetTimeScale(void)
 
 static void Q3_Lerp2Pos(const int taskID, const int entID, vec3_t origin, vec3_t angles, const float duration)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2POS*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2POS*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -733,7 +733,7 @@ static void Q3_Lerp2Pos(const int taskID, const int entID, vec3_t origin, vec3_t
 
 static void Q3_Lerp2Origin(const int taskID, const int entID, vec3_t origin, const float duration)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ORIGIN*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ORIGIN*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -746,7 +746,7 @@ static void Q3_Lerp2Origin(const int taskID, const int entID, vec3_t origin, con
 
 static void Q3_Lerp2Angles(const int taskID, const int entID, vec3_t angles, const float duration)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ANGLES*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2ANGLES*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -759,7 +759,7 @@ static void Q3_Lerp2Angles(const int taskID, const int entID, vec3_t angles, con
 
 static int Q3_GetTag(const int entID, const char* name, const int lookup, vec3_t info)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETTAG*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_GETTAG*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->name, name);
@@ -773,7 +773,7 @@ static int Q3_GetTag(const int entID, const char* name, const int lookup, vec3_t
 
 static void Q3_Lerp2Start(const int entID, const int taskID, const float duration)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2START*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2START*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -784,7 +784,7 @@ static void Q3_Lerp2Start(const int entID, const int taskID, const float duratio
 
 static void Q3_Lerp2End(const int entID, const int taskID, const float duration)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2END*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_LERP2END*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -795,7 +795,7 @@ static void Q3_Lerp2End(const int entID, const int taskID, const float duration)
 
 static void Q3_Use(const int entID, const char* target)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_USE*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_USE*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->target, target);
@@ -805,7 +805,7 @@ static void Q3_Use(const int entID, const char* target)
 
 static void Q3_Kill(const int entID, const char* name)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_KILL*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_KILL*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->name, name);
@@ -815,7 +815,7 @@ static void Q3_Kill(const int entID, const char* name)
 
 static void Q3_Remove(const int entID, const char* name)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_REMOVE*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_REMOVE*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	strcpy(sharedMem->name, name);
@@ -825,7 +825,7 @@ static void Q3_Remove(const int entID, const char* name)
 
 static void Q3_Play(const int taskID, const int entID, const char* type, const char* name)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_PLAY*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_PLAY*>(sv.mSharedMemory);
 
 	sharedMem->taskID = taskID;
 	sharedMem->entID = entID;
@@ -837,7 +837,7 @@ static void Q3_Play(const int taskID, const int entID, const char* type, const c
 
 static int Q3_GetFloat(const int entID, const int type, const char* name, float* value)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETFLOAT*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_GETFLOAT*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	sharedMem->type = type;
@@ -851,7 +851,7 @@ static int Q3_GetFloat(const int entID, const int type, const char* name, float*
 
 static int Q3_GetVector(const int entID, const int type, const char* name, vec3_t value)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETVECTOR*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_GETVECTOR*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	sharedMem->type = type;
@@ -865,7 +865,7 @@ static int Q3_GetVector(const int entID, const int type, const char* name, vec3_
 
 static int Q3_GetString(const int entID, const int type, const char* name, char** value)
 {
-	auto sharedMem = reinterpret_cast<T_G_ICARUS_GETSTRING*>(sv.mSharedMemory);
+	const auto sharedMem = reinterpret_cast<T_G_ICARUS_GETSTRING*>(sv.mSharedMemory);
 
 	sharedMem->entID = entID;
 	sharedMem->type = type;

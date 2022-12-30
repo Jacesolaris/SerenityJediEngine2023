@@ -2476,7 +2476,7 @@ static inline char* G2_Get_Bone_Name(CGhoul2Info* ghlInfo, boneInfo_v& blist, co
 		}
 
 		// figure out what skeletal info structure this bone entry is looking at
-		auto skel = (mdxaSkel_t*)((byte*)ghlInfo->aHeader + sizeof(mdxaHeader_t) + offsets->offsets[blist[i].
+		const auto skel = (mdxaSkel_t*)((byte*)ghlInfo->aHeader + sizeof(mdxaHeader_t) + offsets->offsets[blist[i].
 			boneNumber]);
 
 		return skel->name;

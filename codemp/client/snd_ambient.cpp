@@ -130,7 +130,7 @@ AddSet
 ambientSet_t* CSetGroup::AddSet(const char* name)
 {
 	//Allocate the memory
-	auto set = static_cast<ambientSet_t*>(Z_Malloc(sizeof(ambientSet_t), TAG_AMBIENTSET, qtrue));
+	const auto set = static_cast<ambientSet_t*>(Z_Malloc(sizeof(ambientSet_t), TAG_AMBIENTSET, qtrue));
 
 	//Set up some defaults
 	Q_strncpyz(set->name, name, sizeof set->name);

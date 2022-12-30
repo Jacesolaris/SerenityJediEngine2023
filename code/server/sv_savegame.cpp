@@ -575,7 +575,7 @@ void SG_ReadCvars()
 		saved_game.read_chunk(
 			INT_ID('V', 'A', 'L', 'U'));
 
-		auto psValue = static_cast<const char*>(
+		const auto psValue = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
 		Cvar_Set(psName.c_str(), psValue);
@@ -669,7 +669,7 @@ void SG_ReadServerConfigStrings()
 		saved_game.read_chunk(
 			INT_ID('C', 'S', 'D', 'A'));
 
-		auto psName = static_cast<const char*>(
+		const auto psName = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
 		Com_DPrintf("Cfg str %d = %s\n", iIndex, psName);

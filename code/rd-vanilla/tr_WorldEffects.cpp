@@ -1491,7 +1491,7 @@ ratl::vector_vs<CParticleCloud, MAX_PARTICLE_CLOUDS>	mParticleClouds;
 ////////////////////////////////////////////////////////////////////////////////////////
 // Init World Effects - Will Iterate Over All Particle Clouds, Clear Them Out, And Erase
 ////////////////////////////////////////////////////////////////////////////////////////
-void R_InitWorldEffects(void)
+void R_InitWorldEffects()
 {
 	for (int i = 0; i < mParticleClouds.size(); i++)
 	{
@@ -1510,7 +1510,7 @@ void R_InitWorldEffects(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Init World Effects - Will Iterate Over All Particle Clouds, Clear Them Out, And Erase
 ////////////////////////////////////////////////////////////////////////////////////////
-void R_ShutdownWorldEffects(void)
+void R_ShutdownWorldEffects()
 {
 	R_InitWorldEffects();
 }

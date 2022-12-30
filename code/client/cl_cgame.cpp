@@ -1324,7 +1324,7 @@ case CG_UI_GETITEMINFO:
 			h = static_cast<int*>(VMA(6));
 			*h = static_cast<int>(item->window.rect.h);
 
-			auto color = static_cast<vec4_t*>(VMA(7));
+			const auto color = static_cast<vec4_t*>(VMA(7));
 			if (!color)
 			{
 				return qfalse;
@@ -1334,7 +1334,7 @@ case CG_UI_GETITEMINFO:
 			(*color)[1] = item->window.foreColor[1];
 			(*color)[2] = item->window.foreColor[2];
 			(*color)[3] = item->window.foreColor[3];
-			auto background = static_cast<qhandle_t*>(VMA(8));
+			const auto background = static_cast<qhandle_t*>(VMA(8));
 			if (!background)
 			{
 				return qfalse;

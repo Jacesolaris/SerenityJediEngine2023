@@ -1420,7 +1420,8 @@ static void CG_RegisterGraphics(void)
 	cgs.effects.forceInvincibility = trap->FX_RegisterEffect("force/invin.efx");
 
 	cgs.effects.Bobaflamethrower = trap->FX_RegisterEffect("effects/boba/fthrw.efx");
-	cgs.effects.flamethrower = trap->FX_RegisterEffect("effects/flamethrower/flamethrower.efx");
+	cgs.effects.flamethrower = trap->FX_RegisterEffect("effects/flamethrower/flamethrower_mp.efx");
+	cgs.effects.flame_impact = trap->FX_RegisterEffect("effects/flamethrower/flame_impact.efx");
 
 	cgs.effects.redlightningwide = trap->FX_RegisterEffect("force/redlightningwide");
 	cgs.effects.redlightning = trap->FX_RegisterEffect("force/redlightning");

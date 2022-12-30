@@ -1680,6 +1680,7 @@ typedef struct cgEffects_s {
 	fxHandle_t	yellowlightning;
 
 	fxHandle_t flamethrower;
+	fxHandle_t flame_impact;
 	fxHandle_t Bobaflamethrower;
 
 	fxHandle_t forceDrain;
