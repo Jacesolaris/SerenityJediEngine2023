@@ -86,14 +86,14 @@ enum
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void CG_DrawEdge(vec3_t start, vec3_t end, int type);
 
-static void HT_Speech(const gentity_t* self, const int speechType, const float failChance)
+static void HT_Speech(const gentity_t* self, const int speech_type, const float fail_chance)
 {
-	if (Q_flrand(0.0f, 1.0f) < failChance)
+	if (Q_flrand(0.0f, 1.0f) < fail_chance)
 	{
 		return;
 	}
 
-	if (failChance >= 0)
+	if (fail_chance >= 0)
 	{
 		//a negative failChance makes it always talk
 		if (self->NPC->group)
@@ -118,7 +118,7 @@ static void HT_Speech(const gentity_t* self, const int speechType, const float f
 		return;
 	}
 
-	switch (speechType)
+	switch (speech_type)
 	{
 	case SPEECH_CHASE:
 		G_AddVoiceEvent(self, Q_irand(EV_CHASE1, EV_CHASE3), 2000);
@@ -547,11 +547,11 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 	bool TroopInFormation()
 	{
-		float maxActorRangeSq = (mActors.size() / 2 + 2) * mFormSpacingFwd;
-		maxActorRangeSq *= maxActorRangeSq;
-		for (int actorIndex = 1; actorIndex < mActors.size(); actorIndex++)
+		float max_actor_range_sq = (mActors.size() / 2 + 2) * mFormSpacingFwd;
+		max_actor_range_sq *= max_actor_range_sq;
+		for (int actor_index = 1; actor_index < mActors.size(); actor_index++)
 		{
-			if (DistanceSq(mActors[actorIndex]) > maxActorRangeSq)
+			if (DistanceSq(mActors[actor_index]) > max_actor_range_sq)
 			{
 				return false;
 			}
@@ -803,18 +803,18 @@ private:
 				}
 				else if (NextState == TS_ATTACK_FLANK && actorIndex >= 4)
 				{
-					int cpFlags = CP_HAS_ROUTE | CP_AVOID_ENEMY | CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
+					int cp_flags = CP_HAS_ROUTE | CP_AVOID_ENEMY | CP_CLEAR | CP_COVER | CP_FLANK | CP_APPROACH_ENEMY;
 					constexpr float avoidDist = 128.0f;
 
 					Order.mCombatPoint = NPC_FindCombatPointRetry(
 						mActors[actorIndex]->currentOrigin,
 						mActors[actorIndex]->currentOrigin,
 						mActors[actorIndex]->currentOrigin,
-						&cpFlags,
+						&cp_flags,
 						avoidDist,
 						0);
 
-					if (Order.mCombatPoint != -1 && cpFlags & CP_CLEAR)
+					if (Order.mCombatPoint != -1 && cp_flags & CP_CLEAR)
 					{
 						Order.mPosition = level.combatPoints[Order.mCombatPoint].origin;
 						NPC_SetCombatPoint(Order.mCombatPoint);

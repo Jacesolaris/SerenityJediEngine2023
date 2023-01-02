@@ -53,7 +53,7 @@ void NPC_MineMonster_Precache()
 MineMonster_Idle
 -------------------------
 */
-void MineMonster_Idle(void)
+void MineMonster_Idle()
 {
 	if (UpdateGoal())
 	{
@@ -67,7 +67,7 @@ void MineMonster_Idle(void)
 MineMonster_Patrol
 -------------------------
 */
-void MineMonster_Patrol(void)
+void MineMonster_Patrol()
 {
 	NPCInfo->localState = LSTATE_CLEAR;
 
@@ -97,7 +97,7 @@ void MineMonster_Patrol(void)
 MineMonster_Move
 -------------------------
 */
-void MineMonster_Move(qboolean visible)
+void MineMonster_Move()
 {
 	if (NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -145,7 +145,7 @@ void MineMonster_TryDamage(const gentity_t* enemy, const int damage)
 }
 
 //------------------------------
-void MineMonster_Attack(void)
+void MineMonster_Attack()
 {
 	if (!TIMER_Exists(NPC, "attacking"))
 	{
@@ -205,7 +205,7 @@ void MineMonster_Attack(void)
 }
 
 //----------------------------------
-void MineMonster_Combat(void)
+void MineMonster_Combat()
 {
 	// If we cannot see our target or we have somewhere to go, then do that
 	if (!NPC_ClearLOS(NPC->enemy) || UpdateGoal())
@@ -234,7 +234,7 @@ void MineMonster_Combat(void)
 		}
 		else
 		{
-			MineMonster_Move(qtrue);
+			MineMonster_Move();
 		}
 	}
 	else
@@ -276,7 +276,7 @@ void NPC_MineMonster_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* othe
 NPC_BSMineMonster_Default
 -------------------------
 */
-void NPC_BSMineMonster_Default(void)
+void NPC_BSMineMonster_Default()
 {
 	if (NPC->enemy)
 	{

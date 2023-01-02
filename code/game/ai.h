@@ -109,7 +109,7 @@ void NPC_BSMark1_Default(void);
 void NPC_BSMark2_Default(void);
 
 //monsters
-void NPC_BSMineMonster_Default(void);
+void NPC_BSMineMonster_Default();
 void NPC_BSHowler_Default(void);
 void NPC_BSRancor_Default(void);
 void NPC_BSWampa_Default(void);

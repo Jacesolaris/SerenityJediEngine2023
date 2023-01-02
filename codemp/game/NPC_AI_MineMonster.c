@@ -105,7 +105,7 @@ void MineMonster_Patrol(void)
 MineMonster_Move
 -------------------------
 */
-void MineMonster_Move(qboolean visible)
+void MineMonster_Move()
 {
 	if (NPCS.NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -243,7 +243,7 @@ void MineMonster_Combat(void)
 		}
 		else
 		{
-			MineMonster_Move(qtrue);
+			MineMonster_Move();
 		}
 	}
 	else

@@ -209,8 +209,6 @@ void CG_TestLine(vec3_t start, vec3_t end, const int time, unsigned int color, c
 	}
 
 	le->color[3] = 1.0;
-
-	//re->renderfx |= RF_DEPTHHACK;
 }
 
 void CG_BlockLine(vec3_t start, vec3_t end, const int time, unsigned int color, const int radius)
@@ -324,8 +322,8 @@ void CG_GrappleLine(vec3_t start, vec3_t end, const int time, unsigned int color
 // Since we have shared verts when we tesselate the glass sheet, it helps to have a
 //	random offset table set up up front.
 
-static float offX[20][20],
-             offZ[20][20];
+static float off_x[20][20],
+             off_z[20][20];
 
 #define	FX_ALPHA_NONLINEAR	0x00000004
 #define FX_APPLY_PHYSICS	0x02000000
@@ -489,8 +487,8 @@ void CG_InitGlass(void)
 	{
 		for (int t = 0; t < 20; t++)
 		{
-			offX[t][i] = Q_flrand(-1.0f, 1.0f) * 0.03f;
-			offZ[i][t] = Q_flrand(-1.0f, 1.0f) * 0.03f;
+			off_x[t][i] = Q_flrand(-1.0f, 1.0f) * 0.03f;
+			off_z[i][t] = Q_flrand(-1.0f, 1.0f) * 0.03f;
 		}
 	}
 }
@@ -563,7 +561,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 			// This is nasty..
 			if (t > 0 && t < mx_width)
 			{
-				xx = x - offX[i][t];
+				xx = x - off_x[i][t];
 			}
 			else
 			{
@@ -572,7 +570,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i > 0 && i < mx_height)
 			{
-				zz = z - offZ[t][i];
+				zz = z - off_z[t][i];
 			}
 			else
 			{
@@ -583,7 +581,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (t + 1 > 0 && t + 1 < mx_width)
 			{
-				xx = x - offX[i][t + 1];
+				xx = x - off_x[i][t + 1];
 			}
 			else
 			{
@@ -592,7 +590,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i > 0 && i < mx_height)
 			{
-				zz = z - offZ[t + 1][i];
+				zz = z - off_z[t + 1][i];
 			}
 			else
 			{
@@ -603,7 +601,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (t + 1 > 0 && t + 1 < mx_width)
 			{
-				xx = x - offX[i + 1][t + 1];
+				xx = x - off_x[i + 1][t + 1];
 			}
 			else
 			{
@@ -612,7 +610,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i + 1 > 0 && i + 1 < mx_height)
 			{
-				zz = z - offZ[t + 1][i + 1];
+				zz = z - off_z[t + 1][i + 1];
 			}
 			else
 			{
@@ -623,7 +621,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (t > 0 && t < mx_width)
 			{
-				xx = x - offX[i + 1][t];
+				xx = x - off_x[i + 1][t];
 			}
 			else
 			{
@@ -632,7 +630,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i + 1 > 0 && i + 1 < mx_height)
 			{
-				zz = z - offZ[t][i + 1];
+				zz = z - off_z[t][i + 1];
 			}
 			else
 			{

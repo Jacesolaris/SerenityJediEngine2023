@@ -154,7 +154,7 @@ qboolean CG_OwnerDrawVisible(const int flags)
 
 	if (flags & CG_SHOW_NOTEAMINFO)
 	{
-		return !(cg_currentSelectedPlayer.integer == numSortedTeamPlayers);
+		return (cg_currentSelectedPlayer.integer != numSortedTeamPlayers);
 	}
 
 	if (flags & CG_SHOW_OTHERTEAMHASFLAG)

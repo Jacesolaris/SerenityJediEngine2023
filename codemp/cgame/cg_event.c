@@ -27,10 +27,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "fx_local.h"
 #include "ui/ui_shared.h"
 #include "ui/ui_public.h"
-
-// for the voice chats
-#include "ui/menudef.h"
-
 #include "ghoul2/G2.h"
 //==========================================================================
 
@@ -50,7 +46,7 @@ extern int cg_vehicleAmmoWarning;
 extern int cg_vehicleAmmoWarningTime;
 
 extern qboolean PM_InKnockDownOnly(int anim);
-void CG_BounceEffect(const int weapon, vec3_t origin, vec3_t normal);
+void CG_BounceEffect(int weapon, vec3_t origin, vec3_t normal);
 
 //I know, not siege, but...
 typedef enum
@@ -272,12 +268,12 @@ static void CG_Obituary(entityState_t* ent)
 	// check for attacker in a vehicle
 	if (ent->brokenLimbs >= MAX_CLIENTS)
 	{
-		centity_t* attVehCent = &cg_entities[ent->brokenLimbs];
-		if (attVehCent && attVehCent->m_pVehicle && attVehCent->m_pVehicle->m_pVehicleInfo)
+		centity_t* att_veh_cent = &cg_entities[ent->brokenLimbs];
+		if (att_veh_cent && att_veh_cent->m_pVehicle && att_veh_cent->m_pVehicle->m_pVehicleInfo)
 		{
-			if (attVehCent->m_pVehicle->m_pVehicleInfo->name)
+			if (att_veh_cent->m_pVehicle->m_pVehicleInfo->name)
 			{
-				Q_strncpyz(attacker_veh_name, attVehCent->m_pVehicle->m_pVehicleInfo->name, sizeof attacker_veh_name - 2);
+				Q_strncpyz(attacker_veh_name, att_veh_cent->m_pVehicle->m_pVehicleInfo->name, sizeof attacker_veh_name - 2);
 			}
 		}
 	}
@@ -473,12 +469,6 @@ clientkilled:
 				//no JM, saber must be out
 				char part1[512];
 				trap->SE_GetStringTextString("MP_INGAME_KILLED_MESSAGE", part1, sizeof part1);
-				/*
-				kmsg1 = "for 0 points.\nGo for the saber!";
-				strcpy(part2, kmsg1);
-
-				s = va("%s %s %s\n", part1, targetName, part2);
-				*/
 				s = va("%s %s\n", part1, target_name);
 			}
 			else if (cgs.gametype == GT_POWERDUEL)
@@ -487,22 +477,22 @@ clientkilled:
 			}
 			else
 			{
-				char sPlaceWith[256];
-				char sKilledStr[256];
-				trap->SE_GetStringTextString("MP_INGAME_PLACE_WITH", sPlaceWith, sizeof sPlaceWith);
-				trap->SE_GetStringTextString("MP_INGAME_KILLED_MESSAGE", sKilledStr, sizeof sKilledStr);
+				char s_place_with[256];
+				char s_killed_str[256];
+				trap->SE_GetStringTextString("MP_INGAME_PLACE_WITH", s_place_with, sizeof s_place_with);
+				trap->SE_GetStringTextString("MP_INGAME_KILLED_MESSAGE", s_killed_str, sizeof s_killed_str);
 
-				s = va("%s %s.\n%s %s %i.", sKilledStr, target_name,
+				s = va("%s %s.\n%s %s %i.", s_killed_str, target_name,
 				       CG_PlaceString(cg.snap->ps.persistant[PERS_RANK] + 1),
-				       sPlaceWith,
+				       s_place_with,
 				       cg.snap->ps.persistant[PERS_SCORE]);
 			}
 		}
 		else
 		{
-			char sKilledStr[256];
-			trap->SE_GetStringTextString("MP_INGAME_KILLED_MESSAGE", sKilledStr, sizeof sKilledStr);
-			s = va("%s %s", sKilledStr, target_name);
+			char s_killed_str[256];
+			trap->SE_GetStringTextString("MP_INGAME_KILLED_MESSAGE", s_killed_str, sizeof s_killed_str);
+			s = va("%s %s", s_killed_str, target_name);
 		}
 		CG_CenterPrint(s, SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH);
 	}
@@ -764,13 +754,6 @@ void CG_ToggleBinoculars(const centity_t* cent, const int force_zoom)
 		//So we can't fool it and reactivate while switching to the saber or something.
 		return;
 	}
-
-	/*
-	if (cg.snap->ps.weapon == WP_SABER)
-	{ //No.
-		return;
-	}
-	*/
 
 	if (force_zoom)
 	{

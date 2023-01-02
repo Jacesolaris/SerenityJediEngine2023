@@ -572,7 +572,7 @@ void CG_GrappleLine(vec3_t start, vec3_t end, const int time, unsigned int color
 // Since we have shared verts when we tesselate the glass sheet, it helps to have a
 //	random offset table set up up front...so that we can have more random looking breaks.
 
-static float offX[20][20], offZ[20][20];
+static float off_x[20][20], off_z[20][20];
 
 static void CG_DoGlassQuad(vec3_t p[4], vec2_t uv[4], const bool stick, const int time, vec3_t dmg_dir)
 {
@@ -689,8 +689,8 @@ void CG_InitGlass()
 	{
 		for (int t = 0; t < 20; t++)
 		{
-			offX[t][i] = Q_flrand(-1.0f, 1.0f) * 0.03f;
-			offZ[i][t] = Q_flrand(-1.0f, 1.0f) * 0.03f;
+			off_x[t][i] = Q_flrand(-1.0f, 1.0f) * 0.03f;
+			off_z[i][t] = Q_flrand(-1.0f, 1.0f) * 0.03f;
 		}
 	}
 }
@@ -756,7 +756,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 			//	...but we do in the center, otherwise the breaking scheme looks way too orderly
 			if (t > 0 && t < mx_width)
 			{
-				xx = x - offX[i][t];
+				xx = x - off_x[i][t];
 			}
 			else
 			{
@@ -765,7 +765,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i > 0 && i < mx_height)
 			{
-				zz = z - offZ[t][i];
+				zz = z - off_z[t][i];
 			}
 			else
 			{
@@ -776,7 +776,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (t + 1 > 0 && t + 1 < mx_width)
 			{
-				xx = x - offX[i][t + 1];
+				xx = x - off_x[i][t + 1];
 			}
 			else
 			{
@@ -785,7 +785,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i > 0 && i < mx_height)
 			{
-				zz = z - offZ[t + 1][i];
+				zz = z - off_z[t + 1][i];
 			}
 			else
 			{
@@ -796,7 +796,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (t + 1 > 0 && t + 1 < mx_width)
 			{
-				xx = x - offX[i + 1][t + 1];
+				xx = x - off_x[i + 1][t + 1];
 			}
 			else
 			{
@@ -805,7 +805,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i + 1 > 0 && i + 1 < mx_height)
 			{
-				zz = z - offZ[t + 1][i + 1];
+				zz = z - off_z[t + 1][i + 1];
 			}
 			else
 			{
@@ -816,7 +816,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (t > 0 && t < mx_width)
 			{
-				xx = x - offX[i + 1][t];
+				xx = x - off_x[i + 1][t];
 			}
 			else
 			{
@@ -825,7 +825,7 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 
 			if (i + 1 > 0 && i + 1 < mx_height)
 			{
-				zz = z - offZ[t][i + 1];
+				zz = z - off_z[t][i + 1];
 			}
 			else
 			{
@@ -857,45 +857,6 @@ void CG_DoGlass(vec3_t verts[], vec3_t dmg_pt, vec3_t dmg_dir, const float dmg_r
 	}
 }
 
-/*
-=================
-CG_Seeker
-=================
-*/
-/*void CG_Seeker( centity_t *cent )
-{
-	refEntity_t	re;
-
-	vec3_t	seekerOrg, viewAng;
-	float	angle, c;
-
-	// must match cg_effects ( CG_Seeker ) & g_weapon ( SeekerAcquiresTarget ) & cg_weapons ( CG_FireSeeker )
-	angle = cg.time * 0.004f;
-	c = cos( angle );
-
-	seekerOrg[0] = cent->lerpOrigin[0] + 18 * c;
-	seekerOrg[1] = cent->lerpOrigin[1] + 18 * sin(angle);
-	seekerOrg[2] = cent->lerpOrigin[2] + cg.predicted_player_state.viewheight + 8 + (3 * cos(cg.time * 0.001));
-
-	memset( &re, 0, sizeof( re ) );
-
-	re.reType = RT_MODEL;
-	VectorCopy( seekerOrg, re.origin);
-	re.hModel = cgi_R_RegisterModel( "models/items/remote.md3" );
-
-	VectorCopy( cent->lerpAngles, viewAng ); // so the seeker faces the same direction the player is
-	viewAng[PITCH] = -90; // but, we don't want the seeker facing up or down, always horizontal
-	viewAng[YAW] += c * 15.f;
-
-	AnglesToAxis( viewAng, re.axis );
-	VectorScale( re.axis[0], 0.5f, re.axis[0] );
-	VectorScale( re.axis[1], 0.5f, re.axis[1] );
-	VectorScale( re.axis[2], 0.5f, re.axis[2] );
-	re.nonNormalizedAxes = qtrue;
-
-	cgi_R_AddRefEntityToScene( &re );
-}
-*/
 //------------------------------------------------------------------------------------------
 void CG_DrawTargetBeam(vec3_t start, vec3_t end, vec3_t norm, const char* beam_fx, const char* impact_fx)
 {
