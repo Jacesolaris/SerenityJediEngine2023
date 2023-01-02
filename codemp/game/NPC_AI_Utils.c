@@ -43,7 +43,7 @@ AI_GetGroupSize
 
 int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, gentity_t* avoid)
 {
-	int radiusEnts[MAX_RADIUS_ENTS];
+	int radius_ents[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
 	int realCount = 0;
 
@@ -55,12 +55,12 @@ int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, ge
 	}
 
 	//Get the number of entities in a given space
-	const int numEnts = trap->EntitiesInBox(mins, maxs, radiusEnts, MAX_RADIUS_ENTS);
+	const int num_ents = trap->EntitiesInBox(mins, maxs, radius_ents, MAX_RADIUS_ENTS);
 
 	//Cull this list
-	for (int j = 0; j < numEnts; j++)
+	for (int j = 0; j < num_ents; j++)
 	{
-		const gentity_t* check = &g_entities[radiusEnts[j]];
+		const gentity_t* check = &g_entities[radius_ents[j]];
 
 		//Validate clients
 		if (check->client == NULL)
@@ -1117,7 +1117,7 @@ AI_DistributeAttack
 
 gentity_t* AI_DistributeAttack(gentity_t* attacker, gentity_t* enemy, const team_t team, const int threshold)
 {
-	int radiusEnts[MAX_RADIUS_ENTS];
+	int radius_ents[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
 
 	//Don't take new targets
@@ -1153,12 +1153,12 @@ gentity_t* AI_DistributeAttack(gentity_t* attacker, gentity_t* enemy, const team
 	}
 
 	//Get the number of entities in a given space
-	const int numEnts = trap->EntitiesInBox(mins, maxs, radiusEnts, MAX_RADIUS_ENTS);
+	const int num_ents = trap->EntitiesInBox(mins, maxs, radius_ents, MAX_RADIUS_ENTS);
 
 	//Cull this list
-	for (int j = 0; j < numEnts; j++)
+	for (int j = 0; j < num_ents; j++)
 	{
-		gentity_t* check = &g_entities[radiusEnts[j]];
+		gentity_t* check = &g_entities[radius_ents[j]];
 
 		//Validate clients
 		if (check->client == NULL)

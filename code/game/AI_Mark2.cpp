@@ -24,7 +24,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 
 #include "b_local.h"
-#include "g_nav.h"
 
 constexpr auto AMMO_POD_HEALTH = 1;
 constexpr auto TURN_OFF = 0x00000100;
@@ -111,10 +110,10 @@ void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 		{
 			if (self->locationDamage[hit_loc] >= AMMO_POD_HEALTH)
 			{
-				const int newBolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], va("torso_canister%d", i + 1));
-				if (newBolt != -1)
+				const int new_bolt = gi.G2API_AddBolt(&self->ghoul2[self->playerModel], va("torso_canister%d", i + 1));
+				if (new_bolt != -1)
 				{
-					NPC_Mark2_Part_Explode(self, newBolt);
+					NPC_Mark2_Part_Explode(self, new_bolt);
 				}
 				gi.G2API_SetSurfaceOnOff(&self->ghoul2[self->playerModel], va("torso_canister%d", i + 1), TURN_OFF);
 				break;
@@ -136,7 +135,7 @@ void NPC_Mark2_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, con
 Mark2_Hunt
 -------------------------
 */
-void Mark2_Hunt(void)
+void Mark2_Hunt()
 {
 	if (NPCInfo->goalEntity == nullptr)
 	{
@@ -155,7 +154,7 @@ void Mark2_Hunt(void)
 Mark2_FireBlaster
 -------------------------
 */
-void Mark2_FireBlaster(qboolean advance)
+void Mark2_FireBlaster()
 {
 	vec3_t muzzle1;
 	static vec3_t forward, vright, up;
@@ -170,13 +169,13 @@ void Mark2_FireBlaster(qboolean advance)
 
 	if (NPC->health)
 	{
-		vec3_t angleToEnemy1;
+		vec3_t angle_to_enemy1;
 		vec3_t delta1;
 		vec3_t enemy_org1;
 		CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
 		VectorSubtract(enemy_org1, muzzle1, delta1);
-		vectoangles(delta1, angleToEnemy1);
-		AngleVectors(angleToEnemy1, forward, vright, up);
+		vectoangles(delta1, angle_to_enemy1);
+		AngleVectors(angle_to_enemy1, forward, vright, up);
 	}
 	else
 	{
@@ -215,7 +214,7 @@ void Mark2_BlasterAttack(const qboolean advance)
 		{
 			TIMER_Set(NPC, "attackDelay", Q_irand(100, 500));
 		}
-		Mark2_FireBlaster(advance);
+		Mark2_FireBlaster();
 		return;
 	}
 	if (advance)
@@ -229,7 +228,7 @@ void Mark2_BlasterAttack(const qboolean advance)
 Mark2_AttackDecision
 -------------------------
 */
-void Mark2_AttackDecision(void)
+void Mark2_AttackDecision()
 {
 	NPC_FaceEnemy(qtrue);
 
@@ -318,11 +317,10 @@ void Mark2_AttackDecision(void)
 Mark2_Patrol
 -------------------------
 */
-void Mark2_Patrol(void)
+void Mark2_Patrol()
 {
 	if (NPC_CheckPlayerTeamStealth())
 	{
-		//		G_Sound( NPC, G_SoundIndex("sound/chars/mark1/misc/anger.wav"));
 		NPC_UpdateAngles(qtrue, qtrue);
 		return;
 	}
@@ -340,8 +338,6 @@ void Mark2_Patrol(void)
 		//randomly talk
 		if (TIMER_Done(NPC, "patrolNoise"))
 		{
-			//			G_Sound( NPC, G_SoundIndex(va("sound/chars/mark1/misc/talk%d.wav",	Q_irand(1, 4))));
-
 			TIMER_Set(NPC, "patrolNoise", Q_irand(2000, 4000));
 		}
 	}
@@ -352,7 +348,7 @@ void Mark2_Patrol(void)
 Mark2_Idle
 -------------------------
 */
-void Mark2_Idle(void)
+void Mark2_Idle()
 {
 	NPC_BSIdle();
 }
@@ -362,7 +358,7 @@ void Mark2_Idle(void)
 NPC_BSMark2_Default
 -------------------------
 */
-void NPC_BSMark2_Default(void)
+void NPC_BSMark2_Default()
 {
 	if (NPC->enemy)
 	{

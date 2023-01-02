@@ -2824,82 +2824,82 @@ void G_CamCircleForLegsAnim(const gentity_t* ent)
 
 qboolean G_GrabClient(gentity_t* ent, const usercmd_t* ucmd)
 {
-	gentity_t *bestEnt = nullptr, *radiusEnts[128];
+	gentity_t *bestEnt = nullptr, *radius_ents[128];
 	constexpr float radius = 100.0f;
 	constexpr float radiusSquared = radius * radius;
 	float bestDistSq = radiusSquared + 1.0f;
 	vec3_t boltOrg;
 
-	const int numEnts = G_GetEntsNearBolt(ent, radiusEnts, radius, ent->handRBolt, boltOrg);
+	const int num_ents = G_GetEntsNearBolt(ent, radius_ents, radius, ent->handRBolt, boltOrg);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
-		if (!radiusEnts[i]->inuse)
+		if (!radius_ents[i]->inuse)
 		{
 			continue;
 		}
 
-		if (radiusEnts[i] == ent)
+		if (radius_ents[i] == ent)
 		{
 			//Skip the rancor ent
 			continue;
 		}
 
-		if (!radiusEnts[i]->inuse || radiusEnts[i]->health <= 0)
+		if (!radius_ents[i]->inuse || radius_ents[i]->health <= 0)
 		{
 			//must be alive
 			continue;
 		}
 
-		if (radiusEnts[i]->client == nullptr)
+		if (radius_ents[i]->client == nullptr)
 		{
 			//must be a client
 			continue;
 		}
 
-		if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_RANCOR
-			|| radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_WAMPA
-			|| radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
+		if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_RANCOR
+			|| radius_ents[i]->client->ps.eFlags & EF_HELD_BY_WAMPA
+			|| radius_ents[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
 		{
 			//can't be one being held
 			continue;
 		}
 
-		if (PM_LockedAnim(radiusEnts[i]->client->ps.torsoAnim)
-			|| PM_LockedAnim(radiusEnts[i]->client->ps.legsAnim))
+		if (PM_LockedAnim(radius_ents[i]->client->ps.torsoAnim)
+			|| PM_LockedAnim(radius_ents[i]->client->ps.legsAnim))
 		{
 			//don't interrupt
 			continue;
 		}
-		if (radiusEnts[i]->client->ps.groundEntityNum == ENTITYNUM_NONE)
+		if (radius_ents[i]->client->ps.groundEntityNum == ENTITYNUM_NONE)
 		{
 			//must be on ground
 			continue;
 		}
 
-		if (PM_InOnGroundAnim(&radiusEnts[i]->client->ps))
+		if (PM_InOnGroundAnim(&radius_ents[i]->client->ps))
 		{
 			//must be standing up
 			continue;
 		}
 
-		if (fabs(radiusEnts[i]->currentOrigin[2] - ent->currentOrigin[2]) > 8.0f)
+		if (fabs(radius_ents[i]->currentOrigin[2] - ent->currentOrigin[2]) > 8.0f)
 		{
 			//have to be close in Z
 			continue;
 		}
 
-		if (!PM_HasAnimation(radiusEnts[i], BOTH_PLAYER_PA_1))
+		if (!PM_HasAnimation(radius_ents[i], BOTH_PLAYER_PA_1))
 		{
 			//doesn't have matching anims
 			continue;
 		}
 
-		const float distSq = DistanceSquared(radiusEnts[i]->currentOrigin, boltOrg);
+		const float distSq = DistanceSquared(radius_ents[i]->currentOrigin, boltOrg);
 		if (distSq < bestDistSq)
 		{
 			bestDistSq = distSq;
-			bestEnt = radiusEnts[i];
+			bestEnt = radius_ents[i];
 		}
 	}
 

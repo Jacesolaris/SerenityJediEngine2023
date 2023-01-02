@@ -566,13 +566,13 @@ void Workshop_Set_BehaviorState_f(gentity_t* ent)
 		gi.Printf("usage: workshop_set_bstate <bstate>\n");
 		return;
 	}
-	int bState = GetIDForString(BSTable, gi.argv(1));
-	if (bState == -1)
+	int b_state = GetIDForString(BSTable, gi.argv(1));
+	if (b_state == -1)
 	{
 		gi.Printf("Invalid bstate\n");
 		return;
 	}
-	g_entities[selectedAI].NPC->behaviorState = static_cast<bState_t>(bState);
+	g_entities[selectedAI].NPC->behaviorState = static_cast<bState_t>(b_state);
 }
 
 // Set goal entity

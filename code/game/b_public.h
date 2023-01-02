@@ -289,7 +289,7 @@ public:
 	int greetingDebounceTime; //when we can greet someone next
 	gentity_t* eventOwner;
 
-	//bState-specific fields
+	//b_state-specific fields
 	gentity_t* coverTarg;
 	jumpState_t jumpState;
 	float followDist;
@@ -356,8 +356,8 @@ public:
 	int jumpNextCheckTime; // The Minimal Next Time To Check For A Jump
 
 	//
-	int combatPoint; //NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point
-	int lastFailedCombatPoint; //NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point
+	int combatPoint; //NPCs in b_state BS_COMBAT_POINT will find their closest empty combat_point
+	int lastFailedCombatPoint; //NPCs in b_state BS_COMBAT_POINT will find their closest empty combat_point
 	int movementSpeech; //what to say when you first successfully move
 	float movementSpeechChance; //how likely you are to say it
 

@@ -152,7 +152,7 @@ void Mark2_Hunt(void)
 Mark2_FireBlaster
 -------------------------
 */
-void Mark2_FireBlaster(qboolean advance)
+void Mark2_FireBlaster()
 {
 	vec3_t muzzle1, enemy_org1, delta1, angleToEnemy1;
 	static vec3_t forward, vright, up;
@@ -210,7 +210,7 @@ void Mark2_BlasterAttack(const qboolean advance)
 		{
 			TIMER_Set(NPCS.NPC, "attackDelay", Q_irand(100, 500));
 		}
-		Mark2_FireBlaster(advance);
+		Mark2_FireBlaster();
 		return;
 	}
 	if (advance)

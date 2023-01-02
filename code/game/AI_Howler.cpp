@@ -251,7 +251,7 @@ static void Howler_TryDamage(const int damage, const qboolean tongue, const qboo
 					return;
 				}
 			}
-			//FIXME: some sort of damage effect (claws and tongue are cutting you... blood?)
+
 			G_Damage(victim, NPC, NPC, dir, tr.endpos, damage, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 
 			NPC->enemy->client->poisonDamage = 18;

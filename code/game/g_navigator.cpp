@@ -3953,8 +3953,8 @@ void STEER::Activate(gentity_t* actor)
 	gentity_t* EntityList[MAX_GENTITIES];
 	gentity_t* neighbor = nullptr;
 
-	const int numFound = gi.EntitiesInBox(Mins.v, Maxs.v, EntityList, MAX_GENTITIES);
-	for (int i = 0; i < numFound; i++)
+	const int num_found = gi.EntitiesInBox(Mins.v, Maxs.v, EntityList, MAX_GENTITIES);
+	for (int i = 0; i < num_found; i++)
 	{
 		neighbor = EntityList[i];
 		assert(neighbor != nullptr);

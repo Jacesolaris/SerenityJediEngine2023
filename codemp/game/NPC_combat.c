@@ -2187,7 +2187,7 @@ default:
 			//NOTE: cantHitEnemyCounter >= 100 means we couldn't hit enemy for a full
 			//	10 seconds, so give up.  This means even if we're chasing him, we would
 			//	try to find another enemy after 10 seconds (assuming the cantHitEnemyCounter
-			//	is allowed to increment in a chasing bState)
+			//	is allowed to increment in a chasing b_state)
 			qboolean foundenemy = qfalse;
 
 			if (!find_new)
@@ -2657,7 +2657,7 @@ default:
 	}
 
 	/*QUAKED point_combat (0.7 0 0.7) (-16 -16 -24) (16 16 32) DUCK FLEE INVESTIGATE SQUAD LEAN SNIPE
-	NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point
+	NPCs in b_state BS_COMBAT_POINT will find their closest empty combat_point
 	
 	DUCK - NPC will duck and fire from this point, NOT IMPLEMENTED?
 	FLEE - Will choose this point when running

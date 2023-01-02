@@ -3793,7 +3793,7 @@ Q3_SetBState
   Argument		:  int entID
   Argument		: const char *bs_name
 FIXME: this should be a general NPC wrapper function
-	that is called ANY time	a bState is changed...
+	that is called ANY time	a b_state is changed...
 ============
 */
 void ClearNPCGlobals(void);

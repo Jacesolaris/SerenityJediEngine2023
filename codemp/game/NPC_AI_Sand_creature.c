@@ -371,7 +371,7 @@ void SandCreature_SeekEnt(gentity_t* bestEnt, const float score)
 
 void SandCreature_CheckMovingEnts(void)
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	const float radius = NPCS.NPCInfo->stats.earshot;
 	int i;
 	vec3_t mins, maxs;
@@ -385,28 +385,28 @@ void SandCreature_CheckMovingEnts(void)
 		maxs[i] = NPCS.NPC->r.currentOrigin[i] + radius;
 	}
 
-	const int numEnts = trap->EntitiesInBox(mins, maxs, iradiusEnts, 128);
+	const int num_ents = trap->EntitiesInBox(mins, maxs, iradiusEnts, 128);
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
-		radiusEnts[i] = &g_entities[iradiusEnts[i]];
+		radius_ents[i] = &g_entities[iradiusEnts[i]];
 
-		if (!radiusEnts[i]->inuse)
+		if (!radius_ents[i]->inuse)
 		{
 			continue;
 		}
 
-		if (radiusEnts[i] == NPCS.NPC)
+		if (radius_ents[i] == NPCS.NPC)
 		{
 			//Skip the itself
 			continue;
 		}
 
-		if (radiusEnts[i]->client == NULL)
+		if (radius_ents[i]->client == NULL)
 		{
 			//must be a client
-			if (radiusEnts[i]->s.eType != ET_MISSILE
-				|| radiusEnts[i]->s.weapon != WP_THERMAL)
+			if (radius_ents[i]->s.eType != ET_MISSILE
+				|| radius_ents[i]->s.weapon != WP_THERMAL)
 			{
 				//not a thermal detonator
 				continue;
@@ -414,35 +414,35 @@ void SandCreature_CheckMovingEnts(void)
 		}
 		else
 		{
-			if (radiusEnts[i]->client->ps.eFlags & EF2_HELD_BY_MONSTER)
+			if (radius_ents[i]->client->ps.eFlags & EF2_HELD_BY_MONSTER)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->s.eFlags & EF_NODRAW)
+			if (radius_ents[i]->s.eFlags & EF_NODRAW)
 			{
 				//not if invisible
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.groundEntityNum != ENTITYNUM_WORLD)
+			if (radius_ents[i]->client->ps.groundEntityNum != ENTITYNUM_WORLD)
 			{
 				//not on the ground
 				continue;
 			}
 
-			if (radiusEnts[i]->client->NPC_class == CLASS_SAND_CREATURE)
+			if (radius_ents[i]->client->NPC_class == CLASS_SAND_CREATURE)
 			{
 				continue;
 			}
 		}
 
-		if (radiusEnts[i]->flags & FL_NOTARGET)
+		if (radius_ents[i]->flags & FL_NOTARGET)
 		{
 			continue;
 		}
-		const float checkScore = SandCreature_EntScore(radiusEnts[i]);
+		const float checkScore = SandCreature_EntScore(radius_ents[i]);
 
 		if (checkScore > bestScore)
 		{
@@ -452,7 +452,7 @@ void SandCreature_CheckMovingEnts(void)
 	}
 	if (bestEnt != -1)
 	{
-		SandCreature_SeekEnt(radiusEnts[bestEnt], bestScore);
+		SandCreature_SeekEnt(radius_ents[bestEnt], bestScore);
 	}
 }
 
@@ -678,7 +678,7 @@ void SandCreature_Sleep(void)
 
 void SandCreature_PushEnts()
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	const float radius = 70;
 	vec3_t mins, maxs;
 	vec3_t smack_dir;
@@ -690,25 +690,25 @@ void SandCreature_PushEnts()
 		maxs[i] = NPCS.NPC->r.currentOrigin[i] + radius;
 	}
 
-	const int numEnts = trap->EntitiesInBox(mins, maxs, iradiusEnts, 128);
-	for (int entIndex = 0; entIndex < numEnts; entIndex++)
+	const int num_ents = trap->EntitiesInBox(mins, maxs, iradiusEnts, 128);
+	for (int entIndex = 0; entIndex < num_ents; entIndex++)
 	{
-		radiusEnts[entIndex] = &g_entities[iradiusEnts[entIndex]];
+		radius_ents[entIndex] = &g_entities[iradiusEnts[entIndex]];
 
 		// Only Clients
 		//--------------
-		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client || radiusEnts[entIndex] == NPCS.NPC)
+		if (!radius_ents[entIndex] || !radius_ents[entIndex]->client || radius_ents[entIndex] == NPCS.NPC)
 		{
 			continue;
 		}
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
+		VectorSubtract(radius_ents[entIndex]->r.currentOrigin, NPCS.NPC->r.currentOrigin, smack_dir);
 		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			g_throw(radiusEnts[entIndex], smack_dir, 90);
+			g_throw(radius_ents[entIndex], smack_dir, 90);
 		}
 	}
 }

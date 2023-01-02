@@ -281,19 +281,19 @@ public:
 	{
 		assert(actor->NPC->troop == mTroopHandle);
 		int bestNewLeader = -1;
-		int numEnts = mActors.size();
+		int num_ents = mActors.size();
 		//bool	found = false;
 		mTroopReform = true;
 
 		// Find The Actor
 		//----------------
-		for (int i = 0; i < numEnts; i++)
+		for (int i = 0; i < num_ents; i++)
 		{
 			if (mActors[i] == actor)
 			{
 				//found = true;
 				mActors.erase_swap(i);
-				numEnts--;
+				num_ents--;
 				if (i == 0 && !mActors.empty())
 				{
 					bestNewLeader = 0;
@@ -962,8 +962,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////
 	void MergeInto(c_troop& Other)
 	{
-		const int numEnts = mActors.size();
-		for (int i = 0; i < numEnts; i++)
+		const int num_ents = mActors.size();
+		for (int i = 0; i < num_ents; i++)
 		{
 			mActors[i]->client->leader = nullptr;
 			mActors[i]->NPC->troop = 0;
@@ -1469,10 +1469,10 @@ NPC_BehaviorSet_Trooper
 -------------------------
 */
 ////////////////////////////////////////////////////////////////////////////////////////
-void NPC_BehaviorSet_Trooper(const int bState)
+void NPC_BehaviorSet_Trooper(const int b_state)
 {
 	Trooper_UpdateTroop(NPC);
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:

@@ -353,7 +353,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 {
 	if (ent->spawnflags & SFB_CINEMATIC)
 	{
-		//if a cinematic guy, default us to wait bState
+		//if a cinematic guy, default us to wait b_state
 		ent->NPC->behaviorState = BS_CINEMATIC;
 	}
 	if (ent->client->NPC_class == CLASS_BOBAFETT)
@@ -1757,7 +1757,7 @@ extern void G_CreateFighterNPC(Vehicle_t** p_veh, const char* strType);
 
 qboolean NPC_SafeSpawn(gentity_t* ent, const float safeRadius)
 {
-	int radiusEnts[MAX_SAFESPAWN_ENTS];
+	int radius_ents[MAX_SAFESPAWN_ENTS];
 	vec3_t safeMins, safeMaxs;
 	int i;
 	const float safeRadiusSquared = safeRadius * safeRadius;
@@ -1775,11 +1775,11 @@ qboolean NPC_SafeSpawn(gentity_t* ent, const float safeRadius)
 	}
 
 	//Get a number of entities in a given space
-	const int numEnts = trap->EntitiesInBox(safeMins, safeMaxs, radiusEnts, MAX_SAFESPAWN_ENTS);
+	const int num_ents = trap->EntitiesInBox(safeMins, safeMaxs, radius_ents, MAX_SAFESPAWN_ENTS);
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
-		const gentity_t* FoundEnt = &g_entities[radiusEnts[i]];
+		const gentity_t* FoundEnt = &g_entities[radius_ents[i]];
 
 		//Don't consider self
 		if (FoundEnt == ent)

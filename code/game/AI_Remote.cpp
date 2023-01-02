@@ -21,12 +21,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
 #include "../cgame/cg_local.h"
 #include "g_functions.h"
 
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
-void Remote_Strafe(void);
+void Remote_Strafe();
 
 constexpr auto VELOCITY_DECAY = 0.85f;
 
@@ -36,7 +35,7 @@ enum
 	LSTATE_NONE = 0,
 };
 
-void Remote_Idle(void);
+void Remote_Idle();
 
 void NPC_Remote_Precache()
 {
@@ -67,7 +66,7 @@ void NPC_Remote_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, co
 Remote_MaintainHeight
 -------------------------
 */
-void Remote_MaintainHeight(void)
+void Remote_MaintainHeight()
 {
 	float dif;
 
@@ -162,7 +161,7 @@ constexpr auto REMOTE_UPWARD_PUSH = 32;
 Remote_Strafe
 -------------------------
 */
-void Remote_Strafe(void)
+void Remote_Strafe()
 {
 	vec3_t end, right;
 	trace_t tr;
@@ -247,10 +246,10 @@ void Remote_Hunt(const qboolean visible, const qboolean advance, const qboolean 
 Remote_Fire
 -------------------------
 */
-void Remote_Fire(void)
+void Remote_Fire()
 {
 	vec3_t delta1, enemy_org1, muzzle1;
-	vec3_t angleToEnemy1;
+	vec3_t angle_to_enemy1;
 	static vec3_t forward, vright, up;
 
 	CalcEntitySpot(NPC->enemy, SPOT_HEAD, enemy_org1);
@@ -258,8 +257,8 @@ void Remote_Fire(void)
 
 	VectorSubtract(enemy_org1, muzzle1, delta1);
 
-	vectoangles(delta1, angleToEnemy1);
-	AngleVectors(angleToEnemy1, forward, vright, up);
+	vectoangles(delta1, angle_to_enemy1);
+	AngleVectors(angle_to_enemy1, forward, vright, up);
 
 	gentity_t* missile = create_missile(NPC->currentOrigin, forward, 1000, 10000, NPC);
 
@@ -304,7 +303,7 @@ constexpr auto MIN_DISTANCE = 80;
 Remote_Attack
 -------------------------
 */
-void Remote_Attack(void)
+void Remote_Attack()
 {
 	if (TIMER_Done(NPC, "spin"))
 	{
@@ -325,9 +324,9 @@ void Remote_Attack(void)
 	const float distance = static_cast<int>(DistanceHorizontalSquared(NPC->currentOrigin, NPC->enemy->currentOrigin));
 	//	distance_e	distRate	= ( distance > MIN_MELEE_RANGE_SQR ) ? DIST_LONG : DIST_MELEE;
 	const qboolean visible = NPC_ClearLOS(NPC->enemy);
-	const float idealDist = MIN_DISTANCE_SQR + MIN_DISTANCE_SQR * Q_flrand(0, 1);
-	const auto advance = static_cast<qboolean>(distance > idealDist * 1.25);
-	const auto retreat = static_cast<qboolean>(distance < idealDist * 0.75);
+	const float ideal_dist = MIN_DISTANCE_SQR + MIN_DISTANCE_SQR * Q_flrand(0, 1);
+	const auto advance = static_cast<qboolean>(distance > ideal_dist * 1.25);
+	const auto retreat = static_cast<qboolean>(distance < ideal_dist * 0.75);
 
 	// If we cannot see our target, move to see it
 	if (visible == qfalse)
@@ -347,7 +346,7 @@ void Remote_Attack(void)
 Remote_Idle
 -------------------------
 */
-void Remote_Idle(void)
+void Remote_Idle()
 {
 	Remote_MaintainHeight();
 
@@ -359,7 +358,7 @@ void Remote_Idle(void)
 Remote_Patrol
 -------------------------
 */
-void Remote_Patrol(void)
+void Remote_Patrol()
 {
 	Remote_MaintainHeight();
 
@@ -382,7 +381,7 @@ void Remote_Patrol(void)
 NPC_BSRemote_Default
 -------------------------
 */
-void NPC_BSRemote_Default(void)
+void NPC_BSRemote_Default()
 {
 	if (NPC->enemy)
 	{

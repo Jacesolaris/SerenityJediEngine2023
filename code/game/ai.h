@@ -103,15 +103,15 @@ void NPC_BSATST_Default(void);
 void NPC_BSInterrogator_Default(void);
 
 // AI Mark 1
-void NPC_BSMark1_Default(void);
+void NPC_BSMark1_Default();
 
 // AI Mark 2
-void NPC_BSMark2_Default(void);
+void NPC_BSMark2_Default();
 
 //monsters
 void NPC_BSMineMonster_Default();
-void NPC_BSHowler_Default(void);
-void NPC_BSRancor_Default(void);
+void NPC_BSHowler_Default();
+void NPC_BSRancor_Default();
 void NPC_BSWampa_Default(void);
 void NPC_BSSandCreature_Default(void);
 

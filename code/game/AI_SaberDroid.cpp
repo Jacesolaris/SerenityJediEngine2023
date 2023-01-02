@@ -21,9 +21,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
 #include "anims.h"
-#include "g_navigator.h"
 #include "wp_saber.h"
 
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
@@ -39,7 +37,7 @@ static qboolean shoot;
 static float enemyDist;
 extern void NPC_AngerSound();
 
-static void SaberDroid_HoldPosition(void)
+static void SaberDroid_HoldPosition()
 {
 	NPC_FreeCombatPoint(NPCInfo->combatPoint, qtrue);
 	NPCInfo->goalEntity = nullptr;
@@ -51,7 +49,7 @@ ST_Move
 -------------------------
 */
 
-static qboolean SaberDroid_Move(void)
+static qboolean SaberDroid_Move()
 {
 	NPCInfo->combatMove = qtrue; //always doMove straight toward our goal
 	UpdateGoal();
@@ -94,7 +92,7 @@ NPC_BSSaberDroid_Patrol
 -------------------------
 */
 
-void NPC_BSSaberDroid_Patrol(void)
+void NPC_BSSaberDroid_Patrol()
 {
 	//FIXME: pick up on bodies of dead buddies?
 	if (NPCInfo->confusionTime < level.time && NPCInfo->insanityTime < level.time)
@@ -267,29 +265,29 @@ NPC_BSSaberDroid_Attack
 -------------------------
 */
 
-void NPC_SaberDroid_PickAttack(void)
+void NPC_SaberDroid_PickAttack()
 {
-	int attackAnim = Q_irand(0, 3);
-	switch (attackAnim)
+	int attack_anim = Q_irand(0, 3);
+	switch (attack_anim)
 	{
 	case 0:
 	default:
-		attackAnim = BOTH_A2_TR_BL;
+		attack_anim = BOTH_A2_TR_BL;
 		NPC->client->ps.saberMove = LS_A_TR2BL;
 		NPC->client->ps.saberAnimLevel = SS_MEDIUM;
 		break;
 	case 1:
-		attackAnim = BOTH_A1_BL_TR;
+		attack_anim = BOTH_A1_BL_TR;
 		NPC->client->ps.saberMove = LS_A_BL2TR;
 		NPC->client->ps.saberAnimLevel = SS_FAST;
 		break;
 	case 2:
-		attackAnim = BOTH_A1__L__R;
+		attack_anim = BOTH_A1__L__R;
 		NPC->client->ps.saberMove = LS_A_L2R;
 		NPC->client->ps.saberAnimLevel = SS_FAST;
 		break;
 	case 3:
-		attackAnim = BOTH_A3__L__R;
+		attack_anim = BOTH_A3__L__R;
 		NPC->client->ps.saberMove = LS_A_L2R;
 		NPC->client->ps.saberAnimLevel = SS_STRONG;
 		break;
@@ -298,21 +296,20 @@ void NPC_SaberDroid_PickAttack(void)
 	if (saberMoveData[NPC->client->ps.saberMove].trailLength > 0)
 	{
 		NPC->client->ps.SaberActivateTrail(saberMoveData[NPC->client->ps.saberMove].trailLength);
-		// saber trail lasts for 75ms...feel free to change this if you want it longer or shorter
 	}
 	else
 	{
 		NPC->client->ps.SaberDeactivateTrail(0);
 	}
 
-	NPC_SetAnim(NPC, SETANIM_BOTH, attackAnim, SETANIM_FLAG_HOLD | SETANIM_FLAG_OVERRIDE);
+	NPC_SetAnim(NPC, SETANIM_BOTH, attack_anim, SETANIM_FLAG_HOLD | SETANIM_FLAG_OVERRIDE);
 	NPC->client->ps.torsoAnim = NPC->client->ps.legsAnim;
 	//need to do this because we have no anim split but saber code checks torsoAnim
 	NPC->client->ps.weaponTime = NPC->client->ps.torsoAnimTimer = NPC->client->ps.legsAnimTimer;
 	NPC->client->ps.weaponstate = WEAPON_FIRING;
 }
 
-void NPC_BSSaberDroid_Attack(void)
+void NPC_BSSaberDroid_Attack()
 {
 	//Don't do anything if we're hurt
 	if (NPC->painDebounceTime > level.time)
@@ -356,13 +353,6 @@ void NPC_BSSaberDroid_Attack(void)
 			enemyCS = qtrue;
 		}
 	}
-	/*
-	else if ( gi.inPVS( NPC->enemy->currentOrigin, NPC->currentOrigin ) )
-	{
-		NPCInfo->enemyLastSeenTime = level.time;
-		faceEnemy = qtrue;
-	}
-	*/
 
 	if (enemyLOS)
 	{
@@ -450,7 +440,7 @@ void NPC_BSSaberDroid_Attack(void)
 	}
 }
 
-void NPC_BSSD_Default(void)
+void NPC_BSSD_Default()
 {
 	if (!NPC->enemy)
 	{

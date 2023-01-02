@@ -21,7 +21,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
 
 void Interrogator_Idle(void);
 
@@ -68,7 +67,7 @@ void Interrogator_die(const gentity_t* self, gentity_t* inflictor, gentity_t* at
 Interrogator_PartsMove
 -------------------------
 */
-void Interrogator_PartsMove(void)
+void Interrogator_PartsMove()
 {
 	// Syringe
 	if (TIMER_Done(NPC, "syringeDelay"))
@@ -137,7 +136,7 @@ constexpr auto HUNTER_UPWARD_PUSH = 2;
 Interrogator_MaintainHeight
 -------------------------
 */
-void Interrogator_MaintainHeight(void)
+void Interrogator_MaintainHeight()
 {
 	float dif;
 
@@ -236,7 +235,7 @@ constexpr auto HUNTER_STRAFE_DIS = 200;
 Interrogator_Strafe
 -------------------------
 */
-void Interrogator_Strafe(void)
+void Interrogator_Strafe()
 {
 	vec3_t end, right;
 	trace_t tr;
@@ -370,7 +369,7 @@ void Interrogator_Melee(const qboolean visible, const qboolean advance)
 Interrogator_Attack
 -------------------------
 */
-void Interrogator_Attack(void)
+void Interrogator_Attack()
 {
 	// Always keep a good height off the ground
 	Interrogator_MaintainHeight();
@@ -420,7 +419,7 @@ void Interrogator_Attack(void)
 Interrogator_Idle
 -------------------------
 */
-void Interrogator_Idle(void)
+void Interrogator_Idle()
 {
 	if (NPC_CheckPlayerTeamStealth())
 	{
@@ -439,7 +438,7 @@ void Interrogator_Idle(void)
 NPC_BSInterrogator_Default
 -------------------------
 */
-void NPC_BSInterrogator_Default(void)
+void NPC_BSInterrogator_Default()
 {
 	if (NPC->enemy)
 	{

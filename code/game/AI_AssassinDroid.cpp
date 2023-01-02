@@ -84,7 +84,7 @@ void BubbleShield_PushEnt(gentity_t* pushed, vec3_t smack_dir)
 ////////////////////////////////////////////////////////////////////////////////////////
 void BubbleShield_PushRadiusEnts()
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	constexpr float radius = ASSASSIN_SHIELD_SIZE;
 	vec3_t mins, maxs;
 
@@ -94,38 +94,38 @@ void BubbleShield_PushRadiusEnts()
 		maxs[i] = NPC->currentOrigin[i] + radius;
 	}
 
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
-	for (int entIndex = 0; entIndex < numEnts; entIndex++)
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, 128);
+	for (int entIndex = 0; entIndex < num_ents; entIndex++)
 	{
 		vec3_t smack_dir;
 		// Only Clients
 		//--------------
-		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client)
+		if (!radius_ents[entIndex] || !radius_ents[entIndex]->client)
 		{
 			continue;
 		}
 
 		// Don't Push Away Other Assassin Droids
 		//---------------------------------------
-		if (radiusEnts[entIndex]->client->NPC_class == NPC->client->NPC_class)
+		if (radius_ents[entIndex]->client->NPC_class == NPC->client->NPC_class)
 		{
 			continue;
 		}
 
 		// Should Have Already Pushed The Enemy If He Touched Us
 		//-------------------------------------------------------
-		if (NPC->enemy && NPCInfo->touchedByPlayer == NPC->enemy && radiusEnts[entIndex] == NPC->enemy)
+		if (NPC->enemy && NPCInfo->touchedByPlayer == NPC->enemy && radius_ents[entIndex] == NPC->enemy)
 		{
 			continue;
 		}
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
+		VectorSubtract(radius_ents[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
 		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			BubbleShield_PushEnt(radiusEnts[entIndex], smack_dir);
+			BubbleShield_PushEnt(radius_ents[entIndex], smack_dir);
 		}
 	}
 }

@@ -508,11 +508,11 @@ using setType_t = enum //# setType_e
 	SET_ENEMY_TEAM,
 	//## %t="TEAM_NAMES" # Team in which to look for enemies
 	SET_BEHAVIOR_STATE,
-	//## %t="BSTATE_STRINGS" # Change current bState
+	//## %t="BSTATE_STRINGS" # Change current b_state
 	SET_DEFAULT_BSTATE,
-	//## %t="BSTATE_STRINGS" # Change fallback bState
+	//## %t="BSTATE_STRINGS" # Change fallback b_state
 	SET_TEMP_BSTATE,
-	//## %t="BSTATE_STRINGS" # Set/Chang a temp bState
+	//## %t="BSTATE_STRINGS" # Set/Chang a temp b_state
 	SET_EVENT,
 	//## %t="EVENT_NAMES" # Events you can initiate
 	SET_WEAPON,

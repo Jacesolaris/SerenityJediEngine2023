@@ -260,7 +260,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 {
 	if (ent->spawnflags & SFB_CINEMATIC)
 	{
-		//if a cinematic guy, default us to wait bState
+		//if a cinematic guy, default us to wait b_state
 		ent->NPC->behaviorState = BS_CINEMATIC;
 	}
 	if (ent->client->NPC_class == CLASS_RANCOR)
@@ -1565,7 +1565,7 @@ constexpr auto MAX_SAFESPAWN_ENTS = 4;
 
 bool NPC_SafeSpawn(const gentity_t* ent, const float safeRadius)
 {
-	gentity_t* radiusEnts[MAX_SAFESPAWN_ENTS];
+	gentity_t* radius_ents[MAX_SAFESPAWN_ENTS];
 	vec3_t safeMins, safeMaxs;
 	const float safeRadiusSquared = safeRadius * safeRadius;
 	int i;
@@ -1583,21 +1583,21 @@ bool NPC_SafeSpawn(const gentity_t* ent, const float safeRadius)
 	}
 
 	//Get a number of entities in a given space
-	const int numEnts = gi.EntitiesInBox(safeMins, safeMaxs, radiusEnts, MAX_SAFESPAWN_ENTS);
+	const int num_ents = gi.EntitiesInBox(safeMins, safeMaxs, radius_ents, MAX_SAFESPAWN_ENTS);
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
 		//Don't consider self
-		if (radiusEnts[i] == ent)
+		if (radius_ents[i] == ent)
 			continue;
 
-		if (radiusEnts[i]->NPC && radiusEnts[i]->health == 0)
+		if (radius_ents[i]->NPC && radius_ents[i]->health == 0)
 		{
 			// ignore dead guys
 			continue;
 		}
 
-		const float distance = DistanceSquared(ent->currentOrigin, radiusEnts[i]->currentOrigin);
+		const float distance = DistanceSquared(ent->currentOrigin, radius_ents[i]->currentOrigin);
 
 		//Found one too close to us
 		if (distance < safeRadiusSquared)

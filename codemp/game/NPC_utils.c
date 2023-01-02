@@ -1072,9 +1072,9 @@ int NPC_FindNearestEnemy(const gentity_t* ent)
 	}
 
 	//Get a number of entities in a given space
-	const int numEnts = trap->EntitiesInBox(mins, maxs, iradiusEnts, MAX_RADIUS_ENTS);
+	const int num_ents = trap->EntitiesInBox(mins, maxs, iradiusEnts, MAX_RADIUS_ENTS);
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
 		//nearest = G_CheckControlledTurretEnemy(ent, iradiusEnts[i], qtrue);
 		gentity_t* radEnt = &g_entities[iradiusEnts[i]];
@@ -1590,7 +1590,7 @@ float NPC_EnemyRangeFromBolt(const int bolt_index)
 	return NPC_EntRangeFromBolt(NPCS.NPC->enemy, bolt_index);
 }
 
-int NPC_GetEntsNearBolt(int* radiusEnts, const float radius, const int bolt_index, vec3_t boltOrg)
+int NPC_GetEntsNearBolt(int* radius_ents, const float radius, const int bolt_index, vec3_t boltOrg)
 {
 	vec3_t mins, maxs;
 
@@ -1609,7 +1609,7 @@ int NPC_GetEntsNearBolt(int* radiusEnts, const float radius, const int bolt_inde
 	}
 
 	//Get the number of entities in a given space
-	return trap->EntitiesInBox(mins, maxs, radiusEnts, 128);
+	return trap->EntitiesInBox(mins, maxs, radius_ents, 128);
 }
 
 extern qboolean Boba_Flying(const gentity_t* self);

@@ -45,25 +45,25 @@ void RT_Precache()
 	G_EffectIndex("rockettrooper/light_cone"); //extern this?  At least use a different one
 }
 
-extern void NPC_BehaviorSet_Stormtrooper(int bState);
+extern void NPC_BehaviorSet_Stormtrooper(int b_state);
 
 void RT_RunStormtrooperAI(void)
 {
-	int bState;
-	//Execute our bState
+	int b_state;
+	//Execute our b_state
 	if (NPCInfo->tempBehavior)
 	{
 		//Overrides normal behavior until cleared
-		bState = NPCInfo->tempBehavior;
+		b_state = NPCInfo->tempBehavior;
 	}
 	else
 	{
 		if (!NPCInfo->behaviorState)
 			NPCInfo->behaviorState = NPCInfo->defaultBehavior;
 
-		bState = NPCInfo->behaviorState;
+		b_state = NPCInfo->behaviorState;
 	}
-	NPC_BehaviorSet_Stormtrooper(bState);
+	NPC_BehaviorSet_Stormtrooper(b_state);
 }
 
 void RT_FireDecide()
@@ -539,14 +539,14 @@ void RT_Flying_MaintainHeight(void)
 			// Find the height difference
 			dif = enemyZHeight + Q_flrand(NPC->enemy->maxs[2] / 2, NPC->enemy->maxs[2] + 8) - NPC->currentOrigin[2];
 
-			constexpr float difFactor = 10.0f;
+			constexpr float dif_factor = 10.0f;
 
 			// cap to prevent dramatic height shifts
-			if (fabs(dif) > 2 * difFactor)
+			if (fabs(dif) > 2 * dif_factor)
 			{
-				if (fabs(dif) > 20 * difFactor)
+				if (fabs(dif) > 20 * dif_factor)
 				{
-					dif = dif < 0 ? -20 * difFactor : 20 * difFactor;
+					dif = dif < 0 ? -20 * dif_factor : 20 * dif_factor;
 				}
 
 				NPC->client->ps.velocity[2] = (NPC->client->ps.velocity[2] + dif) / 2;
@@ -956,7 +956,7 @@ void NPC_BSRT_Default(void)
 		RT_RunStormtrooperAI();
 		RT_CheckJump();
 		//NPC_BSST_Default();//FIXME: add missile avoidance
-		//RT_Hunt();//NPC_BehaviorSet_Jedi( bState );
+		//RT_Hunt();//NPC_BehaviorSet_Jedi( b_state );
 	}
 	else
 	{

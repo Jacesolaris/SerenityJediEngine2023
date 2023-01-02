@@ -4,7 +4,7 @@
 
 extern qboolean PM_FlippingAnim(int anim);
 extern void NPC_BSST_Patrol(void);
-extern void NPC_BehaviorSet_Stormtrooper(int bState);
+extern void NPC_BehaviorSet_Stormtrooper(int b_state);
 
 extern void RT_FlyStart(gentity_t* self);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
@@ -29,21 +29,21 @@ void RT_Precache(void)
 
 void RT_RunStormtrooperAI(void)
 {
-	int bState;
-	//Execute our bState
+	int b_state;
+	//Execute our b_state
 	if (NPCS.NPCInfo->tempBehavior)
 	{
 		//Overrides normal behavior until cleared
-		bState = NPCS.NPCInfo->tempBehavior;
+		b_state = NPCS.NPCInfo->tempBehavior;
 	}
 	else
 	{
 		if (!NPCS.NPCInfo->behaviorState)
 			NPCS.NPCInfo->behaviorState = NPCS.NPCInfo->defaultBehavior;
 
-		bState = NPCS.NPCInfo->behaviorState;
+		b_state = NPCS.NPCInfo->behaviorState;
 	}
-	NPC_BehaviorSet_Stormtrooper(bState);
+	NPC_BehaviorSet_Stormtrooper(b_state);
 }
 
 void RT_FireDecide(void)
@@ -482,14 +482,14 @@ void RT_Flying_MaintainHeight(void)
 			dif = enemyZHeight + Q_flrand(NPCS.NPC->enemy->maxs[2] / 2, NPCS.NPC->enemy->maxs[2] + 8) - NPCS.NPC->r.
 				currentOrigin[2];
 
-			const float difFactor = 10.0f;
+			const float dif_factor = 10.0f;
 
 			// cap to prevent dramatic height shifts
-			if (fabs(dif) > 2 * difFactor)
+			if (fabs(dif) > 2 * dif_factor)
 			{
-				if (fabs(dif) > 20 * difFactor)
+				if (fabs(dif) > 20 * dif_factor)
 				{
-					dif = dif < 0 ? -20 * difFactor : 20 * difFactor;
+					dif = dif < 0 ? -20 * dif_factor : 20 * dif_factor;
 				}
 
 				NPCS.NPC->client->ps.velocity[2] = (NPCS.NPC->client->ps.velocity[2] + dif) / 2;

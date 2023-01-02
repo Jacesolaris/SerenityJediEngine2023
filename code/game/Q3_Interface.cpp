@@ -51,7 +51,7 @@ extern void InitMover(gentity_t* ent);
 extern void MatchTeam(gentity_t* team_leader, int mover_state, int time);
 extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
 extern char* G_GetLocationForEnt(const gentity_t* ent);
-extern void NPC_BSSearchStart(int homeWp, bState_t bState);
+extern void NPC_BSSearchStart(int homeWp, bState_t b_state);
 extern void InitMoverTrData(gentity_t* ent);
 extern qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest);
 extern cvar_t* g_sex;
@@ -2502,7 +2502,7 @@ Q3_SetBState
   Argument		:  int entID
   Argument		: const char *bs_name
 FIXME: this should be a general NPC wrapper function
-	that is called ANY time	a bState is changed...
+	that is called ANY time	a b_state is changed...
 ============
 */
 static qboolean Q3_SetBState(const int entID, const char* bs_name)

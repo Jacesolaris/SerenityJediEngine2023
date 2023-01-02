@@ -507,7 +507,7 @@ void Tavion_ScepterSlam(void)
 		const float halfRad = radius / 2;
 		int i;
 		vec3_t mins, maxs, entDir;
-		int radiusEnts[MAX_GENTITIES];
+		int radius_ents[MAX_GENTITIES];
 
 		VectorSet(angles, 0, NPCS.NPC->r.currentAngles[YAW], 0);
 
@@ -530,11 +530,11 @@ void Tavion_ScepterSlam(void)
 		}
 
 		//Get the number of entities in a given space
-		const int numEnts = trap->EntitiesInBox(mins, maxs, radiusEnts, 128);
+		const int num_ents = trap->EntitiesInBox(mins, maxs, radius_ents, 128);
 
-		for (i = 0; i < numEnts; i++)
+		for (i = 0; i < num_ents; i++)
 		{
-			gentity_t* radiusEnt = &g_entities[radiusEnts[i]];
+			gentity_t* radiusEnt = &g_entities[radius_ents[i]];
 			if (!radiusEnt->inuse)
 			{
 				continue;
@@ -1128,7 +1128,9 @@ void Boba_FireFlameThrower(gentity_t* self)
 	const int damage = Q_irand(8, 12);
 	trace_t tr;
 	mdxaBone_t bolt_matrix;
-	vec3_t start, end, dir, traceMins = {-4, -4, -4}, traceMaxs = {4, 4, 4};
+	vec3_t start, end, dir;
+	const vec3_t trace_maxs = {4, 4, 4};
+	const vec3_t trace_mins = {-4, -4, -4};
 
 	trap->G2API_GetBoltMatrix(self->ghoul2, 0, self->client->renderInfo.handLBolt,
 	                          &bolt_matrix, self->r.currentAngles, self->r.currentOrigin, level.time,
@@ -1138,7 +1140,7 @@ void Boba_FireFlameThrower(gentity_t* self)
 	BG_GiveMeVectorFromMatrix(&bolt_matrix, NEGATIVE_Y, dir);
 	VectorMA(start, 128, dir, end);
 
-	trap->Trace(&tr, start, traceMins, traceMaxs, end, self->s.number, MASK_SHOT, qfalse, 0, 0);
+	trap->Trace(&tr, start, trace_mins, trace_maxs, end, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
 	gentity_t* traceEnt = &g_entities[tr.entity_num];
 
@@ -10558,9 +10560,9 @@ void NPC_CheckEvasion(void)
 					mins[e] = NPCS.NPC->r.currentOrigin[e] - 256;
 					maxs[e] = NPCS.NPC->r.currentOrigin[e] + 256;
 				}
-				const int numEnts = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
+				const int num_ents = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-				for (int i = 0; i < numEnts; i++)
+				for (int i = 0; i < num_ents; i++)
 				{
 					const gentity_t* missile = &g_entities[i];
 

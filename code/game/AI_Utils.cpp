@@ -43,7 +43,7 @@ AI_GetGroupSize
 
 int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, const gentity_t* avoid)
 {
-	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
+	gentity_t* radius_ents[MAX_RADIUS_ENTS];
 	vec3_t mins, maxs;
 	int realCount = 0;
 
@@ -55,25 +55,25 @@ int AI_GetGroupSize(vec3_t origin, const int radius, const team_t playerTeam, co
 	}
 
 	//Get the number of entities in a given space
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, MAX_RADIUS_ENTS);
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, MAX_RADIUS_ENTS);
 
 	//Cull this list
-	for (int j = 0; j < numEnts; j++)
+	for (int j = 0; j < num_ents; j++)
 	{
 		//Validate clients
-		if (radiusEnts[j]->client == nullptr)
+		if (radius_ents[j]->client == nullptr)
 			continue;
 
 		//Skip the requested avoid ent if present
-		if (avoid != nullptr && radiusEnts[j] == avoid)
+		if (avoid != nullptr && radius_ents[j] == avoid)
 			continue;
 
 		//Must be on the same team
-		if (radiusEnts[j]->client->playerTeam != playerTeam)
+		if (radius_ents[j]->client->playerTeam != playerTeam)
 			continue;
 
 		//Must be alive
-		if (radiusEnts[j]->health <= 0)
+		if (radius_ents[j]->health <= 0)
 			continue;
 
 		realCount++;
@@ -1055,34 +1055,34 @@ gentity_t* AI_DistributeAttack(const gentity_t* attacker, gentity_t* enemy, cons
 	}
 
 	//Get the number of entities in a given space
-	gentity_t* radiusEnts[MAX_RADIUS_ENTS];
+	gentity_t* radius_ents[MAX_RADIUS_ENTS];
 
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, MAX_RADIUS_ENTS);
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, MAX_RADIUS_ENTS);
 
 	//Cull this list
-	for (int j = 0; j < numEnts; j++)
+	for (int j = 0; j < num_ents; j++)
 	{
 		//Validate clients
-		if (radiusEnts[j]->client == nullptr)
+		if (radius_ents[j]->client == nullptr)
 			continue;
 
 		//Skip the requested avoid ent if present
-		if (radiusEnts[j] == enemy)
+		if (radius_ents[j] == enemy)
 			continue;
 
 		//Must be on the same team
-		if (radiusEnts[j]->client->playerTeam != enemy->client->playerTeam)
+		if (radius_ents[j]->client->playerTeam != enemy->client->playerTeam)
 			continue;
 
 		//Must be alive
-		if (radiusEnts[j]->health <= 0)
+		if (radius_ents[j]->health <= 0)
 			continue;
 
 		//Must not be overwhelmed
-		if (AI_GetGroupSize(radiusEnts[j]->currentOrigin, 48, team, attacker) > threshold)
+		if (AI_GetGroupSize(radius_ents[j]->currentOrigin, 48, team, attacker) > threshold)
 			continue;
 
-		return radiusEnts[j];
+		return radius_ents[j];
 	}
 
 	return nullptr;

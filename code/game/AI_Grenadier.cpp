@@ -21,8 +21,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
-#include "anims.h"
 #include "g_navigator.h"
 #include "g_functions.h"
 
@@ -130,7 +128,7 @@ ST_HoldPosition
 -------------------------
 */
 
-static void Grenadier_HoldPosition(void)
+static void Grenadier_HoldPosition()
 {
 	NPC_FreeCombatPoint(NPCInfo->combatPoint, qtrue);
 	NPCInfo->goalEntity = nullptr;
@@ -142,7 +140,7 @@ ST_Move
 -------------------------
 */
 
-static qboolean Grenadier_Move(void)
+static qboolean Grenadier_Move()
 {
 	NPCInfo->combatMove = qtrue; //always move straight toward our goal
 
@@ -171,13 +169,13 @@ static qboolean Grenadier_Move(void)
 		{
 			//we were running after enemy
 			//Try to find a combat point that can hit the enemy
-			int cpFlags = CP_CLEAR | CP_HAS_ROUTE;
+			int cp_flags = CP_CLEAR | CP_HAS_ROUTE;
 			if (NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)
 			{
-				cpFlags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
-				cpFlags |= CP_NEAREST;
+				cp_flags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
+				cp_flags |= CP_NEAREST;
 			}
-			int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cpFlags, 32);
+			int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cp_flags, 32);
 			if (cp == -1 && !(NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 			{
 				//okay, try one by the enemy
@@ -206,7 +204,7 @@ NPC_BSGrenadier_Patrol
 -------------------------
 */
 
-void NPC_BSGrenadier_Patrol(void)
+void NPC_BSGrenadier_Patrol()
 {
 	//FIXME: pick up on bodies of dead buddies?
 	if (NPCInfo->confusionTime < level.time && NPCInfo->insanityTime < level.time)
@@ -323,7 +321,7 @@ ST_CheckMoveState
 -------------------------
 */
 
-static void Grenadier_CheckMoveState(void)
+static void Grenadier_CheckMoveState()
 {
 	//See if we're a scout
 	if (!(NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)) //behaviorState == BS_STAND_AND_SHOOT )
@@ -405,7 +403,7 @@ ST_CheckFireState
 -------------------------
 */
 
-static void Grenadier_CheckFireState(void)
+static void Grenadier_CheckFireState()
 {
 	if (enemyCS)
 	{
@@ -447,7 +445,7 @@ NPC_BSGrenadier_Attack
 -------------------------
 */
 
-void NPC_BSGrenadier_Attack(void)
+void NPC_BSGrenadier_Attack()
 {
 	//Don't do anything if we're hurt
 	if (NPC->painDebounceTime > level.time)
@@ -572,13 +570,13 @@ void NPC_BSGrenadier_Attack(void)
 			//can we shoot our target?
 			//FIXME: how accurate/necessary is this check?
 			const int hit = NPC_ShotEntity(NPC->enemy);
-			const gentity_t* hitEnt = &g_entities[hit];
+			const gentity_t* hit_ent = &g_entities[hit];
 			if (hit == NPC->enemy->s.number
-				|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam)
+				|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam)
 			{
 				VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
-				const float enemyHorzDist = DistanceHorizontalSquared(NPC->enemy->currentOrigin, NPC->currentOrigin);
-				if (enemyHorzDist < 1048576)
+				const float enemy_horz_dist = DistanceHorizontalSquared(NPC->enemy->currentOrigin, NPC->currentOrigin);
+				if (enemy_horz_dist < 1048576)
 				{
 					//within 1024
 					enemyCS = qtrue;
@@ -689,7 +687,7 @@ void NPC_BSGrenadier_Attack(void)
 	}
 }
 
-void NPC_BSGrenadier_Default(void)
+void NPC_BSGrenadier_Default()
 {
 	if (NPCInfo->scriptFlags & SCF_FIRE_WEAPON)
 	{

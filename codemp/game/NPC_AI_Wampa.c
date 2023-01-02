@@ -203,7 +203,7 @@ void Wampa_Move(const qboolean visible)
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean break_saber_lock);
 extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, int limb_type);
-extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
+extern int NPC_GetEntsNearBolt(int* radius_ents, float radius, int bolt_index, vec3_t boltOrg);
 
 void Wampa_Slash(const int bolt_index, const qboolean backhand)
 {
@@ -213,9 +213,9 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 	vec3_t boltOrg;
 	const int damage = backhand ? Q_irand(10, 15) : Q_irand(20, 30);
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEntNums, radius, bolt_index, boltOrg);
+	const int num_ents = NPC_GetEntsNearBolt(radiusEntNums, radius, bolt_index, boltOrg);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
 		gentity_t* radiusEnt = &g_entities[radiusEntNums[i]];
 		if (!radiusEnt->inuse)

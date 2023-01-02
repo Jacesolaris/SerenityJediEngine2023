@@ -50,7 +50,7 @@ using taskID_t = enum //# taskID_e
 	TID_ANGLE_FACE,
 	// Turning to an angle or facing
 	TID_BSTATE,
-	// Waiting for a certain bState to finish
+	// Waiting for a certain b_state to finish
 	TID_LOCATION,
 	// Waiting for ent to enter a specific trigger_location
 	//	TID_MISSIONSTATUS,	// Waiting for player to finish reading MISSION STATUS SCREEN

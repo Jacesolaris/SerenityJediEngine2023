@@ -605,7 +605,7 @@ void G_AlertTeam(const gentity_t* victim, gentity_t* attacker, const float radiu
 		if (radius_ents[i]->NPC->scriptFlags & SCF_NO_GROUPS)
 			continue;
 
-		//Skip the requested avoid radiusEnts[i] if present
+		//Skip the requested avoid radius_ents[i] if present
 		if (radius_ents[i] == victim)
 			continue;
 
@@ -824,7 +824,7 @@ void DeathFX(const gentity_t* ent)
 
 	case CLASS_BATTLEDROID:
 		VectorCopy(ent->currentOrigin, effect_pos);
-		G_PlayEffect("env/med_explode", effect_pos);
+		G_PlayEffect("env/small_explode2", effect_pos);
 		G_SoundOnEnt(ent, CHAN_AUTO, "sound/chars/battledroid/misc/death2");
 		break;
 
@@ -2306,11 +2306,21 @@ static qboolean G_Dismember(gentity_t* ent, vec3_t point,
 		{
 			//Only the humanoids bleed
 			const int new_bolt = gi.G2API_AddBolt(&limb->ghoul2[limb->playerModel], limb_tag_name);
+
 			if (new_bolt != -1)
 			{
-				G_PlayEffect(G_EffectIndex("saber/limb_bolton"), limb->playerModel, new_bolt, limb->s.number,
-				             new_point);
+				G_PlayEffect(G_EffectIndex("saber/limb_bolton"), limb->playerModel, new_bolt, limb->s.number, new_point);
 			}
+		}
+		else
+		{//Only the humanoids bleed
+			const int new_bolt = gi.G2API_AddBolt(&limb->ghoul2[limb->playerModel], limb_tag_name);
+
+			if (new_bolt != -1)
+			{
+				G_PlayEffect(G_EffectIndex("env/small_fire"), limb->playerModel, new_bolt, limb->s.number, new_point);
+			}
+			
 		}
 	}
 	gi.G2API_StopBoneAnimIndex(&limb->ghoul2[limb->playerModel], limb->hipsBone);

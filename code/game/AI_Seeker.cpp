@@ -73,7 +73,7 @@ void NPC_Seeker_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* other, co
 }
 
 //------------------------------------
-void Seeker_MaintainHeight(void)
+void Seeker_MaintainHeight()
 {
 	float dif;
 
@@ -91,21 +91,21 @@ void Seeker_MaintainHeight(void)
 			dif = NPC->enemy->currentOrigin[2] + Q_flrand(NPC->enemy->maxs[2] / 2, NPC->enemy->maxs[2] + 8) - NPC->
 				currentOrigin[2];
 
-			float difFactor = 1.0f;
+			float dif_factor = 1.0f;
 			if (NPC->client && (NPC->client->NPC_class == CLASS_BOBAFETT || NPC->client->NPC_class == CLASS_MANDO))
 			{
 				if (TIMER_Done(NPC, "flameTime"))
 				{
-					difFactor = 10.0f;
+					dif_factor = 10.0f;
 				}
 			}
 
 			// cap to prevent dramatic height shifts
-			if (fabs(dif) > 2 * difFactor)
+			if (fabs(dif) > 2 * dif_factor)
 			{
-				if (fabs(dif) > 24 * difFactor)
+				if (fabs(dif) > 24 * dif_factor)
 				{
-					dif = dif < 0 ? -24 * difFactor : 24 * difFactor;
+					dif = dif < 0 ? -24 * dif_factor : 24 * dif_factor;
 				}
 
 				NPC->client->ps.velocity[2] = (NPC->client->ps.velocity[2] + dif) / 2;
@@ -357,7 +357,7 @@ void Seeker_Ranged(const qboolean visible, const qboolean advance)
 }
 
 //------------------------------------
-void Seeker_Attack(void)
+void Seeker_Attack()
 {
 	// Always keep a good height off the ground
 	Seeker_MaintainHeight();
@@ -386,18 +386,18 @@ void Seeker_Attack(void)
 }
 
 //------------------------------------
-void Seeker_FindEnemy(void)
+void Seeker_FindEnemy()
 {
-	float bestDis = SEEKER_SEEK_RADIUS * SEEKER_SEEK_RADIUS + 1;
+	float best_dis = SEEKER_SEEK_RADIUS * SEEKER_SEEK_RADIUS + 1;
 	vec3_t mins, maxs;
 	gentity_t *entity_list[MAX_GENTITIES], *best = nullptr;
 
 	VectorSet(maxs, SEEKER_SEEK_RADIUS, SEEKER_SEEK_RADIUS, SEEKER_SEEK_RADIUS);
 	VectorScale(maxs, -1, mins);
 
-	const int numFound = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
+	const int num_found = gi.EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (int i = 0; i < numFound; i++)
+	for (int i = 0; i < num_found; i++)
 	{
 		gentity_t* ent = entity_list[i];
 
@@ -420,9 +420,9 @@ void Seeker_FindEnemy(void)
 
 		const float dis = DistanceHorizontalSquared(NPC->currentOrigin, ent->currentOrigin);
 
-		if (dis <= bestDis)
+		if (dis <= best_dis)
 		{
-			bestDis = dis;
+			best_dis = dis;
 			best = ent;
 		}
 	}
@@ -437,23 +437,23 @@ void Seeker_FindEnemy(void)
 }
 
 //------------------------------------
-void Seeker_FollowPlayer(void)
+void Seeker_FollowPlayer()
 {
 	Seeker_MaintainHeight();
 
 	const float dis = DistanceHorizontalSquared(NPC->currentOrigin, g_entities[0].currentOrigin);
 
-	float minDistSqr = MIN_DISTANCE_SQR;
+	float min_dist_sqr = MIN_DISTANCE_SQR;
 
 	if (NPC->client->NPC_class == CLASS_BOBAFETT || NPC->client->NPC_class == CLASS_MANDO)
 	{
 		if (TIMER_Done(NPC, "flameTime"))
 		{
-			minDistSqr = 200 * 200;
+			min_dist_sqr = 200 * 200;
 		}
 	}
 
-	if (dis < minDistSqr)
+	if (dis < min_dist_sqr)
 	{
 		vec3_t dir;
 		vec3_t pt;
@@ -510,7 +510,7 @@ void Seeker_FollowPlayer(void)
 }
 
 //------------------------------------
-void NPC_BSSeeker_Default(void)
+void NPC_BSSeeker_Default()
 {
 	if (in_camera)
 	{

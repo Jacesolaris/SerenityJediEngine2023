@@ -72,8 +72,8 @@ void BubbleShield_PushRadiusEnts()
 		maxs[i] = NPCS.NPC->r.currentOrigin[i] + radius;
 	}
 
-	const int numEnts = trap->EntitiesInBox(mins, maxs, entity_list, 128);
-	for (i = 0; i < numEnts; i++)
+	const int num_ents = trap->EntitiesInBox(mins, maxs, entity_list, 128);
+	for (i = 0; i < num_ents; i++)
 	{
 		vec3_t smack_dir;
 		gentity_t* radiusEnt = &g_entities[entity_list[i]];

@@ -395,7 +395,7 @@ void SandCreature_SeekEnt(gentity_t* bestEnt, const float score)
 
 void SandCreature_CheckMovingEnts(void)
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	const float radius = NPCInfo->stats.earshot;
 	int i;
 	vec3_t mins, maxs;
@@ -406,86 +406,86 @@ void SandCreature_CheckMovingEnts(void)
 		maxs[i] = NPC->currentOrigin[i] + radius;
 	}
 
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, 128);
 	int bestEnt = -1;
 	float bestScore = 0;
 
-	for (i = 0; i < numEnts; i++)
+	for (i = 0; i < num_ents; i++)
 	{
-		if (!radiusEnts[i]->inuse)
+		if (!radius_ents[i]->inuse)
 		{
 			continue;
 		}
 
-		if (radiusEnts[i] == NPC)
+		if (radius_ents[i] == NPC)
 		{
 			//Skip the rancor ent
 			continue;
 		}
 
-		if (radiusEnts[i]->client == nullptr)
+		if (radius_ents[i]->client == nullptr)
 		{
 			//must be a client
-			if (radiusEnts[i]->s.eType != ET_MISSILE
-				|| radiusEnts[i]->s.weapon != WP_THERMAL)
+			if (radius_ents[i]->s.eType != ET_MISSILE
+				|| radius_ents[i]->s.weapon != WP_THERMAL)
 			{
 				//not a thermal detonator
 				continue;
 			}
-			if (radiusEnts[i]->s.weapon == WP_THERMAL && g_spskill->integer > 1)
+			if (radius_ents[i]->s.weapon == WP_THERMAL && g_spskill->integer > 1)
 			{
 				continue;
 			}
 		}
 		else
 		{
-			if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_RANCOR)
+			if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_RANCOR)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_WAMPA)
+			if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_WAMPA)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
+			if (radius_ents[i]->client->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
 			{
 				//can't be one being held
 				continue;
 			}
 
-			if (radiusEnts[i]->s.eFlags & EF_NODRAW)
+			if (radius_ents[i]->s.eFlags & EF_NODRAW)
 			{
 				//not if invisible
 				continue;
 			}
 
-			if (radiusEnts[i]->client->ps.groundEntityNum != ENTITYNUM_WORLD)
+			if (radius_ents[i]->client->ps.groundEntityNum != ENTITYNUM_WORLD)
 			{
 				//not on the ground
 				continue;
 			}
 
-			if (radiusEnts[i]->client->NPC_class == CLASS_SAND_CREATURE)
+			if (radius_ents[i]->client->NPC_class == CLASS_SAND_CREATURE)
 			{
 				continue;
 			}
 		}
 
-		if (radiusEnts[i]->flags & FL_NOTARGET)
+		if (radius_ents[i]->flags & FL_NOTARGET)
 		{
 			continue;
 		}
 		/*
-		if ( radiusEnts[i]->client && (radiusEnts[i]->client->NPC_class == CLASS_RANCOR || radiusEnts[i]->client->NPC_class == CLASS_ATST ) )
+		if ( radius_ents[i]->client && (radius_ents[i]->client->NPC_class == CLASS_RANCOR || radius_ents[i]->client->NPC_class == CLASS_ATST ) )
 		{//can't grab rancors or atst's
 			continue;
 		}
 		*/
-		const float checkScore = SandCreature_EntScore(radiusEnts[i]);
+		const float checkScore = SandCreature_EntScore(radius_ents[i]);
 		//FIXME: take mass into account too?  What else?
 		if (checkScore > bestScore)
 		{
@@ -495,7 +495,7 @@ void SandCreature_CheckMovingEnts(void)
 	}
 	if (bestEnt != -1)
 	{
-		SandCreature_SeekEnt(radiusEnts[bestEnt], bestScore);
+		SandCreature_SeekEnt(radius_ents[bestEnt], bestScore);
 	}
 }
 
@@ -742,7 +742,7 @@ void SandCreature_Sleep(void)
 
 void SandCreature_PushEnts()
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	constexpr float radius = 70;
 	vec3_t mins, maxs;
 
@@ -752,24 +752,24 @@ void SandCreature_PushEnts()
 		maxs[i] = NPC->currentOrigin[i] + radius;
 	}
 
-	const int numEnts = gi.EntitiesInBox(mins, maxs, radiusEnts, 128);
-	for (int entIndex = 0; entIndex < numEnts; entIndex++)
+	const int num_ents = gi.EntitiesInBox(mins, maxs, radius_ents, 128);
+	for (int entIndex = 0; entIndex < num_ents; entIndex++)
 	{
 		vec3_t smack_dir;
 		// Only Clients
 		//--------------
-		if (!radiusEnts[entIndex] || !radiusEnts[entIndex]->client || radiusEnts[entIndex] == NPC)
+		if (!radius_ents[entIndex] || !radius_ents[entIndex]->client || radius_ents[entIndex] == NPC)
 		{
 			continue;
 		}
 
 		// Do The Vector Distance Test
 		//-----------------------------
-		VectorSubtract(radiusEnts[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
+		VectorSubtract(radius_ents[entIndex]->currentOrigin, NPC->currentOrigin, smack_dir);
 		const float smackDist = VectorNormalize(smack_dir);
 		if (smackDist < radius)
 		{
-			g_throw(radiusEnts[entIndex], smack_dir, 90);
+			g_throw(radius_ents[entIndex], smack_dir, 90);
 		}
 	}
 }

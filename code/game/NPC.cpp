@@ -1315,9 +1315,9 @@ NPC_BehaviorSet_Charmed
 -------------------------
 */
 
-void NPC_BehaviorSet_Charmed(const int bState)
+void NPC_BehaviorSet_Charmed(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_FOLLOW_LEADER: //# 40: Follow your leader and shoot any enemies you come across
 		NPC_BSFollowLeader();
@@ -1350,7 +1350,7 @@ NPC_BehaviorSet_Default
 -------------------------
 */
 
-void NPC_BehaviorSet_Default(const int bState)
+void NPC_BehaviorSet_Default(const int b_state)
 {
 	if (NPC->enemy && NPC->enemy->inuse && NPC->enemy->health > 0)
 	{
@@ -1362,7 +1362,7 @@ void NPC_BehaviorSet_Default(const int bState)
 			return;
 		}
 	}
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_ADVANCE_FIGHT: //head toward captureGoal, shoot anything that gets in the way
 		NPC_BSAdvanceFight();
@@ -1412,9 +1412,9 @@ void NPC_BehaviorSet_Default(const int bState)
 NPC_BehaviorSet_Interrogator
 -------------------------
 */
-void NPC_BehaviorSet_Interrogator(const int bState)
+void NPC_BehaviorSet_Interrogator(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1424,7 +1424,7 @@ void NPC_BehaviorSet_Interrogator(const int bState)
 		NPC_BSInterrogator_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1434,9 +1434,9 @@ void NPC_BehaviorSet_Interrogator(const int bState)
 NPC_BehaviorSet_ImperialProbe
 -------------------------
 */
-void NPC_BehaviorSet_ImperialProbe(const int bState)
+void NPC_BehaviorSet_ImperialProbe(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1446,21 +1446,21 @@ void NPC_BehaviorSet_ImperialProbe(const int bState)
 		NPC_BSImperialProbe_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
 
-void NPC_BSSeeker_Default(void);
+void NPC_BSSeeker_Default();
 
 /*
 -------------------------
 NPC_BehaviorSet_Seeker
 -------------------------
 */
-void NPC_BehaviorSet_Seeker(const int bState)
+void NPC_BehaviorSet_Seeker(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1473,16 +1473,16 @@ void NPC_BehaviorSet_Seeker(const int bState)
 	}
 }
 
-void NPC_BSRemote_Default(void);
+void NPC_BSRemote_Default();
 
 /*
 -------------------------
 NPC_BehaviorSet_Remote
 -------------------------
 */
-void NPC_BehaviorSet_Remote(const int bState)
+void NPC_BehaviorSet_Remote(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1492,21 +1492,21 @@ void NPC_BehaviorSet_Remote(const int bState)
 		NPC_BSRemote_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
 
-void NPC_BSSentry_Default(void);
+void NPC_BSSentry_Default();
 
 /*
 -------------------------
 NPC_BehaviorSet_Sentry
 -------------------------
 */
-void NPC_BehaviorSet_Sentry(const int bState)
+void NPC_BehaviorSet_Sentry(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1516,7 +1516,7 @@ void NPC_BehaviorSet_Sentry(const int bState)
 		NPC_BSSentry_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1526,9 +1526,9 @@ void NPC_BehaviorSet_Sentry(const int bState)
 NPC_BehaviorSet_Grenadier
 -------------------------
 */
-void NPC_BehaviorSet_Grenadier(const int bState)
+void NPC_BehaviorSet_Grenadier(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1539,7 +1539,7 @@ void NPC_BehaviorSet_Grenadier(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1549,9 +1549,9 @@ void NPC_BehaviorSet_Grenadier(const int bState)
 NPC_BehaviorSet_Tusken
 -------------------------
 */
-void NPC_BehaviorSet_Tusken(const int bState)
+void NPC_BehaviorSet_Tusken(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1562,7 +1562,7 @@ void NPC_BehaviorSet_Tusken(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1572,9 +1572,9 @@ void NPC_BehaviorSet_Tusken(const int bState)
 NPC_BehaviorSet_Sniper
 -------------------------
 */
-void NPC_BehaviorSet_Sniper(const int bState)
+void NPC_BehaviorSet_Sniper(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1585,7 +1585,7 @@ void NPC_BehaviorSet_Sniper(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1596,9 +1596,9 @@ NPC_BehaviorSet_Stormtrooper
 -------------------------
 */
 
-void NPC_BehaviorSet_Stormtrooper(const int bState)
+void NPC_BehaviorSet_Stormtrooper(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1617,12 +1617,12 @@ void NPC_BehaviorSet_Stormtrooper(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
 
-void NPC_BehaviorSet_Object(int bState)
+void NPC_BehaviorSet_Object(int b_state)
 {
 }
 
@@ -1632,9 +1632,9 @@ NPC_BehaviorSet_Jedi
 -------------------------
 */
 
-void NPC_BehaviorSet_Jedi(const int bState)
+void NPC_BehaviorSet_Jedi(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1653,7 +1653,7 @@ void NPC_BehaviorSet_Jedi(const int bState)
 		break;
 
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1661,9 +1661,9 @@ void NPC_BehaviorSet_Jedi(const int bState)
 qboolean G_JediInNormalAI(const gentity_t* ent)
 {
 	//NOTE: should match above func's switch!
-	//check our bState
-	const bState_t bState = G_CurrentBState(ent->NPC);
-	switch (bState)
+	//check our b_state
+	const bState_t b_state = G_CurrentBState(ent->NPC);
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1685,9 +1685,9 @@ qboolean G_JediInNormalAI(const gentity_t* ent)
 NPC_BehaviorSet_Droid
 -------------------------
 */
-void NPC_BehaviorSet_Droid(const int bState)
+void NPC_BehaviorSet_Droid(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_STAND_GUARD:
@@ -1695,7 +1695,7 @@ void NPC_BehaviorSet_Droid(const int bState)
 		NPC_BSDroid_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1705,9 +1705,9 @@ void NPC_BehaviorSet_Droid(const int bState)
 NPC_BehaviorSet_Mark1
 -------------------------
 */
-void NPC_BehaviorSet_Mark1(const int bState)
+void NPC_BehaviorSet_Mark1(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_STAND_GUARD:
@@ -1715,7 +1715,7 @@ void NPC_BehaviorSet_Mark1(const int bState)
 		NPC_BSMark1_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1725,9 +1725,9 @@ void NPC_BehaviorSet_Mark1(const int bState)
 NPC_BehaviorSet_Mark2
 -------------------------
 */
-void NPC_BehaviorSet_Mark2(const int bState)
+void NPC_BehaviorSet_Mark2(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_PATROL:
@@ -1736,7 +1736,7 @@ void NPC_BehaviorSet_Mark2(const int bState)
 		NPC_BSMark2_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1746,9 +1746,9 @@ void NPC_BehaviorSet_Mark2(const int bState)
 NPC_BehaviorSet_ATST
 -------------------------
 */
-void NPC_BehaviorSet_ATST(const int bState)
+void NPC_BehaviorSet_ATST(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_PATROL:
@@ -1757,7 +1757,7 @@ void NPC_BehaviorSet_ATST(const int bState)
 		NPC_BSATST_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1767,9 +1767,9 @@ void NPC_BehaviorSet_ATST(const int bState)
 NPC_BehaviorSet_MineMonster
 -------------------------
 */
-void NPC_BehaviorSet_MineMonster(const int bState)
+void NPC_BehaviorSet_MineMonster(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1779,7 +1779,7 @@ void NPC_BehaviorSet_MineMonster(const int bState)
 		NPC_BSMineMonster_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1789,9 +1789,9 @@ void NPC_BehaviorSet_MineMonster(const int bState)
 NPC_BehaviorSet_Howler
 -------------------------
 */
-void NPC_BehaviorSet_Howler(const int bState)
+void NPC_BehaviorSet_Howler(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1801,7 +1801,7 @@ void NPC_BehaviorSet_Howler(const int bState)
 		NPC_BSHowler_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1811,9 +1811,9 @@ void NPC_BehaviorSet_Howler(const int bState)
 NPC_BehaviorSet_Rancor
 -------------------------
 */
-void NPC_BehaviorSet_Rancor(const int bState)
+void NPC_BehaviorSet_Rancor(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1823,7 +1823,7 @@ void NPC_BehaviorSet_Rancor(const int bState)
 		NPC_BSRancor_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1833,9 +1833,9 @@ void NPC_BehaviorSet_Rancor(const int bState)
 NPC_BehaviorSet_Wampa
 -------------------------
 */
-void NPC_BehaviorSet_Wampa(const int bState)
+void NPC_BehaviorSet_Wampa(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1845,7 +1845,7 @@ void NPC_BehaviorSet_Wampa(const int bState)
 		NPC_BSWampa_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1855,9 +1855,9 @@ void NPC_BehaviorSet_Wampa(const int bState)
 NPC_BehaviorSet_SandCreature
 -------------------------
 */
-void NPC_BehaviorSet_SandCreature(const int bState)
+void NPC_BehaviorSet_SandCreature(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_STAND_GUARD:
 	case BS_PATROL:
@@ -1867,7 +1867,7 @@ void NPC_BehaviorSet_SandCreature(const int bState)
 		NPC_BSSandCreature_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1878,9 +1878,9 @@ NPC_BehaviorSet_Droid
 -------------------------
 */
 // Added 01/21/03 by AReis.
-void NPC_BehaviorSet_Animal(const int bState)
+void NPC_BehaviorSet_Animal(const int b_state)
 {
-	switch (bState)
+	switch (b_state)
 	{
 	case BS_DEFAULT:
 	case BS_STAND_GUARD:
@@ -1888,7 +1888,7 @@ void NPC_BehaviorSet_Animal(const int bState)
 		NPC_BSAnimal_Default();
 		break;
 	default:
-		NPC_BehaviorSet_Default(bState);
+		NPC_BehaviorSet_Default(b_state);
 		break;
 	}
 }
@@ -1901,22 +1901,22 @@ NPC_RunBehavior
 extern void NPC_BSEmplaced(void);
 extern qboolean NPC_CheckSurrender(void);
 extern void NPC_BSRT_Default(void);
-extern void NPC_BSCivilian_Default(int bState);
+extern void NPC_BSCivilian_Default(int b_state);
 extern void NPC_BSSD_Default(void);
-extern void NPC_BehaviorSet_Trooper(int bState);
+extern void NPC_BehaviorSet_Trooper(int b_state);
 extern bool NPC_IsTrooper(const gentity_t* ent);
 extern bool Pilot_MasterUpdate();
 extern void NPC_BSGM_Default();
 extern void NPC_BSDROIDEKA_Default(void);
 
-void NPC_RunBehavior(const int team, const int bState)
+void NPC_RunBehavior(const int team, const int b_state)
 {
 	//
-	if (bState == BS_FOLLOW_OVERRIDE)
+	if (b_state == BS_FOLLOW_OVERRIDE)
 	{
 		NPC_BSFollowLeader();
 	}
-	if (bState == BS_CINEMATIC)
+	if (b_state == BS_CINEMATIC)
 	{
 		NPC_BSCinematic();
 	}
@@ -1937,7 +1937,7 @@ void NPC_RunBehavior(const int team, const int bState)
 	}
 	else if (NPC->client->NPC_class == CLASS_HOWLER)
 	{
-		NPC_BehaviorSet_Howler(bState);
+		NPC_BehaviorSet_Howler(b_state);
 	}
 	else if (Jedi_CultistDestroyer(NPC))
 	{
@@ -1951,33 +1951,33 @@ void NPC_RunBehavior(const int team, const int bState)
 	else if (NPC->client->ps.weapon == WP_SABER)
 	{
 		//jedi
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_REBORN && NPC->client->ps.weapon == WP_MELEE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_SITHLORD && NPC->client->ps.weapon == WP_MELEE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_SITHLORD && NPC->client->ps.weapon == WP_NONE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_STORMTROOPER && NPC->client->ps.weapon == WP_TUSKEN_RIFLE || NPC->client->
 		ps.weapon == WP_FLECHETTE)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_STORMCOMMANDO || NPC->client->NPC_class == CLASS_CLONETROOPER)
 	{
 		//force-only reborn
-		NPC_BehaviorSet_Jedi(bState);
+		NPC_BehaviorSet_Jedi(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_BOBAFETT)
 	{
@@ -1992,11 +1992,11 @@ void NPC_RunBehavior(const int team, const int bState)
 			{
 				if (Boba_Flying(NPC))
 				{
-					NPC_BehaviorSet_Seeker(bState);
+					NPC_BehaviorSet_Seeker(b_state);
 				}
 				else
 				{
-					NPC_BehaviorSet_Jedi(bState);
+					NPC_BehaviorSet_Jedi(b_state);
 				}
 			}
 		}
@@ -2014,11 +2014,11 @@ void NPC_RunBehavior(const int team, const int bState)
 			{
 				if (Boba_Flying(NPC))
 				{
-					NPC_BehaviorSet_Seeker(bState);
+					NPC_BehaviorSet_Seeker(b_state);
 				}
 				else
 				{
-					NPC_BehaviorSet_Jedi(bState);
+					NPC_BehaviorSet_Jedi(b_state);
 				}
 			}
 		}
@@ -2032,29 +2032,29 @@ void NPC_RunBehavior(const int team, const int bState)
 		}
 		else
 		{
-			NPC_BehaviorSet_Stormtrooper(bState);
+			NPC_BehaviorSet_Stormtrooper(b_state);
 		}
 		G_CheckCharmed(NPC);
 	}
 	/*else if (NPC->client->NPC_class == CLASS_DROIDEKA)
 	{
-		NPC_BehaviorSet_Stormtrooper(bState);
+		NPC_BehaviorSet_Stormtrooper(b_state);
 	}*/
 	else if (NPC->client->NPC_class == CLASS_BATTLEDROID)
 	{
-		NPC_BehaviorSet_Stormtrooper(bState);
+		NPC_BehaviorSet_Stormtrooper(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_RANCOR)
 	{
-		NPC_BehaviorSet_Rancor(bState);
+		NPC_BehaviorSet_Rancor(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_SAND_CREATURE)
 	{
-		NPC_BehaviorSet_SandCreature(bState);
+		NPC_BehaviorSet_SandCreature(b_state);
 	}
 	else if (NPC->client->NPC_class == CLASS_WAMPA)
 	{
-		NPC_BehaviorSet_Wampa(bState);
+		NPC_BehaviorSet_Wampa(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPCInfo->scriptFlags & SCF_FORCED_MARCH)
@@ -2066,26 +2066,26 @@ void NPC_RunBehavior(const int team, const int bState)
 	{
 		if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
 		{
-			NPC_BehaviorSet_Sniper(bState);
+			NPC_BehaviorSet_Sniper(b_state);
 			G_CheckCharmed(NPC);
 			return;
 		}
-		NPC_BehaviorSet_Tusken(bState);
+		NPC_BehaviorSet_Tusken(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->ps.weapon == WP_TUSKEN_STAFF)
 	{
-		NPC_BehaviorSet_Tusken(bState);
+		NPC_BehaviorSet_Tusken(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->ps.weapon == WP_NOGHRI_STICK)
 	{
-		NPC_BehaviorSet_Stormtrooper(bState);
+		NPC_BehaviorSet_Stormtrooper(b_state);
 		G_CheckCharmed(NPC);
 	}
 	else if (NPC->client->NPC_class == CLASS_OBJECT)
 	{
-		NPC_BehaviorSet_Object(bState);
+		NPC_BehaviorSet_Object(b_state);
 	}
 	else
 	{
@@ -2097,37 +2097,37 @@ void NPC_RunBehavior(const int team, const int bState)
 			switch (NPC->client->NPC_class)
 			{
 			case CLASS_ATST:
-				NPC_BehaviorSet_ATST(bState);
+				NPC_BehaviorSet_ATST(b_state);
 				return;
 			case CLASS_PROBE:
-				NPC_BehaviorSet_ImperialProbe(bState);
+				NPC_BehaviorSet_ImperialProbe(b_state);
 				return;
 			case CLASS_REMOTE:
-				NPC_BehaviorSet_Remote(bState);
+				NPC_BehaviorSet_Remote(b_state);
 				return;
 			case CLASS_SENTRY:
-				NPC_BehaviorSet_Sentry(bState);
+				NPC_BehaviorSet_Sentry(b_state);
 				return;
 			case CLASS_INTERROGATOR:
-				NPC_BehaviorSet_Interrogator(bState);
+				NPC_BehaviorSet_Interrogator(b_state);
 				return;
 			case CLASS_MINEMONSTER:
-				NPC_BehaviorSet_MineMonster(bState);
+				NPC_BehaviorSet_MineMonster(b_state);
 				return;
 			case CLASS_HOWLER:
-				NPC_BehaviorSet_Howler(bState);
+				NPC_BehaviorSet_Howler(b_state);
 				return;
 			case CLASS_RANCOR:
-				NPC_BehaviorSet_Rancor(bState);
+				NPC_BehaviorSet_Rancor(b_state);
 				return;
 			case CLASS_SAND_CREATURE:
-				NPC_BehaviorSet_SandCreature(bState);
+				NPC_BehaviorSet_SandCreature(b_state);
 				return;
 			case CLASS_MARK1:
-				NPC_BehaviorSet_Mark1(bState);
+				NPC_BehaviorSet_Mark1(b_state);
 				return;
 			case CLASS_MARK2:
-				NPC_BehaviorSet_Mark2(bState);
+				NPC_BehaviorSet_Mark2(b_state);
 				return;
 			case CLASS_GALAKMECH:
 				NPC_BSGM_Default();
@@ -2151,15 +2151,15 @@ void NPC_RunBehavior(const int team, const int bState)
 
 			if (NPC_IsTrooper(NPC))
 			{
-				NPC_BehaviorSet_Trooper(bState);
+				NPC_BehaviorSet_Trooper(b_state);
 				return;
 			}
 
-			if (NPC->enemy && NPC->client->ps.weapon == WP_NONE && bState != BS_HUNT_AND_KILL && !Q3_TaskIDPending(
+			if (NPC->enemy && NPC->client->ps.weapon == WP_NONE && b_state != BS_HUNT_AND_KILL && !Q3_TaskIDPending(
 				NPC, TID_MOVE_NAV))
 			{
 				//if in battle and have no weapon, run away, fixme: when in BS_HUNT_AND_KILL, they just stand there
-				if (bState != BS_FLEE)
+				if (b_state != BS_FLEE)
 				{
 					NPC_StartFlee(NPC->enemy, NPC->enemy->currentOrigin, AEL_DANGER_GREAT, 5000, 10000);
 				}
@@ -2172,27 +2172,27 @@ void NPC_RunBehavior(const int team, const int bState)
 			if (NPC->client->ps.weapon == WP_SABER)
 			{
 				//special melee exception
-				NPC_BehaviorSet_Default(bState);
+				NPC_BehaviorSet_Default(b_state);
 				return;
 			}
 			if (NPC->client->ps.weapon == WP_DISRUPTOR && NPCInfo->scriptFlags & SCF_ALT_FIRE)
 			{
 				//a sniper
-				NPC_BehaviorSet_Sniper(bState);
+				NPC_BehaviorSet_Sniper(b_state);
 				return;
 			}
 			if (NPC->client->ps.weapon == WP_THERMAL
 				|| NPC->client->ps.weapon == WP_MELEE) //FIXME: separate AI for melee fighters
 			{
 				//a grenadier
-				NPC_BehaviorSet_Grenadier(bState);
+				NPC_BehaviorSet_Grenadier(b_state);
 				return;
 			}
 			if (NPC_CheckSurrender())
 			{
 				return;
 			}
-			NPC_BehaviorSet_Stormtrooper(bState);
+			NPC_BehaviorSet_Stormtrooper(b_state);
 			break;
 
 		case TEAM_NEUTRAL:
@@ -2200,13 +2200,13 @@ void NPC_RunBehavior(const int team, const int bState)
 			// special cases for enemy droids
 			if (NPC->client->NPC_class == CLASS_PROTOCOL)
 			{
-				NPC_BehaviorSet_Default(bState);
+				NPC_BehaviorSet_Default(b_state);
 			}
 			else if (NPC->client->NPC_class == CLASS_UGNAUGHT
 				|| NPC->client->NPC_class == CLASS_JAWA)
 			{
 				//others, too?
-				NPC_BSCivilian_Default(bState);
+				NPC_BSCivilian_Default(b_state);
 			}
 			// Add special vehicle behavior here.
 			else if (NPC->client->NPC_class == CLASS_VEHICLE)
@@ -2216,31 +2216,31 @@ void NPC_RunBehavior(const int team, const int bState)
 				{
 					if (pVehicle->m_pVehicleInfo->type == VH_ANIMAL)
 					{
-						NPC_BehaviorSet_Animal(bState);
+						NPC_BehaviorSet_Animal(b_state);
 					}
 				}
 			}
 			else
 			{
 				// Just one of the average droids
-				NPC_BehaviorSet_Droid(bState);
+				NPC_BehaviorSet_Droid(b_state);
 			}
 			break;
 
 		default:
 			if (NPC->client->NPC_class == CLASS_SEEKER)
 			{
-				NPC_BehaviorSet_Seeker(bState);
+				NPC_BehaviorSet_Seeker(b_state);
 			}
 			else
 			{
 				if (NPCInfo->charmedTime > level.time || NPCInfo->darkCharmedTime > level.time)
 				{
-					NPC_BehaviorSet_Charmed(bState);
+					NPC_BehaviorSet_Charmed(b_state);
 				}
 				else
 				{
-					NPC_BehaviorSet_Default(bState);
+					NPC_BehaviorSet_Default(b_state);
 				}
 				G_CheckCharmed(NPC);
 			}
@@ -2287,20 +2287,20 @@ void NPC_ExecuteBState(const gentity_t* self) //, int msec )
 		NPC->delayScriptTime = 0;
 	}
 
-	//Clear this and let bState set it itself, so it automatically handles changing bStates... but we need a set bState wrapper func
+	//Clear this and let b_state set it itself, so it automatically handles changing bStates... but we need a set b_state wrapper func
 	NPCInfo->combatMove = qfalse;
 
-	//Execute our bState
-	const bState_t bState = G_CurrentBState(NPCInfo);
+	//Execute our b_state
+	const bState_t b_state = G_CurrentBState(NPCInfo);
 
 	//Pick the proper bstate for us and run it
-	NPC_RunBehavior(self->client->playerTeam, bState);
+	NPC_RunBehavior(self->client->playerTeam, b_state);
 
 	if (NPC->enemy)
 	{
 		if (!NPC->enemy->inuse)
 		{
-			//just in case bState doesn't catch this
+			//just in case b_state doesn't catch this
 			G_ClearEnemy(NPC);
 		}
 	}

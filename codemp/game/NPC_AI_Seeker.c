@@ -95,21 +95,21 @@ void Seeker_MaintainHeight(void)
 			                                                     NPCS.NPC->enemy->r.maxs[2] + 8) - NPCS.NPC->r.
 				currentOrigin[2];
 
-			float difFactor = 1.0f;
+			float dif_factor = 1.0f;
 			if (NPCS.NPC->client->NPC_class == CLASS_BOBAFETT)
 			{
 				if (TIMER_Done(NPCS.NPC, "flameTime"))
 				{
-					difFactor = 10.0f;
+					dif_factor = 10.0f;
 				}
 			}
 
 			// cap to prevent dramatic height shifts
-			if (fabs(dif) > 2 * difFactor)
+			if (fabs(dif) > 2 * dif_factor)
 			{
-				if (fabs(dif) > 24 * difFactor)
+				if (fabs(dif) > 24 * dif_factor)
 				{
-					dif = dif < 0 ? -24 * difFactor : 24 * difFactor;
+					dif = dif < 0 ? -24 * dif_factor : 24 * dif_factor;
 				}
 
 				NPCS.NPC->client->ps.velocity[2] = (NPCS.NPC->client->ps.velocity[2] + dif) / 2;
@@ -491,9 +491,9 @@ void Seeker_FindEnemy(void)
 	VectorAdd(maxs, NPCS.NPC->r.currentOrigin, maxs);
 	VectorAdd(mins, NPCS.NPC->r.currentOrigin, mins);
 
-	const int numFound = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
+	const int num_found = trap->EntitiesInBox(mins, maxs, entity_list, MAX_GENTITIES);
 
-	for (int i = 0; i < numFound; i++)
+	for (int i = 0; i < num_found; i++)
 	{
 		gentity_t* ent = &g_entities[entity_list[i]];
 

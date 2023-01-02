@@ -188,37 +188,37 @@ extern int NPC_GetEntsNearBolt(gentity_t** radius_ents, float radius, int bolt_i
 
 void Wampa_Slash(const int bolt_index, const qboolean backhand)
 {
-	gentity_t* radiusEnts[128];
+	gentity_t* radius_ents[128];
 	constexpr float radius = 88;
 	constexpr float radius_squared = radius * radius;
 	vec3_t boltOrg;
 	const int damage = backhand ? Q_irand(10, 15) : Q_irand(20, 30);
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEnts, radius, bolt_index, boltOrg);
+	const int num_ents = NPC_GetEntsNearBolt(radius_ents, radius, bolt_index, boltOrg);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
-		if (!radiusEnts[i]->inuse)
+		if (!radius_ents[i]->inuse)
 		{
 			continue;
 		}
 
-		if (radiusEnts[i] == NPC)
+		if (radius_ents[i] == NPC)
 		{
 			//Skip the wampa ent
 			continue;
 		}
 
-		if (radiusEnts[i]->client == nullptr)
+		if (radius_ents[i]->client == nullptr)
 		{
 			//must be a client
 			continue;
 		}
 
-		if (DistanceSquared(radiusEnts[i]->currentOrigin, boltOrg) <= radius_squared)
+		if (DistanceSquared(radius_ents[i]->currentOrigin, boltOrg) <= radius_squared)
 		{
 			//smack
-			G_Damage(radiusEnts[i], NPC, NPC, vec3_origin, radiusEnts[i]->currentOrigin, damage,
+			G_Damage(radius_ents[i], NPC, NPC, vec3_origin, radius_ents[i]->currentOrigin, damage,
 			         backhand ? 0 : DAMAGE_NO_KNOCKBACK, MOD_MELEE);
 			if (backhand)
 			{
@@ -229,20 +229,20 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 				angs[YAW] += Q_flrand(25, 50);
 				angs[PITCH] = Q_flrand(-25, -15);
 				AngleVectors(angs, pushDir, nullptr, nullptr);
-				if (radiusEnts[i]->client->NPC_class != CLASS_WAMPA
-					&& radiusEnts[i]->client->NPC_class != CLASS_RANCOR
-					&& radiusEnts[i]->client->NPC_class != CLASS_ATST
-					&& !(radiusEnts[i]->flags & FL_NO_KNOCKBACK))
+				if (radius_ents[i]->client->NPC_class != CLASS_WAMPA
+					&& radius_ents[i]->client->NPC_class != CLASS_RANCOR
+					&& radius_ents[i]->client->NPC_class != CLASS_ATST
+					&& !(radius_ents[i]->flags & FL_NO_KNOCKBACK))
 				{
-					g_throw(radiusEnts[i], pushDir, 65);
-					if (radiusEnts[i]->health > 0 && Q_irand(0, 1))
+					g_throw(radius_ents[i], pushDir, 65);
+					if (radius_ents[i]->health > 0 && Q_irand(0, 1))
 					{
 						//do pain on enemy
-						G_Knockdown(radiusEnts[i], NPC, pushDir, 300, qtrue);
+						G_Knockdown(radius_ents[i], NPC, pushDir, 300, qtrue);
 					}
 				}
 			}
-			else if (radiusEnts[i]->health <= 0 && radiusEnts[i]->client)
+			else if (radius_ents[i]->health <= 0 && radius_ents[i]->client)
 			{
 				//killed them, chance of dismembering
 				if (!Q_irand(0, 1))
@@ -259,20 +259,20 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 					}
 					if (hit_loc == HL_HEAD)
 					{
-						NPC_SetAnim(radiusEnts[i], SETANIM_BOTH, BOTH_DEATH17,
+						NPC_SetAnim(radius_ents[i], SETANIM_BOTH, BOTH_DEATH17,
 						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
 					else if (hit_loc == HL_WAIST)
 					{
-						NPC_SetAnim(radiusEnts[i], SETANIM_BOTH, BOTH_DEATHBACKWARD2,
+						NPC_SetAnim(radius_ents[i], SETANIM_BOTH, BOTH_DEATHBACKWARD2,
 						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 					}
-					radiusEnts[i]->client->dismembered = false;
+					radius_ents[i]->client->dismembered = false;
 					//FIXME: the limb should just disappear, cuz I ate it
-					G_DoDismemberment(radiusEnts[i], radiusEnts[i]->currentOrigin, MOD_SABER, hit_loc, qtrue);
+					G_DoDismemberment(radius_ents[i], radius_ents[i]->currentOrigin, MOD_SABER, hit_loc, qtrue);
 				}
 			}
-			else if (!Q_irand(0, 3) && radiusEnts[i]->health > 0)
+			else if (!Q_irand(0, 3) && radius_ents[i]->health > 0)
 			{
 				//one out of every 4 normal hits does a knockdown, too
 				vec3_t pushDir;
@@ -281,9 +281,9 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 				angs[YAW] += Q_flrand(25, 50);
 				angs[PITCH] = Q_flrand(-25, -15);
 				AngleVectors(angs, pushDir, nullptr, nullptr);
-				G_Knockdown(radiusEnts[i], NPC, pushDir, 35, qtrue);
+				G_Knockdown(radius_ents[i], NPC, pushDir, 35, qtrue);
 			}
-			G_Sound(radiusEnts[i], G_SoundIndex("sound/chars/rancor/swipehit.wav"));
+			G_Sound(radius_ents[i], G_SoundIndex("sound/chars/rancor/swipehit.wav"));
 		}
 	}
 }

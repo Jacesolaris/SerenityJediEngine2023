@@ -21,7 +21,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "b_local.h"
-#include "g_nav.h"
 #include "anims.h"
 #include "g_navigator.h"
 #include "../cgame/cg_local.h"
@@ -142,7 +141,7 @@ ST_HoldPosition
 -------------------------
 */
 
-static void Tusken_HoldPosition(void)
+static void Tusken_HoldPosition()
 {
 	NPC_FreeCombatPoint(NPCInfo->combatPoint, qtrue);
 	NPCInfo->goalEntity = nullptr;
@@ -154,7 +153,7 @@ ST_Move
 -------------------------
 */
 
-static qboolean Tusken_Move(void)
+static qboolean Tusken_Move()
 {
 	NPCInfo->combatMove = qtrue; //always move straight toward our goal
 
@@ -177,7 +176,7 @@ NPC_BSTusken_Patrol
 -------------------------
 */
 
-void NPC_BSTusken_Patrol(void)
+void NPC_BSTusken_Patrol()
 {
 	//FIXME: pick up on bodies of dead buddies?
 	if (NPCInfo->confusionTime < level.time && NPCInfo->insanityTime < level.time)
@@ -267,7 +266,7 @@ void NPC_BSTusken_Patrol(void)
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-void NPC_Tusken_Taunt(void)
+void NPC_Tusken_Taunt()
 {
 	NPC_SetAnim(NPC, SETANIM_BOTH, BOTH_TUSKENTAUNT1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 	TIMER_Set(NPC, "taunting", NPC->client->ps.torsoAnimTimer);
@@ -280,7 +279,7 @@ NPC_BSTusken_Attack
 -------------------------
 */
 
-void NPC_BSTusken_Attack(void)
+void NPC_BSTusken_Attack()
 {
 	// IN PAIN
 	//---------
@@ -339,16 +338,16 @@ void NPC_BSTusken_Attack(void)
 
 	// Check To See If We Are In Attack Range
 	//----------------------------------------
-	const float boundsMin = NPC->maxs[0] + NPC->enemy->maxs[0];
-	const float lungeRange = boundsMin + 65.0f;
-	const float strikeRange = boundsMin + 40.0f;
-	const bool meleeRange = enemyDist < lungeRange;
-	const bool meleeWeapon = NPC->client->ps.weapon != WP_TUSKEN_RIFLE;
-	const bool canSeeEnemy = level.time - NPCInfo->enemyLastSeenTime < 3000;
+	const float bounds_min = NPC->maxs[0] + NPC->enemy->maxs[0];
+	const float lunge_range = bounds_min + 65.0f;
+	const float strike_range = bounds_min + 40.0f;
+	const bool melee_range = enemyDist < lunge_range;
+	const bool melee_weapon = NPC->client->ps.weapon != WP_TUSKEN_RIFLE;
+	const bool can_see_enemy = level.time - NPCInfo->enemyLastSeenTime < 3000;
 
 	// Check To Start Taunting
 	//-------------------------
-	if (canSeeEnemy && !meleeRange && TIMER_Done(NPC, "tuskenTauntCheck"))
+	if (can_see_enemy && !melee_range && TIMER_Done(NPC, "tuskenTauntCheck"))
 	{
 		TIMER_Set(NPC, "tuskenTauntCheck", Q_irand(2000, 6000));
 		if (!Q_irand(0, 3))
@@ -361,7 +360,7 @@ void NPC_BSTusken_Attack(void)
 	{
 		// Should I Attack?
 		//------------------
-		if (meleeRange || !meleeWeapon && canSeeEnemy)
+		if (melee_range || !melee_weapon && can_see_enemy)
 		{
 			if (!(NPCInfo->scriptFlags & SCF_FIRE_WEAPON) && // If This Flag Is On, It Calls Attack From Elsewhere
 				!(NPCInfo->scriptFlags & SCF_DONT_FIRE) && // If This Flag Is On, Don't Fire At All
@@ -372,7 +371,7 @@ void NPC_BSTusken_Attack(void)
 
 				// If Not In Strike Range, Do Lunge, Or If We Don't Have The Staff, Just Shoot Normally
 				//--------------------------------------------------------------------------------------
-				if (enemyDist > strikeRange)
+				if (enemyDist > strike_range)
 				{
 					ucmd.buttons |= BUTTON_ALT_ATTACK;
 				}
@@ -392,14 +391,14 @@ void NPC_BSTusken_Attack(void)
 		else if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 		{
 			NPCInfo->goalEntity = NPC->enemy;
-			NPCInfo->goalRadius = lungeRange;
+			NPCInfo->goalRadius = lunge_range;
 			Tusken_Move();
 		}
 	}
 
 	// UPDATE ANGLES
 	//---------------
-	if (canSeeEnemy)
+	if (can_see_enemy)
 	{
 		NPC_FaceEnemy(qtrue);
 	}
@@ -449,23 +448,23 @@ void Tusken_StaffTrace()
 			if (trace.fraction < 1.0f && trace.entity_num != last_hit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entity_num];
-				if (traceEnt->takedamage
-					&& (!traceEnt->client || traceEnt == NPC->enemy || traceEnt->client->NPC_class != NPC->client->
+				gentity_t* trace_ent = &g_entities[trace.entity_num];
+				if (trace_ent->takedamage
+					&& (!trace_ent->client || trace_ent == NPC->enemy || trace_ent->client->NPC_class != NPC->client->
 						NPC_class))
 				{
 					//smack
 					const int dmg = Q_irand(5, 10) * (g_spskill->integer + 1);
 
 					//FIXME: debounce?
-					G_Sound(traceEnt, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
-					G_Damage(traceEnt, NPC, NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
-					if (traceEnt->health > 0
-						&& (traceEnt->client && traceEnt->client->NPC_class == CLASS_JAWA && !Q_irand(0, 1)
+					G_Sound(trace_ent, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
+					G_Damage(trace_ent, NPC, NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					if (trace_ent->health > 0
+						&& (trace_ent->client && trace_ent->client->NPC_class == CLASS_JAWA && !Q_irand(0, 1)
 							|| dmg > 19)) //FIXME: base on skill!
 					{
 						//do pain on enemy
-						G_Knockdown(traceEnt, NPC, dir, 300, qtrue);
+						G_Knockdown(trace_ent, NPC, dir, 300, qtrue);
 					}
 					last_hit = trace.entity_num;
 					hit = qtrue;
@@ -486,10 +485,10 @@ void Tusken_StaffTracenew(gentity_t* self)
 	const int bolt_index = gi.G2API_AddBolt(&self->ghoul2[self->weaponModel[0]], "*weapon");
 	if (bolt_index != -1)
 	{
-		const int curTime = cg.time ? cg.time : level.time;
+		const int cur_time = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
-		int lastHit = ENTITYNUM_NONE;
-		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
+		int last_hit = ENTITYNUM_NONE;
+		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
 		{
 			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;
@@ -512,28 +511,28 @@ void Tusken_StaffTracenew(gentity_t* self)
 			}
 #endif
 			gi.trace(&trace, base, mins, maxs, tip, self->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-			if (trace.fraction < 1.0f && trace.entity_num != lastHit)
+			if (trace.fraction < 1.0f && trace.entity_num != last_hit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entity_num];
-				if (traceEnt->takedamage
-					&& (!traceEnt->client || traceEnt == self->enemy || traceEnt->client->NPC_class != self->client->
+				gentity_t* trace_ent = &g_entities[trace.entity_num];
+				if (trace_ent->takedamage
+					&& (!trace_ent->client || trace_ent == self->enemy || trace_ent->client->NPC_class != self->client->
 						NPC_class))
 				{
 					//smack
 					const int dmg = Q_irand(5, 10) * (g_spskill->integer + 1);
 
 					//FIXME: debounce?
-					G_Sound(traceEnt, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
-					G_Damage(traceEnt, self, self, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
-					if (traceEnt->health > 0
-						&& (traceEnt->client && traceEnt->client->NPC_class == CLASS_JAWA && !Q_irand(0, 1)
+					G_Sound(trace_ent, G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
+					G_Damage(trace_ent, self, self, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK, MOD_MELEE);
+					if (trace_ent->health > 0
+						&& (trace_ent->client && trace_ent->client->NPC_class == CLASS_JAWA && !Q_irand(0, 1)
 							|| dmg > 19)) //FIXME: base on skill!
 					{
 						//do pain on enemy
-						G_Knockdown(traceEnt, self, dir, 300, qtrue);
+						G_Knockdown(trace_ent, self, dir, 300, qtrue);
 					}
-					lastHit = trace.entity_num;
+					last_hit = trace.entity_num;
 					hit = qtrue;
 				}
 			}
@@ -562,14 +561,14 @@ qboolean G_TuskenAttackAnimDamage(gentity_t* self)
 		                                nullptr,
 		                                nullptr))
 		{
-			const float percentComplete = (current - start) / (end - start);
+			const float percent_complete = (current - start) / (end - start);
 			//gi.Printf("%f\n", percentComplete);
 			switch (self->client->ps.torsoAnim)
 			{
-			case BOTH_TUSKENATTACK1: return static_cast<qboolean>(percentComplete > 0.3 && percentComplete < 0.7);
-			case BOTH_TUSKENATTACK2: return static_cast<qboolean>(percentComplete > 0.3 && percentComplete < 0.7);
-			case BOTH_TUSKENATTACK3: return static_cast<qboolean>(percentComplete > 0.1 && percentComplete < 0.5);
-			case BOTH_TUSKENLUNGE1: return static_cast<qboolean>(percentComplete > 0.3 && percentComplete < 0.5);
+			case BOTH_TUSKENATTACK1: return static_cast<qboolean>(percent_complete > 0.3 && percent_complete < 0.7);
+			case BOTH_TUSKENATTACK2: return static_cast<qboolean>(percent_complete > 0.3 && percent_complete < 0.7);
+			case BOTH_TUSKENATTACK3: return static_cast<qboolean>(percent_complete > 0.1 && percent_complete < 0.5);
+			case BOTH_TUSKENLUNGE1: return static_cast<qboolean>(percent_complete > 0.3 && percent_complete < 0.5);
 			default: ;
 			}
 		}

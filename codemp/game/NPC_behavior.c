@@ -509,7 +509,7 @@ qboolean NPC_BSFollowLeader_AttackEnemy(void)
 		//lightsaber user or charmed enemy
 		if (NPCS.NPCInfo->tempBehavior != BS_FOLLOW_LEADER)
 		{
-			//not already in a temp bState
+			//not already in a temp b_state
 			//go after the guy
 			NPCS.NPCInfo->tempBehavior = BS_HUNT_AND_KILL;
 			NPC_UpdateAngles(qtrue, qtrue);
@@ -901,7 +901,7 @@ void NPC_BSSearch(void)
 			}
 			else
 			{
-				//if bState, change to run and shoot
+				//if b_state, change to run and shoot
 				NPCS.NPCInfo->behaviorState = BS_DEFAULT; //BS_HUNT_AND_KILL;
 			}
 			return;
@@ -935,7 +935,7 @@ void NPC_BSSearch(void)
 
 			if (NPCS.NPCInfo->homeWp == WAYPOINT_NONE || NPCS.NPC->waypoint == WAYPOINT_NONE)
 			{
-				//Heading for or at an invalid waypoint, get out of this bState
+				//Heading for or at an invalid waypoint, get out of this b_state
 				if (NPCS.NPCInfo->tempBehavior == BS_SEARCH)
 				{
 					//if tempbehavior, set tempbehavior to default
@@ -943,7 +943,7 @@ void NPC_BSSearch(void)
 				}
 				else
 				{
-					//if bState, change to stand guard
+					//if b_state, change to stand guard
 					NPCS.NPCInfo->behaviorState = BS_STAND_GUARD;
 					NPC_BSRunAndShoot();
 				}
@@ -1051,10 +1051,10 @@ NPC_BSSearchStart
 -------------------------
 */
 
-void NPC_BSSearchStart(const int homeWp, const bState_t bState)
+void NPC_BSSearchStart(const int homeWp, const bState_t b_state)
 {
 	NPCS.NPCInfo->homeWp = homeWp;
-	NPCS.NPCInfo->tempBehavior = bState;
+	NPCS.NPCInfo->tempBehavior = b_state;
 	NPCS.NPCInfo->aiFlags |= NPCAI_ENROUTE_TO_HOMEWP;
 	NPCS.NPCInfo->investigateDebounceTime = 0;
 	trap->Nav_GetNodePosition(homeWp, NPCS.NPCInfo->tempGoal->r.currentOrigin);
@@ -1121,7 +1121,7 @@ void NPC_BSWander(void)
 			}
 			else
 			{
-				//if bState, change to run and shoot
+				//if b_state, change to run and shoot
 				NPCS.NPCInfo->behaviorState = BS_DEFAULT;
 			}
 			return;

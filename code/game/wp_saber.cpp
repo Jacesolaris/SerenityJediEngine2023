@@ -22723,7 +22723,7 @@ void force_shoot_lightning(gentity_t* self)
 
 	AngleVectors(self->client->ps.viewangles, forward, nullptr, nullptr);
 	VectorNormalize(forward);
-	//Execute our bState
+	//Execute our b_state
 
 	if (self->client->ps.forcePowerLevel[FP_LIGHTNING] > FORCE_LEVEL_2)
 	{

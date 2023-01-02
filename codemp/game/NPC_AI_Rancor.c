@@ -130,7 +130,7 @@ void Rancor_Patrol(void)
 Rancor_Move
 -------------------------
 */
-void Rancor_Move(qboolean visible)
+void Rancor_Move()
 {
 	if (NPCS.NPCInfo->localState != LSTATE_WAITING)
 	{
@@ -152,7 +152,7 @@ extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_
                         qboolean break_saber_lock);
 extern void G_Dismember(const gentity_t* ent, const gentity_t* enemy, vec3_t point, int limb_type);
 extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
-extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
+extern int NPC_GetEntsNearBolt(int* radius_ents, float radius, int bolt_index, vec3_t boltOrg);
 
 void Rancor_DropVictim(gentity_t* self)
 {
@@ -220,9 +220,9 @@ void Rancor_Swing(const qboolean tryGrab)
 	const float radiusSquared = radius * radius;
 	vec3_t boltOrg;
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEntNums, radius, NPCS.NPC->client->renderInfo.handRBolt, boltOrg);
+	const int num_ents = NPC_GetEntsNearBolt(radiusEntNums, radius, NPCS.NPC->client->renderInfo.handRBolt, boltOrg);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
 		gentity_t* radiusEnt = &g_entities[radiusEntNums[i]];
 		if (!radiusEnt->inuse)
@@ -337,9 +337,9 @@ void Rancor_Smash(void)
 
 	AddSoundEvent(NPCS.NPC, NPCS.NPC->r.currentOrigin, 512, AEL_DANGER, qfalse, qtrue);
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEntNums, radius, NPCS.NPC->client->renderInfo.handLBolt, boltOrg);
+	const int num_ents = NPC_GetEntsNearBolt(radiusEntNums, radius, NPCS.NPC->client->renderInfo.handLBolt, boltOrg);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
 		gentity_t* radiusEnt = &g_entities[radiusEntNums[i]];
 		if (!radiusEnt->inuse)
@@ -398,10 +398,10 @@ void Rancor_Bite(void)
 	const float radiusSquared = radius * radius;
 	vec3_t boltOrg;
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEntNums, radius, NPCS.NPC->client->renderInfo.crotchBolt, boltOrg);
+	const int num_ents = NPC_GetEntsNearBolt(radiusEntNums, radius, NPCS.NPC->client->renderInfo.crotchBolt, boltOrg);
 	//was gutBolt?
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
 		gentity_t* radiusEnt = &g_entities[radiusEntNums[i]];
 		if (!radiusEnt->inuse)
@@ -738,7 +738,7 @@ void Rancor_Combat(void)
 			}
 			else
 			{
-				Rancor_Move(qtrue);
+				Rancor_Move();
 			}
 		}
 		else

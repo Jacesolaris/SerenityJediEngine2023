@@ -1305,7 +1305,7 @@ typedef struct level_locals_s
 	interestPoint_t interestPoints[MAX_INTEREST_POINTS];
 	int numInterestPoints;
 
-	//Combat points- NPCs in bState BS_COMBAT_POINT will find their closest empty combat_point
+	//Combat points- NPCs in b_state BS_COMBAT_POINT will find their closest empty combat_point
 	combatPoint_t combatPoints[MAX_COMBAT_POINTS];
 	int numCombatPoints;
 

@@ -283,12 +283,12 @@ static void Howler_TryDamage(const int damage, const qboolean tongue, const qboo
 }
 
 //Moved in from SP
-extern int NPC_GetEntsNearBolt(int* radiusEnts, float radius, int bolt_index, vec3_t boltOrg);
+extern int NPC_GetEntsNearBolt(int* radius_ents, float radius, int bolt_index, vec3_t boltOrg);
 extern float NPC_EntRangeFromBolt(const gentity_t* targ_ent, int bolt_index);
 
 static void Howler_Howl(void)
 {
-	//gentity_t	*radiusEnts[ 128 ];
+	//gentity_t	*radius_ents[ 128 ];
 	int radiusEntsNums[128];
 	const float radius = NPCS.NPC->spawnflags & 1 ? 256 : 128;
 	const float halfRadSquared = radius / 2 * (radius / 2);
@@ -297,9 +297,9 @@ static void Howler_Howl(void)
 
 	AddSoundEvent(NPCS.NPC, NPCS.NPC->r.currentOrigin, 512, AEL_DANGER, qfalse, qtrue);
 
-	const int numEnts = NPC_GetEntsNearBolt(radiusEntsNums, radius, NPCS.NPC->NPC->genericBolt1, boltOrg);
+	const int num_ents = NPC_GetEntsNearBolt(radiusEntsNums, radius, NPCS.NPC->NPC->genericBolt1, boltOrg);
 
-	for (int i = 0; i < numEnts; i++)
+	for (int i = 0; i < num_ents; i++)
 	{
 		gentity_t* ent = &g_entities[radiusEntsNums[i]];
 

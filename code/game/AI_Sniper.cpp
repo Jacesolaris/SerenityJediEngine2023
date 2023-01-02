@@ -50,7 +50,7 @@ constexpr auto LIGHT_SCALE = 0.25f;
 constexpr auto REALIZE_THRESHOLD = 0.6f;
 #define CAUTIOUS_THRESHOLD	( REALIZE_THRESHOLD * 0.75 )
 
-extern void NPC_Tusken_Taunt(void);
+extern void NPC_Tusken_Taunt();
 qboolean NPC_CheckPlayerTeamStealth();
 
 static qboolean enemyLOS;
@@ -137,16 +137,10 @@ ST_HoldPosition
 -------------------------
 */
 
-static void Sniper_HoldPosition(void)
+static void Sniper_HoldPosition()
 {
 	NPC_FreeCombatPoint(NPCInfo->combatPoint, qtrue);
 	NPCInfo->goalEntity = nullptr;
-
-	/*if ( TIMER_Done( NPC, "stand" ) )
-	{//FIXME: what if can't shoot from this pos?
-		TIMER_Set( NPC, "duck", Q_irand( 2000, 4000 ) );
-	}
-	*/
 }
 
 /*
@@ -154,7 +148,7 @@ static void Sniper_HoldPosition(void)
 ST_Move
 -------------------------
 */
-static qboolean Sniper_Move(void)
+static qboolean Sniper_Move()
 {
 	NPCInfo->combatMove = qtrue; //always doMove straight toward our goal
 
@@ -182,13 +176,13 @@ static qboolean Sniper_Move(void)
 		{
 			//we were running after enemy
 			//Try to find a combat point that can hit the enemy
-			int cpFlags = CP_CLEAR | CP_HAS_ROUTE;
+			int cp_flags = CP_CLEAR | CP_HAS_ROUTE;
 			if (NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)
 			{
-				cpFlags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
-				cpFlags |= CP_NEAREST;
+				cp_flags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
+				cp_flags |= CP_NEAREST;
 			}
-			int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cpFlags, 32);
+			int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cp_flags, 32);
 			if (cp == -1 && !(NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 			{
 				//okay, try one by the enemy
@@ -217,7 +211,7 @@ NPC_BSSniper_Patrol
 -------------------------
 */
 
-void NPC_BSSniper_Patrol(void)
+void NPC_BSSniper_Patrol()
 {
 	//FIXME: pick up on bodies of dead buddies?
 	NPC->count = 0;
@@ -342,7 +336,7 @@ ST_CheckMoveState
 -------------------------
 */
 
-static void Sniper_CheckMoveState(void)
+static void Sniper_CheckMoveState()
 {
 	//See if we're a scout
 	if (!(NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)) //NPCInfo->behaviorState == BS_STAND_AND_SHOOT )
@@ -429,7 +423,7 @@ static void Sniper_CheckMoveState(void)
 	}
 }
 
-static void Sniper_ResolveBlockedShot(void)
+static void Sniper_ResolveBlockedShot()
 {
 	if (TIMER_Done(NPC, "duck"))
 	{
@@ -442,13 +436,13 @@ static void Sniper_ResolveBlockedShot(void)
 			{
 				//we were running after enemy
 				//Try to find a combat point that can hit the enemy
-				int cpFlags = CP_CLEAR | CP_HAS_ROUTE;
+				int cp_flags = CP_CLEAR | CP_HAS_ROUTE;
 				if (NPCInfo->scriptFlags & SCF_USE_CP_NEAREST)
 				{
-					cpFlags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
-					cpFlags |= CP_NEAREST;
+					cp_flags &= ~(CP_FLANK | CP_APPROACH_ENEMY | CP_CLOSEST);
+					cp_flags |= CP_NEAREST;
 				}
-				int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cpFlags, 32);
+				int cp = NPC_FindCombatPoint(NPC->currentOrigin, NPC->currentOrigin, NPC->currentOrigin, cp_flags, 32);
 				if (cp == -1 && !(NPCInfo->scriptFlags & SCF_USE_CP_NEAREST))
 				{
 					//okay, try one by the enemy
@@ -471,22 +465,6 @@ static void Sniper_ResolveBlockedShot(void)
 			}
 		}
 	}
-	/*
-	else
-	{//maybe we should stand
-		if ( TIMER_Done( NPC, "stand" ) )
-		{//stand for as long as we'll be here
-			TIMER_Set( NPC, "stand", Q_irand( 500, 2000 ) );
-			return;
-		}
-	}
-	//Hmm, can't resolve this by telling them to duck or telling me to stand
-	//We need to doMove!
-	TIMER_Set( NPC, "roamTime", -1 );
-	TIMER_Set( NPC, "stick", -1 );
-	TIMER_Set( NPC, "duck", -1 );
-	TIMER_Set( NPC, "attackDelay", Q_irand( 1000, 3000 ) );
-	*/
 }
 
 /*
@@ -495,7 +473,7 @@ ST_CheckFireState
 -------------------------
 */
 
-static void Sniper_CheckFireState(void)
+static void Sniper_CheckFireState()
 {
 	if (enemyCS)
 	{
@@ -561,12 +539,12 @@ qboolean Sniper_EvaluateShot(const int hit)
 		return qfalse;
 	}
 
-	const gentity_t* hitEnt = &g_entities[hit];
+	const gentity_t* hit_ent = &g_entities[hit];
 	if (hit == NPC->enemy->s.number
-		|| hitEnt && hitEnt->client && hitEnt->client->playerTeam == NPC->client->enemyTeam
-		|| hitEnt && hitEnt->takedamage && (hitEnt->svFlags & SVF_GLASS_BRUSH || hitEnt->health < 40 || NPC->s.weapon ==
+		|| hit_ent && hit_ent->client && hit_ent->client->playerTeam == NPC->client->enemyTeam
+		|| hit_ent && hit_ent->takedamage && (hit_ent->svFlags & SVF_GLASS_BRUSH || hit_ent->health < 40 || NPC->s.weapon ==
 			WP_EMPLACED_GUN)
-		|| hitEnt && hitEnt->svFlags & SVF_GLASS_BRUSH)
+		|| hit_ent && hit_ent->svFlags & SVF_GLASS_BRUSH)
 	{
 		//can hit enemy or will hit glass, so shoot anyway
 		return qtrue;
@@ -574,11 +552,8 @@ qboolean Sniper_EvaluateShot(const int hit)
 	return qfalse;
 }
 
-void Sniper_FaceEnemy(void)
+void Sniper_FaceEnemy()
 {
-	//FIXME: the ones behind kill holes are facing some arbitrary direction and not firing
-	//FIXME: If actually trying to hit enemy, don't fire unless enemy is at least in front of me?
-	//FIXME: need to give designers option to make them not miss first few shots
 	if (NPC->enemy)
 	{
 		vec3_t muzzle, target, angles, forward, right, up;
@@ -596,20 +571,20 @@ void Sniper_FaceEnemy(void)
 				if (shoot && TIMER_Done(NPC, "attackDelay") && level.time >= NPCInfo->shotTime)
 				{
 					//ready to fire again
-					qboolean aimError = qfalse;
+					qboolean aim_error = qfalse;
 					qboolean hit = qtrue;
-					int tryMissCount = 0;
+					int try_miss_count = 0;
 					trace_t trace;
 
 					GetAnglesForDirection(muzzle, target, angles);
 					AngleVectors(angles, forward, right, up);
 
-					while (hit && tryMissCount < 10)
+					while (hit && try_miss_count < 10)
 					{
-						tryMissCount++;
+						try_miss_count++;
 						if (!Q_irand(0, 1))
 						{
-							aimError = qtrue;
+							aim_error = qtrue;
 							if (!Q_irand(0, 1))
 							{
 								VectorMA(target, NPC->enemy->maxs[2] * Q_flrand(1.5, 4), right, target);
@@ -619,7 +594,7 @@ void Sniper_FaceEnemy(void)
 								VectorMA(target, NPC->enemy->mins[2] * Q_flrand(1.5, 4), right, target);
 							}
 						}
-						if (!aimError || !Q_irand(0, 1))
+						if (!aim_error || !Q_irand(0, 1))
 						{
 							if (!Q_irand(0, 1))
 							{
@@ -649,17 +624,17 @@ void Sniper_FaceEnemy(void)
 			{
 				//based on distance, aim value, difficulty and enemy movement, miss
 				//FIXME: incorporate distance as a factor?
-				int missFactor = 8 - (NPCInfo->stats.aim + g_spskill->integer) * 3;
-				if (missFactor > ENEMY_POS_LAG_STEPS)
+				int miss_factor = 8 - (NPCInfo->stats.aim + g_spskill->integer) * 3;
+				if (miss_factor > ENEMY_POS_LAG_STEPS)
 				{
-					missFactor = ENEMY_POS_LAG_STEPS;
+					miss_factor = ENEMY_POS_LAG_STEPS;
 				}
-				else if (missFactor < 0)
+				else if (miss_factor < 0)
 				{
 					//???
-					missFactor = 0;
+					miss_factor = 0;
 				}
-				VectorCopy(NPCInfo->enemyLaggedPos[missFactor], target);
+				VectorCopy(NPCInfo->enemyLaggedPos[miss_factor], target);
 			}
 			GetAnglesForDirection(muzzle, target, angles);
 		}
@@ -676,7 +651,7 @@ void Sniper_FaceEnemy(void)
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-void Sniper_UpdateEnemyPos(void)
+void Sniper_UpdateEnemyPos()
 {
 	for (int i = MAX_ENEMY_POS_LAG - ENEMY_POS_LAG_INTERVAL; i >= 0; i -= ENEMY_POS_LAG_INTERVAL)
 	{
@@ -699,20 +674,20 @@ NPC_BSSniper_Attack
 -------------------------
 */
 
-void Sniper_StartHide(void)
+void Sniper_StartHide()
 {
-	const int duckTime = Q_irand(2000, 5000);
+	const int duck_time = Q_irand(2000, 5000);
 
-	TIMER_Set(NPC, "duck", duckTime);
+	TIMER_Set(NPC, "duck", duck_time);
 	if (NPC->client->NPC_class == CLASS_SABOTEUR)
 	{
 		Saboteur_Cloak(NPC);
 	}
 	TIMER_Set(NPC, "watch", 500);
-	TIMER_Set(NPC, "attackDelay", duckTime + Q_irand(500, 2000));
+	TIMER_Set(NPC, "attackDelay", duck_time + Q_irand(500, 2000));
 }
 
-void NPC_BSSniper_Attack(void)
+void NPC_BSSniper_Attack()
 {
 	//Don't do anything if we're hurt
 	if (NPC->painDebounceTime > level.time)
@@ -832,8 +807,8 @@ void NPC_BSSniper_Attack(void)
 		NPCInfo->enemyLastSeenTime = level.time;
 		VectorCopy(NPC->enemy->currentOrigin, NPCInfo->enemyLastSeenLocation);
 		enemyLOS = qtrue;
-		const float maxShootDist = NPC_MaxDistSquaredForWeapon();
-		if (enemyDist < maxShootDist)
+		const float max_shoot_dist = NPC_MaxDistSquaredForWeapon();
+		if (enemyDist < max_shoot_dist)
 		{
 			vec3_t fwd, right, up, muzzle, end;
 			trace_t tr;

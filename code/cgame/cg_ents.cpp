@@ -2382,10 +2382,20 @@ void CG_Limb(const centity_t* cent)
 						const int new_bolt = gi.G2API_AddBolt(&owner->ghoul2[owner->playerModel], cent->gent->target);
 						if (new_bolt != -1)
 						{
-							cent->gent->delay = cg.time + 50;
-							CG_PlayEffectBolted("saber/limb_bolton", owner->playerModel, new_bolt, owner->s.number,
-							                    owner->s.origin); //ent origin used to make FX culling work
+							cent->gent->delay = cg.time + 1500;
+							CG_PlayEffectBolted("saber/limb_bolton", owner->playerModel, new_bolt, owner->s.number,owner->s.origin); //ent origin used to make FX culling work
 						}
+					}
+					else
+					{
+						//Only the humanoids bleed
+						const int new_bolt = gi.G2API_AddBolt(&owner->ghoul2[owner->playerModel], cent->gent->target);
+						if (new_bolt != -1)
+						{
+							cent->gent->delay = cg.time + 2500;
+							CG_PlayEffectBolted("env/small_fire", owner->playerModel, new_bolt, owner->s.number, owner->s.origin); //ent origin used to make FX culling work
+						}
+						
 					}
 				}
 			}

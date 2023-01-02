@@ -8456,7 +8456,7 @@ UI_BuildFindPlayerList
 */
 static void UI_BuildFindPlayerList(qboolean force)
 {
-	static int numFound, numTimeOuts;
+	static int num_found, numTimeOuts;
 	int i;
 	serverStatusInfo_t info;
 
@@ -8493,11 +8493,11 @@ static void UI_BuildFindPlayerList(qboolean force)
 		uiInfo.numFoundPlayerServers = 1;
 
 		trap->SE_GetStringTextString("MENUS_SEARCHING", holdSPString, sizeof holdSPString);
-		trap->Cvar_Set("ui_playerServersFound", va(holdSPString, uiInfo.pendingServerStatus.num, numFound));
+		trap->Cvar_Set("ui_playerServersFound", va(holdSPString, uiInfo.pendingServerStatus.num, num_found));
 		//	Com_sprintf(uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1],
 		//					sizeof(uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1]),
 		//						"searching %d...", uiInfo.pendingServerStatus.num);
-		numFound = 0;
+		num_found = 0;
 		numTimeOuts++;
 	}
 	for (i = 0; i < MAX_SERVERSTATUSREQUESTS; i++)
@@ -8509,7 +8509,7 @@ static void UI_BuildFindPlayerList(qboolean force)
 			if (UI_GetServerStatusInfo(uiInfo.pendingServerStatus.server[i].adrstr, &info))
 			{
 				//
-				numFound++;
+				num_found++;
 				// parse through the server status lines
 				for (int j = 0; j < info.numLines; j++)
 				{
@@ -8546,10 +8546,10 @@ static void UI_BuildFindPlayerList(qboolean force)
 				}
 
 				trap->SE_GetStringTextString("MENUS_SEARCHING", holdSPString, sizeof holdSPString);
-				trap->Cvar_Set("ui_playerServersFound", va(holdSPString, uiInfo.pendingServerStatus.num, numFound));
+				trap->Cvar_Set("ui_playerServersFound", va(holdSPString, uiInfo.pendingServerStatus.num, num_found));
 				//	Com_sprintf(uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1],
 				//					sizeof(uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1]),
-				//						"searching %d/%d...", uiInfo.pendingServerStatus.num, numFound);
+				//						"searching %d/%d...", uiInfo.pendingServerStatus.num, num_found);
 				// retrieved the server status so reuse this spot
 				uiInfo.pendingServerStatus.server[i].valid = qfalse;
 			}
@@ -8585,11 +8585,11 @@ static void UI_BuildFindPlayerList(qboolean force)
 				uiInfo.pendingServerStatus.num++;
 
 				trap->SE_GetStringTextString("MENUS_SEARCHING", holdSPString, sizeof holdSPString);
-				trap->Cvar_Set("ui_playerServersFound", va(holdSPString, uiInfo.pendingServerStatus.num, numFound));
+				trap->Cvar_Set("ui_playerServersFound", va(holdSPString, uiInfo.pendingServerStatus.num, num_found));
 
 				//	Com_sprintf(uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1],
 				//					sizeof(uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers-1]),
-				//						"searching %d/%d...", uiInfo.pendingServerStatus.num, numFound);
+				//						"searching %d/%d...", uiInfo.pendingServerStatus.num, num_found);
 			}
 		}
 	}

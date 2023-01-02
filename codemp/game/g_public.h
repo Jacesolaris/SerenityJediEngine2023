@@ -192,7 +192,7 @@ typedef enum //# taskID_e
 	TID_ANIM_BOTH,		// Waiting to finish lower and upper anim holdtimes or normal md3 animating
 	TID_MOVE_NAV,		// Trying to get to a navgoal or For ET_MOVERS
 	TID_ANGLE_FACE,		// Turning to an angle or facing
-	TID_BSTATE,			// Waiting for a certain bState to finish
+	TID_BSTATE,			// Waiting for a certain b_state to finish
 	TID_LOCATION,		// Waiting for ent to enter a specific trigger_location
 	//	TID_MISSIONSTATUS,	// Waiting for player to finish reading MISSION STATUS SCREEN
 	TID_RESIZE,			// Waiting for clear bbox to inflate size
