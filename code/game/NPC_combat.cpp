@@ -48,7 +48,7 @@ extern qboolean PM_DroidMelee(int npc_class);
 extern int delayedShutDown;
 extern qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 extern qboolean PM_ReloadAnim(int anim);
-void ChangeWeapon(const gentity_t* ent, int newWeapon);
+void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern void npc_check_speak(gentity_t* speaker_npc);
 
 void G_ClearEnemy(gentity_t* self)
@@ -711,7 +711,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 	self->enemy = enemy;
 }
 
-void ChangeWeapon(const gentity_t* ent, int newWeapon)
+void ChangeWeapon(const gentity_t* ent, int new_weapon)
 {
 	if (!ent || !ent->client || !ent->NPC)
 	{
@@ -723,19 +723,19 @@ void ChangeWeapon(const gentity_t* ent, int newWeapon)
 		return;
 	}
 
-	if (newWeapon < 0)
+	if (new_weapon < 0)
 	{
 		// bug fix. If newWeapon is -1, set it to WP_NONE
-		newWeapon = WP_NONE;
+		new_weapon = WP_NONE;
 	}
 
-	ent->client->ps.weapon = newWeapon;
+	ent->client->ps.weapon = new_weapon;
 	ent->NPC->shotTime = 0;
 	ent->NPC->burstCount = 0;
 	ent->NPC->attackHold = 0;
-	ent->NPC->currentAmmo = ent->client->ps.ammo[weaponData[newWeapon].ammoIndex];
+	ent->NPC->currentAmmo = ent->client->ps.ammo[weaponData[new_weapon].ammoIndex];
 
-	switch (newWeapon)
+	switch (new_weapon)
 	{
 	case WP_BRYAR_PISTOL:
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
@@ -1936,11 +1936,11 @@ gentity_t* NPC_PickEnemy(const gentity_t* closestTo, const int enemyTeam, const 
 	return &g_entities[choice[rand() % num_choices]];
 }
 
-int NPC_CheckMultipleEnemies(const gentity_t* closestTo, const int enemyTeam, const qboolean checkVis)
+int NPC_CheckMultipleEnemies(const gentity_t* closest_to, const int enemy_team, const qboolean check_vis)
 {
-	int visChecks = CHECK_360 | CHECK_FOV | CHECK_VISRANGE;
+	int vis_checks = CHECK_360 | CHECK_FOV | CHECK_VISRANGE;
 
-	if (enemyTeam == TEAM_NEUTRAL)
+	if (enemy_team == TEAM_NEUTRAL)
 	{
 		return NULL;
 	}
@@ -1951,14 +1951,14 @@ int NPC_CheckMultipleEnemies(const gentity_t* closestTo, const int enemyTeam, co
 		//Formations guys don't require inFov to pick up a target
 		//These other behavior states are active battle states and should not
 		//use FOV.  FOV checks are for enemies who are patrolling, guarding, etc.
-		visChecks &= ~CHECK_FOV;
+		vis_checks &= ~CHECK_FOV;
 	}
 
 	int num_choices = 0;
 
-	for (int entNum = 0; entNum < globals.num_entities; entNum++)
+	for (int ent_num = 0; ent_num < globals.num_entities; ent_num++)
 	{
-		const gentity_t* newenemy = &g_entities[entNum];
+		const gentity_t* newenemy = &g_entities[ent_num];
 
 		if (newenemy != NPC && (newenemy->client || newenemy->svFlags & SVF_NONNPC_ENEMY) && !(newenemy->flags &
 			FL_NOTARGET) && !(newenemy->s.eFlags & EF_NODRAW))
@@ -1966,10 +1966,10 @@ int NPC_CheckMultipleEnemies(const gentity_t* closestTo, const int enemyTeam, co
 			if (newenemy->health > 0)
 			{
 				if (newenemy->client && NPC_ValidEnemy(newenemy)
-					|| !newenemy->client && newenemy->noDamageTeam == enemyTeam)
+					|| !newenemy->client && newenemy->noDamageTeam == enemy_team)
 				{
 					//FIXME:  check for range and FOV or vis?
-					if (NPC->client->playerTeam == TEAM_PLAYER && enemyTeam == TEAM_PLAYER)
+					if (NPC->client->playerTeam == TEAM_PLAYER && enemy_team == TEAM_PLAYER)
 					{
 						//player allies turning on ourselves?  How?
 						if (newenemy->s.number)
@@ -2003,11 +2003,11 @@ int NPC_CheckMultipleEnemies(const gentity_t* closestTo, const int enemyTeam, co
 							}
 						}
 
-						VectorSubtract(closestTo->currentOrigin, newenemy->currentOrigin, diff);
-						const float relDist = VectorLengthSquared(diff);
+						VectorSubtract(closest_to->currentOrigin, newenemy->currentOrigin, diff);
+						const float rel_dist = VectorLengthSquared(diff);
 						if (newenemy->client && newenemy->client->hiddenDist > 0)
 						{
-							if (relDist > newenemy->client->hiddenDist * newenemy->client->hiddenDist)
+							if (rel_dist > newenemy->client->hiddenDist * newenemy->client->hiddenDist)
 							{
 								//out of hidden range
 								if (VectorLengthSquared(newenemy->client->hiddenDir))
@@ -2040,7 +2040,7 @@ int NPC_CheckMultipleEnemies(const gentity_t* closestTo, const int enemyTeam, co
 						if (!NPC_EnemyTooFar(newenemy, 0, qfalse))
 						{
 							int choice[128];
-							if (checkVis)
+							if (check_vis)
 							{
 								if (NPC_CheckVisibility(newenemy, CHECK_360 | CHECK_VISRANGE) >= VIS_360)
 								{
@@ -3299,7 +3299,7 @@ qboolean NPC_SetCombatPoint(const int combatPointID)
 
 extern qboolean CheckItemCanBePickedUpByNPC(const gentity_t* item, const gentity_t* pickerupper);
 
-gentity_t* NPC_SearchForWeapons(void)
+gentity_t* NPC_SearchForWeapons()
 {
 	gentity_t* bestFound = nullptr;
 	float bestDist = Q3_INFINITE;
@@ -3343,14 +3343,14 @@ gentity_t* NPC_SearchForWeapons(void)
 	return bestFound;
 }
 
-void NPC_SetPickUpGoal(gentity_t* foundWeap)
+void NPC_SetPickUpGoal(gentity_t* found_weap)
 {
 	vec3_t org;
 
-	VectorCopy(foundWeap->currentOrigin, org);
-	org[2] += 24 - foundWeap->mins[2] * -1; //adjust the origin so that I am on the ground
-	NPC_SetMoveGoal(NPC, org, foundWeap->maxs[0] * 0.75, qfalse, -1, foundWeap);
-	NPCInfo->tempGoal->waypoint = foundWeap->waypoint;
+	VectorCopy(found_weap->currentOrigin, org);
+	org[2] += 24 - found_weap->mins[2] * -1; //adjust the origin so that I am on the ground
+	NPC_SetMoveGoal(NPC, org, found_weap->maxs[0] * 0.75, qfalse, -1, found_weap);
+	NPCInfo->tempGoal->waypoint = found_weap->waypoint;
 	NPCInfo->tempBehavior = BS_DEFAULT;
 	NPCInfo->squadState = SQUAD_TRANSITION;
 }

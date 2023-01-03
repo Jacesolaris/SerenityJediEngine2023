@@ -2286,7 +2286,7 @@ void G_SetsaberdownorAnim(gentity_t* ent)
 extern cvar_t* g_saberPickuppableDroppedSabers;
 extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern void CG_ChangeWeapon(int num);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 void Cmd_SaberDrop_f(gentity_t* ent, const int saber_num)
 {

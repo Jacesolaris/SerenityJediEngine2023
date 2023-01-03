@@ -5900,7 +5900,7 @@ static void PM_GroundTraceMissed()
 }
 
 #ifdef _GAME
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock);
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength, qboolean breakSaberLock);
 #endif
 
 qboolean BG_InDFA()

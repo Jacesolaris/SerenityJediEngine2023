@@ -94,7 +94,7 @@ extern usercmd_t ucmd;
 extern visibility_t enemyVisibility;
 
 //AI_Default
-extern qboolean NPC_CheckInvestigate(int alertEventNum);
+extern qboolean NPC_CheckInvestigate(int alert_event_num);
 extern qboolean NPC_StandTrackAndShoot(gentity_t* NPC);
 extern void NPC_BSIdle();
 extern void NPC_BSPointShoot(qboolean shoot);
@@ -108,17 +108,17 @@ extern void NPC_BSDefault();
 
 //NPC_behavior
 extern void NPC_BSAdvanceFight();
-extern void NPC_BSSleep(void);
+extern void NPC_BSSleep();
 extern void NPC_BSFollowLeader(void);
-extern void NPC_BSJump(void);
-extern void NPC_BSRemove(void);
-extern void NPC_BSSearch(void);
-extern void NPC_BSSearchStart(int homeWp, bState_t b_state);
+extern void NPC_BSJump();
+extern void NPC_BSRemove();
+extern void NPC_BSSearch();
+extern void NPC_BSSearchStart(int home_wp, bState_t b_state);
 extern void NPC_BSWander();
-extern qboolean NPC_BSFlee(void);
-extern void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin, int fleeTimeMax);
-extern void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, int dangerLevel, int fleeTimeMin,
-                        int fleeTimeMax);
+extern qboolean NPC_BSFlee();
+extern void NPC_StartFlee(gentity_t* enemy, vec3_t danger_point, int danger_level, int flee_time_min, int flee_time_max);
+extern void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, int danger_level, int flee_time_min,
+                        int flee_time_max);
 
 //NPC_combat
 extern void NPC_ChangeWeapon(int newWeapon);

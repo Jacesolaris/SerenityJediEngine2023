@@ -726,7 +726,7 @@ void Workshop_Set_Aiflags_f(gentity_t* ent)
 
 // Set weapon
 extern stringID_table_t WPTable[];
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern int wp_saber_init_blade_data(gentity_t* ent);
 extern void g_create_g2_attached_weapon_model(gentity_t* ent, const char* ps_weapon_model, int bolt_num,
                                               int weapon_num);

@@ -20,11 +20,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 
-#include "../cgame/cg_local.h"
 #include "b_local.h"
 #include "Q3_Interface.h"
 
-extern qboolean NPC_CheckSurrender(void);
+extern qboolean NPC_CheckSurrender();
 extern void NPC_BehaviorSet_Default(int b_state);
 
 void NPC_BSCivilian_Default(const int b_state)

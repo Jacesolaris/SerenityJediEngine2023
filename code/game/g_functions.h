@@ -193,7 +193,7 @@ extern void NPC_Begin(gentity_t* ent);
 extern void moverCallback(gentity_t* ent);
 extern void anglerCallback(gentity_t* ent);
 extern void RemoveOwner(gentity_t* ent);
-extern void MakeOwnerInvis(gentity_t* ent);
+extern void MakeOwnerInvis(gentity_t* self);
 extern void MakeOwnerEnergy(gentity_t* ent);
 extern void func_usable_think(gentity_t* self);
 extern void misc_dlight_think(gentity_t* ent);

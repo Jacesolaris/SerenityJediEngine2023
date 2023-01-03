@@ -926,7 +926,7 @@ void RT_Flying_Think(void)
 //=====================================================================================
 extern void RT_CheckJump();
 
-void NPC_BSRT_Default(void)
+void NPC_BSRT_Default()
 {
 	//FIXME: custom pain and death funcs:
 	//pain3 is in air

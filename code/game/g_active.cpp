@@ -33,7 +33,7 @@ constexpr auto SLOWDOWN_DIST = 128.0f;
 constexpr auto MIN_NPC_SPEED = 16.0f;
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern void TryUse(gentity_t* ent);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern void ScoreBoardReset(void);
 extern void wp_saber_update(gentity_t* self, const usercmd_t* ucmd);
 extern void wp_saber_start_missile_block_check(gentity_t* self, const usercmd_t* ucmd);

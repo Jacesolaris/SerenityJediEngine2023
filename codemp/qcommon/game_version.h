@@ -29,10 +29,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define VERSION_MAJOR_RELEASE		23
 #define VERSION_MINOR_RELEASE		01
-#define VERSION_INTERNAL_BUILD		02
+#define VERSION_INTERNAL_BUILD		03
 
-#define VERSION_STRING				"Year-23,Month-01,Day-02,BuildNum-01"
-#define VERSION_STRING_DOTTED		"Year-23,Month-01,Day-02,BuildNum-01"
+#define VERSION_STRING				"Year-23,Month-01,Day-03,BuildNum-01"
+#define VERSION_STRING_DOTTED		"Year-23,Month-01,Day-03,BuildNum-01"
 
 #if defined(_DEBUG)
 #define	JK_VERSION		"(debug)SerenityJediEngine2023-MP: " VERSION_STRING_DOTTED

@@ -221,13 +221,13 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				if (turnFromImpact)
 				{
 					//bounce off impact surf and turn away
-					vec3_t pushDir = {0}, turnAwayAngles, turnDelta;
+					vec3_t push_dir = {0}, turnAwayAngles, turnDelta;
 					vec3_t moveDir;
 					//bounce
 					if (!turnHitEnt)
 					{
 						//hit wall
-						VectorScale(bounceDir, pm->ps->speed * 0.25f / pSelfVeh->m_pVehicleInfo->mass, pushDir);
+						VectorScale(bounceDir, pm->ps->speed * 0.25f / pSelfVeh->m_pVehicleInfo->mass, push_dir);
 					}
 					else
 					{
@@ -235,17 +235,17 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 #ifdef _GAME
 						if (hitEnt->client)
 						{
-							VectorScale(bounceDir, (pm->ps->speed + hitEnt->client->ps.speed) * 0.5f, pushDir);
+							VectorScale(bounceDir, (pm->ps->speed + hitEnt->client->ps.speed) * 0.5f, push_dir);
 						}
 						else
 						{
-							VectorScale(bounceDir, (pm->ps->speed + hitEnt->s.speed) * 0.5f, pushDir);
+							VectorScale(bounceDir, (pm->ps->speed + hitEnt->s.speed) * 0.5f, push_dir);
 						}
 #else
 						VectorScale(bounceDir, (pm->ps->speed + hitEnt->s.speed) * 0.5f, bounceDir);
 #endif
-						VectorScale(pushDir, l / pSelfVeh->m_pVehicleInfo->mass, pushDir);
-						VectorScale(pushDir, 0.1f, pushDir);
+						VectorScale(push_dir, l / pSelfVeh->m_pVehicleInfo->mass, push_dir);
+						VectorScale(push_dir, 0.1f, push_dir);
 					}
 					VectorNormalize2(pm->ps->velocity, moveDir);
 					float bounceDot = DotProduct(moveDir, bounceDir) * -1;
@@ -253,8 +253,8 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 					{
 						bounceDot = 0.1f;
 					}
-					VectorScale(pushDir, bounceDot, pushDir);
-					VectorAdd(pm->ps->velocity, pushDir, pm->ps->velocity);
+					VectorScale(push_dir, bounceDot, push_dir);
+					VectorAdd(pm->ps->velocity, push_dir, pm->ps->velocity);
 					//turn
 					float turnDivider = pSelfVeh->m_pVehicleInfo->mass / 400.0f;
 					if (turnHitEnt)
@@ -330,16 +330,16 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 						//flip the bounceDir
 						VectorScale(bounceDir, -1, bounceDir);
 						//do bounce
-						VectorScale(bounceDir, (pm->ps->speed + l) * 0.5f, pushDir);
-						VectorScale(pushDir, l * 0.5f / hitEnt->m_pVehicle->m_pVehicleInfo->mass, pushDir);
+						VectorScale(bounceDir, (pm->ps->speed + l) * 0.5f, push_dir);
+						VectorScale(push_dir, l * 0.5f / hitEnt->m_pVehicle->m_pVehicleInfo->mass, push_dir);
 						VectorNormalize2(hitEnt->client->ps.velocity, moveDir);
 						bounceDot = DotProduct(moveDir, bounceDir) * -1;
 						if (bounceDot < 0.1f)
 						{
 							bounceDot = 0.1f;
 						}
-						VectorScale(pushDir, bounceDot, pushDir);
-						VectorAdd(hitEnt->client->ps.velocity, pushDir, hitEnt->client->ps.velocity);
+						VectorScale(push_dir, bounceDot, push_dir);
+						VectorAdd(hitEnt->client->ps.velocity, push_dir, hitEnt->client->ps.velocity);
 						//turn
 						turnDivider = hitEnt->m_pVehicle->m_pVehicleInfo->mass / 400.0f;
 						if (turnHitEnt)

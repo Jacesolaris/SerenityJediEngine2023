@@ -41,7 +41,7 @@ extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLoo
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clear_time);
 extern void Mark1_dying(gentity_t* self);
-extern void NPC_BSCinematic(void);
+extern void NPC_BSCinematic();
 extern int GetTime(int lastTime);
 extern void G_CheckCharmed(gentity_t* self);
 extern qboolean Boba_Flying(const gentity_t* self);
@@ -1898,16 +1898,16 @@ void NPC_BehaviorSet_Animal(const int b_state)
 NPC_RunBehavior
 -------------------------
 */
-extern void NPC_BSEmplaced(void);
-extern qboolean NPC_CheckSurrender(void);
-extern void NPC_BSRT_Default(void);
+extern void NPC_BSEmplaced();
+extern qboolean NPC_CheckSurrender();
+extern void NPC_BSRT_Default();
 extern void NPC_BSCivilian_Default(int b_state);
-extern void NPC_BSSD_Default(void);
+extern void NPC_BSSD_Default();
 extern void NPC_BehaviorSet_Trooper(int b_state);
 extern bool NPC_IsTrooper(const gentity_t* ent);
 extern bool Pilot_MasterUpdate();
 extern void NPC_BSGM_Default();
-extern void NPC_BSDROIDEKA_Default(void);
+extern void NPC_BSDROIDEKA_Default();
 
 void NPC_RunBehavior(const int team, const int b_state)
 {

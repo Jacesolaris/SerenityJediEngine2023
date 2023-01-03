@@ -2929,20 +2929,20 @@ static void PM_Accelerate(vec3_t wishdir, const float wishspeed, const float acc
 	else
 	{
 		//use the proper way for siege
-		vec3_t wishVelocity;
-		vec3_t pushDir;
+		vec3_t wish_velocity;
+		vec3_t push_dir;
 
-		VectorScale(wishdir, wishspeed, wishVelocity);
-		VectorSubtract(wishVelocity, pm->ps->velocity, pushDir);
-		const float pushLen = VectorNormalize(pushDir);
+		VectorScale(wishdir, wishspeed, wish_velocity);
+		VectorSubtract(wish_velocity, pm->ps->velocity, push_dir);
+		const float push_len = VectorNormalize(push_dir);
 
 		float canPush = accel * pml.frametime * wishspeed;
-		if (canPush > pushLen)
+		if (canPush > push_len)
 		{
-			canPush = pushLen;
+			canPush = push_len;
 		}
 
-		VectorMA(pm->ps->velocity, canPush, pushDir, pm->ps->velocity);
+		VectorMA(pm->ps->velocity, canPush, push_dir, pm->ps->velocity);
 	}
 }
 
@@ -7969,7 +7969,7 @@ static void PM_GroundTraceMissed(void)
 }
 
 #ifdef _GAME
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean breakSaberLock);
 #endif
 

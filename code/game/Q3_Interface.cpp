@@ -49,9 +49,9 @@ extern void lock_doors(gentity_t* ent);
 
 extern void InitMover(gentity_t* ent);
 extern void MatchTeam(gentity_t* team_leader, int mover_state, int time);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern char* G_GetLocationForEnt(const gentity_t* ent);
-extern void NPC_BSSearchStart(int homeWp, bState_t b_state);
+extern void NPC_BSSearchStart(int home_wp, bState_t b_state);
 extern void InitMoverTrData(gentity_t* ent);
 extern qboolean spot_would_telefrag2(const gentity_t* mover, vec3_t dest);
 extern cvar_t* g_sex;

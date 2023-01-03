@@ -6208,7 +6208,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 
 			if (push_list[x]->client)
 			{
-				vec3_t pushDir;
+				vec3_t push_dir;
 				qboolean wasWallGrabbing = qfalse;
 				qboolean canPullWeapon = qtrue;
 				float dirLen = 0;
@@ -6309,9 +6309,9 @@ void ForceThrow(gentity_t* self, qboolean pull)
 				//shove them
 				if (pull)
 				{
-					VectorSubtract(self->client->ps.origin, thispush_org, pushDir);
+					VectorSubtract(self->client->ps.origin, thispush_org, push_dir);
 
-					if (push_list[x]->client && VectorLength(pushDir) <= 256)
+					if (push_list[x]->client && VectorLength(push_dir) <= 256)
 					{
 						if (!OnSameTeam(self, push_list[x]) && push_list[x]->client->ps.saberFatigueChainCount <
 							MISHAPLEVEL_HEAVY)
@@ -6348,15 +6348,15 @@ void ForceThrow(gentity_t* self, qboolean pull)
 				}
 				else
 				{
-					VectorSubtract(thispush_org, self->client->ps.origin, pushDir);
+					VectorSubtract(thispush_org, self->client->ps.origin, push_dir);
 				}
 
 				if (!dirLen)
 				{
-					dirLen = VectorLength(pushDir);
+					dirLen = VectorLength(push_dir);
 				}
 
-				VectorNormalize(pushDir);
+				VectorNormalize(push_dir);
 
 				if (push_list[x]->client)
 				{
@@ -6393,7 +6393,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						if (BG_KnockDownable(&push_list[x]->client->ps) && dirLen <= 128.0f)
 						{
 							//can only do a knockdown if running
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 
 							if (self->client->ps.weapon == WP_MELEE || self->client->ps.weapon == WP_NONE && self->
@@ -6453,7 +6453,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						else if (PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove) && dirLen <= 64.0f)
 						{
 							//do a knockdown if fairly close
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 							pushPowerMod = 200;
 
@@ -6480,7 +6480,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 							push_list[x]))
 						{
 							//can only do a knockdown if fairly close
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 							pushPowerMod = 250;
 
@@ -6506,7 +6506,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						else if (!in_front(push_list[x]->r.currentOrigin, self->r.currentOrigin,
 						                   self->client->ps.viewangles, 0.3f) && !walk_check(push_list[x]))
 						{
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 							pushPowerMod = 200;
 
@@ -6531,7 +6531,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						}
 						else
 						{
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							pushPowerMod = 200;
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 
@@ -6573,7 +6573,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						else if (PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove) && dirLen <= 64.0f)
 						{
 							//do a knockdown if fairly close
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							pushPowerMod = 200;
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 
@@ -6600,7 +6600,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 							push_list[x]))
 						{
 							//can only do a knockdown if fairly close
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							pushPowerMod = 250;
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 
@@ -6626,7 +6626,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						else if (!in_front(push_list[x]->r.currentOrigin, self->r.currentOrigin,
 						                   self->client->ps.viewangles, 0.3f) && !walk_check(push_list[x]))
 						{
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							pushPowerMod = 200;
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 
@@ -6651,7 +6651,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						}
 						else
 						{
-							G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
 							pushPowerMod = 200;
 							G_Sound(push_list[x], CHAN_BODY, G_SoundIndex("sound/weapons/force/pushed.mp3"));
 
@@ -6681,13 +6681,13 @@ void ForceThrow(gentity_t* self, qboolean pull)
 						pushPowerMod *= 4;
 					}
 
-					push_list[x]->client->ps.velocity[0] = pushDir[0] * pushPowerMod;
-					push_list[x]->client->ps.velocity[1] = pushDir[1] * pushPowerMod;
+					push_list[x]->client->ps.velocity[0] = push_dir[0] * pushPowerMod;
+					push_list[x]->client->ps.velocity[1] = push_dir[1] * pushPowerMod;
 
 					if ((int)push_list[x]->client->ps.velocity[2] == 0)
 					{
 						//if not going anywhere vertically, boost them up a bit
-						push_list[x]->client->ps.velocity[2] = pushDir[2] * pushPowerMod + 200;
+						push_list[x]->client->ps.velocity[2] = push_dir[2] * pushPowerMod + 200;
 
 						if (push_list[x]->client->ps.velocity[2] < 128)
 						{
@@ -6696,7 +6696,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 					}
 					else
 					{
-						push_list[x]->client->ps.velocity[2] = pushDir[2] * pushPowerMod;
+						push_list[x]->client->ps.velocity[2] = push_dir[2] * pushPowerMod;
 					}
 				}
 			}

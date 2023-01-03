@@ -61,18 +61,18 @@ void NPC_DROIDEKA_Init(gentity_t* ent)
 }
 
 //-----------------------------------------------------------------
-static void DROIDEKA_CreateExplosion(gentity_t* self, const int boltID, const qboolean doSmall = qfalse)
+static void DROIDEKA_CreateExplosion(gentity_t* self, const int bolt_id, const qboolean do_small = qfalse)
 {
-	if (boltID >= 0)
+	if (bolt_id >= 0)
 	{
 		mdxaBone_t bolt_matrix;
 		vec3_t org, dir;
-		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, boltID, &bolt_matrix, self->currentAngles,
+		gi.G2API_GetBoltMatrix(self->ghoul2, self->playerModel, bolt_id, &bolt_matrix, self->currentAngles,
 		                       self->currentOrigin, level.time, nullptr, self->s.modelScale);
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, dir);
 
-		if (doSmall)
+		if (do_small)
 		{
 			G_PlayEffect("env/small_explode2", org, dir);
 		}
@@ -290,7 +290,7 @@ void NPC_DROIDEKA_Pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacke
 	}
 }
 
-static void DROIDEKA_HoldPosition(void)
+static void DROIDEKA_HoldPosition()
 {
 	NPC_FreeCombatPoint(NPCInfo->combatPoint, qtrue);
 	if (!Q3_TaskIDPending(NPC, TID_MOVE_NAV))
@@ -300,46 +300,12 @@ static void DROIDEKA_HoldPosition(void)
 	}
 }
 
-static qboolean DROIDEKA_Move(void)
-{
-	NPCInfo->combatMove = qtrue; //always move straight toward our goal
-
-	const qboolean moved = NPC_MoveToGoal(qtrue);
-	navInfo_t info;
-
-	//Get the move info
-	NAV_GetLastMove(info);
-
-	//FIXME: if we bump into another one of our guys and can't get around him, just stop!
-	//If we hit our target, then stop and fire!
-	if (info.flags & NIF_COLLISION)
-	{
-		if (info.blocker == NPC->enemy)
-		{
-			DROIDEKA_HoldPosition();
-		}
-	}
-
-	//If our move failed, then reset
-	if (moved == qfalse)
-	{
-		//FIXME: if we're going to a combat point, need to pick a different one
-		if (!Q3_TaskIDPending(NPC, TID_MOVE_NAV))
-		{
-			//can't transfer movegoal or stop when a script we're running is waiting to complete
-			DROIDEKA_HoldPosition();
-		}
-	}
-
-	return moved;
-}
-
 /*
 -------------------------
 DROIDEKA_Hunt
 -------------------------`
 */
-void DROIDEKA_Hunt(qboolean visible, qboolean advance)
+void DROIDEKA_Hunt()
 {
 	//If we're not supposed to stand still, pursue the player
 	if (NPCInfo->standTime < level.time)
@@ -373,7 +339,7 @@ void DROIDEKA_Hunt(qboolean visible, qboolean advance)
 DROIDEKA_Ranged
 -------------------------
 */
-void DROIDEKA_Ranged(const qboolean visible, const qboolean advance, qboolean altAttack)
+void DROIDEKA_Ranged(const qboolean visible)
 {
 	if (TIMER_Done(NPC, "atkDelay") && visible) // Attack?
 	{
@@ -383,7 +349,7 @@ void DROIDEKA_Ranged(const qboolean visible, const qboolean advance, qboolean al
 
 	if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 	{
-		DROIDEKA_Hunt(visible, advance);
+		DROIDEKA_Hunt();
 	}
 }
 
@@ -394,18 +360,17 @@ DROIDEKA_Attack
 */
 void droideka_attack()
 {
-	constexpr qboolean altAttack = qfalse;
 
 	// Rate our distance to the target, and our visibilty
 	const float distance = static_cast<int>(DistanceHorizontalSquared(NPC->currentOrigin, NPC->enemy->currentOrigin));
-	const distance_e distRate = distance > MIN_MELEE_RANGE_SQR ? DIST_LONG : DIST_MELEE;
+	const distance_e dist_rate = distance > MIN_MELEE_RANGE_SQR ? DIST_LONG : DIST_MELEE;
 	const qboolean visible = NPC_ClearLOS(NPC->enemy);
-	const auto advance = static_cast<qboolean>(distance > MIN_DISTANCE_SQR);
+	
 
 	if (NPC_CheckEnemyExt() == qfalse)
 	{
 		NPC->enemy = nullptr;
-		DROIDEKA_Hunt(visible, advance);
+		DROIDEKA_Hunt();
 		return;
 	}
 
@@ -414,21 +379,21 @@ void droideka_attack()
 	{
 		if (NPCInfo->scriptFlags & SCF_CHASE_ENEMIES)
 		{
-			DROIDEKA_Hunt(visible, advance);
+			DROIDEKA_Hunt();
 			return;
 		}
 	}
 
 	//If we're too far away, then keep walking forward
-	if (distRate != DIST_MELEE)
+	if (dist_rate != DIST_MELEE)
 	{
-		DROIDEKA_Hunt(visible, advance);
+		DROIDEKA_Hunt();
 		return;
 	}
 
 	NPC_FaceEnemy(qtrue);
 
-	DROIDEKA_Ranged(visible, advance, altAttack);
+	DROIDEKA_Ranged(visible);
 
 	if (NPCInfo->touchedByPlayer != nullptr && NPCInfo->touchedByPlayer == NPC->enemy)
 	{
@@ -464,7 +429,7 @@ void droideka_attack()
 DROIDEKA_Patrol
 -------------------------
 */
-void DROIDEKA_Patrol(void)
+void DROIDEKA_Patrol()
 {
 	if (NPC_CheckPlayerTeamStealth())
 	{
@@ -488,7 +453,7 @@ void DROIDEKA_Patrol(void)
 NPC_BSDROIDEKA_Default
 -------------------------
 */
-void NPC_BSDROIDEKA_Default(void)
+void NPC_BSDROIDEKA_Default()
 {
 	if (NPCInfo->scriptFlags & SCF_FIRE_WEAPON)
 	{

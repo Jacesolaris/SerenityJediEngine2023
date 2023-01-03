@@ -44,7 +44,7 @@ extern int NAV_FindClosestWaypointForPoint2(vec3_t point);
 extern int NAV_GetNearestNode(gentity_t* self, int lastNode);
 extern qboolean PM_DroidMelee(int npc_class);
 extern qboolean PM_ReloadAnim(int anim);
-void ChangeWeapon(const gentity_t* ent, int newWeapon);
+void ChangeWeapon(const gentity_t* ent, int new_weapon);
 qboolean G_ValidEnemy(const gentity_t* self, const gentity_t* enemy);
 
 void G_ClearEnemy(gentity_t* self)
@@ -722,7 +722,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 	self->enemy = enemy;
 }
 
-void ChangeWeapon(const gentity_t* ent, int newWeapon)
+void ChangeWeapon(const gentity_t* ent, int new_weapon)
 {
 	if (!ent || !ent->client || !ent->NPC)
 	{
@@ -734,20 +734,20 @@ void ChangeWeapon(const gentity_t* ent, int newWeapon)
 		return;
 	}
 
-	if (newWeapon < 0)
+	if (new_weapon < 0)
 	{
 		// bug fix. If newWeapon is -1, set it to WP_NONE
-		newWeapon = WP_NONE;
+		new_weapon = WP_NONE;
 	}
 
-	ent->client->ps.weapon = newWeapon;
-	ent->client->pers.cmd.weapon = newWeapon;
+	ent->client->ps.weapon = new_weapon;
+	ent->client->pers.cmd.weapon = new_weapon;
 	ent->NPC->shotTime = 0;
 	ent->NPC->burstCount = 0;
 	ent->NPC->attackHold = 0;
-	ent->NPC->currentAmmo = ent->client->ps.ammo[weaponData[newWeapon].ammoIndex];
+	ent->NPC->currentAmmo = ent->client->ps.ammo[weaponData[new_weapon].ammoIndex];
 
-	switch (newWeapon)
+	switch (new_weapon)
 	{
 	case WP_BRYAR_PISTOL: //prifle
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
@@ -3315,14 +3315,14 @@ default:
 		return bestFound;
 	}
 
-	void NPC_SetPickUpGoal(gentity_t* foundWeap)
+	void NPC_SetPickUpGoal(gentity_t* found_weap)
 	{
 		vec3_t org;
 
-		VectorCopy(foundWeap->r.currentOrigin, org);
-		org[2] += 24 - foundWeap->r.mins[2] * -1; //adjust the origin so that I am on the ground
-		NPC_SetMoveGoal(NPCS.NPC, org, foundWeap->r.maxs[0] * 0.75, qfalse, -1, foundWeap);
-		NPCS.NPCInfo->tempGoal->waypoint = foundWeap->waypoint;
+		VectorCopy(found_weap->r.currentOrigin, org);
+		org[2] += 24 - found_weap->r.mins[2] * -1; //adjust the origin so that I am on the ground
+		NPC_SetMoveGoal(NPCS.NPC, org, found_weap->r.maxs[0] * 0.75, qfalse, -1, found_weap);
+		NPCS.NPCInfo->tempGoal->waypoint = found_weap->waypoint;
 		NPCS.NPCInfo->tempBehavior = BS_DEFAULT;
 		NPCS.NPCInfo->squadState = SQUAD_TRANSITION;
 	}

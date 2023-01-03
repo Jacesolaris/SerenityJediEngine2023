@@ -710,7 +710,7 @@ void Tavion_SithSwordRecharge(void)
 	}
 }
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 void Boba_ChangeWeapon(const int wp)
 {
@@ -847,7 +847,7 @@ void Boba_SetJetpackAnims(gentity_t* self)
 	}
 }
 
-qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t pushDir)
+qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t push_dir)
 {
 	//certain NPCs can avoid knockdowns, check for that.
 	vec3_t pDir, fwd, right, ang;
@@ -885,7 +885,7 @@ qboolean Jedi_StopKnockdown(gentity_t* self, const vec3_t pushDir)
 	VectorSet(ang, 0, self->r.currentAngles[YAW], 0);
 
 	AngleVectors(ang, fwd, right, NULL);
-	VectorNormalize2(pushDir, pDir);
+	VectorNormalize2(push_dir, pDir);
 	const float fDot = DotProduct(pDir, fwd);
 	const float rDot = DotProduct(pDir, right);
 

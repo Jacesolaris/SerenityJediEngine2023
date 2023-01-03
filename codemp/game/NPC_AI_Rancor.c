@@ -302,24 +302,24 @@ void Rancor_Swing(const qboolean tryGrab)
 			else
 			{
 				//smack
-				vec3_t pushDir;
+				vec3_t push_dir;
 				vec3_t angs;
 
 				G_Sound(radiusEnt, CHAN_AUTO, G_SoundIndex("sound/chars/rancor/swipehit.wav"));
 				VectorCopy(NPCS.NPC->client->ps.viewangles, angs);
 				angs[YAW] += flrand(25, 50);
 				angs[PITCH] = flrand(-25, -15);
-				AngleVectors(angs, pushDir, NULL, NULL);
+				AngleVectors(angs, push_dir, NULL, NULL);
 				if (radiusEnt->client->NPC_class != CLASS_RANCOR
 					&& radiusEnt->client->NPC_class != CLASS_ATST)
 				{
 					G_Damage(radiusEnt, NPCS.NPC, NPCS.NPC, vec3_origin, radiusEnt->r.currentOrigin, Q_irand(25, 40),
 					         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK, MOD_MELEE);
-					g_throw(radiusEnt, pushDir, 250);
+					g_throw(radiusEnt, push_dir, 250);
 					if (radiusEnt->health > 0)
 					{
 						//do pain on enemy
-						G_Knockdown(radiusEnt, NPCS.NPC, pushDir, 100, qtrue);
+						G_Knockdown(radiusEnt, NPCS.NPC, push_dir, 100, qtrue);
 					}
 				}
 			}

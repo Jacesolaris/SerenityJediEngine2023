@@ -14446,7 +14446,7 @@ qboolean G_CheckEnemyPresence(const gentity_t* ent, const int dir, const float r
 //OTHER JEDI POWERS=========================================================================
 //OTHER JEDI POWERS=========================================================================
 extern gentity_t* TossClientItems(gentity_t* self);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 void WP_DropWeapon(gentity_t* dropper, vec3_t velocity)
 {

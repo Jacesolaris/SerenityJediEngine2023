@@ -510,7 +510,7 @@ static void AnimalTailSwipe(Vehicle_t* p_veh, gentity_t *parent, gentity_t *pilo
 #endif
 			g_entities[trace.entity_num].client->NPC_class != CLASS_VEHICLE )
 		{
-			vec3_t pushDir;
+			vec3_t push_dir;
 			vec3_t angs;
 			int iDamage = 10;
 			// Get the direction we're facing.
@@ -518,9 +518,9 @@ static void AnimalTailSwipe(Vehicle_t* p_veh, gentity_t *parent, gentity_t *pilo
 			// Add some fudge.
 			angs[YAW] += Q_flrand( 5, 15 );
 			angs[PITCH] = Q_flrand( -20, -10 );
-			AngleVectors( angs, pushDir, NULL, NULL );
+			AngleVectors( angs, push_dir, NULL, NULL );
 			// Reverse direction.
-			pushDir[YAW] = -pushDir[YAW];
+			push_dir[YAW] = -push_dir[YAW];
 
 			// Smack this ho down.
 #ifdef _JK2MP
@@ -528,7 +528,7 @@ static void AnimalTailSwipe(Vehicle_t* p_veh, gentity_t *parent, gentity_t *pilo
 #else
 			G_Sound( &g_entities[trace.entity_num], G_SoundIndex( "sound/chars/rancor/swipehit.wav" ) );
 #endif
-			g_throw( &g_entities[trace.entity_num], pushDir, 50 );
+			g_throw( &g_entities[trace.entity_num], push_dir, 50 );
 
 			if ( g_entities[trace.entity_num].health > 0 )
 			{
@@ -545,12 +545,12 @@ static void AnimalTailSwipe(Vehicle_t* p_veh, gentity_t *parent, gentity_t *pilo
 					hit->client->ps.otherKillerTime = level.time + 5000;
 					hit->client->ps.otherKillerDebounceTime = level.time + 100;
 
-					hit->client->ps.velocity[0] = pushDir[0]*80;
-					hit->client->ps.velocity[1] = pushDir[1]*80;
+					hit->client->ps.velocity[0] = push_dir[0]*80;
+					hit->client->ps.velocity[1] = push_dir[1]*80;
 					hit->client->ps.velocity[2] = 100;
 				}
 #else
-				G_Knockdown( hit, parent, pushDir, 300, qtrue );
+				G_Knockdown( hit, parent, push_dir, 300, qtrue );
 #endif
 				G_Damage( hit, parent, parent, NULL, NULL, iDamage, DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_MELEE );
 				//G_PlayEffect( p_veh->m_pVehicleInfo->explodeFX, parent->currentOrigin );

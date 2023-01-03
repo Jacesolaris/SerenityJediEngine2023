@@ -1125,7 +1125,7 @@ int NPC_WeaponsForTeam(const team_t team, const int spawnflags, const char* NPC_
 	return WP_NONE;
 }
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 /*
 -------------------------

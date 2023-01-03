@@ -3892,11 +3892,11 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 					if (traceEnt->client)
 					{
 						//only if we hit a client
-						vec3_t pushDir;
-						VectorCopy(forward, pushDir);
-						if (pushDir[2] < 0.2f)
+						vec3_t push_dir;
+						VectorCopy(forward, push_dir);
+						if (push_dir[2] < 0.2f)
 						{
-							pushDir[2] = 0.2f;
+							push_dir[2] = 0.2f;
 						} //hmm, re-normalize?  nah...
 
 						if (traceEnt->health > 0)
@@ -3932,8 +3932,8 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 								traceEnt->client->otherKillerVehWeapon = 0;
 								traceEnt->client->otherKillerWeaponType = WP_NONE;
 
-								traceEnt->client->ps.velocity[0] += pushDir[0] * pStr;
-								traceEnt->client->ps.velocity[1] += pushDir[1] * pStr;
+								traceEnt->client->ps.velocity[0] += push_dir[0] * pStr;
+								traceEnt->client->ps.velocity[1] += push_dir[1] * pStr;
 								traceEnt->client->ps.velocity[2] = pStr;
 							}
 						}

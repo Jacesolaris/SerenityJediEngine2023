@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 //lock the owner into place relative to the cannon pos
 void EWebPositionUser(gentity_t* owner, gentity_t* eweb)

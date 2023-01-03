@@ -167,7 +167,7 @@ void misc_model_breakable_touch(gentity_t* self, gentity_t* other, trace_t* trac
 
 void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 {
-	vec3_t pushDir, kvel;
+	vec3_t push_dir, kvel;
 	float knockback = 200;
 	float mass = self->mass;
 	const gentity_t* target = G_Find(NULL, FOFS(targetname), self->target4);
@@ -176,8 +176,8 @@ void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 		//nothing to throw ourselves at...
 		return;
 	}
-	VectorSubtract(target->r.currentOrigin, self->r.currentOrigin, pushDir);
-	knockback -= VectorNormalize(pushDir);
+	VectorSubtract(target->r.currentOrigin, self->r.currentOrigin, push_dir);
+	knockback -= VectorNormalize(push_dir);
 	if (knockback < 100)
 	{
 		knockback = 100;
@@ -198,12 +198,12 @@ void misc_model_throw_at_target4(gentity_t* self, const gentity_t* activator)
 
 	if (g_gravity.value > 0)
 	{
-		VectorScale(pushDir, g_knockback.value * knockback / mass * 0.8, kvel);
-		kvel[2] = pushDir[2] * g_knockback.value * knockback / mass * 1.5;
+		VectorScale(push_dir, g_knockback.value * knockback / mass * 0.8, kvel);
+		kvel[2] = push_dir[2] * g_knockback.value * knockback / mass * 1.5;
 	}
 	else
 	{
-		VectorScale(pushDir, g_knockback.value * knockback / mass, kvel);
+		VectorScale(push_dir, g_knockback.value * knockback / mass, kvel);
 	}
 
 	VectorAdd(self->s.pos.trDelta, kvel, self->s.pos.trDelta);

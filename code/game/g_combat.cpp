@@ -49,7 +49,7 @@ constexpr auto TURN_OFF = 0x00000100;
 extern cvar_t* g_DebugSaberCombat;
 extern qboolean Rosh_TwinPresent();
 extern void G_CheckCharmed(gentity_t* self);
-extern qboolean Wampa_CheckDropVictim(gentity_t* self, qboolean excludeMe);
+extern qboolean Wampa_CheckDropVictim(gentity_t* self, qboolean exclude_me);
 extern cvar_t* g_debugDamage;
 extern qboolean stop_icarus;
 extern cvar_t* g_dismemberment;
@@ -72,7 +72,7 @@ extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce
 extern qboolean PM_HasAnimation(const gentity_t* ent, int animation);
 extern qboolean G_TeamEnemy(const gentity_t* self);
 extern void CG_ChangeWeapon(int num);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern void PM_SetLegsAnimTimer(gentity_t* ent, int* legsAnimTimer, int time);

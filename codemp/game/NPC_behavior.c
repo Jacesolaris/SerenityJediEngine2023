@@ -257,15 +257,15 @@ void NPC_BSWait(void)
 	NPC_UpdateAngles(qtrue, qtrue);
 }
 
-qboolean NPC_CheckInvestigate(const int alertEventNum)
+qboolean NPC_CheckInvestigate(const int alert_event_num)
 {
-	gentity_t* owner = level.alertEvents[alertEventNum].owner;
-	const int invAdd = level.alertEvents[alertEventNum].level;
+	gentity_t* owner = level.alertEvents[alert_event_num].owner;
+	const int invAdd = level.alertEvents[alert_event_num].level;
 	vec3_t soundPos;
-	const float soundRad = level.alertEvents[alertEventNum].radius;
+	const float soundRad = level.alertEvents[alert_event_num].radius;
 	const float earshot = NPCS.NPCInfo->stats.earshot;
 
-	VectorCopy(level.alertEvents[alertEventNum].position, soundPos);
+	VectorCopy(level.alertEvents[alert_event_num].position, soundPos);
 
 	//NOTE: Trying to preserve previous investigation behavior
 	if (!owner)
@@ -1326,7 +1326,7 @@ NPC_BSFlee
 */
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern void WP_DropWeapon(gentity_t* dropper, vec3_t velocity);
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 void NPC_Surrender(void)
 {
@@ -1657,8 +1657,8 @@ void NPC_BSFlee(void)
 	NPC_CheckGetNewWeapon();
 }
 
-void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
-                   const int fleeTimeMax)
+void NPC_StartFlee(gentity_t* enemy, vec3_t danger_point, const int danger_level, const int flee_time_min,
+                   const int flee_time_max)
 {
 	int cp = -1;
 
@@ -1685,28 +1685,28 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, 
 	}
 
 	//FIXME: if don't have a weapon, find nearest one we have a route to and run for it?
-	if (dangerLevel > AEL_DANGER || NPCS.NPC->s.weapon == WP_NONE || (!NPCS.NPCInfo->group || NPCS.NPCInfo->group->
+	if (danger_level > AEL_DANGER || NPCS.NPC->s.weapon == WP_NONE || (!NPCS.NPCInfo->group || NPCS.NPCInfo->group->
 		numGroup <= 1) && NPCS.NPC->health <= 10)
 	{
 		//IF either great danger OR I have no weapon OR I'm alone and low on health, THEN try to find a combat point out of PVS
-		cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
+		cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, danger_point,
 		                         CP_COVER | CP_AVOID | CP_HAS_ROUTE | CP_NO_PVS, 128, -1);
 	}
 	//FIXME: still happens too often...
 	if (cp == -1)
 	{
 		//okay give up on the no PVS thing
-		cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
+		cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, danger_point,
 		                         CP_COVER | CP_AVOID | CP_HAS_ROUTE, 128, -1);
 		if (cp == -1)
 		{
 			//okay give up on the avoid
-			cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
+			cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, danger_point,
 			                         CP_COVER | CP_HAS_ROUTE, 128, -1);
 			if (cp == -1)
 			{
 				//okay give up on the cover
-				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, dangerPoint,
+				cp = NPC_FindCombatPoint(NPCS.NPC->r.currentOrigin, NPCS.NPC->r.currentOrigin, danger_point,
 				                         CP_HAS_ROUTE, 128, -1);
 			}
 		}
@@ -1724,7 +1724,7 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, 
 		NPC_SetMoveGoal(NPCS.NPC, NPCS.NPC->r.currentOrigin, 0, qtrue, cp, NULL);
 	}
 
-	if (dangerLevel > AEL_DANGER //geat danger always makes people turn and run
+	if (danger_level > AEL_DANGER //geat danger always makes people turn and run
 		|| NPCS.NPC->s.weapon == WP_NONE //melee/unarmed guys turn and run, others keep facing you and shooting
 		|| NPCS.NPC->s.weapon == WP_MELEE) //RAFIXME - impliment weapon?
 	{
@@ -1733,13 +1733,13 @@ void NPC_StartFlee(gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, 
 	TIMER_Set(NPCS.NPC, "attackDelay", Q_irand(500, 2500));
 	//FIXME: is this always applicable?
 	NPCS.NPCInfo->squadState = SQUAD_RETREAT;
-	TIMER_Set(NPCS.NPC, "flee", Q_irand(fleeTimeMin, fleeTimeMax));
+	TIMER_Set(NPCS.NPC, "flee", Q_irand(flee_time_min, flee_time_max));
 	TIMER_Set(NPCS.NPC, "panic", Q_irand(1000, 4000)); //how long to wait before trying to nav to a dropped weapon
 	TIMER_Set(NPCS.NPC, "duck", 0);
 }
 
-void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, const int dangerLevel, const int fleeTimeMin,
-                 const int fleeTimeMax)
+void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t danger_point, const int danger_level, const int flee_time_min,
+                 const int flee_time_max)
 {
 	if (!self->NPC)
 	{
@@ -1749,7 +1749,7 @@ void G_StartFlee(gentity_t* self, gentity_t* enemy, vec3_t dangerPoint, const in
 	SaveNPCGlobals();
 	SetNPCGlobals(self);
 
-	NPC_StartFlee(enemy, dangerPoint, dangerLevel, fleeTimeMin, fleeTimeMax);
+	NPC_StartFlee(enemy, danger_point, danger_level, flee_time_min, flee_time_max);
 
 	RestoreNPCGlobals();
 }

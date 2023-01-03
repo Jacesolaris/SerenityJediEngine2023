@@ -1042,7 +1042,7 @@ void RegisterAssets(Vehicle_t* p_veh)
 {
 }
 
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 
 // Initialize the vehicle.
 qboolean Initialize(Vehicle_t* p_veh)

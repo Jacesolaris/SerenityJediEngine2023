@@ -1730,7 +1730,7 @@ int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean super_break, c
 }
 
 #ifdef _GAME
-extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t pushDir, float strength,
+extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean breakSaberLock);
 #endif
 void PM_SaberLockBreak(playerState_t* genemy, const qboolean victory, const int strength)

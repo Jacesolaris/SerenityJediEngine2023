@@ -4437,7 +4437,7 @@ Q3_SetWeapon
   Argument		: const char *wp_name
 ============
 */
-extern void ChangeWeapon(const gentity_t* ent, int newWeapon);
+extern void ChangeWeapon(const gentity_t* ent, int new_weapon);
 int SpawnWeapons; //used to set default weapons for spawn when using ICARUS scripts.
 qboolean UseSpawnWeapons;
 //Indicates if SpawnWeapons is to be used.used to set default forcepowers for spawn when using ICARUS scripts.

@@ -193,11 +193,11 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 					if (traceEnt->client)
 					{
 						//only if we hit a client
-						vec3_t pushDir;
-						VectorCopy(forwardVec, pushDir);
-						if (pushDir[2] < 0.2f)
+						vec3_t push_dir;
+						VectorCopy(forwardVec, push_dir);
+						if (push_dir[2] < 0.2f)
 						{
-							pushDir[2] = 0.2f;
+							push_dir[2] = 0.2f;
 						} //hmm, re-normalize?  nah...
 
 						//if ( traceEnt->NPC || Q_irand(0,g_spskill->integer+1) )
@@ -205,7 +205,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 							if (!noKnockBack)
 							{
 								//knock-backable
-								g_throw(traceEnt, pushDir, 200);
+								g_throw(traceEnt, push_dir, 200);
 								if (traceEnt->client->NPC_class == CLASS_ROCKETTROOPER)
 								{
 									traceEnt->client->ps.pm_time = Q_irand(1500, 3000);
@@ -217,7 +217,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 								if (G_HasKnockdownAnims(traceEnt))
 								{
 									//knock-downable
-									G_Knockdown(traceEnt, ent, pushDir, 400, qtrue);
+									G_Knockdown(traceEnt, ent, push_dir, 400, qtrue);
 								}
 							}
 						}

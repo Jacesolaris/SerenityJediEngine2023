@@ -243,17 +243,17 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 			if (backhand)
 			{
 				//actually push the enemy
-				vec3_t pushDir;
+				vec3_t push_dir;
 				vec3_t angs;
 				VectorCopy(NPCS.NPC->client->ps.viewangles, angs);
 				angs[YAW] += flrand(25, 50);
 				angs[PITCH] = flrand(-25, -15);
-				AngleVectors(angs, pushDir, NULL, NULL);
+				AngleVectors(angs, push_dir, NULL, NULL);
 				if (radiusEnt->client->NPC_class != CLASS_WAMPA
 					&& radiusEnt->client->NPC_class != CLASS_RANCOR
 					&& radiusEnt->client->NPC_class != CLASS_ATST)
 				{
-					g_throw(radiusEnt, pushDir, 65);
+					g_throw(radiusEnt, push_dir, 65);
 					if (BG_KnockDownable(&radiusEnt->client->ps) &&
 						radiusEnt->health > 0 && Q_irand(0, 1))
 					{
@@ -287,13 +287,13 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 			else if (!Q_irand(0, 3) && radiusEnt->health > 0)
 			{
 				//one out of every 4 normal hits does a knockdown, too
-				vec3_t pushDir;
+				vec3_t push_dir;
 				vec3_t angs;
 				VectorCopy(NPCS.NPC->client->ps.viewangles, angs);
 				angs[YAW] += flrand(25, 50);
 				angs[PITCH] = flrand(-25, -15);
-				AngleVectors(angs, pushDir, NULL, NULL);
-				G_Knockdown(radiusEnt, NPCS.NPC, pushDir, 35, qtrue);
+				AngleVectors(angs, push_dir, NULL, NULL);
+				G_Knockdown(radiusEnt, NPCS.NPC, push_dir, 35, qtrue);
 			}
 			G_Sound(radiusEnt, CHAN_WEAPON, G_SoundIndex("sound/chars/rancor/swipehit.wav"));
 		}
@@ -301,17 +301,17 @@ void Wampa_Slash(const int bolt_index, const qboolean backhand)
 }
 
 //------------------------------
-void Wampa_Attack(const float distance, const qboolean doCharge)
+void Wampa_Attack(const float distance, const qboolean do_charge)
 {
 	if (!TIMER_Exists(NPCS.NPC, "attacking"))
 	{
-		if (Q_irand(0, 2) && !doCharge)
+		if (Q_irand(0, 2) && !do_charge)
 		{
 			//double slash
 			NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, BOTH_ATTACK1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			TIMER_Set(NPCS.NPC, "attack_dmg", 750);
 		}
-		else if (doCharge || distance > 270 && distance < 430 && !Q_irand(0, 1))
+		else if (do_charge || distance > 270 && distance < 430 && !Q_irand(0, 1))
 		{
 			//leap
 			vec3_t fwd, yawAng;
