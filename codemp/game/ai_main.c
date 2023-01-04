@@ -83,7 +83,7 @@ extern qboolean PM_SaberInBounce(int move);
 extern qboolean PM_SaberInReturn(int move);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean PM_SaberInTransition(int move);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags);
 qboolean AttackLocalBreakable(bot_state_t* bs);
 boteventtracker_t gBotEventTracker[MAX_CLIENTS];
 extern qboolean G_PointInBounds(vec3_t point, vec3_t mins, vec3_t maxs);

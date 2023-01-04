@@ -1434,13 +1434,13 @@ void Rancor_FireBreathAttack()
 
 	gi.trace(&tr, start, trace_mins, trace_maxs, end, NPC->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entity_num];
+	gentity_t* trace_ent = &g_entities[tr.entity_num];
 	if (tr.entity_num < ENTITYNUM_WORLD
-		&& traceEnt->takedamage
-		&& traceEnt->client)
+		&& trace_ent->takedamage
+		&& trace_ent->client)
 	{
 		//breath attack only does damage to living things
-		G_Damage(traceEnt, NPC, NPC, dir, tr.endpos, damage * 2,
+		G_Damage(trace_ent, NPC, NPC, dir, tr.endpos, damage * 2,
 		         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_HIT_LOC | DAMAGE_IGNORE_TEAM, MOD_LAVA, HL_NONE);
 	}
 	if (tr.fraction < 1.0f)

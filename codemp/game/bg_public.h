@@ -1651,7 +1651,7 @@ typedef struct saberMoveData_s {
 	int	startQuad;
 	int	endQuad;
 	unsigned animSetFlags;
-	int blendTime;
+	int blend_time;
 	int blocking;
 	saberMoveName_t chain_idle;			// What move to call if the attack button is not pressed at the end of this anim
 	saberMoveName_t chain_attack;		// What move to call if the attack button (and nothing else) is pressed
@@ -1941,7 +1941,7 @@ qboolean BG_LegalizedForcePowers(char* power_out, size_t power_out_size, int max
 void BG_GiveMeVectorFromMatrix(const mdxaBone_t* bolt_matrix, int flags, vec3_t vec);
 
 void BG_IK_MoveArm(void* ghoul2, int lHandBolt, int time, const entityState_t* ent, int basePose, vec3_t desiredPos, qboolean* ikInProgress,
-	vec3_t origin, vec3_t angles, vec3_t scale, int blendTime, qboolean forceHalt);
+	vec3_t origin, vec3_t angles, vec3_t scale, int blend_time, qboolean forceHalt);
 
 void BG_G2PlayerAngles(void* ghoul2, int motionBolt, entityState_t* cent, int time, vec3_t cent_lerpOrigin,
 	vec3_t cent_lerpAngles, matrix3_t legs, vec3_t legsAngles, qboolean* tYawing,

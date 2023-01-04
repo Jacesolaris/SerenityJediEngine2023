@@ -131,7 +131,7 @@ int R_CullLocalPointAndRadius(const vec3_t pt, const float radius)
 */
 int R_CullPointAndRadius(const vec3_t pt, const float radius)
 {
-	qboolean mightBeClipped = qfalse;
+	qboolean might_be_clipped = qfalse;
 
 	if (r_nocull->integer == 1)
 	{
@@ -150,11 +150,11 @@ int R_CullPointAndRadius(const vec3_t pt, const float radius)
 		}
 		if (dist <= radius)
 		{
-			mightBeClipped = qtrue;
+			might_be_clipped = qtrue;
 		}
 	}
 
-	if (mightBeClipped)
+	if (might_be_clipped)
 	{
 		return CULL_CLIP;
 	}
@@ -208,20 +208,6 @@ void R_WorldNormalToEntity(const vec3_t worldvec, vec3_t entvec)
 	entvec[2] = -worldvec[0] * preTransEntMatrix[2] - worldvec[1] * preTransEntMatrix[6] + worldvec[2] *
 		preTransEntMatrix[10];
 }
-
-/*
-=================
-R_WorldPointToEntity
-
-=================
-*/
-/*void R_WorldPointToEntity (vec3_t worldvec, vec3_t entvec)
-{
-	entvec[0] = worldvec[0] * preTransEntMatrix[0] + worldvec[1] * preTransEntMatrix[4] + worldvec[2] * preTransEntMatrix[8]+preTransEntMatrix[12];
-	entvec[1] = worldvec[0] * preTransEntMatrix[1] + worldvec[1] * preTransEntMatrix[5] + worldvec[2] * preTransEntMatrix[9]+preTransEntMatrix[13];
-	entvec[2] = worldvec[0] * preTransEntMatrix[2] + worldvec[1] * preTransEntMatrix[6] + worldvec[2] * preTransEntMatrix[10]+preTransEntMatrix[14];
-}
-*/
 
 /*
 =================

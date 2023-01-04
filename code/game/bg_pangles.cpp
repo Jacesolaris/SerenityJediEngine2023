@@ -97,7 +97,7 @@ void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, const int bolt_index, const char* ani
 		VectorSet(ik_p.pcjMaxs, 0, 0, 0);
 
 		//give the info on our entity.
-		ik_p.blendTime = blend_time;
+		ik_p.blend_time = blend_time;
 		VectorCopy(origin, ik_p.origin);
 		VectorCopy(angles, ik_p.angles);
 		ik_p.angles[PITCH] = 0;

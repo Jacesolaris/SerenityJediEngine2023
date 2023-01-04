@@ -53,27 +53,27 @@ void WP_FireTuskenRifle(gentity_t* ent)
 		//need to loop this in case we hit a Jedi who dodges the shot
 		gi.trace(&tr, start, nullptr, nullptr, end, ignore, MASK_SHOT, G2_RETURNONHIT, 0);
 
-		gentity_t* traceEnt = &g_entities[tr.entity_num];
+		gentity_t* trace_ent = &g_entities[tr.entity_num];
 
-		if (traceEnt)
+		if (trace_ent)
 		{
 			//players can block or dodge disruptor shots.
-			if (wp_saber_must_block(traceEnt, ent, qfalse, tr.endpos, -1, -1) && !
-				WP_DoingForcedAnimationForForcePowers(traceEnt))
+			if (wp_saber_must_block(trace_ent, ent, qfalse, tr.endpos, -1, -1) && !
+				WP_DoingForcedAnimationForForcePowers(trace_ent))
 			{
 				//saber can be used to block the shot.
 
-				g_missile_reflect_effect(traceEnt, tr.plane.normal);
-				WP_ForcePowerDrain(traceEnt, FP_SABER_DEFENSE, WP_SaberBlockCost(traceEnt, ent, tr.endpos));
+				g_missile_reflect_effect(trace_ent, tr.plane.normal);
+				WP_ForcePowerDrain(trace_ent, FP_SABER_DEFENSE, WP_SaberBlockCost(trace_ent, ent, tr.endpos));
 
 				//force player into a projective block move.
-				WP_SaberBlockBolt(traceEnt, tr.endpos, qtrue);
+				WP_SaberBlockBolt(trace_ent, tr.endpos, qtrue);
 				VectorCopy(tr.endpos, start);
 				ignore = tr.entity_num;
 				traces++;
 				continue;
 			}
-			if (jedi_disruptor_dodge_evasion(traceEnt, ent, &tr, HL_NONE))
+			if (jedi_disruptor_dodge_evasion(trace_ent, ent, &tr, HL_NONE))
 			{
 				//act like we didn't even hit him
 				VectorCopy(tr.endpos, start);

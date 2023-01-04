@@ -2123,21 +2123,21 @@ void PM_SetSpecialMoveValues(void)
 	//default until we decide otherwise
 	pm_flying = FLY_NONE;
 
-	const bgEntity_t* pEnt = pm_entSelf;
+	const bgEntity_t* p_ent = pm_entSelf;
 
-	if (pEnt)
+	if (p_ent)
 	{
 		if (pm->ps->eFlags2 & EF2_FLYING)
 		{
 			pm_flying = FLY_NORMAL;
 		}
-		else if (pEnt->s.NPC_class == CLASS_VEHICLE)
+		else if (p_ent->s.NPC_class == CLASS_VEHICLE)
 		{
-			if (pEnt->m_pVehicle->m_pVehicleInfo->type == VH_FIGHTER)
+			if (p_ent->m_pVehicle->m_pVehicleInfo->type == VH_FIGHTER)
 			{
 				pm_flying = FLY_VEHICLE;
 			}
-			else if (pEnt->m_pVehicle->m_pVehicleInfo->hoverHeight > 0)
+			else if (p_ent->m_pVehicle->m_pVehicleInfo->hoverHeight > 0)
 			{
 				pm_flying = FLY_HOVER;
 			}
@@ -2151,27 +2151,27 @@ void PM_SetSpecialMoveValues(void)
 //
 //qboolean PM_RocketeersAvoidDangerousFalls(void)
 //{
-//	bgEntity_t *pEnt;
+//	bgEntity_t *p_ent;
 //
-//	pEnt = pm_entSelf;
+//	p_ent = pm_entSelf;
 //
-//	if (pEnt->s.NPC_class == == CLASS_BOBAFETT || pEnt->s.NPC_class == == CLASS_ROCKETTROOPER)
+//	if (p_ent->s.NPC_class == == CLASS_BOBAFETT || p_ent->s.NPC_class == == CLASS_ROCKETTROOPER)
 //	{
-//		if (JET_Flying(pEnt))
+//		if (JET_Flying(p_ent))
 //		{
-//			if (pEnt->s.NPC_class == == CLASS_BOBAFETT)
+//			if (p_ent->s.NPC_class == == CLASS_BOBAFETT)
 //			{
-//				pEnt->jetPackTime = level.time + 2000;
+//				p_ent->jetPackTime = level.time + 2000;
 //			}
 //			else
 //			{
-//				pEnt->jetPackTime = Q3_INFINITE;
+//				p_ent->jetPackTime = Q3_INFINITE;
 //			}
 //		}
 //		else
 //		{
-//			TIMER_Set(pEnt, "jetRecharge", 0);
-//			JET_FlyStart(pEnt);
+//			TIMER_Set(p_ent, "jetRecharge", 0);
+//			JET_FlyStart(p_ent);
 //		}
 //		return qtrue;
 //	}
@@ -2222,16 +2222,16 @@ static void PM_FallToDeath(gentity_t* self)
 
 static void PM_SetVehicleAngles(vec3_t normal)
 {
-	const bgEntity_t* pEnt = pm_entSelf;
+	const bgEntity_t* p_ent = pm_entSelf;
 	vec3_t vAngles;
 	float pitchBias;
 
-	if (!pEnt || pEnt->s.NPC_class != CLASS_VEHICLE)
+	if (!p_ent || p_ent->s.NPC_class != CLASS_VEHICLE)
 	{
 		return;
 	}
 
-	const Vehicle_t* p_veh = pEnt->m_pVehicle;
+	const Vehicle_t* p_veh = p_ent->m_pVehicle;
 
 	//float	curVehicleBankingSpeed;
 	float vehicleBankingSpeed = p_veh->m_pVehicleInfo->bankingSpeed * 32.0f * pml.frametime; //0.25f
@@ -2266,7 +2266,7 @@ static void PM_SetVehicleAngles(vec3_t normal)
 	else if (normal)
 	{
 		//have a valid surface below me
-		PM_pitch_roll_for_slope(pEnt, normal, vAngles);
+		PM_pitch_roll_for_slope(p_ent, normal, vAngles);
 		if (pml.groundTrace.contents & (CONTENTS_WATER | CONTENTS_SLIME | CONTENTS_LAVA))
 		{
 			//on water
@@ -2405,13 +2405,13 @@ void PM_HoverTrace(void)
 	vec3_t vAng;
 	vec3_t fxAxis[3];
 
-	bgEntity_t* pEnt = pm_entSelf;
-	if (!pEnt || pEnt->s.NPC_class != CLASS_VEHICLE)
+	bgEntity_t* p_ent = pm_entSelf;
+	if (!p_ent || p_ent->s.NPC_class != CLASS_VEHICLE)
 	{
 		return;
 	}
 
-	Vehicle_t* p_veh = pEnt->m_pVehicle;
+	Vehicle_t* p_veh = p_ent->m_pVehicle;
 	const float hoverHeight = p_veh->m_pVehicleInfo->hoverHeight;
 	trace_t * trace = &pml.groundTrace;
 
@@ -2464,7 +2464,7 @@ void PM_HoverTrace(void)
 #ifdef _GAME //yeah, this is kind of crappy and makes no use of prediction whatsoever
 					if (p_veh->m_pVehicleInfo->iWakeFX)
 					{
-						G_AddEvent((gentity_t*)pEnt, EV_PLAY_EFFECT_ID, p_veh->m_pVehicleInfo->iWakeFX);
+						G_AddEvent((gentity_t*)p_ent, EV_PLAY_EFFECT_ID, p_veh->m_pVehicleInfo->iWakeFX);
 					}
 #endif
 				}
@@ -2741,7 +2741,7 @@ static void PM_Friction(void)
 	vec3_t vec;
 	float control;
 	float friction = pm_friction;
-	const bgEntity_t* pEnt = NULL;
+	const bgEntity_t* p_ent = NULL;
 
 	float* vel = pm->ps->velocity;
 
@@ -2767,19 +2767,19 @@ static void PM_Friction(void)
 
 	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
-		pEnt = pm_entSelf;
+		p_ent = pm_entSelf;
 	}
 
 	// apply ground friction, even if on ladder
 	if (pm_flying != FLY_VEHICLE &&
-		pEnt &&
-		pEnt->s.NPC_class == CLASS_VEHICLE &&
-		pEnt->m_pVehicle &&
-		pEnt->m_pVehicle->m_pVehicleInfo->type != VH_ANIMAL &&
-		pEnt->m_pVehicle->m_pVehicleInfo->type != VH_WALKER &&
-		pEnt->m_pVehicle->m_pVehicleInfo->friction)
+		p_ent &&
+		p_ent->s.NPC_class == CLASS_VEHICLE &&
+		p_ent->m_pVehicle &&
+		p_ent->m_pVehicle->m_pVehicleInfo->type != VH_ANIMAL &&
+		p_ent->m_pVehicle->m_pVehicleInfo->type != VH_WALKER &&
+		p_ent->m_pVehicle->m_pVehicleInfo->friction)
 	{
-		const float friction1 = pEnt->m_pVehicle->m_pVehicleInfo->friction;
+		const float friction1 = p_ent->m_pVehicle->m_pVehicleInfo->friction;
 		if (!(pm->ps->pm_flags & PMF_TIME_KNOCKBACK) && !(pm->ps->pm_flags & PMF_TIME_NOFRICTION))
 		{
 			control = speed < pm_stopspeed ? pm_stopspeed : speed;
@@ -4194,10 +4194,10 @@ static qboolean pm_check_jump(void)
 
 	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
-		bgEntity_t* pEnt = pm_entSelf;
+		bgEntity_t* p_ent = pm_entSelf;
 
-		if (pEnt->s.eType == ET_NPC &&
-			pEnt->s.NPC_class == CLASS_VEHICLE)
+		if (p_ent->s.eType == ET_NPC &&
+			p_ent->s.NPC_class == CLASS_VEHICLE)
 		{
 			//no!
 			return qfalse;
@@ -5259,7 +5259,7 @@ static qboolean pm_check_jump(void)
 						vec3_t forward, trace_to, minimum_mins, maximum_maxs, angles;
 						trace_t trace_s;
 						vec3_t ideal_normal;
-						bgEntity_t* traceEnt;
+						bgEntity_t* trace_ent;
 
 						VectorSet(minimum_mins, pm->mins[0], pm->mins[1], 0.0f);
 						VectorSet(maximum_maxs, pm->maxs[0], pm->maxs[1], 24.0f);
@@ -5274,10 +5274,10 @@ static qboolean pm_check_jump(void)
 						VectorSubtract(pm->ps->origin, trace_to, ideal_normal);
 						VectorNormalize(ideal_normal);
 
-						traceEnt = PM_BGEntForNum(trace_s.entity_num);
+						trace_ent = PM_BGEntForNum(trace_s.entity_num);
 
 						if (trace_s.fraction < 1.0f
-							&& (trace_s.entity_num < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL ||
+							&& (trace_s.entity_num < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL ||
 								DotProduct(trace_s.plane.normal, ideal_normal) > 0.7))
 						{
 							//there is a wall there
@@ -5301,10 +5301,10 @@ static qboolean pm_check_jump(void)
 
 							if (pm->ps->userInt2 == 1)
 							{
-								if (traceEnt && (traceEnt->s.eType == ET_PLAYER || traceEnt->s.eType == ET_NPC))
+								if (trace_ent && (trace_ent->s.eType == ET_PLAYER || trace_ent->s.eType == ET_NPC))
 								{
 									//kick that thang!
-									pm->ps->forceKickFlip = traceEnt->s.number + 1;
+									pm->ps->forceKickFlip = trace_ent->s.number + 1;
 								}
 							}
 							pm->cmd.rightmove = pm->cmd.forwardmove = 0;
@@ -5365,17 +5365,17 @@ static qboolean pm_check_jump(void)
 						vec3_t idealNormal;
 						vec3_t traceto;
 						//trace in the dir we're pushing in and see if there's a vertical wall there
-						bgEntity_t* traceEnt;
+						bgEntity_t* trace_ent;
 
 						VectorMA(pm->ps->origin, 8, checkDir, traceto);
 						pm->trace(&trace, pm->ps->origin, mins, maxs, traceto, pm->ps->client_num, CONTENTS_SOLID);
 						//FIXME: clip brushes too?
 						VectorSubtract(pm->ps->origin, traceto, idealNormal);
 						VectorNormalize(idealNormal);
-						traceEnt = PM_BGEntForNum(trace.entity_num);
+						trace_ent = PM_BGEntForNum(trace.entity_num);
 						if (trace.fraction < 1.0f
 							&& fabs(trace.plane.normal[2]) <= 0.2f /*MAX_WALL_GRAB_SLOPE*/
-							&& (trace.entity_num < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL ||
+							&& (trace.entity_num < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL ||
 								DotProduct(trace.plane.normal, idealNormal) > 0.7))
 						{
 							//there is a wall there
@@ -6211,11 +6211,11 @@ static void PM_AirMove(void)
 
 	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
-		const bgEntity_t* pEnt = pm_entSelf;
+		const bgEntity_t* p_ent = pm_entSelf;
 
-		if (pEnt && pEnt->s.NPC_class == CLASS_VEHICLE)
+		if (p_ent && p_ent->s.NPC_class == CLASS_VEHICLE)
 		{
-			p_veh = pEnt->m_pVehicle;
+			p_veh = p_ent->m_pVehicle;
 		}
 	}
 
@@ -6727,9 +6727,9 @@ static void PM_WalkMove(void)
 	if (pm->ps->client_num >= MAX_CLIENTS && !VectorCompare(pm->ps->moveDir, vec3_origin))
 	{
 		//NPC
-		const bgEntity_t* pEnt = pm_entSelf;
+		const bgEntity_t* p_ent = pm_entSelf;
 
-		if (pEnt && pEnt->s.NPC_class == CLASS_VEHICLE)
+		if (p_ent && p_ent->s.NPC_class == CLASS_VEHICLE)
 		{
 			// If The UCmds Were Set, But Never Converted Into A MoveDir, Then Make The WishDir From UCmds
 			//--------------------------------------------------------------------------------------------
@@ -8045,11 +8045,11 @@ static void PM_GroundTrace(void)
 
 	if (pm->ps->client_num >= MAX_CLIENTS)
 	{
-		const bgEntity_t* pEnt = pm_entSelf;
+		const bgEntity_t* p_ent = pm_entSelf;
 
-		if (pEnt && pEnt->s.NPC_class == CLASS_VEHICLE)
+		if (p_ent && p_ent->s.NPC_class == CLASS_VEHICLE)
 		{
-			minNormal = pEnt->m_pVehicle->m_pVehicleInfo->maxSlope;
+			minNormal = p_ent->m_pVehicle->m_pVehicleInfo->maxSlope;
 		}
 	}
 
@@ -9085,7 +9085,7 @@ qboolean PM_AdjustStandAnimForSlope(void)
 	float diff;
 	float interval;
 	int destAnim;
-	const bgEntity_t* pEnt = pm_entSelf;
+	const bgEntity_t* p_ent = pm_entSelf;
 #define SLOPERECALCVAR pm->ps->slopeRecalcTime //this is purely convenience
 
 	if (!pm->ghoul2)
@@ -9152,7 +9152,7 @@ qboolean PM_AdjustStandAnimForSlope(void)
 	int legsAnim = pm->ps->legsAnim;
 	//adjust for current legs anim
 
-	if (pEnt->s.NPC_class != CLASS_ATST)
+	if (p_ent->s.NPC_class != CLASS_ATST)
 	{
 		//adjust for current legs anim
 		switch (legsAnim)
@@ -9329,7 +9329,7 @@ qboolean PM_AdjustStandAnimForSlope(void)
 	else
 	{
 		//in a stand of some sort?
-		if (pEnt->s.NPC_class == CLASS_ATST)
+		if (p_ent->s.NPC_class == CLASS_ATST)
 		{
 			if (legsAnim == BOTH_STAND1 || legsAnim == BOTH_STAND2 || legsAnim == BOTH_CROUCH1IDLE)
 			{
@@ -9691,7 +9691,7 @@ static void PM_Footsteps(void)
 {
 	float bobmove;
 	int old;
-	int setAnimFlags = 0;
+	int set_anim_flags = 0;
 
 	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
@@ -9719,7 +9719,7 @@ static void PM_Footsteps(void)
 		if (pm->ps->legsAnim == BOTH_TURN_LEFT1 || pm->ps->legsAnim == BOTH_TURN_RIGHT1)
 		{
 			//moving overrides turning
-			setAnimFlags |= SETANIM_FLAG_OVERRIDE;
+			set_anim_flags |= SETANIM_FLAG_OVERRIDE;
 		}
 	}
 	else
@@ -9748,7 +9748,7 @@ static void PM_Footsteps(void)
 			|| PM_ForceAnim(pm->ps->legsAnim))
 		{
 			//legs are in a saber anim, and not spinning, be sure to override it
-			setAnimFlags |= SETANIM_FLAG_OVERRIDE;
+			set_anim_flags |= SETANIM_FLAG_OVERRIDE;
 		}
 	}
 
@@ -9844,7 +9844,7 @@ static void PM_Footsteps(void)
 			{
 				if (pm->ps->legsAnim != BOTH_CROUCH1IDLE)
 				{
-					PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1IDLE, setAnimFlags);
+					PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1IDLE, set_anim_flags);
 				}
 				else
 				{
@@ -9992,7 +9992,7 @@ static void PM_Footsteps(void)
 			{
 				if (pm->ps->legsAnim != BOTH_CROUCH1WALKBACK)
 				{
-					PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALKBACK, setAnimFlags);
+					PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALKBACK, set_anim_flags);
 				}
 				else
 				{
@@ -10003,7 +10003,7 @@ static void PM_Footsteps(void)
 			{
 				if (pm->ps->legsAnim != BOTH_CROUCH1WALK)
 				{
-					PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALK, setAnimFlags);
+					PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALK, set_anim_flags);
 				}
 				else
 				{
@@ -10052,7 +10052,7 @@ static void PM_Footsteps(void)
 		{
 			if (pm->ps->legsAnim != BOTH_CROUCH1WALKBACK)
 			{
-				PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALKBACK, setAnimFlags);
+				PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALKBACK, set_anim_flags);
 			}
 			else
 			{
@@ -10063,7 +10063,7 @@ static void PM_Footsteps(void)
 		{
 			if (pm->ps->legsAnim != BOTH_CROUCH1WALK)
 			{
-				PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALK, setAnimFlags);
+				PM_SetAnim(SETANIM_LEGS, BOTH_CROUCH1WALK, set_anim_flags);
 			}
 			else
 			{
@@ -10704,27 +10704,27 @@ static void PM_Footsteps(void)
 							{
 								if (pm->ps->fd.forcePowersActive & 1 << FP_SPEED)
 								{
-									PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT, setAnimFlags);
+									PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT, set_anim_flags);
 								}
 								else
 								{
 									if (pm->ps->stats[STAT_HEALTH] <= 70 && pm->ps->stats[STAT_HEALTH] >= 40)
 									{
-										PM_SetAnim(SETANIM_BOTH, BOTH_RUN9, setAnimFlags);
+										PM_SetAnim(SETANIM_BOTH, BOTH_RUN9, set_anim_flags);
 									}
 									else if (pm->ps->stats[STAT_HEALTH] <= 40)
 									{
-										PM_SetAnim(SETANIM_BOTH, BOTH_RUN8, setAnimFlags);
+										PM_SetAnim(SETANIM_BOTH, BOTH_RUN8, set_anim_flags);
 									}
 									else
 									{
 										if (holding_block)
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN_STAFF, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN_STAFF, set_anim_flags);
 										}
 										else
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN1, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN1, set_anim_flags);
 										}
 									}
 								}
@@ -10733,17 +10733,17 @@ static void PM_Footsteps(void)
 							{
 								if (pm->ps->fd.forcePowersActive & 1 << FP_SPEED)
 								{
-									PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT, setAnimFlags);
+									PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT, set_anim_flags);
 								}
 								else
 								{
 									if (pm->ps->stats[STAT_HEALTH] <= 70 && pm->ps->stats[STAT_HEALTH] >= 40)
 									{
-										PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, setAnimFlags);
+										PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, set_anim_flags);
 									}
 									else if (pm->ps->stats[STAT_HEALTH] <= 40)
 									{
-										PM_SetAnim(SETANIM_BOTH, BOTH_RUN8, setAnimFlags);
+										PM_SetAnim(SETANIM_BOTH, BOTH_RUN8, set_anim_flags);
 									}
 									else
 									{
@@ -10751,20 +10751,20 @@ static void PM_Footsteps(void)
 										{
 											if (saber1 && saber1->type == SABER_GRIE)
 											{
-												PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, setAnimFlags);
+												PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, set_anim_flags);
 											}
 											else if (saber1 && saber1->type == SABER_GRIE4)
 											{
-												PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, setAnimFlags);
+												PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, set_anim_flags);
 											}
 											else
 											{
-												PM_SetAnim(SETANIM_BOTH, BOTH_RUN_DUAL, setAnimFlags);
+												PM_SetAnim(SETANIM_BOTH, BOTH_RUN_DUAL, set_anim_flags);
 											}
 										}
 										else
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN1, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN1, set_anim_flags);
 										}
 									}
 								}
@@ -10777,46 +10777,46 @@ static void PM_Footsteps(void)
 							{
 								if (pm->ps->fd.forcePowersActive & 1 << FP_SPEED)
 								{
-									PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT, setAnimFlags);
+									PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT, set_anim_flags);
 								}
 								else
 								{
 									if (pm->ps->stats[STAT_HEALTH] <= 70 && pm->ps->stats[STAT_HEALTH] >= 40)
 									{
-										PM_SetAnim(SETANIM_BOTH, BOTH_RUN9, setAnimFlags);
+										PM_SetAnim(SETANIM_BOTH, BOTH_RUN9, set_anim_flags);
 									}
 									else if (pm->ps->stats[STAT_HEALTH] <= 40)
 									{
-										PM_SetAnim(SETANIM_BOTH, BOTH_RUN8, setAnimFlags);
+										PM_SetAnim(SETANIM_BOTH, BOTH_RUN8, set_anim_flags);
 									}
 									else
 									{
 										if (saber1 && (saber1->type == SABER_BACKHAND
 											|| saber1->type == SABER_ASBACKHAND)) //saber backhand
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN_STAFF, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN_STAFF, set_anim_flags);
 										}
 										else if (saber1 && saber1->type == SABER_YODA) //saber yoda
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN10, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN10, set_anim_flags);
 										}
 										else if (saber1 && saber1->type == SABER_GRIE) //saber kylo
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, set_anim_flags);
 										}
 										else if (saber1 && saber1->type == SABER_GRIE4) //saber kylo
 										{
-											PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, setAnimFlags);
+											PM_SetAnim(SETANIM_BOTH, BOTH_RUN7, set_anim_flags);
 										}
 										else
 										{
 											if (holding_block)
 											{
-												PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT_SABER_MP, setAnimFlags);
+												PM_SetAnim(SETANIM_BOTH, BOTH_SPRINT_SABER_MP, set_anim_flags);
 											}
 											else
 											{
-												PM_SetAnim(SETANIM_BOTH, BOTH_RUN1, setAnimFlags);
+												PM_SetAnim(SETANIM_BOTH, BOTH_RUN1, set_anim_flags);
 											}
 										}
 									}
@@ -11264,7 +11264,7 @@ static void PM_Footsteps(void)
 
 			if (pm->ps->legsAnim != desiredAnim && ires == desiredAnim)
 			{
-				PM_SetAnim(SETANIM_LEGS, desiredAnim, setAnimFlags);
+				PM_SetAnim(SETANIM_LEGS, desiredAnim, set_anim_flags);
 			}
 			else
 			{
@@ -16322,7 +16322,7 @@ qboolean BG_InRollES(entityState_t* ps, const int anim)
 void BG_IK_MoveArm(void* ghoul2, const int lHandBolt, const int time, const entityState_t* ent, const int basePose,
                    vec3_t desiredPos,
                    qboolean* ikInProgress,
-                   vec3_t origin, vec3_t angles, vec3_t scale, const int blendTime, const qboolean forceHalt)
+                   vec3_t origin, vec3_t angles, vec3_t scale, const int blend_time, const qboolean forceHalt)
 {
 	mdxaBone_t l_hand_matrix;
 
@@ -16349,7 +16349,7 @@ void BG_IK_MoveArm(void* ghoul2, const int lHandBolt, const int time, const enti
 		VectorSet(ikP.pcjMaxs, 0, 0, 0);
 
 		//give the info on our entity.
-		ikP.blendTime = blendTime;
+		ikP.blend_time = blend_time;
 		VectorCopy(origin, ikP.origin);
 		VectorCopy(angles, ikP.angles);
 		ikP.angles[PITCH] = 0;
@@ -19364,10 +19364,10 @@ void PmoveSingle(pmove_t* pmove)
 		pm->ps->groundEntityNum >= MAX_CLIENTS)
 	{
 		//I am a player client, not riding on a vehicle, and potentially standing on an NPC
-		bgEntity_t* pEnt = PM_BGEntForNum(pm->ps->groundEntityNum);
+		bgEntity_t* p_ent = PM_BGEntForNum(pm->ps->groundEntityNum);
 
-		if (pEnt && pEnt->s.eType == ET_NPC &&
-			pEnt->s.NPC_class != CLASS_VEHICLE) //don't bounce on vehicles
+		if (p_ent && p_ent->s.eType == ET_NPC &&
+			p_ent->s.NPC_class != CLASS_VEHICLE) //don't bounce on vehicles
 		{
 			//this is actually an NPC, let's try to bounce of its head to make sure we can't just stand around on top of it.
 			if (pm->ps->velocity[2] < 270)
@@ -19380,16 +19380,16 @@ void PmoveSingle(pmove_t* pmove)
 #ifdef _GAME
 		else if (!pm->ps->zoomMode &&
 			pm_entSelf //I exist
-			&& pEnt->m_pVehicle) //ent has a vehicle
+			&& p_ent->m_pVehicle) //ent has a vehicle
 		{
-			const gentity_t* gEnt = (gentity_t*)pEnt;
+			const gentity_t* gEnt = (gentity_t*)p_ent;
 			if (gEnt->client
 				&& !gEnt->client->ps.m_iVehicleNum //vehicle is empty
 				&& gEnt->spawnflags & 2) //SUSPENDED
 			{
 				//it's a vehicle, see if we should get in it
 				//if land on an empty, suspended vehicle, get in it
-				pEnt->m_pVehicle->m_pVehicleInfo->Board(pEnt->m_pVehicle, pm_entSelf);
+				p_ent->m_pVehicle->m_pVehicleInfo->Board(p_ent->m_pVehicle, pm_entSelf);
 			}
 		}
 #endif
@@ -19812,7 +19812,7 @@ void Pmove(pmove_t* pmove)
 
 int pm_min_get_up_time(const playerState_t* ps)
 {
-	const bgEntity_t* pEnt = pm_entSelf;
+	const bgEntity_t* p_ent = pm_entSelf;
 	const int npcget_up_time = NPC_KNOCKDOWN_HOLD_EXTRA_TIME;
 
 	if (ps->legsAnim == BOTH_PLAYER_PA_3_FLY
@@ -19821,19 +19821,19 @@ int pm_min_get_up_time(const playerState_t* ps)
 	{
 		return 200;
 	}
-	if (pEnt->s.NPC_class == CLASS_ALORA)
+	if (p_ent->s.NPC_class == CLASS_ALORA)
 	{
 		return 1000;
 	}
-	if (pEnt->s.NPC_class == CLASS_STORMTROOPER)
+	if (p_ent->s.NPC_class == CLASS_STORMTROOPER)
 	{
 		return npcget_up_time + 100;
 	}
-	if (pEnt->s.NPC_class == CLASS_CLONETROOPER)
+	if (p_ent->s.NPC_class == CLASS_CLONETROOPER)
 	{
 		return npcget_up_time + 100;
 	}
-	if (pEnt->s.NPC_class == CLASS_STORMCOMMANDO)
+	if (p_ent->s.NPC_class == CLASS_STORMCOMMANDO)
 	{
 		return npcget_up_time + 100;
 	}
@@ -20370,7 +20370,7 @@ qboolean PM_CheckRollGetup(void)
 
 qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchheight)
 {
-	const bgEntity_t* pEnt = pm_entSelf;
+	const bgEntity_t* p_ent = pm_entSelf;
 
 	const int legsAnim = pm->ps->legsAnim;
 
@@ -20415,7 +20415,7 @@ qboolean PM_GettingUpFromKnockDown(const float standheight, const float crouchhe
 #endif
 		if (!pm->ps->legsTimer //our knockdown is over
 			|| pm->ps->legsTimer <= minTimeLeft //or we're strong enough to get up earlier.
-			&& (pm->cmd.upmove > 0 || pEnt->s.NPC_class == CLASS_ALORA)) //and we're trying to get up
+			&& (pm->cmd.upmove > 0 || p_ent->s.NPC_class == CLASS_ALORA)) //and we're trying to get up
 		{
 			//done with the knockdown - FIXME: somehow this is allowing an *instant* getup...???
 			if (pm->cmd.upmove < 0)

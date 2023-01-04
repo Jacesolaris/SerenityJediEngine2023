@@ -974,15 +974,15 @@ qboolean NPC_SomeoneLookingAtMe(gentity_t* ent)
 
 	while (i < MAX_CLIENTS)
 	{
-		const gentity_t* pEnt = &g_entities[i];
+		const gentity_t* p_ent = &g_entities[i];
 
-		if (pEnt && pEnt->inuse && pEnt->client && pEnt->client->sess.sessionTeam != TEAM_SPECTATOR &&
-			pEnt->client->tempSpectate < level.time && !(pEnt->client->ps.pm_flags & PMF_FOLLOW) && pEnt->s.weapon !=
+		if (p_ent && p_ent->inuse && p_ent->client && p_ent->client->sess.sessionTeam != TEAM_SPECTATOR &&
+			p_ent->client->tempSpectate < level.time && !(p_ent->client->ps.pm_flags & PMF_FOLLOW) && p_ent->s.weapon !=
 			WP_NONE)
 		{
-			if (trap->InPVS(ent->r.currentOrigin, pEnt->r.currentOrigin))
+			if (trap->InPVS(ent->r.currentOrigin, p_ent->r.currentOrigin))
 			{
-				if (InFOV(ent, pEnt, 30, 30))
+				if (InFOV(ent, p_ent, 30, 30))
 				{
 					//I'm in a 30 fov or so cone from this player.. that's enough I guess.
 					return qtrue;

@@ -3415,7 +3415,7 @@ void force_shoot_lightning(gentity_t* self)
 {
 	trace_t tr;
 	vec3_t forward;
-	gentity_t* traceEnt;
+	gentity_t* trace_ent;
 
 	if (self->health <= 0)
 	{
@@ -3462,33 +3462,33 @@ void force_shoot_lightning(gentity_t* self)
 			vec3_t size;
 			vec3_t ent_org;
 			vec3_t dir;
-			traceEnt = entity_list[e];
+			trace_ent = entity_list[e];
 
-			if (!traceEnt)
+			if (!trace_ent)
 				continue;
-			if (traceEnt == self)
+			if (trace_ent == self)
 				continue;
-			if (traceEnt->r.ownerNum == self->s.number && traceEnt->s.weapon != WP_THERMAL) //can push your own thermals
+			if (trace_ent->r.ownerNum == self->s.number && trace_ent->s.weapon != WP_THERMAL) //can push your own thermals
 				continue;
-			if (!traceEnt->inuse)
+			if (!trace_ent->inuse)
 				continue;
-			if (!traceEnt->takedamage)
+			if (!trace_ent->takedamage)
 				continue;
-			//if (traceEnt->health <= 0)//no torturing corpses
+			//if (trace_ent->health <= 0)//no torturing corpses
 			//	continue;
-			if (!g_friendlyFire.integer && OnSameTeam(self, traceEnt))
+			if (!g_friendlyFire.integer && OnSameTeam(self, trace_ent))
 				continue;
 			//this is all to see if we need to start a saber attack, if it's in flight, this doesn't matter
 			// find the distance from the edge of the bounding box
 			for (i = 0; i < 3; i++)
 			{
-				if (center[i] < traceEnt->r.absmin[i])
+				if (center[i] < trace_ent->r.absmin[i])
 				{
-					v[i] = traceEnt->r.absmin[i] - center[i];
+					v[i] = trace_ent->r.absmin[i] - center[i];
 				}
-				else if (center[i] > traceEnt->r.absmax[i])
+				else if (center[i] > trace_ent->r.absmax[i])
 				{
-					v[i] = center[i] - traceEnt->r.absmax[i];
+					v[i] = center[i] - trace_ent->r.absmax[i];
 				}
 				else
 				{
@@ -3496,8 +3496,8 @@ void force_shoot_lightning(gentity_t* self)
 				}
 			}
 
-			VectorSubtract(traceEnt->r.absmax, traceEnt->r.absmin, size);
-			VectorMA(traceEnt->r.absmin, 0.5, size, ent_org);
+			VectorSubtract(trace_ent->r.absmax, trace_ent->r.absmin, size);
+			VectorMA(trace_ent->r.absmin, 0.5, size, ent_org);
 
 			//see if they're in front of me
 			//must be within the forward cone
@@ -3514,7 +3514,7 @@ void force_shoot_lightning(gentity_t* self)
 			}
 
 			//in PVS?
-			if (!traceEnt->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
+			if (!trace_ent->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
 			{
 				//must be in PVS
 				continue;
@@ -3523,14 +3523,14 @@ void force_shoot_lightning(gentity_t* self)
 			//Now check and see if we can actually hit it
 			trap->Trace(&tr, self->client->ps.origin, vec3_origin, vec3_origin, ent_org, self->s.number, MASK_SHOT,
 			            qfalse, 0, 0);
-			if (tr.fraction < 1.0f && tr.entity_num != traceEnt->s.number)
+			if (tr.fraction < 1.0f && tr.entity_num != trace_ent->s.number)
 			{
 				//must have clear LOS
 				continue;
 			}
 
 			// ok, we are within the radius, add us to the incoming list
-			force_lightning_damage(self, traceEnt, dir, dist, dot, ent_org);
+			force_lightning_damage(self, trace_ent, dir, dist, dot, ent_org);
 		}
 	}
 	else
@@ -3545,8 +3545,8 @@ void force_shoot_lightning(gentity_t* self)
 			return;
 		}
 
-		traceEnt = &g_entities[tr.entity_num];
-		force_lightning_damage(self, traceEnt, forward, 0, 0, tr.endpos);
+		trace_ent = &g_entities[tr.entity_num];
+		force_lightning_damage(self, trace_ent, forward, 0, 0, tr.endpos);
 	}
 }
 
@@ -3805,7 +3805,7 @@ int ForceShootDrain(gentity_t* self)
 
 	if (self->client->ps.fd.forcePowerDebounce[FP_DRAIN] <= level.time)
 	{
-		gentity_t* traceEnt;
+		gentity_t* trace_ent;
 		if (self->client->ps.fd.forcePowerLevel[FP_DRAIN] > FORCE_LEVEL_2) // level 3 only
 		{
 			vec3_t center;
@@ -3840,35 +3840,35 @@ int ForceShootDrain(gentity_t* self)
 				vec3_t dir;
 				// ReSharper disable once CppEntityAssignedButNoRead
 				float dot;
-				traceEnt = entity_list[e];
+				trace_ent = entity_list[e];
 
-				if (!traceEnt)
+				if (!trace_ent)
 					continue;
-				if (traceEnt == self)
+				if (trace_ent == self)
 					continue;
-				if (!traceEnt->inuse)
+				if (!trace_ent->inuse)
 					continue;
-				if (!traceEnt->takedamage)
+				if (!trace_ent->takedamage)
 					continue;
-				if (traceEnt->health <= 0) //no torturing corpses
+				if (trace_ent->health <= 0) //no torturing corpses
 					continue;
-				if (!traceEnt->client)
+				if (!trace_ent->client)
 					continue;
-				if (!traceEnt->client->ps.fd.forcePower)
+				if (!trace_ent->client->ps.fd.forcePower)
 					continue;
-				if (OnSameTeam(self, traceEnt) && !g_friendlyFire.integer)
+				if (OnSameTeam(self, trace_ent) && !g_friendlyFire.integer)
 					continue;
 				//this is all to see if we need to start a saber attack, if it's in flight, this doesn't matter
 				// find the distance from the edge of the bounding box
 				for (i = 0; i < 3; i++)
 				{
-					if (center[i] < traceEnt->r.absmin[i])
+					if (center[i] < trace_ent->r.absmin[i])
 					{
-						v[i] = traceEnt->r.absmin[i] - center[i];
+						v[i] = trace_ent->r.absmin[i] - center[i];
 					}
-					else if (center[i] > traceEnt->r.absmax[i])
+					else if (center[i] > trace_ent->r.absmax[i])
 					{
-						v[i] = center[i] - traceEnt->r.absmax[i];
+						v[i] = center[i] - trace_ent->r.absmax[i];
 					}
 					else
 					{
@@ -3876,8 +3876,8 @@ int ForceShootDrain(gentity_t* self)
 					}
 				}
 
-				VectorSubtract(traceEnt->r.absmax, traceEnt->r.absmin, size);
-				VectorMA(traceEnt->r.absmin, 0.5, size, ent_org);
+				VectorSubtract(trace_ent->r.absmax, trace_ent->r.absmin, size);
+				VectorMA(trace_ent->r.absmin, 0.5, size, ent_org);
 
 				//see if they're in front of me
 				//must be within the forward cone
@@ -3897,7 +3897,7 @@ int ForceShootDrain(gentity_t* self)
 				}
 
 				//in PVS?
-				if (!traceEnt->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
+				if (!trace_ent->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
 				{
 					//must be in PVS
 					continue;
@@ -3907,14 +3907,14 @@ int ForceShootDrain(gentity_t* self)
 				trap->Trace(&tr, self->client->ps.origin, vec3_origin, vec3_origin, ent_org, self->s.number, MASK_SHOT,
 				            qfalse, 0, 0);
 
-				if (tr.fraction < 1.0f && tr.entity_num != traceEnt->s.number)
+				if (tr.fraction < 1.0f && tr.entity_num != trace_ent->s.number)
 				{
 					//must have clear LOS
 					continue;
 				}
 
 				// ok, we are within the radius, add us to the incoming list
-				ForceDrainDamage(self, traceEnt, dir, ent_org);
+				ForceDrainDamage(self, trace_ent, dir, ent_org);
 				numDrained = 1;
 			}
 		}
@@ -3932,9 +3932,9 @@ int ForceShootDrain(gentity_t* self)
 				return 0;
 			}
 
-			traceEnt = &g_entities[tr.entity_num];
+			trace_ent = &g_entities[tr.entity_num];
 
-			ForceDrainDamage(self, traceEnt, forward, tr.endpos);
+			ForceDrainDamage(self, trace_ent, forward, tr.endpos);
 			numDrained = 1;
 		}
 	}
@@ -4001,35 +4001,35 @@ int ForceShootDestruction(gentity_t* self)
 			vec3_t dir;
 			// ReSharper disable once CppEntityAssignedButNoRead
 			float dot;
-			const gentity_t* traceEnt = entity_list[e];
+			const gentity_t* trace_ent = entity_list[e];
 
-			if (!traceEnt)
+			if (!trace_ent)
 				continue;
-			if (traceEnt == self)
+			if (trace_ent == self)
 				continue;
-			if (!traceEnt->inuse)
+			if (!trace_ent->inuse)
 				continue;
-			if (!traceEnt->takedamage)
+			if (!trace_ent->takedamage)
 				continue;
-			if (traceEnt->health <= 0) //no torturing corpses
+			if (trace_ent->health <= 0) //no torturing corpses
 				continue;
-			if (!traceEnt->client)
+			if (!trace_ent->client)
 				continue;
-			if (!traceEnt->client->ps.fd.forcePower)
+			if (!trace_ent->client->ps.fd.forcePower)
 				continue;
-			if (OnSameTeam(self, traceEnt) && !g_friendlyFire.integer)
+			if (OnSameTeam(self, trace_ent) && !g_friendlyFire.integer)
 				continue;
 			//this is all to see if we need to start a saber attack, if it's in flight, this doesn't matter
 			// find the distance from the edge of the bounding box
 			for (i = 0; i < 3; i++)
 			{
-				if (center[i] < traceEnt->r.absmin[i])
+				if (center[i] < trace_ent->r.absmin[i])
 				{
-					v[i] = traceEnt->r.absmin[i] - center[i];
+					v[i] = trace_ent->r.absmin[i] - center[i];
 				}
-				else if (center[i] > traceEnt->r.absmax[i])
+				else if (center[i] > trace_ent->r.absmax[i])
 				{
-					v[i] = center[i] - traceEnt->r.absmax[i];
+					v[i] = center[i] - trace_ent->r.absmax[i];
 				}
 				else
 				{
@@ -4037,8 +4037,8 @@ int ForceShootDestruction(gentity_t* self)
 				}
 			}
 
-			VectorSubtract(traceEnt->r.absmax, traceEnt->r.absmin, size);
-			VectorMA(traceEnt->r.absmin, 0.5, size, ent_org);
+			VectorSubtract(trace_ent->r.absmax, trace_ent->r.absmin, size);
+			VectorMA(trace_ent->r.absmin, 0.5, size, ent_org);
 
 			//see if they're in front of me
 			//must be within the forward cone
@@ -4055,7 +4055,7 @@ int ForceShootDestruction(gentity_t* self)
 			}
 
 			//in PVS?
-			if (!traceEnt->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
+			if (!trace_ent->r.bmodel && !trap->InPVS(ent_org, self->client->ps.origin))
 			{
 				//must be in PVS
 				continue;
@@ -4064,7 +4064,7 @@ int ForceShootDestruction(gentity_t* self)
 			//Now check and see if we can actually hit it
 			trap->Trace(&tr, self->client->ps.origin, vec3_origin, vec3_origin, ent_org, self->s.number, MASK_SHOT,
 			            qfalse, 0, 0);
-			if (tr.fraction < 1.0f && tr.entity_num != traceEnt->s.number)
+			if (tr.fraction < 1.0f && tr.entity_num != trace_ent->s.number)
 			{
 				//must have clear LOS
 				continue;
@@ -4366,16 +4366,16 @@ qboolean ForceTelepathyCheckDirectNPCTarget(gentity_t* self, trace_t* tr, qboole
 		return qfalse;
 	}
 
-	gentity_t* traceEnt = &g_entities[tr->entity_num];
+	gentity_t* trace_ent = &g_entities[tr->entity_num];
 
-	if (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE)
+	if (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE)
 	{
 		return qfalse;
 	}
 
-	if (traceEnt && traceEnt->client)
+	if (trace_ent && trace_ent->client)
 	{
-		switch (traceEnt->client->NPC_class)
+		switch (trace_ent->client->NPC_class)
 		{
 		case CLASS_GALAKMECH: //cant grip him, he's in armor
 		case CLASS_ATST: //much too big to grip!
@@ -4399,50 +4399,50 @@ qboolean ForceTelepathyCheckDirectNPCTarget(gentity_t* self, trace_t* tr, qboole
 		}
 	}
 
-	if (traceEnt->s.number < MAX_CLIENTS)
+	if (trace_ent->s.number < MAX_CLIENTS)
 	{
 		//a regular client
 		return qfalse;
 	}
 
-	if (targetLive && traceEnt->NPC)
+	if (targetLive && trace_ent->NPC)
 	{
 		//hit an organic non-player
 		vec3_t eyeDir;
-		if (G_ActivateBehavior(traceEnt, BSET_MINDTRICK))
+		if (G_ActivateBehavior(trace_ent, BSET_MINDTRICK))
 		{
 			//activated a script on him
 			//FIXME: do the visual sparkles effect on their heads, still?
 			WP_ForcePowerStart(self, FP_TELEPATHY, 0);
 		}
-		else if (self->NPC && traceEnt->client->playerTeam != self->client->playerTeam
-			|| !self->NPC && traceEnt->client->playerTeam != (npcteam_t)self->client->sess.sessionTeam)
+		else if (self->NPC && trace_ent->client->playerTeam != self->client->playerTeam
+			|| !self->NPC && trace_ent->client->playerTeam != (npcteam_t)self->client->sess.sessionTeam)
 		{
 			//an enemy
 			const int override = 0;
-			if (traceEnt->NPC->scriptFlags & SCF_NO_MIND_TRICK)
+			if (trace_ent->NPC->scriptFlags & SCF_NO_MIND_TRICK)
 			{
 			}
-			else if (traceEnt->s.weapon != WP_SABER && traceEnt->client->NPC_class != CLASS_REBORN)
+			else if (trace_ent->s.weapon != WP_SABER && trace_ent->client->NPC_class != CLASS_REBORN)
 			{
 				//haha!  Jedi aren't easily confused!
 				if (self->client->ps.fd.forcePowerLevel[FP_TELEPATHY] > FORCE_LEVEL_2)
 				{
 					//turn them to our side
 					//if mind trick 3 and aiming at an enemy need more force power
-					if (traceEnt->s.weapon != WP_NONE)
+					if (trace_ent->s.weapon != WP_NONE)
 					{
 						//don't charm people who aren't capable of fighting... like ugnaughts and droids
 						int newPlayerTeam, newEnemyTeam;
 
-						if (traceEnt->enemy)
+						if (trace_ent->enemy)
 						{
-							G_ClearEnemy(traceEnt);
+							G_ClearEnemy(trace_ent);
 						}
-						if (traceEnt->NPC)
+						if (trace_ent->NPC)
 						{
-							//traceEnt->NPC->tempBehavior = BS_FOLLOW_LEADER;
-							traceEnt->client->leader = self;
+							//trace_ent->NPC->tempBehavior = BS_FOLLOW_LEADER;
+							trace_ent->client->leader = self;
 						}
 						//FIXME: maybe pick an enemy right here?
 						if (self->NPC)
@@ -4474,17 +4474,17 @@ qboolean ForceTelepathyCheckDirectNPCTarget(gentity_t* self, trace_t* tr, qboole
 							}
 						}
 						//store these for retrieval later
-						traceEnt->genericValue1 = traceEnt->client->playerTeam;
-						traceEnt->genericValue2 = traceEnt->client->enemyTeam;
-						traceEnt->genericValue3 = traceEnt->s.teamowner;
+						trace_ent->genericValue1 = trace_ent->client->playerTeam;
+						trace_ent->genericValue2 = trace_ent->client->enemyTeam;
+						trace_ent->genericValue3 = trace_ent->s.teamowner;
 						//set the new values
-						traceEnt->client->playerTeam = newPlayerTeam;
-						traceEnt->client->enemyTeam = newEnemyTeam;
-						traceEnt->s.teamowner = newPlayerTeam;
-						traceEnt->NPC->charmedTime = level.time + mindTrickTime[self->client->ps.fd.forcePowerLevel[
+						trace_ent->client->playerTeam = newPlayerTeam;
+						trace_ent->client->enemyTeam = newEnemyTeam;
+						trace_ent->s.teamowner = newPlayerTeam;
+						trace_ent->NPC->charmedTime = level.time + mindTrickTime[self->client->ps.fd.forcePowerLevel[
 							FP_TELEPATHY]];
 
-						G_SetAnim(traceEnt, &traceEnt->client->pers.cmd, SETANIM_TORSO, BOTH_SONICPAIN_HOLD,
+						G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_SONICPAIN_HOLD,
 						          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD, 0);
 					}
 				}
@@ -4492,39 +4492,39 @@ qboolean ForceTelepathyCheckDirectNPCTarget(gentity_t* self, trace_t* tr, qboole
 				{
 					//just confuse them
 					//somehow confuse them?  Set don't fire to true for a while?  Drop their aggression?  Maybe just take their enemy away and don't let them pick one up for a while unless shot?
-					traceEnt->NPC->confusionTime = level.time + mindTrickTime[self->client->ps.fd.forcePowerLevel[
+					trace_ent->NPC->confusionTime = level.time + mindTrickTime[self->client->ps.fd.forcePowerLevel[
 						FP_TELEPATHY]]; //confused for about 10 seconds
 
-					G_SetAnim(traceEnt, &traceEnt->client->pers.cmd, SETANIM_TORSO, BOTH_SONICPAIN_HOLD,
+					G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_SONICPAIN_HOLD,
 					          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD, 0);
 
-					NPC_PlayConfusionSound(traceEnt);
-					if (traceEnt->enemy)
+					NPC_PlayConfusionSound(trace_ent);
+					if (trace_ent->enemy)
 					{
-						G_ClearEnemy(traceEnt);
+						G_ClearEnemy(trace_ent);
 					}
 				}
 			}
 			else
 			{
-				NPC_Jedi_PlayConfusionSound(traceEnt);
+				NPC_Jedi_PlayConfusionSound(trace_ent);
 			}
 			WP_ForcePowerStart(self, FP_TELEPATHY, override);
 		}
-		else if (traceEnt->client->playerTeam == self->client->playerTeam)
+		else if (trace_ent->client->playerTeam == self->client->playerTeam)
 		{
 			//an ally
 			//maybe just have him look at you?  Respond?  Take your enemy?
-			if (traceEnt->client->ps.pm_type < PM_DEAD && traceEnt->NPC != NULL && !(traceEnt->NPC->scriptFlags &
+			if (trace_ent->client->ps.pm_type < PM_DEAD && trace_ent->NPC != NULL && !(trace_ent->NPC->scriptFlags &
 				SCF_NO_RESPONSE))
 			{
-				NPC_UseResponse(traceEnt, self, qfalse);
+				NPC_UseResponse(trace_ent, self, qfalse);
 				WP_ForcePowerStart(self, FP_TELEPATHY, 1);
 			}
 		} //NOTE: no effect on TEAM_NEUTRAL?
-		AngleVectors(traceEnt->client->renderInfo.eyeAngles, eyeDir, NULL, NULL);
+		AngleVectors(trace_ent->client->renderInfo.eyeAngles, eyeDir, NULL, NULL);
 		VectorNormalize(eyeDir);
-		G_PlayEffectID(G_EffectIndex("force/force_touch"), traceEnt->client->renderInfo.eyePoint, eyeDir);
+		G_PlayEffectID(G_EffectIndex("force/force_touch"), trace_ent->client->renderInfo.eyePoint, eyeDir);
 	}
 	else
 	{

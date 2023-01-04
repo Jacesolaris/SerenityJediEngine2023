@@ -63,7 +63,7 @@ extern qboolean PM_RunningAnim(int anim);
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);
 extern cvar_t* g_sex;
 extern void G_PilotXWing(gentity_t* ent);
-extern void G_DriveATST(gentity_t* pEnt, gentity_t* atst);
+extern void G_DriveATST(gentity_t* p_ent, gentity_t* atst);
 extern qboolean IsHoldingGun(const gentity_t* ent);
 extern void ReloadGun(gentity_t* ent);
 extern void RemoveBarrier(gentity_t* ent);
@@ -717,8 +717,6 @@ void UserSpawn(const gentity_t* ent, const char* name)
 	gentity_t* ent2 = G_Spawn();
 	ent2->classname = G_NewString(name);
 
-	//TODO: This should ultimately make sure this is a safe spawn!
-
 	//Spawn the entity and place it there
 	VectorSet(angles, 0, ent->s.apos.trBase[YAW], 0);
 	AngleVectors(angles, vf, nullptr, nullptr);
@@ -791,18 +789,18 @@ void Cmd_SetViewpos_f(gentity_t* ent)
 Cmd_SetObjective_f
 =================
 */
-qboolean g_check_player_dark_side(void);
+qboolean g_check_player_dark_side();
 
 void Cmd_SetObjective_f(const gentity_t* ent)
 {
-	int objectiveI;
+	int objective_i;
 
 	if (gi.argc() == 2)
 	{
-		objectiveI = atoi(gi.argv(1));
-		gi.Printf("objective #%d  display status=%d, status=%d\n", objectiveI,
-		          ent->client->sess.mission_objectives[objectiveI].display,
-		          ent->client->sess.mission_objectives[objectiveI].status
+		objective_i = atoi(gi.argv(1));
+		gi.Printf("objective #%d  display status=%d, status=%d\n", objective_i,
+		          ent->client->sess.mission_objectives[objective_i].display,
+		          ent->client->sess.mission_objectives[objective_i].status
 		);
 		return;
 	}
@@ -813,12 +811,12 @@ void Cmd_SetObjective_f(const gentity_t* ent)
 		return;
 	}
 
-	objectiveI = atoi(gi.argv(1));
-	const int displayStatus = atoi(gi.argv(2));
+	objective_i = atoi(gi.argv(1));
+	const int display_status = atoi(gi.argv(2));
 	const int status = atoi(gi.argv(3));
 
-	ent->client->sess.mission_objectives[objectiveI].display = static_cast<qboolean>(displayStatus != 0);
-	ent->client->sess.mission_objectives[objectiveI].status = status;
+	ent->client->sess.mission_objectives[objective_i].display = static_cast<qboolean>(display_status != 0);
+	ent->client->sess.mission_objectives[objective_i].status = status;
 	g_check_player_dark_side();
 }
 

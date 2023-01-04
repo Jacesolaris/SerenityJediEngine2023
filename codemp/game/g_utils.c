@@ -556,7 +556,7 @@ local anim index into account and make the call -rww
 */
 void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_parts, int anim, int set_anim_flags);
 
-void G_SetAnim(gentity_t* ent, usercmd_t* ucmd, int setAnimParts, int anim, int setAnimFlags, int blendTime)
+void G_SetAnim(gentity_t* ent, usercmd_t* ucmd, int set_anim_parts, int anim, int set_anim_flags, int blend_time)
 {
 #if 0 //old hackish way
 	pmove_t pmv;
@@ -580,10 +580,10 @@ void G_SetAnim(gentity_t* ent, usercmd_t* ucmd, int setAnimParts, int anim, int 
 
 	//don't need to bother with ghoul2 stuff, it's not even used in PM_SetAnim.
 	pm = &pmv;
-	PM_SetAnim(setAnimParts, anim, setAnimFlags, blendTime);
+	PM_SetAnim(set_anim_parts, anim, set_anim_flags, blend_time);
 #else //new clean and shining way!
 	assert(ent->client);
-	BG_SetAnim(&ent->client->ps, bgAllAnims[ent->localAnimIndex].anims, setAnimParts, anim, setAnimFlags);
+	BG_SetAnim(&ent->client->ps, bgAllAnims[ent->localAnimIndex].anims, set_anim_parts, anim, set_anim_flags);
 #endif
 }
 

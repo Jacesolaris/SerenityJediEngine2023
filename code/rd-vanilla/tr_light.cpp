@@ -61,14 +61,14 @@ R_DlightBmodel
 Determine which dynamic lights may effect this bmodel
 =============
 */
-void R_DlightBmodel(const bmodel_t* bmodel, const qboolean NoLight) {
+void R_DlightBmodel(const bmodel_t* bmodel, const qboolean no_light) {
 	int			i;
 
 	// transform all the lights
 	R_TransformDlights(tr.refdef.num_dlights, tr.refdef.dlights, &tr.ori);
 
 	int mask = 0;
-	if (!NoLight)
+	if (!no_light)
 	{
 		int j;
 		for (i = 0; i < tr.refdef.num_dlights; i++) {
@@ -161,8 +161,8 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent)
 	}
 #define ACCURATE_LIGHTGRID_SAMPLING 1
 #if ACCURATE_LIGHTGRID_SAMPLING
-	vec3_t	startLightOrigin;
-	VectorCopy(light_origin, startLightOrigin);
+	vec3_t	start_light_origin;
+	VectorCopy(light_origin, start_light_origin);
 #endif
 
 	VectorSubtract(light_origin, tr.world->lightGridOrigin, light_origin);
@@ -201,7 +201,7 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent)
 	for (i = 0; i < 8; i++) {
 		float			factor;
 		mgrid_t* data;
-		unsigned short* gridPos;
+		unsigned short* grid_pos;
 		int				lat, lng;
 		vec3_t			normal;
 #if ACCURATE_LIGHTGRID_SAMPLING
@@ -210,11 +210,11 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent)
 #endif
 
 		factor = 1.0;
-		gridPos = start_grid_pos;
+		grid_pos = start_grid_pos;
 		for (j = 0; j < 3; j++) {
 			if (i & 1 << j) {
 				factor *= frac[j];
-				gridPos += grid_step[j];
+				grid_pos += grid_step[j];
 #if ACCURATE_LIGHTGRID_SAMPLING
 				gridOrg[j] += tr.world->lightGridSize[j];
 #endif
@@ -224,11 +224,11 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent)
 			}
 		}
 
-		if (gridPos >= tr.world->lightGridArray + tr.world->numGridArrayElements)
+		if (grid_pos >= tr.world->lightGridArray + tr.world->numGridArrayElements)
 		{//we've gone off the array somehow
 			continue;
 		}
-		data = tr.world->lightGridData + *gridPos;
+		data = tr.world->lightGridData + *grid_pos;
 
 		if (data->styles[0] == LS_NONE)
 		{
@@ -473,27 +473,27 @@ void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent) {
 }
 
 //pass in origin
-qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir) {
+qboolean RE_GetLighting(const vec3_t origin, vec3_t ambient_light, vec3_t directed_light, vec3_t light_dir) {
 	trRefEntity_t tr_ent;
 
 	if (!tr.world || !tr.world->lightGridData) {
-		ambientLight[0] = ambientLight[1] = ambientLight[2] = 255.0;
-		directedLight[0] = directedLight[1] = directedLight[2] = 255.0;
-		VectorCopy(tr.sunDirection, lightDir);
+		ambient_light[0] = ambient_light[1] = ambient_light[2] = 255.0;
+		directed_light[0] = directed_light[1] = directed_light[2] = 255.0;
+		VectorCopy(tr.sunDirection, light_dir);
 		return qfalse;
 	}
 	memset(&tr_ent, 0, sizeof tr_ent);
 
-	if (ambientLight[0] == 666)
+	if (ambient_light[0] == 666)
 	{//HAX0R
 		tr_ent.e.hModel = -1;
 	}
 
 	VectorCopy(origin, tr_ent.e.origin);
 	R_SetupEntityLightingGrid(&tr_ent);
-	VectorCopy(tr_ent.ambientLight, ambientLight);
-	VectorCopy(tr_ent.directedLight, directedLight);
-	VectorCopy(tr_ent.lightDir, lightDir);
+	VectorCopy(tr_ent.ambientLight, ambient_light);
+	VectorCopy(tr_ent.directedLight, directed_light);
+	VectorCopy(tr_ent.lightDir, light_dir);
 	return qtrue;
 }
 
@@ -502,7 +502,7 @@ qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directe
 R_LightForPoint
 =================
 */
-int R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir)
+int R_LightForPoint(vec3_t point, vec3_t ambient_light, vec3_t directed_light, vec3_t light_dir)
 {
 	trRefEntity_t ent;
 
@@ -513,9 +513,9 @@ int R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec
 	memset(&ent, 0, sizeof ent);
 	VectorCopy(point, ent.e.origin);
 	R_SetupEntityLightingGrid(&ent);
-	VectorCopy(ent.ambientLight, ambientLight);
-	VectorCopy(ent.directedLight, directedLight);
-	VectorCopy(ent.lightDir, lightDir);
+	VectorCopy(ent.ambientLight, ambient_light);
+	VectorCopy(ent.directedLight, directed_light);
+	VectorCopy(ent.lightDir, light_dir);
 
 	return qtrue;
 }

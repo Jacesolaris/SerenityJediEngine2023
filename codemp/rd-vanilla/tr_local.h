@@ -1097,6 +1097,7 @@ extern	cvar_t* r_autoMapDisable;
 extern cvar_t* r_dlightStyle;
 extern cvar_t* r_surfaceSprites;
 extern cvar_t* r_surfaceWeather;
+extern cvar_t* r_AdvancedsurfaceSprites;
 
 extern cvar_t* r_windSpeed;
 extern cvar_t* r_windAngle;
@@ -1213,7 +1214,7 @@ void R_AddDrawSurf(surfaceType_t* surface, shader_t* shader, int fogIndex, int d
 #define	CULL_OUT	2		// completely outside the clipping planes
 void R_LocalNormalToWorld(const vec3_t local, vec3_t world);
 void R_LocalPointToWorld(const vec3_t local, vec3_t world);
-void R_WorldNormalToEntity(const vec3_t localVec, vec3_t world);
+void R_WorldNormalToEntity(const vec3_t worldvec, vec3_t entvec);
 int R_CullLocalBox(const vec3_t bounds[2]);
 int R_CullPointAndRadius(const vec3_t origin, float radius);
 int R_CullLocalPointAndRadius(const vec3_t origin, float radius);
@@ -1469,10 +1470,10 @@ LIGHTS
 ============================================================
 */
 
-void R_DlightBmodel(const bmodel_t* bmodel, bool NoLight);
+void R_DlightBmodel(const bmodel_t* bmodel, bool no_light);
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent);
 void R_TransformDlights(int count, dlight_t* dl, const orientationr_t* ori);
-int R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
+int R_LightForPoint(vec3_t point, vec3_t ambient_light, vec3_t directed_light, vec3_t light_dir);
 
 /*
 ============================================================
@@ -1493,8 +1494,8 @@ SKIES
 
 ============================================================
 */
-void R_BuildCloudData(const shaderCommands_t* shader);
-void R_InitSkyTexCoords(float cloudLayerHeight);
+void R_BuildCloudData(const shaderCommands_t* input);
+void R_InitSkyTexCoords(float height_cloud);
 void R_DrawSkyBox(shaderCommands_t* shader);
 void RB_DrawSun(void);
 void RB_ClipSkyPolygons(const shaderCommands_t* input);
@@ -1804,10 +1805,10 @@ void		RE_InsertModelIntoHash(const char* name, model_t* mod);
 Ghoul2 Insert End
 */
 
-void R_InitDecals(void);
-void RE_ClearDecals(void);
+void R_InitDecals();
+void RE_ClearDecals();
 void RE_AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alpha_fade, float radius, qboolean temporary);
-void R_AddDecals(void);
+void R_AddDecals();
 
 // tr_surfacesprites
 void RB_DrawSurfaceSprites(shaderStage_t* stage, shaderCommands_t* input);

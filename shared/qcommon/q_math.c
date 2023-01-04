@@ -1304,10 +1304,10 @@ void VectorInverse(vec3_t vec) {
 	vec[0] = -vec[0]; vec[1] = -vec[1]; vec[2] = -vec[2];
 }
 
-void CrossProduct(const vec3_t vec1, const vec3_t vec2, vec3_t vecOut) {
-	vecOut[0] = vec1[1] * vec2[2] - vec1[2] * vec2[1];
-	vecOut[1] = vec1[2] * vec2[0] - vec1[0] * vec2[2];
-	vecOut[2] = vec1[0] * vec2[1] - vec1[1] * vec2[0];
+void CrossProduct(const vec3_t vec1, const vec3_t vec2, vec3_t vec_out) {
+	vec_out[0] = vec1[1] * vec2[2] - vec1[2] * vec2[1];
+	vec_out[1] = vec1[2] * vec2[0] - vec1[0] * vec2[2];
+	vec_out[2] = vec1[0] * vec2[1] - vec1[1] * vec2[0];
 }
 
 float DotProduct(const vec3_t vec1, const vec3_t vec2) {

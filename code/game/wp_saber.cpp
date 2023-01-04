@@ -18727,11 +18727,11 @@ void ForceGripWide(gentity_t* self, gentity_t* trace_ent)
 		return;
 	}
 #else
-	if (!traceEnt || traceEnt == self || traceEnt->bmodel || (traceEnt->health <= 0 && traceEnt->takedamage) || (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE))
+	if (!trace_ent || trace_ent == self || trace_ent->bmodel || (trace_ent->health <= 0 && trace_ent->takedamage) || (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE))
 	{
 		return;
-		traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
-		NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+		trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
+		NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 	}
 #endif
 
@@ -19343,11 +19343,11 @@ void ForceGripAdvanced(gentity_t* self)
 		return;
 	}
 #else
-	if (!traceEnt || traceEnt == self || traceEnt->bmodel || (traceEnt->health <= 0 && traceEnt->takedamage) || (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE))
+	if (!trace_ent || trace_ent == self || trace_ent->bmodel || (trace_ent->health <= 0 && trace_ent->takedamage) || (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE))
 	{
 		return;
-		traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
-		NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+		trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
+		NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 	}
 #endif
 	if (trace_ent->m_pVehicle != nullptr)
@@ -19807,11 +19807,11 @@ void ForceGripBasic(gentity_t* self)
 		return;
 	}
 #else
-	if (!traceEnt || traceEnt == self || traceEnt->bmodel || (traceEnt->health <= 0 && traceEnt->takedamage) || (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE))
+	if (!trace_ent || trace_ent == self || trace_ent->bmodel || (trace_ent->health <= 0 && trace_ent->takedamage) || (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE))
 	{
 		return;
-		traceEnt->client->ps.powerups[PW_MEDITATE] = level.time + traceEnt->client->ps.torsoAnimTimer + 5000;
-		NPC_SetAnim(traceEnt, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
+		trace_ent->client->ps.powerups[PW_MEDITATE] = level.time + trace_ent->client->ps.torsoAnimTimer + 5000;
+		NPC_SetAnim(trace_ent, SETANIM_TORSO, BOTH_WIND, SETANIM_AFLAG_PACE);
 	}
 #endif
 
@@ -22704,7 +22704,7 @@ void force_shoot_lightning(gentity_t* self)
 {
 	trace_t tr;
 	vec3_t forward;
-	gentity_t* traceEnt;
+	gentity_t* trace_ent;
 
 	if (self->health <= 0)
 	{
@@ -22749,31 +22749,31 @@ void force_shoot_lightning(gentity_t* self)
 			vec3_t size;
 			vec3_t ent_org;
 			vec3_t dir;
-			traceEnt = entity_list[e];
+			trace_ent = entity_list[e];
 
-			if (!traceEnt)
+			if (!trace_ent)
 				continue;
-			if (traceEnt == self)
+			if (trace_ent == self)
 				continue;
-			if (traceEnt->owner == self && traceEnt->s.weapon != WP_THERMAL) //can push your own thermals
+			if (trace_ent->owner == self && trace_ent->s.weapon != WP_THERMAL) //can push your own thermals
 				continue;
-			if (!traceEnt->inuse)
+			if (!trace_ent->inuse)
 				continue;
-			if (!traceEnt->takedamage)
+			if (!trace_ent->takedamage)
 				continue;
-			//if (traceEnt->health <= 0)//no torturing corpses
+			//if (trace_ent->health <= 0)//no torturing corpses
 			//	continue;
 			//this is all to see if we need to start a saber attack, if it's in flight, this doesn't matter
 			// find the distance from the edge of the bounding box
 			for (i = 0; i < 3; i++)
 			{
-				if (center[i] < traceEnt->absmin[i])
+				if (center[i] < trace_ent->absmin[i])
 				{
-					v[i] = traceEnt->absmin[i] - center[i];
+					v[i] = trace_ent->absmin[i] - center[i];
 				}
-				else if (center[i] > traceEnt->absmax[i])
+				else if (center[i] > trace_ent->absmax[i])
 				{
-					v[i] = center[i] - traceEnt->absmax[i];
+					v[i] = center[i] - trace_ent->absmax[i];
 				}
 				else
 				{
@@ -22781,8 +22781,8 @@ void force_shoot_lightning(gentity_t* self)
 				}
 			}
 
-			VectorSubtract(traceEnt->absmax, traceEnt->absmin, size);
-			VectorMA(traceEnt->absmin, 0.5, size, ent_org);
+			VectorSubtract(trace_ent->absmax, trace_ent->absmin, size);
+			VectorMA(trace_ent->absmin, 0.5, size, ent_org);
 
 			//see if they're in front of me
 			//must be within the forward cone
@@ -22798,7 +22798,7 @@ void force_shoot_lightning(gentity_t* self)
 				continue;
 			}
 
-			if (!traceEnt->bmodel && !gi.inPVS(ent_org, self->client->renderInfo.handLPoint))
+			if (!trace_ent->bmodel && !gi.inPVS(ent_org, self->client->renderInfo.handLPoint))
 			{
 				//must be in PVS
 				continue;
@@ -22808,12 +22808,12 @@ void force_shoot_lightning(gentity_t* self)
 			gi.trace(&tr, self->client->renderInfo.handLPoint, vec3_origin, vec3_origin, ent_org, self->s.number,
 			         MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-			if (tr.fraction < 1.0f && tr.entity_num != traceEnt->s.number)
+			if (tr.fraction < 1.0f && tr.entity_num != trace_ent->s.number)
 			{
 				//must have clear LOS
 				continue;
 			}
-			force_lightning_damage(self, traceEnt, dir, dist, dot, ent_org);
+			force_lightning_damage(self, trace_ent, dir, dist, dot, ent_org);
 		}
 	}
 	else
@@ -22835,16 +22835,16 @@ void force_shoot_lightning(gentity_t* self)
 				return;
 			}
 
-			traceEnt = &g_entities[tr.entity_num];
+			trace_ent = &g_entities[tr.entity_num];
 			//NOTE: only NPCs do this auto-dodge
-			if (!in_camera && traceEnt
-				&& traceEnt->s.weapon != WP_SABER
-				&& traceEnt->s.number >= MAX_CLIENTS
-				&& traceEnt->client
-				&& traceEnt->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
+			if (!in_camera && trace_ent
+				&& trace_ent->s.weapon != WP_SABER
+				&& trace_ent->s.number >= MAX_CLIENTS
+				&& trace_ent->client
+				&& trace_ent->client->ps.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_0)
 			{
 				//FIXME: need a more reliable way to know we hit a jedi?
-				if (!jedi_dodge_evasion(traceEnt, self, &tr, HL_NONE))
+				if (!jedi_dodge_evasion(trace_ent, self, &tr, HL_NONE))
 				{
 					//act like we didn't even hit him
 					VectorCopy(tr.endpos, start);
@@ -22857,9 +22857,9 @@ void force_shoot_lightning(gentity_t* self)
 			break;
 		}
 
-		traceEnt = &g_entities[tr.entity_num];
+		trace_ent = &g_entities[tr.entity_num];
 
-		force_lightning_damage(self, traceEnt, forward, 0, 0, tr.endpos);
+		force_lightning_damage(self, trace_ent, forward, 0, 0, tr.endpos);
 	}
 }
 
@@ -25460,11 +25460,11 @@ void ForceGrasp(gentity_t* self)
 	{
 		return;
 	}
-	/*if (traceEnt == player && player->flags & FL_NOFORCE)
+	/*if (trace_ent == player && player->flags & FL_NOFORCE)
 		return;*/
 #else
 //rww - RAGDOLL_END
-	if (!traceEnt || traceEnt == self/*???*/ || traceEnt->bmodel || (traceEnt->health <= 0 && traceEnt->takedamage) || (traceEnt->NPC && traceEnt->NPC->scriptFlags & SCF_NO_FORCE))
+	if (!trace_ent || trace_ent == self/*???*/ || trace_ent->bmodel || (trace_ent->health <= 0 && trace_ent->takedamage) || (trace_ent->NPC && trace_ent->NPC->scriptFlags & SCF_NO_FORCE))
 	{
 		return;
 	}
@@ -25597,7 +25597,7 @@ void ForceGrasp(gentity_t* self)
 	{
 		//can't grip non-clients... right?
 		//FIXME: Make it so objects flagged as "grabbable" are let through
-		//if ( Q_stricmp( "misc_model_breakable", traceEnt->classname ) || !(traceEnt->s.eFlags&EF_BOUNCE_HALF) || !traceEnt->physicsBounce )
+		//if ( Q_stricmp( "misc_model_breakable", trace_ent->classname ) || !(trace_ent->s.eFlags&EF_BOUNCE_HALF) || !trace_ent->physicsBounce )
 		{
 			return;
 		}
@@ -25615,9 +25615,9 @@ void ForceGrasp(gentity_t* self)
 			//riding vehicle? pull him off!
 			//FIXME: if in an AT-ST or X-Wing, shouldn't do this... :)
 			//pull him off of it
-			//((CVehicleNPC *)traceEnt->NPC)->Eject( traceEnt );
+			//((CVehicleNPC *)trace_ent->NPC)->Eject( trace_ent );
 			p_veh->m_pVehicleInfo->Eject(p_veh, trace_ent, qtrue);
-			//G_DriveVehicle( traceEnt, NULL, NULL );
+			//G_DriveVehicle( trace_ent, NULL, NULL );
 		}
 		G_AddVoiceEvent(trace_ent, Q_irand(EV_PUSHED1, EV_PUSHED3), 2000);
 		if (self->client->ps.forcePowerLevel[FP_GRASP] > FORCE_LEVEL_2 || trace_ent->s.weapon == WP_SABER)
@@ -25699,7 +25699,7 @@ void ForceGrasp(gentity_t* self)
 		{
 			//lifting sound?  or always?
 		}
-		//if ( traceEnt->s.number )
+		//if ( trace_ent->s.number )
 		{
 			//picks them up for a second first
 			self->client->ps.forcePowerDebounce[FP_GRASP] = level.time + 1000;

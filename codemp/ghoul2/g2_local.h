@@ -221,10 +221,10 @@ int G2_IsSurfaceRendered(CGhoul2Info* ghlInfo, const char* surfaceName, surfaceI
 // internal bone calls - G2_Bones.cpp
 qboolean G2_Set_Bone_Angles(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const char* boneName, const float* angles,
                             int flags, Eorientations up, Eorientations left, Eorientations forward,
-                            qhandle_t* modelList, int model_index, int blendTime, int currentTime);
+                            qhandle_t* modelList, int model_index, int blend_time, int currentTime);
 qboolean G2_Remove_Bone(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const char* boneName);
 qboolean G2_Set_Bone_Anim(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const char* boneName, int startFrame,
-                          int endFrame, int flags, float animSpeed, int currentTime, float setFrame, int blendTime);
+                          int endFrame, int flags, float animSpeed, int currentTime, float setFrame, int blend_time);
 qboolean G2_Get_Bone_Anim(const CGhoul2Info* ghlInfo, boneInfo_v& blist, const char* boneName, int currentTime,
                           float* currentFrame, int* startFrame, int* endFrame, int* flags, float* retAnimSpeed,
                           qhandle_t* modelList, int model_index);
@@ -242,17 +242,17 @@ int G2_Find_Bone_In_List(const boneInfo_v& blist, int boneNum);
 void G2_RemoveRedundantBoneOverrides(boneInfo_v& blist, int* activeBones);
 qboolean G2_Set_Bone_Angles_Matrix(const char* fileName, boneInfo_v& blist, const char* boneName,
                                    const mdxaBone_t& matrix, int flags, const qhandle_t* modelList, int model_index,
-                                   int blendTime, int currentTime);
+                                   int blend_time, int currentTime);
 int G2_Get_Bone_Index(CGhoul2Info* ghoul2, const char* boneName);
 qboolean G2_Set_Bone_Angles_Index(boneInfo_v& blist, int index, const float* angles, int flags, Eorientations yaw,
                                   Eorientations pitch, Eorientations roll, qhandle_t* modelList, int model_index,
-                                  int blendTime, int currentTime);
+                                  int blend_time, int currentTime);
 qboolean G2_Set_Bone_Angles_Matrix_Index(boneInfo_v& blist, int index, const mdxaBone_t& matrix, int flags,
-                                         qhandle_t* modelList, int model_index, int blendTime, int currentTime);
+                                         qhandle_t* modelList, int model_index, int blend_time, int currentTime);
 qboolean G2_Stop_Bone_Anim_Index(boneInfo_v& blist, int index);
 qboolean G2_Stop_Bone_Angles_Index(boneInfo_v& blist, int index);
 qboolean G2_Set_Bone_Anim_Index(boneInfo_v& blist, int index, int startFrame, int endFrame, int flags, float animSpeed,
-                                int currentTime, float setFrame, int blendTime, int numFrames);
+                                int currentTime, float setFrame, int blend_time, int numFrames);
 qboolean G2_Get_Bone_Anim_Index(boneInfo_v& blist, int index, int currentTime, float* currentFrame, int* startFrame,
                                 int* endFrame, int* flags, float* retAnimSpeed, qhandle_t* modelList, int model_index);
 
@@ -317,7 +317,7 @@ qboolean G2API_RemoveSurface(CGhoul2Info* ghlInfo, int index);
 int G2API_AddSurface(CGhoul2Info* ghlInfo, int surfaceNumber, int polyNumber, float BarycentricI, float BarycentricJ,
                      int lod);
 qboolean G2API_SetBoneAnim(CGhoul2Info_v& ghoul2, int model_index, const char* boneName, int startFrame, int endFrame,
-                           int flags, float animSpeed, int currentTime, float setFrame = -1, int blendTime = -1);
+                           int flags, float animSpeed, int currentTime, float setFrame = -1, int blend_time = -1);
 qboolean G2API_GetBoneAnim(CGhoul2Info_v& ghoul2, int model_index, const char* boneName, int currentTime,
                            float* currentFrame, int* startFrame, int* endFrame, int* flags, float* animSpeed,
                            qhandle_t* modelList);
@@ -328,7 +328,7 @@ qboolean G2API_StopBoneAnim(CGhoul2Info* ghlInfo, const char* boneName);
 
 qboolean G2API_SetBoneAngles(CGhoul2Info_v& ghoul2, int model_index, const char* boneName, const vec3_t angles,
                              int flags, Eorientations up, Eorientations left, Eorientations forward,
-                             qhandle_t* modelList, int blendTime, int currentTime);
+                             qhandle_t* modelList, int blend_time, int currentTime);
 
 qboolean G2API_StopBoneAngles(CGhoul2Info* ghlInfo, const char* boneName);
 qboolean G2API_RemoveBone(CGhoul2Info_v& ghoul2, int model_index, const char* boneName);
@@ -371,19 +371,19 @@ int G2API_GetSurfaceIndex(CGhoul2Info* ghlInfo, const char* surfaceName);
 char* G2API_GetSurfaceName(CGhoul2Info_v& ghoul2, int model_index, int surfNumber);
 char* G2API_GetGLAName(CGhoul2Info_v& ghoul2, int model_index);
 qboolean G2API_SetBoneAnglesMatrix(CGhoul2Info* ghlInfo, const char* boneName, const mdxaBone_t& matrix, int flags,
-                                   qhandle_t* modelList, int blendTime = 0, int currentTime = 0);
+                                   qhandle_t* modelList, int blend_time = 0, int currentTime = 0);
 qboolean G2API_SetNewOrigin(CGhoul2Info_v& ghoul2, int bolt_index);
 int G2API_GetBoneIndex(CGhoul2Info* ghlInfo, const char* boneName);
 qboolean G2API_StopBoneAnglesIndex(CGhoul2Info* ghlInfo, int index);
 qboolean G2API_StopBoneAnimIndex(CGhoul2Info* ghlInfo, int index);
 qboolean G2API_SetBoneAnglesIndex(CGhoul2Info* ghlInfo, int index, const vec3_t angles, int flags, Eorientations yaw,
-                                  Eorientations pitch, Eorientations roll, qhandle_t* modelList, int blendTime,
+                                  Eorientations pitch, Eorientations roll, qhandle_t* modelList, int blend_time,
                                   int currentTime);
 qboolean G2API_SetBoneAnglesMatrixIndex(CGhoul2Info* ghlInfo, int index, const mdxaBone_t& matrix, int flags,
-                                        qhandle_t* modelList, int blendTime, int currentTime);
+                                        qhandle_t* modelList, int blend_time, int currentTime);
 qboolean G2API_DoesBoneExist(CGhoul2Info_v& ghoul2, int model_index, const char* boneName);
 qboolean G2API_SetBoneAnimIndex(CGhoul2Info* ghlInfo, int index, int startFrame, int endFrame, int flags,
-                                float animSpeed, int currentTime, float setFrame, int blendTime);
+                                float animSpeed, int currentTime, float setFrame, int blend_time);
 qboolean G2API_SaveGhoul2Models(CGhoul2Info_v& ghoul2, char** buffer, int* size);
 void G2API_LoadGhoul2Models(CGhoul2Info_v& ghoul2, char* buffer);
 void G2API_LoadSaveCodeDestructGhoul2Info(CGhoul2Info_v& ghoul2);

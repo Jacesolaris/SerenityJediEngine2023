@@ -218,7 +218,7 @@ extern qboolean PM_InOnGroundAnim(playerState_t * ps);
 extern weaponInfo_t cg_weapons[MAX_WEAPONS];
 extern int PM_PickAnim(const gentity_t* self, int minAnim, int maxAnim);
 
-extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trace_t* trace);
+extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damage_self, const trace_t* trace);
 extern saberMoveName_t transitionMove[Q_NUM_QUADS][Q_NUM_QUADS];
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
@@ -2487,7 +2487,7 @@ static qboolean pm_check_jump()
 							parts = SETANIM_BOTH;
 						}
 						PM_SetAnim(pm, parts, anim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
-						//FIXME: do damage to traceEnt, like above?
+						//FIXME: do damage to trace_ent, like above?
 						pm->ps->pm_flags |= PMF_JUMPING | PMF_SLOW_MO_FALL;
 						pm->cmd.upmove = 0;
 						PM_AddEvent(EV_JUMP);
@@ -2562,10 +2562,10 @@ static qboolean pm_check_jump()
 						          static_cast<EG2_Collision>(0), 0); //FIXME: clip brushes too?
 						VectorSubtract(pm->ps->origin, traceto, ideal_normal);
 						VectorNormalize(ideal_normal);
-						gentity_t* traceEnt = &g_entities[trace.entity_num];
+						gentity_t* trace_ent = &g_entities[trace.entity_num];
 						if (trace.fraction < 1.0f
 							&& fabs(trace.plane.normal[2]) <= MAX_WALL_GRAB_SLOPE
-							&& (trace.entity_num < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL ||
+							&& (trace.entity_num < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL ||
 								DotProduct(trace.plane.normal, ideal_normal) > 0.7))
 						{
 							//there is a wall there
@@ -4440,8 +4440,8 @@ qboolean pm_try_roll()
 				else
 				{
 					//check other conditions
-					const gentity_t* traceEnt = &g_entities[trace.entity_num];
-					if (traceEnt && traceEnt->svFlags & SVF_GLASS_BRUSH)
+					const gentity_t* trace_ent = &g_entities[trace.entity_num];
+					if (trace_ent && trace_ent->svFlags & SVF_GLASS_BRUSH)
 					{
 						//okay to roll through glass
 						roll = qtrue;
@@ -4668,8 +4668,8 @@ qboolean PM_TryRoll_SJE()
 				else
 				{
 					//check other conditions
-					const gentity_t* traceEnt = &g_entities[trace.entity_num];
-					if (traceEnt && traceEnt->svFlags & SVF_GLASS_BRUSH)
+					const gentity_t* trace_ent = &g_entities[trace.entity_num];
+					if (trace_ent && trace_ent->svFlags & SVF_GLASS_BRUSH)
 					{
 						//okay to roll through glass
 						roll = qtrue;
@@ -5607,8 +5607,8 @@ static void PM_GroundTraceMissed()
 														client->NPC_class != CLASS_ROCKETTROOPER))
 												{
 													//Jedi don't scream and die if they're heading for a hard impact
-													const gentity_t* traceEnt = &g_entities[trace.entity_num];
-													if (trace.entity_num == ENTITYNUM_WORLD || traceEnt && traceEnt->
+													const gentity_t* trace_ent = &g_entities[trace.entity_num];
+													if (trace.entity_num == ENTITYNUM_WORLD || trace_ent && trace_ent->
 														bmodel)
 													{
 														//hit architecture, find impact force
@@ -13429,7 +13429,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 
 	if (anim != -1)
 	{
-		PM_SetAnim(pm, parts, anim, setflags, saberMoveData[new_move].blendTime);
+		PM_SetAnim(pm, parts, anim, setflags, saberMoveData[new_move].blend_time);
 	}
 
 	if (pm->ps->torsoAnim == anim)

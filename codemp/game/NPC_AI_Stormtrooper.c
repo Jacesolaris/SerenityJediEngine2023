@@ -2922,21 +2922,21 @@ void Noghri_StickTrace(void)
 			if (trace.fraction < 1.0f && trace.entity_num != lastHit)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entity_num];
-				if (traceEnt->takedamage
-					&& (!traceEnt->client || traceEnt == NPCS.NPC->enemy || traceEnt->client->NPC_class != NPCS.NPC->
+				gentity_t* trace_ent = &g_entities[trace.entity_num];
+				if (trace_ent->takedamage
+					&& (!trace_ent->client || trace_ent == NPCS.NPC->enemy || trace_ent->client->NPC_class != NPCS.NPC->
 						client->NPC_class))
 				{
 					//smack
 					const int dmg = Q_irand(12, 20); //FIXME: base on skill!
-					G_Sound(traceEnt, CHAN_AUTO,
+					G_Sound(trace_ent, CHAN_AUTO,
 					        G_SoundIndex(va("sound/weapons/tusken_staff/stickhit%d.wav", Q_irand(1, 4))));
-					G_Damage(traceEnt, NPCS.NPC, NPCS.NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK,
+					G_Damage(trace_ent, NPCS.NPC, NPCS.NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK,
 					         MOD_MELEE);
-					if (traceEnt->health > 0 && dmg > 17)
+					if (trace_ent->health > 0 && dmg > 17)
 					{
 						//do pain on enemy
-						G_Knockdown(traceEnt, NPCS.NPC, dir, 300, qtrue);
+						G_Knockdown(trace_ent, NPCS.NPC, dir, 300, qtrue);
 					}
 					lastHit = trace.entity_num;
 					hit = qtrue;

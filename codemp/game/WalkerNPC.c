@@ -33,7 +33,7 @@ extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 extern vec3_t player_mins;
 extern vec3_t player_maxs;
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
+extern void Vehicle_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean breakSaberLock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
@@ -57,9 +57,9 @@ static qboolean Update( Vehicle_t *p_veh, const usercmd_t *pUcmd )
 */
 
 // Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-static qboolean Board(Vehicle_t* p_veh, bgEntity_t* pEnt)
+static qboolean Board(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
-	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, pEnt))
+	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, p_ent))
 		return qfalse;
 
 	// Set the board wait time (they won't be able to do anything, including getting off, for this amount of time).
@@ -85,7 +85,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	//Client sets ucmds and such for speed alterations
 	float speedInc;
 	const bgEntity_t* parent = p_veh->m_pParentEntity;
-	playerState_t * parentPS = parent->playerState;
+	playerState_t * parent_ps = parent->playerState;
 
 	const float speedIdleDec = p_veh->m_pVehicleInfo->decelIdle * p_veh->m_fTimeModifier;
 	float speedMax = p_veh->m_pVehicleInfo->speedMax;
@@ -93,52 +93,52 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	const float speedIdle = p_veh->m_pVehicleInfo->speedIdle;
 	const float speedMin = p_veh->m_pVehicleInfo->speedMin;
 
-	if (!parentPS->m_iVehicleNum)
+	if (!parent_ps->m_iVehicleNum)
 	{
 		//drifts to a stop
 		speedInc = speedIdle * p_veh->m_fTimeModifier;
-		VectorClear(parentPS->moveDir);
+		VectorClear(parent_ps->moveDir);
 		//m_ucmd.forwardmove = 127;
-		parentPS->speed = 0;
+		parent_ps->speed = 0;
 	}
 	else
 	{
 		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier;
 	}
 
-	if (parentPS->speed || parentPS->groundEntityNum == ENTITYNUM_NONE ||
+	if (parent_ps->speed || parent_ps->groundEntityNum == ENTITYNUM_NONE ||
 		p_veh->m_ucmd.forwardmove || p_veh->m_ucmd.upmove > 0)
 	{
 		if (p_veh->m_ucmd.forwardmove > 0 && speedInc)
 		{
-			parentPS->speed += speedInc;
+			parent_ps->speed += speedInc;
 		}
 		else if (p_veh->m_ucmd.forwardmove < 0)
 		{
-			if (parentPS->speed > speedIdle)
+			if (parent_ps->speed > speedIdle)
 			{
-				parentPS->speed -= speedInc;
+				parent_ps->speed -= speedInc;
 			}
-			else if (parentPS->speed > speedMin)
+			else if (parent_ps->speed > speedMin)
 			{
-				parentPS->speed -= speedIdleDec;
+				parent_ps->speed -= speedIdleDec;
 			}
 		}
 		// No input, so coast to stop.
-		else if (parentPS->speed > 0.0f)
+		else if (parent_ps->speed > 0.0f)
 		{
-			parentPS->speed -= speedIdleDec;
-			if (parentPS->speed < 0.0f)
+			parent_ps->speed -= speedIdleDec;
+			if (parent_ps->speed < 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
-		else if (parentPS->speed < 0.0f)
+		else if (parent_ps->speed < 0.0f)
 		{
-			parentPS->speed += speedIdleDec;
-			if (parentPS->speed > 0.0f)
+			parent_ps->speed += speedIdleDec;
+			if (parent_ps->speed > 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
 	}
@@ -162,7 +162,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 		}*/
 	}
 
-	if (parentPS&& parentPS
+	if (parent_ps&& parent_ps
 	
 	->
 	electrifyTime > pm->cmd.serverTime
@@ -172,23 +172,23 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	}
 
 	const float fWalkSpeedMax = speedMax * 0.275f;
-	if (p_veh->m_ucmd.buttons & BUTTON_WALKING && parentPS->speed > fWalkSpeedMax)
+	if (p_veh->m_ucmd.buttons & BUTTON_WALKING && parent_ps->speed > fWalkSpeedMax)
 	{
-		parentPS->speed = fWalkSpeedMax;
+		parent_ps->speed = fWalkSpeedMax;
 	}
-	else if (parentPS->speed > speedMax)
+	else if (parent_ps->speed > speedMax)
 	{
-		parentPS->speed = speedMax;
+		parent_ps->speed = speedMax;
 	}
-	else if (parentPS->speed < speedMin)
+	else if (parent_ps->speed < speedMin)
 	{
-		parentPS->speed = speedMin;
+		parent_ps->speed = speedMin;
 	}
 
-	if (parentPS->stats[STAT_HEALTH] <= 0)
+	if (parent_ps->stats[STAT_HEALTH] <= 0)
 	{
 		//don't keep moving while you're dying!
-		parentPS->speed = 0;
+		parent_ps->speed = 0;
 	}
 
 	/********************************************************************************/
@@ -196,13 +196,13 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	/********************************************************************************/
 }
 
-void WalkerYawAdjust(const Vehicle_t* p_veh, const playerState_t* riderPS, const playerState_t* parentPS)
+void WalkerYawAdjust(const Vehicle_t* p_veh, const playerState_t* rider_ps, const playerState_t* parent_ps)
 {
-	float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
+	float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], rider_ps->viewangles[YAW]);
 
-	if (parentPS && parentPS->speed)
+	if (parent_ps && parent_ps->speed)
 	{
-		float s = parentPS->speed;
+		float s = parent_ps->speed;
 		const float maxDif = p_veh->m_pVehicleInfo->turningSpeed * 1.5f; //magic number hackery
 
 		if (s < 0.0f)
@@ -224,13 +224,13 @@ void WalkerYawAdjust(const Vehicle_t* p_veh, const playerState_t* riderPS, const
 }
 
 /*
-void WalkerPitchAdjust(Vehicle_t *p_veh, playerState_t *riderPS, playerState_t *parentPS)
+void WalkerPitchAdjust(Vehicle_t *p_veh, playerState_t *rider_ps, playerState_t *parent_ps)
 {
-	float angDif = AngleSubtract(p_veh->m_vOrientation[PITCH], riderPS->viewangles[PITCH]);
+	float angDif = AngleSubtract(p_veh->m_vOrientation[PITCH], rider_ps->viewangles[PITCH]);
 
-	if (parentPS && parentPS->speed)
+	if (parent_ps && parent_ps->speed)
 	{
-		float s = parentPS->speed;
+		float s = parent_ps->speed;
 		float maxDif = p_veh->m_pVehicleInfo->turningSpeed*0.8f; //magic number hackery
 
 		if (s < 0.0f)
@@ -276,22 +276,22 @@ static void ProcessOrientCommands(const Vehicle_t* p_veh)
 		rider = parent;
 	}
 
-	const playerState_t* parentPS = parent->playerState;
-	const playerState_t* riderPS = rider->playerState;
+	const playerState_t* parent_ps = parent->playerState;
+	const playerState_t* rider_ps = rider->playerState;
 
 	// If the player is the rider...
 	if (rider->s.number < MAX_CLIENTS)
 	{
 		//FIXME: use the vehicle's turning stat in this calc
-		WalkerYawAdjust(p_veh, riderPS, parentPS);
-		//FighterPitchAdjust(p_veh, riderPS, parentPS);
-		p_veh->m_vOrientation[PITCH] = riderPS->viewangles[PITCH];
+		WalkerYawAdjust(p_veh, rider_ps, parent_ps);
+		//FighterPitchAdjust(p_veh, rider_ps, parent_ps);
+		p_veh->m_vOrientation[PITCH] = rider_ps->viewangles[PITCH];
 	}
 	else
 	{
 		float turnSpeed = p_veh->m_pVehicleInfo->turningSpeed;
 		if (!p_veh->m_pVehicleInfo->turnWhenStopped
-			&& !parentPS->speed) //FIXME: or !p_veh->m_ucmd.forwardmove?
+			&& !parent_ps->speed) //FIXME: or !p_veh->m_ucmd.forwardmove?
 		{
 			//can't turn when not moving
 			//FIXME: or ramp up to max turnSpeed?
@@ -301,9 +301,9 @@ static void ProcessOrientCommands(const Vehicle_t* p_veh)
 		{
 			//help NPCs out some
 			turnSpeed *= 2.0f;
-			if (parentPS->speed > 200.0f)
+			if (parent_ps->speed > 200.0f)
 			{
-				turnSpeed += turnSpeed * parentPS->speed / 200.0f * 0.05f;
+				turnSpeed += turnSpeed * parent_ps->speed / 200.0f * 0.05f;
 			}
 		}
 		turnSpeed *= p_veh->m_fTimeModifier;
@@ -335,7 +335,7 @@ static void ProcessOrientCommands(const Vehicle_t* p_veh)
 static void AnimateVehicle(const Vehicle_t* p_veh)
 {
 	animNumber_t Anim;
-	int iFlags, iBlend;
+	int iFlags, i_blend;
 	gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
 
 	// We're dead (boarding is reused here so I don't have to make another variable :-).
@@ -348,7 +348,7 @@ static void AnimateVehicle(const Vehicle_t* p_veh)
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
 			// FIXME! Why do you keep repeating over and over!!?!?!? Bastard!
-			//Vehicle_SetAnim( parent, SETANIM_LEGS, BOTH_VT_DEATH1, iFlags, iBlend );
+			//Vehicle_SetAnim( parent, SETANIM_LEGS, BOTH_VT_DEATH1, iFlags, i_blend );
 		}
 		*/
 		return;
@@ -377,7 +377,7 @@ static void AnimateVehicle(const Vehicle_t* p_veh)
 	{
 		//	float fYawDelta;
 
-		iBlend = 300;
+		i_blend = 300;
 		iFlags = SETANIM_FLAG_OVERRIDE;
 		//	fYawDelta = p_veh->m_vPrevOrientation[YAW] - p_veh->m_vOrientation[YAW];
 
@@ -403,7 +403,7 @@ static void AnimateVehicle(const Vehicle_t* p_veh)
 		{
 			iFlags = SETANIM_FLAG_NORMAL;
 			Anim = BOTH_WALKBACK1;
-			iBlend = 500;
+			i_blend = 500;
 		}
 		else
 		{
@@ -411,7 +411,7 @@ static void AnimateVehicle(const Vehicle_t* p_veh)
 
 			// Every once in a while buck or do a different idle...
 			iFlags = SETANIM_FLAG_NORMAL | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD;
-			iBlend = 600;
+			i_blend = 600;
 			if (parent->client->ps.m_iVehicleNum)
 			{
 				//occupant
@@ -425,7 +425,7 @@ static void AnimateVehicle(const Vehicle_t* p_veh)
 		}
 	}
 
-	Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, iBlend);
+	Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, i_blend);
 }
 
 //rwwFIXMEFIXME: This is all going to have to be predicted I think, or it will feel awful

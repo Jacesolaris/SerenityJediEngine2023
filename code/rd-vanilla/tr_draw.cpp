@@ -37,7 +37,7 @@ Used for cinematics.
 */
 
 // param 'bDirty' should be true 99% of the time
-void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols, int rows, const byte* data, const int iClient, const qboolean bDirty)
+void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols, int rows, const byte* data, const int i_client, const qboolean b_dirty)
 {
 	if (!tr.registered) {
 		return;
@@ -62,14 +62,14 @@ void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols,
 		Com_Error(ERR_DROP, "Draw_StretchRaw: size not a power of 2: %i by %i", cols, rows);
 	}
 
-	GL_Bind(tr.scratchImage[iClient]);
+	GL_Bind(tr.scratchImage[i_client]);
 
 	// if the scratchImage isn't in the format we want, specify it as a new texture...
 	//
-	if (cols != tr.scratchImage[iClient]->width || rows != tr.scratchImage[iClient]->height)
+	if (cols != tr.scratchImage[i_client]->width || rows != tr.scratchImage[i_client]->height)
 	{
-		tr.scratchImage[iClient]->width = cols;
-		tr.scratchImage[iClient]->height = rows;
+		tr.scratchImage[i_client]->width = cols;
+		tr.scratchImage[i_client]->height = rows;
 #ifdef TIMEBIND
 		if (r_ignore->integer)
 		{
@@ -94,7 +94,7 @@ void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols,
 	}
 	else
 	{
-		if (bDirty)	// FIXME: some TA addition or other, not sure why, yet. Should probably be true 99% of the time?
+		if (b_dirty)	// FIXME: some TA addition or other, not sure why, yet. Should probably be true 99% of the time?
 		{
 			// otherwise, just subimage upload it so that drivers can tell we are going to be changing
 			// it and don't try and do a texture compression
@@ -161,7 +161,7 @@ void RE_UploadCinematic(const int cols, const int rows, const byte* data, const 
 }
 
 extern byte* RB_ReadPixels(int x, int y, int width, int height, size_t* offset, int* padlen);
-void RE_GetScreenShot(byte* buffer, const int w, const int h)
+void RE_GetScreenShot(byte* data, const int w, const int h)
 {
 	size_t offset = 0;
 	int padlen;
@@ -189,7 +189,7 @@ void RE_GetScreenShot(byte* buffer, const int w, const int h)
 					b += src[2];
 				}
 			}
-			byte* dst = buffer + 3 * (y * w + x);
+			byte* dst = data + 3 * (y * w + x);
 			dst[0] = r / 12;
 			dst[1] = g / 12;
 			dst[2] = b / 12;

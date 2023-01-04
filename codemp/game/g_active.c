@@ -194,7 +194,7 @@ Check for lava / slime contents and drowning
 =============
 */
 extern qboolean G_PointInBounds(vec3_t point, vec3_t mins, vec3_t maxs);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags);
 extern void WP_ForcePowerStart(const gentity_t* self, forcePowers_t forcePower, int overrideAmt);
 
 void P_WorldEffects(gentity_t* ent)
@@ -1013,7 +1013,7 @@ Find all trigger entities that ent's current position touches.
 Spectators will only interact with teleporters.
 ============
 */
-void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
+void g_mover_touch_push_triggers(gentity_t* ent, vec3_t old_org)
 {
 	trace_t trace;
 	vec3_t dir, size;
@@ -1032,7 +1032,7 @@ void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
 		stepSize = 1;
 	}
 
-	VectorSubtract(ent->r.currentOrigin, oldOrg, dir);
+	VectorSubtract(ent->r.currentOrigin, old_org, dir);
 	const float dist = VectorNormalize(dir);
 	for (float step = 0; step <= dist; step += stepSize)
 	{

@@ -1466,7 +1466,7 @@ void G_FreeFakeClient(gclient_t** cl);
 void G_CreateFakeClient(int entNum, gclient_t** cl);
 void G_CleanAllFakeClients(void);
 
-void G_SetAnim(gentity_t* ent, usercmd_t* ucmd, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+void G_SetAnim(gentity_t* ent, usercmd_t* ucmd, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 gentity_t* G_PickTarget(char* targetname);
 void GlobalUse(gentity_t* self, gentity_t* other, gentity_t* activator);
 void G_UseTargets2(gentity_t* ent, gentity_t* activator, const char* string);

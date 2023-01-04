@@ -105,7 +105,7 @@ int Text_Width(const char* text, float scale, int iFontIndex);
 void _UI_DrawTopBottom(float x, float y, float w, float h, float size);
 void _UI_DrawSides(float x, float y, float w, float h, float size);
 void UI_CheckVid1Data(const char* menuTo, const char* warningMenuName);
-void UI_GetVideoSetup(void);
+void UI_GetVideoSetup();
 void UI_UpdateVideoSetup(void);
 static void UI_UpdateCharacterCvars(void);
 static void UI_GetCharacterCvars(void);
@@ -2536,9 +2536,9 @@ int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, const int animNum, 
 			flags = BONE_ANIM_OVERRIDE_LOOP;
 		}
 		flags |= BONE_ANIM_BLEND;
-		constexpr int blendTime = 150;
+		constexpr int blend_time = 150;
 
-		re.G2API_SetBoneAnim(ghlInfo, boneName, sFrame, eFrame, flags, animSpeed, time, -1, blendTime);
+		re.G2API_SetBoneAnim(ghlInfo, boneName, sFrame, eFrame, flags, animSpeed, time, -1, blend_time);
 
 		return anim->frameLerp * (anim->numFrames - 2);
 	}
@@ -4986,7 +4986,7 @@ Retrieves the current actual video settings into the temporary user
 interface versions of the cvars.
 =================
 */
-void UI_GetVideoSetup(void)
+void UI_GetVideoSetup()
 {
 	Cvar_Register(nullptr, "ui_r_glCustom", "4", CVAR_ARCHIVE);
 

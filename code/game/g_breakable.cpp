@@ -33,7 +33,7 @@ extern void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t 
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 
 extern gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, int model_index, int frame,
-                                 trType_t trType, int effectID);
+                                 trType_t tr_type, int effect_id);
 
 extern qboolean player_locked;
 

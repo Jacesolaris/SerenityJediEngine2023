@@ -445,7 +445,7 @@ void Tavion_ScepterDamage(void)
 			if (trace.fraction < 1.0f)
 			{
 				//hit something
-				gentity_t* traceEnt = &g_entities[trace.entity_num];
+				gentity_t* trace_ent = &g_entities[trace.entity_num];
 
 				//FIXME: too expensive!
 				//if ( time == curTime )
@@ -454,16 +454,16 @@ void Tavion_ScepterDamage(void)
 					G_PlayEffect(G_EffectIndex("scepter/impact.efx"), trace.endpos, trace.plane.normal);
 				}
 
-				if (traceEnt->takedamage
+				if (trace_ent->takedamage
 					&& trace.entity_num != lastHit
-					&& (!traceEnt->client || traceEnt == NPCS.NPC->enemy || traceEnt->client->NPC_class != NPCS.NPC->
+					&& (!trace_ent->client || trace_ent == NPCS.NPC->enemy || trace_ent->client->NPC_class != NPCS.NPC->
 						client->NPC_class))
 				{
 					//smack
 					const int dmg = Q_irand(10, 20) * (g_npcspskill.integer + 1); //NOTE: was 6-12
-					G_Damage(traceEnt, NPCS.NPC, NPCS.NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK,
+					G_Damage(trace_ent, NPCS.NPC, NPCS.NPC, vec3_origin, trace.endpos, dmg, DAMAGE_NO_KNOCKBACK,
 					         MOD_SABER); //MOD_MELEE );
-					if (traceEnt->client)
+					if (trace_ent->client)
 					{
 						if (!Q_irand(0, 2))
 						{
@@ -473,11 +473,11 @@ void Tavion_ScepterDamage(void)
 						{
 							G_AddVoiceEvent(NPCS.NPC, EV_JDETECTED3, 10000);
 						}
-						g_throw(traceEnt, dir, Q_flrand(50, 80));
-						if (traceEnt->health > 0 && !Q_irand(0, 2)) //FIXME: base on skill!
+						g_throw(trace_ent, dir, Q_flrand(50, 80));
+						if (trace_ent->health > 0 && !Q_irand(0, 2)) //FIXME: base on skill!
 						{
 							//do pain on enemy
-							G_Knockdown(traceEnt, NPCS.NPC, dir, 300, qtrue);
+							G_Knockdown(trace_ent, NPCS.NPC, dir, 300, qtrue);
 						}
 					}
 					hit = qtrue;
@@ -1142,34 +1142,34 @@ void Boba_FireFlameThrower(gentity_t* self)
 
 	trap->Trace(&tr, start, trace_mins, trace_maxs, end, self->s.number, MASK_SHOT, qfalse, 0, 0);
 
-	gentity_t* traceEnt = &g_entities[tr.entity_num];
+	gentity_t* trace_ent = &g_entities[tr.entity_num];
 
-	if (tr.entity_num < ENTITYNUM_WORLD && traceEnt->takedamage)
+	if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
 	{
-		G_Damage(traceEnt, self, self, dir, tr.endpos, damage,
+		G_Damage(trace_ent, self, self, dir, tr.endpos, damage,
 		         DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_BURNING);
-		g_throw(traceEnt, dir, 30);
+		g_throw(trace_ent, dir, 30);
 
-		if (traceEnt->health > 0 && traceEnt->painDebounceTime > level.time)
+		if (trace_ent->health > 0 && trace_ent->painDebounceTime > level.time)
 		{
-			g_throw(traceEnt, dir, 30);
+			g_throw(trace_ent, dir, 30);
 
-			if (damage && traceEnt->client)
+			if (damage && trace_ent->client)
 			{
-				G_PlayBoltedEffect(G_EffectIndex("flamethrower/flame_impact"), traceEnt, "thoracic");
+				G_PlayBoltedEffect(G_EffectIndex("flamethrower/flame_impact"), trace_ent, "thoracic");
 
-				if (!PM_InRoll(&traceEnt->client->ps)
-					&& !PM_InKnockDown(&traceEnt->client->ps))
+				if (!PM_InRoll(&trace_ent->client->ps)
+					&& !PM_InKnockDown(&trace_ent->client->ps))
 				{
-					G_SetAnim(traceEnt, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FACEPROTECT,
+					G_SetAnim(trace_ent, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FACEPROTECT,
 					          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 				}
 			}
-			player_Burn(traceEnt);
+			player_Burn(trace_ent);
 		}
 		else
 		{
-			Player_CheckBurn(traceEnt);
+			Player_CheckBurn(trace_ent);
 		}
 	}
 }
@@ -4507,8 +4507,8 @@ evasionType_t Jedi_CheckFlipEvasions(gentity_t* self, const float rightdot, floa
 
 			VectorSubtract(self->r.currentOrigin, traceto, idealNormal);
 			VectorNormalize(idealNormal);
-			const gentity_t* traceEnt = &g_entities[trace.entity_num];
-			if (trace.entity_num < ENTITYNUM_WORLD && traceEnt && traceEnt->s.solid != SOLID_BMODEL || DotProduct(
+			const gentity_t* trace_ent = &g_entities[trace.entity_num];
+			if (trace.entity_num < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL || DotProduct(
 				trace.plane.normal, idealNormal) > 0.7f)
 			{
 				//it's a ent of some sort or it's a wall roughly facing us

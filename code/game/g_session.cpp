@@ -103,7 +103,7 @@ void G_ReadSessionData(gclient_t* client)
 {
 	char s[MAX_STRING_CHARS];
 	int i;
-	int lightsideDisplay;
+	int lightside_display;
 
 	const char* var = va("session%i", client - level.clients);
 	gi.Cvar_VariableStringBuffer(var, s, sizeof s);
@@ -125,9 +125,9 @@ void G_ReadSessionData(gclient_t* client)
 
 	// Now load the LIGHTSIDE objective. That's the only cross level objective.
 	sscanf(var, "%i %i",
-	       &lightsideDisplay,
+	       &lightside_display,
 	       &client->sess.mission_objectives[LIGHTSIDE_OBJ].status);
-	client->sess.mission_objectives[LIGHTSIDE_OBJ].display = lightsideDisplay ? qtrue : qfalse;
+	client->sess.mission_objectives[LIGHTSIDE_OBJ].display = lightside_display ? qtrue : qfalse;
 
 	var = va("missionstats%i", client - level.clients);
 	gi.Cvar_VariableStringBuffer(var, s, sizeof s);
@@ -181,7 +181,7 @@ G_InitSessionData
 Called on a first-time connect
 ================
 */
-void G_InitSessionData(gclient_t* client, char* userinfo)
+void G_InitSessionData(gclient_t* client)
 {
 	clientSession_t* sess = &client->sess;
 
@@ -196,7 +196,7 @@ G_InitWorldSession
 
 ==================
 */
-void G_InitWorldSession(void)
+void G_InitWorldSession()
 {
 }
 
@@ -206,7 +206,7 @@ G_WriteSessionData
 
 ==================
 */
-void G_WriteSessionData(void)
+void G_WriteSessionData()
 {
 	gi.cvar_set("session", nullptr);
 

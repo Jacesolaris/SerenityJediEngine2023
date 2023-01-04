@@ -951,18 +951,18 @@ void trap_G2API_CleanGhoul2Models(void** ghoul2Ptr)
 
 qboolean trap_G2API_SetBoneAngles(void* ghoul2, const int model_index, const char* boneName, const vec3_t angles,
                                   const int flags, const int up, const int right, const int forward,
-                                  qhandle_t* modelList, const int blendTime, const int currentTime)
+                                  qhandle_t* modelList, const int blend_time, const int currentTime)
 {
 	return Q_syscall(CG_G2_ANGLEOVERRIDE, ghoul2, model_index, boneName, angles, flags, up, right, forward, modelList,
-	                 blendTime, currentTime);
+	                 blend_time, currentTime);
 }
 
 qboolean trap_G2API_SetBoneAnim(void* ghoul2, const int model_index, const char* boneName, const int startFrame,
                                 const int endFrame, const int flags, const float animSpeed, const int currentTime,
-                                const float setFrame, const int blendTime)
+                                const float setFrame, const int blend_time)
 {
 	return Q_syscall(CG_G2_PLAYANIM, ghoul2, model_index, boneName, startFrame, endFrame, flags, PASSFLOAT(animSpeed),
-	                 currentTime, PASSFLOAT(setFrame), blendTime);
+	                 currentTime, PASSFLOAT(setFrame), blend_time);
 }
 
 qboolean trap_G2API_GetBoneAnim(void* ghoul2, const char* boneName, const int currentTime, float* currentFrame,

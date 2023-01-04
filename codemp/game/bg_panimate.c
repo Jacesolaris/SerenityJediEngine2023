@@ -6421,9 +6421,9 @@ void BG_SetAnim(playerState_t* ps, const animation_t* animations, int set_anim_p
 	BG_SetAnimFinal(ps, animations, set_anim_parts, anim, set_anim_flags);
 }
 
-void PM_SetAnim(const int setAnimParts, const int anim, const int set_anim_flags)
+void PM_SetAnim(const int set_anim_parts, const int anim, const int set_anim_flags)
 {
-	BG_SetAnim(pm->ps, pm->animations, setAnimParts, anim, set_anim_flags);
+	BG_SetAnim(pm->ps, pm->animations, set_anim_parts, anim, set_anim_flags);
 }
 
 float bg_get_torso_anim_point(const playerState_t* ps, const int anim_index)

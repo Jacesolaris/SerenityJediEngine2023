@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "bg_vehicles.h"
 
 extern gentity_t* NPC_Spawn_Do(gentity_t* ent);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags);
 extern void G_DamageFromKiller(gentity_t* p_ent, const gentity_t* p_veh_ent, gentity_t* attacker, vec3_t org,
                                int damage,
                                int dflags, int mod);
@@ -42,10 +42,10 @@ extern void VEH_TurretThink(Vehicle_t* p_veh, gentity_t* parent, int turretNum);
 
 extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, Vehicle_t* p_veh);
 
-void Vehicle_SetAnim(gentity_t* ent, const int setAnimParts, const int anim, const int setAnimFlags, int iBlend)
+void Vehicle_SetAnim(gentity_t* ent, const int set_anim_parts, const int anim, const int set_anim_flags, int i_blend)
 {
 	assert(ent->client);
-	BG_SetAnim(&ent->client->ps, bgAllAnims[ent->localAnimIndex].anims, setAnimParts, anim, setAnimFlags);
+	BG_SetAnim(&ent->client->ps, bgAllAnims[ent->localAnimIndex].anims, set_anim_parts, anim, set_anim_flags);
 	ent->s.legsAnim = ent->client->ps.legsAnim;
 }
 
@@ -55,9 +55,9 @@ void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, co
 	trap->Trace(results, start, tMins, tMaxs, end, pass_entity_num, contentmask, qfalse, 0, 0);
 }
 
-Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt)
+Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent)
 {
-	const gentity_t* ent = pEnt;
+	const gentity_t* ent = p_ent;
 
 	if (ent && ent->client && ent->client->NPC_class != CLASS_VEHICLE && ent->s.m_iVehicleNum != 0)
 	{
@@ -118,14 +118,14 @@ void G_VehicleSpawn(gentity_t* self)
 }
 
 // Attachs an entity to the vehicle it's riding (it's owner).
-void G_AttachToVehicle(gentity_t* pEnt, usercmd_t** ucmd)
+void G_AttachToVehicle(gentity_t* p_ent, usercmd_t** ucmd)
 {
 	mdxaBone_t bolt_matrix;
 
-	if (!pEnt || !ucmd)
+	if (!p_ent || !ucmd)
 		return;
 
-	gentity_t* ent = pEnt;
+	gentity_t* ent = p_ent;
 
 	gentity_t* vehEnt = &g_entities[ent->r.ownerNum];
 	ent->waypoint = vehEnt->waypoint; // take the veh's waypoint as your own
@@ -160,13 +160,13 @@ void Animate(Vehicle_t* p_veh)
 }
 
 // Determine whether this entity is able to board this vehicle or not.
-qboolean ValidateBoard(Vehicle_t* p_veh, bgEntity_t* pEnt)
+qboolean ValidateBoard(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
 	// Determine where the entity is entering the vehicle from (left, right, or back).
 	vec3_t vVehToEnt;
 	vec3_t vVehDir;
 	const gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
-	const gentity_t* ent = (gentity_t*)pEnt;
+	const gentity_t* ent = (gentity_t*)p_ent;
 	vec3_t vVehAngles;
 
 	if (p_veh->m_iDieTime > 0)
@@ -264,7 +264,7 @@ qboolean ValidateBoard(Vehicle_t* p_veh, bgEntity_t* pEnt)
 #ifdef VEH_CONTROL_SCHEME_4
 void FighterStorePilotViewAngles(Vehicle_t* p_veh, bgEntity_t* parent)
 {
-	playerState_t* riderPS;
+	playerState_t* rider_ps;
 	bgEntity_t* rider = NULL;
 	if (parent->s.owner != ENTITYNUM_NONE)
 	{
@@ -276,17 +276,17 @@ void FighterStorePilotViewAngles(Vehicle_t* p_veh, bgEntity_t* parent)
 		rider = parent;
 	}
 
-	riderPS = rider->playerState;
+	rider_ps = rider->playerState;
 	VectorClear(p_veh->m_vPrevRiderViewAngles);
-	p_veh->m_vPrevRiderViewAngles[YAW] = AngleNormalize180(riderPS->viewangles[YAW]);
+	p_veh->m_vPrevRiderViewAngles[YAW] = AngleNormalize180(rider_ps->viewangles[YAW]);
 }
 #endif// VEH_CONTROL_SCHEME_4
 
 // Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-qboolean Board(Vehicle_t* p_veh, bgEntity_t* pEnt)
+qboolean Board(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
 	vec3_t vPlayerDir;
-	gentity_t* ent = (gentity_t*)pEnt;
+	gentity_t* ent = (gentity_t*)p_ent;
 	gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
 
 	// If it's not a valid entity, OR if the vehicle is blowing up (it's dead), OR it's not
@@ -301,7 +301,7 @@ qboolean Board(Vehicle_t* p_veh, bgEntity_t* pEnt)
 		return qfalse;
 
 	// Validate the entity's ability to board this vehicle.
-	if (!p_veh->m_pVehicleInfo->ValidateBoard(p_veh, pEnt))
+	if (!p_veh->m_pVehicleInfo->ValidateBoard(p_veh, p_ent))
 		return qfalse;
 
 	// FIXME FIXME!!! Ask Mike monday where ent->client->ps.eFlags might be getting changed!!! It is always 0 (when it should
@@ -610,16 +610,16 @@ void G_EjectDroidUnit(Vehicle_t* p_veh, const qboolean kill)
 }
 
 // Eject the pilot from the vehicle.
-qboolean Eject(Vehicle_t* p_veh, bgEntity_t* pEnt, const qboolean forceEject)
+qboolean Eject(Vehicle_t* p_veh, bgEntity_t* p_ent, const qboolean forceEject)
 {
 	gentity_t* parent;
 	vec3_t vExitPos;
-	gentity_t* ent = (gentity_t*)pEnt;
+	gentity_t* ent = (gentity_t*)p_ent;
 
 	qboolean taintedRider = qfalse;
 	qboolean deadRider = qfalse;
 
-	if (pEnt == p_veh->m_pDroidUnit)
+	if (p_ent == p_veh->m_pDroidUnit)
 	{
 		G_EjectDroidUnit(p_veh, qfalse);
 		return qtrue;
@@ -1165,7 +1165,7 @@ static qboolean Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 	int halfMaxSpeed;
 	qboolean linkHeld = qfalse;
 
-	playerState_t * parentPS = p_veh->m_pParentEntity->playerState;
+	playerState_t * parent_ps = p_veh->m_pParentEntity->playerState;
 
 #ifdef _GAME
 	curTime = level.time;
@@ -1214,16 +1214,16 @@ static qboolean Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 
 	//increment shields for rechargable shields
 	if (p_veh->m_pVehicleInfo->shieldRechargeMS
-		&& parentPS->stats[STAT_ARMOR] > 0 //still have some shields left
-		&& parentPS->stats[STAT_ARMOR] < p_veh->m_pVehicleInfo->shields //its below max
+		&& parent_ps->stats[STAT_ARMOR] > 0 //still have some shields left
+		&& parent_ps->stats[STAT_ARMOR] < p_veh->m_pVehicleInfo->shields //its below max
 		&& pUmcd->serverTime - p_veh->lastShieldInc >= p_veh->m_pVehicleInfo->shieldRechargeMS) //enough time has passed
 	{
-		parentPS->stats[STAT_ARMOR]++;
-		if (parentPS->stats[STAT_ARMOR] > p_veh->m_pVehicleInfo->shields)
+		parent_ps->stats[STAT_ARMOR]++;
+		if (parent_ps->stats[STAT_ARMOR] > p_veh->m_pVehicleInfo->shields)
 		{
-			parentPS->stats[STAT_ARMOR] = p_veh->m_pVehicleInfo->shields;
+			parent_ps->stats[STAT_ARMOR] = p_veh->m_pVehicleInfo->shields;
 		}
-		p_veh->m_iShields = parentPS->stats[STAT_ARMOR];
+		p_veh->m_iShields = parent_ps->stats[STAT_ARMOR];
 		G_VehUpdateShields(parent);
 	}
 
@@ -1365,7 +1365,7 @@ static qboolean Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 	{
 		if (!p_veh->m_bWasBoarding)
 		{
-			VectorCopy(parentPS->velocity, p_veh->m_vBoardingVelocity);
+			VectorCopy(parent_ps->velocity, p_veh->m_vBoardingVelocity);
 			p_veh->m_bWasBoarding = qtrue;
 		}
 
@@ -1460,13 +1460,13 @@ static qboolean Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 	}
 	//now pass it over the network so cgame knows about it
 	//NOTE: SP can just cheat and check directly
-	parentPS->vehWeaponsLinked = qfalse;
+	parent_ps->vehWeaponsLinked = qfalse;
 	for (i = 0; i < MAX_VEHICLE_WEAPONS; i++)
 	{
 		//HMM... can't get a seperate command for each weapon, so do them all...?
 		if (p_veh->weaponStatus[i].linked)
 		{
-			parentPS->vehWeaponsLinked = qtrue;
+			parent_ps->vehWeaponsLinked = qtrue;
 		}
 	}
 
@@ -1518,9 +1518,9 @@ maintainSelfDuringBoarding:
 	*/
 
 	// Process the move commands.
-	prevSpeed = parentPS->speed;
+	prevSpeed = parent_ps->speed;
 	p_veh->m_pVehicleInfo->ProcessMoveCommands(p_veh);
-	nextSpeed = parentPS->speed;
+	nextSpeed = parent_ps->speed;
 	halfMaxSpeed = p_veh->m_pVehicleInfo->speedMax * 0.5f;
 
 	// Shifting Sounds
@@ -1628,7 +1628,7 @@ static qboolean UpdateRider(Vehicle_t* p_veh, bgEntity_t* pRider, const usercmd_
 				if (p_veh->m_pVehicleInfo->Eject(p_veh, pRider, qfalse))
 				{
 					animNumber_t Anim;
-					const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, iBlend = 300;
+					const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, i_blend = 300;
 					if (pUmcd->rightmove > 0)
 					{
 						Anim = BOTH_ROLL_R;
@@ -1640,7 +1640,7 @@ static qboolean UpdateRider(Vehicle_t* p_veh, bgEntity_t* pRider, const usercmd_
 						p_veh->m_EjectDir = VEH_EJECT_LEFT;
 					}
 					VectorScale(parent->client->ps.velocity, 0.25f, rider->client->ps.velocity);
-					Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, iBlend);
+					Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, i_blend);
 
 					rider->client->ps.weaponTime = rider->client->ps.torsoTimer - 200;
 					//just to make sure it's cleared when roll is done
@@ -1652,7 +1652,7 @@ static qboolean UpdateRider(Vehicle_t* p_veh, bgEntity_t* pRider, const usercmd_
 			{
 				// FIXME: Check trace to see if we should start playing the animation.
 				animNumber_t Anim;
-				const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, iBlend = 500;
+				const int iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, i_blend = 500;
 				if (pUmcd->rightmove > 0)
 				{
 					Anim = BOTH_VS_DISMOUNT_R;
@@ -1680,7 +1680,7 @@ static qboolean UpdateRider(Vehicle_t* p_veh, bgEntity_t* pRider, const usercmd_
 
 				VectorScale(parent->client->ps.velocity, 0.25f, rider->client->ps.velocity);
 
-				Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, iBlend);
+				Vehicle_SetAnim(rider, SETANIM_BOTH, Anim, iFlags, i_blend);
 			}
 		}
 		// Flying, so just fall off.
@@ -1873,12 +1873,12 @@ static void AttachRiders(const Vehicle_t* p_veh)
 }
 
 // Make someone invisible and un-collidable.
-static void Ghost(Vehicle_t* p_veh, bgEntity_t* pEnt)
+static void Ghost(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
-	if (!pEnt)
+	if (!p_ent)
 		return;
 
-	gentity_t* ent = (gentity_t*)pEnt;
+	gentity_t* ent = (gentity_t*)p_ent;
 
 	// This was introduced to prevent one extra entity from being sent to the clients
 	ent->r.svFlags |= SVF_NOCLIENT;
@@ -1892,12 +1892,12 @@ static void Ghost(Vehicle_t* p_veh, bgEntity_t* pEnt)
 }
 
 // Make someone visible and collidable.
-static void UnGhost(Vehicle_t* p_veh, bgEntity_t* pEnt)
+static void UnGhost(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
-	if (!pEnt)
+	if (!p_ent)
 		return;
 
-	gentity_t* ent = (gentity_t*)pEnt;
+	gentity_t* ent = (gentity_t*)p_ent;
 
 	// make sure the client is sent again
 	ent->r.svFlags &= ~SVF_NOCLIENT;

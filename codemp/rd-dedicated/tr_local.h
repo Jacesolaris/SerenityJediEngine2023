@@ -866,8 +866,8 @@ using world_t = struct world_s
 
 #define	MAX_MOD_KNOWN	1024
 
-void R_ModelInit(void);
-void R_InitDecals(void);
+void R_ModelInit();
+void R_InitDecals();
 
 model_t* R_GetModelByHandle(qhandle_t hModel);
 int R_LerpTag(orientation_t* tag, qhandle_t handle, int startFrame, int endFrame,
@@ -1161,6 +1161,7 @@ extern cvar_t* r_autoMapDisable;
 extern cvar_t* r_dlightStyle;
 extern cvar_t* r_surfaceSprites;
 extern cvar_t* r_surfaceWeather;
+extern cvar_t* r_AdvancedsurfaceSprites;
 
 extern cvar_t* r_windSpeed;
 extern cvar_t* r_windAngle;
@@ -1271,7 +1272,7 @@ void R_AddDrawSurf(surfaceType_t* surface, shader_t* shader, int fogIndex, int d
 #define	CULL_OUT	2		// completely outside the clipping planes
 void R_LocalNormalToWorld(const vec3_t local, vec3_t world);
 void R_LocalPointToWorld(const vec3_t local, vec3_t world);
-void R_WorldNormalToEntity(const vec3_t localVec, vec3_t world);
+void R_WorldNormalToEntity(const vec3_t worldvec, vec3_t entvec);
 int R_CullLocalBox(const vec3_t bounds[2]);
 int R_CullPointAndRadius(const vec3_t origin, float radius);
 int R_CullLocalPointAndRadius(const vec3_t origin, float radius);
@@ -1504,10 +1505,10 @@ LIGHTS
 ============================================================
 */
 
-void R_DlightBmodel(const bmodel_t* bmodel, bool NoLight);
+void R_DlightBmodel(const bmodel_t* bmodel, bool no_light);
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent);
 void R_TransformDlights(int count, dlight_t* dl, const orientationr_t* ori);
-int R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
+int R_LightForPoint(vec3_t point, vec3_t ambient_light, vec3_t directed_light, vec3_t light_dir);
 
 /*
 ============================================================
@@ -1567,7 +1568,7 @@ SCENE GENERATION
 void R_InitNextFrame(void);
 
 void RE_ClearScene(void);
-void RE_ClearDecals(void);
+void RE_ClearDecals();
 void RE_AddRefEntityToScene(const refEntity_t* ent);
 void RE_AddMiniRefEntityToScene(const miniRefEntity_t* ent);
 void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num);

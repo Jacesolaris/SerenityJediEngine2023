@@ -112,7 +112,7 @@ constexpr unsigned char g_strGlowPShaderARB[] =
 #define GL_PROGRAM_ERROR_STRING_ARB						0x8874
 #define GL_PROGRAM_ERROR_POSITION_ARB					0x864B
 
-void ARB_InitGlowShaders(void) {
+void ARB_InitGlowShaders() {
 	// Allocate and Load the global 'Glow' Vertex Program. - AReis
 	if (qglGenProgramsARB)
 	{
@@ -121,9 +121,9 @@ void ARB_InitGlowShaders(void) {
 		qglProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, static_cast<GLsizei>(strlen((char*)g_strGlowVShaderARB)), g_strGlowVShaderARB);
 
 		//		const GLubyte *strErr = qglGetString( GL_PROGRAM_ERROR_STRING_ARB );
-		int iErrPos = 0;
-		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &iErrPos);
-		assert(iErrPos == -1);
+		int i_err_pos = 0;
+		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &i_err_pos);
+		assert(i_err_pos == -1);
 	}
 
 	// NOTE: I make an assumption here. If you have (current) nvidia hardware, you obviously support register combiners instead of fragment
@@ -185,8 +185,8 @@ void ARB_InitGlowShaders(void) {
 		qglProgramStringARB(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, static_cast<GLsizei>(strlen((char*)g_strGlowPShaderARB)), g_strGlowPShaderARB);
 
 		//		const GLubyte *strErr = qglGetString( GL_PROGRAM_ERROR_STRING_ARB );
-		int iErrPos = 0;
-		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &iErrPos);
-		assert(iErrPos == -1);
+		int i_err_pos = 0;
+		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &i_err_pos);
+		assert(i_err_pos == -1);
 	}
 }

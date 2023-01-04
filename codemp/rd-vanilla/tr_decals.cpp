@@ -59,13 +59,13 @@ RE_ClearDecals
 This is called to remove all decals from the world
 ===================
 */
-void RE_ClearDecals(void) {
+void RE_ClearDecals() {
 	memset(re_decalPolys, 0, sizeof re_decalPolys);
 	memset(re_decalPolyHead, 0, sizeof re_decalPolyHead);
 	memset(re_decalPolyTotal, 0, sizeof re_decalPolyTotal);
 }
 
-void R_InitDecals(void) {
+void R_InitDecals() {
 	RE_ClearDecals();
 }
 
@@ -248,15 +248,15 @@ void RE_AddDecalToScene(const qhandle_t shader, const vec3_t origin, const vec3_
 R_AddDecals
 ===============
 */
-void R_AddDecals(void)
+void R_AddDecals()
 {
-	static int  lastMarkCount = -1;
+	static int  last_mark_count = -1;
 
-	if (r_markcount->integer != lastMarkCount) {
-		if (lastMarkCount != -1)
+	if (r_markcount->integer != last_mark_count) {
+		if (last_mark_count != -1)
 			RE_ClearDecals();
 
-		lastMarkCount = r_markcount->integer;
+		last_mark_count = r_markcount->integer;
 	}
 
 	if (r_markcount->integer <= 0)
@@ -264,11 +264,11 @@ void R_AddDecals(void)
 
 	for (int type = DECALPOLY_TYPE_NORMAL; type < DECALPOLY_TYPE_MAX; type++)
 	{
-		int decalPoly = re_decalPolyHead[type];
+		int decal_poly = re_decalPolyHead[type];
 
 		do
 		{
-			decalPoly_t* p = &re_decalPolys[type][decalPoly];
+			decalPoly_t* p = &re_decalPolys[type][decal_poly];
 
 			if (p->time)
 			{
@@ -289,7 +289,7 @@ void R_AddDecals(void)
 					}
 					else
 					{
-						RE_FreeDecal(type, decalPoly);
+						RE_FreeDecal(type, decal_poly);
 					}
 				}
 				else
@@ -298,11 +298,11 @@ void R_AddDecals(void)
 				}
 			}
 
-			decalPoly++;
-			if (decalPoly >= r_markcount->integer)
+			decal_poly++;
+			if (decal_poly >= r_markcount->integer)
 			{
-				decalPoly = 0;
+				decal_poly = 0;
 			}
-		} while (decalPoly != re_decalPolyHead[type]);
+		} while (decal_poly != re_decalPolyHead[type]);
 	}
 }

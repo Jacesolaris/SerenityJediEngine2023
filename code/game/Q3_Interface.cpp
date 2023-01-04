@@ -891,7 +891,7 @@ static char* Q3_GetAnimBoth(const gentity_t* ent)
 Q3_SetObjective
 -------------------------
 */
-extern qboolean g_check_player_dark_side(void);
+extern qboolean g_check_player_dark_side();
 
 static void Q3_SetObjective(const char* obj_enum, const int status)
 {

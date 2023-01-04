@@ -83,7 +83,7 @@ int R_CullLocalBox(const vec3_t bounds[2])
 	}
 
 	// check against frustum planes
-	int anyBack = 0;
+	int any_back = 0;
 	for (i = 0; i < 5; i++)
 	{
 		const cplane_t* frust = &tr.viewParms.frustum[i];
@@ -110,10 +110,10 @@ int R_CullLocalBox(const vec3_t bounds[2])
 			// all points were behind one of the planes
 			return CULL_OUT;
 		}
-		anyBack |= back;
+		any_back |= back;
 	}
 
-	if (!anyBack)
+	if (!any_back)
 	{
 		return CULL_IN; // completely inside frustum
 	}
@@ -140,7 +140,7 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 {
 	float dist;
 	cplane_t* frust;
-	qboolean mightBeClipped = qfalse;
+	qboolean might_be_clipped = qfalse;
 
 	if (r_nocull->integer == 1)
 	{
@@ -161,7 +161,7 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 		}
 		else if (dist <= radius)
 		{
-			mightBeClipped = qtrue;
+			might_be_clipped = qtrue;
 		}
 	}
 #else
@@ -176,12 +176,12 @@ int R_CullPointAndRadius(const vec3_t pt, float radius)
 		}
 		if (dist <= radius)
 		{
-			mightBeClipped = qtrue;
+			might_be_clipped = qtrue;
 		}
 	}
 #endif
 
-	if (mightBeClipped)
+	if (might_be_clipped)
 	{
 		return CULL_CLIP;
 	}
@@ -220,29 +220,6 @@ void R_LocalPointToWorld(const vec3_t local, vec3_t world)
 
 float preTransEntMatrix[16];
 
-void R_InvertMatrix(float* sourcemat, float* destmat)
-{
-	int i, j, temp = 0;
-
-	for (i = 0; i < 3; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			destmat[j * 4 + i] = sourcemat[temp++];
-		}
-	}
-	for (i = 0; i < 3; i++)
-	{
-		temp = i * 4;
-		destmat[temp + 3] = 0; // destmat[destmat[i][3]=0;
-		for (j = 0; j < 3; j++)
-		{
-			destmat[temp + 3] -= destmat[temp + j] * sourcemat[j * 4 + 3];
-			// dest->matrix[i][3]-=dest->matrix[i][j]*src->matrix[j][3];
-		}
-	}
-}
-
 /*
 =================
 R_WorldNormalToEntity
@@ -258,20 +235,6 @@ void R_WorldNormalToEntity(const vec3_t worldvec, vec3_t entvec)
 	entvec[2] = -worldvec[0] * preTransEntMatrix[2] - worldvec[1] * preTransEntMatrix[6] + worldvec[2] *
 		preTransEntMatrix[10];
 }
-
-/*
-=================
-R_WorldPointToEntity
-
-=================
-*/
-/*void R_WorldPointToEntity (vec3_t worldvec, vec3_t entvec)
-{
-	entvec[0] = worldvec[0] * preTransEntMatrix[0] + worldvec[1] * preTransEntMatrix[4] + worldvec[2] * preTransEntMatrix[8]+preTransEntMatrix[12];
-	entvec[1] = worldvec[0] * preTransEntMatrix[1] + worldvec[1] * preTransEntMatrix[5] + worldvec[2] * preTransEntMatrix[9]+preTransEntMatrix[13];
-	entvec[2] = worldvec[0] * preTransEntMatrix[2] + worldvec[1] * preTransEntMatrix[6] + worldvec[2] * preTransEntMatrix[10]+preTransEntMatrix[14];
-}
-*/
 
 /*
 =================

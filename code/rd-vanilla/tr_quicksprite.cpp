@@ -43,7 +43,7 @@ CQuickSpriteSystem::CQuickSpriteSystem() :
 	mGLStateBits(0),
 	mFogIndex(-1),
 	mUseFog(qfalse),
-	mNextVert(0)
+	mNextVert(0), mTurnCullBackOn()
 {
 	memset(mVerts, 0, sizeof mVerts);
 	memset(mFogTextureCoords, 0, sizeof mFogTextureCoords);
@@ -66,11 +66,11 @@ CQuickSpriteSystem::CQuickSpriteSystem() :
 	}
 }
 
-CQuickSpriteSystem::~CQuickSpriteSystem(void)
+CQuickSpriteSystem::~CQuickSpriteSystem()
 {
 }
 
-void CQuickSpriteSystem::Flush(void)
+void CQuickSpriteSystem::Flush()
 {
 	if (mNextVert == 0)
 	{
@@ -164,16 +164,16 @@ void CQuickSpriteSystem::Flush(void)
 	mNextVert = 0;
 }
 
-void CQuickSpriteSystem::StartGroup(textureBundle_t* bundle, const uint32_t glbits, const int fogIndex)
+void CQuickSpriteSystem::StartGroup(textureBundle_t* bundle, const uint32_t glbits, const int fog_index)
 {
 	mNextVert = 0;
 
 	mTexBundle = bundle;
 	mGLStateBits = glbits;
-	if (fogIndex != -1)
+	if (fog_index != -1)
 	{
 		mUseFog = qtrue;
-		mFogIndex = fogIndex;
+		mFogIndex = fog_index;
 	}
 	else
 	{
@@ -194,7 +194,7 @@ void CQuickSpriteSystem::StartGroup(textureBundle_t* bundle, const uint32_t glbi
 	qglDisable(GL_CULL_FACE);
 }
 
-void CQuickSpriteSystem::EndGroup(void)
+void CQuickSpriteSystem::EndGroup()
 {
 	Flush();
 
@@ -205,7 +205,7 @@ void CQuickSpriteSystem::EndGroup(void)
 	}
 }
 
-void CQuickSpriteSystem::Add(float* pointdata, color4ub_t color, vec2_t fog)
+void CQuickSpriteSystem::Add(const float* pointdata, color4ub_t color, vec2_t fog)
 {
 	if (mNextVert > SHADER_MAX_VERTEXES - 4)
 	{
@@ -218,10 +218,10 @@ void CQuickSpriteSystem::Add(float* pointdata, color4ub_t color, vec2_t fog)
 
 	// Set up color
 	uint32_t* curcolor = &mColors[mNextVert];
-	*curcolor++ = *(uint32_t*)color;
-	*curcolor++ = *(uint32_t*)color;
-	*curcolor++ = *(uint32_t*)color;
-	*curcolor++ = *(uint32_t*)color;
+	*curcolor++ = *reinterpret_cast<uint32_t*>(color);
+	*curcolor++ = *reinterpret_cast<uint32_t*>(color);
+	*curcolor++ = *reinterpret_cast<uint32_t*>(color);
+	*curcolor++ = *reinterpret_cast<uint32_t*>(color);
 
 	if (fog)
 	{

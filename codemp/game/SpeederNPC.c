@@ -90,7 +90,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	//	playerState_t *pilotPS = NULL;
 	int curTime;
 
-	playerState_t * parentPS = p_veh->m_pParentEntity->playerState;
+	playerState_t * parent_ps = p_veh->m_pParentEntity->playerState;
 	if (p_veh->m_pPilot)
 	{
 		//	pilotPS = p_veh->m_pPilot->playerState;
@@ -102,7 +102,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	{
 		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier * 0.4f;
 	}
-	else if (!parentPS->m_iVehicleNum)
+	else if (!parent_ps->m_iVehicleNum)
 	{
 		//drifts to a stop
 		speedInc = 0;
@@ -124,7 +124,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	if (p_veh->m_pPilot &&
 		p_veh->m_ucmd.buttons & BUTTON_ALT_ATTACK && p_veh->m_pVehicleInfo->turboSpeed)
 	{
-		if (parentPS&& parentPS
+		if (parent_ps&& parent_ps
 		
 		->
 		electrifyTime > curTime ||
@@ -161,7 +161,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 #endif
 					}
 				}
-				parentPS->speed = p_veh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
+				parent_ps->speed = p_veh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
 			}
 		}
 	}
@@ -173,7 +173,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 		{
 			p_veh->m_ulFlags &= ~VEH_SLIDEBREAKING;
 		}
-		parentPS->speed = 0;
+		parent_ps->speed = 0;
 	}
 	else if (
 		curTime > p_veh->m_iTurboTime &&
@@ -187,56 +187,56 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	if (curTime < p_veh->m_iTurboTime)
 	{
 		speedMax = p_veh->m_pVehicleInfo->turboSpeed;
-		if (parentPS)
+		if (parent_ps)
 		{
-			parentPS->eFlags |= EF_JETPACK_ACTIVE;
+			parent_ps->eFlags |= EF_JETPACK_ACTIVE;
 		}
 	}
 	else
 	{
 		speedMax = p_veh->m_pVehicleInfo->speedMax;
-		if (parentPS)
+		if (parent_ps)
 		{
-			parentPS->eFlags &= ~EF_JETPACK_ACTIVE;
+			parent_ps->eFlags &= ~EF_JETPACK_ACTIVE;
 		}
 	}
 
 	speedIdle = p_veh->m_pVehicleInfo->speedIdle;
 	speedMin = p_veh->m_pVehicleInfo->speedMin;
 
-	if (parentPS->speed || parentPS->groundEntityNum == ENTITYNUM_NONE ||
+	if (parent_ps->speed || parent_ps->groundEntityNum == ENTITYNUM_NONE ||
 		p_veh->m_ucmd.forwardmove || p_veh->m_ucmd.upmove > 0)
 	{
 		if (p_veh->m_ucmd.forwardmove > 0 && speedInc)
 		{
-			parentPS->speed += speedInc;
+			parent_ps->speed += speedInc;
 		}
 		else if (p_veh->m_ucmd.forwardmove < 0)
 		{
-			if (parentPS->speed > speedIdle)
+			if (parent_ps->speed > speedIdle)
 			{
-				parentPS->speed -= speedInc;
+				parent_ps->speed -= speedInc;
 			}
-			else if (parentPS->speed > speedMin)
+			else if (parent_ps->speed > speedMin)
 			{
-				parentPS->speed -= speedIdleDec;
+				parent_ps->speed -= speedIdleDec;
 			}
 		}
 		// No input, so coast to stop.
-		else if (parentPS->speed > 0.0f)
+		else if (parent_ps->speed > 0.0f)
 		{
-			parentPS->speed -= speedIdleDec;
-			if (parentPS->speed < 0.0f)
+			parent_ps->speed -= speedIdleDec;
+			if (parent_ps->speed < 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
-		else if (parentPS->speed < 0.0f)
+		else if (parent_ps->speed < 0.0f)
 		{
-			parentPS->speed += speedIdleDec;
-			if (parentPS->speed > 0.0f)
+			parent_ps->speed += speedIdleDec;
+			if (parent_ps->speed > 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
 	}
@@ -249,22 +249,22 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 		}
 	}
 
-	if (parentPS->speed > speedMax)
+	if (parent_ps->speed > speedMax)
 	{
-		parentPS->speed = speedMax;
+		parent_ps->speed = speedMax;
 	}
-	else if (parentPS->speed < speedMin)
+	else if (parent_ps->speed < speedMin)
 	{
-		parentPS->speed = speedMin;
+		parent_ps->speed = speedMin;
 	}
 
-	if (parentPS&& parentPS
+	if (parent_ps&& parent_ps
 	
 	->
 	electrifyTime > curTime
 	)
 	{
-		parentPS->speed *= p_veh->m_fTimeModifier / 60.0f;
+		parent_ps->speed *= p_veh->m_fTimeModifier / 60.0f;
 	}
 
 	/********************************************************************************/
@@ -289,23 +289,23 @@ void ProcessOrientCommands(const Vehicle_t* p_veh)
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
 	/********************************************************************************/
-	playerState_t * riderPS;
+	playerState_t * rider_ps;
 
 	if (p_veh->m_pPilot)
 	{
-		riderPS = p_veh->m_pPilot->playerState;
+		rider_ps = p_veh->m_pPilot->playerState;
 	}
 	else
 	{
-		riderPS = p_veh->m_pParentEntity->playerState;
+		rider_ps = p_veh->m_pParentEntity->playerState;
 	}
-	const playerState_t* parentPS = p_veh->m_pParentEntity->playerState;
+	const playerState_t* parent_ps = p_veh->m_pParentEntity->playerState;
 
-	//p_veh->m_vOrientation[YAW] = 0.0f;//riderPS->viewangles[YAW];
-	float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
-	if (parentPS && parentPS->speed)
+	//p_veh->m_vOrientation[YAW] = 0.0f;//rider_ps->viewangles[YAW];
+	float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], rider_ps->viewangles[YAW]);
+	if (parent_ps && parent_ps->speed)
 	{
-		float s = parentPS->speed;
+		float s = parent_ps->speed;
 		const float maxDif = p_veh->m_pVehicleInfo->turningSpeed * 4.0f; //magic number hackery
 		if (s < 0.0f)
 		{
@@ -323,7 +323,7 @@ void ProcessOrientCommands(const Vehicle_t* p_veh)
 		p_veh->m_vOrientation[YAW] = AngleNormalize180(
 			p_veh->m_vOrientation[YAW] - angDif * (p_veh->m_fTimeModifier * 0.2f));
 
-		if (parentPS->electrifyTime > pm->cmd.serverTime)
+		if (parent_ps->electrifyTime > pm->cmd.serverTime)
 		{
 			//do some crazy stuff
 			p_veh->m_vOrientation[YAW] += sin(pm->cmd.serverTime / 1000.0f) * 3.0f * p_veh->m_fTimeModifier;

@@ -116,7 +116,7 @@ struct boneInfo_t
 	// speed at which this anim runs. 1.0f means full speed of animation incoming - ie if anim is 20hrtz, we run at 20hrts. If 5hrts, we run at 5 hrts
 	float blendFrame; // frame PLUS LERP value to blend from
 	int blendLerpFrame; // frame to lerp the blend frame with.
-	int blendTime;
+	int blend_time;
 	// Duration time for blending - used to calc amount each frame of new anim is blended with last frame of the last anim
 	int blendStart;
 	// Time when blending starts - not necessarily the same as startTime since we might start half way through an anim
@@ -201,7 +201,7 @@ struct boneInfo_t
 		animSpeed(0),
 		blendFrame(0),
 		blendLerpFrame(0),
-		blendTime(0),
+		blend_time(0),
 		blendStart(0),
 		boneBlendTime(0),
 		boneBlendStart(0), newMatrix(), lastTimeUpdated(0), lastContents(0), lastPosition{}, velocityEffector{},
@@ -263,7 +263,7 @@ struct boneInfo_t
 		saved_game.write<float>(animSpeed);
 		saved_game.write<float>(blendFrame);
 		saved_game.write<int32_t>(blendLerpFrame);
-		saved_game.write<int32_t>(blendTime);
+		saved_game.write<int32_t>(blend_time);
 		saved_game.write<int32_t>(blendStart);
 		saved_game.write<int32_t>(boneBlendTime);
 		saved_game.write<int32_t>(boneBlendStart);
@@ -339,7 +339,7 @@ struct boneInfo_t
 		saved_game.read<float>(animSpeed);
 		saved_game.read<float>(blendFrame);
 		saved_game.read<int32_t>(blendLerpFrame);
-		saved_game.read<int32_t>(blendTime);
+		saved_game.read<int32_t>(blend_time);
 		saved_game.read<int32_t>(blendStart);
 		saved_game.read<int32_t>(boneBlendTime);
 		saved_game.read<int32_t>(boneBlendStart);

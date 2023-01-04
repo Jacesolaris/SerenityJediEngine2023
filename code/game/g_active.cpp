@@ -868,7 +868,7 @@ void G_GetMassAndVelocityForEnt(const gentity_t* ent, float* mass, vec3_t veloci
 extern cvar_t* com_outcast;
 extern qboolean is_outcast_map();
 
-void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, const trace_t* trace)
+void DoImpact(gentity_t* self, gentity_t* other, const qboolean damage_self, const trace_t* trace)
 {
 	float magnitude, my_mass;
 	bool thrown = false;
@@ -876,24 +876,24 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 	const char* info = CG_ConfigString(CS_SERVERINFO);
 	const char* s = Info_ValueForKey(info, "mapname");
 
-	Vehicle_t* pSelfVeh = nullptr;
-	const Vehicle_t* pOtherVeh = nullptr;
+	Vehicle_t* p_self_veh = nullptr;
+	const Vehicle_t* p_other_veh = nullptr;
 
 	// See if either of these guys are vehicles, if so, keep a pointer to the vehicle npc.
 	if (self->client && self->client->NPC_class == CLASS_VEHICLE)
 	{
-		pSelfVeh = self->m_pVehicle;
+		p_self_veh = self->m_pVehicle;
 	}
 	if (other->client && other->client->NPC_class == CLASS_VEHICLE)
 	{
-		pOtherVeh = other->m_pVehicle;
+		p_other_veh = other->m_pVehicle;
 	}
 
 	G_GetMassAndVelocityForEnt(self, &my_mass, velocity);
 
-	if (pSelfVeh)
+	if (p_self_veh)
 	{
-		magnitude = VectorLength(velocity) * pSelfVeh->m_pVehicleInfo->mass / 50.0f;
+		magnitude = VectorLength(velocity) * p_self_veh->m_pVehicleInfo->mass / 50.0f;
 	}
 	else
 	{
@@ -902,30 +902,30 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 
 	// Check For Vehicle On Vehicle Impact (Ramming)
 	//-----------------------------------------------
-	if (pSelfVeh &&
-		pSelfVeh->m_pVehicleInfo->type != VH_ANIMAL &&
-		pOtherVeh &&
-		pSelfVeh->m_pVehicleInfo == pOtherVeh->m_pVehicleInfo)
+	if (p_self_veh &&
+		p_self_veh->m_pVehicleInfo->type != VH_ANIMAL &&
+		p_other_veh &&
+		p_self_veh->m_pVehicleInfo == p_other_veh->m_pVehicleInfo)
 	{
 		const gentity_t* attacker = self;
-		const Vehicle_t* attackerVeh = pSelfVeh;
+		const Vehicle_t* attacker_veh = p_self_veh;
 		gentity_t* victim = other;
-		const Vehicle_t* victimVeh = pOtherVeh;
+		const Vehicle_t* victim_veh = p_other_veh;
 
 		// Is The Attacker Actually Not Attacking?
 		//-----------------------------------------
-		if (!(attackerVeh->m_ulFlags & VEH_STRAFERAM))
+		if (!(attacker_veh->m_ulFlags & VEH_STRAFERAM))
 		{
 			// Ok, So Is The Victim Actually Attacking?
 			//------------------------------------------
-			if (victimVeh->m_ulFlags & VEH_STRAFERAM)
+			if (victim_veh->m_ulFlags & VEH_STRAFERAM)
 			{
 				// Ah, Ok.  Swap Who Is The Attacker Then
 				//----------------------------------------
 				attacker = other;
-				attackerVeh = pOtherVeh;
+				attacker_veh = p_other_veh;
 				victim = self;
-				victimVeh = pSelfVeh;
+				victim_veh = p_self_veh;
 			}
 			else
 			{
@@ -937,32 +937,30 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 
 		if (attacker && victim)
 		{
-			vec3_t attackerMoveDir;
-			vec3_t victimMoveDir;
-			vec3_t victimTowardAttacker;
-			vec3_t victimRight;
+			vec3_t attacker_move_dir;
+			vec3_t victim_move_dir;
+			vec3_t victim_toward_attacker;
+			vec3_t victim_right;
 
-			VectorCopy(attacker->client->ps.velocity, attackerMoveDir);
-			VectorCopy(victim->client->ps.velocity, victimMoveDir);
+			VectorCopy(attacker->client->ps.velocity, attacker_move_dir);
+			VectorCopy(victim->client->ps.velocity, victim_move_dir);
 
-			AngleVectors(victim->currentAngles, nullptr, victimRight, nullptr);
+			AngleVectors(victim->currentAngles, nullptr, victim_right, nullptr);
 
-			VectorSubtract(victim->currentOrigin, attacker->currentOrigin, victimTowardAttacker);
-			VectorNormalize(victimTowardAttacker);
+			VectorSubtract(victim->currentOrigin, attacker->currentOrigin, victim_toward_attacker);
+			VectorNormalize(victim_toward_attacker);
 
-			const float victimRightAccuracy = DotProduct(victimTowardAttacker, victimRight);
+			const float victim_right_accuracy = DotProduct(victim_toward_attacker, victim_right);
 
-			if (fabsf(victimRightAccuracy) > 0.25)
+			if (fabsf(victim_right_accuracy) > 0.25)
 			{
 				thrown = true;
-
-				vec3_t victim_right;
 				vec3_t victim_angles;
 				VectorCopy(victim->currentAngles, victim_angles);
 				victim_angles[2] = 0;
 				AngleVectors(victim_angles, nullptr, victim_right, nullptr);
 
-				if (attackerVeh->m_fStrafeTime < 0)
+				if (attacker_veh->m_fStrafeTime < 0)
 				{
 					VectorScale(victim_right, -1.0f, victim_right);
 				}
@@ -970,9 +968,9 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 				{
 					g_throw(victim, victim_right, 250);
 				}
-				if (victimVeh->m_pVehicleInfo->iImpactFX)
+				if (victim_veh->m_pVehicleInfo->iImpactFX)
 				{
-					G_PlayEffect(victimVeh->m_pVehicleInfo->iImpactFX, victim->currentOrigin, trace->plane.normal);
+					G_PlayEffect(victim_veh->m_pVehicleInfo->iImpactFX, victim->currentOrigin, trace->plane.normal);
 				}
 			}
 		}
@@ -982,7 +980,7 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 		.time)
 	{
 		float force = 0;
-		qboolean vehicleHitOwner = qfalse;
+		qboolean vehicle_hit_owner = qfalse;
 
 		if (other->material == MAT_GLASS
 			|| other->material == MAT_GLASS_METAL
@@ -995,47 +993,47 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 		}
 
 		// See if the vehicle has crashed into the ground.
-		if (pSelfVeh && pSelfVeh->m_pVehicleInfo->type != VH_ANIMAL)
+		if (p_self_veh && p_self_veh->m_pVehicleInfo->type != VH_ANIMAL)
 		{
 			if (magnitude >= 80 && self->painDebounceTime < level.time)
 			{
 				// Setup Some Variables
 				//----------------------
-				vec3_t vehFwd;
-				VectorCopy(velocity, vehFwd);
-				const float vehSpeed = VectorNormalize(vehFwd);
-				float vehToughnessAgainstOther = pSelfVeh->m_pVehicleInfo->toughness;
-				const float vehHitPercent = fabsf(DotProduct(vehFwd, trace->plane.normal));
-				int vehDFlags = DAMAGE_NO_ARMOR;
-				const bool vehPilotedByPlayer = pSelfVeh->m_pPilot && pSelfVeh->m_pPilot->s.number < MAX_CLIENTS;
-				const bool vehInTurbo = pSelfVeh->m_iTurboTime > level.time;
+				vec3_t veh_fwd;
+				VectorCopy(velocity, veh_fwd);
+				const float veh_speed = VectorNormalize(veh_fwd);
+				float veh_toughness_against_other = p_self_veh->m_pVehicleInfo->toughness;
+				const float veh_hit_percent = fabsf(DotProduct(veh_fwd, trace->plane.normal));
+				int veh_d_flags = DAMAGE_NO_ARMOR;
+				const bool veh_piloted_by_player = p_self_veh->m_pPilot && p_self_veh->m_pPilot->s.number < MAX_CLIENTS;
+				const bool veh_in_turbo = p_self_veh->m_iTurboTime > level.time;
 
 				self->painDebounceTime = level.time + 200;
 
 				// Modify Magnitude By Hit Percent And Toughness Against Other
 				//-------------------------------------------------------------
-				if (pSelfVeh->m_ulFlags & VEH_OUTOFCONTROL)
+				if (p_self_veh->m_ulFlags & VEH_OUTOFCONTROL)
 				{
-					vehToughnessAgainstOther *= 0.01f; // If Out Of Control, No Damage Resistance
+					veh_toughness_against_other *= 0.01f; // If Out Of Control, No Damage Resistance
 				}
 				else
 				{
-					if (vehPilotedByPlayer)
+					if (veh_piloted_by_player)
 					{
-						vehToughnessAgainstOther *= 1.5f;
+						veh_toughness_against_other *= 1.5f;
 					}
 					if (other && other->client)
 					{
-						vehToughnessAgainstOther *= 15.0f; // Very Tough against other clients (NPCS, Player, etc)
+						veh_toughness_against_other *= 15.0f; // Very Tough against other clients (NPCS, Player, etc)
 					}
 				}
-				if (vehToughnessAgainstOther > 0.0f)
+				if (veh_toughness_against_other > 0.0f)
 				{
-					magnitude *= vehHitPercent / vehToughnessAgainstOther;
+					magnitude *= veh_hit_percent / veh_toughness_against_other;
 				}
 				else
 				{
-					magnitude *= vehHitPercent;
+					magnitude *= veh_hit_percent;
 				}
 
 				// If We Hit Architecture
@@ -1044,58 +1042,58 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 				{
 					// Turbo Hurts
 					//-------------
-					if (vehInTurbo)
+					if (veh_in_turbo)
 					{
 						magnitude *= 5.0f;
 					}
 
-					else if (trace->plane.normal[2] > 0.75f && vehHitPercent < 0.2f)
+					else if (trace->plane.normal[2] > 0.75f && veh_hit_percent < 0.2f)
 					{
 						magnitude /= 10.0f;
 					}
 
 					// If No Pilot, Blow This Thing Now
 					//----------------------------------
-					if (vehHitPercent > 0.9f && !pSelfVeh->m_pPilot && vehSpeed > 1000.0f)
+					if (veh_hit_percent > 0.9f && !p_self_veh->m_pPilot && veh_speed > 1000.0f)
 					{
-						vehDFlags |= DAMAGE_IMPACT_DIE;
+						veh_d_flags |= DAMAGE_IMPACT_DIE;
 					}
 
 					// If Out Of Control, And We Hit A Wall Or Landed Or Head On
 					//------------------------------------------------------------
-					if (pSelfVeh->m_ulFlags & VEH_OUTOFCONTROL && (vehHitPercent > 0.5f || trace->plane.normal[2] < 0.5f
+					if (p_self_veh->m_ulFlags & VEH_OUTOFCONTROL && (veh_hit_percent > 0.5f || trace->plane.normal[2] < 0.5f
 						|| velocity[2] < -50.0f))
 					{
-						vehDFlags |= DAMAGE_IMPACT_DIE;
+						veh_d_flags |= DAMAGE_IMPACT_DIE;
 					}
 
 					// If This Is A Direct Impact (Debounced By 4 Seconds)
 					//-----------------------------------------------------
-					if (vehHitPercent > 0.9f && level.time - self->lastImpact > 2000 && vehSpeed > 300.0f)
+					if (veh_hit_percent > 0.9f && level.time - self->lastImpact > 2000 && veh_speed > 300.0f)
 					{
 						self->lastImpact = level.time;
 
 						// The Player Has Harder Requirements to Explode
 						//-----------------------------------------------
-						if (vehPilotedByPlayer)
+						if (veh_piloted_by_player)
 						{
-							if (vehHitPercent > 0.99f && vehSpeed > 1000.0f && !Q_irand(0, 30) ||
-								vehHitPercent > 0.999f && vehInTurbo)
+							if (veh_hit_percent > 0.99f && veh_speed > 1000.0f && !Q_irand(0, 30) ||
+								veh_hit_percent > 0.999f && veh_in_turbo)
 							{
-								vehDFlags |= DAMAGE_IMPACT_DIE;
+								veh_d_flags |= DAMAGE_IMPACT_DIE;
 							}
 						}
 						else if (player && G_IsRidingVehicle(player) &&
 							Distance(self->currentOrigin, player->currentOrigin) < 800.0f &&
-							(vehInTurbo || !Q_irand(0, 1) || vehHitPercent > 0.999f))
+							(veh_in_turbo || !Q_irand(0, 1) || veh_hit_percent > 0.999f))
 						{
-							vehDFlags |= DAMAGE_IMPACT_DIE;
+							veh_d_flags |= DAMAGE_IMPACT_DIE;
 						}
 					}
 
 					// Make Sure He Dies This Time.  I will accept no excuses.
 					//---------------------------------------------------------
-					if (vehDFlags & DAMAGE_IMPACT_DIE)
+					if (veh_d_flags & DAMAGE_IMPACT_DIE)
 					{
 						// If close enough To The PLayer
 						if (player &&
@@ -1115,17 +1113,17 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 				{
 					// Play The Impact Effect
 					//------------------------
-					if (pSelfVeh->m_pVehicleInfo->iImpactFX && vehSpeed > 100.0f)
+					if (p_self_veh->m_pVehicleInfo->iImpactFX && veh_speed > 100.0f)
 					{
-						G_PlayEffect(pSelfVeh->m_pVehicleInfo->iImpactFX, self->currentOrigin, trace->plane.normal);
+						G_PlayEffect(p_self_veh->m_pVehicleInfo->iImpactFX, self->currentOrigin, trace->plane.normal);
 					}
 
 					// Set The Crashing Flag And Pain Debounce Time
 					//----------------------------------------------
-					pSelfVeh->m_ulFlags |= VEH_CRASHING;
+					p_self_veh->m_ulFlags |= VEH_CRASHING;
 				}
 
-				G_Damage(self, player, player, nullptr, self->currentOrigin, magnitude, vehDFlags, MOD_FALLING);
+				G_Damage(self, player, player, nullptr, self->currentOrigin, magnitude, veh_d_flags, MOD_FALLING);
 			}
 
 			if (self->owner == other || self->activator == other)
@@ -1138,13 +1136,13 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 					{
 						//just spawned in a second ago
 						//don't actually damage or throw him...
-						vehicleHitOwner = qtrue;
+						vehicle_hit_owner = qtrue;
 					}
 				}
 			}
 			//if 2 vehicles on same side hit each other, tone it down
 			//NOTE: we do this here because we still want the impact effect
-			if (pOtherVeh)
+			if (p_other_veh)
 			{
 				if (self->client->playerTeam == other->client->playerTeam)
 				{
@@ -1219,23 +1217,23 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 			}
 
 			//FIXME: certain NPCs/entities should be TOUGH - like Ion Cannons, AT-STs, Mark1 droids, etc.
-			if (pOtherVeh)
+			if (p_other_veh)
 			{
 				//if hit another vehicle, take their toughness into account, too
-				force /= pOtherVeh->m_pVehicleInfo->toughness;
+				force /= p_other_veh->m_pVehicleInfo->toughness;
 			}
 
-			if ((force >= 1 || pSelfVeh) && other->s.number >= MAX_CLIENTS || force >= 10)
+			if ((force >= 1 || p_self_veh) && other->s.number >= MAX_CLIENTS || force >= 10)
 			{
 				if (other->svFlags & SVF_GLASS_BRUSH)
 				{
 					other->splashRadius = (self->maxs[0] - self->mins[0]) / 4.0f;
 				}
 
-				if (pSelfVeh)
+				if (p_self_veh)
 				{
 					//if in a vehicle when land on someone, always knockdown, throw, damage
-					if (!vehicleHitOwner)
+					if (!vehicle_hit_owner)
 					{
 						//didn't hit owner
 						// If the player was hit don't make the damage so bad...
@@ -1291,7 +1289,7 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 					if (other->health > 0)
 					{
 						//still alive?
-						//TODO: if someone was thrown through the air (in a knockdown or being gripped)
+						//if someone was thrown through the air (in a knockdown or being gripped)
 						//		and they hit me hard enough, knock me down
 						if (other->client)
 						{
@@ -1326,9 +1324,9 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 			}
 		}
 
-		if (damageSelf && self->takedamage && !(self->flags & FL_NO_IMPACT_DMG))
+		if (damage_self && self->takedamage && !(self->flags & FL_NO_IMPACT_DMG))
 		{
-			if (pSelfVeh && self->client->ps.forceJumpZStart)
+			if (p_self_veh && self->client->ps.forceJumpZStart)
 			{
 				//we were force-jumping
 				if (self->currentOrigin[2] >= self->client->ps.forceJumpZStart)
@@ -1368,15 +1366,15 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 						magnitude = magnitude - force / 2;
 					}
 
-					if (pSelfVeh)
+					if (p_self_veh)
 					{
-						magnitude /= pSelfVeh->m_pVehicleInfo->toughness * 1000.0f;
+						magnitude /= p_self_veh->m_pVehicleInfo->toughness * 1000.0f;
 
 						if (other->bmodel && other->material != MAT_GLASS)
 						{
 							//broke through some architecture, take a good amount of damage
 						}
-						else if (pOtherVeh)
+						else if (p_other_veh)
 						{
 							//they're tougher
 						}
@@ -1431,15 +1429,15 @@ void DoImpact(gentity_t* self, gentity_t* other, const qboolean damageSelf, cons
 						magnitude = magnitude - force / 2;
 					}
 
-					if (pSelfVeh)
+					if (p_self_veh)
 					{
-						magnitude /= pSelfVeh->m_pVehicleInfo->toughness * 1000.0f;
+						magnitude /= p_self_veh->m_pVehicleInfo->toughness * 1000.0f;
 
 						if (other->bmodel && other->material != MAT_GLASS)
 						{
 							//broke through some architecture, take a good amount of damage
 						}
-						else if (pOtherVeh)
+						else if (p_other_veh)
 						{
 							//they're tougher
 						}
@@ -1731,7 +1729,7 @@ Find all trigger entities that ent's current position touches.
 Spectators will only interact with teleporters.
 ============
 */
-void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
+void g_mover_touch_push_triggers(gentity_t* ent, vec3_t old_org)
 {
 	trace_t trace;
 	vec3_t dir;
@@ -1745,29 +1743,29 @@ void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg)
 	}
 
 	VectorSubtract(ent->mins, ent->maxs, size);
-	float stepSize = VectorLength(size);
-	if (stepSize < 1)
+	float step_size = VectorLength(size);
+	if (step_size < 1)
 	{
-		stepSize = 1;
+		step_size = 1;
 	}
 
-	VectorSubtract(ent->currentOrigin, oldOrg, dir);
+	VectorSubtract(ent->currentOrigin, old_org, dir);
 	const float dist = VectorNormalize(dir);
-	for (float step = 0; step <= dist; step += stepSize)
+	for (float step = 0; step <= dist; step += step_size)
 	{
-		vec3_t checkSpot;
+		vec3_t check_spot;
 		vec3_t maxs;
 		vec3_t mins;
 		gentity_t* touch[MAX_GENTITIES];
-		VectorMA(ent->currentOrigin, step, dir, checkSpot);
-		VectorSubtract(checkSpot, range, mins);
-		VectorAdd(checkSpot, range, maxs);
+		VectorMA(ent->currentOrigin, step, dir, check_spot);
+		VectorSubtract(check_spot, range, mins);
+		VectorAdd(check_spot, range, maxs);
 
 		const int num = gi.EntitiesInBox(mins, maxs, touch, MAX_GENTITIES);
 
 		// can't use ent->absmin, because that has a one unit pad
-		VectorAdd(checkSpot, ent->mins, mins);
-		VectorAdd(checkSpot, ent->maxs, maxs);
+		VectorAdd(check_spot, ent->mins, mins);
+		VectorAdd(check_spot, ent->maxs, maxs);
 
 		for (int i = 0; i < num; i++)
 		{
@@ -5884,13 +5882,13 @@ void G_HeldByMonster(gentity_t* ent, usercmd_t** ucmd)
 }
 
 // yes...   so stop skipping...
-void G_StopCinematicSkip(void)
+void G_StopCinematicSkip()
 {
 	gi.cvar_set("skippingCinematic", "0");
 	gi.cvar_set("timescale", "1");
 }
 
-void G_StartCinematicSkip(void)
+void G_StartCinematicSkip()
 {
 	if (cinematicSkipScript[0])
 	{

@@ -34,7 +34,7 @@ extern vec3_t player_maxs;
 
 extern int BG_AnimLength(int index, animNumber_t anim);
 
-extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
+extern void Vehicle_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean breakSaberLock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
@@ -82,7 +82,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	float fWalkSpeedMax;
 	int curTime;
 	const bgEntity_t* parent = p_veh->m_pParentEntity;
-	playerState_t * parentPS = parent->playerState;
+	playerState_t * parent_ps = parent->playerState;
 
 #ifdef _GAME
 	curTime = level.time;
@@ -103,7 +103,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 		if (curTime - p_veh->m_iTurboTime > p_veh->m_pVehicleInfo->turboRecharge)
 		{
 			p_veh->m_iTurboTime = curTime + p_veh->m_pVehicleInfo->turboDuration;
-			parentPS->speed = p_veh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
+			parent_ps->speed = p_veh->m_pVehicleInfo->turboSpeed; // Instantly Jump To Turbo Speed
 		}
 	}
 
@@ -116,52 +116,52 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 		speedMax = p_veh->m_pVehicleInfo->speedMax;
 	}
 
-	if (!parentPS->m_iVehicleNum)
+	if (!parent_ps->m_iVehicleNum)
 	{
 		//drifts to a stop
 		speedInc = speedIdle * p_veh->m_fTimeModifier;
-		VectorClear(parentPS->moveDir);
+		VectorClear(parent_ps->moveDir);
 		//m_ucmd.forwardmove = 127;
-		parentPS->speed = 0;
+		parent_ps->speed = 0;
 	}
 	else
 	{
 		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier;
 	}
 
-	if (parentPS->speed || parentPS->groundEntityNum == ENTITYNUM_NONE ||
+	if (parent_ps->speed || parent_ps->groundEntityNum == ENTITYNUM_NONE ||
 		p_veh->m_ucmd.forwardmove || p_veh->m_ucmd.upmove > 0)
 	{
 		if (p_veh->m_ucmd.forwardmove > 0 && speedInc)
 		{
-			parentPS->speed += speedInc;
+			parent_ps->speed += speedInc;
 		}
 		else if (p_veh->m_ucmd.forwardmove < 0)
 		{
-			if (parentPS->speed > speedIdle)
+			if (parent_ps->speed > speedIdle)
 			{
-				parentPS->speed -= speedInc;
+				parent_ps->speed -= speedInc;
 			}
-			else if (parentPS->speed > speedMin)
+			else if (parent_ps->speed > speedMin)
 			{
-				parentPS->speed -= speedIdleDec;
+				parent_ps->speed -= speedIdleDec;
 			}
 		}
 		// No input, so coast to stop.
-		else if (parentPS->speed > 0.0f)
+		else if (parent_ps->speed > 0.0f)
 		{
-			parentPS->speed -= speedIdleDec;
-			if (parentPS->speed < 0.0f)
+			parent_ps->speed -= speedIdleDec;
+			if (parent_ps->speed < 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
-		else if (parentPS->speed < 0.0f)
+		else if (parent_ps->speed < 0.0f)
 		{
-			parentPS->speed += speedIdleDec;
-			if (parentPS->speed > 0.0f)
+			parent_ps->speed += speedIdleDec;
+			if (parent_ps->speed > 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
 	}
@@ -186,17 +186,17 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	}
 
 	fWalkSpeedMax = speedMax * 0.275f;
-	if (curTime > p_veh->m_iTurboTime && p_veh->m_ucmd.buttons & BUTTON_WALKING && parentPS->speed > fWalkSpeedMax)
+	if (curTime > p_veh->m_iTurboTime && p_veh->m_ucmd.buttons & BUTTON_WALKING && parent_ps->speed > fWalkSpeedMax)
 	{
-		parentPS->speed = fWalkSpeedMax;
+		parent_ps->speed = fWalkSpeedMax;
 	}
-	else if (parentPS->speed > speedMax)
+	else if (parent_ps->speed > speedMax)
 	{
-		parentPS->speed = speedMax;
+		parent_ps->speed = speedMax;
 	}
-	else if (parentPS->speed < speedMin)
+	else if (parent_ps->speed < speedMin)
 	{
-		parentPS->speed = speedMin;
+		parent_ps->speed = speedMin;
 	}
 
 	/********************************************************************************/
@@ -229,15 +229,15 @@ static void ProcessOrientCommands(const Vehicle_t* p_veh)
 		rider = parent;
 	}
 
-	const playerState_t* parentPS = parent->playerState;
+	const playerState_t* parent_ps = parent->playerState;
 
 	if (rider)
 	{
-		const playerState_t* riderPS = rider->playerState;
-		float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], riderPS->viewangles[YAW]);
-		if (parentPS && parentPS->speed)
+		const playerState_t* rider_ps = rider->playerState;
+		float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], rider_ps->viewangles[YAW]);
+		if (parent_ps && parent_ps->speed)
 		{
-			float s = parentPS->speed;
+			float s = parent_ps->speed;
 			const float maxDif = p_veh->m_pVehicleInfo->turningSpeed * 4.0f; //magic number hackery
 			if (s < 0.0f)
 			{
@@ -257,18 +257,18 @@ static void ProcessOrientCommands(const Vehicle_t* p_veh)
 		}
 	}
 
-	/*	speed = VectorLength( parentPS->velocity );
+	/*	speed = VectorLength( parent_ps->velocity );
 
 		// If the player is the rider...
 		if ( rider->s.number < MAX_CLIENTS )
 		{//FIXME: use the vehicle's turning stat in this calc
-			p_veh->m_vOrientation[YAW] = riderPS->viewangles[YAW];
+			p_veh->m_vOrientation[YAW] = rider_ps->viewangles[YAW];
 		}
 		else
 		{
 			float turnSpeed = p_veh->m_pVehicleInfo->turningSpeed;
 			if ( !p_veh->m_pVehicleInfo->turnWhenStopped
-				&& !parentPS->speed )//FIXME: or !p_veh->m_ucmd.forwardmove?
+				&& !parent_ps->speed )//FIXME: or !p_veh->m_ucmd.forwardmove?
 			{//can't turn when not moving
 				//FIXME: or ramp up to max turnSpeed?
 				turnSpeed = 0.0f;
@@ -276,9 +276,9 @@ static void ProcessOrientCommands(const Vehicle_t* p_veh)
 			if (rider->s.eType == ET_NPC)
 			{//help NPCs out some
 				turnSpeed *= 2.0f;
-				if (parentPS->speed > 200.0f)
+				if (parent_ps->speed > 200.0f)
 				{
-					turnSpeed += turnSpeed * parentPS->speed/200.0f*0.05f;
+					turnSpeed += turnSpeed * parent_ps->speed/200.0f*0.05f;
 				}
 			}
 			turnSpeed *= p_veh->m_fTimeModifier;
@@ -312,7 +312,7 @@ void AnimalProcessOri(const Vehicle_t* p_veh)
 static void AnimateVehicle(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VT_IDLE;
-	int iFlags = SETANIM_FLAG_NORMAL, iBlend = 300;
+	int iFlags = SETANIM_FLAG_NORMAL, i_blend = 300;
 	gentity_t* pilot = (gentity_t*)p_veh->m_pPilot;
 	gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
 
@@ -326,7 +326,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
 			// FIXME! Why do you keep repeating over and over!!?!?!? Bastard!
-			//Vehicle_SetAnim( parent, SETANIM_LEGS, BOTH_VT_DEATH1, iFlags, iBlend );
+			//Vehicle_SetAnim( parent, SETANIM_LEGS, BOTH_VT_DEATH1, iFlags, i_blend );
 		}
 		*/
 		return;
@@ -349,8 +349,8 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 	{
 		iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 		Anim = BOTH_VT_BUCK;
-		iBlend = 500;
-		Vehicle_SetAnim(parent, SETANIM_LEGS, BOTH_VT_BUCK, iFlags, iBlend);
+		i_blend = 500;
+		Vehicle_SetAnim(parent, SETANIM_LEGS, BOTH_VT_BUCK, iFlags, i_blend);
 		return;
 	}
 
@@ -383,10 +383,10 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 			// TODO: But what if he's killed? Should the animation remain persistant???
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
-			Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, iBlend);
+			Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, i_blend);
 			if (pilot)
 			{
-				Vehicle_SetAnim(pilot, SETANIM_BOTH, Anim, iFlags, iBlend);
+				Vehicle_SetAnim(pilot, SETANIM_BOTH, Anim, iFlags, i_blend);
 			}
 			return;
 		}
@@ -405,7 +405,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 	if (fSpeedPercToMax < -0.01f)
 	{
 		Anim = BOTH_VT_WALK_REV;
-		iBlend = 600;
+		i_blend = 600;
 	}
 	else
 	{
@@ -421,19 +421,19 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 		if (Turbo)
 		{
 			// Kicked In Turbo
-			iBlend = 50;
+			i_blend = 50;
 			iFlags = SETANIM_FLAG_OVERRIDE;
 			Anim = BOTH_VT_TURBO;
 		}
 		else
 		{
 			// No Special Moves
-			iBlend = 300;
+			i_blend = 300;
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS;
 			Anim = Walking ? BOTH_VT_WALK_FWD : Running ? BOTH_VT_RUN_FWD : BOTH_VT_IDLE1;
 		}
 	}
-	Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, iBlend);
+	Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, i_blend);
 }
 
 //rwwFIXMEFIXME: This is all going to have to be predicted I think, or it will feel awful
@@ -442,7 +442,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 static void AnimateRiders(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VT_IDLE;
-	int iFlags, iBlend;
+	int iFlags, i_blend;
 	gentity_t* pilot = (gentity_t*)p_veh->m_pPilot;
 	const gentity_t* parent = (gentity_t*)p_veh->m_pParentEntity;
 
@@ -505,7 +505,7 @@ static void AnimateRiders(Vehicle_t* p_veh)
 		if (Attacking && WeaponPose)
 		{
 			// Attack!
-			iBlend = 100;
+			i_blend = 100;
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_RESTART;
 
 			if (Turbo)
@@ -567,14 +567,14 @@ static void AnimateRiders(Vehicle_t* p_veh)
 		else if (Turbo)
 		{
 			// Kicked In Turbo
-			iBlend = 50;
+			i_blend = 50;
 			iFlags = SETANIM_FLAG_OVERRIDE;
 			Anim = BOTH_VT_TURBO;
 		}
 		else
 		{
 			// No Special Moves
-			iBlend = 300;
+			i_blend = 300;
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLDLESS;
 
 			if (WeaponPose == WPOSE_NONE)
@@ -608,7 +608,7 @@ static void AnimateRiders(Vehicle_t* p_veh)
 		} // No Special Moves
 	}
 
-	Vehicle_SetAnim(pilot, SETANIM_BOTH, Anim, iFlags, iBlend);
+	Vehicle_SetAnim(pilot, SETANIM_BOTH, Anim, iFlags, i_blend);
 }
 #endif //_GAME
 

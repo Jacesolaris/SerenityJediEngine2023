@@ -761,9 +761,9 @@ constexpr auto SETANIM_AFLAG_PACE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 constexpr auto AFLAG_LEDGE = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS | SETANIM_FLAG_PACE;
 constexpr auto SETANIM_BLEND_DEFAULT = 100;
 
-void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime = SETANIM_BLEND_DEFAULT);
+void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time = SETANIM_BLEND_DEFAULT);
 void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, int type, int anim, int priority, int* torsoAnimTimer,
-                     int* legsAnimTimer, gentity_t* gent, int blendTime = SETANIM_BLEND_DEFAULT);
+                     int* legsAnimTimer, gentity_t* gent, int blend_time = SETANIM_BLEND_DEFAULT);
 
 //===================================================================================
 

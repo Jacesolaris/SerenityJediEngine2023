@@ -96,21 +96,21 @@ void NPC_BSAdvanceFight(void)
 					trace_t tr;
 					//are we gonna hit him if we shoot at his center?
 					trap->Trace(&tr, muzzle, NULL, NULL, enemy_org, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
-					const gentity_t* traceEnt = &g_entities[tr.entity_num];
-					if (traceEnt != NPCS.NPC->enemy &&
-						(!traceEnt || !traceEnt->client || !NPCS.NPC->client->enemyTeam || NPCS.NPC->client->enemyTeam
-							!= traceEnt->client->playerTeam))
+					const gentity_t* trace_ent = &g_entities[tr.entity_num];
+					if (trace_ent != NPCS.NPC->enemy &&
+						(!trace_ent || !trace_ent->client || !NPCS.NPC->client->enemyTeam || NPCS.NPC->client->enemyTeam
+							!= trace_ent->client->playerTeam))
 					{
 						//no, so shoot for the head
 						attack_scale *= 0.75;
 						trap->Trace(&tr, muzzle, NULL, NULL, enemy_head, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
-						traceEnt = &g_entities[tr.entity_num];
+						trace_ent = &g_entities[tr.entity_num];
 					}
 
 					VectorCopy(tr.endpos, hitspot);
 
-					if (traceEnt == NPCS.NPC->enemy || traceEnt->client && NPCS.NPC->client->enemyTeam && NPCS.NPC->
-						client->enemyTeam == traceEnt->client->playerTeam)
+					if (trace_ent == NPCS.NPC->enemy || trace_ent->client && NPCS.NPC->client->enemyTeam && NPCS.NPC->
+						client->enemyTeam == trace_ent->client->playerTeam)
 					{
 						dead_on = qtrue;
 					}
@@ -119,9 +119,9 @@ void NPC_BSAdvanceFight(void)
 						attack_scale *= 0.5;
 						if (NPCS.NPC->client->playerTeam)
 						{
-							if (traceEnt && traceEnt->client && traceEnt->client->playerTeam)
+							if (trace_ent && trace_ent->client && trace_ent->client->playerTeam)
 							{
-								if (NPCS.NPC->client->playerTeam == traceEnt->client->playerTeam)
+								if (NPCS.NPC->client->playerTeam == trace_ent->client->playerTeam)
 								{
 									//Don't shoot our own team
 									attack_ok = qfalse;

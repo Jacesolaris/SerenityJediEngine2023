@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "g_functions.h"
 
-extern void G_NextTestAxes(void);
+extern void G_NextTestAxes();
 extern void G_ChangePlayerModel(gentity_t* ent, const char* newModel);
 extern void G_InitPlayerFromCvars(gentity_t* ent);
 extern void Q3_SetViewEntity(int entID, const char* name);
@@ -135,11 +135,11 @@ void Svcmd_EntityList_f(void)
 }
 
 //---------------------------
-extern void G_StopCinematicSkip(void);
-extern void G_StartCinematicSkip(void);
+extern void G_StopCinematicSkip();
+extern void G_StartCinematicSkip();
 extern void ExitEmplacedWeapon(gentity_t* ent);
 
-static void Svcmd_ExitView_f(void)
+static void Svcmd_ExitView_f()
 {
 	static int exitViewDebounce = 0;
 	if (exitViewDebounce > level.time)
@@ -389,8 +389,8 @@ extern qboolean PM_SaberInTransition(int move);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
 extern qboolean PM_ControlledByPlayer(void);
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags,
-                        int iBlend = SETANIM_BLEND_DEFAULT);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags,
+                        int i_blend = SETANIM_BLEND_DEFAULT);
 
 void Svcmd_SaberAttackCycle_f(void)
 {

@@ -692,54 +692,54 @@ static qboolean SV_G2API_SetAnimIndex(CGhoul2Info* ghlInfo, const int index)
 static qboolean SV_G2API_SetBoneAnim(CGhoul2Info* ghlInfo, const char* boneName, const int startFrame,
                                      const int endFrame,
                                      const int flags, const float animSpeed, const int AcurrentTime,
-                                     const float setFrame, const int blendTime)
+                                     const float setFrame, const int blend_time)
 {
 	return re.G2API_SetBoneAnim(ghlInfo, boneName, startFrame, endFrame, flags,
-	                            animSpeed, AcurrentTime, setFrame, blendTime);
+	                            animSpeed, AcurrentTime, setFrame, blend_time);
 }
 
 static qboolean SV_G2API_SetBoneAnimIndex(CGhoul2Info* ghlInfo, const int index, const int startFrame,
                                           const int endFrame,
                                           const int flags, const float animSpeed, const int AcurrentTime,
-                                          const float setFrame, const int blendTime)
+                                          const float setFrame, const int blend_time)
 {
 	return re.G2API_SetBoneAnimIndex(ghlInfo, index, startFrame, endFrame, flags,
-	                                 animSpeed, AcurrentTime, setFrame, blendTime);
+	                                 animSpeed, AcurrentTime, setFrame, blend_time);
 }
 
 static qboolean SV_G2API_SetBoneAngles(CGhoul2Info* ghlInfo, const char* boneName, const vec3_t angles, const int flags,
                                        const Eorientations up, const Eorientations left, const Eorientations forward,
                                        qhandle_t* modelList,
-                                       const int blendTime, const int AcurrentTime)
+                                       const int blend_time, const int AcurrentTime)
 {
 	return re.G2API_SetBoneAngles(ghlInfo, boneName, angles, flags, up, left, forward,
-	                              modelList, blendTime, AcurrentTime);
+	                              modelList, blend_time, AcurrentTime);
 }
 
 static qboolean SV_G2API_SetBoneAnglesOffset(CGhoul2Info* ghlInfo, const char* boneName, const vec3_t angles,
                                              const int flags,
                                              const Eorientations up, const Eorientations right,
                                              const Eorientations forward, qhandle_t* modelList,
-                                             const int blendTime, const int currentTime, const vec3_t offset)
+                                             const int blend_time, const int currentTime, const vec3_t offset)
 {
-	return re.G2API_SetBoneAnglesOffset(ghlInfo, boneName, angles, flags, up, right, forward, modelList, blendTime,
+	return re.G2API_SetBoneAnglesOffset(ghlInfo, boneName, angles, flags, up, right, forward, modelList, blend_time,
 	                                    currentTime, offset);
 }
 
 static qboolean SV_G2API_SetBoneAnglesIndex(CGhoul2Info* ghlInfo, const int index, const vec3_t angles, const int flags,
                                             const Eorientations yaw, const Eorientations pitch,
                                             const Eorientations roll, qhandle_t* modelList,
-                                            const int blendTime, const int AcurrentTime)
+                                            const int blend_time, const int AcurrentTime)
 {
 	return re.G2API_SetBoneAnglesIndex(ghlInfo, index, angles, flags, yaw, pitch, roll,
-	                                   modelList, blendTime, AcurrentTime);
+	                                   modelList, blend_time, AcurrentTime);
 }
 
 static qboolean SV_G2API_SetBoneAnglesMatrix(CGhoul2Info* ghlInfo, const char* boneName, const mdxaBone_t& matrix,
-                                             const int flags, qhandle_t* modelList, const int blendTime,
+                                             const int flags, qhandle_t* modelList, const int blend_time,
                                              const int AcurrentTime)
 {
-	return re.G2API_SetBoneAnglesMatrix(ghlInfo, boneName, matrix, flags, modelList, blendTime, AcurrentTime);
+	return re.G2API_SetBoneAnglesMatrix(ghlInfo, boneName, matrix, flags, modelList, blend_time, AcurrentTime);
 }
 
 static qboolean SV_G2API_SetBoneAnglesMatrixIndex(CGhoul2Info* ghlInfo, const int index, const mdxaBone_t& matrix,

@@ -44,7 +44,7 @@ float rand_float(float min, float max);
 
 extern void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 extern void Jedi_Decloak(gentity_t* self);
-extern qboolean FighterIsLanded(const Vehicle_t* p_veh, const playerState_t* parentPS);
+extern qboolean FighterIsLanded(const Vehicle_t* p_veh, const playerState_t* parent_ps);
 extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern float VectorDistance(vec3_t v1, vec3_t v2);
 qboolean PM_SaberInStart(int move);

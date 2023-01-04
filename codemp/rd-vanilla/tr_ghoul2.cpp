@@ -1512,13 +1512,13 @@ void G2_TransformBone(const int child, CBoneCache& BC)
 		// set blending stuff if we need to
 		if (boneList[boneListIndex].flags & BONE_ANIM_BLEND)
 		{
-			float blendTime = BC.incomingTime - boneList[boneListIndex].blendStart;
+			float blend_time = BC.incomingTime - boneList[boneListIndex].blendStart;
 			// only set up the blend anim if we actually have some blend time left on this bone anim - otherwise we might corrupt some blend higher up the hiearchy
-			if (blendTime >= 0.0f && blendTime < boneList[boneListIndex].blendTime)
+			if (blend_time >= 0.0f && blend_time < boneList[boneListIndex].blend_time)
 			{
 				TB.blendFrame = boneList[boneListIndex].blendFrame;
 				TB.blendOldFrame = boneList[boneListIndex].blendLerpFrame;
-				TB.blendLerp = blendTime / boneList[boneListIndex].blendTime;
+				TB.blendLerp = blend_time / boneList[boneListIndex].blend_time;
 				TB.blendMode = true;
 			}
 			else
@@ -1608,7 +1608,7 @@ void G2_TransformBone(const int child, CBoneCache& BC)
 				bone.animSpeed,
 				bone.flags,
 				bone.blendStart,
-				bone.blendStart + bone.blendTime,
+				bone.blendStart + bone.blend_time,
 				bone.blendFrame,
 				bone.blendLerpFrame
 			);
@@ -1759,8 +1759,8 @@ void G2_TransformBone(const int child, CBoneCache& BC)
 
 			Multiply_3x4Matrix(&temp, &toMatrix, &skel->BasePoseMatInv); //dest first arg
 
-			float blendTime = BC.incomingTime - boneList[boneListIndex].boneBlendStart;
-			float blendLerp = blendTime / boneList[boneListIndex].boneBlendTime;
+			float blend_time = BC.incomingTime - boneList[boneListIndex].boneBlendStart;
+			float blendLerp = blend_time / boneList[boneListIndex].boneBlendTime;
 			if (blendLerp > 0.0f)
 			{
 				// has started
@@ -1796,8 +1796,8 @@ void G2_TransformBone(const int child, CBoneCache& BC)
 				incomingTime)
 			{
 				// ok, we are supposed to be blending. Work out lerp
-				float blendTime = BC.incomingTime - boneList[boneListIndex].boneBlendStart;
-				float blendLerp = blendTime / boneList[boneListIndex].boneBlendTime;
+				float blend_time = BC.incomingTime - boneList[boneListIndex].boneBlendStart;
+				float blendLerp = blend_time / boneList[boneListIndex].boneBlendTime;
 
 				if (blendLerp <= 1)
 				{

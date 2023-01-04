@@ -125,15 +125,15 @@ void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, cons
 
 	// constant color all the way around
 	// should this be identity and let the shader specify from entity?
-	const byteAlias_t* baSource = (byteAlias_t*)color;
-	byteAlias_t* baDest = (byteAlias_t*)&tess.vertexColors[ndx + 0];
-	baDest->ui = baSource->ui;
-	baDest = (byteAlias_t*)&tess.vertexColors[ndx + 1];
-	baDest->ui = baSource->ui;
-	baDest = (byteAlias_t*)&tess.vertexColors[ndx + 2];
-	baDest->ui = baSource->ui;
-	baDest = (byteAlias_t*)&tess.vertexColors[ndx + 3];
-	baDest->ui = baSource->ui;
+	const byteAlias_t* ba_source = reinterpret_cast<byteAlias_t*>(color);
+	byteAlias_t* ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[ndx + 0]);
+	ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[ndx + 1]);
+	ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[ndx + 2]);
+	ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[ndx + 3]);
+	ba_dest->ui = ba_source->ui;
 
 	tess.numVertexes += 4;
 	tess.numIndexes += 6;
@@ -153,7 +153,7 @@ void RB_AddQuadStamp(vec3_t origin, vec3_t left, vec3_t up, byte* color) {
 RB_SurfaceSprite
 ==============
 */
-static void RB_SurfaceSprite(void) {
+static void RB_SurfaceSprite() {
 	vec3_t		left, up;
 
 	// calculate the xyz locations for the four corners
@@ -185,7 +185,7 @@ static void RB_SurfaceSprite(void) {
 RB_SurfaceOrientedQuad
 =======================
 */
-static void RB_SurfaceOrientedQuad(void)
+static void RB_SurfaceOrientedQuad()
 {
 	vec3_t	left, up;
 
@@ -200,21 +200,21 @@ static void RB_SurfaceOrientedQuad(void)
 	}
 	else
 	{
-		vec3_t	tempLeft, tempUp;
+		vec3_t	temp_left, temp_up;
 
 		const float ang = M_PI * backEnd.currentEntity->e.rotation / 180;
 		const float s = sin(ang);
 		const float c = cos(ang);
 
 		// Use a temp so we don't trash the values we'll need later
-		VectorScale(left, c * radius, tempLeft);
-		VectorMA(tempLeft, -s * radius, up, tempLeft);
+		VectorScale(left, c * radius, temp_left);
+		VectorMA(temp_left, -s * radius, up, temp_left);
 
-		VectorScale(up, c * radius, tempUp);
-		VectorMA(tempUp, s * radius, left, up); // no need to use the temp anymore, so copy into the dest vector ( up )
+		VectorScale(up, c * radius, temp_up);
+		VectorMA(temp_up, s * radius, left, up); // no need to use the temp anymore, so copy into the dest vector ( up )
 
 		// This was copied for safekeeping, we're done, so we can move it back to left
-		VectorCopy(tempLeft, left);
+		VectorCopy(temp_left, left);
 	}
 
 	if (backEnd.viewParms.isMirror)
@@ -244,15 +244,15 @@ RB_SurfaceLine
 //		startRGB, endRGB
 //
 
-static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, const float spanWidth)
+static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, const float span_width)
 {
 	RB_CHECKOVERFLOW(4, 6);
 
 	const int vbase = tess.numVertexes;
 
-	const float spanWidth2 = -spanWidth;
+	const float spanWidth2 = -span_width;
 
-	VectorMA(start, spanWidth, up, tess.xyz[tess.numVertexes]);
+	VectorMA(start, span_width, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = 0;
 	tess.texCoords[tess.numVertexes][0][1] = 0;
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];// * 0.25;//wtf??not sure why the code would be doing this
@@ -270,7 +270,7 @@ static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, const 
 	tess.vertexColors[tess.numVertexes][3] = backEnd.currentEntity->e.shaderRGBA[3];
 	tess.numVertexes++;
 
-	VectorMA(end, spanWidth, up, tess.xyz[tess.numVertexes]);
+	VectorMA(end, span_width, up, tess.xyz[tess.numVertexes]);
 
 	tess.texCoords[tess.numVertexes][0][0] = 0;
 	tess.texCoords[tess.numVertexes][0][1] = 1;//backEnd.currentEntity->e.shaderTexCoord[1];
@@ -298,43 +298,43 @@ static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, const 
 	tess.indexes[tess.numIndexes++] = vbase + 3;
 }
 
-static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, const float spanWidth, const float spanWidth2, const float tcStart, const float tcEnd)
+static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, const float span_width, const float span_width2, const float tc_start, const float tc_end)
 {
 	RB_CHECKOVERFLOW(4, 6);
 
 	const int vbase = tess.numVertexes;
 
-	VectorMA(start, spanWidth, up, tess.xyz[tess.numVertexes]);
+	VectorMA(start, span_width, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = 0;
-	tess.texCoords[tess.numVertexes][0][1] = tcStart;
+	tess.texCoords[tess.numVertexes][0][1] = tc_start;
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];// * 0.25;//wtf??not sure why the code would be doing this
 	tess.vertexColors[tess.numVertexes][1] = backEnd.currentEntity->e.shaderRGBA[1];// * 0.25;
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2];// * 0.25;
 	tess.vertexColors[tess.numVertexes][3] = backEnd.currentEntity->e.shaderRGBA[3];// * 0.25;
 	tess.numVertexes++;
 
-	VectorMA(start, -spanWidth, up, tess.xyz[tess.numVertexes]);
+	VectorMA(start, -span_width, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = 1;//backEnd.currentEntity->e.shaderTexCoord[0];
-	tess.texCoords[tess.numVertexes][0][1] = tcStart;
+	tess.texCoords[tess.numVertexes][0][1] = tc_start;
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];
 	tess.vertexColors[tess.numVertexes][1] = backEnd.currentEntity->e.shaderRGBA[1];
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2];
 	tess.vertexColors[tess.numVertexes][3] = backEnd.currentEntity->e.shaderRGBA[3];
 	tess.numVertexes++;
 
-	VectorMA(end, spanWidth2, up, tess.xyz[tess.numVertexes]);
+	VectorMA(end, span_width2, up, tess.xyz[tess.numVertexes]);
 
 	tess.texCoords[tess.numVertexes][0][0] = 0;
-	tess.texCoords[tess.numVertexes][0][1] = tcEnd;//backEnd.currentEntity->e.shaderTexCoord[1];
+	tess.texCoords[tess.numVertexes][0][1] = tc_end;//backEnd.currentEntity->e.shaderTexCoord[1];
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];
 	tess.vertexColors[tess.numVertexes][1] = backEnd.currentEntity->e.shaderRGBA[1];
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2];
 	tess.vertexColors[tess.numVertexes][3] = backEnd.currentEntity->e.shaderRGBA[3];
 	tess.numVertexes++;
 
-	VectorMA(end, -spanWidth2, up, tess.xyz[tess.numVertexes]);
+	VectorMA(end, -span_width2, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = 1;//backEnd.currentEntity->e.shaderTexCoord[0];
-	tess.texCoords[tess.numVertexes][0][1] = tcEnd;//backEnd.currentEntity->e.shaderTexCoord[1];
+	tess.texCoords[tess.numVertexes][0][1] = tc_end;//backEnd.currentEntity->e.shaderTexCoord[1];
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];
 	tess.vertexColors[tess.numVertexes][1] = backEnd.currentEntity->e.shaderRGBA[1];
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2];
@@ -353,7 +353,7 @@ static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, const
 //-----------------
 // RB_SurfaceLine
 //-----------------
-static void RB_SurfaceLine(void)
+static void RB_SurfaceLine()
 {
 	vec3_t		right;
 	vec3_t		start, end;
@@ -388,7 +388,7 @@ constexpr auto NUM_CYLINDER_SEGMENTS = 40;
 // If a cylinder has a tapered end that has a very small radius, the engine converts it to a cone.  Not a huge savings, but the texture mapping is slightly better
 //	and it uses half as many indicies as the cylinder version
 //-------------------------------------
-static void RB_SurfaceCone(void)
+static void RB_SurfaceCone()
 //-------------------------------------
 {
 	static vec3_t points[NUM_CYLINDER_SEGMENTS];
@@ -509,7 +509,7 @@ static void RB_SurfaceCone(void)
 }
 
 //-------------------------------------
-static void RB_SurfaceCylinder(void)
+static void RB_SurfaceCylinder()
 //-------------------------------------
 {
 	static vec3_t lower_points[NUM_CYLINDER_SEGMENTS], upper_points[NUM_CYLINDER_SEGMENTS];
@@ -651,7 +651,7 @@ static void CreateShape()
 }
 
 //----------------------------------------------------------------------------
-static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradius, const float eradius, const int count, const float startPerc, const float endPerc)
+static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradius, const float eradius, const int count, const float start_perc, const float end_perc)
 //----------------------------------------------------------------------------
 {
 	vec3_t	point1, point2, fwd;
@@ -660,7 +660,7 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradi
 	if (count < 1)
 	{
 		// done recursing
-		DoLine2(start, end, right, sradius, eradius, startPerc, endPerc);
+		DoLine2(start, end, right, sradius, eradius, start_perc, end_perc);
 		return;
 	}
 
@@ -681,7 +681,7 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradi
 	const float rads2 = sradius * 0.333f + eradius * 0.666f;
 
 	// recursion
-	ApplyShape(start, point1, right, sradius, rads1, count - 1, startPerc, startPerc * 0.666f + endPerc * 0.333f);
+	ApplyShape(start, point1, right, sradius, rads1, count - 1, start_perc, start_perc * 0.666f + end_perc * 0.333f);
 
 	perc = sh2[0];
 
@@ -691,8 +691,8 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradi
 	VectorMA(point2, dis * sh2[2], up, point2);
 
 	// recursion
-	ApplyShape(point2, point1, right, rads1, rads2, count - 1, startPerc * 0.333f + endPerc * 0.666f, startPerc * 0.666f + endPerc * 0.333f);
-	ApplyShape(point2, end, right, rads2, eradius, count - 1, startPerc * 0.333f + endPerc * 0.666f, endPerc);
+	ApplyShape(point2, point1, right, rads1, rads2, count - 1, start_perc * 0.333f + end_perc * 0.666f, start_perc * 0.666f + end_perc * 0.333f);
+	ApplyShape(point2, end, right, rads2, eradius, count - 1, start_perc * 0.333f + end_perc * 0.666f, end_perc);
 }
 
 //----------------------------------------------------------------------------
@@ -702,7 +702,7 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius
 	vec3_t fwd, old;
 	vec3_t off = { 10,10,10 };
 	vec3_t rt, up;
-	float oldPerc = 0.0f, perc, oldRadius;
+	float old_perc = 0.0f, perc, old_radius;
 
 	refEntity_t* e = &backEnd.currentEntity->e;
 
@@ -718,7 +718,7 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius
 
 	VectorCopy(start, old);
 
-	float newRadius = oldRadius = radius;
+	float new_radius = old_radius = radius;
 
 	for (int i = 16; i <= dis; i += 16)
 	{
@@ -753,12 +753,12 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius
 		{
 			// This does pretty close to perfect tapering since apply shape interpolates the old and new as it goes along.
 			//	by using one minus the square, the radius stays fairly constant, then drops off quickly at the very point of the bolt
-			oldRadius = radius * (1.0f - oldPerc * oldPerc);
-			newRadius = radius * (1.0f - perc * perc);
+			old_radius = radius * (1.0f - old_perc * old_perc);
+			new_radius = radius * (1.0f - perc * perc);
 		}
 
 		// Apply the random shape to our line seg to give it some micro-detail-jaggy-coolness.
-		ApplyShape(cur, old, right, newRadius, oldRadius, 2 - r_lodbias->integer, 0, 1);
+		ApplyShape(cur, old, right, new_radius, old_radius, 2 - r_lodbias->integer, 0, 1);
 
 		// randomly split off to create little tendrils, but don't do it too close to the end and especially if we are not even of the forked variety
 		if (e->renderfx & RF_FORKED && f_count > 0 && Q_random(&e->frame) > 0.93f && 1.0f - perc > 0.8f)
@@ -778,12 +778,12 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius
 			}
 
 			// we could branch off using OLD and NEWDEST, but that would allow multiple forks...whereas, we just want simpler brancing
-			DoBoltSeg(cur, newDest, right, newRadius);
+			DoBoltSeg(cur, newDest, right, new_radius);
 		}
 
 		// Current point along the line becomes our new old attach point
 		VectorCopy(cur, old);
-		oldPerc = perc;
+		old_perc = perc;
 	}
 }
 
@@ -835,16 +835,16 @@ static void RB_SurfaceElectricity()
 
 //================================================================================
 
-static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, const float len, const float spanWidth)
+static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, const float len, const float span_width)
 {
 	const float		t = len / 256.0f;
 
 	const int vbase = tess.numVertexes;
 
-	const float spanWidth2 = -spanWidth;
+	const float span_width2 = -span_width;
 
 	// FIXME: use quad stamp?
-	VectorMA(start, spanWidth, up, tess.xyz[tess.numVertexes]);
+	VectorMA(start, span_width, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = 0;
 	tess.texCoords[tess.numVertexes][0][1] = 0;
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0] * 0.25;
@@ -852,7 +852,7 @@ static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, co
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2] * 0.25;
 	tess.numVertexes++;
 
-	VectorMA(start, spanWidth2, up, tess.xyz[tess.numVertexes]);
+	VectorMA(start, span_width2, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = 0;
 	tess.texCoords[tess.numVertexes][0][1] = 1;
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];
@@ -860,7 +860,7 @@ static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, co
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2];
 	tess.numVertexes++;
 
-	VectorMA(end, spanWidth, up, tess.xyz[tess.numVertexes]);
+	VectorMA(end, span_width, up, tess.xyz[tess.numVertexes]);
 
 	tess.texCoords[tess.numVertexes][0][0] = t;
 	tess.texCoords[tess.numVertexes][0][1] = 0;
@@ -869,7 +869,7 @@ static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, co
 	tess.vertexColors[tess.numVertexes][2] = backEnd.currentEntity->e.shaderRGBA[2];
 	tess.numVertexes++;
 
-	VectorMA(end, spanWidth2, up, tess.xyz[tess.numVertexes]);
+	VectorMA(end, span_width2, up, tess.xyz[tess.numVertexes]);
 	tess.texCoords[tess.numVertexes][0][0] = t;
 	tess.texCoords[tess.numVertexes][0][1] = 1;
 	tess.vertexColors[tess.numVertexes][0] = backEnd.currentEntity->e.shaderRGBA[0];
@@ -886,7 +886,7 @@ static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, co
 	tess.indexes[tess.numIndexes++] = vbase + 3;
 }
 
-void RB_SurfaceLightningBolt(void)
+void RB_SurfaceLightningBolt()
 {
 	vec3_t		right;
 	vec3_t		vec;
@@ -964,7 +964,7 @@ void RB_SurfacePolychain( srfPoly_t *p ) {
 	tess.numVertexes = numv;
 }
 */
-void RB_SurfacePolychain(srfPoly_t* p) {
+void RB_SurfacePolychain(const srfPoly_t* p) {
 	int		i;
 
 	RB_CHECKOVERFLOW(p->numVerts, 3 * (p->numVerts - 2));
@@ -991,7 +991,7 @@ void RB_SurfacePolychain(srfPoly_t* p) {
 	tess.numVertexes = numv;
 }
 
-inline static uint32_t ComputeFinalVertexColor(const byte* colors) {
+static uint32_t ComputeFinalVertexColor(const byte* colors) {
 	int k;
 	byteAlias_t result;
 	uint32_t g, b;
@@ -1012,11 +1012,11 @@ inline static uint32_t ComputeFinalVertexColor(const byte* colors) {
 	uint32_t r = g = b = 0;
 	for (k = 0; k < MAXLIGHTMAPS; k++) {
 		if (tess.shader->styles[k] < LS_UNUSED) {
-			byte* styleColor = styleColors[tess.shader->styles[k]];
+			byte* style_color = styleColors[tess.shader->styles[k]];
 
-			r += static_cast<uint32_t>(*colors++) * static_cast<uint32_t>(*styleColor++);
-			g += static_cast<uint32_t>(*colors++) * static_cast<uint32_t>(*styleColor++);
-			b += static_cast<uint32_t>(*colors++) * static_cast<uint32_t>(*styleColor);
+			r += static_cast<uint32_t>(*colors++) * static_cast<uint32_t>(*style_color++);
+			g += static_cast<uint32_t>(*colors++) * static_cast<uint32_t>(*style_color++);
+			b += static_cast<uint32_t>(*colors++) * static_cast<uint32_t>(*style_color);
 			colors++;
 		}
 		else
@@ -1034,11 +1034,11 @@ inline static uint32_t ComputeFinalVertexColor(const byte* colors) {
 RB_SurfaceTriangles
 =============
 */
-void RB_SurfaceTriangles(srfTriangles_t* srf) {
+void RB_SurfaceTriangles(const srfTriangles_t* srf) {
 	int			i;
 
-	const int dlightBits = srf->dlightBits;
-	tess.dlightBits |= dlightBits;
+	const int dlight_bits = srf->dlightBits;
+	tess.dlightBits |= dlight_bits;
 
 	RB_CHECKOVERFLOW(srf->numVerts, srf->numIndexes);
 
@@ -1052,7 +1052,7 @@ void RB_SurfaceTriangles(srfTriangles_t* srf) {
 	drawVert_t* dv = srf->verts;
 	float* xyz = tess.xyz[tess.numVertexes];
 	float* normal = tess.normal[tess.numVertexes];
-	float* texCoords = tess.texCoords[tess.numVertexes][0];
+	float* tex_coords = tess.texCoords[tess.numVertexes][0];
 	byte* color = tess.vertexColors[tess.numVertexes];
 
 	for (i = 0; i < srf->numVerts; i++, dv++)
@@ -1070,29 +1070,29 @@ void RB_SurfaceTriangles(srfTriangles_t* srf) {
 		}
 		normal += 4;
 
-		texCoords[0] = dv->st[0];
-		texCoords[1] = dv->st[1];
+		tex_coords[0] = dv->st[0];
+		tex_coords[1] = dv->st[1];
 
 		for (int k = 0; k < MAXLIGHTMAPS; k++)
 		{
 			if (tess.shader->lightmapIndex[k] >= 0)
 			{
-				texCoords[2 + k * 2] = dv->lightmap[k][0];
-				texCoords[2 + k * 2 + 1] = dv->lightmap[k][1];
+				tex_coords[2 + k * 2] = dv->lightmap[k][0];
+				tex_coords[2 + k * 2 + 1] = dv->lightmap[k][1];
 			}
 			else
 			{	// can't have an empty slot in the middle, so we are done
 				break;
 			}
 		}
-		texCoords += NUM_TEX_COORDS * 2;
+		tex_coords += NUM_TEX_COORDS * 2;
 
-		*(unsigned*)color = ComputeFinalVertexColor((byte*)dv->color);
+		*reinterpret_cast<unsigned*>(color) = ComputeFinalVertexColor(reinterpret_cast<byte*>(dv->color));
 		color += 4;
 	}
 
 	for (i = 0; i < srf->numVerts; i++) {
-		tess.vertexDlightBits[tess.numVertexes + i] = dlightBits;
+		tess.vertexDlightBits[tess.numVertexes + i] = dlight_bits;
 	}
 
 	tess.numVertexes += srf->numVerts;
@@ -1103,13 +1103,13 @@ void RB_SurfaceTriangles(srfTriangles_t* srf) {
 RB_SurfaceBeam
 ==============
 */
-static void RB_SurfaceBeam(void)
+static void RB_SurfaceBeam()
 {
-	constexpr auto NUM_BEAM_SEGS = 6;
+	constexpr auto num_beam_segs = 6;
 	int	i;
 	vec3_t perpvec;
 	vec3_t direction, normalized_direction;
-	vec3_t	start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
+	vec3_t	start_points[num_beam_segs], end_points[num_beam_segs];
 	vec3_t oldorigin, origin;
 
 	const refEntity_t* e = &backEnd.currentEntity->e;
@@ -1133,9 +1133,9 @@ static void RB_SurfaceBeam(void)
 
 	VectorScale(perpvec, 4, perpvec);
 
-	for (i = 0; i < NUM_BEAM_SEGS; i++)
+	for (i = 0; i < num_beam_segs; i++)
 	{
-		RotatePointAroundVector(start_points[i], normalized_direction, perpvec, 360.0 / NUM_BEAM_SEGS * i);
+		RotatePointAroundVector(start_points[i], normalized_direction, perpvec, 360.0 / num_beam_segs * i);
 		//		VectorAdd( start_points[i], origin, start_points[i] );
 		VectorAdd(start_points[i], direction, end_points[i]);
 	}
@@ -1159,9 +1159,9 @@ static void RB_SurfaceBeam(void)
 	}
 
 	qglBegin(GL_TRIANGLE_STRIP);
-	for (i = 0; i <= NUM_BEAM_SEGS; i++) {
-		qglVertex3fv(start_points[i % NUM_BEAM_SEGS]);
-		qglVertex3fv(end_points[i % NUM_BEAM_SEGS]);
+	for (i = 0; i <= num_beam_segs; i++) {
+		qglVertex3fv(start_points[i % num_beam_segs]);
+		qglVertex3fv(end_points[i % num_beam_segs]);
 	}
 	qglEnd();
 }
@@ -1219,91 +1219,91 @@ static void RB_SurfaceSaberGlow()
 */
 static void LerpMeshVertexes(md3Surface_t* surf, const float backlerp)
 {
-	int		vertNum;
+	int		vert_num;
 	unsigned lat, lng;
 
-	float* outXyz = tess.xyz[tess.numVertexes];
-	float* outNormal = tess.normal[tess.numVertexes];
+	float* out_xyz = tess.xyz[tess.numVertexes];
+	float* out_normal = tess.normal[tess.numVertexes];
 
-	short* newXyz = (short*)((byte*)surf + surf->ofsXyzNormals)
+	short* new_xyz = reinterpret_cast<short*>(reinterpret_cast<byte*>(surf) + surf->ofsXyzNormals)
 		+ backEnd.currentEntity->e.frame * surf->numVerts * 4;
-	short* newNormals = newXyz + 3;
+	short* new_normals = new_xyz + 3;
 
-	const float newXyzScale = MD3_XYZ_SCALE * (1.0 - backlerp);
-	const float newNormalScale = 1.0 - backlerp;
+	const float new_xyz_scale = MD3_XYZ_SCALE * (1.0 - backlerp);
+	const float new_normal_scale = 1.0 - backlerp;
 
-	const int numVerts = surf->numVerts;
+	const int num_verts = surf->numVerts;
 
 	if (backlerp == 0) {
 		//
 		// just copy the vertexes
 		//
-		for (vertNum = 0; vertNum < numVerts; vertNum++,
-			newXyz += 4, newNormals += 4,
-			outXyz += 4, outNormal += 4)
+		for (vert_num = 0; vert_num < num_verts; vert_num++,
+			new_xyz += 4, new_normals += 4,
+			out_xyz += 4, out_normal += 4)
 		{
-			outXyz[0] = newXyz[0] * newXyzScale;
-			outXyz[1] = newXyz[1] * newXyzScale;
-			outXyz[2] = newXyz[2] * newXyzScale;
+			out_xyz[0] = new_xyz[0] * new_xyz_scale;
+			out_xyz[1] = new_xyz[1] * new_xyz_scale;
+			out_xyz[2] = new_xyz[2] * new_xyz_scale;
 
-			lat = newNormals[0] >> 8 & 0xff;
-			lng = newNormals[0] & 0xff;
+			lat = new_normals[0] >> 8 & 0xff;
+			lng = new_normals[0] & 0xff;
 			lat *= FUNCTABLE_SIZE / 256;
 			lng *= FUNCTABLE_SIZE / 256;
 
 			// decode X as cos( lat ) * sin( long )
 			// decode Y as sin( lat ) * sin( long )
 			// decode Z as cos( long )
-			outNormal[0] = tr.sinTable[lat + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK] * tr.sinTable[lng];
-			outNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			outNormal[2] = tr.sinTable[lng + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK];
+			out_normal[0] = tr.sinTable[lat + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK] * tr.sinTable[lng];
+			out_normal[1] = tr.sinTable[lat] * tr.sinTable[lng];
+			out_normal[2] = tr.sinTable[lng + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK];
 		}
 	}
 	else {
 		//
 		// interpolate and copy the vertex and normal
 		//
-		short* oldXyz = (short*)((byte*)surf + surf->ofsXyzNormals)
+		short* old_xyz = reinterpret_cast<short*>(reinterpret_cast<byte*>(surf) + surf->ofsXyzNormals)
 			+ backEnd.currentEntity->e.oldframe * surf->numVerts * 4;
-		short* oldNormals = oldXyz + 3;
+		short* old_normals = old_xyz + 3;
 
-		const float oldXyzScale = MD3_XYZ_SCALE * backlerp;
-		const float oldNormalScale = backlerp;
+		const float old_xyz_scale = MD3_XYZ_SCALE * backlerp;
+		const float old_normal_scale = backlerp;
 
-		for (vertNum = 0; vertNum < numVerts; vertNum++,
-			oldXyz += 4, newXyz += 4, oldNormals += 4, newNormals += 4,
-			outXyz += 4, outNormal += 4)
+		for (vert_num = 0; vert_num < num_verts; vert_num++,
+			old_xyz += 4, new_xyz += 4, old_normals += 4, new_normals += 4,
+			out_xyz += 4, out_normal += 4)
 		{
-			vec3_t uncompressedOldNormal, uncompressedNewNormal;
+			vec3_t uncompressed_old_normal, uncompressed_new_normal;
 
 			// interpolate the xyz
-			outXyz[0] = oldXyz[0] * oldXyzScale + newXyz[0] * newXyzScale;
-			outXyz[1] = oldXyz[1] * oldXyzScale + newXyz[1] * newXyzScale;
-			outXyz[2] = oldXyz[2] * oldXyzScale + newXyz[2] * newXyzScale;
+			out_xyz[0] = old_xyz[0] * old_xyz_scale + new_xyz[0] * new_xyz_scale;
+			out_xyz[1] = old_xyz[1] * old_xyz_scale + new_xyz[1] * new_xyz_scale;
+			out_xyz[2] = old_xyz[2] * old_xyz_scale + new_xyz[2] * new_xyz_scale;
 
 			// FIXME: interpolate lat/long instead?
-			lat = newNormals[0] >> 8 & 0xff;
-			lng = newNormals[0] & 0xff;
+			lat = new_normals[0] >> 8 & 0xff;
+			lng = new_normals[0] & 0xff;
 			lat *= 4;
 			lng *= 4;
-			uncompressedNewNormal[0] = tr.sinTable[lat + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK] * tr.sinTable[lng];
-			uncompressedNewNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			uncompressedNewNormal[2] = tr.sinTable[lng + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK];
+			uncompressed_new_normal[0] = tr.sinTable[lat + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK] * tr.sinTable[lng];
+			uncompressed_new_normal[1] = tr.sinTable[lat] * tr.sinTable[lng];
+			uncompressed_new_normal[2] = tr.sinTable[lng + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK];
 
-			lat = oldNormals[0] >> 8 & 0xff;
-			lng = oldNormals[0] & 0xff;
+			lat = old_normals[0] >> 8 & 0xff;
+			lng = old_normals[0] & 0xff;
 			lat *= 4;
 			lng *= 4;
 
-			uncompressedOldNormal[0] = tr.sinTable[lat + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK] * tr.sinTable[lng];
-			uncompressedOldNormal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-			uncompressedOldNormal[2] = tr.sinTable[lng + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK];
+			uncompressed_old_normal[0] = tr.sinTable[lat + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK] * tr.sinTable[lng];
+			uncompressed_old_normal[1] = tr.sinTable[lat] * tr.sinTable[lng];
+			uncompressed_old_normal[2] = tr.sinTable[lng + FUNCTABLE_SIZE / 4 & FUNCTABLE_MASK];
 
-			outNormal[0] = uncompressedOldNormal[0] * oldNormalScale + uncompressedNewNormal[0] * newNormalScale;
-			outNormal[1] = uncompressedOldNormal[1] * oldNormalScale + uncompressedNewNormal[1] * newNormalScale;
-			outNormal[2] = uncompressedOldNormal[2] * oldNormalScale + uncompressedNewNormal[2] * newNormalScale;
+			out_normal[0] = uncompressed_old_normal[0] * old_normal_scale + uncompressed_new_normal[0] * new_normal_scale;
+			out_normal[1] = uncompressed_old_normal[1] * old_normal_scale + uncompressed_new_normal[1] * new_normal_scale;
+			out_normal[2] = uncompressed_old_normal[2] * old_normal_scale + uncompressed_new_normal[2] * new_normal_scale;
 
-			VectorNormalize(outNormal);
+			VectorNormalize(out_normal);
 		}
 	}
 }
@@ -1328,21 +1328,21 @@ void RB_SurfaceMesh(md3Surface_t* surface) {
 
 	LerpMeshVertexes(surface, backlerp);
 
-	const int* triangles = (int*)((byte*)surface + surface->ofsTriangles);
+	const int* triangles = reinterpret_cast<int*>(reinterpret_cast<byte*>(surface) + surface->ofsTriangles);
 	const int indexes = surface->numTriangles * 3;
-	const int Bob = tess.numIndexes;
-	const int Doug = tess.numVertexes;
+	const int bob = tess.numIndexes;
+	const int doug = tess.numVertexes;
 	for (j = 0; j < indexes; j++) {
-		tess.indexes[Bob + j] = Doug + triangles[j];
+		tess.indexes[bob + j] = doug + triangles[j];
 	}
 	tess.numIndexes += indexes;
 
-	const float* texCoords = (float*)((byte*)surface + surface->ofsSt);
+	const float* tex_coords = reinterpret_cast<float*>(reinterpret_cast<byte*>(surface) + surface->ofsSt);
 
 	const int numVerts = surface->numVerts;
 	for (j = 0; j < numVerts; j++) {
-		tess.texCoords[Doug + j][0][0] = texCoords[j * 2 + 0];
-		tess.texCoords[Doug + j][0][1] = texCoords[j * 2 + 1];
+		tess.texCoords[doug + j][0][0] = tex_coords[j * 2 + 0];
+		tess.texCoords[doug + j][0][1] = tex_coords[j * 2 + 1];
 		// FIXME: fill in lightmapST for completeness?
 	}
 
@@ -1359,34 +1359,34 @@ void RB_SurfaceFace(srfSurfaceFace_t* surf) {
 
 	RB_CHECKOVERFLOW(surf->numPoints, surf->numIndices);
 
-	const int dlightBits = surf->dlightBits;
-	tess.dlightBits |= dlightBits;
+	const int dlight_bits = surf->dlightBits;
+	tess.dlightBits |= dlight_bits;
 
-	const unsigned int* indices = (unsigned*)((char*)surf + surf->ofsIndices);
+	const unsigned int* indices = reinterpret_cast<unsigned*>(reinterpret_cast<char*>(surf) + surf->ofsIndices);
 
-	const int Bob = tess.numVertexes;
-	glIndex_t* tessIndexes = tess.indexes + tess.numIndexes;
+	const int bob = tess.numVertexes;
+	glIndex_t* tess_indexes = tess.indexes + tess.numIndexes;
 	for (i = surf->numIndices - 1; i >= 0; i--) {
-		tessIndexes[i] = indices[i] + Bob;
+		tess_indexes[i] = indices[i] + bob;
 	}
 
 	tess.numIndexes += surf->numIndices;
 
-	float* v = surf->points[0];
+	float* v;
 
-	int ndx = tess.numVertexes;
+	int ndx;
 
-	const int numPoints = surf->numPoints;
+	const int num_points = surf->numPoints;
 
 	//if ( tess.shader->needsNormal )
 	{
 		const float* normal = surf->plane.normal;
-		for (i = 0, ndx = tess.numVertexes; i < numPoints; i++, ndx++) {
+		for (i = 0, ndx = tess.numVertexes; i < num_points; i++, ndx++) {
 			VectorCopy(normal, tess.normal[ndx]);
 		}
 	}
 
-	for (i = 0, v = surf->points[0], ndx = tess.numVertexes; i < numPoints; i++, v += VERTEXSIZE, ndx++) {
+	for (i = 0, v = surf->points[0], ndx = tess.numVertexes; i < num_points; i++, v += VERTEXSIZE, ndx++) {
 		byteAlias_t ba;
 		VectorCopy(v, tess.xyz[ndx]);
 		tess.texCoords[ndx][0][0] = v[3];
@@ -1406,13 +1406,13 @@ void RB_SurfaceFace(srfSurfaceFace_t* surf) {
 		ba.ui = ComputeFinalVertexColor((byte*)&v[VERTEX_COLOR]);
 		for (int j = 0; j < 4; j++)
 			tess.vertexColors[ndx][j] = ba.b[j];
-		tess.vertexDlightBits[ndx] = dlightBits;
+		tess.vertexDlightBits[ndx] = dlight_bits;
 	}
 
 	tess.numVertexes += surf->numPoints;
 }
 
-static float LodErrorForVolume(vec3_t local, const float radius) {
+static float lod_error_for_volume(vec3_t local, const float radius) {
 	vec3_t		world;
 
 	// never let it go negative
@@ -1451,48 +1451,48 @@ Just copy the grid of points and triangulate
 void RB_SurfaceGrid(srfGridMesh_t* cv) {
 	int		i, j;
 	int irows, vrows;
-	int		widthTable[MAX_GRID_SIZE];
-	int		heightTable[MAX_GRID_SIZE];
+	int		width_table[MAX_GRID_SIZE];
+	int		height_table[MAX_GRID_SIZE];
 
-	const int dlightBits = cv->dlightBits;
-	tess.dlightBits |= dlightBits;
+	const int dlight_bits = cv->dlightBits;
+	tess.dlightBits |= dlight_bits;
 
 	// determine the allowable discrepance
-	const float lodError = LodErrorForVolume(cv->lodOrigin, cv->lodRadius);
+	const float lod_error = lod_error_for_volume(cv->lodOrigin, cv->lodRadius);
 
 	// determine which rows and columns of the subdivision
 	// we are actually going to use
-	widthTable[0] = 0;
-	int lodWidth = 1;
+	width_table[0] = 0;
+	int lod_width = 1;
 	for (i = 1; i < cv->width - 1; i++) {
-		if (cv->widthLodError[i] <= lodError) {
-			widthTable[lodWidth] = i;
-			lodWidth++;
+		if (cv->widthLodError[i] <= lod_error) {
+			width_table[lod_width] = i;
+			lod_width++;
 		}
 	}
-	widthTable[lodWidth] = cv->width - 1;
-	lodWidth++;
+	width_table[lod_width] = cv->width - 1;
+	lod_width++;
 
-	heightTable[0] = 0;
-	int lodHeight = 1;
+	height_table[0] = 0;
+	int lod_height = 1;
 	for (i = 1; i < cv->height - 1; i++) {
-		if (cv->heightLodError[i] <= lodError) {
-			heightTable[lodHeight] = i;
-			lodHeight++;
+		if (cv->heightLodError[i] <= lod_error) {
+			height_table[lod_height] = i;
+			lod_height++;
 		}
 	}
-	heightTable[lodHeight] = cv->height - 1;
-	lodHeight++;
+	height_table[lod_height] = cv->height - 1;
+	lod_height++;
 
 	// very large grids may have more points or indexes than can be fit
 	// in the tess structure, so we may have to issue it in multiple passes
 
 	int used = 0;
-	while (used < lodHeight - 1) {
+	while (used < lod_height - 1) {
 		// see how many rows of both verts and indexes we can add without overflowing
 		do {
-			vrows = (SHADER_MAX_VERTEXES - tess.numVertexes) / lodWidth;
-			irows = (SHADER_MAX_INDEXES - tess.numIndexes) / (lodWidth * 6);
+			vrows = (SHADER_MAX_VERTEXES - tess.numVertexes) / lod_width;
+			irows = (SHADER_MAX_INDEXES - tess.numIndexes) / (lod_width * 6);
 
 			// if we don't have enough space for at least one strip, flush the buffer
 			if (vrows < 2 || irows < 1) {
@@ -1508,37 +1508,37 @@ void RB_SurfaceGrid(srfGridMesh_t* cv) {
 		if (vrows < irows + 1) {
 			rows = vrows - 1;
 		}
-		if (used + rows > lodHeight) {
-			rows = lodHeight - used;
+		if (used + rows > lod_height) {
+			rows = lod_height - used;
 		}
 
-		const int numVertexes = tess.numVertexes;
+		const int num_vertexes = tess.numVertexes;
 
-		float* xyz = tess.xyz[numVertexes];
-		float* normal = tess.normal[numVertexes];
-		float* texCoords = tess.texCoords[numVertexes][0];
-		unsigned char* color = (unsigned char*)&tess.vertexColors[numVertexes];
-		int* vDlightBits = &tess.vertexDlightBits[numVertexes];
+		float* xyz = tess.xyz[num_vertexes];
+		float* normal = tess.normal[num_vertexes];
+		float* tex_coords = tess.texCoords[num_vertexes][0];
+		auto color = reinterpret_cast<unsigned char*>(&tess.vertexColors[num_vertexes]);
+		int* v_dlight_bits = &tess.vertexDlightBits[num_vertexes];
 
 		for (i = 0; i < rows; i++) {
-			for (j = 0; j < lodWidth; j++) {
-				const drawVert_t* dv = cv->verts + heightTable[used + i] * cv->width
-					+ widthTable[j];
+			for (j = 0; j < lod_width; j++) {
+				const drawVert_t* dv = cv->verts + height_table[used + i] * cv->width
+					+ width_table[j];
 
 				xyz[0] = dv->xyz[0];
 				xyz[1] = dv->xyz[1];
 				xyz[2] = dv->xyz[2];
 				xyz += 4;
 
-				texCoords[0] = dv->st[0];
-				texCoords[1] = dv->st[1];
+				tex_coords[0] = dv->st[0];
+				tex_coords[1] = dv->st[1];
 
 				for (int k = 0; k < MAXLIGHTMAPS; k++)
 				{
-					texCoords[2 + k * 2] = dv->lightmap[k][0];
-					texCoords[2 + k * 2 + 1] = dv->lightmap[k][1];
+					tex_coords[2 + k * 2] = dv->lightmap[k][0];
+					tex_coords[2 + k * 2 + 1] = dv->lightmap[k][1];
 				}
-				texCoords += NUM_TEX_COORDS * 2;
+				tex_coords += NUM_TEX_COORDS * 2;
 
 				//				if ( needsNormal )
 				{
@@ -1547,40 +1547,40 @@ void RB_SurfaceGrid(srfGridMesh_t* cv) {
 					normal[2] = dv->normal[2];
 				}
 				normal += 4;
-				*(unsigned*)color = ComputeFinalVertexColor((byte*)dv->color);
+				*reinterpret_cast<unsigned*>(color) = ComputeFinalVertexColor((byte*)dv->color);
 				color += 4;
-				*vDlightBits++ = dlightBits;
+				*v_dlight_bits++ = dlight_bits;
 			}
 		}
 
 		// add the indexes
 		{
 			const int h = rows - 1;
-			const int w = lodWidth - 1;
-			int numIndexes = tess.numIndexes;
+			const int w = lod_width - 1;
+			int num_indexes = tess.numIndexes;
 			for (i = 0; i < h; i++) {
 				for (j = 0; j < w; j++) {
 					// vertex order to be reckognized as tristrips
-					const int v1 = numVertexes + i * lodWidth + j + 1;
+					const int v1 = num_vertexes + i * lod_width + j + 1;
 					const int v2 = v1 - 1;
-					const int v3 = v2 + lodWidth;
+					const int v3 = v2 + lod_width;
 					const int v4 = v3 + 1;
 
-					tess.indexes[numIndexes] = v2;
-					tess.indexes[numIndexes + 1] = v3;
-					tess.indexes[numIndexes + 2] = v1;
+					tess.indexes[num_indexes] = v2;
+					tess.indexes[num_indexes + 1] = v3;
+					tess.indexes[num_indexes + 2] = v1;
 
-					tess.indexes[numIndexes + 3] = v1;
-					tess.indexes[numIndexes + 4] = v3;
-					tess.indexes[numIndexes + 5] = v4;
-					numIndexes += 6;
+					tess.indexes[num_indexes + 3] = v1;
+					tess.indexes[num_indexes + 4] = v3;
+					tess.indexes[num_indexes + 5] = v4;
+					num_indexes += 6;
 				}
 			}
 
-			tess.numIndexes = numIndexes;
+			tess.numIndexes = num_indexes;
 		}
 
-		tess.numVertexes += rows * lodWidth;
+		tess.numVertexes += rows * lod_width;
 
 		used += rows - 1;
 	}
@@ -1623,11 +1623,11 @@ static void RB_SurfaceLathe()
 	{
 		lod = 1;
 	}
-	const float bezierStep = BEZIER_STEP * lod;
-	const float latheStep = LATHE_SEG_STEP * lod;
+	const float bezier_step = BEZIER_STEP * lod;
+	const float lathe_step = LATHE_SEG_STEP * lod;
 
 	// Do bezier profile strip, then lathe this around to make a 3d model
-	for (float mu = 0.0f; mu <= 1.01f * d; mu += bezierStep)
+	for (float mu = 0.0f; mu <= 1.01f * d; mu += bezier_step)
 	{
 		vec2_t oldpt2;
 		vec2_t oldpt;
@@ -1648,7 +1648,7 @@ static void RB_SurfaceLathe()
 		VectorSet2(oldpt2, l_oldpt2[0], 0);
 
 		// lathe patch section around in a complete circle
-		for (int t = latheStep; t <= 360; t += latheStep)
+		for (int t = lathe_step; t <= 360; t += lathe_step)
 		{
 			VectorSet2(pt, l_oldpt[0], 0);
 			VectorSet2(pt2, l_oldpt2[0], 0);
@@ -1676,8 +1676,8 @@ static void RB_SurfaceLathe()
 			VectorAdd(e->origin, tess.normal[tess.numVertexes], tess.xyz[tess.numVertexes]);
 			VectorNormalize(tess.normal[tess.numVertexes]);
 			i = oldpt[0] * 0.1f + oldpt[1] * 0.1f;
-			tess.texCoords[tess.numVertexes][0][0] = (t - latheStep) / 360.0f;
-			tess.texCoords[tess.numVertexes][0][1] = mu - bezierStep + cos(i + backEnd.refdef.floatTime) * pain;
+			tess.texCoords[tess.numVertexes][0][0] = (t - lathe_step) / 360.0f;
+			tess.texCoords[tess.numVertexes][0][1] = mu - bezier_step + cos(i + backEnd.refdef.floatTime) * pain;
 			tess.vertexColors[tess.numVertexes][0] = e->shaderRGBA[0];
 			tess.vertexColors[tess.numVertexes][1] = e->shaderRGBA[1];
 			tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[2];
@@ -1688,7 +1688,7 @@ static void RB_SurfaceLathe()
 			VectorAdd(e->origin, tess.normal[tess.numVertexes], tess.xyz[tess.numVertexes]);
 			VectorNormalize(tess.normal[tess.numVertexes]);
 			i = oldpt2[0] * 0.1f + oldpt2[1] * 0.1f;
-			tess.texCoords[tess.numVertexes][0][0] = (t - latheStep) / 360.0f;
+			tess.texCoords[tess.numVertexes][0][0] = (t - lathe_step) / 360.0f;
 			tess.texCoords[tess.numVertexes][0][1] = mu + cos(i + backEnd.refdef.floatTime) * pain;
 			tess.vertexColors[tess.numVertexes][0] = e->shaderRGBA[0];
 			tess.vertexColors[tess.numVertexes][1] = e->shaderRGBA[1];
@@ -1701,7 +1701,7 @@ static void RB_SurfaceLathe()
 			VectorNormalize(tess.normal[tess.numVertexes]);
 			i = pt[0] * 0.1f + pt[1] * 0.1f;
 			tess.texCoords[tess.numVertexes][0][0] = t / 360.0f;
-			tess.texCoords[tess.numVertexes][0][1] = mu - bezierStep + cos(i + backEnd.refdef.floatTime) * pain;
+			tess.texCoords[tess.numVertexes][0][1] = mu - bezier_step + cos(i + backEnd.refdef.floatTime) * pain;
 			tess.vertexColors[tess.numVertexes][0] = e->shaderRGBA[0];
 			tess.vertexColors[tess.numVertexes][1] = e->shaderRGBA[1];
 			tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[2];
@@ -1744,26 +1744,26 @@ constexpr auto TUBE_DEF = 6;
 static void RB_SurfaceClouds()
 {
 	// Disk definition
-	float diskStripDef[DISK_DEF] = {
+	float disk_strip_def[DISK_DEF] = {
 				0.0f,
 				0.4f,
 				0.7f,
 				1.0f };
 
-	float diskAlphaDef[DISK_DEF] = {
+	float disk_alpha_def[DISK_DEF] = {
 				1.0f,
 				1.0f,
 				0.4f,
 				0.0f };
 
-	float diskCurveDef[DISK_DEF] = {
+	float disk_curve_def[DISK_DEF] = {
 				0.0f,
 				0.0f,
 				0.008f,
 				0.02f };
 
 	// tube definition
-	float tubeStripDef[TUBE_DEF] = {
+	float tube_strip_def[TUBE_DEF] = {
 				0.0f,
 				0.05f,
 				0.1f,
@@ -1771,7 +1771,7 @@ static void RB_SurfaceClouds()
 				0.7f,
 				1.0f };
 
-	float tubeAlphaDef[TUBE_DEF] = {
+	float tube_alpha_def[TUBE_DEF] = {
 				0.0f,
 				0.45f,
 				1.0f,
@@ -1779,7 +1779,7 @@ static void RB_SurfaceClouds()
 				0.45f,
 				0.0f };
 
-	float tubeCurveDef[TUBE_DEF] = {
+	float tube_curve_def[TUBE_DEF] = {
 				0.0f,
 				0.004f,
 				0.006f,
@@ -1789,7 +1789,7 @@ static void RB_SurfaceClouds()
 
 	vec3_t		pt;
 	vec3_t		pt2;
-	float* stripDef, * alphaDef, * curveDef, ct;
+	float* strip_def, * alpha_def, * curve_def, ct;
 
 	refEntity_t* e = &backEnd.currentEntity->e;
 
@@ -1797,30 +1797,30 @@ static void RB_SurfaceClouds()
 	if (e->renderfx & RF_GROW) // doing tube type
 	{
 		ct = TUBE_DEF;
-		stripDef = tubeStripDef;
-		alphaDef = tubeAlphaDef;
-		curveDef = tubeCurveDef;
+		strip_def = tube_strip_def;
+		alpha_def = tube_alpha_def;
+		curve_def = tube_curve_def;
 		e->backlerp *= -1; // needs to be reversed
 	}
 	else
 	{
 		ct = DISK_DEF;
-		stripDef = diskStripDef;
-		alphaDef = diskAlphaDef;
-		curveDef = diskCurveDef;
+		strip_def = disk_strip_def;
+		alpha_def = disk_alpha_def;
+		curve_def = disk_curve_def;
 	}
 
 	// do the strip def, then lathe this around to make a 3d model
 	for (int i = 0; i < ct - 1; i++)
 	{
-		constexpr float latheStep = 30.0f;
+		constexpr float lathe_step = 30.0f;
 		vec3_t oldpt2;
 		vec3_t oldpt;
-		VectorSet(oldpt, stripDef[i] * (e->radius - e->rotation) + e->rotation, 0, curveDef[i] * e->radius * e->backlerp);
-		VectorSet(oldpt2, stripDef[i + 1] * (e->radius - e->rotation) + e->rotation, 0, curveDef[i + 1] * e->radius * e->backlerp);
+		VectorSet(oldpt, strip_def[i] * (e->radius - e->rotation) + e->rotation, 0, curve_def[i] * e->radius * e->backlerp);
+		VectorSet(oldpt2, strip_def[i + 1] * (e->radius - e->rotation) + e->rotation, 0, curve_def[i + 1] * e->radius * e->backlerp);
 
 		// lathe section around in a complete circle
-		for (int t = latheStep; t <= 360; t += latheStep)
+		for (int t = lathe_step; t <= 360; t += lathe_step)
 		{
 			// rotate every time except last seg
 			if (t < 360.0f)
@@ -1828,8 +1828,8 @@ static void RB_SurfaceClouds()
 				VectorCopy(oldpt, pt);
 				VectorCopy(oldpt2, pt2);
 
-				const float s = sin(DEG2RAD(latheStep));
-				const float c = cos(DEG2RAD(latheStep));
+				const float s = sin(DEG2RAD(lathe_step));
+				const float c = cos(DEG2RAD(lathe_step));
 
 				// rotate lathe points
 				float temp = c * pt[0] - s * pt[1];	// c -s 0
@@ -1843,8 +1843,8 @@ static void RB_SurfaceClouds()
 			else
 			{
 				// just glue directly to the def points.
-				VectorSet(pt, stripDef[i] * (e->radius - e->rotation) + e->rotation, 0, curveDef[i] * e->radius * e->backlerp);
-				VectorSet(pt2, stripDef[i + 1] * (e->radius - e->rotation) + e->rotation, 0, curveDef[i + 1] * e->radius * e->backlerp);
+				VectorSet(pt, strip_def[i] * (e->radius - e->rotation) + e->rotation, 0, curve_def[i] * e->radius * e->backlerp);
+				VectorSet(pt2, strip_def[i + 1] * (e->radius - e->rotation) + e->rotation, 0, curve_def[i + 1] * e->radius * e->backlerp);
 			}
 
 			RB_CHECKOVERFLOW(4, 6);
@@ -1857,7 +1857,7 @@ static void RB_SurfaceClouds()
 			tess.texCoords[tess.numVertexes][0][1] = tess.xyz[tess.numVertexes][1] * 0.1f;
 			tess.vertexColors[tess.numVertexes][0] =
 				tess.vertexColors[tess.numVertexes][1] =
-				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alphaDef[i];
+				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alpha_def[i];
 			tess.vertexColors[tess.numVertexes][3] = e->shaderRGBA[3];
 			tess.numVertexes++;
 
@@ -1866,7 +1866,7 @@ static void RB_SurfaceClouds()
 			tess.texCoords[tess.numVertexes][0][1] = tess.xyz[tess.numVertexes][1] * 0.1f;
 			tess.vertexColors[tess.numVertexes][0] =
 				tess.vertexColors[tess.numVertexes][1] =
-				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alphaDef[i + 1];
+				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alpha_def[i + 1];
 			tess.vertexColors[tess.numVertexes][3] = e->shaderRGBA[3];
 			tess.numVertexes++;
 
@@ -1875,7 +1875,7 @@ static void RB_SurfaceClouds()
 			tess.texCoords[tess.numVertexes][0][1] = tess.xyz[tess.numVertexes][1] * 0.1f;
 			tess.vertexColors[tess.numVertexes][0] =
 				tess.vertexColors[tess.numVertexes][1] =
-				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alphaDef[i];
+				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alpha_def[i];
 			tess.vertexColors[tess.numVertexes][3] = e->shaderRGBA[3];
 			tess.numVertexes++;
 
@@ -1884,7 +1884,7 @@ static void RB_SurfaceClouds()
 			tess.texCoords[tess.numVertexes][0][1] = tess.xyz[tess.numVertexes][1] * 0.1f;
 			tess.vertexColors[tess.numVertexes][0] =
 				tess.vertexColors[tess.numVertexes][1] =
-				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alphaDef[i + 1];
+				tess.vertexColors[tess.numVertexes][2] = e->shaderRGBA[0] * alpha_def[i + 1];
 			tess.vertexColors[tess.numVertexes][3] = e->shaderRGBA[3];
 			tess.numVertexes++;
 
@@ -1918,7 +1918,7 @@ RB_SurfaceAxis
 Draws x/y/z lines from the origin for orientation debugging
 ===================
 */
-static void RB_SurfaceAxis(void) {
+static void RB_SurfaceAxis() {
 	GL_Bind(tr.whiteImage);
 	GL_State(GLS_DEFAULT);
 	qglLineWidth(3);
@@ -1945,7 +1945,7 @@ RB_SurfaceEntity
 Entities that have a single procedurally generated surface
 ====================
 */
-void RB_SurfaceEntity(surfaceType_t* surfType) {
+void RB_SurfaceEntity(surfaceType_t* surf_type) {
 	switch (backEnd.currentEntity->e.reType) {
 	case RT_SPRITE:
 		RB_SurfaceSprite();
@@ -1983,7 +1983,7 @@ void RB_SurfaceEntity(surfaceType_t* surfType) {
 	}
 }
 
-void RB_SurfaceBad(surfaceType_t* surfType) {
+void RB_SurfaceBad(surfaceType_t* surf_type) {
 	ri.Printf(PRINT_ALL, "Bad surface tesselated.\n");
 }
 
@@ -2028,10 +2028,10 @@ static bool RB_TestZFlare(vec3_t point) {
 	glState.finishCalled = qfalse;
 	qglReadPixels(backEnd.viewParms.viewportX + window[0], backEnd.viewParms.viewportY + window[1], 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 
-	const float screenZ = backEnd.viewParms.projectionMatrix[14] /
+	const float screen_z = backEnd.viewParms.projectionMatrix[14] /
 		((2 * depth - 1) * backEnd.viewParms.projectionMatrix[11] - backEnd.viewParms.projectionMatrix[10]);
 
-	const bool visible = -eye[2] - -screenZ < 24;
+	const bool visible = -eye[2] - -screen_z < 24;
 	return visible;
 }
 
@@ -2086,7 +2086,7 @@ void RB_SurfaceFlare(srfFlare_t* surf) {
 	RB_AddQuadStamp(origin, left, up, color);
 }
 
-void RB_SurfaceDisplayList(srfDisplayList_t* surf) {
+void RB_SurfaceDisplayList(const srfDisplayList_t* surf) {
 	// all appropriate state must be set in RB_BeginSurface
 	// this isn't implemented yet...
 	qglCallList(surf->listNum);
@@ -2095,22 +2095,24 @@ void RB_SurfaceDisplayList(srfDisplayList_t* surf) {
 void RB_SurfaceSkip(void* surf) {
 }
 
-void (*rb_surfaceTable[SF_NUM_SURFACE_TYPES])(void*) = {
-	(void(*)(void*))RB_SurfaceBad,			// SF_BAD,
+void (*rb_surfaceTable[SF_NUM_SURFACE_TYPES])(void*) =
+{
+	reinterpret_cast<void(*)(void*)>(RB_SurfaceBad),			// SF_BAD,
 	static_cast<void(*)(void*)>(RB_SurfaceSkip),			// SF_SKIP,
-	(void(*)(void*))RB_SurfaceFace,			// SF_FACE,
-	(void(*)(void*))RB_SurfaceGrid,			// SF_GRID,
-	(void(*)(void*))RB_SurfaceTriangles,	// SF_TRIANGLES,
-	(void(*)(void*))RB_SurfacePolychain,	// SF_POLY,
-	(void(*)(void*))RB_SurfaceMesh,			// SF_MD3,
+	reinterpret_cast<void(*)(void*)>(RB_SurfaceFace),			// SF_FACE,
+	reinterpret_cast<void(*)(void*)>(RB_SurfaceGrid),			// SF_GRID,
+	reinterpret_cast<void(*)(void*)>(RB_SurfaceTriangles),	// SF_TRIANGLES,
+	reinterpret_cast<void(*)(void*)>(RB_SurfacePolychain),	// SF_POLY,
+	reinterpret_cast<void(*)(void*)>(RB_SurfaceMesh),			// SF_MD3,
 	/*
 	Ghoul2 Insert Start
 	*/
-		(void(*)(void*))RB_SurfaceGhoul,		// SF_MDX,
+		reinterpret_cast<void(*)(void*)>(RB_SurfaceGhoul),		// SF_MDX,
 		/*
 		Ghoul2 Insert End
 		*/
-			(void(*)(void*))RB_SurfaceFlare,		// SF_FLARE,
-			(void(*)(void*))RB_SurfaceEntity,		// SF_ENTITY
-			(void(*)(void*))RB_SurfaceDisplayList	// SF_DISPLAY_LIST
+			reinterpret_cast<void(*)(void*)>(RB_SurfaceFlare),		// SF_FLARE,
+			reinterpret_cast<void(*)(void*)>(RB_SurfaceEntity),		// SF_ENTITY
+			reinterpret_cast<void(*)(void*)>(RB_SurfaceDisplayList // SF_DISPLAY_LIST
+			)	// SF_DISPLAY_LIST
 };

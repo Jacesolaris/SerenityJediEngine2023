@@ -3007,20 +3007,20 @@ qboolean PM_CheckEnemyInBack(const float backCheckDist)
 	          static_cast<EG2_Collision>(0), 0);
 	if (trace.fraction < 1.0f && trace.entity_num < ENTITYNUM_WORLD)
 	{
-		gentity_t* traceEnt = &g_entities[trace.entity_num];
-		if (traceEnt
-			&& traceEnt->health > 0
-			&& traceEnt->client
-			&& traceEnt->client->playerTeam == pm->gent->client->enemyTeam
-			&& traceEnt->client->ps.groundEntityNum != ENTITYNUM_NONE)
+		gentity_t* trace_ent = &g_entities[trace.entity_num];
+		if (trace_ent
+			&& trace_ent->health > 0
+			&& trace_ent->client
+			&& trace_ent->client->playerTeam == pm->gent->client->enemyTeam
+			&& trace_ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 		{
 			if (pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 			{
 				//player
 				if (pm->gent)
 				{
-					//set player enemy to traceEnt so he auto-aims at him
-					pm->gent->enemy = traceEnt;
+					//set player enemy to trace_ent so he auto-aims at him
+					pm->gent->enemy = trace_ent;
 				}
 			}
 			return qtrue;
@@ -5860,9 +5860,9 @@ PM_SetAnimFinal
 */
 constexpr auto G2_DEBUG_TIMING = 0;
 
-void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int anim, const int setAnimFlags,
+void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int set_anim_parts, int anim, const int set_anim_flags,
                      int* torsoAnimTimer,
-                     int* legsAnimTimer, gentity_t* gent, int blendTime) // default blendTime=350
+                     int* legsAnimTimer, gentity_t* gent, int blend_time) // default blend_time=350
 {
 	// BASIC SETUP AND SAFETY CHECKING
 	//=================================
@@ -5926,11 +5926,11 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	//---------------------------------------------------------------------------------------------------------
 	if (!gi.G2API_HaveWeGhoul2Models(gent->ghoul2))
 	{
-		if (setAnimParts & SETANIM_TORSO)
+		if (set_anim_parts & SETANIM_TORSO)
 		{
 			*torsoAnim = anim;
 		}
-		if (setAnimParts & SETANIM_LEGS)
+		if (set_anim_parts & SETANIM_LEGS)
 		{
 			*legsAnim = anim;
 		}
@@ -5945,11 +5945,11 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	//======================================
 	const bool anim_foot_move = PM_WalkingAnim(anim) || PM_RunningAnim(anim) || anim == BOTH_CROUCH1WALK || anim ==
 		BOTH_CROUCH1WALKBACK;
-	const bool anim_holdless = (setAnimFlags & SETANIM_FLAG_HOLDLESS) != 0;
-	const bool anim_hold = (setAnimFlags & SETANIM_FLAG_HOLD) != 0;
-	const bool anim_restart = (setAnimFlags & SETANIM_FLAG_RESTART) != 0;
-	const bool anim_pace = (setAnimFlags & SETANIM_FLAG_PACE) != 0;
-	const bool anim_override = (setAnimFlags & SETANIM_FLAG_OVERRIDE) != 0;
+	const bool anim_holdless = (set_anim_flags & SETANIM_FLAG_HOLDLESS) != 0;
+	const bool anim_hold = (set_anim_flags & SETANIM_FLAG_HOLD) != 0;
+	const bool anim_restart = (set_anim_flags & SETANIM_FLAG_RESTART) != 0;
+	const bool anim_pace = (set_anim_flags & SETANIM_FLAG_PACE) != 0;
+	const bool anim_override = (set_anim_flags & SETANIM_FLAG_OVERRIDE) != 0;
 	const bool anim_sync = g_synchSplitAnims->integer != 0 && !anim_restart && !anim_pace;
 	float anim_current = -1.0f;
 	float anim_speed = 50.0f / cur_anim.frameLerp * time_scale_mod;
@@ -5965,7 +5965,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 
 	// If We Have A Blend Timer, Add The Blend Flag
 	//----------------------------------------------
-	if (blendTime > 0)
+	if (blend_time > 0)
 	{
 		anim_flags |= BONE_ANIM_BLEND;
 	}
@@ -5987,7 +5987,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 		const int temp = anim_end;
 		anim_end = anim_start;
 		anim_start = temp;
-		blendTime = 0;
+		blend_time = 0;
 	}
 
 	// If The Animation Is Walking Or Running, Attempt To Scale The Playback Speed To Match
@@ -6082,7 +6082,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	const int body_anim = *legsAnim;
 	const int body_bone = gent->rootBone;
 	const bool body_timer_on = *legsAnimTimer > 0 || *legsAnimTimer == -1;
-	bool body_play = setAnimParts & SETANIM_LEGS && body_bone != -1 && (anim_override || !body_timer_on);
+	bool body_play = set_anim_parts & SETANIM_LEGS && body_bone != -1 && (anim_override || !body_timer_on);
 	const bool body_animating = !!gi.G2API_GetBoneAnimIndex(&gent->ghoul2[gent->playerModel], body_bone, actual_time,
 	                                                        &body_current, &body_start, &body_end, &body_flags,
 	                                                        &body_speed,
@@ -6101,7 +6101,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	const int tors_anim = *torsoAnim;
 	const int tors_bone = gent->lowerLumbarBone;
 	const bool tors_timer_on = *torsoAnimTimer > 0 || *torsoAnimTimer == -1;
-	bool tors_play = gent->client->NPC_class != CLASS_RANCOR && setAnimParts & SETANIM_TORSO && tors_bone != -1 && (
+	bool tors_play = gent->client->NPC_class != CLASS_RANCOR && set_anim_parts & SETANIM_TORSO && tors_bone != -1 && (
 		anim_override || !tors_timer_on);
 	const bool tors_animating = !!gi.G2API_GetBoneAnimIndex(&gent->ghoul2[gent->playerModel], tors_bone, actual_time,
 	                                                        &tors_current, &tors_start, &tors_end, &tors_flags,
@@ -6211,7 +6211,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 		                          anim_speed,
 		                          actual_time,
 		                          anim_current,
-		                          blendTime);
+		                          blend_time);
 
 		if (gent->motionBone != -1)
 		{
@@ -6224,7 +6224,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 			                          anim_speed,
 			                          actual_time,
 			                          anim_current,
-			                          blendTime);
+			                          blend_time);
 		}
 
 		anim_current = old_anim_current;
@@ -6258,7 +6258,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 		                          anim_speed,
 		                          actual_time,
 		                          anim_current,
-		                          blendTime);
+		                          blend_time);
 
 		// If This Animation Is To Be Locked And Held, Calculate The Duration And Set The Timer
 		//--------------------------------------------------------------------------------------
@@ -6272,7 +6272,7 @@ void PM_SetAnimFinal(int* torsoAnim, int* legsAnim, const int setAnimParts, int 
 	//==========================================
 }
 
-void PM_SetAnim(const pmove_t* pm, int setAnimParts, const int anim, const int setAnimFlags, const int blendTime)
+void PM_SetAnim(const pmove_t* pm, int set_anim_parts, const int anim, const int set_anim_flags, const int blend_time)
 {
 	if (pm->ps->pm_type >= PM_DEAD)
 	{
@@ -6303,7 +6303,7 @@ void PM_SetAnim(const pmove_t* pm, int setAnimParts, const int anim, const int s
 			&& !PM_LockedAnim(anim))
 		{
 			//nothing can override these special anims
-			setAnimParts &= ~SETANIM_TORSO;
+			set_anim_parts &= ~SETANIM_TORSO;
 		}
 
 		if (pm->ps->legsAnimTimer
@@ -6311,35 +6311,35 @@ void PM_SetAnim(const pmove_t* pm, int setAnimParts, const int anim, const int s
 			&& !PM_LockedAnim(anim))
 		{
 			//nothing can override these special anims
-			setAnimParts &= ~SETANIM_LEGS;
+			set_anim_parts &= ~SETANIM_LEGS;
 		}
 	}
 
-	if (!setAnimParts)
+	if (!set_anim_parts)
 	{
 		return;
 	}
 
-	if (setAnimFlags & SETANIM_FLAG_OVERRIDE)
+	if (set_anim_flags & SETANIM_FLAG_OVERRIDE)
 	{
-		if (setAnimParts & SETANIM_TORSO)
+		if (set_anim_parts & SETANIM_TORSO)
 		{
-			if (setAnimFlags & SETANIM_FLAG_RESTART || pm->ps->torsoAnim != anim)
+			if (set_anim_flags & SETANIM_FLAG_RESTART || pm->ps->torsoAnim != anim)
 			{
 				PM_SetTorsoAnimTimer(pm->gent, &pm->ps->torsoAnimTimer, 0);
 			}
 		}
-		if (setAnimParts & SETANIM_LEGS)
+		if (set_anim_parts & SETANIM_LEGS)
 		{
-			if (setAnimFlags & SETANIM_FLAG_RESTART || pm->ps->legsAnim != anim)
+			if (set_anim_flags & SETANIM_FLAG_RESTART || pm->ps->legsAnim != anim)
 			{
 				PM_SetLegsAnimTimer(pm->gent, &pm->ps->legsAnimTimer, 0);
 			}
 		}
 	}
 
-	PM_SetAnimFinal(&pm->ps->torsoAnim, &pm->ps->legsAnim, setAnimParts, anim, setAnimFlags, &pm->ps->torsoAnimTimer,
-	                &pm->ps->legsAnimTimer, &g_entities[pm->ps->client_num], blendTime); //was pm->gent
+	PM_SetAnimFinal(&pm->ps->torsoAnim, &pm->ps->legsAnim, set_anim_parts, anim, set_anim_flags, &pm->ps->torsoAnimTimer,
+	                &pm->ps->legsAnimTimer, &g_entities[pm->ps->client_num], blend_time); //was pm->gent
 }
 
 bool TorsoAgainstWindTest(gentity_t* ent)

@@ -24,7 +24,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_functions.h"
 #include "b_local.h"
 
-extern void g_mover_touch_push_triggers(gentity_t* ent, vec3_t oldOrg);
+extern void g_mover_touch_push_triggers(gentity_t* ent, vec3_t old_org);
 void G_StopObjectMoving(gentity_t* object);
 
 /*
@@ -38,15 +38,15 @@ void G_BounceObject(gentity_t* ent, const trace_t* trace)
 	vec3_t velocity;
 
 	// reflect the velocity on the trace plane
-	const int hitTime = level.previousTime + (level.time - level.previousTime) * trace->fraction;
-	EvaluateTrajectoryDelta(&ent->s.pos, hitTime, velocity);
+	const int hit_time = level.previousTime + (level.time - level.previousTime) * trace->fraction;
+	EvaluateTrajectoryDelta(&ent->s.pos, hit_time, velocity);
 	const float dot = DotProduct(velocity, trace->plane.normal);
-	float bounceFactor = 60 / ent->mass;
-	if (bounceFactor > 1.0f)
+	float bounce_factor = 60 / ent->mass;
+	if (bounce_factor > 1.0f)
 	{
-		bounceFactor = 1.0f;
+		bounce_factor = 1.0f;
 	}
-	VectorMA(velocity, -2 * dot * bounceFactor, trace->plane.normal, ent->s.pos.trDelta);
+	VectorMA(velocity, -2 * dot * bounce_factor, trace->plane.normal, ent->s.pos.trDelta);
 
 	//FIXME: customized or material-based impact/bounce sounds
 	if (ent->s.eFlags & EF_BOUNCE_HALF)
@@ -73,7 +73,7 @@ void G_BounceObject(gentity_t* ent, const trace_t* trace)
 	//	and set the trTime to the actual time of impact....
 	//	FIXME: Should we still consider adding the normal though??
 	VectorCopy(trace->endpos, ent->currentOrigin);
-	ent->s.pos.trTime = hitTime;
+	ent->s.pos.trTime = hit_time;
 
 	VectorCopy(ent->currentOrigin, ent->s.pos.trBase);
 	VectorCopy(trace->plane.normal, ent->pos1); //???
@@ -82,16 +82,13 @@ void G_BounceObject(gentity_t* ent, const trace_t* trace)
 /*
 ================
 G_RunObject
-
-  TODO:  When transition to 0 grav, push away from surface you were resting on
-  TODO:  When free-floating in air, apply some friction to your trDelta (based on mass?)
 ================
 */
-extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, const trace_t* trace);
+extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damage_self, const trace_t* trace);
 
 void G_RunObject(gentity_t* ent)
 {
-	vec3_t origin, oldOrg;
+	vec3_t origin, old_org;
 	trace_t tr;
 
 	//FIXME: floaters need to stop floating up after a while, even if gravity stays negative?
@@ -108,7 +105,7 @@ void G_RunObject(gentity_t* ent)
 
 	ent->nextthink = level.time + FRAMETIME;
 
-	VectorCopy(ent->currentOrigin, oldOrg);
+	VectorCopy(ent->currentOrigin, old_org);
 	// get current position
 	EvaluateTrajectory(&ent->s.pos, level.time, origin);
 	//Get current angles?
@@ -135,21 +132,7 @@ void G_RunObject(gentity_t* ent)
 		tr.fraction = 0;
 	}
 
-	g_mover_touch_push_triggers(ent, oldOrg);
-	/*
-	if ( !(ent->s.eFlags & EF_TELEPORT_BIT) && !(ent->svFlags & SVF_NO_TELEPORT) )
-	{
-		G_MoverTouchTeleportTriggers( ent, oldOrg );
-		if ( ent->s.eFlags & EF_TELEPORT_BIT )
-		{//was teleported
-			return;
-		}
-	}
-	else
-	{
-		ent->s.eFlags &= ~EF_TELEPORT_BIT;
-	}
-	*/
+	g_mover_touch_push_triggers(ent, old_org);
 
 	if (tr.fraction == 1)
 	{
@@ -179,13 +162,13 @@ void G_RunObject(gentity_t* ent)
 	//hit something
 
 	//Do impact damage
-	gentity_t* traceEnt = &g_entities[tr.entity_num];
-	if (tr.fraction || traceEnt && traceEnt->takedamage)
+	gentity_t* trace_ent = &g_entities[tr.entity_num];
+	if (tr.fraction || trace_ent && trace_ent->takedamage)
 	{
-		if (!VectorCompare(ent->currentOrigin, oldOrg))
+		if (!VectorCompare(ent->currentOrigin, old_org))
 		{
 			//moved and impacted
-			if (traceEnt && traceEnt->takedamage)
+			if (trace_ent && trace_ent->takedamage)
 			{
 				//hurt someone
 				vec3_t fx_dir;
@@ -207,7 +190,7 @@ void G_RunObject(gentity_t* ent)
 				G_Sound(ent, G_SoundIndex("sound/movers/objects/objectHit.wav"));
 			}
 		}
-		DoImpact(ent, traceEnt, static_cast<qboolean>(!(tr.surfaceFlags & SURF_NODAMAGE)), &tr);
+		DoImpact(ent, trace_ent, static_cast<qboolean>(!(tr.surfaceFlags & SURF_NODAMAGE)), &tr);
 	}
 
 	if (!ent || ent->takedamage && ent->health <= 0)
@@ -276,33 +259,17 @@ void G_StopObjectMoving(gentity_t* object)
 	VectorCopy(object->currentOrigin, object->s.origin);
 	VectorCopy(object->currentOrigin, object->s.pos.trBase);
 	VectorClear(object->s.pos.trDelta);
-
-	/*
-	//Stop spinning
-	VectorClear( self->s.apos.trDelta );
-	vectoangles(trace->plane.normal, self->s.angles);
-	VectorCopy(self->s.angles, self->currentAngles );
-	VectorCopy(self->s.angles, self->s.apos.trBase);
-	*/
 }
 
-void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const trType_t trType)
+void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const trType_t tr_type)
 {
 	VectorNormalize(dir);
 
 	//object->s.eType = ET_GENERAL;
-	object->s.pos.trType = trType;
+	object->s.pos.trType = tr_type;
 	VectorCopy(object->currentOrigin, object->s.pos.trBase);
 	VectorScale(dir, speed, object->s.pos.trDelta);
 	object->s.pos.trTime = level.time;
-
-	/*
-	//FIXME: incorporate spin?
-	vectoangles(dir, object->s.angles);
-	VectorCopy(object->s.angles, object->s.apos.trBase);
-	VectorSet(object->s.apos.trDelta, 300, 0, 0 );
-	object->s.apos.trTime = level.time;
-	*/
 
 	//FIXME: make these objects go through G_RunObject automatically, like missiles do
 	if (object->e_ThinkFunc == thinkF_NULL)
@@ -317,8 +284,8 @@ void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const
 }
 
 gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const int model_index, const int frame,
-                          const trType_t trType,
-                          const int effectID = 0)
+                          const trType_t tr_type,
+                          const int effect_id = 0)
 {
 	gentity_t* object = G_Spawn();
 
@@ -340,7 +307,7 @@ gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const 
 	//object->e_TouchFunc = touchF_charge_stick;
 
 	// The effect to play.
-	object->count = effectID;
+	object->count = effect_id;
 
 	//Give it SOME size for now
 	VectorSet(object->mins, -4, -4, -4);
@@ -348,7 +315,7 @@ gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const 
 
 	//Origin
 	G_SetOrigin(object, origin);
-	object->s.pos.trType = trType;
+	object->s.pos.trType = tr_type;
 	VectorCopy(origin, object->s.pos.trBase);
 	//Velocity
 	VectorClear(object->s.pos.trDelta);

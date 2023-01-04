@@ -1063,6 +1063,7 @@ extern	cvar_t* r_showcluster;
 extern cvar_t* r_dlightStyle;
 extern cvar_t* r_surfaceSprites;
 extern cvar_t* r_surfaceWeather;
+extern cvar_t* r_AdvancedsurfaceSprites;
 
 extern cvar_t* r_windSpeed;
 extern cvar_t* r_windAngle;
@@ -1174,7 +1175,7 @@ void R_AddDrawSurf(const surfaceType_t* surface, const shader_t* shader, int fog
 #define	CULL_OUT	2		// completely outside the clipping planes
 void R_LocalNormalToWorld(const vec3_t local, vec3_t world);
 void R_LocalPointToWorld(const vec3_t local, vec3_t world);
-void R_WorldNormalToEntity(const vec3_t localVec, vec3_t world);
+void R_WorldNormalToEntity(const vec3_t worldvec, vec3_t entvec);
 int R_CullLocalBox(const vec3_t bounds[2]);
 int R_CullPointAndRadius(const vec3_t pt, float radius);
 int R_CullLocalPointAndRadius(const vec3_t pt, float radius);
@@ -1230,7 +1231,7 @@ void	GL_Cull(int cullType);
 #define GLS_DEFAULT			GLS_DEPTHMASK_TRUE
 #define GLS_ALPHA			(GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA)
 
-void	RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* data, int iClient, qboolean bDirty);
+void	RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* data, int i_client, qboolean b_dirty);
 void	RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboolean dirty);
 void	RE_GetScreenShot(byte* data, int w, int h);
 byte* RE_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pbReSampleBuffer, qboolean qbVertFlip);
@@ -1403,7 +1404,7 @@ LIGHTS
 ============================================================
 */
 
-void R_DlightBmodel(const bmodel_t* bmodel, qboolean NoLight);
+void R_DlightBmodel(const bmodel_t* bmodel, qboolean no_light);
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent);
 void R_TransformDlights(int count, dlight_t* dl, const orientationr_t* ori);
 
@@ -1428,7 +1429,7 @@ SKIES
 */
 
 void R_BuildCloudData(const shaderCommands_t* shader);
-void R_InitSkyTexCoords(float cloudLayerHeight);
+void R_InitSkyTexCoords(float height_cloud);
 void RB_DrawSun(void);
 void RB_ClipSkyPolygons(const shaderCommands_t* input);
 
@@ -1477,7 +1478,7 @@ void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts)
 void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b);
 void RE_RenderScene(const refdef_t* fd);
 
-qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
+qboolean RE_GetLighting(const vec3_t origin, vec3_t ambient_light, vec3_t directed_light, vec3_t light_dir);
 
 // Only returns a four sided face and normal of the best face to break ( this is for glass right now )
 void RE_GetBModelVerts(int bmodelIndex, vec3_t* verts, vec3_t normal);

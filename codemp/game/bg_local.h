@@ -112,7 +112,7 @@ void PM_ForceLegsAnim(int anim);
 void PM_BeginWeaponChange(int weapon);
 void PM_FinishWeaponChange(void);
 
-void PM_SetAnim(int setAnimParts, int anim, int set_anim_flags);
+void PM_SetAnim(int set_anim_parts, int anim, int set_anim_flags);
 
 void PM_WeaponLightsaber(void);
 void PM_SetSaberMove(saberMoveName_t new_move);

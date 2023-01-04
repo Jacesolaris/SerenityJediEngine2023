@@ -125,7 +125,7 @@ END";
 #define GL_PROGRAM_ERROR_STRING_ARB						0x8874
 #define GL_PROGRAM_ERROR_POSITION_ARB					0x864B
 
-void ARB_InitGPUShaders(void) {
+void ARB_InitGPUShaders() {
 	if (!qglGenProgramsARB)
 	{
 		return;
@@ -137,9 +137,9 @@ void ARB_InitGPUShaders(void) {
 	qglProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, static_cast<GLsizei>(strlen((char*)g_strGlowVShaderARB)), g_strGlowVShaderARB);
 
 	//	const GLubyte *strErr = qglGetString( GL_PROGRAM_ERROR_STRING_ARB );
-	int iErrPos = 0;
-	qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &iErrPos);
-	assert(iErrPos == -1);
+	int i_err_pos = 0;
+	qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &i_err_pos);
+	assert(i_err_pos == -1);
 
 	// NOTE: I make an assumption here. If you have (current) nvidia hardware, you obviously support register combiners instead of fragment
 	// programs, so use those. The problem with this is that nv30 WILL support fragment shaders, breaking this logic. The good thing is that
@@ -200,20 +200,20 @@ void ARB_InitGPUShaders(void) {
 		qglProgramStringARB(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, static_cast<GLsizei>(strlen((char*)g_strGlowPShaderARB)), g_strGlowPShaderARB);
 
 		//		const GLubyte *strErr = qglGetString( GL_PROGRAM_ERROR_STRING_ARB );
-		int iErrPos = 0;
-		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &iErrPos);
-		assert(iErrPos == -1);
+		int err_pos = 0;
+		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &err_pos);
+		assert(err_pos == -1);
 	}
 
 	qglGenProgramsARB(1, &tr.gammaCorrectVtxShader);
 	qglBindProgramARB(GL_VERTEX_PROGRAM_ARB, tr.gammaCorrectVtxShader);
 	qglProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, strlen(gammaCorrectVtxShader), gammaCorrectVtxShader);
 
-	int errorChar;
-	qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorChar);
-	if (errorChar != -1)
+	int error_char;
+	qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &error_char);
+	if (error_char != -1)
 	{
-		Com_Printf(S_COLOR_RED "ERROR: Failed to compile gamma correction vertex shader. Error at character %d\n", errorChar);
+		Com_Printf(S_COLOR_RED "ERROR: Failed to compile gamma correction vertex shader. Error at character %d\n", error_char);
 		glConfigExt.doGammaCorrectionWithShaders = qfalse;
 	}
 	else
@@ -222,10 +222,10 @@ void ARB_InitGPUShaders(void) {
 		qglBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, tr.gammaCorrectPxShader);
 		qglProgramStringARB(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, strlen(gammaCorrectPxShader), gammaCorrectPxShader);
 
-		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorChar);
-		if (errorChar != -1)
+		qglGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &error_char);
+		if (error_char != -1)
 		{
-			Com_Printf(S_COLOR_RED "Failed to compile gamma correction pixel shader. Error at character %d\n", errorChar);
+			Com_Printf(S_COLOR_RED "Failed to compile gamma correction pixel shader. Error at character %d\n", error_char);
 			glConfigExt.doGammaCorrectionWithShaders = qfalse;
 		}
 	}

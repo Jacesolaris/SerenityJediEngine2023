@@ -887,18 +887,18 @@ void WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWea
 	}
 }
 
-void WP_VehLeadCrosshairVeh(const gentity_t* camTraceEnt, vec3_t newEnd, const vec3_t dir, const vec3_t shotStart,
+void WP_VehLeadCrosshairVeh(const gentity_t* camtrace_ent, vec3_t newEnd, const vec3_t dir, const vec3_t shotStart,
                             vec3_t shotDir)
 {
 	if (g_vehAutoAimLead->integer)
 	{
-		if (camTraceEnt
-			&& camTraceEnt->client
-			&& camTraceEnt->client->NPC_class == CLASS_VEHICLE)
+		if (camtrace_ent
+			&& camtrace_ent->client
+			&& camtrace_ent->client->NPC_class == CLASS_VEHICLE)
 		{
 			//if the crosshair is on a vehicle, lead it
-			const float distAdjust = DotProduct(camTraceEnt->client->ps.velocity, dir);
-			if (distAdjust > 500 || DistanceSquared(camTraceEnt->client->ps.origin, shotStart) > 7000000)
+			const float distAdjust = DotProduct(camtrace_ent->client->ps.velocity, dir);
+			if (distAdjust > 500 || DistanceSquared(camtrace_ent->client->ps.origin, shotStart) > 7000000)
 			{
 				vec3_t predShotDir;
 				vec3_t predPos;
@@ -970,10 +970,10 @@ qboolean WP_VehCheckTraceFromCamPos(gentity_t* ent, const vec3_t shotStart, vec3
 	//	{//NOW do the trace from the camPos and compare with above trace
 	//		trace_t	extraTrace;
 	//		vec3_t	newEnd;
-	//		int camTraceEntNum = BG_VehTraceFromCamPos(&extraTrace, (bgEntity_t *)ent, ent->r.currentOrigin, shotStart, end, newEnd, shotDir, (trace.fraction*g_cullDistance));
-	//		if (camTraceEntNum)
+	//		int camtrace_entNum = BG_VehTraceFromCamPos(&extraTrace, (bgEntity_t *)ent, ent->r.currentOrigin, shotStart, end, newEnd, shotDir, (trace.fraction*g_cullDistance));
+	//		if (camtrace_entNum)
 	//		{
-	//			WP_VehLeadCrosshairVeh(&g_entities[camTraceEntNum - 1], newEnd, dir, shotStart, shotDir);
+	//			WP_VehLeadCrosshairVeh(&g_entities[camtrace_entNum - 1], newEnd, dir, shotStart, shotDir);
 	//			return qtrue;
 	//		}
 	//	}
@@ -1300,7 +1300,7 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 	VectorMA(start, shot_range, forwardVec, end);
 
 	gi.trace(&tr, start, nullptr, nullptr, end, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-	gentity_t* traceEnt = &g_entities[tr.entity_num];
+	gentity_t* trace_ent = &g_entities[tr.entity_num];
 
 	if (tr.surfaceFlags & SURF_NOIMPACT)
 	{
@@ -1314,14 +1314,14 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 
 	if (render_impact)
 	{
-		if (tr.entity_num < ENTITYNUM_WORLD && traceEnt->takedamage)
+		if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
 		{
 			constexpr int damage = 1;
 			// Create a simple impact type mark that doesn't last long in the world
 			G_PlayEffect(G_EffectIndex("disruptor/flesh_impact"), tr.endpos, tr.plane.normal);
 
 			const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
-			G_Damage(traceEnt, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hit_loc);
+			G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hit_loc);
 		}
 		else
 		{

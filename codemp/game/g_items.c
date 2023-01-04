@@ -64,7 +64,7 @@ extern void player_Burn(const gentity_t* self);
 #define MAX_MEDPACK_HEAL_AMOUNT		25
 #define MAX_MEDPACK_BIG_HEAL_AMOUNT	50
 #define MAX_SENTRY_DISTANCE			256
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags);
 
 // For more than four players, adjust the respawn times, up to 1/4.
 int adjustRespawnTime(const float preRespawnTime, const int itemType, const int itemTag)

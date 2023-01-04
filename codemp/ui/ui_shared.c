@@ -7619,14 +7619,14 @@ qboolean ItemParse_asset_model_go(itemDef_t* item, const char* name, int* runTim
 							int flags = BONE_ANIM_OVERRIDE_FREEZE;
 							const int time = DC->realTime;
 							const float animSpeed = 50.0f / anim->frameLerp;
-							const int blendTime = 150;
+							const int blend_time = 150;
 
 							if (anim->loopFrames != -1)
 							{
 								flags |= BONE_ANIM_OVERRIDE_LOOP;
 							}
 
-							trap->G2API_SetBoneAnim(item->ghoul2, 0, "model_root", sFrame, eFrame, flags, animSpeed, time, -1, blendTime);
+							trap->G2API_SetBoneAnim(item->ghoul2, 0, "model_root", sFrame, eFrame, flags, animSpeed, time, -1, blend_time);
 							*runTimeLength = anim->frameLerp * (anim->numFrames - 2);
 						}
 					}

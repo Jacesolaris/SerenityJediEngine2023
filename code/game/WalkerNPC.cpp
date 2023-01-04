@@ -94,9 +94,9 @@ extern vmCvar_t cg_thirdPersonAlpha;
 extern vec3_t player_mins;
 extern vec3_t player_maxs;
 extern cvar_t* g_speederControlScheme;
-extern void PM_SetAnim(const pmove_t* pm, int setAnimParts, int anim, int setAnimFlags, int blendTime);
+extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_anim_flags, int blend_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags, int iBlend);
+extern void Vehicle_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
                         qboolean break_saber_lock);
 extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs,
@@ -124,9 +124,9 @@ static bool Update( Vehicle_t *p_veh, const usercmd_t *pUcmd )
 */
 
 // Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-static bool Board(Vehicle_t* p_veh, bgEntity_t* pEnt)
+static bool Board(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
-	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, pEnt))
+	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, p_ent))
 		return false;
 
 	// Set the board wait time (they won't be able to do anything, including getting off, for this amount of time).
@@ -158,9 +158,9 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	float fWalkSpeedMax;
 	bgEntity_t* parent = p_veh->m_pParentEntity;
 #ifdef _JK2MP
-	playerState_t* parentPS = parent->playerState;
+	playerState_t* parent_ps = parent->playerState;
 #else
-	playerState_t* parentPS = &parent->client->ps;
+	playerState_t* parent_ps = &parent->client->ps;
 #endif
 
 	speedIdleDec = p_veh->m_pVehicleInfo->decelIdle * p_veh->m_fTimeModifier;
@@ -171,55 +171,55 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	speedMin = p_veh->m_pVehicleInfo->speedMin;
 
 #ifdef _JK2MP
-	if (!parentPS->m_iVehicleNum)
+	if (!parent_ps->m_iVehicleNum)
 #else
 	if (!p_veh->m_pVehicleInfo->Inhabited(p_veh))
 #endif
 	{
 		//drifts to a stop
 		speedInc = speedIdle * p_veh->m_fTimeModifier;
-		VectorClear(parentPS->moveDir);
+		VectorClear(parent_ps->moveDir);
 		//m_ucmd.forwardmove = 127;
-		parentPS->speed = 0;
+		parent_ps->speed = 0;
 	}
 	else
 	{
 		speedInc = p_veh->m_pVehicleInfo->acceleration * p_veh->m_fTimeModifier;
 	}
 
-	if (parentPS->speed || parentPS->groundEntityNum == ENTITYNUM_NONE ||
+	if (parent_ps->speed || parent_ps->groundEntityNum == ENTITYNUM_NONE ||
 		p_veh->m_ucmd.forwardmove || p_veh->m_ucmd.upmove > 0)
 	{
 		if (p_veh->m_ucmd.forwardmove > 0 && speedInc)
 		{
-			parentPS->speed += speedInc;
+			parent_ps->speed += speedInc;
 		}
 		else if (p_veh->m_ucmd.forwardmove < 0)
 		{
-			if (parentPS->speed > speedIdle)
+			if (parent_ps->speed > speedIdle)
 			{
-				parentPS->speed -= speedInc;
+				parent_ps->speed -= speedInc;
 			}
-			else if (parentPS->speed > speedMin)
+			else if (parent_ps->speed > speedMin)
 			{
-				parentPS->speed -= speedIdleDec;
+				parent_ps->speed -= speedIdleDec;
 			}
 		}
 		// No input, so coast to stop.
-		else if (parentPS->speed > 0.0f)
+		else if (parent_ps->speed > 0.0f)
 		{
-			parentPS->speed -= speedIdleDec;
-			if (parentPS->speed < 0.0f)
+			parent_ps->speed -= speedIdleDec;
+			if (parent_ps->speed < 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
-		else if (parentPS->speed < 0.0f)
+		else if (parent_ps->speed < 0.0f)
 		{
-			parentPS->speed += speedIdleDec;
-			if (parentPS->speed > 0.0f)
+			parent_ps->speed += speedIdleDec;
+			if (parent_ps->speed > 0.0f)
 			{
-				parentPS->speed = 0.0f;
+				parent_ps->speed = 0.0f;
 			}
 		}
 	}
@@ -244,17 +244,17 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	}
 
 	fWalkSpeedMax = speedMax * 0.275f;
-	if (p_veh->m_ucmd.buttons & BUTTON_WALKING && parentPS->speed > fWalkSpeedMax)
+	if (p_veh->m_ucmd.buttons & BUTTON_WALKING && parent_ps->speed > fWalkSpeedMax)
 	{
-		parentPS->speed = fWalkSpeedMax;
+		parent_ps->speed = fWalkSpeedMax;
 	}
-	else if (parentPS->speed > speedMax)
+	else if (parent_ps->speed > speedMax)
 	{
-		parentPS->speed = speedMax;
+		parent_ps->speed = speedMax;
 	}
-	else if (parentPS->speed < speedMin)
+	else if (parent_ps->speed < speedMin)
 	{
-		parentPS->speed = speedMin;
+		parent_ps->speed = speedMin;
 	}
 
 	/********************************************************************************/
@@ -263,8 +263,8 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 }
 
 #ifdef _JK2MP
-extern void FighterYawAdjust(Vehicle_t* p_veh, playerState_t* riderPS, playerState_t* parentPS); //FighterNPC.c
-extern void FighterPitchAdjust(Vehicle_t* p_veh, playerState_t* riderPS, playerState_t* parentPS); //FighterNPC.c
+extern void FighterYawAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps); //FighterNPC.c
+extern void FighterPitchAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps); //FighterNPC.c
 #endif
 
 //MP RULE - ALL PROCESSORIENTCOMMANDS FUNCTIONS MUST BE BG-COMPATIBLE!!!
@@ -281,7 +281,7 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 	/********************************************************************************/
 	//float speed;
 	bgEntity_t* parent = p_veh->m_pParentEntity;
-	playerState_t *parentPS, *riderPS;
+	playerState_t *parent_ps, *rider_ps;
 
 #ifdef _JK2MP
 	bgEntity_t* rider = nullptr;
@@ -303,33 +303,33 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 	}
 
 #ifdef _JK2MP
-	parentPS = parent->playerState;
-	riderPS = rider->playerState;
+	parent_ps = parent->playerState;
+	rider_ps = rider->playerState;
 #else
-	parentPS = &parent->client->ps;
-	riderPS = &rider->client->ps;
+	parent_ps = &parent->client->ps;
+	rider_ps = &rider->client->ps;
 #endif
 
-	//speed = VectorLength( parentPS->velocity );
+	//speed = VectorLength( parent_ps->velocity );
 
 	// If the player is the rider...
 	if (rider->s.number < MAX_CLIENTS)
 	{
 		//FIXME: use the vehicle's turning stat in this calc
 #ifdef _JK2MP
-		FighterYawAdjust(p_veh, riderPS, parentPS);
-		//FighterPitchAdjust(p_veh, riderPS, parentPS);
-		p_veh->m_vOrientation[PITCH] = riderPS->viewangles[PITCH];
+		FighterYawAdjust(p_veh, rider_ps, parent_ps);
+		//FighterPitchAdjust(p_veh, rider_ps, parent_ps);
+		p_veh->m_vOrientation[PITCH] = rider_ps->viewangles[PITCH];
 #else
-		p_veh->m_vOrientation[YAW] = riderPS->viewangles[YAW];
-		p_veh->m_vOrientation[PITCH] = riderPS->viewangles[PITCH];
+		p_veh->m_vOrientation[YAW] = rider_ps->viewangles[YAW];
+		p_veh->m_vOrientation[PITCH] = rider_ps->viewangles[PITCH];
 #endif
 	}
 	else
 	{
 		float turnSpeed = p_veh->m_pVehicleInfo->turningSpeed;
 		if (!p_veh->m_pVehicleInfo->turnWhenStopped
-			&& !parentPS->speed) //FIXME: or !p_veh->m_ucmd.forwardmove?
+			&& !parent_ps->speed) //FIXME: or !p_veh->m_ucmd.forwardmove?
 		{
 			//can't turn when not moving
 			//FIXME: or ramp up to max turnSpeed?
@@ -344,12 +344,12 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 			//help NPCs out some
 			turnSpeed *= 2.0f;
 #ifdef _JK2MP
-			if (parentPS->speed > 200.0f)
+			if (parent_ps->speed > 200.0f)
 #else
 			if (parent->client->ps.speed > 200.0f)
 #endif
 			{
-				turnSpeed += turnSpeed * parentPS->speed / 200.0f * 0.05f;
+				turnSpeed += turnSpeed * parent_ps->speed / 200.0f * 0.05f;
 			}
 		}
 		turnSpeed *= p_veh->m_fTimeModifier;
@@ -381,7 +381,7 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 static void AnimateVehicle(Vehicle_t* p_veh)
 {
 	animNumber_t Anim;
-	int iFlags, iBlend;
+	int iFlags, i_blend;
 	auto parent = p_veh->m_pParentEntity;
 
 	// We're dead (boarding is reused here so I don't have to make another variable :-).
@@ -393,7 +393,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
 
 			// FIXME! Why do you keep repeating over and over!!?!?!? Bastard!
-			//Vehicle_SetAnim( parent, SETANIM_LEGS, BOTH_VT_DEATH1, iFlags, iBlend );
+			//Vehicle_SetAnim( parent, SETANIM_LEGS, BOTH_VT_DEATH1, iFlags, i_blend );
 		}
 		return;
 	}
@@ -421,7 +421,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 	{
 		//float fYawDelta;
 
-		iBlend = 300;
+		i_blend = 300;
 		iFlags = SETANIM_FLAG_OVERRIDE;
 		//fYawDelta = p_veh->m_vPrevOrientation[YAW] - p_veh->m_vOrientation[YAW];
 
@@ -447,7 +447,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 		{
 			iFlags = SETANIM_FLAG_NORMAL;
 			Anim = BOTH_WALKBACK1;
-			iBlend = 500;
+			i_blend = 500;
 		}
 		else
 		{
@@ -455,7 +455,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 
 			// Every once in a while buck or do a different idle...
 			iFlags = SETANIM_FLAG_NORMAL | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD;
-			iBlend = 600;
+			i_blend = 600;
 #ifdef _JK2MP
 			if (parent->client->ps.m_iVehicleNum)
 #else
@@ -473,7 +473,7 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 		}
 	}
 
-	Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, iBlend);
+	Vehicle_SetAnim(parent, SETANIM_LEGS, Anim, iFlags, i_blend);
 }
 
 //rwwFIXMEFIXME: This is all going to have to be predicted I think, or it will feel awful

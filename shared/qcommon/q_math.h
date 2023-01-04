@@ -253,7 +253,7 @@ void VectorAdvance(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vec
 void VectorInc(vec3_t vec);
 void VectorDec(vec3_t vec);
 void VectorInverse(vec3_t vec);
-void CrossProduct(const vec3_t vec1, const vec3_t vec2, vec3_t vecOut);
+void CrossProduct(const vec3_t vec1, const vec3_t vec2, vec3_t vec_out);
 float DotProduct(const vec3_t vec1, const vec3_t vec2);
 qboolean VectorCompare(const vec3_t vec1, const vec3_t vec2);
 qboolean VectorCompare2(const vec3_t v1, const vec3_t v2);

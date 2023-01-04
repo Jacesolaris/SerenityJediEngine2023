@@ -3440,7 +3440,7 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 				armFlags |= BONE_ANIM_BLEND;
 			}
 
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, brokenBone, armFirstFrame, armLastFrame, armFlags, armAnimSpeed, cg.time, -1, blendTime);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, brokenBone, armFirstFrame, armLastFrame, armFlags, armAnimSpeed, cg.time, -1, blend_time);
 		}
 		else if (cent->localAnimIndex <= 1 && cent->currentState.brokenLimbs &&
 			(cent->currentState.brokenLimbs & (1 << BROKENLIMB_RARM)))
@@ -3481,7 +3481,7 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 				}
 				else
 				{ //we want to keep the broken bone updated for some cases
-					trap->G2API_SetBoneAnim(cent->ghoul2, 0, brokenBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blendTime);
+					trap->G2API_SetBoneAnim(cent->ghoul2, 0, brokenBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blend_time);
 				}
 
 				if (newAnimation != BOTH_MELEE1 &&
@@ -3512,13 +3512,13 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 				}
 				else
 				{ //we want to keep the support bone updated for some cases
-					trap->G2API_SetBoneAnim(cent->ghoul2, 0, supportBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blendTime);
+					trap->G2API_SetBoneAnim(cent->ghoul2, 0, supportBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blend_time);
 				}
 			}
 			else if (cent->currentState.torsoAnim == newAnimation)
 			{ //otherwise, keep it set to the same as the torso
-				trap->G2API_SetBoneAnim(cent->ghoul2, 0, brokenBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blendTime);
-				trap->G2API_SetBoneAnim(cent->ghoul2, 0, supportBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blendTime);
+				trap->G2API_SetBoneAnim(cent->ghoul2, 0, brokenBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blend_time);
+				trap->G2API_SetBoneAnim(cent->ghoul2, 0, supportBone, firstFrame, lastFrame, flags, animSpeed, cg.time, beginFrame, blend_time);
 			}
 		}
 		else if (ci &&
@@ -3810,7 +3810,7 @@ typedef struct boneAngleParms_s {
 	int right;
 	int forward;
 	qhandle_t* modelList;
-	int blendTime;
+	int blend_time;
 	int currentTime;
 
 	qboolean refreshSet;
@@ -3842,7 +3842,7 @@ void CG_G2SetBoneAngles(void* ghoul2, int model_index, const char* bone_name, co
 	cgBoneAnglePostSet.right = right;
 	cgBoneAnglePostSet.forward = forward;
 	cgBoneAnglePostSet.modelList = modelList;
-	cgBoneAnglePostSet.blendTime = blendTime;
+	cgBoneAnglePostSet.blend_time = blend_time;
 	cgBoneAnglePostSet.currentTime = currentTime;
 
 	cgBoneAnglePostSet.refreshSet = qtrue;
@@ -4130,7 +4130,7 @@ qboolean CG_RagDoll(centity_t* cent, vec3_t forced_angles)
 #if 0
 		{
 			float animSpeed = 0;
-			int blendTime = 600;
+			int blend_time = 600;
 			int flags = 0;//BONE_ANIM_OVERRIDE_FREEZE;
 
 			if (bgAllAnims[cent->localAnimIndex].anims[ragAnim].loopFrames != -1)
@@ -4146,9 +4146,9 @@ qboolean CG_RagDoll(centity_t* cent, vec3_t forced_angles)
 			*/
 
 			animSpeed = 50.0f / bgAllAnims[cent->localAnimIndex].anims[ragAnim].frameLerp;
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "lower_lumbar", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blendTime);
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "Motion", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blendTime);
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "model_root", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blendTime);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "lower_lumbar", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blend_time);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "Motion", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blend_time);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "model_root", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blend_time);
 		}
 #elif 1 //with my new method of doing things I want it to continue the anim
 		{
@@ -4546,7 +4546,7 @@ static void CG_G2SetHeadAnim(const centity_t* cent, const int anim)
 	{
 		const int blend_time = 50;
 		//	gi.G2API_SetBoneAnimIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone,
-		//		firstFrame, lastFrame, animFlags, animSpeed, cg.time, -1, blendTime);
+		//		firstFrame, lastFrame, animFlags, animSpeed, cg.time, -1, blend_time);
 		trap->G2API_SetBoneAnim(cent->ghoul2, 0, "face", first_frame, last_frame, anim_flags, anim_speed,
 		                        cg.time, -1, blend_time);
 	}
@@ -20167,7 +20167,7 @@ stillDoSaber:
 	{
 		trap->G2API_SetBoneAngles(cgBoneAnglePostSet.ghoul2, cgBoneAnglePostSet.model_index, cgBoneAnglePostSet.boneName,
 			cgBoneAnglePostSet.angles, cgBoneAnglePostSet.flags, cgBoneAnglePostSet.up, cgBoneAnglePostSet.right,
-			cgBoneAnglePostSet.forward, cgBoneAnglePostSet.modelList, cgBoneAnglePostSet.blendTime, cgBoneAnglePostSet.currentTime);
+			cgBoneAnglePostSet.forward, cgBoneAnglePostSet.modelList, cgBoneAnglePostSet.blend_time, cgBoneAnglePostSet.currentTime);
 
 		cgBoneAnglePostSet.refreshSet = qfalse;
 	}

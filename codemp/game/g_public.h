@@ -1087,8 +1087,8 @@ typedef struct gameImport_s {
 	int			(*G2API_Ghoul2Size)						(void* ghlInfo);
 	int			(*G2API_AddBolt)						(void* ghoul2, int model_index, const char* boneName);
 	void		(*G2API_SetBoltInfo)					(void* ghoul2, int model_index, int boltInfo);
-	qboolean(*G2API_SetBoneAngles)					(void* ghoul2, int model_index, const char* boneName, const vec3_t angles, int flags, int up, int right, int forward, qhandle_t* modelList, int blendTime, int currentTime);
-	qboolean(*G2API_SetBoneAnim)					(void* ghoul2, int model_index, const char* boneName, int startFrame, int endFrame, int flags, float animSpeed, int currentTime, float setFrame, int blendTime);
+	qboolean(*G2API_SetBoneAngles)					(void* ghoul2, int model_index, const char* boneName, const vec3_t angles, int flags, int up, int right, int forward, qhandle_t* modelList, int blend_time, int currentTime);
+	qboolean(*G2API_SetBoneAnim)					(void* ghoul2, int model_index, const char* boneName, int startFrame, int endFrame, int flags, float animSpeed, int currentTime, float setFrame, int blend_time);
 	qboolean(*G2API_GetBoneAnim)					(void* ghoul2, const char* boneName, int currentTime, float* currentFrame, int* startFrame, int* endFrame, int* flags, float* animSpeed, int* modelList, int model_index);
 	void		(*G2API_GetGLAName)						(void* ghoul2, int model_index, char* fillBuf);
 	int			(*G2API_CopyGhoul2Instance)				(void* g2From, void* g2To, int model_index);

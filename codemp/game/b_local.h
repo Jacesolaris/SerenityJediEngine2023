@@ -219,7 +219,7 @@ extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
 //MCG - End============================================================
 
 // NPC.cpp
-extern void NPC_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlags);
+extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags);
 extern qboolean NPC_EnemyTooFar(const gentity_t* enemy, float dist, qboolean toShoot);
 
 // ==================================================================

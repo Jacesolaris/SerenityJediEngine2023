@@ -58,17 +58,17 @@ extern bgEntity_t* pm_entVeh;
 
 //vehicle impact stuff continued...
 #ifdef _GAME
-extern qboolean FighterIsLanded(Vehicle_t* p_veh, playerState_t* parentPS);
-extern void G_DamageFromKiller(gentity_t* pEnt, gentity_t* pVehEnt, gentity_t* attacker, vec3_t org, int damage,
+extern qboolean FighterIsLanded(Vehicle_t* p_veh, playerState_t* parent_ps);
+extern void G_DamageFromKiller(gentity_t* p_ent, gentity_t* pVehEnt, gentity_t* attacker, vec3_t org, int damage,
                                int dflags, int mod);
 #endif
 
 #define MAX_IMPACT_TURN_ANGLE 45.0f
 
-void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
+void PM_VehicleImpact(bgEntity_t* p_ent, trace_t* trace)
 {
 	// See if the vehicle has crashed into the ground.
-	Vehicle_t* pSelfVeh = pEnt->m_pVehicle;
+	Vehicle_t* pSelfVeh = p_ent->m_pVehicle;
 	float magnitude = VectorLength(pm->ps->velocity) * pSelfVeh->m_pVehicleInfo->mass / 50.0f;
 	qboolean forceSurfDestruction = qfalse;
 #ifdef _GAME
@@ -91,7 +91,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 		{
 			//hit another vehicle, explode!
 			//Give credit to whoever got me into this death spiral state
-			G_DamageFromKiller((gentity_t*)pEnt, (gentity_t*)pSelfVeh->m_pParentEntity, hitEnt, pm->ps->origin, 999999,
+			G_DamageFromKiller((gentity_t*)p_ent, (gentity_t*)pSelfVeh->m_pParentEntity, hitEnt, pm->ps->origin, 999999,
 			                   DAMAGE_NO_ARMOR, MOD_COLLISION);
 			return;
 		}
@@ -106,7 +106,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			if (impactDot <= -0.7f) //hit rather head-on and hard
 			{
 				// Just DIE now
-				G_DamageFromKiller((gentity_t*)pEnt, (gentity_t*)pSelfVeh->m_pParentEntity, hitEnt, pm->ps->origin,
+				G_DamageFromKiller((gentity_t*)p_ent, (gentity_t*)pSelfVeh->m_pParentEntity, hitEnt, pm->ps->origin,
 				                   999999, DAMAGE_NO_ARMOR, MOD_FALLING);
 				return;
 			}
@@ -148,7 +148,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 		//this is kind of weird on tauntauns and atst's..
 		(magnitude >= 100 || forceSurfDestruction))
 	{
-		if (pEnt->m_pVehicle->m_iHitDebounce < pm->cmd.serverTime
+		if (p_ent->m_pVehicle->m_iHitDebounce < pm->cmd.serverTime
 			|| forceSurfDestruction)
 		{
 			//a bit of a hack, may conflict with getting shot, but...
@@ -410,9 +410,9 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			AngleVectors(pSelfVeh->m_vOrientation, NULL, NULL, vehUp);
 			if (pSelfVeh->m_pVehicleInfo->iImpactFX)
 			{
-				G_AddEvent((gentity_t*)pEnt, EV_PLAY_EFFECT_ID, pSelfVeh->m_pVehicleInfo->iImpactFX);
+				G_AddEvent((gentity_t*)p_ent, EV_PLAY_EFFECT_ID, pSelfVeh->m_pVehicleInfo->iImpactFX);
 			}
-			pEnt->m_pVehicle->m_iHitDebounce = pm->cmd.serverTime + 200;
+			p_ent->m_pVehicle->m_iHitDebounce = pm->cmd.serverTime + 200;
 			magnitude /= pSelfVeh->m_pVehicleInfo->toughness * 50.0f;
 
 			if (hitEnt && (hitEnt->s.eType != ET_TERRAIN || !(hitEnt->spawnflags & 1) || pSelfVeh->m_pVehicleInfo->type
@@ -462,14 +462,14 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				}
 				if (!noDamage)
 				{
-					G_Damage((gentity_t*)pEnt, hitEnt, killer != NULL ? killer : hitEnt, NULL, pm->ps->origin,
+					G_Damage((gentity_t*)p_ent, hitEnt, killer != NULL ? killer : hitEnt, NULL, pm->ps->origin,
 					         magnitude * 5, DAMAGE_NO_ARMOR,
 					         hitEnt->s.NPC_class == CLASS_VEHICLE ? MOD_COLLISION : MOD_FALLING);
 				}
 
 				if (pSelfVeh->m_pVehicleInfo->surfDestruction)
 				{
-					G_FlyVehicleSurfaceDestruction((gentity_t*)pEnt, trace, magnitude, forceSurfDestruction);
+					G_FlyVehicleSurfaceDestruction((gentity_t*)p_ent, trace, magnitude, forceSurfDestruction);
 				}
 
 				pSelfVeh->m_ulFlags |= VEH_CRASHING;
@@ -499,7 +499,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 
 					if (hitEnt->client &&
 						BG_KnockDownable(&hitEnt->client->ps) &&
-						G_CanBeEnemy((gentity_t*)pEnt, hitEnt))
+						G_CanBeEnemy((gentity_t*)p_ent, hitEnt))
 					{
 						//smash!
 						if (hitEnt->client->ps.forceHandExtend != HANDEXTEND_KNOCKDOWN)
@@ -510,7 +510,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 							//this toggles between 1 and 0, when it's 1 we should play the get up anim
 						}
 
-						hitEnt->client->ps.otherKiller = pEnt->s.number;
+						hitEnt->client->ps.otherKiller = p_ent->s.number;
 						hitEnt->client->ps.otherKillerTime = pm->cmd.serverTime + 5000;
 						hitEnt->client->ps.otherKillerDebounceTime = pm->cmd.serverTime + 100;
 						hitEnt->client->otherKillerMOD = MOD_COLLISION;
@@ -530,7 +530,7 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 				}
 				else
 				{
-					attackEnt = (gentity_t*)pEnt;
+					attackEnt = (gentity_t*)p_ent;
 				}
 
 				int finalD = magnitude * pmult;
@@ -548,11 +548,11 @@ void PM_VehicleImpact(bgEntity_t* pEnt, trace_t* trace)
 			//it doesn't look bad though. could just use predicted events, but I'm too lazy.
 			hitEnt = PM_BGEntForNum(trace->entity_num);
 
-			if (!hitEnt || hitEnt->s.owner != pEnt->s.number)
+			if (!hitEnt || hitEnt->s.owner != p_ent->s.number)
 			{
 				//don't hit your own missiles!
 				AngleVectors(pSelfVeh->m_vOrientation, NULL, NULL, vehUp);
-				pEnt->m_pVehicle->m_iHitDebounce = pm->cmd.serverTime + 200;
+				p_ent->m_pVehicle->m_iHitDebounce = pm->cmd.serverTime + 200;
 				trap->FX_PlayEffectID(pSelfVeh->m_pVehicleInfo->iImpactFX, pm->ps->origin, vehUp, -1, -1, qfalse);
 
 				pSelfVeh->m_ulFlags |= VEH_CRASHING;
@@ -611,7 +611,7 @@ qboolean PM_ClientImpact(const trace_t* trace, qboolean damageSelf)
 		return qfalse;
 	}
 
-	const gentity_t* traceEnt = &g_entities[otherEntityNum];
+	const gentity_t* trace_ent = &g_entities[otherEntityNum];
 
 	if (VectorLength(pm->ps->velocity) >= 100 && pm_entSelf->s.NPC_class != CLASS_VEHICLE && pm->ps->lastOnGround + 100
 		< level.time)
@@ -620,8 +620,8 @@ qboolean PM_ClientImpact(const trace_t* trace, qboolean damageSelf)
 		//DoImpact((gentity_t*)(pm_entSelf), &g_entities[otherEntityNum], damageSelf, trace);
 	}
 
-	if (!traceEnt
-		|| !(traceEnt->r.contents & pm->tracemask))
+	if (!trace_ent
+		|| !(trace_ent->r.contents & pm->tracemask))
 	{
 		//it's dead or not in my way anymore, don't clip against it
 		return qtrue;

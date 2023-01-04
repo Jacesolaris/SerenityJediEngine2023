@@ -600,7 +600,7 @@ void client_userinfo_changed(const int client_num)
 
 	// set max health
 	constexpr int max_health = 100;
-	const int health = Com_Clampi(1, 100, atoi(Info_ValueForKey(userinfo, "handicap")));
+	
 	client->pers.maxHealth = player->client->ps.stats[STAT_MAX_HEALTH];
 	if (client->pers.maxHealth < 1 || client->pers.maxHealth > max_health)
 		client->pers.maxHealth = 100;
@@ -683,7 +683,7 @@ char* client_connect(const int client_num, const qboolean first_time,
 		// read or initialize the session data
 		if (first_time)
 		{
-			G_InitSessionData(client, userinfo);
+			G_InitSessionData(client);
 		}
 		G_ReadSessionData(client);
 
@@ -1157,7 +1157,7 @@ int axes_0 = POSITIVE_X;
 int axes_1 = POSITIVE_Z;
 int axes_2 = POSITIVE_Y;
 
-void G_NextTestAxes(void)
+void G_NextTestAxes()
 {
 	static int which_axes = 0;
 	do
@@ -2661,7 +2661,7 @@ Initializes all non-persistant parts of playerState
 ============
 */
 
-qboolean g_check_player_dark_side(void)
+qboolean g_check_player_dark_side()
 {
 	if (player && player->client && player->client->sess.mission_objectives[LIGHTSIDE_OBJ].status == 2)
 	{
