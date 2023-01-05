@@ -1234,7 +1234,7 @@ void	GL_Cull(int cullType);
 void	RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* data, int i_client, qboolean b_dirty);
 void	RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboolean dirty);
 void	RE_GetScreenShot(byte* data, int w, int h);
-byte* RE_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pbReSampleBuffer, qboolean qbVertFlip);
+byte* RE_TempRawImage_ReadFromFile(const char* ps_local_filename, int* pi_width, int* pi_height, byte* pb_re_sample_buffer, qboolean qb_vert_flip);
 void	RE_TempRawImage_CleanUp();
 
 void		RE_BeginRegistration(glconfig_t* glconfig);
@@ -1734,7 +1734,7 @@ void RE_LAGoggles(void);
 void RE_Scissor(float x, float y, float w, float h);
 void RE_BeginFrame(stereoFrame_t stereoFrame);
 void RE_EndFrame(int* frontEndMsec, int* backEndMsec);
-qboolean	RE_ProcessDissolve(void);
+qboolean	RE_ProcessDissolve();
 qboolean	RE_InitDissolve(qboolean bForceCircularExtroWipe);
 
 long generateHashValue(const char* fname);

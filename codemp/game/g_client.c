@@ -47,13 +47,13 @@ extern int g_siegeRespawnCheck;
 void WP_SaberAddG2Model(gentity_t* saberent, const char* saber_model, qhandle_t saber_skin);
 void WP_SaberRemoveG2Model(gentity_t* saberent);
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
-extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
+extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saber_style);
 extern void Player_CheckBurn(const gentity_t* self);
 extern void Player_CheckFreeze(const gentity_t* self);
-extern qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered,
-                                           int saberAnimLevel);
-extern qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered,
-                                           int* saberAnimLevel);
+extern qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saber_holstered,
+                                           int saber_anim_level);
+extern qboolean WP_UseFirstValidSaberStyle(const saberInfo_t* saber1, const saberInfo_t* saber2, int saber_holstered,
+                                           int* saber_anim_level);
 
 forcedata_t Client_Force[MAX_CLIENTS];
 
@@ -7900,7 +7900,7 @@ call trap->DropClient(), which will call this and do
 server system housekeeping.
 ============
 */
-extern void G_LeaveVehicle(gentity_t* ent, qboolean ConCheck);
+extern void G_LeaveVehicle(gentity_t* ent, qboolean con_check);
 
 void G_ClearVote(const gentity_t* ent)
 {

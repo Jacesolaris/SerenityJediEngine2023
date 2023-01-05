@@ -257,7 +257,7 @@ extern void CGCam_BlockShakeSP(float intensity, int duration);
 static qhandle_t repulseLoopSound = 0;
 extern void Boba_FlyStop(gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
-extern void SabBeh_SaberShouldBeDisarmedBlocker(gentity_t* blocker, int saber_num);
+extern void sab_beh_saber_should_be_disarmed_blocker(gentity_t* blocker, int saber_num);
 
 qboolean g_saberNoEffects = qfalse;
 qboolean g_noClashFlare = qfalse;
@@ -7906,7 +7906,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 								if (hit_owner->client->ps.blockPoints < BLOCKPOINTS_FATIGUE)
 								{
 									//Low points = bad blocks
-									SabBeh_SaberShouldBeDisarmedBlocker(hit_owner, saber_num);
+									sab_beh_saber_should_be_disarmed_blocker(hit_owner, saber_num);
 									wp_block_points_regenerate_over_ride(hit_owner, BLOCKPOINTS_TEN);
 								}
 								else

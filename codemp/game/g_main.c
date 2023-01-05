@@ -2431,7 +2431,7 @@ When the intermission starts, this will be called for all players.
 If a new client connects, this will be called after the spawn function.
 ========================
 */
-extern void G_LeaveVehicle(gentity_t* ent, qboolean ConCheck);
+extern void G_LeaveVehicle(gentity_t* ent, qboolean con_check);
 
 void MoveClientToIntermission(gentity_t* ent)
 {

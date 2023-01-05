@@ -1394,11 +1394,11 @@ char* G_NewString(const char* string);
 //
 void Cmd_Score_f(const gentity_t* ent);
 void StopFollowing(gentity_t* ent);
-void BroadcastTeamChange(gclient_t* client, int oldTeam);
+void BroadcastTeamChange(gclient_t* client, int old_team);
 void SetTeam(gentity_t* ent, const char* s);
 void Cmd_FollowCycle_f(gentity_t* ent, int dir);
 void Cmd_SaberAttackCycle_f(gentity_t* ent);
-int G_ItemUsable(playerState_t* ps, int forcedUse);
+int G_ItemUsable(const playerState_t* ps, int forced_use);
 void Cmd_ToggleSaber_f(gentity_t* ent);
 void Cmd_EngageDuel_f(gentity_t* ent);
 
@@ -1665,7 +1665,7 @@ void ClientRespawn(gentity_t* ent);
 void BeginIntermission(void);
 void InitBodyQue(void);
 void ClientSpawn(gentity_t* ent);
-void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death);
+void player_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, int damage, int means_of_death);
 void AddScore(const gentity_t* ent, int score);
 void CalculateRanks(void);
 qboolean SpotWouldTelefrag(const gentity_t* spot);
@@ -1692,7 +1692,7 @@ void RemoveDetpacks(const gentity_t* ent);
 // p_hud.c
 //
 void MoveClientToIntermission(gentity_t* client);
-void DeathmatchScoreboardMessage(const gentity_t* client);
+void DeathmatchScoreboardMessage(const gentity_t* ent);
 
 //
 // g_cmds.c

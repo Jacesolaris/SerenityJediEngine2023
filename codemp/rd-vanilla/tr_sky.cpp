@@ -500,7 +500,7 @@ static void FillCloudBox(const int stage)
 		int sky_mins_subd[2], sky_maxs_subd[2];
 		float min_t;
 
-		if (true) // FIXME? shader->sky->fullClouds )
+		if (true)
 		{
 			min_t = -HALF_SKY_SUBDIVISIONS;
 
@@ -606,7 +606,7 @@ void R_InitSkyTexCoords(const float height_cloud)
 			for (int s = 0; s <= SKY_SUBDIVISIONS; s++)
 			{
 				vec3_t sky_vec;
-				constexpr float radiusWorld = 4096;
+				constexpr float radius_world = 4096;
 				// compute vector from view origin to sky side integral point
 				MakeSkyVec((s - HALF_SKY_SUBDIVISIONS) / static_cast<float>(HALF_SKY_SUBDIVISIONS),
 					(t - HALF_SKY_SUBDIVISIONS) / static_cast<float>(HALF_SKY_SUBDIVISIONS),
@@ -616,20 +616,20 @@ void R_InitSkyTexCoords(const float height_cloud)
 
 				// compute parametric value 'p' that intersects with cloud layer
 				const float p = 1.0f / (2 * DotProduct(sky_vec, sky_vec)) *
-					(-2 * sky_vec[2] * radiusWorld +
-						2 * sqrt(SQR(sky_vec[2]) * SQR(radiusWorld) +
-							2 * SQR(sky_vec[0]) * radiusWorld * height_cloud +
+					(-2 * sky_vec[2] * radius_world +
+						2 * sqrt(SQR(sky_vec[2]) * SQR(radius_world) +
+							2 * SQR(sky_vec[0]) * radius_world * height_cloud +
 							SQR(sky_vec[0]) * SQR(height_cloud) +
-							2 * SQR(sky_vec[1]) * radiusWorld * height_cloud +
+							2 * SQR(sky_vec[1]) * radius_world * height_cloud +
 							SQR(sky_vec[1]) * SQR(height_cloud) +
-							2 * SQR(sky_vec[2]) * radiusWorld * height_cloud +
+							2 * SQR(sky_vec[2]) * radius_world * height_cloud +
 							SQR(sky_vec[2]) * SQR(height_cloud)));
 
 				s_cloudTexP[i][t][s] = p;
 
 				// compute intersection point based on p
 				VectorScale(sky_vec, p, v);
-				v[2] += radiusWorld;
+				v[2] += radius_world;
 
 				// compute vector from world origin to intersection point 'v'
 				VectorNormalize(v);

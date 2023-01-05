@@ -2556,7 +2556,7 @@ static void Jedi_Advance(void)
 }
 
 extern qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber);
-extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
+extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saber_style);
 
 static void Jedi_AdjustSaberAnimLevel(gentity_t* self, int newLevel)
 {

@@ -35,7 +35,7 @@ qboolean PM_SaberInStart(int move);
 qboolean PM_SaberInReturn(int move);
 qboolean saberCheckKnockdown_DuelLoss(gentity_t* saberent, gentity_t* saberOwner, const gentity_t* other);
 extern void BG_ReduceSaberMishapLevel(playerState_t* ps);
-extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saberStyle);
+extern qboolean G_ValidSaberStyle(const gentity_t* ent, int saber_style);
 extern qboolean BG_SprintAnim(int anim);
 extern void Weapon_GrapplingHook_Fire(gentity_t* ent);
 extern void G_SoundOnEnt(gentity_t* ent, soundChannel_t channel, const char* soundPath);
@@ -62,8 +62,8 @@ extern float manual_npc_kick_absorbing(const gentity_t* defender);
 extern qboolean PM_WalkingAnim(int anim);
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean BG_IsAlreadyinTauntAnim(int anim);
-qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saberHolstered,
-                                    int saberAnimLevel);
+qboolean WP_SaberStyleValidForSaber(const saberInfo_t* saber1, const saberInfo_t* saber2, int saber_holstered,
+                                    int saber_anim_level);
 extern qboolean PM_SaberInBashedAnim(int anim);
 
 void P_SetTwitchInfo(gclient_t* client)

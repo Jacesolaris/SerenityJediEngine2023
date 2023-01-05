@@ -319,7 +319,7 @@ char* C_MP3_IsValid(void* pvData, const int iDataLen, const int bStereoDesired)
 
 // char *return is NZ for any errors (no trailing CR!)
 //
-char* C_MP3_GetHeaderData(void* pvData, const int iDataLen, int* piRate, int* piWidth, int* piChannels,
+char* C_MP3_GetHeaderData(void* pvData, const int iDataLen, int* piRate, int* pi_width, int* piChannels,
                           const int bStereoDesired)
 {
 	unsigned int iRealDataStart;
@@ -342,7 +342,7 @@ char* C_MP3_GetHeaderData(void* pvData, const int iDataLen, int* piRate, int* pi
 		audio.decode_info(&decinfo);
 
 		*piRate = decinfo.samprate; // rate (eg 22050, 44100 etc)
-		*piWidth = decinfo.bits / 8; // 1 for 8bit, 2 for 16 bit
+		*pi_width = decinfo.bits / 8; // 1 for 8bit, 2 for 16 bit
 		*piChannels = decinfo.channels; // 1 for mono, 2 for stereo
 	}
 	else

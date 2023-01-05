@@ -2829,11 +2829,11 @@ void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, int
 extern void BubbleShield_TurnOff(gentity_t* self);
 void G_CheckForblowingup(gentity_t* ent, const gentity_t* enemy, int damage);
 
-void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const int damage, const int means_of_death)
+void player_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, const int damage, const int means_of_death)
 {
 	int killer;
 	int i;
-	char *killerName, *obit;
+	char *killer_name, *obit;
 	qboolean was_jedi_master = qfalse;
 	char buf[512] = {0};
 
@@ -3272,23 +3272,23 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 		killer = attacker->s.number;
 		if (attacker->client)
 		{
-			killerName = attacker->client->pers.netname;
+			killer_name = attacker->client->pers.netname;
 		}
 		else
 		{
-			killerName = "<non-client>";
+			killer_name = "<non-client>";
 		}
 	}
 	else
 	{
 		killer = ENTITYNUM_WORLD;
-		killerName = "<world>";
+		killer_name = "<world>";
 	}
 
 	if (killer < 0 || killer >= MAX_CLIENTS)
 	{
 		killer = ENTITYNUM_WORLD;
-		killerName = "<world>";
+		killer_name = "<world>";
 	}
 
 	if (means_of_death < 0 || means_of_death >= sizeof modNames / sizeof modNames[0])
@@ -3301,7 +3301,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 	}
 
 	// log the victim and attacker's names with the method of death
-	Com_sprintf(buf, sizeof buf, "Kill: %i %i %i: %s killed ", killer, self->s.number, means_of_death, killerName);
+	Com_sprintf(buf, sizeof buf, "Kill: %i %i %i: %s killed ", killer, self->s.number, means_of_death, killer_name);
 	if (self->s.eType == ET_NPC)
 	{
 		// check for named NPCs

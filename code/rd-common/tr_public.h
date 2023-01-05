@@ -216,7 +216,7 @@ using refexport_t = struct
 	// this is so you can get access to raw pixels from a graphics format (TGA/JPG/BMP etc),
 	//	currently only the save game uses it (to make raw shots for the autosaves)
 	//
-	byte* (*TempRawImage_ReadFromFile)(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pbReSampleBuffer,
+	byte* (*TempRawImage_ReadFromFile)(const char* psLocalFilename, int* pi_width, int* pi_height, byte* pb_re_sample_buffer,
 	                                   qboolean qbVertFlip);
 	void (*TempRawImage_CleanUp)();
 

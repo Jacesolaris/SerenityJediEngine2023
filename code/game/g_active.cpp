@@ -114,7 +114,7 @@ extern qboolean BG_SprintAnim(int anim);
 extern qboolean BG_SprintSaberAnim(int anim);
 extern void Weapon_GrapplingHook_Fire(gentity_t* ent);
 extern qboolean PlayerAffectedByStasis();
-extern void SabBeh_AnimateSlowBounceBlocker(gentity_t* blocker);
+extern void sab_beh_animate_slow_bounce_blocker(gentity_t* blocker);
 extern void Player_CheckBurn(const gentity_t* self);
 extern void Player_CheckFreeze(const gentity_t* self);
 extern qboolean PM_SaberInAttackPure(int move);
@@ -2650,7 +2650,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 							//knockdown
 							if (hit_ent->client->ps.saberAnimLevel == SS_STAFF)
 							{
-								SabBeh_AnimateSlowBounceBlocker(hit_ent);
+								sab_beh_animate_slow_bounce_blocker(hit_ent);
 							}
 							else
 							{

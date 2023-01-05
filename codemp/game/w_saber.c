@@ -72,7 +72,6 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern stringID_table_t SaberMoveTable[];
 extern stringID_table_t animTable[MAX_ANIMATIONS + 1];
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
-extern qboolean G_TransitionParry(const gentity_t* self);
 qboolean WP_SaberBlockNonRandom(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 qboolean wp_saber_block_non_random_missile(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
 extern qboolean g_accurate_blocking(const gentity_t* self, const gentity_t* attacker, vec3_t hit_loc);
@@ -97,7 +96,7 @@ extern qboolean npc_is_dark_jedi(const gentity_t* self);
 extern qboolean npc_is_light_jedi(const gentity_t* self);
 extern qboolean PM_SaberInMassiveBounce(int anim);
 extern qboolean PM_InForceGetUp(const playerState_t* ps);
-extern void SabBeh_AnimateSlowBounceBlocker(gentity_t* self);
+extern void sab_beh_animate_slow_bounce_blocker(gentity_t* self);
 extern void NPC_SetPainEvent(gentity_t* self);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern saberMoveName_t pm_block_the_attack(int move);
@@ -128,7 +127,7 @@ int BotCanAbsorbKick(const gentity_t* defender, const vec3_t push_dir);
 extern qboolean PM_Dyinganim(const playerState_t* ps);
 extern int SabBeh_AnimateMassiveDualSlowBounce(int anim);
 extern int SabBeh_AnimateMassiveStaffSlowBounce(int anim);
-extern qboolean SabBeh_AttackVsAttack(gentity_t* attacker, gentity_t* blocker);
+extern qboolean sab_beh_attack_vs_attack(gentity_t* attacker, gentity_t* blocker);
 extern qboolean BG_SaberInFullDamageMove(const playerState_t* ps, int anim_index);
 extern void G_ClearEnemy(gentity_t* self);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9789,7 +9788,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 							//knockdown
 							if (hit_ent->client->ps.fd.saberAnimLevel == SS_STAFF)
 							{
-								SabBeh_AnimateSlowBounceBlocker(hit_ent);
+								sab_beh_animate_slow_bounce_blocker(hit_ent);
 							}
 							else
 							{

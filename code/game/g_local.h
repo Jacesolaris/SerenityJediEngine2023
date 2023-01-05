@@ -576,7 +576,7 @@ void FireWeapon(gentity_t* ent, qboolean alt_fire);
 //
 void MoveClientToIntermission(gentity_t* client);
 void G_SetStats(gentity_t* ent);
-void DeathmatchScoreboardMessage(const gentity_t* client);
+void DeathmatchScoreboardMessage(const gentity_t* ent);
 
 //
 // g_cmds.c

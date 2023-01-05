@@ -502,7 +502,7 @@ static void FillCloudBox(const int stage)
 		int sky_mins_subd[2], sky_maxs_subd[2];
 		float min_t;
 
-		if (true) // FIXME? shader->sky->fullClouds )
+		if (true)
 		{
 			min_t = -HALF_SKY_SUBDIVISIONS;
 

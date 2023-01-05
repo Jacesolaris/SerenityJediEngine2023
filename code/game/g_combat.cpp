@@ -5690,20 +5690,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 		}
 	}
 
-	//do any dismemberment if there's any to do...
-	if (dflags & DAMAGE_DISMEMBER
-		&& G_DoDismemberment(self, self->pos1, means_of_death, hit_loc)
-		&& !special_anim)
-	{
-		//we did dismemberment and our death anim is okay to override
-		if (hit_loc == HL_HAND_RT && self->locationDamage[hit_loc] >= Q3_INFINITE && cliff_fall != 2 && self->client->ps
-			.
-			groundEntityNum != ENTITYNUM_NONE)
-		{
-			//just lost our right hand and we're on the ground, use the special anim
-			NPC_SetAnim(self, SETANIM_BOTH, BOTH_RIGHTHANDCHOPPEDOFF, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-		}
-	}
+	
 
 	if (means_of_death == MOD_BODYSHOT && !NPC_IsNotDismemberable(self))
 	{
