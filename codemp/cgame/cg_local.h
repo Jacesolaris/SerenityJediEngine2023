@@ -1972,9 +1972,9 @@ Ghoul2 Insert End
 // cg_drawtools.c
 //
 void CG_FillRect(float x, float y, float width, float height, const float* color);
-void CG_DrawPic(float x, float y, float width, float height, qhandle_t hShader);
-void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t hShader);
-void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t hShader);
+void CG_DrawPic(float x, float y, float width, float height, qhandle_t h_shader);
+void CG_DrawRotatePic(float x, float y, float width, float height, float angle, qhandle_t h_shader);
+void CG_DrawRotatePic2(float x, float y, float width, float height, float angle, qhandle_t h_shader);
 void CG_DrawNumField(int x, int y, int width, int value, int charWidth, int charHeight, int style, qboolean zeroFill);
 
 void CG_DrawStringExt(int x, int y, const char* string, const float* setColor, qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars);

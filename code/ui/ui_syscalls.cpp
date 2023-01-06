@@ -54,12 +54,12 @@ void trap_R_SetColor(const float* rgba)
 }
 
 void trap_R_DrawStretchPic(const float x, const float y, const float w, const float h, const float s1, const float t1,
-                           const float s2, const float t2, const qhandle_t hShader)
+                           const float s2, const float t2, const qhandle_t h_shader)
 {
-	//	syscall( UI_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), hShader );
-	//	re.DrawStretchPic( x, y, w, h, s1, t1, s2, t2, hShader  );
+	//	syscall( UI_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), h_shader );
+	//	re.DrawStretchPic( x, y, w, h, s1, t1, s2, t2, h_shader  );
 
-	ui.R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, hShader);
+	ui.R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, h_shader);
 }
 
 void trap_R_ModelBounds(const clipHandle_t model, vec3_t mins, vec3_t maxs)

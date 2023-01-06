@@ -551,15 +551,15 @@ typedef struct cgameImport_s {
 	void			(*R_AddAdditiveLightToScene)			(const vec3_t org, float intensity, float r, float g, float b);
 	void			(*R_AddDecalToScene)					(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary);
 	void			(*R_AddLightToScene)					(const vec3_t org, float intensity, float r, float g, float b);
-	void			(*R_AddPolysToScene)					(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num);
+	void			(*R_AddPolysToScene)					(qhandle_t h_shader, int numVerts, const polyVert_t* verts, int num);
 	void			(*R_AddRefEntityToScene)				(const refEntity_t* re);
 	unsigned int	(*R_AnyLanguage_ReadCharFromString)		(const char* psText, int* piAdvanceCount, qboolean* pbIsTrailingPunctuation);
 	void			(*R_AutomapElevationAdjustment)			(float newHeight);
 	void			(*R_ClearDecals)						(void);
 	void			(*R_ClearScene)							(void);
-	void			(*R_DrawStretchPic)						(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader);	// 0 = white
-	void			(*R_DrawRotatePic)						(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float a1, qhandle_t hShader);	// 0 = white
-	void			(*R_DrawRotatePic2)						(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float a1, qhandle_t hShader);	// 0 = white
+	void			(*R_DrawStretchPic)						(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t h_shader);	// 0 = white
+	void			(*R_DrawRotatePic)						(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float a1, qhandle_t h_shader);	// 0 = white
+	void			(*R_DrawRotatePic2)						(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float a1, qhandle_t h_shader);	// 0 = white
 	void			(*R_Font_DrawString)					(int ox, int oy, const char* text, const float* rgba, int setIndex, int iCharLimit, float scale);
 	int				(*R_Font_HeightPixels)					(int iFontIndex, float scale);
 	int				(*R_Font_StrLenChars)					(const char* text);

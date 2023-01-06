@@ -160,14 +160,14 @@ R_LoadLightmaps
 ===============
 */
 constexpr auto LIGHTMAP_SIZE = 128;
-static	void R_LoadLightmaps(lump_t* l, const char* psMapName, world_t& worldData)
+static	void R_LoadLightmaps(lump_t* l, const char* ps_map_name, world_t& world_data)
 {
 	byte		image[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 4];
 	int j;
-	float				maxIntensity = 0;
-	double				sumIntensity = 0;
+	float				max_intensity = 0;
+	double				sum_intensity = 0;
 
-	if (&worldData == &s_worldData)
+	if (&world_data == &s_worldData)
 	{
 		tr.numLightmaps = 0;
 	}
@@ -182,7 +182,7 @@ static	void R_LoadLightmaps(lump_t* l, const char* psMapName, world_t& worldData
 	R_IssuePendingRenderCommands(); //
 
 	// create all the lightmaps
-	worldData.startLightMapIndex = tr.numLightmaps;
+	world_data.startLightMapIndex = tr.numLightmaps;
 	const int count = len / (LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3);
 	tr.numLightmaps += count;
 
@@ -191,8 +191,8 @@ static	void R_LoadLightmaps(lump_t* l, const char* psMapName, world_t& worldData
 		return;
 	}
 
-	char sMapName[MAX_QPATH];
-	COM_StripExtension(psMapName, sMapName, sizeof sMapName);
+	char s_map_name[MAX_QPATH];
+	COM_StripExtension(ps_map_name, s_map_name, sizeof s_map_name);
 
 	for (int i = 0; i < count; i++) {
 		// expand the 24 bit on-disk to 32 bit
@@ -214,8 +214,8 @@ static	void R_LoadLightmaps(lump_t* l, const char* psMapName, world_t& worldData
 				else
 					intensity /= 255.0f;
 
-				if (intensity > maxIntensity)
-					maxIntensity = intensity;
+				if (intensity > max_intensity)
+					max_intensity = intensity;
 
 				HSVtoRGB(intensity, 1.00, 0.50, out);
 
@@ -224,7 +224,7 @@ static	void R_LoadLightmaps(lump_t* l, const char* psMapName, world_t& worldData
 				image[j * 4 + 2] = out[2] * 255;
 				image[j * 4 + 3] = 255;
 
-				sumIntensity += intensity;
+				sum_intensity += intensity;
 			}
 		}
 		else {
@@ -233,15 +233,15 @@ static	void R_LoadLightmaps(lump_t* l, const char* psMapName, world_t& worldData
 				image[j * 4 + 3] = 255;
 			}
 		}
-		tr.lightmaps[worldData.startLightMapIndex + i] = R_CreateImage(
-			va("$%s/lightmap%d", sMapName, worldData.startLightMapIndex + i),
+		tr.lightmaps[world_data.startLightMapIndex + i] = R_CreateImage(
+			va("$%s/lightmap%d", s_map_name, world_data.startLightMapIndex + i),
 			image, LIGHTMAP_SIZE, LIGHTMAP_SIZE, GL_RGBA, qfalse, qfalse,
 			static_cast<qboolean>(r_ext_compressed_lightmaps->integer != 0),
 			GL_CLAMP);
 	}
 
 	if (r_lightmap->integer == 2) {
-		ri.Printf(PRINT_ALL, "Brightest lightmap value: %d\n", static_cast<int>(maxIntensity * 255));
+		ri.Printf(PRINT_ALL, "Brightest lightmap value: %d\n", static_cast<int>(max_intensity * 255));
 	}
 }
 
@@ -262,10 +262,10 @@ void		RE_SetWorldVisData(const byte* vis) {
 R_LoadVisibility
 =================
 */
-static	void R_LoadVisibility(const lump_t* l, world_t& worldData) {
-	int len = worldData.numClusters + 63 & ~63;
-	worldData.novis = static_cast<unsigned char*>(R_Hunk_Alloc(len, qfalse));
-	memset(worldData.novis, 0xff, len);
+static	void R_LoadVisibility(const lump_t* l, world_t& world_data) {
+	int len = world_data.numClusters + 63 & ~63;
+	world_data.novis = static_cast<unsigned char*>(R_Hunk_Alloc(len, qfalse));
+	memset(world_data.novis, 0xff, len);
 
 	len = l->filelen;
 	if (!len) {
@@ -273,18 +273,18 @@ static	void R_LoadVisibility(const lump_t* l, world_t& worldData) {
 	}
 	byte* buf = fileBase + l->fileofs;
 
-	worldData.numClusters = LittleLong reinterpret_cast<int*>(buf)[0];
-	worldData.clusterBytes = LittleLong reinterpret_cast<int*>(buf)[1];
+	world_data.numClusters = LittleLong reinterpret_cast<int*>(buf)[0];
+	world_data.clusterBytes = LittleLong reinterpret_cast<int*>(buf)[1];
 
 	// CM_Load should have given us the vis data to share, so
 	// we don't need to allocate another copy
 	if (tr.externalVisData) {
-		worldData.vis = tr.externalVisData;
+		world_data.vis = tr.externalVisData;
 	}
 	else {
-		byte* dest = static_cast<byte*>(R_Hunk_Alloc(len - 8, qfalse));
+		const auto dest = static_cast<byte*>(R_Hunk_Alloc(len - 8, qfalse));
 		memcpy(dest, buf + 8, len - 8);
-		worldData.vis = dest;
+		world_data.vis = dest;
 	}
 }
 
@@ -295,24 +295,24 @@ static	void R_LoadVisibility(const lump_t* l, world_t& worldData) {
 ShaderForShaderNum
 ===============
 */
-static shader_t* ShaderForShaderNum(int shaderNum, const int* lightmapNum, const byte* lightmapStyles, const byte* vertexStyles, world_t& worldData) {
-	const byte* styles = lightmapStyles;
+static shader_t* ShaderForShaderNum(int shader_num, const int* lightmap_num, const byte* lightmap_styles, const byte* vertex_styles, const world_t& world_data) {
+	const byte* styles = lightmap_styles;
 
-	shaderNum = LittleLong shaderNum;
-	if (shaderNum < 0 || shaderNum >= worldData.numShaders) {
-		Com_Error(ERR_DROP, "ShaderForShaderNum: bad num %i", shaderNum);
+	shader_num = LittleLong shader_num;
+	if (shader_num < 0 || shader_num >= world_data.numShaders) {
+		Com_Error(ERR_DROP, "ShaderForShaderNum: bad num %i", shader_num);
 	}
-	const dshader_t* dsh = &worldData.shaders[shaderNum];
+	const dshader_t* dsh = &world_data.shaders[shader_num];
 
-	if (lightmapNum[0] == LIGHTMAP_BY_VERTEX)
+	if (lightmap_num[0] == LIGHTMAP_BY_VERTEX)
 	{
-		styles = vertexStyles;
+		styles = vertex_styles;
 	}
 
 	if (r_vertexLight->integer)
 	{
-		lightmapNum = lightmapsVertex;
-		styles = vertexStyles;
+		lightmap_num = lightmapsVertex;
+		styles = vertex_styles;
 	}
 
 	/*	if ( r_fullbright->integer )
@@ -321,7 +321,7 @@ static shader_t* ShaderForShaderNum(int shaderNum, const int* lightmapNum, const
 			styles = vertexStyles;
 		}
 	*/
-	shader_t* shader = R_FindShader(dsh->shader, lightmapNum, styles, qtrue);
+	shader_t* shader = R_FindShader(dsh->shader, lightmap_num, styles, qtrue);
 
 	// if the shader had errors, just use default shader
 	if (shader->defaultShader) {
@@ -336,17 +336,17 @@ static shader_t* ShaderForShaderNum(int shaderNum, const int* lightmapNum, const
 ParseFace
 ===============
 */
-static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, byte*& pFaceDataBuffer, world_t& worldData, const int index)
+static void ParseFace(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, byte*& p_face_data_buffer, const world_t& world_data, const int index)
 {
 	int			i, j, k;
-	int			lightmapNum[MAXLIGHTMAPS];
+	int			lightmap_num[MAXLIGHTMAPS];
 
 	for (i = 0; i < MAXLIGHTMAPS; i++)
 	{
-		lightmapNum[i] = LittleLong ds->lightmapNum[i];
-		if (lightmapNum[i] >= 0)
+		lightmap_num[i] = LittleLong ds->lightmapNum[i];
+		if (lightmap_num[i] >= 0)
 		{
-			lightmapNum[i] += worldData.startLightMapIndex;
+			lightmap_num[i] += world_data.startLightMapIndex;
 		}
 	}
 
@@ -354,33 +354,33 @@ static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* i
 	surf->fogIndex = LittleLong ds->fogNum + 1;
 	if (index && !surf->fogIndex && tr.world && tr.world->globalFog != -1)
 	{
-		surf->fogIndex = worldData.globalFog;
+		surf->fogIndex = world_data.globalFog;
 	}
 
 	// get shader value
-	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmapNum, ds->lightmapStyles, ds->vertexStyles, worldData);
+	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmap_num, ds->lightmapStyles, ds->vertexStyles, world_data);
 	if (r_singleShader->integer && !surf->shader->sky) {
 		surf->shader = tr.defaultShader;
 	}
 
-	const int numPoints = ds->numVerts;
-	const int numIndexes = ds->numIndexes;
+	const int num_points = ds->numVerts;
+	const int num_indexes = ds->numIndexes;
 
 	// create the srfSurfaceFace_t
-	int sfaceSize = (intptr_t) & static_cast<srfSurfaceFace_t*>(nullptr)->points[numPoints];
-	const int ofsIndexes = sfaceSize;
-	sfaceSize += sizeof(int) * numIndexes;
+	int sface_size = reinterpret_cast<intptr_t>(&static_cast<srfSurfaceFace_t*>(nullptr)->points[num_points]);
+	const int ofs_indexes = sface_size;
+	sface_size += sizeof(int) * num_indexes;
 
-	srfSurfaceFace_t* cv = (srfSurfaceFace_t*)pFaceDataBuffer;//R_Hunk_Alloc( sfaceSize );
-	pFaceDataBuffer += sfaceSize;	// :-)
+	srfSurfaceFace_t* cv = reinterpret_cast<srfSurfaceFace_t*>(p_face_data_buffer);
+	p_face_data_buffer += sface_size;	// :-)
 
 	cv->surfaceType = SF_FACE;
-	cv->numPoints = numPoints;
-	cv->numIndices = numIndexes;
-	cv->ofsIndices = ofsIndexes;
+	cv->numPoints = num_points;
+	cv->numIndices = num_indexes;
+	cv->ofsIndices = ofs_indexes;
 
 	verts += LittleLong ds->firstVert;
-	for (i = 0; i < numPoints; i++) {
+	for (i = 0; i < num_points; i++) {
 		for (j = 0; j < 3; j++) {
 			cv->points[i][j] = LittleFloat verts[i].xyz[j];
 		}
@@ -393,13 +393,13 @@ static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* i
 		}
 		for (k = 0; k < MAXLIGHTMAPS; k++)
 		{
-			R_ColorShiftLightingBytes(verts[i].color[k], (byte*)&cv->points[i][VERTEX_COLOR + k]);
+			R_ColorShiftLightingBytes(verts[i].color[k], reinterpret_cast<byte*>(&cv->points[i][VERTEX_COLOR + k]));
 		}
 	}
 
 	indexes += LittleLong ds->firstIndex;
-	for (i = 0; i < numIndexes; i++) {
-		((int*)((byte*)cv + cv->ofsIndices))[i] = LittleLong indexes[i];
+	for (i = 0; i < num_indexes; i++) {
+		reinterpret_cast<int*>(reinterpret_cast<byte*>(cv) + cv->ofsIndices)[i] = LittleLong indexes[i];
 	}
 
 	// take the plane information from the lightmap vector
@@ -410,7 +410,7 @@ static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* i
 	SetPlaneSignbits(&cv->plane);
 	cv->plane.type = PlaneTypeForNormal(cv->plane.normal);
 
-	surf->data = (surfaceType_t*)cv;
+	surf->data = reinterpret_cast<surfaceType_t*>(cv);
 }
 
 /*
@@ -418,20 +418,20 @@ static void ParseFace(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* i
 ParseMesh
 ===============
 */
-static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_t& worldData, const int index) {
+static void ParseMesh(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, const world_t& world_data, const int index) {
 	int				i, j, k;
 	drawVert_t points[MAX_PATCH_SIZE * MAX_PATCH_SIZE];
-	int				lightmapNum[MAXLIGHTMAPS]{};
+	int				lightmap_num[MAXLIGHTMAPS]{};
 	vec3_t			bounds[2];
-	vec3_t			tmpVec;
-	static surfaceType_t	skipData = SF_SKIP;
+	vec3_t			tmp_vec;
+	static surfaceType_t	skip_data = SF_SKIP;
 
 	for (i = 0; i < MAXLIGHTMAPS; i++)
 	{
-		lightmapNum[i] = LittleLong ds->lightmapNum[i];
-		if (lightmapNum[i] >= 0)
+		lightmap_num[i] = LittleLong ds->lightmapNum[i];
+		if (lightmap_num[i] >= 0)
 		{
-			lightmapNum[i] += worldData.startLightMapIndex;
+			lightmap_num[i] += world_data.startLightMapIndex;
 		}
 	}
 
@@ -439,19 +439,19 @@ static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_
 	surf->fogIndex = LittleLong ds->fogNum + 1;
 	if (index && !surf->fogIndex && tr.world && tr.world->globalFog != -1)
 	{
-		surf->fogIndex = worldData.globalFog;
+		surf->fogIndex = world_data.globalFog;
 	}
 
 	// get shader value
-	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmapNum, ds->lightmapStyles, ds->vertexStyles, worldData);
+	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmap_num, ds->lightmapStyles, ds->vertexStyles, world_data);
 	if (r_singleShader->integer && !surf->shader->sky) {
 		surf->shader = tr.defaultShader;
 	}
 
 	// we may have a nodraw surface, because they might still need to
 	// be around for movement clipping
-	if (worldData.shaders[LittleLong ds->shaderNum].surfaceFlags & SURF_NODRAW) {
-		surf->data = &skipData;
+	if (world_data.shaders[LittleLong ds->shaderNum].surfaceFlags & SURF_NODRAW) {
+		surf->data = &skip_data;
 		return;
 	}
 
@@ -459,8 +459,8 @@ static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_
 	const int height = ds->patchHeight;
 
 	verts += LittleLong ds->firstVert;
-	const int numPoints = width * height;
-	for (i = 0; i < numPoints; i++) {
+	const int num_points = width * height;
+	for (i = 0; i < num_points; i++) {
 		for (j = 0; j < 3; j++) {
 			points[i].xyz[j] = LittleFloat verts[i].xyz[j];
 			points[i].normal[j] = LittleFloat verts[i].normal[j];
@@ -480,7 +480,7 @@ static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_
 
 	// pre-tesseleate
 	srfGridMesh_t* grid = R_SubdividePatchToGrid(width, height, points);
-	surf->data = (surfaceType_t*)grid;
+	surf->data = reinterpret_cast<surfaceType_t*>(grid);
 
 	// copy the level of detail origin, which is the center
 	// of the group of all curves that must subdivide the same
@@ -491,8 +491,8 @@ static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_
 	}
 	VectorAdd(bounds[0], bounds[1], bounds[1]);
 	VectorScale(bounds[1], 0.5f, grid->lodOrigin);
-	VectorSubtract(bounds[0], grid->lodOrigin, tmpVec);
-	grid->lodRadius = VectorLength(tmpVec);
+	VectorSubtract(bounds[0], grid->lodOrigin, tmp_vec);
+	grid->lodRadius = VectorLength(tmp_vec);
 }
 
 /*
@@ -500,48 +500,48 @@ static void ParseMesh(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, world_
 ParseTriSurf
 ===============
 */
-static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, const int index) {
+static void ParseTriSurf(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, const world_t& world_data, const int index) {
 	int				i, j, k;
 
 	// get fog volume
 	surf->fogIndex = LittleLong ds->fogNum + 1;
 	if (index && !surf->fogIndex && tr.world && tr.world->globalFog != -1)
 	{
-		surf->fogIndex = worldData.globalFog;
+		surf->fogIndex = world_data.globalFog;
 	}
 
 	// get shader
-	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmapsVertex, ds->lightmapStyles, ds->vertexStyles, worldData);
+	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmapsVertex, ds->lightmapStyles, ds->vertexStyles, world_data);
 	if (r_singleShader->integer && !surf->shader->sky) {
 		surf->shader = tr.defaultShader;
 	}
 
-	const int numVerts = ds->numVerts;
-	const int numIndexes = ds->numIndexes;
+	const int num_verts = ds->numVerts;
+	const int num_indexes = ds->numIndexes;
 
-	if (numVerts >= SHADER_MAX_VERTEXES) {
-		Com_Error(ERR_DROP, "ParseTriSurf: verts > MAX (%d > %d) on misc_model %s", numVerts, SHADER_MAX_VERTEXES, surf->shader->name);
+	if (num_verts >= SHADER_MAX_VERTEXES) {
+		Com_Error(ERR_DROP, "ParseTriSurf: verts > MAX (%d > %d) on misc_model %s", num_verts, SHADER_MAX_VERTEXES, surf->shader->name);
 	}
-	if (numIndexes >= SHADER_MAX_INDEXES) {
-		Com_Error(ERR_DROP, "ParseTriSurf: indices > MAX (%d > %d) on misc_model %s", numIndexes, SHADER_MAX_INDEXES, surf->shader->name);
+	if (num_indexes >= SHADER_MAX_INDEXES) {
+		Com_Error(ERR_DROP, "ParseTriSurf: indices > MAX (%d > %d) on misc_model %s", num_indexes, SHADER_MAX_INDEXES, surf->shader->name);
 	}
 
 	srfTriangles_t* tri = static_cast<srfTriangles_t*>(R_Malloc(
-		sizeof * tri + numVerts * sizeof tri->verts[0] + numIndexes * sizeof tri->indexes[0], TAG_HUNKMISCMODELS,
+		sizeof * tri + num_verts * sizeof tri->verts[0] + num_indexes * sizeof tri->indexes[0], TAG_HUNKMISCMODELS,
 		qfalse));
 	tri->dlightBits = 0; //JIC
 	tri->surfaceType = SF_TRIANGLES;
-	tri->numVerts = numVerts;
-	tri->numIndexes = numIndexes;
-	tri->verts = (drawVert_t*)(tri + 1);
-	tri->indexes = (int*)(tri->verts + tri->numVerts);
+	tri->numVerts = num_verts;
+	tri->numIndexes = num_indexes;
+	tri->verts = reinterpret_cast<drawVert_t*>(tri + 1);
+	tri->indexes = reinterpret_cast<int*>(tri->verts + tri->numVerts);
 
-	surf->data = (surfaceType_t*)tri;
+	surf->data = reinterpret_cast<surfaceType_t*>(tri);
 
 	// copy vertexes
 	verts += LittleLong ds->firstVert;
 	ClearBounds(tri->bounds[0], tri->bounds[1]);
-	for (i = 0; i < numVerts; i++) {
+	for (i = 0; i < num_verts; i++) {
 		for (j = 0; j < 3; j++) {
 			tri->verts[i].xyz[j] = LittleFloat verts[i].xyz[j];
 			tri->verts[i].normal[j] = LittleFloat verts[i].normal[j];
@@ -562,9 +562,9 @@ static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int
 
 	// copy indexes
 	indexes += LittleLong ds->firstIndex;
-	for (i = 0; i < numIndexes; i++) {
+	for (i = 0; i < num_indexes; i++) {
 		tri->indexes[i] = LittleLong indexes[i];
-		if (tri->indexes[i] < 0 || tri->indexes[i] >= numVerts) {
+		if (tri->indexes[i] < 0 || tri->indexes[i] >= num_verts) {
 			Com_Error(ERR_DROP, "Bad index in triangle surface");
 		}
 	}
@@ -575,7 +575,7 @@ static void ParseTriSurf(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int
 ParseFlare
 ===============
 */
-static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* indexes, world_t& worldData, const int index)
+static void ParseFlare(const dsurface_t* ds, msurface_t* surf, const world_t& world_data, const int index)
 {
 	constexpr int		lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_BY_VERTEX };
 
@@ -583,11 +583,11 @@ static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* 
 	surf->fogIndex = LittleLong ds->fogNum + 1;
 	if (index && !surf->fogIndex && tr.world->globalFog != -1)
 	{
-		surf->fogIndex = worldData.globalFog;
+		surf->fogIndex = world_data.globalFog;
 	}
 
 	// get shader
-	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmaps, ds->lightmapStyles, ds->vertexStyles, worldData);
+	surf->shader = ShaderForShaderNum(ds->shaderNum, lightmaps, ds->lightmapStyles, ds->vertexStyles, world_data);
 	if (r_singleShader->integer && !surf->shader->sky) {
 		surf->shader = tr.defaultShader;
 	}
@@ -595,7 +595,7 @@ static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* 
 	srfFlare_t* flare = static_cast<srfFlare_t*>(R_Hunk_Alloc(sizeof * flare, qtrue));
 	flare->surfaceType = SF_FLARE;
 
-	surf->data = (surfaceType_t*)flare;
+	surf->data = reinterpret_cast<surfaceType_t*>(flare);
 
 	for (int i = 0; i < 3; i++) {
 		flare->origin[i] = LittleFloat ds->lightmapOrigin[i];
@@ -609,37 +609,37 @@ static void ParseFlare(dsurface_t* ds, mapVert_t* verts, msurface_t* surf, int* 
 R_LoadSurfaces
 ===============
 */
-static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, world_t& worldData, const int index) {
+static	void R_LoadSurfaces(const lump_t* surfs, const lump_t* verts, const lump_t* index_lump, world_t& world_data, const int index) {
 	int			i;
 
-	int numFaces = 0;
-	int numMeshes = 0;
-	int numTriSurfs = 0;
-	int numFlares = 0;
+	int num_faces = 0;
+	int num_meshes = 0;
+	int num_tri_surfs = 0;
+	int num_flares = 0;
 
-	dsurface_t* in = (dsurface_t*)(fileBase + surfs->fileofs);
+	dsurface_t* in = reinterpret_cast<dsurface_t*>(fileBase + surfs->fileofs);
 	if (surfs->filelen % sizeof * in)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	const int count = surfs->filelen / sizeof * in;
 
-	mapVert_t* dv = (mapVert_t*)(fileBase + verts->fileofs);
+	mapVert_t* dv = reinterpret_cast<mapVert_t*>(fileBase + verts->fileofs);
 	if (verts->filelen % sizeof * dv)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 
-	int* indexes = (int*)(fileBase + indexLump->fileofs);
-	if (indexLump->filelen % sizeof * indexes)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+	const auto indexes = reinterpret_cast<int*>(fileBase + index_lump->fileofs);
+	if (index_lump->filelen % sizeof * indexes)
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 
 	msurface_t* out = static_cast<msurface_s*>(R_Hunk_Alloc(count * sizeof * out, qtrue));
 
-	worldData.surfaces = out;
-	worldData.numsurfaces = count;
+	world_data.surfaces = out;
+	world_data.numsurfaces = count;
 
 	// new bit, the face code on our biggest map requires over 15,000 mallocs, which was no problem on the hunk,
 	//	bit hits the zone pretty bad (even the tagFree takes about 9 seconds for that many memblocks),
 	//	so special-case pre-alloc enough space for this data (the patches etc can stay as they are)...
 	//
-	int iFaceDataSizeRequired = 0;
+	int i_face_data_size_required = 0;
 	for (i = 0; i < count; i++, in++)
 	{
 		switch (LittleLong in->surfaceType)
@@ -649,7 +649,7 @@ static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, worl
 			int sfaceSize = (intptr_t) & static_cast<srfSurfaceFace_t*>(nullptr)->points[LittleLong in->numVerts];
 			sfaceSize += sizeof(int) * LittleLong in->numIndexes;
 
-			iFaceDataSizeRequired += sfaceSize;
+			i_face_data_size_required += sfaceSize;
 			break;
 		}
 	}
@@ -658,27 +658,27 @@ static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, worl
 	// since this ptr is to hunk data, I can pass it in and have it advanced without worrying about losing
 	//	the original alloc ptr...
 	//
-	byte* pFaceDataBuffer = static_cast<byte*>(R_Hunk_Alloc(iFaceDataSizeRequired, qtrue));
+	byte* p_face_data_buffer = static_cast<byte*>(R_Hunk_Alloc(i_face_data_size_required, qtrue));
 
 	// now do regular loop...
 	//
 	for (i = 0; i < count; i++, in++, out++) {
 		switch (LittleLong in->surfaceType) {
 		case MST_PATCH:
-			ParseMesh(in, dv, out, worldData, index);
-			numMeshes++;
+			ParseMesh(in, dv, out, world_data, index);
+			num_meshes++;
 			break;
 		case MST_TRIANGLE_SOUP:
-			ParseTriSurf(in, dv, out, indexes, worldData, index);
-			numTriSurfs++;
+			ParseTriSurf(in, dv, out, indexes, world_data, index);
+			num_tri_surfs++;
 			break;
 		case MST_PLANAR:
-			ParseFace(in, dv, out, indexes, pFaceDataBuffer, worldData, index);
-			numFaces++;
+			ParseFace(in, dv, out, indexes, p_face_data_buffer, world_data, index);
+			num_faces++;
 			break;
 		case MST_FLARE:
-			ParseFlare(in, dv, out, indexes, worldData, index);
-			numFlares++;
+			ParseFlare(in, out, world_data, index);
+			num_flares++;
 			break;
 		default:
 			Com_Error(ERR_DROP, "Bad surfaceType");
@@ -686,7 +686,7 @@ static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, worl
 	}
 
 	ri.Printf(PRINT_ALL, "...loaded %d faces, %i meshes, %i trisurfs, %i flares\n",
-		numFaces, numMeshes, numTriSurfs, numFlares);
+		num_faces, num_meshes, num_tri_surfs, num_flares);
 }
 
 /*
@@ -694,15 +694,15 @@ static	void R_LoadSurfaces(lump_t* surfs, lump_t* verts, lump_t* indexLump, worl
 R_LoadSubmodels
 =================
 */
-static	void R_LoadSubmodels(lump_t* l, world_t& worldData, const int index) {
+static	void R_LoadSubmodels(const lump_t* l, world_t& world_data, const int index) {
 	bmodel_t* out;
 
-	dmodel_t* in = (dmodel_t*)(fileBase + l->fileofs);
+	dmodel_t* in = reinterpret_cast<dmodel_t*>(fileBase + l->fileofs);
 	if (l->filelen % sizeof * in)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	const int count = l->filelen / sizeof * in;
 
-	worldData.bmodels = out = static_cast<bmodel_t*>(R_Hunk_Alloc(count * sizeof * out, qtrue));
+	world_data.bmodels = out = static_cast<bmodel_t*>(R_Hunk_Alloc(count * sizeof * out, qtrue));
 
 	for (int i = 0; i < count; i++, in++, out++) {
 		model_t* model = R_AllocModel();
@@ -737,7 +737,7 @@ static	void R_LoadSubmodels(lump_t* l, world_t& worldData, const int index) {
 		Ghoul2 Insert End
 		*/
 
-		out->firstSurface = worldData.surfaces + LittleLong in->firstSurface;
+		out->firstSurface = world_data.surfaces + LittleLong in->firstSurface;
 		out->numSurfaces = LittleLong in->numSurfaces;
 	}
 }
@@ -763,25 +763,25 @@ static	void R_SetParent(mnode_t* node, mnode_t* parent)
 R_LoadNodesAndLeafs
 =================
 */
-static	void R_LoadNodesAndLeafs(lump_t* nodeLump, lump_t* leafLump, world_t& worldData) {
+static	void R_LoadNodesAndLeafs(const lump_t* node_lump, const lump_t* leaf_lump, world_t& world_data) {
 	int			i, j;
 
-	dnode_t* in = (dnode_t*)(fileBase + nodeLump->fileofs);
-	if (nodeLump->filelen % sizeof(dnode_t) ||
-		leafLump->filelen % sizeof(dleaf_t)) {
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+	dnode_t* in = reinterpret_cast<dnode_t*>(fileBase + node_lump->fileofs);
+	if (node_lump->filelen % sizeof(dnode_t) ||
+		leaf_lump->filelen % sizeof(dleaf_t)) {
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	}
-	const int numNodes = nodeLump->filelen / sizeof(dnode_t);
-	const int numLeafs = leafLump->filelen / sizeof(dleaf_t);
+	const int num_nodes = node_lump->filelen / sizeof(dnode_t);
+	const int num_leafs = leaf_lump->filelen / sizeof(dleaf_t);
 
-	mnode_t* out = static_cast<mnode_s*>(R_Hunk_Alloc((numNodes + numLeafs) * sizeof * out, qtrue));
+	mnode_t* out = static_cast<mnode_s*>(R_Hunk_Alloc((num_nodes + num_leafs) * sizeof * out, qtrue));
 
-	worldData.nodes = out;
-	worldData.numnodes = numNodes + numLeafs;
-	worldData.numDecisionNodes = numNodes;
+	world_data.nodes = out;
+	world_data.numnodes = num_nodes + num_leafs;
+	world_data.numDecisionNodes = num_nodes;
 
 	// load nodes
-	for (i = 0; i < numNodes; i++, in++, out++)
+	for (i = 0; i < num_nodes; i++, in++, out++)
 	{
 		for (j = 0; j < 3; j++)
 		{
@@ -790,7 +790,7 @@ static	void R_LoadNodesAndLeafs(lump_t* nodeLump, lump_t* leafLump, world_t& wor
 		}
 
 		int p = in->planeNum;
-		out->plane = worldData.planes + p;
+		out->plane = world_data.planes + p;
 
 		out->contents = CONTENTS_NODE;	// differentiate from leafs
 
@@ -798,36 +798,36 @@ static	void R_LoadNodesAndLeafs(lump_t* nodeLump, lump_t* leafLump, world_t& wor
 		{
 			p = LittleLong in->children[j];
 			if (p >= 0)
-				out->children[j] = worldData.nodes + p;
+				out->children[j] = world_data.nodes + p;
 			else
-				out->children[j] = worldData.nodes + numNodes + (-1 - p);
+				out->children[j] = world_data.nodes + num_nodes + (-1 - p);
 		}
 	}
 
 	// load leafs
-	dleaf_t* inLeaf = (dleaf_t*)(fileBase + leafLump->fileofs);
-	for (i = 0; i < numLeafs; i++, inLeaf++, out++)
+	dleaf_t* in_leaf = reinterpret_cast<dleaf_t*>(fileBase + leaf_lump->fileofs);
+	for (i = 0; i < num_leafs; i++, in_leaf++, out++)
 	{
 		for (j = 0; j < 3; j++)
 		{
-			out->mins[j] = LittleLong inLeaf->mins[j];
-			out->maxs[j] = LittleLong inLeaf->maxs[j];
+			out->mins[j] = LittleLong in_leaf->mins[j];
+			out->maxs[j] = LittleLong in_leaf->maxs[j];
 		}
 
-		out->cluster = LittleLong inLeaf->cluster;
-		out->area = LittleLong inLeaf->area;
+		out->cluster = LittleLong in_leaf->cluster;
+		out->area = LittleLong in_leaf->area;
 
-		if (out->cluster >= worldData.numClusters) {
-			worldData.numClusters = out->cluster + 1;
+		if (out->cluster >= world_data.numClusters) {
+			world_data.numClusters = out->cluster + 1;
 		}
 
-		out->firstmarksurface = worldData.marksurfaces +
-			LittleLong inLeaf->firstLeafSurface;
-		out->nummarksurfaces = LittleLong inLeaf->numLeafSurfaces;
+		out->firstmarksurface = world_data.marksurfaces +
+			LittleLong in_leaf->firstLeafSurface;
+		out->nummarksurfaces = LittleLong in_leaf->numLeafSurfaces;
 	}
 
 	// chain decendants
-	R_SetParent(worldData.nodes, nullptr);
+	R_SetParent(world_data.nodes, nullptr);
 }
 
 //=============================================================================
@@ -837,15 +837,15 @@ static	void R_LoadNodesAndLeafs(lump_t* nodeLump, lump_t* leafLump, world_t& wor
 R_LoadShaders
 =================
 */
-static	void R_LoadShaders(lump_t* l, world_t& worldData) {
-	const dshader_t* in = (dshader_t*)(fileBase + l->fileofs);
+static	void R_LoadShaders(const lump_t* l, world_t& world_data) {
+	const dshader_t* in = reinterpret_cast<dshader_t*>(fileBase + l->fileofs);
 	if (l->filelen % sizeof * in)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	const int count = l->filelen / sizeof * in;
 	dshader_t* out = static_cast<dshader_t*>(R_Hunk_Alloc(count * sizeof * out, qfalse));
 
-	worldData.shaders = out;
-	worldData.numShaders = count;
+	world_data.shaders = out;
+	world_data.numShaders = count;
 
 	memcpy(out, in, count * sizeof * out);
 
@@ -860,21 +860,21 @@ static	void R_LoadShaders(lump_t* l, world_t& worldData) {
 R_LoadMarksurfaces
 =================
 */
-static	void R_LoadMarksurfaces(lump_t* l, world_t& worldData)
+static	void R_LoadMarksurfaces(const lump_t* l, world_t& world_data)
 {
-	const int* in = (int*)(fileBase + l->fileofs);
+	const int* in = reinterpret_cast<int*>(fileBase + l->fileofs);
 	if (l->filelen % sizeof * in)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	const int count = l->filelen / sizeof * in;
 	msurface_t** out = static_cast<msurface_s**>(R_Hunk_Alloc(count * sizeof * out, qtrue));
 
-	worldData.marksurfaces = out;
-	worldData.nummarksurfaces = count;
+	world_data.marksurfaces = out;
+	world_data.nummarksurfaces = count;
 
 	for (int i = 0; i < count; i++)
 	{
 		const int j = in[i];
-		out[i] = worldData.surfaces + j;
+		out[i] = world_data.surfaces + j;
 	}
 }
 
@@ -883,15 +883,15 @@ static	void R_LoadMarksurfaces(lump_t* l, world_t& worldData)
 R_LoadPlanes
 =================
 */
-static	void R_LoadPlanes(lump_t* l, world_t& worldData) {
-	dplane_t* in = (dplane_t*)(fileBase + l->fileofs);
+static	void R_LoadPlanes(const lump_t* l, world_t& world_data) {
+	dplane_t* in = reinterpret_cast<dplane_t*>(fileBase + l->fileofs);
 	if (l->filelen % sizeof * in)
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	const int count = l->filelen / sizeof * in;
 	cplane_t* out = static_cast<cplane_s*>(R_Hunk_Alloc(count * 2 * sizeof * out, qtrue));
 
-	worldData.planes = out;
-	worldData.numplanes = count;
+	world_data.planes = out;
+	world_data.numplanes = count;
 
 	for (int i = 0; i < count; i++, in++, out++) {
 		int bits = 0;
@@ -914,24 +914,24 @@ R_LoadFogs
 
 =================
 */
-static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_t& worldData, const int index) {
+static	void R_LoadFogs(const lump_t* l, const lump_t* brushes_lump, const lump_t* sides_lump, world_t& world_data, const int index) {
 	fog_t* out;
-	int			sideNum;
-	int			planeNum;
-	int			firstSide = 0;
+	int			side_num;
+	int			plane_num;
+	int			first_side = 0;
 	constexpr int			lightmaps[MAXLIGHTMAPS] = { LIGHTMAP_NONE };
 
-	dfog_t* fogs = (dfog_t*)(fileBase + l->fileofs);
+	dfog_t* fogs = reinterpret_cast<dfog_t*>(fileBase + l->fileofs);
 	if (l->filelen % sizeof * fogs) {
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	}
 	const int count = l->filelen / sizeof * fogs;
 
 	// create fog strucutres for them
-	worldData.numfogs = count + 1;
-	worldData.fogs = static_cast<fog_t*>(R_Hunk_Alloc((worldData.numfogs + 1) * sizeof * out, qtrue));
-	worldData.globalFog = -1;
-	out = worldData.fogs + 1;
+	world_data.numfogs = count + 1;
+	world_data.fogs = static_cast<fog_t*>(R_Hunk_Alloc((world_data.numfogs + 1) * sizeof * out, qtrue));
+	world_data.globalFog = -1;
+	out = world_data.fogs + 1;
 
 	// Copy the global fog from the main world into the bsp instance
 	if (index)
@@ -939,9 +939,9 @@ static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_
 		if (tr.world && tr.world->globalFog != -1)
 		{
 			// Use the nightvision fog slot
-			worldData.fogs[worldData.numfogs] = tr.world->fogs[tr.world->globalFog];
-			worldData.globalFog = worldData.numfogs;
-			worldData.numfogs++;
+			world_data.fogs[world_data.numfogs] = tr.world->fogs[tr.world->globalFog];
+			world_data.globalFog = world_data.numfogs;
+			world_data.numfogs++;
 		}
 	}
 
@@ -949,17 +949,17 @@ static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_
 		return;
 	}
 
-	const dbrush_t* brushes = (dbrush_t*)(fileBase + brushesLump->fileofs);
-	if (brushesLump->filelen % sizeof * brushes) {
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+	const dbrush_t* brushes = reinterpret_cast<dbrush_t*>(fileBase + brushes_lump->fileofs);
+	if (brushes_lump->filelen % sizeof * brushes) {
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	}
-	const int brushesCount = brushesLump->filelen / sizeof * brushes;
+	const int brushes_count = brushes_lump->filelen / sizeof * brushes;
 
-	const dbrushside_t* sides = (dbrushside_t*)(fileBase + sidesLump->fileofs);
-	if (sidesLump->filelen % sizeof * sides) {
-		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
+	const dbrushside_t* sides = reinterpret_cast<dbrushside_t*>(fileBase + sides_lump->fileofs);
+	if (sides_lump->filelen % sizeof * sides) {
+		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", world_data.name);
 	}
-	const int sidesCount = sidesLump->filelen / sizeof * sides;
+	const int sides_count = sides_lump->filelen / sizeof * sides;
 
 	for (int i = 0; i < count; i++, fogs++) {
 		out->originalBrushNumber = LittleLong fogs->brushNum;
@@ -967,49 +967,49 @@ static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_
 		{
 			if (index)
 			{
-				Com_Error(ERR_DROP, "LoadMap: global fog not allowed in bsp instances - %s", worldData.name);
+				Com_Error(ERR_DROP, "LoadMap: global fog not allowed in bsp instances - %s", world_data.name);
 			}
 			VectorSet(out->bounds[0], MIN_WORLD_COORD, MIN_WORLD_COORD, MIN_WORLD_COORD);
 			VectorSet(out->bounds[1], MAX_WORLD_COORD, MAX_WORLD_COORD, MAX_WORLD_COORD);
-			worldData.globalFog = i + 1;
+			world_data.globalFog = i + 1;
 		}
 		else
 		{
-			if (static_cast<unsigned>(out->originalBrushNumber) >= static_cast<unsigned>(brushesCount)) {
+			if (static_cast<unsigned>(out->originalBrushNumber) >= static_cast<unsigned>(brushes_count)) {
 				Com_Error(ERR_DROP, "fog brushNumber out of range");
 			}
 			const dbrush_t* brush = brushes + out->originalBrushNumber;
 
-			firstSide = LittleLong brush->firstSide;
+			first_side = LittleLong brush->firstSide;
 
-			if (static_cast<unsigned>(firstSide) > static_cast<unsigned>(sidesCount - 6)) {
+			if (static_cast<unsigned>(first_side) > static_cast<unsigned>(sides_count - 6)) {
 				Com_Error(ERR_DROP, "fog brush sideNumber out of range");
 			}
 
 			// brushes are always sorted with the axial sides first
-			sideNum = firstSide + 0;
-			planeNum = LittleLong sides[sideNum].planeNum;
-			out->bounds[0][0] = -worldData.planes[planeNum].dist;
+			side_num = first_side + 0;
+			plane_num = LittleLong sides[side_num].planeNum;
+			out->bounds[0][0] = -world_data.planes[plane_num].dist;
 
-			sideNum = firstSide + 1;
-			planeNum = LittleLong sides[sideNum].planeNum;
-			out->bounds[1][0] = worldData.planes[planeNum].dist;
+			side_num = first_side + 1;
+			plane_num = LittleLong sides[side_num].planeNum;
+			out->bounds[1][0] = world_data.planes[plane_num].dist;
 
-			sideNum = firstSide + 2;
-			planeNum = LittleLong sides[sideNum].planeNum;
-			out->bounds[0][1] = -worldData.planes[planeNum].dist;
+			side_num = first_side + 2;
+			plane_num = LittleLong sides[side_num].planeNum;
+			out->bounds[0][1] = -world_data.planes[plane_num].dist;
 
-			sideNum = firstSide + 3;
-			planeNum = LittleLong sides[sideNum].planeNum;
-			out->bounds[1][1] = worldData.planes[planeNum].dist;
+			side_num = first_side + 3;
+			plane_num = LittleLong sides[side_num].planeNum;
+			out->bounds[1][1] = world_data.planes[plane_num].dist;
 
-			sideNum = firstSide + 4;
-			planeNum = LittleLong sides[sideNum].planeNum;
-			out->bounds[0][2] = -worldData.planes[planeNum].dist;
+			side_num = first_side + 4;
+			plane_num = LittleLong sides[side_num].planeNum;
+			out->bounds[0][2] = -world_data.planes[plane_num].dist;
 
-			sideNum = firstSide + 5;
-			planeNum = LittleLong sides[sideNum].planeNum;
-			out->bounds[1][2] = worldData.planes[planeNum].dist;
+			side_num = first_side + 5;
+			plane_num = LittleLong sides[side_num].planeNum;
+			out->bounds[1][2] = world_data.planes[plane_num].dist;
 		}
 
 		// get information from the shader for fog parameters
@@ -1035,16 +1035,16 @@ static	void R_LoadFogs(lump_t* l, lump_t* brushesLump, lump_t* sidesLump, world_
 		out->tcScale = 1.0f / (d * 8);
 
 		// set the gradient vector
-		sideNum = LittleLong fogs->visibleSide;
+		side_num = LittleLong fogs->visibleSide;
 
-		if (sideNum == -1) {
+		if (side_num == -1) {
 			out->hasSurface = qfalse;
 		}
 		else {
 			out->hasSurface = qtrue;
-			planeNum = LittleLong sides[firstSide + sideNum].planeNum;
-			VectorSubtract(vec3_origin, worldData.planes[planeNum].normal, out->surface);
-			out->surface[3] = -worldData.planes[planeNum].dist;
+			plane_num = LittleLong sides[first_side + side_num].planeNum;
+			VectorSubtract(vec3_origin, world_data.planes[plane_num].normal, out->surface);
+			out->surface[3] = -world_data.planes[plane_num].dist;
 		}
 
 		out++;
@@ -1074,32 +1074,32 @@ R_LoadLightGrid
 
 ================
 */
-void R_LoadLightGrid(lump_t* l, world_t& worldData) {
+void R_LoadLightGrid(const lump_t* l, world_t& world_data) {
 	int		i;
 	vec3_t	maxs;
 
-	world_t* w = &worldData;
+	world_t* w = &world_data;
 
 	w->lightGridInverseSize[0] = 1.0 / w->lightGridSize[0];
 	w->lightGridInverseSize[1] = 1.0 / w->lightGridSize[1];
 	w->lightGridInverseSize[2] = 1.0 / w->lightGridSize[2];
 
-	const float* wMins = w->bmodels[0].bounds[0];
-	const float* wMaxs = w->bmodels[0].bounds[1];
+	const float* w_mins = w->bmodels[0].bounds[0];
+	const float* w_maxs = w->bmodels[0].bounds[1];
 
 	for (i = 0; i < 3; i++) {
-		w->lightGridOrigin[i] = w->lightGridSize[i] * ceil(wMins[i] / w->lightGridSize[i]);
-		maxs[i] = w->lightGridSize[i] * floor(wMaxs[i] / w->lightGridSize[i]);
+		w->lightGridOrigin[i] = w->lightGridSize[i] * ceil(w_mins[i] / w->lightGridSize[i]);
+		maxs[i] = w->lightGridSize[i] * floor(w_maxs[i] / w->lightGridSize[i]);
 		w->lightGridBounds[i] = (maxs[i] - w->lightGridOrigin[i]) / w->lightGridSize[i] + 1;
 	}
 
-	const int numGridDataElements = l->filelen / sizeof * w->lightGridData;
+	const int num_grid_data_elements = l->filelen / sizeof * w->lightGridData;
 
 	w->lightGridData = static_cast<mgrid_t*>(R_Hunk_Alloc(l->filelen, qfalse));
 	memcpy(w->lightGridData, fileBase + l->fileofs, l->filelen);
 
 	// deal with overbright bits
-	for (i = 0; i < numGridDataElements; i++) {
+	for (i = 0; i < num_grid_data_elements; i++) {
 		for (int j = 0; j < MAXLIGHTMAPS; j++)
 		{
 			R_ColorShiftLightingBytes(w->lightGridData[i].ambientLight[j]);
@@ -1114,13 +1114,13 @@ R_LoadLightGridArray
 
 ================
 */
-void R_LoadLightGridArray(lump_t* l, world_t& worldData) {
+void R_LoadLightGridArray(const lump_t* l, world_t& world_data) {
 	world_t* w;
 #ifdef Q3_BIG_ENDIAN
 	int i;
 #endif
 
-	w = &worldData;
+	w = &world_data;
 
 	w->numGridArrayElements = w->lightGridBounds[0] * w->lightGridBounds[1] * w->lightGridBounds[2];
 
@@ -1145,13 +1145,13 @@ void R_LoadLightGridArray(lump_t* l, world_t& worldData) {
 R_LoadEntities
 ================
 */
-void R_LoadEntities(lump_t* l, world_t& worldData) {
+void R_LoadEntities(const lump_t* l, world_t& world_data) {
 	const char* p;
 	float ambient = 1;
 
 	COM_BeginParseSession();
 
-	world_t* w = &worldData;
+	world_t* w = &world_data;
 	w->lightGridSize[0] = 64;
 	w->lightGridSize[1] = 64;
 	w->lightGridSize[2] = 128;
@@ -1159,7 +1159,7 @@ void R_LoadEntities(lump_t* l, world_t& worldData) {
 	VectorSet(tr.sunAmbient, 1, 1, 1);
 	tr.distanceCull = 12000;//DEFAULT_DISTANCE_CULL;
 
-	p = (char*)(fileBase + l->fileofs);
+	p = reinterpret_cast<char*>(fileBase + l->fileofs);
 
 	const char* token = COM_ParseExt(&p, qtrue);
 	if (!*token || *token != '{') {
@@ -1224,9 +1224,9 @@ RE_LoadWorldMap
 Called directly from cgame
 =================
 */
-void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, const int index) {
+void RE_LoadWorldMap_Actual(const char* name, world_t& world_data, const int index) {
 	byte* buffer = nullptr;
-	qboolean	loadedSubBSP = qfalse;
+	qboolean	loaded_sub_bsp = qfalse;
 
 	if (tr.worldMapLoaded && !index) {
 		Com_Error(ERR_DROP, "ERROR: attempted to redundantly load world map\n");
@@ -1270,7 +1270,7 @@ void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, const int inde
 	//			   gpvCachedMapDiskImage = NULL;
 			//rww - this is a valid possibility now because of sub-bsp loading.\
 			//it's alright, just keep the current cache
-			loadedSubBSP = qtrue;
+			loaded_sub_bsp = qtrue;
 		}
 	}
 
@@ -1286,18 +1286,18 @@ void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, const int inde
 		}
 	}
 
-	memset(&worldData, 0, sizeof worldData);
-	Q_strncpyz(worldData.name, name, sizeof worldData.name);
+	memset(&world_data, 0, sizeof world_data);
+	Q_strncpyz(world_data.name, name, sizeof world_data.name);
 	Q_strncpyz(tr.worldDir, name, sizeof tr.worldDir);
-	Q_strncpyz(worldData.baseName, COM_SkipPath(worldData.name), sizeof worldData.name);
+	Q_strncpyz(world_data.baseName, COM_SkipPath(world_data.name), sizeof world_data.name);
 
-	COM_StripExtension(worldData.baseName, worldData.baseName, sizeof worldData.baseName);
+	COM_StripExtension(world_data.baseName, world_data.baseName, sizeof world_data.baseName);
 	COM_StripExtension(tr.worldDir, tr.worldDir, sizeof tr.worldDir);
 
 	c_gridVerts = 0;
 
-	dheader_t* header = (dheader_t*)buffer;
-	fileBase = (byte*)header;
+	dheader_t* header = reinterpret_cast<dheader_t*>(buffer);
+	fileBase = reinterpret_cast<byte*>(header);
 
 	header->version = LittleLong header->version;
 
@@ -1308,31 +1308,31 @@ void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, const int inde
 
 	// swap all the lumps
 	for (size_t i = 0; i < sizeof(dheader_t) / 4; i++) {
-		((int*)header)[i] = LittleLong((int*)header)[i];
+		reinterpret_cast<int*>(header)[i] = LittleLong reinterpret_cast<int*>(header)[i];
 	}
 
 	// load into heap
-	R_LoadShaders(&header->lumps[LUMP_SHADERS], worldData);
-	R_LoadLightmaps(&header->lumps[LUMP_LIGHTMAPS], name, worldData);
-	R_LoadPlanes(&header->lumps[LUMP_PLANES], worldData);
-	R_LoadFogs(&header->lumps[LUMP_FOGS], &header->lumps[LUMP_BRUSHES], &header->lumps[LUMP_BRUSHSIDES], worldData, index);
-	R_LoadSurfaces(&header->lumps[LUMP_SURFACES], &header->lumps[LUMP_DRAWVERTS], &header->lumps[LUMP_DRAWINDEXES], worldData, index);
-	R_LoadMarksurfaces(&header->lumps[LUMP_LEAFSURFACES], worldData);
-	R_LoadNodesAndLeafs(&header->lumps[LUMP_NODES], &header->lumps[LUMP_LEAFS], worldData);
-	R_LoadSubmodels(&header->lumps[LUMP_MODELS], worldData, index);
-	R_LoadVisibility(&header->lumps[LUMP_VISIBILITY], worldData);
+	R_LoadShaders(&header->lumps[LUMP_SHADERS], world_data);
+	R_LoadLightmaps(&header->lumps[LUMP_LIGHTMAPS], name, world_data);
+	R_LoadPlanes(&header->lumps[LUMP_PLANES], world_data);
+	R_LoadFogs(&header->lumps[LUMP_FOGS], &header->lumps[LUMP_BRUSHES], &header->lumps[LUMP_BRUSHSIDES], world_data, index);
+	R_LoadSurfaces(&header->lumps[LUMP_SURFACES], &header->lumps[LUMP_DRAWVERTS], &header->lumps[LUMP_DRAWINDEXES], world_data, index);
+	R_LoadMarksurfaces(&header->lumps[LUMP_LEAFSURFACES], world_data);
+	R_LoadNodesAndLeafs(&header->lumps[LUMP_NODES], &header->lumps[LUMP_LEAFS], world_data);
+	R_LoadSubmodels(&header->lumps[LUMP_MODELS], world_data, index);
+	R_LoadVisibility(&header->lumps[LUMP_VISIBILITY], world_data);
 
 	if (!index)
 	{
-		R_LoadEntities(&header->lumps[LUMP_ENTITIES], worldData);
-		R_LoadLightGrid(&header->lumps[LUMP_LIGHTGRID], worldData);
-		R_LoadLightGridArray(&header->lumps[LUMP_LIGHTARRAY], worldData);
+		R_LoadEntities(&header->lumps[LUMP_ENTITIES], world_data);
+		R_LoadLightGrid(&header->lumps[LUMP_LIGHTGRID], world_data);
+		R_LoadLightGridArray(&header->lumps[LUMP_LIGHTARRAY], world_data);
 
 		// only set tr.world now that we know the entire level has loaded properly
-		tr.world = &worldData;
+		tr.world = &world_data;
 	}
 
-	if (ri.gpvCachedMapDiskImage() && !loadedSubBSP)
+	if (ri.gpvCachedMapDiskImage() && !loaded_sub_bsp)
 	{
 		// For the moment, I'm going to keep this disk image around in case we need it to respawn.
 		//  No problem for memory, since it'll only be a NZ ptr if we're not low on physical memory

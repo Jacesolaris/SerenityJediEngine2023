@@ -109,7 +109,7 @@ using uiStatic_t = struct
 };
 
 extern void UI_FillRect(float x, float y, float width, float height, const float* color);
-extern void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader);
+extern void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t h_shader);
 extern void UI_UpdateScreen(void);
 extern int UI_RegisterFont(const char* fontName);
 extern void UI_SetColor(const float* rgba);
@@ -241,7 +241,7 @@ void trap_Key_SetBinding(int keynum, const char* binding);
 void trap_Key_SetCatcher(int catcher);
 void trap_Key_SetOverstrikeMode(qboolean state);
 void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-                           qhandle_t hShader);
+                           qhandle_t h_shader);
 void trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs);
 void trap_R_SetColor(const float* rgba);
 void trap_R_ClearScene(void);

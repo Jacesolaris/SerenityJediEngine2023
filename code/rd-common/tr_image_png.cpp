@@ -31,14 +31,15 @@ void user_write_data(const png_structp png_ptr, const png_bytep data, const png_
 	const fileHandle_t fp = *static_cast<fileHandle_t*>(png_get_io_ptr(png_ptr));
 	ri.FS_Write(data, length, fp);
 }
-void user_flush_data(png_structp png_ptr) {
+void user_flush_data(png_structp png_ptr)
+{
 	//TODO: ri->FS_Flush?
 }
 
-int RE_SavePNG(const char* filename, byte* buf, const size_t width, const size_t height, const int byteDepth) {
+int RE_SavePNG(const char* filename, const byte* buf, const size_t width, const size_t height, const int byte_depth) {
 	fileHandle_t fp;
-	png_structp png_ptr = nullptr;
-	png_infop info_ptr = nullptr;
+	png_structp png_ptr;
+	png_infop info_ptr;
 	unsigned int y;
 	/* "status" contains the return value of this function. At first
 	it is set to a value which means 'failure'. When the routine
@@ -87,7 +88,7 @@ int RE_SavePNG(const char* filename, byte* buf, const size_t width, const size_t
 
 	png_byte** row_pointers = static_cast<png_byte**>(png_malloc(png_ptr, height * sizeof(png_byte*)));
 	for (y = 0; y < height; ++y) {
-		png_byte* row = static_cast<png_byte*>(png_malloc(png_ptr, sizeof(uint8_t) * width * byteDepth));
+		png_byte* row = static_cast<png_byte*>(png_malloc(png_ptr, sizeof(uint8_t) * width * byte_depth));
 		row_pointers[height - y - 1] = row;
 		for (unsigned int x = 0; x < width; ++x) {
 			const byte* px = buf + (width * y + x) * 3;
@@ -153,7 +154,7 @@ struct PNGFileReader
 		}
 	}
 
-	int Read(byte** data, int* width, int* height)
+	int read(byte** data, int* width, int* height)
 	{
 		// Setup the pointers
 		*data = nullptr;
@@ -161,12 +162,12 @@ struct PNGFileReader
 		*height = 0;
 
 		// Make sure we're actually reading PNG data.
-		constexpr int SIGNATURE_LEN = 8;
+		constexpr int signature_len = 8;
 
-		byte ident[SIGNATURE_LEN];
-		memcpy(ident, buf, SIGNATURE_LEN);
+		byte ident[signature_len];
+		memcpy(ident, buf, signature_len);
 
-		if (!png_check_sig(ident, SIGNATURE_LEN))
+		if (!png_check_sig(ident, signature_len))
 		{
 			ri.Printf(PRINT_ERROR, "PNG signature not found in given image.");
 			return 0;
@@ -186,7 +187,7 @@ struct PNGFileReader
 		}
 
 		// We've read the signature
-		offset += SIGNATURE_LEN;
+		offset += signature_len;
 
 		// Setup reading information, and read header
 		png_set_read_fn(png_ptr, this, &user_read_data);
@@ -194,19 +195,19 @@ struct PNGFileReader
 		// This generic "ignore all, except required chunks" requires 1.6.0 or newer"
 		png_set_keep_unknown_chunks(png_ptr, PNG_HANDLE_CHUNK_NEVER, nullptr, -1);
 #endif
-		png_set_sig_bytes(png_ptr, SIGNATURE_LEN);
+		png_set_sig_bytes(png_ptr, signature_len);
 		png_read_info(png_ptr, info_ptr);
 
-		png_uint_32 width_;
-		png_uint_32 height_;
+		png_uint_32 width32;
+		png_uint_32 height32;
 		int depth;
 		int colortype;
 
-		png_get_IHDR(png_ptr, info_ptr, &width_, &height_, &depth, &colortype, nullptr, nullptr, nullptr);
+		png_get_IHDR(png_ptr, info_ptr, &width32, &height32, &depth, &colortype, nullptr, nullptr, nullptr);
 
 		// While modern OpenGL can handle non-PoT textures, it's faster to handle only PoT
 		// so that the graphics driver doesn't have to fiddle about with the texture when uploading.
-		if (!IsPowerOfTwo(width_) || !IsPowerOfTwo(height_))
+		if (!IsPowerOfTwo(width32) || !IsPowerOfTwo(height32))
 		{
 			ri.Printf(PRINT_ERROR, "Width or height is not a power-of-two.\n");
 			return 0;
@@ -232,7 +233,7 @@ struct PNGFileReader
 		png_read_update_info(png_ptr, info_ptr);
 
 		// We always assume there are 4 channels. RGB channels are expanded to RGBA when read.
-		byte* tempData = static_cast<byte*>(R_Malloc(width_ * height_ * 4, TAG_TEMP_PNG, qfalse));
+		byte* tempData = static_cast<byte*>(R_Malloc(width32 * height32 * 4, TAG_TEMP_PNG, qfalse));
 		if (!tempData)
 		{
 			ri.Printf(PRINT_ERROR, "Could not allocate enough memory to load the image.");
@@ -240,7 +241,7 @@ struct PNGFileReader
 		}
 
 		// Dynamic array of row pointers, with 'height' elements, initialized to NULL.
-		byte** row_pointers = static_cast<byte**>(R_Malloc(sizeof(byte*) * height_, TAG_TEMP_PNG, qfalse));
+		byte** row_pointers = static_cast<byte**>(R_Malloc(sizeof(byte*) * height32, TAG_TEMP_PNG, qfalse));
 		if (!row_pointers)
 		{
 			ri.Printf(PRINT_ERROR, "Could not allocate enough memory to load the image.");
@@ -258,9 +259,9 @@ struct PNGFileReader
 			return 0;
 		}
 
-		for (unsigned int i = 0, j = 0; i < height_; i++, j += 4)
+		for (unsigned int i = 0, j = 0; i < height32; i++, j += 4)
 		{
-			row_pointers[i] = tempData + j * width_;
+			row_pointers[i] = tempData + j * width32;
 		}
 
 		png_read_image(png_ptr, row_pointers);
@@ -272,8 +273,8 @@ struct PNGFileReader
 
 		// Finally assign all the parameters
 		*data = tempData;
-		*width = width_;
-		*height = height_;
+		*width = width32;
+		*height = height32;
 
 		return 1;
 	}
@@ -308,5 +309,5 @@ void LoadPNG(const char* filename, byte** data, int* width, int* height)
 	}
 
 	PNGFileReader reader(buf);
-	reader.Read(data, width, height);
+	reader.read(data, width, height);
 }

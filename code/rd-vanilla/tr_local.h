@@ -544,7 +544,7 @@ constexpr auto MAX_GRID_SIZE = 65;			// max dimensions of a grid mesh in memory;
 // as soon as it is called
 using srfPoly_t = struct srfPoly_s {
 	surfaceType_t	surfaceType;
-	qhandle_t		hShader;
+	qhandle_t		h_shader;
 	int				fogIndex;
 	int				numVerts;
 	polyVert_t* verts;
@@ -1238,7 +1238,7 @@ byte* RE_TempRawImage_ReadFromFile(const char* ps_local_filename, int* pi_width,
 void	RE_TempRawImage_CleanUp();
 
 void		RE_BeginRegistration(glconfig_t* glconfig);
-void		RE_LoadWorldMap(const char* mapname);
+void		RE_LoadWorldMap(const char* name);
 void		RE_SetWorldVisData(const byte* vis);
 qhandle_t	RE_RegisterModel(const char* name);
 qhandle_t	RE_RegisterSkin(const char* name);
@@ -1257,7 +1257,7 @@ void		RE_RegisterImages_Info_f(void);
 model_t* R_AllocModel(void);
 
 void    	R_Init();
-image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int glWrapClampMode);
+image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allow_picmip, qboolean allow_tc, int gl_wrap_clamp_mode);
 
 image_t* R_CreateImage(const char* name, const byte* pic, int width, int height, GLenum format, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int wrapClampMode);
 
@@ -1292,10 +1292,10 @@ extern	const byte	stylesDefault[MAXLIGHTMAPS];
 qhandle_t		 RE_RegisterShader(const char* name);
 qhandle_t		 RE_RegisterShaderNoMip(const char* name);
 
-shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, qboolean mipRawImage);
-shader_t* R_GetShaderByHandle(qhandle_t hShader);
-void		R_InitShaders(void);
-void		R_ShaderList_f(void);
+shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* styles, qboolean mip_raw_image);
+shader_t* R_GetShaderByHandle(qhandle_t h_shader);
+void		R_InitShaders();
+void		R_ShaderList_f();
 
 //
 // tr_arb.c
@@ -1474,7 +1474,7 @@ void R_InitNextFrame(void);
 
 void RE_ClearScene(void);
 void RE_AddRefEntityToScene(const refEntity_t* ent);
-void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts);
+void RE_AddPolyToScene(qhandle_t h_shader, int numVerts, const polyVert_t* verts);
 void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b);
 void RE_RenderScene(const refdef_t* fd);
 
@@ -1724,11 +1724,11 @@ void R_AddDrawSurfCmd(drawSurf_t* drawSurfs, int numDrawSurfs);
 
 void RE_SetColor(const float* rgba);
 void RE_StretchPic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, qhandle_t hShader);
+	float s1, float t1, float s2, float t2, qhandle_t h_shader);
 void RE_RotatePic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t hShader);
+	float s1, float t1, float s2, float t2, float a, qhandle_t h_shader);
 void RE_RotatePic2(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t hShader);
+	float s1, float t1, float s2, float t2, float a, qhandle_t h_shader);
 void RE_RenderWorldEffects(void);
 void RE_LAGoggles(void);
 void RE_Scissor(float x, float y, float w, float h);

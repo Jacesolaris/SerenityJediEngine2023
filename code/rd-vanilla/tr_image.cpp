@@ -889,35 +889,35 @@ qboolean RE_RegisterImages_LevelLoadEnd(void)
 //
 // This is called by both R_FindImageFile and anything that creates default images...
 //
-static image_t* R_FindImageFile_NoLoad(const char* name, const qboolean mipmap, const qboolean allowPicmip, qboolean allowTC, const int glWrapClampMode)
+static image_t* R_FindImageFile_NoLoad(const char* name, const qboolean mipmap, const qboolean allow_picmip, const int gl_wrap_clamp_mode)
 {
 	if (!name) {
 		return nullptr;
 	}
 
-	const char* pName = GenerateImageMappingName(name);
+	const char* p_name = GenerateImageMappingName(name);
 
 	//
 	// see if the image is already loaded
 	//
-	const AllocatedImages_t::iterator itAllocatedImage = AllocatedImages.find(pName);
+	const AllocatedImages_t::iterator itAllocatedImage = AllocatedImages.find(p_name);
 	if (itAllocatedImage != AllocatedImages.end())
 	{
 		image_t* pImage = (*itAllocatedImage).second;
 
 		// the white image can be used with any set of parms, but other mismatches are errors...
 		//
-		if (strcmp(pName, "*white") != 0)
+		if (strcmp(p_name, "*white") != 0)
 		{
 			if (pImage->mipmap != !!mipmap)
 			{
 				//ri.Printf( PRINT_WARNING, "WARNING: reused image %s with mixed mipmap parm\n", pName );
 			}
-			if (pImage->allowPicmip != !!allowPicmip)
+			if (pImage->allowPicmip != !!allow_picmip)
 			{
 				//ri.Printf( PRINT_WARNING, "WARNING: reused image %s with mixed allowPicmip parm\n", pName );
 			}
-			if (pImage->wrapClampMode != glWrapClampMode)
+			if (pImage->wrapClampMode != gl_wrap_clamp_mode)
 			{
 				//ri.Printf( PRINT_WARNING, "WARNING: reused image %s with mixed glWrapClampMode parm\n", pName );
 			}
@@ -961,7 +961,7 @@ image_t* R_CreateImage(const char* name, const byte* pic, const int width, const
 		Com_Error(ERR_FATAL, "R_CreateImage: %s dimensions (%i x %i) not power of 2!\n", name, width, height);
 	}
 
-	image_t* image = R_FindImageFile_NoLoad(name, mipmap, allowPicmip, allowTC, glWrapClampMode);
+	image_t* image = R_FindImageFile_NoLoad(name, mipmap, allowPicmip, glWrapClampMode);
 	if (image) {
 		return image;
 	}
@@ -1021,7 +1021,7 @@ Finds or loads the given image.
 Returns NULL if it fails, not a default image.
 ==============
 */
-image_t* R_FindImageFile(const char* name, const qboolean mipmap, const qboolean allowPicmip, const qboolean allowTC, int glWrapClampMode) {
+image_t* R_FindImageFile(const char* name, const qboolean mipmap, const qboolean allow_picmip, const qboolean allow_tc, int gl_wrap_clamp_mode) {
 	int		width, height;
 	byte* pic;
 
@@ -1032,11 +1032,11 @@ image_t* R_FindImageFile(const char* name, const qboolean mipmap, const qboolean
 	// need to do this here as well as in R_CreateImage, or R_FindImageFile_NoLoad() may complain about
 	//	different clamp parms used...
 	//
-	if (glConfig.clampToEdgeAvailable && glWrapClampMode == GL_CLAMP) {
-		glWrapClampMode = GL_CLAMP_TO_EDGE;
+	if (glConfig.clampToEdgeAvailable && gl_wrap_clamp_mode == GL_CLAMP) {
+		gl_wrap_clamp_mode = GL_CLAMP_TO_EDGE;
 	}
 
-	image_t* image = R_FindImageFile_NoLoad(name, mipmap, allowPicmip, allowTC, glWrapClampMode);
+	image_t* image = R_FindImageFile_NoLoad(name, mipmap, allow_picmip, gl_wrap_clamp_mode);
 	if (image) {
 		return image;
 	}
@@ -1049,7 +1049,7 @@ image_t* R_FindImageFile(const char* name, const qboolean mipmap, const qboolean
 		return nullptr;
 	}
 
-	image = R_CreateImage(name, pic, width, height, GL_RGBA, mipmap, allowPicmip, allowTC, glWrapClampMode);
+	image = R_CreateImage(name, pic, width, height, GL_RGBA, mipmap, allow_picmip, allow_tc, gl_wrap_clamp_mode);
 	R_Free(pic);
 	return image;
 }

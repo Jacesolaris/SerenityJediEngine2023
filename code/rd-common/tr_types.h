@@ -113,7 +113,7 @@ using polyVert_t = struct
 
 using poly_t = struct poly_s
 {
-	qhandle_t hShader;
+	qhandle_t h_shader;
 	int numVerts;
 	polyVert_t* verts;
 };

@@ -409,14 +409,14 @@ void trap_R_AddRefEntityToScene(const refEntity_t* re)
 	Q_syscall(CG_R_ADDREFENTITYTOSCENE, re);
 }
 
-void trap_R_AddPolyToScene(const qhandle_t hShader, const int numVerts, const polyVert_t* verts)
+void trap_R_AddPolyToScene(const qhandle_t h_shader, const int numVerts, const polyVert_t* verts)
 {
-	Q_syscall(CG_R_ADDPOLYTOSCENE, hShader, numVerts, verts);
+	Q_syscall(CG_R_ADDPOLYTOSCENE, h_shader, numVerts, verts);
 }
 
-void trap_R_AddPolysToScene(const qhandle_t hShader, const int numVerts, const polyVert_t* verts, const int num)
+void trap_R_AddPolysToScene(const qhandle_t h_shader, const int numVerts, const polyVert_t* verts, const int num)
 {
-	Q_syscall(CG_R_ADDPOLYSTOSCENE, hShader, numVerts, verts, num);
+	Q_syscall(CG_R_ADDPOLYSTOSCENE, h_shader, numVerts, verts, num);
 }
 
 void trap_R_AddDecalToScene(const qhandle_t shader, const vec3_t origin, const vec3_t dir, const float orientation,
@@ -454,10 +454,10 @@ void trap_R_SetColor(const float* rgba)
 }
 
 void trap_R_DrawStretchPic(const float x, const float y, const float w, const float h, const float s1, const float t1,
-                           const float s2, const float t2, const qhandle_t hShader)
+                           const float s2, const float t2, const qhandle_t h_shader)
 {
 	Q_syscall(CG_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-	          PASSFLOAT(s2), PASSFLOAT(t2), hShader);
+	          PASSFLOAT(s2), PASSFLOAT(t2), h_shader);
 }
 
 void trap_R_ModelBounds(const clipHandle_t model, vec3_t mins, vec3_t maxs)
@@ -472,17 +472,17 @@ int trap_R_LerpTag(orientation_t* tag, const clipHandle_t mod, const int startFr
 }
 
 void trap_R_DrawRotatePic(const float x, const float y, const float w, const float h, const float s1, const float t1,
-                          const float s2, const float t2, const float a, const qhandle_t hShader)
+                          const float s2, const float t2, const float a, const qhandle_t h_shader)
 {
 	Q_syscall(CG_R_DRAWROTATEPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-	          PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader);
+	          PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), h_shader);
 }
 
 void trap_R_DrawRotatePic2(const float x, const float y, const float w, const float h, const float s1, const float t1,
-                           const float s2, const float t2, const float a, const qhandle_t hShader)
+                           const float s2, const float t2, const float a, const qhandle_t h_shader)
 {
 	Q_syscall(CG_R_DRAWROTATEPIC2, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-	          PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader);
+	          PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), h_shader);
 }
 
 void trap_R_SetRangeFog(const float range)
@@ -1227,9 +1227,9 @@ void CGSyscall_CM_TransformedTrace(trace_t* results, const vec3_t start, const v
 	else trap_CM_TransformedBoxTrace(results, start, end, mins, maxs, model, brushmask, origin, angles);
 }
 
-void CGSyscall_R_AddPolysToScene(const qhandle_t hShader, const int numVerts, const polyVert_t* verts, int num)
+void CGSyscall_R_AddPolysToScene(const qhandle_t h_shader, const int numVerts, const polyVert_t* verts, int num)
 {
-	trap_R_AddPolyToScene(hShader, numVerts, verts);
+	trap_R_AddPolyToScene(h_shader, numVerts, verts);
 }
 
 float CGSyscall_R_GetDistanceCull(void)

@@ -76,7 +76,7 @@ using refexport_t = struct refexport_s
 	void (*ClearDecals)(void);
 	void (*AddRefEntityToScene)(const refEntity_t* re);
 	void (*AddMiniRefEntityToScene)(const miniRefEntity_t* re);
-	void (*AddPolyToScene)(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num);
+	void (*AddPolyToScene)(qhandle_t h_shader, int numVerts, const polyVert_t* verts, int num);
 	void (*AddDecalToScene)(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r,
 	                        float g, float b, float a, qboolean alphaFade, float radius, qboolean temporary);
 	int (*LightForPoint)(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
@@ -87,11 +87,11 @@ using refexport_t = struct refexport_s
 
 	void (*SetColor)(const float* rgba); // NULL = 1,1,1,1
 	void (*DrawStretchPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-	                       qhandle_t hShader); // 0 = white
+	                       qhandle_t h_shader); // 0 = white
 	void (*DrawRotatePic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float a1,
-	                      qhandle_t hShader); // 0 = white
+	                      qhandle_t h_shader); // 0 = white
 	void (*DrawRotatePic2)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float a1,
-	                       qhandle_t hShader); // 0 = white
+	                       qhandle_t h_shader); // 0 = white
 
 	// Draw images for cinematic rendering, pass as 32 bit rgba
 	void (*DrawStretchRaw)(int x, int y, int w, int h, int cols, int rows, const byte* data, int client,

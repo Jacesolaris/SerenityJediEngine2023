@@ -644,7 +644,7 @@ constexpr auto MAX_GRID_SIZE = 65; // max dimensions of a grid mesh in memory;
 using srfPoly_t = struct srfPoly_s
 {
 	surfaceType_t surfaceType;
-	qhandle_t hShader;
+	qhandle_t h_shader;
 	int fogIndex;
 	int numVerts;
 	polyVert_t* verts;
@@ -1333,7 +1333,7 @@ void RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboole
 
 void RE_BeginFrame(stereoFrame_t stereoFrame);
 void RE_BeginRegistration(glconfig_t* glconfig);
-void RE_LoadWorldMap(const char* mapname);
+void RE_LoadWorldMap(const char* name);
 
 void RE_SetWorldVisData(const byte* vis);
 
@@ -1361,8 +1361,8 @@ model_t* R_AllocModel(void);
 
 void R_Init();
 
-image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allowPicmip, qboolean allowTC,
-                         int glWrapClampMode);
+image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allow_picmip, qboolean allow_tc,
+                         int gl_wrap_clamp_mode);
 
 qboolean R_GetModeInfo(int* width, int* height, int mode);
 
@@ -1392,19 +1392,18 @@ extern const int lightmapsVertex[MAXLIGHTMAPS];
 extern const int lightmapsFullBright[MAXLIGHTMAPS];
 extern const byte stylesDefault[MAXLIGHTMAPS];
 
-qhandle_t RE_RegisterShaderLightMap(const char* name, const int* lightmapIndex, const byte* styles);
+qhandle_t RE_RegisterShaderLightMap(const char* name, const int* lightmap_index, const byte* styles);
 qhandle_t RE_RegisterShader(const char* name);
 qhandle_t RE_RegisterShaderNoMip(const char* name);
 const char* RE_ShaderNameFromIndex(int index);
-qhandle_t RE_RegisterShaderFromImage(const char* name, int* lightmapIndex, byte* styles, image_t* image,
-                                     qboolean mipRawImage);
+qhandle_t RE_RegisterShaderFromImage(const char* name, const int* lightmap_index, const byte* styles, image_t* image);
 
-shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, qboolean mipRawImage);
-shader_t* R_GetShaderByHandle(qhandle_t hShader);
+shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* styles, qboolean mip_raw_image);
+shader_t* R_GetShaderByHandle(qhandle_t h_shader);
 shader_t* R_FindShaderByName(const char* name);
 void R_InitShaders(qboolean server);
-void R_ShaderList_f(void);
-void R_RemapShader(const char* oldShader, const char* newShader, const char* timeOffset);
+void R_ShaderList_f();
+void R_RemapShader(const char* shader_name, const char* new_shader_name, const char* time_offset);
 
 /*
 ====================================================================
@@ -1571,7 +1570,7 @@ void RE_ClearScene(void);
 void RE_ClearDecals();
 void RE_AddRefEntityToScene(const refEntity_t* ent);
 void RE_AddMiniRefEntityToScene(const miniRefEntity_t* ent);
-void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num);
+void RE_AddPolyToScene(qhandle_t h_shader, int numVerts, const polyVert_t* verts, int num);
 void RE_AddDecalToScene(qhandle_t shader, const vec3_t origin, const vec3_t dir, float orientation, float r, float g,
                         float b, float a, qboolean alpha_fade, float radius, qboolean temporary);
 void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b);
@@ -1825,11 +1824,11 @@ void R_AddDrawSurfCmd(drawSurf_t* drawSurfs, int numDrawSurfs);
 
 void RE_SetColor(const float* rgba);
 void RE_StretchPic(float x, float y, float w, float h,
-                   float s1, float t1, float s2, float t2, qhandle_t hShader);
+                   float s1, float t1, float s2, float t2, qhandle_t h_shader);
 void RE_RotatePic(float x, float y, float w, float h,
-                  float s1, float t1, float s2, float t2, float a, qhandle_t hShader);
+                  float s1, float t1, float s2, float t2, float a, qhandle_t h_shader);
 void RE_RotatePic2(float x, float y, float w, float h,
-                   float s1, float t1, float s2, float t2, float a, qhandle_t hShader);
+                   float s1, float t1, float s2, float t2, float a, qhandle_t h_shader);
 void RE_BeginFrame(stereoFrame_t stereoFrame);
 void RE_EndFrame(int* frontEndMsec, int* backEndMsec);
 void RE_TakeVideoFrame(int width, int height, byte* captureBuffer, byte* encodeBuffer, qboolean motionJpeg);
@@ -1861,4 +1860,4 @@ using decalPoly_t = struct decalPoly_s
 
 extern refimport_t* ri;
 
-qboolean ShaderHashTableExists(void);
+qboolean ShaderHashTableExists();

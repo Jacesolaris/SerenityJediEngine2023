@@ -702,13 +702,13 @@ Text_PaintChar
 ================
 */
 /*
-static void Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t hShader)
+static void Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t h_shader)
 {
 	float w, h;
 
 	w = width * scale;
 	h = height * scale;
-	ui.R_DrawStretchPic((int)x, (int)y, w, h, s, t, s2, t2, hShader );	//make the coords (int) or else the chars bleed
+	ui.R_DrawStretchPic((int)x, (int)y, w, h, s, t, s2, t2, h_shader );	//make the coords (int) or else the chars bleed
 }
 */
 

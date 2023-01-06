@@ -98,9 +98,9 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void CG_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
+void CG_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t h_shader)
 {
-	cgi_R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
+	cgi_R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, h_shader);
 }
 
 /*
@@ -113,9 +113,9 @@ Can also specify the exact texture coordinates
 =================
 */
 void CG_DrawPic2(const float x, const float y, const float width, const float height, const float s1, const float t1,
-                 const float s2, const float t2, const qhandle_t hShader)
+                 const float s2, const float t2, const qhandle_t h_shader)
 {
-	cgi_R_DrawStretchPic(x, y, width, height, s1, t1, s2, t2, hShader);
+	cgi_R_DrawStretchPic(x, y, width, height, s1, t1, s2, t2, h_shader);
 }
 
 /*
@@ -128,10 +128,10 @@ rotates around the upper right corner of the passed in point
 =================
 */
 void CG_DrawRotatePic(const float x, const float y, const float width, const float height, const float angle,
-                      const qhandle_t hShader,
+                      const qhandle_t h_shader,
                       const float aspectCorrection)
 {
-	cgi_R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
+	cgi_R_DrawRotatePic(x, y, width, height, 0, 0, 1, 1, angle, h_shader, aspectCorrection);
 }
 
 /*
@@ -144,10 +144,10 @@ Actually rotates around the center point of the passed in coordinates
 =================
 */
 void CG_DrawRotatePic2(const float x, const float y, const float width, const float height, const float angle,
-                       const qhandle_t hShader,
+                       const qhandle_t h_shader,
                        const float aspectCorrection)
 {
-	cgi_R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, hShader, aspectCorrection);
+	cgi_R_DrawRotatePic2(x, y, width, height, 0, 0, 1, 1, angle, h_shader, aspectCorrection);
 }
 
 /*
@@ -301,13 +301,13 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-static void CG_TileClearBox(const int x, const int y, const int w, const int h, const qhandle_t hShader)
+static void CG_TileClearBox(const int x, const int y, const int w, const int h, const qhandle_t h_shader)
 {
 	const float s1 = x / 64.0;
 	const float t1 = y / 64.0;
 	const float s2 = (x + w) / 64.0;
 	const float t2 = (y + h) / 64.0;
-	cgi_R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, hShader);
+	cgi_R_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, h_shader);
 }
 
 /*

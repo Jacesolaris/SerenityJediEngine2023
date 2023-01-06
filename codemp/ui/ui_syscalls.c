@@ -160,8 +160,8 @@ void trap_R_ClearScene(void) {
 void trap_R_AddRefEntityToScene(const refEntity_t* re) {
 	Q_syscall(UI_R_ADDREFENTITYTOSCENE, re);
 }
-void trap_R_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts) {
-	Q_syscall(UI_R_ADDPOLYTOSCENE, hShader, numVerts, verts);
+void trap_R_AddPolyToScene(qhandle_t h_shader, int numVerts, const polyVert_t* verts) {
+	Q_syscall(UI_R_ADDPOLYTOSCENE, h_shader, numVerts, verts);
 }
 void trap_R_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b) {
 	Q_syscall(UI_R_ADDLIGHTTOSCENE, org, PASSFLOAT(intensity), PASSFLOAT(r), PASSFLOAT(g), PASSFLOAT(b));
@@ -172,8 +172,8 @@ void trap_R_RenderScene(const refdef_t* fd) {
 void trap_R_SetColor(const float* rgba) {
 	Q_syscall(UI_R_SETCOLOR, rgba);
 }
-void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader) {
-	Q_syscall(UI_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), hShader);
+void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t h_shader) {
+	Q_syscall(UI_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1), PASSFLOAT(s2), PASSFLOAT(t2), h_shader);
 }
 void	trap_R_ModelBounds(clipHandle_t model, vec3_t mins, vec3_t maxs) {
 	Q_syscall(UI_R_MODELBOUNDS, model, mins, maxs);
@@ -456,7 +456,7 @@ qboolean trap_G2API_AttachG2Model(void* ghoul2From, int modelIndexFrom, void* gh
 
 int UISyscall_FS_Read(void* buffer, int len, fileHandle_t f) { trap_FS_Read(buffer, len, f); return 0; }
 int UISyscall_FS_Write(const void* buffer, int len, fileHandle_t f) { trap_FS_Write(buffer, len, f); return 0; }
-void UISyscall_R_AddPolysToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int num) { trap_R_AddPolyToScene(hShader, numVerts, verts); }
+void UISyscall_R_AddPolysToScene(qhandle_t h_shader, int numVerts, const polyVert_t* verts, int num) { trap_R_AddPolyToScene(h_shader, numVerts, verts); }
 void UISyscall_G2API_CollisionDetect(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius) { trap_G2API_CollisionDetect(collRecMap, ghoul2, angles, position, frameNumber, entNum, rayStart, rayEnd, scale, traceFlags, use_lod, fRadius); }
 
 void UISyscall_AddCommand(const char* cmd_name)

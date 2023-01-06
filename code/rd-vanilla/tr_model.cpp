@@ -35,7 +35,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	LS(x) x=LittleShort(x)
 #define	LF(x) x=LittleFloat(x)
 
-void RE_LoadWorldMap_Actual(const char* name, world_t& worldData, int index); //should only be called for sub-bsp instances
+void RE_LoadWorldMap_Actual(const char* name, world_t& world_data, int index); //should only be called for sub-bsp instances
 
 static qboolean R_LoadMD3(model_t* mod, int lod, void* buffer, const char* name, qboolean& bAlreadyCached);
 

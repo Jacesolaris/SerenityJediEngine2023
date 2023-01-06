@@ -114,7 +114,7 @@ qboolean UI_ConsoleCommand(int realTime) {
 	return qtrue;
 }
 
-void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader) {
+void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t h_shader) {
 	float	s0;
 	float	s1;
 	float	t0;
@@ -140,7 +140,7 @@ void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader) {
 		t1 = 1;
 	}
 
-	trap->R_DrawStretchPic(x, y, w, h, s0, t0, s1, t1, hShader);
+	trap->R_DrawStretchPic(x, y, w, h, s0, t0, s1, t1, h_shader);
 }
 
 /*

@@ -389,7 +389,7 @@ typedef struct uiInfo_s {
 extern uiInfo_t uiInfo;
 
 qboolean	UI_ConsoleCommand(int realTime);
-void		UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader);
+void		UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t h_shader);
 void		UI_FillRect(float x, float y, float width, float height, const float* color);
 char* UI_Cvar_VariableString(const char* var_name);
 
