@@ -53,7 +53,7 @@ static mdfour_ctx* m;
 #define ROUND3(a,b,c,d,k,s) a = lshift(a + H(b,c,d) + X[k] + 0x6ED9EBA1,s)
 
 /* this applies md4 to 64 byte chunks */
-static void mdfour64(uint32_t* M)
+static void mdfour64(const uint32_t* M)
 {
 	int j;
 	uint32_t X[16];
@@ -135,7 +135,7 @@ static void mdfour64(uint32_t* M)
 	m->D = D;
 }
 
-static void copy64(uint32_t* M, byte* in)
+static void copy64(uint32_t* M, const byte* in)
 {
 	for (int i = 0; i < 16; i++)
 		M[i] = in[i * 4 + 3] << 24 | in[i * 4 + 2] << 16 |
@@ -159,7 +159,7 @@ void mdfour_begin(mdfour_ctx* md)
 	md->totalN = 0;
 }
 
-static void mdfour_tail(byte* in, const int n)
+static void mdfour_tail(const byte* in, const int n)
 {
 	byte buf[128];
 	uint32_t M[16];

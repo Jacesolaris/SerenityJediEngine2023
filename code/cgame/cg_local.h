@@ -934,7 +934,7 @@ void CG_ProcessSnapshots(void);
 //
 // cg_info.c
 //
-void CG_DrawInformation(void);
+void CG_DrawInformation();
 
 //
 // cg_scoreboard.c

@@ -32,21 +32,21 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <cctype>
 
-static void skipWhitespace(gsl::cstring_view& text, const bool allowLineBreaks)
+static void skipWhitespace(gsl::cstring_view& text, const bool allow_line_breaks)
 {
-	auto whitespaceEnd = text.begin();
-	while (whitespaceEnd != text.end() // No EOF
-		&& std::isspace(*whitespaceEnd) // No End of Whitespace
-		&& (allowLineBreaks || *whitespaceEnd != '\n')) // No unwanted newline
+	auto whitespace_end = text.begin();
+	while (whitespace_end != text.end() // No EOF
+		&& std::isspace(*whitespace_end) // No End of Whitespace
+		&& (allow_line_breaks || *whitespace_end != '\n')) // No unwanted newline
 	{
-		++whitespaceEnd;
+		++whitespace_end;
 	}
-	text = {whitespaceEnd, text.end()};
+	text = {whitespace_end, text.end()};
 }
 
-static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allowLineBreaks)
+static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allow_line_breaks)
 {
-	skipWhitespace(text, allowLineBreaks);
+	skipWhitespace(text, allow_line_breaks);
 	// skip single line comment
 	if (text.size() >= 2 && text[0] == '/' && text[1] == '/')
 	{
@@ -57,7 +57,7 @@ static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allowL
 			return;
 		}
 		text = {commentEnd, text.end()};
-		skipWhitespaceAndComments(text, allowLineBreaks);
+		skipWhitespaceAndComments(text, allow_line_breaks);
 		return;
 	}
 
@@ -65,14 +65,14 @@ static void skipWhitespaceAndComments(gsl::cstring_view& text, const bool allowL
 	if (text.size() >= 2 && text[0] == '/' && text[1] == '*')
 	{
 		static const std::array<char, 2> endStr{'*', '/'};
-		auto commentEnd = std::search(text.begin(), text.end(), endStr.begin(), endStr.end());
-		if (commentEnd == text.end())
+		auto comment_end = std::search(text.begin(), text.end(), endStr.begin(), endStr.end());
+		if (comment_end == text.end())
 		{
 			text = {text.end(), text.end()};
 			return;
 		}
-		text = {commentEnd + endStr.size(), text.end()};
-		skipWhitespace(text, allowLineBreaks);
+		text = {comment_end + endStr.size(), text.end()};
+		skipWhitespace(text, allow_line_breaks);
 	}
 }
 

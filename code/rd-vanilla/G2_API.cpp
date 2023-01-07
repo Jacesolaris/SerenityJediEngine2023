@@ -2098,10 +2098,10 @@ char* G2API_GetSurfaceName(CGhoul2Info* ghlInfo, const int surfNumber)
 		if (surf)
 		{
 			assert(G2_MODEL_OK(ghlInfo));
-			const auto surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)ghlInfo->currentModel->mdxm + sizeof(mdxmHeader_t));
-			const auto surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surf->
+			const auto surf_indexes = (mdxmHierarchyOffsets_t*)(reinterpret_cast<byte*>(ghlInfo->currentModel->mdxm) + sizeof(mdxmHeader_t));
+			const auto surf_info = (mdxmSurfHierarchy_t*)(reinterpret_cast<byte*>(surf_indexes) + surf_indexes->offsets[surf->
 				thisSurfaceIndex]);
-			return surfInfo->name;
+			return surf_info->name;
 		}
 	}
 	G2WARNING(0, "Surface Not Found");

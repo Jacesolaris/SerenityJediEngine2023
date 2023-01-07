@@ -1091,11 +1091,11 @@ using trGlobals_t = struct trGlobals_s
 	float distanceCull;
 };
 
-int R_Images_StartIteration(void);
-image_t* R_Images_GetNextIteration(void);
-void R_Images_Clear(void);
+int R_Images_StartIteration();
+image_t* R_Images_GetNextIteration();
+void R_Images_Clear();
 void R_Images_DeleteLightMaps(void);
-void R_Images_DeleteImage(image_t* pImage);
+void R_Images_DeleteImage(image_t* p_image);
 
 extern backEndState_t backEnd;
 extern trGlobals_t tr;
@@ -1352,8 +1352,8 @@ void RE_RegisterModels_StoreShaderRequest(const char* psModelFileName, const cha
                                           int* piShaderIndexPoke);
 void RE_RegisterModels_Info_f(void);
 //
-qboolean RE_RegisterImages_LevelLoadEnd(void);
-void RE_RegisterImages_Info_f(void);
+qboolean RE_RegisterImages_LevelLoadEnd();
+void RE_RegisterImages_Info_f();
 
 qboolean R_GetEntityToken(char* buffer, int size);
 
@@ -1366,18 +1366,18 @@ image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allow_picmi
 
 qboolean R_GetModeInfo(int* width, int* height, int mode);
 
-void R_SetColorMappings(void);
-void R_GammaCorrect(byte* buffer, int bufSize);
+void R_SetColorMappings();
+void R_GammaCorrect(byte* buffer, int buf_size);
 
-void R_ImageList_f(void);
+void R_ImageList_f();
 void R_SkinList_f(void);
 void R_FontList_f(void);
 
 void R_InitFogTable(void);
 float R_FogFactor(float s, float t);
-void R_InitImages(void);
-void R_DeleteTextures(void);
-float R_SumOfUsedImages(qboolean bUseFormat);
+void R_InitImages();
+void R_DeleteTextures();
+float R_SumOfUsedImages(qboolean b_use_format);
 void R_InitSkins(void);
 skin_t* R_GetSkinByHandle(qhandle_t hSkin);
 const void* RB_TakeVideoFrameCmd(const void* data);

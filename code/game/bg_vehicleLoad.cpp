@@ -279,7 +279,7 @@ static qboolean BG_ParseVehWeaponParm(vehWeaponInfo_t* vehWeapon, const char* pa
 		}
 		break;
 	case VF_WEAPON: // take string, resolve into index into VehWeaponParms
-		//*(int *)(b+vehWeaponField->ofs) = VEH_VehWeaponIndexForName( value );
+		//*(int *)(b+vehWeaponField->ofs) = VEH_Vehweapon_indexForName( value );
 		break;
 	case VF_MODEL: // take the string, get the G_ModelIndex
 #ifdef QAGAME
@@ -462,7 +462,7 @@ int VEH_LoadVehWeapon(const char* vehWeaponName)
 	return numVehicleWeapons++;
 }
 
-int VEH_VehWeaponIndexForName(const char* vehWeaponName)
+int VEH_Vehweapon_indexForName(const char* vehWeaponName)
 {
 	int vw;
 	if (!vehWeaponName || !vehWeaponName[0])
@@ -892,7 +892,7 @@ static qboolean BG_ParseVehicleParm(vehicleInfo_t* vehicle, const char* parmName
 		}
 		break;
 	case VF_WEAPON: // take string, resolve into index into VehWeaponParms
-		*(int*)(b + vehField->ofs) = VEH_VehWeaponIndexForName(value);
+		*(int*)(b + vehField->ofs) = VEH_Vehweapon_indexForName(value);
 		break;
 	case VF_MODEL: // take the string, get the G_ModelIndex
 #ifdef QAGAME

@@ -71,7 +71,7 @@ using weaponinfo_t = struct weaponinfo_s
 	char name[MAX_STRINGFIELD];
 	char model[MAX_STRINGFIELD];
 	int level;
-	int weaponindex;
+	int weapon_index;
 	int flags;
 	char projectile[MAX_STRINGFIELD];
 	int numprojectiles;

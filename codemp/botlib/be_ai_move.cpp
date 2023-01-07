@@ -99,8 +99,8 @@ constexpr auto AVOIDREACH_TRIES = 4;
 constexpr auto PREDICTIONTIME_JUMP = 3;		//in seconds;
 constexpr auto PREDICTIONTIME_MOVE = 2;		//in seconds;
 //weapon indexes for weapon jumping
-constexpr auto WEAPONINDEX_ROCKET_LAUNCHER = 5;
-constexpr auto WEAPONINDEX_BFG = 9;
+constexpr auto weapon_index_ROCKET_LAUNCHER = 5;
+constexpr auto weapon_index_BFG = 9;
 
 constexpr auto MODELTYPE_FUNC_PLAT = 1;
 constexpr auto MODELTYPE_FUNC_BOB = 2;

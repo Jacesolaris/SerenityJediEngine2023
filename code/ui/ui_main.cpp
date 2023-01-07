@@ -117,14 +117,14 @@ static void UI_AffectForcePowerLevel(const char* forceName);
 static void UI_ShowForceLevelDesc(const char* forceName);
 static void UI_ResetForceLevels(void);
 static void UI_ClearWeapons(void);
-static void UI_GiveWeapon(int weaponIndex);
-static void UI_EquipWeapon(int weaponIndex);
+static void UI_GiveWeapon(int weapon_index);
+static void UI_EquipWeapon(int weapon_index);
 static void UI_LoadMissionSelectMenu(const char* cvarName);
-static void UI_AddWeaponSelection(int weaponIndex, int ammoIndex, int ammoAmount, const char* iconItemName,
+static void UI_AddWeaponSelection(int weapon_index, int ammoIndex, int ammoAmount, const char* iconItemName,
                                   const char* litIconItemName, const char* hexBackground, const char* soundfile);
-static void UI_AddThrowWeaponSelection(int weaponIndex, int ammoIndex, int ammoAmount, const char* iconItemName,
+static void UI_AddThrowWeaponSelection(int weapon_index, int ammoIndex, int ammoAmount, const char* iconItemName,
                                        const char* litIconItemName, const char* hexBackground, const char* soundfile);
-static void UI_RemoveWeaponSelection(int weaponIndex);
+static void UI_RemoveWeaponSelection(int weapon_index);
 static void UI_RemoveThrowWeaponSelection(void);
 static void UI_HighLightWeaponSelection(int selectionslot);
 static void UI_NormalWeaponSelection(int selectionslot);
@@ -1594,21 +1594,21 @@ static qboolean UI_RunMenuScript(const char** args)
 		}
 		else if (Q_stricmp(name, "giveweapon") == 0)
 		{
-			const char* weaponIndex;
-			String_Parse(args, &weaponIndex);
-			UI_GiveWeapon(atoi(weaponIndex));
+			const char* weapon_index;
+			String_Parse(args, &weapon_index);
+			UI_GiveWeapon(atoi(weapon_index));
 		}
 		else if (Q_stricmp(name, "equipweapon") == 0)
 		{
-			const char* weaponIndex;
-			String_Parse(args, &weaponIndex);
-			UI_EquipWeapon(atoi(weaponIndex));
+			const char* weapon_index;
+			String_Parse(args, &weapon_index);
+			UI_EquipWeapon(atoi(weapon_index));
 		}
 		else if (Q_stricmp(name, "addweaponselection") == 0)
 		{
-			const char* weaponIndex;
-			String_Parse(args, &weaponIndex);
-			if (!weaponIndex)
+			const char* weapon_index;
+			String_Parse(args, &weapon_index);
+			if (!weapon_index)
 			{
 				return qfalse;
 			}
@@ -1651,14 +1651,14 @@ static qboolean UI_RunMenuScript(const char** args)
 			const char* soundfile = nullptr;
 			String_Parse(args, &soundfile);
 
-			UI_AddWeaponSelection(atoi(weaponIndex), atoi(ammoIndex), atoi(ammoAmount), itemName, litItemName,
+			UI_AddWeaponSelection(atoi(weapon_index), atoi(ammoIndex), atoi(ammoAmount), itemName, litItemName,
 			                      backgroundName, soundfile);
 		}
 		else if (Q_stricmp(name, "addthrowweaponselection") == 0)
 		{
-			const char* weaponIndex;
-			String_Parse(args, &weaponIndex);
-			if (!weaponIndex)
+			const char* weapon_index;
+			String_Parse(args, &weapon_index);
+			if (!weapon_index)
 			{
 				return qfalse;
 			}
@@ -1701,16 +1701,16 @@ static qboolean UI_RunMenuScript(const char** args)
 			const char* soundfile;
 			String_Parse(args, &soundfile);
 
-			UI_AddThrowWeaponSelection(atoi(weaponIndex), atoi(ammoIndex), atoi(ammoAmount), itemName, litItemName,
+			UI_AddThrowWeaponSelection(atoi(weapon_index), atoi(ammoIndex), atoi(ammoAmount), itemName, litItemName,
 			                           backgroundName, soundfile);
 		}
 		else if (Q_stricmp(name, "removeweaponselection") == 0)
 		{
-			const char* weaponIndex;
-			String_Parse(args, &weaponIndex);
-			if (weaponIndex)
+			const char* weapon_index;
+			String_Parse(args, &weapon_index);
+			if (weapon_index)
 			{
-				UI_RemoveWeaponSelection(atoi(weaponIndex));
+				UI_RemoveWeaponSelection(atoi(weapon_index));
 			}
 		}
 		else if (Q_stricmp(name, "removethrowweaponselection") == 0)
@@ -1860,7 +1860,7 @@ static void UI_CalcForceStatus(void)
 	{
 		return;
 	}
-	const playerState_t* pState = cl->gentity->client;
+	const playerState_t* p_state = cl->gentity->client;
 
 	if (!cl->gentity || !cl->gentity->client)
 	{
@@ -1869,25 +1869,25 @@ static void UI_CalcForceStatus(void)
 
 	memset(value, 0, sizeof value);
 
-	const float lightSide = pState->forcePowerLevel[FP_HEAL] +
-		pState->forcePowerLevel[FP_TELEPATHY] +
-		pState->forcePowerLevel[FP_PROTECT] +
-		pState->forcePowerLevel[FP_ABSORB] +
-		pState->forcePowerLevel[FP_STASIS] +
-		pState->forcePowerLevel[FP_GRASP] +
-		pState->forcePowerLevel[FP_REPULSE] +
-		pState->forcePowerLevel[FP_BLAST] +
-		pState->forcePowerLevel[FP_BLINDING];
+	const float lightSide = p_state->forcePowerLevel[FP_HEAL] +
+		p_state->forcePowerLevel[FP_TELEPATHY] +
+		p_state->forcePowerLevel[FP_PROTECT] +
+		p_state->forcePowerLevel[FP_ABSORB] +
+		p_state->forcePowerLevel[FP_STASIS] +
+		p_state->forcePowerLevel[FP_GRASP] +
+		p_state->forcePowerLevel[FP_REPULSE] +
+		p_state->forcePowerLevel[FP_BLAST] +
+		p_state->forcePowerLevel[FP_BLINDING];
 
-	const float darkSide = pState->forcePowerLevel[FP_GRIP] +
-		pState->forcePowerLevel[FP_LIGHTNING] +
-		pState->forcePowerLevel[FP_RAGE] +
-		pState->forcePowerLevel[FP_DRAIN] +
-		pState->forcePowerLevel[FP_DESTRUCTION] +
-		pState->forcePowerLevel[FP_LIGHTNING_STRIKE] +
-		pState->forcePowerLevel[FP_FEAR] +
-		pState->forcePowerLevel[FP_DEADLYSIGHT] +
-		pState->forcePowerLevel[FP_INSANITY];
+	const float darkSide = p_state->forcePowerLevel[FP_GRIP] +
+		p_state->forcePowerLevel[FP_LIGHTNING] +
+		p_state->forcePowerLevel[FP_RAGE] +
+		p_state->forcePowerLevel[FP_DRAIN] +
+		p_state->forcePowerLevel[FP_DESTRUCTION] +
+		p_state->forcePowerLevel[FP_LIGHTNING_STRIKE] +
+		p_state->forcePowerLevel[FP_FEAR] +
+		p_state->forcePowerLevel[FP_DEADLYSIGHT] +
+		p_state->forcePowerLevel[FP_INSANITY];
 
 	const float total = lightSide + darkSide;
 
@@ -5161,13 +5161,13 @@ static void UI_UpdateFightingStyleChoices(void)
 
 		if (cl && cl->gentity && cl->gentity->client)
 		{
-			const playerState_t* pState = cl->gentity->client;
+			const playerState_t* p_state = cl->gentity->client;
 
 			// Knows Fast style?
-			if (pState->saberStylesKnown & 1 << SS_FAST)
+			if (p_state->saberStylesKnown & 1 << SS_FAST)
 			{
 				// And Medium?
-				if (pState->saberStylesKnown & 1 << SS_MEDIUM)
+				if (p_state->saberStylesKnown & 1 << SS_MEDIUM)
 				{
 					Cvar_Set("ui_fightingstylesallowed", "6"); // Has FAST and MEDIUM, so can only choose STRONG
 					Cvar_Set("ui_newfightingstyle", "2"); // STRONG
@@ -5179,10 +5179,10 @@ static void UI_UpdateFightingStyleChoices(void)
 				}
 			}
 			// Knows Medium style?
-			else if (pState->saberStylesKnown & 1 << SS_MEDIUM)
+			else if (p_state->saberStylesKnown & 1 << SS_MEDIUM)
 			{
 				// And Strong?
-				if (pState->saberStylesKnown & 1 << SS_STRONG)
+				if (p_state->saberStylesKnown & 1 << SS_STRONG)
 				{
 					Cvar_Set("ui_fightingstylesallowed", "4"); // Has MEDIUM and STRONG, so can only choose FAST
 					Cvar_Set("ui_newfightingstyle", "0"); // FAST
@@ -5194,10 +5194,10 @@ static void UI_UpdateFightingStyleChoices(void)
 				}
 			}
 			// Knows Strong style?
-			else if (pState->saberStylesKnown & 1 << SS_STRONG)
+			else if (p_state->saberStylesKnown & 1 << SS_STRONG)
 			{
 				// And Fast
-				if (pState->saberStylesKnown & 1 << SS_FAST)
+				if (p_state->saberStylesKnown & 1 << SS_FAST)
 				{
 					Cvar_Set("ui_fightingstylesallowed", "5"); // Has STRONG and FAST, so can only take MEDIUM
 					Cvar_Set("ui_newfightingstyle", "1"); // MEDIUM
@@ -5216,11 +5216,11 @@ static void UI_UpdateFightingStyleChoices(void)
 			}
 
 			// Determine current style
-			if (pState->saberAnimLevel == SS_FAST)
+			if (p_state->saberAnimLevel == SS_FAST)
 			{
 				Cvar_Set("ui_currentfightingstyle", "0"); // FAST
 			}
-			else if (pState->saberAnimLevel == SS_STRONG)
+			else if (p_state->saberAnimLevel == SS_STRONG)
 			{
 				Cvar_Set("ui_currentfightingstyle", "2"); // STRONG
 			}
@@ -5339,8 +5339,8 @@ static void UI_InitAllocForcePowers(const char* forceName)
 	// by getting info frim UIInfo instead of PlayerState
 	if (cl)
 	{
-		const playerState_t* pState = cl->gentity->client;
-		forcelevel = pState->forcePowerLevel[powerEnums[forcePowerI].powerEnum];
+		const playerState_t* p_state = cl->gentity->client;
+		forcelevel = p_state->forcePowerLevel[powerEnums[forcePowerI].powerEnum];
 	}
 	else
 	{
@@ -5523,10 +5523,10 @@ static void UI_DemoSetForceLevels(void)
 	char buffer[MAX_STRING_CHARS];
 
 	const client_t* cl = &svs.clients[0]; // 0 because only ever us as a player
-	const playerState_t* pState = nullptr;
+	const playerState_t* p_state = nullptr;
 	if (cl)
 	{
-		pState = cl->gentity->client;
+		p_state = cl->gentity->client;
 	}
 
 	ui.Cvar_VariableStringBuffer("ui_demo_level", buffer, sizeof buffer);
@@ -5604,39 +5604,39 @@ static void UI_DemoSetForceLevels(void)
 		uiInfo.forcePowerLevel[FP_BLINDING] = 0;
 	}
 
-	if (pState)
+	if (p_state)
 	{
 		//i am carrying over from a previous level, so get the increased power! (non-core only)
-		uiInfo.forcePowerLevel[FP_HEAL] = Q_max(pState->forcePowerLevel[FP_HEAL], uiInfo.forcePowerLevel[FP_HEAL]);
-		uiInfo.forcePowerLevel[FP_TELEPATHY] = Q_max(pState->forcePowerLevel[FP_TELEPATHY],
+		uiInfo.forcePowerLevel[FP_HEAL] = Q_max(p_state->forcePowerLevel[FP_HEAL], uiInfo.forcePowerLevel[FP_HEAL]);
+		uiInfo.forcePowerLevel[FP_TELEPATHY] = Q_max(p_state->forcePowerLevel[FP_TELEPATHY],
 		                                             uiInfo.forcePowerLevel[FP_TELEPATHY]);
-		uiInfo.forcePowerLevel[FP_GRIP] = Q_max(pState->forcePowerLevel[FP_GRIP], uiInfo.forcePowerLevel[FP_GRIP]);
-		uiInfo.forcePowerLevel[FP_LIGHTNING] = Q_max(pState->forcePowerLevel[FP_LIGHTNING],
+		uiInfo.forcePowerLevel[FP_GRIP] = Q_max(p_state->forcePowerLevel[FP_GRIP], uiInfo.forcePowerLevel[FP_GRIP]);
+		uiInfo.forcePowerLevel[FP_LIGHTNING] = Q_max(p_state->forcePowerLevel[FP_LIGHTNING],
 		                                             uiInfo.forcePowerLevel[FP_LIGHTNING]);
-		uiInfo.forcePowerLevel[FP_PROTECT] = Q_max(pState->forcePowerLevel[FP_PROTECT],
+		uiInfo.forcePowerLevel[FP_PROTECT] = Q_max(p_state->forcePowerLevel[FP_PROTECT],
 		                                           uiInfo.forcePowerLevel[FP_PROTECT]);
 
 		uiInfo.forcePowerLevel[FP_ABSORB] =
-			Q_max(pState->forcePowerLevel[FP_ABSORB], uiInfo.forcePowerLevel[FP_ABSORB]);
-		uiInfo.forcePowerLevel[FP_DRAIN] = Q_max(pState->forcePowerLevel[FP_DRAIN], uiInfo.forcePowerLevel[FP_DRAIN]);
-		uiInfo.forcePowerLevel[FP_RAGE] = Q_max(pState->forcePowerLevel[FP_RAGE], uiInfo.forcePowerLevel[FP_RAGE]);
+			Q_max(p_state->forcePowerLevel[FP_ABSORB], uiInfo.forcePowerLevel[FP_ABSORB]);
+		uiInfo.forcePowerLevel[FP_DRAIN] = Q_max(p_state->forcePowerLevel[FP_DRAIN], uiInfo.forcePowerLevel[FP_DRAIN]);
+		uiInfo.forcePowerLevel[FP_RAGE] = Q_max(p_state->forcePowerLevel[FP_RAGE], uiInfo.forcePowerLevel[FP_RAGE]);
 		uiInfo.forcePowerLevel[FP_STASIS] =
-			Q_max(pState->forcePowerLevel[FP_STASIS], uiInfo.forcePowerLevel[FP_STASIS]);
-		uiInfo.forcePowerLevel[FP_DESTRUCTION] = Q_max(pState->forcePowerLevel[FP_DESTRUCTION],
+			Q_max(p_state->forcePowerLevel[FP_STASIS], uiInfo.forcePowerLevel[FP_STASIS]);
+		uiInfo.forcePowerLevel[FP_DESTRUCTION] = Q_max(p_state->forcePowerLevel[FP_DESTRUCTION],
 		                                               uiInfo.forcePowerLevel[FP_DESTRUCTION]);
-		uiInfo.forcePowerLevel[FP_INSANITY] = Q_max(pState->forcePowerLevel[FP_INSANITY],
+		uiInfo.forcePowerLevel[FP_INSANITY] = Q_max(p_state->forcePowerLevel[FP_INSANITY],
 		                                            uiInfo.forcePowerLevel[FP_INSANITY]);
 
-		uiInfo.forcePowerLevel[FP_GRASP] = Q_max(pState->forcePowerLevel[FP_GRASP], uiInfo.forcePowerLevel[FP_GRASP]);
-		uiInfo.forcePowerLevel[FP_REPULSE] = Q_max(pState->forcePowerLevel[FP_REPULSE],
+		uiInfo.forcePowerLevel[FP_GRASP] = Q_max(p_state->forcePowerLevel[FP_GRASP], uiInfo.forcePowerLevel[FP_GRASP]);
+		uiInfo.forcePowerLevel[FP_REPULSE] = Q_max(p_state->forcePowerLevel[FP_REPULSE],
 		                                           uiInfo.forcePowerLevel[FP_REPULSE]);
-		uiInfo.forcePowerLevel[FP_LIGHTNING_STRIKE] = Q_max(pState->forcePowerLevel[FP_FEAR],
+		uiInfo.forcePowerLevel[FP_LIGHTNING_STRIKE] = Q_max(p_state->forcePowerLevel[FP_FEAR],
 		                                                    uiInfo.forcePowerLevel[FP_LIGHTNING_STRIKE]);
-		uiInfo.forcePowerLevel[FP_FEAR] = Q_max(pState->forcePowerLevel[FP_FEAR], uiInfo.forcePowerLevel[FP_FEAR]);
-		uiInfo.forcePowerLevel[FP_DEADLYSIGHT] = Q_max(pState->forcePowerLevel[FP_DEADLYSIGHT],
+		uiInfo.forcePowerLevel[FP_FEAR] = Q_max(p_state->forcePowerLevel[FP_FEAR], uiInfo.forcePowerLevel[FP_FEAR]);
+		uiInfo.forcePowerLevel[FP_DEADLYSIGHT] = Q_max(p_state->forcePowerLevel[FP_DEADLYSIGHT],
 		                                               uiInfo.forcePowerLevel[FP_DEADLYSIGHT]);
-		uiInfo.forcePowerLevel[FP_BLAST] = Q_max(pState->forcePowerLevel[FP_BLAST], uiInfo.forcePowerLevel[FP_BLAST]);
-		uiInfo.forcePowerLevel[FP_BLINDING] = Q_max(pState->forcePowerLevel[FP_BLINDING],
+		uiInfo.forcePowerLevel[FP_BLAST] = Q_max(p_state->forcePowerLevel[FP_BLAST], uiInfo.forcePowerLevel[FP_BLAST]);
+		uiInfo.forcePowerLevel[FP_BLINDING] = Q_max(p_state->forcePowerLevel[FP_BLINDING],
 		                                            uiInfo.forcePowerLevel[FP_BLINDING]);
 	}
 }
@@ -5744,7 +5744,7 @@ static void UI_ShutdownForceHelp(void)
 			return;
 		}
 
-		const playerState_t* pState = cl->gentity->client;
+		const playerState_t* p_state = cl->gentity->client;
 
 		if (uiInfo.forcePowerUpdated == FP_UPDATED_NONE)
 		{
@@ -5757,7 +5757,7 @@ static void UI_ShutdownForceHelp(void)
 			sizeof itemName,
 			"%s_level%ddesc",
 			powerEnums[uiInfo.forcePowerUpdated].title,
-			pState->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum]
+			p_state->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum]
 		);
 
 		item = Menu_FindItemByName(menu, itemName);
@@ -5803,13 +5803,13 @@ static void UI_DecrementCurrentForcePower(void)
 
 	// Get player state
 	const client_t* cl = &svs.clients[0]; // 0 because only ever us as a player
-	playerState_t* pState = nullptr;
+	playerState_t* p_state = nullptr;
 	int forcelevel;
 
 	if (cl)
 	{
-		pState = cl->gentity->client;
-		forcelevel = pState->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum];
+		p_state = cl->gentity->client;
+		forcelevel = p_state->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum];
 	}
 	else
 	{
@@ -5825,14 +5825,14 @@ static void UI_DecrementCurrentForcePower(void)
 
 	if (forcelevel > 0)
 	{
-		if (pState)
+		if (p_state)
 		{
-			pState->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum]--; // Decrement it
-			forcelevel = pState->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum];
+			p_state->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum]--; // Decrement it
+			forcelevel = p_state->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum];
 			// Turn off power if level is 0
-			if (pState->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum] < 1)
+			if (p_state->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum] < 1)
 			{
-				pState->forcePowersKnown &= ~(1 << powerEnums[uiInfo.forcePowerUpdated].powerEnum);
+				p_state->forcePowersKnown &= ~(1 << powerEnums[uiInfo.forcePowerUpdated].powerEnum);
 			}
 		}
 		else
@@ -5906,12 +5906,12 @@ static void UI_AffectForcePowerLevel(const char* forceName)
 
 	// Get player state
 	const client_t* cl = &svs.clients[0]; // 0 because only ever us as a player
-	playerState_t* pState = nullptr;
+	playerState_t* p_state = nullptr;
 	int forcelevel;
 	if (cl)
 	{
-		pState = cl->gentity->client;
-		forcelevel = pState->forcePowerLevel[powerEnums[forcePowerI].powerEnum];
+		p_state = cl->gentity->client;
+		forcelevel = p_state->forcePowerLevel[powerEnums[forcePowerI].powerEnum];
 	}
 	else
 	{
@@ -5929,11 +5929,11 @@ static void UI_AffectForcePowerLevel(const char* forceName)
 
 	uiInfo.forcePowerUpdated = forcePowerI; // Remember which power was updated
 
-	if (pState)
+	if (p_state)
 	{
-		pState->forcePowerLevel[powerEnums[forcePowerI].powerEnum]++; // Increment it
-		pState->forcePowersKnown |= 1 << powerEnums[forcePowerI].powerEnum;
-		forcelevel = pState->forcePowerLevel[powerEnums[forcePowerI].powerEnum];
+		p_state->forcePowerLevel[powerEnums[forcePowerI].powerEnum]++; // Increment it
+		p_state->forcePowersKnown |= 1 << powerEnums[forcePowerI].powerEnum;
+		forcelevel = p_state->forcePowerLevel[powerEnums[forcePowerI].powerEnum];
 	}
 	else
 	{
@@ -6001,9 +6001,9 @@ static void UI_DecrementForcePowerLevel(void)
 		return;
 	}
 
-	playerState_t* pState = cl->gentity->client;
+	playerState_t* p_state = cl->gentity->client;
 
-	pState->forcePowerLevel[powerEnums[forcePowerI].powerEnum]--; // Decrement it
+	p_state->forcePowerLevel[powerEnums[forcePowerI].powerEnum]--; // Decrement it
 }
 
 // Show force level description that matches current player level (Used by Force Power Allocation screen)
@@ -6029,7 +6029,7 @@ static void UI_ShowForceLevelDesc(const char* forceName)
 	{
 		return;
 	}
-	const playerState_t* pState = cl->gentity->client;
+	const playerState_t* p_state = cl->gentity->client;
 
 	char itemName[128];
 
@@ -6039,7 +6039,7 @@ static void UI_ShowForceLevelDesc(const char* forceName)
 		sizeof itemName,
 		"%s_level%ddesc",
 		powerEnums[forcePowerI].title,
-		pState->forcePowerLevel[powerEnums[forcePowerI].powerEnum]
+		p_state->forcePowerLevel[powerEnums[forcePowerI].powerEnum]
 	);
 
 	itemDef_t* item = Menu_FindItemByName(menu, itemName);
@@ -6062,10 +6062,10 @@ static void UI_ResetForceLevels(void)
 		{
 			return;
 		}
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 
 		// Decrement that power
-		pState->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum]--;
+		p_state->forcePowerLevel[powerEnums[uiInfo.forcePowerUpdated].powerEnum]--;
 
 		itemDef_t* item;
 
@@ -6139,8 +6139,8 @@ static void UI_UpdateFightingStyle(void)
 	// No client, get out
 	if (cl && cl->gentity && cl->gentity->client)
 	{
-		playerState_t* pState = cl->gentity->client;
-		pState->saberStylesKnown |= 1 << saberStyle;
+		playerState_t* p_state = cl->gentity->client;
+		p_state->saberStylesKnown |= 1 << saberStyle;
 	}
 	else // Must be at the beginning of the game so the client hasn't been created, shove data in a cvar
 	{
@@ -6213,11 +6213,11 @@ static void UI_ClearInventory(void)
 
 	if (cl->gentity && cl->gentity->client)
 	{
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 
 		for (int i = 0; i < MAX_INVENTORY; i++)
 		{
-			pState->inventory[i] = 0;
+			p_state->inventory[i] = 0;
 		}
 	}
 }
@@ -6234,11 +6234,11 @@ static void UI_GiveInventory(const int itemIndex, const int amount)
 
 	if (cl->gentity && cl->gentity->client)
 	{
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 
 		if (itemIndex < MAX_INVENTORY)
 		{
-			pState->inventory[itemIndex] = amount;
+			p_state->inventory[itemIndex] = amount;
 		}
 	}
 }
@@ -6336,16 +6336,16 @@ static void UI_ClearWeapons(void)
 
 	if (cl->gentity && cl->gentity->client)
 	{
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 
 		// Clear out any weapons for the player
-		pState->stats[STAT_WEAPONS] = 0;
+		p_state->stats[STAT_WEAPONS] = 0;
 
-		pState->weapon = WP_NONE;
+		p_state->weapon = WP_NONE;
 	}
 }
 
-static void UI_GiveWeapon(const int weaponIndex)
+static void UI_GiveWeapon(const int weapon_index)
 {
 	// Get player state
 	const client_t* cl = &svs.clients[0]; // 0 because only ever us as a player
@@ -6357,16 +6357,16 @@ static void UI_GiveWeapon(const int weaponIndex)
 
 	if (cl->gentity && cl->gentity->client)
 	{
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 
-		if (weaponIndex < WP_NUM_WEAPONS)
+		if (weapon_index < WP_NUM_WEAPONS)
 		{
-			pState->stats[STAT_WEAPONS] |= 1 << weaponIndex;
+			p_state->stats[STAT_WEAPONS] |= 1 << weapon_index;
 		}
 	}
 }
 
-static void UI_EquipWeapon(const int weaponIndex)
+static void UI_EquipWeapon(const int weapon_index)
 {
 	// Get player state
 	const client_t* cl = &svs.clients[0]; // 0 because only ever us as a player
@@ -6378,11 +6378,11 @@ static void UI_EquipWeapon(const int weaponIndex)
 
 	if (cl->gentity && cl->gentity->client)
 	{
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 
-		if (weaponIndex < WP_NUM_WEAPONS)
+		if (weapon_index < WP_NUM_WEAPONS)
 		{
-			pState->weapon = weaponIndex;
+			p_state->weapon = weapon_index;
 			//force it to change
 			//CG_ChangeWeapon( wp );
 		}
@@ -6415,7 +6415,7 @@ static void UI_LoadMissionSelectMenu(const char* cvarName)
 }
 
 // Update the player weapons with the chosen weapon
-static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, const int ammoAmount,
+static void UI_AddWeaponSelection(const int weapon_index, const int ammoIndex, const int ammoAmount,
                                   const char* iconItemName, const char* litIconItemName, const char* hexBackground,
                                   const char* soundfile)
 {
@@ -6432,12 +6432,12 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 	const char *chosenItemName, *chosenButtonName;
 
 	// has this weapon already been chosen?
-	if (weaponIndex == uiInfo.selectedWeapon1)
+	if (weapon_index == uiInfo.selectedWeapon1)
 	{
 		UI_RemoveWeaponSelection(1);
 		return;
 	}
-	if (weaponIndex == uiInfo.selectedWeapon2)
+	if (weapon_index == uiInfo.selectedWeapon2)
 	{
 		UI_RemoveWeaponSelection(2);
 		return;
@@ -6448,7 +6448,7 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 	{
 		chosenItemName = "chosenweapon1_icon";
 		chosenButtonName = "chosenweapon1_button";
-		uiInfo.selectedWeapon1 = weaponIndex;
+		uiInfo.selectedWeapon1 = weapon_index;
 		uiInfo.selectedWeapon1AmmoIndex = ammoIndex;
 
 		memcpy(uiInfo.selectedWeapon1ItemName, hexBackground, sizeof uiInfo.selectedWeapon1ItemName);
@@ -6464,7 +6464,7 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 	{
 		chosenItemName = "chosenweapon2_icon";
 		chosenButtonName = "chosenweapon2_button";
-		uiInfo.selectedWeapon2 = weaponIndex;
+		uiInfo.selectedWeapon2 = weapon_index;
 		uiInfo.selectedWeapon2AmmoIndex = ammoIndex;
 
 		memcpy(uiInfo.selectedWeapon2ItemName, hexBackground, sizeof uiInfo.selectedWeapon2ItemName);
@@ -6516,17 +6516,17 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 		// Add weapon
 		if (cl->gentity && cl->gentity->client)
 		{
-			playerState_t* pState = cl->gentity->client;
+			playerState_t* p_state = cl->gentity->client;
 
-			if (weaponIndex > 0 && weaponIndex < WP_NUM_WEAPONS)
+			if (weapon_index > 0 && weapon_index < WP_NUM_WEAPONS)
 			{
-				pState->stats[STAT_WEAPONS] |= 1 << weaponIndex;
+				p_state->stats[STAT_WEAPONS] |= 1 << weapon_index;
 			}
 
 			// Give them ammo too
 			if (ammoIndex > 0 && ammoIndex < AMMO_MAX)
 			{
-				pState->ammo[ammoIndex] = ammoAmount;
+				p_state->ammo[ammoIndex] = ammoAmount;
 			}
 		}
 	}
@@ -6543,7 +6543,7 @@ static void UI_AddWeaponSelection(const int weaponIndex, const int ammoIndex, co
 static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 {
 	const char *chosenItemName, *chosenButtonName, *background;
-	int ammoIndex, weaponIndex;
+	int ammoIndex, weapon_index;
 
 	const menuDef_t* menu = Menu_GetFocused(); // Get current menu
 
@@ -6554,7 +6554,7 @@ static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 		chosenButtonName = "chosenweapon1_button";
 		background = uiInfo.selectedWeapon1ItemName;
 		ammoIndex = uiInfo.selectedWeapon1AmmoIndex;
-		weaponIndex = uiInfo.selectedWeapon1;
+		weapon_index = uiInfo.selectedWeapon1;
 
 		if (uiInfo.weapon1ItemButton)
 		{
@@ -6568,7 +6568,7 @@ static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 		chosenButtonName = "chosenweapon2_button";
 		background = uiInfo.selectedWeapon2ItemName;
 		ammoIndex = uiInfo.selectedWeapon2AmmoIndex;
-		weaponIndex = uiInfo.selectedWeapon2;
+		weapon_index = uiInfo.selectedWeapon2;
 
 		if (uiInfo.weapon2ItemButton)
 		{
@@ -6615,11 +6615,11 @@ static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 		// Remove weapon
 		if (cl->gentity && cl->gentity->client)
 		{
-			playerState_t* pState = cl->gentity->client;
+			playerState_t* p_state = cl->gentity->client;
 
-			if (weaponIndex > 0 && weaponIndex < WP_NUM_WEAPONS)
+			if (weapon_index > 0 && weapon_index < WP_NUM_WEAPONS)
 			{
-				pState->stats[STAT_WEAPONS] &= ~(1 << weaponIndex);
+				p_state->stats[STAT_WEAPONS] &= ~(1 << weapon_index);
 			}
 
 			// Remove ammo too
@@ -6628,7 +6628,7 @@ static void UI_RemoveWeaponSelection(const int weaponSelectionIndex)
 				// But don't take it away if the other weapon is using that ammo
 				if (uiInfo.selectedWeapon1AmmoIndex != uiInfo.selectedWeapon2AmmoIndex)
 				{
-					pState->ammo[ammoIndex] = 0;
+					p_state->ammo[ammoIndex] = 0;
 				}
 			}
 		}
@@ -6715,7 +6715,7 @@ static void UI_HighLightWeaponSelection(const int selectionslot)
 }
 
 // Update the player throwable weapons (okay it's a bad description) with the chosen weapon
-static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoIndex, const int ammoAmount,
+static void UI_AddThrowWeaponSelection(const int weapon_index, const int ammoIndex, const int ammoAmount,
                                        const char* iconItemName, const char* litIconItemName, const char* hexBackground,
                                        const char* soundfile)
 {
@@ -6733,7 +6733,7 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 	if (uiInfo.selectedThrowWeapon != NOWEAPON)
 	{
 		// Clicked on the selected throwable weapon
-		if (uiInfo.selectedThrowWeapon == weaponIndex)
+		if (uiInfo.selectedThrowWeapon == weapon_index)
 		{
 			// Deselect it
 			UI_RemoveThrowWeaponSelection();
@@ -6743,7 +6743,7 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 
 	const auto chosenItemName = "chosenthrowweapon_icon";
 	const auto chosenButtonName = "chosenthrowweapon_button";
-	uiInfo.selectedThrowWeapon = weaponIndex;
+	uiInfo.selectedThrowWeapon = weapon_index;
 	uiInfo.selectedThrowWeaponAmmoIndex = ammoIndex;
 	uiInfo.weaponThrowButton = uiInfo.runScriptItem;
 
@@ -6794,17 +6794,17 @@ static void UI_AddThrowWeaponSelection(const int weaponIndex, const int ammoInde
 		// Add weapon
 		if (cl->gentity && cl->gentity->client)
 		{
-			playerState_t* pState = cl->gentity->client;
+			playerState_t* p_state = cl->gentity->client;
 
-			if (weaponIndex > 0 && weaponIndex < WP_NUM_WEAPONS)
+			if (weapon_index > 0 && weapon_index < WP_NUM_WEAPONS)
 			{
-				pState->stats[STAT_WEAPONS] |= 1 << weaponIndex;
+				p_state->stats[STAT_WEAPONS] |= 1 << weapon_index;
 			}
 
 			// Give them ammo too
 			if (ammoIndex > 0 && ammoIndex < AMMO_MAX)
 			{
-				pState->ammo[ammoIndex] = ammoAmount;
+				p_state->ammo[ammoIndex] = ammoAmount;
 			}
 		}
 	}
@@ -6867,17 +6867,17 @@ static void UI_RemoveThrowWeaponSelection(void)
 		// Remove weapon
 		if (cl->gentity && cl->gentity->client)
 		{
-			playerState_t* pState = cl->gentity->client;
+			playerState_t* p_state = cl->gentity->client;
 
 			if (uiInfo.selectedThrowWeapon > 0 && uiInfo.selectedThrowWeapon < WP_NUM_WEAPONS)
 			{
-				pState->stats[STAT_WEAPONS] &= ~(1 << uiInfo.selectedThrowWeapon);
+				p_state->stats[STAT_WEAPONS] &= ~(1 << uiInfo.selectedThrowWeapon);
 			}
 
 			// Remove ammo too
 			if (uiInfo.selectedThrowWeaponAmmoIndex > 0 && uiInfo.selectedThrowWeaponAmmoIndex < AMMO_MAX)
 			{
-				pState->ammo[uiInfo.selectedThrowWeaponAmmoIndex] = 0;
+				p_state->ammo[uiInfo.selectedThrowWeaponAmmoIndex] = 0;
 			}
 		}
 	}

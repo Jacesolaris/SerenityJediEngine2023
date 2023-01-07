@@ -34,7 +34,7 @@ Handles byte ordering and avoids alignment errors
 ==============================================================================
 */
 
-void MSG_Init(msg_t* buf, byte* data, int length)
+void MSG_Init(msg_t* buf, byte* data, const int length)
 {
 	memset(buf, 0, sizeof * buf);
 	buf->data = data;
@@ -64,7 +64,7 @@ void MSG_ReadByteAlign(msg_t* buf)
 	}
 }
 
-void* MSG_GetSpace(msg_t* buf, int length)
+void* MSG_GetSpace(msg_t* buf, const int length)
 {
 	// round up to the next byte
 	if (buf->bit)
@@ -94,7 +94,7 @@ void* MSG_GetSpace(msg_t* buf, int length)
 	return data;
 }
 
-void MSG_WriteData(msg_t* buf, const void* data, int length)
+void MSG_WriteData(msg_t* buf, const void* data, const int length)
 {
 	memcpy(MSG_GetSpace(buf, length), data, length);
 }
@@ -187,7 +187,7 @@ int MSG_ReadBits(msg_t* msg, int bits)
 	qboolean sgn;
 
 	int value = 0;
-	int valueBits = 0;
+	int value_bits = 0;
 
 	if (bits < 0)
 	{
@@ -199,7 +199,7 @@ int MSG_ReadBits(msg_t* msg, int bits)
 		sgn = qfalse;
 	}
 
-	while (valueBits < bits)
+	while (value_bits < bits)
 	{
 		if (msg->bit == 0)
 		{
@@ -207,16 +207,16 @@ int MSG_ReadBits(msg_t* msg, int bits)
 			assert(msg->readcount <= msg->cursize);
 		}
 		int get = 8 - msg->bit;
-		if (get > bits - valueBits)
+		if (get > bits - value_bits)
 		{
-			get = bits - valueBits;
+			get = bits - value_bits;
 		}
 		int fraction = msg->data[msg->readcount - 1];
 		fraction >>= msg->bit;
 		fraction &= (1 << get) - 1;
-		value |= fraction << valueBits;
+		value |= fraction << value_bits;
 
-		valueBits += get;
+		value_bits += get;
 		msg->bit = msg->bit + get & 7;
 	}
 
@@ -257,12 +257,12 @@ void MSG_WriteShort(msg_t* sb, int c)
 	MSG_WriteBits(sb, c, 16);
 }
 
-static void MSG_WriteSShort(msg_t* sb, int c)
+static void MSG_WriteSShort(msg_t* sb, const int c)
 {
 	MSG_WriteBits(sb, c, -16);
 }
 
-void MSG_WriteLong(msg_t* sb, int c)
+void MSG_WriteLong(msg_t* sb, const int c)
 {
 	MSG_WriteBits(sb, c, 32);
 }
@@ -289,7 +289,7 @@ void MSG_WriteString(msg_t* sb, const char* s)
 		// get rid of 0xff chars, because old clients don't like them
 		for (int i = 0; i < l; i++)
 		{
-			if (((byte*)string)[i] > 127)
+			if (reinterpret_cast<byte*>(string)[i] > 127)
 			{
 				string[i] = '.';
 			}
@@ -427,7 +427,7 @@ char* MSG_ReadStringLine(msg_t* msg)
 	return string;
 }
 
-void MSG_ReadData(msg_t* msg, void* data, int len)
+void MSG_ReadData(msg_t* msg, void* data, const int len)
 {
 	MSG_ReadByteAlign(msg);
 	for (int i = 0; i < len; i++)
@@ -448,40 +448,40 @@ extern cvar_t* cl_shownet;
 
 #define	LOG(x) if( cl_shownet->integer == 4 ) { Com_Printf("%s ", x ); };
 
-void MSG_WriteDelta(msg_t* msg, int oldV, int newV, int bits)
+void MSG_WriteDelta(msg_t* msg, const int old_v, const int new_v, const int bits)
 {
-	if (oldV == newV)
+	if (old_v == new_v)
 	{
 		MSG_WriteBits(msg, 0, 1);
 		return;
 	}
 	MSG_WriteBits(msg, 1, 1);
-	MSG_WriteBits(msg, newV, bits);
+	MSG_WriteBits(msg, new_v, bits);
 }
 
-int MSG_ReadDelta(msg_t* msg, int oldV, int bits)
+int MSG_ReadDelta(msg_t* msg, const int old_v, const int bits)
 {
 	if (MSG_ReadBits(msg, 1))
 	{
 		return MSG_ReadBits(msg, bits);
 	}
-	return oldV;
+	return old_v;
 }
 
-void MSG_WriteDeltaFloat(msg_t* msg, float oldV, float newV)
+void MSG_WriteDeltaFloat(msg_t* msg, const float old_v, const float new_v)
 {
 	byteAlias_t fi;
-	if (oldV == newV)
+	if (old_v == new_v)
 	{
 		MSG_WriteBits(msg, 0, 1);
 		return;
 	}
-	fi.f = newV;
+	fi.f = new_v;
 	MSG_WriteBits(msg, 1, 1);
 	MSG_WriteBits(msg, fi.i, 32);
 }
 
-float MSG_ReadDeltaFloat(msg_t* msg, float oldV)
+float MSG_ReadDeltaFloat(msg_t* msg, const float old_v)
 {
 	if (MSG_ReadBits(msg, 1))
 	{
@@ -490,7 +490,7 @@ float MSG_ReadDeltaFloat(msg_t* msg, float oldV)
 		fi.i = MSG_ReadBits(msg, 32);
 		return fi.f;
 	}
-	return oldV;
+	return old_v;
 }
 
 /*
@@ -516,7 +516,7 @@ constexpr auto CM_WEAPON = 1 << 7;
 MSG_WriteDeltaUsercmd
 =====================
 */
-void MSG_WriteDeltaUsercmd(msg_t* msg, usercmd_t* from, usercmd_t* to)
+void MSG_WriteDeltaUsercmd(msg_t* msg, const usercmd_t* from, const usercmd_t* to)
 {
 	MSG_WriteDelta(msg, from->serverTime, to->serverTime, 32);
 	MSG_WriteDelta(msg, from->angles[0], to->angles[0], 16);
@@ -536,7 +536,7 @@ void MSG_WriteDeltaUsercmd(msg_t* msg, usercmd_t* from, usercmd_t* to)
 MSG_ReadDeltaUsercmd
 =====================
 */
-void MSG_ReadDeltaUsercmd(msg_t* msg, usercmd_t* from, usercmd_t* to)
+void MSG_ReadDeltaUsercmd(msg_t* msg, const usercmd_t* from, usercmd_t* to)
 {
 	to->serverTime = MSG_ReadDelta(msg, from->serverTime, 32);
 	to->angles[0] = MSG_ReadDelta(msg, from->angles[0], 16);
@@ -738,18 +738,18 @@ Ghoul2 Insert Start
 constexpr auto FLOAT_INT_BITS = 13;
 #define	FLOAT_INT_BIAS	(1<<(FLOAT_INT_BITS-1))
 
-void MSG_WriteField(msg_t* msg, const int* toF, const netField_t* field)
+void MSG_WriteField(msg_t* msg, const int* to_f, const netField_t* field)
 {
 	if (field->bits == -1)
 	{
 		// a -1 in the bits field means it's a float that's always between -1 and 1
-		const int temp = *(float*)toF * 32767;
+		const int temp = *(float*)to_f * 32767;
 		MSG_WriteBits(msg, temp, -16);
 	}
 	else if (field->bits == 0)
 	{
 		// float
-		const float fullFloat = *(float*)toF;
+		const float fullFloat = *(float*)to_f;
 		const int trunc = static_cast<int>(fullFloat);
 
 		if (fullFloat == 0.0f)
@@ -770,13 +770,13 @@ void MSG_WriteField(msg_t* msg, const int* toF, const netField_t* field)
 			{
 				// send as full floating point value
 				MSG_WriteBits(msg, 1, 1);
-				MSG_WriteBits(msg, *toF, 32);
+				MSG_WriteBits(msg, *to_f, 32);
 			}
 		}
 	}
 	else
 	{
-		if (*toF == 0)
+		if (*to_f == 0)
 		{
 			MSG_WriteBits(msg, 0, 1); //it's a zero
 		}
@@ -784,25 +784,25 @@ void MSG_WriteField(msg_t* msg, const int* toF, const netField_t* field)
 		{
 			MSG_WriteBits(msg, 1, 1); //not a zero
 			// integer
-			MSG_WriteBits(msg, *toF, field->bits);
+			MSG_WriteBits(msg, *to_f, field->bits);
 		}
 	}
 }
 
-void MSG_ReadField(msg_t* msg, int* toF, const netField_t* field, int print)
+void MSG_ReadField(msg_t* msg, int* to_f, const netField_t* field, const int print)
 {
 	if (field->bits == -1)
 	{
 		// a -1 in the bits field means it's a float that's always between -1 and 1
 		const int temp = MSG_ReadBits(msg, -16);
-		*(float*)toF = static_cast<float>(temp) / 32767;
+		*reinterpret_cast<float*>(to_f) = static_cast<float>(temp) / 32767;
 	}
 	else if (field->bits == 0)
 	{
 		// float
 		if (MSG_ReadBits(msg, 1) == 0)
 		{
-			*(float*)toF = 0.0f;
+			*reinterpret_cast<float*>(to_f) = 0.0f;
 		}
 		else
 		{
@@ -812,7 +812,7 @@ void MSG_ReadField(msg_t* msg, int* toF, const netField_t* field, int print)
 				int trunc = MSG_ReadBits(msg, FLOAT_INT_BITS);
 				// bias to allow equal parts positive and negative
 				trunc -= FLOAT_INT_BIAS;
-				*(float*)toF = trunc;
+				*reinterpret_cast<float*>(to_f) = trunc;
 				if (print)
 				{
 					Com_Printf("%s:%i ", field->name, trunc);
@@ -821,10 +821,10 @@ void MSG_ReadField(msg_t* msg, int* toF, const netField_t* field, int print)
 			else
 			{
 				// full floating point value
-				*toF = MSG_ReadBits(msg, 32);
+				*to_f = MSG_ReadBits(msg, 32);
 				if (print)
 				{
-					Com_Printf("%s:%f ", field->name, *(float*)toF);
+					Com_Printf("%s:%f ", field->name, *reinterpret_cast<float*>(to_f));
 				}
 			}
 		}
@@ -833,15 +833,15 @@ void MSG_ReadField(msg_t* msg, int* toF, const netField_t* field, int print)
 	{
 		if (MSG_ReadBits(msg, 1) == 0)
 		{
-			*toF = 0;
+			*to_f = 0;
 		}
 		else
 		{
 			// integer
-			*toF = MSG_ReadBits(msg, field->bits);
+			*to_f = MSG_ReadBits(msg, field->bits);
 			if (print)
 			{
-				Com_Printf("%s:%i ", field->name, *toF);
+				Com_Printf("%s:%i ", field->name, *to_f);
 			}
 		}
 	}
@@ -949,11 +949,11 @@ void MSG_WriteDeltaEntity(msg_t* msg, struct entityState_s* from, struct entityS
 
 extern serverStatic_t svs;
 
-void MSG_WriteEntity(msg_t* msg, entityState_s* to, int removeNum)
+void MSG_WriteEntity(msg_t* msg, const entityState_s* to, const int remove_num)
 {
 	if (to == nullptr)
 	{
-		MSG_WriteBits(msg, removeNum, GENTITYNUM_BITS);
+		MSG_WriteBits(msg, remove_num, GENTITYNUM_BITS);
 		MSG_WriteBits(msg, 1, 1); //removed
 		return;
 	}
@@ -1262,20 +1262,20 @@ void MSG_WriteDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* t
 
 	int c = msg->cursize;
 
-	constexpr int numFields = std::size(playerStateFields);
-	for (i = 0, field = playerStateFields; i < numFields; i++, field++)
+	constexpr int num_fields = std::size(playerStateFields);
+	for (i = 0, field = playerStateFields; i < num_fields; i++, field++)
 	{
-		const auto fromF = (int*)((byte*)from + field->offset);
-		const auto toF = (int*)((byte*)to + field->offset);
+		const auto from_f = reinterpret_cast<int*>(reinterpret_cast<byte*>(from) + field->offset);
+		const auto to_f = reinterpret_cast<int*>(reinterpret_cast<byte*>(to) + field->offset);
 
-		if (*fromF == *toF)
+		if (*from_f == *to_f)
 		{
 			MSG_WriteBits(msg, 0, 1); // no change
 			continue;
 		}
 
 		MSG_WriteBits(msg, 1, 1); // changed
-		MSG_WriteField(msg, toF, field);
+		MSG_WriteField(msg, to_f, field);
 	}
 	c = msg->cursize - c;
 
@@ -1402,7 +1402,7 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 	int i;
 	int bits;
 	const netField_t* field;
-	int startBit;
+	int start_bit;
 	int print;
 	playerState_t dummy;
 
@@ -1415,11 +1415,11 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 
 	if (msg->bit == 0)
 	{
-		startBit = msg->readcount * 8 - GENTITYNUM_BITS;
+		start_bit = msg->readcount * 8 - GENTITYNUM_BITS;
 	}
 	else
 	{
-		startBit = (msg->readcount - 1) * 8 + msg->bit - GENTITYNUM_BITS;
+		start_bit = (msg->readcount - 1) * 8 + msg->bit - GENTITYNUM_BITS;
 	}
 
 	// shownet 2/3 will interleave with other printed info, -2 will
@@ -1434,20 +1434,20 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 		print = 0;
 	}
 
-	constexpr int numFields = std::size(playerStateFields);
-	for (i = 0, field = playerStateFields; i < numFields; i++, field++)
+	constexpr int num_fields = std::size(playerStateFields);
+	for (i = 0, field = playerStateFields; i < num_fields; i++, field++)
 	{
-		const auto fromF = (int*)((byte*)from + field->offset);
-		const auto toF = (int*)((byte*)to + field->offset);
+		const auto from_f = reinterpret_cast<int*>(reinterpret_cast<byte*>(from) + field->offset);
+		const auto to_f = reinterpret_cast<int*>(reinterpret_cast<byte*>(to) + field->offset);
 
 		if (!MSG_ReadBits(msg, 1))
 		{
 			// no change
-			*toF = *fromF;
+			*to_f = *from_f;
 		}
 		else
 		{
-			MSG_ReadField(msg, toF, field, print);
+			MSG_ReadField(msg, to_f, field, print);
 		}
 	}
 
@@ -1534,7 +1534,7 @@ void MSG_ReadDeltaPlayerstate(msg_t* msg, playerState_t* from, playerState_t* to
 		{
 			endBit = (msg->readcount - 1) * 8 + msg->bit - GENTITYNUM_BITS;
 		}
-		Com_Printf(" (%i bits)\n", endBit - startBit);
+		Com_Printf(" (%i bits)\n", endBit - start_bit);
 	}
 }
 

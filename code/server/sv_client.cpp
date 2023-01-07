@@ -245,7 +245,7 @@ void SV_SendClientGameState(client_t* client)
 SV_ClientEnterWorld
 ==================
 */
-void SV_ClientEnterWorld(client_t* client, usercmd_t* cmd, const SavedGameJustLoaded_e e_saved_game_just_loaded)
+void SV_ClientEnterWorld(client_t* client, const usercmd_t* cmd, const SavedGameJustLoaded_e e_saved_game_just_loaded)
 {
 	Com_DPrintf("SV_ClientEnterWorld() from %s\n", client->name);
 	client->state = CS_ACTIVE;
@@ -446,7 +446,7 @@ static void SV_UserMove(client_t* cl, msg_t* msg)
 	}
 
 	memset(&nullcmd, 0, sizeof nullcmd);
-	usercmd_t* oldcmd = &nullcmd;
+	const usercmd_t* oldcmd = &nullcmd;
 	for (i = 0; i < cmdCount; i++)
 	{
 		usercmd_t* cmd = &cmds[i];

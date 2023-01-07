@@ -79,24 +79,24 @@ void MSG_WriteShort(msg_t* sb, int c);
 void MSG_WriteLong(msg_t* sb, int c);
 void MSG_WriteString(msg_t* sb, const char* s);
 
-void MSG_BeginReading(msg_t* sb);
+void MSG_BeginReading(msg_t* msg);
 
 int MSG_ReadBits(msg_t* msg, int bits);
 
-int MSG_ReadByte(msg_t* sb);
-int MSG_ReadShort(msg_t* sb);
-int MSG_ReadLong(msg_t* sb);
-char* MSG_ReadString(msg_t* sb);
-char* MSG_ReadStringLine(msg_t* sb);
-void MSG_ReadData(msg_t* sb, void* buffer, int size);
+int MSG_ReadByte(msg_t* msg);
+int MSG_ReadShort(msg_t* msg);
+int MSG_ReadLong(msg_t* msg);
+char* MSG_ReadString(msg_t* msg);
+char* MSG_ReadStringLine(msg_t* msg);
+void MSG_ReadData(msg_t* msg, void* data, int len);
 
-void MSG_WriteDeltaUsercmd(msg_t * msg, usercmd_t * from, usercmd_t * to);
-void MSG_ReadDeltaUsercmd(msg_t * msg, usercmd_t * from, usercmd_t * to);
+void MSG_WriteDeltaUsercmd(msg_t * msg, const usercmd_t * from, const usercmd_t * to);
+void MSG_ReadDeltaUsercmd(msg_t * msg, const usercmd_t * from, usercmd_t * to);
 
 void MSG_WriteDeltaEntity(msg_t* msg, entityState_s* from, entityState_s* to, qboolean force);
 void MSG_ReadDeltaEntity(msg_t* msg, entityState_t* from, entityState_t* to, int number);
 void MSG_ReadEntity(msg_t * msg, entityState_t * to);
-void MSG_WriteEntity(msg_t* msg, entityState_s* to, int removeNum);
+void MSG_WriteEntity(msg_t* msg, const entityState_s* to, int remove_num);
 
 void MSG_WriteDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t * to);
 void MSG_ReadDeltaPlayerstate(msg_t * msg, playerState_t * from, playerState_t * to);

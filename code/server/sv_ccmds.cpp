@@ -150,22 +150,22 @@ static bool SV_Map_(const ForceReload_e eForceReload)
 		return false;
 	}
 
-	if (!(com_outcast->integer == 0))
+	if (com_outcast->integer != 0)
 	{
-		for (auto& JKA_Map : JKA_Maps)
+		for (auto& jka_map : JKA_Maps)
 		{
-			if (strcmp(map, JKA_Map) == 0)
+			if (strcmp(map, jka_map) == 0)
 			{
 				Cvar_Set("com_outcast", "0");
 			}
 		}
 	}
 
-	if (!(com_outcast->integer == 1))
+	if (com_outcast->integer != 1)
 	{
-		for (auto& JKO_Map : JKO_Maps)
+		for (auto& jko_map : JKO_Maps)
 		{
-			if (strcmp(map, JKO_Map) == 0)
+			if (strcmp(map, jko_map) == 0)
 			{
 				Cvar_Set("com_outcast", "1");
 			}
@@ -174,9 +174,9 @@ static bool SV_Map_(const ForceReload_e eForceReload)
 
 	if (com_outcast->integer == 1)
 	{
-		for (auto& JKO_Map : JKO_Maps)
+		for (auto& jko_map : JKO_Maps)
 		{
-			if (strcmp(map, JKO_Map) == 0)
+			if (strcmp(map, jko_map) == 0)
 			{
 				Cvar_Set("g_char_model", "kyle");
 				Cvar_Set("g_char_skin_head", "model_default");
@@ -190,25 +190,25 @@ static bool SV_Map_(const ForceReload_e eForceReload)
 		}
 	}
 
-	bool notJKMap = true;
+	bool not_jk_map = true;
 
-	for (auto& JKO_Map : JKO_Maps)
+	for (auto& jko_map : JKO_Maps)
 	{
-		if (strcmp(map, JKO_Map) == 0)
+		if (strcmp(map, jko_map) == 0)
 		{
-			notJKMap = false;
+			not_jk_map = false;
 		}
 	}
 
-	for (auto& JKA_Map : JKA_Maps)
+	for (auto& jka_map : JKA_Maps)
 	{
-		if (strcmp(map, JKA_Map) == 0)
+		if (strcmp(map, jka_map) == 0)
 		{
-			notJKMap = false;
+			not_jk_map = false;
 		}
 	}
 
-	if (notJKMap) //then it must be a MP Map so just to be sure go to "2".
+	if (not_jk_map) //then it must be a MP Map so just to be sure go to "2".
 	{
 		Cvar_Set("com_outcast", "2");
 	}
@@ -237,8 +237,6 @@ static bool SV_Map_(const ForceReload_e eForceReload)
 // (now also called by auto-save code to setup the cvars correctly
 void SV_Player_EndOfLevelSave()
 {
-	int i;
-
 	// I could just call GetClientState() but that's in sv_bot.cpp, and I'm not sure if that's going to be deleted for
 	//	the single player build, so here's the guts again...
 	//
@@ -250,91 +248,92 @@ void SV_Player_EndOfLevelSave()
 		//	Shouldn't happen, but does sometimes...
 	)
 	{
+		int i;
 		Cvar_Set(sCVARNAME_PLAYERSAVE, ""); // default to blank
 
-		playerState_t* pState = cl->gentity->client;
+		playerState_t* p_state = cl->gentity->client;
 		const char* s2;
 		const char* s;
 #ifdef JK2_MODE
 		s = va("%i %i %i %i %i %i %i %f %f %f %i %i %i %i %i %i",
-			pState->stats[STAT_HEALTH],
-			pState->stats[STAT_ARMOR],
-			pState->stats[STAT_WEAPONS],
-			pState->stats[STAT_ITEMS],
-			pState->weapon,
-			pState->weaponstate,
-			pState->batteryCharge,
-			pState->viewangles[0],
-			pState->viewangles[1],
-			pState->viewangles[2],
-			pState->forcePowersKnown,
-			pState->forcePower,
-			pState->saberActive,
-			pState->saberAnimLevel,
-			pState->saberLockEnemy,
-			pState->saberLockTime
+			p_state->stats[STAT_HEALTH],
+			p_state->stats[STAT_ARMOR],
+			p_state->stats[STAT_WEAPONS],
+			p_state->stats[STAT_ITEMS],
+			p_state->weapon,
+			p_state->weaponstate,
+			p_state->batteryCharge,
+			p_state->viewangles[0],
+			p_state->viewangles[1],
+			p_state->viewangles[2],
+			p_state->forcePowersKnown,
+			p_state->forcePower,
+			p_state->saberActive,
+			p_state->saberAnimLevel,
+			p_state->saberLockEnemy,
+			p_state->saberLockTime
 		);
 #else
 		//				|general info				  |-force powers |-saber 1		|-saber 2										  |-general saber
 		s = va(
 			"%i %i %i %i %i %i %i %f %f %f %i %i %i %i %i %s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %s %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
-			pState->stats[STAT_HEALTH],
-			pState->stats[STAT_ARMOR],
-			pState->stats[STAT_WEAPONS],
-			pState->stats[STAT_ITEMS],
-			pState->weapon,
-			pState->weaponstate,
-			pState->batteryCharge,
-			pState->viewangles[0],
-			pState->viewangles[1],
-			pState->viewangles[2],
+			p_state->stats[STAT_HEALTH],
+			p_state->stats[STAT_ARMOR],
+			p_state->stats[STAT_WEAPONS],
+			p_state->stats[STAT_ITEMS],
+			p_state->weapon,
+			p_state->weaponstate,
+			p_state->batteryCharge,
+			p_state->viewangles[0],
+			p_state->viewangles[1],
+			p_state->viewangles[2],
 			//force power data
-			pState->forcePowersKnown,
-			pState->forcePower,
-			pState->forcePowerMax,
-			pState->forcePowerRegenRate,
-			pState->forcePowerRegenAmount,
+			p_state->forcePowersKnown,
+			p_state->forcePower,
+			p_state->forcePowerMax,
+			p_state->forcePowerRegenRate,
+			p_state->forcePowerRegenAmount,
 			//saber 1 data
-			pState->saber[0].name,
-			pState->saber[0].blade[0].active,
-			pState->saber[0].blade[1].active,
-			pState->saber[0].blade[2].active,
-			pState->saber[0].blade[3].active,
-			pState->saber[0].blade[4].active,
-			pState->saber[0].blade[5].active,
-			pState->saber[0].blade[6].active,
-			pState->saber[0].blade[7].active,
-			pState->saber[0].blade[0].color,
-			pState->saber[0].blade[1].color,
-			pState->saber[0].blade[2].color,
-			pState->saber[0].blade[3].color,
-			pState->saber[0].blade[4].color,
-			pState->saber[0].blade[5].color,
-			pState->saber[0].blade[6].color,
-			pState->saber[0].blade[7].color,
+			p_state->saber[0].name,
+			p_state->saber[0].blade[0].active,
+			p_state->saber[0].blade[1].active,
+			p_state->saber[0].blade[2].active,
+			p_state->saber[0].blade[3].active,
+			p_state->saber[0].blade[4].active,
+			p_state->saber[0].blade[5].active,
+			p_state->saber[0].blade[6].active,
+			p_state->saber[0].blade[7].active,
+			p_state->saber[0].blade[0].color,
+			p_state->saber[0].blade[1].color,
+			p_state->saber[0].blade[2].color,
+			p_state->saber[0].blade[3].color,
+			p_state->saber[0].blade[4].color,
+			p_state->saber[0].blade[5].color,
+			p_state->saber[0].blade[6].color,
+			p_state->saber[0].blade[7].color,
 			//saber 2 data
-			pState->saber[1].name,
-			pState->saber[1].blade[0].active,
-			pState->saber[1].blade[1].active,
-			pState->saber[1].blade[2].active,
-			pState->saber[1].blade[3].active,
-			pState->saber[1].blade[4].active,
-			pState->saber[1].blade[5].active,
-			pState->saber[1].blade[6].active,
-			pState->saber[1].blade[7].active,
-			pState->saber[1].blade[0].color,
-			pState->saber[1].blade[1].color,
-			pState->saber[1].blade[2].color,
-			pState->saber[1].blade[3].color,
-			pState->saber[1].blade[4].color,
-			pState->saber[1].blade[5].color,
-			pState->saber[1].blade[6].color,
-			pState->saber[1].blade[7].color,
+			p_state->saber[1].name,
+			p_state->saber[1].blade[0].active,
+			p_state->saber[1].blade[1].active,
+			p_state->saber[1].blade[2].active,
+			p_state->saber[1].blade[3].active,
+			p_state->saber[1].blade[4].active,
+			p_state->saber[1].blade[5].active,
+			p_state->saber[1].blade[6].active,
+			p_state->saber[1].blade[7].active,
+			p_state->saber[1].blade[0].color,
+			p_state->saber[1].blade[1].color,
+			p_state->saber[1].blade[2].color,
+			p_state->saber[1].blade[3].color,
+			p_state->saber[1].blade[4].color,
+			p_state->saber[1].blade[5].color,
+			p_state->saber[1].blade[6].color,
+			p_state->saber[1].blade[7].color,
 			//general saber data
-			pState->saberStylesKnown,
-			pState->saberAnimLevel,
-			pState->saberLockEnemy,
-			pState->saberLockTime
+			p_state->saberStylesKnown,
+			p_state->saberAnimLevel,
+			p_state->saberLockEnemy,
+			p_state->saberLockTime
 		);
 #endif
 		Cvar_Set(sCVARNAME_PLAYERSAVE, s);
@@ -343,7 +342,7 @@ void SV_Player_EndOfLevelSave()
 		s2 = "";
 		for (i = 0; i < AMMO_MAX; i++)
 		{
-			s2 = va("%s %i", s2, pState->ammo[i]);
+			s2 = va("%s %i", s2, p_state->ammo[i]);
 		}
 		Cvar_Set("playerammo", s2);
 
@@ -351,7 +350,7 @@ void SV_Player_EndOfLevelSave()
 		s2 = "";
 		for (i = 0; i < INV_MAX; i++)
 		{
-			s2 = va("%s %i", s2, pState->inventory[i]);
+			s2 = va("%s %i", s2, p_state->inventory[i]);
 		}
 		Cvar_Set("playerinv", s2);
 
@@ -360,7 +359,7 @@ void SV_Player_EndOfLevelSave()
 		s2 = "";
 		for (i = 0; i < NUM_FORCE_POWERS; i++)
 		{
-			s2 = va("%s %i", s2, pState->forcePowerLevel[i]);
+			s2 = va("%s %i", s2, p_state->forcePowerLevel[i]);
 		}
 		Cvar_Set("playerfplvl", s2);
 	}
@@ -368,7 +367,7 @@ void SV_Player_EndOfLevelSave()
 
 // Restart the server on a different map
 //
-static void SV_MapTransition_f(void)
+static void SV_MapTransition_f()
 {
 	const char* spawntarget;
 
@@ -401,7 +400,7 @@ player weapons/ammo/etc from the previous level that you haven't really exited (
 #ifdef JK2_MODE
 extern void SCR_UnprecacheScreenshot();
 #endif
-static void SV_Map_f(void)
+static void SV_Map_f()
 {
 	Cvar_Set(sCVARNAME_PLAYERSAVE, "");
 	Cvar_Set("spawntarget", "");
@@ -411,15 +410,15 @@ static void SV_Map_f(void)
 	SCR_UnprecacheScreenshot();
 #endif
 
-	ForceReload_e eForceReload = eForceReload_NOTHING; // default for normal load
+	ForceReload_e e_force_reload = eForceReload_NOTHING; // default for normal load
 
 	const char* cmd = Cmd_Argv(0);
 	if (!Q_stricmp(cmd, "devmapbsp"))
-		eForceReload = eForceReload_BSP;
+		e_force_reload = eForceReload_BSP;
 	else if (!Q_stricmp(cmd, "devmapmdl"))
-		eForceReload = eForceReload_MODELS;
+		e_force_reload = eForceReload_MODELS;
 	else if (!Q_stricmp(cmd, "devmapall"))
-		eForceReload = eForceReload_ALL;
+		e_force_reload = eForceReload_ALL;
 
 	auto cheat = static_cast<qboolean>(!Q_stricmpn(cmd, "devmap", 6));
 
@@ -427,7 +426,7 @@ static void SV_Map_f(void)
 	if (!cheat && Cvar_VariableIntegerValue("helpUsObi"))
 		cheat = qtrue;
 
-	if (SV_Map_(eForceReload))
+	if (SV_Map_(e_force_reload))
 	{
 		// set the cheat value
 		// if the level was started with "map <levelname>", then
@@ -563,7 +562,7 @@ SV_Systeminfo_f
 Examine or change the serverinfo string
 ===========
 */
-static void SV_Systeminfo_f(void)
+static void SV_Systeminfo_f()
 {
 	Com_Printf("System info settings:\n");
 	Info_Print(Cvar_InfoString(CVAR_SYSTEMINFO));
@@ -576,7 +575,7 @@ SV_DumpUser_f
 Examine all a users info strings FIXME: move to game
 ===========
 */
-static void SV_DumpUser_f(void)
+static void SV_DumpUser_f()
 {
 	// make sure server is running
 	if (!com_sv_running->integer)
@@ -610,9 +609,9 @@ static void SV_DumpUser_f(void)
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteMapName(char* args, const int argNum)
+static void SV_CompleteMapName(char* args, const int arg_num)
 {
-	if (argNum == 2)
+	if (arg_num == 2)
 		Field_CompleteFilename("maps", "bsp", qtrue, qfalse);
 }
 
@@ -621,9 +620,9 @@ static void SV_CompleteMapName(char* args, const int argNum)
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteSaveName(char* args, const int argNum)
+static void SV_CompleteSaveName(char* args, const int arg_num)
 {
-	if (argNum == 2)
+	if (arg_num == 2)
 	{
 		if (com_outcast->integer == 0)
 		{
@@ -702,7 +701,7 @@ static void SV_CompleteSaveName(char* args, const int argNum)
 SV_AddOperatorCommands
 ==================
 */
-void SV_AddOperatorCommands(void)
+void SV_AddOperatorCommands()
 {
 	static qboolean initialized;
 
@@ -742,7 +741,7 @@ void SV_AddOperatorCommands(void)
 SV_RemoveOperatorCommands
 ==================
 */
-void SV_RemoveOperatorCommands(void)
+void SV_RemoveOperatorCommands()
 {
 #if 0
 	// removing these won't let the server start again

@@ -365,7 +365,7 @@ using Dissolve_t = struct
 	int			iUploadWidth;
 	int			iUploadHeight;
 	int			iScratchPadNumber;
-	image_t* pImage;	// old image screen
+	image_t* p_image;	// old image screen
 	image_t* pDissolve;	// fuzzy thing
 	image_t* pBlack;	// small black image for clearing
 	int			iStartTime;	// 0 = not processing
@@ -416,25 +416,25 @@ static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const 
 	{
 		// TL...
 		//
-//		qglTexCoord2f( fU0 / (float)pImage->width,  fV0 / (float)pImage->height );
+//		qglTexCoord2f( fU0 / (float)p_image->width,  fV0 / (float)p_image->height );
 		qglTexCoord2f(0, 0);
 		qglVertex2f(f_x0, f_y0);
 
 		// TR...
 		//
-//		qglTexCoord2f( fU1 / (float)pImage->width,  fV1 / (float)pImage->height );
+//		qglTexCoord2f( fU1 / (float)p_image->width,  fV1 / (float)p_image->height );
 		qglTexCoord2f(1, 0);
 		qglVertex2f(f_x1, f_y1);
 
 		// BR...
 		//
-//		qglTexCoord2f( fU2 / (float)pImage->width,  fV2 / (float)pImage->height );
+//		qglTexCoord2f( fU2 / (float)p_image->width,  fV2 / (float)p_image->height );
 		qglTexCoord2f(1, 1);
 		qglVertex2f(f_x2, f_y2);
 
 		// BL...
 		//
-//		qglTexCoord2f( fU3 / (float)pImage->width,  fV3 / (float)pImage->height );
+//		qglTexCoord2f( fU3 / (float)p_image->width,  fV3 / (float)p_image->height );
 		qglTexCoord2f(0, 1);
 		qglVertex2f(f_x3, f_y3);
 	}
@@ -445,10 +445,10 @@ static void RE_KillDissolve()
 {
 	Dissolve.iStartTime = 0;
 
-	if (Dissolve.pImage)
+	if (Dissolve.p_image)
 	{
-		R_Images_DeleteImage(Dissolve.pImage);
-		Dissolve.pImage = nullptr;
+		R_Images_DeleteImage(Dissolve.p_image);
+		Dissolve.p_image = nullptr;
 	}
 }
 // Draw the dissolve pic to the screen, over the top of what's already been rendered.
@@ -718,14 +718,14 @@ qboolean RE_ProcessDissolve()
 				//
 				x0 = 0.0f;
 				y0 = 0.0f;
-				x1 = f_x_scale_factor * Dissolve.pImage->width;
+				x1 = f_x_scale_factor * Dissolve.p_image->width;
 				y1 = y0;
 				x2 = x1;
-				y2 = f_y_scale_factor * Dissolve.pImage->height;
+				y2 = f_y_scale_factor * Dissolve.p_image->height;
 				x3 = x0;
 				y3 = y2;
 
-				RE_Blit(x0, y0, x1, y1, x2, y2, x3, y3, Dissolve.pImage, GLS_DEPTHFUNC_EQUAL);
+				RE_Blit(x0, y0, x1, y1, x2, y2, x3, y3, Dissolve.p_image, GLS_DEPTHFUNC_EQUAL);
 			}
 		}
 
@@ -857,7 +857,7 @@ qboolean RE_InitDissolve(const qboolean bForceCircularExtroWipe)
 				&Dissolve.iUploadHeight	// int *pi_height
 			);
 
-			Dissolve.pImage = R_CreateImage("*DissolveImage",		// const char *name
+			Dissolve.p_image = R_CreateImage("*DissolveImage",		// const char *name
 				pbScreenSprite,			// const byte *pic
 				Dissolve.iUploadWidth,	// int width
 				Dissolve.iUploadHeight,	// int height

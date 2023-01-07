@@ -186,8 +186,8 @@ extern cvar_t* sv_compress_saved_games;
 void SV_FinalMessage(char* message);
 void QDECL SV_SendServerCommand(client_t* cl, const char* fmt, ...);
 
-void SV_AddOperatorCommands(void);
-void SV_RemoveOperatorCommands(void);
+void SV_AddOperatorCommands();
+void SV_RemoveOperatorCommands();
 
 //
 // sv_init.c
@@ -208,7 +208,7 @@ void SV_DirectConnect(netadr_t from);
 void SV_ExecuteClientMessage(client_t* cl, msg_t* msg);
 void SV_UserinfoChanged(client_t* cl);
 
-void SV_ClientEnterWorld(client_t* client, usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
+void SV_ClientEnterWorld(client_t* client, const usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
 void SV_DropClient(client_t* drop, const char* reason);
 
 void SV_ExecuteClientCommand(client_t* cl, const char* s);
@@ -218,8 +218,8 @@ void SV_ClientThink(client_t * cl, usercmd_t * cmd);
 // sv_snapshot.c
 //
 void SV_AddServerCommand(client_t* client, const char* cmd);
-void SV_SendMessageToClient(msg_t* msg, client_t* client);
-void SV_SendClientMessages(void);
+void SV_SendMessageToClient(const msg_t* msg, client_t* client);
+void SV_SendClientMessages();
 void SV_SendClientSnapshot(client_t* client);
 
 //
@@ -295,7 +295,7 @@ void SV_WipeGame_f();
 qboolean SV_TryLoadTransition(const char* mapname);
 qboolean SG_WriteSavegame(const char* psPathlessBaseName, qboolean qbAutosave);
 qboolean SG_ReadSavegame(const char* psPathlessBaseName);
-void SG_WipeSavegame(const char* psPathlessBaseName);
+void SG_WipeSavegame(const char* ps_pathless_base_name);
 void SG_Shutdown();
 void SG_TestSave();
 //

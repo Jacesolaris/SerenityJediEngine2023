@@ -173,20 +173,20 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawBigStringExt(const int x, const int y, const char* string, const float* setColor,
-                          const qboolean forceColor, const qboolean noColorEscape)
+void SCR_DrawBigStringExt(const int x, const int y, const char* string, const float* set_color,
+                          const qboolean force_color, const qboolean no_color_escape)
 {
 	vec4_t color;
 
 	// draw the drop shadow
 	color[0] = color[1] = color[2] = 0;
-	color[3] = setColor[3];
+	color[3] = set_color[3];
 	re.SetColor(color);
 	const char* s = string;
 	int xx = x;
 	while (*s)
 	{
-		if (!noColorEscape && Q_IsColorString(s))
+		if (!no_color_escape && Q_IsColorString(s))
 		{
 			s += 2;
 			continue;
@@ -199,18 +199,18 @@ void SCR_DrawBigStringExt(const int x, const int y, const char* string, const fl
 	// draw the colored text
 	s = string;
 	xx = x;
-	re.SetColor(setColor);
+	re.SetColor(set_color);
 	while (*s)
 	{
 		if (Q_IsColorString(s))
 		{
-			if (!forceColor)
+			if (!force_color)
 			{
 				memcpy(color, g_color_table[ColorIndex(*(s + 1))], sizeof color);
-				color[3] = setColor[3];
+				color[3] = set_color[3];
 				re.SetColor(color);
 			}
-			if (!noColorEscape)
+			if (!no_color_escape)
 			{
 				s += 2;
 				continue;
@@ -571,7 +571,7 @@ void SCR_PrecacheScreenshot()
 		//		SCR_UnprecacheScreenshot();
 		//		pbScreenData = (byte *)Z_Malloc(SG_SCR_WIDTH * SG_SCR_HEIGHT * 4);
 		S_ClearSoundBuffer(); // clear DMA etc because the following glReadPixels() call can take ages
-		re.GetScreenShot((byte*)&bScreenData, SG_SCR_WIDTH, SG_SCR_HEIGHT);
+		re.GetScreenShot(reinterpret_cast<byte*>(&bScreenData), SG_SCR_WIDTH, SG_SCR_HEIGHT);
 		screenDataValid = qtrue;
 	}
 }

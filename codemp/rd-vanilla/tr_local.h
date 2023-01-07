@@ -1026,11 +1026,11 @@ struct glconfigExt_t
 	const char* originalExtensionString;
 };
 
-int		 R_Images_StartIteration(void);
-image_t* R_Images_GetNextIteration(void);
-void	 R_Images_Clear(void);
+int		 R_Images_StartIteration();
+image_t* R_Images_GetNextIteration();
+void	 R_Images_Clear();
 void	 R_Images_DeleteLightMaps(void);
-void	 R_Images_DeleteImage(image_t* pImage);
+void	 R_Images_DeleteImage(image_t* p_image);
 
 extern backEndState_t	backEnd;
 extern trGlobals_t	tr;
@@ -1292,8 +1292,8 @@ qboolean	RE_RegisterModels_LevelLoadEnd(qboolean bDeleteEverythingNotUsedThisLev
 void* RE_RegisterModels_Malloc(int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, memtag_t eTag);
 void		RE_RegisterModels_StoreShaderRequest(const char* psModelFileName, const char* psShaderName, int* piShaderIndexPoke);
 void		RE_RegisterModels_Info_f(void);
-qboolean	RE_RegisterImages_LevelLoadEnd(void);
-void		RE_RegisterImages_Info_f(void);
+qboolean	RE_RegisterImages_LevelLoadEnd();
+void		RE_RegisterImages_Info_f();
 
 qboolean	R_GetEntityToken(char* buffer, int size);
 
@@ -1303,23 +1303,23 @@ void    	R_Init();
 
 image_t* R_FindImageFile(const char* name, qboolean mipmap, qboolean allow_picmip, qboolean allow_tc, int gl_wrap_clamp_mode);
 
-image_t* R_CreateImage(const char* name, const byte* pic, int width, int height, GLenum format, qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int wrapClampMode, bool bRectangle = false);
+image_t* R_CreateImage(const char* name, const byte* pic, int width, int height, GLenum format, qboolean mipmap, qboolean allow_picmip, qboolean allow_tc, int gl_wrap_clamp_mode, bool b_rectangle = false);
 
 qboolean	R_GetModeInfo(int* width, int* height, int mode);
 
-void		R_SetColorMappings(void);
+void		R_SetColorMappings();
 void		R_SetGammaCorrectionLUT();
-void		R_GammaCorrect(byte* buffer, int bufSize);
+void		R_GammaCorrect(byte* buffer, int buf_size);
 
-void	R_ImageList_f(void);
+void	R_ImageList_f();
 void	R_SkinList_f(void);
 void	R_FontList_f(void);
 
 void	R_InitFogTable(void);
 float	R_FogFactor(float s, float t);
-void	R_InitImages(void);
-void	R_DeleteTextures(void);
-float	R_SumOfUsedImages(qboolean bUseFormat);
+void	R_InitImages();
+void	R_DeleteTextures();
+float	R_SumOfUsedImages(qboolean b_use_format);
 void	R_InitSkins(void);
 skin_t* R_GetSkinByHandle(qhandle_t hSkin);
 const void* RB_TakeVideoFrameCmd(const void* data);

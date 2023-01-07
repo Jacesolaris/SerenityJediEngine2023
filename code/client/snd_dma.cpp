@@ -2263,8 +2263,8 @@ void S_RawSamples(const int samples, const int rate, const int width, const int 
 				//Don't overflow if resampling.
 				if (s_rawend > rawEndStart + MAX_RAW_SAMPLES)
 					break;
-				s_rawsamples[dst].left = (((byte*)data)[src] - 128) * intVolume;
-				s_rawsamples[dst].right = (((byte*)data)[src] - 128) * intVolume;
+				s_rawsamples[dst].left = (const_cast<byte*>(data)[src] - 128) * intVolume;
+				s_rawsamples[dst].right = (const_cast<byte*>(data)[src] - 128) * intVolume;
 			}
 		}
 		else
@@ -2279,8 +2279,8 @@ void S_RawSamples(const int samples, const int rate, const int width, const int 
 				//Don't overflow if resampling.
 				if (s_rawend > rawEndStart + MAX_RAW_SAMPLES)
 					break;
-				s_rawsamples[dst].left += (((byte*)data)[src] - 128) * intVolume;
-				s_rawsamples[dst].right += (((byte*)data)[src] - 128) * intVolume;
+				s_rawsamples[dst].left += (const_cast<byte*>(data)[src] - 128) * intVolume;
+				s_rawsamples[dst].right += (const_cast<byte*>(data)[src] - 128) * intVolume;
 			}
 		}
 	}

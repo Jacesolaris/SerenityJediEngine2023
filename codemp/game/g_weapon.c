@@ -5093,7 +5093,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 			weaponNum = 1;
 		}
 
-		const int vehWeaponIndex = p_veh->m_pVehicleInfo->weapon[weaponNum].ID;
+		const int vehweapon_index = p_veh->m_pVehicleInfo->weapon[weaponNum].ID;
 
 		if (p_veh->weaponStatus[weaponNum].ammo <= 0)
 		{
@@ -5104,7 +5104,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 				//but only if one of the vehicle muzzles is actually ready to fire this weapon
 				for (int i = 0; i < MAX_VEHICLE_MUZZLES; i++)
 				{
-					if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehWeaponIndex)
+					if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehweapon_index)
 					{
 						//this muzzle doesn't match the weapon we're trying to use
 						continue;
@@ -5131,7 +5131,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 			linkedFiring = qtrue;
 		}
 
-		if (vehWeaponIndex <= VEH_WEAPON_BASE || vehWeaponIndex >= MAX_VEH_WEAPONS)
+		if (vehweapon_index <= VEH_WEAPON_BASE || vehweapon_index >= MAX_VEH_WEAPONS)
 		{
 			//invalid vehicle weapon
 			return;
@@ -5139,7 +5139,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 		int i, numMuzzles = 0, numMuzzlesReady = 0, cumulativeDelay = 0, cumulativeAmmo = 0;
 		qboolean sentAmmoWarning = qfalse;
 
-		vehWeapon = &g_vehWeaponInfo[vehWeaponIndex];
+		vehWeapon = &g_vehWeaponInfo[vehweapon_index];
 
 		if (p_veh->m_pVehicleInfo->weapon[weaponNum].linkable == 2)
 		{
@@ -5149,7 +5149,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 		//find out how many we've got for this weapon
 		for (i = 0; i < MAX_VEHICLE_MUZZLES; i++)
 		{
-			if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehWeaponIndex)
+			if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehweapon_index)
 			{
 				//this muzzle doesn't match the weapon we're trying to use
 				continue;
@@ -5158,7 +5158,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 			{
 				numMuzzlesReady++;
 			}
-			if (p_veh->m_pVehicleInfo->weapMuzzle[p_veh->weaponStatus[weaponNum].nextMuzzle] != vehWeaponIndex)
+			if (p_veh->m_pVehicleInfo->weapMuzzle[p_veh->weaponStatus[weaponNum].nextMuzzle] != vehweapon_index)
 			{
 				//Our designated next muzzle for this weapon isn't valid for this weapon (happens when ships fire for the first time)
 				//set the next to this one
@@ -5199,7 +5199,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 
 		for (i = 0; i < MAX_VEHICLE_MUZZLES; i++)
 		{
-			if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehWeaponIndex)
+			if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehweapon_index)
 			{
 				//this muzzle doesn't match the weapon we're trying to use
 				continue;
@@ -5304,7 +5304,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 							//WTF?  Wrapped without finding another valid one!
 							break;
 						}
-						if (p_veh->m_pVehicleInfo->weapMuzzle[nextMuzzle] == vehWeaponIndex)
+						if (p_veh->m_pVehicleInfo->weapMuzzle[nextMuzzle] == vehweapon_index)
 						{
 							//this is the next muzzle for this weapon
 							p_veh->weaponStatus[weaponNum].nextMuzzle = nextMuzzle;
@@ -5345,7 +5345,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 			//we linked muzzles so we need to apply the cumulative delay now, to each of the linked muzzles
 			for (i = 0; i < MAX_VEHICLE_MUZZLES; i++)
 			{
-				if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehWeaponIndex)
+				if (p_veh->m_pVehicleInfo->weapMuzzle[i] != vehweapon_index)
 				{
 					//this muzzle doesn't match the weapon we're trying to use
 					continue;

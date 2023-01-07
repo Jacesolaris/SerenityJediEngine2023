@@ -1576,7 +1576,7 @@ static void CG_RestoreClientGhoul_f(void)
 	{
 		assert(argNum >= 3);
 		const int bodyIndex = atoi(CG_Argv(2));
-		const int weaponIndex = atoi(CG_Argv(3));
+		const int weapon_index = atoi(CG_Argv(3));
 		const int side = atoi(CG_Argv(4));
 
 		centity_t* body = &cg_entities[bodyIndex];
@@ -1586,7 +1586,7 @@ static void CG_RestoreClientGhoul_f(void)
 		else
 			body->teamPowerType = 0; //dark side
 
-		CG_BodyQueueCopy(body, clent->currentState.number, weaponIndex);
+		CG_BodyQueueCopy(body, clent->currentState.number, weapon_index);
 	}
 
 	//reattach any missing limbs

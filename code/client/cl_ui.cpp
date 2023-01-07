@@ -37,7 +37,7 @@ extern qboolean SG_GetSaveImage(const char* psPathlessBaseName, void* pvAddress)
 #endif
 extern int SG_GetSaveGameComment(const char* psPathlessBaseName, char* sComment, char* sMapName);
 extern qboolean SG_GameAllowedToSaveHere(qboolean inCamera);
-extern void SG_StoreSaveGameComment(const char* sComment);
+extern void SG_StoreSaveGameComment(const char* s_comment);
 extern byte* SCR_GetScreenshot(qboolean* qValid); // uncommented
 
 /*

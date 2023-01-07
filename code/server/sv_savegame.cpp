@@ -49,7 +49,7 @@ char sLastSaveFileLoaded[MAX_QPATH] = {0};
 #define iSG_MAPCMD_SIZE (MAX_QPATH)
 #endif // JK2_MODE
 
-static char* SG_GetSaveGameMapName(const char* psPathlessBaseName);
+static char* SG_GetSaveGameMapName(const char* ps_pathless_base_name);
 
 #ifdef SG_PROFILE
 
@@ -83,27 +83,27 @@ typedef map<unsigned int, CChid> CChidInfo_t;
 CChidInfo_t	save_info;
 #endif
 
-static const char* GetString_FailedToOpenSaveGame(const char* psFilename, qboolean bOpen)
+static const char* GetString_FailedToOpenSaveGame(const char* ps_filename, qboolean b_open)
 {
-	static char sTemp[256];
+	static char s_temp[256];
 
-	strcpy(sTemp, S_COLOR_RED);
+	strcpy(s_temp, S_COLOR_RED);
 
 #ifdef JK2_MODE
-	const char* psReference = bOpen ? "MENUS3_FAILED_TO_OPEN_SAVEGAME" : "MENUS3_FAILED_TO_CREATE_SAVEGAME";
+	const char* ps_reference = bOpen ? "MENUS3_FAILED_TO_OPEN_SAVEGAME" : "MENUS3_FAILED_TO_CREATE_SAVEGAME";
 #else
-	const char* psReference = bOpen ? "MENUS_FAILED_TO_OPEN_SAVEGAME" : "MENUS3_FAILED_TO_CREATE_SAVEGAME";
+	const char* ps_reference = b_open ? "MENUS_FAILED_TO_OPEN_SAVEGAME" : "MENUS3_FAILED_TO_CREATE_SAVEGAME";
 #endif
-	Q_strncpyz(sTemp + strlen(sTemp), va(SE_GetString(psReference), psFilename), sizeof sTemp);
-	strcat(sTemp, "\n");
-	return sTemp;
+	Q_strncpyz(s_temp + strlen(s_temp), va(SE_GetString(ps_reference), ps_filename), sizeof s_temp);
+	strcat(s_temp, "\n");
+	return s_temp;
 }
 
 void SG_WipeSavegame(
-	const char* psPathlessBaseName)
+	const char* ps_pathless_base_name)
 {
 	ojk::SavedGame::remove(
-		psPathlessBaseName);
+		ps_pathless_base_name);
 }
 
 // called from the ERR_DROP stuff just in case the error occurred during loading of a saved game, because if
@@ -144,18 +144,18 @@ void SV_WipeGame_f()
 // Store given string in saveGameComment for later use when game is
 // actually saved
 */
-void SG_StoreSaveGameComment(const char* sComment)
+void SG_StoreSaveGameComment(const char* s_comment)
 {
-	memmove(save_game_comment, sComment, iSG_COMMENT_SIZE);
+	memmove(save_game_comment, s_comment, iSG_COMMENT_SIZE);
 }
 
 qboolean SV_TryLoadTransition(const char* mapname)
 {
-	char* psFilename = va("hub/%s", mapname);
+	char* ps_filename = va("hub/%s", mapname);
 
-	Com_Printf(S_COLOR_CYAN "Restoring game \"%s\"...\n", psFilename);
+	Com_Printf(S_COLOR_CYAN "Restoring game \"%s\"...\n", ps_filename);
 
-	if (!SG_ReadSavegame(psFilename))
+	if (!SG_ReadSavegame(ps_filename))
 	{
 		//couldn't load a savegame
 		return qfalse;
@@ -185,14 +185,14 @@ void SV_LoadGame_f()
 		return;
 	}
 
-	const char* psFilename = Cmd_Argv(1);
-	if (strstr(psFilename, "..") || strstr(psFilename, "/") || strstr(psFilename, "\\"))
+	const char* ps_filename = Cmd_Argv(1);
+	if (strstr(ps_filename, "..") || strstr(ps_filename, "/") || strstr(ps_filename, "\\"))
 	{
 		Com_Printf(S_COLOR_RED "Bad load game name.\n");
 		return;
 	}
 
-	if (!Q_stricmp(psFilename, "current"))
+	if (!Q_stricmp(ps_filename, "current"))
 	{
 		Com_Printf(S_COLOR_RED "Can't load from \"current\"\n");
 		return;
@@ -201,25 +201,25 @@ void SV_LoadGame_f()
 	// special case, if doing a respawn then check that the available auto-save (if any) is from the same map
 	//	as we're currently on (if in a map at all), if so, load that "auto", else re-load the last-loaded file...
 	//
-	if (!Q_stricmp(psFilename, "*respawn"))
+	if (!Q_stricmp(ps_filename, "*respawn"))
 	{
-		psFilename = "auto"; // default to standard respawn behaviour
+		ps_filename = "auto"; // default to standard respawn behaviour
 
 		// see if there's a last-loaded file to even check against as regards loading...
 		//
 		if (sLastSaveFileLoaded[0])
 		{
-			const char* psServerInfo = sv.configstrings[CS_SERVERINFO];
-			const char* psMapName = Info_ValueForKey(psServerInfo, "mapname");
+			const char* ps_server_info = sv.configstrings[CS_SERVERINFO];
+			const char* ps_map_name = Info_ValueForKey(ps_server_info, "mapname");
 
-			const char* psMapNameOfAutoSave = SG_GetSaveGameMapName("auto");
+			const char* ps_map_name_of_auto_save = SG_GetSaveGameMapName("auto");
 
-			if (!Q_stricmp(psMapName, "_brig"))
+			if (!Q_stricmp(ps_map_name, "_brig"))
 			{
 				//if you're in the brig and there is no autosave, load the last loaded savegame
-				if (!psMapNameOfAutoSave)
+				if (!ps_map_name_of_auto_save)
 				{
-					psFilename = sLastSaveFileLoaded;
+					ps_filename = sLastSaveFileLoaded;
 				}
 			}
 			else
@@ -236,11 +236,11 @@ void SV_LoadGame_f()
 				}
 				else
 #endif
-				if (!(psMapName && psMapNameOfAutoSave && !Q_stricmp(psMapName, psMapNameOfAutoSave)))
+				if (!(ps_map_name && ps_map_name_of_auto_save && !Q_stricmp(ps_map_name, ps_map_name_of_auto_save)))
 				{
 					// either there's no auto file, or it's from a different map to the one we've just died on...
 					//
-					psFilename = sLastSaveFileLoaded;
+					ps_filename = sLastSaveFileLoaded;
 				}
 			}
 		}
@@ -249,11 +249,11 @@ void SV_LoadGame_f()
 #ifdef JK2_MODE
 	Com_Printf(S_COLOR_CYAN "Loading game \"%s\"...\n", psFilename);
 #else
-	Com_Printf(S_COLOR_CYAN "%s\n", va(SE_GetString("MENUS_LOADING_MAPNAME"), psFilename));
+	Com_Printf(S_COLOR_CYAN "%s\n", va(SE_GetString("MENUS_LOADING_MAPNAME"), ps_filename));
 #endif
 
 	gbAlreadyDoingLoad = qtrue;
-	if (!SG_ReadSavegame(psFilename))
+	if (!SG_ReadSavegame(ps_filename))
 	{
 		gbAlreadyDoingLoad = qfalse;
 		//	do NOT do this here now, need to wait until client spawn, unless the load failed.
@@ -433,16 +433,16 @@ static void WriteGame(const qboolean autosave)
 
 static qboolean ReadGame()
 {
-	qboolean qbAutoSave = qfalse;
+	qboolean qb_auto_save = qfalse;
 
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
 
 	saved_game.read_chunk<int32_t>(
 		INT_ID('G', 'A', 'M', 'E'),
-		qbAutoSave);
+		qb_auto_save);
 
-	if (qbAutoSave)
+	if (qb_auto_save)
 	{
 		char s[MAX_STRING_CHARS] = {0};
 
@@ -487,7 +487,7 @@ static qboolean ReadGame()
 		Cvar_Set("playerfplvl", s);
 	}
 
-	return qbAutoSave;
+	return qb_auto_save;
 }
 
 //---------------
@@ -501,7 +501,7 @@ extern cvar_t* cvar_vars;
 void SG_WriteCvars()
 {
 	cvar_t* var;
-	int iCount = 0;
+	int i_count = 0;
 
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
@@ -518,14 +518,14 @@ void SG_WriteCvars()
 		{
 			continue;
 		}
-		iCount++;
+		i_count++;
 	}
 
 	// store count...
 	//
 	saved_game.write_chunk<int32_t>(
 		INT_ID('C', 'V', 'C', 'N'),
-		iCount);
+		i_count);
 
 	// write 'em...
 	//
@@ -554,22 +554,22 @@ void SG_WriteCvars()
 
 void SG_ReadCvars()
 {
-	int iCount = 0;
-	std::string psName;
+	int i_count = 0;
+	std::string ps_name;
 
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
 
 	saved_game.read_chunk<int32_t>(
 		INT_ID('C', 'V', 'C', 'N'),
-		iCount);
+		i_count);
 
-	for (int i = 0; i < iCount; ++i)
+	for (int i = 0; i < i_count; ++i)
 	{
 		saved_game.read_chunk(
 			INT_ID('C', 'V', 'A', 'R'));
 
-		psName = static_cast<const char*>(
+		ps_name = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
 		saved_game.read_chunk(
@@ -578,7 +578,7 @@ void SG_ReadCvars()
 		const auto psValue = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
-		Cvar_Set(psName.c_str(), psValue);
+		Cvar_Set(ps_name.c_str(), psValue);
 	}
 }
 
@@ -647,35 +647,35 @@ void SG_ReadServerConfigStrings()
 
 	// now read the replacement ones...
 	//
-	int iCount = 0;
+	int i_count = 0;
 
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
 
 	saved_game.read_chunk<int32_t>(
 		INT_ID('C', 'S', 'C', 'N'),
-		iCount);
+		i_count);
 
-	Com_DPrintf("Reading %d configstrings...\n", iCount);
+	Com_DPrintf("Reading %d configstrings...\n", i_count);
 
-	for (int i = 0; i < iCount; i++)
+	for (int i = 0; i < i_count; i++)
 	{
-		int iIndex = 0;
+		int i_index = 0;
 
 		saved_game.read_chunk<int32_t>(
 			INT_ID('C', 'S', 'I', 'N'),
-			iIndex);
+			i_index);
 
 		saved_game.read_chunk(
 			INT_ID('C', 'S', 'D', 'A'));
 
-		const auto psName = static_cast<const char*>(
+		const auto ps_name = static_cast<const char*>(
 			saved_game.get_buffer_data());
 
-		Com_DPrintf("Cfg str %d = %s\n", iIndex, psName);
+		Com_DPrintf("Cfg str %d = %s\n", i_index, ps_name);
 
 		//sv.configstrings[iIndex] = psName;
-		SV_SetConfigstring(iIndex, psName);
+		SV_SetConfigstring(i_index, ps_name);
 	}
 }
 
@@ -684,25 +684,25 @@ static unsigned int SG_UnixTimestamp(const time_t& t)
 	return static_cast<unsigned int>(t);
 }
 
-static void SG_WriteComment(const qboolean qbAutosave, const char* psMapName)
+static void SG_WriteComment(const qboolean qb_autosave, const char* ps_map_name)
 {
 	ojk::SavedGameHelper saved_game(
 		&ojk::SavedGame::get_instance());
 
-	char sComment[iSG_COMMENT_SIZE];
+	char s_comment[iSG_COMMENT_SIZE];
 
-	if (qbAutosave || !*save_game_comment)
+	if (qb_autosave || !*save_game_comment)
 	{
-		Com_sprintf(sComment, sizeof sComment, "---> %s", psMapName);
+		Com_sprintf(s_comment, sizeof s_comment, "---> %s", ps_map_name);
 	}
 	else
 	{
-		Q_strncpyz(sComment, save_game_comment, sizeof sComment);
+		Q_strncpyz(s_comment, save_game_comment, sizeof s_comment);
 	}
 
 	saved_game.write_chunk(
 		INT_ID('C', 'O', 'M', 'M'),
-		sComment);
+		s_comment);
 
 	// Add Date/Time/Map stamp
 	const unsigned int timestamp = SG_UnixTimestamp(time(nullptr));
@@ -711,7 +711,7 @@ static void SG_WriteComment(const qboolean qbAutosave, const char* psMapName)
 		INT_ID('C', 'M', 'T', 'M'),
 		timestamp);
 
-	Com_DPrintf("Saving: current (%s)\n", sComment);
+	Com_DPrintf("Saving: current (%s)\n", s_comment);
 }
 
 static time_t SG_GetTime(const unsigned int timestamp)
@@ -769,16 +769,16 @@ int SG_GetSaveGameComment(
 
 	if (is_succeed)
 	{
-		unsigned int fileTime = 0;
+		unsigned int file_time = 0;
 
 		is_succeed = sgh.try_read_chunk<uint32_t>(
 			INT_ID('C', 'M', 'T', 'M'),
-			fileTime);
+			file_time);
 
 		if (is_succeed)
 		{
 			tFileTime = SG_GetTime(
-				fileTime);
+				file_time);
 		}
 	}
 
@@ -839,11 +839,11 @@ int SG_GetSaveGameComment(
 //
 // returns NULL if not found
 //
-static char* SG_GetSaveGameMapName(const char* psPathlessBaseName)
+static char* SG_GetSaveGameMapName(const char* ps_pathless_base_name)
 {
 	static char sMapName[iSG_MAPCMD_SIZE] = {0};
 	char* psReturn = nullptr;
-	if (SG_GetSaveGameComment(psPathlessBaseName, nullptr, sMapName))
+	if (SG_GetSaveGameComment(ps_pathless_base_name, nullptr, sMapName))
 	{
 		psReturn = sMapName;
 	}

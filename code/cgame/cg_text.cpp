@@ -46,20 +46,20 @@ extern vec4_t textcolor_scroll;
 //
 // this is execrable, and should NOT have had to've been done now, but...
 //
-float gfAdvanceHack = 0.0f; // MUST default to this
-int giLinesOutput; // hack-city after release, only used by one function
+float gf_advance_hack = 0.0f; // MUST default to this
+int gi_lines_output; // hack-city after release, only used by one function
 //
 const char* CG_DisplayBoxedText(const int iBoxX, const int iBoxY, const int iBoxWidth, const int iBoxHeight,
                                 const char* psText, const int iFontHandle, const float fScale,
                                 const vec4_t v4Color)
 {
-	giLinesOutput = 0;
+	gi_lines_output = 0;
 	cgi_R_SetColor(v4Color);
 
 	// Setup a reasonable vertical spacing (taiwanese & japanese need 1.5 fontheight, so use that for all)...
 	//
 	const int iFontHeight = cgi_R_Font_HeightPixels(iFontHandle, fScale);
-	const int iFontHeightAdvance = static_cast<int>((gfAdvanceHack == 0.0f ? 1.5f : gfAdvanceHack) * static_cast<float>(
+	const int iFontHeightAdvance = static_cast<int>((gf_advance_hack == 0.0f ? 1.5f : gf_advance_hack) * static_cast<float>(
 		iFontHeight));
 	int iYpos = iBoxY; // start print pos
 
@@ -157,7 +157,7 @@ const char* CG_DisplayBoxedText(const int iBoxX, const int iBoxY, const int iBox
 		//
 		cgi_R_Font_DrawString(iBoxX, iYpos, sLineForDisplay, v4Color, iFontHandle, -1, fScale);
 		iYpos += iFontHeightAdvance;
-		giLinesOutput++;
+		gi_lines_output++;
 
 		// and echo to console in dev mode...
 		//

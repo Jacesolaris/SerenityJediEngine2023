@@ -113,16 +113,16 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define MODELINDEX_BLUECUBE			34
 
 //
-#define WEAPONINDEX_STUN_BATON		1
-#define WEAPONINDEX_SABER			2
-#define WEAPONINDEX_BRYAR_PISTOL	3
-#define WEAPONINDEX_BLASTER			4
-#define WEAPONINDEX_DISRUPTOR		5
-#define WEAPONINDEX_BOWCASTER		6
-#define WEAPONINDEX_REPEATER		7
-#define WEAPONINDEX_DEMP2			8
-#define WEAPONINDEX_FLECHETTE		9
-#define WEAPONINDEX_ROCKET_LAUNCHER	10
-#define WEAPONINDEX_THERMAL			11
-#define WEAPONINDEX_TRIP_MINE		12
-#define WEAPONINDEX_DET_PACK		13
+#define weapon_index_STUN_BATON		1
+#define weapon_index_SABER			2
+#define weapon_index_BRYAR_PISTOL	3
+#define weapon_index_BLASTER			4
+#define weapon_index_DISRUPTOR		5
+#define weapon_index_BOWCASTER		6
+#define weapon_index_REPEATER		7
+#define weapon_index_DEMP2			8
+#define weapon_index_FLECHETTE		9
+#define weapon_index_ROCKET_LAUNCHER	10
+#define weapon_index_THERMAL			11
+#define weapon_index_TRIP_MINE		12
+#define weapon_index_DET_PACK		13

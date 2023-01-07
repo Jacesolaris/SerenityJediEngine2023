@@ -2451,16 +2451,16 @@ WEAPON SELECTION
 CG_WeaponCheck
 ===================
 */
-int CG_WeaponCheck(const int weaponIndex)
+int CG_WeaponCheck(const int weapon_index)
 {
-	if (weaponIndex == WP_SABER || weaponIndex == WP_STUN_BATON)
+	if (weapon_index == WP_SABER || weapon_index == WP_STUN_BATON)
 	{
 		return qtrue;
 	}
 
-	int value = weaponData[weaponIndex].energyPerShot < weaponData[weaponIndex].altEnergyPerShot
-		            ? weaponData[weaponIndex].energyPerShot
-		            : weaponData[weaponIndex].altEnergyPerShot;
+	int value = weaponData[weapon_index].energyPerShot < weaponData[weapon_index].altEnergyPerShot
+		            ? weaponData[weapon_index].energyPerShot
+		            : weaponData[weapon_index].altEnergyPerShot;
 
 	if (!cg.snap)
 	{
@@ -2468,7 +2468,7 @@ int CG_WeaponCheck(const int weaponIndex)
 	}
 
 	// check how much energy(ammo) it takes to fire this weapon against how much ammo we have
-	if (value > cg.snap->ps.ammo[weaponData[weaponIndex].ammoIndex])
+	if (value > cg.snap->ps.ammo[weaponData[weapon_index].ammoIndex])
 	{
 		value = qfalse;
 	}

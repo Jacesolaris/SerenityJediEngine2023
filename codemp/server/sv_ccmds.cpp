@@ -2083,9 +2083,9 @@ static void SV_Record_f(void)
 SV_CompleteMapName
 ==================
 */
-static void SV_CompleteMapName(char* args, const int argNum)
+static void SV_CompleteMapName(char* args, const int arg_num)
 {
-	if (argNum == 2)
+	if (arg_num == 2)
 		Field_CompleteFilename("maps", "bsp", qtrue, qfalse);
 }
 

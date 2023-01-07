@@ -63,7 +63,7 @@ static fielddef_t weaponinfo_fields[] =
 {"name", WEAPON_OFS(name), FT_STRING},							//name of the weapon
 {"level", WEAPON_OFS(level), FT_INT},
 {"model", WEAPON_OFS(model), FT_STRING},						//model of the weapon
-{"weaponindex", WEAPON_OFS(weaponindex), FT_INT},			//index of weapon in inventory
+{"weapon_index", WEAPON_OFS(weapon_index), FT_INT},			//index of weapon in inventory
 {"flags", WEAPON_OFS(flags), FT_INT},							//special flags
 {"projectile", WEAPON_OFS(projectile), FT_STRING},			//projectile used by the weapon
 {"numprojectiles", WEAPON_OFS(numprojectiles), FT_INT},	//number of projectiles
