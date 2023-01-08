@@ -75,9 +75,9 @@ void func_usable_think(gentity_t* self)
 	}
 }
 
-qboolean G_EntIsRemovableUsable(const int entNum)
+qboolean G_EntIsRemovableUsable(const int ent_num)
 {
-	const gentity_t* ent = &g_entities[entNum];
+	const gentity_t* ent = &g_entities[ent_num];
 	if (ent->classname && !Q_stricmp("func_usable", ent->classname))
 	{
 		if (!(ent->s.eFlags & EF_SHADER_ANIM) && !(ent->spawnflags & 8) && ent->targetname)
@@ -184,7 +184,7 @@ void func_usable_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker
 	}
 }
 
-void func_usable_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void func_usable_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int d_flags,
                      int hit_loc)
 {
 	self->takedamage = qfalse;
@@ -263,9 +263,9 @@ void SP_func_usable(gentity_t* self)
 
 	gi.linkentity(self);
 
-	int forceVisible = 0;
-	G_SpawnInt("forcevisible", "0", &forceVisible);
-	if (forceVisible)
+	int force_visible = 0;
+	G_SpawnInt("forcevisible", "0", &force_visible);
+	if (force_visible)
 	{
 		//can see these through walls with force sight, so must be broadcast
 		if (VectorCompare(self->s.origin, vec3_origin))

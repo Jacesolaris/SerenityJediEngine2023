@@ -62,7 +62,7 @@ qboolean NAV_CheckNodeFailedForEnt(const gentity_t* ent, int nodeNum);
 qboolean G_EntIsUnlockedDoor(int entity_num);
 qboolean G_EntIsDoor(int entity_num);
 qboolean G_EntIsBreakable(int entity_num);
-qboolean G_EntIsRemovableUsable(int entNum);
+qboolean G_EntIsRemovableUsable(int ent_num);
 void CP_FindCombatPointWaypoints(void);
 extern void G_CheckSpecialPersistentEvents(gentity_t* ent);
 extern qboolean PM_RestAnim(int anim);

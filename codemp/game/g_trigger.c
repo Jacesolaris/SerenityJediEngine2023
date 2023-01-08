@@ -160,7 +160,7 @@ void SiegeItemRemoveOwner(gentity_t* ent, gentity_t* carrier);
 
 void multi_trigger(gentity_t* ent, gentity_t* activator)
 {
-	qboolean haltTrigger = qfalse;
+	qboolean halt_trigger = qfalse;
 
 	if (ent->think == multi_trigger_run)
 	{
@@ -205,7 +205,7 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 
 	if (level.gametype == GT_SIEGE && ent->genericValue1)
 	{
-		haltTrigger = qtrue;
+		halt_trigger = qtrue;
 
 		if (activator && activator->client &&
 			activator->client->holdingObjectiveItem &&
@@ -229,12 +229,12 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 							//3-24-03 - want to fire off the target too I guess, if we have one.
 							if (ent->targetname && ent->targetname[0])
 							{
-								haltTrigger = qfalse;
+								halt_trigger = qfalse;
 							}
 						}
 						else
 						{
-							haltTrigger = qfalse;
+							halt_trigger = qfalse;
 						}
 
 						//now that the item has been delivered, it can go away.
@@ -259,7 +259,7 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 		int i = 0;
 		int team1_cl_num = 0;
 		int team2_cl_num = 0;
-		const int owningTeam = ent->genericValue3;
+		const int owning_team = ent->genericValue3;
 		int new_owning_team;
 		int entity_list[MAX_GENTITIES];
 
@@ -328,7 +328,7 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 			new_owning_team = SIEGETEAM_TEAM2;
 		}
 
-		if (owningTeam == new_owning_team)
+		if (owning_team == new_owning_team)
 		{
 			//it's the same one it already was, don't care then.
 			return;
@@ -339,7 +339,7 @@ void multi_trigger(gentity_t* ent, gentity_t* activator)
 		ent->genericValue4 = new_owning_team;
 	}
 
-	if (haltTrigger)
+	if (halt_trigger)
 	{
 		//This is an objective trigger and the activator is not carrying an objective item that matches the targetname.
 		return;
@@ -578,15 +578,15 @@ void Touch_Multi(gentity_t* self, gentity_t* other, trace_t* trace)
 
 	if (self->radius)
 	{
-		vec3_t eyeSpot;
+		vec3_t eye_spot;
 
 		//Only works if your head is in it, but we allow leaning out
 		//NOTE: We don't use CalcEntitySpot SPOT_HEAD because we don't want this
 		//to be reliant on the physical model the player uses.
-		VectorCopy(other->client->ps.origin, eyeSpot);
-		eyeSpot[2] += other->client->ps.viewheight;
+		VectorCopy(other->client->ps.origin, eye_spot);
+		eye_spot[2] += other->client->ps.viewheight;
 
-		if (G_PointInBounds(eyeSpot, self->r.absmin, self->r.absmax))
+		if (G_PointInBounds(eye_spot, self->r.absmin, self->r.absmax))
 		{
 			if (!(other->client->pers.cmd.buttons & BUTTON_ATTACK) &&
 				!(other->client->pers.cmd.buttons & BUTTON_ALT_ATTACK))
@@ -841,31 +841,31 @@ trigger_lightningstrike -rww
 //lightning strike trigger lightning strike event
 void Do_Strike(gentity_t* ent)
 {
-	trace_t localTrace;
-	vec3_t strikeFrom;
-	vec3_t strikePoint;
-	vec3_t fxAng;
+	trace_t local_trace;
+	vec3_t strike_from;
+	vec3_t strike_point;
+	vec3_t fx_ang;
 
 	//maybe allow custom fx direction at some point?
-	VectorSet(fxAng, 90.0f, 0.0f, 0.0f);
+	VectorSet(fx_ang, 90.0f, 0.0f, 0.0f);
 
 	//choose a random point to strike within the bounds of the trigger
-	strikePoint[0] = flrand(ent->r.absmin[0], ent->r.absmax[0]);
-	strikePoint[1] = flrand(ent->r.absmin[1], ent->r.absmax[1]);
+	strike_point[0] = flrand(ent->r.absmin[0], ent->r.absmax[0]);
+	strike_point[1] = flrand(ent->r.absmin[1], ent->r.absmax[1]);
 
 	//consider the bottom mins the ground level
-	strikePoint[2] = ent->r.absmin[2];
+	strike_point[2] = ent->r.absmin[2];
 
 	//set the from point
-	strikeFrom[0] = strikePoint[0];
-	strikeFrom[1] = strikePoint[1];
-	strikeFrom[2] = ent->r.absmax[2] - 4.0f;
+	strike_from[0] = strike_point[0];
+	strike_from[1] = strike_point[1];
+	strike_from[2] = ent->r.absmax[2] - 4.0f;
 
 	//now trace for damaging stuff, and do the effect
-	trap->Trace(&localTrace, strikeFrom, NULL, NULL, strikePoint, ent->s.number, MASK_PLAYERSOLID, qfalse, 0, 0);
-	VectorCopy(localTrace.endpos, strikePoint);
+	trap->Trace(&local_trace, strike_from, NULL, NULL, strike_point, ent->s.number, MASK_PLAYERSOLID, qfalse, 0, 0);
+	VectorCopy(local_trace.endpos, strike_point);
 
-	if (localTrace.startsolid || localTrace.allsolid)
+	if (local_trace.startsolid || local_trace.allsolid)
 	{
 		//got a bad spot, think again next frame to try another strike
 		ent->nextthink = level.time;
@@ -875,12 +875,12 @@ void Do_Strike(gentity_t* ent)
 	if (ent->radius)
 	{
 		//do a radius damage at the end pos
-		g_radius_damage(strikePoint, ent, ent->damage, ent->radius, ent, NULL, MOD_SUICIDE);
+		g_radius_damage(strike_point, ent, ent->damage, ent->radius, ent, NULL, MOD_SUICIDE);
 	}
 	else
 	{
 		//only damage individuals
-		gentity_t* trHit = &g_entities[localTrace.entity_num];
+		gentity_t* trHit = &g_entities[local_trace.entity_num];
 
 		if (trHit->inuse && trHit->takedamage)
 		{
@@ -889,7 +889,7 @@ void Do_Strike(gentity_t* ent)
 		}
 	}
 
-	G_PlayEffectID(ent->genericValue2, strikeFrom, fxAng);
+	G_PlayEffectID(ent->genericValue2, strike_from, fx_ang);
 }
 
 //lightning strike trigger think loop
@@ -1679,7 +1679,7 @@ void shipboundary_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 
 void shipboundary_think(gentity_t* ent)
 {
-	int iEntityList[MAX_GENTITIES];
+	int i_entity_list[MAX_GENTITIES];
 	int i = 0;
 
 	ent->nextthink = level.time + 100;
@@ -1690,19 +1690,19 @@ void shipboundary_think(gentity_t* ent)
 		return;
 	}
 
-	const int num_listed_entities = trap->EntitiesInBox(ent->r.absmin, ent->r.absmax, iEntityList, MAX_GENTITIES);
+	const int num_listed_entities = trap->EntitiesInBox(ent->r.absmin, ent->r.absmax, i_entity_list, MAX_GENTITIES);
 	while (i < num_listed_entities)
 	{
-		gentity_t* listedEnt = &g_entities[iEntityList[i]];
-		if (listedEnt->inuse && listedEnt->client && listedEnt->client->ps.m_iVehicleNum)
+		gentity_t* listed_ent = &g_entities[i_entity_list[i]];
+		if (listed_ent->inuse && listed_ent->client && listed_ent->client->ps.m_iVehicleNum)
 		{
-			if (listedEnt->s.eType == ET_NPC &&
-				listedEnt->s.NPC_class == CLASS_VEHICLE)
+			if (listed_ent->s.eType == ET_NPC &&
+				listed_ent->s.NPC_class == CLASS_VEHICLE)
 			{
-				const Vehicle_t* p_veh = listedEnt->m_pVehicle;
+				const Vehicle_t* p_veh = listed_ent->m_pVehicle;
 				if (p_veh && p_veh->m_pVehicleInfo->type == VH_FIGHTER)
 				{
-					shipboundary_touch(ent, listedEnt, NULL);
+					shipboundary_touch(ent, listed_ent, NULL);
 				}
 			}
 		}
@@ -1758,8 +1758,8 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 		if (other->client->ps.eFlags2 & EF2_HYPERSPACE)
 		{
 			//they've started the hyperspace but haven't been teleported yet
-			const float timeFrac = (float)(level.time - other->client->ps.hyperSpaceTime) / HYPERSPACE_TIME;
-			if (timeFrac >= HYPERSPACE_TELEPORT_FRAC)
+			const float time_frac = (float)(level.time - other->client->ps.hyperSpaceTime) / HYPERSPACE_TIME;
+			if (time_frac >= HYPERSPACE_TELEPORT_FRAC)
 			{
 				//half-way, now teleport them!
 				vec3_t diff, fwd, right, up, newOrg;
@@ -1775,9 +1775,9 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 				}
 				VectorSubtract(other->client->ps.origin, ent->s.origin, diff);
 				AngleVectors(ent->s.angles, fwd, right, up);
-				const float fDiff = DotProduct(fwd, diff);
-				const float rDiff = DotProduct(right, diff);
-				const float uDiff = DotProduct(up, diff);
+				const float f_diff = DotProduct(fwd, diff);
+				const float r_diff = DotProduct(right, diff);
+				const float u_diff = DotProduct(up, diff);
 				//Now get the base position of the destination
 				ent = G_Find(NULL, FOFS(targetname), self->target2);
 				if (!ent || !ent->inuse)
@@ -1789,9 +1789,9 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 				VectorCopy(ent->s.origin, newOrg);
 				//finally, add the offset into the new origin
 				AngleVectors(ent->s.angles, fwd, right, up);
-				VectorMA(newOrg, fDiff * self->radius, fwd, newOrg);
-				VectorMA(newOrg, rDiff * self->radius, right, newOrg);
-				VectorMA(newOrg, uDiff * self->radius, up, newOrg);
+				VectorMA(newOrg, f_diff * self->radius, fwd, newOrg);
+				VectorMA(newOrg, r_diff * self->radius, right, newOrg);
+				VectorMA(newOrg, u_diff * self->radius, up, newOrg);
 				//now put them in the offset position, facing the angles that position wants them to be facing
 				TeleportPlayer(other, newOrg, ent->s.angles);
 				if (other->m_pVehicle && other->m_pVehicle->m_pPilot)
@@ -2014,13 +2014,13 @@ extern void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
 
 void asteroid_move_to_start(gentity_t* self);
 
-void asteroid_move_to_start2(gentity_t* self, const gentity_t* ownerTrigger)
+void asteroid_move_to_start2(gentity_t* self, const gentity_t* owner_trigger)
 {
 	//move asteroid to a new start position
-	if (ownerTrigger)
+	if (owner_trigger)
 	{
 		//move it
-		vec3_t startSpot, endSpot, startAngles;
+		vec3_t start_spot, end_spot, start_angles;
 		const float speed = flrand(self->speed * 0.25f, self->speed * 2.0f);
 
 		const int capAxis = Q_irand(0, 2);
@@ -2030,35 +2030,35 @@ void asteroid_move_to_start2(gentity_t* self, const gentity_t* ownerTrigger)
 			{
 				if (Q_irand(0, 1))
 				{
-					startSpot[axis] = ownerTrigger->r.mins[axis];
-					endSpot[axis] = ownerTrigger->r.maxs[axis];
+					start_spot[axis] = owner_trigger->r.mins[axis];
+					end_spot[axis] = owner_trigger->r.maxs[axis];
 				}
 				else
 				{
-					startSpot[axis] = ownerTrigger->r.maxs[axis];
-					endSpot[axis] = ownerTrigger->r.mins[axis];
+					start_spot[axis] = owner_trigger->r.maxs[axis];
+					end_spot[axis] = owner_trigger->r.mins[axis];
 				}
 			}
 			else
 			{
-				startSpot[axis] = ownerTrigger->r.mins[axis] + flrand(0, 1.0f) * (ownerTrigger->r.maxs[axis] -
-					ownerTrigger->r.mins[axis]);
-				endSpot[axis] = ownerTrigger->r.mins[axis] + flrand(0, 1.0f) * (ownerTrigger->r.maxs[axis] -
-					ownerTrigger->r.mins[axis]);
+				start_spot[axis] = owner_trigger->r.mins[axis] + flrand(0, 1.0f) * (owner_trigger->r.maxs[axis] -
+					owner_trigger->r.mins[axis]);
+				end_spot[axis] = owner_trigger->r.mins[axis] + flrand(0, 1.0f) * (owner_trigger->r.maxs[axis] -
+					owner_trigger->r.mins[axis]);
 			}
 		}
 		//FIXME: maybe trace from start to end to make sure nothing is in the way?  How big of a trace?
 
-		G_SetOrigin(self, startSpot);
-		const float dist = Distance(endSpot, startSpot);
+		G_SetOrigin(self, start_spot);
+		const float dist = Distance(end_spot, start_spot);
 		const int time = ceil(dist / speed) * 1000;
-		Q3_Lerp2Origin(-1, self->s.number, endSpot, time);
+		Q3_Lerp2Origin(-1, self->s.number, end_spot, time);
 
 		//spin it
-		startAngles[0] = flrand(-360, 360);
-		startAngles[1] = flrand(-360, 360);
-		startAngles[2] = flrand(-360, 360);
-		G_SetAngles(self, startAngles);
+		start_angles[0] = flrand(-360, 360);
+		start_angles[1] = flrand(-360, 360);
+		start_angles[2] = flrand(-360, 360);
+		G_SetAngles(self, start_angles);
 		self->s.apos.trDelta[0] = flrand(-100, 100);
 		self->s.apos.trDelta[1] = flrand(-100, 100);
 		self->s.apos.trDelta[2] = flrand(-100, 100);
@@ -2084,47 +2084,47 @@ void asteroid_move_to_start(gentity_t* self)
 
 void asteroid_field_think(gentity_t* self)
 {
-	const int numAsteroids = asteroid_count_num_asteroids(self);
+	const int num_asteroids = asteroid_count_num_asteroids(self);
 
 	self->nextthink = level.time + 500;
 
-	if (numAsteroids < self->count)
+	if (num_asteroids < self->count)
 	{
 		//need to spawn a new asteroid
-		gentity_t* newAsteroid = G_Spawn();
-		if (newAsteroid)
+		gentity_t* new_asteroid = G_Spawn();
+		if (new_asteroid)
 		{
-			gentity_t* copyAsteroid = asteroid_pick_random_asteroid(self);
-			if (copyAsteroid)
+			gentity_t* copy_asteroid = asteroid_pick_random_asteroid(self);
+			if (copy_asteroid)
 			{
-				newAsteroid->model = copyAsteroid->model;
-				newAsteroid->model2 = copyAsteroid->model2;
-				newAsteroid->health = copyAsteroid->health;
-				newAsteroid->spawnflags = copyAsteroid->spawnflags;
-				newAsteroid->mass = copyAsteroid->mass;
-				newAsteroid->damage = copyAsteroid->damage;
-				newAsteroid->speed = copyAsteroid->speed;
+				new_asteroid->model = copy_asteroid->model;
+				new_asteroid->model2 = copy_asteroid->model2;
+				new_asteroid->health = copy_asteroid->health;
+				new_asteroid->spawnflags = copy_asteroid->spawnflags;
+				new_asteroid->mass = copy_asteroid->mass;
+				new_asteroid->damage = copy_asteroid->damage;
+				new_asteroid->speed = copy_asteroid->speed;
 
-				G_SetOrigin(newAsteroid, copyAsteroid->s.origin);
-				G_SetAngles(newAsteroid, copyAsteroid->s.angles);
-				newAsteroid->classname = "func_rotating";
+				G_SetOrigin(new_asteroid, copy_asteroid->s.origin);
+				G_SetAngles(new_asteroid, copy_asteroid->s.angles);
+				new_asteroid->classname = "func_rotating";
 
-				SP_func_rotating(newAsteroid);
+				SP_func_rotating(new_asteroid);
 
-				newAsteroid->genericValue15 = copyAsteroid->genericValue15;
-				newAsteroid->s.iModelScale = copyAsteroid->s.iModelScale;
-				newAsteroid->maxHealth = newAsteroid->health;
-				G_ScaleNetHealth(newAsteroid);
-				newAsteroid->radius = copyAsteroid->radius;
-				newAsteroid->material = copyAsteroid->material;
+				new_asteroid->genericValue15 = copy_asteroid->genericValue15;
+				new_asteroid->s.iModelScale = copy_asteroid->s.iModelScale;
+				new_asteroid->maxHealth = new_asteroid->health;
+				G_ScaleNetHealth(new_asteroid);
+				new_asteroid->radius = copy_asteroid->radius;
+				new_asteroid->material = copy_asteroid->material;
 				//CacheChunkEffects( self->material );
 
 				//keep track of it
-				newAsteroid->r.ownerNum = self->s.number;
+				new_asteroid->r.ownerNum = self->s.number;
 				//position it
-				asteroid_move_to_start2(newAsteroid, self);
+				asteroid_move_to_start2(new_asteroid, self);
 				//think again sooner if need even more
-				if (numAsteroids + 1 < self->count)
+				if (num_asteroids + 1 < self->count)
 				{
 					//still need at least one more
 					//spawn it in 100ms

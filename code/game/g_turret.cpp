@@ -71,7 +71,7 @@ void TurretPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 }
 
 //------------------------------------------------------------------------------------------------------------
-void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath, int dFlags,
+void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath, int d_flags,
                 int hit_loc)
 //------------------------------------------------------------------------------------------------------------
 {
@@ -139,22 +139,22 @@ void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int 
 }
 
 //start an animation on model_root both server side and client side
-void TurboLaser_SetBoneAnim(gentity_t* eweb, const int startFrame, const int endFrame)
+void TurboLaser_SetBoneAnim(gentity_t* eweb, const int start_frame, const int end_frame)
 {
-	if (eweb->s.torsoAnim == startFrame && eweb->s.legsAnim == endFrame)
+	if (eweb->s.torsoAnim == start_frame && eweb->s.legsAnim == end_frame)
 	{
 		//already playing this anim, let's flag it to restart
 		//eweb->s.torsoFlip = !eweb->s.torsoFlip;
 	}
 	else
 	{
-		eweb->s.torsoAnim = startFrame;
-		eweb->s.legsAnim = endFrame;
+		eweb->s.torsoAnim = start_frame;
+		eweb->s.legsAnim = end_frame;
 	}
 
 	//now set the animation on the server ghoul2 instance.
 	assert(&eweb->ghoul2[0]);
-	gi.G2API_SetBoneAnim(&eweb->ghoul2[0], "model_root", startFrame, endFrame,
+	gi.G2API_SetBoneAnim(&eweb->ghoul2[0], "model_root", start_frame, end_frame,
 	                     BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, 1.0f, level.time, -1, 100);
 }
 
@@ -287,10 +287,10 @@ void turret_head_think(gentity_t* self)
 static void turret_aim(gentity_t* self)
 //-----------------------------------------------------
 {
-	vec3_t desiredAngles;
-	float diffYaw = 0.0f, diffPitch = 0.0f;
-	const float maxYawSpeed = self->spawnflags & SPF_TURRETG2_TURBO ? 30.0f : 14.0f;
-	const float maxPitchSpeed = self->spawnflags & SPF_TURRETG2_TURBO ? 15.0f : 3.0f;
+	vec3_t desired_angles;
+	float diff_yaw = 0.0f, diff_pitch = 0.0f;
+	const float max_yaw_speed = self->spawnflags & SPF_TURRETG2_TURBO ? 30.0f : 14.0f;
+	const float max_pitch_speed = self->spawnflags & SPF_TURRETG2_TURBO ? 15.0f : 3.0f;
 
 	// move our gun base yaw to where we should be at this time....
 	EvaluateTrajectory(&self->s.apos, level.time, self->currentAngles);
@@ -301,7 +301,7 @@ static void turret_aim(gentity_t* self)
 	{
 		vec3_t org2;
 		vec3_t org;
-		vec3_t enemyDir;
+		vec3_t enemy_dir;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
 		if (self->enemy->client)
@@ -339,11 +339,11 @@ static void turret_aim(gentity_t* self)
 
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org2);
 
-		VectorSubtract(org, org2, enemyDir);
-		vectoangles(enemyDir, desiredAngles);
+		VectorSubtract(org, org2, enemy_dir);
+		vectoangles(enemy_dir, desired_angles);
 
-		diffYaw = AngleSubtract(self->currentAngles[YAW], desiredAngles[YAW]);
-		diffPitch = AngleSubtract(self->speed, desiredAngles[PITCH]);
+		diff_yaw = AngleSubtract(self->currentAngles[YAW], desired_angles[YAW]);
+		diff_pitch = AngleSubtract(self->speed, desired_angles[PITCH]);
 	}
 	else
 	{
@@ -351,35 +351,35 @@ static void turret_aim(gentity_t* self)
 		//		diffYaw = sin( level.time * 0.0001f + self->count ) * 5.0f;	// don't do this for now since it can make it go into walls.
 	}
 
-	if (diffYaw)
+	if (diff_yaw)
 	{
-		vec3_t setAngle;
+		vec3_t set_angle;
 		// cap max speed....
-		if (fabs(diffYaw) > maxYawSpeed)
+		if (fabs(diff_yaw) > max_yaw_speed)
 		{
-			diffYaw = diffYaw >= 0 ? maxYawSpeed : -maxYawSpeed;
+			diff_yaw = diff_yaw >= 0 ? max_yaw_speed : -max_yaw_speed;
 		}
 
 		// ...then set up our desired yaw
-		VectorSet(setAngle, 0.0f, diffYaw, 0.0f);
+		VectorSet(set_angle, 0.0f, diff_yaw, 0.0f);
 
 		VectorCopy(self->currentAngles, self->s.apos.trBase);
-		VectorScale(setAngle, -5, self->s.apos.trDelta);
+		VectorScale(set_angle, -5, self->s.apos.trDelta);
 		self->s.apos.trTime = level.time;
 		self->s.apos.trType = TR_LINEAR;
 	}
 
-	if (diffPitch)
+	if (diff_pitch)
 	{
-		if (fabs(diffPitch) > maxPitchSpeed)
+		if (fabs(diff_pitch) > max_pitch_speed)
 		{
 			// cap max speed
-			self->speed += diffPitch > 0.0f ? -maxPitchSpeed : maxPitchSpeed;
+			self->speed += diff_pitch > 0.0f ? -max_pitch_speed : max_pitch_speed;
 		}
 		else
 		{
 			// small enough, so just add half the diff so we smooth out the stopping
-			self->speed -= diffPitch; //desiredAngles[PITCH];
+			self->speed -= diff_pitch; //desiredAngles[PITCH];
 		}
 
 		// Note that this is NOT interpolated, so it will be less smooth...On the other hand, it does use Ghoul2 to blend, so it may smooth it out a bit?
@@ -387,31 +387,31 @@ static void turret_aim(gentity_t* self)
 		{
 			if (self->spawnflags & 2)
 			{
-				VectorSet(desiredAngles, 0.0f, 0.0f, -self->speed);
+				VectorSet(desired_angles, 0.0f, 0.0f, -self->speed);
 			}
 			else
 			{
-				VectorSet(desiredAngles, 0.0f, 0.0f, self->speed);
+				VectorSet(desired_angles, 0.0f, 0.0f, self->speed);
 			}
-			turret_SetBoneAngles(self, "pitch", desiredAngles);
+			turret_SetBoneAngles(self, "pitch", desired_angles);
 		}
 		else
 		{
 			// Note that this is NOT interpolated, so it will be less smooth...On the other hand, it does use Ghoul2 to blend, so it may smooth it out a bit?
 			if (self->spawnflags & 2)
 			{
-				VectorSet(desiredAngles, self->speed, 0.0f, 0.0f);
+				VectorSet(desired_angles, self->speed, 0.0f, 0.0f);
 			}
 			else
 			{
-				VectorSet(desiredAngles, -self->speed, 0.0f, 0.0f);
+				VectorSet(desired_angles, -self->speed, 0.0f, 0.0f);
 			}
-			gi.G2API_SetBoneAngles(&self->ghoul2[0], "Bone_body", desiredAngles,
+			gi.G2API_SetBoneAngles(&self->ghoul2[0], "Bone_body", desired_angles,
 			                       BONE_ANGLES_POSTMULT, POSITIVE_Y, POSITIVE_Z, POSITIVE_X, nullptr, 100, cg.time);
 		}
 	}
 
-	if (diffYaw || diffPitch)
+	if (diff_yaw || diff_pitch)
 	{
 		self->s.loopSound = G_SoundIndex("sound/chars/turret/move.wav");
 	}
@@ -455,7 +455,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 		return qfalse;
 
 	qboolean found = qfalse;
-	float bestDist = self->radius * self->radius;
+	float best_dist = self->radius * self->radius;
 	vec3_t org, org2;
 	gentity_t *entity_list[MAX_GENTITIES], *bestTarget = nullptr;
 
@@ -520,12 +520,12 @@ static qboolean turret_find_enemies(gentity_t* self)
 
 		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
 		{
-			vec3_t enemyDir;
+			vec3_t enemy_dir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
-			VectorSubtract(target->currentOrigin, self->currentOrigin, enemyDir);
-			const float enemyDist = VectorLengthSquared(enemyDir);
+			VectorSubtract(target->currentOrigin, self->currentOrigin, enemy_dir);
+			const float enemy_dist = VectorLengthSquared(enemy_dir);
 
-			if (enemyDist < bestDist) // all things equal, keep current
+			if (enemy_dist < best_dist) // all things equal, keep current
 			{
 				if (self->attackDebounceTime < level.time)
 				{
@@ -537,7 +537,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 				}
 
 				bestTarget = target;
-				bestDist = enemyDist;
+				best_dist = enemy_dist;
 				found = qtrue;
 			}
 		}
@@ -565,7 +565,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 void turret_base_think(gentity_t* self)
 //-----------------------------------------------------
 {
-	qboolean turnOff = qtrue;
+	qboolean turn_off = qtrue;
 
 	self->nextthink = level.time + FRAMETIME;
 
@@ -586,19 +586,19 @@ void turret_base_think(gentity_t* self)
 	{
 		if (turret_find_enemies(self))
 		{
-			turnOff = qfalse;
+			turn_off = qfalse;
 		}
 	}
 	else
 	{
 		if (self->enemy->health > 0)
 		{
-			vec3_t enemyDir;
+			vec3_t enemy_dir;
 			// enemy is alive
-			VectorSubtract(self->enemy->currentOrigin, self->currentOrigin, enemyDir);
-			const float enemyDist = VectorLengthSquared(enemyDir);
+			VectorSubtract(self->enemy->currentOrigin, self->currentOrigin, enemy_dir);
+			const float enemy_dist = VectorLengthSquared(enemy_dir);
 
-			if (enemyDist < self->radius * self->radius)
+			if (enemy_dist < self->radius * self->radius)
 			{
 				// was in valid radius
 				if (gi.inPVS(self->currentOrigin, self->enemy->currentOrigin))
@@ -631,7 +631,7 @@ void turret_base_think(gentity_t* self)
 					if (self->spawnflags & SPF_TURRETG2_TURBO || !tr.allsolid && !tr.startsolid && tr.entity_num == self
 						->enemy->s.number)
 					{
-						turnOff = qfalse; // Can see our enemy
+						turn_off = qfalse; // Can see our enemy
 					}
 				}
 			}
@@ -640,7 +640,7 @@ void turret_base_think(gentity_t* self)
 		turret_head_think(self);
 	}
 
-	if (turnOff)
+	if (turn_off)
 	{
 		if (self->bounceCount < level.time) // bounceCount is used to keep the thing from ping-ponging from on to off
 		{
@@ -1101,7 +1101,7 @@ void laser_arm_fire(gentity_t* ent)
 
 void laser_arm_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
-	vec3_t newAngles;
+	vec3_t new_angles;
 
 	self->activator = activator;
 	switch (self->count)
@@ -1115,39 +1115,39 @@ void laser_arm_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 		break;
 	case 1:
 		//Yaw left
-		VectorCopy(self->lastEnemy->currentAngles, newAngles);
-		newAngles[1] += self->speed;
-		G_SetAngles(self->lastEnemy, newAngles);
+		VectorCopy(self->lastEnemy->currentAngles, new_angles);
+		new_angles[1] += self->speed;
+		G_SetAngles(self->lastEnemy, new_angles);
 		G_Sound(self->lastEnemy, G_SoundIndex("sound/chars/l_arm/move.wav"));
 		break;
 	case 2:
 		//Yaw right
 		//gi.Printf("RIGHT...\n");
-		VectorCopy(self->lastEnemy->currentAngles, newAngles);
-		newAngles[1] -= self->speed;
-		G_SetAngles(self->lastEnemy, newAngles);
+		VectorCopy(self->lastEnemy->currentAngles, new_angles);
+		new_angles[1] -= self->speed;
+		G_SetAngles(self->lastEnemy, new_angles);
 		G_Sound(self->lastEnemy, G_SoundIndex("sound/chars/l_arm/move.wav"));
 		break;
 	case 3:
 		//pitch up
-		VectorCopy(self->lastEnemy->lastEnemy->currentAngles, newAngles);
-		newAngles[0] -= self->speed;
-		if (newAngles[0] < -45)
+		VectorCopy(self->lastEnemy->lastEnemy->currentAngles, new_angles);
+		new_angles[0] -= self->speed;
+		if (new_angles[0] < -45)
 		{
-			newAngles[0] = -45;
+			new_angles[0] = -45;
 		}
-		G_SetAngles(self->lastEnemy->lastEnemy, newAngles);
+		G_SetAngles(self->lastEnemy->lastEnemy, new_angles);
 		G_Sound(self->lastEnemy->lastEnemy, G_SoundIndex("sound/chars/l_arm/move.wav"));
 		break;
 	case 4:
 		//pitch down
-		VectorCopy(self->lastEnemy->lastEnemy->currentAngles, newAngles);
-		newAngles[0] += self->speed;
-		if (newAngles[0] > 90)
+		VectorCopy(self->lastEnemy->lastEnemy->currentAngles, new_angles);
+		new_angles[0] += self->speed;
+		if (new_angles[0] > 90)
 		{
-			newAngles[0] = 90;
+			new_angles[0] = 90;
 		}
-		G_SetAngles(self->lastEnemy->lastEnemy, newAngles);
+		G_SetAngles(self->lastEnemy->lastEnemy, new_angles);
 		G_Sound(self->lastEnemy->lastEnemy, G_SoundIndex("sound/chars/l_arm/move.wav"));
 		break;
 	}
@@ -1174,16 +1174,16 @@ What it does when used depends on it's "count" (can be set by a script)
 */
 void laser_arm_start(gentity_t* base)
 {
-	vec3_t armAngles;
-	vec3_t headAngles;
+	vec3_t arm_angles;
+	vec3_t head_angles;
 
 	base->e_ThinkFunc = thinkF_NULL;
 	//We're the base, spawn the arm and head
 	gentity_t* arm = G_Spawn();
 	gentity_t* head = G_Spawn();
 
-	VectorCopy(base->s.angles, armAngles);
-	VectorCopy(base->s.angles, headAngles);
+	VectorCopy(base->s.angles, arm_angles);
+	VectorCopy(base->s.angles, head_angles);
 	if (base->target && base->target[0])
 	{
 		//Start out pointing at something
@@ -1200,9 +1200,9 @@ void laser_arm_start(gentity_t* base)
 
 			VectorSubtract(targ->currentOrigin, base->s.origin, dir);
 			vectoangles(dir, angles);
-			armAngles[1] = angles[1];
-			headAngles[0] = angles[0];
-			headAngles[1] = angles[1];
+			arm_angles[1] = angles[1];
+			head_angles[0] = angles[0];
+			head_angles[1] = angles[1];
 		}
 	}
 
@@ -1232,22 +1232,22 @@ void laser_arm_start(gentity_t* base)
 	//Does nothing, not solid, gets removed when head explodes
 	G_SetOrigin(arm, base->s.origin);
 	gi.linkentity(arm);
-	G_SetAngles(arm, armAngles);
+	G_SetAngles(arm, arm_angles);
 	//	bolt_head_to_arm( arm, head, LARM_FOFS, LARM_ROFS, LARM_UOFS );
 	arm->s.modelindex = G_ModelIndex("models/mapobjects/dn/laser_arm.md3");
 
 	//Head
 	//Fires when enemy detected, animates, can be blown up
 	//Need to normalize the headAngles pitch for the clamping later
-	if (headAngles[0] < -180)
+	if (head_angles[0] < -180)
 	{
-		headAngles[0] += 360;
+		head_angles[0] += 360;
 	}
-	else if (headAngles[0] > 180)
+	else if (head_angles[0] > 180)
 	{
-		headAngles[0] -= 360;
+		head_angles[0] -= 360;
 	}
-	G_SetAngles(head, headAngles);
+	G_SetAngles(head, head_angles);
 	head->s.modelindex = G_ModelIndex("models/mapobjects/dn/laser_head.md3");
 	head->s.eType = ET_GENERAL;
 	//	head->svFlags |= SVF_BROADCAST;// Broadcast to all clients
@@ -1374,7 +1374,7 @@ static qboolean pas_find_enemies(gentity_t* self)
 //-----------------------------------------------------
 {
 	qboolean found = qfalse;
-	float bestDist = self->radius * self->radius;
+	float best_dist = self->radius * self->radius;
 	vec3_t org, org2;
 	gentity_t* entity_list[MAX_GENTITIES];
 
@@ -1437,17 +1437,17 @@ static qboolean pas_find_enemies(gentity_t* self)
 
 		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
 		{
-			vec3_t enemyDir;
+			vec3_t enemy_dir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
-			VectorSubtract(target->currentOrigin, self->currentOrigin, enemyDir);
-			const float enemyDist = VectorLengthSquared(enemyDir);
+			VectorSubtract(target->currentOrigin, self->currentOrigin, enemy_dir);
+			const float enemy_dist = VectorLengthSquared(enemy_dir);
 
 			if (target->s.number) // don't do this for the player
 			{
 				G_StartFlee(target, self, self->currentOrigin, AEL_DANGER, 3000, 5000);
 			}
 
-			if (enemyDist < bestDist) // all things equal, keep current
+			if (enemy_dist < best_dist) // all things equal, keep current
 			{
 				if (self->attackDebounceTime + 2000 < level.time)
 				{
@@ -1459,7 +1459,7 @@ static qboolean pas_find_enemies(gentity_t* self)
 				}
 
 				G_SetEnemy(self, target);
-				bestDist = enemyDist;
+				best_dist = enemy_dist;
 				found = qtrue;
 			}
 		}
@@ -1581,17 +1581,17 @@ void pas_think(gentity_t* ent)
 	}
 
 	qboolean moved = qfalse;
-	float diffYaw, diffPitch = 0.0f;
-	vec3_t frontAngles, backAngles;
+	float diff_yaw, diff_pitch = 0.0f;
+	vec3_t front_angles, back_angles;
 
 	ent->speed = AngleNormalize360(ent->speed);
 	ent->random = AngleNormalize360(ent->random);
 
 	if (ent->enemy)
 	{
-		vec3_t desiredAngles;
+		vec3_t desired_angles;
 		vec3_t org;
-		vec3_t enemyDir;
+		vec3_t enemy_dir;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
 		if (ent->enemy->client)
@@ -1604,59 +1604,59 @@ void pas_think(gentity_t* ent)
 			VectorCopy(ent->enemy->currentOrigin, org);
 		}
 
-		VectorSubtract(org, ent->currentOrigin, enemyDir);
-		vectoangles(enemyDir, desiredAngles);
+		VectorSubtract(org, ent->currentOrigin, enemy_dir);
+		vectoangles(enemy_dir, desired_angles);
 
-		diffYaw = AngleSubtract(ent->speed, desiredAngles[YAW]);
-		diffPitch = AngleSubtract(ent->random, desiredAngles[PITCH]);
+		diff_yaw = AngleSubtract(ent->speed, desired_angles[YAW]);
+		diff_pitch = AngleSubtract(ent->random, desired_angles[PITCH]);
 	}
 	else
 	{
 		// no enemy, so make us slowly sweep back and forth as if searching for a new one
-		diffYaw = sin(level.time * 0.0001f + ent->count) * 2.0f;
+		diff_yaw = sin(level.time * 0.0001f + ent->count) * 2.0f;
 	}
 
-	if (fabs(diffYaw) > 0.25f)
+	if (fabs(diff_yaw) > 0.25f)
 	{
 		moved = qtrue;
 
-		if (fabs(diffYaw) > 10.0f)
+		if (fabs(diff_yaw) > 10.0f)
 		{
 			// cap max speed
-			ent->speed += diffYaw > 0.0f ? -10.0f : 10.0f;
+			ent->speed += diff_yaw > 0.0f ? -10.0f : 10.0f;
 		}
 		else
 		{
 			// small enough
-			ent->speed -= diffYaw;
+			ent->speed -= diff_yaw;
 		}
 	}
 
-	if (fabs(diffPitch) > 0.25f)
+	if (fabs(diff_pitch) > 0.25f)
 	{
 		moved = qtrue;
 
-		if (fabs(diffPitch) > 4.0f)
+		if (fabs(diff_pitch) > 4.0f)
 		{
 			// cap max speed
-			ent->random += diffPitch > 0.0f ? -4.0f : 4.0f;
+			ent->random += diff_pitch > 0.0f ? -4.0f : 4.0f;
 		}
 		else
 		{
 			// small enough
-			ent->random -= diffPitch;
+			ent->random -= diff_pitch;
 		}
 	}
 
 	// the bone axes are messed up, so hence some dumbness here
-	VectorSet(frontAngles, -ent->random, 0.0f, 0.0f);
-	VectorSet(backAngles, 0.0f, 0.0f, ent->speed - ent->s.angles[YAW]);
+	VectorSet(front_angles, -ent->random, 0.0f, 0.0f);
+	VectorSet(back_angles, 0.0f, 0.0f, ent->speed - ent->s.angles[YAW]);
 
-	gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "bone_barrel", frontAngles,
+	gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "bone_barrel", front_angles,
 	                       BONE_ANGLES_POSTMULT, POSITIVE_Y, POSITIVE_Z, NEGATIVE_X, nullptr, 100, cg.time);
-	gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "bone_gback", frontAngles,
+	gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "bone_gback", front_angles,
 	                       BONE_ANGLES_POSTMULT, POSITIVE_Y, POSITIVE_Z, NEGATIVE_X, nullptr, 100, cg.time);
-	gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "bone_hinge", backAngles,
+	gi.G2API_SetBoneAngles(&ent->ghoul2[ent->playerModel], "bone_hinge", back_angles,
 	                       BONE_ANGLES_POSTMULT, POSITIVE_Y, POSITIVE_Z, POSITIVE_X, nullptr, 100, cg.time);
 
 	if (moved)
@@ -1915,7 +1915,7 @@ void ion_cannon_think(gentity_t* self)
 }
 
 //----------------------------------------------------------------------------------------------
-void ion_cannon_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void ion_cannon_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int d_flags,
                     int hit_loc)
 //----------------------------------------------------------------------------------------------
 {
@@ -2267,7 +2267,7 @@ void panel_turret_shoot(gentity_t* self, vec3_t org, vec3_t dir)
 }
 
 //-----------------------------------------
-void misc_panel_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void misc_panel_turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int d_flags,
                            int hit_loc)
 {
 	if (self->target3)
@@ -2334,7 +2334,7 @@ void panel_turret_think(gentity_t* self)
 
 		// Let cgame interpolation smooth out the angle changes
 		self->s.apos.trType = TR_INTERPOLATE;
-		self->s.pos.trType = TR_INTERPOLATE; // not really moving, but this fixes an interpolation bug in cg_ents.
+		self->s.pos.trType = TR_INTERPOLATE; // not really moving, but this fixes an interpolation error in cg_ents.
 
 		// Check for backing out of turret
 		if (self->useDebounceTime < level.time && (ucmd->buttons & BUTTON_BLOCK || ucmd->buttons & BUTTON_USE || ucmd->

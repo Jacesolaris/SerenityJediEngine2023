@@ -170,7 +170,7 @@ void Use_Multi(gentity_t* ent, gentity_t* other, gentity_t* activator)
 	multi_trigger(ent, activator);
 }
 
-extern int Pilot_ActivePilotCount(void);
+extern int Pilot_ActivePilotCount();
 
 void Touch_Multi(gentity_t* self, gentity_t* other, trace_t* trace)
 {
@@ -513,7 +513,6 @@ Fires "backwardstarget" when someone moves through it in the opposite direction 
 
 "wait" - how long to wait between triggerings
 
-  TODO:
 	count
 */
 void SP_trigger_bidirectional(gentity_t* ent)
@@ -997,21 +996,21 @@ void trigger_teleporter_touch(const gentity_t* self, gentity_t* other, trace_t* 
 		other->s.pos.trDelta))
 	{
 		//It's a mover of some sort and is currently moving
-		vec3_t diffAngles = {0, 0, 0};
+		vec3_t diff_angles = {0, 0, 0};
 		qboolean snap = qfalse;
 
 		if (self->lastEnemy)
 		{
-			VectorSubtract(dest->s.angles, self->lastEnemy->s.angles, diffAngles);
+			VectorSubtract(dest->s.angles, self->lastEnemy->s.angles, diff_angles);
 		}
 		else
 		{
 			//snaps to angle
-			VectorSubtract(dest->s.angles, other->currentAngles, diffAngles);
+			VectorSubtract(dest->s.angles, other->currentAngles, diff_angles);
 			snap = qtrue;
 		}
 
-		TeleportMover(other, dest->s.origin, diffAngles, snap);
+		TeleportMover(other, dest->s.origin, diff_angles, snap);
 	}
 }
 
@@ -1019,7 +1018,7 @@ void trigger_teleporter_find_closest_portal(gentity_t* self)
 {
 	gentity_t* found = nullptr;
 	vec3_t org;
-	float bestDist = 64 * 64;
+	float best_dist = 64 * 64;
 
 	VectorAdd(self->mins, self->maxs, org);
 	VectorScale(org, 0.5, org);
@@ -1028,10 +1027,10 @@ void trigger_teleporter_find_closest_portal(gentity_t* self)
 		vec3_t vec;
 		VectorSubtract(found->currentOrigin, org, vec);
 		const float dist = VectorLengthSquared(vec);
-		if (dist < bestDist)
+		if (dist < best_dist)
 		{
 			self->lastEnemy = found;
-			bestDist = dist;
+			best_dist = dist;
 		}
 	}
 
@@ -1122,7 +1121,7 @@ extern void JET_FlyStart(gentity_t* self);
 void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 {
 	int dflags;
-	int actualDmg = self->damage;
+	int actual_dmg = self->damage;
 
 	if (self->svFlags & SVF_INACTIVE)
 	{
@@ -1206,7 +1205,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		if (self->attackDebounceTime < self->delay)
 		{
 			//FIXME: this is for the entire trigger, not per person, so if someone else jumped in after you were in it for 5 seconds, they'd get damaged faster
-			actualDmg = floor(static_cast<float>(self->damage * self->attackDebounceTime / self->delay));
+			actual_dmg = floor(static_cast<float>(self->damage * self->attackDebounceTime / self->delay));
 		}
 		self->attackDebounceTime += FRAMETIME;
 
@@ -1214,7 +1213,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		self->nextthink = level.time + FRAMETIME * 2;
 	}
 
-	if (actualDmg)
+	if (actual_dmg)
 	{
 		if (self->spawnflags & 64 && other->client) //electrical damage
 		{
@@ -1238,7 +1237,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 			}
 			else
 			{
-				G_Damage(other, self, self, nullptr, nullptr, actualDmg, dflags | DAMAGE_NO_ARMOR, MOD_FALLING);
+				G_Damage(other, self, self, nullptr, nullptr, actual_dmg, dflags | DAMAGE_NO_ARMOR, MOD_FALLING);
 				// G_Damage will free this ent, which makes it s.number 0, so we must check inuse...
 				if (!other->s.number && other->health <= 0)
 				{
@@ -1264,7 +1263,7 @@ void hurt_touch(gentity_t* self, gentity_t* other, trace_t* trace)
 		}
 		else
 		{
-			G_Damage(other, self, self, nullptr, nullptr, actualDmg, dflags, MOD_TRIGGER_HURT);
+			G_Damage(other, self, self, nullptr, nullptr, actual_dmg, dflags, MOD_TRIGGER_HURT);
 		}
 		if (other && !other->s.number)
 		{
@@ -1465,16 +1464,16 @@ void shipboundary_think(gentity_t* ent)
 	const int num_listed_entities = gi.EntitiesInBox(ent->absmin, ent->absmax, entity_list, MAX_GENTITIES);
 	while (i < num_listed_entities)
 	{
-		gentity_t* listedEnt = entity_list[i];
-		if (listedEnt->inuse && listedEnt->client && listedEnt->s.m_iVehicleNum)
+		gentity_t* listed_ent = entity_list[i];
+		if (listed_ent->inuse && listed_ent->client && listed_ent->s.m_iVehicleNum)
 		{
-			if (listedEnt->NPC &&
-				listedEnt->client->NPC_class == CLASS_VEHICLE)
+			if (listed_ent->NPC &&
+				listed_ent->client->NPC_class == CLASS_VEHICLE)
 			{
-				const Vehicle_t* p_veh = listedEnt->m_pVehicle;
+				const Vehicle_t* p_veh = listed_ent->m_pVehicle;
 				if (p_veh && p_veh->m_pVehicleInfo->type == VH_FIGHTER)
 				{
-					shipboundary_touch(ent, listedEnt, nullptr);
+					shipboundary_touch(ent, listed_ent, nullptr);
 				}
 			}
 		}
@@ -1531,8 +1530,8 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 		if (other->client->ps.eFlags2 & EF2_HYPERSPACE)
 		{
 			//they've started the hyperspace but haven't been teleported yet
-			const float timeFrac = static_cast<float>(level.time - other->client->ps.hyperSpaceTime) / HYPERSPACE_TIME;
-			if (timeFrac >= HYPERSPACE_TELEPORT_FRAC)
+			const float time_frac = static_cast<float>(level.time - other->client->ps.hyperSpaceTime) / HYPERSPACE_TIME;
+			if (time_frac >= HYPERSPACE_TELEPORT_FRAC)
 			{
 				//half-way, now teleport them!
 				vec3_t diff, fwd, right, up, newOrg;
@@ -1547,9 +1546,9 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 				}
 				VectorSubtract(other->client->ps.origin, ent->s.origin, diff);
 				AngleVectors(ent->s.angles, fwd, right, up);
-				const float fDiff = DotProduct(fwd, diff);
-				const float rDiff = DotProduct(right, diff);
-				const float uDiff = DotProduct(up, diff);
+				const float f_diff = DotProduct(fwd, diff);
+				const float r_diff = DotProduct(right, diff);
+				const float u_diff = DotProduct(up, diff);
 				//Now get the base position of the destination
 				ent = G_Find(nullptr, FOFS(targetname), self->target2);
 				if (!ent || !ent->inuse)
@@ -1560,9 +1559,9 @@ void hyperspace_touch(const gentity_t* self, gentity_t* other, trace_t* trace)
 				VectorCopy(ent->s.origin, newOrg);
 				//finally, add the offset into the new origin
 				AngleVectors(ent->s.angles, fwd, right, up);
-				VectorMA(newOrg, fDiff * self->radius, fwd, newOrg);
-				VectorMA(newOrg, rDiff * self->radius, right, newOrg);
-				VectorMA(newOrg, uDiff * self->radius, up, newOrg);
+				VectorMA(newOrg, f_diff * self->radius, fwd, newOrg);
+				VectorMA(newOrg, r_diff * self->radius, right, newOrg);
+				VectorMA(newOrg, u_diff * self->radius, up, newOrg);
 				//trap->Print("hyperspace from %s to %s\n", vtos(other->client->ps.origin), vtos(newOrg) );
 				//now put them in the offset position, facing the angles that position wants them to be facing
 				TeleportPlayer(other, newOrg, ent->s.angles);
@@ -1719,51 +1718,51 @@ extern void Q3_Lerp2Origin(int taskID, int entID, vec3_t origin, float duration)
 
 void asteroid_move_to_start(gentity_t* self);
 
-void asteroid_move_to_start2(gentity_t* self, const gentity_t* ownerTrigger)
+void asteroid_move_to_start2(gentity_t* self, const gentity_t* owner_trigger)
 {
 	//move asteroid to a new start position
-	if (ownerTrigger)
+	if (owner_trigger)
 	{
 		//move it
-		vec3_t startSpot, endSpot, startAngles;
+		vec3_t start_spot, end_spot, start_angles;
 		const float speed = flrand(self->speed * 0.25f, self->speed * 2.0f);
 
-		const int capAxis = Q_irand(0, 2);
+		const int cap_axis = Q_irand(0, 2);
 		for (int axis = 0; axis < 3; axis++)
 		{
-			if (axis == capAxis)
+			if (axis == cap_axis)
 			{
 				if (Q_irand(0, 1))
 				{
-					startSpot[axis] = ownerTrigger->mins[axis];
-					endSpot[axis] = ownerTrigger->maxs[axis];
+					start_spot[axis] = owner_trigger->mins[axis];
+					end_spot[axis] = owner_trigger->maxs[axis];
 				}
 				else
 				{
-					startSpot[axis] = ownerTrigger->maxs[axis];
-					endSpot[axis] = ownerTrigger->mins[axis];
+					start_spot[axis] = owner_trigger->maxs[axis];
+					end_spot[axis] = owner_trigger->mins[axis];
 				}
 			}
 			else
 			{
-				startSpot[axis] = ownerTrigger->mins[axis] + flrand(0, 1.0f) * (ownerTrigger->maxs[axis] - ownerTrigger
+				start_spot[axis] = owner_trigger->mins[axis] + flrand(0, 1.0f) * (owner_trigger->maxs[axis] - owner_trigger
 					->mins[axis]);
-				endSpot[axis] = ownerTrigger->mins[axis] + flrand(0, 1.0f) * (ownerTrigger->maxs[axis] - ownerTrigger->
+				end_spot[axis] = owner_trigger->mins[axis] + flrand(0, 1.0f) * (owner_trigger->maxs[axis] - owner_trigger->
 					mins[axis]);
 			}
 		}
 		//FIXME: maybe trace from start to end to make sure nothing is in the way?  How big of a trace?
 
-		G_SetOrigin(self, startSpot);
-		const float dist = Distance(endSpot, startSpot);
+		G_SetOrigin(self, start_spot);
+		const float dist = Distance(end_spot, start_spot);
 		const int time = ceil(dist / speed) * 1000;
-		Q3_Lerp2Origin(-1, self->s.number, endSpot, time);
+		Q3_Lerp2Origin(-1, self->s.number, end_spot, time);
 
 		//spin it
-		startAngles[0] = flrand(-360, 360);
-		startAngles[1] = flrand(-360, 360);
-		startAngles[2] = flrand(-360, 360);
-		G_SetAngles(self, startAngles);
+		start_angles[0] = flrand(-360, 360);
+		start_angles[1] = flrand(-360, 360);
+		start_angles[2] = flrand(-360, 360);
+		G_SetAngles(self, start_angles);
 		self->s.apos.trDelta[0] = flrand(-100, 100);
 		self->s.apos.trDelta[1] = flrand(-100, 100);
 		self->s.apos.trDelta[2] = flrand(-100, 100);
@@ -1789,47 +1788,47 @@ void asteroid_move_to_start(gentity_t* self)
 
 void asteroid_field_think(gentity_t* self)
 {
-	const int numAsteroids = asteroid_count_num_asteroids(self);
+	const int num_asteroids = asteroid_count_num_asteroids(self);
 
 	self->nextthink = level.time + 500;
 
-	if (numAsteroids < self->count)
+	if (num_asteroids < self->count)
 	{
 		//need to spawn a new asteroid
-		gentity_t* newAsteroid = G_Spawn();
-		if (newAsteroid)
+		gentity_t* new_asteroid = G_Spawn();
+		if (new_asteroid)
 		{
-			const gentity_t* copyAsteroid = asteroid_pick_random_asteroid(self);
-			if (copyAsteroid)
+			const gentity_t* copy_asteroid = asteroid_pick_random_asteroid(self);
+			if (copy_asteroid)
 			{
-				newAsteroid->model = G_NewString(copyAsteroid->model);
-				newAsteroid->model2 = copyAsteroid->model2;
-				newAsteroid->health = copyAsteroid->health;
-				newAsteroid->spawnflags = copyAsteroid->spawnflags;
-				newAsteroid->mass = copyAsteroid->mass;
-				newAsteroid->damage = copyAsteroid->damage;
-				newAsteroid->speed = copyAsteroid->speed;
+				new_asteroid->model = G_NewString(copy_asteroid->model);
+				new_asteroid->model2 = copy_asteroid->model2;
+				new_asteroid->health = copy_asteroid->health;
+				new_asteroid->spawnflags = copy_asteroid->spawnflags;
+				new_asteroid->mass = copy_asteroid->mass;
+				new_asteroid->damage = copy_asteroid->damage;
+				new_asteroid->speed = copy_asteroid->speed;
 
-				G_SetOrigin(newAsteroid, copyAsteroid->s.origin);
-				G_SetAngles(newAsteroid, copyAsteroid->s.angles);
-				newAsteroid->classname = "func_rotating";
+				G_SetOrigin(new_asteroid, copy_asteroid->s.origin);
+				G_SetAngles(new_asteroid, copy_asteroid->s.angles);
+				new_asteroid->classname = "func_rotating";
 
-				SP_func_rotating(newAsteroid);
+				SP_func_rotating(new_asteroid);
 
-				VectorCopy(copyAsteroid->s.modelScale, newAsteroid->s.modelScale);
-				VectorSet(newAsteroid->s.modelScale, 2.0, 2.0, 2.0);
+				VectorCopy(copy_asteroid->s.modelScale, new_asteroid->s.modelScale);
+				VectorSet(new_asteroid->s.modelScale, 2.0, 2.0, 2.0);
 
-				newAsteroid->radius = copyAsteroid->radius;
-				newAsteroid->material = copyAsteroid->material;
+				new_asteroid->radius = copy_asteroid->radius;
+				new_asteroid->material = copy_asteroid->material;
 
 				//keep track of it
-				newAsteroid->owner = self;
+				new_asteroid->owner = self;
 
 				//move it
-				asteroid_move_to_start2(newAsteroid, self);
+				asteroid_move_to_start2(new_asteroid, self);
 
 				//think again sooner if need even more
-				if (numAsteroids + 1 < self->count)
+				if (num_asteroids + 1 < self->count)
 				{
 					//still need at least one more
 					//spawn it in 100ms
@@ -1965,7 +1964,7 @@ void trigger_entdist_use(gentity_t* self, gentity_t* other, gentity_t* activator
 	vec3_t diff;
 	gentity_t* found = nullptr;
 	const gentity_t* owner = nullptr;
-	const char* holdString;
+	const char* hold_string;
 
 	if (self->svFlags & SVF_INACTIVE) // Don't use INACTIVE
 		return;
@@ -2004,11 +2003,11 @@ void trigger_entdist_use(gentity_t* self, gentity_t* other, gentity_t* activator
 
 	if (self->spawnflags & ENTDIST_NPC && !useflag)
 	{
-		holdString = self->NPC_target;
+		hold_string = self->NPC_target;
 
-		while (holdString)
+		while (hold_string)
 		{
-			const char* token = COM_Parse(&holdString);
+			const char* token = COM_Parse(&hold_string);
 			if (!token) // Nothing left to look at
 			{
 				break;
