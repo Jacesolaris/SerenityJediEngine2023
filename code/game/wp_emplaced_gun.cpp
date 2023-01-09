@@ -69,9 +69,9 @@ void WP_EmplacedFire(gentity_t* ent)
 	const float damage = weaponData[WP_EMPLACED_GUN].damage * (ent->NPC ? 0.1f : 1.0f);
 	const float vel = EMPLACED_VEL * (ent->NPC ? 0.4f : 1.0f);
 
-	WP_MissileTargetHint(ent, muzzle, forwardVec);
+	WP_MissileTargetHint(ent, muzzle, forward_vec);
 
-	gentity_t* missile = create_missile(muzzle, forwardVec, vel, 10000, ent);
+	gentity_t* missile = create_missile(muzzle, forward_vec, vel, 10000, ent);
 
 	missile->classname = "emplaced_proj";
 	missile->s.weapon = WP_EMPLACED_GUN;

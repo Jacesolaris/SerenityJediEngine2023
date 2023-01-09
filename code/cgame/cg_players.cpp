@@ -165,8 +165,8 @@ qboolean CG_RegisterClientModelname(clientInfo_t* ci, const char* headModelName,
 
 static void CG_PlayerFootsteps(const centity_t* cent, footstepType_t foot_step_type);
 static void CG_PlayerAnimEvents(int anim_file_index, qboolean torso, int old_frame, int frame, int ent_num);
-extern void BG_G2SetBoneAngles(const centity_t* cent, const int bone_index, const vec3_t angles, const int flags,
-                               const Eorientations up, const Eorientations left, const Eorientations forward, qhandle_t* model_list);
+extern void BG_G2SetBoneAngles(const centity_t* cent, int bone_index, const vec3_t angles, int flags,
+                               Eorientations up, Eorientations left, Eorientations forward, qhandle_t* model_list);
 extern qboolean pm_saber_in_special_attack(int anim);
 extern qboolean PM_SaberInAttack(int move);
 extern qboolean PM_SaberInTransitionAny(int move);
@@ -15162,7 +15162,7 @@ void CG_Player(centity_t* cent)
 					effect = &w_data->mMuzzleEffect[0];
 				}
 
-				if (cent->altFire)
+				if (cent->alt_fire)
 				{
 					// We're alt-firing, so see if we need to override with a custom alt-fire effect
 					if (w_data->mAltMuzzleEffect[0])

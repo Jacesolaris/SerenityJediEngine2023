@@ -152,7 +152,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Access To Raw Array
 		////////////////////////////////////////////////////////////////////////////////////
-		operator const char*()
+		operator const char*() const
 		{
 			return mData;
 		}
@@ -160,7 +160,7 @@ namespace ratl
 		////////////////////////////////////////////////////////////////////////////////////
 		// Access To Raw Array
 		////////////////////////////////////////////////////////////////////////////////////
-		const char* operator*()
+		const char* operator*() const
 		{
 			return mData;
 		}
@@ -300,7 +300,7 @@ namespace ratl
 		public:
 			// Constructors
 			//--------------
-			tokenizer() : mLoc(nullptr)
+			tokenizer() : mLoc(nullptr), mGap{}
 			{
 			}
 
@@ -309,7 +309,7 @@ namespace ratl
 				strncpy(mGap, gap, TOKEN_GAP_LEN); // Safe String Copy
 				mGap[TOKEN_GAP_LEN - 1] = 0; // Make Sure We Have A Null Terminated Str
 
-				const auto temp = (char*)t;
+				const auto temp = const_cast<char*>(t);
 				mLoc = str::tok(temp, mGap);
 			}
 

@@ -31,7 +31,7 @@ void WP_FireNoghriStick(gentity_t* ent)
 {
 	vec3_t dir, angs;
 
-	vectoangles(forwardVec, angs);
+	vectoangles(forward_vec, angs);
 
 	if (!(ent->client->ps.forcePowersActive & 1 << FP_SEE) || ent->client->ps.forcePowerLevel[FP_SEE] < FORCE_LEVEL_2)
 	{

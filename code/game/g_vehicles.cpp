@@ -542,11 +542,11 @@ void Animate(Vehicle_t* p_veh)
 bool ValidateBoard(Vehicle_t* p_veh, bgEntity_t* p_ent)
 {
 	// Determine where the entity is entering the vehicle from (left, right, or back).
-	vec3_t vVehToEnt;
-	vec3_t vVehDir;
+	vec3_t v_veh_to_ent;
+	vec3_t v_veh_dir;
 	const gentity_t* parent = p_veh->m_pParentEntity;
 	const gentity_t* ent = p_ent;
-	vec3_t vVehAngles;
+	vec3_t v_veh_angles;
 
 	if (p_veh->m_iDieTime > 0)
 	{
@@ -592,19 +592,19 @@ bool ValidateBoard(Vehicle_t* p_veh, bgEntity_t* p_ent)
 	}
 
 	// Clear out all orientation axis except for the yaw.
-	VectorSet(vVehAngles, 0, parent->currentAngles[YAW], 0);
+	VectorSet(v_veh_angles, 0, parent->currentAngles[YAW], 0);
 
 	// Vector from Entity to Vehicle.
-	VectorSubtract(ent->currentOrigin, parent->currentOrigin, vVehToEnt);
-	vVehToEnt[2] = 0;
-	VectorNormalize(vVehToEnt);
+	VectorSubtract(ent->currentOrigin, parent->currentOrigin, v_veh_to_ent);
+	v_veh_to_ent[2] = 0;
+	VectorNormalize(v_veh_to_ent);
 
 	// Get the right vector.
-	AngleVectors(vVehAngles, nullptr, vVehDir, nullptr);
-	VectorNormalize(vVehDir);
+	AngleVectors(v_veh_angles, nullptr, v_veh_dir, nullptr);
+	VectorNormalize(v_veh_dir);
 
 	// Find the angle between the vehicle right vector and the vehicle to entity vector.
-	const float fDot = DotProduct(vVehToEnt, vVehDir);
+	const float fDot = DotProduct(v_veh_to_ent, v_veh_dir);
 
 	// If the entity is within a certain angle to the left of the vehicle...
 	if (fDot >= 0.5f)

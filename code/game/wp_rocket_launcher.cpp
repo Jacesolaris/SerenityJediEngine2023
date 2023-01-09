@@ -192,7 +192,7 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
-	gentity_t* missile = create_missile(start, forwardVec, vel, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, forward_vec, vel, 10000, ent, alt_fire);
 
 	missile->classname = "rocket_proj";
 	missile->s.weapon = WP_ROCKET_LAUNCHER;
@@ -234,7 +234,7 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 		}
 
 		//Shove us backwards for half a second
-		VectorMA(ent->client->ps.velocity, -200, forwardVec, ent->client->ps.velocity);
+		VectorMA(ent->client->ps.velocity, -200, forward_vec, ent->client->ps.velocity);
 		ent->client->ps.groundEntityNum = ENTITYNUM_NONE;
 
 		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_HALF)
@@ -293,7 +293,7 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 			}
 		}
 
-		VectorCopy(forwardVec, missile->movedir);
+		VectorCopy(forward_vec, missile->movedir);
 
 		missile->e_ThinkFunc = thinkF_rocketThink;
 		missile->random = 1.0f;

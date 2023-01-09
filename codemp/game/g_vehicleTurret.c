@@ -25,11 +25,11 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "ghoul2/G2.h"
 
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
-extern void WP_CalcVehMuzzle(gentity_t* ent, int muzzleNum);
-extern gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWeaponInfo_t* vehWeapon,
-                                       qboolean alt_fire, qboolean isTurretWeap);
+extern void WP_CalcVehMuzzle(gentity_t* ent, int muzzle_num);
+extern gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWeaponInfo_t* veh_weapon,
+                                       qboolean alt_fire, qboolean is_turret_weap);
 
-extern void G_VehMuzzleFireFX(const gentity_t* ent, gentity_t* broadcaster, int muzzlesFired);
+extern void G_VehMuzzleFireFX(const gentity_t* ent, gentity_t* broadcaster, int muzzles_fired);
 //-----------------------------------------------------
 void VEH_TurretCheckFire(Vehicle_t* p_veh,
                          gentity_t* parent,
@@ -87,139 +87,139 @@ void VEH_TurretCheckFire(Vehicle_t* p_veh,
 	}
 }
 
-void VEH_TurretAnglesToEnemy(Vehicle_t* p_veh, const int curMuzzle, const float fSpeed, gentity_t* turretEnemy,
-                             const qboolean bAILead,
-                             vec3_t desiredAngles)
+void VEH_TurretAnglesToEnemy(const Vehicle_t* p_veh, const int cur_muzzle, const float f_speed, const gentity_t* turret_enemy,
+                             const qboolean b_ai_lead,
+                             vec3_t desired_angles)
 {
-	vec3_t enemyDir, org;
-	VectorCopy(turretEnemy->r.currentOrigin, org);
-	if (bAILead)
+	vec3_t enemy_dir, org;
+	VectorCopy(turret_enemy->r.currentOrigin, org);
+	if (b_ai_lead)
 	{
 		//we want to lead them a bit
 		vec3_t diff, velocity;
-		VectorSubtract(org, p_veh->m_vMuzzlePos[curMuzzle], diff);
+		VectorSubtract(org, p_veh->m_vMuzzlePos[cur_muzzle], diff);
 		const float dist = VectorNormalize(diff);
-		if (turretEnemy->client)
+		if (turret_enemy->client)
 		{
-			VectorCopy(turretEnemy->client->ps.velocity, velocity);
+			VectorCopy(turret_enemy->client->ps.velocity, velocity);
 		}
 		else
 		{
-			VectorCopy(turretEnemy->s.pos.trDelta, velocity);
+			VectorCopy(turret_enemy->s.pos.trDelta, velocity);
 		}
-		VectorMA(org, dist / fSpeed, velocity, org);
+		VectorMA(org, dist / f_speed, velocity, org);
 	}
 
 	//FIXME: this isn't quite right, it's aiming from the muzzle, not the center of the turret...
-	VectorSubtract(org, p_veh->m_vMuzzlePos[curMuzzle], enemyDir);
+	VectorSubtract(org, p_veh->m_vMuzzlePos[cur_muzzle], enemy_dir);
 	//Get the desired absolute, world angles to our target
-	vectoangles(enemyDir, desiredAngles);
+	vectoangles(enemy_dir, desired_angles);
 }
 
 //-----------------------------------------------------
 qboolean VEH_TurretAim(Vehicle_t* p_veh,
                        gentity_t* parent,
-                       gentity_t* turretEnemy,
-                       const turretStats_t* turretStats,
-                       const vehWeaponInfo_t* vehWeapon,
-                       const int turretNum, const int curMuzzle, vec3_t desiredAngles)
+                      const  gentity_t* turret_enemy,
+                       const turretStats_t* turret_stats,
+                       const vehWeaponInfo_t* veh_weapon,
+                       const int turret_num, const int cur_muzzle, vec3_t desired_angles)
 //-----------------------------------------------------
 {
-	vec3_t curAngles, addAngles, newAngles;
-	float aimCorrect = qfalse;
+	vec3_t cur_angles, add_angles, new_angles;
+	float aim_correct = qfalse;
 
-	WP_CalcVehMuzzle(parent, curMuzzle);
+	WP_CalcVehMuzzle(parent, cur_muzzle);
 	//get the current absolute angles of the turret right now
-	vectoangles(p_veh->m_vMuzzleDir[curMuzzle], curAngles);
+	vectoangles(p_veh->m_vMuzzleDir[cur_muzzle], cur_angles);
 	//subtract out the vehicle's angles to get the relative alignment
-	AnglesSubtract(curAngles, p_veh->m_vOrientation, curAngles);
+	AnglesSubtract(cur_angles, p_veh->m_vOrientation, cur_angles);
 
-	if (turretEnemy)
+	if (turret_enemy)
 	{
-		aimCorrect = qtrue;
+		aim_correct = qtrue;
 		// ...then we'll calculate what new aim adjustments we should attempt to make this frame
 		// Aim at enemy
-		VEH_TurretAnglesToEnemy(p_veh, curMuzzle, vehWeapon->fSpeed, turretEnemy, turretStats->bAILead, desiredAngles);
+		VEH_TurretAnglesToEnemy(p_veh, cur_muzzle, veh_weapon->fSpeed, turret_enemy, turret_stats->bAILead, desired_angles);
 	}
 	//subtract out the vehicle's angles to get the relative desired alignment
-	AnglesSubtract(desiredAngles, p_veh->m_vOrientation, desiredAngles);
+	AnglesSubtract(desired_angles, p_veh->m_vOrientation, desired_angles);
 	//Now clamp the desired relative angles
 	//clamp yaw
-	desiredAngles[YAW] = AngleNormalize180(desiredAngles[YAW]);
-	if (p_veh->m_pVehicleInfo->turret[turretNum].yawClampLeft
-		&& desiredAngles[YAW] > p_veh->m_pVehicleInfo->turret[turretNum].yawClampLeft)
+	desired_angles[YAW] = AngleNormalize180(desired_angles[YAW]);
+	if (p_veh->m_pVehicleInfo->turret[turret_num].yawClampLeft
+		&& desired_angles[YAW] > p_veh->m_pVehicleInfo->turret[turret_num].yawClampLeft)
 	{
-		aimCorrect = qfalse;
-		desiredAngles[YAW] = p_veh->m_pVehicleInfo->turret[turretNum].yawClampLeft;
+		aim_correct = qfalse;
+		desired_angles[YAW] = p_veh->m_pVehicleInfo->turret[turret_num].yawClampLeft;
 	}
-	if (p_veh->m_pVehicleInfo->turret[turretNum].yawClampRight
-		&& desiredAngles[YAW] < p_veh->m_pVehicleInfo->turret[turretNum].yawClampRight)
+	if (p_veh->m_pVehicleInfo->turret[turret_num].yawClampRight
+		&& desired_angles[YAW] < p_veh->m_pVehicleInfo->turret[turret_num].yawClampRight)
 	{
-		aimCorrect = qfalse;
-		desiredAngles[YAW] = p_veh->m_pVehicleInfo->turret[turretNum].yawClampRight;
+		aim_correct = qfalse;
+		desired_angles[YAW] = p_veh->m_pVehicleInfo->turret[turret_num].yawClampRight;
 	}
 	//clamp pitch
-	desiredAngles[PITCH] = AngleNormalize180(desiredAngles[PITCH]);
-	if (p_veh->m_pVehicleInfo->turret[turretNum].pitchClampDown
-		&& desiredAngles[PITCH] > p_veh->m_pVehicleInfo->turret[turretNum].pitchClampDown)
+	desired_angles[PITCH] = AngleNormalize180(desired_angles[PITCH]);
+	if (p_veh->m_pVehicleInfo->turret[turret_num].pitchClampDown
+		&& desired_angles[PITCH] > p_veh->m_pVehicleInfo->turret[turret_num].pitchClampDown)
 	{
-		aimCorrect = qfalse;
-		desiredAngles[PITCH] = p_veh->m_pVehicleInfo->turret[turretNum].pitchClampDown;
+		aim_correct = qfalse;
+		desired_angles[PITCH] = p_veh->m_pVehicleInfo->turret[turret_num].pitchClampDown;
 	}
-	if (p_veh->m_pVehicleInfo->turret[turretNum].pitchClampUp
-		&& desiredAngles[PITCH] < p_veh->m_pVehicleInfo->turret[turretNum].pitchClampUp)
+	if (p_veh->m_pVehicleInfo->turret[turret_num].pitchClampUp
+		&& desired_angles[PITCH] < p_veh->m_pVehicleInfo->turret[turret_num].pitchClampUp)
 	{
-		aimCorrect = qfalse;
-		desiredAngles[PITCH] = p_veh->m_pVehicleInfo->turret[turretNum].pitchClampUp;
+		aim_correct = qfalse;
+		desired_angles[PITCH] = p_veh->m_pVehicleInfo->turret[turret_num].pitchClampUp;
 	}
 	//Now get the offset we want from our current relative angles
-	AnglesSubtract(desiredAngles, curAngles, addAngles);
+	AnglesSubtract(desired_angles, cur_angles, add_angles);
 	//Now cap the addAngles for our fTurnSpeed
-	if (addAngles[PITCH] > turretStats->fTurnSpeed)
+	if (add_angles[PITCH] > turret_stats->fTurnSpeed)
 	{
 		//aimCorrect = qfalse;//???
-		addAngles[PITCH] = turretStats->fTurnSpeed;
+		add_angles[PITCH] = turret_stats->fTurnSpeed;
 	}
-	else if (addAngles[PITCH] < -turretStats->fTurnSpeed)
+	else if (add_angles[PITCH] < -turret_stats->fTurnSpeed)
 	{
 		//aimCorrect = qfalse;//???
-		addAngles[PITCH] = -turretStats->fTurnSpeed;
+		add_angles[PITCH] = -turret_stats->fTurnSpeed;
 	}
-	if (addAngles[YAW] > turretStats->fTurnSpeed)
+	if (add_angles[YAW] > turret_stats->fTurnSpeed)
 	{
 		//aimCorrect = qfalse;//???
-		addAngles[YAW] = turretStats->fTurnSpeed;
+		add_angles[YAW] = turret_stats->fTurnSpeed;
 	}
-	else if (addAngles[YAW] < -turretStats->fTurnSpeed)
+	else if (add_angles[YAW] < -turret_stats->fTurnSpeed)
 	{
 		//aimCorrect = qfalse;//???
-		addAngles[YAW] = -turretStats->fTurnSpeed;
+		add_angles[YAW] = -turret_stats->fTurnSpeed;
 	}
 	//Now add the additional angles back in to our current relative angles
 	//FIXME: add some AI aim error randomness...?
-	newAngles[PITCH] = AngleNormalize180(curAngles[PITCH] + addAngles[PITCH]);
-	newAngles[YAW] = AngleNormalize180(curAngles[YAW] + addAngles[YAW]);
+	new_angles[PITCH] = AngleNormalize180(cur_angles[PITCH] + add_angles[PITCH]);
+	new_angles[YAW] = AngleNormalize180(cur_angles[YAW] + add_angles[YAW]);
 	//Now set the bone angles to the new angles
 	//set yaw
-	if (turretStats->yawBone)
+	if (turret_stats->yawBone)
 	{
 		vec3_t yawAngles;
 		VectorClear(yawAngles);
-		yawAngles[turretStats->yawAxis] = newAngles[YAW];
-		NPC_SetBoneAngles(parent, turretStats->yawBone, yawAngles);
+		yawAngles[turret_stats->yawAxis] = new_angles[YAW];
+		NPC_SetBoneAngles(parent, turret_stats->yawBone, yawAngles);
 	}
 	//set pitch
-	if (turretStats->pitchBone)
+	if (turret_stats->pitchBone)
 	{
 		vec3_t pitchAngles;
 		VectorClear(pitchAngles);
-		pitchAngles[turretStats->pitchAxis] = newAngles[PITCH];
-		NPC_SetBoneAngles(parent, turretStats->pitchBone, pitchAngles);
+		pitchAngles[turret_stats->pitchAxis] = new_angles[PITCH];
+		NPC_SetBoneAngles(parent, turret_stats->pitchBone, pitchAngles);
 	}
 	//force muzzle to recalc next check
-	p_veh->m_iMuzzleTime[curMuzzle] = 0;
+	p_veh->m_iMuzzleTime[cur_muzzle] = 0;
 
-	return aimCorrect;
+	return aim_correct;
 }
 
 //-----------------------------------------------------

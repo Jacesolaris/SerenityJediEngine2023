@@ -93,7 +93,7 @@ using wristWeapon_t = struct wristWeapon_s
 	int theMissile;
 	int dummyForcePower;
 	int whichWeapon;
-	qboolean altFire;
+	qboolean alt_fire;
 	int maxShots;
 	int animTimer;
 	int animDelay;

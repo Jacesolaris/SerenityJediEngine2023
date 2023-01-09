@@ -3031,7 +3031,7 @@ qboolean wp_saber_apply_damage(gentity_t* ent, const float base_damage, const in
 									NPC_class == CLASS_GALAKMECH)
 								{
 									//if it's the player or a saber-user, don't kill them with this blow
-									//dFlags |= DAMAGE_NO_KILL;
+									//d_flags |= DAMAGE_NO_KILL;
 									G_SaberBounce(ent, victim);
 
 									if (victim->health > 20)

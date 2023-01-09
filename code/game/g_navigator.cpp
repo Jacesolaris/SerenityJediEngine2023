@@ -3621,9 +3621,9 @@ unsigned int NAV::ClassifyEntSize(gentity_t* ent)
 {
 	if (ent)
 	{
-		const float minRadius = Min(ent->mins[0], ent->mins[1]);
-		const float maxRadius = Max(ent->maxs[0], ent->maxs[1]);
-		const float radius = Max(fabsf(minRadius), maxRadius);
+		const float min_radius = Min(ent->mins[0], ent->mins[1]);
+		const float max_radius = Max(ent->maxs[0], ent->maxs[1]);
+		const float radius = Max(fabsf(min_radius), max_radius);
 		const float height = ent->maxs[2];
 
 		if (radius > SC_MEDIUM_RADIUS || height > SC_MEDIUM_HEIGHT)

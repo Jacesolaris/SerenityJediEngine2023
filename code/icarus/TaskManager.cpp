@@ -1164,22 +1164,20 @@ Print
 -------------------------
 */
 
-int CTaskManager::Print(const CTask* task, CIcarus* icarus)
+int CTaskManager::Print(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
-	char* sVal;
-	int memberNum = 0;
+	char* s_val;
+	int member_num = 0;
 
-	ICARUS_VALIDATE(Get(m_ownerID, block, memberNum, &sVal, icarus));
+	ICARUS_VALIDATE(Get(m_ownerID, block, member_num, &s_val, icarus));
 
-	icarus->GetGame()->DebugPrint(IGameInterface::WL_DEBUG, "%4d print(\"%s\"); [%d]", m_ownerID, sVal,
+	icarus->GetGame()->DebugPrint(IGameInterface::WL_DEBUG, "%4d print(\"%s\"); [%d]", m_ownerID, s_val,
 	                              task->GetTimeStamp());
 
-	icarus->GetGame()->CenterPrint(sVal);
+	icarus->GetGame()->CenterPrint(s_val);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1188,7 +1186,7 @@ Sound
 -------------------------
 */
 
-int CTaskManager::Sound(const CTask* task, CIcarus* icarus)
+int CTaskManager::Sound(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char *sVal, *sVal2;
@@ -1202,7 +1200,7 @@ int CTaskManager::Sound(const CTask* task, CIcarus* icarus)
 
 	//Only instantly complete if the user has requested it
 	if (icarus->GetGame()->PlayIcarusSound(task->GetGUID(), m_ownerID, sVal2, sVal))
-		Completed(task->GetGUID());
+		return Completed(task->GetGUID());
 
 	return TASK_OK;
 }
@@ -1232,7 +1230,6 @@ int CTaskManager::Rotate(const CTask* task, CIcarus* icarus) const
 
 		if (icarus->GetGame()->GetTag(m_ownerID, tagName, static_cast<int>(tagLookup), vector) == false)
 		{
-			//TODO: Emit warning
 			icarus->GetGame()->DebugPrint(IGameInterface::WL_ERROR, "Unable to find tag \"%s\"!\n", tagName);
 			assert(0);
 			return TASK_FAILED;
@@ -1260,7 +1257,7 @@ Remove
 -------------------------
 */
 
-int CTaskManager::Remove(const CTask* task, CIcarus* icarus)
+int CTaskManager::Remove(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1272,9 +1269,7 @@ int CTaskManager::Remove(const CTask* task, CIcarus* icarus)
 	                              task->GetTimeStamp());
 	icarus->GetGame()->Remove(m_ownerID, sVal);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1283,7 +1278,7 @@ Camera
 -------------------------
 */
 
-int CTaskManager::Camera(const CTask* task, CIcarus* icarus)
+int CTaskManager::Camera(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	vec3_t vector, vector2;
@@ -1422,9 +1417,7 @@ int CTaskManager::Camera(const CTask* task, CIcarus* icarus)
 	default: ;
 	}
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1472,7 +1465,7 @@ Kill
 -------------------------
 */
 
-int CTaskManager::Kill(const CTask* task, CIcarus* icarus)
+int CTaskManager::Kill(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1484,9 +1477,7 @@ int CTaskManager::Kill(const CTask* task, CIcarus* icarus)
 	                              task->GetTimeStamp());
 	icarus->GetGame()->Kill(m_ownerID, sVal);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1517,7 +1508,7 @@ Use
 -------------------------
 */
 
-int CTaskManager::Use(const CTask* task, CIcarus* icarus)
+int CTaskManager::Use(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1529,9 +1520,7 @@ int CTaskManager::Use(const CTask* task, CIcarus* icarus)
 	                              task->GetTimeStamp());
 	icarus->GetGame()->Use(m_ownerID, sVal);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1540,7 +1529,7 @@ DeclareVariable
 -------------------------
 */
 
-int CTaskManager::DeclareVariable(const CTask* task, CIcarus* icarus)
+int CTaskManager::DeclareVariable(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1554,9 +1543,7 @@ int CTaskManager::DeclareVariable(const CTask* task, CIcarus* icarus)
 	                              static_cast<int>(fVal), sVal, task->GetTimeStamp());
 	icarus->GetGame()->DeclareVariable(static_cast<int>(fVal), sVal);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1565,7 +1552,7 @@ FreeVariable
 -------------------------
 */
 
-int CTaskManager::FreeVariable(const CTask* task, CIcarus* icarus)
+int CTaskManager::FreeVariable(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1577,9 +1564,7 @@ int CTaskManager::FreeVariable(const CTask* task, CIcarus* icarus)
 	                              task->GetTimeStamp());
 	icarus->GetGame()->FreeVariable(sVal);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*
@@ -1588,7 +1573,7 @@ Signal
 -------------------------
 */
 
-int CTaskManager::Signal(const CTask* task, CIcarus* icarus)
+int CTaskManager::Signal(const CTask* task, CIcarus* icarus) const
 {
 	CBlock* block = task->GetBlock();
 	char* sVal;
@@ -1600,9 +1585,7 @@ int CTaskManager::Signal(const CTask* task, CIcarus* icarus)
 	                              task->GetTimeStamp());
 	icarus->Signal(sVal);
 
-	Completed(task->GetGUID());
-
-	return TASK_OK;
+	return Completed(task->GetGUID());
 }
 
 /*

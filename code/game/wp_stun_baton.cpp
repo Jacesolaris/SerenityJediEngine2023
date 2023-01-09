@@ -42,7 +42,7 @@ void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 		VectorCopy(muzzle, start);
 		WP_TraceSetStart(ent, start);
 
-		VectorMA(start, STUN_BATON_RANGE, forwardVec, end);
+		VectorMA(start, STUN_BATON_RANGE, forward_vec, end);
 
 		VectorSet(maxs, 5, 5, 5);
 		VectorScale(maxs, -1, mins);
@@ -62,13 +62,13 @@ void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 			G_PlayEffect("stunBaton/flesh_impact", tr.endpos, tr.plane.normal);
 			tr_ent->client->ps.powerups[PW_SHOCKED] = level.time + 1500;
 
-			G_Damage(tr_ent, ent, ent, forwardVec, tr.endpos, weaponData[WP_STUN_BATON].damage, DAMAGE_NO_KNOCKBACK,
+			G_Damage(tr_ent, ent, ent, forward_vec, tr.endpos, weaponData[WP_STUN_BATON].damage, DAMAGE_NO_KNOCKBACK,
 			         MOD_MELEE);
 		}
 		else if (tr_ent->svFlags & SVF_GLASS_BRUSH || tr_ent->svFlags & SVF_BBRUSH && tr_ent->material == 12)
 		// material grate...we are breaking a grate!
 		{
-			G_Damage(tr_ent, ent, ent, forwardVec, tr.endpos, 999, DAMAGE_NO_KNOCKBACK, MOD_MELEE); // smash that puppy
+			G_Damage(tr_ent, ent, ent, forward_vec, tr.endpos, 999, DAMAGE_NO_KNOCKBACK, MOD_MELEE); // smash that puppy
 		}
 	}
 }

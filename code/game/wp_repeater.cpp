@@ -100,8 +100,8 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 	}
 	else
 	{
-		WP_MissileTargetHint(ent, start, forwardVec);
-		missile = create_missile(start, forwardVec, REPEATER_ALT_VELOCITY, 10000, ent, qtrue);
+		WP_MissileTargetHint(ent, start, forward_vec);
+		missile = create_missile(start, forward_vec, REPEATER_ALT_VELOCITY, 10000, ent, qtrue);
 	}
 
 	missile->classname = "repeater_alt_proj";
@@ -148,7 +148,7 @@ void WP_FireRepeater(gentity_t* ent, const qboolean alt_fire)
 {
 	vec3_t angs;
 
-	vectoangles(forwardVec, angs);
+	vectoangles(forward_vec, angs);
 
 	if (alt_fire)
 	{

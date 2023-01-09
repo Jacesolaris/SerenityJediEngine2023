@@ -1633,7 +1633,7 @@ extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_
 static void AnimateVehicle(Vehicle_t* p_veh)
 {
 	int anim = -1;
-	int i_flags = SETANIM_FLAG_NORMAL;
+	constexpr int i_flags = SETANIM_FLAG_NORMAL;
 #ifdef _JK2MP
 	playerState_t* parent_ps = p_veh->m_pParentEntity->playerState;
 #else

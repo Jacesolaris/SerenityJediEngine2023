@@ -875,7 +875,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	const int old_weapon = self->s.weapon;
 
 	self->s.weapon = missileStates[whichMissile].whichWeapon;
-	const qboolean alt_fire = missileStates[whichMissile].altFire;
+	const qboolean alt_fire = missileStates[whichMissile].alt_fire;
 	if (missileStates[whichMissile].fullyCharged)
 	{
 		self->client->ps.weaponChargeTime = 0;

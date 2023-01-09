@@ -112,7 +112,7 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 {
 	vec3_t dir, angs;
 
-	vectoangles(forwardVec, angs);
+	vectoangles(forward_vec, angs);
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -209,11 +209,11 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
+void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire)
 //---------------------------------------------------------
 {
 	int velocity = CLONECOMMANDO_VELOCITY;
-	int damage = altFire ? weaponData[WP_WRIST_BLASTER].altDamage : weaponData[WP_WRIST_BLASTER].damage;
+	int damage = alt_fire ? weaponData[WP_WRIST_BLASTER].altDamage : weaponData[WP_WRIST_BLASTER].damage;
 
 	if (ent && ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -242,7 +242,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 
 	WP_MissileTargetHint(ent, start, dir);
 
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
 
 	missile->classname = "clone_proj";
 	missile->s.weapon = WP_WRIST_BLASTER;
@@ -266,7 +266,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 
 	missile->damage = damage;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
-	if (altFire)
+	if (alt_fire)
 	{
 		missile->methodOfDeath = MOD_BLASTER_ALT;
 	}
@@ -286,7 +286,7 @@ void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 {
 	vec3_t dir, angs;
 
-	vectoangles(forwardVec, angs);
+	vectoangles(forward_vec, angs);
 
 	if (ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{

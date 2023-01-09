@@ -175,44 +175,44 @@ void laserTrapThink(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void CreateLaserTrap(gentity_t* laserTrap, vec3_t start, gentity_t* owner)
+void CreateLaserTrap(gentity_t* laser_trap, vec3_t start, gentity_t* owner)
 //---------------------------------------------------------
 {
-	if (!VALIDSTRING(laserTrap->classname))
+	if (!VALIDSTRING(laser_trap->classname))
 	{
 		// since we may be coming from a map placed trip mine, we don't want to override that class name....
 		//	That would be bad because the player drop code tries to limit number of placed items...so it would have removed map placed ones as well.
-		laserTrap->classname = "tripmine";
+		laser_trap->classname = "tripmine";
 	}
 
-	laserTrap->splashDamage = weaponData[WP_TRIP_MINE].splashDamage;
-	laserTrap->splashRadius = weaponData[WP_TRIP_MINE].splashRadius;
-	laserTrap->damage = weaponData[WP_TRIP_MINE].damage;
-	laserTrap->methodOfDeath = MOD_LASERTRIP;
-	laserTrap->splashMethodOfDeath = MOD_LASERTRIP; //? SPLASH;
+	laser_trap->splashDamage = weaponData[WP_TRIP_MINE].splashDamage;
+	laser_trap->splashRadius = weaponData[WP_TRIP_MINE].splashRadius;
+	laser_trap->damage = weaponData[WP_TRIP_MINE].damage;
+	laser_trap->methodOfDeath = MOD_LASERTRIP;
+	laser_trap->splashMethodOfDeath = MOD_LASERTRIP; //? SPLASH;
 
-	laserTrap->s.eType = ET_MISSILE;
-	laserTrap->svFlags = SVF_USE_CURRENT_ORIGIN;
-	laserTrap->s.weapon = WP_TRIP_MINE;
+	laser_trap->s.eType = ET_MISSILE;
+	laser_trap->svFlags = SVF_USE_CURRENT_ORIGIN;
+	laser_trap->s.weapon = WP_TRIP_MINE;
 
-	laserTrap->owner = owner;
+	laser_trap->owner = owner;
 	//	VectorSet( laserTrap->mins, -LT_SIZE, -LT_SIZE, -LT_SIZE );
 	//	VectorSet( laserTrap->maxs, LT_SIZE, LT_SIZE, LT_SIZE );
-	laserTrap->clipmask = CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_SHOTCLIP; //MASK_SHOT;
+	laser_trap->clipmask = CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_SHOTCLIP; //MASK_SHOT;
 
-	laserTrap->s.pos.trTime = level.time; // move a bit on the very first frame
-	VectorCopy(start, laserTrap->s.pos.trBase);
-	VectorCopy(start, laserTrap->currentOrigin);
+	laser_trap->s.pos.trTime = level.time; // move a bit on the very first frame
+	VectorCopy(start, laser_trap->s.pos.trBase);
+	VectorCopy(start, laser_trap->currentOrigin);
 
-	VectorCopy(start, laserTrap->pos2); // ?? wtf ?
+	VectorCopy(start, laser_trap->pos2); // ?? wtf ?
 
-	laserTrap->fxID = G_EffectIndex("tripMine/explosion");
+	laser_trap->fxID = G_EffectIndex("tripMine/explosion");
 
-	laserTrap->e_TouchFunc = touchF_touchLaserTrap;
+	laser_trap->e_TouchFunc = touchF_touchLaserTrap;
 
-	laserTrap->s.radius = 60;
-	VectorSet(laserTrap->s.modelScale, 1.0f, 1.0f, 1.0f);
-	gi.G2API_InitGhoul2Model(laserTrap->ghoul2, weaponData[WP_TRIP_MINE].missileMdl,
+	laser_trap->s.radius = 60;
+	VectorSet(laser_trap->s.modelScale, 1.0f, 1.0f, 1.0f);
+	gi.G2API_InitGhoul2Model(laser_trap->ghoul2, weaponData[WP_TRIP_MINE].missileMdl,
 	                         G_ModelIndex(weaponData[WP_TRIP_MINE].missileMdl),
 	                         NULL_HANDLE, NULL_HANDLE, 0, 0);
 }
@@ -299,7 +299,7 @@ void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
 
 		laserTrap->s.eFlags |= EF_MISSILE_STICK;
 		laserTrap->s.pos.trType = TR_GRAVITY;
-		VectorScale(forwardVec, LT_VELOCITY, laserTrap->s.pos.trDelta);
+		VectorScale(forward_vec, LT_VELOCITY, laserTrap->s.pos.trDelta);
 
 		if (alt_fire)
 		{

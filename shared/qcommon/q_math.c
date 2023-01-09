@@ -382,10 +382,10 @@ float Q_acos(const float c) {
 	const float angle = acosf(c);
 
 	if (angle > M_PI) {
-		return (float)M_PI;
+		return M_PI;
 	}
 	if (angle < -M_PI) {
-		return (float)M_PI;
+		return M_PI;
 	}
 	return angle;
 }
@@ -395,10 +395,10 @@ float Q_asin(const float c)
 	const float angle = asinf(c);
 
 	if (angle > M_PI) {
-		return (float)M_PI;
+		return M_PI;
 	}
 	if (angle < -M_PI) {
-		return (float)M_PI;
+		return M_PI;
 	}
 	return angle;
 }
@@ -414,7 +414,7 @@ float Q_powf(const float x, int y)
 qboolean Q_isnan(float f)
 {
 #ifdef _MSC_VER
-	return (qboolean)(_isnan(f) != 0);
+	return _isnan(f) != 0;
 #else
 	return (qboolean)(isnan(f) != 0);
 #endif
@@ -1316,7 +1316,7 @@ float DotProduct(const vec3_t vec1, const vec3_t vec2) {
 
 qboolean VectorCompare(const vec3_t vec1, const vec3_t vec2)
 {
-	return (qboolean)(vec1[0] == vec2[0] && vec1[1] == vec2[1] && vec1[2] == vec2[2]);
+	return vec1[0] == vec2[0] && vec1[1] == vec2[1] && vec1[2] == vec2[2];
 }
 
 qboolean VectorCompare2(const vec3_t v1, const vec3_t v2)

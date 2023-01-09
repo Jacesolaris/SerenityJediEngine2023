@@ -78,7 +78,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 		count--;
 	}
 
-	WP_MissileTargetHint(ent, start, forwardVec);
+	WP_MissileTargetHint(ent, start, forward_vec);
 
 	for (int i = 0; i < count; i++)
 	{
@@ -86,7 +86,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 		// create a range of different velocities
 		const float vel = BOWCASTER_VELOCITY * (Q_flrand(-1.0f, 1.0f) * BOWCASTER_VEL_RANGE + 1.0f);
 
-		vectoangles(forwardVec, angs);
+		vectoangles(forward_vec, angs);
 
 		if (!(ent->client->ps.forcePowersActive & 1 << FP_SEE) || ent->client->ps.forcePowerLevel[FP_SEE] <
 			FORCE_LEVEL_2)
@@ -171,9 +171,9 @@ static void WP_BowcasterAltFire(gentity_t* ent)
 	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
-	WP_MissileTargetHint(ent, start, forwardVec);
+	WP_MissileTargetHint(ent, start, forward_vec);
 
-	gentity_t* missile = create_missile(start, forwardVec, BOWCASTER_VELOCITY, 10000, ent, qtrue);
+	gentity_t* missile = create_missile(start, forward_vec, BOWCASTER_VELOCITY, 10000, ent, qtrue);
 
 	missile->classname = "bowcaster_alt_proj";
 	missile->s.weapon = WP_BOWCASTER;

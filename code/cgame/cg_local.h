@@ -162,7 +162,7 @@ struct centity_s
 	int muzzleFlashTime; // move to playerEntity?
 	int muzzleFlashTimeL; // move to playerEntity?
 	int muzzleFlashTimeR; // move to playerEntity?
-	qboolean altFire; // move to playerEntity?
+	qboolean alt_fire; // move to playerEntity?
 
 	int previousEvent;
 	//	int				teleportFlag;
@@ -1236,7 +1236,7 @@ void FX_NoghriShotProjectileThink(centity_t* cent, const weaponInfo_s* weapon);
 void FX_NoghriShotWeaponHitWall(vec3_t origin, vec3_t normal);
 void FX_NoghriShotWeaponHitPlayer(gentity_t* hit, vec3_t origin, vec3_t normal, qboolean humanoid);
 
-void CG_BounceEffect(const int weapon, vec3_t origin, vec3_t normal);
+void CG_BounceEffect(int weapon, vec3_t origin, vec3_t normal);
 void CG_MissileStick(const centity_t* cent, int weapon, vec3_t origin);
 
 void cg_missile_hit_player(const centity_t* cent, int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);

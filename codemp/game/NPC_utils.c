@@ -145,7 +145,7 @@ void CalcEntitySpot(const gentity_t* ent, const spot_t spot, vec3_t point)
 		{
 			AngleVectors(ent->client->ps.viewangles, forward, right, up);
 		}
-		CalcMuzzlePoint((gentity_t*)ent, forward, right, up, point);
+		CalcMuzzlePoint((gentity_t*)ent, forward, right, point);
 	//NOTE: automatically takes leaning into account!
 		break;
 
@@ -782,7 +782,7 @@ extern stringID_table_t BSETTable[];
 
 qboolean G_ActivateBehavior(gentity_t* self, const int bset)
 {
-	bState_t bSID = -1;
+	bState_t b_sid = -1;
 
 	if (!self)
 	{
@@ -798,13 +798,13 @@ qboolean G_ActivateBehavior(gentity_t* self, const int bset)
 
 	if (self->NPC)
 	{
-		bSID = (bState_t)GetIDForString(BSTable, bs_name);
+		b_sid = (bState_t)GetIDForString(BSTable, bs_name);
 	}
 
-	if (bSID != (bState_t) - 1)
+	if (b_sid != (bState_t) - 1)
 	{
 		self->NPC->tempBehavior = BS_DEFAULT;
-		self->NPC->behaviorState = bSID;
+		self->NPC->behaviorState = b_sid;
 	}
 	else
 	{
@@ -831,26 +831,26 @@ qboolean G_ActivateBehavior(gentity_t* self, const int bset)
 */
 
 //rww - special system for sync'ing bone angles between client and server.
-void NPC_SetBoneAngles(gentity_t* ent, char* bone, vec3_t angles)
+void NPC_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 {
 	int* thebone = &ent->s.boneIndex1;
-	int* firstFree = NULL;
+	int* first_free = NULL;
 	int i = 0;
-	const int boneIndex = G_BoneIndex(bone);
-	vec3_t* boneVector = &ent->s.boneAngles1;
-	vec3_t* freeBoneVec = NULL;
+	const int bone_index = G_BoneIndex(bone);
+	vec3_t* bone_vector = &ent->s.boneAngles1;
+	vec3_t* free_bone_vec = NULL;
 
 	while (thebone)
 	{
-		if (!*thebone && !firstFree)
+		if (!*thebone && !first_free)
 		{
 			//if the value is 0 then this index is clear, we can use it if we don't find the bone we want already existing.
-			firstFree = thebone;
-			freeBoneVec = boneVector;
+			first_free = thebone;
+			free_bone_vec = bone_vector;
 		}
 		else if (*thebone)
 		{
-			if (*thebone == boneIndex)
+			if (*thebone == bone_index)
 			{
 				//this is it
 				break;
@@ -861,19 +861,19 @@ void NPC_SetBoneAngles(gentity_t* ent, char* bone, vec3_t angles)
 		{
 		case 0:
 			thebone = &ent->s.boneIndex2;
-			boneVector = &ent->s.boneAngles2;
+			bone_vector = &ent->s.boneAngles2;
 			break;
 		case 1:
 			thebone = &ent->s.boneIndex3;
-			boneVector = &ent->s.boneAngles3;
+			bone_vector = &ent->s.boneAngles3;
 			break;
 		case 2:
 			thebone = &ent->s.boneIndex4;
-			boneVector = &ent->s.boneAngles4;
+			bone_vector = &ent->s.boneAngles4;
 			break;
 		default:
 			thebone = NULL;
-			boneVector = NULL;
+			bone_vector = NULL;
 			break;
 		}
 
@@ -883,24 +883,24 @@ void NPC_SetBoneAngles(gentity_t* ent, char* bone, vec3_t angles)
 	if (!thebone)
 	{
 		//didn't find it, create it
-		if (!firstFree)
+		if (!first_free)
 		{
 			//no free bones.. can't do a thing then.
 			Com_Printf("WARNING: NPC has no free bone indexes\n");
 			return;
 		}
 
-		thebone = firstFree;
+		thebone = first_free;
 
-		*thebone = boneIndex;
-		boneVector = freeBoneVec;
+		*thebone = bone_index;
+		bone_vector = free_bone_vec;
 	}
 
 	//If we got here then we have a vector and an index.
 
 	//Copy the angles over the vector in the entitystate, so we can use the corresponding index
 	//to set the bone angles on the client.
-	VectorCopy(angles, *boneVector);
+	VectorCopy(angles, *bone_vector);
 
 	//Now set the angles on our server instance if we have one.
 
@@ -968,7 +968,7 @@ void NPC_SetSurfaceOnOff(gentity_t* ent, const char* surfaceName, const int surf
 }
 
 //rww - cheap check to see if an armed client is looking in our general direction
-qboolean NPC_SomeoneLookingAtMe(gentity_t* ent)
+qboolean NPC_SomeoneLookingAtMe(const gentity_t* ent)
 {
 	int i = 0;
 
@@ -1538,7 +1538,7 @@ void G_CheckCharmed(gentity_t* self)
 void G_GetBoltPosition(gentity_t* self, const int bolt_index, vec3_t pos, const int model_index)
 {
 	mdxaBone_t bolt_matrix;
-	vec3_t result, angles;
+	vec3_t angles;
 
 	if (!self || !self->inuse)
 	{
@@ -1566,6 +1566,7 @@ void G_GetBoltPosition(gentity_t* self, const int bolt_index, vec3_t pos, const 
 	                          NULL, self->modelScale);
 	if (pos)
 	{
+		vec3_t result;
 		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, result);
 		VectorCopy(result, pos);
 	}

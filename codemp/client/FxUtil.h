@@ -79,15 +79,15 @@ CCylinder* FX_AddCylinder(vec3_t start, vec3_t normal,
                           qboolean trace_end = qfalse);
 
 CEmitter* FX_AddEmitter(vec3_t org, vec3_t vel, vec3_t accel,
-                        const float size1, const float size2, const float size_parm,
-                        const float alpha1, const float alpha2, const float alpha_parm,
-                        vec3_t rgb1, vec3_t rgb2, const float rgb_parm,
+                        float size1, float size2, float size_parm,
+                        float alpha1, float alpha2, float alpha_parm,
+                        vec3_t rgb1, vec3_t rgb2, float rgb_parm,
                         vec3_t angs, vec3_t delta_angs,
-                        vec3_t min, vec3_t max, const float elasticity,
-                        const int death_id, const int impact_id, const int emitter_id,
-                        const float density, const float variance,
-                        const int kill_time, const qhandle_t model, const int flags,
-                        const EMatImpactEffect mat_impact_fx = MATIMPACTFX_NONE, const int fx_parm = -1,
+                        vec3_t min, vec3_t max, float elasticity,
+                        int death_id, int impact_id, int emitter_id,
+                        float density, float variance,
+                        int kill_time, qhandle_t model, int flags,
+                        EMatImpactEffect mat_impact_fx = MATIMPACTFX_NONE, int fx_parm = -1,
                         const CGhoul2Info_v* ghoul2 = nullptr);
 
 CLight* FX_AddLight(vec3_t org, float size1, float size2, float size_parm,

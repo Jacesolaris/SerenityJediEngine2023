@@ -223,7 +223,7 @@ extern void CalcMuzzlePoint(gentity_t* ent, vec3_t forward, vec3_t right, vec3_t
 //g_combat
 extern void ExplodeDeath(gentity_t* self);
 extern void ExplodeDeath_Wait(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-                              int dFlags, int hit_loc);
+                              int d_flags, int hit_loc);
 extern void GoExplodeDeath(gentity_t* self, gentity_t* other, gentity_t* activator);
 extern float IdealDistance(gentity_t* self);
 

@@ -377,7 +377,7 @@ void NPC_ChoosePainAnimation(gentity_t* self, const gentity_t* other, vec3_t poi
 	}
 }
 
-extern void emplaced_gun_use(gentity_t* self, gentity_t* other, trace_t* trace);
+extern void emplaced_gun_use(gentity_t* self, gentity_t* other);
 
 gentity_t* G_CheckControlledTurretEnemy(const gentity_t* self, gentity_t* enemy, qboolean validate)
 {

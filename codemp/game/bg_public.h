@@ -1983,7 +1983,7 @@ qboolean BG_InDeathAnim(int anim);
 qboolean BG_InSaberLockOld(int anim);
 qboolean PM_InSaberLock(int anim);
 
-void pm_saber_start_trans_anim(const int client_num, const int saber_anim_level, const int weapon, const int anim, float* anim_speed, const int
+void pm_saber_start_trans_anim(int client_num, int saber_anim_level, int weapon, int anim, float* anim_speed, int
                                fatigued);
 
 void WP_ForcePowerDrain(playerState_t* ps, forcePowers_t force_power, int override_amt);
@@ -2016,7 +2016,7 @@ int BG_GetItemIndexByTag(int tag, int type);
 qboolean BG_IsUsingMediumWeap(const playerState_t* ps);
 qboolean BG_IsUsingHeavyWeap(const playerState_t* ps);
 
-qboolean BG_IsItemSelectable(const int item);
+qboolean BG_IsItemSelectable(int item);
 qboolean BG_IsLMSGametype(int gametype);
 
 qboolean BG_HasYsalamiri(int gametype, const playerState_t* ps);
@@ -2027,7 +2027,7 @@ void* BG_AllocUnaligned(int size);
 void* BG_TempAlloc(int size);
 void BG_TempFree(int size);
 char* BG_StringAlloc(const char* source);
-qboolean BG_OutOfMemory(void);
+qboolean BG_OutOfMemory();
 
 qboolean BG_IsWhiteSpace(char c);
 

@@ -2336,10 +2336,10 @@ qboolean G_FlyVehicleDestroySurface(gentity_t* veh, const int surface)
 	return qtrue;
 }
 
-void G_FlyVehicleSurfaceDestruction(gentity_t* veh, trace_t* trace, const int magnitude, const qboolean force)
+void G_FlyVehicleSurfaceDestruction(gentity_t* veh, const trace_t* trace, const int magnitude, const qboolean force)
 {
-	int deathPoint = -1;
-	qboolean alreadyRebroken = qfalse;
+	int death_point = -1;
+	qboolean already_rebroken = qfalse;
 
 	if (!veh->ghoul2 || !veh->m_pVehicle)
 	{
@@ -2347,66 +2347,66 @@ void G_FlyVehicleSurfaceDestruction(gentity_t* veh, trace_t* trace, const int ma
 		return;
 	}
 
-	int impactDir = G_FlyVehicleImpactDir(veh, trace);
+	int impact_dir = G_FlyVehicleImpactDir(veh, trace);
 
 anotherImpact:
-	if (impactDir == -1)
+	if (impact_dir == -1)
 	{
 		//not valid?
 		return;
 	}
 
-	veh->locationDamage[impactDir] += magnitude * 7;
+	veh->locationDamage[impact_dir] += magnitude * 7;
 
-	switch (impactDir)
+	switch (impact_dir)
 	{
 	case SHIPSURF_FRONT:
-		deathPoint = veh->m_pVehicle->m_pVehicleInfo->health_front;
+		death_point = veh->m_pVehicle->m_pVehicleInfo->health_front;
 		break;
 	case SHIPSURF_BACK:
-		deathPoint = veh->m_pVehicle->m_pVehicleInfo->health_back;
+		death_point = veh->m_pVehicle->m_pVehicleInfo->health_back;
 		break;
 	case SHIPSURF_RIGHT:
-		deathPoint = veh->m_pVehicle->m_pVehicleInfo->health_right;
+		death_point = veh->m_pVehicle->m_pVehicleInfo->health_right;
 		break;
 	case SHIPSURF_LEFT:
-		deathPoint = veh->m_pVehicle->m_pVehicleInfo->health_left;
+		death_point = veh->m_pVehicle->m_pVehicleInfo->health_left;
 		break;
 	default:
 		break;
 	}
 
-	if (deathPoint != -1)
+	if (death_point != -1)
 	{
 		//got a valid health value
-		if (force && veh->locationDamage[impactDir] < deathPoint)
+		if (force && veh->locationDamage[impact_dir] < death_point)
 		{
 			//force that surf to be destroyed
-			veh->locationDamage[impactDir] = deathPoint;
+			veh->locationDamage[impact_dir] = death_point;
 		}
-		if (veh->locationDamage[impactDir] >= deathPoint)
+		if (veh->locationDamage[impact_dir] >= death_point)
 		{
 			//do it
-			if (G_FlyVehicleDestroySurface(veh, impactDir))
+			if (G_FlyVehicleDestroySurface(veh, impact_dir))
 			{
 				//actually took off a surface
-				G_VehicleSetDamageLocFlags(veh, impactDir, deathPoint);
+				G_VehicleSetDamageLocFlags(veh, impact_dir, death_point);
 			}
 		}
 		else
 		{
-			G_VehicleSetDamageLocFlags(veh, impactDir, deathPoint);
+			G_VehicleSetDamageLocFlags(veh, impact_dir, death_point);
 		}
 	}
 
-	if (!alreadyRebroken)
+	if (!already_rebroken)
 	{
-		const int secondImpact = G_FlyVehicleImpactDir(veh, trace);
-		if (impactDir != secondImpact)
+		const int second_impact = G_FlyVehicleImpactDir(veh, trace);
+		if (impact_dir != second_impact)
 		{
 			//can break off another piece in this same impact.. but only break off up to 2 at once
-			alreadyRebroken = qtrue;
-			impactDir = secondImpact;
+			already_rebroken = qtrue;
+			impact_dir = second_impact;
 			goto anotherImpact;
 		}
 	}

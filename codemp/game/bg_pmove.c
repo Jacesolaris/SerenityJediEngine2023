@@ -3942,7 +3942,7 @@ void PM_GrabWallForJump(const int anim)
 	pm->ps->pm_flags |= PMF_STUCK_TO_WALL;
 }
 
-qboolean PM_CheckGrabWall(trace_t* trace)
+qboolean PM_CheckGrabWall(const trace_t* trace)
 {
 	if (!pm->ps)
 	{
@@ -11683,39 +11683,39 @@ extern void CG_GetVehicleCamPos(vec3_t camPos);
 #endif
 #define MAX_XHAIR_DIST_ACCURACY	20000.0f
 
-int BG_VehTraceFromCamPos(trace_t* camTrace, bgEntity_t* bgEnt, const vec3_t entOrg, const vec3_t shotStart,
-                          const vec3_t end, vec3_t newEnd, vec3_t shotDir, const float bestDist)
+int BG_VehTraceFromCamPos(trace_t* cam_trace, const bgEntity_t* bg_ent, const vec3_t ent_org, const vec3_t shot_start,
+                          const vec3_t end, vec3_t new_end, vec3_t shot_dir, const float best_dist)
 {
 	//NOTE: this MUST stay up to date with the method used in CG_ScanForCrosshairEntity (where it checks the doExtraVehTraceFromViewPos bool)
 	vec3_t viewDir2End, extraEnd, camPos;
 	float minAutoAimDist;
 
 #ifdef _GAME
-	WP_GetVehicleCamPos((gentity_t*)bgEnt, (gentity_t*)bgEnt->m_pVehicle->m_pPilot, camPos);
+	WP_GetVehicleCamPos((gentity_t*)bg_ent, (gentity_t*)bg_ent->m_pVehicle->m_pPilot, camPos);
 #else
 	CG_GetVehicleCamPos(camPos);
 #endif
 
-	minAutoAimDist = Distance(entOrg, camPos) + bgEnt->m_pVehicle->m_pVehicleInfo->length / 2.0f + 200.0f;
+	minAutoAimDist = Distance(ent_org, camPos) + bg_ent->m_pVehicle->m_pVehicleInfo->length / 2.0f + 200.0f;
 
-	VectorCopy(end, newEnd);
+	VectorCopy(end, new_end);
 	VectorSubtract(end, camPos, viewDir2End);
 	VectorNormalize(viewDir2End);
 	VectorMA(camPos, MAX_XHAIR_DIST_ACCURACY, viewDir2End, extraEnd);
 
-	pm->trace(camTrace, camPos, vec3_origin, vec3_origin, extraEnd, bgEnt->s.number, CONTENTS_SOLID | CONTENTS_BODY);
+	pm->trace(cam_trace, camPos, vec3_origin, vec3_origin, extraEnd, bg_ent->s.number, CONTENTS_SOLID | CONTENTS_BODY);
 
-	if (!camTrace->allsolid
-		&& !camTrace->startsolid
-		&& camTrace->fraction < 1.0f
-		&& camTrace->fraction * MAX_XHAIR_DIST_ACCURACY > minAutoAimDist
-		&& camTrace->fraction * MAX_XHAIR_DIST_ACCURACY - Distance(entOrg, camPos) < bestDist)
+	if (!cam_trace->allsolid
+		&& !cam_trace->startsolid
+		&& cam_trace->fraction < 1.0f
+		&& cam_trace->fraction * MAX_XHAIR_DIST_ACCURACY > minAutoAimDist
+		&& cam_trace->fraction * MAX_XHAIR_DIST_ACCURACY - Distance(ent_org, camPos) < best_dist)
 	{
 		//this trace hit *something* that's closer than the thing the main trace hit, so use this result instead
-		VectorCopy(camTrace->endpos, newEnd);
-		VectorSubtract(newEnd, shotStart, shotDir);
-		VectorNormalize(shotDir);
-		return camTrace->entity_num + 1;
+		VectorCopy(cam_trace->endpos, new_end);
+		VectorSubtract(new_end, shot_start, shot_dir);
+		VectorNormalize(shot_dir);
+		return cam_trace->entity_num + 1;
 	}
 	return 0;
 }
@@ -11832,7 +11832,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 //---------------------------------------
 {
 	qboolean charging = qfalse,
-	         altFire = qfalse;
+	         alt_fire = qfalse;
 
 	if (vehicleRocketLock)
 	{
@@ -11859,7 +11859,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 				}
 				if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 				{
-					altFire = qtrue;
+					alt_fire = qtrue;
 				}
 			}
 		}
@@ -11879,7 +11879,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 				if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 				{
 					charging = qtrue;
-					altFire = qtrue;
+					alt_fire = qtrue;
 				}
 			}
 			break;
@@ -11887,7 +11887,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 		case WP_CONCUSSION:
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
-				altFire = qtrue;
+				alt_fire = qtrue;
 			}
 			break;
 
@@ -11897,7 +11897,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
 				charging = qtrue;
-				altFire = qtrue;
+				alt_fire = qtrue;
 			}
 			break;
 
@@ -11918,7 +11918,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 			{
 				PM_RocketLock(2048, qfalse);
 				charging = qtrue;
-				altFire = qtrue;
+				alt_fire = qtrue;
 			}
 			break;
 
@@ -11927,7 +11927,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
-				altFire = qtrue; // override default of not being an alt-fire
+				alt_fire = qtrue; // override default of not being an alt-fire
 				charging = qtrue;
 			}
 			else if (pm->cmd.buttons & BUTTON_ATTACK)
@@ -11939,7 +11939,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 		case WP_DEMP2:
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
-				altFire = qtrue; // override default of not being an alt-fire
+				alt_fire = qtrue; // override default of not being an alt-fire
 				charging = qtrue;
 			}
 			break;
@@ -11954,12 +11954,12 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 					pm->cmd.upmove <= 0)
 				{
 					charging = qtrue;
-					altFire = qtrue;
+					alt_fire = qtrue;
 				}
 				else
 				{
 					charging = qfalse;
-					altFire = qfalse;
+					alt_fire = qfalse;
 				}
 			}
 
@@ -11968,7 +11968,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 			{
 				pm->ps->weaponstate = WEAPON_READY;
 				charging = qfalse;
-				altFire = qfalse;
+				alt_fire = qfalse;
 			}
 		default: ;
 		} // end switch
@@ -11978,7 +11978,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 	//	Note that we ALWAYS return if charging is set ( meaning the buttons are still down )
 	if (charging)
 	{
-		if (altFire)
+		if (alt_fire)
 		{
 			if (pm->ps->weaponstate != WEAPON_CHARGING_ALT)
 			{

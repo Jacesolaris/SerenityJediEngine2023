@@ -2007,7 +2007,7 @@ extern  char systemChat[256];
 void CG_AddLagometerFrameInfo(void);
 void CG_AddLagometerSnapshotInfo(const snapshot_t* snap);
 void CG_CenterPrint(const char* str, int y, int char_width);
-void CG_DrawHead(const float x, const float y, const float w, const float h, const int client_num);
+void CG_DrawHead(float x, float y, float w, float h, int client_num);
 void CG_DrawActive(stereoFrame_t stereo_view);
 void CG_DrawFlagModel(float x, float y, float w, float h, int team, qboolean force_2d);
 void CG_DrawTeamBackground(int x, int y, int w, int h, float alpha, int team);
@@ -2117,7 +2117,7 @@ void CG_RegisterItemVisuals(int item_num);
 
 void CG_FireWeapon(centity_t* cent, qboolean alt_fire);
 void cg_missile_hit_wall(int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire, int charge);
-void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qboolean alt_fire);
+void cg_missile_hit_player(int weapon, vec3_t origin, vec3_t dir, qboolean alt_fire);
 
 void CG_AddViewWeapon(playerState_t* ps);
 void cg_add_player_weaponduals(refEntity_t* parent, playerState_t* ps, centity_t* cent, vec3_t new_angles, qboolean third_person, qboolean leftweap);
@@ -2165,7 +2165,7 @@ void CG_ScorePlum(int client, vec3_t org, int score);
 void CG_GibPlayer(vec3_t player_origin);
 void CG_GibPlayerHeadshot(vec3_t player_origin);
 
-void CG_Chunks(const int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
+void CG_Chunks(int owner, vec3_t origin, const vec3_t mins, const vec3_t maxs,
                float speed, int num_chunks, material_t chunk_type, int custom_chunk, float base_scale);
 void CG_MiscModelExplosion(vec3_t mins, vec3_t maxs, int size, material_t chunk_type);
 

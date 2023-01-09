@@ -206,13 +206,13 @@ namespace ragl
 		using TNodeNeighbors = ratl::vector_vs<SNodeNeighbor, MAXNODENEIGHBORS>;
 		using TLinks = ratl::array_vs< TNodeNeighbors, MAXNODES>;
 
-		using TGraph = ragl::graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, MAXNODENEIGHBORS>;
+		using TGraph = graph_vs<TNODE, MAXNODES, TEDGE, MAXEDGES, MAXNODENEIGHBORS>;
 
 		////////////////////////////////////////////////////////////////////////////////////
 		// cells class
 		////////////////////////////////////////////////////////////////////////////////////
 		template <int NODESPERCELL, int CELLSX, int CELLSY>
-		class cells : public ratl::ratl_base
+		class cells : public ratl_base
 		{
 		public:
 			enum

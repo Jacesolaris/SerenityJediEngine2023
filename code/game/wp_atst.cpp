@@ -38,9 +38,9 @@ void WP_ATSTMainFire(gentity_t* ent)
 		vel *= 1.6f;
 	}
 
-	WP_MissileTargetHint(ent, muzzle, forwardVec);
+	WP_MissileTargetHint(ent, muzzle, forward_vec);
 
-	gentity_t* missile = create_missile(muzzle, forwardVec, vel, 10000, ent);
+	gentity_t* missile = create_missile(muzzle, forward_vec, vel, 10000, ent);
 
 	missile->classname = "atst_main_proj";
 	missile->s.weapon = WP_ATST_MAIN;
@@ -69,7 +69,7 @@ void WP_ATSTSideAltFire(gentity_t* ent)
 		vel = ATST_SIDE_ALT_VELOCITY;
 	}
 
-	gentity_t* missile = create_missile(muzzle, forwardVec, vel, 10000, ent, qtrue);
+	gentity_t* missile = create_missile(muzzle, forward_vec, vel, 10000, ent, qtrue);
 
 	missile->classname = "atst_rocket";
 	missile->s.weapon = WP_ATST_SIDE;
@@ -93,7 +93,7 @@ void WP_ATSTSideAltFire(gentity_t* ent)
 		}
 	}
 
-	VectorCopy(forwardVec, missile->movedir);
+	VectorCopy(forward_vec, missile->movedir);
 
 	// Make it easier to hit things
 	VectorSet(missile->maxs, ATST_SIDE_ALT_ROCKET_SIZE, ATST_SIDE_ALT_ROCKET_SIZE, ATST_SIDE_ALT_ROCKET_SIZE);
@@ -122,7 +122,7 @@ void WP_ATSTSideFire(gentity_t* ent)
 {
 	int damage = weaponData[WP_ATST_SIDE].damage;
 
-	gentity_t* missile = create_missile(muzzle, forwardVec, ATST_SIDE_MAIN_VELOCITY, 10000, ent, qfalse);
+	gentity_t* missile = create_missile(muzzle, forward_vec, ATST_SIDE_MAIN_VELOCITY, 10000, ent, qfalse);
 
 	missile->classname = "atst_side_proj";
 	missile->s.weapon = WP_ATST_SIDE;

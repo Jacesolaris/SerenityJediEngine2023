@@ -108,35 +108,35 @@ CFlash* FX_AddFlash(vec3_t origin, vec3_t s_rgb, vec3_t e_rgb, float rgb_parm,
 
 // Included for backwards compatibility with CHC and for doing quick programmatic effects.
 void FX_AddSprite(vec3_t origin, vec3_t vel, vec3_t accel,
-                  const float scale,
-                  const float s_alpha, const float e_alpha,
-                  const float rotation, const float bounce,
-                  const int life, const qhandle_t shader, const int flags = 0);
+                  float scale,
+                  float s_alpha, float e_alpha,
+                  float rotation, float bounce,
+                  int life, qhandle_t shader, int flags = 0);
 
 void FX_AddSprite(vec3_t origin, vec3_t vel, vec3_t accel,
-                  const float scale,
-                  const float s_alpha, const float e_alpha,
+                  float scale,
+                  float s_alpha, float e_alpha,
                   vec3_t s_rgb, vec3_t e_rgb,
-                  const float rotation, const float bounce,
-                  const int life, const qhandle_t shader, const int flags = 0);
+                  float rotation, float bounce,
+                  int life, qhandle_t shader, int flags = 0);
 
 void FX_AddLine(vec3_t start, vec3_t end,
-                const float width,
-                const float s_alpha, const float e_alpha,
-                const int life, const qhandle_t shader);
+                float width,
+                float s_alpha, float e_alpha,
+                int life, qhandle_t shader);
 
 void FX_AddLine(vec3_t start, vec3_t end,
-                const float width,
-                const float s_alpha, const float e_alpha,
+                float width,
+                float s_alpha, float e_alpha,
                 vec3_t s_rgb, vec3_t e_rgb,
-                const int life, const qhandle_t shader, const int flags = 0);
+                int life, qhandle_t shader, int flags = 0);
 
 void FX_AddQuad(vec3_t origin, vec3_t normal,
                 vec3_t vel, vec3_t accel,
-                const float sradius, const float eradius,
-                const float salpha, const float ealpha,
+                float sradius, float eradius,
+                float salpha, float ealpha,
                 vec3_t s_rgb, vec3_t e_rgb,
-                const float rotation, const int life, const qhandle_t shader);
+                float rotation, int life, qhandle_t shader);
 
 CBezier* FX_AddBezier(const vec3_t start, const vec3_t end,
                       const vec3_t control1, const vec3_t control1_vel,

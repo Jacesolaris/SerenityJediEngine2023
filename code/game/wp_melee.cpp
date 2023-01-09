@@ -46,7 +46,7 @@ void WP_Melee(gentity_t* ent)
 		                               ? qtrue
 		                               : qfalse;
 
-	VectorMA(muzzle, range, forwardVec, end);
+	VectorMA(muzzle, range, forward_vec, end);
 
 	VectorSet(maxs, 6, 6, 6);
 	VectorScale(maxs, -1, mins);
@@ -57,7 +57,7 @@ void WP_Melee(gentity_t* ent)
 	{
 		if (tr.entity_num == ENTITYNUM_WORLD)
 		{
-			G_PlayEffect(G_EffectIndex("melee/punch_impact"), tr.endpos, forwardVec);
+			G_PlayEffect(G_EffectIndex("melee/punch_impact"), tr.endpos, forward_vec);
 		}
 		return;
 	}
@@ -102,7 +102,7 @@ void WP_Melee(gentity_t* ent)
 		}
 		else
 		{
-			G_PlayEffect(G_EffectIndex("melee/punch_impact"), tr.endpos, forwardVec);
+			G_PlayEffect(G_EffectIndex("melee/punch_impact"), tr.endpos, forward_vec);
 		}
 		if (ent->NPC && ent->NPC->aiFlags & NPCAI_HEAVY_MELEE)
 		{
@@ -128,7 +128,7 @@ void WP_Melee(gentity_t* ent)
 			damage = MELEE_SWING_EXTRA_DAMAGE;
 		}
 
-		G_Damage(tr_ent, ent, ent, forwardVec, tr.endpos, damage, dflags, MOD_MELEE);
+		G_Damage(tr_ent, ent, ent, forward_vec, tr.endpos, damage, dflags, MOD_MELEE);
 	}
 }
 

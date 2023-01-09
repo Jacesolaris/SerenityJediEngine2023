@@ -49,7 +49,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 	{
 		constexpr float shotRange = 8192;
 		vec3_t end;
-		VectorMA(start, shotRange, forwardVec, end);
+		VectorMA(start, shotRange, forward_vec, end);
 		//need to loop this in case we hit a Jedi who dodges the shot
 		gi.trace(&tr, start, nullptr, nullptr, end, ignore, MASK_SHOT, G2_RETURNONHIT, 0);
 
@@ -100,7 +100,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 		{
 			vec3_t angs;
 
-			vectoangles(forwardVec, angs);
+			vectoangles(forward_vec, angs);
 
 			if (ent->client->NPC_class == CLASS_IMPWORKER)
 			{
@@ -116,13 +116,13 @@ void WP_FireTuskenRifle(gentity_t* ent)
 				angs[YAW] += Q_flrand(-1.0f, 1.0f) * ((5 - ent->NPC->currentAim) * 0.25f);
 			}
 
-			AngleVectors(angs, forwardVec, nullptr, nullptr);
+			AngleVectors(angs, forward_vec, nullptr, nullptr);
 		}
 	}
 
-	WP_MissileTargetHint(ent, start, forwardVec);
+	WP_MissileTargetHint(ent, start, forward_vec);
 
-	gentity_t* missile = create_missile(start, forwardVec, TUSKEN_RIFLE_VEL, 10000, ent, qfalse);
+	gentity_t* missile = create_missile(start, forward_vec, TUSKEN_RIFLE_VEL, 10000, ent, qfalse);
 
 	missile->classname = "trifle_proj";
 	missile->s.weapon = WP_TUSKEN_RIFLE;

@@ -3822,7 +3822,7 @@ targetname - starts off, when used, turns on (toggles)
 
 FIXME: sometimes we want these to not be shootable... maybe just put them behind a force field?
 */
-void CreateLaserTrap(gentity_t* laserTrap, vec3_t start, gentity_t* owner);
+void CreateLaserTrap(gentity_t* laser_trap, vec3_t start, gentity_t* owner);
 void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 gitem_t* BG_FindItemForAmmo(ammo_t ammo);
 
@@ -4893,7 +4893,7 @@ void SP_misc_model_beacon(gentity_t* ent)
 extern gentity_t* LaunchItem(gitem_t* item, vec3_t origin, vec3_t velocity);
 
 void misc_model_cargo_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker, const int damage,
-                          const int mod, int dFlags,
+                          const int mod, int d_flags,
                           int hit_loc)
 {
 	vec3_t org, temp;

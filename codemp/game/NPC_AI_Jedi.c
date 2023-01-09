@@ -1244,7 +1244,7 @@ typedef struct wristWeapon_s
 	int theMissile;
 	int dummyForcePower;
 	int whichWeapon;
-	qboolean altFire;
+	qboolean alt_fire;
 	int maxShots;
 	int animTimer;
 	int animDelay;
@@ -1335,7 +1335,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	const int oldWeapon = self->s.weapon;
 
 	self->s.weapon = missileStates[whichMissile].whichWeapon;
-	qboolean altFire = missileStates[whichMissile].altFire;
+	qboolean alt_fire = missileStates[whichMissile].alt_fire;
 	if (missileStates[whichMissile].fullyCharged)
 	{
 		self->client->ps.weaponChargeTime = 0;

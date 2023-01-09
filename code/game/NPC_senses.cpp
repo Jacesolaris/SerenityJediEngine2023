@@ -622,7 +622,7 @@ int G_CheckAlertEvents(gentity_t* self, const qboolean checkSight, const qboolea
                        const int ignoreAlert, const qboolean mustHaveOwner, const int minAlertLevel,
                        const qboolean onGroundOnly)
 {
-	if (&g_entities[0] == nullptr || g_entities[0].health <= 0)
+	if (g_entities[0].health <= 0)
 	{
 		//player is dead
 		return -1;

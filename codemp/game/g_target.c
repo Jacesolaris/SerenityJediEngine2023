@@ -147,7 +147,7 @@ void SP_target_delay(gentity_t* ent)
 
 The activator is given this many points.
 */
-void Use_Target_Score(gentity_t* ent, gentity_t* other, const gentity_t* activator)
+void Use_Target_Score(const gentity_t* ent, gentity_t* other, const gentity_t* activator)
 {
 	AddScore(activator, ent->count);
 }

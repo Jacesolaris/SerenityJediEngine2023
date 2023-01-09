@@ -44,7 +44,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "w_local.h"
 #include "../cgame/cg_local.h"
 
-vec3_t forwardVec, vrightVec, up;
+vec3_t forward_vec, vrightVec, up;
 vec3_t muzzle;
 vec3_t muzzle2;
 
@@ -203,7 +203,7 @@ void WP_Explode(gentity_t* self)
 //-----------------------------------------------------------------------------
 {
 	gentity_t* attacker = self;
-	vec3_t forwardVec = {0, 0, 1};
+	vec3_t forward_vec = {0, 0, 1};
 
 	// stop chain reaction runaway loops
 	self->takedamage = qfalse;
@@ -212,12 +212,12 @@ void WP_Explode(gentity_t* self)
 
 	if (!self->client)
 	{
-		AngleVectors(self->s.angles, forwardVec, nullptr, nullptr);
+		AngleVectors(self->s.angles, forward_vec, nullptr, nullptr);
 	}
 
 	if (self->fxID > 0)
 	{
-		G_PlayEffect(self->fxID, self->currentOrigin, forwardVec);
+		G_PlayEffect(self->fxID, self->currentOrigin, forward_vec);
 	}
 
 	if (self->owner)
@@ -249,7 +249,7 @@ void WP_Explode(gentity_t* self)
 // We need to have a dieFunc, otherwise G_Damage won't actually make us die.  I could modify G_Damage, but that entails too many changes
 //-----------------------------------------------------------------------------
 void WP_ExplosiveDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int meansOfDeath,
-                     int dFlags, int hit_loc)
+                     int d_flags, int hit_loc)
 //-----------------------------------------------------------------------------
 {
 	self->enemy = attacker;
@@ -474,7 +474,7 @@ qboolean LogAccuracyHit(const gentity_t* target, const gentity_t* attacker)
 	return qtrue;
 }
 
-void CalcMuzzlePoint2(const gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3_t up, vec3_t muzzlePoint,
+void CalcMuzzlePoint2(const gentity_t* const ent, vec3_t forward_vec, vec3_t right, vec3_t up, vec3_t muzzlePoint,
                       const float lead_in)
 {
 	if (!lead_in)
@@ -492,7 +492,7 @@ void CalcMuzzlePoint2(const gentity_t* const ent, vec3_t forwardVec, vec3_t righ
 }
 
 //---------------------------------------------------------
-void CalcMuzzlePoint(gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3_t up, vec3_t muzzlePoint,
+void CalcMuzzlePoint(gentity_t* const ent, vec3_t forward_vec, vec3_t right, vec3_t up, vec3_t muzzlePoint,
                      const float lead_in)
 //---------------------------------------------------------
 {
@@ -523,7 +523,7 @@ void CalcMuzzlePoint(gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3
 		ViewHeightFix(ent);
 		muzzlePoint[2] += ent->client->ps.viewheight; //By eyes
 		muzzlePoint[2] -= 16;
-		VectorMA(muzzlePoint, 28, forwardVec, muzzlePoint);
+		VectorMA(muzzlePoint, 28, forward_vec, muzzlePoint);
 		VectorMA(muzzlePoint, 6, vrightVec, muzzlePoint);
 		break;
 
@@ -541,11 +541,11 @@ void CalcMuzzlePoint(gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3
 		muzzlePoint[2] += ent->client->ps.viewheight; //By eyes
 		muzzlePoint[2] -= 1;
 		if (ent->s.number == 0)
-			VectorMA(muzzlePoint, 12, forwardVec, muzzlePoint);
+			VectorMA(muzzlePoint, 12, forward_vec, muzzlePoint);
 			// player, don't set this any lower otherwise the projectile will impact immediately when your back is to a wall
 		else
-			VectorMA(muzzlePoint, 2, forwardVec, muzzlePoint);
-	// NPC, don't set too far forwardVec otherwise the projectile can go through doors
+			VectorMA(muzzlePoint, 2, forward_vec, muzzlePoint);
+	// NPC, don't set too far forward_vec otherwise the projectile can go through doors
 
 		VectorMA(muzzlePoint, 1, vrightVec, muzzlePoint);
 		break;
@@ -562,7 +562,7 @@ void CalcMuzzlePoint(gentity_t* const ent, vec3_t forwardVec, vec3_t right, vec3
 		{
 			muzzlePoint[2] += 16;
 		}
-		VectorMA(muzzlePoint, 8, forwardVec, muzzlePoint);
+		VectorMA(muzzlePoint, 8, forward_vec, muzzlePoint);
 		VectorMA(muzzlePoint, 16, vrightVec, muzzlePoint);
 		break;
 
@@ -633,16 +633,16 @@ void WP_RocketLock(const gentity_t* ent, const float lockDist)
 	vec3_t ang;
 	trace_t tr;
 
-	vec3_t muzzleOffPoint, muzzlePoint, forwardVec, right, up;
+	vec3_t muzzleOffPoint, muzzlePoint, forward_vec, right, up;
 
-	AngleVectors(ent->client->ps.viewangles, forwardVec, right, up);
+	AngleVectors(ent->client->ps.viewangles, forward_vec, right, up);
 
 	AngleVectors(ent->client->ps.viewangles, ang, nullptr, nullptr);
 
 	VectorCopy(ent->client->ps.origin, muzzlePoint);
 	VectorCopy(WP_MuzzlePoint[WP_ROCKET_LAUNCHER], muzzleOffPoint);
 
-	VectorMA(muzzlePoint, muzzleOffPoint[0], forwardVec, muzzlePoint);
+	VectorMA(muzzlePoint, muzzleOffPoint[0], forward_vec, muzzlePoint);
 	VectorMA(muzzlePoint, muzzleOffPoint[1], right, muzzlePoint);
 	muzzlePoint[2] += ent->client->ps.viewheight + muzzleOffPoint[2];
 
@@ -887,8 +887,8 @@ void WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWea
 	}
 }
 
-void WP_VehLeadCrosshairVeh(const gentity_t* camtrace_ent, vec3_t newEnd, const vec3_t dir, const vec3_t shotStart,
-                            vec3_t shotDir)
+void WP_VehLeadCrosshairVeh(const gentity_t* camtrace_ent, vec3_t new_end, const vec3_t dir, const vec3_t shot_start,
+                            vec3_t shot_dir)
 {
 	if (g_vehAutoAimLead->integer)
 	{
@@ -898,28 +898,28 @@ void WP_VehLeadCrosshairVeh(const gentity_t* camtrace_ent, vec3_t newEnd, const 
 		{
 			//if the crosshair is on a vehicle, lead it
 			const float distAdjust = DotProduct(camtrace_ent->client->ps.velocity, dir);
-			if (distAdjust > 500 || DistanceSquared(camtrace_ent->client->ps.origin, shotStart) > 7000000)
+			if (distAdjust > 500 || DistanceSquared(camtrace_ent->client->ps.origin, shot_start) > 7000000)
 			{
 				vec3_t predShotDir;
 				vec3_t predPos;
 				//moving away from me at a decent speed and/or more than @2600 units away from me
-				VectorMA(newEnd, distAdjust, dir, predPos);
-				VectorSubtract(predPos, shotStart, predShotDir);
+				VectorMA(new_end, distAdjust, dir, predPos);
+				VectorSubtract(predPos, shot_start, predShotDir);
 				VectorNormalize(predShotDir);
-				const float dot = DotProduct(predShotDir, shotDir);
+				const float dot = DotProduct(predShotDir, shot_dir);
 				if (dot >= 0.75f)
 				{
 					//if the new aim vector is no more than 23 degrees off the original one, go ahead and adjust the aim
-					VectorCopy(predPos, newEnd);
+					VectorCopy(predPos, new_end);
 				}
 			}
 		}
 	}
-	VectorSubtract(newEnd, shotStart, shotDir);
-	VectorNormalize(shotDir);
+	VectorSubtract(new_end, shot_start, shot_dir);
+	VectorNormalize(shot_dir);
 }
 
-qboolean WP_VehCheckTraceFromCamPos(gentity_t* ent, const vec3_t shotStart, vec3_t shotDir)
+qboolean WP_VehCheckTraceFromCamPos(gentity_t* ent, const vec3_t shot_start, vec3_t shot_dir)
 {
 	//FIXME: only if dynamicCrosshair and dynamicCrosshairPrecision is on!
 	//if (!ent
@@ -1296,8 +1296,8 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 	VectorCopy(muzzle, start);
 	WP_TraceSetStart(ent, start);
 
-	WP_MissileTargetHint(ent, start, forwardVec);
-	VectorMA(start, shot_range, forwardVec, end);
+	WP_MissileTargetHint(ent, start, forward_vec);
+	VectorMA(start, shot_range, forward_vec, end);
 
 	gi.trace(&tr, start, nullptr, nullptr, end, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
 	gentity_t* trace_ent = &g_entities[tr.entity_num];
@@ -1321,7 +1321,7 @@ void WP_FireScepter(gentity_t* ent, qboolean alt_fire)
 			G_PlayEffect(G_EffectIndex("disruptor/flesh_impact"), tr.endpos, tr.plane.normal);
 
 			const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_DISRUPTOR);
-			G_Damage(trace_ent, ent, ent, forwardVec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hit_loc);
+			G_Damage(trace_ent, ent, ent, forward_vec, tr.endpos, damage, DAMAGE_EXTRA_KNOCKBACK, MOD_DISRUPTOR, hit_loc);
 		}
 		else
 		{
@@ -1416,7 +1416,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 		if (ent->NPC)
 		{
 			//snipers must use the angles they actually did their shot trace with
-			AngleVectors(ent->lastAngles, forwardVec, vrightVec, up);
+			AngleVectors(ent->lastAngles, forward_vec, vrightVec, up);
 		}
 	}
 	else if (ent && (ent->s.weapon == WP_ATST_SIDE || ent->s.weapon == WP_ATST_MAIN))
@@ -1480,12 +1480,12 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, NEGATIVE_Y, ent->client->renderInfo.muzzleDir);
 			ent->client->renderInfo.mPCalcTime = level.time;
 
-			AngleVectors(ent->client->ps.viewangles, forwardVec, vrightVec, up);
+			AngleVectors(ent->client->ps.viewangles, forward_vec, vrightVec, up);
 		}
 		else if (!ent->enemy)
 		{
 			//an NPC with no enemy to auto-aim at
-			VectorCopy(ent->client->renderInfo.muzzleDir, forwardVec);
+			VectorCopy(ent->client->renderInfo.muzzleDir, forward_vec);
 		}
 		else
 		{
@@ -1498,7 +1498,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 			VectorSubtract(enemy_org1, muzzle1, delta1);
 
 			vectoangles(delta1, angleToEnemy1);
-			AngleVectors(angleToEnemy1, forwardVec, vrightVec, up);
+			AngleVectors(angleToEnemy1, forward_vec, vrightVec, up);
 		}
 	}
 	else if (ent->s.weapon == WP_BOT_LASER && ent->enemy)
@@ -1512,7 +1512,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 		VectorSubtract(enemy_org1, muzzle1, delta1);
 
 		vectoangles(delta1, angleToEnemy1);
-		AngleVectors(angleToEnemy1, forwardVec, vrightVec, up);
+		AngleVectors(angleToEnemy1, forward_vec, vrightVec, up);
 	}
 	else
 	{
@@ -1522,12 +1522,12 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 			if (ent->s.eFlags & EF_NODRAW) //we're inside it
 			{
 				vec3_t aimAngles;
-				VectorCopy(ent->client->renderInfo.muzzleDir, forwardVec);
-				vectoangles(forwardVec, aimAngles);
+				VectorCopy(ent->client->renderInfo.muzzleDir, forward_vec);
+				vectoangles(forward_vec, aimAngles);
 				//we're only keeping the yaw
 				aimAngles[PITCH] = ent->client->ps.viewangles[PITCH];
 				aimAngles[ROLL] = 0;
-				AngleVectors(aimAngles, forwardVec, vrightVec, up);
+				AngleVectors(aimAngles, forward_vec, vrightVec, up);
 			}
 			else
 			{
@@ -1541,21 +1541,21 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 				//-------------
 				if (ent->client->ps.torsoAnim == BOTH_VT_ATL_G || ent->client->ps.torsoAnim == BOTH_VS_ATL_G)
 				{
-					VectorScale(actorRight, -1.0f, forwardVec);
+					VectorScale(actorRight, -1.0f, forward_vec);
 				}
 
 				// Aiming Right
 				//--------------
 				else if (ent->client->ps.torsoAnim == BOTH_VT_ATR_G || ent->client->ps.torsoAnim == BOTH_VS_ATR_G)
 				{
-					VectorCopy(actorRight, forwardVec);
+					VectorCopy(actorRight, forward_vec);
 				}
 
 				// Aiming Forward
 				//----------------
 				else
 				{
-					VectorCopy(actorFwd, forwardVec);
+					VectorCopy(actorFwd, forward_vec);
 				}
 
 				// If We Have An Enemy, Fudge The Aim To Hit The Enemy
@@ -1564,24 +1564,24 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 					vec3_t toEnemy;
 					VectorSubtract(ent->enemy->currentOrigin, ent->currentOrigin, toEnemy);
 					VectorNormalize(toEnemy);
-					if (DotProduct(toEnemy, forwardVec) > 0.75f &&
+					if (DotProduct(toEnemy, forward_vec) > 0.75f &&
 						(ent->s.number == 0 && !Q_irand(0, 2) || // the player has a 1 in 3 chance
 							ent->s.number != 0 && !Q_irand(0, 5))) // other guys have a 1 in 6 chance
 					{
-						VectorCopy(toEnemy, forwardVec);
+						VectorCopy(toEnemy, forward_vec);
 					}
 					else
 					{
-						forwardVec[0] += Q_flrand(-0.1f, 0.1f);
-						forwardVec[1] += Q_flrand(-0.1f, 0.1f);
-						forwardVec[2] += Q_flrand(-0.1f, 0.1f);
+						forward_vec[0] += Q_flrand(-0.1f, 0.1f);
+						forward_vec[1] += Q_flrand(-0.1f, 0.1f);
+						forward_vec[2] += Q_flrand(-0.1f, 0.1f);
 					}
 				}
 			}
 		}
 		else
 		{
-			AngleVectors(ent->client->ps.viewangles, forwardVec, vrightVec, up);
+			AngleVectors(ent->client->ps.viewangles, forward_vec, vrightVec, up);
 		}
 	}
 
@@ -1591,16 +1591,16 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 		if (ent->NPC && ent->NPC->scriptFlags & SCF_FIRE_WEAPON_NO_ANIM)
 		{
 			VectorCopy(ent->client->renderInfo.muzzlePoint, muzzle);
-			VectorCopy(ent->client->renderInfo.muzzleDir, forwardVec);
-			MakeNormalVectors(forwardVec, vrightVec, up);
+			VectorCopy(ent->client->renderInfo.muzzleDir, forward_vec);
+			MakeNormalVectors(forward_vec, vrightVec, up);
 		}
 		else
 		{
-			CalcMuzzlePoint(ent, forwardVec, vrightVec, up, muzzle, 0);
+			CalcMuzzlePoint(ent, forward_vec, vrightVec, up, muzzle, 0);
 
 			if (!cg_trueguns.integer && !cg.renderingThirdPerson && ent->client->ps.eFlags & EF2_DUAL_WEAPONS)
 			{
-				CalcMuzzlePoint2(ent, forwardVec, vrightVec, up, muzzle2, 0);
+				CalcMuzzlePoint2(ent, forward_vec, vrightVec, up, muzzle2, 0);
 			}
 
 			if (!DoesnotDrainMishap(ent))

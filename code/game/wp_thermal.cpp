@@ -88,7 +88,7 @@ void thermalDetonatorExplode(gentity_t* ent)
 }
 
 //-------------------------------------------------------------------------------------------------------------
-void thermal_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void thermal_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int d_flags,
                  int hit_loc)
 //-------------------------------------------------------------------------------------------------------------
 {
@@ -97,8 +97,8 @@ void thermal_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int
 
 //---------------------------------------------------------
 qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t mins, vec3_t maxs, const int clipmask,
-                    vec3_t velocity, const qboolean tracePath, const int ignoreEntNum, const int enemyNum,
-                    float minSpeed, float maxSpeed, float idealSpeed, const qboolean mustHit)
+                    vec3_t velocity, const qboolean trace_path, const int ignore_ent_num, const int enemy_num,
+                    float min_speed, float max_speed, float ideal_speed, const qboolean must_hit)
 //---------------------------------------------------------
 {
 	constexpr float speedInc = 100;
@@ -109,23 +109,23 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 	int hitCount = 0;
 	constexpr int max_hits = 7;
 
-	if (!idealSpeed)
+	if (!ideal_speed)
 	{
-		idealSpeed = 300;
+		ideal_speed = 300;
 	}
-	else if (idealSpeed < speedInc)
+	else if (ideal_speed < speedInc)
 	{
-		idealSpeed = speedInc;
+		ideal_speed = speedInc;
 	}
-	float shotSpeed = idealSpeed;
-	const int skipNum = (idealSpeed - speedInc) / speedInc;
-	if (!minSpeed)
+	float shotSpeed = ideal_speed;
+	const int skipNum = (ideal_speed - speedInc) / speedInc;
+	if (!min_speed)
 	{
-		minSpeed = 100;
+		min_speed = 100;
 	}
-	if (!maxSpeed)
+	if (!max_speed)
 	{
-		maxSpeed = 900;
+		max_speed = 900;
 	}
 	while (hitCount < max_hits)
 	{
@@ -140,14 +140,14 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 		if (!hitCount)
 		{
 			//save the first (ideal) one as the failCase (fallback value)
-			if (!mustHit)
+			if (!must_hit)
 			{
 				//default is fine as a return value
 				VectorCopy(shotVel, failCase);
 			}
 		}
 
-		if (tracePath)
+		if (trace_path)
 		{
 			vec3_t lastPos;
 			constexpr int timeStep = 500;
@@ -171,7 +171,7 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 					elapsedTime = floor(travelTime);
 				}
 				EvaluateTrajectory(&tr, level.time + elapsedTime, testPos);
-				gi.trace(&trace, lastPos, mins, maxs, testPos, ignoreEntNum, clipmask, static_cast<EG2_Collision>(0),
+				gi.trace(&trace, lastPos, mins, maxs, testPos, ignore_ent_num, clipmask, static_cast<EG2_Collision>(0),
 				         0);
 
 				if (trace.allsolid || trace.startsolid)
@@ -182,7 +182,7 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 				if (trace.fraction < 1.0f)
 				{
 					//hit something
-					if (trace.entity_num == enemyNum)
+					if (trace.entity_num == enemy_num)
 					{
 						//hit the enemy, that's perfect!
 						break;
@@ -227,7 +227,7 @@ qboolean WP_LobFire(const gentity_t* self, vec3_t start, vec3_t target, vec3_t m
 			{
 				//hit something, adjust speed (which will change arc)
 				hitCount++;
-				shotSpeed = idealSpeed + (hitCount - skipNum) * speedInc; //from min to max (skipping ideal)
+				shotSpeed = ideal_speed + (hitCount - skipNum) * speedInc; //from min to max (skipping ideal)
 				if (hitCount >= skipNum)
 				{
 					//skip ideal since that was the first value we tested
@@ -346,7 +346,7 @@ gentity_t* WP_FireThermalDetonator(gentity_t* ent, const qboolean alt_fire)
 	vec3_t dir, start;
 	float damageScale = 1.0f;
 
-	VectorCopy(forwardVec, dir);
+	VectorCopy(forward_vec, dir);
 	VectorCopy(muzzle, start);
 
 	gentity_t* bolt = G_Spawn();
@@ -502,7 +502,7 @@ gentity_t* WP_FireThermalDetonator(gentity_t* ent, const qboolean alt_fire)
 gentity_t* WP_DropThermal(gentity_t* ent)
 //---------------------------------------------------------
 {
-	AngleVectors(ent->client->ps.viewangles, forwardVec, vrightVec, up);
+	AngleVectors(ent->client->ps.viewangles, forward_vec, vrightVec, up);
 	CalcEntitySpot(ent, SPOT_WEAPON, muzzle);
 	return WP_FireThermalDetonator(ent, qfalse);
 }

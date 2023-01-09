@@ -38,7 +38,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 	mdxaBone_t bolt_matrix;
 	vec3_t p, p2, d;
 	trace_t tr;
-	qboolean traceOver = qtrue;
+	qboolean trace_over = qtrue;
 
 	if (owner->s.number < MAX_CLIENTS)
 	{
@@ -48,10 +48,10 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 		if (tr.startsolid || tr.allsolid)
 		{
 			//crap, they're already in solid somehow, don't bother tracing over
-			traceOver = qfalse;
+			trace_over = qfalse;
 		}
 	}
-	if (traceOver)
+	if (trace_over)
 	{
 		//trace up
 		VectorCopy(owner->currentOrigin, p2);
@@ -76,7 +76,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 	d[2] = 0;
 	VectorNormalize(d);
 	VectorMA(p, -44.0f, d, p);
-	if (!traceOver)
+	if (!trace_over)
 	{
 		VectorCopy(p, tr.endpos);
 		tr.allsolid = tr.startsolid = qfalse;
@@ -116,11 +116,11 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 		if (!tr.startsolid && !tr.allsolid) //&& tr.fraction == 1.0f)
 		{
 			//all clear, we can move there
-			vec3_t moveDir;
+			vec3_t move_dir;
 			VectorCopy(tr.endpos, p);
-			VectorSubtract(p, eweb->pos4, moveDir);
-			const float moveDist = VectorNormalize(moveDir);
-			if (moveDist > 4.0f)
+			VectorSubtract(p, eweb->pos4, move_dir);
+			const float move_dist = VectorNormalize(move_dir);
+			if (move_dist > 4.0f)
 			{
 				//moved past the threshold from last position
 				vec3_t oRight;
@@ -129,7 +129,7 @@ void EWebPositionUser(gentity_t* owner, gentity_t* eweb)
 				VectorCopy(p, eweb->pos4); //update the position
 				//find out what direction he moved in
 				AngleVectors(owner->currentAngles, nullptr, oRight, nullptr);
-				if (DotProduct(moveDir, oRight) > 0)
+				if (DotProduct(move_dir, oRight) > 0)
 				{
 					//moved to his right, play right strafe
 					strafeAnim = BOTH_STRAFE_RIGHT1;
@@ -205,7 +205,7 @@ void eweb_pain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, const
 }
 
 //----------------------------------------------------------
-void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags, int hit_loc)
+void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int d_flags, int hit_loc)
 {
 	vec3_t org;
 
@@ -334,9 +334,9 @@ qboolean eweb_can_be_used(const gentity_t* self, const gentity_t* other, const g
 		return qfalse;
 	}
 
-	vec3_t facingAngles;
+	vec3_t facing_angles;
 
-	VectorAdd(self->s.angles, self->pos1, facingAngles);
+	VectorAdd(self->s.angles, self->pos1, facing_angles);
 	if (activator && activator->s.number < MAX_CLIENTS)
 	{
 		vec3_t fwd2;
@@ -347,7 +347,7 @@ qboolean eweb_can_be_used(const gentity_t* self, const gentity_t* other, const g
 		fwd1[2] = 0;
 
 		// Get the gun's direction vector
-		AngleVectors(facingAngles, fwd2, nullptr, nullptr);
+		AngleVectors(facing_angles, fwd2, nullptr, nullptr);
 		fwd2[2] = 0;
 
 		const float dot = DotProduct(fwd1, fwd2);
@@ -373,9 +373,9 @@ void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 		return;
 	}
 
-	const int oldWeapon = activator->s.weapon;
+	const int old_weapon = activator->s.weapon;
 
-	if (oldWeapon == WP_SABER)
+	if (old_weapon == WP_SABER)
 	{
 		self->alt_fire = activator->client->ps.SaberActive();
 	}
@@ -405,7 +405,7 @@ void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 	//keep this around so we know when to make them play the strafe anim
 
 	// the gun will track which weapon we used to have
-	self->s.weapon = oldWeapon;
+	self->s.weapon = old_weapon;
 
 	// Lock the player
 	activator->client->ps.eFlags |= EF_LOCKED_TO_WEAPON;
@@ -602,9 +602,9 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 	// don't allow using it again for half a second
 	if (self->delay + 500 < level.time)
 	{
-		const int oldWeapon = activator->s.weapon;
+		const int old_weapon = activator->s.weapon;
 
-		if (oldWeapon == WP_SABER)
+		if (old_weapon == WP_SABER)
 		{
 			self->alt_fire = activator->client->ps.SaberActive();
 		}
@@ -654,7 +654,7 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 		gi.linkentity(activator);
 
 		// the gun will track which weapon we used to have
-		self->s.weapon = oldWeapon;
+		self->s.weapon = old_weapon;
 
 		// Lock the player
 		activator->client->ps.eFlags |= EF_LOCKED_TO_WEAPON;
@@ -723,7 +723,7 @@ void emplaced_blow(gentity_t* ent)
 }
 
 //----------------------------------------------------------
-void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int dFlags,
+void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int damage, int mod, int d_flags,
                       int hit_loc)
 {
 	vec3_t org;
@@ -911,11 +911,11 @@ void G_UpdateEmplacedWeaponData(gentity_t* ent)
 
 			//update the actual origin of the sitter
 			mdxaBone_t bolt_matrix;
-			const vec3_t chairAng = {0, ent->client->ps.viewangles[YAW], 0};
+			const vec3_t chair_ang = {0, ent->client->ps.viewangles[YAW], 0};
 
 			// Getting the seat bolt here
 			gi.G2API_GetBoltMatrix(chair->ghoul2, chair->playerModel, chair->headBolt,
-			                       &bolt_matrix, chairAng, chair->currentOrigin, cg.time ? cg.time : level.time,
+			                       &bolt_matrix, chair_ang, chair->currentOrigin, cg.time ? cg.time : level.time,
 			                       nullptr, chair->s.modelScale);
 			// Storing ent position, bolt position, and bolt axis
 			gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, ent->client->ps.origin);
@@ -953,29 +953,29 @@ void ExitEmplacedWeapon(gentity_t* ent)
 			else if (ent->owner->e_UseFunc == useF_eweb_use) //yeah, crappy way to check this, but...
 			{
 				// so give 'em a push away from us
-				vec3_t backDir, start, end;
+				vec3_t back_dir, start, end;
 				trace_t trace;
 				gentity_t* eweb = ent->owner;
-				qboolean safeExit = qfalse;
+				qboolean safe_exit = qfalse;
 
-				VectorSubtract(ent->currentOrigin, eweb->currentOrigin, backDir);
-				backDir[2] = 0;
-				const float minRadius = VectorNormalize(backDir) - 8.0f;
+				VectorSubtract(ent->currentOrigin, eweb->currentOrigin, back_dir);
+				back_dir[2] = 0;
+				const float min_radius = VectorNormalize(back_dir) - 8.0f;
 
-				float maxRadius = (ent->maxs[0] + ent->maxs[1]) * 0.5f;
-				maxRadius += (eweb->maxs[0] + eweb->maxs[1]) * 0.5f;
-				maxRadius *= 1.5f;
+				float max_radius = (ent->maxs[0] + ent->maxs[1]) * 0.5f;
+				max_radius += (eweb->maxs[0] + eweb->maxs[1]) * 0.5f;
+				max_radius *= 1.5f;
 
-				if (minRadius >= maxRadius - 1.0f)
+				if (min_radius >= max_radius - 1.0f)
 				{
-					maxRadius = minRadius + 8.0f;
+					max_radius = min_radius + 8.0f;
 				}
 
 				ent->owner = nullptr; //so his trace hits me
 
-				for (float curRadius = minRadius; curRadius <= maxRadius; curRadius += 4.0f)
+				for (float cur_radius = min_radius; cur_radius <= max_radius; cur_radius += 4.0f)
 				{
-					VectorMA(ent->currentOrigin, curRadius, backDir, start);
+					VectorMA(ent->currentOrigin, cur_radius, back_dir, start);
 					//make sure they're not in the ground
 					VectorCopy(start, end);
 					start[2] += 18;
@@ -986,13 +986,13 @@ void ExitEmplacedWeapon(gentity_t* ent)
 					{
 						G_SetOrigin(ent, trace.endpos);
 						gi.linkentity(ent);
-						safeExit = qtrue;
+						safe_exit = qtrue;
 						break;
 					}
 				}
 				//Hmm... otherwise, don't allow them to get off?
 				ent->owner = eweb;
-				if (!safeExit)
+				if (!safe_exit)
 				{
 					//don't try again for a second
 					ent->owner->delay = level.time + 500;

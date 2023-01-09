@@ -206,17 +206,17 @@ protected:
 
 	// Task functions
 	int Rotate(const CTask* task, CIcarus* icarus) const;
-	int Remove(const CTask* task, CIcarus* icarus);
-	int Camera(const CTask* task, CIcarus* icarus);
-	int Print(const CTask* task, CIcarus* icarus);
-	int Sound(const CTask* task, CIcarus* icarus);
+	int Remove(const CTask* task, CIcarus* icarus) const;
+	int Camera(const CTask* task, CIcarus* icarus) const;
+	int Print(const CTask* task, CIcarus* icarus) const;
+	int Sound(const CTask* task, CIcarus* icarus) const;
 	int Move(const CTask* task, CIcarus* icarus) const;
-	int Kill(const CTask* task, CIcarus* icarus);
+	int Kill(const CTask* task, CIcarus* icarus) const;
 	int Set(const CTask* task, CIcarus* icarus) const;
-	int Use(const CTask* task, CIcarus* icarus);
-	int DeclareVariable(const CTask* task, CIcarus* icarus);
-	int FreeVariable(const CTask* task, CIcarus* icarus);
-	int Signal(const CTask* task, CIcarus* icarus);
+	int Use(const CTask* task, CIcarus* icarus) const;
+	int DeclareVariable(const CTask* task, CIcarus* icarus) const;
+	int FreeVariable(const CTask* task, CIcarus* icarus) const;
+	int Signal(const CTask* task, CIcarus* icarus) const;
 	int Play(const CTask* task, CIcarus* icarus) const;
 
 	int Wait(const CTask* task, bool& completed, CIcarus* icarus);

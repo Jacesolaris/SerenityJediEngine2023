@@ -565,7 +565,7 @@ void Sniper_FaceEnemy(void)
 		vec3_t muzzle, target, angles, forward, right, up;
 		//Get the positions
 		AngleVectors(NPCS.NPC->client->ps.viewangles, forward, right, up);
-		CalcMuzzlePoint(NPCS.NPC, forward, right, up, muzzle);
+		CalcMuzzlePoint(NPCS.NPC, forward, right, muzzle);
 		//CalcEntitySpot( NPC, SPOT_WEAPON, muzzle );
 		CalcEntitySpot(NPCS.NPC->enemy, SPOT_ORIGIN, target);
 
@@ -824,7 +824,7 @@ void NPC_BSSniper_Attack(void)
 			trace_t tr;
 
 			AngleVectors(NPCS.NPC->client->ps.viewangles, fwd, right, up);
-			CalcMuzzlePoint(NPCS.NPC, fwd, right, up, muzzle);
+			CalcMuzzlePoint(NPCS.NPC, fwd, right, muzzle);
 			VectorMA(muzzle, 8192, fwd, end);
 			trap->Trace(&tr, muzzle, NULL, NULL, end, NPCS.NPC->s.number, MASK_SHOT, qfalse, 0, 0);
 
