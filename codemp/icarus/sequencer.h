@@ -90,12 +90,12 @@ public:
 	CSequencer();
 	~CSequencer();
 
-	int Init(int ownerID, interface_export_t* ie, CTaskManager* taskManager, ICARUS_Instance* iCARUS);
+	int Init(int ownerID, interface_export_t* ie, CTaskManager* task_manager, ICARUS_Instance* iCARUS);
 	static CSequencer* Create(void);
 	int Free(void);
 
 	int Run(char* buffer, long size);
-	int Callback(CTaskManager* taskManager, CBlock* block, int returnCode);
+	int Callback(CTaskManager* task_manager, CBlock* block, int returnCode);
 
 	ICARUS_Instance* GetOwner(void) const { return m_owner; }
 
@@ -162,7 +162,7 @@ protected:
 
 	void Prep(CBlock**);
 
-	int Prime(CTaskManager* taskManager, CBlock* command);
+	int Prime(CTaskManager* task_manager, CBlock* command);
 
 	int ParseRun(CBlock* block);
 	int ParseLoop(CBlock* block, bstream_t* bstream);

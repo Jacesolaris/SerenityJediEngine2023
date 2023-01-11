@@ -1433,7 +1433,7 @@ void bot_update_input(bot_state_t* bs, const int time, const int elapsed_time)
 		bi.actionflags |= ACTION_BLOCK;
 	}
 
-	const int curmove = g_entities[bs->client].client->ps.saberMove;
+	const int curmove = g_entities[bs->client].client->ps.saber_move;
 	if (PM_SaberInStart(curmove) || PM_SaberInTransition(curmove))
 	{
 		bi.actionflags |= ACTION_ATTACK;
@@ -8474,7 +8474,7 @@ void bot_behave_attack_basic(bot_state_t* bs, const gentity_t* target)
 		bot_weapon_detpack(bs, target);
 	}
 
-	if (!PM_SaberInKata(bs->cur_ps.saberMove) && bs->cur_ps.fd.forcePower > 80 &&
+	if (!PM_SaberInKata(bs->cur_ps.saber_move) && bs->cur_ps.fd.forcePower > 80 &&
 		bs->cur_ps.weapon == WP_SABER && dist < 128 && in_field_of_vision(bs->viewangles, 90, ang))
 	{
 		//KATA!
@@ -8537,9 +8537,9 @@ void bot_behave_attack_basic(bot_state_t* bs, const gentity_t* target)
 		&& bs->virtualWeapon == WP_SABER && in_field_of_vision(bs->viewangles, 100, ang))
 	{
 		//we're using a lightsaber
-		if (PM_SaberInIdle(bs->cur_ps.saberMove)
-			|| PM_SaberInBounce(bs->cur_ps.saberMove)
-			|| PM_SaberInReturn(bs->cur_ps.saberMove))
+		if (PM_SaberInIdle(bs->cur_ps.saber_move)
+			|| PM_SaberInBounce(bs->cur_ps.saber_move)
+			|| PM_SaberInReturn(bs->cur_ps.saber_move))
 		{
 			//we want to attack, and we need to choose a new attack swing, pick randomly.
 			movefor_attack_quad(bs, move_dir, Q_irand(Q_BR, Q_B));
@@ -8550,12 +8550,12 @@ void bot_behave_attack_basic(bot_state_t* bs, const gentity_t* target)
 			bs->saberBFTime = level.time + Q_irand(3000, 5000); //every 3-5 secs
 		}
 		else if (bs->saberBFTime < level.time
-			&& (PM_SaberInTransition(bs->cur_ps.saberMove)
-				|| PM_SaberInStart(bs->cur_ps.saberMove)))
+			&& (PM_SaberInTransition(bs->cur_ps.saber_move)
+				|| PM_SaberInStart(bs->cur_ps.saber_move)))
 		{
 			//we can and want to do a saber attack fake.
 			int fake_quad = Q_irand(Q_BR, Q_B);
-			while (fake_quad == saberMoveData[bs->cur_ps.saberMove].endQuad)
+			while (fake_quad == saberMoveData[bs->cur_ps.saber_move].endQuad)
 			{
 				//can't fake in the direction we're already trying to attack in
 				fake_quad = Q_irand(Q_BR, Q_B);
@@ -8711,7 +8711,7 @@ void saber_combat_handling(bot_state_t* bs)
 
 		if (bs->currentEnemy && bs->currentEnemy->client)
 		{
-			if (!PM_SaberInSpecial(bs->currentEnemy->client->ps.saberMove)
+			if (!PM_SaberInSpecial(bs->currentEnemy->client->ps.saber_move)
 				&& bs->frame_Enemy_Len > 90
 				&& bs->saberBFTime > level.time
 				&& bs->saberBTime > level.time
@@ -8725,10 +8725,10 @@ void saber_combat_handling(bot_state_t* bs)
 				&& bs->frame_Enemy_Len < 80.0f
 				&& (Q_irand(1, 10) < 8
 					&& bs->saberBFTime < level.time || bs->saberBTime > level.time
-					|| PM_SaberInKata(bs->currentEnemy->client->ps.saberMove)
-					|| bs->currentEnemy->client->ps.saberMove == LS_SPINATTACK
-					|| bs->currentEnemy->client->ps.saberMove == LS_SPINATTACK_GRIEV
-					|| bs->currentEnemy->client->ps.saberMove == LS_SPINATTACK_DUAL))
+					|| PM_SaberInKata(bs->currentEnemy->client->ps.saber_move)
+					|| bs->currentEnemy->client->ps.saber_move == LS_SPINATTACK
+					|| bs->currentEnemy->client->ps.saber_move == LS_SPINATTACK_GRIEV
+					|| bs->currentEnemy->client->ps.saber_move == LS_SPINATTACK_DUAL))
 			{
 				vec3_t vs;
 				vec3_t groundcheck;
@@ -8738,10 +8738,10 @@ void saber_combat_handling(bot_state_t* bs)
 				VectorSubtract(bs->origin, bs->goalPosition, vs);
 				VectorNormalize(vs);
 
-				if (PM_SaberInKata(bs->currentEnemy->client->ps.saberMove)
-					|| bs->currentEnemy->client->ps.saberMove == LS_SPINATTACK
-					|| bs->currentEnemy->client->ps.saberMove == LS_SPINATTACK_GRIEV
-					|| bs->currentEnemy->client->ps.saberMove == LS_SPINATTACK_DUAL)
+				if (PM_SaberInKata(bs->currentEnemy->client->ps.saber_move)
+					|| bs->currentEnemy->client->ps.saber_move == LS_SPINATTACK
+					|| bs->currentEnemy->client->ps.saber_move == LS_SPINATTACK_GRIEV
+					|| bs->currentEnemy->client->ps.saber_move == LS_SPINATTACK_DUAL)
 				{
 					ideal_dist = 256;
 				}
@@ -10426,7 +10426,7 @@ int bot_use_inventory_item(bot_state_t* bs)
 		}
 	}
 	if (bs->cur_ps.stats[STAT_HOLDABLE_ITEMS] & 1 << HI_CLOAK
-		&& !PM_SaberInAttack(bs->cur_ps.saberMove)
+		&& !PM_SaberInAttack(bs->cur_ps.saber_move)
 		&& !bs->cur_ps.powerups[PW_CLOAKED]
 		&& !(bs->cur_ps.communicatingflags & 1 << CLOAK_CHARGE_RESTRICTION))
 	{
@@ -10919,7 +10919,7 @@ void standard_bot_ai(bot_state_t* bs)
 		return;
 	}
 
-	if (g_entities[bs->client].client->ps.fd.saberAnimLevel == SS_STAFF
+	if (g_entities[bs->client].client->ps.fd.saber_anim_level == SS_STAFF
 		&& !(g_entities[bs->client].client->saber[saber_num].type == SABER_STAFF
 			|| g_entities[bs->client].client->saber[saber_num].type == SABER_STAFF_THIN
 			|| g_entities[bs->client].client->saber[saber_num].type == SABER_STAFF_UNSTABLE
@@ -10933,8 +10933,8 @@ void standard_bot_ai(bot_state_t* bs)
 		}
 	}
 
-	if (g_entities[bs->client].client->ps.fd.saberAnimLevel == SS_DUAL
-		|| g_entities[bs->client].client->ps.fd.saberAnimLevel != SS_MEDIUM)
+	if (g_entities[bs->client].client->ps.fd.saber_anim_level == SS_DUAL
+		|| g_entities[bs->client].client->ps.fd.saber_anim_level != SS_MEDIUM)
 	{
 		if (bs->changeStyleDebounce < level.time)
 		{
@@ -12128,7 +12128,7 @@ void standard_bot_ai(bot_state_t* bs)
 			if (bs->currentEnemy->health > 40
 				&& g_entities[bs->client].client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE] > 1)
 			{
-				if (g_entities[bs->client].client->ps.fd.saberAnimLevel != SS_MEDIUM)
+				if (g_entities[bs->client].client->ps.fd.saber_anim_level != SS_MEDIUM)
 				{
 					//they're down on health a little, use level 2 if we can
 					Cmd_SaberAttackCycle_f(&g_entities[bs->client]);
@@ -12136,7 +12136,7 @@ void standard_bot_ai(bot_state_t* bs)
 			}
 			else
 			{
-				if (g_entities[bs->client].client->ps.fd.saberAnimLevel != SS_FAST)
+				if (g_entities[bs->client].client->ps.fd.saber_anim_level != SS_FAST)
 				{
 					//they've gone below 40 health, go at them with quick attacks
 					Cmd_SaberAttackCycle_f(&g_entities[bs->client]);

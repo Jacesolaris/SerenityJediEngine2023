@@ -72,11 +72,11 @@ Init
 Initializes the sequencer
 ========================
 */
-int CSequencer::Init(const int ownerID, interface_export_t* ie, CTaskManager* taskManager, ICARUS_Instance* iICARUS)
+int CSequencer::Init(const int ownerID, interface_export_t* ie, CTaskManager* task_manager, ICARUS_Instance* iICARUS)
 {
 	m_ownerID = ownerID;
 	m_owner = iICARUS;
-	m_taskManager = taskManager;
+	m_taskManager = task_manager;
 	m_ie = ie;
 
 	return SEQ_OK;
@@ -705,7 +705,7 @@ int CSequencer::ParseAffect(CBlock* block, bstream_t* bstream)
 	//Don't actually do these right now, we're just pre-processing (parsing) the affect
 	if( ent )
 	{	// ents need to update upon being affected
-		ent->taskManager->Update();
+		ent->task_manager->Update();
 	}
 	*/
 
@@ -1798,7 +1798,7 @@ void CSequencer::CheckAffect(CBlock** command)
 		if (ent)
 		{
 			// ents need to update upon being affected
-			//ent->taskManager->Update();
+			//ent->task_manager->Update();
 			gTaskManagers[ent->s.number]->Update();
 		}
 
@@ -1831,7 +1831,7 @@ void CSequencer::CheckAffect(CBlock** command)
 		if (ent)
 		{
 			// ents need to update upon being affected
-			//ent->taskManager->Update();
+			//ent->task_manager->Update();
 			gTaskManagers[ent->s.number]->Update();
 		}
 	}
@@ -1964,13 +1964,13 @@ Starts communication between the task manager and this sequencer
 ========================
 */
 
-int CSequencer::Prime(CTaskManager* taskManager, CBlock* command)
+int CSequencer::Prime(CTaskManager* task_manager, CBlock* command)
 {
 	Prep(&command);
 
 	if (command)
 	{
-		taskManager->SetCommand(command, PUSH_BACK);
+		task_manager->SetCommand(command, PUSH_BACK);
 	}
 
 	return SEQ_OK;
@@ -1984,7 +1984,7 @@ Handles a completed task and returns a new task to be completed
 ========================
 */
 
-int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, const int returnCode)
+int CSequencer::Callback(CTaskManager* task_manager, CBlock* block, const int returnCode)
 {
 	CBlock* command;
 
@@ -2022,7 +2022,7 @@ int CSequencer::Callback(CTaskManager* taskManager, CBlock* block, const int ret
 		Prep(&command);
 
 		if (command)
-			taskManager->SetCommand(command, PUSH_FRONT);
+			task_manager->SetCommand(command, PUSH_FRONT);
 
 		return SEQ_OK;
 	}
@@ -2293,7 +2293,7 @@ int CSequencer::Save(void)
 		m_ie->I_WriteSaveData('SQRI', &id, sizeof(id));
 	}
 
-	//Save out the taskManager
+	//Save out the task_manager
 	m_taskManager->Save();
 
 	//Save out the task sequences mapping the name to the GUIDs

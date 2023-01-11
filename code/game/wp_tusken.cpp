@@ -47,9 +47,9 @@ void WP_FireTuskenRifle(gentity_t* ent)
 	int traces = 0;
 	while (traces < 10)
 	{
-		constexpr float shotRange = 8192;
+		constexpr float shot_range = 8192;
 		vec3_t end;
-		VectorMA(start, shotRange, forward_vec, end);
+		VectorMA(start, shot_range, forward_vec, end);
 		//need to loop this in case we hit a Jedi who dodges the shot
 		gi.trace(&tr, start, nullptr, nullptr, end, ignore, MASK_SHOT, G2_RETURNONHIT, 0);
 

@@ -135,7 +135,7 @@ void G_ReadSessionData(gclient_t* client)
 			client->sess.IP[i] = ' ';
 	}
 
-	client->ps.fd.saberAnimLevel = client->sess.saberLevel;
+	client->ps.fd.saber_anim_level = client->sess.saberLevel;
 	client->ps.fd.saberDrawAnimLevel = client->sess.saberLevel;
 	client->ps.fd.forcePowerSelected = client->sess.selectedFP;
 }

@@ -445,7 +445,7 @@ model_t* R_GetModelByHandle(const qhandle_t index) {
 /*
 ** R_GetAnimModelByHandle
 */
-model_t* R_GetAnimModelByHandle(CGhoul2Info* ghlInfo, qhandle_t index)
+model_t* R_GetAnimModelByHandle(CGhoul2Info* ghl_info, qhandle_t index)
 {
 	// out of range gets the defualt model
 	if (index < 1 || index > tr.numModels) {
@@ -454,10 +454,10 @@ model_t* R_GetAnimModelByHandle(CGhoul2Info* ghlInfo, qhandle_t index)
 
 	model_t* mod;
 
-	if (ghlInfo->animModelIndexOffset)
+	if (ghl_info->animModelIndexOffset)
 	{
 		// Have to recalculate offset to get map animations for JKA Campaign
-		index -= ghlInfo->animModelIndexOffset;
+		index -= ghl_info->animModelIndexOffset;
 		int mapIndex{};
 		constexpr int len = std::size(tr.models);
 		for (int i = 0; i < len; i++)
@@ -477,7 +477,7 @@ model_t* R_GetAnimModelByHandle(CGhoul2Info* ghlInfo, qhandle_t index)
 		}
 		else
 		{
-			mod = tr.models[index + ghlInfo->animModelIndexOffset];
+			mod = tr.models[index + ghl_info->animModelIndexOffset];
 		}
 	}
 	else
@@ -1094,15 +1094,15 @@ static md3Tag_t* R_GetTag(md3Header_t* mod, int frame, const char* tagName) {
 R_LerpTag
 ================
 */
-void	R_LerpTag(orientation_t* tag, const qhandle_t handle, const int startFrame, const int endFrame,
+void	R_LerpTag(orientation_t* tag, const qhandle_t handle, const int start_frame, const int end_frame,
                   const float frac, const char* tagName) {
 	md3Tag_t* start, * finish;
 
 	const model_t* model = R_GetModelByHandle(handle);
 	if (model->md3[0])
 	{
-		start = R_GetTag(model->md3[0], startFrame, tagName);
-		finish = R_GetTag(model->md3[0], endFrame, tagName);
+		start = R_GetTag(model->md3[0], start_frame, tagName);
+		finish = R_GetTag(model->md3[0], end_frame, tagName);
 	}
 	else
 	{

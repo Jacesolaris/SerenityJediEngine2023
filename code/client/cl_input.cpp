@@ -990,7 +990,7 @@ void CL_WritePacket(void)
 
 		// write all the commands, including the predicted command
 		memset(&nullcmd, 0, sizeof nullcmd);
-		usercmd_t* oldcmd = &nullcmd;
+		const usercmd_t* oldcmd = &nullcmd;
 		for (i = 0; i < count; i++)
 		{
 			const int j = cl.cmdNumber - count + i + 1 & CMD_MASK;

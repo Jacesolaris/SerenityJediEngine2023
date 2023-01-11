@@ -95,13 +95,13 @@ public:
 
 	int Save() override;
 	int Load() override;
-	int Run(int icarusID, char* buffer, long length) override;
-	void DeleteIcarusID(int& icarusID) override;
-	int GetIcarusID(int ownerID) override;
-	int Update(int icarusID) override;
+	int Run(int icarus_id, char* buffer, long length) override;
+	void DeleteIcarusID(int& icarus_id) override;
+	int GetIcarusID(int game_id) override;
+	int Update(int icarus_id) override;
 
-	int IsRunning(int icarusID) override;
-	void Completed(int icarusID, int taskID) override;
+	int IsRunning(int icarus_id) override;
+	void Completed(int icarus_id, int task_id) override;
 	void Precache(char* buffer, long length) override;
 
 protected:
@@ -111,8 +111,8 @@ protected:
 public:
 	CSequence* GetSequence(int id);
 	void DeleteSequence(CSequence* sequence);
-	int AllocateSequences(int numSequences, const int* idTable);
-	CSequencer* FindSequencer(int sequencerID);
+	int AllocateSequences(int num_sequences, const int* id_table);
+	CSequencer* FindSequencer(int sequencer_id);
 	CSequence* GetSequence();
 
 protected:
@@ -261,9 +261,9 @@ public:
 	// Reset the buffer completely.
 	void ResetBuffer();
 	// Write to a buffer.
-	void BufferWrite(const void* pSrcData, unsigned long ulNumBytesToWrite);
+	void BufferWrite(const void* p_src_data, unsigned long ul_num_bytes_to_write);
 	// Read from a buffer.
-	void BufferRead(void* pDstBuff, unsigned long ulNumBytesToRead);
+	void BufferRead(void* p_dst_buff, unsigned long ul_num_bytes_to_read);
 };
 
 #endif

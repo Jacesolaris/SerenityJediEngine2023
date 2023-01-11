@@ -74,8 +74,8 @@ struct boneInfo_t
 	int boneNumber; // what bone are we overriding?
 	mdxaBone_t matrix; // details of bone angle overrides - some are pre-done on the server, some in ghoul2
 	int flags; // flags for override
-	int startFrame; // start frame for animation
-	int endFrame; // end frame for animation NOTE anim actually ends on endFrame+1
+	int start_frame; // start frame for animation
+	int end_frame; // end frame for animation NOTE anim actually ends on end_frame+1
 	int startTime; // time we started this animation
 	int pauseTime; // time we paused this animation - 0 if not paused
 	float animSpeed;
@@ -160,8 +160,8 @@ struct boneInfo_t
 	boneInfo_t() :
 		boneNumber(-1),
 		flags(0),
-		startFrame(0),
-		endFrame(0),
+		start_frame(0),
+		end_frame(0),
 		startTime(0),
 		pauseTime(0),
 		animSpeed(0),
@@ -220,7 +220,7 @@ struct SSkinGoreData
 {
 	vec3_t			angles;
 	vec3_t			position;
-	int				currentTime;
+	int				current_time;
 	int				entNum;
 	vec3_t			rayDirection;	// in world space
 	vec3_t			hitLocation;	// in world space

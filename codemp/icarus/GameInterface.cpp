@@ -689,7 +689,7 @@ ICARUS_LinkEntity
 -------------------------
 */
 
-int ICARUS_LinkEntity(const int entID, CSequencer* sequencer, CTaskManager* taskManager)
+int ICARUS_LinkEntity(const int entID, CSequencer* sequencer, CTaskManager* task_manager)
 {
 	sharedEntity_t* ent = SV_GentityNum(entID);
 
@@ -697,7 +697,7 @@ int ICARUS_LinkEntity(const int entID, CSequencer* sequencer, CTaskManager* task
 		return false;
 
 	gSequencers[ent->s.number] = sequencer;
-	gTaskManagers[ent->s.number] = taskManager;
+	gTaskManagers[ent->s.number] = task_manager;
 
 	ICARUS_AssociateEnt(ent);
 

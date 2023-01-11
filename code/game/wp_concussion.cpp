@@ -111,9 +111,9 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 
 	for (int i = 0; i < traces; i++)
 	{
-		constexpr float shotRange = 8192;
+		constexpr float shot_range = 8192;
 		vec3_t end;
-		VectorMA(start, shotRange, forward_vec, end);
+		VectorMA(start, shot_range, forward_vec, end);
 
 		gi.trace(&tr, start, shot_mins, shot_maxs, end, skip, MASK_SHOT, G2_COLLIDE, 10);
 
@@ -177,7 +177,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 					}
 
 					const int hit_loc = G_GetHitLocFromTrace(&tr, MOD_CONC_ALT);
-					const auto noKnockBack = static_cast<qboolean>((trace_ent->flags & FL_NO_KNOCKBACK) != 0);
+					const auto no_knock_back = static_cast<qboolean>((trace_ent->flags & FL_NO_KNOCKBACK) != 0);
 					//will be set if they die, I want to know if it was on *before* they died
 					if (trace_ent && trace_ent->client && trace_ent->client->NPC_class == CLASS_GALAKMECH)
 					{
@@ -202,7 +202,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 
 						//if ( trace_ent->NPC || Q_irand(0,g_spskill->integer+1) )
 						{
-							if (!noKnockBack)
+							if (!no_knock_back)
 							{
 								//knock-backable
 								g_throw(trace_ent, push_dir, 200);
@@ -258,10 +258,10 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 	// now go along the trail and make sight events
 	VectorSubtract(tr.endpos, muzzle, dir);
 
-	const float shotDist = VectorNormalize(dir);
+	const float shot_dist = VectorNormalize(dir);
 
 	//FIXME: if shoot *really* close to someone, the alert could be way out of their FOV
-	for (float dist = 0; dist < shotDist; dist += 64)
+	for (float dist = 0; dist < shot_dist; dist += 64)
 	{
 		//FIXME: on a really long shot, this could make a LOT of alerts in one frame...
 		VectorMA(muzzle, dist, dir, spot);
@@ -270,7 +270,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 		G_PlayEffect(G_EffectIndex("concussion/alt_ring"), spot, forward_vec);
 	}
 	//FIXME: spawn a temp ent that continuously spawns sight alerts here?  And 1 sound alert to draw their attention?
-	VectorMA(start, shotDist - 4, forward_vec, spot);
+	VectorMA(start, shot_dist - 4, forward_vec, spot);
 	AddSightEvent(ent, spot, 256, AEL_DISCOVERED, 50);
 
 	G_PlayEffect(G_EffectIndex("concussion/altmuzzle_flash"), muzzle, forward_vec);

@@ -48,7 +48,7 @@ public:
 	virtual ~IIcarusInterface();
 
 	// Get a static singleton instance (of a specific flavor).
-	static IIcarusInterface* GetIcarus(int flavor = 0, bool constructIfNecessary = true);
+	static IIcarusInterface* GetIcarus(int flavor = 0, bool construct_if_necessary = true);
 	// must be implemented along with concrete class
 	static void DestroyIcarus(); // Destroy the static singleton instance.
 

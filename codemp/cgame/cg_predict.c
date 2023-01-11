@@ -543,7 +543,7 @@ static void CG_InterpolatePlayerState(const qboolean grab_angles)
 		const int cmd_num = trap->GetCurrentCmdNumber();
 		trap->GetUserCmd(cmd_num, &cmd);
 
-		PM_UpdateViewAngles(out->fd.saberAnimLevel, out, &cmd);
+		PM_UpdateViewAngles(out->fd.saber_anim_level, out, &cmd);
 	}
 
 	// if the next frame is a teleport, we can't lerp to it
@@ -595,7 +595,7 @@ static void CG_InterpolateVehiclePlayerState(const qboolean grab_angles)
 		const int cmd_num = trap->GetCurrentCmdNumber();
 		trap->GetUserCmd(cmd_num, &cmd);
 
-		PM_UpdateViewAngles(out->fd.saberAnimLevel, out, &cmd);
+		PM_UpdateViewAngles(out->fd.saber_anim_level, out, &cmd);
 	}
 
 	// if the next frame is a teleport, we can't lerp to it
@@ -1193,7 +1193,7 @@ void CG_PredictPlayerState(void)
 			cgSendPS[i]->legsFlip = cg_entities[i].currentState.legsFlip;
 			cgSendPS[i]->torsoFlip = cg_entities[i].currentState.torsoFlip;
 			cgSendPS[i]->client_num = cg_entities[i].currentState.client_num;
-			cgSendPS[i]->saberMove = cg_entities[i].currentState.saberMove;
+			cgSendPS[i]->saber_move = cg_entities[i].currentState.saber_move;
 		}
 	}
 
@@ -1216,7 +1216,7 @@ void CG_PredictPlayerState(void)
 
 		if (cg_pmove.pmove_fixed)
 		{
-			PM_UpdateViewAngles(ci->fd.saberAnimLevel, cg_pmove.ps, &cg_pmove.cmd);
+			PM_UpdateViewAngles(ci->fd.saber_anim_level, cg_pmove.ps, &cg_pmove.cmd);
 		}
 
 		// don't do anything if the time is before the snapshot player time
@@ -1402,7 +1402,7 @@ void CG_PredictPlayerState(void)
 		}
 
 		//THIS is pretty much bad, but...
-		cg_pmove.ps->fd.saberAnimLevelBase = cg_pmove.ps->fd.saberAnimLevel;
+		cg_pmove.ps->fd.saberAnimLevelBase = cg_pmove.ps->fd.saber_anim_level;
 		if (cg_pmove.ps->saberHolstered == 1)
 		{
 			if (ci->saber[0].numBlades > 0)
@@ -1615,7 +1615,7 @@ revertES:
 			cg_entities[i].currentState.torsoAnim = cgSendPS[i]->torsoAnim;
 			cg_entities[i].currentState.legsAnim = cgSendPS[i]->legsAnim;
 			cg_entities[i].currentState.forceFrame = cgSendPS[i]->saberLockFrame;
-			cg_entities[i].currentState.saberMove = cgSendPS[i]->saberMove;
+			cg_entities[i].currentState.saber_move = cgSendPS[i]->saber_move;
 		}
 	}
 }

@@ -1086,7 +1086,7 @@ void StopFollowing(gentity_t* ent)
 	ent->client->ps.zoomMode = 0;
 	ent->client->ps.zoomLocked = qfalse;
 	ent->client->ps.zoomLockTime = 0;
-	ent->client->ps.saberMove = LS_NONE;
+	ent->client->ps.saber_move = LS_NONE;
 	ent->client->ps.legsAnim = 0;
 	ent->client->ps.legsTimer = 0;
 	ent->client->ps.torsoAnim = 0;
@@ -1528,30 +1528,30 @@ qboolean G_SetSaber(const gentity_t* ent, const int saber_num, const char* saber
 	else
 		Q_strncpyz(ent->client->pers.saber2, ent->client->saber[1].name, sizeof ent->client->pers.saber2);
 
-	if (!G_ValidSaberStyle(ent, ent->client->ps.fd.saberAnimLevel))
+	if (!G_ValidSaberStyle(ent, ent->client->ps.fd.saber_anim_level))
 	{
 		//had an illegal style, revert to default
 		if ((ent->client->saber[0].type == SABER_BACKHAND))
 		{
-			ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+			ent->client->ps.fd.saber_anim_level = SS_STAFF;
 		}
 		else if ((ent->client->saber[0].type == SABER_ASBACKHAND))
 		{
-			ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+			ent->client->ps.fd.saber_anim_level = SS_STAFF;
 		}
 		else if ((ent->client->saber[0].type == SABER_STAFF_MAUL))
 		{
-			ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+			ent->client->ps.fd.saber_anim_level = SS_STAFF;
 		}
 		else if ((ent->client->saber[0].type == SABER_ELECTROSTAFF))
 		{
-			ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+			ent->client->ps.fd.saber_anim_level = SS_STAFF;
 		}
 		else
 		{
-			ent->client->ps.fd.saberAnimLevel = SS_MEDIUM;
+			ent->client->ps.fd.saber_anim_level = SS_MEDIUM;
 		}
-		ent->client->saberCycleQueue = ent->client->ps.fd.saberAnimLevel;
+		ent->client->saberCycleQueue = ent->client->ps.fd.saber_anim_level;
 	}
 
 	return qtrue;
@@ -3213,22 +3213,22 @@ void Cmd_SaberAttackCycle_f(gentity_t* ent)
 		return;
 	}
 
-	if ((ent->client->saber[0].type == SABER_BACKHAND) && ent->client->ps.fd.saberAnimLevel == SS_STAFF)
+	if ((ent->client->saber[0].type == SABER_BACKHAND) && ent->client->ps.fd.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
-	if ((ent->client->saber[0].type == SABER_ASBACKHAND) && ent->client->ps.fd.saberAnimLevel == SS_STAFF)
+	if ((ent->client->saber[0].type == SABER_ASBACKHAND) && ent->client->ps.fd.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
-	if ((ent->client->saber[0].type == SABER_STAFF_MAUL) && ent->client->ps.fd.saberAnimLevel == SS_STAFF)
+	if ((ent->client->saber[0].type == SABER_STAFF_MAUL) && ent->client->ps.fd.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
-	if ((ent->client->saber[0].type == SABER_ELECTROSTAFF) && ent->client->ps.fd.saberAnimLevel == SS_STAFF)
+	if ((ent->client->saber[0].type == SABER_ELECTROSTAFF) && ent->client->ps.fd.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
@@ -3269,7 +3269,7 @@ void Cmd_SaberAttackCycle_f(gentity_t* ent)
 	}
 	else
 	{
-		select_level = ent->client->ps.fd.saberAnimLevel;
+		select_level = ent->client->ps.fd.saber_anim_level;
 	}
 
 	if (level.gametype == GT_SIEGE &&
@@ -3377,7 +3377,7 @@ void Cmd_SaberAttackCycle_f(gentity_t* ent)
 	if (ent->client->ps.weaponTime <= 0)
 	{
 		//not busy, set it now
-		ent->client->ps.fd.saberAnimLevel = select_level;
+		ent->client->ps.fd.saber_anim_level = select_level;
 	}
 	else
 	{
@@ -3608,15 +3608,15 @@ void Cmd_DebugSetSaberMove_f(gentity_t* self)
 		return;
 	}
 
-	self->client->ps.saberMove = atoi(arg);
+	self->client->ps.saber_move = atoi(arg);
 	self->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
 
-	if (self->client->ps.saberMove >= LS_MOVE_MAX)
+	if (self->client->ps.saber_move >= LS_MOVE_MAX)
 	{
-		self->client->ps.saberMove = LS_MOVE_MAX - 1;
+		self->client->ps.saber_move = LS_MOVE_MAX - 1;
 	}
 
-	Com_Printf("Anim for move: %s\n", animTable[saberMoveData[self->client->ps.saberMove].animToUse].name);
+	Com_Printf("Anim for move: %s\n", animTable[saberMoveData[self->client->ps.saber_move].animToUse].name);
 }
 
 void Cmd_DebugSetSaberBlock_f(gentity_t* self)

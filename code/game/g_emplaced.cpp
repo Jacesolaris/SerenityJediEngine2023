@@ -210,7 +210,7 @@ void eweb_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int da
 	vec3_t org;
 
 	// turn off any firing animations it may have been doing
-	self->s.frame = self->startFrame = self->endFrame = 0;
+	self->s.frame = self->start_frame = self->end_frame = 0;
 	self->svFlags &= ~(SVF_ANIMATING | SVF_PLAYER_USABLE);
 
 	self->health = 0;
@@ -729,7 +729,7 @@ void emplaced_gun_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker
 	vec3_t org;
 
 	// turn off any firing animations it may have been doing
-	self->s.frame = self->startFrame = self->endFrame = 0;
+	self->s.frame = self->start_frame = self->end_frame = 0;
 	self->svFlags &= ~SVF_ANIMATING;
 
 	self->health = 0;

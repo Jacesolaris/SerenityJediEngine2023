@@ -3186,7 +3186,7 @@ int pm_power_level_for_saber_anims(const playerState_t* ps)
 		|| anim >= BOTH_P7_S7_T_ && anim <= BOTH_P7_S7_BR)
 	{
 		//parries
-		switch (ps->fd.saberAnimLevel)
+		switch (ps->fd.saber_anim_level)
 		{
 		case SS_STRONG:
 		case SS_DESANN:
@@ -6197,7 +6197,7 @@ void BG_SetAnimFinal(playerState_t* ps, const animation_t* animations, const int
 	assert(anim > -1);
 	assert(animations[anim].firstFrame > 0 || animations[anim].numFrames > 0);
 
-	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, anim, &edit_anim_speed, ps->userInt3);
+	pm_saber_start_trans_anim(ps->client_num, ps->fd.saber_anim_level, ps->weapon, anim, &edit_anim_speed, ps->userInt3);
 
 	// Set torso anim
 	if (set_anim_parts & SETANIM_TORSO)
@@ -6432,7 +6432,7 @@ float bg_get_torso_anim_point(const playerState_t* ps, const int anim_index)
 	float anim_speed_factor = 1.0f;
 
 	//Be sure to scale by the proper anim speed just as if we were going to play the animation
-	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->torsoAnim, &anim_speed_factor,
+	pm_saber_start_trans_anim(ps->client_num, ps->fd.saber_anim_level, ps->weapon, ps->torsoAnim, &anim_speed_factor,
 	                          ps->userInt3);
 
 	if (anim_speed_factor > 0)
@@ -6468,7 +6468,7 @@ float BG_GetLegsAnimPoint(const playerState_t* ps, const int anim_index)
 	float anim_speed_factor = 1.0f;
 
 	//Be sure to scale by the proper anim speed just as if we were going to play the animation
-	pm_saber_start_trans_anim(ps->client_num, ps->fd.saberAnimLevel, ps->weapon, ps->legsAnim, &anim_speed_factor,
+	pm_saber_start_trans_anim(ps->client_num, ps->fd.saber_anim_level, ps->weapon, ps->legsAnim, &anim_speed_factor,
 	                          ps->userInt3);
 
 	if (anim_speed_factor > 0)

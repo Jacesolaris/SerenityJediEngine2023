@@ -238,7 +238,7 @@ static void WP_RemoveOldTraps(const gentity_t* ent)
 	// now remove first ones we find until there are only 9 left
 	found = nullptr;
 	const int trapcount_org = trapcount;
-	int lowestTimeStamp = level.time;
+	int lowest_time_stamp = level.time;
 
 	while (trapcount > 9)
 	{
@@ -250,10 +250,10 @@ static void WP_RemoveOldTraps(const gentity_t* ent)
 				continue;
 			}
 			found = &g_entities[foundLaserTraps[i]];
-			if (found->setTime < lowestTimeStamp)
+			if (found->setTime < lowest_time_stamp)
 			{
 				removeMe = i;
-				lowestTimeStamp = found->setTime;
+				lowest_time_stamp = found->setTime;
 			}
 		}
 		if (removeMe != -1)

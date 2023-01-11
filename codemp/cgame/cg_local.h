@@ -367,7 +367,7 @@ typedef struct clientInfo_s {
 	int         saberFatigueChainCount;
 	int			BlasterAttackChainCount;
 	int			blockPoints;
-	int			saberAnimLevel;
+	int			saber_anim_level;
 
 	forcedata_t	fd;
 } clientInfo_t;

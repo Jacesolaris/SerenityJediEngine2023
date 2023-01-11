@@ -536,8 +536,8 @@ struct gentity_s
 	int IcarusSoundTime; //manual debouncer for Icarus sound scripting.
 	char* cameraGroup; //used for cameragroup targeting
 
-	int startFrame; //startframe for map entity animations
-	int endFrame; //endframe for map entity animations
+	int start_frame; //startframe for map entity animations
+	int end_frame; //endframe for map entity animations
 	qboolean loopAnim; //does this animation loop?
 
 	int roff_ctr; // current roff frame we are playing

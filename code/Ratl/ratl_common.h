@@ -273,7 +273,7 @@ namespace ratl
 		}
 #else
 	public:
-		int operator()()
+		int operator()() const
 		{
 			return 1;
 		}

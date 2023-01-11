@@ -631,7 +631,7 @@ extern	pmove_t* pm;
 #define	AFLAG_LEDGE (SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS|SETANIM_FLAG_PACE)
 
 // if a full pmove isn't done on the client, you can just update the angles
-void PM_UpdateViewAngles(int saberAnimLevel, playerState_t* ps, const usercmd_t* cmd);
+void PM_UpdateViewAngles(int saber_anim_level, playerState_t* ps, const usercmd_t* cmd);
 void Pmove(pmove_t* pmove);
 
 //===================================================================================

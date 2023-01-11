@@ -4797,7 +4797,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 
 			if (self->owner)
 			{
-				self->owner->s.frame = self->owner->startFrame = self->owner->endFrame = 0;
+				self->owner->s.frame = self->owner->start_frame = self->owner->end_frame = 0;
 				self->owner->svFlags &= ~SVF_ANIMATING;
 			}
 
@@ -5791,10 +5791,10 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 	if (PM_PowerLevelForSaberAnim(&self->client->ps) > FORCE_LEVEL_2)
 	{
 		//strong attacks can't be interrupted
-		if (PM_InAnimForSaberMove(self->client->ps.torsoAnim, self->client->ps.saberMove))
+		if (PM_InAnimForSaberMove(self->client->ps.torsoAnim, self->client->ps.saber_move))
 		{
-			//our saberMove was not already interupted by some other anim (like pain)
-			if (PM_SaberInStart(self->client->ps.saberMove))
+			//our saber_move was not already interupted by some other anim (like pain)
+			if (PM_SaberInStart(self->client->ps.saber_move))
 			{
 				const float anim_length = PM_AnimLength(self->client->clientInfo.animFileIndex,
 					static_cast<animNumber_t>(self->client->ps.torsoAnim));
@@ -5804,7 +5804,7 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 					return qtrue;
 				}
 			}
-			else if (PM_SaberInReturn(self->client->ps.saberMove))
+			else if (PM_SaberInReturn(self->client->ps.saber_move))
 			{
 				if (self->client->ps.torsoAnimTimer > 750)
 				{
@@ -5914,7 +5914,7 @@ void PlayerPain(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 						//temp HACK: these are the only 2 pain anims that look good when holding a saber
 						NPC_SetAnim(self, parts, PM_PickAnim(self, BOTH_PAIN2, BOTH_PAIN3),
 							SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-						self->client->ps.saberMove = LS_READY; //don't finish whatever saber move you may have been in
+						self->client->ps.saber_move = LS_READY; //don't finish whatever saber move you may have been in
 						//WTF - insn't working
 						if (self->health < 10 && d_slowmodeath->integer > 5)
 						{

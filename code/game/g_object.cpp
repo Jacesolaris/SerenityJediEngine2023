@@ -301,7 +301,7 @@ gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const 
 	object->s.eFlags |= EF_AUTO_SIZE; //CG_Ents will create the mins & max itself based on model bounds
 	object->s.modelindex = model_index;
 	//FIXME: allow to set a targetname/script_targetname and animation info?
-	object->s.frame = object->startFrame = object->endFrame = frame;
+	object->s.frame = object->start_frame = object->end_frame = frame;
 	object->owner = owner;
 	object->clipmask = MASK_SOLID; //?
 	//object->e_TouchFunc = touchF_charge_stick;

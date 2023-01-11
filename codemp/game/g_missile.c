@@ -816,7 +816,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 		&& !WP_DoingForcedAnimationForForcePowers(other))
 	{
 		//play projectile block animation
-		if (other->client && !PM_SaberInAttack(other->client->ps.saberMove)
+		if (other->client && !PM_SaberInAttack(other->client->ps.saber_move)
 			|| other->client && (pm->cmd.buttons & BUTTON_FORCEPOWER
 				|| pm->cmd.buttons & BUTTON_FORCEGRIP
 				|| pm->cmd.buttons & BUTTON_DASH
@@ -850,7 +850,7 @@ qboolean G_MissileImpact(gentity_t* ent, trace_t* trace)
 			ent->methodOfDeath != MOD_CONC_ALT)
 		{
 			if (other_owner->client
-				&& !PM_SaberInAttack(other_owner->client->ps.saberMove)
+				&& !PM_SaberInAttack(other_owner->client->ps.saber_move)
 				|| other_owner->client && (pm->cmd.buttons & BUTTON_FORCEPOWER
 					|| pm->cmd.buttons & BUTTON_FORCEGRIP
 					|| pm->cmd.buttons & BUTTON_DASH
@@ -1541,7 +1541,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 					//very Low points = bad blocks
 					WP_BrokenBoltBlockKnockBack(blocker);
 					blocker->client->ps.saberBlocked = BLOCKED_NONE;
-					blocker->client->ps.saberMove = LS_NONE;
+					blocker->client->ps.saber_move = LS_NONE;
 				}
 				else
 				{
@@ -1590,7 +1590,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 					//very Low points = bad blocks
 					WP_BrokenBoltBlockKnockBack(blocker);
 					blocker->client->ps.saberBlocked = BLOCKED_NONE;
-					blocker->client->ps.saberMove = LS_NONE;
+					blocker->client->ps.saber_move = LS_NONE;
 				}
 				else
 				{
@@ -1663,7 +1663,7 @@ void wp_handle_bolt_block(gentity_t* bolt, gentity_t* blocker, trace_t* trace, v
 					//very Low points = bad blocks
 					WP_BrokenBoltBlockKnockBack(blocker);
 					blocker->client->ps.saberBlocked = BLOCKED_NONE;
-					blocker->client->ps.saberMove = LS_NONE;
+					blocker->client->ps.saber_move = LS_NONE;
 				}
 				else
 				{

@@ -3383,7 +3383,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 				{
 					n = 5;
 				}
-				npc->client->ps.fd.saberAnimLevel = n;
+				npc->client->ps.fd.saber_anim_level = n;
 				continue;
 			}
 

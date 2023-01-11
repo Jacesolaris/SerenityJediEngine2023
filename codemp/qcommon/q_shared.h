@@ -475,8 +475,8 @@ typedef struct sharedRagDollParams_s {
 	int me; //index of entity giving this update
 
 	//rww - we have convenient animation/frame access in the game, so just send this info over from there.
-	int startFrame;
-	int endFrame;
+	int start_frame;
+	int end_frame;
 
 	int collisionType; // 1 = from a fall, 0 from effectors, this will be going away soon, hence no enum
 
@@ -516,8 +516,8 @@ typedef struct sharedSetBoneIKStateParams_s {
 	float radius; //bone rad
 	int blend_time; //bone blend time
 	int pcjOverrides; //override ik bone flags
-	int startFrame; //base pose start
-	int endFrame; //base pose end
+	int start_frame; //base pose start
+	int end_frame; //base pose end
 	qboolean forceAnimOnBone; //normally if the bone has specified start/end frames already it will leave it alone.. if this is true, then the animation will be restarted on the bone with the specified frames anyway.
 } sharedSetBoneIKStateParams_t;
 
@@ -1039,7 +1039,7 @@ typedef struct forcedata_s {
 	qboolean	sentryDeployed;
 
 	int			saberAnimLevelBase;//sigh...
-	int			saberAnimLevel;
+	int			saber_anim_level;
 	int			saberDrawAnimLevel;
 
 	int			suicides;
@@ -1195,14 +1195,14 @@ typedef struct playerState_s {
 
 	qboolean	saberInFlight;
 
-	int			saberMove;
+	int			saber_move;
 	int			saberBlocking;
 	int			saberBlocked;
 	int		    saberBounceMove;
 	short 		leanStopDebounceTime;
 	int			saberBlockingTime;
 	int         saberManualBlockingTime;
-	int			saberAnimLevel;
+	int			saber_anim_level;
 
 	int			saberLockTime;
 	int			saberLockEnemy;
@@ -1862,7 +1862,7 @@ typedef struct entityState_s {
 
 	qboolean	saberInFlight;
 	int			saberEntityNum;
-	int			saberMove;
+	int			saber_move;
 	int			forcePowersActive;
 	int			saberHolstered;//sent in only only 2 bits - should be 0, 1 or 2
 
@@ -2110,7 +2110,7 @@ typedef struct SSkinGoreData_s
 {
 	vec3_t			angles;
 	vec3_t			position;
-	int				currentTime;
+	int				current_time;
 	int				entNum;
 	vec3_t			rayDirection;	// in world space
 	vec3_t			hitLocation;	// in world space

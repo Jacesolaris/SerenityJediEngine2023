@@ -2254,8 +2254,8 @@ void beacon_deploy(gentity_t* ent)
 	ent->nextthink = level.time + FRAMETIME * 0.5f;
 
 	ent->s.frame = 0;
-	ent->startFrame = 0;
-	ent->endFrame = 30;
+	ent->start_frame = 0;
+	ent->end_frame = 30;
 	ent->loopAnim = qfalse;
 }
 
@@ -2269,8 +2269,8 @@ void beacon_think(gentity_t* ent)
 		ent->e_ThinkFunc = thinkF_NULL;
 		ent->nextthink = -1;
 
-		ent->startFrame = 31;
-		ent->endFrame = 60;
+		ent->start_frame = 31;
+		ent->end_frame = 60;
 		ent->loopAnim = qtrue;
 
 		ent->s.loopSound = ent->noise_index;

@@ -3334,7 +3334,7 @@ void player_die(gentity_t* self, const gentity_t* inflictor, gentity_t* attacker
 			//also - if MOD_SABER, list the animation and saber style
 			if (means_of_death == MOD_SABER)
 			{
-				G_LogPrintf("killer saber style: %d, killer saber anim %s\n", attacker->client->ps.fd.saberAnimLevel,
+				G_LogPrintf("killer saber style: %d, killer saber anim %s\n", attacker->client->ps.fd.saber_anim_level,
 				            animTable[attacker->client->ps.torsoAnim].name);
 			}
 		}
@@ -3862,10 +3862,10 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 	if (pm_power_level_for_saber_anims(&self->client->ps) > FORCE_LEVEL_2)
 	{
 		//strong attacks can't be interrupted
-		if (PM_InAnimForSaberMove(self->client->ps.torsoAnim, self->client->ps.saberMove))
+		if (PM_InAnimForSaberMove(self->client->ps.torsoAnim, self->client->ps.saber_move))
 		{
-			//our saberMove was not already interupted by some other anim (like pain)
-			if (PM_SaberInStart(self->client->ps.saberMove))
+			//our saber_move was not already interupted by some other anim (like pain)
+			if (PM_SaberInStart(self->client->ps.saber_move))
 			{
 				const float anim_length = PM_AnimLength(self->client->ps.torsoAnim);
 				if (anim_length - self->client->ps.torsoTimer > 750)
@@ -3874,7 +3874,7 @@ qboolean G_CheckForStrongAttackMomentum(const gentity_t* self)
 					return qtrue;
 				}
 			}
-			else if (PM_SaberInReturn(self->client->ps.saberMove))
+			else if (PM_SaberInReturn(self->client->ps.saber_move))
 			{
 				if (self->client->ps.torsoTimer > 750)
 				{
@@ -3971,7 +3971,7 @@ void PlayerPain(gentity_t* self, const int damage)
 						//temp HACK: these are the only 2 pain anims that look good when holding a saber
 						NPC_SetAnim(self, parts, PM_PickAnim(self->localAnimIndex, BOTH_PAIN2, BOTH_PAIN3),
 						            SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
-						self->client->ps.saberMove = LS_READY; //don't finish whatever saber move you may have been in
+						self->client->ps.saber_move = LS_READY; //don't finish whatever saber move you may have been in
 					}
 					if (parts == SETANIM_BOTH && (damage > 30 || self->painDebounceTime > level.time && damage > 10))
 					{

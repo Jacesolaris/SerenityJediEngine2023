@@ -2165,8 +2165,8 @@ void SP_func_train(gentity_t* self)
 
 	char* noise;
 
-	G_SpawnInt("startframe", "0", &self->startFrame);
-	G_SpawnInt("endframe", "0", &self->endFrame);
+	G_SpawnInt("startframe", "0", &self->start_frame);
+	G_SpawnInt("endframe", "0", &self->end_frame);
 
 	if (G_SpawnString("noise", "", &noise))
 	{
@@ -2211,9 +2211,9 @@ void SP_func_train(gentity_t* self)
 	{
 		self->spawnflags &= ~32; // once only
 
-		gi.G2API_SetBoneAnim(&self->ghoul2[self->playerModel], "model_root", self->startFrame, self->endFrame,
+		gi.G2API_SetBoneAnim(&self->ghoul2[self->playerModel], "model_root", self->start_frame, self->end_frame,
 		                     BONE_ANIM_OVERRIDE_LOOP, 1.0f + Q_flrand(-1.0f, 1.0f) * 0.1f, 0, -1, -1);
-		self->endFrame = 0; // don't allow it to do anything with the animation function in G_main
+		self->end_frame = 0; // don't allow it to do anything with the animation function in G_main
 	}
 }
 

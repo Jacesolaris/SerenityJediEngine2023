@@ -57,8 +57,8 @@ void rocketThink(gentity_t* ent)
 		vec3_t targetdir;
 		vec3_t newdir;
 		float vel = ent->spawnflags & 1 ? ent->speed : ROCKET_VELOCITY;
-		const float newDirMult = ent->angle ? ent->angle * 2.0f : 1.0f;
-		const float oldDirMult = ent->angle ? (1.0f - ent->angle) * 2.0f : 1.0f;
+		const float new_dir_mult = ent->angle ? ent->angle * 2.0f : 1.0f;
+		const float old_dir_mult = ent->angle ? (1.0f - ent->angle) * 2.0f : 1.0f;
 
 		if (ent->spawnflags & 1)
 		{
@@ -115,16 +115,16 @@ void rocketThink(gentity_t* ent)
 			if (dot2 > 0)
 			{
 				// Turn 45 degrees right.
-				VectorMA(ent->movedir, 0.3f * newDirMult, right, newdir);
+				VectorMA(ent->movedir, 0.3f * new_dir_mult, right, newdir);
 			}
 			else
 			{
 				// Turn 45 degrees left.
-				VectorMA(ent->movedir, -0.3f * newDirMult, right, newdir);
+				VectorMA(ent->movedir, -0.3f * new_dir_mult, right, newdir);
 			}
 
 			// Yeah we've adjusted horizontally, but let's split the difference vertically, so we kinda try to move towards it.
-			newdir[2] = (targetdir[2] * newDirMult + ent->movedir[2] * oldDirMult) * 0.5;
+			newdir[2] = (targetdir[2] * new_dir_mult + ent->movedir[2] * old_dir_mult) * 0.5;
 
 			// slowing down coupled with fairly tight turns can lead us to orbit an enemy..looks bad so don't do it!
 			//			vel *= 0.5f;
@@ -132,12 +132,12 @@ void rocketThink(gentity_t* ent)
 		else if (dot < 0.70f)
 		{
 			// Still a bit off, so we turn a bit softer
-			VectorMA(ent->movedir, 0.5f * newDirMult, targetdir, newdir);
+			VectorMA(ent->movedir, 0.5f * new_dir_mult, targetdir, newdir);
 		}
 		else
 		{
 			// getting close, so turn a bit harder
-			VectorMA(ent->movedir, 0.9f * newDirMult, targetdir, newdir);
+			VectorMA(ent->movedir, 0.9f * new_dir_mult, targetdir, newdir);
 		}
 
 		// add crazy drunkenness
@@ -221,16 +221,16 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 
 	if (alt_fire)
 	{
-		int lockEntNum, lockTime;
+		int lock_ent_num, lock_time;
 		if (ent->NPC && ent->enemy)
 		{
-			lockEntNum = ent->enemy->s.number;
-			lockTime = Q_irand(600, 1200);
+			lock_ent_num = ent->enemy->s.number;
+			lock_time = Q_irand(600, 1200);
 		}
 		else
 		{
-			lockEntNum = g_rocketLockEntNum;
-			lockTime = g_rocketLockTime;
+			lock_ent_num = g_rocketLockEntNum;
+			lock_time = g_rocketLockTime;
 		}
 
 		//Shove us backwards for half a second
@@ -242,10 +242,10 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 			NPC_SetAnim(ent, SETANIM_BOTH, BOTH_H1_S1_TR, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
 		// we'll consider attempting to lock this little poochie onto some baddie.
-		if ((lockEntNum > 0 || ent->NPC && lockEntNum >= 0) && lockEntNum < ENTITYNUM_WORLD && lockTime > 0)
+		if ((lock_ent_num > 0 || ent->NPC && lock_ent_num >= 0) && lock_ent_num < ENTITYNUM_WORLD && lock_time > 0)
 		{
 			// take our current lock time and divide that by 8 wedge slices to get the current lock amount
-			int dif = (level.time - lockTime) / (1200.0f / 8.0f);
+			int dif = (level.time - lock_time) / (1200.0f / 8.0f);
 
 			if (dif < 0)
 			{
@@ -261,7 +261,7 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 			//	Finally, just give any amount of charge a very slight random chance of locking.
 			if (dif == 8 || Q_flrand(0.0f, 1.0f) * dif > 2 || Q_flrand(0.0f, 1.0f) > 0.97f)
 			{
-				missile->enemy = &g_entities[lockEntNum];
+				missile->enemy = &g_entities[lock_ent_num];
 
 				if (missile->enemy
 					&& missile->enemy->inuse)

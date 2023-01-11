@@ -625,7 +625,7 @@ static const char* sg_get_chid_text(const unsigned int chid)
 	return chidtext;
 }
 
-extern void wp_saber_set_defaults(saberInfo_t* saber, qboolean setColors);
+extern void wp_saber_set_defaults(saberInfo_t* saber, qboolean set_colors);
 
 void saberInfoRetail_t::sg_export(
 	saberInfo_t& dst) const

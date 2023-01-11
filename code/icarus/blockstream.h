@@ -136,18 +136,18 @@ public:
 
 	//Write Overloads
 
-	int Write(int, vec3_t, CIcarus* icaru);
-	int Write(int, float, CIcarus* icaru);
-	int Write(int, const char*, CIcarus* icaru);
-	int Write(int, int, CIcarus* icaru);
+	int Write(int, vec3_t, CIcarus* icarus);
+	int Write(int, float, CIcarus* icarus);
+	int Write(int, const char*, CIcarus* icarus);
+	int Write(int, int, CIcarus* icarus);
 	int Write(CBlockMember*, CIcarus* icaru);
 
 	//Member push / pop functions
 
 	int AddMember(CBlockMember*);
-	CBlockMember* GetMember(int memberNum) const;
+	CBlockMember* GetMember(int member_num) const;
 
-	void* GetMemberData(int memberNum) const;
+	void* GetMemberData(int member_num) const;
 
 	CBlock* Duplicate(const CIcarus* icarus);
 

@@ -110,7 +110,7 @@ void CG_AddGhoul2Mark(const int type, const float size, vec3_t hitloc, vec3_t hi
 	gore_skin.backFaces = false; // no back
 	gore_skin.lifeTime = life_time;
 	gore_skin.firstModel = first_model;
-	gore_skin.currentTime = cg.time;
+	gore_skin.current_time = cg.time;
 	gore_skin.entNum = entnum;
 	gore_skin.SSize = size;
 	gore_skin.TSize = size;
@@ -6490,10 +6490,10 @@ static void CG_G2SetHeadAnim(const centity_t* cent, const int anim)
 	}
 
 	// first decide if we are doing an animation on the head already
-	//	int startFrame, endFrame;
-	//	const qboolean animatingHead =  gi.G2API_GetAnimRangeIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone, &startFrame, &endFrame);
+	//	int start_frame, end_frame;
+	//	const qboolean animatingHead =  gi.G2API_GetAnimRangeIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone, &start_frame, &end_frame);
 
-	//	if (!animatingHead || ( animations[anim].firstFrame != startFrame ) )// only set the anim if we aren't going to do the same animation again
+	//	if (!animatingHead || ( animations[anim].firstFrame != start_frame ) )// only set the anim if we aren't going to do the same animation again
 	{
 		constexpr int blend_time = 50;
 		gi.G2API_SetBoneAnimIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone,
@@ -12272,8 +12272,8 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 		{
 			//do no effects when idle
 			if (!cent->gent->client->ps.saberInFlight
-				&& !PM_SaberInAttack(cent->gent->client->ps.saberMove)
-				&& !PM_SaberInTransitionAny(cent->gent->client->ps.saberMove)
+				&& !PM_SaberInAttack(cent->gent->client->ps.saber_move)
+				&& !PM_SaberInTransitionAny(cent->gent->client->ps.saber_move)
 				&& !pm_saber_in_special_attack(cent->gent->client->ps.torsoAnim))
 			{
 				//idle, do no marks
@@ -12283,7 +12283,7 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 		if (cg_saberEntMarks.integer)
 		{
 			if (cent->gent->client->ps.saberInFlight
-				|| PM_SaberInAttack(cent->gent->client->ps.saberMove)
+				|| PM_SaberInAttack(cent->gent->client->ps.saber_move)
 				|| pm_saber_in_special_attack(cent->gent->client->ps.torsoAnim))
 			{
 				trace_mask |= CONTENTS_BODY | CONTENTS_CORPSE;
@@ -12370,7 +12370,7 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 										{
 											//ugh, need to have a real sound debouncer... or do this game-side
 											cent->gent->client->ps.saberHitWallSoundDebounceTime = cg.time;
-											if (PM_SaberInAttack(cent->gent->client->ps.saberMove)
+											if (PM_SaberInAttack(cent->gent->client->ps.saber_move)
 												|| pm_saber_in_special_attack(cent->gent->client->ps.torsoAnim))
 											{
 												cgi_S_StartSound(cent->lerpOrigin, cent->currentState.client_num,
@@ -12755,7 +12755,7 @@ static void CG_AddSaberBladeGo(const centity_t* cent, centity_t* scent, const in
 			float dirlen1 = VectorLength(dir1);
 			const float dirlen2 = VectorLength(dir2);
 
-			if (saberMoveData[client->ps.saberMove].trailLength == 0)
+			if (saberMoveData[client->ps.saber_move].trailLength == 0)
 			{
 				dirlen0 *= 0.5f;
 				dirlen1 *= 0.3f;
@@ -14675,7 +14675,7 @@ void CG_Player(centity_t* cent)
 								}
 								else
 								{
-									switch (cent->gent->client->ps.saberAnimLevel)
+									switch (cent->gent->client->ps.saber_anim_level)
 									{
 									case SS_FAST:
 										cent->gent->client->ps.saber[saber_num].blade[blade_num].length += cent->gent->

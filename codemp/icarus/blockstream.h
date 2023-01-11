@@ -148,9 +148,9 @@ public:
 	//Member push / pop functions
 
 	int AddMember(CBlockMember*);
-	CBlockMember* GetMember(int memberNum) const;
+	CBlockMember* GetMember(int member_num) const;
 
-	void* GetMemberData(int memberNum) const;
+	void* GetMemberData(int member_num) const;
 
 	CBlock* Duplicate(void);
 

@@ -362,10 +362,10 @@ void WP_InitForcePowers(const gentity_t* ent)
 	if (!ent || !ent->client)
 		return;
 
-	ent->client->ps.fd.saberAnimLevel = ent->client->sess.saberLevel;
+	ent->client->ps.fd.saber_anim_level = ent->client->sess.saberLevel;
 
-	if (ent->client->ps.fd.saberAnimLevel < FORCE_LEVEL_1 || ent->client->ps.fd.saberAnimLevel > FORCE_LEVEL_3)
-		ent->client->ps.fd.saberAnimLevel = FORCE_LEVEL_1;
+	if (ent->client->ps.fd.saber_anim_level < FORCE_LEVEL_1 || ent->client->ps.fd.saber_anim_level > FORCE_LEVEL_3)
+		ent->client->ps.fd.saber_anim_level = FORCE_LEVEL_1;
 
 	// so that the client configstring is already modified with this when we need it
 	if (!speedLoopSound)
@@ -999,7 +999,7 @@ int ForcePowerUsableOn(const gentity_t* attacker, const gentity_t* other, const 
 		return 0;
 	}
 
-	if (other && other->client && (other->client->ps.fd.saberAnimLevel == SS_DESANN && other->client->ps.
+	if (other && other->client && (other->client->ps.fd.saber_anim_level == SS_DESANN && other->client->ps.
 		saberFatigueChainCount >=
 		MISHAPLEVEL_HEAVY))
 	{
@@ -1717,7 +1717,7 @@ void ForceHeal(gentity_t* self)
 	{
 		G_SetAnim(self, &self->client->pers.cmd, SETANIM_BOTH, BOTH_FORCEHEAL_START,
 		          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
-		self->client->ps.saberMove = self->client->ps.saberBounceMove = LS_READY;
+		self->client->ps.saber_move = self->client->ps.saberBounceMove = LS_READY;
 		self->client->ps.saberBlocked = BLOCKED_NONE;
 	}
 	else
@@ -1725,7 +1725,7 @@ void ForceHeal(gentity_t* self)
 		//just a quick gesture
 		G_SetAnim(self, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FORCEHEAL_QUICK,
 		          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
-		self->client->ps.saberMove = self->client->ps.saberBounceMove = LS_READY;
+		self->client->ps.saber_move = self->client->ps.saberBounceMove = LS_READY;
 		self->client->ps.saberBlocked = BLOCKED_NONE;
 	}
 
@@ -2166,7 +2166,7 @@ qboolean WP_CounterForce(const gentity_t* attacker, const gentity_t* defender, c
 		}
 	}
 
-	if (PM_SaberInBrokenParry(defender->client->ps.saberMove))
+	if (PM_SaberInBrokenParry(defender->client->ps.saber_move))
 	{
 		//can't block while stunned
 		return qfalse;
@@ -2190,7 +2190,7 @@ qboolean WP_CounterForce(const gentity_t* attacker, const gentity_t* defender, c
 		return qfalse;
 	}
 	if (defender->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT
-		&& attacker->client->ps.fd.saberAnimLevel == SS_DESANN)
+		&& attacker->client->ps.fd.saber_anim_level == SS_DESANN)
 	{
 		//can't block if we're too off balance and they are using Juyo's perk
 		return qfalse;
@@ -2243,7 +2243,7 @@ void ForceGrip(const gentity_t* self)
 		return;
 	}
 
-	if (self->client->ps.weaponTime > 0 && (!PM_SaberInParry(self->client->ps.saberMove) || !(self->client->ps.userInt3
+	if (self->client->ps.weaponTime > 0 && (!PM_SaberInParry(self->client->ps.saber_move) || !(self->client->ps.userInt3
 		& 1 << FLAG_PREBLOCK)))
 	{
 		return;
@@ -2317,7 +2317,7 @@ void ForceGrip(const gentity_t* self)
 int IsPressingDashButton(const gentity_t* self)
 {
 	if (PM_RunningAnim(self->client->ps.legsAnim)
-		&& !PM_SaberInAttack(self->client->ps.saberMove)
+		&& !PM_SaberInAttack(self->client->ps.saber_move)
 		&& (!(self->client->buttons & BUTTON_KICK))
 		&& self->client->buttons & BUTTON_DASH)
 	{
@@ -2486,12 +2486,12 @@ void ForceSpeedDash(gentity_t* self)
 		return;
 	}
 
-	if (PM_SaberInAttack(self->client->ps.saberMove))
+	if (PM_SaberInAttack(self->client->ps.saber_move))
 	{
 		return;
 	}
 
-	if (PM_KickMove(self->client->ps.saberMove))
+	if (PM_KickMove(self->client->ps.saber_move))
 	{
 		return;
 	}
@@ -2614,7 +2614,7 @@ void ForceSeeing(gentity_t* self)
 		G_SetAnim(self, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FORCE_DRAIN_HOLD,
 		          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 		self->client->ps.weaponTime = self->client->ps.torsoTimer;
-		self->client->ps.saberMove = self->client->ps.saberBounceMove = LS_READY;
+		self->client->ps.saber_move = self->client->ps.saberBounceMove = LS_READY;
 		self->client->ps.saberBlocked = BLOCKED_NONE;
 	}
 
@@ -2670,7 +2670,7 @@ void ForceProtect(gentity_t* self)
 			          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 		}
 		self->client->ps.weaponTime = self->client->ps.torsoTimer;
-		self->client->ps.saberMove = self->client->ps.saberBounceMove = LS_READY;
+		self->client->ps.saber_move = self->client->ps.saberBounceMove = LS_READY;
 		self->client->ps.saberBlocked = BLOCKED_NONE;
 	}
 
@@ -2717,7 +2717,7 @@ void ForceAbsorb(gentity_t* self)
 		G_SetAnim(self, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FORCE_ABSORB,
 		          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 		self->client->ps.weaponTime = self->client->ps.torsoTimer;
-		self->client->ps.saberMove = self->client->ps.saberBounceMove = LS_READY;
+		self->client->ps.saber_move = self->client->ps.saberBounceMove = LS_READY;
 		self->client->ps.saberBlocked = BLOCKED_NONE;
 	}
 
@@ -2793,7 +2793,7 @@ void ForceRage(gentity_t* self)
 		G_SetAnim(self, &self->client->pers.cmd, SETANIM_TORSO, BOTH_FORCE_RAGE,
 		          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 0);
 		self->client->ps.weaponTime = self->client->ps.torsoTimer;
-		self->client->ps.saberMove = self->client->ps.saberBounceMove = LS_READY;
+		self->client->ps.saber_move = self->client->ps.saberBounceMove = LS_READY;
 		self->client->ps.saberBlocked = BLOCKED_NONE;
 	}
 
@@ -2881,7 +2881,7 @@ void ForceLightning(gentity_t* self)
 	{
 		return;
 	}
-	if (self->client->ps.weaponTime > 0 && (!PM_SaberInParry(self->client->ps.saberMove) || !(self->client->ps.userInt3
+	if (self->client->ps.weaponTime > 0 && (!PM_SaberInParry(self->client->ps.saber_move) || !(self->client->ps.userInt3
 		& 1 << FLAG_PREBLOCK)))
 	{
 		return;
@@ -3291,7 +3291,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 										G_PlayEffectID(G_EffectIndex("saber/fizz.efx"), end2, ang);
 									}
 								}
-								switch (trace_ent->client->ps.fd.saberAnimLevel)
+								switch (trace_ent->client->ps.fd.saber_anim_level)
 								{
 								case SS_DUAL:
 									G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P6_S6_T_,
@@ -3351,7 +3351,7 @@ void force_lightning_damage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, c
 									G_PlayEffectID(G_EffectIndex("saber/fizz.efx"), end2, ang);
 								}
 							}
-							switch (trace_ent->client->ps.fd.saberAnimLevel)
+							switch (trace_ent->client->ps.fd.saber_anim_level)
 							{
 							case SS_DUAL:
 								G_SetAnim(trace_ent, &trace_ent->client->pers.cmd, SETANIM_TORSO, BOTH_P6_S6_T_,
@@ -4719,7 +4719,7 @@ void ForceTelepathy(gentity_t* self)
 				          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 500);
 				G_AddEvent(ent, EV_STASIS, DirToByte(dir));
 				G_Sound(self, CHAN_AUTO, G_SoundIndex("sound/weapons/force/stasis.wav"));
-				ent->client->ps.saberMove = ent->client->ps.saberBounceMove = LS_READY;
+				ent->client->ps.saber_move = ent->client->ps.saberBounceMove = LS_READY;
 				//don't finish whatever saber anim you may have been in
 				ent->client->ps.saberBlocked = BLOCKED_NONE;
 				player_Freeze(ent);
@@ -4739,7 +4739,7 @@ void ForceTelepathy(gentity_t* self)
 				          SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 300);
 				G_AddEvent(ent, EV_STASIS, DirToByte(dir));
 				G_Sound(self, CHAN_AUTO, G_SoundIndex("sound/weapons/force/stasis.wav"));
-				ent->client->ps.saberMove = ent->client->ps.saberBounceMove = LS_READY;
+				ent->client->ps.saber_move = ent->client->ps.saberBounceMove = LS_READY;
 				//don't finish whatever saber anim you may have been in
 				ent->client->ps.saberBlocked = BLOCKED_NONE;
 				player_Freeze(ent);
@@ -4831,7 +4831,7 @@ static qboolean playeris_resisting_force_throw(const gentity_t* player, gentity_
 		return qfalse;
 	}
 
-	if (PM_SaberInKata(player->client->ps.saberMove) || PM_InKataAnim(player->client->ps.torsoAnim))
+	if (PM_SaberInKata(player->client->ps.saber_move) || PM_InKataAnim(player->client->ps.torsoAnim))
 	{
 		//don't throw saber when in special attack (alt+attack)
 		return qfalse;
@@ -4892,7 +4892,7 @@ qboolean ShouldPlayerResistForceThrow(const gentity_t* self, const gentity_t* th
 		return qfalse;
 	}
 
-	if (PM_SaberInKata(self->client->ps.saberMove))
+	if (PM_SaberInKata(self->client->ps.saber_move))
 	{
 		//don't throw saber when in special attack (alt+attack)
 		return qfalse;
@@ -5065,13 +5065,13 @@ void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, const qboolean
 		return;
 	}
 
-	if (PM_SaberInKata(self->client->ps.saberMove) || PM_InKataAnim(self->client->ps.torsoAnim))
+	if (PM_SaberInKata(self->client->ps.saber_move) || PM_InKataAnim(self->client->ps.torsoAnim))
 	{
 		//don't throw saber when in special attack (alt+attack)
 		return;
 	}
 
-	if (!PM_SaberCanInterruptMove(self->client->ps.saberMove, self->client->ps.torsoAnim))
+	if (!PM_SaberCanInterruptMove(self->client->ps.saber_move, self->client->ps.torsoAnim))
 	{
 		//can't interrupt my current torso anim/sabermove with this, so ignore it entirely!
 		return;
@@ -5252,7 +5252,7 @@ void ForceThrow(gentity_t* self, qboolean pull)
 		return;
 	}
 
-	if (PM_SaberInKata(self->client->ps.saberMove))
+	if (PM_SaberInKata(self->client->ps.saber_move))
 	{
 		return;
 	}
@@ -6446,11 +6446,11 @@ void ForceThrow(gentity_t* self, qboolean pull)
 							            self->client->ps.viewangles, -0.7f))
 						{
 							WP_ResistForcePush(push_list[x], self, qfalse);
-							push_list[x]->client->ps.saberMove = push_list[x]->client->ps.saberBounceMove = LS_READY;
+							push_list[x]->client->ps.saber_move = push_list[x]->client->ps.saberBounceMove = LS_READY;
 							//don't finish whatever saber anim you may have been in
 							push_list[x]->client->ps.saberBlocked = BLOCKED_NONE;
 						}
-						else if (PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove) && dirLen <= 64.0f)
+						else if (PM_SaberInBrokenParry(push_list[x]->client->ps.saber_move) && dirLen <= 64.0f)
 						{
 							//do a knockdown if fairly close
 							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
@@ -6566,11 +6566,11 @@ void ForceThrow(gentity_t* self, qboolean pull)
 							            self->client->ps.viewangles, -0.7f))
 						{
 							WP_ResistForcePush(push_list[x], self, qfalse);
-							push_list[x]->client->ps.saberMove = push_list[x]->client->ps.saberBounceMove = LS_READY;
+							push_list[x]->client->ps.saber_move = push_list[x]->client->ps.saberBounceMove = LS_READY;
 							//don't finish whatever saber anim you may have been in
 							push_list[x]->client->ps.saberBlocked = BLOCKED_NONE;
 						}
-						else if (PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove) && dirLen <= 64.0f)
+						else if (PM_SaberInBrokenParry(push_list[x]->client->ps.saber_move) && dirLen <= 64.0f)
 						{
 							//do a knockdown if fairly close
 							G_Knockdown(push_list[x], self, push_dir, 300, qtrue);
@@ -8096,17 +8096,17 @@ void HolocronUpdate(gentity_t* self)
 				if (self->client->saber[0].model[0] && self->client->saber[1].model[0])
 				{
 					//dual
-					self->client->ps.fd.saberAnimLevelBase = self->client->ps.fd.saberAnimLevel = self->client->ps.fd.
+					self->client->ps.fd.saberAnimLevelBase = self->client->ps.fd.saber_anim_level = self->client->ps.fd.
 						saberDrawAnimLevel = SS_DUAL;
 				}
 				else if (self->client->saber[0].saberFlags & SFL_TWO_HANDED)
 				{
 					//staff
-					self->client->ps.fd.saberAnimLevel = self->client->ps.fd.saberDrawAnimLevel = SS_STAFF;
+					self->client->ps.fd.saber_anim_level = self->client->ps.fd.saberDrawAnimLevel = SS_STAFF;
 				}
 				else
 				{
-					self->client->ps.fd.saberAnimLevelBase = self->client->ps.fd.saberAnimLevel = self->client->ps.fd.
+					self->client->ps.fd.saberAnimLevelBase = self->client->ps.fd.saber_anim_level = self->client->ps.fd.
 						saberDrawAnimLevel = SS_MEDIUM;
 				}
 			}
@@ -8307,9 +8307,9 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 
 	//The stance in relation to power level is no longer applicable with the crazy new akimbo/staff stances.
-	if (!self->client->ps.fd.saberAnimLevel)
+	if (!self->client->ps.fd.saber_anim_level)
 	{
-		self->client->ps.fd.saberAnimLevel = FORCE_LEVEL_1;
+		self->client->ps.fd.saber_anim_level = FORCE_LEVEL_1;
 	}
 
 	if (level.gametype != GT_SIEGE)
@@ -8337,7 +8337,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 
 	if ((self->client->sess.selectedFP != self->client->ps.fd.forcePowerSelected ||
-			self->client->sess.saberLevel != self->client->ps.fd.saberAnimLevel) &&
+			self->client->sess.saberLevel != self->client->ps.fd.saber_anim_level) &&
 		!(self->r.svFlags & SVF_BOT))
 	{
 		if (self->client->sess.updateUITime < level.time)
@@ -8346,7 +8346,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 			//through their force powers or saber attack levels
 
 			self->client->sess.selectedFP = self->client->ps.fd.forcePowerSelected;
-			self->client->sess.saberLevel = self->client->ps.fd.saberAnimLevel;
+			self->client->sess.saberLevel = self->client->ps.fd.saber_anim_level;
 		}
 	}
 
@@ -8366,7 +8366,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	if (self->client->ps.forceHandExtend == HANDEXTEND_KNOCKDOWN &&
 		self->client->ps.forceHandExtendTime >= level.time)
 	{
-		self->client->ps.saberMove = 0;
+		self->client->ps.saber_move = 0;
 		self->client->ps.saberBlocking = 0;
 		self->client->ps.saberBlocked = 0;
 		self->client->ps.weaponTime = 0;
@@ -8898,11 +8898,11 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 					self->client->ps.fd.forcePowerRegenDebounceTime += 2000; //1 point per 1 seconds.. super slow
 					wp_force_power_regenerate(self, 1);
 				}
-				else if (PM_SaberInAttack(self->client->ps.saberMove)
+				else if (PM_SaberInAttack(self->client->ps.saber_move)
 					|| pm_saber_in_special_attack(self->client->ps.torsoAnim)
 					|| PM_SpinningSaberAnim(self->client->ps.torsoAnim)
-					|| PM_SaberInParry(self->client->ps.saberMove)
-					|| PM_SaberInReturn(self->client->ps.saberMove))
+					|| PM_SaberInParry(self->client->ps.saber_move)
+					|| PM_SaberInReturn(self->client->ps.saber_move))
 				{
 					//regen half as fast
 					self->client->ps.fd.forcePowerRegenDebounceTime += 4000; //1 point per 1 seconds.. super slow
@@ -8967,7 +8967,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 
 	if (self->client->DodgeDebounce < level.time
-		&& !BG_InSlowBounce(&self->client->ps) && !PM_SaberInBrokenParry(self->client->ps.saberMove)
+		&& !BG_InSlowBounce(&self->client->ps) && !PM_SaberInBrokenParry(self->client->ps.saber_move)
 		&& !PM_InKnockDown(&self->client->ps) && self->client->ps.forceHandExtend != HANDEXTEND_DODGE
 		&& self->client->ps.saberLockTime < level.time //not in a saber lock.
 		&& self->client->ps.groundEntityNum != ENTITYNUM_NONE //can't regen while in the air.
@@ -8992,7 +8992,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 
 	if (self->client->MishapDebounce < level.time
-		&& !BG_InSlowBounce(&self->client->ps) && !PM_SaberInBrokenParry(self->client->ps.saberMove)
+		&& !BG_InSlowBounce(&self->client->ps) && !PM_SaberInBrokenParry(self->client->ps.saber_move)
 		&& !PM_InKnockDown(&self->client->ps) && self->client->ps.forceHandExtend != HANDEXTEND_DODGE
 		&& self->client->ps.saberLockTime < level.time //not in a saber lock.
 		&& self->client->ps.groundEntityNum != ENTITYNUM_NONE) //can't regen while in the air.
@@ -9005,7 +9005,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		if (self->client->ps.weapon == WP_SABER)
 		{
 			//saberer regens slower since they use MP differently
-			if (self->client->ps.fd.saberAnimLevel == SS_MEDIUM)
+			if (self->client->ps.fd.saber_anim_level == SS_MEDIUM)
 			{
 				//yellow style is more "centered" and recovers MP faster.
 				self->client->MishapDebounce = level.time + g_mishapRegenTime.integer * .75;
@@ -9046,12 +9046,12 @@ void WP_BlockPointsUpdate(const gentity_t* self)
 		if (!PM_InKnockDown(&self->client->ps)
 			&& self->client->ps.groundEntityNum != ENTITYNUM_NONE
 			&& walk_check(self)
-			&& !PM_SaberInAttack(self->client->ps.saberMove)
+			&& !PM_SaberInAttack(self->client->ps.saber_move)
 			&& !pm_saber_in_special_attack(self->client->ps.torsoAnim)
 			&& !PM_SpinningSaberAnim(self->client->ps.torsoAnim)
-			&& !PM_SaberInParry(self->client->ps.saberMove)
-			&& !PM_SaberInReturn(self->client->ps.saberMove)
-			&& !PM_Saberinstab(self->client->ps.saberMove)
+			&& !PM_SaberInParry(self->client->ps.saber_move)
+			&& !PM_SaberInReturn(self->client->ps.saber_move)
+			&& !PM_Saberinstab(self->client->ps.saber_move)
 			&& !holding_block
 			&& !(self->client->buttons & BUTTON_BLOCK))
 		{
@@ -9103,12 +9103,12 @@ void WP_BlockPointsUpdate(const gentity_t* self)
 		if (!PM_InKnockDown(&self->client->ps)
 			&& self->client->ps.groundEntityNum != ENTITYNUM_NONE
 			//&& WalkCheck(self)
-			&& !(PM_SaberInAttack(self->client->ps.saberMove)
+			&& !(PM_SaberInAttack(self->client->ps.saber_move)
 				//|| PM_SaberInSpecialAttack(self->client->ps.torsoAnim)
 				//|| PM_SpinningSaberAnim(self->client->ps.torsoAnim)
-				//|| PM_SaberInParry(self->client->ps.saberMove)
-				//|| PM_SaberInReturn(self->client->ps.saberMove)
-				|| PM_Saberinstab(self->client->ps.saberMove)))
+				//|| PM_SaberInParry(self->client->ps.saber_move)
+				//|| PM_SaberInReturn(self->client->ps.saber_move)
+				|| PM_Saberinstab(self->client->ps.saber_move)))
 		{
 			if (self->client->ps.fd.BlockPointsRegenDebounceTime < level.time)
 			{
@@ -9474,7 +9474,7 @@ qboolean jedi_dodge_evasion(gentity_t* self, const gentity_t* shooter, trace_t* 
 		self->client->ps.forceDodgeAnim = dodge_anim;
 		self->client->ps.forceHandExtendTime = level.time + 300;
 		self->client->ps.weaponTime = 300;
-		self->client->ps.saberMove = LS_NONE;
+		self->client->ps.saber_move = LS_NONE;
 		G_Sound(self, CHAN_BODY, G_SoundIndex("sound/weapons/melee/swing4.wav"));
 		return qtrue;
 	}
@@ -9636,7 +9636,7 @@ qboolean jedi_disruptor_dodge_evasion(gentity_t* self, gentity_t* shooter, vec3_
 		self->client->ps.forceDodgeAnim = dodge_anim;
 		self->client->ps.forceHandExtendTime = level.time + 300;
 		self->client->ps.weaponTime = 300;
-		self->client->ps.saberMove = LS_NONE;
+		self->client->ps.saber_move = LS_NONE;
 		G_Sound(self, CHAN_BODY, G_SoundIndex("sound/weapons/melee/swing4.wav"));
 		return qtrue;
 	}

@@ -326,7 +326,7 @@ namespace ratl
 
 			// Handle & Index Access
 			//-----------------------
-			int index()
+			int index() const
 			{
 				assert(mOwner && mOwner->is_used_index(mIndex));
 				return mIndex;

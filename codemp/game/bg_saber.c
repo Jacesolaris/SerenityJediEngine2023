@@ -616,7 +616,7 @@ void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir)
 
 	AngleVectors(ps->viewangles, v_forward, v_right, v_up);
 
-	switch (saberMoveData[ps->saberMove].startQuad)
+	switch (saberMoveData[ps->saber_move].startQuad)
 	{
 	case Q_BR:
 		VectorScale(v_right, 1, start_q);
@@ -648,7 +648,7 @@ void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir)
 		break;
 	default: ;
 	}
-	switch (saberMoveData[ps->saberMove].endQuad)
+	switch (saberMoveData[ps->saber_move].endQuad)
 	{
 	case Q_BR:
 		VectorScale(v_right, 1, end_q);
@@ -1145,11 +1145,11 @@ saberMoveName_t PM_CheckStabDown(void)
 		BG_InKnockDown(ent->s.legsAnim))
 	{
 		//guy is on the ground below me, do a top-down attack
-		if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		if (pm->ps->fd.saber_anim_level == SS_DUAL)
 		{
 			return LS_STABDOWN_DUAL;
 		}
-		if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+		if (pm->ps->fd.saber_anim_level == SS_STAFF)
 		{
 			if (saber1 && (saber1->type == SABER_BACKHAND
 				|| saber1->type == SABER_ASBACKHAND)) //saber backhand
@@ -1360,24 +1360,24 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 		return qfalse;
 	}
 
-	if (pm->ps->fd.saberAnimLevel == SS_DESANN || pm->ps->fd.saberAnimLevel == SS_TAVION)
+	if (pm->ps->fd.saber_anim_level == SS_DESANN || pm->ps->fd.saber_anim_level == SS_TAVION)
 	{
 		//desann and tavion can link up as many attacks as they want
 		return qfalse;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+	if (pm->ps->fd.saber_anim_level == SS_STAFF)
 	{
 		return qfalse;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+	if (pm->ps->fd.saber_anim_level == SS_DUAL)
 	{
 		return qfalse;
 	}
-	if (pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3)
+	if (pm->ps->fd.saber_anim_level == FORCE_LEVEL_3)
 	{
 		if (curmove == LS_NONE || newmove == LS_NONE)
 		{
-			if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
+			if (pm->ps->fd.saber_anim_level >= FORCE_LEVEL_3 && pm->ps->saberAttackChainCount > Q_irand(0, 1))
 			{
 				return qtrue;
 			}
@@ -1414,7 +1414,7 @@ qboolean PM_SaberKataDone(const int curmove, const int newmove)
 	}
 	else
 	{
-		if ((pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2 || pm->ps->fd.saberAnimLevel == SS_DUAL)
+		if ((pm->ps->fd.saber_anim_level == FORCE_LEVEL_2 || pm->ps->fd.saber_anim_level == SS_DUAL)
 			&& pm->ps->saberAttackChainCount > Q_irand(2, 5))
 		{
 			return qtrue;
@@ -1444,7 +1444,7 @@ int PM_SaberLockWinAnim(const qboolean victory, const qboolean super_break)
 		}
 		else
 		{
-			pm->ps->saberMove = LS_A_T2B;
+			pm->ps->saber_move = LS_A_T2B;
 			win_anim = BOTH_A3_T__B_;
 		}
 		break;
@@ -1459,7 +1459,7 @@ int PM_SaberLockWinAnim(const qboolean victory, const qboolean super_break)
 		}
 		else
 		{
-			pm->ps->saberMove = LS_K1_T_;
+			pm->ps->saber_move = LS_K1_T_;
 			win_anim = BOTH_K1_S1_T_;
 		}
 		break;
@@ -1470,7 +1470,7 @@ int PM_SaberLockWinAnim(const qboolean victory, const qboolean super_break)
 		}
 		else if (!victory)
 		{
-			pm->ps->saberMove = pm->ps->saberBounceMove = LS_V1_BL;
+			pm->ps->saber_move = pm->ps->saberBounceMove = LS_V1_BL;
 			pm->ps->saberBlocked = BLOCKED_PARRY_BROKEN;
 			win_anim = BOTH_V1_BL_S1;
 		}
@@ -1486,7 +1486,7 @@ int PM_SaberLockWinAnim(const qboolean victory, const qboolean super_break)
 		}
 		else if (!victory)
 		{
-			pm->ps->saberMove = pm->ps->saberBounceMove = LS_V1_BR;
+			pm->ps->saber_move = pm->ps->saberBounceMove = LS_V1_BR;
 			pm->ps->saberBlocked = BLOCKED_PARRY_BROKEN;
 			win_anim = BOTH_V1_BR_S1;
 		}
@@ -1536,7 +1536,7 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 			if (!victory)
 			{
 				//no-one won
-				genemy->saberMove = LS_K1_T_;
+				genemy->saber_move = LS_K1_T_;
 				lose_anim = BOTH_K1_S1_T_;
 			}
 			else
@@ -1560,7 +1560,7 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 			if (!victory)
 			{
 				//no-one won
-				genemy->saberMove = LS_A_T2B;
+				genemy->saber_move = LS_A_T2B;
 				lose_anim = BOTH_A3_T__B_;
 			}
 			else
@@ -1576,7 +1576,7 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 		}
 		else if (!victory)
 		{
-			genemy->saberMove = genemy->saberBounceMove = LS_V1_BL;
+			genemy->saber_move = genemy->saberBounceMove = LS_V1_BL;
 			genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
 			lose_anim = BOTH_V1_BL_S1;
 		}
@@ -1589,7 +1589,7 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 			}
 			else
 			{
-				genemy->saberMove = genemy->saberBounceMove = LS_V1_BL;
+				genemy->saber_move = genemy->saberBounceMove = LS_V1_BL;
 				genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
 				lose_anim = BOTH_V1_BL_S1;
 			}
@@ -1602,7 +1602,7 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 		}
 		else if (!victory)
 		{
-			genemy->saberMove = genemy->saberBounceMove = LS_V1_BR;
+			genemy->saber_move = genemy->saberBounceMove = LS_V1_BR;
 			genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
 			lose_anim = BOTH_V1_BR_S1;
 		}
@@ -1615,7 +1615,7 @@ int PM_SaberLockLoseAnim(playerState_t* genemy, const qboolean victory, const qb
 			}
 			else
 			{
-				genemy->saberMove = genemy->saberBounceMove = LS_V1_BR;
+				genemy->saber_move = genemy->saberBounceMove = LS_V1_BR;
 				genemy->saberBlocked = BLOCKED_PARRY_BROKEN;
 				lose_anim = BOTH_V1_BR_S1;
 			}
@@ -1710,7 +1710,7 @@ int PM_SaberLockResultAnim(playerState_t* duelist, const qboolean super_break, c
 #endif
 		{
 			//set saber move to none
-			duelist->saberMove = LS_NONE;
+			duelist->saber_move = LS_NONE;
 			//Hold the anim a little longer than it is
 			duelist->torsoTimer += 250;
 		}
@@ -2153,7 +2153,7 @@ saberMoveName_t PM_SaberFlipOverAttackMove(void)
 	pm->cmd.upmove = 0;
 	WP_ForcePowerDrain(pm->ps, FP_SABER_OFFENSE, SABER_ALT_ATTACK_POWER_FB);
 
-	if (pm->ps->fd.saberAnimLevel == SS_FAST || pm->ps->fd.saberAnimLevel == SS_TAVION)
+	if (pm->ps->fd.saber_anim_level == SS_FAST || pm->ps->fd.saber_anim_level == SS_TAVION)
 	{
 		return LS_A_FLIP_STAB;
 	}
@@ -2208,7 +2208,7 @@ int PM_SaberDualJumpAttackMove(void)
 	if (saber1 && saber1->type == SABER_GRIE4
 		|| saber1 && saber1->type == SABER_GRIE
 		|| saber1 && saber1->type == SABER_PALP
-		&& pm->ps->fd.saberAnimLevel == SS_DUAL)
+		&& pm->ps->fd.saber_anim_level == SS_DUAL)
 	{
 		return LS_GRIEVOUS_LUNGE;
 	}
@@ -2255,7 +2255,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 	//just do it
 	saber1 = BG_MySaber(pm->ps->client_num, 0);
 
-	if (pm->ps->fd.saberAnimLevel == SS_FAST)
+	if (pm->ps->fd.saber_anim_level == SS_FAST)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2265,7 +2265,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		PM_AddEvent(EV_JUMP);
 		return LS_PULL_ATTACK_STAB;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_MEDIUM)
+	if (pm->ps->fd.saber_anim_level == SS_MEDIUM)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2275,7 +2275,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		PM_AddEvent(EV_JUMP);
 		return LS_A_LUNGE;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_STRONG)
+	if (pm->ps->fd.saber_anim_level == SS_STRONG)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2289,7 +2289,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		}
 		return LS_A_JUMP_T__B_;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_DESANN)
+	if (pm->ps->fd.saber_anim_level == SS_DESANN)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2303,7 +2303,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		}
 		return LS_A_JUMP_T__B_;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_TAVION)
+	if (pm->ps->fd.saber_anim_level == SS_TAVION)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2313,7 +2313,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		PM_AddEvent(EV_JUMP);
 		return LS_A_LUNGE;
 	}
-	if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+	if (pm->ps->fd.saber_anim_level == SS_DUAL)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2331,7 +2331,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		}
 		return LS_SPINATTACK_DUAL;
 	}
-	if (!noSpecials && pm->ps->fd.saberAnimLevel == SS_STAFF)
+	if (!noSpecials && pm->ps->fd.saber_anim_level == SS_STAFF)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2341,7 +2341,7 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean noSpecials)
 		PM_AddEvent(EV_JUMP);
 		return LS_SPINATTACK;
 	}
-	if (!noSpecials && pm->ps->fd.saberAnimLevel == SS_STAFF && saber1->numBlades < 2)
+	if (!noSpecials && pm->ps->fd.saber_anim_level == SS_STAFF && saber1->numBlades < 2)
 	{
 		VectorCopy(pm->ps->viewangles, fwdAngles);
 		fwdAngles[PITCH] = fwdAngles[ROLL] = 0;
@@ -2504,7 +2504,7 @@ saberMoveName_t PM_SaberJumpAttackMove2(void)
 		return LS_A_T2B;
 	}
 	//just do it
-	if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+	if (pm->ps->fd.saber_anim_level == SS_DUAL)
 	{
 		return PM_SaberDualJumpAttackMove();
 	}
@@ -2723,11 +2723,11 @@ saberMoveName_t PM_CheckPullAttack(void)
 		return LS_NONE;
 	}
 
-	if ((pm->ps->saberMove == LS_READY || PM_SaberInReturn(pm->ps->saberMove) || PM_SaberInReflect(pm->ps->saberMove))
+	if ((pm->ps->saber_move == LS_READY || PM_SaberInReturn(pm->ps->saber_move) || PM_SaberInReflect(pm->ps->saber_move))
 		//ready
 		&& pm->ps->groundEntityNum != ENTITYNUM_NONE
-		&& pm->ps->fd.saberAnimLevel >= SS_FAST
-		&& pm->ps->fd.saberAnimLevel <= SS_STRONG
+		&& pm->ps->fd.saber_anim_level >= SS_FAST
+		&& pm->ps->fd.saber_anim_level <= SS_STRONG
 		&& pm->ps->powerups[PW_DISINT_4] > pm->cmd.serverTime
 		&& !(pm->ps->fd.forcePowersActive & 1 << FP_PULL)
 		&& pm->ps->powerups[PW_PULL] > pm->cmd.serverTime
@@ -2737,7 +2737,7 @@ saberMoveName_t PM_CheckPullAttack(void)
 		const qboolean doMove = qtrue;
 
 		saberMoveName_t pullAttackMove;
-		if (pm->ps->fd.saberAnimLevel == SS_FAST)
+		if (pm->ps->fd.saber_anim_level == SS_FAST)
 		{
 			pullAttackMove = LS_PULL_ATTACK_STAB;
 		}
@@ -2759,7 +2759,7 @@ qboolean PM_InSecondarySaberStyle(void)
 {
 	if (pm->ps->fd.saberAnimLevelBase == SS_STAFF || pm->ps->fd.saberAnimLevelBase == SS_DUAL)
 	{
-		if (pm->ps->fd.saberAnimLevel != pm->ps->fd.saberAnimLevelBase)
+		if (pm->ps->fd.saber_anim_level != pm->ps->fd.saberAnimLevelBase)
 		{
 			return qtrue;
 		}
@@ -2896,7 +2896,7 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 			pm->ps->velocity[0] = pm->ps->velocity[1] = 0.0f;
 			VectorMA(pm->ps->velocity, 190.0f, right, pm->ps->velocity);
 
-			if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+			if (pm->ps->fd.saber_anim_level == SS_STAFF)
 			{
 				newmove = LS_BUTTERFLY_RIGHT;
 				pm->ps->velocity[2] = 350.0f;
@@ -2952,7 +2952,7 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 			AngleVectors(fwdAngles, NULL, right, NULL);
 			pm->ps->velocity[0] = pm->ps->velocity[1] = 0.0f;
 			VectorMA(pm->ps->velocity, -190.0f, right, pm->ps->velocity);
-			if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+			if (pm->ps->fd.saber_anim_level == SS_STAFF)
 			{
 				newmove = LS_BUTTERFLY_LEFT;
 				pm->ps->velocity[2] = 250.0f;
@@ -2991,13 +2991,13 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 		{
 			//forward= T2B slash
 			if (!noSpecials &&
-				(pm->ps->fd.saberAnimLevel == SS_DUAL || pm->ps->fd.saberAnimLevel == SS_STAFF) &&
+				(pm->ps->fd.saber_anim_level == SS_DUAL || pm->ps->fd.saber_anim_level == SS_STAFF) &&
 				pm->ps->fd.forceRageRecoveryTime < pm->cmd.serverTime &&
 				(pm->ps->groundEntityNum != ENTITYNUM_NONE || PM_GroundDistance() <= 40) &&
 				pm->ps->velocity[2] >= 0 &&
 				(pm->cmd.upmove > 0 || pm->ps->pm_flags & PMF_JUMP_HELD) &&
-				!PM_SaberInTransitionAny(pm->ps->saberMove) &&
-				!PM_SaberInAttack(pm->ps->saberMove) &&
+				!PM_SaberInTransitionAny(pm->ps->saber_move) &&
+				!PM_SaberInAttack(pm->ps->saber_move) &&
 				pm->ps->weaponTime <= 0 &&
 				pm->ps->forceHandExtend == HANDEXTEND_NONE &&
 				(pm->cmd.buttons & BUTTON_ATTACK && !(pm->cmd.buttons & BUTTON_BLOCK)) &&
@@ -3011,9 +3011,9 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 				}
 			}
 			else if (!noSpecials &&
-				(pm->ps->fd.saberAnimLevel == SS_FAST
-					|| pm->ps->fd.saberAnimLevel == SS_MEDIUM
-					|| pm->ps->fd.saberAnimLevel == SS_TAVION) &&
+				(pm->ps->fd.saber_anim_level == SS_FAST
+					|| pm->ps->fd.saber_anim_level == SS_MEDIUM
+					|| pm->ps->fd.saber_anim_level == SS_TAVION) &&
 				pm->ps->velocity[2] > 100 &&
 				PM_GroundDistance() < 32 &&
 				!PM_InSpecialJump(pm->ps->legsAnim) &&
@@ -3028,8 +3028,8 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 				}
 			}
 			else if (!noSpecials &&
-				(pm->ps->fd.saberAnimLevel == SS_STRONG
-					|| pm->ps->fd.saberAnimLevel == SS_DESANN) &&
+				(pm->ps->fd.saber_anim_level == SS_STRONG
+					|| pm->ps->fd.saber_anim_level == SS_DESANN) &&
 				pm->ps->velocity[2] > 100 &&
 				PM_GroundDistance() < 32 &&
 				!PM_InSpecialJump(pm->ps->legsAnim) &&
@@ -3068,14 +3068,14 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 		{
 			//backward= T2B slash//B2T uppercut?
 			if (!noSpecials &&
-				pm->ps->fd.saberAnimLevel == SS_STAFF &&
+				pm->ps->fd.saber_anim_level == SS_STAFF &&
 				pm->ps->fd.forceRageRecoveryTime < pm->cmd.serverTime &&
 				pm->ps->fd.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1 &&
 				(pm->ps->groundEntityNum != ENTITYNUM_NONE || PM_GroundDistance() <= 40) &&
 				pm->ps->velocity[2] >= 0 &&
 				(pm->cmd.upmove > 0 || pm->ps->pm_flags & PMF_JUMP_HELD) &&
-				!PM_SaberInTransitionAny(pm->ps->saberMove) &&
-				!PM_SaberInAttack(pm->ps->saberMove) &&
+				!PM_SaberInTransitionAny(pm->ps->saber_move) &&
+				!PM_SaberInAttack(pm->ps->saber_move) &&
 				pm->ps->weaponTime <= 0 &&
 				pm->ps->forceHandExtend == HANDEXTEND_NONE &&
 				pm->cmd.buttons & BUTTON_ATTACK)
@@ -3086,7 +3086,7 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 			else if (PM_CanBackstab() && !pm_saber_in_special_attack(pm->ps->torsoAnim))
 			{
 				//BACKSTAB (attack varies by level)
-				if (pm->ps->fd.saberAnimLevel >= FORCE_LEVEL_2 && pm->ps->fd.saberAnimLevel != SS_STAFF)
+				if (pm->ps->fd.saber_anim_level >= FORCE_LEVEL_2 && pm->ps->fd.saber_anim_level != SS_STAFF)
 				{
 					//medium and higher attacks
 					if (pm->ps->pm_flags & PMF_DUCKED || pm->cmd.upmove < 0)
@@ -3165,7 +3165,7 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 				else
 #endif
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_FAST || pm->ps->fd.saberAnimLevel == SS_TAVION)
+					if (pm->ps->fd.saber_anim_level == SS_FAST || pm->ps->fd.saber_anim_level == SS_TAVION)
 					{
 						//player is in fast attacks, so come right back down from the same spot
 						newmove = PM_AttackMoveForQuad(saberMoveData[curmove].endQuad);
@@ -3210,7 +3210,7 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 		}
 	}
 
-	if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+	if (pm->ps->fd.saber_anim_level == SS_DUAL)
 	{
 		if ((newmove == LS_A_R2L || newmove == LS_S_R2L
 				|| newmove == LS_A_L2R || newmove == LS_S_L2R)
@@ -3240,7 +3240,7 @@ saberMoveName_t PM_SaberAttackForMovement(const saberMoveName_t curmove)
 
 qboolean PM_CheckUpsideDownAttack(void)
 {
-	if (pm->ps->saberMove != LS_READY)
+	if (pm->ps->saber_move != LS_READY)
 	{
 		return qfalse;
 	}
@@ -3248,7 +3248,7 @@ qboolean PM_CheckUpsideDownAttack(void)
 	{
 		return qfalse;
 	}
-	if (pm->ps->fd.saberAnimLevel < SS_FAST || pm->ps->fd.saberAnimLevel > SS_STRONG)
+	if (pm->ps->fd.saber_anim_level < SS_FAST || pm->ps->fd.saber_anim_level > SS_STRONG)
 	{
 		return qfalse;
 	}
@@ -3347,10 +3347,10 @@ int PM_CheckKick(void)
 {
 	int kick_move = -1;
 
-	if (!PM_SaberInBounce(pm->ps->saberMove)
-		&& !PM_SaberInKnockaway(pm->ps->saberMove)
-		&& !PM_SaberInBrokenParry(pm->ps->saberMove)
-		&& !PM_KickMove(pm->ps->saberMove)
+	if (!PM_SaberInBounce(pm->ps->saber_move)
+		&& !PM_SaberInKnockaway(pm->ps->saber_move)
+		&& !PM_SaberInBrokenParry(pm->ps->saber_move)
+		&& !PM_KickMove(pm->ps->saber_move)
 		&& !PM_KickingAnim(pm->ps->torsoAnim)
 		&& !PM_KickingAnim(pm->ps->legsAnim)
 		&& !BG_InRoll(pm->ps, pm->ps->legsAnim)
@@ -3450,10 +3450,10 @@ int PM_MeleeMoveForConditions(void)
 {
 	int kickMove = -1;
 
-	if (!PM_SaberInBounce(pm->ps->saberMove)
-		&& !PM_SaberInKnockaway(pm->ps->saberMove)
-		&& !PM_SaberInBrokenParry(pm->ps->saberMove)
-		&& !PM_KickMove(pm->ps->saberMove)
+	if (!PM_SaberInBounce(pm->ps->saber_move)
+		&& !PM_SaberInKnockaway(pm->ps->saber_move)
+		&& !PM_SaberInBrokenParry(pm->ps->saber_move)
+		&& !PM_KickMove(pm->ps->saber_move)
 		&& !PM_KickingAnim(pm->ps->torsoAnim)
 		&& !PM_KickingAnim(pm->ps->legsAnim)
 		&& !BG_InRoll(pm->ps, pm->ps->legsAnim)
@@ -3554,9 +3554,9 @@ qboolean PM_RunningAnim(int anim);
 
 qboolean PM_SaberMoveOkayForKata(void)
 {
-	if (pm->ps->saberMove == LS_READY
-		|| PM_SaberInReflect(pm->ps->saberMove)
-		|| PM_SaberInStart(pm->ps->saberMove))
+	if (pm->ps->saber_move == LS_READY
+		|| PM_SaberInReflect(pm->ps->saber_move)
+		|| PM_SaberInStart(pm->ps->saber_move))
 	{
 		return qtrue;
 	}
@@ -3567,7 +3567,7 @@ qboolean PM_CanDoKata(void)
 {
 	if (!pm->ps->saberInFlight //not throwing saber
 		&& PM_SaberMoveOkayForKata()
-		&& !PM_SaberInKata(pm->ps->saberMove)
+		&& !PM_SaberInKata(pm->ps->saber_move)
 		&& !PM_InKataAnim(pm->ps->legsAnim)
 		&& !PM_InKataAnim(pm->ps->torsoAnim)
 		&& pm->ps->groundEntityNum != ENTITYNUM_NONE //not in the air
@@ -4165,7 +4165,7 @@ void PM_SaberDroidWeapon(void)
 		}
 
 		pm->ps->saberBlocked = BLOCKED_NONE;
-		pm->ps->saberMove = LS_NONE;
+		pm->ps->saber_move = LS_NONE;
 		pm->ps->weaponstate = WEAPON_READY;
 	}
 }
@@ -4205,18 +4205,18 @@ qboolean PM_SaberBlocking(void)
 	{
 		qboolean wasAttackedByGun = qfalse;
 
-		if (pm->ps->saberMove > LS_PUTAWAY && pm->ps->saberMove <= LS_A_BL2TR && pm->ps->saberBlocked !=
+		if (pm->ps->saber_move > LS_PUTAWAY && pm->ps->saber_move <= LS_A_BL2TR && pm->ps->saberBlocked !=
 			BLOCKED_PARRY_BROKEN &&
 			(pm->ps->saberBlocked < BLOCKED_FRONT || pm->ps->saberBlocked > BLOCKED_FRONT_PROJ))
 		{
 			//we parried another lightsaber while attacking, so treat it as a bounce
 			pm->ps->saberBlocked = BLOCKED_ATK_BOUNCE;
 		}
-		else if ((pm->ps->fd.saberAnimLevel == SS_FAST ||
-				pm->ps->fd.saberAnimLevel == SS_MEDIUM ||
-				pm->ps->fd.saberAnimLevel == SS_STRONG ||
-				pm->ps->fd.saberAnimLevel == SS_DESANN ||
-				pm->ps->fd.saberAnimLevel == SS_TAVION) &&
+		else if ((pm->ps->fd.saber_anim_level == SS_FAST ||
+				pm->ps->fd.saber_anim_level == SS_MEDIUM ||
+				pm->ps->fd.saber_anim_level == SS_STRONG ||
+				pm->ps->fd.saber_anim_level == SS_DESANN ||
+				pm->ps->fd.saber_anim_level == SS_TAVION) &&
 			(pm->cmd.buttons & BUTTON_WALKING && pm->cmd.buttons & BUTTON_USE)
 			&& pm->ps->saberBlocked >= BLOCKED_UPPER_RIGHT
 			&& pm->ps->saberBlocked <= BLOCKED_FRONT
@@ -4233,12 +4233,12 @@ qboolean PM_SaberBlocking(void)
 				if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK)
 				{
 					//trying to attack
-					if (pm->ps->saberMove == LS_READY || PM_SaberInReflect(pm->ps->saberMove))
+					if (pm->ps->saber_move == LS_READY || PM_SaberInReflect(pm->ps->saber_move))
 					{
 						pm->ps->saberBlocked = BLOCKED_NONE;
 						pm->ps->saberBounceMove = LS_NONE;
 						pm->ps->weaponstate = WEAPON_READY;
-						if (PM_SaberInReflect(pm->ps->saberMove) && pm->ps->weaponTime > 0)
+						if (PM_SaberInReflect(pm->ps->saber_move) && pm->ps->weaponTime > 0)
 						{
 							pm->ps->weaponTime = 0;
 						}
@@ -4257,9 +4257,9 @@ qboolean PM_SaberBlocking(void)
 		{
 		case BLOCKED_BOUNCE_MOVE:
 			{
-				//act as a bounceMove and reset the saberMove instead of using a separate value for it
+				//act as a bounceMove and reset the saber_move instead of using a separate value for it
 				pm->ps->torsoTimer = 0;
-				PM_SetSaberMove(pm->ps->saberMove);
+				PM_SetSaberMove(pm->ps->saber_move);
 				pm->ps->weaponTime = pm->ps->torsoTimer;
 				pm->ps->saberBlocked = 0;
 			}
@@ -4269,14 +4269,14 @@ qboolean PM_SaberBlocking(void)
 			{
 				saberMoveName_t nextMove;
 
-				if (PM_SaberInBrokenParry(pm->ps->saberMove))
+				if (PM_SaberInBrokenParry(pm->ps->saber_move))
 				{
 					//already have one...?
 					nextMove = (saberMoveName_t)pm->ps->saberBounceMove;
 				}
 				else
 				{
-					nextMove = PM_BrokenParryForParry(pm->ps->saberMove);
+					nextMove = PM_BrokenParryForParry(pm->ps->saber_move);
 				}
 				if (nextMove != LS_NONE)
 				{
@@ -4290,9 +4290,9 @@ qboolean PM_SaberBlocking(void)
 			}
 			break;
 		case BLOCKED_ATK_BOUNCE:
-			if (pm->ps->saberMove >= LS_T1_BR__R
-				|| PM_SaberInBounce(pm->ps->saberMove)
-				|| PM_SaberInReturn(pm->ps->saberMove)
+			if (pm->ps->saber_move >= LS_T1_BR__R
+				|| PM_SaberInBounce(pm->ps->saber_move)
+				|| PM_SaberInReturn(pm->ps->saber_move)
 				|| PM_SaberInMassiveBounce(pm->ps->torsoAnim))
 			{
 				//an actual bounce?  Other bounces before this are actually transitions?
@@ -4300,7 +4300,7 @@ qboolean PM_SaberBlocking(void)
 			}
 			else if (pm->ps->userInt3 & 1 << FLAG_SLOWBOUNCE
 				&& !(pm->ps->userInt3 & 1 << FLAG_OLDSLOWBOUNCE)
-				|| !PM_SaberInAttack(pm->ps->saberMove) && !PM_SaberInStart(pm->ps->saberMove))
+				|| !PM_SaberInAttack(pm->ps->saber_move) && !PM_SaberInStart(pm->ps->saber_move))
 			{
 				//already in the bounce, go into an attack or transition to ready.. should never get here since can't be blocked in a bounce!
 				int nextMove;
@@ -4312,7 +4312,7 @@ qboolean PM_SaberBlocking(void)
 					if (g_entities[pm->ps->client_num].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 					{
 						// Some special bot stuff.
-						nextMove = saberMoveData[pm->ps->saberMove].chain_attack;
+						nextMove = saberMoveData[pm->ps->saber_move].chain_attack;
 					}
 					else
 #endif
@@ -4320,12 +4320,12 @@ qboolean PM_SaberBlocking(void)
 						//player
 						int newQuad = PM_SaberMoveQuadrantForMovement(&pm->cmd);
 
-						while (newQuad == saberMoveData[pm->ps->saberMove].startQuad)
+						while (newQuad == saberMoveData[pm->ps->saber_move].startQuad)
 						{
 							//player is still in same attack quad, don't repeat that attack because it looks bad,
 							newQuad = Q_irand(Q_BR, Q_BL);
 						}
-						nextMove = transitionMove[saberMoveData[pm->ps->saberMove].startQuad][newQuad];
+						nextMove = transitionMove[saberMoveData[pm->ps->saber_move].startQuad][newQuad];
 					}
 				}
 				else
@@ -4335,24 +4335,24 @@ qboolean PM_SaberBlocking(void)
 					if (g_entities[pm->ps->client_num].r.svFlags & SVF_BOT || pm_entSelf->s.eType == ET_NPC)
 					{
 						// Some special bot stuff.
-						nextMove = saberMoveData[pm->ps->saberMove].chain_idle;
+						nextMove = saberMoveData[pm->ps->saber_move].chain_idle;
 					}
 					else
 #endif
 					{
 						//player
-						if (saberMoveData[pm->ps->saberMove].startQuad == Q_T)
+						if (saberMoveData[pm->ps->saber_move].startQuad == Q_T)
 						{
 							nextMove = LS_R_BL2TR;
 						}
-						else if (saberMoveData[pm->ps->saberMove].startQuad < Q_T)
+						else if (saberMoveData[pm->ps->saber_move].startQuad < Q_T)
 						{
-							nextMove = LS_R_TL2BR + (saberMoveName_t)(saberMoveData[pm->ps->saberMove].startQuad -
+							nextMove = LS_R_TL2BR + (saberMoveName_t)(saberMoveData[pm->ps->saber_move].startQuad -
 								Q_BR);
 						}
 						else
 						{
-							nextMove = LS_R_BR2TL + (saberMoveName_t)(saberMoveData[pm->ps->saberMove].startQuad -
+							nextMove = LS_R_BR2TL + (saberMoveName_t)(saberMoveData[pm->ps->saber_move].startQuad -
 								Q_TL);
 						}
 					}
@@ -4370,7 +4370,7 @@ qboolean PM_SaberBlocking(void)
 				}
 				else
 				{
-					bounceMove = PM_SaberBounceForAttack(pm->ps->saberMove);
+					bounceMove = PM_SaberBounceForAttack(pm->ps->saber_move);
 				}
 				PM_SetSaberMove(bounceMove);
 				pm->ps->weaponTime = pm->ps->torsoTimer;
@@ -4514,11 +4514,11 @@ qboolean PM_SaberBlocking(void)
 			}
 			else
 			{
-				if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+				if (pm->ps->fd.saber_anim_level == SS_DUAL)
 				{
 					PM_SetSaberMove(LS_PARRY_UP);
 				}
-				else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+				else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 				{
 					PM_SetSaberMove(LS_PARRY_UP);
 				}
@@ -4564,11 +4564,11 @@ qboolean PM_SaberBlocking(void)
 			PM_SetSaberMove(LS_REFLECT_ATTACK_FRONT);
 			break;
 		case BLOCKED_BACK:
-			if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+			if (pm->ps->fd.saber_anim_level == SS_DUAL)
 			{
 				PM_SetAnim(SETANIM_TORSO, BOTH_P6_S1_B1_, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			}
-			else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+			else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 			{
 				PM_SetAnim(SETANIM_TORSO, BOTH_P7_S1_B1_, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 			}
@@ -4655,7 +4655,7 @@ void PM_WeaponLightsaber(void)
 	if (!in_camera)
 	{
 		//preblocks can be interrupted
-		if (PM_SaberInParry(pm->ps->saberMove) && pm->ps->userInt3 & 1 << FLAG_PREBLOCK // in a pre-block
+		if (PM_SaberInParry(pm->ps->saber_move) && pm->ps->userInt3 & 1 << FLAG_PREBLOCK // in a pre-block
 			&& (pm->cmd.buttons & BUTTON_ALT_ATTACK || pm->cmd.buttons & BUTTON_ATTACK)) //and attempting an attack
 		{
 			//interrupting a preblock
@@ -4667,11 +4667,11 @@ void PM_WeaponLightsaber(void)
 		if (g_entities[pm->ps->client_num].r.svFlags & SVF_BOT)
 		{
 			if (!(pm->cmd.buttons & BUTTON_ATTACK)
-				&& !PM_SaberInSpecial(pm->ps->saberMove)
-				&& !PM_SaberInStart(pm->ps->saberMove)
-				&& !PM_SaberInTransition(pm->ps->saberMove)
-				&& !PM_SaberInAttack(pm->ps->saberMove)
-				&& pm->ps->saberMove > LS_PUTAWAY)
+				&& !PM_SaberInSpecial(pm->ps->saber_move)
+				&& !PM_SaberInStart(pm->ps->saber_move)
+				&& !PM_SaberInTransition(pm->ps->saber_move)
+				&& !PM_SaberInAttack(pm->ps->saber_move)
+				&& pm->ps->saber_move > LS_PUTAWAY)
 			{
 				// Always return to ready when attack is released...
 				PM_SetSaberMove(LS_READY);
@@ -4741,7 +4741,7 @@ void PM_WeaponLightsaber(void)
 
 	if (pm->ps->saberLockTime > pm->cmd.serverTime)
 	{
-		pm->ps->saberMove = LS_NONE;
+		pm->ps->saber_move = LS_NONE;
 		PM_SaberLocked();
 		return;
 	}
@@ -4781,13 +4781,13 @@ void PM_WeaponLightsaber(void)
 			return;
 		}
 		//done?  be immediately ready to do an attack
-		pm->ps->saberMove = LS_READY;
+		pm->ps->saber_move = LS_READY;
 		pm->ps->weaponTime = 0;
 	}
 
 	if (BG_SabersOff(pm->ps))
 	{
-		if (pm->ps->saberMove != LS_READY)
+		if (pm->ps->saber_move != LS_READY)
 		{
 			PM_SetSaberMove(LS_READY);
 		}
@@ -4810,11 +4810,11 @@ void PM_WeaponLightsaber(void)
 			{
 				if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+					if (pm->ps->fd.saber_anim_level == SS_DUAL)
 					{
 						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelDual(), SETANIM_FLAG_OVERRIDE);
 					}
-					else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+					else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 					{
 						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelStaff(), SETANIM_FLAG_OVERRIDE);
 					}
@@ -4861,7 +4861,7 @@ void PM_WeaponLightsaber(void)
 	if (!pm->ps->saberEntityNum && pm->ps->saberInFlight)
 	{
 		//this means our saber has been knocked away
-		if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		if (pm->ps->fd.saber_anim_level == SS_DUAL)
 		{
 			if (pm->ps->saberHolstered > 1 || !pm->ps->saberHolstered)
 			{
@@ -4923,7 +4923,7 @@ void PM_WeaponLightsaber(void)
 		else if (pm->ps->saberInFlight && pm->ps->saberEntityNum)
 		{
 			//saber is already in flight continue moving it with the force.
-			switch (pm->ps->fd.saberAnimLevel)
+			switch (pm->ps->fd.saber_anim_level)
 			{
 			case SS_FAST:
 			case SS_TAVION:
@@ -4991,7 +4991,7 @@ void PM_WeaponLightsaber(void)
 
 				pm->ps->saberInFlight = qtrue;
 
-				switch (pm->ps->fd.saberAnimLevel)
+				switch (pm->ps->fd.saber_anim_level)
 				{
 				case SS_FAST:
 				case SS_TAVION:
@@ -5080,7 +5080,7 @@ weapChecks:
 
 		if (override_move == LS_INVALID)
 		{
-			switch (pm->ps->fd.saberAnimLevel)
+			switch (pm->ps->fd.saber_anim_level)
 			{
 			case SS_FAST:
 				if (saber1 && saber1->type == SABER_YODA)
@@ -5317,11 +5317,11 @@ weapChecks:
 			{
 				if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+					if (pm->ps->fd.saber_anim_level == SS_DUAL)
 					{
 						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelDual(), SETANIM_FLAG_NORMAL);
 					}
-					else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+					else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 					{
 						PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelStaff(), SETANIM_FLAG_NORMAL);
 					}
@@ -5471,9 +5471,9 @@ weapChecks:
 	{
 		int curmove;
 		// Start with the current move, and cross index it with the current control states.
-		if (pm->ps->saberMove > LS_NONE && pm->ps->saberMove < LS_MOVE_MAX)
+		if (pm->ps->saber_move > LS_NONE && pm->ps->saber_move < LS_MOVE_MAX)
 		{
-			curmove = (saberMoveName_t)pm->ps->saberMove;
+			curmove = (saberMoveName_t)pm->ps->saber_move;
 		}
 		else
 		{
@@ -5626,12 +5626,12 @@ weapChecks:
 			// Last attack is not yet complete.
 			if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 			{
-				if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+				if (pm->ps->fd.saber_anim_level == SS_DUAL)
 				{
 					PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelDual(), SETANIM_FLAG_OVERRIDE);
 					return;
 				}
-				if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+				if (pm->ps->fd.saber_anim_level == SS_STAFF)
 				{
 					PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelStaff(), SETANIM_FLAG_OVERRIDE);
 					return;
@@ -5731,7 +5731,7 @@ weapChecks:
 #ifdef _GAME
 				if (g_entities[pm->ps->client_num].r.svFlags & SVF_BOT
 					&& (Q_irand(0, pm->ps->fd.forcePowerLevel[FP_SABER_OFFENSE] - 1)
-						|| pm->ps->fd.saberAnimLevel == SS_FAST
+						|| pm->ps->fd.saber_anim_level == SS_FAST
 						&& Q_irand(0, 1))) //minor change to make fast-attack users use the special attacks more
 				{
 					//NPCs use more randomized attacks the more skilled they are
@@ -5899,11 +5899,11 @@ weapChecks:
 				{
 					if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 					{
-						if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+						if (pm->ps->fd.saber_anim_level == SS_DUAL)
 						{
 							anim = PM_BlockingPoseForSaberAnimLevelDual();
 						}
-						else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+						else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 						{
 							anim = PM_BlockingPoseForSaberAnimLevelStaff();
 						}
@@ -5952,12 +5952,12 @@ weapChecks:
 
 	if (pm->ps->weaponTime > 0 && holding_block && pm->cmd.buttons & BUTTON_WALKING)
 	{
-		if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+		if (pm->ps->fd.saber_anim_level == SS_STAFF)
 		{
 			PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelStaff(),
 			           SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}
-		else if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		else if (pm->ps->fd.saber_anim_level == SS_DUAL)
 		{
 			PM_SetAnim(SETANIM_TORSO, PM_BlockingPoseForSaberAnimLevelDual(),
 			           SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -6066,7 +6066,7 @@ extern qboolean PM_KnockAwayStaffAndDuels(int move);
 
 void PM_BlockFatigue(playerState_t* ps, const int new_move, const int anim)
 {
-	if (ps->saberMove != new_move)
+	if (ps->saber_move != new_move)
 	{
 		//wasn't playing that attack before
 		if (PM_KickMove(new_move))
@@ -6102,7 +6102,7 @@ void PM_BlockFatigue(playerState_t* ps, const int new_move, const int anim)
 		else if (PM_SaberInTransition(new_move) && pm->ps->userInt3 & 1 << FLAG_ATTACKFAKE)
 		{
 			//attack fakes cost FP as well
-			if (ps->fd.saberAnimLevel == SS_DUAL)
+			if (ps->fd.saber_anim_level == SS_DUAL)
 			{
 				//dual sabers don't have transition/FP costs.
 			}
@@ -6117,7 +6117,7 @@ void PM_BlockFatigue(playerState_t* ps, const int new_move, const int anim)
 
 void PM_SaberFatigue(playerState_t* ps, const int new_move, const int anim)
 {
-	if (ps->saberMove != new_move)
+	if (ps->saber_move != new_move)
 	{
 		//wasn't playing that attack before
 		if (PM_KickMove(new_move))
@@ -6158,7 +6158,7 @@ void PM_SaberFatigue(playerState_t* ps, const int new_move, const int anim)
 		else if (PM_SaberInTransition(new_move) && pm->ps->userInt3 & 1 << FLAG_ATTACKFAKE)
 		{
 			//attack fakes cost FP as well
-			if (ps->fd.saberAnimLevel == SS_DUAL)
+			if (ps->fd.saber_anim_level == SS_DUAL)
 			{
 				//dual sabers don't have transition/FP costs.
 			}
@@ -6173,7 +6173,7 @@ void PM_SaberFatigue(playerState_t* ps, const int new_move, const int anim)
 
 void PM_NPCFatigue(playerState_t* ps, const int new_move)
 {
-	if (ps->saberMove != new_move)
+	if (ps->saber_move != new_move)
 	{
 		//wasn't playing that attack before
 		if (PM_KnockAwayStaffAndDuels(new_move))
@@ -6199,7 +6199,7 @@ void PM_NPCFatigue(playerState_t* ps, const int new_move)
 		else if (PM_SaberInTransition(new_move) && pm->ps->userInt3 & 1 << FLAG_ATTACKFAKE)
 		{
 			//attack fakes cost FP as well
-			if (ps->fd.saberAnimLevel == SS_DUAL)
+			if (ps->fd.saber_anim_level == SS_DUAL)
 			{
 				//dual sabers don't have transition/FP costs.
 			}
@@ -6337,7 +6337,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		{
 			anim = saber2->drawAnim;
 		}
-		else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+		else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 		{
 			if (saber1 && (saber1->type == SABER_BACKHAND
 				|| saber1->type == SABER_ASBACKHAND))
@@ -6353,7 +6353,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				anim = BOTH_S1_S7;
 			}
 		}
-		else if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		else if (pm->ps->fd.saber_anim_level == SS_DUAL)
 		{
 			if (saber1 && saber1->type == SABER_GRIE || saber1 && saber1->type == SABER_GRIE4)
 			{
@@ -6377,11 +6377,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		{
 			anim = saber2->putawayAnim;
 		}
-		else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+		else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 		{
 			anim = BOTH_S7_S1;
 		}
-		else if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+		else if (pm->ps->fd.saber_anim_level == SS_DUAL)
 		{
 			if (saber1 && saber1->type == SABER_GRIE || saber1 && saber1->type == SABER_GRIE4)
 			{
@@ -6394,11 +6394,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		}
 	}
 	//different styles use different animations for the DFA move.
-	else if (new_move == LS_A_JUMP_T__B_ && pm->ps->fd.saberAnimLevel == SS_DESANN)
+	else if (new_move == LS_A_JUMP_T__B_ && pm->ps->fd.saber_anim_level == SS_DESANN)
 	{
 		anim = BOTH_FJSS_TR_BL;
 	}
-	else if (pm->ps->fd.saberAnimLevel == SS_STAFF && new_move >= LS_S_TL2BR && new_move < LS_REFLECT_LL)
+	else if (pm->ps->fd.saber_anim_level == SS_STAFF && new_move >= LS_S_TL2BR && new_move < LS_REFLECT_LL)
 	{
 		//staff has an entirely new set of anims, besides special attacks
 		if (new_move >= LS_V1_BR && new_move <= LS_REFLECT_LL)
@@ -6409,10 +6409,10 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		else
 		{
 			//add the appropriate animLevel
-			anim += (pm->ps->fd.saberAnimLevel - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
+			anim += (pm->ps->fd.saber_anim_level - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
 		}
 	}
-	else if (pm->ps->fd.saberAnimLevel == SS_DUAL && new_move >= LS_S_TL2BR && new_move < LS_REFLECT_LL)
+	else if (pm->ps->fd.saber_anim_level == SS_DUAL && new_move >= LS_S_TL2BR && new_move < LS_REFLECT_LL)
 	{
 		//akimbo has an entirely new set of anims, besides special attacks
 		if (new_move >= LS_V1_BR && new_move <= LS_REFLECT_LL)
@@ -6447,15 +6447,15 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 		else
 		{
 			//add the appropriate animLevel
-			anim += (pm->ps->fd.saberAnimLevel - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
+			anim += (pm->ps->fd.saber_anim_level - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
 		}
 	}
-	else if (pm->ps->fd.saberAnimLevel > FORCE_LEVEL_1 &&
+	else if (pm->ps->fd.saber_anim_level > FORCE_LEVEL_1 &&
 		!PM_SaberInIdle(new_move) && !PM_SaberInParry(new_move) && !PM_SaberInKnockaway(new_move) && !
 		PM_SaberInBrokenParry(new_move) && !PM_SaberInReflect(new_move) && !PM_SaberInSpecial(new_move))
 	{
 		//readies, parries and reflections have only 1 level
-		anim += (pm->ps->fd.saberAnimLevel - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
+		anim += (pm->ps->fd.saber_anim_level - FORCE_LEVEL_1) * SABER_ANIM_GROUP_SIZE;
 	}
 	else if (new_move == LS_KICK_F_AIR
 		|| new_move == LS_KICK_F_AIR2
@@ -6501,11 +6501,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			{
 				if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+					if (pm->ps->fd.saber_anim_level == SS_DUAL)
 					{
 						anim = PM_BlockingPoseForSaberAnimLevelDual();
 					}
-					else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+					else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 					{
 						anim = PM_BlockingPoseForSaberAnimLevelStaff();
 					}
@@ -6526,11 +6526,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			//Playing torso walk anims while crouched makes you look like a monkey
 			if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 			{
-				if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+				if (pm->ps->fd.saber_anim_level == SS_DUAL)
 				{
 					anim = PM_BlockingPoseForSaberAnimLevelDual();
 				}
-				else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+				else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 				{
 					anim = PM_BlockingPoseForSaberAnimLevelStaff();
 				}
@@ -6558,11 +6558,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			{
 				if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+					if (pm->ps->fd.saber_anim_level == SS_DUAL)
 					{
 						anim = PM_BlockingPoseForSaberAnimLevelDual();
 					}
-					else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+					else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 					{
 						anim = PM_BlockingPoseForSaberAnimLevelStaff();
 					}
@@ -6591,11 +6591,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			{
 				if (holding_block && pm->cmd.buttons & BUTTON_WALKING)
 				{
-					if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+					if (pm->ps->fd.saber_anim_level == SS_DUAL)
 					{
 						anim = PM_BlockingPoseForSaberAnimLevelDual();
 					}
-					else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+					else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 					{
 						anim = PM_BlockingPoseForSaberAnimLevelStaff();
 					}
@@ -6690,11 +6690,11 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 				&& !PM_SaberInSpecial(new_move))
 			{
 				parts = SETANIM_TORSO;
-				if (pm->ps->fd.saberAnimLevel == SS_DUAL)
+				if (pm->ps->fd.saber_anim_level == SS_DUAL)
 				{
 					anim = PM_BlockingPoseForSaberAnimLevelDual();
 				}
-				else if (pm->ps->fd.saberAnimLevel == SS_STAFF)
+				else if (pm->ps->fd.saber_anim_level == SS_STAFF)
 				{
 					anim = PM_BlockingPoseForSaberAnimLevelStaff();
 				}
@@ -6793,7 +6793,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 
 			if (PM_SaberInAttack(new_move) || pm_saber_in_special_attack(anim))
 			{
-				if (pm->ps->saberMove != new_move)
+				if (pm->ps->saber_move != new_move)
 				{
 					//wasn't playing that attack before
 					if (new_move != LS_KICK_F
@@ -6865,7 +6865,7 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 		}
 
-		pm->ps->saberMove = new_move;
+		pm->ps->saber_move = new_move;
 		pm->ps->saberBlocking = saberMoveData[new_move].blocking;
 
 		pm->ps->torsoAnim = anim;
@@ -7006,10 +7006,10 @@ qboolean PM_DoSlap(void)
 	//perform a kick.
 	int kickMove = -1;
 
-	if (!PM_SaberInBounce(pm->ps->saberMove)
-		&& !PM_SaberInKnockaway(pm->ps->saberMove)
-		&& !PM_SaberInBrokenParry(pm->ps->saberMove)
-		&& !PM_KickMove(pm->ps->saberMove)
+	if (!PM_SaberInBounce(pm->ps->saber_move)
+		&& !PM_SaberInKnockaway(pm->ps->saber_move)
+		&& !PM_SaberInBrokenParry(pm->ps->saber_move)
+		&& !PM_KickMove(pm->ps->saber_move)
 		&& !PM_KickingAnim(pm->ps->torsoAnim)
 		&& !PM_KickingAnim(pm->ps->legsAnim)
 		&& !BG_InRoll(pm->ps, pm->ps->legsAnim)
@@ -7110,33 +7110,33 @@ qboolean BG_SaberInFullDamageMove(const playerState_t* ps, const int anim_index)
 	//The player is attacking with a saber attack that does full damage
 	const float torso_anim_point = bg_get_torso_anim_point(ps, anim_index);
 
-	if (PM_SaberInAttack(ps->saberMove)
-		|| PM_SaberInDamageMove(ps->saberMove)
+	if (PM_SaberInAttack(ps->saber_move)
+		|| PM_SaberInDamageMove(ps->saber_move)
 		|| pm_saber_in_special_attack(ps->torsoAnim) //jacesolaris 2019 test for idle kill
 		|| PM_SaberDoDamageAnim(ps->torsoAnim)
-		&& !PM_KickMove(ps->saberMove)
+		&& !PM_KickMove(ps->saber_move)
 		&& !PM_InSaberLock(ps->torsoAnim)
 		|| PM_SuperBreakWinAnim(ps->torsoAnim))
 	{
 		//in attack animation
-		if ((ps->saberMove == LS_A_FLIP_STAB || ps->saberMove == LS_A_FLIP_SLASH
-				|| ps->saberMove == BOTH_JUMPFLIPSTABDOWN || ps->saberMove == BOTH_JUMPFLIPSLASHDOWN1)
+		if ((ps->saber_move == LS_A_FLIP_STAB || ps->saber_move == LS_A_FLIP_SLASH
+				|| ps->saber_move == BOTH_JUMPFLIPSTABDOWN || ps->saber_move == BOTH_JUMPFLIPSLASHDOWN1)
 			&& (torso_anim_point >= 0.30f && torso_anim_point <= 0.95f)) //assumes that the dude is
 		{
 			//flip attacks shouldn't do damage during the whole move.
 			return qtrue;
 		}
 
-		if ((ps->saberMove == BOTH_ROLL_STAB
-			|| ps->saberMove == LS_ROLL_STAB) && (torso_anim_point >= 0.30f && torso_anim_point <= 0.95f))
+		if ((ps->saber_move == BOTH_ROLL_STAB
+			|| ps->saber_move == LS_ROLL_STAB) && (torso_anim_point >= 0.30f && torso_anim_point <= 0.95f))
 		{
 			//don't do damage during the follow thru part of the roll stab.
 			return qtrue;
 		}
 
-		if ((ps->saberMove == BOTH_STABDOWN || ps->saberMove == BOTH_STABDOWN_STAFF || ps->saberMove ==
+		if ((ps->saber_move == BOTH_STABDOWN || ps->saber_move == BOTH_STABDOWN_STAFF || ps->saber_move ==
 				BOTH_STABDOWN_DUAL
-				|| ps->saberMove == LS_STABDOWN || ps->saberMove == LS_STABDOWN_STAFF || ps->saberMove ==
+				|| ps->saber_move == LS_STABDOWN || ps->saber_move == LS_STABDOWN_STAFF || ps->saber_move ==
 				LS_STABDOWN_DUAL)
 			&& (torso_anim_point >= 0.35f && torso_anim_point <= 0.95f))
 		{
@@ -7158,23 +7158,23 @@ qboolean BG_SaberInPartialDamageMove(const playerState_t* ps, const int anim_ind
 	//The player is attacking with a saber attack that does NO damage AT THIS POINT
 	const float torso_anim_point = bg_get_torso_anim_point(ps, anim_index);
 
-	if ((ps->saberMove == LS_A_FLIP_STAB || ps->saberMove == LS_A_FLIP_SLASH
-			|| ps->saberMove == BOTH_JUMPFLIPSTABDOWN || ps->saberMove == BOTH_JUMPFLIPSLASHDOWN1)
+	if ((ps->saber_move == LS_A_FLIP_STAB || ps->saber_move == LS_A_FLIP_SLASH
+			|| ps->saber_move == BOTH_JUMPFLIPSTABDOWN || ps->saber_move == BOTH_JUMPFLIPSLASHDOWN1)
 		&& (torso_anim_point >= 0.30f && torso_anim_point <= 0.95f)) //assumes that the dude is
 	{
 		//flip attacks shouldn't do damage during the whole move.
 		return qtrue;
 	}
 
-	if ((ps->saberMove == BOTH_ROLL_STAB
-		|| ps->saberMove == LS_ROLL_STAB) && (torso_anim_point >= 0.30f && torso_anim_point <= 0.95f))
+	if ((ps->saber_move == BOTH_ROLL_STAB
+		|| ps->saber_move == LS_ROLL_STAB) && (torso_anim_point >= 0.30f && torso_anim_point <= 0.95f))
 	{
 		//don't do damage during the follow thru part of the roll stab.
 		return qtrue;
 	}
 
-	if ((ps->saberMove == BOTH_STABDOWN || ps->saberMove == BOTH_STABDOWN_STAFF || ps->saberMove == BOTH_STABDOWN_DUAL
-			|| ps->saberMove == LS_STABDOWN || ps->saberMove == LS_STABDOWN_STAFF || ps->saberMove == LS_STABDOWN_DUAL)
+	if ((ps->saber_move == BOTH_STABDOWN || ps->saber_move == BOTH_STABDOWN_STAFF || ps->saber_move == BOTH_STABDOWN_DUAL
+			|| ps->saber_move == LS_STABDOWN || ps->saber_move == LS_STABDOWN_STAFF || ps->saber_move == LS_STABDOWN_DUAL)
 		&& (torso_anim_point >= 0.35f && torso_anim_point <= 0.95f))
 	{
 		//don't do damage during the follow thru part of the stab.
@@ -7187,7 +7187,7 @@ qboolean BG_SaberInPartialDamageMove(const playerState_t* ps, const int anim_ind
 qboolean BG_SaberInTransitionDamageMove(const playerState_t* ps)
 {
 	//player is in a saber move where it does transitional damage
-	if (PM_SaberInTransition(ps->saberMove))
+	if (PM_SaberInTransition(ps->saber_move))
 	{
 		if (ps->saberBlocked == BLOCKED_NONE)
 		{
@@ -7213,7 +7213,7 @@ qboolean BG_InSlowBounce(const playerState_t* ps)
 		//in slow bounce
 		return qtrue;
 	}
-	if (PM_SaberInBounce(ps->saberMove))
+	if (PM_SaberInBounce(ps->saber_move))
 	{
 		//in slow bounce
 		return qtrue;

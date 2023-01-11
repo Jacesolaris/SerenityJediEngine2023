@@ -1666,7 +1666,7 @@ static int CG_CalcViewValues(void)
 		{
 			// back away from character
 			if (cg_thirdPersonSpecialCam.integer &&
-				PM_SaberInSpecial(cg.snap->ps.saberMove))
+				PM_SaberInSpecial(cg.snap->ps.saber_move))
 			{
 				//the action cam
 				if (!CG_ThirdPersonActionCam())

@@ -58,7 +58,7 @@ void WP_ATSTMainFire(gentity_t* ent);
 void WP_ATSTSideAltFire(gentity_t* ent);
 void WP_ATSTSideFire(gentity_t* ent);
 void WP_FireBryarPistol(gentity_t* ent, qboolean alt_fire);
-void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean secondPistol);
+void WP_FireBryarPistolDuals(gentity_t* ent, qboolean alt_fire, qboolean second_pistol);
 void WP_FireBryarPistolold(gentity_t* ent, qboolean alt_fire);
 void WP_FireJawaPistol(gentity_t* ent, qboolean alt_fire);
 void WP_FireBryarsbdPistol(gentity_t* ent, qboolean alt_fire);

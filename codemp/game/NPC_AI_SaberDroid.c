@@ -151,26 +151,26 @@ void NPC_SaberDroid_PickAttack(void)
 	case 0:
 	default:
 		attackAnim = BOTH_A2_TR_BL;
-		NPCS.NPC->client->ps.saberMove = LS_A_TR2BL;
-		NPCS.NPC->client->ps.fd.saberAnimLevel = SS_MEDIUM;
+		NPCS.NPC->client->ps.saber_move = LS_A_TR2BL;
+		NPCS.NPC->client->ps.fd.saber_anim_level = SS_MEDIUM;
 		break;
 	case 1:
 		attackAnim = BOTH_A1_BL_TR;
-		NPCS.NPC->client->ps.saberMove = LS_A_BL2TR;
-		NPCS.NPC->client->ps.fd.saberAnimLevel = SS_FAST;
+		NPCS.NPC->client->ps.saber_move = LS_A_BL2TR;
+		NPCS.NPC->client->ps.fd.saber_anim_level = SS_FAST;
 		break;
 	case 2:
 		attackAnim = BOTH_A1__L__R;
-		NPCS.NPC->client->ps.saberMove = LS_A_L2R;
-		NPCS.NPC->client->ps.fd.saberAnimLevel = SS_FAST;
+		NPCS.NPC->client->ps.saber_move = LS_A_L2R;
+		NPCS.NPC->client->ps.fd.saber_anim_level = SS_FAST;
 		break;
 	case 3:
 		attackAnim = BOTH_A3__L__R;
-		NPCS.NPC->client->ps.saberMove = LS_A_L2R;
-		NPCS.NPC->client->ps.fd.saberAnimLevel = SS_STRONG;
+		NPCS.NPC->client->ps.saber_move = LS_A_L2R;
+		NPCS.NPC->client->ps.fd.saber_anim_level = SS_STRONG;
 		break;
 	}
-	NPCS.NPC->client->ps.saberBlocking = saberMoveData[NPCS.NPC->client->ps.saberMove].blocking;
+	NPCS.NPC->client->ps.saberBlocking = saberMoveData[NPCS.NPC->client->ps.saber_move].blocking;
 	NPC_SetAnim(NPCS.NPC, SETANIM_BOTH, attackAnim, SETANIM_FLAG_HOLD | SETANIM_FLAG_OVERRIDE);
 	NPCS.NPC->client->ps.torsoAnim = NPCS.NPC->client->ps.legsAnim;
 	//need to do this because we have no anim split but saber code checks torsoAnim
@@ -337,10 +337,10 @@ void NPC_BSSD_Default(void)
 	if (!NPCS.NPC->client->ps.weaponTime)
 	{
 		//we're not attacking.
-		NPCS.NPC->client->ps.saberMove = LS_READY;
+		NPCS.NPC->client->ps.saber_move = LS_READY;
 		NPCS.NPC->client->ps.saberBlocking = saberMoveData[LS_READY].blocking;
 		//RAFIXME - since this is saber trail code, I think this needs to be ported to cgame.
-		NPCS.NPC->client->ps.fd.saberAnimLevel = SS_MEDIUM;
+		NPCS.NPC->client->ps.fd.saber_anim_level = SS_MEDIUM;
 		NPCS.NPC->client->ps.weaponstate = WEAPON_READY;
 	}
 }

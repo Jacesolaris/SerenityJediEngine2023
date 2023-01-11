@@ -429,7 +429,7 @@ qboolean Pickup_Saber(gentity_t* self, qboolean hadSaber, gentity_t* pickUpSaber
 				if (self->client->ps.torsoAnim == BOTH_BUTTON_HOLD)
 				{
 					//but only if already playing the pickup with left hand anim...
-					switch (self->client->ps.saberAnimLevel)
+					switch (self->client->ps.saber_anim_level)
 					{
 					case SS_FAST:
 					case SS_TAVION:

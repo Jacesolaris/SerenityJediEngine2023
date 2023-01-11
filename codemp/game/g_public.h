@@ -1075,8 +1075,8 @@ typedef struct gameImport_s {
 	int			(*CM_RegisterTerrain)					(const char* config);
 	void		(*RMG_Init)								(void);
 
-	void		(*G2API_ListModelBones)					(void* ghlInfo, int frame);
-	void		(*G2API_ListModelSurfaces)				(void* ghlInfo);
+	void		(*G2API_ListModelBones)					(void* ghl_info, int frame);
+	void		(*G2API_ListModelSurfaces)				(void* ghl_info);
 	qboolean(*G2API_HaveWeGhoul2Models)				(void* ghoul2);
 	void		(*G2API_SetGhoul2ModelIndexes)			(void* ghoul2, qhandle_t* modelList, qhandle_t* skinList);
 	qboolean(*G2API_GetBoltMatrix)					(void* ghoul2, int model_index, int bolt_index, mdxaBone_t* matrix, const vec3_t angles, const vec3_t position, int frameNum, qhandle_t* modelList, vec3_t scale);
@@ -1084,19 +1084,19 @@ typedef struct gameImport_s {
 	qboolean(*G2API_GetBoltMatrix_NoRecNoRot)		(void* ghoul2, int model_index, int bolt_index, mdxaBone_t* matrix, const vec3_t angles, const vec3_t position, int frameNum, qhandle_t* modelList, vec3_t scale);
 	int			(*G2API_InitGhoul2Model)				(void** ghoul2Ptr, const char* fileName, int model_index, qhandle_t customSkin, qhandle_t customShader, int modelFlags, int lodBias);
 	qboolean(*G2API_SetSkin)						(void* ghoul2, int model_index, qhandle_t customSkin, qhandle_t renderSkin);
-	int			(*G2API_Ghoul2Size)						(void* ghlInfo);
+	int			(*G2API_Ghoul2Size)						(void* ghl_info);
 	int			(*G2API_AddBolt)						(void* ghoul2, int model_index, const char* boneName);
 	void		(*G2API_SetBoltInfo)					(void* ghoul2, int model_index, int boltInfo);
-	qboolean(*G2API_SetBoneAngles)					(void* ghoul2, int model_index, const char* boneName, const vec3_t angles, int flags, int up, int right, int forward, qhandle_t* modelList, int blend_time, int currentTime);
-	qboolean(*G2API_SetBoneAnim)					(void* ghoul2, int model_index, const char* boneName, int startFrame, int endFrame, int flags, float animSpeed, int currentTime, float setFrame, int blend_time);
-	qboolean(*G2API_GetBoneAnim)					(void* ghoul2, const char* boneName, int currentTime, float* currentFrame, int* startFrame, int* endFrame, int* flags, float* animSpeed, int* modelList, int model_index);
+	qboolean(*G2API_SetBoneAngles)					(void* ghoul2, int model_index, const char* boneName, const vec3_t angles, int flags, int up, int right, int forward, qhandle_t* modelList, int blend_time, int current_time);
+	qboolean(*G2API_SetBoneAnim)					(void* ghoul2, int model_index, const char* boneName, int start_frame, int end_frame, int flags, float animSpeed, int current_time, float setFrame, int blend_time);
+	qboolean(*G2API_GetBoneAnim)					(void* ghoul2, const char* boneName, int current_time, float* current_frame, int* start_frame, int* end_frame, int* flags, float* animSpeed, int* modelList, int model_index);
 	void		(*G2API_GetGLAName)						(void* ghoul2, int model_index, char* fillBuf);
 	int			(*G2API_CopyGhoul2Instance)				(void* g2From, void* g2To, int model_index);
 	void		(*G2API_CopySpecificGhoul2Model)		(void* g2From, int modelFrom, void* g2To, int modelTo);
 	void		(*G2API_DuplicateGhoul2Instance)		(void* g2From, void** g2To);
-	qboolean(*G2API_HasGhoul2ModelOnIndex)			(void* ghlInfo, int model_index);
-	qboolean(*G2API_RemoveGhoul2Model)				(void* ghlInfo, int model_index);
-	qboolean(*G2API_RemoveGhoul2Models)				(void* ghlInfo);
+	qboolean(*G2API_HasGhoul2ModelOnIndex)			(void* ghl_info, int model_index);
+	qboolean(*G2API_RemoveGhoul2Model)				(void* ghl_info, int model_index);
+	qboolean(*G2API_RemoveGhoul2Models)				(void* ghl_info);
 	void		(*G2API_CleanGhoul2Models)				(void** ghoul2Ptr);
 	void		(*G2API_CollisionDetect)				(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius);
 	void		(*G2API_CollisionDetectCache)			(CollisionRecord_t* collRecMap, void* ghoul2, const vec3_t angles, const vec3_t position, int frameNumber, int entNum, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, int traceFlags, int use_lod, float fRadius);

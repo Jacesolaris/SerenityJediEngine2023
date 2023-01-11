@@ -305,13 +305,13 @@ GetChild
 -------------------------
 */
 
-CSequence* CSequence::GetChildByIndex(const int iIndex)
+CSequence* CSequence::GetChildByIndex(const int i_index)
 {
-	if (iIndex < 0 || iIndex >= static_cast<int>(m_children.size()))
+	if (i_index < 0 || i_index >= static_cast<int>(m_children.size()))
 		return nullptr;
 
 	auto iterSeq = m_children.begin();
-	for (int i = 0; i < iIndex; i++)
+	for (int i = 0; i < i_index; i++)
 	{
 		++iterSeq;
 	}

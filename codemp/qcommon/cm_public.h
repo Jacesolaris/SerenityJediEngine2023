@@ -70,7 +70,7 @@ bool CM_GenericBoxCollide(const vec3pair_t abounds, const vec3pair_t bbounds);
 void CM_CalcExtents(const vec3_t start, const vec3_t end, const struct traceWork_s* tw, vec3pair_t bounds);
 
 // cm_tag.c
-int CM_LerpTag(orientation_t* tag, clipHandle_t model, int startFrame, int endFrame,
+int CM_LerpTag(orientation_t* tag, clipHandle_t model, int start_frame, int end_frame,
                float frac, const char* tagName);
 
 // cm_marks.c

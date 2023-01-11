@@ -47,7 +47,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 	vec3_t start, end, spot;
 	trace_t tr;
 	gentity_t* trace_ent = nullptr;
-	constexpr float shotRange = 8192;
+	constexpr float shot_range = 8192;
 
 	if (ent->NPC)
 	{
@@ -70,7 +70,7 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 	WP_TraceSetStart(ent, start);
 
 	WP_MissileTargetHint(ent, start, forward_vec);
-	VectorMA(start, shotRange, forward_vec, end);
+	VectorMA(start, shot_range, forward_vec, end);
 
 	int ignore = ent->s.number;
 	int traces = 0;
@@ -152,15 +152,15 @@ static void WP_DisruptorMainFire(gentity_t* ent)
 		}
 	}
 
-	const float shotDist = shotRange * tr.fraction;
+	const float shot_dist = shot_range * tr.fraction;
 
-	for (float dist = 0; dist < shotDist; dist += 64)
+	for (float dist = 0; dist < shot_dist; dist += 64)
 	{
 		//FIXME: on a really long shot, this could make a LOT of alerts in one frame...
 		VectorMA(start, dist, forward_vec, spot);
 		AddSightEvent(ent, spot, 256, AEL_DISCOVERED, 50);
 	}
-	VectorMA(start, shotDist - 4, forward_vec, spot);
+	VectorMA(start, shot_dist - 4, forward_vec, spot);
 	AddSightEvent(ent, spot, 256, AEL_DISCOVERED, 50);
 }
 
@@ -174,7 +174,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 	vec3_t muzzle2, spot, dir;
 	trace_t tr;
 	gentity_t* tent;
-	qboolean hitDodged = qfalse, fullCharge = qfalse;
+	qboolean hit_dodged = qfalse, fullCharge = qfalse;
 
 	VectorCopy(muzzle, muzzle2); // making a backup copy
 
@@ -234,9 +234,9 @@ void WP_DisruptorAltFire(gentity_t* ent)
 
 	for (int i = 0; i < traces; i++)
 	{
-		constexpr float shotRange = 8192;
+		constexpr float shot_range = 8192;
 		vec3_t end;
-		VectorMA(start, shotRange, forward_vec, end);
+		VectorMA(start, shot_range, forward_vec, end);
 
 		//NOTE: if you want to be able to hit guys in emplaced guns, use "G2_COLLIDE, 10" instead of "G2_RETURNONHIT, 0"
 		//alternately, if you end up hitting an emplaced_gun that has a sitter, just redo this one trace with the "G2_COLLIDE, 10" to see if we it the sitter
@@ -280,15 +280,15 @@ void WP_DisruptorAltFire(gentity_t* ent)
 				WP_ForcePowerDrain(trace_ent, FP_SABER_DEFENSE, WP_SaberBlockCost(trace_ent, ent, tr.endpos));
 
 				//force player into a projective block move.
-				hitDodged = WP_SaberBlockBolt(trace_ent, tr.endpos, qtrue);
+				hit_dodged = WP_SaberBlockBolt(trace_ent, tr.endpos, qtrue);
 			}
 			else
 			{
-				hitDodged = jedi_disruptor_dodge_evasion(trace_ent, ent, &tr, HL_NONE);
+				hit_dodged = jedi_disruptor_dodge_evasion(trace_ent, ent, &tr, HL_NONE);
 				//acts like we didn't even hit him
 			}
 		}
-		if (!hitDodged)
+		if (!hit_dodged)
 		{
 			if (render_impact)
 			{
@@ -340,7 +340,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 		VectorCopy(tr.endpos, muzzle2);
 		VectorCopy(tr.endpos, start);
 		skip = tr.entity_num;
-		hitDodged = qfalse;
+		hit_dodged = qfalse;
 	}
 	//just draw one solid beam all the way to the end...
 	tent = G_TempEntity(tr.endpos, EV_DISRUPTOR_MAIN_SHOT);
@@ -351,17 +351,17 @@ void WP_DisruptorAltFire(gentity_t* ent)
 	// now go along the trail and make sight events
 	VectorSubtract(tr.endpos, muzzle, dir);
 
-	const float shotDist = VectorNormalize(dir);
+	const float shot_dist = VectorNormalize(dir);
 
 	//FIXME: if shoot *really* close to someone, the alert could be way out of their FOV
-	for (float dist = 0; dist < shotDist; dist += 64)
+	for (float dist = 0; dist < shot_dist; dist += 64)
 	{
 		//FIXME: on a really long shot, this could make a LOT of alerts in one frame...
 		VectorMA(muzzle, dist, dir, spot);
 		AddSightEvent(ent, spot, 256, AEL_DISCOVERED, 50);
 	}
 	//FIXME: spawn a temp ent that continuously spawns sight alerts here?  And 1 sound alert to draw their attention?
-	VectorMA(start, shotDist - 4, forward_vec, spot);
+	VectorMA(start, shot_dist - 4, forward_vec, spot);
 	AddSightEvent(ent, spot, 256, AEL_DISCOVERED, 50);
 }
 

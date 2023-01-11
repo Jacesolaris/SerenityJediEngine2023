@@ -6,7 +6,7 @@ typedef struct holster_s holster_t;
 
 struct holster_s
 {
-	qhandle_t boneIndex; //bolt index to base this weapon off of.
+	qhandle_t bone_index; //bolt index to base this weapon off of.
 	vec3_t posOffset; //the positional offset of the weapon
 	vec3_t angOffset; //the angular offset of the weapon
 };

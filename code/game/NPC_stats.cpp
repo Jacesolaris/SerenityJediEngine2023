@@ -4297,7 +4297,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 					//clear
 					npc->client->ps.saberStylesKnown &= ~(1 << n);
 				}
-				npc->client->ps.saberAnimLevel = n;
+				npc->client->ps.saber_anim_level = n;
 				if (parsingPlayer)
 				{
 					cg.saberAnimLevelPending = n;

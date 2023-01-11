@@ -2053,7 +2053,7 @@ public:
 	};
 #endif // !JK2_MODE
 
-	short saberMove;
+	short saber_move;
 
 #ifndef JK2_MODE
 	short saberMoveNext;
@@ -2094,7 +2094,7 @@ public:
 	int saberEventFlags;
 	int saberBlockingTime;
 	int saberManualBlockingTime;
-	int saberAnimLevel;
+	int saber_anim_level;
 	int saberAttackChainCount;
 	int saberFatigueChainCount;
 	int BlasterAttackChainCount;
@@ -2325,7 +2325,7 @@ public:
 		saved_game.write<int32_t>(dualSabers);
 #endif // !JK2_MODE
 
-		saved_game.write<int16_t>(saberMove);
+		saved_game.write<int16_t>(saber_move);
 
 #ifndef JK2_MODE
 		saved_game.write<int16_t>(saberMoveNext);
@@ -2350,7 +2350,7 @@ public:
 		saved_game.write<int32_t>(saberEventFlags);
 		saved_game.write<int32_t>(saberBlockingTime);
 		saved_game.write<int32_t>(saberManualBlockingTime);
-		saved_game.write<int32_t>(saberAnimLevel);
+		saved_game.write<int32_t>(saber_anim_level);
 		saved_game.write<int32_t>(saberAttackChainCount);
 		saved_game.write<int32_t>(saberFatigueChainCount);
 		saved_game.write<int32_t>(BlasterAttackChainCount);
@@ -2578,7 +2578,7 @@ public:
 		saved_game.read<int32_t>(dualSabers);
 #endif // !JK2_MODE
 
-		saved_game.read<int16_t>(saberMove);
+		saved_game.read<int16_t>(saber_move);
 
 #ifndef JK2_MODE
 		saved_game.read<int16_t>(saberMoveNext);
@@ -2603,7 +2603,7 @@ public:
 		saved_game.read<int32_t>(saberEventFlags);
 		saved_game.read<int32_t>(saberBlockingTime);
 		saved_game.read<int32_t>(saberManualBlockingTime);
-		saved_game.read<int32_t>(saberAnimLevel);
+		saved_game.read<int32_t>(saber_anim_level);
 		saved_game.read<int32_t>(saberAttackChainCount);
 		saved_game.read<int32_t>(saberFatigueChainCount);
 		saved_game.read<int32_t>(BlasterAttackChainCount);
@@ -3020,7 +3020,7 @@ using entityState_t = struct entityState_s
 
 	int generic1;
 
-	int saberMove;
+	int saber_move;
 
 	int genericenemyindex;
 
@@ -3335,7 +3335,7 @@ using SSkinGoreData = struct SSkinGoreData_s
 {
 	vec3_t angles;
 	vec3_t position;
-	int currentTime;
+	int current_time;
 	int entNum;
 	vec3_t rayDirection; // in world space
 	vec3_t hitLocation; // in world space
@@ -3400,8 +3400,8 @@ using sharedSetBoneIKStateParams_t = struct
 	float radius; //bone rad
 	int blend_time; //bone blend time
 	int pcjOverrides; //override ik bone flags
-	int startFrame; //base pose start
-	int endFrame; //base pose end
+	int start_frame; //base pose start
+	int end_frame; //base pose end
 };
 
 enum sharedEIKMoveState

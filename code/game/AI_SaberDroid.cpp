@@ -273,29 +273,29 @@ void NPC_SaberDroid_PickAttack()
 	case 0:
 	default:
 		attack_anim = BOTH_A2_TR_BL;
-		NPC->client->ps.saberMove = LS_A_TR2BL;
-		NPC->client->ps.saberAnimLevel = SS_MEDIUM;
+		NPC->client->ps.saber_move = LS_A_TR2BL;
+		NPC->client->ps.saber_anim_level = SS_MEDIUM;
 		break;
 	case 1:
 		attack_anim = BOTH_A1_BL_TR;
-		NPC->client->ps.saberMove = LS_A_BL2TR;
-		NPC->client->ps.saberAnimLevel = SS_FAST;
+		NPC->client->ps.saber_move = LS_A_BL2TR;
+		NPC->client->ps.saber_anim_level = SS_FAST;
 		break;
 	case 2:
 		attack_anim = BOTH_A1__L__R;
-		NPC->client->ps.saberMove = LS_A_L2R;
-		NPC->client->ps.saberAnimLevel = SS_FAST;
+		NPC->client->ps.saber_move = LS_A_L2R;
+		NPC->client->ps.saber_anim_level = SS_FAST;
 		break;
 	case 3:
 		attack_anim = BOTH_A3__L__R;
-		NPC->client->ps.saberMove = LS_A_L2R;
-		NPC->client->ps.saberAnimLevel = SS_STRONG;
+		NPC->client->ps.saber_move = LS_A_L2R;
+		NPC->client->ps.saber_anim_level = SS_STRONG;
 		break;
 	}
-	NPC->client->ps.saberBlocking = saberMoveData[NPC->client->ps.saberMove].blocking;
-	if (saberMoveData[NPC->client->ps.saberMove].trailLength > 0)
+	NPC->client->ps.saberBlocking = saberMoveData[NPC->client->ps.saber_move].blocking;
+	if (saberMoveData[NPC->client->ps.saber_move].trailLength > 0)
 	{
-		NPC->client->ps.SaberActivateTrail(saberMoveData[NPC->client->ps.saberMove].trailLength);
+		NPC->client->ps.SaberActivateTrail(saberMoveData[NPC->client->ps.saber_move].trailLength);
 	}
 	else
 	{
@@ -465,10 +465,10 @@ void NPC_BSSD_Default()
 	}
 	if (!NPC->client->ps.weaponTime)
 	{
-		NPC->client->ps.saberMove = LS_READY;
+		NPC->client->ps.saber_move = LS_READY;
 		NPC->client->ps.saberBlocking = saberMoveData[LS_READY].blocking;
 		NPC->client->ps.SaberDeactivateTrail(0);
-		NPC->client->ps.saberAnimLevel = SS_MEDIUM;
+		NPC->client->ps.saber_anim_level = SS_MEDIUM;
 		NPC->client->ps.weaponstate = WEAPON_READY;
 	}
 }

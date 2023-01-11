@@ -508,7 +508,7 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 	}
 	//NOTE: Stop any scripts that are currently running (FLUSH)... ?
 	//Turn off animation
-	self->s.frame = self->startFrame = self->endFrame = 0;
+	self->s.frame = self->start_frame = self->end_frame = 0;
 	self->svFlags &= ~SVF_ANIMATING;
 
 	self->health = 0;

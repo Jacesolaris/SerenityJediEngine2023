@@ -31,7 +31,7 @@ constexpr auto G2T_SV_TIME = 0;
 constexpr auto G2T_CG_TIME = 1;
 constexpr auto NUM_G2T_TIME = 2;
 
-void G2API_SetTime(int currentTime, int clock);
+void G2API_SetTime(int current_time, int clock);
 int G2API_GetTime(int argTime); // this may or may not return arg depending on ghoul2_time cvar
 
 //===================================================================
@@ -108,8 +108,8 @@ struct boneInfo_t
 	int boneNumber; // what bone are we overriding?
 	mdxaBone_t matrix; // details of bone angle overrides - some are pre-done on the server, some in ghoul2
 	int flags; // flags for override
-	int startFrame; // start frame for animation
-	int endFrame; // end frame for animation NOTE anim actually ends on endFrame+1
+	int start_frame; // start frame for animation
+	int end_frame; // end frame for animation NOTE anim actually ends on end_frame+1
 	int startTime; // time we started this animation
 	int pauseTime; // time we paused this animation - 0 if not paused
 	float animSpeed;
@@ -194,8 +194,8 @@ struct boneInfo_t
 	boneInfo_t() :
 		boneNumber(-1), matrix(),
 		flags(0),
-		startFrame(0),
-		endFrame(0),
+		start_frame(0),
+		end_frame(0),
 		startTime(0),
 		pauseTime(0),
 		animSpeed(0),
@@ -256,8 +256,8 @@ struct boneInfo_t
 		saved_game.write<int32_t>(boneNumber);
 		saved_game.write<>(matrix);
 		saved_game.write<int32_t>(flags);
-		saved_game.write<int32_t>(startFrame);
-		saved_game.write<int32_t>(endFrame);
+		saved_game.write<int32_t>(start_frame);
+		saved_game.write<int32_t>(end_frame);
 		saved_game.write<int32_t>(startTime);
 		saved_game.write<int32_t>(pauseTime);
 		saved_game.write<float>(animSpeed);
@@ -332,8 +332,8 @@ struct boneInfo_t
 		saved_game.read<int32_t>(boneNumber);
 		saved_game.read<>(matrix);
 		saved_game.read<int32_t>(flags);
-		saved_game.read<int32_t>(startFrame);
-		saved_game.read<int32_t>(endFrame);
+		saved_game.read<int32_t>(start_frame);
+		saved_game.read<int32_t>(end_frame);
 		saved_game.read<int32_t>(startTime);
 		saved_game.read<int32_t>(pauseTime);
 		saved_game.read<float>(animSpeed);

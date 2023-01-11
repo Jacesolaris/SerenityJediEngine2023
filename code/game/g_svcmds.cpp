@@ -40,7 +40,7 @@ extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saberName);
 extern void WP_RemoveSaber(gentity_t* ent, int saber_num);
 extern saber_colors_t TranslateSaberColor(const char* name);
 extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int blade_num);
-extern qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel);
+extern qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saber_anim_level);
 extern void G_RemoveWeather(void);
 extern void RemoveBarrier(gentity_t* ent);
 
@@ -407,23 +407,23 @@ void Svcmd_SaberAttackCycle_f(void)
 		return;
 	}
 
-	if (self->client->ps.saber[0].type == SABER_BACKHAND && self->client->ps.saberAnimLevel == SS_STAFF)
+	if (self->client->ps.saber[0].type == SABER_BACKHAND && self->client->ps.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
-	if (self->client->ps.saber[0].type == SABER_ASBACKHAND && self->client->ps.saberAnimLevel == SS_STAFF)
+	if (self->client->ps.saber[0].type == SABER_ASBACKHAND && self->client->ps.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
-	if (self->client->ps.saber[0].type == SABER_ELECTROSTAFF && self->client->ps.saberAnimLevel == SS_STAFF)
+	if (self->client->ps.saber[0].type == SABER_ELECTROSTAFF && self->client->ps.saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
 	if (self->s.client_num >= MAX_CLIENTS //not the player
-		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF && self->client->ps.saberAnimLevel
+		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF && self->client->ps.saber_anim_level
 		== SS_STAFF)
 	{
 		return;
@@ -431,27 +431,27 @@ void Svcmd_SaberAttackCycle_f(void)
 
 	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_ELECTROSTAFF && self->client->ps.
-		saberAnimLevel == SS_STAFF)
+		saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
 	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_UNSTABLE && self->client->ps.
-		saberAnimLevel == SS_STAFF)
+		saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
 	if (self->s.client_num >= MAX_CLIENTS //not the player
 		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_MAUL && self->client->ps.
-		saberAnimLevel == SS_STAFF)
+		saber_anim_level == SS_STAFF)
 	{
 		return;
 	}
 
 	if (self->s.client_num >= MAX_CLIENTS //not the player
-		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_SINGLE && self->client->ps.saberAnimLevel
+		&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_SINGLE && self->client->ps.saber_anim_level
 		== SS_DUAL)
 	{
 		return;
@@ -625,78 +625,78 @@ void Svcmd_SaberAttackCycle_f(void)
 		return;
 	}
 
-	int saberAnimLevel;
+	int saber_anim_level;
 	if (!self->s.number)
 	{
-		saberAnimLevel = cg.saberAnimLevelPending;
+		saber_anim_level = cg.saberAnimLevelPending;
 	}
 	else
 	{
-		saberAnimLevel = self->client->ps.saberAnimLevel;
+		saber_anim_level = self->client->ps.saber_anim_level;
 	}
-	saberAnimLevel++;
+	saber_anim_level++;
 	int sanityCheck = 0;
-	while (self->client->ps.saberAnimLevel != saberAnimLevel
-		&& !(allowedStyles & 1 << saberAnimLevel)
+	while (self->client->ps.saber_anim_level != saber_anim_level
+		&& !(allowedStyles & 1 << saber_anim_level)
 		&& sanityCheck < SS_NUM_SABER_STYLES + 1)
 	{
-		saberAnimLevel++;
-		if (saberAnimLevel > SS_STAFF)
+		saber_anim_level++;
+		if (saber_anim_level > SS_STAFF)
 		{
 			if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF && self->client->ps.
-				saberAnimLevel == SS_STAFF)
+				saber_anim_level == SS_STAFF)
 			{
-				saberAnimLevel = SS_STAFF;
+				saber_anim_level = SS_STAFF;
 			}
 			else if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_UNSTABLE && self->client->
-				ps.saberAnimLevel == SS_STAFF)
+				ps.saber_anim_level == SS_STAFF)
 			{
-				saberAnimLevel = SS_STAFF;
+				saber_anim_level = SS_STAFF;
 			}
 			else if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_STAFF_MAUL && self->client->ps.
-				saberAnimLevel == SS_STAFF)
+				saber_anim_level == SS_STAFF)
 			{
-				saberAnimLevel = SS_STAFF;
+				saber_anim_level = SS_STAFF;
 			}
 			else if (self->s.client_num >= MAX_CLIENTS //not the player
 				&& !PM_ControlledByPlayer() && self->client->ps.saber[0].type == SABER_SINGLE && self->client->ps.
-				saberAnimLevel == SS_DUAL)
+				saber_anim_level == SS_DUAL)
 			{
-				saberAnimLevel = SS_DUAL;
+				saber_anim_level = SS_DUAL;
 			}
 			else if (self->client->ps.saber[0].type == SABER_BACKHAND
 				|| self->client->ps.saber[0].type == SABER_ASBACKHAND) //saber backhand
 			{
-				saberAnimLevel = SS_STAFF;
+				saber_anim_level = SS_STAFF;
 			}
 			else
 			{
-				saberAnimLevel = SS_FAST;
+				saber_anim_level = SS_FAST;
 			}
 		}
 		sanityCheck++;
 	}
 
-	if (!(allowedStyles & 1 << saberAnimLevel))
+	if (!(allowedStyles & 1 << saber_anim_level))
 	{
 		return;
 	}
 
-	WP_UseFirstValidSaberStyle(self, &saberAnimLevel);
+	WP_UseFirstValidSaberStyle(self, &saber_anim_level);
 	if (!self->s.number)
 	{
-		cg.saberAnimLevelPending = saberAnimLevel;
+		cg.saberAnimLevelPending = saber_anim_level;
 	}
 	else
 	{
-		self->client->ps.saberAnimLevel = saberAnimLevel;
+		self->client->ps.saber_anim_level = saber_anim_level;
 	}
 
 #ifndef FINAL_BUILD
-	switch (saberAnimLevel)
+	switch (saber_anim_level)
 	{
 	case SS_FAST:
 		gi.Printf(S_COLOR_BLUE"Lightsaber Combat Style: Fast\n");

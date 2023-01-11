@@ -228,21 +228,21 @@ using displayContextDef_t = struct
 	qhandle_t (*registerSkin)(const char* name);
 
 	//rww - ghoul2 stuff. Add whatever you need here, remember to set it in _UI_Init or it will crash when you try to use it.
-	qboolean (*g2_SetSkin)(CGhoul2Info* ghlInfo, qhandle_t customSkin, qhandle_t renderSkin);
-	qboolean (*g2_SetBoneAnim)(CGhoul2Info* ghlInfo, const char* boneName, int startFrame, int endFrame,
-	                           int flags, float animSpeed, int currentTime, float setFrame, int blend_time);
-	qboolean (*g2_RemoveGhoul2Model)(CGhoul2Info_v& ghlInfo, int model_index);
+	qboolean (*g2_SetSkin)(CGhoul2Info* ghl_info, qhandle_t customSkin, qhandle_t renderSkin);
+	qboolean (*g2_SetBoneAnim)(CGhoul2Info* ghl_info, const char* boneName, int start_frame, int end_frame,
+	                           int flags, float animSpeed, int current_time, float setFrame, int blend_time);
+	qboolean (*g2_RemoveGhoul2Model)(CGhoul2Info_v& ghl_info, int model_index);
 	int (*g2_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int, qhandle_t customSkin,
 	                          qhandle_t customShader, int modelFlags, int lodBias);
 	void (*g2_CleanGhoul2Models)(CGhoul2Info_v& ghoul2);
-	int (*g2_AddBolt)(CGhoul2Info* ghlInfo, const char* boneName);
+	int (*g2_AddBolt)(CGhoul2Info* ghl_info, const char* boneName);
 	qboolean (*g2_GetBoltMatrix)(CGhoul2Info_v& ghoul2, int model_index, int bolt_index, mdxaBone_t* matrix,
 	                             const vec3_t angles, const vec3_t position, int frameNum, qhandle_t* modelList,
 	                             const vec3_t scale);
 	void (*g2_GiveMeVectorFromMatrix)(mdxaBone_t& bolt_matrix, Eorientations flags, vec3_t& vec);
 
 	//Utility functions that don't immediately redirect to ghoul2 functions
-	int (*g2hilev_SetAnim)(CGhoul2Info* ghlInfo, const char* boneName, int animNum, qboolean freeze);
+	int (*g2hilev_SetAnim)(CGhoul2Info* ghl_info, const char* boneName, int animNum, qboolean freeze);
 
 	float yscale;
 	float xscale;

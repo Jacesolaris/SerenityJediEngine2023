@@ -729,7 +729,7 @@ qboolean Q3_TaskIDPending( gentity_t *ent, taskID_t taskType )
 */
 qboolean Q3_TaskIDPending(const gentity_t* ent, const taskID_t taskType)
 {
-	if (ent->m_iIcarusID == IIcarusInterface::ICARUS_INVALID /*!ent->sequencer || !ent->taskManager*/)
+	if (ent->m_iIcarusID == IIcarusInterface::ICARUS_INVALID /*!ent->sequencer || !ent->task_manager*/)
 	{
 		return qfalse;
 	}
@@ -759,7 +759,7 @@ void Q3_TaskIDComplete(gentity_t* ent, const taskID_t taskType)
 		return;
 	}
 
-	if (ent->m_iIcarusID != IIcarusInterface::ICARUS_INVALID /*ent->taskManager*/ && Q3_TaskIDPending(ent, taskType))
+	if (ent->m_iIcarusID != IIcarusInterface::ICARUS_INVALID /*ent->task_manager*/ && Q3_TaskIDPending(ent, taskType))
 	{
 		//Complete it
 		IIcarusInterface::GetIcarus()->Completed(ent->m_iIcarusID, ent->taskID[taskType]);
@@ -1573,7 +1573,7 @@ void Blocked_Mover(gentity_t* ent, gentity_t* other)
 		CONTENTS_CORPSE && !other->message))
 	{
 		if (!IIcarusInterface::GetIcarus()->IsRunning(other->m_iIcarusID)
-			/*!other->taskManager || !other->taskManager->IsRunning()*/)
+			/*!other->task_manager || !other->task_manager->IsRunning()*/)
 		{
 			// if an item or weapon can we do a little explosion..?
 			G_FreeEntity(other);
@@ -6264,10 +6264,10 @@ Q3_SetStartFrame
   Description	:
   Return type	: static void
   Argument		:  int entID
-  Argument		: int startFrame
+  Argument		: int start_frame
 ============
 */
-static void Q3_SetStartFrame(const int entID, const int startFrame)
+static void Q3_SetStartFrame(const int entID, const int start_frame)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6283,10 +6283,10 @@ static void Q3_SetStartFrame(const int entID, const int startFrame)
 		return;
 	}
 
-	if (startFrame >= 0)
+	if (start_frame >= 0)
 	{
-		ent->s.frame = startFrame;
-		ent->startFrame = startFrame;
+		ent->s.frame = start_frame;
+		ent->start_frame = start_frame;
 	}
 }
 
@@ -6296,10 +6296,10 @@ Q3_SetEndFrame
   Description	:
   Return type	: static void
   Argument		:  int entID
-  Argument		: int endFrame
+  Argument		: int end_frame
 ============
 */
-static void Q3_SetEndFrame(const int entID, const int endFrame)
+static void Q3_SetEndFrame(const int entID, const int end_frame)
 {
 	gentity_t* ent = &g_entities[entID];
 
@@ -6315,9 +6315,9 @@ static void Q3_SetEndFrame(const int entID, const int endFrame)
 		return;
 	}
 
-	if (endFrame >= 0)
+	if (end_frame >= 0)
 	{
-		ent->endFrame = endFrame;
+		ent->end_frame = end_frame;
 	}
 }
 
@@ -6327,7 +6327,7 @@ Q3_SetAnimFrame
   Description	:
   Return type	: static void
   Argument		:  int entID
-  Argument		: int startFrame
+  Argument		: int start_frame
 ============
 */
 static void Q3_SetAnimFrame(const int entID, const int animFrame)
@@ -6346,11 +6346,11 @@ static void Q3_SetAnimFrame(const int entID, const int animFrame)
 		return;
 	}
 
-	if (animFrame >= ent->endFrame)
+	if (animFrame >= ent->end_frame)
 	{
-		ent->s.frame = ent->endFrame;
+		ent->s.frame = ent->end_frame;
 	}
-	else if (animFrame >= ent->startFrame)
+	else if (animFrame >= ent->start_frame)
 	{
 		ent->s.frame = animFrame;
 	}
@@ -10322,10 +10322,10 @@ int CQuake3GameInterface::GetFloat(const int entID, const char* name, float* val
 		*value = ent->client->forced_rightmove;
 		break;
 	case SET_STARTFRAME: //## %d="0" # frame to start animation sequence on
-		*value = ent->startFrame;
+		*value = ent->start_frame;
 		break;
 	case SET_ENDFRAME: //## %d="0" # frame to end animation sequence on
-		*value = ent->endFrame;
+		*value = ent->end_frame;
 		break;
 	case SET_ANIMFRAME: //## %d="0" # of current frame
 		*value = ent->s.frame;

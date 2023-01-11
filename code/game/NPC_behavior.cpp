@@ -198,7 +198,7 @@ void NPC_BSAdvanceFight()
 	if (!ucmd.forwardmove && !ucmd.rightmove)
 	{
 		//We reached our captureGoal
-		if (NPC->m_iIcarusID != IIcarusInterface::ICARUS_INVALID /*NPC->taskManager*/)
+		if (NPC->m_iIcarusID != IIcarusInterface::ICARUS_INVALID /*NPC->task_manager*/)
 		{
 			Q3_TaskIDComplete(NPC, TID_BSTATE);
 		}

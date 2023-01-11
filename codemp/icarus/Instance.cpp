@@ -169,11 +169,11 @@ GetSequencer
 CSequencer* ICARUS_Instance::GetSequencer(const int ownerID)
 {
 	CSequencer* sequencer = CSequencer::Create();
-	CTaskManager* taskManager = CTaskManager::Create();
+	CTaskManager* task_manager = CTaskManager::Create();
 
-	sequencer->Init(ownerID, m_interface, taskManager, this);
+	sequencer->Init(ownerID, m_interface, task_manager, this);
 
-	taskManager->Init(sequencer);
+	task_manager->Init(sequencer);
 
 	STL_INSERT(m_sequencers, sequencer);
 
@@ -197,12 +197,12 @@ void ICARUS_Instance::DeleteSequencer(CSequencer* sequencer)
 	// added 2/12/2 to properly delete blocks that were passed to the task manager
 	sequencer->Recall();
 
-	CTaskManager* taskManager = sequencer->GetTaskManager();
+	CTaskManager* task_manager = sequencer->GetTaskManager();
 
-	if (taskManager)
+	if (task_manager)
 	{
-		taskManager->Free();
-		delete taskManager;
+		task_manager->Free();
+		delete task_manager;
 	}
 
 	m_sequencers.remove(sequencer);

@@ -73,7 +73,7 @@ public:
 	int GetNumChildren(void) const { return m_children.size(); }
 
 	CSequence* GetChildByID(int id);
-	CSequence* GetChildByIndex(int iIndex);
+	CSequence* GetChildByIndex(int i_index);
 	bool HasChild(CSequence* sequence) const;
 
 	int Save();

@@ -1749,7 +1749,7 @@ void G2_FreeSaveBuffer(char* buffer)
 	Z_Free(buffer);
 }
 
-qboolean G2_SetupModelPointers(CGhoul2Info* ghlInfo);
+qboolean G2_SetupModelPointers(CGhoul2Info* ghl_info);
 qboolean G2_SetupModelPointers(CGhoul2Info_v& ghoul2);
 
 void G2_LoadGhoul2Model(CGhoul2Info_v& ghoul2, const char* buffer)

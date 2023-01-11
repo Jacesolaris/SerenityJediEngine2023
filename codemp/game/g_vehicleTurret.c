@@ -378,7 +378,7 @@ void VEH_TurretThink(Vehicle_t* p_veh, gentity_t* parent, const int turretNum)
 {
 	qboolean doAim = qfalse;
 	const turretStats_t* turretStats = &p_veh->m_pVehicleInfo->turret[turretNum];
-	gentity_t* turretEnemy = NULL;
+	const gentity_t* turretEnemy = NULL;
 
 	if (!turretStats || !turretStats->iAmmoMax)
 	{

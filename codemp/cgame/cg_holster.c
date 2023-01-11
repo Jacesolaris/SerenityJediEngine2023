@@ -39,7 +39,7 @@ void InitHolsterData(clientInfo_t* ci)
 	//initialize holster data with the premade defaults.
 	for (int i = 0; i < MAX_HOLSTER; i++)
 	{
-		ci->holsterData[i].boneIndex = HOLSTER_NONE;
+		ci->holsterData[i].bone_index = HOLSTER_NONE;
 		VectorCopy(vec3_origin, ci->holsterData[i].posOffset);
 		VectorCopy(vec3_origin, ci->holsterData[i].angOffset);
 	}
@@ -124,17 +124,17 @@ void CG_LoadHolsterData(clientInfo_t* ci)
 			continue;
 		}
 
-		if (BG_SiegeGetPairedValue(holster_type_group, "boneIndex", holster_type_value))
+		if (BG_SiegeGetPairedValue(holster_type_group, "bone_index", holster_type_value))
 		{
 			//have bone index data for this holster type, use it
 			if (!Q_stricmp(holster_type_value, "disabled"))
 			{
 				//disable the rendering of this holster type on this model
-				ci->holsterData[i].boneIndex = HOLSTER_NONE;
+				ci->holsterData[i].bone_index = HOLSTER_NONE;
 			}
 			else
 			{
-				ci->holsterData[i].boneIndex = GetIDForString(holsterBoneTable, holster_type_value);
+				ci->holsterData[i].bone_index = GetIDForString(holsterBoneTable, holster_type_value);
 			}
 		}
 

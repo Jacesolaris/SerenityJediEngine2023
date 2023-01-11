@@ -1842,7 +1842,7 @@ void G_MatchPlayerWeapon(gentity_t* ent)
 							[blade_num].length;
 					}
 				}
-				ent->client->ps.saberAnimLevel = g_entities[0].client->ps.saberAnimLevel;
+				ent->client->ps.saber_anim_level = g_entities[0].client->ps.saber_anim_level;
 				ent->client->ps.saberStylesKnown = g_entities[0].client->ps.saberStylesKnown;
 			}
 			else
@@ -1913,7 +1913,7 @@ void ClientTimerActions(gentity_t* ent, const int msec)
 			}
 		}
 
-		if (!PM_SaberInAttack(ent->client->ps.saberMove)
+		if (!PM_SaberInAttack(ent->client->ps.saber_move)
 			&& !(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			&& !ent->client->poisonTime
 			&& !ent->client->stunTime
@@ -1965,10 +1965,10 @@ void ClientTimerActions(gentity_t* ent, const int msec)
 		if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
 			&& (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)) // player
 			&& !BG_InSlowBounce(&ent->client->ps)
-			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
-			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
-			&& !PM_SaberInAttack(ent->client->ps.saberMove)
-			&& !PM_SaberInTransitionAny(ent->client->ps.saberMove)
+			&& !PM_SaberInBrokenParry(ent->client->ps.saber_move)
+			&& !PM_SaberInAttackPure(ent->client->ps.saber_move)
+			&& !PM_SaberInAttack(ent->client->ps.saber_move)
+			&& !PM_SaberInTransitionAny(ent->client->ps.saber_move)
 			&& !PM_InKnockDown(&ent->client->ps)
 			&& ent->client->ps.saberLockTime < level.time
 			&& ent->client->ps.saberBlockingTime < level.time
@@ -1982,10 +1982,10 @@ void ClientTimerActions(gentity_t* ent, const int msec)
 		else if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_NONE
 			&& (ent->s.client_num >= MAX_CLIENTS && !G_ControlledByPlayer(ent)) //npc
 			&& !BG_InSlowBounce(&ent->client->ps)
-			&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
-			&& !PM_SaberInAttackPure(ent->client->ps.saberMove)
-			&& !PM_SaberInAttack(ent->client->ps.saberMove)
-			&& !PM_SaberInTransitionAny(ent->client->ps.saberMove)
+			&& !PM_SaberInBrokenParry(ent->client->ps.saber_move)
+			&& !PM_SaberInAttackPure(ent->client->ps.saber_move)
+			&& !PM_SaberInAttack(ent->client->ps.saber_move)
+			&& !PM_SaberInTransitionAny(ent->client->ps.saber_move)
 			&& !PM_InKnockDown(&ent->client->ps)
 			&& ent->client->ps.saberLockTime < level.time
 			&& ent->client->ps.saberBlockingTime < level.time
@@ -2000,7 +2000,7 @@ void ClientTimerActions(gentity_t* ent, const int msec)
 			if (!PM_SaberInMassiveBounce(ent->client->ps.torsoAnim)
 				&& !BG_InSlowBounce(&ent->client->ps)
 				&& !PM_InKnockDown(&ent->client->ps)
-				&& !PM_SaberInBrokenParry(ent->client->ps.saberMove)
+				&& !PM_SaberInBrokenParry(ent->client->ps.saber_move)
 				&& ent->client->ps.saberBlockingTime < level.time) // npc, dont auto regen bp if doing this
 			{
 				ent->client->ps.blockPoints++;
@@ -2520,7 +2520,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 								hit_ent->client->otherKillerMOD = MOD_MELEE;
 								hit_ent->client->otherKillerVehWeapon = 0;
 								hit_ent->client->otherKillerWeaponType = WP_NONE;
-								hit_ent->client->ps.saberMove = LS_READY;
+								hit_ent->client->ps.saber_move = LS_READY;
 							}
 							g_kick_throw(hit_ent, kick_dir, 70);
 							return hit_ent;
@@ -2648,7 +2648,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 						{
 							//knockdown
-							if (hit_ent->client->ps.saberAnimLevel == SS_STAFF)
+							if (hit_ent->client->ps.saber_anim_level == SS_STAFF)
 							{
 								sab_beh_animate_slow_bounce_blocker(hit_ent);
 							}
@@ -2664,7 +2664,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 								}
 							}
 						}
-						else if (ent->client->ps.saberAnimLevel == SS_DESANN
+						else if (ent->client->ps.saber_anim_level == SS_DESANN
 							&& (hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
 								hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
 							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
@@ -3157,7 +3157,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 
-	if (ent->client->ps.saberMove == LS_A_LUNGE)
+	if (ent->client->ps.saber_move == LS_A_LUNGE)
 	{
 		//can't move during lunge
 		ucmd->rightmove = ucmd->upmove = 0;
@@ -3191,7 +3191,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		overridAngles = PM_AdjustAnglesForWallRunUpFlipAlt(ent, ucmd) ? qtrue : overridAngles;
 	}
 
-	if (ent->client->ps.saberMove == LS_A_JUMP_T__B_ || ent->client->ps.saberMove == LS_A_JUMP_PALP_)
+	if (ent->client->ps.saber_move == LS_A_JUMP_T__B_ || ent->client->ps.saber_move == LS_A_JUMP_PALP_)
 	{
 		//can't move during leap
 		if (ent->client->ps.groundEntityNum != ENTITYNUM_NONE || !ent->s.number && (player_locked ||
@@ -3207,12 +3207,12 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		}
 	}
 	else if (ent->client->ps.legsAnim == BOTH_GRIEVOUS_SPIN || ent->client->ps.torsoAnim == BOTH_GRIEVOUS_SPIN || ent->
-		client->ps.saberMove == LS_GRIEVOUS_SPECIAL)
+		client->ps.saber_move == LS_GRIEVOUS_SPECIAL)
 	{
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
 	}
 
-	if (ent->client->ps.saberMove == LS_A_BACKFLIP_ATK
+	if (ent->client->ps.saber_move == LS_A_BACKFLIP_ATK
 		&& ent->client->ps.legsAnim == BOTH_JUMPATTACK7)
 	{
 		//backflip attack
@@ -3343,13 +3343,13 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 	}
 
 	if (ent->client->ps.legsAnim == BOTH_BUTTERFLY_FL1
-		&& ent->client->ps.saberMove == LS_JUMPATTACK_STAFF_LEFT
+		&& ent->client->ps.saber_move == LS_JUMPATTACK_STAFF_LEFT
 		|| ent->client->ps.legsAnim == BOTH_BUTTERFLY_FR1
-		&& ent->client->ps.saberMove == LS_JUMPATTACK_STAFF_RIGHT
+		&& ent->client->ps.saber_move == LS_JUMPATTACK_STAFF_RIGHT
 		|| ent->client->ps.legsAnim == BOTH_BUTTERFLY_RIGHT
-		&& ent->client->ps.saberMove == LS_BUTTERFLY_RIGHT
+		&& ent->client->ps.saber_move == LS_BUTTERFLY_RIGHT
 		|| ent->client->ps.legsAnim == BOTH_BUTTERFLY_LEFT
-		&& ent->client->ps.saberMove == LS_BUTTERFLY_LEFT)
+		&& ent->client->ps.saber_move == LS_BUTTERFLY_LEFT)
 	{
 		//forward flip/spin attack
 		ucmd->forwardmove = ucmd->rightmove = ucmd->upmove = 0;
@@ -3416,7 +3416,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 	}
 
 	if (ent->client->ps.legsAnim == BOTH_A7_SOULCAL
-		&& ent->client->ps.saberMove == LS_STAFF_SOULCAL)
+		&& ent->client->ps.saber_move == LS_STAFF_SOULCAL)
 	{
 		//forward spinning staff attack
 		ucmd->upmove = 0;
@@ -4992,13 +4992,13 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 			G_KickTrace(ent, kickDir2, kickDist2, kickEnd2, kickDamage2, kickPush2, kickSoundOnWalls);
 		}
 	}
-	else if (ent->client->ps.saberMove == LS_DUAL_FB)
+	else if (ent->client->ps.saber_move == LS_DUAL_FB)
 	{
 		//pull back the view
 		G_CamPullBackForLegsAnim(ent);
 	}
-	else if (ent->client->ps.saberMove == LS_A_BACK || ent->client->ps.saberMove == LS_A_BACK_CR
-		|| ent->client->ps.saberMove == LS_A_BACKSTAB || ent->client->ps.saberMove == LS_A_BACKSTAB_B)
+	else if (ent->client->ps.saber_move == LS_A_BACK || ent->client->ps.saber_move == LS_A_BACK_CR
+		|| ent->client->ps.saber_move == LS_A_BACKSTAB || ent->client->ps.saber_move == LS_A_BACKSTAB_B)
 	{
 		//can't move or turn during back attacks
 		ucmd->forwardmove = ucmd->rightmove = 0;
@@ -5188,7 +5188,7 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		ucmd->forwardmove = 0;
 	}
 	else if (ent->client->ps.legsAnim == BOTH_GRIEVOUS_SPIN || ent->client->ps.torsoAnim == BOTH_GRIEVOUS_SPIN || ent->
-		client->ps.saberMove == LS_GRIEVOUS_SPECIAL)
+		client->ps.saber_move == LS_GRIEVOUS_SPECIAL)
 	{
 		ucmd->rightmove = 0;
 		ucmd->upmove = 0;
@@ -6591,10 +6591,10 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
 		{
 			client->ps.speed *= 0.85f;
 		}
-		else if (PM_SaberInAttack(client->ps.saberMove) && ucmd->forwardmove < 0)
+		else if (PM_SaberInAttack(client->ps.saber_move) && ucmd->forwardmove < 0)
 		{
 			//if running backwards while attacking, don't run as fast.
-			switch (client->ps.saberAnimLevel)
+			switch (client->ps.saber_anim_level)
 			{
 			case SS_TAVION:
 			case SS_FAST:
@@ -6632,7 +6632,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
 		else if (client->ps.weapon == WP_SABER && ucmd->buttons & BUTTON_ATTACK)
 		{
 			//if attacking with saber while running, drop your speed
-			switch (client->ps.saberAnimLevel)
+			switch (client->ps.saber_anim_level)
 			{
 			case SS_TAVION:
 			case SS_FAST:
@@ -6654,8 +6654,8 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
 				client->ps.speed *= g_saberMoveSpeed->value;
 			}
 		}
-		else if (client->ps.weapon == WP_SABER && client->ps.saberAnimLevel == FORCE_LEVEL_3 &&
-			PM_SaberInTransition(client->ps.saberMove))
+		else if (client->ps.weapon == WP_SABER && client->ps.saber_anim_level == FORCE_LEVEL_3 &&
+			PM_SaberInTransition(client->ps.saber_move))
 		{
 			//Now, we want to even slow down in transitions for level 3 (since it has chains and stuff)
 			if (ucmd->forwardmove < 0)
@@ -6982,7 +6982,7 @@ void CG_DamagedBreathPuffs(const gentity_t* ent)
 	{
 		client->VaderBreathTime = cg.time + 2000; // every 200 ms
 	}
-	else if (PM_SaberInAttack(client->ps.saberMove) || PM_RunningAnim(client->ps.legsAnim))
+	else if (PM_SaberInAttack(client->ps.saber_move) || PM_RunningAnim(client->ps.legsAnim))
 	{
 		client->VaderBreathTime = cg.time + 3000; // every 3 seconds.
 	}
@@ -7257,8 +7257,8 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		if (ent->client->renderInfo.lookTargetClearTime < level.time
 			//NOTE: here this is used as a debounce, not an actual timer
 			&& ent->health > 0 //must be alive
-			&& (!ent->enemy || ent->client->ps.saberMove != LS_A_BACKSTAB)
-			&& (!ent->enemy || ent->client->ps.saberMove != LS_A_BACKSTAB_B))
+			&& (!ent->enemy || ent->client->ps.saber_move != LS_A_BACKSTAB)
+			&& (!ent->enemy || ent->client->ps.saber_move != LS_A_BACKSTAB_B))
 		//don't update if in backstab unless don't currently have an enemy
 		{
 			//NOTE: doesn't keep updating to nearest enemy once you're dead
@@ -7633,7 +7633,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 								}
 								NPC_SetAnim(ent, SETANIM_BOTH, rollAnim, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 								G_AddEvent(ent, EV_ROLL, 0);
-								ent->client->ps.saberMove = LS_NONE;
+								ent->client->ps.saber_move = LS_NONE;
 							}
 						}
 					}
@@ -7756,7 +7756,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		client->ps.SaberActive() &&
 		!PM_SaberInMassiveBounce(client->ps.torsoAnim) &&
 		!PM_SaberInBashedAnim(client->ps.torsoAnim) &&
-		!PM_Saberinstab(client->ps.saberMove))
+		!PM_Saberinstab(client->ps.saber_move))
 	{
 		if (manual_running_and_saberblocking(ent))
 		{
@@ -7972,7 +7972,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		client->ps.SaberActive()
 		&& !PM_SaberInMassiveBounce(client->ps.torsoAnim)
 		&& !PM_SaberInBashedAnim(client->ps.torsoAnim)
-		&& !PM_Saberinstab(client->ps.saberMove))
+		&& !PM_Saberinstab(client->ps.saber_move))
 	{
 		if (manual_npc_saberblocking(ent))
 		{
@@ -8077,8 +8077,8 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			}
 		}
 		else if (IsPressingDashButton(ent)
-			&& !PM_SaberInAttack(ent->client->ps.saberMove)
-			&& !PM_KickMove(ent->client->ps.saberMove))
+			&& !PM_SaberInAttack(ent->client->ps.saber_move)
+			&& !PM_KickMove(ent->client->ps.saber_move))
 		{
 			client->ps.dashtimeplayer = level.time;
 

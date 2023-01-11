@@ -38,7 +38,7 @@ extern stringID_table_t FPTable[];
 constexpr auto MAX_SABER_DATA_SIZE = 1024 * 1024 * 16; // 16mb, was 512kb;
 char SaberParms[MAX_SABER_DATA_SIZE];
 
-void Saber_SithSwordPrecache(void)
+void Saber_SithSwordPrecache()
 {
 	//*SIGH* special sounds used by the sith sword
 	int i;
@@ -425,27 +425,27 @@ qboolean WP_SaberBladeDoTransitionDamage(const saberInfo_t* saber, const int bla
 	return qfalse;
 }
 
-qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel)
+qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saber_anim_level)
 {
 	if (ent && ent->client)
 	{
-		qboolean styleInvalid = qfalse;
-		int validStyles = 0, styleNum;
+		qboolean style_invalid = qfalse;
+		int valid_styles = 0, style_num;
 
 		//initially, all styles are valid
-		for (styleNum = SS_NONE + 1; styleNum < SS_NUM_SABER_STYLES; styleNum++)
+		for (style_num = SS_NONE + 1; style_num < SS_NUM_SABER_STYLES; style_num++)
 		{
-			validStyles |= 1 << styleNum;
+			valid_styles |= 1 << style_num;
 		}
 
 		if (ent->client->ps.saber[0].Active()
 			&& ent->client->ps.saber[0].stylesForbidden)
 		{
-			if (ent->client->ps.saber[0].stylesForbidden & 1 << *saberAnimLevel)
+			if (ent->client->ps.saber[0].stylesForbidden & 1 << *saber_anim_level)
 			{
 				//not a valid style for first saber!
-				styleInvalid = qtrue;
-				validStyles &= ~ent->client->ps.saber[0].stylesForbidden;
+				style_invalid = qtrue;
+				valid_styles &= ~ent->client->ps.saber[0].stylesForbidden;
 			}
 		}
 		if (ent->client->ps.dualSabers)
@@ -454,37 +454,37 @@ qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel)
 			if (ent->client->ps.saber[1].Active()
 				&& ent->client->ps.saber[1].stylesForbidden)
 			{
-				if (ent->client->ps.saber[1].stylesForbidden & 1 << *saberAnimLevel)
+				if (ent->client->ps.saber[1].stylesForbidden & 1 << *saber_anim_level)
 				{
 					//not a valid style for second saber!
-					styleInvalid = qtrue;
+					style_invalid = qtrue;
 					//only the ones both sabers allow is valid
-					validStyles &= ~ent->client->ps.saber[1].stylesForbidden;
+					valid_styles &= ~ent->client->ps.saber[1].stylesForbidden;
 				}
 			}
 			else
 			{
 				//can't use dual style if not using 2 sabers
-				validStyles &= ~(1 << SS_DUAL);
+				valid_styles &= ~(1 << SS_DUAL);
 			}
 		}
 		else
 		{
 			//can't use dual style if not using 2 sabers
-			validStyles &= ~(1 << SS_DUAL);
-			if (*saberAnimLevel == SS_DUAL) // saber style switch bug fixed --eez
+			valid_styles &= ~(1 << SS_DUAL);
+			if (*saber_anim_level == SS_DUAL) // saber style switch bug fixed --eez
 			{
-				styleInvalid = qtrue;
+				style_invalid = qtrue;
 			}
 		}
-		if (styleInvalid && validStyles)
+		if (style_invalid && valid_styles)
 		{
 			//using an invalid style and have at least one valid style to use, so switch to it
-			for (styleNum = SS_NONE + 1; styleNum < SS_NUM_SABER_STYLES; styleNum++)
+			for (style_num = SS_NONE + 1; style_num < SS_NUM_SABER_STYLES; style_num++)
 			{
-				if (validStyles & 1 << styleNum)
+				if (valid_styles & 1 << style_num)
 				{
-					*saberAnimLevel = styleNum;
+					*saber_anim_level = style_num;
 					return qtrue;
 				}
 			}
@@ -493,14 +493,14 @@ qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saberAnimLevel)
 	return qfalse;
 }
 
-qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, const int saberAnimLevel)
+qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, const int saber_anim_level)
 {
 	if (ent && ent->client)
 	{
 		if (ent->client->ps.saber[0].Active()
 			&& ent->client->ps.saber[0].stylesForbidden)
 		{
-			if (ent->client->ps.saber[0].stylesForbidden & 1 << saberAnimLevel)
+			if (ent->client->ps.saber[0].stylesForbidden & 1 << saber_anim_level)
 			{
 				//not a valid style for first saber!
 				return qfalse;
@@ -513,7 +513,7 @@ qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, const int saberAnimLev
 			{
 				if (ent->client->ps.saber[1].stylesForbidden)
 				{
-					if (ent->client->ps.saber[1].stylesForbidden & 1 << saberAnimLevel)
+					if (ent->client->ps.saber[1].stylesForbidden & 1 << saber_anim_level)
 					{
 						//not a valid style for second saber!
 						return qfalse;
@@ -521,10 +521,10 @@ qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, const int saberAnimLev
 				}
 
 				//now: if using dual sabers, only dual and tavion (if given with this saber) are allowed
-				if (saberAnimLevel != SS_DUAL)
+				if (saber_anim_level != SS_DUAL)
 				{
 					//dual is okay
-					if (saberAnimLevel != SS_TAVION)
+					if (saber_anim_level != SS_TAVION)
 					{
 						//tavion might be okay, all others are not
 						return qfalse;
@@ -546,13 +546,13 @@ qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, const int saberAnimLev
 					}
 				}
 			}
-			else if (saberAnimLevel == SS_DUAL)
+			else if (saber_anim_level == SS_DUAL)
 			{
 				//can't use dual style if not using dualSabers
 				return qfalse;
 			}
 		}
-		else if (saberAnimLevel == SS_DUAL)
+		else if (saber_anim_level == SS_DUAL)
 		{
 			//can't use dual style if not using dualSabers
 			return qfalse;
@@ -585,14 +585,14 @@ qboolean WP_SaberCanTurnOffSomeBlades(const saberInfo_t* saber)
 	return qtrue;
 }
 
-void wp_saber_set_defaults(saberInfo_t* saber, const qboolean setColors = qtrue)
+void wp_saber_set_defaults(saberInfo_t* saber, const qboolean set_colors = qtrue)
 {
 	//Set defaults so that, if it fails, there's at least something there
 	saber->name = DEFAULT_SABER;
 	saber->fullName = DEFAULT_SABER_NAME;
 	for (auto& i : saber->blade)
 	{
-		if (setColors)
+		if (set_colors)
 		{
 			i.color = static_cast<saber_colors_t>(Q_irand(SABER_ORANGE, SABER_PURPLE));
 		}
@@ -1491,9 +1491,9 @@ static void Saber_ParseKataMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->kataMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->kataMove = saber_move;
 	//LS_INVALID - if set, player will execute this move when they press both attack buttons at the same time
 }
 
@@ -1502,9 +1502,9 @@ static void Saber_ParseLungeAtkMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->lungeAtkMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->lungeAtkMove = saber_move;
 }
 
 static void Saber_ParseJumpAtkUpMove(saberInfo_t* saber, const char** p)
@@ -1512,9 +1512,9 @@ static void Saber_ParseJumpAtkUpMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->jumpAtkUpMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->jumpAtkUpMove = saber_move;
 }
 
 static void Saber_ParseJumpAtkFwdMove(saberInfo_t* saber, const char** p)
@@ -1522,9 +1522,9 @@ static void Saber_ParseJumpAtkFwdMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->jumpAtkFwdMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->jumpAtkFwdMove = saber_move;
 }
 
 static void Saber_ParseJumpAtkBackMove(saberInfo_t* saber, const char** p)
@@ -1532,9 +1532,9 @@ static void Saber_ParseJumpAtkBackMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->jumpAtkBackMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->jumpAtkBackMove = saber_move;
 }
 
 static void Saber_ParseJumpAtkRightMove(saberInfo_t* saber, const char** p)
@@ -1542,9 +1542,9 @@ static void Saber_ParseJumpAtkRightMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->jumpAtkRightMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->jumpAtkRightMove = saber_move;
 }
 
 static void Saber_ParseJumpAtkLeftMove(saberInfo_t* saber, const char** p)
@@ -1552,9 +1552,9 @@ static void Saber_ParseJumpAtkLeftMove(saberInfo_t* saber, const char** p)
 	const char* value;
 	if (COM_ParseString(p, &value))
 		return;
-	const int saberMove = GetIDForString(SaberMoveTable, value);
-	if (saberMove >= LS_INVALID && saberMove < LS_MOVE_MAX)
-		saber->jumpAtkLeftMove = saberMove;
+	const int saber_move = GetIDForString(SaberMoveTable, value);
+	if (saber_move >= LS_INVALID && saber_move < LS_MOVE_MAX)
+		saber->jumpAtkLeftMove = saber_move;
 }
 
 static void Saber_ParseReadyAnim(saberInfo_t* saber, const char** p)
@@ -2795,18 +2795,18 @@ void WP_RemoveSaber(gentity_t* ent, const int saber_num)
 		gi.G2API_RemoveGhoul2Model(ent->ghoul2, ent->weaponModel[saber_num]);
 		ent->weaponModel[saber_num] = -1;
 	}
-	if (ent->client->ps.saberAnimLevel == SS_DUAL
-		|| ent->client->ps.saberAnimLevel == SS_STAFF)
+	if (ent->client->ps.saber_anim_level == SS_DUAL
+		|| ent->client->ps.saber_anim_level == SS_STAFF)
 	{
 		//change to the style to the default
 		for (int i = SS_NONE + 1; i < SS_NUM_SABER_STYLES; i++)
 		{
 			if (ent->client->ps.saberStylesKnown & 1 << i)
 			{
-				ent->client->ps.saberAnimLevel = i;
+				ent->client->ps.saber_anim_level = i;
 				if (ent->s.number < MAX_CLIENTS)
 				{
-					cg.saberAnimLevelPending = ent->client->ps.saberAnimLevel;
+					cg.saberAnimLevelPending = ent->client->ps.saber_anim_level;
 				}
 				break;
 			}
@@ -2832,18 +2832,18 @@ void WP_RemoveSecondSaber(gentity_t* ent, const int saber_num)
 		gi.G2API_RemoveGhoul2Model(ent->ghoul2, ent->weaponModel[saber_num]);
 		ent->weaponModel[saber_num] = -1;
 	}
-	if (ent->client->ps.saberAnimLevel == SS_DUAL
-		|| ent->client->ps.saberAnimLevel == SS_STAFF)
+	if (ent->client->ps.saber_anim_level == SS_DUAL
+		|| ent->client->ps.saber_anim_level == SS_STAFF)
 	{
 		//change to the style to the default
 		for (int i = SS_NONE + 1; i < SS_NUM_SABER_STYLES; i++)
 		{
 			if (ent->client->ps.saberStylesKnown & 1 << i)
 			{
-				ent->client->ps.saberAnimLevel = i;
+				ent->client->ps.saber_anim_level = i;
 				if (ent->s.number < MAX_CLIENTS)
 				{
-					cg.saberAnimLevelPending = ent->client->ps.saberAnimLevel;
+					cg.saberAnimLevelPending = ent->client->ps.saber_anim_level;
 				}
 				break;
 			}
@@ -2910,10 +2910,10 @@ void WP_SetSaber(gentity_t* ent, const int saber_num, const char* saberName)
 	{
 		ent->client->ps.saberStylesKnown |= ent->client->ps.saber[saber_num].singleBladeStyle;
 	}
-	WP_UseFirstValidSaberStyle(ent, &ent->client->ps.saberAnimLevel);
+	WP_UseFirstValidSaberStyle(ent, &ent->client->ps.saber_anim_level);
 	if (ent->s.number < MAX_CLIENTS)
 	{
-		cg.saberAnimLevelPending = ent->client->ps.saberAnimLevel;
+		cg.saberAnimLevelPending = ent->client->ps.saber_anim_level;
 	}
 }
 
@@ -2967,9 +2967,9 @@ qboolean WP_BreakSaber(gentity_t* ent, const char* surfName, const saberType_t s
 		return qfalse;
 	}
 
-	if (PM_SaberInStart(ent->client->ps.saberMove) //in a start
-		|| PM_SaberInTransition(ent->client->ps.saberMove) //in a transition
-		|| PM_SaberInAttack(ent->client->ps.saberMove)) //in an attack
+	if (PM_SaberInStart(ent->client->ps.saber_move) //in a start
+		|| PM_SaberInTransition(ent->client->ps.saber_move) //in a transition
+		|| PM_SaberInAttack(ent->client->ps.saber_move)) //in an attack
 	{
 		//don't break when in the middle of an attack
 		return qfalse;

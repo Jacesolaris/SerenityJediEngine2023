@@ -5119,7 +5119,7 @@ void G_BreakArm(gentity_t* ent, const int arm)
 		return;
 	}
 
-	if (ent->client->ps.fd.saberAnimLevel == SS_STAFF)
+	if (ent->client->ps.fd.saber_anim_level == SS_STAFF)
 	{
 		//I'm too lazy to deal with this as well for now.
 		return;
@@ -5266,7 +5266,7 @@ tryTorso:
 
 		f = torsoAnim;
 
-		pm_saber_start_trans_anim(self->s.number, self->client->ps.fd.saberAnimLevel, self->client->ps.weapon, f,
+		pm_saber_start_trans_anim(self->s.number, self->client->ps.fd.saber_anim_level, self->client->ps.weapon, f,
 		                          &animSpeedScale, self->client->ps.userInt3);
 
 		animSpeed = 50.0f / bgAllAnims[self->localAnimIndex].anims[f].frameLerp;
@@ -5531,8 +5531,8 @@ void ClientSpawn(gentity_t* ent)
 		client->ps.fd.forceDoInit = 0;
 	}
 	if (ent->r.svFlags & SVF_BOT
-		&& ent->client->ps.fd.saberAnimLevel != SS_STAFF
-		&& ent->client->ps.fd.saberAnimLevel != SS_DUAL)
+		&& ent->client->ps.fd.saber_anim_level != SS_STAFF
+		&& ent->client->ps.fd.saber_anim_level != SS_DUAL)
 	{
 		//Bots randomly switch styles on respawn if not using a staff or dual
 		int newLevel = Q_irand(SS_MEDIUM, SS_STAFF);
@@ -5562,7 +5562,7 @@ void ClientSpawn(gentity_t* ent)
 					{
 						if (ent->client->saber[0].model[0] && ent->client->saber[1].model[0]
 							&& WP_SaberCanTurnOffSomeBlades(&ent->client->saber[1])
-							&& ent->client->ps.fd.saberAnimLevel != SS_DUAL)
+							&& ent->client->ps.fd.saber_anim_level != SS_DUAL)
 						{
 							//using dual sabers, but not the dual style
 							newLevel = SS_TAVION;
@@ -5581,38 +5581,38 @@ void ClientSpawn(gentity_t* ent)
 			}
 		}
 
-		ent->client->ps.fd.saberAnimLevel = newLevel;
+		ent->client->ps.fd.saber_anim_level = newLevel;
 	}
 
-	ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = ent->client->sess.saberLevel;
+	ent->client->ps.fd.saber_anim_level = ent->client->ps.fd.saberDrawAnimLevel = ent->client->sess.saberLevel;
 
 	if (g_gametype.integer != GT_SIEGE)
 	{
 		//let's just make sure the styles we chose are cool
-		if (!G_ValidSaberStyle(ent, ent->client->ps.fd.saberAnimLevel))
+		if (!G_ValidSaberStyle(ent, ent->client->ps.fd.saber_anim_level))
 		{
 			//had an illegal style, revert to default
 			if ((ent->client->saber[0].type == SABER_BACKHAND))
 			{
-				ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+				ent->client->ps.fd.saber_anim_level = SS_STAFF;
 			}
 			else if ((ent->client->saber[0].type == SABER_ASBACKHAND))
 			{
-				ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+				ent->client->ps.fd.saber_anim_level = SS_STAFF;
 			}
 			else if ((ent->client->saber[0].type == SABER_STAFF_MAUL))
 			{
-				ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+				ent->client->ps.fd.saber_anim_level = SS_STAFF;
 			}
 			else if ((ent->client->saber[0].type == SABER_ELECTROSTAFF))
 			{
-				ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+				ent->client->ps.fd.saber_anim_level = SS_STAFF;
 			}
 			else
 			{
-				ent->client->ps.fd.saberAnimLevel = SS_MEDIUM;
+				ent->client->ps.fd.saber_anim_level = SS_MEDIUM;
 			}
-			ent->client->saberCycleQueue = ent->client->ps.fd.saberAnimLevel;
+			ent->client->saberCycleQueue = ent->client->ps.fd.saber_anim_level;
 		}
 	}
 
@@ -7681,14 +7681,14 @@ void ClientSpawn(gentity_t* ent)
 	//set initial saber holstered mode
 	if (ent->client->saber[0].model[0] && ent->client->saber[1].model[0]
 		&& WP_SaberCanTurnOffSomeBlades(&ent->client->saber[1])
-		&& ent->client->ps.fd.saberAnimLevel != SS_DUAL)
+		&& ent->client->ps.fd.saber_anim_level != SS_DUAL)
 	{
 		//using dual sabers, but not the dual style, turn off blade
 		ent->client->ps.saberHolstered = 1;
 	}
 	else if (ent->client->saber[0].numBlades > 1
 		&& WP_SaberCanTurnOffSomeBlades(&ent->client->saber[0])
-		&& ent->client->ps.fd.saberAnimLevel != SS_STAFF)
+		&& ent->client->ps.fd.saber_anim_level != SS_STAFF)
 	{
 		//using staff saber, but not the staff style, turn off blade
 		ent->client->ps.saberHolstered = 1;

@@ -2493,11 +2493,11 @@ qboolean UI_ParseAnimFileSet(const char* animCFG, int* animFileIndex)
 	return qtrue;
 }
 
-int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, const int animNum, const qboolean freeze)
+int UI_G2SetAnim(CGhoul2Info* ghl_info, const char* boneName, const int animNum, const qboolean freeze)
 {
 	int animIndex;
 
-	const char* GLAName = re.G2API_GetGLAName(ghlInfo);
+	const char* GLAName = re.G2API_GetGLAName(ghl_info);
 
 	if (!GLAName || !GLAName[0])
 	{
@@ -2538,7 +2538,7 @@ int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, const int animNum, 
 		flags |= BONE_ANIM_BLEND;
 		constexpr int blend_time = 150;
 
-		re.G2API_SetBoneAnim(ghlInfo, boneName, sFrame, eFrame, flags, animSpeed, time, -1, blend_time);
+		re.G2API_SetBoneAnim(ghl_info, boneName, sFrame, eFrame, flags, animSpeed, time, -1, blend_time);
 
 		return anim->frameLerp * (anim->numFrames - 2);
 	}
@@ -5216,11 +5216,11 @@ static void UI_UpdateFightingStyleChoices(void)
 			}
 
 			// Determine current style
-			if (p_state->saberAnimLevel == SS_FAST)
+			if (p_state->saber_anim_level == SS_FAST)
 			{
 				Cvar_Set("ui_currentfightingstyle", "0"); // FAST
 			}
-			else if (p_state->saberAnimLevel == SS_STRONG)
+			else if (p_state->saber_anim_level == SS_STRONG)
 			{
 				Cvar_Set("ui_currentfightingstyle", "2"); // STRONG
 			}

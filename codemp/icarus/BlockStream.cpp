@@ -343,13 +343,13 @@ GetMember
 -------------------------
 */
 
-CBlockMember* CBlock::GetMember(const int memberNum) const
+CBlockMember* CBlock::GetMember(const int member_num) const
 {
-	if (memberNum > GetNumMembers() - 1)
+	if (member_num > GetNumMembers() - 1)
 	{
 		return nullptr;
 	}
-	return m_members[memberNum];
+	return m_members[member_num];
 }
 
 /*
@@ -358,13 +358,13 @@ GetMemberData
 -------------------------
 */
 
-void* CBlock::GetMemberData(const int memberNum) const
+void* CBlock::GetMemberData(const int member_num) const
 {
-	if (memberNum >= GetNumMembers())
+	if (member_num >= GetNumMembers())
 	{
 		return nullptr;
 	}
-	return GetMember(memberNum)->GetData();
+	return GetMember(member_num)->GetData();
 }
 
 /*

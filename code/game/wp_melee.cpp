@@ -37,11 +37,11 @@ void WP_Melee(gentity_t* ent)
 	vec3_t mins, maxs, end;
 	int damage = ent->s.number ? g_spskill->integer * 2 + 1 : 3;
 	const float range = ent->s.number ? 64 : 32;
-	const qboolean isBobaPlayer = !ent->s.number && ent->client->NPC_class == CLASS_BOBAFETT && ent->client->ps.
+	const qboolean is_boba_player = !ent->s.number && ent->client->NPC_class == CLASS_BOBAFETT && ent->client->ps.
 	                              forcePowerDuration[missileStates[BOBA_MISSILE_VIBROBLADE].dummyForcePower]
 		                              ? qtrue
 		                              : qfalse;
-	const qboolean isMandoPlayer = !ent->s.number && ent->client->NPC_class == CLASS_MANDO && ent->client->ps.
+	const qboolean is_mando_player = !ent->s.number && ent->client->NPC_class == CLASS_MANDO && ent->client->ps.
 	                               forcePowerDuration[missileStates[BOBA_MISSILE_VIBROBLADE].dummyForcePower]
 		                               ? qtrue
 		                               : qfalse;
@@ -76,11 +76,11 @@ void WP_Melee(gentity_t* ent)
 		}
 	}
 
-	if (isBobaPlayer)
+	if (is_boba_player)
 	{
 		damage = 50;
 	}
-	else if (isMandoPlayer)
+	else if (is_mando_player)
 	{
 		damage = 75;
 	}
@@ -88,11 +88,11 @@ void WP_Melee(gentity_t* ent)
 	if (tr_ent && tr_ent->takedamage)
 	{
 		int dflags = DAMAGE_NO_KNOCKBACK;
-		if (isBobaPlayer)
+		if (is_boba_player)
 		{
 			G_Sound(ent, G_SoundIndex(va("sound/weapons/sword/stab%d.wav", Q_irand(1, 4))));
 		}
-		else if (isMandoPlayer)
+		else if (is_mando_player)
 		{
 			G_Sound(ent, G_SoundIndex(va("sound/weapons/sword/stab%d.wav", Q_irand(1, 4))));
 		}

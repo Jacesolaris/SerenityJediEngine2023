@@ -2207,18 +2207,18 @@ void CG_AddViewWeaponDuals(playerState_t* ps)
 		const clientInfo_t* ci = &cent->gent->client->clientInfo;
 
 		int torsoAnim = cent->gent->client->ps.torsoAnim; //pe.torso.animationNumber;
-		float currentFrame;
-		int startFrame, endFrame, flags;
+		float current_frame;
+		int start_frame, end_frame, flags;
 		float animSpeed;
 		if (cent->gent->lowerLumbarBone >= 0 && gi.G2API_GetBoneAnimIndex(
-			&cent->gent->ghoul2[cent->gent->playerModel], cent->gent->lowerLumbarBone, cg.time, &currentFrame,
-			&startFrame, &endFrame, &flags, &animSpeed, nullptr))
+			&cent->gent->ghoul2[cent->gent->playerModel], cent->gent->lowerLumbarBone, cg.time, &current_frame,
+			&start_frame, &end_frame, &flags, &animSpeed, nullptr))
 		{
-			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(currentFrame), torsoAnim, cent->currentState.weapon,
+			hand.oldframe = CG_MapTorsoToWeaponFrame(ci, floor(current_frame), torsoAnim, cent->currentState.weapon,
 			                                         cent->currentState.eFlags & EF_FIRING);
-			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(currentFrame), torsoAnim, cent->currentState.weapon,
+			hand.frame = CG_MapTorsoToWeaponFrame(ci, ceil(current_frame), torsoAnim, cent->currentState.weapon,
 			                                      cent->currentState.eFlags & EF_FIRING);
-			hand.backlerp = 1.0f - (currentFrame - floor(currentFrame));
+			hand.backlerp = 1.0f - (current_frame - floor(current_frame));
 			if (cg_debugAnim.integer == 1 && cent->currentState.client_num == 0)
 			{
 				Com_Printf("Torso frame %d to %d makes Weapon frame %d to %d\n", cent->pe.torso.oldFrame,

@@ -661,7 +661,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 
 			if (ent->client->NPC_class == CLASS_SHADOWTROOPER && Q_stricmpn("shadowtrooper", ent->NPC_type, 13) == 0)
 			{
-				if (!PM_SaberInAttack(ent->client->ps.saberMove))
+				if (!PM_SaberInAttack(ent->client->ps.saber_move))
 				{
 					Jedi_Cloak(ent);
 				}
@@ -1513,7 +1513,7 @@ void NPC_Begin(gentity_t* ent)
 	//Run a script if you have one assigned to you
 	if (G_ActivateBehavior(ent, BSET_SPAWN))
 	{
-		if (ent->m_iIcarusID != IIcarusInterface::ICARUS_INVALID/*ent->taskManager*/ && !stop_icarus)
+		if (ent->m_iIcarusID != IIcarusInterface::ICARUS_INVALID/*ent->task_manager*/ && !stop_icarus)
 		{
 			IIcarusInterface::GetIcarus()->Update(ent->m_iIcarusID);
 		}
@@ -1776,7 +1776,7 @@ gentity_t* NPC_Spawn_Do(gentity_t* ent, const qboolean fullSpawnNow)
 		if (ent->spawnflags & 1)
 		{
 			//wants to explode when not in vis of player
-			newent->endFrame = ent->endFrame;
+			newent->end_frame = ent->end_frame;
 		}
 
 		// Setup the vehicle.
@@ -2265,9 +2265,9 @@ void SP_NPC_Vehicle(gentity_t* self)
 	if (self->spawnflags & 1)
 	{
 		//wants to explode when not in vis of player
-		if (!self->endFrame)
+		if (!self->end_frame)
 		{
-			self->endFrame = NO_PILOT_DIE_TIME;
+			self->end_frame = NO_PILOT_DIE_TIME;
 		}
 	}
 

@@ -58,7 +58,7 @@ void charge_stick(gentity_t* self, gentity_t* other, const trace_t* trace)
 }
 
 //---------------------------------------------------------
-static void WP_DropDetPack(gentity_t* self, vec3_t start, vec3_t dir)
+static void WP_DropDetPack(gentity_t* self, vec3_t start)
 //---------------------------------------------------------
 {
 	// Chucking a new one
@@ -143,7 +143,7 @@ void WP_FireDetPack(gentity_t* ent, const qboolean alt_fire)
 	}
 	else
 	{
-		WP_DropDetPack(ent, muzzle, forward_vec);
+		WP_DropDetPack(ent, muzzle);
 
 		ent->client->ps.eFlags |= EF_PLANTED_CHARGE;
 	}

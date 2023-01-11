@@ -694,7 +694,7 @@ void CGCam_Roll(float dest, float duration)
 	CGCam_Anything();
 }
 
-int ICARUS_LinkEntity(int entID, CSequencer* sequencer, CTaskManager* taskManager);
+int ICARUS_LinkEntity(int entID, CSequencer* sequencer, CTaskManager* task_manager);
 
 static unsigned int Q3_GetTimeScale(void)
 {

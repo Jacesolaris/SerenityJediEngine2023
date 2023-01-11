@@ -283,8 +283,8 @@ void NORETURN QDECL Com_Error(int code, const char* fmt, ...)
 	}
 
 	// if we are getting a solid stream of ERR_DROP, do an ERR_FATAL
-	const int currentTime = Sys_Milliseconds();
-	if (currentTime - lastErrorTime < 100)
+	const int current_time = Sys_Milliseconds();
+	if (current_time - lastErrorTime < 100)
 	{
 		if (++errorCount > 3)
 		{
@@ -295,7 +295,7 @@ void NORETURN QDECL Com_Error(int code, const char* fmt, ...)
 	{
 		errorCount = 0;
 	}
-	lastErrorTime = currentTime;
+	lastErrorTime = current_time;
 
 #ifdef JK2_MODE
 	SCR_UnprecacheScreenshot();

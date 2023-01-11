@@ -111,7 +111,7 @@ void func_usable_use(gentity_t* self, const gentity_t* other, gentity_t* activat
 	{
 		//animate shader when used
 		self->s.frame++; //inc frame
-		if (self->s.frame > self->endFrame)
+		if (self->s.frame > self->end_frame)
 		{
 			//wrap around
 			self->s.frame = 0;
@@ -255,9 +255,9 @@ void SP_func_usable(gentity_t* self)
 		self->e_PainFunc = painF_func_usable_pain;
 	}
 
-	if (self->endFrame > 0)
+	if (self->end_frame > 0)
 	{
-		self->s.frame = self->startFrame = 0;
+		self->s.frame = self->start_frame = 0;
 		self->s.eFlags |= EF_SHADER_ANIM;
 	}
 

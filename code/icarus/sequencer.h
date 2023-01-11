@@ -76,12 +76,12 @@ protected:
 public:
 	int GetID() const { return m_id; };
 
-	int Init(int ownerID, CTaskManager* taskManager);
+	int Init(int owner_id, CTaskManager* task_manager);
 	static CSequencer* Create(void);
 	void Free(CIcarus* icarus);
 
 	int Run(char* buffer, long size, CIcarus* icarus);
-	int Callback(CTaskManager* taskManager, CBlock* block, int returnCode, CIcarus* icarus);
+	int Callback(CTaskManager* task_manager, CBlock* block, int returnCode, CIcarus* icarus);
 
 	void SetOwnerID(const int owner) { m_ownerID = owner; }
 
@@ -124,7 +124,7 @@ protected:
 	int AddAffect(const bstream_t* bstream, int retain, int* id, CIcarus* icarus);
 
 	CSequence* AddSequence(CIcarus* icarus);
-	CSequence* AddSequence(CSequence* parent, CSequence* returnSeq, int flags, CIcarus* icarus);
+	CSequence* AddSequence(CSequence* parent, CSequence* return_seq, int flags, CIcarus* icarus);
 
 	CSequence* GetSequence(int id);
 
@@ -146,7 +146,7 @@ protected:
 
 	void Prep(CBlock**, CIcarus* icarus);
 
-	int Prime(CTaskManager* taskManager, CBlock* command, CIcarus* icarus);
+	int Prime(CTaskManager* task_manager, CBlock* command, CIcarus* icarus);
 
 	int ParseRun(CBlock* block, CIcarus* icarus);
 	int ParseLoop(CBlock* block, bstream_t* bstream, CIcarus* icarus);

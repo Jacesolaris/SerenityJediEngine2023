@@ -692,7 +692,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 
 			if (ent->client->NPC_class == CLASS_SHADOWTROOPER && Q_stricmpn("shadowtrooper", ent->NPC_type, 13) == 0)
 			{
-				if (!PM_SaberInAttack(ent->client->ps.saberMove))
+				if (!PM_SaberInAttack(ent->client->ps.saber_move))
 				{
 					Jedi_Cloak(ent);
 				}
@@ -1537,12 +1537,12 @@ void NPC_Begin(gentity_t* ent)
 	//set saberAnimLevelBase
 	if (ent->client->saber[0].model[0] && ent->client->saber[1].model[0])
 	{
-		ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saberAnimLevel = SS_DUAL;
+		ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saber_anim_level = SS_DUAL;
 	}
 	else if (ent->client->saber[0].numBlades > 1
 		&& WP_SaberCanTurnOffSomeBlades(&ent->client->saber[0]))
 	{
-		ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saberAnimLevel = SS_STAFF;
+		ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saber_anim_level = SS_STAFF;
 	}
 	else
 	{
@@ -1582,7 +1582,7 @@ void NPC_Begin(gentity_t* ent)
 			}
 		}
 
-		ent->client->ps.fd.saberAnimLevel = newLevel;
+		ent->client->ps.fd.saber_anim_level = newLevel;
 	}
 
 	if (!(ent->spawnflags & SFB_STARTINSOLID))

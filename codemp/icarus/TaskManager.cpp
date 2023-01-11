@@ -45,7 +45,7 @@ CTask::CTask(void)
 CTask::~CTask(void)
 = default;
 
-CTask* CTask::Create(const int GUID, CBlock* block)
+CTask* CTask::Create(const int guid, CBlock* block)
 {
 	const auto task = new CTask;
 
@@ -56,7 +56,7 @@ CTask* CTask::Create(const int GUID, CBlock* block)
 
 	task->SetTimeStamp(0);
 	task->SetBlock(block);
-	task->SetGUID(GUID);
+	task->SetGUID(guid);
 
 	return task;
 }
@@ -100,9 +100,9 @@ SetGUID
 -------------------------
 */
 
-void CTaskGroup::SetGUID(const int GUID)
+void CTaskGroup::SetGUID(const int guid)
 {
-	m_GUID = GUID;
+	m_GUID = guid;
 }
 
 /*
@@ -356,9 +356,9 @@ Check
 -------------------------
 */
 
-inline bool CTaskManager::Check(const int targetID, const CBlock* block, const int memberNum)
+inline bool CTaskManager::Check(const int target_id, const CBlock* block, const int member_num)
 {
-	if (block->GetMember(memberNum)->GetID() == targetID)
+	if (block->GetMember(member_num)->GetID() == target_id)
 		return true;
 
 	return false;

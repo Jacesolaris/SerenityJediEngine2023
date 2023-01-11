@@ -47,7 +47,7 @@ void G2Tur_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 	int* thebone = &ent->s.boneIndex1;
 	int* firstFree = NULL;
 	int i = 0;
-	const int boneIndex = G_BoneIndex(bone);
+	const int bone_index = G_BoneIndex(bone);
 	vec3_t* boneVector = &ent->s.boneAngles1;
 	vec3_t* freeBoneVec = NULL;
 
@@ -61,7 +61,7 @@ void G2Tur_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 		}
 		else if (*thebone)
 		{
-			if (*thebone == boneIndex)
+			if (*thebone == bone_index)
 			{
 				//this is it
 				break;
@@ -103,7 +103,7 @@ void G2Tur_SetBoneAngles(gentity_t* ent, const char* bone, vec3_t angles)
 
 		thebone = firstFree;
 
-		*thebone = boneIndex;
+		*thebone = bone_index;
 		boneVector = freeBoneVec;
 	}
 

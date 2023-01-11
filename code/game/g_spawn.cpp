@@ -297,8 +297,8 @@ field_t fields[] = {
 	{"type", FOFS(count), F_FLOAT}, //for fx_crew_beam_in
 	{"fxfile", FOFS(fxFile), F_LSTRING},
 	{"fxfile2", FOFS(cameraGroup), F_LSTRING},
-	{"noVisTime", FOFS(endFrame), F_INT}, //for NPC_Vehicle
-	{"endFrame", FOFS(endFrame), F_INT}, //for func_usable shader animation
+	{"noVisTime", FOFS(end_frame), F_INT}, //for NPC_Vehicle
+	{"end_frame", FOFS(end_frame), F_INT}, //for func_usable shader animation
 	{"linear", FOFS(alt_fire), F_INT}, //for movers to use linear movement
 	{"weapon",FOFS(paintarget), F_LSTRING}, //for misc_weapon_shooter only
 

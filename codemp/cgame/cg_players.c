@@ -3285,7 +3285,7 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 		if (!PM_WalkingOrRunningAnim(cent->currentState.legsAnim) && !PM_InKataAnim(cent->currentState.torsoAnim))
 		{
 			//make smooth animations
-			if ((active_blocking || holding_block) && cent->currentState.saberMove == LS_READY)
+			if ((active_blocking || holding_block) && cent->currentState.saber_move == LS_READY)
 			{
 				blend_time *= 1.8f;
 			}
@@ -3305,7 +3305,7 @@ static void CG_SetLerpFrameAnimation(centity_t* cent, clientInfo_t* ci, lerpFram
 				resume_frame = qtrue;
 			}
 			lf->animationTorsoSpeed = anim_speed_mult;
-			if ((active_blocking || holding_block) && cent->currentState.saberMove == LS_READY)
+			if ((active_blocking || holding_block) && cent->currentState.saber_move == LS_READY)
 			{
 				blend_time *= 1.8f;
 			}
@@ -3776,7 +3776,7 @@ static void CG_PlayerAnimation(centity_t* cent, int* legs_old, int* legs, float*
 		if (!PM_WalkingOrRunningAnim(cent->currentState.legsAnim) && !PM_InKataAnim(cent->currentState.torsoAnim))
 		{
 			//make smooth animations
-			if ((active_blocking || holding_block) && cent->currentState.saberMove == LS_READY)
+			if ((active_blocking || holding_block) && cent->currentState.saber_move == LS_READY)
 			{
 				speed_scale *= 0.3f;
 			}
@@ -3811,7 +3811,7 @@ typedef struct boneAngleParms_s {
 	int forward;
 	qhandle_t* modelList;
 	int blend_time;
-	int currentTime;
+	int current_time;
 
 	qboolean refreshSet;
 } boneAngleParms_t;
@@ -3843,7 +3843,7 @@ void CG_G2SetBoneAngles(void* ghoul2, int model_index, const char* bone_name, co
 	cgBoneAnglePostSet.forward = forward;
 	cgBoneAnglePostSet.modelList = modelList;
 	cgBoneAnglePostSet.blend_time = blend_time;
-	cgBoneAnglePostSet.currentTime = currentTime;
+	cgBoneAnglePostSet.current_time = current_time;
 
 	cgBoneAnglePostSet.refreshSet = qtrue;
 #endif
@@ -4122,9 +4122,9 @@ qboolean CG_RagDoll(centity_t* cent, vec3_t forced_angles)
 		}
 
 		//these will be used as "base" frames for the ragoll settling.
-		t_parms.startFrame = bgAllAnims[cent->localAnimIndex].anims[rag_anim].firstFrame;
+		t_parms.start_frame = bgAllAnims[cent->localAnimIndex].anims[rag_anim].firstFrame;
 		// + bgAllAnims[cent->localAnimIndex].anims[ragAnim].numFrames;
-		t_parms.endFrame = bgAllAnims[cent->localAnimIndex].anims[rag_anim].firstFrame + bgAllAnims[cent->
+		t_parms.end_frame = bgAllAnims[cent->localAnimIndex].anims[rag_anim].firstFrame + bgAllAnims[cent->
 				localAnimIndex].
 			anims[rag_anim].numFrames;
 #if 0
@@ -4146,9 +4146,9 @@ qboolean CG_RagDoll(centity_t* cent, vec3_t forced_angles)
 			*/
 
 			animSpeed = 50.0f / bgAllAnims[cent->localAnimIndex].anims[ragAnim].frameLerp;
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "lower_lumbar", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blend_time);
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "Motion", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blend_time);
-			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "model_root", tParms.startFrame, tParms.endFrame, flags, animSpeed, cg.time, -1, blend_time);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "lower_lumbar", tParms.start_frame, tParms.end_frame, flags, animSpeed, cg.time, -1, blend_time);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "Motion", tParms.start_frame, tParms.end_frame, flags, animSpeed, cg.time, -1, blend_time);
+			trap->G2API_SetBoneAnim(cent->ghoul2, 0, "model_root", tParms.start_frame, tParms.end_frame, flags, animSpeed, cg.time, -1, blend_time);
 		}
 #elif 1 //with my new method of doing things I want it to continue the anim
 		{
@@ -4204,7 +4204,7 @@ qboolean CG_RagDoll(centity_t* cent, vec3_t forced_angles)
 		VectorCopy(used_org, tu_parms.position);
 		VectorCopy(cent->modelScale, tu_parms.scale);
 		tu_parms.me = cent->currentState.number;
-		tu_parms.settleFrame = t_parms.endFrame - 1;
+		tu_parms.settleFrame = t_parms.end_frame - 1;
 
 		if (cent->currentState.groundEntityNum != ENTITYNUM_NONE)
 		{
@@ -4539,10 +4539,10 @@ static void CG_G2SetHeadAnim(const centity_t* cent, const int anim)
 	}
 
 	// first decide if we are doing an animation on the head already
-	//	int startFrame, endFrame;
-	//	const qboolean animatingHead =  gi.G2API_GetAnimRangeIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone, &startFrame, &endFrame);
+	//	int start_frame, end_frame;
+	//	const qboolean animatingHead =  gi.G2API_GetAnimRangeIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone, &start_frame, &end_frame);
 
-	//	if (!animatingHead || ( animations[anim].firstFrame != startFrame ) )// only set the anim if we aren't going to do the same animation again
+	//	if (!animatingHead || ( animations[anim].firstFrame != start_frame ) )// only set the anim if we aren't going to do the same animation again
 	{
 		const int blend_time = 50;
 		//	gi.G2API_SetBoneAnimIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone,
@@ -11670,7 +11670,7 @@ void CG_AddGhoul2Mark(const int shader, const float size, vec3_t start, vec3_t e
 
 	gore_skin.baseModelOnly = qfalse;
 
-	gore_skin.currentTime = cg.time;
+	gore_skin.current_time = cg.time;
 	gore_skin.entNum = entnum;
 	gore_skin.SSize = size;
 	gore_skin.TSize = size;
@@ -12133,7 +12133,7 @@ void CG_AddSaberBlade(centity_t* cent, centity_t* scent, int renderfx, int saber
 							{
 								//ugh, need to have a real sound debouncer... or do this game-side
 								client->saber[saber_num].blade[blade_num].hitWallDebounceTime = cg.time;
-								if (PM_SaberInAttack(cent->currentState.saberMove)
+								if (PM_SaberInAttack(cent->currentState.saber_move)
 									|| pm_saber_in_special_attack(cent->currentState.torsoAnim))
 								{
 									trap->S_StartSound(trace.endpos, -1, CHAN_WEAPON,
@@ -12201,7 +12201,7 @@ CheckTrail:
 	{
 		int trail_dur;
 		// Use Raven's superior sabers.
-		saber_trail->duration = saberMoveData[cent->currentState.saberMove].trailLength;
+		saber_trail->duration = saberMoveData[cent->currentState.saber_move].trailLength;
 
 		if (cent->currentState.userInt3 & 1 << FLAG_ATTACKFAKE)
 		{
@@ -12238,7 +12238,7 @@ CheckTrail:
 			{
 				if (client->saber[saber_num].type == SABER_SITH_SWORD
 					|| (PM_SuperBreakWinAnim(cent->currentState.torsoAnim)
-						|| saberMoveData[cent->currentState.saberMove].trailLength > 0
+						|| saberMoveData[cent->currentState.saber_move].trailLength > 0
 						|| cent->currentState.powerups & 1 << PW_SPEED && cg_speedTrail.integer
 						|| cent->currentState.saberInFlight && saber_num == 0)
 					&& cg.time < saber_trail->lastTime + 2000)
@@ -12503,7 +12503,7 @@ CheckTrail:
 								trap->R_SetRefractionProperties(1.0f, 0.0f, qtrue, qtrue);
 								//don't need to do this every frame.. but..
 
-								if (PM_SaberInAttack(cent->currentState.saberMove)
+								if (PM_SaberInAttack(cent->currentState.saber_move)
 									|| PM_SuperBreakWinAnim(cent->currentState.torsoAnim))
 								{
 									//in attack, strong trail
@@ -12569,7 +12569,7 @@ CheckTrail:
 			dirlen1 = VectorLength(dir1);
 			dirlen2 = VectorLength(dir2);
 
-			if (saberMoveData[cent->currentState.saberMove].trailLength == 0)
+			if (saberMoveData[cent->currentState.saber_move].trailLength == 0)
 			{
 				dirlen0 *= 0.5;
 				dirlen1 *= 0.3;
@@ -15857,7 +15857,7 @@ void CG_HolsteredWeaponRender(centity_t* cent, const clientInfo_t* ci, const int
 	else
 	{
 		//use the model's loaded data for this holsterType
-		bone_index = ci->holsterData[holster_type].boneIndex;
+		bone_index = ci->holsterData[holster_type].bone_index;
 		VectorCopy(ci->holsterData[holster_type].posOffset, pos_offset);
 		VectorCopy(ci->holsterData[holster_type].angOffset, ang_offset);
 	}
@@ -15934,7 +15934,7 @@ void CG_HolsteredWeaponRender(centity_t* cent, const clientInfo_t* ci, const int
 		offset_bolt = ci->bolt_rfemurYZ; //use right hip bone
 		break;
 	default:
-		Com_Printf("Unknown offsetBolt for boneIndex %i in CG_HolsteredWeaponRender.\n", bone_index);
+		Com_Printf("Unknown offsetBolt for bone_index %i in CG_HolsteredWeaponRender.\n", bone_index);
 		return;
 	}
 
@@ -20167,7 +20167,7 @@ stillDoSaber:
 	{
 		trap->G2API_SetBoneAngles(cgBoneAnglePostSet.ghoul2, cgBoneAnglePostSet.model_index, cgBoneAnglePostSet.boneName,
 			cgBoneAnglePostSet.angles, cgBoneAnglePostSet.flags, cgBoneAnglePostSet.up, cgBoneAnglePostSet.right,
-			cgBoneAnglePostSet.forward, cgBoneAnglePostSet.modelList, cgBoneAnglePostSet.blend_time, cgBoneAnglePostSet.currentTime);
+			cgBoneAnglePostSet.forward, cgBoneAnglePostSet.modelList, cgBoneAnglePostSet.blend_time, cgBoneAnglePostSet.current_time);
 
 		cgBoneAnglePostSet.refreshSet = qfalse;
 	}

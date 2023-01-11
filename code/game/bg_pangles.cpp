@@ -106,8 +106,8 @@ void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, const int bolt_index, const char* ani
 		VectorCopy(scale, ik_p.scale);
 
 		//base pose frames for the limb
-		ik_p.startFrame = anim->firstFrame + anim->numFrames;
-		ik_p.endFrame = anim->firstFrame + anim->numFrames;
+		ik_p.start_frame = anim->firstFrame + anim->numFrames;
+		ik_p.end_frame = anim->firstFrame + anim->numFrames;
 
 		//ikP.forceAnimOnBone = qfalse; //let it use existing anim if it's the same as this one.
 
@@ -743,12 +743,12 @@ qboolean PM_AdjustAnglesForBackAttack(gentity_t* ent, usercmd_t* ucmd)
 	{
 		return qfalse;
 	}
-	if ((ent->client->ps.saberMove == LS_A_BACK || ent->client->ps.saberMove == LS_A_BACK_CR || ent->client->ps.
-			saberMove == LS_A_BACKSTAB
-			|| ent->client->ps.saberMove == LS_A_BACKSTAB_B)
-		&& PM_InAnimForSaberMove(ent->client->ps.torsoAnim, ent->client->ps.saberMove))
+	if ((ent->client->ps.saber_move == LS_A_BACK || ent->client->ps.saber_move == LS_A_BACK_CR || ent->client->ps.
+			saber_move == LS_A_BACKSTAB
+			|| ent->client->ps.saber_move == LS_A_BACKSTAB_B)
+		&& PM_InAnimForSaberMove(ent->client->ps.torsoAnim, ent->client->ps.saber_move))
 	{
-		if (ent->client->ps.saberMove != LS_A_BACKSTAB || !ent->enemy || ent->s.number >= MAX_CLIENTS && !
+		if (ent->client->ps.saber_move != LS_A_BACKSTAB || !ent->enemy || ent->s.number >= MAX_CLIENTS && !
 			G_ControlledByPlayer(ent))
 		{
 			if (ent->client->ps.viewEntity <= 0 || ent->client->ps.viewEntity >= ENTITYNUM_WORLD)
@@ -759,7 +759,7 @@ qboolean PM_AdjustAnglesForBackAttack(gentity_t* ent, usercmd_t* ucmd)
 			ucmd->angles[PITCH] = ANGLE2SHORT(ent->client->ps.viewangles[PITCH]) - ent->client->ps.delta_angles[PITCH];
 			ucmd->angles[YAW] = ANGLE2SHORT(ent->client->ps.viewangles[YAW]) - ent->client->ps.delta_angles[YAW];
 		}
-		else if (ent->client->ps.saberMove != LS_A_BACKSTAB_B || !ent->enemy || ent->s.number >= MAX_CLIENTS && !
+		else if (ent->client->ps.saber_move != LS_A_BACKSTAB_B || !ent->enemy || ent->s.number >= MAX_CLIENTS && !
 			G_ControlledByPlayer(ent))
 		{
 			if (ent->client->ps.viewEntity <= 0 || ent->client->ps.viewEntity >= ENTITYNUM_WORLD)
@@ -2074,7 +2074,7 @@ void PM_UpdateViewAngles(int saber_anim_level, playerState_t* ps, usercmd_t* cmd
 		&& gent->s.weapon == WP_SABER
 		&& pm->ps->SaberActive()
 		&& !gent->client->ps.saberInFlight
-		&& !PM_KickMove(pm->ps->saberMove)
+		&& !PM_KickMove(pm->ps->saber_move)
 		&& cmd->forwardmove >= 0
 		&& !PM_WalkingOrRunningAnim(pm->ps->legsAnim)
 		&& !PM_WalkingOrRunningAnim(pm->ps->torsoAnim)

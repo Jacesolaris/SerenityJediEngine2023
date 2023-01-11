@@ -234,13 +234,13 @@ void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			bullseye[2] += Q_irand(-16, 4);
 			VectorSubtract(bullseye, missile->currentOrigin, bounce_dir);
 			VectorNormalize(bounce_dir);
-			if (!PM_SaberInParry(owner->client->ps.saberMove)
-				&& !PM_SaberInReflect(owner->client->ps.saberMove)
-				&& !PM_SaberInIdle(owner->client->ps.saberMove))
+			if (!PM_SaberInParry(owner->client->ps.saber_move)
+				&& !PM_SaberInReflect(owner->client->ps.saber_move)
+				&& !PM_SaberInIdle(owner->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(owner->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(owner->client->ps.saberMove)
+				if (PM_SaberInAttack(owner->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(owner->client->ps.saber_move)
 					|| pm_saber_in_special_attack(owner->client->ps.torsoAnim))
 				{
 					//moderately more wild
@@ -308,13 +308,13 @@ void g_reflect_missile_auto(gentity_t* ent, gentity_t* missile, vec3_t forward)
 					bounce_dir[i] += Q_flrand(-0.2f, 0.2f);
 				}
 			}
-			if (!PM_SaberInParry(owner->client->ps.saberMove)
-				&& !PM_SaberInReflect(owner->client->ps.saberMove)
-				&& !PM_SaberInIdle(owner->client->ps.saberMove))
+			if (!PM_SaberInParry(owner->client->ps.saber_move)
+				&& !PM_SaberInReflect(owner->client->ps.saber_move)
+				&& !PM_SaberInIdle(owner->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(owner->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(owner->client->ps.saberMove)
+				if (PM_SaberInAttack(owner->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(owner->client->ps.saber_move)
 					|| pm_saber_in_special_attack(owner->client->ps.torsoAnim))
 				{
 					//really wild
@@ -409,13 +409,13 @@ void g_reflect_missile_npc(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			bullseye[2] += Q_irand(-16, 4);
 			VectorSubtract(bullseye, missile->currentOrigin, bounce_dir);
 			VectorNormalize(bounce_dir);
-			if (!PM_SaberInParry(owner->client->ps.saberMove)
-				&& !PM_SaberInReflect(owner->client->ps.saberMove)
-				&& !PM_SaberInIdle(owner->client->ps.saberMove))
+			if (!PM_SaberInParry(owner->client->ps.saber_move)
+				&& !PM_SaberInReflect(owner->client->ps.saber_move)
+				&& !PM_SaberInIdle(owner->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(owner->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(owner->client->ps.saberMove)
+				if (PM_SaberInAttack(owner->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(owner->client->ps.saber_move)
 					|| pm_saber_in_special_attack(owner->client->ps.torsoAnim))
 				{
 					//moderately more wild
@@ -482,13 +482,13 @@ void g_reflect_missile_npc(gentity_t* ent, gentity_t* missile, vec3_t forward)
 					bounce_dir[i] += Q_flrand(-0.2f, 0.2f);
 				}
 			}
-			if (!PM_SaberInParry(owner->client->ps.saberMove)
-				&& !PM_SaberInReflect(owner->client->ps.saberMove)
-				&& !PM_SaberInIdle(owner->client->ps.saberMove))
+			if (!PM_SaberInParry(owner->client->ps.saber_move)
+				&& !PM_SaberInReflect(owner->client->ps.saber_move)
+				&& !PM_SaberInIdle(owner->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(owner->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(owner->client->ps.saberMove)
+				if (PM_SaberInAttack(owner->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(owner->client->ps.saber_move)
 					|| pm_saber_in_special_attack(owner->client->ps.torsoAnim))
 				{
 					//really wild
@@ -582,13 +582,13 @@ void g_missile_bouncedoff_saber(gentity_t* ent, gentity_t* missile, vec3_t forwa
 			bullseye[2] += Q_irand(-16, 4);
 			VectorSubtract(bullseye, missile->currentOrigin, bounce_dir);
 			VectorNormalize(bounce_dir);
-			if (!PM_SaberInParry(owner->client->ps.saberMove)
-				&& !PM_SaberInReflect(owner->client->ps.saberMove)
-				&& !PM_SaberInIdle(owner->client->ps.saberMove))
+			if (!PM_SaberInParry(owner->client->ps.saber_move)
+				&& !PM_SaberInReflect(owner->client->ps.saber_move)
+				&& !PM_SaberInIdle(owner->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(owner->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(owner->client->ps.saberMove)
+				if (PM_SaberInAttack(owner->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(owner->client->ps.saber_move)
 					|| pm_saber_in_special_attack(owner->client->ps.torsoAnim))
 				{
 					//moderately more wild
@@ -655,13 +655,13 @@ void g_missile_bouncedoff_saber(gentity_t* ent, gentity_t* missile, vec3_t forwa
 					bounce_dir[i] += Q_flrand(-0.4f, 0.4f);
 				}
 			}
-			if (!PM_SaberInParry(owner->client->ps.saberMove)
-				&& !PM_SaberInReflect(owner->client->ps.saberMove)
-				&& !PM_SaberInIdle(owner->client->ps.saberMove))
+			if (!PM_SaberInParry(owner->client->ps.saber_move)
+				&& !PM_SaberInReflect(owner->client->ps.saber_move)
+				&& !PM_SaberInIdle(owner->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(owner->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(owner->client->ps.saberMove)
+				if (PM_SaberInAttack(owner->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(owner->client->ps.saber_move)
 					|| pm_saber_in_special_attack(owner->client->ps.torsoAnim))
 				{
 					//really wild
@@ -885,13 +885,13 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			VectorSubtract(bullseye, missile->currentOrigin, bounce_dir);
 			VectorNormalize(bounce_dir);
 
-			if (!PM_SaberInParry(blocker->client->ps.saberMove)
-				&& !PM_SaberInReflect(blocker->client->ps.saberMove)
-				&& !PM_SaberInIdle(blocker->client->ps.saberMove))
+			if (!PM_SaberInParry(blocker->client->ps.saber_move)
+				&& !PM_SaberInReflect(blocker->client->ps.saber_move)
+				&& !PM_SaberInIdle(blocker->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(blocker->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(blocker->client->ps.saberMove)
+				if (PM_SaberInAttack(blocker->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(blocker->client->ps.saber_move)
 					|| pm_saber_in_special_attack(blocker->client->ps.torsoAnim))
 				{
 					//moderately more wild
@@ -978,13 +978,13 @@ void wp_handle_bolt_block(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			VectorSubtract(bullseye, missile->currentOrigin, bounce_dir);
 			VectorNormalize(bounce_dir);
 
-			if (!PM_SaberInParry(blocker->client->ps.saberMove)
-				&& !PM_SaberInReflect(blocker->client->ps.saberMove)
-				&& !PM_SaberInIdle(blocker->client->ps.saberMove))
+			if (!PM_SaberInParry(blocker->client->ps.saber_move)
+				&& !PM_SaberInReflect(blocker->client->ps.saber_move)
+				&& !PM_SaberInIdle(blocker->client->ps.saber_move))
 			{
 				//a bit more wild
-				if (PM_SaberInAttack(blocker->client->ps.saberMove)
-					|| PM_SaberInTransitionAny(blocker->client->ps.saberMove)
+				if (PM_SaberInAttack(blocker->client->ps.saber_move)
+					|| PM_SaberInTransitionAny(blocker->client->ps.saber_move)
 					|| pm_saber_in_special_attack(blocker->client->ps.torsoAnim))
 				{
 					//moderately more wild
@@ -1796,7 +1796,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NON
 		&& !WP_DoingForcedAnimationForForcePowers(other))
 	{
 		//play projectile block animation
-		if (other->client && !PM_SaberInAttack(other->client->ps.saberMove)
+		if (other->client && !PM_SaberInAttack(other->client->ps.saber_move)
 			|| other->client && (pm->cmd.buttons & BUTTON_USE_FORCE
 				|| pm->cmd.buttons & BUTTON_FORCEGRIP
 				|| pm->cmd.buttons & BUTTON_DASH
@@ -1856,7 +1856,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NON
 				VectorSubtract(ent->currentOrigin, other->currentOrigin, diff);
 				VectorNormalize(diff);
 
-				if (other->owner->client && !PM_SaberInAttack(other->owner->client->ps.saberMove)
+				if (other->owner->client && !PM_SaberInAttack(other->owner->client->ps.saber_move)
 					|| other->owner->client && (pm->cmd.buttons & BUTTON_USE_FORCE
 						|| pm->cmd.buttons & BUTTON_FORCEGRIP
 						|| pm->cmd.buttons & BUTTON_DASH

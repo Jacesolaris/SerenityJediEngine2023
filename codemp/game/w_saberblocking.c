@@ -135,7 +135,7 @@ qboolean g_accurate_blocking(const gentity_t* self, const gentity_t* attacker, v
 		//can't parry attacks to the rear.
 		return qfalse;
 	}
-	if (PM_SaberInKnockaway(self->client->ps.saberMove))
+	if (PM_SaberInKnockaway(self->client->ps.saber_move))
 	{
 		//already in parry move, continue parrying anything that hits us as long as
 		//the attacker is in the same general area that we're facing.
@@ -149,7 +149,7 @@ qboolean g_accurate_blocking(const gentity_t* self, const gentity_t* attacker, v
 	}
 
 	if (BG_SaberInNonIdleDamageMove(&self->client->ps, self->localAnimIndex)
-		|| PM_SaberInBounce(self->client->ps.saberMove) || BG_InSlowBounce(&self->client->ps))
+		|| PM_SaberInBounce(self->client->ps.saber_move) || BG_InSlowBounce(&self->client->ps))
 	{
 		//can't parry if we're transitioning into a block from an attack state.
 		return qfalse;
@@ -229,7 +229,7 @@ qboolean g_perfect_blocking(const gentity_t* blocker, const gentity_t* attacker,
 		//can't parry attacks to the rear.
 		return qfalse;
 	}
-	if (PM_SaberInKnockaway(blocker->client->ps.saberMove))
+	if (PM_SaberInKnockaway(blocker->client->ps.saber_move))
 	{
 		//already in parry move, continue parrying anything that hits us as long as
 		//the attacker is in the same general area that we're facing.
@@ -249,7 +249,7 @@ qboolean g_perfect_blocking(const gentity_t* blocker, const gentity_t* attacker,
 	}
 
 	if (BG_SaberInNonIdleDamageMove(&blocker->client->ps, blocker->localAnimIndex)
-		|| PM_SaberInBounce(blocker->client->ps.saberMove) || BG_InSlowBounce(&blocker->client->ps))
+		|| PM_SaberInBounce(blocker->client->ps.saber_move) || BG_InSlowBounce(&blocker->client->ps))
 	{
 		//can't parry if we're transitioning into a block from an attack state.
 		return qfalse;
@@ -453,7 +453,7 @@ void sab_beh_animate_small_bounce(gentity_t* attacker)
 	else
 	{
 		attacker->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
-		attacker->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[attacker->client->ps.saberMove].startQuad -
+		attacker->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[attacker->client->ps.saber_move].startQuad -
 			Q_BR);
 		attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
 	}
@@ -467,7 +467,7 @@ void sab_beh_animate_heavy_slow_bounce_blocker(gentity_t* blocker, gentity_t* at
 	G_AddEvent(blocker, Q_irand(EV_PUSHED1, EV_PUSHED3), 0);
 	G_AddEvent(attacker, Q_irand(EV_DEFLECT1, EV_DEFLECT3), 0);
 
-	blocker->client->ps.saberBounceMove = pm_broken_parry_for_attack(blocker->client->ps.saberMove);
+	blocker->client->ps.saberBounceMove = pm_broken_parry_for_attack(blocker->client->ps.saber_move);
 	blocker->client->ps.saberBlocked = BLOCKED_PARRY_BROKEN;
 }
 
@@ -673,7 +673,7 @@ qboolean sab_beh_attack_vs_attack(gentity_t* attacker, gentity_t* blocker)
 		//set otherOwner
 		sab_beh_add_balance(blocker, 1);
 	}
-	else if (PM_SaberInKata(attacker->client->ps.saberMove))
+	else if (PM_SaberInKata(attacker->client->ps.saber_move))
 	{
 		sab_beh_add_balance(attacker, 1);
 		//set otherOwner
@@ -692,7 +692,7 @@ qboolean sab_beh_attack_vs_attack(gentity_t* attacker, gentity_t* blocker)
 			PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 		}
 	}
-	else if (PM_SaberInKata(blocker->client->ps.saberMove))
+	else if (PM_SaberInKata(blocker->client->ps.saber_move))
 	{
 		sab_beh_add_balance(attacker, -1);
 		//set otherOwner
@@ -1028,7 +1028,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 					}
 					else
 					{
-						if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel ==
+						if (attacker->client->ps.saber_anim_level == SS_DESANN || attacker->client->ps.saber_anim_level ==
 							SS_STRONG)
 						{
 							//WP_SaberFatiguedParry(blocker, attacker, saber_num, blade_num);
@@ -1075,7 +1075,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 				}
 				else
 				{
-					if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel ==
+					if (attacker->client->ps.saber_anim_level == SS_DESANN || attacker->client->ps.saber_anim_level ==
 						SS_STRONG)
 					{
 						//WP_SaberFatiguedParry(blocker, attacker, saber_num, blade_num);
@@ -1118,7 +1118,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 			{
 				if (blocker->r.svFlags & SVF_BOT) //NPC only
 				{
-					if (attacker->client->ps.saberAnimLevel == SS_DESANN || attacker->client->ps.saberAnimLevel ==
+					if (attacker->client->ps.saber_anim_level == SS_DESANN || attacker->client->ps.saber_anim_level ==
 						SS_STRONG)
 					{
 						//WP_SaberFatiguedParry(blocker, attacker, saber_num, blade_num);

@@ -158,8 +158,8 @@ public:
 	int me;
 
 	//rww - we have convenient animation/frame access in the game, so just send this info over from there.
-	int startFrame;
-	int endFrame;
+	int start_frame;
+	int end_frame;
 
 	int collisionType; // 1 = from a fall, 0 from effectors, this will be going away soon, hence no enum
 

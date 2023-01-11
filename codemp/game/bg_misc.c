@@ -3309,7 +3309,7 @@ void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, const qboo
 
 	s->saberInFlight = ps->saberInFlight;
 	s->saberEntityNum = ps->saberEntityNum;
-	s->saberMove = ps->saberMove;
+	s->saber_move = ps->saber_move;
 	s->forcePowersActive = ps->fd.forcePowersActive;
 
 	if (ps->duelInProgress)
@@ -3425,7 +3425,7 @@ void BG_PlayerStateToEntityState(playerState_t* ps, entityState_t* s, const qboo
 
 	s->time2 = ps->holocronBits;
 
-	s->fireflag = ps->fd.saberAnimLevel;
+	s->fireflag = ps->fd.saber_anim_level;
 
 	s->heldByClient = ps->heldByClient;
 	s->ragAttach = ps->ragAttach;
@@ -3519,7 +3519,7 @@ void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s,
 
 	s->saberInFlight = ps->saberInFlight;
 	s->saberEntityNum = ps->saberEntityNum;
-	s->saberMove = ps->saberMove;
+	s->saber_move = ps->saber_move;
 	s->forcePowersActive = ps->fd.forcePowersActive;
 
 	if (ps->duelInProgress)
@@ -3634,7 +3634,7 @@ void BG_PlayerStateToEntityStateExtraPolate(playerState_t* ps, entityState_t* s,
 
 	s->time2 = ps->holocronBits;
 
-	s->fireflag = ps->fd.saberAnimLevel;
+	s->fireflag = ps->fd.saber_anim_level;
 
 	s->heldByClient = ps->heldByClient;
 	s->ragAttach = ps->ragAttach;

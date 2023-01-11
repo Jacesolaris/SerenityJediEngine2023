@@ -72,9 +72,9 @@ int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, const int surfaceNum, co
 
 //=========================================================================================
 //// Public Bolt Routines
-int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surfNum)
+int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surfNum)
 {
-	assert(ghlInfo && ghlInfo->mValid);
+	assert(ghl_info && ghl_info->mValid);
 	boltInfo_t tempBolt;
 
 	// first up, make sure have a surface first
@@ -119,11 +119,11 @@ int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const 
 	return bltlist.size() - 1;
 }
 
-int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, surfaceInfo_v& slist, const char* boneName)
+int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, surfaceInfo_v& slist, const char* boneName)
 {
-	assert(ghlInfo && ghlInfo->mValid);
-	const auto mod_m = const_cast<model_t*>(ghlInfo->currentModel);
-	const model_t* mod_a = const_cast<model_t*>(ghlInfo->animModel);
+	assert(ghl_info && ghl_info->mValid);
+	const auto mod_m = const_cast<model_t*>(ghl_info->currentModel);
+	const model_t* mod_a = const_cast<model_t*>(ghl_info->animModel);
 	int x;
 	boltInfo_t tempBolt;
 	int flags;

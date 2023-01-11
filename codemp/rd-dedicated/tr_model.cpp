@@ -919,7 +919,7 @@ qboolean ServerLoadMDXM(model_t* mod, void* buffer, const char* mod_name, qboole
 
 				for (k = 0; k < surf->maxVertBoneWeights; k++)
 				{
-					v->weights[k].boneIndex = LittleLong(v->weights[k].boneIndex);
+					v->weights[k].bone_index = LittleLong(v->weights[k].bone_index);
 					v->weights[k].boneWeight = LittleFloat(v->weights[k].boneWeight);
 				}
 				v = (mdxmVertex_t*)&v->weights[surf->maxVertBoneWeights];
@@ -1641,7 +1641,7 @@ static md3Tag_t* R_GetTag(md3Header_t* mod, int frame, const char* tagName)
 R_LerpTag
 ================
 */
-int R_LerpTag(orientation_t* tag, const qhandle_t handle, const int startFrame, const int endFrame,
+int R_LerpTag(orientation_t* tag, const qhandle_t handle, const int start_frame, const int end_frame,
               const float frac, const char* tagName)
 {
 	const model_t* model = R_GetModelByHandle(handle);
@@ -1652,8 +1652,8 @@ int R_LerpTag(orientation_t* tag, const qhandle_t handle, const int startFrame, 
 		return qfalse;
 	}
 
-	const md3Tag_t* start = R_GetTag(model->md3[0], startFrame, tagName);
-	const md3Tag_t* end = R_GetTag(model->md3[0], endFrame, tagName);
+	const md3Tag_t* start = R_GetTag(model->md3[0], start_frame, tagName);
+	const md3Tag_t* end = R_GetTag(model->md3[0], end_frame, tagName);
 	if (!start || !end)
 	{
 		AxisClear(tag->axis);
