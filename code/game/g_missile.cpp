@@ -1281,7 +1281,7 @@ void G_SpawnNoghriGasCloud(gentity_t* ent)
 	ent->s.time = level.time;
 }
 
-extern qboolean W_AccuracyLoggableWeapon(int weapon, qboolean alt_fire, int mod);
+extern qboolean W_AccuracyLoggableWeapon(int weapon, qboolean altFire, int mod);
 
 void g_missile_impacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3_t normal, const int hit_loc = HL_NONE)
 {
@@ -1540,7 +1540,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NON
 		bounce = qfalse;
 
 		// in fact, alt-charge shots will not call the regular impact functions
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			// detonate at the trace end
 			VectorCopy(trace->endpos, ent->currentOrigin);
@@ -1627,7 +1627,7 @@ void g_missile_impact(gentity_t* ent, trace_t* trace, const int hit_loc = HL_NON
 
 	if ((!other->takedamage || other->client && other->health <= 0)
 		&& ent->s.weapon == WP_THERMAL
-		&& !ent->alt_fire)
+		&& !ent->altFire)
 	{
 		//rolling thermal det - FIXME: make this an eFlag like bounce & stick!!!
 		if (ent->owner)

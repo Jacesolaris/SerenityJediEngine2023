@@ -26,15 +26,15 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "qfiles.h"
 
-qboolean CM_DeleteCachedMap(qboolean bGuaranteedOkToDelete);
-void CM_LoadMap(const char* name, qboolean clientload, int* checksum, qboolean subBSP);
+qboolean CM_DeleteCachedMap(qboolean b_guaranteed_ok_to_delete);
+void CM_LoadMap(const char* name, qboolean clientload, int* checksum, qboolean sub_bsp);
 void CM_ClearMap(void);
 int CM_TotalMapContents();
 
 clipHandle_t CM_InlineModel(int index); // 0 = world, 1 + are bmodels
 clipHandle_t CM_TempBoxModel(const vec3_t mins, const vec3_t maxs); //, const int contents );
 
-int CM_ModelContents(clipHandle_t model, int subBSPIndex);
+int CM_ModelContents(clipHandle_t model, int sub_bsp_index);
 
 int CM_NumInlineModels(void);
 char* CM_EntityString(void);

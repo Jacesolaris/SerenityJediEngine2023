@@ -230,7 +230,7 @@ extern qboolean G_BoxInBounds(vec3_t point, vec3_t mins, vec3_t maxs, vec3_t bou
 extern qboolean G_HeavyMelee(const gentity_t* attacker);
 extern void Jedi_Decloak(gentity_t* self);
 
-static void WP_FireEmplaced(gentity_t* ent, qboolean alt_fire);
+static void WP_FireEmplaced(gentity_t* ent, qboolean altFire);
 
 void laserTrapStick(gentity_t* ent, vec3_t endpos, vec3_t normal);
 
@@ -244,7 +244,7 @@ void RocketDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int d
 extern vmCvar_t g_vehAutoAimLead;
 
 //We should really organize weapon data into tables or parse from the ext data so we have accurate info for this,
-float WP_SpeedOfMissileForWeapon(int wp, qboolean alt_fire)
+float WP_SpeedOfMissileForWeapon(int wp, qboolean altFire)
 {
 	return 500;
 }
@@ -303,13 +303,13 @@ BRYAR PISTOL
 */
 
 //----------------------------------------------
-static void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireBryarPistol(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int damage = BRYAR_PISTOL_DAMAGE;
 
-	gentity_t* missile = create_missile(muzzle, forward, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
-	gentity_t* missile2 = create_missile(muzzle2, forward, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(muzzle, forward, BRYAR_PISTOL_VEL, 10000, ent, altFire);
+	gentity_t* missile2 = create_missile(muzzle2, forward, BRYAR_PISTOL_VEL, 10000, ent, altFire);
 
 	missile->classname = "bryar_proj";
 	missile->s.weapon = WP_BRYAR_PISTOL;
@@ -320,7 +320,7 @@ static void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 		missile2->s.weapon = WP_BRYAR_PISTOL;
 	}
 
-	if (alt_fire)
+	if (altFire)
 	{
 		int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
 
@@ -371,7 +371,7 @@ static void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 	missile->damage = damage;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
 
-	if (alt_fire)
+	if (altFire)
 	{
 		missile->methodOfDeath = MOD_BRYAR_PISTOL_ALT;
 	}
@@ -388,7 +388,7 @@ static void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 		missile2->damage = damage;
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
 
-		if (alt_fire)
+		if (altFire)
 		{
 			missile->methodOfDeath = MOD_BRYAR_PISTOL_ALT;
 		}
@@ -403,17 +403,17 @@ static void WP_FireBryarPistol(gentity_t* ent, const qboolean alt_fire)
 }
 
 //----------------------------------------------
-static void WP_FireBryarPistolold(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireBryarPistolold(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int damage = SBD_PISTOL_DAMAGE;
 
-	gentity_t* missile = create_missile(muzzle, forward, BRYAR_PISTOL_VEL, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(muzzle, forward, BRYAR_PISTOL_VEL, 10000, ent, altFire);
 
 	missile->classname = "bryar_proj";
 	missile->s.weapon = WP_BRYAR_OLD;
 
-	if (alt_fire)
+	if (altFire)
 	{
 		int count = (level.time - ent->client->ps.weaponChargeTime) / BRYAR_CHARGE_UNIT;
 
@@ -445,7 +445,7 @@ static void WP_FireBryarPistolold(gentity_t* ent, const qboolean alt_fire)
 
 	missile->damage = damage;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
-	if (alt_fire)
+	if (altFire)
 	{
 		missile->methodOfDeath = MOD_BOWCASTER;
 	}
@@ -468,12 +468,12 @@ GENERIC
 */
 
 //---------------------------------------------------------
-void WP_FireTurretMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire, const int damage,
+void WP_FireTurretMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire, const int damage,
                           const int velocity, const int mod,
                           const gentity_t* ignore)
 //---------------------------------------------------------
 {
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
 
 	missile->classname = "generic_proj";
 	missile->s.weapon = WP_TURRET;
@@ -543,12 +543,12 @@ void WP_Explode(gentity_t* self)
 //Currently only the seeker drone uses this, but it might be useful for other things as well.
 
 //---------------------------------------------------------
-void WP_FireGenericBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire, const int damage,
+void WP_FireGenericBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire, const int damage,
                                   const int velocity,
                                   const int mod)
 //---------------------------------------------------------
 {
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
 
 	missile->classname = "generic_proj";
 	missile->s.weapon = WP_BRYAR_PISTOL;
@@ -571,12 +571,12 @@ BLASTER
 */
 
 //---------------------------------------------------------
-void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire)
+void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	const int velocity = BLASTER_VELOCITY;
 
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
 
 	missile->classname = "blaster_proj";
 	missile->s.weapon = WP_BLASTER;
@@ -646,13 +646,13 @@ void WP_FireTurboLaserMissile(gentity_t* ent, vec3_t start, vec3_t dir)
 }
 
 //---------------------------------------------------------
-void WP_FireEmplacedMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire, gentity_t* ignore)
+void WP_FireEmplacedMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire, gentity_t* ignore)
 //---------------------------------------------------------
 {
 	const int velocity = BLASTER_VELOCITY;
 	const int damage = BLASTER_DAMAGE;
 
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
 
 	missile->classname = "emplaced_gun_proj";
 	missile->s.weapon = WP_TURRET; //WP_EMPLACED_GUN;
@@ -712,7 +712,7 @@ void WP_FireWrist(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
+void WP_FireBlaster(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -727,7 +727,7 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 		FP_SEE] < FORCE_LEVEL_2)
 	{
 		//force sight 2+ gives perfect aim
-		if (alt_fire)
+		if (altFire)
 		{
 			// add some slop to the alt-fire direction
 
@@ -810,7 +810,7 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 
 	AngleVectors(angs, dir, NULL, NULL);
 
-	WP_FireBlasterMissile(ent, muzzle, dir, alt_fire);
+	WP_FireBlasterMissile(ent, muzzle, dir, altFire);
 }
 
 /*
@@ -1305,13 +1305,13 @@ void WP_DisruptorAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-static void WP_FireDisruptor(gentity_t* ent, qboolean alt_fire)
+static void WP_FireDisruptor(gentity_t* ent, qboolean altFire)
 //---------------------------------------------------------
 {
 	if (!ent || !ent->client || ent->client->ps.zoomMode != 1)
 	{
 		//do not ever let it do the alt fire when not zoomed
-		alt_fire = qfalse;
+		altFire = qfalse;
 	}
 
 	if (ent && ent->s.eType == ET_NPC && !ent->client)
@@ -1321,7 +1321,7 @@ static void WP_FireDisruptor(gentity_t* ent, qboolean alt_fire)
 		return;
 	}
 
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_DisruptorAltFire(ent);
 	}
@@ -1499,10 +1499,10 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-static void WP_FireBowcaster(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireBowcaster(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_BowcasterAltFire(ent);
 	}
@@ -1581,14 +1581,14 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-static void WP_FireRepeater(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireRepeater(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t angs;
 
 	vectoangles(forward, angs);
 
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_RepeaterAltFire(ent);
 	}
@@ -1930,10 +1930,10 @@ static void WP_DEMP2_AltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-static void WP_FireDEMP2(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireDEMP2(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_DEMP2_AltFire(ent);
 	}
@@ -2207,10 +2207,10 @@ static void WP_FlechetteAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-static void WP_FireFlechette(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireFlechette(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_FlechetteAltFire(ent);
 	}
@@ -2392,13 +2392,13 @@ void RocketDie(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int d
 }
 
 //---------------------------------------------------------
-static void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireRocket(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	const int damage = ROCKET_DAMAGE;
 	int vel = ROCKET_VELOCITY;
 
-	if (alt_fire)
+	if (altFire)
 	{
 		vel *= 0.5f;
 
@@ -2412,7 +2412,7 @@ static void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-	gentity_t* missile = create_missile(muzzle, forward, vel, 30000, ent, alt_fire);
+	gentity_t* missile = create_missile(muzzle, forward, vel, 30000, ent, altFire);
 
 	if (ent->client && ent->client->ps.rocketLockIndex != ENTITYNUM_NONE)
 	{
@@ -2459,7 +2459,7 @@ static void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 
 	missile->damage = damage;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
-	if (alt_fire)
+	if (altFire)
 	{
 		missile->methodOfDeath = MOD_ROCKET_HOMING;
 		missile->splashMethodOfDeath = MOD_ROCKET_HOMING_SPLASH;
@@ -2674,7 +2674,7 @@ void WP_GrenadeThink(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-gentity_t* WP_FireThermalDetonator(gentity_t* ent, const qboolean alt_fire)
+gentity_t* WP_FireThermalDetonator(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t dir, start;
@@ -2748,7 +2748,7 @@ gentity_t* WP_FireThermalDetonator(gentity_t* ent, const qboolean alt_fire)
 		bolt->s.pos.trDelta[2] += 120;
 	}
 
-	if (!alt_fire)
+	if (!altFire)
 	{
 		bolt->flags |= FL_BOUNCE_HALF;
 	}
@@ -3261,7 +3261,7 @@ void CreateLaserTrap(gentity_t* laser_trap, vec3_t start, gentity_t* owner)
 	laser_trap->nextthink = level.time + 50;
 }
 
-void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
+void WP_PlaceLaserTrap(gentity_t* ent, const qboolean altFire)
 {
 	gentity_t* found = NULL;
 	vec3_t dir, start;
@@ -3328,7 +3328,7 @@ void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
 	//set player-created-specific fields
 	laserTrap->setTime = level.time; //remember when we placed it
 
-	if (!alt_fire)
+	if (!altFire)
 	{
 		//tripwire
 		laserTrap->count = 1;
@@ -3337,7 +3337,7 @@ void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
 	//move it
 	laserTrap->s.pos.trType = TR_GRAVITY;
 
-	if (alt_fire)
+	if (altFire)
 	{
 		VectorScale(dir, 512, laserTrap->s.pos.trDelta);
 	}
@@ -3646,7 +3646,7 @@ qboolean CheatsOn(void)
 	return qtrue;
 }
 
-void WP_DropDetPack(gentity_t* ent, const qboolean alt_fire)
+void WP_DropDetPack(gentity_t* ent, const qboolean altFire)
 {
 	gentity_t* found = NULL;
 	int trapcount = 0;
@@ -3708,7 +3708,7 @@ void WP_DropDetPack(gentity_t* ent, const qboolean alt_fire)
 		}
 	}
 
-	if (alt_fire)
+	if (altFire)
 	{
 		BlowDetpacks(ent);
 	}
@@ -4007,9 +4007,9 @@ static void WP_FireConcussion(gentity_t* ent)
 //---------------------------------------------------------
 // FireStunBaton
 //---------------------------------------------------------
-void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
+void WP_FireStunBaton(gentity_t* ent, const qboolean altFire)
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		//
 	}
@@ -4098,7 +4098,7 @@ void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
 //---------------------------------------------------------
 // FireMelee
 //---------------------------------------------------------
-void WP_FireMelee(gentity_t* ent, qboolean alt_fire)
+void WP_FireMelee(gentity_t* ent, qboolean altFire)
 {
 	trace_t tr;
 	vec3_t mins, maxs, end;
@@ -4519,7 +4519,7 @@ void WP_VehWeapSetSolidToOwner(gentity_t* self)
 #define VEH_HOMING_MISSILE_THINK_TIME		100
 
 gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWeaponInfo_t* veh_weapon,
-                                const qboolean alt_fire,
+                                const qboolean altFire,
                                 const qboolean is_turret_weap)
 {
 	gentity_t* missile = NULL;
@@ -4542,7 +4542,7 @@ gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const 
 		WP_TraceSetStart(ent, start, mins, maxs);
 
 		//FIXME: CUSTOM MODEL?
-		//QUERY: alt_fire true or not?  Does it matter?
+		//QUERY: altFire true or not?  Does it matter?
 		missile = create_missile(start, dir, veh_weapon->fSpeed, 10000, ent, qfalse);
 
 		missile->classname = "vehicle_proj";
@@ -4618,7 +4618,7 @@ gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const 
 
 		//set veh as cgame side owner for purpose of fx overrides
 		missile->s.owner = ent->s.number;
-		if (alt_fire)
+		if (altFire)
 		{
 			//use the second weapon's iShotFX
 			missile->s.eFlags |= EF_ALT_FIRING;
@@ -5025,7 +5025,7 @@ qboolean WP_VehCheckTraceFromCamPos(gentity_t* ent, const vec3_t shot_start, vec
 }
 
 //---------------------------------------------------------
-void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
+void FireVehicleWeapon(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	Vehicle_t* p_veh = ent->m_pVehicle;
@@ -5061,7 +5061,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 		int weapon_num;
 		qboolean linked_firing = qfalse;
 
-		if (!alt_fire)
+		if (!altFire)
 		{
 			weapon_num = 0;
 		}
@@ -5250,7 +5250,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 					//NOTE: just need MAX_VEHICLE_MUZZLES bits for this... should be cool since it's currently 12 and we're sending it in 16 bits
 					muzzles_fired |= 1 << i;
 
-					missile = WP_FireVehicleWeapon(ent, start, dir, veh_weapon, alt_fire, qfalse);
+					missile = WP_FireVehicleWeapon(ent, start, dir, veh_weapon, altFire, qfalse);
 					if (veh_weapon->fHoming)
 					{
 						//clear the rocket lock entity *after* all muzzles have fired
@@ -5404,7 +5404,7 @@ qboolean DoesnotDrainMishap(const gentity_t* ent)
 	return qfalse;
 }
 
-void FireWeapon(gentity_t* ent, const qboolean alt_fire)
+void FireWeapon(gentity_t* ent, const qboolean altFire)
 {
 	float alert = 256;
 
@@ -5428,7 +5428,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 
 	if (ent && ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
-		FireVehicleWeapon(ent, alt_fire);
+		FireVehicleWeapon(ent, altFire);
 		return;
 	}
 	// set aiming directions
@@ -5546,23 +5546,23 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 	switch (ent->s.weapon)
 	{
 	case WP_STUN_BATON:
-		WP_FireStunBaton(ent, alt_fire);
+		WP_FireStunBaton(ent, altFire);
 		break;
 
 	case WP_MELEE:
 		alert = 0;
-		WP_FireMelee(ent, alt_fire);
+		WP_FireMelee(ent, altFire);
 		break;
 
 	case WP_SABER:
 		break;
 
 	case WP_BRYAR_PISTOL:
-		WP_FireBryarPistol(ent, alt_fire);
+		WP_FireBryarPistol(ent, altFire);
 		break;
 
 	case WP_CONCUSSION:
-		if (alt_fire)
+		if (altFire)
 		{
 			WP_FireConcussionAlt(ent);
 		}
@@ -5573,50 +5573,50 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 		break;
 
 	case WP_BRYAR_OLD:
-		WP_FireBryarPistolold(ent, alt_fire);
+		WP_FireBryarPistolold(ent, altFire);
 		break;
 
 	case WP_BLASTER:
-		WP_FireBlaster(ent, alt_fire);
+		WP_FireBlaster(ent, altFire);
 		break;
 
 	case WP_DISRUPTOR:
 		alert = 50;
-		WP_FireDisruptor(ent, alt_fire);
+		WP_FireDisruptor(ent, altFire);
 		break;
 
 	case WP_BOWCASTER:
-		WP_FireBowcaster(ent, alt_fire);
+		WP_FireBowcaster(ent, altFire);
 		break;
 
 	case WP_REPEATER:
-		WP_FireRepeater(ent, alt_fire);
+		WP_FireRepeater(ent, altFire);
 		break;
 
 	case WP_DEMP2:
-		WP_FireDEMP2(ent, alt_fire);
+		WP_FireDEMP2(ent, altFire);
 		break;
 
 	case WP_FLECHETTE:
-		WP_FireFlechette(ent, alt_fire);
+		WP_FireFlechette(ent, altFire);
 		break;
 
 	case WP_ROCKET_LAUNCHER:
-		WP_FireRocket(ent, alt_fire);
+		WP_FireRocket(ent, altFire);
 		break;
 
 	case WP_THERMAL:
-		WP_FireThermalDetonator(ent, alt_fire);
+		WP_FireThermalDetonator(ent, altFire);
 		break;
 
 	case WP_TRIP_MINE:
 		alert = 0;
-		WP_PlaceLaserTrap(ent, alt_fire);
+		WP_PlaceLaserTrap(ent, altFire);
 		break;
 
 	case WP_DET_PACK:
 		alert = 0;
-		WP_DropDetPack(ent, alt_fire);
+		WP_DropDetPack(ent, altFire);
 		break;
 
 	case WP_EMPLACED_GUN:
@@ -5625,7 +5625,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 			//specially handled by the e-web itself
 			break;
 		}
-		WP_FireEmplaced(ent, alt_fire);
+		WP_FireEmplaced(ent, altFire);
 		break;
 	default:
 		//			assert(!"unknown weapon fire");
@@ -5657,7 +5657,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 }
 
 //---------------------------------------------------------
-static void WP_FireEmplaced(gentity_t* ent, const qboolean alt_fire)
+static void WP_FireEmplaced(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs, gunpoint;
@@ -5708,7 +5708,7 @@ static void WP_FireEmplaced(gentity_t* ent, const qboolean alt_fire)
 
 	AngleVectors(angs, dir, NULL, NULL);
 
-	WP_FireEmplacedMissile(gun, gunpoint, dir, alt_fire, ent);
+	WP_FireEmplacedMissile(gun, gunpoint, dir, altFire, ent);
 }
 
 #define EMPLACED_CANRESPAWN 1

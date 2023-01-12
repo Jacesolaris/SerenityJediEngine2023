@@ -852,7 +852,7 @@ void G_Roff(gentity_t* ent)
 		VectorAdd(ent->pos1, org, ent->pos1);
 
 		//make it true linear... FIXME: sticks around after ROFF is done, but do we really care?
-		ent->alt_fire = qtrue;
+		ent->altFire = qtrue;
 
 		if (ent->e_ThinkFunc == thinkF_TieFighterThink || ent->e_ThinkFunc == thinkF_TieBomberThink ||
 			!ent->e_ThinkFunc

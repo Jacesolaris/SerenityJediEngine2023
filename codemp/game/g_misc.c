@@ -119,7 +119,7 @@ static void misc_lightstyle_set(const gentity_t* ent)
 	const int mLightStyle = ent->count;
 	const int mLightSwitchStyle = ent->bounceCount;
 	const int mLightOffStyle = ent->fly_sound_debounce_time;
-	if (!ent->alt_fire)
+	if (!ent->altFire)
 	{
 		//turn off
 		if (mLightOffStyle) //i have a light style i'd like to use when off
@@ -169,7 +169,7 @@ void misc_dlight_use(gentity_t* ent, gentity_t* other, gentity_t* activator)
 {
 	G_ActivateBehavior(ent, BSET_USE);
 
-	ent->alt_fire = !ent->alt_fire; //toggle
+	ent->altFire = !ent->altFire; //toggle
 	misc_lightstyle_set(ent);
 }
 
@@ -191,13 +191,13 @@ void SP_light(gentity_t* self)
 	self->use = misc_dlight_use;
 
 	self->s.eType = ET_GENERAL;
-	self->alt_fire = qfalse;
+	self->altFire = qfalse;
 	self->r.svFlags |= SVF_NOCLIENT;
 
 	if (!(self->spawnflags & 4))
 	{
 		//turn myself on now
-		self->alt_fire = qtrue;
+		self->altFire = qtrue;
 	}
 	misc_lightstyle_set(self);
 }
@@ -4532,7 +4532,7 @@ void SP_misc_camera(gentity_t* self)
 	G_SetOrigin(self, self->s.origin);
 	G_SetAngles(self, self->s.angles);
 	self->s.apos.trType = TR_LINEAR_STOP; //TR_INTERPOLATE;//
-	self->alt_fire = qtrue;
+	self->altFire = qtrue;
 	VectorSet(self->r.mins, -8, -8, -12);
 	VectorSet(self->r.maxs, 8, 8, 0);
 	self->r.contents = CONTENTS_SOLID;
@@ -4563,7 +4563,7 @@ void SP_misc_spotlight(gentity_t* self)
 	G_SetOrigin(self, self->s.origin);
 	G_SetAngles(self, self->s.angles);
 	self->s.apos.trType = TR_LINEAR_STOP; //TR_INTERPOLATE;//
-	self->alt_fire = qtrue;
+	self->altFire = qtrue;
 	VectorSet(self->r.mins, -8, -8, -12);
 	VectorSet(self->r.maxs, 8, 8, 0);
 	self->r.contents = CONTENTS_SOLID;

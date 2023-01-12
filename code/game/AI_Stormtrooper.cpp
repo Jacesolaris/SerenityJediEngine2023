@@ -1740,13 +1740,13 @@ static void ST_CheckFireState()
 					dist_threshold = 65536/*256*256*/;
 					break;
 				case WP_REPEATER:
-					if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+					if (NPCInfo->scriptFlags & SCF_altFire)
 					{
 						dist_threshold = 65536/*256*256*/;
 					}
 					break;
 				case WP_CONCUSSION:
-					if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+					if (!(NPCInfo->scriptFlags & SCF_altFire))
 					{
 						dist_threshold = 65536/*256*256*/;
 					}
@@ -1778,13 +1778,13 @@ static void ST_CheckFireState()
 						dist_threshold = 262144/*512*512*/;
 						break;
 					case WP_REPEATER:
-						if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+						if (NPCInfo->scriptFlags & SCF_altFire)
 						{
 							dist_threshold = 262144/*512*512*/;
 						}
 						break;
 					case WP_CONCUSSION:
-						if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+						if (!(NPCInfo->scriptFlags & SCF_altFire))
 						{
 							dist_threshold = 262144/*512*512*/;
 						}
@@ -2620,13 +2620,13 @@ void ST_Commander()
 					dist_threshold = 65536/*256*256*/;
 					break;
 				case WP_REPEATER:
-					if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+					if (NPCInfo->scriptFlags & SCF_altFire)
 					{
 						dist_threshold = 65536/*256*256*/;
 					}
 					break;
 				case WP_CONCUSSION:
-					if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+					if (!(NPCInfo->scriptFlags & SCF_altFire))
 					{
 						dist_threshold = 65536/*256*256*/;
 					}
@@ -3232,10 +3232,10 @@ void NPC_BSST_Attack()
 	{
 		//enemy within 128
 		if ((NPC->client->ps.weapon == WP_FLECHETTE || NPC->client->ps.weapon == WP_REPEATER) &&
-			NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			NPCInfo->scriptFlags & SCF_altFire)
 		{
 			//shooting an explosive, but enemy too close, switch to primary fire
-			NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+			NPCInfo->scriptFlags &= ~SCF_altFire;
 		}
 	}
 	else if (enemyDist > 65536) //256 squared
@@ -3243,10 +3243,10 @@ void NPC_BSST_Attack()
 		if (NPC->client->ps.weapon == WP_DISRUPTOR)
 		{
 			//sniping...
-			if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+			if (!(NPCInfo->scriptFlags & SCF_altFire))
 			{
 				//use primary fire
-				NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+				NPCInfo->scriptFlags |= SCF_altFire;
 				//reset fire-timing variables
 				NPC_ChangeWeapon(WP_DISRUPTOR);
 				NPC_UpdateAngles(qtrue, qtrue);
@@ -3273,8 +3273,8 @@ void NPC_BSST_Attack()
 			if (enemyDist < MIN_ROCKET_DIST_SQUARED &&
 				level.time - NPC->lastMoveTime < 5000 &&
 				(NPC->client->ps.weapon == WP_ROCKET_LAUNCHER
-					|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE)
-					|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_ALT_FIRE))
+					|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_altFire)
+					|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_altFire))
 			{
 				enemyCS = qfalse; //not true, but should stop us from firing
 				hitAlly = qtrue; //us!
@@ -4430,7 +4430,7 @@ void NPC_BSST_Attack()
 			Saboteur_Decloak(NPC);
 		}
 		if (NPC->s.weapon == WP_ROCKET_LAUNCHER
-			|| NPC->s.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+			|| NPC->s.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_altFire))
 		{
 			if (!enemyLOS || !enemyCS)
 			{

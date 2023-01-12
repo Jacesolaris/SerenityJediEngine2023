@@ -275,7 +275,7 @@ static void WP_RemoveOldTraps(const gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
+void WP_PlaceLaserTrap(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	// limit to 10 placed at any one time
@@ -301,7 +301,7 @@ void WP_PlaceLaserTrap(gentity_t* ent, const qboolean alt_fire)
 		laserTrap->s.pos.trType = TR_GRAVITY;
 		VectorScale(forward_vec, LT_VELOCITY, laserTrap->s.pos.trDelta);
 
-		if (alt_fire)
+		if (altFire)
 		{
 			laserTrap->count = PROXIMITY_STYLE;
 			laserTrap->delay = level.time + 40000; // will auto-blow in 40 seconds.

@@ -108,10 +108,10 @@ void RT_FireDecide()
 	{
 		//enemy within 128
 		if ((NPC->client->ps.weapon == WP_FLECHETTE || NPC->client->ps.weapon == WP_REPEATER) &&
-			NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			NPCInfo->scriptFlags & SCF_altFire)
 		{
 			//shooting an explosive, but enemy too close, switch to primary fire
-			NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+			NPCInfo->scriptFlags &= ~SCF_altFire;
 			//FIXME: we can never go back to alt-fire this way since, after this, we don't know if we were initially supposed to use alt-fire or not...
 		}
 	}
@@ -132,8 +132,8 @@ void RT_FireDecide()
 			{
 				//can we shoot our target?
 				if ((NPC->client->ps.weapon == WP_ROCKET_LAUNCHER
-						|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE)
-						|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemy_dist
+						|| NPC->client->ps.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_altFire)
+						|| NPC->client->ps.weapon == WP_FLECHETTE && NPCInfo->scriptFlags & SCF_altFire) && enemy_dist
 					<
 					MIN_ROCKET_DIST_SQUARED) //128*128
 				{
@@ -240,13 +240,13 @@ void RT_FireDecide()
 							distThreshold = 65536/*256*256*/;
 							break;
 						case WP_REPEATER:
-							if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+							if (NPCInfo->scriptFlags & SCF_altFire)
 							{
 								distThreshold = 65536/*256*256*/;
 							}
 							break;
 						case WP_CONCUSSION:
-							if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+							if (!(NPCInfo->scriptFlags & SCF_altFire))
 							{
 								distThreshold = 65536/*256*256*/;
 							}
@@ -278,13 +278,13 @@ void RT_FireDecide()
 								distThreshold = 262144/*512*512*/;
 								break;
 							case WP_REPEATER:
-								if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+								if (NPCInfo->scriptFlags & SCF_altFire)
 								{
 									distThreshold = 262144/*512*512*/;
 								}
 								break;
 							case WP_CONCUSSION:
-								if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+								if (!(NPCInfo->scriptFlags & SCF_altFire))
 								{
 									distThreshold = 262144/*512*512*/;
 								}
@@ -323,7 +323,7 @@ void RT_FireDecide()
 		if (NPC->client->fireDelay)
 		{
 			if (NPC->s.weapon == WP_ROCKET_LAUNCHER
-				|| NPC->s.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+				|| NPC->s.weapon == WP_CONCUSSION && !(NPCInfo->scriptFlags & SCF_altFire))
 			{
 				if (!enemyLOS || !enemyCS)
 				{

@@ -5368,7 +5368,7 @@ int bot_can_hear(const bot_state_t* bs, const gentity_t* en, const float endist)
 		minlen = 256;
 		break;
 	case EV_FIRE_WEAPON:
-	case EV_ALT_FIRE:
+	case EV_altFire:
 	case EV_SABER_ATTACK:
 		minlen = 512;
 		break;

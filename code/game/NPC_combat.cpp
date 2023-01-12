@@ -328,7 +328,7 @@ void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 		case WP_BRYAR_PISTOL:
 			break;
 		case WP_SBD_PISTOL:
-			if (self->NPC->scriptFlags & SCF_ALT_FIRE)
+			if (self->NPC->scriptFlags & SCF_altFire)
 			{
 				//rapid-fire blasters
 				attDelay += Q_irand(0, 500);
@@ -341,7 +341,7 @@ void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 			break;
 		case WP_BLASTER:
 		case WP_WRIST_BLASTER:
-			if (self->NPC->scriptFlags & SCF_ALT_FIRE)
+			if (self->NPC->scriptFlags & SCF_altFire)
 			{
 				//rapid-fire blasters
 				attDelay += Q_irand(0, 500);
@@ -356,7 +356,7 @@ void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 			attDelay += Q_irand(0, 500);
 			break;
 		case WP_REPEATER:
-			if (!(self->NPC->scriptFlags & SCF_ALT_FIRE))
+			if (!(self->NPC->scriptFlags & SCF_altFire))
 			{
 				//rapid-fire blasters
 				attDelay += Q_irand(0, 500);
@@ -390,7 +390,7 @@ void G_AttackDelay(const gentity_t* self, const gentity_t* enemy)
 			attDelay += Q_irand(0, 500);
 			break;
 		case WP_JAWA:
-			if (self->NPC->scriptFlags & SCF_ALT_FIRE)
+			if (self->NPC->scriptFlags & SCF_altFire)
 			{
 				//rapid-fire blasters
 				attDelay += Q_irand(0, 500);
@@ -532,7 +532,7 @@ void G_SetEnemy(gentity_t* self, gentity_t* enemy)
 		//Special case- if player is being hunted by his own people, set the player's team to team_free
 		if (self->client->playerTeam == TEAM_PLAYER
 			&& enemy->s.number == 0
-			&& enemy->client
+			&& enemy->client && enemy->client->ps.weapon != WP_TURRET
 			&& enemy->client->playerTeam == TEAM_PLAYER)
 		{
 			//make the player "evil" so that everyone goes after him
@@ -742,7 +742,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 		ent->NPC->burstSpacing = 1000; //attackdebounce
 		break;
 	case WP_SBD_PISTOL:
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			ent->NPC->aiFlags |= NPCAI_BURST_WEAPON;
 			ent->NPC->burstMin = 3;
@@ -821,7 +821,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 
 	case WP_DISRUPTOR:
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			switch (g_spskill->integer)
 			{
@@ -845,7 +845,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 
 	case WP_TUSKEN_RIFLE:
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			switch (g_spskill->integer)
 			{
@@ -878,7 +878,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 		break;
 
 	case WP_REPEATER:
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
 			ent->NPC->burstSpacing = 2000; //attackdebounce
@@ -905,7 +905,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 
 	case WP_FLECHETTE:
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			ent->NPC->burstSpacing = 2000; //attackdebounce
 		}
@@ -927,7 +927,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 
 	case WP_CONCUSSION:
 		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			//beam
 			ent->NPC->burstSpacing = 1200; //attackdebounce
@@ -956,7 +956,7 @@ void ChangeWeapon(const gentity_t* ent, int new_weapon)
 
 	case WP_BLASTER:
 	case WP_WRIST_BLASTER:
-		if (ent->NPC->scriptFlags & SCF_ALT_FIRE)
+		if (ent->NPC->scriptFlags & SCF_altFire)
 		{
 			ent->NPC->aiFlags |= NPCAI_BURST_WEAPON;
 			ent->NPC->burstMin = 3;
@@ -1158,7 +1158,7 @@ void NPC_ApplyWeaponFireDelay()
 		break;
 
 	case WP_TUSKEN_RIFLE:
-		if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+		if (!(NPCInfo->scriptFlags & SCF_altFire))
 		{
 			client->fireDelay = 300;
 		}
@@ -1566,7 +1566,7 @@ float NPC_MaxDistSquaredForWeapon(void)
 	case WP_DISRUPTOR: //disruptor
 	case WP_TUSKEN_RIFLE:
 		{
-			if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			if (NPCInfo->scriptFlags & SCF_altFire)
 			{
 				return 4096 * 4096;
 			}

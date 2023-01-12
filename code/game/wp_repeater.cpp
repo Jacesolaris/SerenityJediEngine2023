@@ -143,14 +143,14 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireRepeater(gentity_t* ent, const qboolean alt_fire)
+void WP_FireRepeater(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t angs;
 
 	vectoangles(forward_vec, angs);
 
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_RepeaterAltFire(ent);
 	}

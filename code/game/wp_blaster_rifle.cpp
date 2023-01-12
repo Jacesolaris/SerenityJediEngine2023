@@ -35,11 +35,11 @@ extern qboolean G_ControlledByPlayer(const gentity_t* self);
 //---------------
 
 //---------------------------------------------------------
-void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire)
+void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = BLASTER_VELOCITY;
-	int damage = alt_fire ? weaponData[WP_BLASTER].altDamage : weaponData[WP_BLASTER].damage;
+	int damage = altFire ? weaponData[WP_BLASTER].altDamage : weaponData[WP_BLASTER].damage;
 
 	if (ent && ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -68,7 +68,7 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbool
 
 	WP_MissileTargetHint(ent, start, dir);
 
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
 
 	missile->classname = "blaster_proj";
 	missile->s.weapon = WP_BLASTER;
@@ -92,7 +92,7 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbool
 
 	missile->damage = damage;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
-	if (alt_fire)
+	if (altFire)
 	{
 		missile->methodOfDeath = MOD_BLASTER_ALT;
 	}
@@ -107,7 +107,7 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbool
 }
 
 //---------------------------------------------------------
-void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
+void WP_FireBlaster(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -122,7 +122,7 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 		FP_SEE] < FORCE_LEVEL_2))
 	{
 		//force sight 2+ gives perfect aim
-		if (alt_fire)
+		if (altFire)
 		{
 			// add some slop to the alt-fire direction
 			if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))) //if running aim is shit
@@ -205,15 +205,15 @@ void WP_FireBlaster(gentity_t* ent, const qboolean alt_fire)
 
 	AngleVectors(angs, dir, nullptr, nullptr);
 
-	WP_FireBlasterMissile(ent, muzzle, dir, alt_fire);
+	WP_FireBlasterMissile(ent, muzzle, dir, altFire);
 }
 
 //---------------------------------------------------------
-void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean alt_fire)
+void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolean altFire)
 //---------------------------------------------------------
 {
 	int velocity = CLONECOMMANDO_VELOCITY;
-	int damage = alt_fire ? weaponData[WP_WRIST_BLASTER].altDamage : weaponData[WP_WRIST_BLASTER].damage;
+	int damage = altFire ? weaponData[WP_WRIST_BLASTER].altDamage : weaponData[WP_WRIST_BLASTER].damage;
 
 	if (ent && ent->client && ent->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -242,7 +242,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 
 	WP_MissileTargetHint(ent, start, dir);
 
-	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, alt_fire);
+	gentity_t* missile = create_missile(start, dir, velocity, 10000, ent, altFire);
 
 	missile->classname = "clone_proj";
 	missile->s.weapon = WP_WRIST_BLASTER;
@@ -266,7 +266,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 
 	missile->damage = damage;
 	missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
-	if (alt_fire)
+	if (altFire)
 	{
 		missile->methodOfDeath = MOD_BLASTER_ALT;
 	}
@@ -281,7 +281,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 }
 
 //---------------------------------------------------------
-void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
+void WP_FireWristPistol(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	vec3_t dir, angs;
@@ -296,7 +296,7 @@ void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 		FP_SEE] < FORCE_LEVEL_2))
 	{
 		//force sight 2+ gives perfect aim
-		if (alt_fire)
+		if (altFire)
 		{
 			// add some slop to the alt-fire direction
 			if (!walk_check(ent) && (ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent))) //if running aim is shit
@@ -379,5 +379,5 @@ void WP_FireWristPistol(gentity_t* ent, const qboolean alt_fire)
 
 	AngleVectors(angs, dir, nullptr, nullptr);
 
-	WP_FireJangoWristMissile(ent, muzzle, dir, alt_fire);
+	WP_FireJangoWristMissile(ent, muzzle, dir, altFire);
 }

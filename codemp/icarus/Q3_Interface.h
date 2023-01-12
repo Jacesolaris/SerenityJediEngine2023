@@ -194,7 +194,7 @@ SET_PLAYER_LOCKED,//## %t="BOOL_TYPES" # Makes it so player cannot move
 SET_LOCK_PLAYER_WEAPONS,//## %t="BOOL_TYPES" # Makes it so player cannot switch weapons
 SET_NO_IMPACT_DAMAGE,//## %t="BOOL_TYPES" # Stops this ent from taking impact damage
 SET_NO_KNOCKBACK,//## %t="BOOL_TYPES" # Stops this ent from taking knockback from weapons
-SET_ALT_FIRE,//## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
+SET_altFire,//## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
 SET_NO_RESPONSE,//## %t="BOOL_TYPES" # NPCs will do generic responses when this is on (usescripts override generic responses as well)
 SET_INVINCIBLE,//## %t="BOOL_TYPES" # Completely unkillable
 SET_MISSIONSTATUSACTIVE,	//# Turns on Mission Status Screen

@@ -10361,7 +10361,7 @@ PlayerModel_BuildList
 */
 static void UI_BuildQ3Model_List(void)
 {
-	char dirlist[2048];
+	char dirlist[16384];
 	char skinname[64];
 	int dirlen;
 	int filelen;
@@ -10369,11 +10369,11 @@ static void UI_BuildQ3Model_List(void)
 	uiInfo.q3HeadCount = 0;
 
 	// iterate directory of all player models
-	const int numdirs = trap->FS_GetFileList("models/players", "/", dirlist, 2048);
+	const int numdirs = trap->FS_GetFileList("models/players", "/", dirlist, 16384);
 	char* dirptr = dirlist;
 	for (int i = 0; i < numdirs && uiInfo.q3HeadCount < MAX_Q3PLAYERMODELS; i++, dirptr += dirlen + 1)
 	{
-		char filelist[2048];
+		char filelist[16384];
 		dirlen = strlen(dirptr);
 
 		if (dirlen && dirptr[dirlen - 1] == '/') dirptr[dirlen - 1] = '\0';
@@ -10381,7 +10381,7 @@ static void UI_BuildQ3Model_List(void)
 		if (strcmp(dirptr, ".") == 0 || strcmp(dirptr, "..") == 0)
 			continue;
 
-		const int numfiles = trap->FS_GetFileList(va("models/players/%s", dirptr), "skin", filelist, 2048);
+		const int numfiles = trap->FS_GetFileList(va("models/players/%s", dirptr), "skin", filelist, 16384);
 		char* fileptr = filelist;
 		for (int j = 0; j < numfiles && uiInfo.q3HeadCount < MAX_Q3PLAYERMODELS; j++, fileptr += filelen + 1)
 		{
@@ -10389,9 +10389,9 @@ static void UI_BuildQ3Model_List(void)
 
 			COM_StripExtension(fileptr, skinname, sizeof skinname);
 
-			const int skinLen = strlen(skinname);
+			const int skin_len = strlen(skinname);
 			int k = 0;
-			while (k < skinLen && skinname[k] && skinname[k] != '_')
+			while (k < skin_len && skinname[k] && skinname[k] != '_')
 			{
 				k++;
 			}
@@ -10408,20 +10408,11 @@ static void UI_BuildQ3Model_List(void)
 				skinname[p] = '\0';
 			}
 
-			/*
-			Com_sprintf(fpath, 2048, "models/players/%s/icon%s.jpg", dirptr, skinname);
-
-			trap->FS_Open(fpath, &f, FS_READ);
-
-			if (f)
-			*/
 			const char* check = &skinname[1];
 			if (bIsImageFile(dirptr, check))
 			{
 				//if it exists
-				qboolean iconExists = qfalse;
-
-				//trap->FS_Close(f);
+				qboolean icon_exists = qfalse;
 
 				if (skinname[0] == '_')
 				{
@@ -10436,13 +10427,13 @@ static void UI_BuildQ3Model_List(void)
 					//check for dupes
 					if (!Q_stricmp(va("%s%s", dirptr, skinname), uiInfo.q3HeadNames[s]))
 					{
-						iconExists = qtrue;
+						icon_exists = qtrue;
 						break;
 					}
 					s++;
 				}
 
-				if (iconExists)
+				if (icon_exists)
 				{
 					continue;
 				}

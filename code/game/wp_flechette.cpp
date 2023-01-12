@@ -296,10 +296,10 @@ static void WP_FlechetteAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireFlechette(gentity_t* ent, const qboolean alt_fire)
+void WP_FireFlechette(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_FlechetteAltFire(ent);
 	}

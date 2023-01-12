@@ -170,7 +170,7 @@ field_t fields[] = {
 	{"healingsound", FOFS(healingsound), F_STRING},
 	{"health", FOFS(health), F_INT},
 	{"idealclass", FOFS(idealclass), F_STRING}, //for siege spawnpoints
-	{"linear", FOFS(alt_fire), F_INT}, //for movers to use linear movement
+	{"linear", FOFS(altFire), F_INT}, //for movers to use linear movement
 	{"lostenemyscript", FOFS(behaviorSet[BSET_LOSTENEMY]), F_STRING}, //name of script to run
 	{"message", FOFS(message), F_STRING},
 	{"mindtrickscript", FOFS(behaviorSet[BSET_MINDTRICK]), F_STRING}, //name of script to run

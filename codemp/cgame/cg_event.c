@@ -2686,8 +2686,8 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		}
 		break;
 
-	case EV_ALT_FIRE:
-		DEBUGNAME("EV_ALT_FIRE");
+	case EV_altFire:
+		DEBUGNAME("EV_altFire");
 
 		if (cent->currentState.weapon == WP_EMPLACED_GUN)
 		{

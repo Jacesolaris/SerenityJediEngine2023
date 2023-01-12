@@ -327,7 +327,7 @@ extern void G_SetSabersFromCVars(gentity_t* ent);
 
 qboolean Pickup_Saber(gentity_t* self, qboolean hadSaber, gentity_t* pickUpSaber)
 {
-	//NOTE: loopAnim = saberSolo, alt_fire = saberLeftHand, NPC_type = saberType, NPC_targetname = saberColor
+	//NOTE: loopAnim = saberSolo, altFire = saberLeftHand, NPC_type = saberType, NPC_targetname = saberColor
 	qboolean foundIt = qfalse;
 
 	if (!pickUpSaber || !self || !self->client)
@@ -365,7 +365,7 @@ qboolean Pickup_Saber(gentity_t* self, qboolean hadSaber, gentity_t* pickUpSaber
 			//successfully found a saber .sab entry to use
 			int saber_num = 0;
 			qboolean removeLeftSaber = qfalse;
-			if (pickUpSaber->alt_fire)
+			if (pickUpSaber->altFire)
 			{
 				//always go in the left hand
 				if (!hadSaber)
@@ -2071,8 +2071,8 @@ void PlaceBarrier(gentity_t* ent)
 	{
 		if (!ent->client->ps.powerups[PW_GALAK_SHIELD])
 		{
-			G_AddEvent(ent, EV_GENERAL_SOUND, shieldActivateSound);
 			ent->client->ps.powerups[PW_GALAK_SHIELD] = Q3_INFINITE;
+			G_AddEvent(ent, EV_GENERAL_SOUND, shieldActivateSound);
 			ent->client->ps.BarrierFuel -= 15;
 			ent->flags |= FL_SHIELDED; //reflect normal shots
 			ent->fx_time = level.time;

@@ -771,7 +771,7 @@ void NPC_BSSniper_Attack(void)
 		if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR)
 		{
 			//sniping... should be assumed
-			if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			if (NPCS.NPCInfo->scriptFlags & SCF_altFire)
 			{
 				//use primary fire
 				trace_t trace;
@@ -782,7 +782,7 @@ void NPC_BSSniper_Attack(void)
 					number))
 				{
 					//he can get right to me
-					NPCS.NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+					NPCS.NPCInfo->scriptFlags &= ~SCF_altFire;
 					//reset fire-timing variables
 					NPC_ChangeWeapon(WP_DISRUPTOR);
 					NPC_UpdateAngles(qtrue, qtrue);
@@ -797,10 +797,10 @@ void NPC_BSSniper_Attack(void)
 		if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR)
 		{
 			//sniping... should be assumed
-			if (!(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
+			if (!(NPCS.NPCInfo->scriptFlags & SCF_altFire))
 			{
 				//use primary fire
-				NPCS.NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+				NPCS.NPCInfo->scriptFlags |= SCF_altFire;
 				//reset fire-timing variables
 				NPC_ChangeWeapon(WP_DISRUPTOR);
 				NPC_UpdateAngles(qtrue, qtrue);
@@ -902,7 +902,7 @@ void NPC_BSSniper_Attack(void)
 		&& TIMER_Get(NPCS.NPC, "attackDelay") - level.time > 1000
 		&& NPCS.NPC->attackDebounceTime < level.time)
 	{
-		if (enemyLOS2 && NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+		if (enemyLOS2 && NPCS.NPCInfo->scriptFlags & SCF_altFire)
 		{
 			if (NPCS.NPC->fly_sound_debounce_time < level.time)
 			{

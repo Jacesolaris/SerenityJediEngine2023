@@ -1424,7 +1424,7 @@ void G_CheapWeaponFire(const int entNum, const int ev)
 		ent->client->ps.eFlags &= ~EF_INVULNERABLE;
 		ent->client->invulnerableTimer = 0;
 		break;
-	case EV_ALT_FIRE:
+	case EV_altFire:
 		if (PM_ReloadAnim(ent->client->ps.torsoAnim))
 		{
 			return;
@@ -1608,7 +1608,7 @@ void ClientEvents(gentity_t* ent, int old_event_sequence)
 			ent->client->invulnerableTimer = 0;
 			break;
 
-		case EV_ALT_FIRE:
+		case EV_altFire:
 			if (PM_ReloadAnim(ent->client->ps.torsoAnim))
 			{
 				return;

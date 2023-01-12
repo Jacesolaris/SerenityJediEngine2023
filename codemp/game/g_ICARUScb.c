@@ -190,7 +190,7 @@ stringID_table_t setTable[] =
 	ENUM2STRING(SET_CHASE_ENEMIES),
 	ENUM2STRING(SET_LOOK_FOR_ENEMIES),
 	ENUM2STRING(SET_FACE_MOVE_DIR),
-	ENUM2STRING(SET_ALT_FIRE),
+	ENUM2STRING(SET_altFire),
 	ENUM2STRING(SET_DONT_FLEE),
 	ENUM2STRING(SET_FORCED_MARCH),
 	ENUM2STRING(SET_NO_RESPONSE),
@@ -1753,7 +1753,7 @@ void Q3_Lerp2Pos(const int taskID, const int entID, vec3_t origin, vec3_t angles
 
 		VectorCopy(ent->r.currentAngles, ent->s.apos.trBase);
 
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			ent->s.apos.trType = TR_LINEAR_STOP;
 		}
@@ -1822,7 +1822,7 @@ void Q3_Lerp2Angles(const int taskID, const int entID, vec3_t angles, const floa
 
 	VectorCopy(ent->r.currentAngles, ent->s.apos.trBase);
 
-	if (ent->alt_fire)
+	if (ent->altFire)
 	{
 		ent->s.apos.trType = TR_LINEAR_STOP;
 	}
@@ -2554,13 +2554,13 @@ int Q3_GetFloat(const int entID, int type, const char* name, float* value)
 	case SET_NO_KNOCKBACK: //## %t="BOOL_TYPES" # Stops this ent from taking knockback from weapons
 		*value = ent->flags & FL_NO_KNOCKBACK;
 		break;
-	case SET_ALT_FIRE: //## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
+	case SET_altFire: //## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
 		if (ent->NPC == NULL)
 		{
-			G_DebugPrint(WL_WARNING, "GetFloat: SET_ALT_FIRE, %s not an NPC\n", ent->targetname);
+			G_DebugPrint(WL_WARNING, "GetFloat: SET_altFire, %s not an NPC\n", ent->targetname);
 			return 0;
 		}
-		*value = ent->NPC->scriptFlags & SCF_ALT_FIRE;
+		*value = ent->NPC->scriptFlags & SCF_altFire;
 		break;
 	case SET_NO_RESPONSE:
 		//## %t="BOOL_TYPES" # NPCs will do generic responses when this is on (usescripts override generic responses as well)
@@ -6027,11 +6027,11 @@ static void Q3_SetAltFire(const int entID, const qboolean add)
 
 	if (add)
 	{
-		ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+		ent->NPC->scriptFlags |= SCF_altFire;
 	}
 	else
 	{
-		ent->NPC->scriptFlags &= ~SCF_ALT_FIRE;
+		ent->NPC->scriptFlags &= ~SCF_altFire;
 	}
 
 	ChangeWeapon(ent, ent->client->ps.weapon);
@@ -8320,7 +8320,7 @@ qboolean Q3_Set(const int taskID, const int entID, const char* type_name, const 
 			Q3_SetFaceMoveDir(entID, qfalse);
 		break;
 
-	case SET_ALT_FIRE:
+	case SET_altFire:
 		if (!Q_stricmp("true", (char*)data))
 			Q3_SetAltFire(entID, qtrue);
 		else

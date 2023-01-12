@@ -33,6 +33,13 @@ void ObjectDie(gentity_t* self, gentity_t* attacker);
 //special routine for tracking angles between client and server -rww
 void turret_SetBoneAngles(gentity_t* ent, const char* bone, const vec3_t angles);
 
+extern gentity_t* player;
+extern qboolean G_ClearViewEntity(gentity_t* ent);
+extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
+extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
+	qboolean altFire = qfalse);
+extern cvar_t* com_outcast;
+
 constexpr auto ARM_ANGLE_RANGE = 60;
 constexpr auto HEAD_ANGLE_RANGE = 90;
 
@@ -192,7 +199,7 @@ static void turret_fire(gentity_t* ent, vec3_t start, vec3_t dir)
 		G_SoundOnEnt(ent, CHAN_LESS_ATTEN, "sound/vehicles/weapons/turbolaser/fire1");
 
 		WP_FireTurboLaserMissile(ent, start, dir);
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			TurboLaser_SetBoneAnim(ent, 2, 3);
 		}
@@ -250,7 +257,7 @@ void turret_head_think(gentity_t* self)
 		gi.G2API_GetBoltMatrix(self->ghoul2,
 		                       0,
 		                       self->spawnflags & SPF_TURRETG2_TURBO
-			                       ? (self->alt_fire
+			                       ? (self->altFire
 				                          ? gi.G2API_AddBolt(&self->ghoul2[0], "*muzzle2")
 				                          : gi.G2API_AddBolt(&self->ghoul2[0], "*muzzle1"))
 			                       : gi.G2API_AddBolt(&self->ghoul2[0], "*flash03"),
@@ -262,7 +269,7 @@ void turret_head_think(gentity_t* self)
 		                       self->modelScale);
 		if (self->spawnflags & SPF_TURRETG2_TURBO)
 		{
-			self->alt_fire = static_cast<qboolean>(!self->alt_fire);
+			self->altFire = static_cast<qboolean>(!self->altFire);
 		}
 
 		gi.G2API_GiveMeVectorFromMatrix(bolt_matrix, ORIGIN, org);
@@ -326,7 +333,7 @@ static void turret_aim(gentity_t* self)
 		gi.G2API_GetBoltMatrix(self->ghoul2,
 		                       0,
 		                       self->spawnflags & SPF_TURRETG2_TURBO
-			                       ? (self->alt_fire
+			                       ? (self->altFire
 				                          ? gi.G2API_AddBolt(&self->ghoul2[0], "*muzzle2")
 				                          : gi.G2API_AddBolt(&self->ghoul2[0], "*muzzle1"))
 			                       : gi.G2API_AddBolt(&self->ghoul2[0], "*flash03"),
@@ -1057,10 +1064,10 @@ void laser_arm_fire(gentity_t* ent)
 	vec3_t start, end, fwd, rt, up;
 	trace_t trace;
 
-	if (ent->attackDebounceTime < level.time && ent->alt_fire)
+	if (ent->attackDebounceTime < level.time && ent->altFire)
 	{
 		// If I'm firing the laser and it's time to quit....then quit!
-		ent->alt_fire = qfalse;
+		ent->altFire = qfalse;
 	}
 
 	ent->nextthink = level.time + FRAMETIME;
@@ -1076,7 +1083,7 @@ void laser_arm_fire(gentity_t* ent)
 	ent->fly_sound_debounce_time = level.time; //used as lastShotTime
 
 	// Only deal damage when in alt-fire mode
-	if (trace.fraction < 1.0 && ent->alt_fire)
+	if (trace.fraction < 1.0 && ent->altFire)
 	{
 		if (trace.entity_num < ENTITYNUM_WORLD)
 		{
@@ -1089,7 +1096,7 @@ void laser_arm_fire(gentity_t* ent)
 		}
 	}
 
-	if (ent->alt_fire)
+	if (ent->altFire)
 	{
 		//		CG_FireLaser( start, trace.endpos, trace.plane.normal, ent->nextTrain->startRGBA, qfalse );
 	}
@@ -1109,7 +1116,7 @@ void laser_arm_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 	case 0:
 	default:
 		//For 3 seconds
-		self->lastEnemy->lastEnemy->alt_fire = qtrue; // Let 'er rip!
+		self->lastEnemy->lastEnemy->altFire = qtrue; // Let 'er rip!
 		self->lastEnemy->lastEnemy->attackDebounceTime = level.time + self->lastEnemy->lastEnemy->wait;
 		G_Sound(self->lastEnemy->lastEnemy, G_SoundIndex("sound/chars/l_arm/fire.wav"));
 		break;
@@ -1291,7 +1298,7 @@ void laser_arm_start(gentity_t* base)
 	// The head should always think, since it will be either firing a damage laser or just a target laser
 	head->e_ThinkFunc = thinkF_laser_arm_fire;
 	head->nextthink = level.time + FRAMETIME;
-	head->alt_fire = qfalse; // Don't do damage until told to
+	head->altFire = qfalse; // Don't do damage until told to
 }
 
 void SP_laser_arm(gentity_t* base)
@@ -2236,18 +2243,20 @@ Creates a turret that, when the player uses a panel, takes control of this turre
   heatlh - how much heatlh the thing has, (default 200) only works if HEALTH is checked, otherwise it can't be destroyed.
 */
 
-extern gentity_t* player;
-extern qboolean G_ClearViewEntity(gentity_t* ent);
-extern void G_SetViewEntity(gentity_t* self, gentity_t* viewEntity);
-extern gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner,
-                                 qboolean alt_fire = qfalse);
-
 void panel_turret_shoot(gentity_t* self, vec3_t org, vec3_t dir)
 {
 	gentity_t* missile = create_missile(org, dir, self->speed, 10000, self);
 
 	missile->classname = "turret_proj";
-	missile->s.weapon = WP_EMPLACED_GUN;
+
+	if (com_outcast->integer == 1) //playing outcast
+	{
+		missile->s.weapon = WP_CONCUSSION;
+	}
+	else
+	{
+		missile->s.weapon = WP_TIE_FIGHTER;
+	}
 
 	VectorSet(missile->maxs, 7, 7, 7);
 	VectorScale(missile->maxs, -1, missile->mins);
@@ -2263,7 +2272,17 @@ void panel_turret_shoot(gentity_t* self, vec3_t org, vec3_t dir)
 
 	VectorMA(org, 32, dir, org);
 	org[2] -= 5;
-	G_PlayEffect("emplaced/muzzle_flash", org, dir);
+
+	if (com_outcast->integer == 1) //playing outcast
+	{
+		org[2] -= 5;
+		G_PlayEffect("emplaced/muzzle_flash", org, dir);
+	}
+	else
+	{
+		org[2] -= 4;
+		G_PlayEffect("ships/imp_blastermuzzleflash", org, dir);
+	}
 }
 
 //-----------------------------------------
@@ -2317,17 +2336,17 @@ void panel_turret_think(gentity_t* self)
 		// Only clamp if we have a YAW clamp
 		if (self->radius != 0.0f)
 		{
-			const float yawDif = AngleSubtract(self->s.apos.trBase[YAW], self->s.angles[YAW]);
+			const float yaw_dif = AngleSubtract(self->s.apos.trBase[YAW], self->s.angles[YAW]);
 
 			// Angle clamping -- YAW
-			if (yawDif > self->radius) // radius is YAW
+			if (yaw_dif > self->radius) // radius is YAW
 			{
-				self->pos3[YAW] += ANGLE2SHORT(self->radius - yawDif);
+				self->pos3[YAW] += ANGLE2SHORT(self->radius - yaw_dif);
 				self->s.apos.trBase[YAW] = AngleNormalize180(self->s.angles[YAW] + self->radius);
 			}
-			else if (yawDif < -self->radius) // radius is YAW
+			else if (yaw_dif < -self->radius) // radius is YAW
 			{
-				self->pos3[YAW] -= ANGLE2SHORT(self->radius + yawDif);
+				self->pos3[YAW] -= ANGLE2SHORT(self->radius + yaw_dif);
 				self->s.apos.trBase[YAW] = AngleNormalize180(self->s.angles[YAW] - self->radius);
 			}
 		}
@@ -2446,7 +2465,15 @@ void SP_misc_panel_turret(gentity_t* self)
 	self->soundPos2 = G_SoundIndex("sound/movers/camera_off.mp3");
 
 	G_SoundIndex("sound/movers/objects/ladygun_fire");
-	G_EffectIndex("ships/imp_blastermuzzleflash");
+
+	if (com_outcast->integer == 1) //playing outcast
+	{
+		G_EffectIndex("ships/imp_blastermuzzleflash");
+	}
+	else
+	{
+		G_EffectIndex("ships/imp_blastermuzzleflash");
+	}
 
 	G_SetOrigin(self, self->s.origin);
 	G_SetAngles(self, self->s.angles);

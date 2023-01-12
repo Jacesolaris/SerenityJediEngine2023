@@ -299,7 +299,7 @@ field_t fields[] = {
 	{"fxfile2", FOFS(cameraGroup), F_LSTRING},
 	{"noVisTime", FOFS(end_frame), F_INT}, //for NPC_Vehicle
 	{"end_frame", FOFS(end_frame), F_INT}, //for func_usable shader animation
-	{"linear", FOFS(alt_fire), F_INT}, //for movers to use linear movement
+	{"linear", FOFS(altFire), F_INT}, //for movers to use linear movement
 	{"weapon",FOFS(paintarget), F_LSTRING}, //for misc_weapon_shooter only
 
 	//Script parms - will this handle clamping to 16 or whatever length of parm[0] is?
@@ -362,7 +362,7 @@ field_t fields[] = {
 	//for weapon_saber
 	{"saberType", FOFS(NPC_type), F_LSTRING},
 	{"saberColor", FOFS(NPC_targetname), F_LSTRING},
-	{"saberLeftHand", FOFS(alt_fire), F_INT},
+	{"saberLeftHand", FOFS(altFire), F_INT},
 	{"saberSolo", FOFS(loopAnim), F_INT},
 	{"saberPitch", FOFS(random), F_FLOAT},
 	//freaky camera shit

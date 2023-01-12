@@ -478,7 +478,7 @@ int GVM_BG_GetItemIndexByTag(const int tag, const int type)
 siegePers_t sv_siegePersData = {qfalse, 0, 0};
 
 extern float g_svCullDist;
-int CM_ModelContents(clipHandle_t model, int subBSPIndex);
+int CM_ModelContents(clipHandle_t model, int sub_bsp_index);
 int CM_LoadSubBSP(const char* name, qboolean clientload);
 int CM_FindSubBSP(int model_index);
 char* CM_SubBSPEntityString(int index);

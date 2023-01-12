@@ -875,7 +875,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	const int old_weapon = self->s.weapon;
 
 	self->s.weapon = missileStates[whichMissile].whichWeapon;
-	const qboolean alt_fire = missileStates[whichMissile].alt_fire;
+	const qboolean altFire = missileStates[whichMissile].altFire;
 	if (missileStates[whichMissile].fullyCharged)
 	{
 		self->client->ps.weaponChargeTime = 0;
@@ -895,7 +895,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 		effect = &w_data->mMuzzleEffect[0];
 	}
 
-	if (alt_fire)
+	if (altFire)
 	{
 		// We're alt-firing, so see if we need to override with a custom alt-fire effect
 		if (w_data->mAltMuzzleEffect[0])
@@ -923,7 +923,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 		G_PlayEffect(effect, muzzle_point, muzzle_dir);
 	}
 
-	FireWeapon(self, alt_fire);
+	FireWeapon(self, altFire);
 	shots_fired++;
 
 	self->s.weapon = old_weapon;
@@ -1037,20 +1037,20 @@ void Boba_Fire()
 				if (Q_irand(0, NPC->count * 2 + 3) > 2)
 				{
 					TIMER_Set(NPC, "nextBlasterAltFireDecide", Q_irand(3000, 8000));
-					if (!(NPCInfo->scriptFlags & SCF_ALT_FIRE))
+					if (!(NPCInfo->scriptFlags & SCF_altFire))
 					{
 						Boba_Printf("ALT FIRE On");
-						NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+						NPCInfo->scriptFlags |= SCF_altFire;
 						NPC_ChangeWeapon(WP_BLASTER); // Update Delay Timers
 					}
 				}
 				else
 				{
 					TIMER_Set(NPC, "nextBlasterAltFireDecide", Q_irand(2000, 5000));
-					if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+					if (NPCInfo->scriptFlags & SCF_altFire)
 					{
 						Boba_Printf("ALT FIRE Off");
-						NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+						NPCInfo->scriptFlags &= ~SCF_altFire;
 						NPC_ChangeWeapon(WP_BLASTER); // Update Delay Timers
 					}
 				}
@@ -1058,7 +1058,7 @@ void Boba_Fire()
 
 			// Occasionally Alt Fire
 			//-----------------------
-			if (NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			if (NPCInfo->scriptFlags & SCF_altFire)
 			{
 				ucmd.buttons &= ~BUTTON_ATTACK;
 				ucmd.buttons |= BUTTON_ALT_ATTACK;

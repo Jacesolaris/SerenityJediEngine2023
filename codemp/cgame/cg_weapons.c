@@ -2436,7 +2436,7 @@ Caused by an EV_FIRE_WEAPON event
 */
 extern qboolean PM_WeponRestAnim(int anim);
 
-void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
+void CG_FireWeapon(centity_t* cent, const qboolean altFire)
 {
 	int c;
 
@@ -2464,10 +2464,10 @@ void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 
 	if (cg.predictedPlayerState.client_num == cent->currentState.number)
 	{
-		if (ent->weapon == WP_BRYAR_PISTOL && alt_fire ||
-			ent->weapon == WP_BRYAR_OLD && alt_fire ||
-			ent->weapon == WP_BOWCASTER && !alt_fire ||
-			ent->weapon == WP_DEMP2 && alt_fire)
+		if (ent->weapon == WP_BRYAR_PISTOL && altFire ||
+			ent->weapon == WP_BRYAR_OLD && altFire ||
+			ent->weapon == WP_BOWCASTER && !altFire ||
+			ent->weapon == WP_DEMP2 && altFire)
 		{
 			float val = (cg.time - cent->currentState.constantLight) * 0.001f;
 
@@ -2485,9 +2485,9 @@ void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 			CGCam_Shake(val, 250);
 		}
 		else if (ent->weapon == WP_ROCKET_LAUNCHER ||
-			ent->weapon == WP_REPEATER && alt_fire ||
+			ent->weapon == WP_REPEATER && altFire ||
 			ent->weapon == WP_FLECHETTE ||
-			ent->weapon == WP_CONCUSSION && !alt_fire)
+			ent->weapon == WP_CONCUSSION && !altFire)
 		{
 			if (ent->weapon == WP_CONCUSSION)
 			{
@@ -2509,7 +2509,7 @@ void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 			}
 			else if (ent->weapon == WP_FLECHETTE)
 			{
-				if (alt_fire)
+				if (altFire)
 				{
 					CGCam_Shake(flrand(2, 3), 350);
 				}
@@ -2530,7 +2530,7 @@ void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 	}
 
 	// play a sound
-	if (alt_fire)
+	if (altFire)
 	{
 		// play a sound
 		for (c = 0; c < 4; c++)
@@ -2649,7 +2649,7 @@ CG_MissileHitWall
 Caused by an EV_MISSILE_MISS event, or directly by local bullet tracing
 =================
 */
-void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboolean alt_fire, const int charge)
+void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboolean altFire, const int charge)
 {
 	int parm;
 	vec3_t up = {0, 0, 1};
@@ -2657,7 +2657,7 @@ void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboo
 	switch (weapon)
 	{
 	case WP_BRYAR_PISTOL:
-		if (alt_fire)
+		if (altFire)
 		{
 			parm = charge;
 			FX_BryarAltHitWall(origin, dir, parm);
@@ -2681,7 +2681,7 @@ void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboo
 		break;
 
 	case WP_BRYAR_OLD:
-		if (alt_fire)
+		if (altFire)
 		{
 			parm = charge;
 			FX_BryarsbdAltHitWall(origin, dir, parm);
@@ -2709,7 +2709,7 @@ void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboo
 		break;
 
 	case WP_REPEATER:
-		if (alt_fire)
+		if (altFire)
 		{
 			FX_RepeaterAltHitWall(origin, dir);
 		}
@@ -2720,7 +2720,7 @@ void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboo
 		break;
 
 	case WP_DEMP2:
-		if (alt_fire)
+		if (altFire)
 		{
 			trap->FX_PlayEffectID(cgs.effects.mAltDetonate, origin, dir, -1, -1, qfalse);
 		}
@@ -2731,7 +2731,7 @@ void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboo
 		break;
 
 	case WP_FLECHETTE:
-		if (alt_fire)
+		if (altFire)
 		{
 			FX_FlechetteWeaponalt_blow(origin, dir);
 		}
@@ -2762,7 +2762,7 @@ void cg_missile_hit_wall(const int weapon, vec3_t origin, vec3_t dir, const qboo
 cg_missile_hit_player
 =================
 */
-void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qboolean alt_fire)
+void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qboolean altFire)
 {
 	const qboolean humanoid = qtrue;
 	vec3_t up = {0, 0, 1};
@@ -2772,7 +2772,7 @@ void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qb
 	switch (weapon)
 	{
 	case WP_BRYAR_PISTOL:
-		if (alt_fire)
+		if (altFire)
 		{
 			FX_BryarAltHitPlayer(origin, dir, humanoid);
 		}
@@ -2795,7 +2795,7 @@ void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qb
 		break;
 
 	case WP_BRYAR_OLD:
-		if (alt_fire)
+		if (altFire)
 		{
 			FX_BryarAltHitPlayer(origin, dir, humanoid);
 		}
@@ -2822,7 +2822,7 @@ void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qb
 		break;
 
 	case WP_REPEATER:
-		if (alt_fire)
+		if (altFire)
 		{
 			FX_RepeaterAltHitPlayer(origin, dir, humanoid);
 		}
@@ -2833,7 +2833,7 @@ void cg_missile_hit_player(const int weapon, vec3_t origin, vec3_t dir, const qb
 		break;
 
 	case WP_DEMP2:
-		if (alt_fire)
+		if (altFire)
 		{
 			trap->FX_PlayEffectID(cgs.effects.mAltDetonate, origin, dir, -1, -1, qfalse);
 		}

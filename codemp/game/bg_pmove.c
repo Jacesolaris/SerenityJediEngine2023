@@ -11832,7 +11832,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 //---------------------------------------
 {
 	qboolean charging = qfalse,
-	         alt_fire = qfalse;
+	         altFire = qfalse;
 
 	if (vehicleRocketLock)
 	{
@@ -11859,7 +11859,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 				}
 				if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 				{
-					alt_fire = qtrue;
+					altFire = qtrue;
 				}
 			}
 		}
@@ -11879,7 +11879,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 				if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 				{
 					charging = qtrue;
-					alt_fire = qtrue;
+					altFire = qtrue;
 				}
 			}
 			break;
@@ -11887,7 +11887,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 		case WP_CONCUSSION:
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
-				alt_fire = qtrue;
+				altFire = qtrue;
 			}
 			break;
 
@@ -11897,7 +11897,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
 				charging = qtrue;
-				alt_fire = qtrue;
+				altFire = qtrue;
 			}
 			break;
 
@@ -11918,7 +11918,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 			{
 				PM_RocketLock(2048, qfalse);
 				charging = qtrue;
-				alt_fire = qtrue;
+				altFire = qtrue;
 			}
 			break;
 
@@ -11927,7 +11927,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
-				alt_fire = qtrue; // override default of not being an alt-fire
+				altFire = qtrue; // override default of not being an alt-fire
 				charging = qtrue;
 			}
 			else if (pm->cmd.buttons & BUTTON_ATTACK)
@@ -11939,7 +11939,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 		case WP_DEMP2:
 			if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 			{
-				alt_fire = qtrue; // override default of not being an alt-fire
+				altFire = qtrue; // override default of not being an alt-fire
 				charging = qtrue;
 			}
 			break;
@@ -11954,12 +11954,12 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 					pm->cmd.upmove <= 0)
 				{
 					charging = qtrue;
-					alt_fire = qtrue;
+					altFire = qtrue;
 				}
 				else
 				{
 					charging = qfalse;
-					alt_fire = qfalse;
+					altFire = qfalse;
 				}
 			}
 
@@ -11968,7 +11968,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 			{
 				pm->ps->weaponstate = WEAPON_READY;
 				charging = qfalse;
-				alt_fire = qfalse;
+				altFire = qfalse;
 			}
 		default: ;
 		} // end switch
@@ -11978,7 +11978,7 @@ static qboolean PM_DoChargedWeapons(const qboolean vehicleRocketLock, const bgEn
 	//	Note that we ALWAYS return if charging is set ( meaning the buttons are still down )
 	if (charging)
 	{
-		if (alt_fire)
+		if (altFire)
 		{
 			if (pm->ps->weaponstate != WEAPON_CHARGING_ALT)
 			{
@@ -13827,7 +13827,7 @@ void PM_Weapon(void)
 		pm->ps->weaponTime += addTime;
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
-			PM_AddEvent(EV_ALT_FIRE);
+			PM_AddEvent(EV_altFire);
 		}
 		else
 		{
@@ -13843,7 +13843,7 @@ void PM_Weapon(void)
 #ifdef _GAME //hack, only do it game-side. vehicle weapons don't really need predicting I suppose.
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
-			G_CheapWeaponFire(pm->ps->client_num, EV_ALT_FIRE);
+			G_CheapWeaponFire(pm->ps->client_num, EV_altFire);
 		}
 		else
 		{
@@ -14237,7 +14237,7 @@ void PM_Weapon(void)
 			if (pm->ps->weapon != WP_MELEE || !pm->ps->m_iVehicleNum)
 			{
 				//do not fire melee events at all when on vehicle
-				PM_AddEvent(EV_ALT_FIRE);
+				PM_AddEvent(EV_altFire);
 			}
 			addTime = weaponData[pm->ps->weapon].altFireTime;
 		}

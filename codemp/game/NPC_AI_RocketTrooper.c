@@ -83,10 +83,10 @@ void RT_FireDecide(void)
 	{
 		//enemy within 128
 		if ((NPCS.NPC->client->ps.weapon == WP_FLECHETTE || NPCS.NPC->client->ps.weapon == WP_REPEATER) &&
-			NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			NPCS.NPCInfo->scriptFlags & SCF_altFire)
 		{
 			//shooting an explosive, but enemy too close, switch to primary fire
-			NPCS.NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+			NPCS.NPCInfo->scriptFlags &= ~SCF_altFire;
 		}
 	}
 	else if (enemyDist > 65536) //256 squared
@@ -94,10 +94,10 @@ void RT_FireDecide(void)
 		if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR)
 		{
 			//sniping... should be assumed
-			if (!(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
+			if (!(NPCS.NPCInfo->scriptFlags & SCF_altFire))
 			{
 				//use primary fire
-				NPCS.NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+				NPCS.NPCInfo->scriptFlags |= SCF_altFire;
 				//reset fire-timing variables
 				NPC_ChangeWeapon(WP_DISRUPTOR);
 				NPC_UpdateAngles(qtrue, qtrue);
@@ -122,7 +122,7 @@ void RT_FireDecide(void)
 			{
 				//can we shoot our target?
 				if ((NPCS.NPC->client->ps.weapon == WP_ROCKET_LAUNCHER || NPCS.NPC->client->ps.weapon == WP_FLECHETTE &&
-					NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemyDist < MIN_ROCKET_DIST_SQUARED) //128*128
+					NPCS.NPCInfo->scriptFlags & SCF_altFire) && enemyDist < MIN_ROCKET_DIST_SQUARED) //128*128
 				{
 					enemyCS = qfalse; //not true, but should stop us from firing
 					hitAlly = qtrue; //us!
@@ -227,7 +227,7 @@ void RT_FireDecide(void)
 							distThreshold = 65536/*256*256*/;
 							break;
 						case WP_REPEATER:
-							if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+							if (NPCS.NPCInfo->scriptFlags & SCF_altFire)
 							{
 								distThreshold = 65536/*256*256*/;
 							}
@@ -259,7 +259,7 @@ void RT_FireDecide(void)
 								distThreshold = 262144/*512*512*/;
 								break;
 							case WP_REPEATER:
-								if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+								if (NPCS.NPCInfo->scriptFlags & SCF_altFire)
 								{
 									distThreshold = 262144/*512*512*/;
 								}
@@ -296,7 +296,7 @@ void RT_FireDecide(void)
 		if (NPCS.NPC->client->ps.weaponTime > 0)
 		{
 			if (NPCS.NPC->s.weapon == WP_ROCKET_LAUNCHER
-				|| NPCS.NPC->s.weapon == WP_CONCUSSION && !(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
+				|| NPCS.NPC->s.weapon == WP_CONCUSSION && !(NPCS.NPCInfo->scriptFlags & SCF_altFire))
 			{
 				if (!enemyLOS || !enemyCS)
 				{

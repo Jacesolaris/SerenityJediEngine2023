@@ -1097,11 +1097,11 @@ void Boba_ChooseWeapon(void)
 	{
 		if (Q_irand(0, 1))
 		{
-			NPCS.NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+			NPCS.NPCInfo->scriptFlags &= ~SCF_altFire;
 		}
 		else
 		{
-			NPCS.NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+			NPCS.NPCInfo->scriptFlags |= SCF_altFire;
 		}
 
 		while (1)
@@ -1244,7 +1244,7 @@ typedef struct wristWeapon_s
 	int theMissile;
 	int dummyForcePower;
 	int whichWeapon;
-	qboolean alt_fire;
+	qboolean altFire;
 	int maxShots;
 	int animTimer;
 	int animDelay;
@@ -1335,7 +1335,7 @@ void Boba_FireWristMissile(gentity_t* self, const int whichMissile)
 	const int oldWeapon = self->s.weapon;
 
 	self->s.weapon = missileStates[whichMissile].whichWeapon;
-	qboolean alt_fire = missileStates[whichMissile].alt_fire;
+	qboolean altFire = missileStates[whichMissile].altFire;
 	if (missileStates[whichMissile].fullyCharged)
 	{
 		self->client->ps.weaponChargeTime = 0;
@@ -1613,14 +1613,14 @@ void Boba_FireDecide(void)
 
 	if (NPCS.NPC->enemy->s.weapon == WP_SABER)
 	{
-		NPCS.NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+		NPCS.NPCInfo->scriptFlags &= ~SCF_altFire;
 		Boba_ChangeWeapon(WP_ROCKET_LAUNCHER);
 	}
 	else
 	{
 		if (NPCS.NPC->health < NPCS.NPC->client->pers.maxHealth * 0.5f)
 		{
-			NPCS.NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+			NPCS.NPCInfo->scriptFlags |= SCF_altFire;
 			Boba_ChangeWeapon(WP_BLASTER);
 			NPCS.NPCInfo->burstMin = 3;
 			NPCS.NPCInfo->burstMean = 12;
@@ -1629,7 +1629,7 @@ void Boba_FireDecide(void)
 		}
 		else
 		{
-			NPCS.NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+			NPCS.NPCInfo->scriptFlags &= ~SCF_altFire;
 			Boba_ChangeWeapon(WP_BLASTER);
 		}
 	}
@@ -1660,10 +1660,10 @@ void Boba_FireDecide(void)
 	{
 		//enemy within 128
 		if ((NPCS.NPC->client->ps.weapon == WP_FLECHETTE || NPCS.NPC->client->ps.weapon == WP_REPEATER) &&
-			NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+			NPCS.NPCInfo->scriptFlags & SCF_altFire)
 		{
 			//shooting an explosive, but enemy too close, switch to primary fire
-			NPCS.NPCInfo->scriptFlags &= ~SCF_ALT_FIRE;
+			NPCS.NPCInfo->scriptFlags &= ~SCF_altFire;
 			//FIXME: we can never go back to alt-fire this way since, after this, we don't know if we were initially supposed to use alt-fire or not...
 		}
 	}
@@ -1672,10 +1672,10 @@ void Boba_FireDecide(void)
 		if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR)
 		{
 			//sniping... should be assumed
-			if (!(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
+			if (!(NPCS.NPCInfo->scriptFlags & SCF_altFire))
 			{
 				//use primary fire
-				NPCS.NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+				NPCS.NPCInfo->scriptFlags |= SCF_altFire;
 				//reset fire-timing variables
 				NPC_ChangeWeapon(WP_DISRUPTOR);
 				NPC_UpdateAngles(qtrue, qtrue);
@@ -1700,7 +1700,7 @@ void Boba_FireDecide(void)
 			{
 				//can we shoot our target?
 				if ((NPCS.NPC->client->ps.weapon == WP_ROCKET_LAUNCHER || NPCS.NPC->client->ps.weapon == WP_FLECHETTE
-					&& NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE) && enemyDist < MIN_ROCKET_DIST_SQUARED) //128*128
+					&& NPCS.NPCInfo->scriptFlags & SCF_altFire) && enemyDist < MIN_ROCKET_DIST_SQUARED) //128*128
 				{
 					enemyCS = qfalse; //not true, but should stop us from firing
 					hitAlly = qtrue; //us!
@@ -1804,7 +1804,7 @@ void Boba_FireDecide(void)
 							distThreshold = 65536/*256*256*/;
 							break;
 						case WP_REPEATER:
-							if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+							if (NPCS.NPCInfo->scriptFlags & SCF_altFire)
 							{
 								distThreshold = 65536/*256*256*/;
 							}
@@ -1836,7 +1836,7 @@ void Boba_FireDecide(void)
 								distThreshold = 262144/*512*512*/;
 								break;
 							case WP_REPEATER:
-								if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+								if (NPCS.NPCInfo->scriptFlags & SCF_altFire)
 								{
 									distThreshold = 262144/*512*512*/;
 								}
@@ -6863,7 +6863,7 @@ void NPC_EvasionSaber(void)
 	}
 }
 
-extern float WP_SpeedOfMissileForWeapon(int wp, qboolean alt_fire);
+extern float WP_SpeedOfMissileForWeapon(int wp, qboolean altFire);
 
 static void Jedi_FaceEnemy(const qboolean doPitch)
 {
@@ -6894,7 +6894,7 @@ static void Jedi_FaceEnemy(const qboolean doPitch)
 		&& TIMER_Done(NPCS.NPC, "flameTime")
 		&& NPCS.NPC->s.weapon != WP_NONE
 		&& NPCS.NPC->s.weapon != WP_DISRUPTOR
-		&& (NPCS.NPC->s.weapon != WP_ROCKET_LAUNCHER || !(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE))
+		&& (NPCS.NPC->s.weapon != WP_ROCKET_LAUNCHER || !(NPCS.NPCInfo->scriptFlags & SCF_altFire))
 		&& NPCS.NPC->s.weapon != WP_THERMAL
 		&& NPCS.NPC->s.weapon != WP_TRIP_MINE
 		&& NPCS.NPC->s.weapon != WP_DET_PACK
@@ -6906,7 +6906,7 @@ static void Jedi_FaceEnemy(const qboolean doPitch)
 		{
 			//lead
 			const float missileSpeed = WP_SpeedOfMissileForWeapon(NPCS.NPC->s.weapon,
-			                                                      NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE);
+			                                                      NPCS.NPCInfo->scriptFlags & SCF_altFire);
 			if (missileSpeed)
 			{
 				float eDist = Distance(eyes, enemy_eyes);
@@ -10636,7 +10636,7 @@ void NPC_BSJedi_Default(void)
 			if (NPCS.NPC->enemy->enemy != NPCS.NPC && NPCS.NPC->health == NPCS.NPC->client->pers.maxHealth &&
 				DistanceSquared(NPCS.NPC->r.currentOrigin, NPCS.NPC->enemy->r.currentOrigin) > 800 * 800)
 			{
-				NPCS.NPCInfo->scriptFlags |= SCF_ALT_FIRE;
+				NPCS.NPCInfo->scriptFlags |= SCF_altFire;
 				Boba_ChangeWeapon(WP_DISRUPTOR);
 				NPC_BSSniper_Default();
 				return;

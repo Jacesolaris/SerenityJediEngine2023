@@ -1601,9 +1601,9 @@ void R_Register()
 	r_nocurves = ri.Cvar_Get("r_nocurves", "0", CVAR_CHEAT);
 	r_drawworld = ri.Cvar_Get("r_drawworld", "1", CVAR_CHEAT);
 #ifdef JK2_MODE
-	r_drawfog = ri.Cvar_Get("r_drawfog", "1", 0);
+	r_drawfog = ri.Cvar_Get("r_drawfog", "3", 0);
 #else
-	r_drawfog = ri.Cvar_Get("r_drawfog", "1", 0);
+	r_drawfog = ri.Cvar_Get("r_drawfog", "3", 0);
 #endif
 	r_lightmap = ri.Cvar_Get("r_lightmap", "0", CVAR_CHEAT);
 	r_portalOnly = ri.Cvar_Get("r_portalOnly", "0", CVAR_CHEAT);

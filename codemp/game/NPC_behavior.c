@@ -221,7 +221,7 @@ void NPC_BSCinematic(void)
 		if (TIMER_Done(NPCS.NPC, "NoAnimFireDelay"))
 		{
 			TIMER_Set(NPCS.NPC, "NoAnimFireDelay", NPC_AttackDebounceForWeapon());
-			FireWeapon(NPCS.NPC, (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE) != 0);
+			FireWeapon(NPCS.NPC, (NPCS.NPCInfo->scriptFlags & SCF_altFire) != 0);
 		}
 	}
 

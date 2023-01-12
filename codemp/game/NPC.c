@@ -635,7 +635,7 @@ void NPC_ApplyScriptFlags(void)
 		NPCS.ucmd.upmove = 0;
 	}
 
-	if (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE && NPCS.ucmd.buttons & BUTTON_ATTACK)
+	if (NPCS.NPCInfo->scriptFlags & SCF_altFire && NPCS.ucmd.buttons & BUTTON_ATTACK)
 	{
 		//Use altfire instead
 		// new code so snipers shoot their altfire properly
@@ -663,7 +663,7 @@ void NPC_ApplyScriptFlags(void)
 			NPCS.NPCInfo->attackHold = 2000;
 		}
 	}
-	else if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR && !(NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE) && NPCS.NPC->
+	else if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR && !(NPCS.NPCInfo->scriptFlags & SCF_altFire) && NPCS.NPC->
 		client->ps.zoomMode != 0)
 	{
 		// reset sniper zoomMode when switching back to primary fire
@@ -1632,7 +1632,7 @@ void NPC_RunBehavior(const int team, const int b_state)
 			case CLASS_RODIAN:
 			case CLASS_TRANDOSHAN:
 				{
-					if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR && NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+					if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR && NPCS.NPCInfo->scriptFlags & SCF_altFire)
 					{
 						//a sniper
 						NPC_BehaviorSet_Sniper(b_state);
@@ -1643,7 +1643,7 @@ void NPC_RunBehavior(const int team, const int b_state)
 				}
 			case CLASS_TUSKEN:
 				{
-					if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR /*&& (NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)*/)
+					if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR /*&& (NPCS.NPCInfo->scriptFlags & SCF_altFire)*/)
 					{
 						//a sniper
 						NPC_BehaviorSet_Sniper(b_state);
@@ -1706,7 +1706,7 @@ void NPC_RunBehavior(const int team, const int b_state)
 			NPC_BehaviorSet_Default(b_state);
 			return;
 		}
-		if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR && NPCS.NPCInfo->scriptFlags & SCF_ALT_FIRE)
+		if (NPCS.NPC->client->ps.weapon == WP_DISRUPTOR && NPCS.NPCInfo->scriptFlags & SCF_altFire)
 		{
 			//a sniper
 			NPC_BehaviorSet_Sniper(b_state);

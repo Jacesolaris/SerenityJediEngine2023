@@ -71,7 +71,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	SCF_LEAN_RIGHT		0x00000008	//Force rightmove+BUTTON_USE
 #define	SCF_LEAN_LEFT		0x00000010	//Force leftmove+BUTTON_USE
 #define	SCF_RUNNING			0x00000020	//Takes off walking button, overrides SCF_WALKING
-#define	SCF_ALT_FIRE		0x00000040	//Force to use alt-fire when firing
+#define	SCF_altFire		0x00000040	//Force to use alt-fire when firing
 #define	SCF_NO_RESPONSE		0x00000080	//NPC will not do generic responses to being used
 #define	SCF_FFDEATH			0x00000100	//Just tells player_die to run the friendly fire deathscript
 #define	SCF_NO_COMBAT_TALK	0x00000200	//NPC will not use their generic combat chatter stuff

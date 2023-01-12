@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void G_SetEnemy(gentity_t* self, gentity_t* enemy);
 extern void WP_CalcVehMuzzle(gentity_t* ent, int muzzle_num);
 extern gentity_t* WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWeaponInfo_t* veh_weapon,
-                                       qboolean alt_fire, qboolean is_turret_weap);
+                                       qboolean altFire, qboolean is_turret_weap);
 
 extern void G_VehMuzzleFireFX(const gentity_t* ent, gentity_t* broadcaster, int muzzles_fired);
 //-----------------------------------------------------

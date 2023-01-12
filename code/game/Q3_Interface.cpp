@@ -411,7 +411,7 @@ stringID_table_t setTable[] =
 	ENUM2STRING(SET_CHASE_ENEMIES),
 	ENUM2STRING(SET_LOOK_FOR_ENEMIES),
 	ENUM2STRING(SET_FACE_MOVE_DIR),
-	ENUM2STRING(SET_ALT_FIRE),
+	ENUM2STRING(SET_altFire),
 	ENUM2STRING(SET_DONT_FLEE),
 	ENUM2STRING(SET_FORCED_MARCH),
 	ENUM2STRING(SET_NO_RESPONSE),
@@ -1778,7 +1778,7 @@ Lerps the origin and angles of an entity to the destination values
 
 		VectorCopy( ent->currentAngles, ent->s.apos.trBase );
 
-		if ( ent->alt_fire )
+		if ( ent->altFire )
 		{
 			ent->s.apos.trType = TR_LINEAR_STOP;
 		}
@@ -1953,7 +1953,7 @@ Lerps the angles to the destination value
 
 	VectorCopy( ent->currentAngles, ent->s.apos.trBase );
 
-	if ( ent->alt_fire )
+	if ( ent->altFire )
 	{
 		ent->s.apos.trType = TR_LINEAR_STOP;
 	}
@@ -5141,11 +5141,11 @@ static void Q3_SetAltFire(const int entID, const qboolean add)
 
 	if (add)
 	{
-		ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+		ent->NPC->scriptFlags |= SCF_altFire;
 	}
 	else
 	{
-		ent->NPC->scriptFlags &= ~SCF_ALT_FIRE;
+		ent->NPC->scriptFlags &= ~SCF_altFire;
 	}
 
 	ChangeWeapon(ent, ent->client->ps.weapon);
@@ -8230,7 +8230,7 @@ void CQuake3GameInterface::Lerp2Pos(const int taskID, const int entID, vec3_t or
 
 		VectorCopy(ent->currentAngles, ent->s.apos.trBase);
 
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			ent->s.apos.trType = TR_LINEAR_STOP;
 		}
@@ -8295,7 +8295,7 @@ void CQuake3GameInterface::Lerp2Angles(const int taskID, const int entID, vec3_t
 
 	VectorCopy(ent->currentAngles, ent->s.apos.trBase);
 
-	if (ent->alt_fire)
+	if (ent->altFire)
 	{
 		ent->s.apos.trType = TR_LINEAR_STOP;
 	}
@@ -8891,7 +8891,7 @@ void CQuake3GameInterface::Set(const int taskID, const int entID, const char* ty
 			Q3_SetFaceMoveDir(entID, qfalse);
 		break;
 
-	case SET_ALT_FIRE:
+	case SET_altFire:
 		if (!Q_stricmp("true", data))
 			Q3_SetAltFire(entID, qtrue);
 		else
@@ -10524,13 +10524,13 @@ int CQuake3GameInterface::GetFloat(const int entID, const char* name, float* val
 	case SET_NO_KNOCKBACK: //## %t="BOOL_TYPES" # Stops this ent from taking knockback from weapons
 		*value = ent->flags & FL_NO_KNOCKBACK;
 		break;
-	case SET_ALT_FIRE: //## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
+	case SET_altFire: //## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
 		if (ent->NPC == nullptr)
 		{
-			DebugPrint(WL_WARNING, "GetFloat: SET_ALT_FIRE, %s not an NPC\n", ent->targetname);
+			DebugPrint(WL_WARNING, "GetFloat: SET_altFire, %s not an NPC\n", ent->targetname);
 			return false;
 		}
-		*value = ent->NPC->scriptFlags & SCF_ALT_FIRE;
+		*value = ent->NPC->scriptFlags & SCF_altFire;
 		break;
 	case SET_NO_RESPONSE:
 		//## %t="BOOL_TYPES" # NPCs will do generic responses when this is on (usescripts override generic responses as well)

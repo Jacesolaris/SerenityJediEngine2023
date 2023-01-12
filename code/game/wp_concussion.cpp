@@ -349,9 +349,9 @@ static void WP_FireConcussion(gentity_t* ent)
 	missile->bounceCount = 0;
 }
 
-void WP_Concussion(gentity_t* ent, const qboolean alt_fire)
+void WP_Concussion(gentity_t* ent, const qboolean altFire)
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_FireConcussionAlt(ent);
 	}

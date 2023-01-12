@@ -1617,7 +1617,7 @@ void R_Register()
 	r_windPointY = ri->Cvar_Get("r_windPointY", "0", CVAR_NONE, "");
 	r_nocurves = ri->Cvar_Get("r_nocurves", "0", CVAR_CHEAT, "");
 	r_drawworld = ri->Cvar_Get("r_drawworld", "1", CVAR_CHEAT, "");
-	r_drawfog = ri->Cvar_Get("r_drawfog", "1", CVAR_NONE, "");
+	r_drawfog = ri->Cvar_Get("r_drawfog", "3", CVAR_NONE, "");
 	r_lightmap = ri->Cvar_Get("r_lightmap", "0", CVAR_CHEAT, "");
 	r_portalOnly = ri->Cvar_Get("r_portalOnly", "0", CVAR_CHEAT, "");
 	r_skipBackEnd = ri->Cvar_Get("r_skipBackEnd", "0", CVAR_CHEAT, "");

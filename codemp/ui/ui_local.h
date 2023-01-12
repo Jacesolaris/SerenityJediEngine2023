@@ -141,7 +141,7 @@ typedef struct playerInfo_s {
 #define MAX_MODS				128
 #define MAX_DEMOS				2048 // 256
 #define MAX_MOVIES				2048 // 256
-#define MAX_Q3PLAYERMODELS		1024 //256
+#define MAX_Q3PLAYERMODELS		8192 //256
 
 #define DEMO_DIRECTORY "demos"
 #define DEMO_EXTENSION "dm_"

@@ -26,9 +26,9 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "wp_saber.h"
 #include "w_local.h"
 //---------------------------------------------------------
-void WP_FireStunBaton(gentity_t* ent, const qboolean alt_fire)
+void WP_FireStunBaton(gentity_t* ent, const qboolean altFire)
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		//
 	}

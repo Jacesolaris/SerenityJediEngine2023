@@ -11637,7 +11637,7 @@ static void PM_BeginWeaponChange(const int weapon)
 
 	if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_GALAKMECH)
 	{
-		if (pm->gent->alt_fire)
+		if (pm->gent->altFire)
 		{
 			//FIXME: attack delay?
 			PM_SetAnim(pm, SETANIM_TORSO, TORSO_DROPWEAP3, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -11984,7 +11984,7 @@ static void PM_FinishWeaponChange()
 
 		if (pm->gent && pm->gent->client && pm->gent->client->NPC_class == CLASS_GALAKMECH)
 		{
-			if (pm->gent->alt_fire)
+			if (pm->gent->altFire)
 			{
 				//FIXME: attack delay?
 				PM_SetAnim(pm, SETANIM_TORSO, TORSO_RAISEWEAP3, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
@@ -14828,6 +14828,7 @@ qboolean G_CanKickEntity(const gentity_t* self, const gentity_t* target)
 	if (target && target->client
 		&& !PM_InKnockDown(&target->client->ps)
 		&& !PM_SaberInMassiveBounce(self->client->ps.torsoAnim)
+		&& !PM_SaberInBashedAnim(self->client->ps.torsoAnim)
 		&& G_EnemyInKickRange(self, target))
 	{
 		return qtrue;
@@ -18294,7 +18295,7 @@ void PM_WeaponLightsaber()
 
 	if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 	{
-		PM_AddEvent(EV_ALT_FIRE);
+		PM_AddEvent(EV_altFire);
 
 		if (!add_time)
 		{
@@ -18385,7 +18386,7 @@ static bool PM_DoChargedWeapons()
 //---------------------------------------
 {
 	qboolean charging = qfalse,
-	         alt_fire = qfalse;
+	         altFire = qfalse;
 
 	//FIXME: make jedi aware they're being aimed at with a charged-up weapon (strafe and be evasive?)
 	// If you want your weapon to be a charging weapon, just set this bit up
@@ -18399,7 +18400,7 @@ static bool PM_DoChargedWeapons()
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
 			charging = qtrue;
-			alt_fire = qtrue;
+			altFire = qtrue;
 		}
 		break;
 
@@ -18415,18 +18416,18 @@ static bool PM_DoChargedWeapons()
 				if (pm->cmd.buttons & BUTTON_ATTACK)
 				{
 					charging = qtrue;
-					alt_fire = qtrue; // believe it or not, it really is an alt-fire in this case!
+					altFire = qtrue; // believe it or not, it really is an alt-fire in this case!
 				}
 			}
 		}
 		else if (pm->gent && pm->gent->NPC)
 		{
-			if (pm->gent->NPC->scriptFlags & SCF_ALT_FIRE)
+			if (pm->gent->NPC->scriptFlags & SCF_altFire)
 			{
 				if (pm->gent->fly_sound_debounce_time > level.time)
 				{
 					charging = qtrue;
-					alt_fire = qtrue;
+					altFire = qtrue;
 				}
 			}
 		}
@@ -18449,7 +18450,7 @@ static bool PM_DoChargedWeapons()
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
 			charging = qtrue;
-			alt_fire = qtrue;
+			altFire = qtrue;
 		}
 		break;
 
@@ -18461,7 +18462,7 @@ static bool PM_DoChargedWeapons()
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
 			charging = qtrue;
-			alt_fire = qtrue;
+			altFire = qtrue;
 		}
 		break;
 
@@ -18472,7 +18473,7 @@ static bool PM_DoChargedWeapons()
 		//			the actual throw when he lets go...
 		if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 		{
-			alt_fire = qtrue; // override default of not being an alt-fire
+			altFire = qtrue; // override default of not being an alt-fire
 			charging = qtrue;
 		}
 		else if (pm->cmd.buttons & BUTTON_ATTACK)
@@ -18487,7 +18488,7 @@ static bool PM_DoChargedWeapons()
 	//	Note that we ALWAYS return if charging is set ( meaning the buttons are still down )
 	if (charging)
 	{
-		if (alt_fire)
+		if (altFire)
 		{
 			if (pm->ps->weaponstate != WEAPON_CHARGING_ALT && pm->ps->weaponstate != WEAPON_DROPPING)
 			{
@@ -18918,7 +18919,7 @@ static void PM_Weapon()
 				delayed_fire = qtrue;
 				if ((pm->ps->client_num < MAX_CLIENTS || PM_ControlledByPlayer())
 					&& pm->ps->weapon == WP_THERMAL
-					&& pm->gent->alt_fire)
+					&& pm->gent->altFire)
 				{
 					pm->cmd.buttons |= BUTTON_ALT_ATTACK;
 				}
@@ -19102,7 +19103,7 @@ static void PM_Weapon()
 			           SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD);
 			pm->gent->client->fireDelay = 300;
 			pm->ps->weaponstate = WEAPON_FIRING;
-			pm->gent->alt_fire = static_cast<qboolean>(pm->cmd.buttons & BUTTON_ALT_ATTACK);
+			pm->gent->altFire = static_cast<qboolean>(pm->cmd.buttons & BUTTON_ALT_ATTACK);
 			return;
 		}
 
@@ -19117,7 +19118,7 @@ static void PM_Weapon()
 			//delay the actual firing of the missile until the anim has played some
 			pm->gent->client->fireDelay = 150;
 			pm->ps->weaponstate = WEAPON_FIRING;
-			pm->gent->alt_fire = static_cast<qboolean>(pm->cmd.buttons & BUTTON_ALT_ATTACK);
+			pm->gent->altFire = static_cast<qboolean>(pm->cmd.buttons & BUTTON_ALT_ATTACK);
 			return;
 		}
 
@@ -19132,7 +19133,7 @@ static void PM_Weapon()
 			//delay the actual firing of the missile until the anim has played some
 			pm->gent->client->fireDelay = 200;
 			pm->ps->weaponstate = WEAPON_FIRING;
-			pm->gent->alt_fire = static_cast<qboolean>(pm->cmd.buttons & BUTTON_ALT_ATTACK);
+			pm->gent->altFire = static_cast<qboolean>(pm->cmd.buttons & BUTTON_ALT_ATTACK);
 			return;
 		}
 	}
@@ -19673,7 +19674,7 @@ static void PM_Weapon()
 			&& pm->gent->owner->e_UseFunc == useF_eweb_use)
 		{
 			//eweb always shoots alt-fire, for proper effects and sounds
-			PM_AddEvent(EV_ALT_FIRE);
+			PM_AddEvent(EV_altFire);
 			add_time = weaponData[pm->ps->weapon].altFireTime;
 		}
 		else
@@ -19692,7 +19693,7 @@ static void PM_Weapon()
 	}
 	else if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 	{
-		PM_AddEvent(EV_ALT_FIRE);
+		PM_AddEvent(EV_altFire);
 		add_time = weaponData[pm->ps->weapon].altFireTime;
 		if (pm->ps->weapon == WP_THERMAL)
 		{
@@ -19934,7 +19935,7 @@ static void PM_VehicleWeapon()
 
 	if (pm->cmd.buttons & BUTTON_ALT_ATTACK)
 	{
-		PM_AddEvent(EV_ALT_FIRE);
+		PM_AddEvent(EV_altFire);
 	}
 	else
 	{
@@ -20337,7 +20338,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 			if (pm->ps->client_num < MAX_CLIENTS && pm->gent && pm->ps->eFlags & EF_IN_ATST)
 			{
 				//switch ATST barrels
-				pm->gent->alt_fire = qtrue;
+				pm->gent->altFire = qtrue;
 			}
 		}
 		else
@@ -20346,7 +20347,7 @@ void PM_AdjustAttackStates(pmove_t* pm)
 			if (pm->ps->client_num < MAX_CLIENTS && pm->gent && pm->ps->eFlags & EF_IN_ATST)
 			{
 				//switch ATST barrels
-				pm->gent->alt_fire = qfalse;
+				pm->gent->altFire = qfalse;
 			}
 		}
 

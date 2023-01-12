@@ -576,7 +576,7 @@ void g_bounce_projectile(vec3_t start, vec3_t impact, vec3_t dir, vec3_t endout)
 
 //-----------------------------------------------------------------------------
 gentity_t* create_missile(vec3_t org, vec3_t dir, const float vel, const int life, gentity_t* owner,
-                          const qboolean alt_fire)
+                          const qboolean altFire)
 {
 	gentity_t* missile = G_Spawn();
 
@@ -587,7 +587,7 @@ gentity_t* create_missile(vec3_t org, vec3_t dir, const float vel, const int lif
 	missile->parent = owner;
 	missile->r.ownerNum = owner->s.number;
 
-	if (alt_fire)
+	if (altFire)
 	{
 		missile->s.eFlags |= EF_ALT_FIRING;
 	}

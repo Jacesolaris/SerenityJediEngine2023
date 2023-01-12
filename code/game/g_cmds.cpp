@@ -1117,14 +1117,14 @@ void Cmd_UseBarrier_f(gentity_t* ent)
 		}
 		CG_ChangeWeapon(WP_MELEE);
 
-		const int actualTime = cg.time ? cg.time : level.time;
-		qboolean Clear_to_activate_barrier = qtrue;
+		const int actual_time = cg.time ? cg.time : level.time;
+		qboolean clear_to_activate_barrier = qtrue;
 
-		if (actualTime < 1500)
+		if (actual_time < 1500)
 		{
-			Clear_to_activate_barrier = qfalse;
+			clear_to_activate_barrier = qfalse;
 		}
-		if (Clear_to_activate_barrier)
+		if (clear_to_activate_barrier)
 		{
 			ItemUse_Barrier_with_saber(ent);
 		}

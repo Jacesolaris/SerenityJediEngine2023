@@ -381,7 +381,7 @@ using setType_t = enum //# setType_e
 	//## %t="BOOL_TYPES" # Stops this ent from taking impact damage
 	SET_NO_KNOCKBACK,
 	//## %t="BOOL_TYPES" # Stops this ent from taking knockback from weapons
-	SET_ALT_FIRE,
+	SET_altFire,
 	//## %t="BOOL_TYPES" # Force NPC to use altfire when shooting
 	SET_NO_RESPONSE,
 	//## %t="BOOL_TYPES" # NPCs will do generic responses when this is on (usescripts override generic responses as well)

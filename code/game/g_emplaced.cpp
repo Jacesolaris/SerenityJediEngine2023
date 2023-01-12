@@ -377,7 +377,7 @@ void eweb_use(gentity_t* self, const gentity_t* other, gentity_t* activator)
 
 	if (old_weapon == WP_SABER)
 	{
-		self->alt_fire = activator->client->ps.SaberActive();
+		self->altFire = activator->client->ps.SaberActive();
 	}
 
 	// swap the users weapon with the emplaced gun and add the ammo the gun has to the player
@@ -606,7 +606,7 @@ void emplaced_gun_use(gentity_t* self, const gentity_t* other, gentity_t* activa
 
 		if (old_weapon == WP_SABER)
 		{
-			self->alt_fire = activator->client->ps.SaberActive();
+			self->altFire = activator->client->ps.SaberActive();
 		}
 
 		// swap the users weapon with the emplaced gun and add the ammo the gun has to the player
@@ -1096,7 +1096,7 @@ void ExitEmplacedWeapon(gentity_t* ent)
 
 		if (ent->client->ps.weapon == WP_SABER)
 		{
-			if (ent->owner->alt_fire)
+			if (ent->owner->altFire)
 			{
 				ent->client->ps.SaberActivate();
 			}

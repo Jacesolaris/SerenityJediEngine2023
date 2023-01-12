@@ -2074,21 +2074,21 @@ void ClientEvents(gentity_t* ent, const int old_event_sequence)
 			}
 #ifndef FINAL_BUILD
 			if (fired) {
-				gi.Printf("DOUBLE EV_FIRE_WEAPON AND-OR EV_ALT_FIRE!!\n");
+				gi.Printf("DOUBLE EV_FIRE_WEAPON AND-OR EV_altFire!!\n");
 			}
 			fired = qtrue;
 #endif
 			FireWeapon(ent, qfalse);
 			break;
 
-		case EV_ALT_FIRE:
+		case EV_altFire:
 			if (PM_ReloadAnim(ent->client->ps.torsoAnim))
 			{
 				return;
 			}
 #ifndef FINAL_BUILD
 			if (fired) {
-				gi.Printf("DOUBLE EV_FIRE_WEAPON AND-OR EV_ALT_FIRE!!\n");
+				gi.Printf("DOUBLE EV_FIRE_WEAPON AND-OR EV_altFire!!\n");
 			}
 			fired = qtrue;
 #endif

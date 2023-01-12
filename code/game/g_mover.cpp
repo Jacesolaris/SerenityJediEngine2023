@@ -670,7 +670,7 @@ void SetMoverState(gentity_t* ent, const moverState_t mover_state, const int tim
 		VectorSubtract(ent->pos2, ent->pos1, delta);
 		f = 1000.0 / ent->s.pos.trDuration;
 		VectorScale(delta, f, ent->s.pos.trDelta);
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			ent->s.pos.trType = TR_LINEAR_STOP;
 		}
@@ -685,7 +685,7 @@ void SetMoverState(gentity_t* ent, const moverState_t mover_state, const int tim
 		VectorSubtract(ent->pos1, ent->pos2, delta);
 		f = 1000.0 / ent->s.pos.trDuration;
 		VectorScale(delta, f, ent->s.pos.trDelta);
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			ent->s.pos.trType = TR_LINEAR_STOP;
 		}
@@ -1842,7 +1842,7 @@ void Think_BeginMoving(gentity_t* ent)
 	}
 
 	ent->s.pos.trTime = level.time;
-	if (ent->alt_fire)
+	if (ent->altFire)
 	{
 		ent->s.pos.trType = TR_LINEAR_STOP;
 	}
@@ -1926,7 +1926,7 @@ void Reached_Train(gentity_t* ent)
 		VectorScale(angs, 0.5f, ent->s.apos.trDelta);
 		ent->s.apos.trTime = level.time;
 		ent->s.apos.trDuration = 2000;
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			ent->s.apos.trType = TR_LINEAR_STOP;
 		}
@@ -1958,7 +1958,7 @@ void Reached_Train(gentity_t* ent)
 			}
 			ent->s.apos.trTime = level.time;
 			ent->s.apos.trDuration = 2000;
-			if (ent->alt_fire)
+			if (ent->altFire)
 			{
 				ent->s.apos.trType = TR_LINEAR_STOP;
 			}

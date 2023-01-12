@@ -107,7 +107,7 @@ static void WP_DropDetPack(gentity_t* self, vec3_t start)
 }
 
 //---------------------------------------------------------
-void WP_FireDetPack(gentity_t* ent, const qboolean alt_fire)
+void WP_FireDetPack(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
 	if (!ent || !ent->client)
@@ -115,7 +115,7 @@ void WP_FireDetPack(gentity_t* ent, const qboolean alt_fire)
 		return;
 	}
 
-	if (alt_fire)
+	if (altFire)
 	{
 		if (ent->client->ps.eFlags & EF_PLANTED_CHARGE)
 		{

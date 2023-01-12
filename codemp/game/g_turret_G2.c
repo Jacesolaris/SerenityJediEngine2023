@@ -393,7 +393,7 @@ static void turretG2_fire(gentity_t* ent, vec3_t start, vec3_t dir)
 		//muzzle flash
 		G_PlayEffectID(ent->genericValue13, org, ang);
 		WP_FireTurboLaserMissile(ent, start, dir);
-		if (ent->alt_fire)
+		if (ent->altFire)
 		{
 			TurboLaser_SetBoneAnim(ent, 2, 3);
 		}
@@ -477,7 +477,7 @@ void turretG2_head_think(gentity_t* self)
 		// Getting the flash bolt here
 		trap->G2API_GetBoltMatrix(self->ghoul2,
 		                          0,
-		                          self->alt_fire ? self->genericValue12 : self->genericValue11,
+		                          self->altFire ? self->genericValue12 : self->genericValue11,
 		                          &bolt_matrix,
 		                          self->r.currentAngles,
 		                          self->r.currentOrigin,
@@ -486,7 +486,7 @@ void turretG2_head_think(gentity_t* self)
 		                          self->modelScale);
 		if (self->spawnflags & SPF_TURRETG2_TURBO)
 		{
-			self->alt_fire = !self->alt_fire;
+			self->altFire = !self->altFire;
 		}
 
 		BG_GiveMeVectorFromMatrix(&bolt_matrix, ORIGIN, org);
@@ -566,7 +566,7 @@ static void turretG2_aim(gentity_t* self)
 		// Getting the "eye" here
 		trap->G2API_GetBoltMatrix(self->ghoul2,
 		                          0,
-		                          self->alt_fire ? self->genericValue12 : self->genericValue11,
+		                          self->altFire ? self->genericValue12 : self->genericValue11,
 		                          &bolt_matrix,
 		                          self->r.currentAngles,
 		                          self->s.origin,

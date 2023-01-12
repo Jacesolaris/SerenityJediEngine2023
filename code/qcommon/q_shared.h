@@ -193,7 +193,7 @@ constexpr auto MAX_STRING_CHARS = 1024; // max length of a string passed to Cmd_
 constexpr auto MAX_STRING_TOKENS = 1024; // max tokens resulting from Cmd_TokenizeString;
 constexpr auto MAX_TOKEN_CHARS = 1024; // max length of an individual token;
 
-constexpr auto MAX_INFO_STRING = 1024;
+constexpr auto MAX_INFO_STRING = 4096;
 constexpr auto MAX_INFO_KEY = 1024;
 constexpr auto MAX_INFO_VALUE = 1024;
 

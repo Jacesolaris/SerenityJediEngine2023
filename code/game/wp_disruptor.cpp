@@ -345,7 +345,7 @@ void WP_DisruptorAltFire(gentity_t* ent)
 	//just draw one solid beam all the way to the end...
 	tent = G_TempEntity(tr.endpos, EV_DISRUPTOR_MAIN_SHOT);
 	tent->svFlags |= SVF_BROADCAST;
-	tent->alt_fire = fullCharge; // mark us so we can alter the effect
+	tent->altFire = fullCharge; // mark us so we can alter the effect
 	VectorCopy(muzzle, tent->s.origin2);
 
 	// now go along the trail and make sight events
@@ -366,10 +366,10 @@ void WP_DisruptorAltFire(gentity_t* ent)
 }
 
 //---------------------------------------------------------
-void WP_FireDisruptor(gentity_t* ent, const qboolean alt_fire)
+void WP_FireDisruptor(gentity_t* ent, const qboolean altFire)
 //---------------------------------------------------------
 {
-	if (alt_fire)
+	if (altFire)
 	{
 		WP_DisruptorAltFire(ent);
 	}

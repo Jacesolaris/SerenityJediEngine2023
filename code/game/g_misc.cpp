@@ -937,7 +937,7 @@ void SP_misc_camera(gentity_t* self)
 	G_SetOrigin(self, self->s.origin);
 	G_SetAngles(self, self->s.angles);
 	self->s.apos.trType = TR_LINEAR_STOP; //TR_INTERPOLATE;//
-	self->alt_fire = qtrue;
+	self->altFire = qtrue;
 	VectorSet(self->mins, -8, -8, -12);
 	VectorSet(self->maxs, 8, 8, 0);
 	self->contents = CONTENTS_SOLID;

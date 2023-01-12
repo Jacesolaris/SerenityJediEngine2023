@@ -357,7 +357,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 		ent->client->ps.stats[STAT_ARMOR] = 250; // start with full armor
 		if (ent->s.weapon == WP_BLASTER)
 		{
-			ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+			ent->NPC->scriptFlags |= SCF_altFire;
 		}
 		ent->flags |= FL_NO_KNOCKBACK;
 	}
@@ -429,7 +429,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 	}
 	if (!Q_stricmp("Captain_Phasma", ent->NPC_type))
 	{
-		ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+		ent->NPC->scriptFlags |= SCF_altFire;
 		ent->flags |= FL_SHIELDED;
 	}
 	if (!Q_stricmp("ShadowTrooper", ent->NPC_type) ||
@@ -594,7 +594,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 					if (ent->NPC->rank >= RANK_LT || ent->client->ps.weapon == WP_THERMAL)
 					{
 						//officers, grenade-throwers use alt-fire
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					break;
@@ -731,36 +731,36 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 					}
 					if (!Q_stricmp("Imperial", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (!Q_stricmp("StormPilot", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				case WP_DISRUPTOR:
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					if (!Q_stricmp("saboteursniper", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				case WP_BOWCASTER:
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					if (!Q_stricmp("human_merc_bow", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				case WP_REPEATER:
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					if (!Q_stricmp("human_merc_rep", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (!Q_stricmp("StormTrooper_red", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				case WP_DEMP2:
@@ -770,15 +770,15 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					if (!Q_stricmp("stofficeralt", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (!Q_stricmp("human_merc_flc", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (!Q_stricmp("StormTrooper_blue", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				case WP_ROCKET_LAUNCHER:
@@ -787,7 +787,7 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					if (!Q_stricmp("human_merc_cnc", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				case WP_THERMAL:
@@ -805,23 +805,23 @@ void NPC_SetMiscDefaultData(gentity_t* ent)
 					if (ent->NPC->rank >= RANK_COMMANDER)
 					{
 						//commanders use alt-fire
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (ent->client->NPC_class == CLASS_IMPERIAL)
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (ent->client->NPC_class == CLASS_RODIAN)
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (!Q_stricmp("human_merc", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					if (!Q_stricmp("rodian2", ent->NPC_type))
 					{
-						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_altFire;
 					}
 					break;
 				}
